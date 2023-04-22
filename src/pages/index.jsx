@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
+import md5 from 'md5'
 
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -107,10 +108,42 @@ function SocialLink({ icon: Icon, ...props }) {
   )
 }
 
+
+// handleSubmit reads the value out of the subscribe form's input, uses md5 to hash it and then sends it to EmailOctopus
+// so that the new member joins the email list 
+function handleSubmit(e) {
+  e.preventDefault()
+
+  const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY
+  const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID
+
+  const form = e.currentTarget
+  const formElements = form.elements
+  const newMemberEmailAddress = formElements[0].value.toString().toLowerCase().trim()
+  // The EmailOctopus API expects an md5 hash of the lowercase value of the new member's email address
+  const newMemberId = md5(newMemberEmailAddress)
+  console.dir(formElements[0].value)
+
+  console.log(`you entered ${newMemberEmailAddress}`)
+  console.log(`Attempting to subscribe new member Id: ${newMemberId} to EmailOctopus list`)
+
+  const requestOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ${emailOctopusAPIKey}' },
+    body: JSON.stringify({ api_key: emailOctopusAPIKey, "email_address": newMemberEmailAddress, status: "SUBSCRIBED" })
+  }
+  const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts/${newMemberId}`
+
+  // Fire the API call to EmailOctopus to subscribe the new member to the list
+  fetch(emailOctopusAPIEndpoint, requestOptions)
+    .then(response => response.json())
+    .then(data => console.dir(data))
+}
+
 function Newsletter() {
   return (
     <form
-      action="/thank-you"
+      onSubmit={(e) => { handleSubmit(e); }}
       className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
     >
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -263,8 +296,8 @@ export default function Home({ articles }) {
             Senior software engineer, open source hacker, writer and artist.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Zachary, a senior software engineer. I work at Gruntwork.io,
-            where I handle DevOps automation, IaC development, and Golang development.
+            I’m Zachary, a senior software engineer and tech lead at Gruntwork.io,
+            where I handle DevOps automation, complex AWS deployments, Infrastructure as Code and development in Golang, Bash, Python and Typescript.
             I love to share what I learn via technical tutorials, video demos, and deep-dive
             content. Nice to meet you!
           </p>
