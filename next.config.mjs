@@ -19,19 +19,5 @@ const withMDX = nextMDX({
   },
 })
 
-module.exports = {
-  async headers() {
-    return [
-      {
-        headers: [
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          }
-        ],
-      },
-    ]
-  },
-}
 
 export default withMDX(nextConfig)
