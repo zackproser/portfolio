@@ -41,7 +41,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>About - Spencer Sharp</title>
+        <title>About - Zachary Proser</title>
         <meta
           name="description"
           content="I’m Zachary Proser.  I am an open source developer, senior software engineer, and artist."
