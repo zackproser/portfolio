@@ -128,8 +128,9 @@ function handleSubmit(e) {
   console.log(`Attempting to subscribe new member Id: ${newMemberId} to EmailOctopus list`)
 
   const requestOptions = {
+    crossDomain: true,
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ${emailOctopusAPIKey}' },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ api_key: emailOctopusAPIKey, "email_address": newMemberEmailAddress, status: "SUBSCRIBED" })
   }
   const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts/${newMemberId}`
