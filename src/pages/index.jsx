@@ -13,12 +13,13 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from '@/components/SocialIcons'
-import logoAirbnb from '@/images/logos/airbnb.svg'
-import logoFacebook from '@/images/logos/facebook.svg'
-import logoPlanetaria from '@/images/logos/planetaria.svg'
-import logoStarbucks from '@/images/logos/starbucks.svg'
+import logoCloudflare from '@/images/logos/cloudflare.svg'
+import logoCloudmark from '@/images/logos/cloudmark.png'
+import logoGrunty from '@/images/logos/grunty.png'
+import logoBrightcontext from '@/images/logos/brightcontext.png'
 import wikka from '@/images/photos/wikka.png'
-import image2 from '@/images/photos/image-2.jpg'
+import tmuxDemo from '@/images/tmux-flow.gif'
+import streamingImg from '@/images/streaming.png'
 import image3 from '@/images/photos/image-3.jpg'
 import image4 from '@/images/photos/image-4.jpg'
 import image5 from '@/images/photos/image-5.jpg'
@@ -169,7 +170,7 @@ function Resume() {
     {
       company: 'Gruntwork.io',
       title: 'Tech Lead & Senior Software Engineer',
-      logo: logoPlanetaria,
+      logo: logoGrunty,
       start: '2019',
       end: {
         label: 'Present',
@@ -179,21 +180,21 @@ function Resume() {
     {
       company: 'Cloudflare',
       title: 'Software Engineer',
-      logo: logoAirbnb,
+      logo: logoCloudflare,
       start: '2014',
       end: '2019',
     },
     {
       company: 'Cloudmark',
       title: 'Software Engineer',
-      logo: logoFacebook,
+      logo: logoCloudmark,
       start: '2011',
       end: '2014',
     },
     {
       company: 'BrightContext',
       title: 'Software Engineer',
-      logo: logoStarbucks,
+      logo: logoBrightcontext,
       start: '2008',
       end: '2011',
     },
@@ -252,7 +253,7 @@ function Photos() {
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[wikka, image2, image3, image4, image5].map((image, imageIndex) => (
+        {[wikka, tmuxDemo, image3, streamingImg, image5].map((image, imageIndex) => (
           <div
             key={image.src}
             className={clsx(
