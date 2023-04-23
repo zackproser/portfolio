@@ -296,13 +296,11 @@ export default function Home({ articles }) {
             Senior software engineer, open source hacker, writer and artist.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Hi, I’m Zack, a senior software engineer and tech lead at Gruntwork.io,
-            where I do DevOps automation, complex AWS deployments, Infrastructure as Code and develop software in Golang, Bash, Python, Typescript and more.
+            Hi, I’m Zack, a senior software engineer and tech lead at Gruntwork.io, where I do complex AWS deployments and develop software in Golang, Bash, Python, Typescript and more in the DevOps and automation space.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I love to learn and share knowledge. I&apos;m constantly discovering new terminal, scripting, and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
+            I love to learn and share knowledge. I&apos;m constantly discovering new terminal and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
 
-            I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, and you&apos;re incentivized to continue learning. Ultimately, mastering your tools makes you more employable. 
           </p>
           <Newsletter />
           <div className="mt-6 flex gap-6">
@@ -330,6 +328,13 @@ export default function Home({ articles }) {
         </div>
       </Container>
       <Photos />
+      <Container className="mt-9">
+              <div className="max-w-2xl">
+                <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+                  I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand. 
+                </p>
+              </div>
+      </Container>
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
