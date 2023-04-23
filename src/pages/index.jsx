@@ -300,9 +300,9 @@ export default function Home({ articles }) {
             where I do DevOps automation, complex AWS deployments, Infrastructure as Code and develop software in Golang, Bash, Python, Typescript and more.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I love to learn and share knowledge. I'm constantly discovering new terminal, scripting, and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
+            I love to learn and share knowledge. I&apos;m constantly discovering new terminal, scripting, and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
 
-            I believe that when you're efficient and happy with your tools, you do better work more quickly, and you're incentivized to continue learning. Ultimately, mastering your tools makes you more employable. 
+            I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, and you&apos;re incentivized to continue learning. Ultimately, mastering your tools makes you more employable. 
           </p>
           <Newsletter />
           <div className="mt-6 flex gap-6">
