@@ -126,13 +126,13 @@ export default function About() {
             </h1>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I'm a tech lead and senior software engineer at Gruntwork.io, a startup 
+                I&apos;m a tech lead and senior software engineer at Gruntwork.io, a startup 
                 that specializes in infrastructure as code, AWS, DevOps and automation. 
                 I love to build, maintain and enhance useful tools, especially in Golang
                 using the TUI library bubbletea from Charm.sh. 
               </p>
               <p>
-                I've been a software developer and open-source contributor for {RenderNumYearsExperience()} years. 
+                I&apos;ve been a software developer and open-source contributor for {RenderNumYearsExperience()} years. 
                 All of my open-source work lives at <a href="https://github.com/zackproser">https://github.com/zackproser</a>
               </p>
               <p>
