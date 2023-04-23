@@ -9,8 +9,15 @@ import logoPlanetaria from '@/images/logos/planetaria.svg'
 import logoHelioStream from '@/images/logos/helio-stream.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
+import nuke from '@/images/logos/nuke.svg'
 
 const projects = [
+  { 
+    name: 'cloud-nuke', 
+    description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion', 
+    link: { href: 'https://github.com/gruntwork-io/cloud-nuke', label: 'github' },
+    logo: nuke,
+  }, 
   {
     name: 'git-xargs',
     description:
