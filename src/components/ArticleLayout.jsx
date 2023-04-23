@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Container } from '@/components/Container'
+import { Newsletter } from '@/components/Newsletter'
 import { Prose } from '@/components/Prose'
 import { formatDate } from '@/lib/formatDate'
 import clsx from 'clsx'
@@ -24,76 +25,6 @@ function ArrowLeftIcon(props) {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
-
-function Newsletter() {
-  // Handle the submit event on form submit.
-  const handleSubmit = async (event) => {
-    // Stop the form from submitting and refreshing the page.
-    event.preventDefault()
-
-    // Cast the event target to an html form
-    const form = event.target
-
-    // Get data from the form.
-    const data = {
-      email: form.email.value,
-    }
-
-    // Send the form data to our API and get a response.
-    const response = await fetch('/api/form', {
-      // Body of the request is the JSON data we created above.
-      body: JSON.stringify(data),
-      // Tell the server we're sending JSON.
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // The method is POST because we are sending data.
-      method: 'POST',
-    })
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
-    >
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <MailIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Supercharge your development skills</span>
-      </h2>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        I publish deep-dive technical content for professional developers who want to become faster and more efficient in their work.
-      </p>
-      <div className="mt-6 flex">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email address"
-          aria-label="Email address"
-          required
-          className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-teal-400 dark:focus:ring-teal-400/10 sm:text-sm"
-        />
-        <Button type="submit" className="ml-4 flex-none">
-          Count me in
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-export function Button({ variant = 'primary', className, href, ...props }) {
-  className = clsx(
-    'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
-    variantStyles[variant],
-    className
-  )
-
-  return href ? (
-    <Link href={href} className={className} {...props} />
-  ) : (
-    <button className={className} {...props} />
   )
 }
 
