@@ -26,9 +26,9 @@ export default function handler(req, res) {
   }
 
   fetch(emailOctopusAPIEndpoint, requestOptions)
-    .then(response => response.json())
-    .then(data => console.dir(data))
-    .catch(error => console.dir(error))
+    .then((response) => response.json())
+    .then((data) => console.dir(data))
+    .catch((error) => console.dir(error))
 
   // Sends a HTTP success code
   res.status(200).json({ data: `Think we successfully subscribed ${body.email}` })
