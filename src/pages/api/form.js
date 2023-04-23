@@ -1,5 +1,3 @@
-import md5 from 'md5'
-
 export default function handler(req, res) {
   // Get data submitted in request's body.
   const body = req.body
@@ -13,13 +11,6 @@ export default function handler(req, res) {
   const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID
   const newMemberEmailAddress = body.email
   const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`
-
-  console.dir({
-    key: emailOctopusAPIKey, 
-    listId: emailOctopusListId,
-    newMemberEmailAddress, 
-    emailOctopusAPIEndpoint, 
-  })
 
   const data = {
     api_key: emailOctopusAPIKey, 
@@ -38,7 +29,6 @@ export default function handler(req, res) {
     .then(response => response.json())
     .then(data => console.dir(data))
     .catch(error => console.dir(error))
-
 
   // Sends a HTTP success code
   res.status(200).json({ data: `Think we successfully subscribed ${body.email}` })
