@@ -248,10 +248,10 @@ export default function Home({ articles }) {
             Senior software engineer, open source hacker, writer and artist.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Hi, I’m Zack, a senior software engineer and tech lead at Gruntwork.io, where I do complex AWS deployments and develop software in Golang, Bash, Python, Typescript and more in the DevOps and automation space.
+            Hi, I’m Zack, a senior software engineer and tech lead. I do complex AWS deployments, develop software, and help my team and our customers succeed.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I love to learn and share knowledge. I&apos;m constantly discovering new terminal and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
+            I love to learn and share knowledge. I&apos;m constantly discovering new developer productivity hacks, which I share via tutorials and demo videos. 
 
           </p>
           <Newsletter />
