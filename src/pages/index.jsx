@@ -31,6 +31,10 @@ import { formatDate } from '@/lib/formatDate'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
 
+function RenderNumYearsExperience() {
+  return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
+}
+
 function MailIcon(props) {
   return (
     <svg
@@ -331,8 +335,14 @@ export default function Home({ articles }) {
       <Container className="mt-9">
               <div className="max-w-2xl">
                 <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-                  I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand. 
+                  I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, 
+                  and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand. 
                 </p>
+                <p className="mt-6  text-base text-zinc-600 dark:text-zinc-400">
+                  On this blog, I share terminal tricks, demo videos, advanced command line techniques and hotkeys, and
+                  I blog about things I&apos;ve learned the hard way while working in the industry for {RenderNumYearsExperience()} years. 
+                </p>
+                  <Newsletter />
               </div>
       </Container>
       <Container className="mt-24 md:mt-28">
