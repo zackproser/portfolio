@@ -20,6 +20,10 @@ import logoBrightcontext from '@/images/logos/brightcontext.png'
 import wikka from '@/images/photos/wikka.png'
 import tmuxDemo from '@/images/tmux-flow.gif'
 import streamingImg from '@/images/streaming.png'
+import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.png'
+import optimizerBlogImg from '@/images/optimizer-blog.png'
+import terraformAssocImg from '@/images/terraform-associate.png'
+import teaTutorImg from '@/images/teatutor-logo.png'
 import image3 from '@/images/photos/image-3.jpg'
 import image4 from '@/images/photos/image-4.jpg'
 import image5 from '@/images/photos/image-5.jpg'
@@ -253,7 +257,7 @@ function Photos() {
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[wikka, tmuxDemo, image3, streamingImg, image5].map((image, imageIndex) => (
+        {[wikka, optimizerBlogImg, canyonRunnerImg, teaTutorImg, terraformAssocImg].map((image, imageIndex) => (
           <div
             key={image.src}
             className={clsx(
