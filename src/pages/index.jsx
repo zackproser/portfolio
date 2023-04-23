@@ -108,44 +108,36 @@ function SocialLink({ icon: Icon, ...props }) {
   )
 }
 
-
-// handleSubmit reads the value out of the subscribe form's input, uses md5 to hash it and then sends it to EmailOctopus
-// so that the new member joins the email list 
-function handleSubmit(e) {
-  e.preventDefault()
-
-  const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY
-  const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID
-
-  const form = e.currentTarget
-  const formElements = form.elements
-  const newMemberEmailAddress = formElements[0].value.toString().toLowerCase().trim()
-  // The EmailOctopus API expects an md5 hash of the lowercase value of the new member's email address
-  const newMemberId = md5(newMemberEmailAddress)
-  console.dir(formElements[0].value)
-
-  console.log(`you entered ${newMemberEmailAddress}`)
-  console.log(`Attempting to subscribe new member Id: ${newMemberId} to EmailOctopus list`)
-
-  const requestOptions = {
-    crossDomain: true,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ api_key: emailOctopusAPIKey, "email_address": newMemberEmailAddress, status: "SUBSCRIBED" })
-  }
-  const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts/${newMemberId}`
-
-  // Fire the API call to EmailOctopus to subscribe the new member to the list
-  fetch(emailOctopusAPIEndpoint, requestOptions)
-    .then(response => response.json())
-    .then(data => console.dir(data))
-}
-
 function Newsletter() {
+  // Handle the submit event on form submit.
+  const handleSubmit = async (event) => {
+    // Stop the form from submitting and refreshing the page.
+    event.preventDefault()
+
+    // Cast the event target to an html form
+    const form = event.target 
+
+    // Get data from the form.
+    const data = {
+      email: form.email.value,
+    }
+
+    // Send the form data to our API and get a response.
+    const response = await fetch('/api/form', {
+      // Body of the request is the JSON data we created above.
+      body: JSON.stringify(data),
+      // Tell the server we're sending JSON.
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // The method is POST because we are sending data.
+      method: 'POST',
+    })
+  }
+  
   return (
     <form
-      action="/api/form"
-      method="POST"
+      onSubmit={handleSubmit}
       className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
     >
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
