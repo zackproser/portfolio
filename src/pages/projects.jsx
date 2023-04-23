@@ -7,43 +7,44 @@ import logoAnimaginary from '@/images/logos/animaginary.svg'
 import logoCosmos from '@/images/logos/cosmos.svg'
 import logoHelioStream from '@/images/logos/helio-stream.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
-import logoPlanetaria from '@/images/logos/planetaria.svg'
+import logoCloudflare from '@/images/logos/cloudflare.svg'
+https://github.com/cloudflare/cf-terraforming
 
 const projects = [
   {
     name: 'git-xargs',
     description:
-      'Make the same change across many GitHub repositories quickly. Run any command or script on multiple repos',
+      'Make the same change across many GitHub repositories quickly. Run any command or script on multiple repos.',
     link: { href: 'https://github.com/gruntwork-io/git-xargs', label: 'github' },
     logo: logoPlanetaria,
   },
   {
-    name: 'Animaginary',
+    name: 'procrastiproxy',
     description:
-      'High performance web animation library, hand-written in optimized WASM.',
-    link: { href: '#', label: 'github' },
+      'A Golang proxy that can be easily deployed to block distracting websites during a time window you configure.',
+    link: { href: 'https://github.com/zackproser/procrastiproxy', label: 'github' },
     logo: logoAnimaginary,
   },
   {
-    name: 'HelioStream',
+    name: 'Teatutor',
     description:
-      'Real-time video streaming library, optimized for interstellar transmission.',
+      'Configure and deploy custom quizzes over ssh. Written in Golang and leveraging Terminal User Interface (TUI) library Bubbletea.',
     link: { href: '#', label: 'github.com' },
-    logo: logoHelioStream,
+    logo: logoOpenShuttle,
   },
   {
-    name: 'cosmOS',
+    name: 'sizeof',
     description:
-      'The operating system that powers our Planetaria space shuttles.',
+      'A Golang command line interface (CLI) and experiment - co-authored with ChatGPT4 via Neovim AI plugins that turned me into an AI-enhanced developer.',
     link: { href: '#', label: 'github.com' },
     logo: logoCosmos,
   },
   {
-    name: 'OpenShuttle',
+    name: 'cf-terraforming',
     description:
-      'The schematics for the first rocket I designed that successfully made it to orbit.',
+      'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account',
     link: { href: '#', label: 'github.com' },
-    logo: logoOpenShuttle,
+    logo: logoCloudflare,
   },
 ]
 
