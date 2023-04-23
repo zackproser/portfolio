@@ -5,10 +5,10 @@ import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import logoAnimaginary from '@/images/logos/animaginary.svg'
 import logoCosmos from '@/images/logos/cosmos.svg'
+import logoPlanetaria from '@/images/logos/planetaria.svg'
 import logoHelioStream from '@/images/logos/helio-stream.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
-https://github.com/cloudflare/cf-terraforming
 
 const projects = [
   {
@@ -29,23 +29,31 @@ const projects = [
     name: 'Teatutor',
     description:
       'Configure and deploy custom quizzes over ssh. Written in Golang and leveraging Terminal User Interface (TUI) library Bubbletea.',
-    link: { href: '#', label: 'github.com' },
+    link: { href: 'https://github.com/zackproser/teatutor', label: 'github.com' },
     logo: logoOpenShuttle,
   },
   {
     name: 'sizeof',
     description:
       'A Golang command line interface (CLI) and experiment - co-authored with ChatGPT4 via Neovim AI plugins that turned me into an AI-enhanced developer.',
-    link: { href: '#', label: 'github.com' },
+    link: { href: 'https://github.com/zackproser/sizeof', label: 'github.com' },
     logo: logoCosmos,
   },
   {
     name: 'cf-terraforming',
     description:
-      'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account',
-    link: { href: '#', label: 'github.com' },
+      'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account.',
+    link: { href: 'https://github.com/cloudflare/cf-terraforming', label: 'github.com' },
     logo: logoCloudflare,
   },
+{
+    name: 'Quake in AWS Fargate',
+    description:
+      'An Infrastructure as Code tutorial, where I demonstrate how to define and launch a game server as code, and even connect to it from your laptop to game with your co-workers.',
+    link: { href: 'https://github.com/zackproser/quake-in-fargate', label: 'github.com' },
+    logo: logoOpenShuttle,
+  }
+
 ]
 
 function LinkIcon(props) {
