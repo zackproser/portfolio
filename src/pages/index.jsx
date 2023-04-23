@@ -287,7 +287,7 @@ export default function Home({ articles }) {
         </title>
         <meta
           name="description"
-          content="I’m Zachary, a senior software engineer, writer, and artist. I am a Tech Lead at Gruntwork.io, where we build automation solutions to make deploying infrastructure as code easier."
+          content="I’m Zack, a senior software engineer, writer, and artist. I am a Tech Lead at Gruntwork.io, where we build automation solutions to make deploying infrastructure as code easier."
         />
       </Head>
       <Container className="mt-9">
@@ -296,11 +296,15 @@ export default function Home({ articles }) {
             Senior software engineer, open source hacker, writer and artist.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Zachary, a senior software engineer and tech lead at Gruntwork.io,
-            where I handle DevOps automation, complex AWS deployments, Infrastructure as Code and development in Golang, Bash, Python and Typescript.
-            I love to share what I learn via technical tutorials, video demos, and deep-dive
-            content. Nice to meet you!
+            Hi, I’m Zack, a senior software engineer and tech lead at Gruntwork.io,
+            where I do DevOps automation, complex AWS deployments, Infrastructure as Code and develop software in Golang, Bash, Python, Typescript and more.
           </p>
+          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+            I love to learn and share knowledge. I'm constantly discovering new terminal, scripting, and developer productivity hacks, and writing deep-dive tutorials and publishing demo videos to share them with you. 
+
+            I believe that when you're efficient and happy with your tools, you do better work more quickly, and you're incentivized to continue learning. Ultimately, mastering your tools makes you more employable. 
+          </p>
+          <Newsletter />
           <div className="mt-6 flex gap-6">
             <SocialLink
               href="https://twitter.com/zackproser"
