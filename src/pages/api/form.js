@@ -1,4 +1,4 @@
-export default function handler(req, res) {
+export default async function handler(req, res) {
   // Get data submitted in request's body.
   const body = req.body
 
@@ -25,7 +25,7 @@ export default function handler(req, res) {
     body: JSON.stringify(data)
   }
 
-  fetch(emailOctopusAPIEndpoint, requestOptions)
+  const response = await fetch(emailOctopusAPIEndpoint, requestOptions)
     .then((response) => response.json())
     .then((data) => console.dir(data))
     .catch((error) => console.dir(error))
