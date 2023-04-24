@@ -127,7 +127,7 @@ function Resume() {
       company: 'Gruntwork.io',
       title: 'Tech Lead & Senior Software Engineer',
       logo: logoGrunty,
-      start: '2019',
+      start: '2020',
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
@@ -137,22 +137,22 @@ function Resume() {
       company: 'Cloudflare',
       title: 'Software Engineer',
       logo: logoCloudflare,
-      start: '2014',
-      end: '2019',
+      start: '2017',
+      end: '2020',
     },
     {
       company: 'Cloudmark',
       title: 'Software Engineer',
       logo: logoCloudmark,
-      start: '2011',
-      end: '2014',
+      start: '2015',
+      end: '2017',
     },
     {
       company: 'BrightContext',
       title: 'Software Engineer',
       logo: logoBrightcontext,
-      start: '2008',
-      end: '2011',
+      start: '2012',
+      end: '2014',
     },
   ]
 
@@ -251,7 +251,7 @@ export default function Home({ articles }) {
             Hi, I’m Zack, a senior software engineer and tech lead. I do complex AWS deployments, develop software, and help my team and our customers succeed.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I love to learn and share knowledge. I&apos;m constantly discovering new developer productivity hacks, which I share via tutorials and demo videos. 
+            I love to learn and share knowledge. I&apos;m constantly discovering new developer productivity hacks, which I share via tutorials and demo videos.
 
           </p>
           <Newsletter />
@@ -281,17 +281,17 @@ export default function Home({ articles }) {
       </Container>
       <Photos />
       <Container className="mt-9">
-              <div className="max-w-2xl">
-                <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-                  I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly, 
-                  and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand. 
-                </p>
-                <p className="mt-6  text-base text-zinc-600 dark:text-zinc-400">
-                  On this blog, I share terminal tricks, demo videos, advanced command line techniques and hotkeys, and
-                  I blog about things I&apos;ve learned the hard way while working in the industry for {RenderNumYearsExperience()} years. 
-                </p>
-                  <Newsletter />
-              </div>
+        <div className="max-w-2xl">
+          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+            I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly,
+            and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand.
+          </p>
+          <p className="mt-6  text-base text-zinc-600 dark:text-zinc-400">
+            On this blog, I share terminal tricks, demo videos, advanced command line techniques and hotkeys, and
+            I blog about things I&apos;ve learned the hard way while working in the industry for {RenderNumYearsExperience()} years.
+          </p>
+          <Newsletter />
+        </div>
       </Container>
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
