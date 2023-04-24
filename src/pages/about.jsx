@@ -71,30 +71,34 @@ export default function About() {
             </h1>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m a tech lead and senior software engineer at Gruntwork.io, a startup 
-                that specializes in infrastructure as code, AWS, DevOps and automation. 
+                I&apos;m a tech lead and senior software engineer at Gruntwork.io, a startup
+                that specializes in infrastructure as code, AWS, DevOps and automation.
                 I love to build, maintain and enhance useful tools, especially in Golang
-                using the TUI library bubbletea from Charm.sh. 
+                using the TUI library bubbletea from Charm.sh.
               </p>
               <p>
-                I&apos;ve been a software developer and open-source contributor for {RenderNumYearsExperience()} years. 
+                I&apos;ve been a software developer and open-source contributor for {RenderNumYearsExperience()} years.
                 All of my open-source work lives at <a href="https://github.com/zackproser">https://github.com/zackproser</a>
               </p>
               <p>
-                In my free time, I love to research new techniques and to practice keyboard-driven development using tmux, neovim, awesome 
-                window manager and other powerful open source tools. 
+                In my free time, I love to research new techniques and to practice keyboard-driven development using tmux, neovim, awesome
+                window manager and other powerful open source tools.
               </p>
               <p>
-                I believe deeply in sharing knowledge and taking the time out to pass along what you know to others, just as so many developers 
-                have done for me. 
+                I believe deeply in sharing knowledge and taking the time out to pass along what you know to others, just as so many developers
+                have done for me.
               </p>
               <p>
-                This site is a part of the way I give back and say thanks to those who took time out of their day to stop what they were doing 
-                and show me a better way to accomplish a task, to use a tool, to decompose a problem. 
+                This site is a part of the way I give back and say thanks to those who took time out of their day to stop what they were doing
+                and show me a better way to accomplish a task, to use a tool, to decompose a problem.
               </p>
               <p>
-                If you find shells, automation, security hardening your system and workflow, high performance computing and automating complex 
-                deployments with custom state machines and cloud infrastructure, then you&apos;ll <b>probably</b> enjoy my content. 
+                If you find shells, command line tools and automation interesting, and if you want to know more about hardening your system and workflow for added security, then you are likely in the right place.
+              </p>
+
+              <p>
+                If you want to know how to shred text on the keyboard, automate complex
+                deployments with custom state machines and cloud infrastructure, and generally level up your devlopment game and career then you&apos;ll <b>probably</b> enjoy my content.
               </p>
               <Newsletter />
             </div>
