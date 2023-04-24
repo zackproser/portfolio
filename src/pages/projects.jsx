@@ -9,15 +9,15 @@ import logoPlanetaria from '@/images/logos/planetaria.svg'
 import logoHelioStream from '@/images/logos/helio-stream.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
-import nuke from '@/images/logos/nuke.svg'
+import nuke from '@/images/nuke.png'
 
 const projects = [
-  { 
-    name: 'cloud-nuke', 
-    description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion', 
+  {
+    name: 'cloud-nuke',
+    description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion',
     link: { href: 'https://github.com/gruntwork-io/cloud-nuke', label: 'github' },
     logo: nuke,
-  }, 
+  },
   {
     name: 'git-xargs',
     description:
@@ -53,7 +53,7 @@ const projects = [
     link: { href: 'https://github.com/cloudflare/cf-terraforming', label: 'github.com' },
     logo: logoCloudflare,
   },
-{
+  {
     name: 'Quake in AWS Fargate',
     description:
       'An Infrastructure as Code tutorial, where I demonstrate how to define and launch a game server as code, and even connect to it from your laptop to game with your co-workers.',
