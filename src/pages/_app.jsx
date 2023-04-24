@@ -4,6 +4,14 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { Analytics } from '@vercel/analytics/react';
 
+// Custom Google font 'Oxygen'
+import { Oxygen } from 'next/font/google'
+
+const oxygen = Oxygen({
+  subsets: ['latin'],
+  weight: '700',
+})
+
 import '@/styles/tailwind.css'
 import 'focus-visible'
 
@@ -28,6 +36,11 @@ export default function App({ Component, pageProps, router }) {
         </div>
       </div>
       <div className="relative">
+        <style jsx global>{`
+        html {
+          font-family: ${oxygen.style.fontFamily};
+        }
+      `}</style>
         <Header />
         <main>
           <Component previousPathname={previousPathname} {...pageProps} />
