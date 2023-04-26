@@ -1,0 +1,205 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import Link from 'next/link'
+import simpleStepsGif from '@/images/stages.gif'
+import elmArchitecture from '@/images/elm-architecture.svg'
+
+
+export const meta = {
+ author: "Zachary Proser",
+ date: "2023-04-25", 
+ title: "The Bubbletea (TUI) State Machine pattern",
+ description: "Combining a lightweight state machine plus the Bubbletea charm library leads to a very powerful pattern for tooling that needs to orchestrate slow or expensive steps."
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## A powerful pattern for CLI's that orchestrate complex deployments or workflows 
+
+<Image src={simpleStepsGif} />
+
+<Link href="https://github.com/zackproser/bubbletea-stages">Check out the project code on GitHub</Link>
+
+In this post, I'm going to demonstrate a pattern that I've employed successfully at work in a few tools that handle complex, multi-step deployments. 
+
+***
+## The goal
+
+The goal is to combine the snappy responsive UI that Bubbletea provides with a state machine that is: 
+* robust to failure, allowing the user to fix an issue and re-run their same command 
+* idempotent, where possible. If a complex step completed in run #1, but the user has to re-run their tool minutes later, we should be able to keep whatever work that was completed correctly from the last run.
+* capable of processing even long-running tasks in sequence 
+* capable of providing extremely detailed error information to the user in the event of an error
+
+## Let's dive into the code 
+***
+### Why is this pattern so powerful? 
+
+Let's dive into the code for this pattern and consider a `stage`. which is a discrete unit of work to be performed, such as running a bash script or performing a `terraform apply`.
+
+```go
+// Stage is a single step in a deployment process. Only one stage 
+// can be running at one time, And the entire process exits 
+// if any stage fails along the way
+
+type Stage struct {
+	Name           string
+	Action         func() error
+	Error          error
+	IsComplete     bool
+	IsCompleteFunc func() bool
+	Reset          func() error
+}
+```
+
+The main idea is that every stage has an action, which represents the unit of work the stage will complete. This work could include: 
+
+* running a command to ensure the user has a certain binary installed on their system
+* performing a `docker build` with a bunch of arguments to select the correct image and destination
+* reading a value from some database
+* running a script or other utility and waiting for its output
+
+Each stage therefore also has an Error. If the Error is ever not `nil`, then we effectively shut down the entire pipeline. This is also a design requirement, because 
+when we're orchestrating complex deployments, we can't successfully run the `terraform apply` at the end if our `docker build` commands for the required images
+never completed successfully.
+
+The `isComplete` field and the `IsCompleteFunc` work in concert to skip any work that has already been completed successfully (likely in a previous run) which makes 
+the pipeline speedier. 
+
+A good example of where this can save a lot of time is a `terraform apply` of some ECR repositories to hold docker images. If the ECR repositories were successfully 
+created on the previous run, then it would be wasteful to destroy and re-apply them from the perspective of the user's time. 
+
+Instead, `isCompleteFunc` can run for this stage, and use the AWS SDK, for example, to check if the ECR repositories already exist. If they do, the function can return `true`, indicating that the work 
+the stage was concerned about is already complete. We can just leave those repos alone, move on to the next step, and use them again later.
+
+Finally each stage also has the concept of a `Reset` function which returns an error. This function could optionally reset a stage back to a known good state if necessary. 
+You could imagine writing code here to delete a test value from the database, or clean up a generated file in preparation for the next run, or even run `terraform destroy`
+in cases where it's preferable to fail cleanly than to litter an AWS account with half-applied configuration. 
+
+By combining these fields together with a certain Bubbletea pattern, we achieve a fast, snappy UI that is extremely responsive to the user, in front of a powerful state 
+machine that can smoothly orchestrate even complex processes with multiple different actors, tools, binaries and arguments - with zero UI lag or stuttering.
+
+The tool can re-use artifacts that were successfully created in previous runs, and can perform teardowns when a show-stopping error is encountered, all while presenting the 
+user with a beautiful, interactive and animated interface. Not bad for a command line tool. 
+
+### Understanding the Bubbletea lifecycle events
+
+Bubbletea is a library for building Terminal User Interface (TUI) applications. Bubbletea publishes a great primer on the elm architecture that inspired it on their project's GitHub page. 
+In essence, think of a Bubbletea program as similar to a game loop. When you build a Bubbletea application, your model must implement the following methods, *which you do not call or manage directly*.
+Instead, you allow Bubbletea to handle the event loop and you write code in an asynchronous way by passing messages to start and stop long-running or expensive work on a separate loop, essentially.
+
+To be honest, it took me a couple of tries with some example bubbletea programs to really be able to make forward progress and not get stuck on some obscure issue. This was all due to the model not 
+really clicking for me - but I read the bubbletea tutorials a couple of times and kept at it and eventually it started to feel natural to extend and manage a program via distinct message types and 
+handlers in the update function - and even pleasant because it did help me to keep the program logic clear and maintainable even as it grew in complexity and functionality.
+
+<Image src={elmArchitecture} alt="The Elm architecture that inspired Bubbletea" />
+
+* `Init` - useful for performing initial setup work or to kick off the main process
+* `Update` - called by Bubbletea - used for handling I/O in an asynchronous manner, which keeps the UI loop snappy and responsive. 
+* `View` - called by Bubbletea - it renders your model depending on your model's state, which you should update via the Update function
+
+In addition to these core bubbletea events, the state machine pattern requires a couple of other key elements I'll call out and touch on separately.
+
+### The runStage function 
+
+`runStage` is the meat of the state machine logic, which can really be this simple. If the stage is not determined to be complete already, then run the stage's 
+action and set its error field to the result. Finally, return the `stageCompleteMsg`, which is picked up by our model's `Update` function in order to signal that
+we're ready to advance the state machine to the next stage. 
+
+```go
+func runStage() tea.Msg {
+	if !stages[stageIndex].IsCompleteFunc() {
+		// Run the current stage, and record its result status
+		stages[stageIndex].Error = stages[stageIndex].Action()
+	}
+	return stageCompleteMsg{}
+}
+```
+
+### The stageComplete handler
+
+Since this is a bubbletea program, we add a new case within our switch statement in our model's `Update` function in order to handle the `stageCompleteMsg` we just returned: 
+
+```go
+case stageCompleteMsg:
+		// If we have an error, then set the error so 
+		// that the views can properly update
+		if stages[stageIndex].Error != nil {
+			// We're setting the error from the stage's 
+			// action on our model as well - we do this 
+			// because our views may need that information 
+			// in order to know to switch into an 
+			// error diagnostic mode - which is highly 
+			// recommended in order to give your user something 
+			// to actually understand and some next steps to follow!
+			m.Error = stages[stageIndex].Error
+			// This is a utility function - and we can call this 
+			// synchronously here because we're about to shut down 
+			// the whole shebang by returning `tea.Quit` next anyway
+			writeCommandLogFile()
+			return m, tea.Quit
+		}
+		// Otherwise, mark the current stage as complete and move to 
+		// the next stage
+		stages[stageIndex].IsComplete = true
+		// If we've reached the end of the defined stages, we're done
+		if stageIndex+1 >= len(stages) {
+			return m, tea.Quit
+		}
+		// Here's how advance the state machine to the next stage
+		stageIndex++
+		// Because we're returning the runStage message again, we 
+		// complete the loop that drives the overall process forward
+		return m, runStage
+
+```
+
+### Example stages
+
+What does a stage look like in practice, anyway? Here's a couple steps that orchestrate a 3 step pipeline, complete with all the functionality described above. 
+You could imagine your actions being a function wherein you can write any custom or business logic you want. As long as it returns no error, the state machine 
+will proceed to the next step 
+
+```go
+var stageIndex = 0
+
+var stages = []Stage{
+	{
+		Name:        "One",
+		Description: "This is an example stage - it could be terraform plan!",
+		Action: func() error {
+			time.Sleep(3 * time.Second)
+			return nil
+		},
+		IsCompleteFunc: func() bool { return false },
+		IsComplete:     false,
+	},
+	{
+		Name:        "Two",
+		Description: "Perhaps generating a special file or running a workflow",
+		Action: func() error {
+			time.Sleep(3 * time.Second)
+			return errors.New("This one errored")
+		},
+		IsCompleteFunc: func() bool { return false },
+		IsComplete:     false,
+	},
+	{
+		Name:        "Three",
+		Description: "Run a database migration",
+		Action: func() error {
+			time.Sleep(3 * time.Second)
+			return nil
+		},
+		IsCompleteFunc: func() bool { return false },
+		IsComplete:     false,
+	},
+}
+```
+
+## Build ambitious command line tools!
+
+With these building blocks, you can create robust tools that can recovery gracefully from errors, report detailed issue breakdowns to end users, and successfully drive even long-running multi-step deployments end to end. 
+
+Be sure to <Link href="https://github.com/zackproser/bubbletea-stages">check out the sample code on GitHub</Link>. Thank you for reading!
+
