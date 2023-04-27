@@ -1,6 +1,9 @@
 
 import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
 import Link from 'next/link'
+
+import NextJSErrors from '@/images/next-js-errors.png'
 
 export const meta = {
   author: "Zachary Proser",
@@ -39,11 +42,42 @@ Finally, while I've done projects in React and Vue over the years, I wanted to t
 The results are the site you are currently reading!
 
 ### Even as a grumpy developer,  I was pleasantly surprised:
-Error reporting is light-years better than I ever remember it being for frontend development. The errors were human legible and I experienced very few WTF moments throughout a weekend of furious hacking. This is some of the highest ratio of time spent just building features and shipping content versus wrestling with my tooling and spending tons of time debugging things. 
+Why? Error reporting is light-years better than I ever remember it being for frontend development. 
+
+<Image src={NextJSErrors} alt="Next.js errors are pleasant to work with and human-legible" />
+
+The errors were human legible and I experienced very few WTF moments throughout a weekend of furious hacking. This is some of the highest ratio of time spent just building features and shipping content versus wrestling with my tooling and debugging why something simple isn't working. 
 
 Hot reloading feels much improved over the years.  
 
-The way next.js handles fonts, prism for code highlighting which even supports custom themes (I installed gruvbx for my site because it is the only correct choice) and MDX integration out of the box is exactly how I wanted to work with my blog content, because markdown is easy to maintain and quick to write, but I can now also render rich graphs or media to enrich my content. 
+It feels like I stepped away for a couple years and then many of the UX pain points for developing on the frontend were handily resolved
+
+The way next.js handles things like fonts, prism for code highlighting which even supports custom themes (I installed gruvbx for my site because it is the only correct choice) and MDX integration out of the box is exactly how I wanted to work with my blog content, because markdown is easy to maintain and quick to write, but I can now also render rich graphs or media to enrich my content. 
+
+For example, here's a look at how easy it is to load a custom Google Font in a next.js project: 
+
+```jsx
+// pages/_app.js
+import { Inter } from 'next/font/google'
+
+// If loading a variable font, you don't need to specify the font weight
+const inter = Inter({ subsets: ['latin'] })
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <main className={inter.className}>
+      <Component {...pageProps} />
+    </main>
+  )
+}
+
+```
+
+More importantly, the optimization happens server-side - and a request is *never sent to Google* when someone hits your site. This is fantastic. It took me quite literally 30 seconds to throw up a branch with a pull request to review what it would look like to change my site back to the custom Google Font Oxygen I've used in the past. 
+
+I was able to quickly eyeball the two fonts together side by side and decide I wanted to stick with the default. Again, the speed of iteration is profound. 
+
+These speed gains just continue when you consider using MDX - which is "markdown for the component era" which allows you to load `.jsx` in your markdown.
 
 Here's a quick snippet to show what I mean. For the most part, it's still just markdown, but now you can build and import rich graphs and diagrams, images, gifs (which I use for terminal demos on my site), and much more: 
 
