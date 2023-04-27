@@ -2,6 +2,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import Link from 'next/link'
+import vercelFunctionsLogging from '@/images/vercel-functions-logging.png'
+import vercelIntegratedAnalytics from '@/images/vercel-integrated-analytics.png'
 
 import NextJSErrors from '@/images/next-js-errors.png'
 
@@ -31,17 +33,17 @@ I'm happy to share that I've just now (the last week of April 2023), finished re
 
 These are the main reasons I wanted to redo my site. The primary one was dependency hell. I was far behind on Vue 2 and nuxt 2 and had not really kept up with breaking changes across the projects. It's an old story, but the further behind I fell, the harder it was to keep up. 
 
-Everytime I wanted to quicky pop back to my site after a long absence to fire off a quick blog post (something that sounds like it should be relatively easy) I ended up wrestling with the various C packages needed to compile my SASS to CSS. Yikes. 
+Everytime I wanted to quicky pop back to my site after a long absence to fire off a quick blog post (something that sounds like it should be relatively easy) I ended up wrestling dependency mismatches between the various C packages needed to compile my SASS to CSS and the versions of node.js, Vue.js and nuxt.js that would interoperate correctly and still build all my custom (heavy) CSS files. Yikes. 
 
 Meanwhile, I was also curious to try out the latest to see how all the various projects and develop tooling had come since I last went all in on a node based framework for building a personal blog. In the previous iteration of my site, I had sort of arrived at an enhanced markdown system, where I read markdown files, parsed their frontmatter metadata to handle routing and display categories, fetched their data asynchronously and ran it through several plugins like `prism` in order to support code syntax highlighting and other rendering features and then renderied it for the viewer. 
 
-In skimming the docs for next.js and MDX, it appeared the project now supported that functionality and more out of the box with a nicer integration and less gross config required. In addition, it seemed that many rust-based tools to support key parts of the developer experience had replaced slower predecessors. I was intrigued enough to give it a shot. 
+In skimming the docs for next.js and MDX, it appeared the project now supported that functionality and more out of the box with a nicer integration and less gross custom config required. In addition, it seemed that many rust-based tools to support key parts of the developer experience had replaced slower predecessors. I was intrigued enough to give it a shot. 
 
 Finally, while I've done projects in React and Vue over the years, I wanted to take a crack at managing my personal site in React. And while I've been a happy Bootstrap user for many years now, I also wanted to break out of my comfort zone and give Tailwind CSS and Tailwind UI a shot. 
 
 The results are the site you are currently reading!
 
-### Even as a grumpy developer,  I was pleasantly surprised:
+### Even as a grumpy developer,  I was pleasantly surprised. This stuff is *fast*
 Why? Error reporting is light-years better than I ever remember it being for frontend development. 
 
 <Image src={NextJSErrors} alt="Next.js errors are pleasant to work with and human-legible" />
@@ -50,9 +52,7 @@ The errors were human legible and I experienced very few WTF moments throughout 
 
 Hot reloading feels much improved over the years.  
 
-It feels like I stepped away for a couple years and then many of the UX pain points for developing on the frontend were handily resolved
-
-The way next.js handles things like fonts, prism for code highlighting which even supports custom themes (I installed gruvbx for my site because it is the only correct choice) and MDX integration out of the box is exactly how I wanted to work with my blog content, because markdown is easy to maintain and quick to write, but I can now also render rich graphs or media to enrich my content. 
+It feels like I stepped away for a couple years and then many of the UX pain points for developing on the frontend were handily resolved. To give some concrete examples, the way next.js handles things like fonts, prism for code highlighting which even supports custom themes (I installed gruvbox for my site, as you can see below, because it is the only correct choice) and MDX integration out of the box is exactly how I wanted to work with my blog content, because markdown is easy to maintain and quick to write, but I can now also render rich graphs or media to enrich my content. 
 
 For example, here's a look at how easy it is to load a custom Google Font in a next.js project: 
 
@@ -73,9 +73,11 @@ export default function MyApp({ Component, pageProps }) {
 
 ```
 
-More importantly, the optimization happens server-side - and a request is *never sent to Google* when someone hits your site. This is fantastic. It took me quite literally 30 seconds to throw up a branch with a pull request to review what it would look like to change my site back to the custom Google Font Oxygen I've used in the past. 
+More importantly, the optimization happens server-side - and a request for the font is *never sent to Google* when someone hits your site. This is fantastic. It took me quite literally 30 seconds to throw up a branch with a pull request to review what it would look like to change my site back to the custom Google Font Oxygen I've used in the past. 
 
 I was able to quickly eyeball the two fonts together side by side and decide I wanted to stick with the default. Again, the speed of iteration is profound. 
+
+### Enhanced Markdown or MDX works intuitively
 
 These speed gains just continue when you consider using MDX - which is "markdown for the component era" which allows you to load `.jsx` in your markdown.
 
@@ -107,7 +109,9 @@ This post will walk through my open-sourced Article Optimizer app...
 
 I can think of a number of proejcts over the past years this would have significantly simplified. 
 
-To underscore the previous point, I was able to have the majority of my previous site and blog migrated to my Tailwind UI template site in a single weekend. Once I had tweaked the template to my needs, I was mostly moving markdown in place, rewriting image links and adding some MDX / react preamble to my markdown files, which otherwise did not need to change. This was one of the least painful migrations I've done. 
+To underscore the previous point, I was able to have the majority of my previous site and blog migrated to my Tailwind UI template site in a single weekend. 
+
+Once I had tweaked the template to my needs, I was mostly moving markdown in place, rewriting image links and adding some MDX / react preamble to my markdown files, which otherwise did not need to change. This was one of the least painful migrations I've done. 
 
 ### React is pretty fast, as is - everything else...
 
@@ -176,6 +180,17 @@ port default async function handler(req, res) {
   res.status(200).json({ data: `Think we successfully subscribed ${body.email}` })
 }
 ```
+
+Within the Vercel dashboard, without doing any additional work whatsoever, you now get first class logging for every request to your functions: 
+
+
+<Image src={vercelFunctionsLogging} alt="Logging is first-class for Vercel serverless functions"/>
+
+### The vercel integration is scary good 
+
+I mean that literally. I'm slightly unnerved by how smooth of an experience deploying to Vercel was, because now I find myself wanting to launch tons of sites and projects there - which I'm certain is exactly their plan :)
+
+<Image src={vercelIntegratedAnalytics} />
 
 
 ### What does this all mean together? Next.js is fast - stupidly fast - to work with
