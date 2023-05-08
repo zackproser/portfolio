@@ -1,0 +1,98 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+
+import githubVerifiedCommit from '@/images/github-verified-commit-example.png'
+import yubikeySchematic from '@/images/yubikey-5-schematic.png'
+import streamingScreenshot from '@/images/streaming-keyboard-hands.png'
+import stressedTyping from '@/images/typing.gif'
+import keyboardCamera from '@/images/keyboard-camera.jpg'
+import keyboardCameraCloseup from '@/images/keyboard-cam-closeup.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-05-07",
+  title: "Passwordless sudo and verified GitHub commit signing with Yubikey - a pair-coder's dream",
+  description: "If you're like me, you can't type your complex password correctly when your entire team is staring at you on a pair call. And now, you no longer have to."
+ }
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+If you're like me - you can't type your complex password correctly when your entire team is staring at you on a pair coding call.
+
+<Image src={stressedTyping} alt="Typing complex passwords on the command line perfectly while being watched is stressful!" />
+
+And yet, we are ambitious software developers, technologists, and creators looking to share knowledge. We actively seek opportunities to stream our terminal, whether it's to our team when working through an issue together,  or to thousands of people in real-time on Twitch or YouTube.
+
+<Image src={streamingScreenshot} alt="How can you stream yourself developing software in real time without leaking your passwords?" />
+
+How can we possibly hope to type sudo passwords and develop software in public securely? I had this question myself when I first started [streaming Golang development on Twitch](https://twitch.tv/zackproser).
+
+## No, seriously - I pointed a high resolution zooming camera at my hands and connected it to the public internet
+
+Just in case there were any questions about the stakes! I enjoy doing things the hard way, so I decided to set up a separate Linux cam on a post at the back of my desk to zoom in and focus on my hands on the keyboard while I develop. 
+
+<Image src={keyboardCamera} alt="Don't make a habit of typing your passwords out when a 4K zooming camera is pointed directly at your keyboard" />
+
+I want folks to see how I use the keyboard and the weird patterns my fingers have gnarled into after many decades of typing in different contexts, because I think it makes the streaming content somewhat more interesting. Here's roughly what that looks like: 
+
+<Image src={keyboardCameraCloseup} alt="Keyboard camera closeup" />
+
+Many folks I've paired with over the years have commented that the way my hands and fingers move is really strange, but when I'm properly caffeinated and focused, I can type around 112 WPM with high accuracy. 
+
+Of course, this presents a critical problem: my typing is of equal interest to viewers who want to learn more about my workflow, and would-be cyber-criminals.
+
+## How to work in public securely
+
+In this post, I'll show you how I use a Yubikey 5 NFC to: 
+
+1. Replace typing my `sudo` password with a finger tap on my Yubikey
+2. Automatically sign my GitHub commits with the private PGP key *that only exists physically on my Yubikey 5 NFC and which cannot be exported from the device*
+
+The result is that I get verified commits on GitHub automatically - without having to type my GPG key's password - but *only if my specific Yubikey is present and plugged into the machine*
+
+Here's a sequence diagram showing the two possible scenarios for git commit signing with a Yubikey: 
+
+<Image src={githubVerifiedCommit} alt="GitHub commit signing verification" />
+
+When you're done reading this post, you'll have all the knowledge you need to adopt the same setup, and along the way you'll learn about some pretty cool Yubikey capabilities you may not have known about before.
+
+<Image src={yubikeySchematic} alt="Did you know Yubikey can hold your private key and prevent it from being exported?" />
+
+## Don't miss the next post!
+
+<Newsletter />
+
+## Step 1: Replacing your `sudo` password with a Yubikey tap  
+
+The best guide I've found for this so far was written by bashbunni and you can find it [here](https://dev.to/bashbunni/set-up-yubikey-for-passwordless-sudo-authentication-4h5o).
+
+I strongly recommend first reading the guide in its entirety, so you're aware of the risk factor of closing out your PAM config editor before confirming your sudo integration works properly so you don't lock yourself out. 
+
+The reason this setup works is thanks to Linux's Pluggable Authentication Module (PAM) system. PAM doesn't do authentication, but it allows you to add things that can - such as your Yubikey!
+
+## Hardening your GitHub commit signing 
+
+Because I configured my GitHub account to trust the PGP keys on my desktop's Yubikey and my laptop's Yubikey, and no others, you cannot author a verified commit on GitHub as Zachary Proser unless you're physically in the room with me - like right meow - and you gain administrator access to one of these two machines. 
+
+If the Yubikey is plugged into my machine when I execute a `git commit` command, my commit is automatically signed by the private PGP key residing on my Yubikey. No more fat fingering my complex password and having to rewrite my git commit message. 
+
+If the Yubikey is not plugged into my machine, git commit signing fails. 
+
+Now, I can  develop software in public, without ever having to worry about leaking my `sudo` password - even while working quickly and streaming my terminal live to the internet for hours.  
+
+## Insight: the developer experience is paramount
+
+I needed a solution that was both highly secure and also extremely low friction to my daily workflow. Something that I would actually *enjoy using* because it is so seamless and reliable. 
+
+What makes this setup so ideal is that it does not introduce additional overhead, complexity or maintenance headaches for the developer implementing it - instead, *it actually simplifies and eases common tasks*. It **takes away tedious things you normally have to do** while still making you more secure. See also: "frictionless security" . This is the way. 
+
+## Step 2. Configure Automatic GitHub commit signing with your Yubikey
+
+<Image src={githubVerifiedCommit} alt="GitHub commit signing verification" />
+
+Commit signature verification means that you have a private GPG or other key which identifies you as you. You then also give the public key of that keypair to GitHub. From then on, GitHub will automatically add a `verified` tag to each commit it is able to verify comes from your specified trusted source. 
+
+This is an important step to take if you participate in open source development because it is trivially easy to spoof someone's git commits without this extra layer of verification protection in place. 
+
