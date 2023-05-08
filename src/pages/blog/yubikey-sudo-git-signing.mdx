@@ -23,7 +23,23 @@ If you're like me - you can't type your complex password correctly when your ent
 
 <Image src={stressedTyping} alt="Typing complex passwords on the command line perfectly while being watched is stressful!" />
 
-And yet, we are ambitious software developers, technologists, and creators looking to share knowledge. We actively seek opportunities to stream our terminal, whether it's to our team when working through an issue together,  or to thousands of people in real-time on Twitch or YouTube.
+When you're done reading this post, you'll never need to again. Instead, you'll tap your Yubikey to execute a sudo command without ever touching a password prompt. In addition, this post will walk you through creating a GPG key pair whose private key lives only on your Yubikey, and then telling GitHub to trust that GPG key pair. 
+
+This effectively locks down the ability to make verified commits under your identity to GitHub
+
+This guide will focus on the Yubikey 5 NFC model, and contemplate setting everything up on an Ubuntu machine, but this will also work for Mac OSX and Windows. I'll create follow-up guides for them, if there's sufficient interest.
+
+## Table of contents
+
+This blog post combines background context around why this workflow is desirable and necessary (at least for me), as well as the technical nitty gritty of accomplishing this setup. 
+
+* [The Challenge: writing software in public, securely](#the-challenge-writing-software-in-public-securely)
+
+
+## The challenge: writing software in public, securely
+
+
+As ambitious software developers, technologists, and creators looking to share knowledge, we actively seek opportunities to stream our terminal, whether it's to our team when working through an issue together,  or to thousands of people in real-time on Twitch or YouTube.
 
 <Image src={streamingScreenshot} alt="How can you stream yourself developing software in real time without leaking your passwords?" />
 
