@@ -132,7 +132,7 @@ printed in your new terminal. If you do, you're all set and can now enjoy passwo
 
 The reason this setup works is thanks to Linux's Pluggable Authentication Module (PAM) system. PAM doesn't do authentication, but it allows you to add things that can - such as your Yubikey!
 
-## Hardening your GitHub commit signing 
+## Understanding how GitHub commit signing verification with a Yubikey works
 
 Next up, we're going to ensure that nobody can author a verified commit as us on GitHub. Here's what that entails in a nutshell: 
 
@@ -156,19 +156,34 @@ Let's look at a sequence diagram to understand how this flow works:
 
 <Image src={gitCommitSigningSequence} />
 
-Now, I can  develop software in public, without ever having to worry about leaking my `sudo` password - even while working quickly and streaming my terminal live to the internet for hours.  
-
-This is an important step to take if you participate in open source development because it is trivially easy to [spoof someone's git commits](https://blog.gruntwork.io/how-to-spoof-any-user-on-github-and-what-to-do-to-prevent-it-e237e95b8deb) without this extra layer of verification protection in place. 
+Commit signing verification is an important step to take if you participate in open source development because it is trivially easy to [spoof someone's git commits](https://blog.gruntwork.io/how-to-spoof-any-user-on-github-and-what-to-do-to-prevent-it-e237e95b8deb) without this extra layer of verification protection in place. 
 
 ## How to configure automatic GitHub commit signing verification with Yubikey
 
 ### Step 1. Install dependencies 
 
+See [Yubico's official guide](https://support.yubico.com/hc/en-us/articles/360016649039-Installing-Yubico-Software-on-Linux).
+
 ### Step 2. Generate the keypair on your Yubikey 
 
-### Step 3. Tell git to use the Yubikey-contained private key for commit signing 
+Follow [Yubico's official guide](https://support.yubico.com/hc/en-us/articles/360013790259-Using-Your-YubiKey-with-OpenPGP) - and scroll down to the find the second option: 
+
+*"Generating Your PGP Key directly on Your YubiKey"*
+
+### Step 3. Tell your local git to use the Yubikey-contained private key for commit signing 
+
+```bash
+# Replace AABBCCDD with the real ID of your GPG private key 
+git config --global user.signingkey AABBCCDD
+```
 
 ### Step 4. Give GitHub your public key 
+
+You can follow [GitHub's official guide.](https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account)
+
+Once you've completed these steps, author any commit on a local project and push it up to GitHub. You will originally be prompted for you Yubikey's pin, but once you enter that - you won't need to do it again for the length of your session. 
+
+Check that your latest commit is showing the verified badge on GitHub, at which point, you're all done!
 
 ## Insight: the developer experience is paramount
 
@@ -176,8 +191,8 @@ I needed a solution that was both highly secure and also extremely low friction 
 
 What makes this setup so ideal is that it does not introduce additional overhead, complexity or maintenance headaches for the developer implementing it - instead, *it actually simplifies and eases common tasks*. It **takes away tedious things you normally have to do** while still making you more secure. See also: "frictionless security" . This is the way. 
 
-## Configure Automatic GitHub commit signing with your Yubikey
+### Thanks for reading - and a request! 
 
-
+Thanks so much for taking the time to read this post. If you found it at all helpful, I hope you will please consider subscribing to my newsletter below, or sharing this post with a friend. Thank you so much for your support!
 
 
