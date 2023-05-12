@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Container } from '@/components/Container'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 import portraitImage from '@/images/zachary-proser.png'
 import Head from 'next/head'
@@ -7,7 +8,13 @@ import Head from 'next/head'
 import { SimpleLayout } from '@/components/SimpleLayout'
 
 function SubscribeWidget() {
+
   const [formSuccess, setSuccess] = React.useState(false);
+
+  // Get access to the router in order to fetch query params off it
+  const router = useRouter()
+
+  const referrer = router.query.referrer || 'unknown/direct'
 
   // Handle the submit event on form submit.
   const handleSubmit = async (event) => {
@@ -16,10 +23,11 @@ function SubscribeWidget() {
 
     // Cast the event target to an html form
     const form = event.target
-
+    
     // Get data from the form.
     const data = {
       email: form.email.value,
+      referrer,
     }
 
     // Send the form data to our API and get a response.
