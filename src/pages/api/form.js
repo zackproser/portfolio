@@ -15,6 +15,9 @@ export default async function handler(req, res) {
   const data = {
     api_key: emailOctopusAPIKey, 
     email_address: newMemberEmailAddress,
+    fields: {
+      Referrer: body.referrer,
+    },
     status: "SUBSCRIBED"
   } 
 
