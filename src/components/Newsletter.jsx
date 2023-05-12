@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { Button } from '@/components/Button'
+import { useRouter } from 'next/router'
 
 function MailIcon(props) {
   return (
@@ -28,6 +29,11 @@ export const Newsletter = function() {
 
   const [formSuccess, setSuccess] = React.useState(false);
 
+  // Get access to the router in order to fetch query params off it
+  const router = useRouter()
+
+  const referrer = router.query.referrer || 'unknown/direct'
+
   // Handle the submit event on form submit.
   const handleSubmit = async (event) => {
     // Stop the form from submitting and refreshing the page.
@@ -39,6 +45,7 @@ export const Newsletter = function() {
     // Get data from the form.
     const data = {
       email: form.email.value,
+      referrer
     }
 
     // Send the form data to our API and get a response.
