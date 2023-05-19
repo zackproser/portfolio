@@ -2,13 +2,14 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import HeroImage from './symfony-optimizer-splash.png'
 import ExampleReport from './article-optimizer-example-report.png'
+import OptimizerBlog from '@/images/optimizer-blog.png'
 
 export const meta = {
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'A powerful and open source content optimizer',
   description: 'A full technical deep-dive on my optimizer app and its features',
-  image: 'optimizer-blog.png'
+  image: OptimizerBlog, 
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

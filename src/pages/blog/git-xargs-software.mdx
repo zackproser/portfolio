@@ -2,13 +2,14 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import gitXargsDemo from '@/images/git-xargs-demo.gif'
 import gitXargsTable from '@/images/git-xargs-table.png'
+import gitXargsBanner from '@/images/git-xargs-banner.png'
 
 export const meta = {
   author: "Zachary Proser",
   date: "2021-04-19",
   title: "Git-xargs allows you to run commands and scripts against many Github repos simultaneously",
   description: "Git-xargs allows you to run commands and scripts against many Github repos simultaneously",
-  image: "git-xargs-banner.png"
+  image: gitXargsBanner, 
  }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
