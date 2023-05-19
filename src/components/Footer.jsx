@@ -24,6 +24,7 @@ export function Footer() {
                 <NavLink href="/about">About</NavLink>
                 <NavLink href="/blog">Blog</NavLink>
                 <NavLink href="/projects">Projects</NavLink>
+                <NavLink href="/testimonials">Testimonials</NavLink>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
                 &copy; {new Date().getFullYear()} Zachary Proser. All rights
