@@ -15,7 +15,7 @@ async function importArticle(articleFilename) {
 export async function getAllArticles() {
   // Get all .mdx files in the pages directory and convert each to a blog article
   let articleFilenames = await glob(['*.mdx', '*/index.mdx'], {
-    cwd: path.join(process.cwd(), 'src/pages/blog'),
+    cwd: path.join(process.cwd(), 'src/pages/blog/'),
   })
 
   let articles = await Promise.all(articleFilenames.map(importArticle))
