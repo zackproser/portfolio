@@ -121,7 +121,7 @@ export default function Example() {
                 {testimonials.map((testimonial) => (
                   <div key={testimonial.name} className="pt-8 sm:inline-block sm:w-full sm:px-4">
                     <h1>{testimonial.body}</h1>
-                    <figure className="rounded-2xl bg-gray-50 p-8 text-sm leading-6">
+                    <figure className="rounded-2xl bg-sky-200 p-8 text-sm leading-6">
                       <figcaption className="mt-6 flex items-center gap-x-4 p-2">
                         <Image className="h-20 w-20 rounded-full bg-gray-50" width={350} height={350} src={testimonial.imgSrc} />
                         <div>
