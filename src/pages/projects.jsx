@@ -6,12 +6,18 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import logoAnimaginary from '@/images/logos/animaginary.svg'
 import logoCosmos from '@/images/logos/cosmos.svg'
 import logoPlanetaria from '@/images/logos/planetaria.svg'
-import logoHelioStream from '@/images/logos/helio-stream.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
 import nuke from '@/images/nuke.png'
+import automations from '@/images/logos/automations.svg'
 
 const projects = [
+  {
+    name: 'automations',
+    description: 'Shell scripts leveraging generative A.I. to make developer workflows buttery smooth and way more fun',
+    link: { href: 'https://github.com/zackproser/automations', label: 'github' },
+    logo: automations,
+  },
   {
     name: 'cloud-nuke',
     description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion',
