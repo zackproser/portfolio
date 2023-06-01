@@ -82,11 +82,18 @@ sudo apt-get install libpam-u2f
 mkdir -p ~/.config/Yubico
 ```
 
-### Step 3. Plug in your Yubikey
+### Step 3. Plug in your Yubikey 
 
-You should see the light flash.
+You should see the light flash. 
 
-### Step 4. Configure PAM
+### Step 4. Add your Yubikey to the list of accepted Yubikeys
+
+```bash
+pamu2fcfg > ~/.config/Yubico/u2f_keys
+```
+Enter your pin if one is set for the key, then touch the key when the key's light blinks.
+
+### Step 5. Configure PAM
 
 ```bash 
 # Open your PAM configuration for editing - but DO NOT CLOSE this file 
@@ -115,7 +122,7 @@ auth sufficient pam_u2f.so
 @include common-session-noninteractive
 ```
 
-### Step 5. Verify 
+### Step 6. Verify 
 
 Now - DO NOT CLOSE your original PAM editing buffer, but instead open a new terminal window and type: 
 
