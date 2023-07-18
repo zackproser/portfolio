@@ -143,7 +143,7 @@ function Resume() {
     },
     {
       company: 'Cloudflare',
-      title: 'Software Engineer',
+      title: 'Senior Software Engineer',
       logo: logoCloudflare,
       start: '2017',
       end: '2020',
