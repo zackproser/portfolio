@@ -18,6 +18,7 @@ import {
 import logoCloudflare from '@/images/logos/cloudflare.svg'
 import logoCloudmark from '@/images/logos/cloudmark.png'
 import logoGrunty from '@/images/logos/grunty.png'
+import logoPinecone from '@/images/logos/pinecone-logo.png'
 import logoBrightcontext from '@/images/logos/brightcontext.png'
 import wikka from '@/images/photos/wikka.png'
 import tmuxDemo from '@/images/tmux-flow.gif'
@@ -124,14 +125,21 @@ function SocialLink({ icon: Icon, ...props }) {
 function Resume() {
   let resume = [
     {
-      company: 'Gruntwork.io',
-      title: 'Tech Lead & Senior Software Engineer',
-      logo: logoGrunty,
-      start: '2020',
+      company: 'Pinecone.io',
+      title: 'Staff Developer Advocate',
+      logo: logoPinecone,
+      start: '2023',
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
       },
+    },
+    {
+      company: 'Gruntwork.io',
+      title: 'Tech Lead & Senior Software Engineer',
+      logo: logoGrunty,
+      start: '2020',
+      end: '2023'
     },
     {
       company: 'Cloudflare',
