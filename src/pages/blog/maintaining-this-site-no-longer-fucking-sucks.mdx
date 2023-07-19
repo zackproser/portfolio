@@ -4,6 +4,7 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import holyComputer from '@/images/holy-computer.png'
 import vercelFunctionsLogging from '@/images/vercel-functions-logging.png'
 import vercelIntegratedAnalytics from '@/images/vercel-integrated-analytics.png'
 
@@ -14,6 +15,7 @@ export const meta = {
   date: "2023-04-27",
   title: "Maintaining this site no longer fucking sucks",
   description: "After re-doing my personal website in next.js and deploying to Vercel, I reflect on how much better the developer experience has become.",
+  image: holyComputer 
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
@@ -24,6 +26,8 @@ how I knowingly did things the painful way on purpose for years.
 And yet, here I am *exactly ten days later*, writing that maintaining this site *no longer fucking sucks*. What has changed in so short a time between that post and now?
 
 ***
+
+<Image src={holyComputer} alt="Maintaining this site no longer fucking sucks" />
 
 ## I tried Vercel, and the latest Next.js
 
