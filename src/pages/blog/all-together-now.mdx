@@ -1,0 +1,31 @@
+
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "7/22/2023",
+  title: "All together now?",
+  description: "Summary", 
+ }
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+  
+ Content - this is a bunch of content that should appear in the blog post in paragraph form. 
+
+That means the newlines should definitely be preserved. 
+
+Is this markdown? 
+
+## Can I add a larger title?
+
+How about some code snippets?
+
+```javascript
+let it = "please work ;)"
+```
+  
