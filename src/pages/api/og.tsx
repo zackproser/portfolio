@@ -4,77 +4,29 @@ export const config = {
   runtime: 'edge',
 };
 
+// TODO - figure out the cleanest way of reading the image property from the post's MDX file
+// TODO - style this ImageResponse using Tailwind
 export default async function handler() {
-  const imageData = await fetch(new URL('/public/zack.png', import.meta.url)).then(
+  const imageData = await fetch(new URL('/src/images/joining-pinecone.png', import.meta.url)).then(
     (res) => res.arrayBuffer(),
   );
+
+
   return new ImageResponse(
-    (
-
-      <div
-        style={{
-          display: 'flex',
-          height: '100%',
-          width: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-          letterSpacing: '-.02em',
-          fontWeight: 700,
-          background: 'white',
-        }}
-      >
-        <div
-          style={{
-            left: 42,
-            top: 42,
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <span
-            style={{
-              width: 24,
-              height: 24,
-              background: 'green',
-            }}
-          />
-          <span
-            style={{
-              marginLeft: 8,
-              fontSize: 20,
-            }}
-          >
-            zackproser.com
-          </span>
-          <img width="619" height="619" src={imageData as unknown as string} />
-
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            padding: '20px 50px',
-            margin: '0 42px',
-            fontSize: 40,
-            width: 'auto',
-            maxWidth: 550,
-            textAlign: 'center',
-            backgroundColor: 'black',
-            color: 'white',
-            lineHeight: 1.4,
-          }}
-        >
-          I'm joining Pinecone.io!
-        </div>
-
+    <div style={{ display: "flex" }} className="bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div style={{ display: "flex" }} className="mx-auto max-w-2xl text-center">
+        <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Support center</h2>
+        <img
+          src={imageData as unknown as string}
+          width={568}
+          height={568}
+          style={{ borderRadius: 128 }}
+        />
+        <p className="mt-6 text-lg leading-8 text-gray-600">
+          Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
+          fugiat veniam occaecat fugiat aliqua.
+        </p>
       </div>
-
-    ),
-    {
-      width: 1200,
-      height: 630,
-    },
-  );
+    </div>
+  )
 }
