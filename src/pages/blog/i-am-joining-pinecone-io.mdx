@@ -1,0 +1,69 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import joiningPinecone from '@/images/joining-pinecone.png'
+import pineconeVectorDatabases from '@/images/pinecone-vector-databases.png'
+import technicalStorytelling from '@/images/technical-storytelling.png'
+import pineconeHiring from '@/images/pinecone-hiring.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-07-23",
+  title: "I'm joining Pinecone.io as a Staff Developer Advocate!",
+  description: "Making the pivot from pure software engineering to developer advocacy",
+  image: joiningPinecone,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={joiningPinecone} alt="Joining Pinecone.io as a developer advocate" />
+
+<figcaption>I'm pivoting from a career of pure software engineering roles to developer advocacy!</figcaption>
+
+I'm excited to share that I'm joining Pinecone.io as a Staff Developer Advocate!
+
+<Link href={"https://pinecone.io"}>Pinecone.io</Link> makes the world's best vector database, which is essential for storing and efficiently querying embeddings. Vector databases are **critical infrastructure** in the midst of the 
+AI revolution we're currently experiencing. 
+
+<Image src={pineconeVectorDatabases} alt="Pinecone.io vector databases" />
+
+If you want a great intro to what vector databases are and how embeddings can give AI models accurate long-term memories (and prevent hallucinations), check out this <Link href={"https://www.pinecone.io/learn/vector-database/"}>great intro</Link> by my 
+colleague Roie.
+
+## Why pivot to Developer Advocacy?
+
+In short, I've figured out that I love technical storytelling as much as I love building systems and applications. 
+
+<Image src={technicalStorytelling} alt="I love technical storytelling as much as I love building systems and apps"/>
+
+I've always been a writer, but since January of 2023, I've found myself increasingly itching to not only produce technical tutorials and deep-dives, but also share them with my fellow developers. 
+
+I also enhanced my production pipeline, modernizing my portfolio site and migrating to Vercel for more rapid iteration, as <Link href={"/blog/maintaining-this-site-no-longer-fucking-sucks"}> I wrote about here</Link>. 
+
+<Newsletter />
+
+My game plan was simple: continue to do my day job as an open source developer, continue to learn in public, but also capture my best learnings, insights, favorite new tech stacks and tools via <Link href={"https://zackproser.com/blog"}>my blog</Link>, <Link href={"https://youtube.com/@zackproser"}>YouTube channel</Link> and even <Link href={"https://twitch.tv/zackproser"}>Twitch!</Link>
+
+Learning in public has brought me a lot of personal joy, especially when I share my learnings with others and get feedback that it helped even one other developer. When I found the opening at Pinecone for a developer advocate that would combine:
+
+* development of applications to demonstrate the latest and most effective patterns around applications that leverage the latest AI technologies
+* open source development to assist the overall community and make it easier to build AI applications
+* technical storytelling
+
+I knew the time had come to jump in, join the team, and go deep on a completely new technology stack, after spending the last 3 and a half years immersed in Infrastructure as Code, SDK and tooling development and deployment automation. 
+
+## Why does this mean so much to me? 
+
+I am a self-taught developer. When I was starting out, and to this day, the work of others who have been generous enough to decide to write up their insights, code blocks, special hacks, secret fixes to that one weird error message, etc and share them with the world, have helped me immensely in my quest. 
+I do the same to give back to the developer community and broader technically-minded community.
+
+## Pinecone is hiring!
+
+If you're interested in joining the Pinecone team, check out <Link href={"https://pinecone.io/careers"}>this page</Link>!
+
+<Image src={pineconeHiring} alt="Pinecone.io is hiring!" />
+
+
