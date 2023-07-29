@@ -1,0 +1,41 @@
+
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "7/29/2023",
+  title: "Markdown editor test",
+  description: "Testing MD editor", 
+ }
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+  
+ # I always wanted to be a wakka    
+
+And then to do takka 
+
+```mermaid
+graph LR
+  A[Local Repository] -->|git pull| B[Remote Repository]
+  B -->|git push| A
+  subgraph "Local Repository"
+    C[Working Directory] -->|git add| D[Staging Index]
+    D -->|git commit| E[Local Branch]
+    E --> C
+    E -->|git checkout| F[Other Local Branch]
+    F --> C
+  end
+  subgraph "Remote Repository"
+    G[Remote Branch] -->|git clone / fetch| E
+    E -->|git push| G
+    G -->|git pull request| H[Other Remote Branch]
+    H --> G
+  end
+
+```
+  
