@@ -71,14 +71,17 @@ export default function About() {
             </h1>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m a tech lead and senior software engineer at Gruntwork.io, a startup
-                that specializes in infrastructure as code, AWS, DevOps and automation.
-                I love to build, maintain and enhance useful tools, especially in Golang
-                using the TUI library bubbletea from Charm.sh.
+                I&apos;m a staff develper advocate at <b><a href="https://pinecone.io">Pinecone</a></b>, a startup
+                that builds the most performant cloud-native vector database.
+
+                I love to build, maintain and enhance useful apps, especially those that demonstrate AI and machine learning patterns,
+                as well as tools, especially in Golang using the TUI library bubbletea from Charm.sh.
+
+                I&apos;m also a huge fan of Next.js and React.
               </p>
               <p>
                 I&apos;ve been a software developer and open-source contributor for {RenderNumYearsExperience()} years.
-                All of my open-source work lives at <a href="https://github.com/zackproser">https://github.com/zackproser</a>
+                All of my open-source work lives at <b><a href="https://github.com/zackproser">https://github.com/zackproser</a></b>.
               </p>
               <p>
                 In my free time, I love to research new techniques and to practice keyboard-driven development using tmux, neovim, awesome
