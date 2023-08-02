@@ -1,12 +1,10 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
 import { Prose } from '@/components/Prose'
 import { formatDate } from '@/lib/formatDate'
-import clsx from 'clsx'
 
 const variantStyles = {
   primary:
