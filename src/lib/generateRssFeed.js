@@ -4,9 +4,11 @@ import { Feed } from 'feed'
 import { mkdir, writeFile } from 'fs/promises'
 
 import { getAllArticles } from './getAllArticles'
+import { getAllVideos } from './getAllVideos'
 
 export async function generateRssFeed() {
   let articles = await getAllArticles()
+  let videos = await getAllVideos()
   let siteUrl = process.env.NEXT_PUBLIC_SITE_URL
   let author = {
     name: 'Zachary Proser',
@@ -45,6 +47,26 @@ export async function generateRssFeed() {
       author: [author],
       contributor: [author],
       date: new Date(article.date),
+    })
+  }
+
+  for (let video of videos) {
+    let url = `${siteUrl}/videos/${video.slug}`
+    let html = ReactDOMServer.renderToStaticMarkup(
+      <MemoryRouterProvider>
+        <video.component isRssFeed />
+      </MemoryRouterProvider>
+    )
+
+    feed.addItem({
+      title: video.title,
+      id: url,
+      link: url,
+      description: video.description,
+      content: html,
+      author: [author],
+      contributor: [author],
+      date: new Date(video.date),
     })
   }
 

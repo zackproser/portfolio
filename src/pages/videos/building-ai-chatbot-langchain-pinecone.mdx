@@ -1,0 +1,20 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import aiChatbot from '@/images/building-an-ai-chatbot.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-06-30",
+  title: "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
+  description: "How I built an Office chatbot that can answer any question about the office",
+  image: aiChatbot
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+What's involved in building an AI chatbot that is trained on a custom corpus of knowledge? In this video I breakdown the data preparation, training and app development components and explain why Jupyter notebooks were such a handy tool while creating this app and tweaking my model.
+
+App is open source at https://github.com/zackproser/office-... and a demo is currently available at https://office-oracle.vercel.app.
+
