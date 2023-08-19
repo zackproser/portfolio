@@ -5,24 +5,31 @@ export const config = {
 };
 
 export default async function handler(request) {
+  const { searchParams } = new URL(request.url);
   const username = 'zackproser'
+  const hasTitle = searchParams.has('title');
+  const title = hasTitle ? searchParams.get('title') : 'Staff Developer Advocate at Pinecone.io'
 
   return new ImageResponse(
     (
       <div
         style={{
           display: 'flex',
-          fontSize: 60,
+          fontSize: 50,
           color: '#00000',
           background: 'linear-gradient(to right, #99f2c8, #228B22)', // Gradient from light green to dark green
           width: '100%',
           height: '100%',
-          paddingTop: 50,
+          paddingTop: 15,
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
+        <p
+          style={{
+            color: '#00000'
+          }}>Zachary Proser</p>
         <img
           width="256"
           height="256"
@@ -33,8 +40,12 @@ export default async function handler(request) {
         />
         <p
           style={{
-            color: '#f3f3f3'
-          }}>zackproser.com</p>
+            color: '#00000',
+            paddingTop: 10,
+            paddingBottom: 15,
+            textAlign: 'center',
+          }}
+        >{title}</p>
       </div>
     ),
     {
