@@ -27,7 +27,7 @@ export default function App({ Component, pageProps, router }) {
       <Head>
         <title>{`Zachary Proser`}</title>
         <meta name="description" content={'Zachary Proser - Staff Developer Advocate'} />
-        <meta name="og:image" content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/og`} />
+        <meta name="og:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og`} />
       </Head>
       <div className="fixed inset-0 flex justify-center sm:px-8">
         <div className="flex w-full max-w-7xl lg:px-8">
