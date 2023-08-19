@@ -11,7 +11,7 @@ import {
 
 
 const FollowButtons = () => (
-  <div className="m-5 p-2">
+  <div className="mt-5 p-2">
     <div className="flex flex-wrap py-4">
       <Link href="https://www.twitch.tv/zackproser" target="_blank" rel="noreferrer" className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white px-2 py-2 rounded m-2 md:m-1">
         <TwitchIcon className="w-6 h-6" />
