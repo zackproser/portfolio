@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
+import FollowButtons from '@/components/FollowButtons'
 import { Prose } from '@/components/Prose'
 import { formatDate } from '@/lib/formatDate'
 
@@ -69,6 +70,7 @@ export function ArticleLayout({
               <Prose className="mt-8">{children}</Prose>
             </article>
             <Newsletter />
+            <FollowButtons />
           </div>
         </div>
       </Container>
