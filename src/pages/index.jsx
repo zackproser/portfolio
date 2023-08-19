@@ -2,8 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import clsx from 'clsx'
-import md5 from 'md5'
-import React, { useState } from "react";
+import React from "react";
 
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
@@ -21,15 +20,10 @@ import logoGrunty from '@/images/logos/grunty.png'
 import logoPinecone from '@/images/logos/pinecone-logo.png'
 import logoBrightcontext from '@/images/logos/brightcontext.png'
 import wikka from '@/images/photos/wikka.png'
-import tmuxDemo from '@/images/tmux-flow.gif'
-import streamingImg from '@/images/streaming.png'
 import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.png'
 import optimizerBlogImg from '@/images/optimizer-blog.png'
 import terraformAssocImg from '@/images/terraform-associate.png'
 import teaTutorImg from '@/images/teatutor-logo.png'
-import image3 from '@/images/photos/image-3.jpg'
-import image4 from '@/images/photos/image-4.jpg'
-import image5 from '@/images/photos/image-5.jpg'
 import { formatDate } from '@/lib/formatDate'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
@@ -38,28 +32,6 @@ function RenderNumYearsExperience() {
   return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
 }
 
-function MailIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M2.75 7.75a3 3 0 0 1 3-3h12.5a3 3 0 0 1 3 3v8.5a3 3 0 0 1-3 3H5.75a3 3 0 0 1-3-3v-8.5Z"
-        className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500"
-      />
-      <path
-        d="m4 6 6.024 5.479a2.915 2.915 0 0 0 3.952 0L20 6"
-        className="stroke-zinc-400 dark:stroke-zinc-500"
-      />
-    </svg>
-  )
-}
 
 function BriefcaseIcon(props) {
   return (
