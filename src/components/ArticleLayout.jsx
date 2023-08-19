@@ -1,19 +1,10 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
 import { Prose } from '@/components/Prose'
 import { formatDate } from '@/lib/formatDate'
-import clsx from 'clsx'
-
-const variantStyles = {
-  primary:
-    'bg-zinc-800 font-semibold text-zinc-100 hover:bg-zinc-700 active:bg-zinc-800 active:text-zinc-100/70 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:active:bg-zinc-700 dark:active:text-zinc-100/70',
-  secondary:
-    'bg-zinc-50 font-medium text-zinc-900 hover:bg-zinc-100 active:bg-zinc-100 active:text-zinc-900/60 dark:bg-zinc-800/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:active:bg-zinc-800/50 dark:active:text-zinc-50/70',
-}
 
 function ArrowLeftIcon(props) {
   return (
@@ -23,29 +14,6 @@ function ArrowLeftIcon(props) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function MailIcon(props) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        d="M2.75 7.75a3 3 0 0 1 3-3h12.5a3 3 0 0 1 3 3v8.5a3 3 0 0 1-3 3H5.75a3 3 0 0 1-3-3v-8.5Z"
-        className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500"
-      />
-      <path
-        d="m4 6 6.024 5.479a2.915 2.915 0 0 0 3.952 0L20 6"
-        className="stroke-zinc-400 dark:stroke-zinc-500"
       />
     </svg>
   )
@@ -63,11 +31,14 @@ export function ArticleLayout({
     return children
   }
 
+  const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
+
   return (
     <>
       <Head>
         <title>{`${meta.title} - Zachary Proser`}</title>
         <meta name="description" content={meta.description} />
+        <meta name="og:image" content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/og?title=${sanitizedTitle}`} />
       </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
