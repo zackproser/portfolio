@@ -1,10 +1,13 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
+import neovimDevDiary from '@/images/neovim-dev-diary-image.png'
+
 export const meta = {
   author: "Zachary Proser",
-  date: "2023-1-23",
-  title: "Video - Exploring a Custom Terminal-Based Developer Workflow -  Tmux, Neovim, Awesome Window Manager, and More",
+  date: "2023-01-23",
+  title: "Exploring a Custom Terminal-Based Developer Workflow -  Tmux, Neovim, Awesome Window Manager, and More",
   description: "check out my custom developer setup in action, complete with my favorite Gruvbox theme. I'll cover the tools I'm using and how they work together to form an IDE-like experience in the terminal, for free - without having to pay any ongoing subscription to a company. ",
+  image: neovimDevDiary
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

@@ -1,9 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import Link from 'next/link'
-import clsx from 'clsx'
 
-import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
 import {
@@ -11,25 +8,14 @@ import {
   InstagramIcon,
   LinkedInIcon,
   TwitterIcon,
+  YouTubeIcon,
+  SocialLink
 } from '@/components/SocialIcons'
+
 import portraitImage from '@/images/zachary-proser.png'
 
 function RenderNumYearsExperience() {
   return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
-}
-
-function SocialLink({ className, href, children, icon: Icon }) {
-  return (
-    <li className={clsx(className, 'flex')}>
-      <Link
-        href={href}
-        className="group flex text-sm font-medium text-zinc-800 transition hover:text-teal-500 dark:text-zinc-200 dark:hover:text-teal-500"
-      >
-        <Icon className="h-6 w-6 flex-none fill-zinc-500 transition group-hover:fill-teal-500" />
-        <span className="ml-4">{children}</span>
-      </Link>
-    </li>
-  )
 }
 
 function MailIcon(props) {
@@ -108,29 +94,32 @@ export default function About() {
           </div>
           <div className="lg:pl-20">
             <ul role="list">
-              <SocialLink href="https://twitter.com/zackproser" icon={TwitterIcon}>
-                Follow on Twitter
+              <SocialLink href="https://twitter.com/zackproser" icon={TwitterIcon} className="mt-4">
+                Follow me on Twitter
+              </SocialLink>
+              <SocialLink href="https://youtube.com/@zackproser" icon={YouTubeIcon} className="mt-4">
+                Subscribe to my YouTube channel
               </SocialLink>
               <SocialLink href="https://instagram.com/zackproser" icon={InstagramIcon} className="mt-4">
-                Follow on Instagram
+                Follow me on Instagram
               </SocialLink>
               <SocialLink href="https://github.com/zackproser" icon={GitHubIcon} className="mt-4">
-                Follow on GitHub
+                Follow me on GitHub
               </SocialLink>
               <SocialLink href="https://linkedin.com/in/zackproser" icon={LinkedInIcon} className="mt-4">
-                Follow on LinkedIn
+                Follow me on LinkedIn
               </SocialLink>
               <SocialLink
                 href="mailto:zackproser@gmail.com"
                 icon={MailIcon}
                 className="mt-8 border-t border-zinc-100 pt-8 dark:border-zinc-700/40"
               >
-                zackproser@gmail.com
+                Drop me an email
               </SocialLink>
             </ul>
           </div>
         </div>
-      </Container>
+      </Container >
     </>
   )
 }
