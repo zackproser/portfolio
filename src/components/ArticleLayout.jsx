@@ -34,9 +34,12 @@ export function ArticleLayout({
 
   const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
 
-  console.log(`ArticleLayout meta.image %o`, meta.image)
+  // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
+  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
 
-  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}&image=${meta.image.src}`
+  if (meta.image && meta.image.src) {
+    ogURL = ogURL + `&image=${meta.image.src}`
+  }
 
   return (
     <>
