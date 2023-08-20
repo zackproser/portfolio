@@ -12,7 +12,13 @@ export const meta = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/pPbTzgUV-UA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/pPbTzgUV-UA" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
 
 Join Roie Schwaber-Cohen and me for a deep dive into The Pinecone Vercel starter template that deploys an AI chatbot that is less likely to hallucinate thanks to Retrieval Augmented Generation (RAG). 
 
