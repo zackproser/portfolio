@@ -22,15 +22,10 @@ export default async function handler(request) {
     (res) => res.arrayBuffer(),
   );
 
-  const fetchURL = () => {
-    setTimeout(() => {
-      return new URL(image, import.meta.url);
-    }, 300)
-  }
 
-  console.log(`og API route fetchURL: ${fetchURL}`)
+  const ultimateURL = new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image}`)
 
-  const postImageData = await fetch(new URL(fetchURL, import.meta.url)).then(
+  const postImageData = await fetch(ultimateURL).then(
     (res) => res.arrayBuffer(),
   ).catch((err) => {
     console.log(`og API route err: ${err}`);
