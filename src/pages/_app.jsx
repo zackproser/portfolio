@@ -6,6 +6,7 @@ import { Header } from '@/components/Header'
 // Head is used for setting meta tags
 import Head from 'next/head'
 
+import '@/styles/global.css'
 import '@/styles/tailwind.css'
 import 'focus-visible'
 
