@@ -63,7 +63,7 @@ export default async function handler(request) {
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
           <h2 tw="flex flex-col pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-            <span tw="text-white">{title}</span>
+            <span tw="text-white font-extrabold">{title}</span>
           </h2>
 
           <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
