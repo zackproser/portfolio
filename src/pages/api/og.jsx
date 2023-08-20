@@ -32,56 +32,31 @@ export default async function handler(request) {
   });
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          display: 'flex',
-          fontSize: 50,
-          color: '#00000',
-          background: 'linear-gradient(to right, #99f2c8, #228B22)', // Gradient from light green to dark green
-          width: '100%',
-          height: '100%',
-          paddingTop: 15,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <p
-          style={{
-            color: '#00000'
-          }}>Zachary Proser</p>
-        <img
-          width="156"
-          height="156"
-          src={profileImageData}
-          style={{
-            borderRadius: 128,
-          }}
-        />
-        {hasImage &&
-          <img
-            width="56"
-            height="56"
-            src={postImageData}
-            style={{
-              borderRadius: 128,
-            }}
-          />
-        }
-        <p
-          style={{
-            color: '#00000',
-            paddingTop: 10,
-            paddingBottom: 15,
-            textAlign: 'center',
-          }}
-        >{title}</p>
+    <div tw="flex flex-col w-full h-full bg-emerald-600">
+      <div tw="flex flex-col md:flex-row w-full">
+        <div tw="flex p-4 w-40 h-40 rounded-full overflow-hidden">
+          <img src={profileImageData} alt="Profile Image" className="w-full h-full object-cover" />
+        </div>
+        <div tw="flex flex-col ml-4 items-center">
+          <h2 tw="text-3xl text-white">Zachary Proser</h2>
+          <h2 tw="text-2xl text-white">Staff Developer Advocate</h2>
+        </div>
       </div>
-    ),
-    {
-      width: 1200,
-      height: 630,
-    },
-  );
+      <div tw="bg-slate-900 flex w-full">
+        <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
+          <h2 tw="flex flex-col text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
+            <span tw="text-white">{title}</span>
+          </h2>
+          {hasImage && (
+            <div tw="flex w-64 h-64 rounded overflow-hidden mt-4">
+              <img src={postImageData} alt="Post Image" className="w-full h-full object-cover" />
+            </div>
+          )}
+        </div>
+      </div>
+      <div tw="mt-8 flex md:mt-0 items-center">
+        <span tw="text-white text-xl">zackproser.com</span>
+      </div>
+    </div>
+  )
 }
