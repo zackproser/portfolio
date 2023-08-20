@@ -22,24 +22,27 @@ export default async function handler(request) {
     (res) => res.arrayBuffer(),
   );
 
+  // This is the fallback image I use if the current post doesn't have an image for whatever reason (like it's the homepage)
+  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
 
   // This is the URL to the image on my site 
-  const ultimateURL = hasImage ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image}`) : undefined
+  const ultimateURL = hasImage ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL
 
-  let postImageData;
-
-  if (ultimateURL) {
-    postImageData = await fetch(ultimateURL).then(
-      (res) => res.arrayBuffer(),
-    ).catch((err) => {
-      console.log(`og API route err: ${err}`);
-    });
-  }
+  const postImageData = await fetch(ultimateURL).then(
+    (res) => res.arrayBuffer(),
+  ).catch((err) => {
+    console.log(`og API route err: ${err} `);
+  });
 
   return new ImageResponse(
-    <div tw="flex flex-col w-full h-full bg-emerald-600">
+    <div
+      tw="flex flex-col w-full h-full bg-emerald-900"
+      style={{
+        background_image: 'linear-gradient(to bottom, #025b30, #2dd30c)'
+      }}
+    >
       <div tw="flex flex-col md:flex-row w-full">
-        <div tw="flex w-40 h-40 rounded-full overflow-hidden">
+        <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
           <img
             src={profileImageData}
             alt="Zachary Proser"
@@ -48,28 +51,36 @@ export default async function handler(request) {
           />
         </div>
         <div tw="flex flex-col ml-4 items-center">
-          <h2 tw="text-4xl text-white">Zachary Proser</h2>
+          <h1 tw="text-4xl text-white">Zachary Proser</h1>
           <h2 tw="text-3xl text-white">Staff Developer Advocate @Pinecone.io</h2>
         </div>
       </div>
-      <div tw="bg-slate-900 flex w-full">
+      <div
+        tw="bg-slate-900 border-1 border-white flex w-full"
+        style={{
+          background_image: 'linear-gradient(to bottom, #1f618d, #0f172a)'
+        }}
+      >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
           <h2 tw="flex flex-col pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-            <span tw="text-white">{title}</span>
+            <span tw="text-white font-extrabold">{title}</span>
           </h2>
-          {hasImage && (
-            <div tw="flex w-64 h-90 rounded overflow-hidden mt-4">
-              <img
-                src={postImageData}
-                alt="Post Image"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+
+          <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
+            <img
+              src={postImageData}
+              alt="Post Image"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
-      <div tw="mt-1 flex items-center px-2 ml-2">
-        <h3 tw="text-white text-4xl text-xl text-bold text-center">zackproser.com</h3>
+      <div tw="flex flex-col items-center">
+        <h1
+          tw="text-white text-3xl pb-2"
+        >
+          zackproser.com
+        </h1>
       </div>
     </div>
   )
