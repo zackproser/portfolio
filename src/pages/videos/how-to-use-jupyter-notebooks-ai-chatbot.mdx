@@ -14,12 +14,17 @@ export const meta = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/IAAIRg3gS1I" 
+  title="How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
 
 In this video, I do a deep dive on the two Jupyter notebooks which I built as part of my office oracle project. 
 
 Both notebooks are now open source: 
-
 
 * <Link href={"https://github.com/zackproser/office-oracle-db-test-notebook"}>Open-sourced Office Oracle Test Notebook</Link>
 * <Link href={"https://github.com/zackproser/office-oracle-data-bench"}>Open-sourced Office Oracle Data Bench</Link>
