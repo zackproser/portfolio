@@ -34,12 +34,14 @@ export function ArticleLayout({
 
   const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
 
+  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}&image=${meta.imagePath}`
+
   return (
     <>
       <Head>
         <title>{`${meta.title} - Zachary Proser`}</title>
         <meta name="description" content={meta.description} />
-        <meta name="og:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`} />
+        <meta name="og:image" content={ogURL} />
       </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
