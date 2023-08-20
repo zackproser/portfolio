@@ -219,7 +219,7 @@ export default function Home({ articles }) {
         </title>
         <meta
           name="description"
-          content="I’m Zack, a senior software engineer, writer, and artist. I am a Tech Lead at Gruntwork.io, where we build automation solutions to make deploying infrastructure as code easier."
+          content="I’m Zack, an open-source developer and technical writer. I am a staff developer advocate at Pinecone.io, where we build a highly-performant cloud-native vector database, which is a critical component for Generative AI applications"
         />
       </Head>
       <Container className="mt-9">
