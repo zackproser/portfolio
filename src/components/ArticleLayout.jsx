@@ -34,7 +34,9 @@ export function ArticleLayout({
 
   const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
 
-  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}&image=${meta.imagePath}`
+  console.log(`ArticleLayout meta.image %o`, meta.image)
+
+  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}&image=${meta.image.src}`
 
   return (
     <>
