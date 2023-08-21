@@ -38,8 +38,8 @@ export default function App({ Component, pageProps, router }) {
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="zackproser.com" />
         <meta property="twitter:url" content="https://zackproser.com" />
-        <meta name="twitter:title" content="Zachary Proser's portfolio site" />
-        <meta name="twitter:description" content="Zachary Proser's writing, videos, and open-source projects" />
+        <meta name="twitter:title" content="Zachary Proser&apos;s portfolio site" />
+        <meta name="twitter:description" content="Zachary Proser&apos;s writing, videos, and open-source projects" />
         <meta name="twitter:image" content={defaultOpengraphImage} />
       </Head>
       <div className="fixed inset-0 flex justify-center sm:px-8">
