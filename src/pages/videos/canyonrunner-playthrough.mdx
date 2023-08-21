@@ -1,0 +1,23 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import canyonRunnerTitle from '@/images/canyonrunner-title-screen.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2015-07-11",
+  title: "A full play through of my HTML5 game, CanyonRunner",
+  description: "I built a complete game using the Phaser.js game development framework",
+  image: canyonRunnerTitle 
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/DP49IKYYzZc" 
+  title="A full play through of my HTML5 game, CanyonRunner" 
+  frameborder="0" 
+  allow="fullscreen;">
+ </iframe>
+
+CanyonRunner is a complete HTML5 game that I built with the Phaser.js framework. I wrote about how the game works in my [blog post here](/blog/canyonrunner-html5-game).
