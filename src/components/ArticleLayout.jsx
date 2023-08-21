@@ -37,9 +37,17 @@ export function ArticleLayout({
   // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
   let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
 
+  // If the post includes an image, append it as a query param to the final opengraph endpoint
   if (meta.image && meta.image.src) {
     ogURL = ogURL + `&image=${meta.image.src}`
   }
+
+  let root = '/blog/'
+  if (article?.type == 'video') {
+    root = '/videos/'
+  }
+
+  const postURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${article.slug}`
 
   return (
     <>
@@ -47,6 +55,20 @@ export function ArticleLayout({
         <title>{`${meta.title} - Zachary Proser`}</title>
         <meta name="description" content={meta.description} />
         <meta name="og:image" content={ogURL} />
+        <title>{meta.title}</title>
+        <meta property="og:title" content={meta.title} />
+        <meta name="description" content={meta.description} />
+        <meta name="og:image" content={ogURL} />
+        <meta name="og:url" content={postURL} />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="zackproser.com" />
+        <meta property="twitter:url" content={postURL} />
+        <meta name="twitter:title" content={meta.title} />
+        <meta name="twitter:description" content={meta.description} />
+        <meta name="twitter:image" content={ogURL} />
+
       </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
