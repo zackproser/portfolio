@@ -8,7 +8,7 @@ export default async function handler(request) {
   const { searchParams } = new URL(request.url);
   console.log(`og API route searchParams %o:`, searchParams)
   const hasTitle = searchParams.has('title');
-  const title = hasTitle ? searchParams.get('title') : 'Staff Developer Advocate at Pinecone.io';
+  const title = hasTitle ? searchParams.get('title') : 'Portfolio, blog, videos and open-source projects';
   const hasImage = searchParams.has('amp;image');
   const image = hasImage ? searchParams.get('amp;image') : undefined;
 
