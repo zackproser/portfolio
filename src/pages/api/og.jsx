@@ -38,7 +38,7 @@ export default async function handler(request) {
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
-        background_image: 'linear-gradient(to bottom, #025b30, #2dd30c)'
+        background_image: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
       }}
     >
       <div tw="flex flex-col md:flex-row w-full">
@@ -56,9 +56,9 @@ export default async function handler(request) {
         </div>
       </div>
       <div
-        tw="bg-slate-900 border-1 border-white flex w-full"
+        tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          background_image: 'linear-gradient(to bottom, #1f618d, #0f172a)'
+          background_image: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
