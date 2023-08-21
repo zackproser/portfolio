@@ -23,12 +23,24 @@ function usePrevious(value) {
 export default function App({ Component, pageProps, router }) {
   let previousPathname = usePrevious(router.pathname)
 
+  const defaultOpengraphImage = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`
+
   return (
     <>
       <Head>
         <title>{`Zachary Proser`}</title>
+        <meta property="og:title" content="Zachary Proser's portfolio site" />
         <meta name="description" content={'Zachary Proser - Staff Developer Advocate'} />
-        <meta name="og:image" content={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og`} />
+        <meta name="og:image" content={defaultOpengraphImage} />
+        <meta name="og:url" content="https://zackproser.com" />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="zackproser.com" />
+        <meta property="twitter:url" content="https://zackproser.com" />
+        <meta name="twitter:title" content="Zachary Proser's portfolio site" />
+        <meta name="twitter:description" content="Zachary Proser's writing, videos, and open-source projects" />
+        <meta name="twitter:image" content={defaultOpengraphImage} />
       </Head>
       <div className="fixed inset-0 flex justify-center sm:px-8">
         <div className="flex w-full max-w-7xl lg:px-8">
