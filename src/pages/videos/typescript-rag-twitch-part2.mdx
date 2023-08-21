@@ -1,0 +1,24 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import ragPart2 from '@/images/typescript-rag-livestream-part2.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-08-16",
+  title: "Part #2 Live code review: Pinecone Vercel starter template and Retrieval Augmented Generation (RAG).",
+  description: "Part #2 of our Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
+  image: ragPart2
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/FrlG83du31Q" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+Part #2 of [our previous video](/videos/typescript-rag-twitch-part1). Join Roie Schwaber-Cohen and me as we continue to step through and discuss the Pinecone Vercel starter template that deploys an AI chatbot that is less likely to hallucinate thanks to Retrieval Augmented Generation (RAG). 
+
