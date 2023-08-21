@@ -42,6 +42,8 @@ export function ArticleLayout({
     ogURL = ogURL + `&image=${meta.image.src}`
   }
 
+  console.log(`ArticleLayout ogURL: ${ogURL}`);
+
   let root = '/blog/'
   if (meta?.type == 'video') {
     root = '/videos/'
