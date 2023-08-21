@@ -31,6 +31,7 @@ export default function App({ Component, pageProps, router }) {
         <title>{`Zachary Proser`}</title>
         <meta property="og:title" content="Zachary Proser's portfolio site" />
         <meta name="description" content={'Zachary Proser - Staff Developer Advocate'} />
+        <meta name="og:description" content={'Zachary Proser - Articles, videos, and open-source projects'} />
         <meta name="og:image" content={defaultOpengraphImage} />
         <meta name="og:url" content="https://zackproser.com" />
         <meta property="og:type" content="website" />
