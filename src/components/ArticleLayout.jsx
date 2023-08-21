@@ -43,11 +43,11 @@ export function ArticleLayout({
   }
 
   let root = '/blog/'
-  if (article?.type == 'video') {
+  if (meta?.type == 'video') {
     root = '/videos/'
   }
 
-  const postURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${article.slug}`
+  const postURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug}`
 
   return (
     <>
