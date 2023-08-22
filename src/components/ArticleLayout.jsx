@@ -49,7 +49,8 @@ export function ArticleLayout({
     root = '/videos/'
   }
 
-  const postURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug}`
+  const builtURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug ?? ''}`
+  const postURL = new URL(builtURL)
 
   return (
     <>
