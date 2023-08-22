@@ -9,6 +9,13 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+  images: {
+    domains: [
+      'localhost',
+      'zackproser.com',
+      'www.zackproser.com'
+    ],
+  }
 }
 
 const withMDX = nextMDX({
