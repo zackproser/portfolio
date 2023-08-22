@@ -9,8 +9,10 @@ export default async function handler(request) {
   console.log(`og API route searchParams %o:`, searchParams)
   const hasTitle = searchParams.has('title');
   const title = hasTitle ? searchParams.get('title') : 'Portfolio, blog, videos and open-source projects';
-  const hasImage = searchParams.has('image');
-  const image = hasImage ? searchParams.get('image') : undefined;
+  // This is horrific - need to figure out and fix this 
+  const hasImage = searchParams.has('image') || searchParams.get('amp;image')
+  // This is equally horrific - need to figure out and fix this for good
+  const image = hasImage ? (searchParams.get('image') || searchParams.get('amp;image')) : undefined;
 
   console.log(`og API route hasImage: ${hasImage}, image: ${image}`)
 
