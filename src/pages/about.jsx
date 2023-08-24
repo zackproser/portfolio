@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
+import { Button } from '@/components/Button'
 
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
+import CV from '@/components/CV'
 import {
   GitHubIcon,
   InstagramIcon,
@@ -36,7 +39,7 @@ export default function About() {
         <title>About - Zachary Proser</title>
         <meta
           name="description"
-          content="I’m Zachary Proser.  I am an open source developer, senior software engineer, and artist."
+          content="I’m Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
         />
       </Head>
       <Container className="mt-16 sm:mt-32">
@@ -53,42 +56,86 @@ export default function About() {
           </div>
           <div className="lg:order-first lg:row-span-2">
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-              I&apos;m Zachary Proser. I&apos;m  an open source developer, senior software engineer and artist.
+              Hi, I&apos;m Zachary Proser
             </h1>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
-                I&apos;m a staff develper advocate at <b><a href="https://pinecone.io">Pinecone</a></b>, a startup
-                that builds the most performant cloud-native vector database.
+                I&apos;m a staff developer advocate at <Link className="font-bold text-green-500" href="https://pinecone.io">Pinecone</Link>,
+                where we build the best-in-class cloud-native vector database at the heart of the Generative AI boom.
 
-                I love to build, maintain and enhance useful apps, especially those that demonstrate AI and machine learning patterns,
-                as well as tools, especially in Golang using the TUI library bubbletea from Charm.sh.
-
-                I&apos;m also a huge fan of Next.js and React.
               </p>
               <p>
-                I&apos;ve been a software developer and open-source contributor for {RenderNumYearsExperience()} years.
-                All of my open-source work lives at <b><a href="https://github.com/zackproser">https://github.com/zackproser</a></b>.
+                I have been a full-stack software engineer, technical writer and open-source contributor for <span className="text-green-500 font-bold">{RenderNumYearsExperience()} years</span>.
+              </p>
+
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Areas of expertise
+              </h2>
+
+              You can get a sense of my work on <Link className="font-extrabold text-green-500" href={"/blog/"}>my blog</Link> and by
+              watching <Link href={"/videos/"} className="font-extrabold text-green-500">my videos</Link>.
+
+              <ul className="list-disc">
+                <li className="font-bold ml-4">Generative AI</li>
+                <li className="font-bold ml-4">Application and web development</li>
+                <li className="font-bold ml-4">Infrastructure as Code (IaC)</li>
+                <li className="font-bold ml-4">Developer tooling and AI-coding assistants</li>
+                <li className="font-bold ml-4">Developer experience</li>
+                <li className="font-bold ml-4">DevOps</li>
+                <li className="font-bold ml-4">Command line interfaces (CLIs)</li>
+                <li className="font-bold ml-4">REST APIs</li>
+                <li className="font-bold ml-4">Technical writing</li>
+              </ul>
+
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Technologies
+              </h2>
+              <ul className="list-disc">
+                <li className="font-bold ml-4">JavaScript / Node / Next.js</li>
+                <li className="font-bold ml-4">Golang</li>
+                <li className="font-bold ml-4">Python</li>
+                <li className="font-bold ml-4">Terraform</li>
+                <li className="font-bold ml-4">AWS</li>
+                <li className="font-bold ml-4">Vercel</li>
+                <li className="font-bold ml-4">Cloudflare</li>
+                <li className="font-bold ml-4">GitHub</li>
+                <li className="font-bold ml-4">Coding assistants: CoPilot, Codium, Cody, etc</li>
+              </ul>
+
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Open-source work and maintenance
+              </h2>
+
+              <p>
+                I&apos;ve been a software developer and open-source contributor for <span className="text-green-500 font-bold">{RenderNumYearsExperience()} years</span>.
+                All of my open-source work lives at <Link className="font-bold text-green-500" href="https://github.com/zackproser">https://github.com/zackproser</Link>
               </p>
               <p>
                 In my free time, I love to research new techniques and to practice keyboard-driven development using tmux, neovim, awesome
                 window manager and other powerful open source tools.
               </p>
+
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Where I'm coming from
+              </h2>
+
               <p>
-                I believe deeply in sharing knowledge and taking the time out to pass along what you know to others, just as so many developers
-                have done for me.
+                I believe deeply in sharing knowledge and taking the time out to pass along what you know to others. I am a self-taught developer, and I brought myself up
+                mostly through unceasing practice, study and consumption of free learning materials that other developers made available on the internet.
               </p>
               <p>
                 This site is a part of the way I give back and say thanks to those who took time out of their day to stop what they were doing
                 and show me a better way to accomplish a task, to use a tool, to decompose a problem.
               </p>
-              <p>
-                If you find shells, command line tools and automation interesting, and if you want to know more about hardening your system and workflow for added security, then you are likely in the right place.
-              </p>
 
-              <p>
-                If you want to know how to shred text on the keyboard, automate complex
-                deployments with custom state machines and cloud infrastructure, and generally level up your devlopment game and career then you&apos;ll <b>probably</b> enjoy my content.
-              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Available for limited consulting and advisory work
+              </h2>
+
+              <p>I advise companies and investors on AI, machine learning, and developer tooling, so long as there&apos;s no conflict of interest with my primary work at Pinecone.</p>
+
+              <p>If you have questions about emerging technologies, best practices or want feedback or insight from someone who codes and writes every day, <Link className="text-bold text-green-500" href={"mailto:zackproser@gmail.com"}> feel free to reach out</Link>.</p>
+
               <Newsletter />
             </div>
           </div>
@@ -109,6 +156,9 @@ export default function About() {
               <SocialLink href="https://linkedin.com/in/zackproser" icon={LinkedInIcon} className="mt-4">
                 Follow me on LinkedIn
               </SocialLink>
+              <Button variant="green" className="rounded-full mt-8 font-extrabold text-white" href="mailto:zackproser@gmail.com">
+                Available for limited consulting and advisory engagements
+              </Button>
               <SocialLink
                 href="mailto:zackproser@gmail.com"
                 icon={MailIcon}
@@ -117,6 +167,9 @@ export default function About() {
                 Drop me an email
               </SocialLink>
             </ul>
+            <div className="mt-8">
+              <CV />
+            </div>
           </div>
         </div>
       </Container >
