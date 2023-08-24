@@ -116,7 +116,7 @@ export default function About() {
               </p>
 
               <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                Where I'm coming from
+                Where I&apos;m coming from
               </h2>
 
               <p>
