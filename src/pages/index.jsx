@@ -4,7 +4,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import React from "react";
 
-import { Card } from '@/components/Card'
+import { BlogPostCard } from '@/components/BlogPostCard'
 import { Container } from '@/components/Container'
 import { Newsletter } from '@/components/Newsletter'
 import CV from '@/components/CV'
@@ -20,27 +20,11 @@ import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Sc
 import optimizerBlogImg from '@/images/optimizer-blog.png'
 import terraformAssocImg from '@/images/terraform-associate.png'
 import teaTutorImg from '@/images/teatutor-logo.png'
-import { formatDate } from '@/lib/formatDate'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
 
 function RenderNumYearsExperience() {
   return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
-}
-
-function Article({ article }) {
-  return (
-    <Card as="article">
-      <Card.Title href={`/blog/${article.slug}`}>
-        {article.title}
-      </Card.Title>
-      <Card.Eyebrow as="time" dateTime={article.date} decorate>
-        {formatDate(article.date)}
-      </Card.Eyebrow>
-      <Card.Description>{article.description}</Card.Description>
-      <Card.Cta>Read article</Card.Cta>
-    </Card>
-  )
 }
 
 function SocialLink({ icon: Icon, ...props }) {
@@ -50,7 +34,6 @@ function SocialLink({ icon: Icon, ...props }) {
     </Link>
   )
 }
-
 
 function Photos() {
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
@@ -84,7 +67,7 @@ export default function Home({ articles }) {
     <>
       <Head>
         <title>
-          Zachary Proser - Senior software engineer, open source hacker, writer and artist
+          Zachary Proser - Staff Developer Advocate, full-stack open-source hacker, technical writer and artist
         </title>
         <meta
           name="description"
@@ -94,10 +77,10 @@ export default function Home({ articles }) {
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Senior software engineer, open source hacker, writer and artist.
+            Staff developer advocate, full-stack open-source hacker, writer and artist.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Hi, I’m Zack, a senior software engineer and tech lead. I do complex AWS deployments, develop software, and help my team and our customers succeed.
+            Hi, I’m Zack, a staff developer advocate  and tech lead. I build generative AI applications, do complex AWS deployments, develop software, and help my team and our customers succeed.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
             I love to learn and share knowledge. I&apos;m constantly discovering new developer productivity hacks, which I share via tutorials and demo videos.
@@ -143,10 +126,18 @@ export default function Home({ articles }) {
         </div>
       </Container>
       <Container className="mt-24 md:mt-28">
+        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl mb-8">My latest posts</h1>
+        <div className="pb-4">
+          <Link
+            className="font-extrabold text-green-500 mb-4 p4"
+            href="/blog">
+            See all my writing on my blog
+          </Link>
+        </div>
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
             {articles.map((article) => (
-              <Article key={article.slug} article={article} />
+              <BlogPostCard key={article.slug} article={article} />
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">
@@ -167,7 +158,7 @@ export async function getStaticProps() {
   return {
     props: {
       articles: (await getAllArticles())
-        .slice(0, 4)
+        .slice(0, 8)
         .map(({ component, ...meta }) => meta),
     },
   }
