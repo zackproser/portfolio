@@ -1,30 +1,34 @@
 
 
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Newsletter } from '@/components/Newsletter'
-import pizzaRatRunningForMayorSpeakinImage from '/src/images/pizza-rat-running-for-mayor-speakin.png'
+    import { ArticleLayout } from '@/components/ArticleLayout'
+    import { Newsletter } from '@/components/Newsletter'
 
+    import Image from 'next/image'
+    import Link from 'next/link'
 
-import Image from 'next/image'
-import Link from 'next/link'
+    export const meta = {
+      author: "Zachary Proser",
+      date: "8/27/2023",
+      title: "The Ballad Of Pizza Rat",
+      description: "Sum", 
+      image: import pizzaRatRunningForMayorSpeakinImage from '/src/images/pizza-rat-running-for-mayor-speakin.png'
+     }
 
-export const meta = {
-  author: "Zachary Proser",
-  date: "8/27/2023",
-  title: "The Ballad Of Pizza Rat",
-  description: "Sum", 
-  image: pizzaRatRunningForMayorSpeakinImage
- }
+    export default (props) => <ArticleLayout meta={meta} {...props} />
+      
+    ## Incipit Pizza Rat
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
-  
- ## Incipit Pizza Rat
+Pizza rat went down the stairs and took the L train into our hearts. 
 
-import pizzaRatRunningForMayorSpeakinImage from '/src/images/pizza-rat-running-for-mayor-speakin.png'
+<Image src={profileShotOfARatDraggingASlImage}/>
+
+## Political aspirations
 
 <Image src={pizzaRatRunningForMayorSpeakinImage}/>
 
-import pizzaRatsTombstoneInTheGraveyaImage from '/src/images/pizza-rats-tombstone-in-the-graveya.png'
+## The death of pizza rat
 
 <Image src={pizzaRatsTombstoneInTheGraveyaImage}/>
-  
+import pizzaRatRunningForMayorSpeakinImage from '/src/images/pizza-rat-running-for-mayor-speakin.png'
+import profileShotOfARatDraggingASlImage from '/src/images/profile-shot-of-a-rat-dragging-a-sl.png'
+import pizzaRatsTombstoneInTheGraveyaImage from '/src/images/pizza-rats-tombstone-in-the-graveya.png'
