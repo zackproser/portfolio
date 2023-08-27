@@ -1,0 +1,22 @@
+
+import supermanStaggeringHomeInTheSunImage from '/src/images/superman-staggering-home-in-the-sun.png'
+import supermanDrinkingFromABottleOfImage from '/src/images/superman-drinking-from-a-bottle-of-.png'
+import supermanPassedOutDrunkInAnAllImage from '/src/images/superman-passed-out-drunk-in-an-all.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "8/27/2023",
+  title: "Superman has a rough day",
+  description: "Superman is in the dumps", 
+  image: supermanStaggeringHomeInTheSunImage
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} /> 
+
+## Superman relapses and starts drinking kryptonite juice
