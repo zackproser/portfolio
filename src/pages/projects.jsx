@@ -9,9 +9,16 @@ import logoPlanetaria from '@/images/logos/planetaria.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
 import nuke from '@/images/nuke.png'
+import panthalia from '@/images/panthalia-logo.png'
 import automations from '@/images/logos/automations.svg'
 
 const projects = [
+  {
+    name: 'panthalia',
+    description: 'Panthalia is an AI-assisted mobile blogging platform for creating media-rich posts on the go',
+    link: { href: 'https://github.com/zackproser/panthalia', label: 'github' },
+    logo: panthalia,
+  },
   {
     name: 'automations',
     description: 'Shell scripts leveraging generative A.I. to make developer workflows buttery smooth and way more fun',
