@@ -67,7 +67,7 @@ export default function Home({ articles }) {
     <>
       <Head>
         <title>
-          Zachary Proser - Staff Developer Advocate, full-stack open-source hacker, technical writer and artist
+          Zachary Proser - Staff Developer Advocate, full-stack open-source hacker, and technical writer
         </title>
         <meta
           name="description"
@@ -77,14 +77,13 @@ export default function Home({ articles }) {
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Staff developer advocate, full-stack open-source hacker, writer and artist.
+            Staff developer advocate, full-stack open-source hacker, and technical writer.
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            Hi, I’m Zack, a staff developer advocate  and tech lead. I build generative AI applications, do complex AWS deployments, develop software, and help my team and our customers succeed.
+            As a staff developer advocate and tech lead, I build generative AI applications, do complex AWS deployments, develop software, and help my team and our customers succeed.
           </p>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I love to learn and share knowledge. I&apos;m constantly discovering new developer productivity hacks, which I share via tutorials and demo videos.
-
+            I constantly acquire knowledge and then share that knowledge. I constantly experiment to discover new tech and the best combinations of developer tools, then write tutorials, and record demo videos demonstrating them. I <Link href={"https://github.com/zackproser"} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={"/about"} className="text-green-500 font-extrabold"> read more about me here</Link>.
           </p>
           <Newsletter />
           <div className="mt-6 flex gap-6">
@@ -110,16 +109,12 @@ export default function Home({ articles }) {
             />
           </div>
         </div>
-      </Container>
+      </Container >
       <Photos />
       <Container className="mt-9">
         <div className="max-w-2xl">
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I believe that when you&apos;re efficient and happy with your tools, you do better work more quickly,
-            and you&apos;re incentivized to continue learning. I know because I&apos;ve experienced it firsthand.
-          </p>
           <p className="mt-6  text-base text-zinc-600 dark:text-zinc-400">
-            On this blog, I share terminal tricks, demo videos, advanced command line techniques and hotkeys, and
+            On this site, I share open-source software, terminal tricks, demo videos, software career advice, advanced command line techniques and hotkeys, and
             I blog about things I&apos;ve learned the hard way while working in the industry for {RenderNumYearsExperience()} years.
           </p>
           <Newsletter />
