@@ -1,0 +1,40 @@
+
+import frustration from '/src/images/frustration.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+ author: "Zachary Proser",
+ date: "2023-9-9",
+ title: "Glossary of tech phrases",
+ description: "If you're coming from Hacker News, I've learned that I need to spell out at the beginning that this post is partly facetious...",
+ image: frustration
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} /> 
+
+<Image src={frustration} alt="frustration"/>
+
+## If you came here from Hacker News...
+
+Then I've learned that I need to explicitly spell out in the beginning of the post that this article is partly facetious. 
+
+|   Phrase said under stress|  Real meaning |  
+|---|---|
+| Thanks for the feedback.  |  Fuck you. |   
+|   Thanks for the feedback! (with an explanation point) |   Die in a slow-moving, low-temperature and ultimately avoidable fire.|   
+| That's interesting. |  You are unburdened by talent. |
+| Could you please file an issue? | Swim into a boat motor. Face-first, but get your arms in there, too. | 
+| Like I said... | Clean the shit out of your ears. |  
+| Let's table this for the time being. We've got N minutes left and a lot of agenda items remaining. | I'm sick of hearing your voice. Shut the fuck up. Your time management is even worse than your hygiene. |
+| How about we do this...| I'm tired of waiting for you to get it, so now I'm going to distract you with a false compromise. |
+| Sounds good | I have zero faith in your ability to deliver. None. So I'm passive agressively pointing to the fact that it only sounds good, because it's never going to be. |
+| Let me know if I can do anything to help | This is completely on you and I don't want to hear about it again. |
+| Let's take some action items. | I can't understand the power dynamics on this Zoom call yet but I'm incapable of contributing to the problems we're discussing here | 
+| \<Name\>, can you take an action item? | I'm a Muppet missing the adult hand that goes up my ass and tells me what to say. I can tell you're all starting to catch on, so in my low-grade panic I'm going to try to distract all of you while I continue to wait around around for the adult to show up...|
+| NIT: I prefer a more \<vague adjective\> coding style...| I'm finally secure enough in this institution to enforce my father-shaped emotional void upon you and our codebase. I never learned to wash my ass properly. |
+| Great idea, \<executive above me\>! | You could have kept my entire salary plus benefits and skipped hiring me with no impact whatsoever on final outcomes or team strength |
