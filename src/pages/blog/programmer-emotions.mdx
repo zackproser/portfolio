@@ -1,0 +1,28 @@
+
+import aHackerMeditatingOnAMatInAPImage from '/src/images/programmer-emotions.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-9-11",
+  title: "Programmer emotions",
+  description: "Programmers are people, and this is how I feel when...",
+  image: aHackerMeditatingOnAMatInAPImage
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} /> 
+
+<Image src={aHackerMeditatingOnAMatInAPImage} alt="a Hacker meditating on a mat" />
+
+|  When  |   I feel |   
+|---|---|
+| My program compiles after an onerous redactoring|  elation|   
+| People add meetings to my calendar to talk through deliverables they haven't thought through or locked down yet| like my precious focus time is being wasted   |   
+| Another developer says something I created was helpful to them| like a link in a long chain stretching from the past into the future|  
+| Someone downloads my code, tool or package| absolutely victorious |
+| I ship something important | A mixture of satisfaction, hope and dread that I've missed something important|
