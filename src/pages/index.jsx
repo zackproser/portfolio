@@ -79,11 +79,8 @@ export default function Home({ articles }) {
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
             Staff developer advocate, full-stack open-source hacker, and technical writer.
           </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            As a staff developer advocate and tech lead, I build generative AI applications, do complex AWS deployments, develop software, and help my team and our customers succeed.
-          </p>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I constantly acquire knowledge and then share that knowledge. I constantly experiment to discover new tech and the best combinations of developer tools, then write tutorials, and record demo videos demonstrating them. I <Link href={"https://github.com/zackproser"} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={"/about"} className="text-green-500 font-extrabold"> read more about me here</Link>.
+          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400 pb-2">
+            I acquire and share knowledge. I constantly experiment, create tutorials,  demo videos and open-source repos to share my best discoveries. I <Link href={"https://github.com/zackproser"} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={"/about"} className="text-green-500 font-extrabold"> read more about me here</Link>.
           </p>
           <Newsletter />
           <div className="mt-6 flex gap-6">
