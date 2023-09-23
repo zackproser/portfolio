@@ -1,0 +1,30 @@
+
+import aBeautifulForestWideAngleShotImage from '/src/images/a-beautiful-forest-wide-angle-shot-.png'
+import aSmallBrownFoxPixelArtInAWiImage from '/src/images/a-small-brown-fox-pixel-art-in-a-wi.png'
+import aBlueBirdAndAFoxAreFriendsIImage from '/src/images/a-blue-bird-and-a-fox-are-friends-i.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const meta = {
+ title: "Dictation prod test",
+ author: "Zachary Proser",
+ date: "2023-9-23",
+ description: "Summary",
+ image: aBeautifulForestWideAngleShotImage,
+} 
+
+export default (props) => <ArticleLayout meta={meta} {...props} /> 
+
+## The brown fox
+
+the quick brown fox jumped over a boulder
+
+## The forest and cabin 
+
+there was a beautiful log cabin in the forest
+
+## The fox and bluebird became friends
