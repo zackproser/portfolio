@@ -1,0 +1,27 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import panthaliaVideo from '@/images/panthalia-video.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-09-23",
+  title: "Project Panthalia: Adding speech to text for mobile blogging",
+  description: "I added speech-to-text capabilities to Panthalia, so that I can commence blog posts more quickly than ever before, from anywhere",
+  image: panthaliaVideo
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/Y36rUWeVnMM"
+  title="Panthalia Update: Speak your thoughts into blog posts" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+Adding speech-to-text capabilities to Panthalia allows me to commence blog posts faster and more efficiently 
+than ever before, regardless of where I might be. 
+
+In this video I demonstrate using speech to text to create a demo short story end to end, complete with generated images, 
+courtesy of StableDiffusionXL.
