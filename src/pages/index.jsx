@@ -22,10 +22,8 @@ import terraformAssocImg from '@/images/terraform-associate.png'
 import teaTutorImg from '@/images/teatutor-logo.png'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
-
-function RenderNumYearsExperience() {
-  return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
-}
+// Instead of needing to constantly update my static site, do the calculation of years that I've been working in tech in JS
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
 function SocialLink({ icon: Icon, ...props }) {
   return (
