@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document'
+import Script from 'next/script'
 
 const modeScript = `
   let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
@@ -40,6 +41,17 @@ export default function Document() {
     <Html className="h-full antialiased" lang="en">
       <Head>
         <script dangerouslySetInnerHTML={{ __html: modeScript }} />
+        <Script async={true} strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-P4FV2589DS"></Script>
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+          <!-- Google tag (gtag.js) -->
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-P4FV2589DS');
+          `}
+        </Script>
         <link
           rel="alternate"
           type="application/rss+xml"
