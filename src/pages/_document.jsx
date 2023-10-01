@@ -41,7 +41,7 @@ export default function Document() {
     <Html className="h-full antialiased" lang="en">
       <Head>
         <script dangerouslySetInnerHTML={{ __html: modeScript }} />
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-P4FV2589DS"></Script>
+        <Script async={true} strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-P4FV2589DS"></Script>
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`
           <!-- Google tag (gtag.js) -->
