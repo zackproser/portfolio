@@ -6,6 +6,8 @@ import { Header } from '@/components/Header'
 // Head is used for setting meta tags
 import Head from 'next/head'
 
+import { Analytics } from '@vercel/analytics/react';
+
 import '@/styles/global.css'
 import '@/styles/tailwind.css'
 import 'focus-visible'
@@ -52,6 +54,7 @@ export default function App({ Component, pageProps, router }) {
         <Header />
         <main>
           <Component previousPathname={previousPathname} {...pageProps} />
+          <Analytics />
         </main>
         <Footer />
       </div>
