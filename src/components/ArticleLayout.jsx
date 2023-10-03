@@ -41,6 +41,12 @@ export function ArticleLayout({
     ogURL = ogURL + `&image=${meta.image.src}`
   }
 
+  // If the post includes a description, append it to the opengraph image body
+  if (meta.description) {
+    const sanitizedDescription = encodeURIComponent(meta.description.replace(/'/g, ''));
+    ogURL = ogURL + `&description=${sanitizedDescription}`
+  }
+
   console.log(`ArticleLayout ogURL: ${ogURL}`);
 
   let root = '/blog/'

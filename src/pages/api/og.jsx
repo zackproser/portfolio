@@ -16,6 +16,9 @@ export default async function handler(request) {
 
   console.log(`og API route hasImage: ${hasImage}, image: ${image}`)
 
+  const hasDescription = searchParams.has('description') || searchParams.get('amp;description')
+  const description = hasDescription ? searchParams.get('description') || searchParams.get('amp;description') : undefined
+
   // My profile image is stored in /public so that we don't need to rely on an external host like GitHub 
   // that might go down
   const profileImageFetchURL = new URL('/public/zack.png', import.meta.url);
@@ -64,10 +67,16 @@ export default async function handler(request) {
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
-          <h2 tw="flex flex-col pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-            <span tw="text-white font-extrabold">{title}</span>
-          </h2>
-
+          <div tw="flex flex-col">  {/* New flex column container */}
+            <h2 tw="pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
+              <span tw="text-white font-extrabold">{title}</span>
+            </h2>
+            {hasDescription && (
+              <p tw="pl-2 text-1xl sm:text-2xl font-extrabold tracking-tight text-white text-left break-words"
+                style={{ maxWidth: '600px' }}
+              >{description}</p>
+            )}
+          </div>
           <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
             <img
               src={postImageData}
