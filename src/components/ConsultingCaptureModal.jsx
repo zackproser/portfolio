@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 
 import logoPinecone from '@/images/logos/pinecone-logo.png'
@@ -102,13 +103,13 @@ export default function ConsultingCaptureModal({ delay }) {
               team dynamics and improving velocity. I can provide product feedback, hands-on stress testing and marketing amplification, and a staff-level developer
               perspective on your product or strategy.
             </p>
-            <div className="mt-6 mb-2">
-              <a
-                href="#"
+            <div className="mt-6 mb-3">
+              <Link
+                href="https://buy.stripe.com/test_dR6eVj5Gycro60o144"
                 className="inline-flex rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Book a call with me - $500 per hour
-              </a>
+              </Link>
             </div>
           </div>
         </div>
