@@ -1,5 +1,6 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
+import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
 
 import sparkOfLearning from '@/images/spark-of-learning.png'
 import foundTheSpark from '@/images/found-the-spark.png'
@@ -29,6 +30,8 @@ export const meta = {
  }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<ConsultingCaptureModal delay={30000} />
 
 <Image src={foundTheSpark} />
 
