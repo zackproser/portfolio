@@ -34,7 +34,7 @@ export default function ConsultingCaptureModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-8">
-      <div className="relative bg-gray-900 w-full max-h-[100%] ">
+      <div className="relative bg-gray-900 w-full max-h-[100%] overflow-auto md:overflow-visible">
         <button
           onClick={dismissModal}
           className="absolute top-4 right-4 bg-white rounded-full p-2"
