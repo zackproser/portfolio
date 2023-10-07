@@ -14,8 +14,9 @@ const modeScript = `
   window.addEventListener('storage', updateModeWithoutTransitions)
 
   function updateMode() {
-    let isSystemDarkMode = darkModeMediaQuery.matches
-    let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)
+    let isSystemDarkMode = darkModeMediaQuery.matches;
+    // Default to dark mode unless user has explicitly set light mode
+    let isDarkMode = window.localStorage.isDarkMode !== 'false';
 
     if (isDarkMode) {
       document.documentElement.classList.add('dark')
