@@ -105,7 +105,7 @@ export default function ConsultingCaptureModal({ delay }) {
             </p>
             <div className="mt-6 mb-3">
               <Link
-                href="https://buy.stripe.com/test_dR6eVj5Gycro60o144"
+                href="https://calendly.com/zackproser/60min"
                 className="inline-flex rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Book a call with me - $500 per hour
