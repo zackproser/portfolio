@@ -35,10 +35,11 @@ export const Newsletter = function() {
   const referrer = router.query.referrer || 'unknown/direct'
 
   const sendFormSubmissionEvent = () => {
-    gtag('event', 'newsletter_subscribe', {
-      "event_category": "subscription",
-      "event_label": "newsletter",
-    })
+
+    gtag("event", "sign_up", {
+      method: "newsletter"
+    });
+
   }
 
   // Handle the submit event on form submit.
