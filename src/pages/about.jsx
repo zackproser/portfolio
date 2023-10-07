@@ -103,6 +103,27 @@ export default function About() {
               </ul>
 
               <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                Hacker for hire
+              </h2>
+
+              <p className="">
+                I advise investors, startups, product managers and technical leaders on everything from AI-assisted developer tooling to security best practices,
+                team dynamics and improving velocity.</p>
+
+              <p>I can provide product feedback, hands-on stress testing and marketing amplification, and a staff-level developer
+                perspective on your product or strategy.
+              </p>
+              <div className="ml-22 p-8 mt-6 mb-3 z-50">
+                <Button
+                  variant="blue"
+                  className="bg-indigo-400 dark:bg-indigo-600 hover:bg-indigo-500"
+                  href={"https://calendly.com/zackproser/60min"}
+                >
+                  Book a consultation - $500 per hour
+                </Button>
+              </div>
+
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
                 Open-source work and maintenance
               </h2>
 
@@ -156,8 +177,8 @@ export default function About() {
               <SocialLink href="https://linkedin.com/in/zackproser" icon={LinkedInIcon} className="mt-4">
                 Follow me on LinkedIn
               </SocialLink>
-              <Button variant="green" className="rounded-full mt-8 font-extrabold text-white" href="mailto:zackproser@gmail.com">
-                Available for limited consulting and advisory engagements
+              <Button variant="blue" className="p-4 rounded-full mt-8 font-extrabold text-white" href="https://calendly.com/zackproser/60min">
+                Book a call with me - $500 per hour
               </Button>
               <SocialLink
                 href="mailto:zackproser@gmail.com"
