@@ -39,6 +39,14 @@ export default function ConsultingCaptureModal({ delay }) {
     localStorage.setItem('dismissedModal', 'true');
   };
 
+  const trackConsultClick = () => {
+    // Capture google analytics event
+    gtag("event", "click_book_consult", {
+      event_category: "advertising",
+      event_label: "consulting_modal",
+    })
+  }
+
   console.log('ConsultingCaptureModal running...');
 
   if (!showModal) return null;
@@ -91,6 +99,7 @@ export default function ConsultingCaptureModal({ delay }) {
             </p>
             <div className="ml-22 p-8 mt-6 mb-3 z-50">
               <Button
+                onClick={trackConsultClick}
                 variant="blue"
                 className="bg-indigo-400 dark:bg-indigo-600 hover:bg-indigo-500"
                 href={"https://calendly.com/zackproser/60min"}
