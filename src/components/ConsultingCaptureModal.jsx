@@ -8,7 +8,7 @@ import hackerForHire from '@/images/hacker-for-hire.webp'
 
 import RenderNumYearsExperience from './NumYearsExperience'; RenderNumYearsExperience
 
-export default function ConsultingCaptureModal() {
+export default function ConsultingCaptureModal({ delay }) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -17,11 +17,11 @@ export default function ConsultingCaptureModal() {
       const timer = setTimeout(() => {
         console.log('ConsultingCaptureModal firing...');
         setShowModal(true);
-      }, 5000);
+      }, delay);
 
       return () => clearTimeout(timer);  // Clear the timer if the component is unmounted
     }
-  }, []);
+  }, [delay]);
 
   const dismissModal = () => {
     setShowModal(false);
@@ -115,4 +115,8 @@ export default function ConsultingCaptureModal() {
       </div>
     </div >
   );
+}
+
+ConsultingCaptureModal.defaultProps = {
+  delay: 15000, // Default delay of 15 seconds
 }
