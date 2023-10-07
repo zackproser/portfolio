@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/Button';
 
 
-import logoPinecone from '@/images/logos/pinecone-logo.png'
 import hackerForHire from '@/images/hacker-for-hire.webp'
 
 import RenderNumYearsExperience from './NumYearsExperience'; RenderNumYearsExperience
@@ -18,6 +16,12 @@ export default function ConsultingCaptureModal({ delay }) {
     if (userDismissedModal !== 'true') {
       const timer = setTimeout(() => {
         console.log('ConsultingCaptureModal firing...');
+        // Capture google analytics event 
+        gtag("event", "display_consulting_modal", {
+          event_category: "advertising",
+          event_label: "consulting_modal",
+        });
+
         setShowModal(true);
       }, delay);
 
@@ -26,6 +30,11 @@ export default function ConsultingCaptureModal({ delay }) {
   }, [delay]);
 
   const dismissModal = () => {
+    // Capture google analytics event 
+    gtag("event", "dismiss_consulting_modal", {
+      event_category: "advertising",
+      event_label: "consulting_modal",
+    });
     setShowModal(false);
     localStorage.setItem('dismissedModal', 'true');
   };
@@ -92,7 +101,7 @@ export default function ConsultingCaptureModal({ delay }) {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
