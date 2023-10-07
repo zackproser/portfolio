@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/Button'
 import { useRouter } from 'next/router'
 
@@ -34,13 +34,20 @@ export const Newsletter = function() {
 
   const referrer = router.query.referrer || 'unknown/direct'
 
+  const sendFormSubmissionEvent = () => {
+    gtag('event', 'newsletter_subscribe', {
+      "event_category": "subscription",
+      "event_label": "newsletter",
+    })
+  }
+
   // Handle the submit event on form submit.
   const handleSubmit = async (event) => {
     // Stop the form from submitting and refreshing the page.
     event.preventDefault()
 
     // Cast the event target to an html form
-    const form = event.target 
+    const form = event.target
 
     // Get data from the form.
     const data = {
@@ -49,7 +56,7 @@ export const Newsletter = function() {
     }
 
     // Send the form data to our API and get a response.
-    const response = await fetch('/api/form', {
+    await fetch('/api/form', {
       // Body of the request is the JSON data we created above.
       body: JSON.stringify(data),
       // Tell the server we're sending JSON.
@@ -58,42 +65,49 @@ export const Newsletter = function() {
       },
       // The method is POST because we are sending data.
       method: 'POST',
-    }).then( setSuccess(true) )
+    }).then(() => {
+      // Send the GA4 event for newsletter subscription
+      sendFormSubmissionEvent();
+      // Update the form UI to show the user their subscription was successful
+      setSuccess(true)
+    }).catch((e) => {
+      console.error(e)
+    })
   }
-  
-  return (
-   formSuccess 
-    ? 
-    <h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="ml-3"> 🔥 You are awesome! 🔥 Thank you for subscribing 🥳 </span>
-    </h2>
 
-    : 
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
-    >
-  
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <MailIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Supercharge your development skills</span>
+  return (
+    formSuccess
+      ?
+      <h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+        <span className="ml-3"> 🔥 You are awesome! 🔥 Thank you for subscribing 🥳 </span>
       </h2>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        I publish deep-dive technical content for professional developers who want to become faster and more efficient in their work.
-      </p>
-      <div className="mt-6 flex">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email address"
-          aria-label="Email address"
-          required
-          className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-teal-400 dark:focus:ring-teal-400/10 sm:text-sm"
-        />
-        <Button type="submit" className="ml-4 flex-none">
-          Count me in
-        </Button>
-      </div>
-    </form>
+
+      :
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
+      >
+
+        <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <MailIcon className="h-6 w-6 flex-none" />
+          <span className="ml-3">Supercharge your development skills</span>
+        </h2>
+        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          I publish deep-dive technical content for professional developers who want to become faster and more efficient in their work.
+        </p>
+        <div className="mt-6 flex">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email address"
+            aria-label="Email address"
+            required
+            className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-teal-400 dark:focus:ring-teal-400/10 sm:text-sm"
+          />
+          <Button type="submit" className="ml-4 flex-none">
+            Count me in
+          </Button>
+        </div>
+      </form>
   )
 }
