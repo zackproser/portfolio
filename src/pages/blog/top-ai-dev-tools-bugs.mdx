@@ -35,7 +35,7 @@ believe it or not, I don't want that unit test generated directly inside my appl
 This is a symptom of the follow-up problem, where an agent or AI in a complex environment hasn't been sufficiently prompted to determine when it needs to ask follow-up 
 questions in order to perform the task correctly. 
 
-Unfortunately, the first time I tried our the AI-assisted Cursor IDE, and asked for a unit test, the unit test was inlined directly in my application code without a moment's
+Unfortunately, the first time I tried out the AI-assisted Cursor IDE, and asked for a unit test, the unit test was inlined directly in my application code without a moment's
 pause or second thought. 
 
 Ideally, the first time I ask for a unit test to be generated, the agent should: 
@@ -43,19 +43,22 @@ Ideally, the first time I ask for a unit test to be generated, the agent should:
 * offer me a few options from some sane defaults for my project, language and framework
 * offer to remember my choice in the future so that I don't continuously have to repeat myself
 
-## "Forgetting" its original prompting, especially after long breaks in coding sessions 
+## "Forgetting" its original prompting after long breaks in coding sessions 
 
 <Image src={agentForgettingPrompting} alt="A confused agent forgetting its original prompting after a long break" />
 
-I've noticed this to be most pronounced in Sourcegraph's Cody tool, which is otherwise excellent and, I feel, one of the more promising AI-assisted developer tools. If you are 
-coding along with Cody for a while, asking questions about your codebase, having it generate boilerplate code for you, and then you take a multi-hour break to do something else, 
-when you return and ask it another question about your code, Cody will tend to respond that it's just an AI model with no access to your code base. 
+I've noticed this to be most pronounced in Sourcegraph's Cody tool, which is otherwise excellent and, I feel, one of the more promising AI-assisted developer tools. 
 
-Huh, but you are an AI model with direct access to the graph representation of my code as well as vector embeddings of all my files and you've been specifically prompted to read 
-my code whenever I issue you a natural language query about it, my good AI assistant, I'll remind it. 
+If you are working with Cody for a while, asking questions about your codebase, having it generate boilerplate code for you, and then you take a multi-hour break to do something else, 
+when you return and ask it another question about your code, Cody will tend to respond that it's just an AI model with no access to your codebase. 
+
+"Huh, but you are an AI model with direct access to the graph representation of my code as well as vector embeddings of all my files and you've been specifically prompted to read 
+my code whenever I issue you a natural language query about it, my good AI assistant!", I'll remind it. 
 
 More often than not, this reminder is sufficient to help rattle Cody back into reality and it continues to hum along more or less correctly after that. This issue is not specific to 
-cody. Even after hours of happily coding alongside ChatGPT4 in the browser on a specific application together, I'll occasionally get back odd responses that suggest ChatGPT4 has 
+cody. 
+
+Even after hours of happily coding alongside ChatGPT4 in the browser on a specific application together, I'll occasionally get back odd responses that suggest ChatGPT4 has 
 temporarily "forgotten" what we're focusing on, discarding all the prior context in the same session. 
 
 At this point, a similar strategy of reminding it what we're doing, and being extremely explicit about what I want it to return when it responds, tends to put it back on track. 
@@ -63,9 +66,10 @@ At this point, a similar strategy of reminding it what we're doing, and being ex
 ## Hand-waving away the critical parts of generated code snippets
 
 When I code alongside ChatGPT4, I will occasionally ask it to generate the beginnings of either a new component for me, if I'm working in Next.js, or an API route, or perhaps a Jest 
-unit test. Most of the time, ChatGPT4 is surprisingly effective at what it can generate and explain clearly. However, I've noticed that the longer or deeper I go into a given session 
-with it, the more likely it becomes to start omittting for brevity the specific code that I'm looking to see generated, either because I'm experiencing a bug or because I don't understand 
-how some feature or concept that is new to me is supposed to work. 
+unit test. Most of the time, ChatGPT4 is surprisingly effective at what it can generate and explain clearly. 
+
+However, I've noticed that the longer or deeper I go into a given session with it, the more likely it becomes to start omittting for brevity the specific code that I'm looking to see generated, 
+either because I'm experiencing a bug or because I don't understand how some feature or concept that is new to me is supposed to work. 
 
 This manifests as ChatGPT4 returning an otherwise high quality response, yet eliding the specific code or parameters I asked it about with: 
 
@@ -91,8 +95,9 @@ VSCode is a completely different animal. It feels more like an operating system 
 extension alerts that are thrown up on screen every time I simply load a file to try to read or edit it. 
 
 The benefit of having a, shall we say, "richer" UX is that the installation and configuration workflows for VSCode can be more complex. Many plugins, especially AI-assisted developer tools, 
-tend to first show a popup asking you to authenticate to, say Codeium, and provide a link that opens in your browser and asks you to authenticate to Codeium's servers. Of course you then need to 
-authorize the return - wherein Codeium's login flow asks you for permission to open a link in your VSCode IDE in order for your IDE to capture the auth token generated that identiifes your account 
+tend to first show a popup asking you to authenticate to, say Codeium, and provide a link that opens in your browser and asks you to authenticate to Codeium's servers. 
+
+Of course you then need to authorize the return - wherein Codeium's login flow asks you for permission to open a link in your VSCode IDE in order for your IDE to capture the auth token generated that identiifes your account 
 and save it to the known path where it will be loaded from in the future. 
 
 There's plenty of hops here and plenty of things that can go wrong, usually on the user's system or browser permissions side, so this all tends to be clunkier than I'd ideally like to begin with. More 
