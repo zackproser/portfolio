@@ -1,0 +1,145 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+
+import hackerEvaluation from '@/images/hacker-bladerunner-many-terminals.jpeg'
+import hackerConfused from '@/images/hacker-bladerunner-confused.jpeg'
+import hackerEnragedAtInlinedCodeResponse from'@/images/hacker-enraged-at-inlined-ai-response.jpeg'
+import agentForgettingPrompting from '@/images/agent-forgetting-its-prompting.jpeg'
+import yourAIDevToolSucks from '@/images/your-ai-dev-tool-sucks.jpeg'
+import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-tool.jpeg'
+
+import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-09',
+  title: 'The top bugs all AI developer tools are suffering from', 
+  description: 'I have evaluated everything from ChatGPT to CoPilot to Codeium to Cursor, to Sourcegraph Cody to CodiumAI. All suffer from the same bugs',
+  image: hackerEvaluation,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<ConsultingCaptureModal delay={35000} />
+
+<Image src={hackerConfused} alt="A confused developer trying to make sense of Cursor's strange output" />
+<figcaption>A confused hacker trying to figure out why the AI-assisted IDE Cursor just broke his entire file by inlining its generated code in the wrong place</figcaption>
+
+## Inlining response code in the wrong place. 
+
+Cursor, I'm looking at you. If I select a block of code in my IDE, then pop up the cursor prompt with command+k and ask for a reasonable unit test to be generated, then, 
+believe it or not, I don't want that unit test generated directly inside my application code, breaking my entire file as it sprays itself across functions and comments. 
+
+<Image src={hackerEnragedAtInlinedCodeResponse} alt="A hacker enraged that AI just inlined a response directly in their application code" />
+
+This is a symptom of the follow-up problem, where an agent or AI in a complex environment hasn't been sufficiently prompted to determine when it needs to ask follow-up 
+questions in order to perform the task correctly. 
+
+Unfortunately, the first time I tried our the AI-assisted Cursor IDE, and asked for a unit test, the unit test was inlined directly in my application code without a moment's
+pause or second thought. 
+
+Ideally, the first time I ask for a unit test to be generated, the agent should: 
+* realize it needs to ask me follow-up questions such as where do I want the test files to live
+* offer me a few options from some sane defaults for my project, language and framework
+* offer to remember my choice in the future so that I don't continuously have to repeat myself
+
+## "Forgetting" its original prompting, especially after long breaks in coding sessions 
+
+<Image src={agentForgettingPrompting} alt="A confused agent forgetting its original prompting after a long break" />
+
+I've noticed this to be most pronounced in Sourcegraph's Cody tool, which is otherwise excellent and, I feel, one of the more promising AI-assisted developer tools. If you are 
+coding along with Cody for a while, asking questions about your codebase, having it generate boilerplate code for you, and then you take a multi-hour break to do something else, 
+when you return and ask it another question about your code, Cody will tend to respond that it's just an AI model with no access to your code base. 
+
+Huh, but you are an AI model with direct access to the graph representation of my code as well as vector embeddings of all my files and you've been specifically prompted to read 
+my code whenever I issue you a natural language query about it, my good AI assistant, I'll remind it. 
+
+More often than not, this reminder is sufficient to help rattle Cody back into reality and it continues to hum along more or less correctly after that. This issue is not specific to 
+cody. Even after hours of happily coding alongside ChatGPT4 in the browser on a specific application together, I'll occasionally get back odd responses that suggest ChatGPT4 has 
+temporarily "forgotten" what we're focusing on, discarding all the prior context in the same session. 
+
+At this point, a similar strategy of reminding it what we're doing, and being extremely explicit about what I want it to return when it responds, tends to put it back on track. 
+
+## Hand-waving away the critical parts of generated code snippets
+
+When I code alongside ChatGPT4, I will occasionally ask it to generate the beginnings of either a new component for me, if I'm working in Next.js, or an API route, or perhaps a Jest 
+unit test. Most of the time, ChatGPT4 is surprisingly effective at what it can generate and explain clearly. However, I've noticed that the longer or deeper I go into a given session 
+with it, the more likely it becomes to start omittting for brevity the specific code that I'm looking to see generated, either because I'm experiencing a bug or because I don't understand 
+how some feature or concept that is new to me is supposed to work. 
+
+This manifests as ChatGPT4 returning an otherwise high quality response, yet eliding the specific code or parameters I asked it about with: 
+
+```
+{*/ The rest of your code here */}
+```
+
+To which I then respond: "Do not elide code by stating - the rest of your code here. Expand the sample code fully. Omit your explanation if that is required to return your entire response within
+the text length or time limits."
+
+This is mostly a minor annoyance, and, to be fair, as of this writing, I still find ChatGPT4, either in a browser tab or via elegant open-source wrappers such as [`mods`](https://github.com/charmbracelet/mods)
+to be the most effective coding and architectural discussion partner of all the tools I've tried this year. 
+
+## Having poor setup UX
+
+<Image src={yourAIDevToolSucks} alt="Your AI dev tool sucks and is insufficiently instrumented to send home errors" />
+
+This is sort of par for the course with Neovim plugins, and tends to be considered a feature, more than a bug, because Neovim users are somewhat inured to painful setups. After all, we 
+volunteer to install a plugin from a stranger's GitHub respository and configure it with various different styles of lua snippets depending on which plugin manager (of several options) we 
+happen to be using. I'm not claiming we're all sadists, but let's say getting a new plugin installed and configured to our liking requires grit, and we expect this. 
+
+VSCode is a completely different animal. It feels more like an operating system than an IDE, and perhaps the thing that annoys me the most about it is the number of popups and third-party 
+extension alerts that are thrown up on screen every time I simply load a file to try to read or edit it. 
+
+The benefit of having a, shall we say, "richer" UX is that the installation and configuration workflows for VSCode can be more complex. Many plugins, especially AI-assisted developer tools, 
+tend to first show a popup asking you to authenticate to, say Codeium, and provide a link that opens in your browser and asks you to authenticate to Codeium's servers. Of course you then need to 
+authorize the return - wherein Codeium's login flow asks you for permission to open a link in your VSCode IDE in order for your IDE to capture the auth token generated that identiifes your account 
+and save it to the known path where it will be loaded from in the future. 
+
+There's plenty of hops here and plenty of things that can go wrong, usually on the user's system or browser permissions side, so this all tends to be clunkier than I'd ideally like to begin with. More 
+than once, on different operating systems and machines, I've noticed needing to re-authenticate to Codeium or Cody in VSCode despite already having done so in my previous session, which is annoying, and 
+does not inspire confidence. 
+
+But this isn't the real issue. The real issue is that, even once you're through all this auth configuration round-tripping, and your token is actually saved where it's expected, most companies making 
+AI-assisted developer tools right now do not have a sufficient onboarding experience that walks you through: 
+1. How to use the tool for even basic flows that are advertised on the marketing website
+1. How to configure the tool to behave in different ways, if it supports that 
+1. What to do if it doesn't appear to be working correctly 
+
+Just about every single tool I've evaluated comes up short in this regard, leading to a lackluster experience loop that tends to go like this: 
+
+1. Spend time browsing the tool's marketing site after reading about it on hacker news or getting a recommendation from a friend
+1. Get mildly excited based on the features and capabilities the site claims the tool has 
+1. Spend a somewhat unreasonable amount of time just getting the tool installed and configured to run properly in your IDE, whether that's Neovim or VSCode
+1. Attempt to do the "hello world" version of what the tool says it can do - such as generate unit tests for your codebase 
+1. Get either no output, the wrong output or output that looks plausible but does not run correctly 
+1. Find nothing in the way of troubleshooting or follow-up information
+1. Realize you've been tricked and get irritated
+1. Uninstall the tool immediately and remind yourself to be more skeptical of this company's claims and tooling going forward
+
+## Not testing its own output or having an easy way to send a question and response chain back to developers
+
+<Image src={hackerQuitingYourCrappyTool} alt="A frustrated hacker giving up on your crappy tool, and company, for good" />
+
+This is a tremendous miss that I see most AI-assisted developer tooling startups making right now. With no way to get automated or one-click reports sent home about which flows are not working for their end users, 
+most companies building intelligent developer tooling are truly flying blind to how poorly their product is working in the wild on their prospective customers' real files and codebases. 
+
+To wit, I recently tested out a new and up and coming AI dev tooling company's flagship offering within VSCode, and started a Google Doc to capture any UX or UI feedback I thought I might have while trying it out. 
+Unfortunately, by the end of my hour long session using the tool, I had filled 9 pages of the Google Doc with screenshots, stack-traces and comments explaining how the tool's flagship feature would not even load properly, 
+in some cases, and how it produced output that was broken or mis-configured for my codebase, in every other instance. 
+
+Despite being a staff-level developer and having tons of experience with different developer tools, Neovim plugins, raw Vim plugins, VSCode, Sublime text, and despite having an above average tolerance for pain and suffering, 
+I could not get their primary tool to work as advertised on the box, and I wasn't even providing it with a tricky codebase as a curveball. 
+
+I say this to hammer home the point that if you're not instrumenting your dev tools sufficiently to capture stacktrackes, anonymized logs, or at least providing your end users with a "click to send stacktrace" button that 
+allows them to optionally provide additional context into what they were doing when your tool failed them, you're not going to have end users for very long. 
+
+This will most likely manifest as your startup being slow to find adoption, and you'll continue to beg, borrow and steal developers to try out your offerings, only to never hear back, get terse non-committal answers about your 
+tool not being for them, or, most likely silence. What that silence really means is that they tried installing and configuring your tool, if they even got that far, it failed spectacularly for them a few times in a row which led 
+to them cursing loudly multiple times and then uninstalling your tool in a fit of rage. No, they're not coming back. Not even when you release version 2.0 with that fancy new feature. 
+
+If developers cannot successfully use your tool in the first place, then they cannot evaluate whether or not it would make their lives easier or richer in the long term. If they cannot get it to work most of the time, they won't 
+leave it installed. If they don't leave it installed, they won't reach that point of nirvana where your tool becomes a delightful, trusted and essential part of their workflow, at which moment they'd happily consider sending you
+money in order to continue using it. 
+
+But most AI devtool startups I've evaluated over the past year continue to ignore getting step 0 rock solid at their own peril, and attempt to sprint before they can crawl. They're leaving a trail of silently frustrated developers 
+in their wake, and most of them have better things to do than to write you up detailed bug reports about exactly where your offering is falling short. That silence you're getting back on your end should be a very loud alarm. 
