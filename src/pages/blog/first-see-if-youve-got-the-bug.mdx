@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
 
 import sparkOfLearning from '@/images/spark-of-learning.png'
 import foundTheSpark from '@/images/found-the-spark.png'
@@ -21,6 +20,8 @@ import descentCoverArt from '@/images/descent.jpg'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import ConsultingCTA from '@/components/ConsultingCTA'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2023-07-17",
@@ -30,8 +31,6 @@ export const meta = {
  }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal delay={30000} />
 
 <Image src={foundTheSpark} />
 
@@ -91,6 +90,8 @@ Here are a few that I can recommend to get you started:
 
 Give the initial exercises a shot. It doesn't really matter what language you start with first, but if you have no clue, try Python, PHP, or JavaScript. When you come across a phrase or concept
 you don't understand, try looking it up and reading about it.
+
+<ConsultingCTA />
 
 It's key that none of these services require you to pay them anything to get started and get a taste for programming. You can do them in your browser on a weak, old computer or at the library or an 
 internet cafe, *before* shelling out for a fancy new laptop. If it turns out you could go happily through the rest of your life without ever touching a keyboard again, you've lost nothing but a little time.
@@ -168,6 +169,8 @@ Then I maintained it as a freely available app for many years. Hosting something
 
 This is the path that worked for me: find something that's outside of your comfort zone. Figure out how to build it. Chase down every curiosity - research it as best you can and then try to get it working. Once you do, it's time for the next project. This time, do something more ambitious 
 than last time around - something that will push you out of your comfort zone again so that you can learn even more.
+
+<ConsultingCTA />
 
 ## Don't pony up your cash until you've gotten a free taste 
 

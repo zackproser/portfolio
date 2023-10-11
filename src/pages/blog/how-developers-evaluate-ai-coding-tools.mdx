@@ -4,7 +4,7 @@ import  Image  from 'next/image'
 import hackerEvaluation from '@/images/hacker-evaluation.jpeg'
 import frustratedDeveloper from '@/images/frustrated-developer.png'
 
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
+import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -15,8 +15,6 @@ export const meta = {
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal delay={20000} />
 
 <Image src={frustratedDeveloper} alt="Your crappy tools are frustrating developers because they don't work as advertised" />
 <figcaption>A frustated senior developer trying our your improperly tested dev tool for the first time</figcaption>
@@ -30,6 +28,8 @@ This appears simple and yet it's where most AI-assisted developer tools fall dow
 
 In the past year I've tried more than a few well-funded, VC-backed, 
 highly-hyped coding tools that claim to be able to generate tests, perform advanced code analysis, or catch security issues that simply do not run successfully when loaded in Neovim or vscode. 
+
+<ConsultingCTA />
 
 ## The two cardinal sins most AI dev tool startups are committing right now
 
@@ -51,6 +51,8 @@ The other cardinal sin I keep seeing dev tool startups making is not doing user 
 
 Sitting with an experienced developer who is not on your product team and watching them struggle to use your product successfully is often painful and very 
 eye-opening, but failing to do so means you're pushing your initial bug reports off to chance. 
+
+<ConsultingCTA />
 
 Hoping that the engineers with the requisite skills to try your product are going to have the time and inclination to write you a detailed bug report after your supposed wonder-tool just 
 failed for them on their first try is foolish and wasteful.
