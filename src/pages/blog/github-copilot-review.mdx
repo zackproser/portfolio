@@ -4,7 +4,7 @@ import  Image  from 'next/image'
 import githubCopilot from '@/images/github-copilot-review.jpeg'
 import githubCopilot2 from '@/images/github-copilot-review-2.jpeg'
 
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
+import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -15,8 +15,6 @@ export const meta = {
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal delay={25000} />
 
 <Image src={githubCopilot} alt="GitHub Copilot review" />
 <figcaption>GitHub Copilot has immense potential, but continues to underwhelm</figcaption>
@@ -29,6 +27,8 @@ Initially, I configured it for use with Neovim, my preferred code editor, but ha
 
 GitHub Copilot struggles to make relevant and high-quality code completion suggestions. I don't do comment-driven development, where you specify what you want in a large block of code comments and cross your 
 fingers that Copilot can figure it out and generate your desired code correctly, but even when I did this to put Copilot through its paces, it still underwhelmed me.
+
+<ConsultingCTA />
 
 As other developers have noted, unfortunately Copilot manages best when you've already defined the overall structure of your current file, and already have a similar function that Copilot can reference. 
 
@@ -48,6 +48,8 @@ It's worth noting that Sourcegraph's Cody has been able to do this (albeit with 
 code files which allows its supporting large language model (LLM), Anthropic's Claude, to return useful responses about your code for your natural language queries. 
 
 The main axe I have to grind with GitHub's product team is the level of vagueness and "I guess we'll see!" that their product page has communicated to developers who might otherwise be interested in giving Copilot X a spin. 
+
+<ConsultingCTA />
 
 One of the FAQ's is about price and upgrades for GitHub Copilot base model users. Will Copilot X be free? Will it cost a premium subscription? "Who knows! We're still trying to figure that out ourselves".
 
