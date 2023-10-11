@@ -2,10 +2,11 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
 import codeiumExample from '@/images/codeium-example.png'
 import codeiumCompletions from '@/images/codeium-completions-breakdown.png'
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
 
 import Image from 'next/image'
 import Link from 'next/link'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
   author: "Zachary Proser",
@@ -16,8 +17,6 @@ export const meta = {
  }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal />
 
 ## Codeium is a GitHub Copilot alternative that I'm trying out 
 
@@ -38,6 +37,8 @@ I've had access to Copilot "original" as an open source developer for several mo
 
 And indeed, in my experience, Copilot required me to fill in essentially everything else - a large comment for context, the function signature and the initial lines of code, perhaps even the return values. And then it could save me a bit of time by filling in some repetitive and obvious code I otherwise 
 would have had to type out myself. 
+
+<ConsultingCTA />
 
 But most of the time, I was just ignoring Copilot suggestions as I went about my development tasks mostly unaided.
 
@@ -63,3 +64,5 @@ In addition, Codeium keeps tabs on the completions you accept and in which langu
 <Image src={codeiumCompletions} alt="Codeium completions breakdown" />
 
 The bar chart is sort of fun to peak at, but, I thought, not very material, until I considered that in the span of a single hacking session, Codeium successfully assisted me with markdown, lua, go, shell  and Javascript. Not bad for a free service!
+
+<ConsultingCTA />

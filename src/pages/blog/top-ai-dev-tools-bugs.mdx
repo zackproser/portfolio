@@ -8,7 +8,7 @@ import agentForgettingPrompting from '@/images/agent-forgetting-its-prompting.jp
 import yourAIDevToolSucks from '@/images/your-ai-dev-tool-sucks.jpeg'
 import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-tool.jpeg'
 
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
+import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -19,8 +19,6 @@ export const meta = {
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal delay={35000} />
 
 <Image src={hackerConfused} alt="A confused developer trying to make sense of Cursor's strange output" />
 <figcaption>A confused hacker trying to figure out why the AI-assisted IDE Cursor just broke his entire file by inlining its generated code in the wrong place</figcaption>
@@ -34,6 +32,8 @@ believe it or not, I don't want that unit test generated directly inside my appl
 
 This is a symptom of the follow-up problem, where an agent or AI in a complex environment hasn't been sufficiently prompted to determine when it needs to ask follow-up 
 questions in order to perform the task correctly. 
+
+<ConsultingCTA />
 
 Unfortunately, the first time I tried out the AI-assisted Cursor IDE, and asked for a unit test, the unit test was inlined directly in my application code without a moment's
 pause or second thought. 
@@ -131,6 +131,8 @@ most companies building intelligent developer tooling are truly flying blind to 
 To wit, I recently tested out a new and up and coming AI dev tooling company's flagship offering within VSCode, and started a Google Doc to capture any UX or UI feedback I thought I might have while trying it out. 
 Unfortunately, by the end of my hour long session using the tool, I had filled 9 pages of the Google Doc with screenshots, stack-traces and comments explaining how the tool's flagship feature would not even load properly, 
 in some cases, and how it produced output that was broken or mis-configured for my codebase, in every other instance. 
+
+<ConsultingCTA />
 
 Despite being a staff-level developer and having tons of experience with different developer tools, Neovim plugins, raw Vim plugins, VSCode, Sublime text, and despite having an above average tolerance for pain and suffering, 
 I could not get their primary tool to work as advertised on the box, and I wasn't even providing it with a tricky codebase as a curveball. 
