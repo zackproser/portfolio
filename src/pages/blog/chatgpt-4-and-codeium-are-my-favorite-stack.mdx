@@ -9,7 +9,7 @@ import mostAIToolsDontWork from '@/images/most-ai-tools-dont-work.jpeg'
 import robotAndHumanTogetherness from '@/images/robot-and-human-togetherness.jpeg'
 import aiDirectEnhancement from '@/images/ai-direct-enhancement.jpeg'
 
-import ConsultingCaptureModal from '@/components/ConsultingCaptureModal'
+import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -20,8 +20,6 @@ export const meta = {
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
-
-<ConsultingCaptureModal delay={35000} />
 
 <Image src={myFavoriteAIStack} alt="As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it" />
 <figcaption>As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it.</figcaption>
@@ -51,6 +49,8 @@ Being able to pipe your entire Python file to `mods` and ask it
 to help you find the bug is truly accelerating. 
 
 Codium works like a dream once you get it installed. I tend to use Neovim by preference but also work with VSCode - once you're over the initial installation and auth hurdles, it "just works".
+
+<ConsultingCTA />
 
 ## Most everything else I've tried doesn't work 
 
@@ -113,6 +113,9 @@ I'm confident with additional work and a litle time, it won't be long until Chat
 
 I'm able to get that information out of it now, but it just takes a good bit of careful prompting and more copy/paste than I would ideally like. What I really want is the helpful daemon looking over my shoulder, who is smart enough to know 
 when to raise its hand to point out something that's going to cause the build to fail, and when to keep quiet because even if it knows better that's just my personal coding style preference so better to leave it alone. 
+
+<ConsultingCTA />
+
 
 We're not quite there yet, but all of the base ingredients to create this experience are. 
 
