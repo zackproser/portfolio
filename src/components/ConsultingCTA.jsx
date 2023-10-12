@@ -13,7 +13,16 @@ export default function ConsultingCTA({ title, body, href }) {
           <p className="mx-auto mt-2 max-w-xl text-center text-lg leading-8 text-gray-300">
             {body}
           </p>
-          <Link href={href}>
+          <Link
+            onClick={() => {
+              // Capture google analytics event
+              gtag("event", "click_book_consult_inline_cta", {
+                event_category: "advertising",
+                event_label: "consulting_inline_cta",
+              })
+
+            }}
+            href={href}>
             <Button
               variant="blue"
               type="submit"
