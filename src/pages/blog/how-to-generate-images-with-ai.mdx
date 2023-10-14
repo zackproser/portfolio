@@ -1,0 +1,204 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+
+import aiImageGeneration from '@/images/ai-image-generation.jpeg'
+import bingCreateInterface from '@/images/bing-create-interface.png'
+import bingCreateCloseUp from '@/images/bing-create-closeup.png'
+import discordStableDiffusion from '@/images/discord-stable-diffusion.png'
+import replicateOverview from '@/images/replicate-overview.png'
+import usingReplicateStableDiffusion from '@/images/using-replicate-stable-diffusion.png'
+import replicateRestAPI from '@/images/replicate-rest-api.png'
+import AUTOMATIC111 from '@/images/automatic111.png'
+import civitAI from '@/images/civitai.png'
+import whyCreateAIImages from '@/images/why-create-ai-images.jpeg'
+import haterade from '@/images/haterade.jpeg'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-14',
+  title: 'How to generate images with AI', 
+  description: 'I have used StableDiffusion, AUTOMATIC111, DALLE and Discord bots to generate images in every style for blog posts. You can too.',
+  image: aiImageGeneration,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={aiImageGeneration} alt="Today we live in a golden age of AI-assisted image generation" />
+<figcaption>You can generate images using AI for free online through a variety of methods</figcaption>
+
+I've been generating images using models such as StableDiffusion and DALLE for blog posts for months now. I love it because I can quickly iterate on getting 
+high quality images that help tell my story. 
+
+This blog post will give you a lay of the land in what's currently possible, and point you to some resources for generating AI images whether you are as 
+technical as a developer or not - and whether you'd prefer to produce images via a simple UI or programmatically via an API. 
+
+In addition, I'll give you the minimum you need to understand about prompts and negative prompts and how to use them effectively.
+
+## DALLE-3 via Bing Create 
+
+Overall, this is probably the best option right now if you want high quality images without needing to pay. You will need a Microsoft live account (which is free), 
+but otherwise you just log into [bing.com/create](https://bing.com/create) and you write your prompt directly into the text input at the top: 
+
+<Image src={bingCreateInterface} alt="Bing Create interface for DALLE-3" />
+
+This is using OpenAI's DALLE-3 model under the hood, which is noticeably better at converting the specific details and instructions in natural human language into an image that 
+resembles what the user intended. 
+
+I have been generally pretty impressed with its outputs, using them for recent blog post hero images as well as my own [404 page](/this-page-doesnt-exist).
+
+For example, I used Bing and DALLE-3 to generate the hero image for this post in particular via the following prompt:
+
+<Image src={bingCreateCloseUp} alt="Bing Create interface for DALLE-3" />
+
+> Neon punk style. A close up of a hand holding a box and waving a magic wand over it. From the box, many different polaroid photos of different pixel art scenes are flying upward and outward.
+
+Bing currently gives you 25 "boosts" per day, which appears to mean 25 priority image generation requests. After you use them up, your requests might slow down as they fall toward the back of the queue. 
+
+Using DALLE-3 in this way also supports specifying the style of art you want generated upfront, such as "Pixel art style. Clowns juggling in a park".
+
+## Discord bots 
+
+Discord is the easiest and lowest friction way to get started generating images via StableDiffusion right now, especially if you're unwilling to pay for anything.
+
+<Image src={discordStableDiffusion} alt="Discord bot for StableDiffusion" />
+
+Stable Foundation is a popular Discord channel that hosts several different instances of the bot that you can ask for image generations via chat prompts. 
+
+Here's [the direct link to the Stable Foundation discord invite page](https://discord.com/invite/stablediffusion)
+
+This is a very handy tool if you don't need a ton of images or just want the occasional AI generated image with a minimum of setup or fuss required. You can run discord in your browser, which makes things even 
+simpler as it requires no downloads. 
+
+## There's some important gotchas to generating AI images via Discord services
+
+There are important catches to be aware of: the good folks behind the Discord channel and the bots that generate your images are paying for the GPUs and compute required to handle their large user base's many requests, so after you've 
+generated a couple of images, you'll eventually ask for another and be told to chill-out for a bit. 
+
+This is their Discord channel's way of rate-limiting you so that you don't cost them too much money and overwhelm 
+the service so that other users can't generate images. 
+
+And this is fair enough - they're providing you with free image generation services, after all. Like other free online services, they also will not allow you to generate content that is considered not safe for work, or adult. 
+
+Also fair enough - it's their house their rules, but occasionally you'll run into slight bugs with the NSFW content detector that will incorrectly flag your innocent image prompt as resulting in NSFW content even when you didn't want it to, 
+which can lead to failed generations and more wasted time. If you want total control over your generations, you need to go local and use a tool like AUTOMATIC111, mentioned below.
+
+Finally, because it's a Discord channel that anyone can join, when you ask the bot for your images and the bot eventually returns them, everyone else in the channel can see your requests and your generated images and could download them if they 
+wanted to. 
+
+If you are working on a top-secret project or you just don't want other people knowing what you're up to, you'll want to look into AUTOMATIC111 or other options for running image generation models locally.
+
+## Replicate.com
+
+[Replicate](https://replicate.com) is an outstanding resource for technical and non-technical folks alike. It's one of my favorite options and I use both their UI for quick image generations when I'm writing content, and I use their 
+REST API in [my Panthalia project](https://github.com/zackproser/panthalia) which allows me to start blog posts by talking into my phone and request images via StableDiffusion XL. 
+
+Replicate.com hosts popular machine learning and AI models and makes them available through 
+a simple UI that you can click around in and type image requests into, as well as a REST API for developers to integrate into their applications. 
+
+<Image src={replicateOverview} alt="Replicate.com" />
+
+Replicate.com is one of those "totally obvious in retrospect" ideas: with the explosion of useful machine learning models, providing a uniform interface to running those models 
+easily was pretty brilliant. 
+
+To use Replicate go to replicate.com and click the Explore button to see all the models you can use. You'll find more than just image generation models, 
+but for the sake of this tutorial, look for StableDiffusionXL. 
+
+Once you're on the StableDiffusionXL model page, you can enter the prompt for the image you want to generate. Here's an example of a simple prompt that works well: 
+
+<Image src={usingReplicateStableDiffusion} alt="Using Replicate\'s StableDiffusion model" />
+
+> Pixel art style. Large aquarium full of colorful fish, algae and aquarium decorations. Toy rocks.
+
+If you're a developer and you don't feel like wrangling Python models into microservices or figuring out how to properly Dockerize StableDiffusion, you can take advantage of Replicate's REST API, which is truly a delight, from experience: 
+
+<Image src={replicateRestAPI} alt="Replicate\'s REST API" />
+
+I have generated a ton of images via Replicate every month for the past several months and the most they've charged me is $2 and some change. Highly recommended.
+
+## AUTOMATIC111
+
+<Image src={AUTOMATIC111} alt="AUTOMATIC111 for private AI image generation totally locally" />
+
+This option requires that you be comfortable with GitHub and git at a minimum, but it's very powerful because it allows you to run StableDiffusion, as well as checkpoint models based on StableDiffusion, 
+completely locally. 
+
+As in, once you have this up and running locally using the provided script, you visit the UI on localhost and you can then pull your ethernet cord out of your laptop, turn off your WiFi
+card's radio and still generate images via natural language prompts locally. 
+
+There are plenty of reasons why you might want to general images completely locally without sending data off your machine which we won't get into right now. 
+
+AUTOMATIC111 is an open-source project which means that it's going to have some bugs, but there's also a community of users who are actively engaging with the project, developers who are fixing those bugs regularly, 
+and plenty of GitHub issues and discussions where you can find fellow users posting workarounds and fixes for common problems. 
+
+The other major benefit of using this tool is that it's completely free. If your use case is either tricky to capture the perfect image for, or if it necessitates you generating tons of images over and over again, 
+it may be worth the time investment to get this running locally and learn how to use it.
+
+AUTOMATIC111 is also powerful because it allows you to use LoRa and LyCORIS models to essentially fine-tune whichever base model you're using to further customize your final image outputs.  
+
+LoRA, short for Low-Rank Adaptation, models are smaller versions of Stable Diffusion models designed to apply minor alterations to standard checkpoint models. For example, there might be a LoRa model for Pikachu, 
+making it easier to generate scenes where Pikachu is performing certain actions. 
+
+The acronym LyCORIS stands for "Lora beYond COnventional methods, Other Rank adaptation Implementations for Stable diffusion."
+Unlike LoRA models, LyCORIS encompasses a variety of fine-tuning methods. It's a project dedicated to exploring diverse ways of parameter-efficient fine-tuning on Stable Diffusion via different algorithm implementations.
+
+If you want to go deeper into understanding the current state of AI image generation via natural language, as well as checkpoint models, LoRa and LyCORIS models and similar techniques for getting specific outputs, 
+AUTOMATIC111 is the way to go. 
+
+If you are working with AUTOMATIC111, one of the more popular websites for finding checkpoint, LoRa and LyCORIS models is civit.ai which hosts a vast array of both SFW and NSFW models contributed by the community.
+
+<Image src={civitAI} alt="civit.ai" />
+
+## Prompt basics 
+
+Prompting is how you ask the AI model for an image in natural human language, like "Pixel art style. Aquarium full of colorful fish, plants and aquarium decorations".
+
+Notice in the above examples that I tend to start by describing the style of art that I want at the beginning of the prompt, such as "Pixel art style" or "Neon punk style". 
+
+Some folks use a specific artist or photographer's name if they want the resulting image to mirror that style, which will work if the model has been trained on that artist. 
+
+Sometimes, results you'll get back from a given prompt are pretty close to what you want, but for one reason or another the image(s) will be slightly off. You can actually re-run 
+generation with the same prompt and you'll get back slightly different images each time due to the random value inputs that are added by default on each run. 
+
+Sometimes, it's better to modify your prompt and try to describe the same scene or situation in simpler terms. 
+
+## Adding emphasis in StableDiffusion image generation prompts
+
+For StableDiffusion and StableDiffusionXL models in particular, there's a trick you can use when writing out your prompt to indicate that a particular phrase or feature is more important 
+and should be given more "weight" during image generation. 
+
+Adding parends around a word or phrase increases its weight relative to other phrases in your prompt, such as: 
+
+> Pixel art style. A ninja running across rooftops ((carrying a samurai sword)).
+
+You can use this trick in both StableDiffusion and StableDiffusionXL models, and you can use (one), ((two)) or (((three))) levels of parends, according to my testing, to signify that something 
+is more important. 
+
+## Negative prompts 
+
+The negative prompt is your opportunity to "steer" the model away from certain features or characteristics you're getting in your generated images that you don't want. If your prompt
+is generating images close to what you want, but you keep getting darkly lit scenes or extra hands or limbs, sometimes adding phrases like "dark", "dimly lit", "extra limbs" or "bad anatomy" 
+can help. 
+
+## Why generate images with AI?
+
+<Image src={whyCreateAIImages} alt="Why create AI images?" />
+
+My primary motivation for generating images with AI is that I write a ton of blog posts both in my free time and as part of [my day job](/blog/i-am-joining-pinecone-io), and I want high-quality eye candy 
+to help attract readers to click and to keep them engaged with my content for longer. 
+
+I also find it to be an absolute blast to generate Neon Punk and Pixel art images to represent even complex scenarios I'm writing about - so it increases my overall enjoyment of the creative process itself. 
+
+I have visual arts skills and I used to make assets for my own posts or applications with Photoshop or Adobe Illustrator - but using natural language to describe what I want is about a thousand times faster and 
+certainly less involved.
+
+I've gotten negative comments on Hacker News before (I know, it sounds unlikely, but hear me out) over my use of AI-generated images in my blog posts, but in fairness to those commenters who didn't feel the need 
+to use their real names in their handles, they woke up and started their day with a large warm bowl of Haterade. 
+
+<Image src={haterade} alt="Starting your day with a warm glass of Haterade" />
+
+I believe that the content I produce is more interesting overall because it features pretty images that help to tell my overall story. 
+
+
+
