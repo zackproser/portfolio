@@ -4,6 +4,7 @@ import  Image  from 'next/image'
 import aiImageGeneration from '@/images/ai-image-generation.jpeg'
 import bingCreateInterface from '@/images/bing-create-interface.png'
 import bingCreateCloseUp from '@/images/bing-create-closeup.png'
+import my404Page from '@/images/my-404-page.png'
 import discordStableDiffusion from '@/images/discord-stable-diffusion.png'
 import replicateOverview from '@/images/replicate-overview.png'
 import usingReplicateStableDiffusion from '@/images/using-replicate-stable-diffusion.png'
@@ -28,8 +29,8 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 <Image src={aiImageGeneration} alt="Today we live in a golden age of AI-assisted image generation" />
 <figcaption>You can generate images using AI for free online through a variety of methods</figcaption>
 
-I've been generating images using models such as StableDiffusion and DALLE for blog posts for months now. I love it because I can quickly iterate on getting 
-high quality images that help tell my story. 
+I've been generating images using models such as StableDiffusion and DALLE for blog posts for months now. I can quickly produce 
+high-quality images that help tell my story. 
 
 This blog post will give you a lay of the land in what's currently possible, and point you to some resources for generating AI images whether you are as 
 technical as a developer or not - and whether you'd prefer to produce images via a simple UI or programmatically via an API. 
@@ -38,7 +39,9 @@ In addition, I'll give you the minimum you need to understand about prompts and 
 
 ## DALLE-3 via Bing Create 
 
-Overall, this is probably the best option right now if you want high quality images without needing to pay. You will need a Microsoft live account (which is free), 
+Overall, this is probably the best option right now if you want high quality images without needing to pay. 
+
+You will need a Microsoft live account (which is free), 
 but otherwise you just log into [bing.com/create](https://bing.com/create) and you write your prompt directly into the text input at the top: 
 
 <Image src={bingCreateInterface} alt="Bing Create interface for DALLE-3" />
@@ -47,6 +50,8 @@ This is using OpenAI's DALLE-3 model under the hood, which is noticeably better 
 resembles what the user intended. 
 
 I have been generally pretty impressed with its outputs, using them for recent blog post hero images as well as my own [404 page](/this-page-doesnt-exist).
+
+<Image src={my404Page} alt="my custom 404 page" />
 
 For example, I used Bing and DALLE-3 to generate the hero image for this post in particular via the following prompt:
 
@@ -121,7 +126,7 @@ I have generated a ton of images via Replicate every month for the past several 
 
 <Image src={AUTOMATIC111} alt="AUTOMATIC111 for private AI image generation totally locally" />
 
-This option requires that you be comfortable with GitHub and git at a minimum, but it's very powerful because it allows you to run StableDiffusion, as well as checkpoint models based on StableDiffusion, 
+[This open-source option](https://github.com/AUTOMATIC1111/stable-diffusion-webui) requires that you be comfortable with GitHub and git at a minimum, but it's very powerful because it allows you to run StableDiffusion, as well as checkpoint models based on StableDiffusion, 
 completely locally. 
 
 As in, once you have this up and running locally using the provided script, you visit the UI on localhost and you can then pull your ethernet cord out of your laptop, turn off your WiFi
@@ -158,7 +163,9 @@ Notice in the above examples that I tend to start by describing the style of art
 
 Some folks use a specific artist or photographer's name if they want the resulting image to mirror that style, which will work if the model has been trained on that artist. 
 
-Sometimes, results you'll get back from a given prompt are pretty close to what you want, but for one reason or another the image(s) will be slightly off. You can actually re-run 
+Sometimes, results you'll get back from a given prompt are pretty close to what you want, but for one reason or another the image(s) will be slightly off. 
+
+You can actually re-run 
 generation with the same prompt and you'll get back slightly different images each time due to the random value inputs that are added by default on each run. 
 
 Sometimes, it's better to modify your prompt and try to describe the same scene or situation in simpler terms. 
@@ -177,13 +184,16 @@ is more important.
 
 ## Negative prompts 
 
-The negative prompt is your opportunity to "steer" the model away from certain features or characteristics you're getting in your generated images that you don't want. If your prompt
-is generating images close to what you want, but you keep getting darkly lit scenes or extra hands or limbs, sometimes adding phrases like "dark", "dimly lit", "extra limbs" or "bad anatomy" 
+The negative prompt is your opportunity to "steer" the model away from certain features or characteristics you're getting in your generated images that you don't want. 
+
+If your prompt is generating images close to what you want, but you keep getting darkly lit scenes or extra hands or limbs, sometimes adding phrases like "dark", "dimly lit", "extra limbs" or "bad anatomy" 
 can help. 
 
 ## Why generate images with AI?
 
 <Image src={whyCreateAIImages} alt="Why create AI images?" />
+
+> Neon punk style. An android artist wearing a french beret, sitting in the greek thinker position, and staring at a half-finished canvas of an oil painting landscape. In a french loft apartment with an open window revealing a beautiful cityscape. 
 
 My primary motivation for generating images with AI is that I write a ton of blog posts both in my free time and as part of [my day job](/blog/i-am-joining-pinecone-io), and I want high-quality eye candy 
 to help attract readers to click and to keep them engaged with my content for longer. 
