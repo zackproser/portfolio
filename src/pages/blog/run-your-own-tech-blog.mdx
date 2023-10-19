@@ -1,0 +1,209 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+
+import bloggingPeacefully from '@/images/blogging-peacefully.webp'
+import bloggingInteriewingLoop from '@/images/blogging-interviewing-loop.webp'
+import bloggingPriorArt from '@/images/blogging-prior-art.webp'
+import bloggingScreenSharing from '@/images/blogging-screen-sharing-code.webp'
+import bloggingMakesMeMoney from '@/images/blogging-makes-me-money.webp'
+import bloggingControlYourOwnDestiny from '@/images/blogging-control-your-own-destiny.webp'
+import bloggingPortfolio from '@/images/blogging-portfolio.webp'
+import bloggingWebPerformance from '@/images/blogging-web-performance.webp'
+import bloggingGetsFaster from '@/images/blogging-gets-faster.webp'
+import bloggingWaving from '@/images/blogging-waving.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Run your own tech blog', 
+  description: 'Control your own destiny, build your personal brand, and master web technologies by running your own tech blog.',
+  image: bloggingPeacefully,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={bloggingPeacefully} alt="Blogging is a very worthwhile hobby, especially if you're trying to grow your tech career" />
+<figcaption>Blogging is a very worthwhile hobby, especially if you're trying to grow your tech career. Here are some ways I've recently benefited from this blog:</figcaption>
+
+In the past several years that I've been building and maintaining this blog, it has gotten me: 
+
+* Jobs, including my most [recent role at Pinecone.io](/blog/i-am-joining-pinecone-io)
+* Extra cash on the side by way of research firms reaching out to pay me to speak to potential investors 
+* Next.js and other recent frontend skills that slotted in perfectly in my last two roles, one as a DevOps engineer and now as a developer advocate
+* Hands on experience in what is practical and what is not for rapid iteration on the web 
+* A deeper appreciation for performance and quanitifying that performance via metrics like pagespeed, time to largest contentful paint, etc
+* Sufficient regular traffic to my content to make me realize that continuing to blog is worth my time 
+* Endless opportunity to sharpen my writing skills and craft 
+
+I highly recommend that everyone who is serious about their tech career run and maintain their own blog. You may be surprised at how many benefits it 
+comes with, assuming you are willing to put in the regular effort. 
+
+## The easiest interview loop I've ever had 
+
+<Image src={bloggingInteriewingLoop} alt="The easiest interview loop I've ever had - thanks to my blog" />
+<figcaption>This last interview loop was the easiest one I've ever had - partly due to experience and time, but partly due to my blog and the large stock of prior work I was able to show.</figcaption>
+
+I normally dread interviews, despite loving what I do for a living and being excited to work at good companies. However, in large part thanks to this blog, 
+my last round of interviews was my easiest and most pleasant ever. 
+
+I even pivoted my career from pure software engineer / full-time code slinger to a developer advocate role that was new for me - and even with this wrinkle 
+in a tough market, I started with five companies I chose myself, continued all the way through with two, and ultimately got two great offers in hand 
+that I was able to compare. 
+
+I've been writing for a long time, but in the last year I decided to step up my publishing game, overhauling my [old shitty and torturously assembled version](/blog/maintaining-this-site-fucking-sucks)
+into this latest version you're reading now that [I'm deeply in love with](/blog/maintaining-this-site-no-longer-fucking-sucks). 
+
+I also started publishing more [YouTube videos](https://youtube.com/@zackproser) while experimenting with different equipment, software and techniques to increase the quality of my finished products. 
+
+Meanwhile, I kept up my usual open-source development work, building tools and software in public, open-sourcing it and writing or recording demos of it. 
+
+The result is that by the time I landed in the interview loops for the two companies I was seriously considering, I was able to hijack each interview call by asking: "Do you mind if I share my screen real quick?"
+which surprisingly everyone said: "Sure, go for it!" to. 
+
+<Image src={bloggingScreenSharing} alt="I was able to share my screen with the folks I was interviewing with" />
+<figcaption>To my surprise and delight everyone was more than happy to let me share my screen and show them my videos, blog posts, open-source projects and demos.</figcaption>
+
+When I shared my screen, I had my latest and best posts, software demos, and open-source projects, replete with animations and eye-candy in addition to high quality READMEs in separate tabs, which I clicked through 
+while talking them through my work. 
+
+I'm not exaggerating when I say that for both companies, the 5-7 folks I interviewed with all appreciated this and said, "That's exactly what we're looking for". It was easy for me to sell these folks on the idea that 
+I could do the work because I was presenting them with hard, public, reviewable evidence of my having recently completed the same type of work. 
+
+<Image src={bloggingPriorArt} alt="Having tons of prior art makes interviewing for certain roles a lot easier" />
+<figcaption>Having tons of prior art makes interviewing for certain roles a lot easier.</figcaption>
+
+Of course I read their job descriptions carefully, but the point is that I would never have been able to pull together this much content to share if I hadn't been steadily blogging about software, development, automation, 
+infrastructure as code and generative AI for the past year. 
+
+I had two great offers in hand after what was certainly the least stressful overall interviewing experience I've ever had in tech. Some of this is just time and experience, but a lot of it was my regular content production habit. 
+
+## Control your own destiny 
+
+This is often also referred to as the acronym POSSE, for publish on your own site and syndicate everywhere. Put your best work on your domain, that you control. Bonus points
+for making your domain your name like zackproser.com or a brand that you've already established. 
+
+<Image src={bloggingControlYourOwnDestiny} alt="Control your own destiny by owning your domain" />
+<figcaption>Control your own destiny by owning your domain.</figcaption>
+
+Content farms like Medium or innumerable others that have come and gone since I started writing on the internet can and will change their rules anytime it suits them 
+and their share-holders and they couldn't possibly care less about you and your content that you've worked so diligently over the years to build up.
+
+Rather than propping up someone else's domain with your excellent work, own your own domain and publish everything important there. Use content farms like Medium to write a shorter, teaser version 
+of your actual post that poses the central problem and offers a high-level look at the solutions while linking back to your full article on your domain. 
+
+As others have pointed out, there's also a reputational tax for publishing on Medium or other low quality text mills - while serious writers and companies do host 
+their entire blogs there - the vast majority of the content on Medium is pure trash - truly liquid dogshit meant to do nothing more than capture traffic via keyword stuffing. 
+
+This means that when you hand someone a link to Medium and ask them to read your latest post, you're already off to a bad start.
+
+## You can showcase your work and build a portfolio
+
+<Image src={bloggingPortfolio} alt="Showcase your work through your tech blog" />
+<figcaption>Your tech blog is the perfect place to showcase all your work for prospective employers.</figcaption>
+
+For my past role and my current role, whenever I write a post at work or make a video that I'm proud of, I add it to my blog / portfolio site. 
+
+My employers don't mind an extra backlink and I'm careful to not duplicate any of the content - when it's a blog post, I just render a button that 
+points to the original post on my employer's web property. 
+
+YouTube videos are different. I'll just embed them, but again my employer doesn't mind getting more views on their content. The point is that I get to take these with me, and they are all a piece of 
+my overall portfolio. I've published blog posts that I'm proud of on the Cloudflare engineering blog, on Gruntwork.io's blog and on Pinecone.io's engineering blog and learning center, and I link to 
+all of them from [my own blog](/blog/).
+
+## An excuse to run a real web property 
+
+When you build and maintain your own blog, you get to try out different technologies and see what works for you. For myself, I knew that I wanted to run the latest next.js framework and that I wanted to host my blog on 
+Vercel and try out Tailwind CSS and UI. 
+
+I had come to this realization by previously home-brewing the older and shittier version of my site with nuxt.js, finding that to be **almost exactly what I wanted** and having to shoe-horn in a bunch of special features 
+and extensions to my homebrewed markdown system. 
+
+By the time I got around to overhauling my entire site, MDX had matured to the point that it included most of the things I had wanted out of the box - the ability to mostly write markdown for quick post iteration, the ability 
+to intermingle react components where needed to use a common layout or quickly define and drop in newsletter sign-up forms or even my own CTAs and ads for my consulting services. 
+
+I wanted the ability to author code blocks of any kind directly in my post and I wanted outstanding image support with all the lazy-loading, performance optimized, responsive image goodness that Next.js bakes into its easy to use 
+`<Image>` component. 
+
+I also knew I wanted to host my site on Vercel and that I wanted my site to be completely static once built, with serverless functions to handle things like form submissions so that I could customize my own email list tie-in 
+and have more excuses to learn the Next.js framework and Vercel platform well. 
+
+<Image src={bloggingWebPerformance} alt="Web performance monitoring" />
+<figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>
+
+Is this fun and would I do it anyway in my spare time? Yes. Did all this experience building a real website and setting up and maintaining my own email newsletter, capture forms, testimonials pages, light vs dark mode and Tailwind CSS
+help me in my actual day jobs? Also yes. 
+
+If you've been itching to get better at a given framework or more familiar with a new stack or technology, running your own blog is an excellent way to be your own guinea pig and see what works and what doesn't. By the time you're making 
+an actual recommendation at work on a Zoom call, you'll be able to speak more from experience and less from you rectum, which your co-workers will also appreciate. 
+
+## Blogging can be lucrative 
+
+<Image src={bloggingMakesMeMoney} alt="Blogging makes me money" />
+
+It's always the "throwaway" posts that you aren't sure are even worth writing down that end up outperforming everything else you've labored on. In my case, it was a quick review for my favorite AI-assisted dev tool for code completion, [Codeium, 
+which I reviewed on my blog](/blog/codeium-review) several months back. 
+
+Codeium is a [GitHub Copilot](/blog/github-copilot-review) competitor and, wouldn't you know it, other people from developers to venture capitalists to product managers at competing companies to folks considering launching their own startup in 
+the space want to know if it's good or not. 
+
+So here I find myself starting to get emails from research firms asking if I'll get on the phone for 30-45 minutes in exchange for several hundred dollars per call to help give these folks direct insight into the experience of using Codeium, what's 
+working well and what isn't and [how developers such as myself](/blog/how-developers-evaluate-ai-coding-tools) tend to evaluate such tools. 
+
+Blogging begets blogging and I've found reason to share more insight on the many AI-assisted developer-centric tools and services I've experimented with and combined over the past year and the more 
+I write about what I know firsthand, the more my overall traffic picks up. 
+
+The more my overall traffic picked up, the more I was incentivized to figure out subtle but effective CTAs such as this one: 
+
+<ConsultingCTA />
+
+in order to let those same folks know they can come to me directly for advice, product feedback, insight and distilled experiences anytime they like. 
+
+There are many such stories from bloggers all over the web who found unexpected opportunities just from continuously writing about what they knew well, so 
+I am in no way an outlier here and I'm really just getting started. 
+
+As Kent Beck recently noted, you should "Publish everything", something that immediately made sense to me the moment I read it, because it's ultimately an 
+emotional decision as to whether or not you want to share something publicly. Hint: you mostly do. Because you never know what's going to hit, and no, unfortunately, 
+it's rarely that post you love the most that you labored over the longest. 
+
+Different folks find different value in your work than you do and that's okay. Just keep writing regularly. 
+
+## It gets easier, faster and more enjoyable the more you do it 
+
+<Image src={bloggingGetsFaster} alt="Blogging gets faster and more enjoyable the more you do it" />
+<figcaption>Blogging gets faster and more enjoyable the more you do it.</figcaption>
+
+This is the case with most things in life and I happen to enjoy acquiring and honing skills, but I've also noticed the more that I write, the easier it gets to write, and the more that 
+I find myself able to compose the rough draft of a post in my head while doing something completely different away from my computer. 
+
+That means when I get back to my laptop all I have to do is type it out. I found this to be the case to such a degree that I started another [Next.js side-project called Panthalia](https://github.com/zackproser/panthalia)
+which allows me to quickly: 
+
+* Speak my thoughts or full sentences into the app on my phone's browser while I'm out and about or walking around 
+* Request images for the post via StableDiffusionXL courtesy of Replicate.com's API 
+* Instantly have the app open a pull request against this portfolio site of mine which hosts my blog 
+* Rapidly iterate on any edits for this post and any other posts I might have in flight concurrently
+
+I've had a great deal of fun working on Panthalia, it's useful to be and I can continue tweaking it until it's the fastest way for me to put out high-quality content, and you never know where 
+these projects will lead. 
+
+I do know that working on it continuously for three and a half months seriously sharpened my Next.js knowledge and kept my JavaScript and TypeScript skills current, which, 
+again fed directly into my day job where all of those skills are relevant, since I do open-source development and maintenance on Python and TypeScript projects in addition to my content production work. 
+
+I think of my blog as a laboratory that is always open for me to experiment with. 
+
+## It's a fun hobby 
+
+Now that I'm older and mostly home-bound due to family responsibilities, writing and coding are still things I can do and enjoy whenever I have the free time. I really enjoy the loop of having an initial 
+thought or idea about a story to tell, arranging the structure of the post in my head, typing it out and refining the language and then generating pixel art images to intersperse into my posts to help 
+tell the story and treat my readers to a little eye-candy. 
+
+If you've made it this far and you're coming from Hacker News and would like to cast aspersions on my use of AI generated pixel art, then allow me to be the first person today to invite you to go fuck yourself.
+
+<Image src={bloggingWaving} alt="So long for now" />
+<figcaption>Thanks for reading and see you next time!</figcaption>
+
+I like them and it's my blog. I don't write on Medium anymore, or anywhere else where I don't make the rules. The rule is: If I like it, it ships. And I like my AI-generated pixel art quite a bit. 
+
+
