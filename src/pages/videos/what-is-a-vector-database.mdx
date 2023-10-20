@@ -1,0 +1,26 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-10-19",
+  title: "What is a vector database?",
+  description: "Vector databases explained, featuring clowns, embeddings, neural networks, feature extraction, semantic search and Retrieval Augmented Generation (RAG).",
+  image: whatIsAVectorDB
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/wc3Lh-eiNBM" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+ 
+I walk through what a vector database is, by first explaining the types of problems that vector databases solve, as well as how AI "thinks". 
+
+I use clowns as an example of a large corpus of training data from which we can extract high level features, and I discuss architectures such as 
+semantic search and RAG.
