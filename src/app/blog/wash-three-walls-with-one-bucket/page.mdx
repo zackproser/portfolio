@@ -11,12 +11,17 @@ import releaseYourWork from '@/images/release-your-work.png'
 import bullshit from '@/images/bullshit.png'
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const article = {
   author: 'Zachary Proser',
   date: '2023-10-25',
   title: 'Wash three walls with one bucket', 
   description: 'Design your side projects, blog posts and even your fun experiments to triangulate multiple learning paths simultaneously. Then, use them to build out your portfolio.',
   image: washThreeWallsWithOneBucket,
+ }
+
+export const meta = {
+  title: article.title,
+  description: article.description
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props}></ArticleLayout>
