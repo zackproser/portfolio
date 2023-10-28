@@ -3,12 +3,18 @@ import Image from 'next/image'
 import teatutorLogo from '@/images/teatutor-logo.png'
 import bubbleViewportExample from '@/images/bubble-viewport-example.gif'
 
-export const meta = {
+export const article = {
  author: "Zachary Proser",
  date: "2022-10-21", 
  title: "Teatutor Deep Dive",
  description: "Teatutor is a Golang CLI leveraging the Bubbletea Terminal User Interface (TUI) library from Charm.sh. It can be served over an SSH connection.",
  image: teatutorLogo,
+}
+
+export const meta = {
+ title: article.title,
+ description: article.description,
+ image: article.image,
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

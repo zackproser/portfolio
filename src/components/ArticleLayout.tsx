@@ -31,7 +31,9 @@ export function ArticleLayout({
     date: string
     image?: {
       src: string
-    }
+    },
+    type?: string
+    slug?: string
   }
   previousPathname: string | undefined
 }) {
