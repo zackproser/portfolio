@@ -12,16 +12,27 @@ const variantStyles = {
     'bg-indigo-700 dark:bg-indigo-700 text-xl font-extrabold text-white hover:bg-indigo-400 active:bg-indigo-400 active:text-zinc-900/60 dark:bg-indigo-400/50 dark:text-zinc-300 dark:hover:bg-indigo-400 dark:hover:text-zinc-50 dark:active:bg-indigo-300/50 dark:active:text-zinc-50/70'
 }
 
-export function Button({ variant = 'primary', className, href, ...props }) {
+type ButtonProps = {
+  variant?: keyof typeof variantStyles
+} & (
+    | (React.ComponentPropsWithoutRef<'button'> & { href?: undefined })
+    | React.ComponentPropsWithoutRef<typeof Link>
+  )
+
+export function Button({
+  variant = 'primary',
+  className,
+  ...props
+}: ButtonProps) {
   className = clsx(
     'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
     variantStyles[variant],
-    className
+    className,
   )
 
-  return href ? (
-    <Link href={href} className={className} {...props} />
-  ) : (
+  return typeof props.href === 'undefined' ? (
     <button className={className} {...props} />
+  ) : (
+    <Link className={className} {...props} />
   )
 }
