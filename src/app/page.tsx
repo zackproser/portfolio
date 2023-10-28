@@ -11,13 +11,16 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from '@/components/SocialIcons'
-import image1 from '@/images/photos/image-1.jpg'
-import image2 from '@/images/photos/image-2.jpg'
-import image3 from '@/images/photos/image-3.jpg'
-import image4 from '@/images/photos/image-4.jpg'
-import image5 from '@/images/photos/image-5.jpg'
+import wikka from '@/images/photos/wikka.png'
+import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.png'
+import optimizerBlogImg from '@/images/optimizer-blog.png'
+import terraformAssocImg from '@/images/terraform-associate.png'
+import teaTutorImg from '@/images/teatutor-logo.png'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
+// Instead of needing to constantly update my static site, do the calculation of years that I've been working in tech in JS
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
+
 
 function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -235,12 +238,13 @@ function Resume() {
 }
 
 function Photos() {
+  const images = [wikka, optimizerBlogImg, canyonRunnerImg, teaTutorImg, terraformAssocImg]
   let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
   return (
     <div className="mt-16 sm:mt-20">
       <div className="-my-4 flex justify-center gap-5 overflow-hidden py-4 sm:gap-8">
-        {[image1, image2, image3, image4, image5].map((image, imageIndex) => (
+        {images.map((image, imageIndex) => (
           <div
             key={image.src}
             className={clsx(
@@ -269,13 +273,10 @@ export default async function Home() {
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Software designer, founder, and amateur astronaut.
+            Open-source hacker and technical writer
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Spencer, a software designer and entrepreneur based in New York
-            City. I’m the founder and CEO of Planetaria, where we develop
-            technologies that empower regular people to explore space on their
-            own terms.
+            I acquire and share knowledge. I constantly experiment, create tutorials,  demo videos and open-source repos to share my best discoveries. I <Link href={"https://github.com/zackproser"} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={"/about"} className="text-green-500 font-extrabold"> read more about me here</Link>.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink
@@ -302,6 +303,15 @@ export default async function Home() {
         </div>
       </Container>
       <Photos />
+      <Container className="mt-9">
+        <div className="max-w-2xl">
+          <p className="mt-6  text-base text-zinc-600 dark:text-zinc-400">
+            On this site, I share open-source software, terminal tricks, demo videos, software career advice, advanced command line techniques and hotkeys, and
+            I blog about things I&apos;ve learned the hard way while working in the industry for {RenderNumYearsExperience()} years.
+          </p>
+          <Newsletter />
+        </div>
+      </Container>
       <Container className="mt-24 md:mt-28">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
