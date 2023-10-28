@@ -3,6 +3,7 @@ import { type Metadata } from 'next'
 import { Card } from '@/components/Card'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
+import { BlogPostCard } from '@/components/BlogPostCard'
 import { formatDate } from '@/lib/formatDate'
 
 function Article({ article }: { article: ArticleWithSlug }) {
@@ -37,7 +38,7 @@ function Article({ article }: { article: ArticleWithSlug }) {
 export const metadata: Metadata = {
   title: 'Articles',
   description:
-    'All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order.',
+    'All of my technical tutorials, deep-dives, developer rants and video walkthroughs'
 }
 
 export default async function ArticlesIndex() {
@@ -45,13 +46,13 @@ export default async function ArticlesIndex() {
 
   return (
     <SimpleLayout
-      title="Writing on software design, company building, and the aerospace industry."
-      intro="All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order."
+      title="I write to learn, and publish to share."
+      intro="All of my technical tutorials, musings and developer rants"
     >
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
-        <div className="flex max-w-3xl flex-col space-y-16">
+        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {articles.map((article) => (
-            <Article key={article.slug} article={article} />
+            <BlogPostCard key={article.slug} article={article} />
           ))}
         </div>
       </div>
