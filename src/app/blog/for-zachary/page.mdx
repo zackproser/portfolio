@@ -8,12 +8,17 @@ import flashback from '@/images/flashback.jpeg'
 import rewiringMyBrain from '@/images/rewiring-my-brain.jpeg'
 import theLightWasYou from '@/images/the-light-was-you.jpeg'
 
-export const meta = {
+export const article = {
   author: 'Zachary Proser',
   date: '2023-10-15',
   title: 'For Zachary', 
   description: 'There are only two people I am aware of named Zachary Proser, with that exact spelling. This article is only for Zachary Proser.',
   image: zacharyLight
+}
+
+export const meta = {
+    title: article.title,
+    description: article.description
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
