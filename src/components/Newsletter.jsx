@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/Button'
-import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
 
 function MailIcon(props) {
   return (
@@ -29,12 +29,12 @@ function MailIcon(props) {
 
 export const Newsletter = function() {
 
-  const [formSuccess, setSuccess] = React.useState(false);
+  const [formSuccess, setSuccess] = useState(false);
 
   // Get access to the router in order to fetch query params off it
-  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const referrer = router.query.referrer || 'unknown/direct'
+  const referrer = searchParams.get('referrer') || 'unknown/direct'
 
   const sendFormSubmissionEvent = () => {
 
