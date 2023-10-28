@@ -1,12 +1,19 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/Button'
 
-export const meta = {
+export const article = {
     author: "Zachary Proser", 
     date: "2022-10-27", 
     title: "How to securely store secrets in BitWarden CLI and load them into your shell when needed", 
     description: "A tutorial on how to write and use shell functions to fetch your tokens from the BitWarden CLI with one command. ",
     href: "https://blog.gruntwork.io/how-to-securely-store-secrets-in-bitwarden-cli-and-load-them-into-your-zsh-shell-when-needed-f12d4d040df"
+}
+
+export const meta = {
+    title: article.title,
+    description: article.description,
+    href: article.href,
+
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
