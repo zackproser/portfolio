@@ -1,21 +1,30 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/Button'
 import Link from 'next/link'
+import Image from 'next/image'
 import quakeInFargate from '@/images/quake-in-fargate.png'
 
-export const meta = {
+export const article = {
     author: "Zachary Proser", 
     date: "2022-04-15", 
     title: "How to Run a Quake 3 Arena Server in an AWS ECS Fargate Task", 
     description: "A tutorial, along with working Terraform code and Dockerfile, that you can use to deploy and operate your own Quake 3 server in an ECS task.",
     href: "https://medium.com/@zackproser/how-to-run-a-quake-server-in-an-aws-fargate-task-aac75c3ab81f",
     image: quakeInFargate
-  }
+}
+
+export const meta = {
+    title: article.title,
+    description: article.description,
+    href: article.href
+}
 
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
 ---
+
+<Image src={quakeInFargate} alt={meta.title} />
 
 <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
     {meta.description}
