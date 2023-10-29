@@ -7,7 +7,7 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const article = {
+export const meta = {
  author: "Zachary Proser",
  date: "2023-9-9",
  title: "Glossary of tech phrases",
@@ -15,11 +15,6 @@ export const article = {
  image: frustration
 }
 
-export const meta = {
- title: article.title,
- description: article.description,
- image: article.image
-}
 
 export default (props) => <ArticleLayout meta={meta} {...props} /> 
 

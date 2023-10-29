@@ -14,18 +14,12 @@ import bloggingWaving from '@/images/blogging-waving.png'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-18',
   title: 'Run your own tech blog', 
   description: 'Control your own destiny, build your personal brand, and master web technologies by running your own tech blog.',
   image: bloggingPeacefully,
-}
-
-export const meta = {
-    title: article.title,
-    description: article.description,
-    image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

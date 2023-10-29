@@ -6,18 +6,12 @@ import githubCopilot2 from '@/images/github-copilot-review-2.jpeg'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-07',
   title: 'GitHub Copilot review', 
   description: 'I got Copilot access for free as an active GitHub open-source maintainer, but would I pay for it?',
   image: githubCopilot,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

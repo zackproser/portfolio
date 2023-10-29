@@ -4,18 +4,12 @@ import wisdomseekerHome from '@/images/wisdomseeker-screens/wisdomseeker-home.pn
 import wisdomseekerSuccess from '@/images/wisdomseeker-screens/wisdomseeker-success.png'
 import wisdomseekerLoop from '@/images/wisdomseeker-screens/wisdomseeker-loop.png'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2011-09-02', 
   title: 'Wisdomseeker',
   description: 'A wikipedia crawling application', 
   image: wisdomseekerHome
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

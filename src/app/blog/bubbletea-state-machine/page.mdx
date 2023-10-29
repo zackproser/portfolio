@@ -6,18 +6,12 @@ import elmArchitecture from '@/images/elm-architecture.svg'
 import bubbleteaStagesGif from '@/images/bubbletea-stages.gif'
 
 
-export const article = {
+export const meta = {
  author: "Zachary Proser",
  date: "2023-04-25", 
  title: "The Bubbletea (TUI) State Machine pattern",
  description: "Combining a lightweight state machine plus the Bubbletea charm library leads to a very powerful pattern for tooling that needs to orchestrate slow or expensive steps.",
  image: bubbleteaStagesGif,
-}
-
-export const meta = {
- title: article.title,
- description: article.description,
- image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
