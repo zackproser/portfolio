@@ -1,0 +1,58 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import wisdomseekerHome from '@/images/wisdomseeker-screens/wisdomseeker-home.png'
+import wisdomseekerSuccess from '@/images/wisdomseeker-screens/wisdomseeker-success.png'
+import wisdomseekerLoop from '@/images/wisdomseeker-screens/wisdomseeker-loop.png'
+
+export const article = {
+  author: 'Zachary Proser',
+  date: '2011-09-02', 
+  title: 'Wisdomseeker',
+  description: 'A wikipedia crawling application', 
+  image: wisdomseekerHome
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={wisdomseekerHome} />
+
+Wikipedia is known to be structured in such a way that [many articles ultimately lead to Philosophy](http://www.xefer.com/2011/05/wikipedia) - if you click the first main body link of each article in succession.
+
+Wisdom Seeker performs this task for you automatically and reports on the path it took to reach Philosophy.
+
+It also knows when it is stuck in a loop - and will report loops as well as meandering paths that will never arrive at Philosophy. To try it out, paste a Wikipedia link - Wisdom Seeker's report includes the full links to each page, so you can follow along manually.
+
+## Screenshots
+
+* * *
+
+**_Easy one-step form accepts any Wikipedia link_**
+
+<Image src={wisdomseekerSuccess} alt="Wisdom Seeker Node App Succeeds in finding Philosophy Article" />
+
+<Image src={wisdomseekerLoop} alt="Wisdom Seeker Node App Gets Stuck in a Loop - And Reports it!" />
+
+## Key Features
+
+* * *
+
+*   Visits Requested Page and Pathfinds to Philosophy Article
+*   Is Aware of Being Stuck in a Loop
+*   Reports Loops and Meandering Paths That Will Never Lead to Philosophy
+*   Reports Full Path with Links So You Can Follow Manually
+
+## Technical Details & Takeaways
+
+* * *
+
+Wisdom Seeker was a fun app that explored an interesting quirk of Wikipedia that I was not familiar with previously.
+
+The biggest challenge in building this app was selecting the exact first link within the body paragraph, given that each Wikipedia page has so many links.
+
+Ultimately, a combination of aggressive jQuery style selectors and regex filtering of retrieved HTML did the trick.
