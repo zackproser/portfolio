@@ -1,16 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse
-): Promise<void> {
+export async function POST(req: NextRequest) {
+
   // Get data submitted in the request's body.
-  const body = req.body;
+  const body = await req.json();
 
   // If email is missing, return an error.
   if (body.email == "") {
-    res.status(400).json({ data: `Error: no valid email found in request` });
-    return;
+    return new NextResponse(JSON.stringify({ data: `Error: no valid email found in request` }), { status: 400 });
   }
 
   const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
@@ -40,15 +37,15 @@ export default async function POST(
       throw new Error(`Failed to subscribe: ${response.statusText}`);
     }
     console.dir(await response.json());
-    res.status(200).json({ data: `Think we successfully subscribed ${body.email}` });
+    return new NextResponse(JSON.stringify({ data: `Think we successfully subscribed ${body.email}` }), { status: 200 });
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error(error.message);
-      res.status(500).json({ data: `Error: ${error.message}` });
+      return new NextResponse(JSON.stringify({ data: `Error: ${error.message}` }), { status: 500 });
     } else {
       // If error is not an instance of Error, it's a type we weren't expecting and we'll just log it as is.
       console.error(error);
-      res.status(500).json({ data: `An unknown error occurred` });
+      return new NextResponse(JSON.stringify({ data: `An unknown error occurred` }), { status: 500 });
     }
   }
 }
