@@ -8,18 +8,12 @@ import Link from 'next/link'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-05-29",
   title: "Codeium with Neovim for A.I. powered code-completion: so far so good",
   description: "Generally unimpressed with GitHub's Copilot (not Copilot X), I gave the alternative, Codeium a shot.",
   image: codeiumExample,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

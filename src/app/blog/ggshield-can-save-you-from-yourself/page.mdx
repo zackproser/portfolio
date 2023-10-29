@@ -10,17 +10,12 @@ import gitGuardian from '@/images/gitguardian-logo.png'
 import ggShieldFindingASecret from '@/images/ggshield-pre-commit-scan.png'
 import ggShieldPreventingEscape from '@/images/ggshield-preventing-a-secret-from-escaping.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-07-18",
   title: "ggshield can save you from yourself. Never accidentally commit secrets again",
   description: "Stop yourself from committing a secret to git with ggshield",
   image: leakingASecret,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

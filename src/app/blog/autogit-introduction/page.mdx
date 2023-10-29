@@ -8,18 +8,12 @@ import autogitStashedChangesGif from '@/images/autogit-stashed-changes.gif'
 
 import Image from 'next/image'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-05-15",
   title: "Autogit - never forget to pull the latest changes again",
   description: "Autogit is an open source shell script that you can wire up to your `cd` command to ensure you always have the latest code, branches, and remotes when you open up a local git repository.",
   image: autogitGif,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image,
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

@@ -22,18 +22,12 @@ import Link from 'next/link'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-07-17",
   title: "First, find out if you've got the programming bug",
   description: "I get this question a lot: how do I get into coding? This is my best advice.",
   image: sparkOfLearning,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

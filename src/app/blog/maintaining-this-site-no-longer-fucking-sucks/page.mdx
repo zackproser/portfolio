@@ -10,18 +10,12 @@ import vercelIntegratedAnalytics from '@/images/vercel-integrated-analytics.png'
 
 import NextJSErrors from '@/images/next-js-errors.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-04-27",
   title: "Maintaining this site no longer fucking sucks",
   description: "After re-doing my personal website in next.js and deploying to Vercel, I reflect on how much better the developer experience has become.",
   image: holyComputer 
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
