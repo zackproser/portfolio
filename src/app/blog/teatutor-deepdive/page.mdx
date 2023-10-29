@@ -3,7 +3,7 @@ import Image from 'next/image'
 import teatutorLogo from '@/images/teatutor-logo.png'
 import bubbleViewportExample from '@/images/bubble-viewport-example.gif'
 
-export const article = {
+export const meta = {
  author: "Zachary Proser",
  date: "2022-10-21", 
  title: "Teatutor Deep Dive",
@@ -11,11 +11,6 @@ export const article = {
  image: teatutorLogo,
 }
 
-export const meta = {
- title: article.title,
- description: article.description,
- image: article.image,
-}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

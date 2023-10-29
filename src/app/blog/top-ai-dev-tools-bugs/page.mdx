@@ -10,7 +10,7 @@ import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-to
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-09',
   title: 'The top bugs all AI developer tools are suffering from', 
@@ -18,11 +18,6 @@ export const article = {
   image: hackerEvaluation,
 }
 
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
-}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

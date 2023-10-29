@@ -19,18 +19,12 @@ import iceBath from '@/images/ice-bath.png'
 import familyWalk from '@/images/family-walk.png'
 import sleepingHacker from '@/images/sleeping-hacker.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-09-30",
   title: "How I keep my shit together",
   description: "Practices and protocols that keep me humming along, healthy and productive on a given day",
   image: keepingItTogether,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description, 
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

@@ -1,16 +1,10 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'How to work with CircleCI more effectively',
   description: 'Pro tips for working with CircleCI configurations',
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  date: article.date
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

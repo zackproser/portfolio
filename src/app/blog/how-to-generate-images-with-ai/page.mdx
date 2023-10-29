@@ -16,18 +16,12 @@ import haterade from '@/images/haterade.jpeg'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-14',
   title: 'How to generate images with AI', 
   description: 'I have used StableDiffusion, AUTOMATIC111, DALLE and Discord bots to generate images in every style for blog posts. You can too.',
   image: aiImageGeneration,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

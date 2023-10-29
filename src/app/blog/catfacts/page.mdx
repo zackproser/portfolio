@@ -5,7 +5,7 @@ import Link from 'next/link'
 import catfactsBlog from '@/images/catfacts-screens/catfacts-blog.png'
 import catfactsScreenshot from '@/images/catfacts-screens/catfacts.png'
 
-export const article = {
+export const meta = {
     author: "Zachary Proser",
     date: "2018-01-08",
     title: "CatFacts in Node.js",
@@ -13,11 +13,6 @@ export const article = {
     image: catfactsBlog
 }
 
-export const meta = {
-    title: article.title,
-    description: article.description,
-    image: article.image
-}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

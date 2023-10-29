@@ -9,7 +9,7 @@ import pineconeVectorDatabases from '@/images/pinecone-vector-databases.png'
 import technicalStorytelling from '@/images/technical-storytelling.png'
 import pineconeHiring from '@/images/pinecone-hiring.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-07-23",
   title: "I'm joining Pinecone.io as a Staff Developer Advocate!",
@@ -17,11 +17,6 @@ export const article = {
   image: joiningPinecone,
 }
 
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
-}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

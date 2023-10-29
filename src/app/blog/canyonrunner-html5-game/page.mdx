@@ -15,18 +15,12 @@ import multipleEndings from '@/images/canyonrunner-screens/CanyonRunner-Two-Diff
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2019-02-28",
   title: "CanyonRunner - a complete HTML5 game",
   description: "I open sourced my first HTML5 game as a resource for other developers working with Phaser.js or wanting to build their own game",
   image: canyonRunnerBlog,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

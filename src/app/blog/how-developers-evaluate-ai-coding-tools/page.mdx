@@ -6,18 +6,12 @@ import frustratedDeveloper from '@/images/frustrated-developer.png'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const article = {
+export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-07',
   title: 'Why your AI dev tool startup is failing with developers', 
   description: 'These common mistakes are dooming your AI-assisted developer tooling startup to failure. Don\'t make them',
   image: hackerEvaluation,
-}
-
-export const meta = {
-  title : article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

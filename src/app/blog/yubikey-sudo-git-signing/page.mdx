@@ -11,18 +11,12 @@ import keyboardCamera from '@/images/keyboard-camera.jpg'
 import keyboardCameraCloseup from '@/images/keyboard-cam-closeup.png'
 import gitCommitSigningSequence from '@/images/git-commit-signing-yubikey-sequence.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-05-07",
   title: "Passwordless sudo and verified GitHub commit signing with Yubikey - a pair-coder's dream",
   description: "If you're like me, you can't type your complex password correctly when your entire team is staring at you on a pair call. And now, you no longer have to.",
   image: stressedTyping,
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

@@ -4,14 +4,14 @@ import glob from 'fast-glob'
 async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  let { article } = (await import(`../app/blog/${articleFilename}`)) as {
+  let { meta } = (await import(`../app/blog/${articleFilename}`)) as {
     default: React.ComponentType
-    article: Article
+    meta: Article
   }
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...article,
+    ...meta,
   }
 }
 
