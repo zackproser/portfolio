@@ -4,6 +4,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
+import { Newsletter } from '@/components/Newsletter'
+import FollowButtons from '@/components/FollowButtons'
 
 function ArrowLeftIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -108,6 +110,8 @@ export function ArticleLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
+            <Newsletter />
+            <FollowButtons />
           </div>
         </div>
       </Container>
