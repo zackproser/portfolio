@@ -1,0 +1,194 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import sparkOfLearning from '@/images/spark-of-learning.png'
+import foundTheSpark from '@/images/found-the-spark.png'
+import programmingBug from '@/images/programming-bug.png'
+import exploringProgramming from '@/images/exploring-programming.png'
+import learningToCodeMap from '@/images/learning-to-code-map.png'
+import workingHacker from '@/images/working-hacker.png'
+import hookedOnHacking from '@/images/hooked-on-hacking.png'
+import hackerEncouragement from '@/images/hacker-encouraging.png'
+import programmingBugReleased from '@/images/programming-bug-released.png'
+import programmersInSnowglobe from '@/images/programmers-in-snowglobe.png'
+import programmingIsMagic from '@/images/programming-is-magic.png'
+import givingUpCoin from '@/images/giving-up-coins.png'
+
+import descentCoverArt from '@/images/descent.jpg'
+
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-07-17",
+  title: "First, find out if you've got the programming bug",
+  description: "I get this question a lot: how do I get into coding? This is my best advice.",
+  image: sparkOfLearning,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={foundTheSpark} />
+
+> I'm thinking about learning to code. Which laptop should I get? Should I do a bootcamp? Does my child need special classes or prep in order to tackle a computer science degree?
+
+A lot of different folks ask me if they should learn to code, if software development is a good career trajectory for them or their children, and what they need to study in school in order
+to be successful. 
+
+## Here's my advice in a nutshell
+
+Before you should worry about any of that: your major, which school you're trying to get your kid into, which laptop you should purchase, you need to figure out if you (or your kid) have the "programming bug". 
+
+This will require a bit of exploration and effort on your part, but the good news is there's a ton of high quality and free resources online that will give you enough of a taste for coding and 
+building to help you determine if this is something worth pursuing as a career or hobby. I'll share some of my favorites in this post.
+
+<Image src={sparkOfLearning} />
+
+## What is the programming bug?
+
+"The programming bug" is the spark of innate curiosity that drives your learning forward. Innate meaning that it's coming from you - other people don't need to push you to do it.
+
+<Image src={programmingBug} />
+
+In software development, coding, systems engineering, machine learning, data science; basically, in working with computers while also possibly working with people - there are periods of profound frustration and tedium, punctuated by anxiety and stress. 
+
+I have personally reached a level of frustration that brought 
+tears to my eyes countless times. If you pursue the path of a digital craftsperson, be assured that you will, too. Especially in the beginning. That's okay. 
+
+I also happen to think that being able to describe to machines of all shapes and sizes exactly what you want them to do in their own languages; to solve problems in collaboration with machines, and to be able to bring an idea from your imagination all the 
+way to a publicly accessible piece of software that people from around the world use and find utility or joy in - borders on magic. 
+
+<Image src={programmingIsMagic} alt="Programming is magic" />
+
+<Newsletter />
+
+## The spark of curiosity allows you to continually re-ignite your own passion for the craft
+
+In my personal experience, considering my own career, and also the folks I've worked with professionally who have been the most effective and resilient, the single determining criterion for success is 
+this innate curiosity and drive to continue learning and to master one's craft; curiosity in the field, in the tools, in the possibilities, in what you can build, share, learn and teach. 
+
+That's all well and good, but how do you actually get started?
+
+## Use free resources to figure out if you have the programming bug 
+
+Don't buy a new macbook. Don't sign up for a bootcamp. Not at first. 
+
+Use the many excellent free resources on the internet that are designed to help folks try out programming in many different languages and contexts. 
+
+<Image src={exploringProgramming} />
+
+Here are a few that I can recommend to get you started: 
+
+* [Exercism.io](https://exercism.io)
+* [Codewars](https://www.codewars.com/)
+* [Codecademy](https://www.codecademy.com/)
+* [Edabit](https://edabit.com/)
+
+Give the initial exercises a shot. It doesn't really matter what language you start with first, but if you have no clue, try Python, PHP, or JavaScript. When you come across a phrase or concept
+you don't understand, try looking it up and reading about it.
+
+<ConsultingCTA />
+
+It's key that none of these services require you to pay them anything to get started and get a taste for programming. You can do them in your browser on a weak, old computer or at the library or an 
+internet cafe, *before* shelling out for a fancy new laptop. If it turns out you could go happily through the rest of your life without ever touching a keyboard again, you've lost nothing but a little time.
+
+## How can you get a feel for what the work is like? 
+
+Jobs in software development vary wildly in how they look - a few parameters are company size, team size, technology stack, the industry you're in (coding for aviation is very, very different from coding for advertising
+in some meaningful ways), etc. 
+
+Nevertheless, it can be helpful to watch some professional developers do developer things, in order to gauge if it even seems interesting to you or not. How can you peek into the day to day of some working developers? 
+
+Luckily, plenty of developers make it easy for you to do that, by sharing content on YouTube and Twitch. This is very far from an exhaustive list, but here's a few channels I've watched recently that can help you see some 
+on-screen action for yourself: 
+
+<Image src={programmersInSnowglobe} alt="Programmers working in a snowglobe" />
+
+* [Ants Are Everywhere](https://www.youtube.com/@ants_are_everywhere) - An ex-Googler reads the source code to popular open-source projects on YouTube, thinking through the process and showing how he answers his own questions 
+as they arise. Really excellent code spelunking. 
+* [Yours truly](https://www.youtube.com/@zackproser) - I make tutorials on open source tools as well as share some recordings of myself live-coding on some open source projects. Lately, and for the foreseeable future, I'll be going deep on A.I. applications, LLMs (large language models such as ChatGPT and others), vector databases and machine learning topics.
+* [TJ DeVries](https://www.youtube.com/@teej_dv) - A great open source developer, author of a very popular Neovim plugin (a coding tool for developers) and someone who makes their content accessible and interesting for all viewers.
+* [The Primeagen](https://www.youtube.com/@ThePrimeTimeagen) - A spicier, no-holds-barred look at all things programming, getting into coding, learning to code, and operating at a high level as a software engineer from a Netflix engineer who isn't afraid to say it like it is.
+
+I'll continue to add more as I find good channels to help folks get a feel for the day in, day out coding tasks. 
+
+Keep in mind: these channels will give you a good taste of working with code, using a code editor and working with different languages and tools, but that's only a part of the overall job of being a professional developer. 
+
+There's entire bookshelves worth of good content on the soft skills of the job: working effectively up and down your organization, planning, team structure and dynamics, collaborative coding, team meetings, methods for planning and tracking work, 
+methods for keeping things organized when working with other developers, etc. 
+
+These skills are perhaps even more important than the technical skills, and, if you decide this space is for you, then you'll want to ensure you're paying attention to your 
+soft skill development as well.
+
+## You may not might find the programming bug overnight 
+
+<Image src={learningToCodeMap} alt="Learning to code can be a winding path and it can look different for everyone" />
+
+I've been on a computer since I was 3 years old, but for the first few years I was really only playing games, making diaramas with paint and similar programs. 
+
+Around age 11, I had a neighborhood friend who showed me an early Descent game on his PC.  
+
+<Image src={descentCoverArt} alt="One of the earliest Descent PC games" />
+
+He also had a C++ textbook that he let me borrow and read through. At the tender age of 11, I was thinking to myself that I would read this book, become a developer, and then make my own games. I started by 
+trying to understand the textbook material. This didn't pan out - and it would be another 15 years until I'd make a conscious decision to learn to code. 
+
+At age 26, I joined my first tech company as a marketing associate. Luckily, there was a component of the job that was also quality assurance, and our product was very technical, so I had to use the command line
+to send various test payloads into our engine and verify the outputs made sense. I was hooked. 
+
+<Image src={hookedOnHacking} />
+
+The staff-level developer who was sitting next to me gave me just the right amount of encouragement and said that if I kept at it - I would be like "this" (he made a motion with his hand of an upward ramp). From that point forward, I was teaching myself everything I could on nights and weekends. Practicing, coding, reading about 
+coding and trying to build things. And I've never stopped. 
+
+<Image src={hackerEncouragement} />
+
+The timeline for learning to code can be lumpy and will look different for different people. That's okay, too. 
+
+<Newsletter />
+
+## What do you do if you think you DO have the programming bug?
+
+So what should you do if you try out some of these types of programming exercises and you find out that you really do like them? That you find yourself thinking about them when you're doing something else? 
+
+What do you do next? **Start building and never stop**. This is the advice from a Stack Overflow developer survey from a few years ago about how to stay current and how to grow as a developer: "Build things all the time and never stop". I couldn't agree more. 
+
+<Image src={programmingBugReleased} alt="Build things all the time and never stop" />
+
+The first complete web app I built for myself was my [Article Optimizer](/blog/open-sourced-article-optimizer). It was brutal. I didn't even know the names of the things I didn't know - so I couldn't Google them. I had to work backwards by examining apps that were similar enough 
+to what I was trying to build (for example, an app that presented the user with a form they could use to submit data) and reverse engineer it, reading the page source code, and trying to find out more information about the base technologies. 
+
+Form processing, APIs, custom fonts, CSS, rendering different images based on certain conditions, text processing and sanitization. I learned a metric ton from my first major web app, even though it took me months to get it live. And the first version was thrilling, but not at all 
+what I wanted. So I kept on refining it, re-building it. Learning new frameworks and techniques. Around the third time I rewrote it, I got it looking and functioning the way I wanted, and I got it running live on the internet so that other people could use it. 
+
+Then I maintained it as a freely available app for many years. Hosting something on the internet, on your own custom domain, will teach you a ton as well.
+
+This is the path that worked for me: find something that's outside of your comfort zone. Figure out how to build it. Chase down every curiosity - research it as best you can and then try to get it working. Once you do, it's time for the next project. This time, do something more ambitious 
+than last time around - something that will push you out of your comfort zone again so that you can learn even more.
+
+<ConsultingCTA />
+
+## Don't pony up your cash until you've gotten a free taste 
+
+<Image src={givingUpCoin} alt="You could drop a ton of money on bootcamps or hardware, but it's far cheaper to first try out programming for free" />
+
+I've seen people take out a loan for $12,000 in order to complete a coding bootcamp, just to discover during their first job placement that they don't actually enjoy working on the computer all day or want to continue building digital things. 
+
+If you're currently considering learning to code or getting into computers as a possible career, don't over invest until you've given yourself a taste of coding and building. 
+
+When you're on the job site day in and day out - doing the actual work, feeling the stress, and the joy and the panic and accomplishment, Mom and Dad are not going to be leaning over your shoulder (hopefully). 
+
+Software development, hacking, designing and building systems, creating apps and sites, solving hard engineering challenges with your ever-expanding toolkit can be a wonderful career - if you enjoy doing the work.
+
+*You* need to figure out if *you* can find that spark and continually use it to renew your own interest and passion. 
+
+<Image src={workingHacker} />
+
+Looking for advice or have a question? You can subscribe to my newsletter below, and the first email in the series will allow you to reply in order to share with me any challenges you're currently facing in your career, or questions you might have. 
+
+All the best and happy coding!
+

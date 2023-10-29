@@ -1,0 +1,350 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+
+import opengraphFallbackImg from '@/images/og.png'
+import opengraphPreview from '@/images/opengraph-preview.png'
+import opengraphSequence from '@/images/opengraph-sequence.png'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2023-08-22",
+    title: "Opengraph dynamic social images", 
+    description: "I built a custom opengraph image with '@vercel/og' that includes a fallback image for index pages",
+    image: opengraphFallbackImg
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og`} 
+    alt="Zachary Proser's default opengraph image" 
+/>
+
+## What is opengraph? 
+
+Opengraph is a standard for social media image formats. It's the "card" that is rendered whenever you or someone else shares a URL to your site on social media: 
+
+<Image 
+    src={opengraphPreview}
+    alt="Opengraph images and markdown determine what social media cards are shown"
+/>
+
+It's considered a good idea to have an opengraph image associated with each of your posts because it's a bit of nice eye candy that theoretically helps improve your click-through rate. A high quality opengraph image can help 
+make your site look more professional.
+
+## Implementing my desired functionality 
+
+This took me a bit to wrap my head around. The [examples Vercel provides](https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples) were helpful and high quality as usual, (they even have a helpful [opengraph playground](https://og-playground.vercel.app/)) but I wish there had been more of them. It took me a while to figure out how to implement the exact
+workflow I wanted: 
+
+1. I add a "hero" image to each of my posts which renders on my [blog's index page](/blog). I wanted my opengraph image for a post to contain the post's title as well as its hero image 
+2. I wanted a fallback image to render for my home or index pages - and in case the individual post's image couldn't be rendered for whatever reason
+
+In this way, I could have an attractive opengraph image for each post shared online, while having a sane default image that does a good job of promoting my site in case of any issues. 
+
+In general, I'm pretty happy with how the final result turned out, but knowing myself I'll likely have additional tweaks to make in the future to improve it further. 
+
+If you look closely (right click the image and open it in a new tab), you can see that my image has two linear gradients, one for the green background which transitions between greens from top to bottom, and one for blue which transitions left to right. 
+
+In addition, each band has a semi-transparent background image - giving a brushed aluminum effect to the top and bottom green bands and a striped paper effect to the center blue card where the title and hero image are rendered. I was able to 
+pull this off due to the fact that Vercel's '@vercel/og' package allows you to use Tailwind CSS in combination with inline styles. 
+
+## Per-post images plus a fallback image for home and index pages
+
+This is my fallback image, and it is being rendered by hitting the local `/api/og` endpoint. It's `src` parameter is `${process.env.NEXT_PUBLIC_SITE_URL/api/og}` which computes to "${process.env.NEXT_PUBLIC_SITE_URL}/api/og".
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og`} 
+    alt="Zachary Proser's default topengraph image" 
+/>
+
+Example dynamically rendered opengraph images for posts: 
+
+
+**Blog post with dynamic title and hero image**
+```javascript
+
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
+    ?title=Retrieval Augmented Generation (RAG)
+    &image=/_next/static/media/retrieval-augmented-generation.2337c1a1.png`}
+```
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=Retrieval Augmented Generation (RAG)&image=/_next/static/media/retrieval-augmented-generation.2337c1a1.png`} 
+    alt="Retrieval Augmented Generation post" 
+/>
+
+**Another blog post with dynamic title and hero image**
+```javascript
+
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
+    ?title='AI-powered and built with...JavaScript?
+    &image=/_next/static/media/javascript-ai.71499014.png`}
+```
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=A-powered and built with...JavaScript?&image=/_next/static/media/javascript-ai.71499014.png`} 
+    alt="AI-powered and built with JavaScript post" 
+/>
+
+**Blog post with dynamic title but fallback image**
+
+Having gone through this exercise, I would highly recommend implementing a fallback image that renders in two cases: 
+1. If the page or post shared did not have a hero image associated with it (because it's your home page, for example)
+2. Some error was encountered in rendering the hero image
+
+Here's an example opengraph image where the title was rendered dynamically, but the fallback image was used: 
+
+```javascript
+
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
+    ?title=This is still a dynamically generated title}
+```
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=This is still a dynamically generated title`} 
+    alt="This is still a dynamically generated title" 
+/>
+
+## Understanding the flow of Vercel's '@vercel/og' package and Next.js 
+
+This is a flowchart of how the sequence works: 
+
+<Image src={opengraphSequence} alt="Opengraph sequence"/>
+
+In essence, you're creating an API route in your Next.js site that can read two query parameters from requests it receives: 
+1. The title of the post to generate an image for 
+2. The hero image to include in the dynamic image 
+
+and use these values to render the final `@vercel/og ImageResponse`. Honestly, it was a huge pain in the ass to get it all working the way I wanted, but it would be far worse without this library and Next.js integration. 
+
+In exchange for the semi-tedious experience of building out your custom OG image you get tremendous flexibility within certain hard limitations, which you can read about here. 
+
+Here's my current `/api/og` route code, which still needs to be improved and cleaned up, but I'm sharing it in case it helps anyone else trying to figure out this exact same flow. 
+
+This entire site is open-source and available at [github.com/zackproser/portfolio](https://github.com/zackproser/portfolio)
+
+```javascript
+import { ImageResponse } from '@vercel/og';
+
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(request) {
+  const { searchParams } = new URL(request.url);
+  console.log(`og API route searchParams %o:`, searchParams)
+  const hasTitle = searchParams.has('title');
+  const title = hasTitle ? searchParams.get('title') : 'Portfolio, blog, videos and open-source projects';
+  // This is horrific - need to figure out and fix this 
+  const hasImage = searchParams.has('image') || searchParams.get('amp;image')
+  // This is equally horrific - need to figure out and fix this for good
+  const image = hasImage ? (searchParams.get('image') || searchParams.get('amp;image')) : undefined;
+
+  console.log(`og API route hasImage: ${hasImage}, image: ${image}`)
+
+  // My profile image is stored in /public so that we don't need to rely on an external host like GitHub 
+  // that might go down
+  const profileImageFetchURL = new URL('/public/zack.png', import.meta.url);
+
+  const profileImageData = await fetch(profileImageFetchURL).then(
+    (res) => res.arrayBuffer(),
+  );
+
+  // This is the fallback image I use if the current post doesn't have an image for whatever reason (like it's the homepage)
+  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
+
+  // This is the URL to the image on my site 
+  const ultimateURL = hasImage ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL
+
+  const postImageData = await fetch(ultimateURL).then(
+    (res) => res.arrayBuffer(),
+  ).catch((err) => {
+    console.log(`og API route err: ${err} `);
+  });
+
+  return new ImageResponse(
+    <div
+      tw="flex flex-col w-full h-full bg-emerald-900"
+      style={{
+        background_image: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
+      }}
+    >
+      <div tw="flex flex-col md:flex-row w-full">
+        <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
+          <img
+            src={profileImageData}
+            alt="Zachary Proser"
+            className="w-full h-full object-cover"
+            style={{ borderRadius: 128 }}
+          />
+        </div>
+        <div tw="flex flex-col ml-4 items-center">
+          <h1 tw="text-4xl text-white">Zachary Proser</h1>
+          <h2 tw="text-3xl text-white">Staff Developer Advocate @Pinecone.io</h2>
+        </div>
+      </div>
+      <div
+        tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
+        style={{
+          background_image: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
+        }}
+      >
+        <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
+          <h2 tw="flex flex-col pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
+            <span tw="text-white font-extrabold">{title}</span>
+          </h2>
+
+          <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
+            <img
+              src={postImageData}
+              alt="Post Image"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+      <div tw="flex flex-col items-center">
+        <h1
+          tw="text-white text-3xl pb-2"
+        >
+          zackproser.com
+        </h1>
+      </div>
+    </div>
+  )
+}
+```
+
+Here's my `ArticleLayout.jsx` component, which forms the `<meta name="og:image" content={ogURL} />` in the head of each post to provide the URL that social media sites will call when rendering
+their cards: 
+
+```javascript
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { Container } from '@/components/Container'
+import { Newsletter } from '@/components/Newsletter'
+import FollowButtons from '@/components/FollowButtons'
+import { Prose } from '@/components/Prose'
+import { formatDate } from '@/lib/formatDate'
+
+function ArrowLeftIcon(props) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function ArticleLayout({
+  children,
+  meta,
+  isRssFeed = false,
+  previousPathname,
+}) {
+  let router = useRouter()
+
+  if (isRssFeed) {
+    return children
+  }
+
+  const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
+
+  // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
+  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
+
+  // If the post includes an image, append it as a query param to the final opengraph endpoint
+  if (meta.image && meta.image.src) {
+    ogURL = ogURL + `&image=${meta.image.src}`
+  }
+
+  console.log(`ArticleLayout ogURL: ${ogURL}`);
+
+  let root = '/blog/'
+  if (meta?.type == 'video') {
+    root = '/videos/'
+  }
+
+  const builtURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug ?? null}`
+  const postURL = new URL(builtURL)
+
+  return (
+    <>
+      <Head>
+        <title>{`${meta.title} - Zachary Proser`}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="og:image" content={ogURL} />
+        <title>{meta.title}</title>
+        <meta property="og:title" content={meta.title} />
+        <meta name="description" content={meta.description} />
+        <meta name="og:image" content={ogURL} />
+        <meta name="og:url" content={postURL} />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="zackproser.com" />
+        <meta property="twitter:url" content={postURL} />
+        <meta name="twitter:title" content={meta.title} />
+        <meta name="twitter:description" content={meta.description} />
+        <meta name="twitter:image" content={ogURL} />
+
+      </Head>
+      <Container className="mt-16 lg:mt-32">
+        <div className="xl:relative">
+          <div className="mx-auto max-w-2xl">
+            {previousPathname && (
+              <button
+                type="button"
+                onClick={() => router.back()}
+                aria-label="Go back to articles"
+                className="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 lg:absolute lg:-left-5 lg:-mt-2 lg:mb-0 xl:-top-1.5 xl:left-0 xl:mt-0"
+              >
+                <ArrowLeftIcon className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+              </button>
+            )}
+            <article>
+              <header className="flex flex-col">
+                <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+                  {meta.title}
+                </h1>
+                <time
+                  dateTime={meta.date}
+                  className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
+                >
+                  <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
+                  <span className="ml-3">{formatDate(meta.date)}</span>
+                </time>
+              </header>
+              <Prose className="mt-8">{children}</Prose>
+            </article>
+            <Newsletter />
+            <FollowButtons />
+          </div>
+        </div>
+      </Container>
+    </>
+  )
+}
+```
+
+## Thanks for reading
+
+If you enjoyed this post or found it helpful in anyway, do me a favor and share the URL somewhere on social media so that you can see my opengraph image in action 🙌😁. 
+
+

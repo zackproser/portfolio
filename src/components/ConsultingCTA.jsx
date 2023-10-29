@@ -1,7 +1,13 @@
+'use client'
+
 import Link from 'next/link';
 import { Button } from '@/components/Button';
 
-export default function ConsultingCTA({ title, body, href }) {
+export default function ConsultingCTA({
+  title = "Hacker for hire",
+  body = "I help investors, founders, CEOs, CTOs and other developers navigate the latest AI developments and the rapidly evolving landscape of tooling and capabilities.",
+  href = "https://calendly.com/zackproser/60min"
+}) {
 
   return (
     <div className="py-8 sm:py-8">
@@ -55,10 +61,4 @@ export default function ConsultingCTA({ title, body, href }) {
       </div>
     </div >
   );
-}
-
-ConsultingCTA.defaultProps = {
-  title: "Hacker for hire", // Default CTA title
-  body: "I help investors, founders, CEOs, CTOs and other developers navigate the latest AI developments and the rapidly evolving landscape of tooling and capabililites.",
-  href: "https://calendly.com/zackproser/60min"
 }
