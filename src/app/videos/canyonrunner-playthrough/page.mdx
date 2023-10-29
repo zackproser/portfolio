@@ -2,12 +2,18 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import canyonRunnerTitle from '@/images/canyonrunner-title-screen.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2015-07-11",
   title: "A full play through of my HTML5 game, CanyonRunner",
   description: "I built a complete game using the Phaser.js game development framework",
   image: canyonRunnerTitle 
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

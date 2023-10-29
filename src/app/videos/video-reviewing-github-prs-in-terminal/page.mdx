@@ -5,12 +5,18 @@ import Image from 'next/image'
 import hackerReviewingCode from '@/images/hacker-reviewing-code.png'
 import hackerReviewingCode2 from '@/images/hacker-reviewing-code-2.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2022-06-15",
   title: "Master GitHub Pull Request Reviews with gh-dash and Octo - A YouTube Video Tutorial",
   description: "Discover the power of terminal-based GitHub pull request reviews using open-source tools gh-dash and the neovim plugin Octo. Learn how these tools can streamline your review process, enhance collaboration, and save time. In this video tutorial, we'll demonstrate how to harness the benefits of a terminal workflow, including powerful command-line functionality, customization options, offline access, and cross-platform compatibility", 
   image: hackerReviewingCode
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

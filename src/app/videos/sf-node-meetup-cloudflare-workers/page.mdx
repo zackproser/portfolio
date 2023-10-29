@@ -2,12 +2,18 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import workersTalk from '@/images/cloudflare-workers-talk.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2018-06-01",
   title: "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
   description: "How we dogfooded Cloudflare workers on the API team",
   image: workersTalk
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

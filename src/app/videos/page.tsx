@@ -2,17 +2,16 @@ import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
-import { getAllArticles } from '@/lib/articles'
+import { getAllVideos } from '@/lib/videos'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
 export const metadata: Metadata = {
-  title: 'Articles',
-  description:
-    'All of my technical tutorials, deep-dives, developer rants and video walkthroughs'
+  title: 'Zachary Proser&apos;s Videos',
+  description: 'All of my latest Twitch streams, YouTube videos, how-tos, demos, and code walkthroughs'
 }
 
 export default async function ArticlesIndex() {
-  let articles = await getAllArticles()
+  let articles = await getAllVideos()
 
   return (
     <SimpleLayout

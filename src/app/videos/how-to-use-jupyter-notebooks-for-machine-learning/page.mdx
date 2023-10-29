@@ -2,12 +2,18 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import jupyterNotebooks from '@/images/how-to-use-jupyter-notebooks.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2023-08-18",
   title: "How to use Jupyter Notebooks for Machine Learning and AI tasks",
   description: "In this comprehensive video, I demonstrate how simple it is to get started using Jupyter Notebooks to run arbitrary Python",
   image: jupyterNotebooks 
+}
+
+export const meta = {
+    title: article.title,
+    description: article.description,
+    image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
