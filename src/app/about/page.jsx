@@ -56,7 +56,7 @@ export default function About() {
           </div>
           <div className="lg:order-first lg:row-span-2">
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-              Hi, I&apos;m Zachary Proser
+              Hi, I&apos;m Zachary
             </h1>
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
@@ -64,6 +64,7 @@ export default function About() {
                 where we build the best-in-class cloud-native vector database at the heart of the Generative AI boom.
 
               </p>
+              <Newsletter />
               <p>
                 I have been a full-stack software engineer, technical writer and open-source contributor for <span className="text-green-500 font-bold">{RenderNumYearsExperience()} years</span>.
               </p>
