@@ -4,18 +4,12 @@ import Link from 'next/link'
 
 import aiChatbot from '@/images/ai-chatbot-jupyter-notebooks.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-07-03",
   title: "How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic",
   description: "How you can shorten your iteration cycles with Jupyter notebooks when building data-rich apps",
   image: aiChatbot
-}
-
-export const meta = {
-    title: article.title,
-    description: article.description,
-    image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

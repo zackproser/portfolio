@@ -2,18 +2,12 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import semanticSearch from '@/images/semantic-search-typescript.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-08-23",
   title: "Semantic Search with TypeScript and Pinecone",
   description: "Join Roie Schwaber-Cohen and I as we first discuss and then review the code for doing semantic search with Pinecone's vector database",
   image: semanticSearch
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

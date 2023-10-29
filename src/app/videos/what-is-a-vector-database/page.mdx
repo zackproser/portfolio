@@ -2,18 +2,12 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-10-19",
   title: "What is a vector database?",
   description: "Vector databases explained, featuring clowns, embeddings, neural networks, feature extraction, semantic search and Retrieval Augmented Generation (RAG).",
   image: whatIsAVectorDB
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
