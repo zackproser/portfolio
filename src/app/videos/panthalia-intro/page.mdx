@@ -2,18 +2,12 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import panthaliaVideo from '@/images/panthalia-video.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-08-27",
   title: "Project Panthalia: AI-assisted mobile blogging platform",
   description: "Panthalia enables me to author rich-media blog posts on the go - assisted by StableDiffusion XL for image generation",
   image: panthaliaVideo
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
