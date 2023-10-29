@@ -2,12 +2,18 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import aiChatbot from '@/images/building-an-ai-chatbot.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2023-06-30",
   title: "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
   description: "How I built an Office chatbot that can answer any question about the office",
   image: aiChatbot
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

@@ -3,12 +3,18 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import awsVault from '@/images/aws-vault.png'
 
-export const meta = {
+export const article = {
   author: "Zachary Proser",
   date: "2023-04-15",
   title: "Mastering Fast, Secure AWS Access with open source tool aws-vault ",
   description: "aws-vault is a powerful open source tool that allows you to define your AWS accounts as configuration, with your credentials stored safely in your operating system's secret store. It also handles multi-factor authentication (sending your TOTP token) and is a much more efficient way to access multiple AWS accounts.",
   image: awsVault
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
