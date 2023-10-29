@@ -1,20 +1,15 @@
-import React, { useState } from 'react'
-import { Container } from '@/components/Container'
-import { useRouter } from 'next/router'
-import Image from 'next/image'
-import portraitImage from '@/images/zachary-proser.png'
-import Head from 'next/head'
+'use client'
 
-import { SimpleLayout } from '@/components/SimpleLayout'
+import { useState } from 'react'
+import { Container } from '@/components/Container'
+import { useSearchParams } from 'next/navigation'
 
 function SubscribeWidget() {
 
-  const [formSuccess, setSuccess] = React.useState(false);
+  const [formSuccess, setSuccess] = useState(false);
 
   // Get access to the router in order to fetch query params off it
-  const router = useRouter()
-
-  const referrer = router.query.referrer || 'unknown/direct'
+  const referrer = useSearchParams().get('referrer') || 'unknown/direct'
 
   // Handle the submit event on form submit.
   const handleSubmit = async (event) => {
@@ -23,7 +18,7 @@ function SubscribeWidget() {
 
     // Cast the event target to an html form
     const form = event.target
-    
+
     // Get data from the form.
     const data = {
       email: form.email.value,
@@ -31,7 +26,7 @@ function SubscribeWidget() {
     }
 
     // Send the form data to our API and get a response.
-    const response = await fetch('/api/form', {
+    await fetch('/api/form', {
       // Body of the request is the JSON data we created above.
       body: JSON.stringify(data),
       // Tell the server we're sending JSON.
