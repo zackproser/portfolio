@@ -1,0 +1,88 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import automationsGif from '@/images/automations.gif'
+import autogitGif from '@/images/autogit.gif'
+import autoreviewGif from '@/images/autoreview.gif'
+import autoreviewResultGif from '@/images/autoreview-result.gif'
+import autocommitmessageGif from '@/images/autocommitmessage.gif'
+import autopullrequestGif from '@/images/autopullrequest.gif'
+import autopullrequestExample from '@/images/autopullrequest-example.png'
+
+import Image from 'next/image'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-05-24",
+  title: "Automations - shell scripts leveraging OpenAI to make your developer workflow buttery smooth and way more fun",
+  description: "I have open sourced my automations project, which is a collection of shell scripts that automatically handle git operations, provide local code reviews, pull requests, and more!",
+  image: automationsGif,
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={automationsGif} alt="Automations open source project" />
+
+## What is this?
+
+[`automations` is a collection of shell scripts](https://github.com/zackproser/automations) that automatically handle git operations, provide local code reviews, pull requests, and more! 
+
+These scripts leverage some of my favorite Go CLI libraries from the talented folks of [`github.com/charmbracelet`](https://github.com/charmbracelet). 
+
+I wrote them for fun and also to save me time, and, as I continue to use them and polish them every time I find an issue, I am happy to report that they are indeed fun to use. I'm pretty sure they're making me faster as well. 
+
+<Newsletter />
+
+## Current automations
+
+With that out of the way, let's get into the automations themselves:
+
+* [`autogit`](https://github.com/zackproser/automations#autogit) - ensures you're working with the latest code locally
+* [`autoreview`](https://github.com/zackproser/automations#autoreview) - get a senior-level code review in your terminal 
+* [`autocommitmessage`](https://github.com/zackproser/automations#autocommitmessage) - always write excellent, clear commit messages 
+* [`autopullrequest`](https://github.com/zackproser/automations#autopullrequest) - open pull requests with clear titles and descriptions 
+
+## autogit 
+
+When you change into a new local repository, autogit runs (thanks to an alias you've configured for your shell) and ensures that your default branch is up to date with the remote. This helps prevent you from opening pull requests with stale changes. 
+
+<Image src={autogitGif} alt="autogit" />
+
+## autoreview
+
+Want a Senior-level code review right in your terminal to help you catch all the low-hanging fruit before you bug a human teammate? `autoreview` does just that. 
+
+<Image src={autoreviewGif} alt="autoreview" />
+
+Here's an example of the kind of review it can produce, and it writes the file to `~/.autoreview` so that you can revisit them or lift code from them. 
+
+<Image src={autoreviewResultGif} alt="autoreview result" />
+
+## autocommitmessage
+
+So far, this may be the automation that has saved me the most time. I love the way it works because it's not just stamping out some low quality commit message that nobody can parse out later. 
+
+It actually describes the context of your changes pretty effectively, so it's currently hitting the sweet spot (at least for me) of combining increased speed with increased quality. 
+
+<Image src={autocommitmessageGif} alt="autocommitmessage" />
+
+Typing my personal alias for it, `gcai`, is so fast there's no excuse for writing "check in latest" anymore.
+
+## autopullrequest
+
+<Image src={autopullrequestGif} alt="autopullrequest" />
+
+This is the most recent automation, but it's pretty promising so far. It uses the official GitHub CLI, `gh` to open pull requests. It uses ChatGPT4 to generate clear, succinct and professional PR descriptions and titles, and then it opens the pull request for you. 
+
+Here's an example pull request it recently opened for me: 
+
+<Image src={autopullrequestExample} alt="autopullrequest example" />
+
+## What's next? 
+
+I'll continue improving the docs and the automations themselves. I hope to add some more automations in the future, too. I want to look into autocompletion functionality and adding installation instructions for various shells. 
+
+## A request
+
+If you found this interesting or useful, please consider sharing it with someone you know who may be interested in the project, or sign-up for my newsletter to receive tips and projects like this as soon as I publish them. Thanks for reading!
+
