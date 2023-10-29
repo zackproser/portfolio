@@ -15,27 +15,20 @@ function usePrevious<T>(value: T) {
 }
 
 function ThemeWatcher() {
-  let { resolvedTheme, setTheme } = useTheme()
+  let { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
-    let media = window.matchMedia('(prefers-color-scheme: dark)')
+    // Check if the user has previously selected light mode
+    const userSelectedLight = window.localStorage.getItem('theme') === 'light';
 
-    function onMediaChange() {
-      let systemTheme = media.matches ? 'dark' : 'light'
-      if (resolvedTheme === systemTheme) {
-        setTheme('system')
-      }
+    if (userSelectedLight) {
+      setTheme('light');  // If so, set theme to light
+    } else {
+      setTheme('dark');  // Otherwise, default to dark
     }
+  }, [setTheme]);
 
-    onMediaChange()
-    media.addEventListener('change', onMediaChange)
-
-    return () => {
-      media.removeEventListener('change', onMediaChange)
-    }
-  }, [resolvedTheme, setTheme])
-
-  return null
+  return null;
 }
 
 export const AppContext = createContext<{ previousPathname?: string | null }>({});
