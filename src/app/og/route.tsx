@@ -3,6 +3,10 @@ import { ImageResponse } from 'next/server';
 
 export const runtime = 'edge';
 
+const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
+  return Buffer.from(buffer).toString('base64');
+};
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url || '');
 
@@ -25,6 +29,9 @@ export async function GET(request: NextRequest) {
     return
   }
 
+  const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`;
+  const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`;
+
   return new ImageResponse(
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
@@ -35,7 +42,7 @@ export async function GET(request: NextRequest) {
       <div tw="flex flex-col md:flex-row w-full">
         <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
           <img
-            src={profileImageData.toString()}
+            src={base64ProfileImage}
             alt="Zachary Proser"
             className="w-full h-full object-cover"
             style={{ borderRadius: 128 }}
@@ -65,7 +72,7 @@ export async function GET(request: NextRequest) {
           </div>
           <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
             <img
-              src={postImageData.toString()}
+              src={base64PostImage}
               alt="Post Image"
               className="w-full h-full object-cover"
             />
