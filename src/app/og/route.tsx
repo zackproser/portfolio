@@ -1,5 +1,5 @@
-import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { ImageResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -10,18 +10,16 @@ export async function GET(request: NextRequest) {
   const image = searchParams.get('image') || searchParams.get('amp;image');
   const description = searchParams.get('description') || searchParams.get('amp;description');
 
-  const profileImageFetchURL = new URL('/public/zack.png', import.meta.url);
-  const profileImageData = await fetch(profileImageFetchURL)
-    .then((res) => res.blob())
-    .then((blob) => URL.createObjectURL(blob));
-
+  const profileImageData = await fetch(new URL('/public/zack.png', import.meta.url)).then(
+    (res) => res.arrayBuffer(),
+  );
 
   const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
   const ultimateURL = image ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL;
 
   let postImageData;
   try {
-    postImageData = await fetch(ultimateURL).then((res) => res.blob().then((blob) => URL.createObjectURL(blob)));
+    postImageData = await fetch(ultimateURL).then((res) => res.arrayBuffer());
   } catch (err) {
     console.log(`og API route err: ${err} `);
     return
@@ -37,7 +35,7 @@ export async function GET(request: NextRequest) {
       <div tw="flex flex-col md:flex-row w-full">
         <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
           <img
-            src={profileImageData}
+            src={profileImageData.toString()}
             alt="Zachary Proser"
             className="w-full h-full object-cover"
             style={{ borderRadius: 128 }}
@@ -67,7 +65,7 @@ export async function GET(request: NextRequest) {
           </div>
           <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
             <img
-              src={postImageData}
+              src={postImageData.toString()}
               alt="Post Image"
               className="w-full h-full object-cover"
             />
