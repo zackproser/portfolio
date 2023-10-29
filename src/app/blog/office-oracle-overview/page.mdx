@@ -1,0 +1,70 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import OfficeOracle from '@/images/michael-scott-oracle.png'
+import OfficeOracle2 from '@/images/michael-scott-oracle-2.png'
+import OfficeOracle3 from '@/images/office-oracle-3.png'
+
+import Image from 'next/image'
+
+export const article = {
+  author: "Zachary Proser",
+  date: "2023-07-04",
+  title: "Office Oracle - a complete AI Chatbot leveraging langchain, Pinecone.io and OpenAI",
+  description: "I open sourced my next.js AI chatbot and the Jupyter notebooks I used to build it, plus created a video series walking through it all on YouTube",
+  image: OfficeOracle2,
+}
+
+export const meta = {
+  title: article.title,
+  description: article.description,
+  image: article.image
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={OfficeOracle} alt="Office Oracle AI chatbot project" />
+
+## What is this?
+
+The Office Oracle AI chatbot is a complete AI chatbot built on top of langchain, Pinecone.io and OpenAI's GPT-3 model. It demonstrates how you can build a fully-featured chat-GPT-like experience 
+for yourself, to produce an AI chatbot with any identity, who can answer factually for any arbitrary corpus of knowledge. 
+
+<Newsletter />
+
+For the purposes of demonstration, I used the popular Office television series, but this same stack and approach will work for AI chatbots who can answer for a company's documentation, or specific processes, products, 
+policies and more. 
+
+<Image src={OfficeOracle3} alt="Office Oracle AI chatbot project" />
+
+## Video series
+
+Be sure to check out my three-part video series on YouTube, where I break down the entire app end to end, and discuss the Jupyter notebooks and data science elements, in addition to the Vercel ai-chatbot template 
+I used and modified for this project: 
+
+[AI Chatbots playlist on YouTube](https://youtube.com/playlist?list=PLAEMpWvY5KHwwDFTNaPquREnk5Y9eiipa)
+
+### Intro video and demo 
+
+<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### Jupyter notebooks deep-dive 
+
+<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+### Next.js vercel template ai-chatbot deep-dive
+
+<iframe width="315" height="315" src="https://www.youtube.com/embed/FiUaEi1q1pI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+## Open source code 
+
+I open sourced the Jupyter notebooks that I used to prepare, sanitize and spot-check my data here: 
+
+* [Office Oracle Data workbench](https://github.com/zackproser/office-oracle-data-bench)
+* [Office Oracle Data test workbench](https://github.com/zackproser/office-oracle-db-test-notebook)
+
+The data workbench notebook handles fetching, parsing and writing the data to local files, as well as converting the text to embeddings and upsertings the vectors into the Pinecone.io vector database. 
+
+The test workbench notebook demonstrates how to create a streamlined test harness that allows you to spot check and tweak your data model without requiring significant development changes to your application layer. 
+
+I also open sourced [the next.js application itself](https://github.com/zackproser/office-oracle)
