@@ -4,18 +4,12 @@ import Link from 'next/link'
 
 import aiChatbot from '@/images/ai-chatbot-vercel-template.png'
 
-export const article = {
+export const meta = {
   author: "Zachary Proser",
   date: "2023-07-03",
   title: "How to build an AI chatbot using Vercel's ai-chatbot template",
   description: "How to extend and modify Vercel's base ai-chatbot template for your own purposes",
   image: aiChatbot
-}
-
-export const meta = {
-  title: article.title,
-  description: article.description,
-  image: article.image
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
