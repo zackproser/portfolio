@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
-import { formatDate } from '@/lib/formatDate'
 
 function ArrowLeftIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -104,7 +103,7 @@ export function ArticleLayout({
                   className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
                 >
                   <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
-                  <span className="ml-3">{formatDate(meta.date)}</span>
+                  <span className="ml-3">{meta.date}</span>
                 </time>
               </header>
               <Prose className="mt-8">{children}</Prose>
