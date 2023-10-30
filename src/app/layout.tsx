@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/react';
+
 import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
@@ -58,6 +60,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex w-full">
             <Layout>{children}</Layout>
+            <Analytics />
           </div>
         </Providers>
       </body>
