@@ -18,6 +18,33 @@ import TomLandesman from '@/images/tom-landesman.jpg'
 import ChristianPaulus from '@/images/christian-paulus.jpg'
 import AnthonyDavanzo from '@/images/anthony-davanzo.jpg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
+  title: 'Testimonials and social proof',
+  description: 'What is it like to work with me?',
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
+
+
 const featuredTestimonial = {
   body: 'When I ran your software, I felt joy',
   author: {
