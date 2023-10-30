@@ -23,6 +23,33 @@ import { getAllArticles } from '@/lib/articles'
 // Instead of needing to constantly update my static site, do the calculation of years that I've been working in tech in JS
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
+  title: 'Homepage',
+  description: 'Full-stack open-source hacker, technical writer and developer advocate.',
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
+
+
 function SocialLink({
   icon: Icon,
   ...props
