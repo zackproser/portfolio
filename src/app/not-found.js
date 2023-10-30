@@ -4,6 +4,32 @@ import Link from 'next/link';
 
 import wizard404 from '@/images/404-wizard.jpeg';
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
+  title: 'Whoops! 404',
+  description: 'There is nothing here!'
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
+
 export default function Custom404() {
   return (
     <Container className="mt-16 lg:mt-32">

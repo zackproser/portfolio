@@ -12,6 +12,31 @@ import nuke from '@/images/nuke.png'
 import panthalia from '@/images/panthalia-logo.png'
 import automations from '@/images/logos/automations.svg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
+  title: 'My projects',
+  description: 'A selection of open-source projects, tools and applications I have built or maintained over the years',
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
 const projects = [
   {
     name: 'panthalia',

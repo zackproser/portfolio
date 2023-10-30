@@ -29,8 +29,6 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
 
-  const defaultOpengraphImage = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`
-
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
@@ -55,21 +53,6 @@ export default function RootLayout({
           type="application/feed+json"
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
-
-        <title>{`Zachary Proser`}</title>
-        <meta property="og:title" content="Zachary Proser's portfolio site" />
-        <meta name="description" content={'Zachary Proser - Staff Developer Advocate'} />
-        <meta name="og:description" content={'Zachary Proser - Articles, videos, and open-source projects'} />
-        <meta name="og:image" content={defaultOpengraphImage} />
-        <meta name="og:url" content="https://zackproser.com" />
-        <meta property="og:type" content="website" />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="zackproser.com" />
-        <meta property="twitter:url" content="https://zackproser.com" />
-        <meta name="twitter:title" content="Zachary Proser&apos;s portfolio site" />
-        <meta name="twitter:description" content="Zachary Proser&apos;s writing, videos, and open-source projects" />
-        <meta name="twitter:image" content={defaultOpengraphImage} />
       </head>
       <body className="flex h-full bg-zinc-50 dark:bg-black">
         <Providers>
