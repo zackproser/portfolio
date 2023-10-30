@@ -7,7 +7,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   return Buffer.from(buffer).toString('base64');
 };
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<ImageResponse | undefined> {
   const { searchParams } = new URL(request.url || '');
 
   const title = searchParams.get('title') || 'Portfolio, blog, videos and open-source projects';
