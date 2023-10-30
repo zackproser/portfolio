@@ -7,7 +7,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   return Buffer.from(buffer).toString('base64');
 };
 
-export async function GET(request: NextRequest): Promise<ImageResponse | undefined> {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url || '');
 
   const title = searchParams.get('title') || 'Portfolio, blog, videos and open-source projects';
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest): Promise<ImageResponse | undefin
   const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`;
   const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`;
 
-  return new ImageResponse(
+  return new (ImageResponse as any)(
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
