@@ -14,12 +14,34 @@ import {
   YouTubeIcon,
   SocialLink
 } from '@/components/SocialIcons'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
 import portraitImage from '@/images/zachary-proser.png'
 
-function RenderNumYearsExperience() {
-  return Math.abs(new Date('January 1 2012').getFullYear() - new Date().getFullYear())
-}
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
+  title: 'About Zachary Proser',
+  description: 'Full-stack open-source hacker, technical writer and developer advocate.',
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 function MailIcon(props) {
   return (

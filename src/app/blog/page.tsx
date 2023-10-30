@@ -5,11 +5,32 @@ import { type ArticleWithSlug } from '@/lib/shared-types'
 import { getAllArticles } from '@/lib/articles'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
-export const metadata: Metadata = {
+import { generateOgUrl } from '@/utils/ogUrl'
+
+const data = {
   title: 'Articles',
   description:
-    'All of my technical tutorials, deep-dives, developer rants and video walkthroughs'
-}
+    'All of my technical tutorials, deep-dives, and developer rants'
+
+};
+
+const ogUrl = generateOgUrl(data);
+
+export const metadata: Metadata = {
+  openGraph: {
+    title: data.title,
+    description: data.description,
+    url: ogUrl,
+    siteName: 'Zack Proser&apos;s portfolio',
+    images: [
+      {
+        url: ogUrl,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 export default async function ArticlesIndex() {
   let articles = await getAllArticles()
