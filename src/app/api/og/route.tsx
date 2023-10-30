@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`;
   const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`;
 
-  return new ImageResponse(
+  return new (ImageResponse as any)(
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
