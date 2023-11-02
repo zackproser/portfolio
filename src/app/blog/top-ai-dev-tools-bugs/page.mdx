@@ -8,6 +8,8 @@ import agentForgettingPrompting from '@/images/agent-forgetting-its-prompting.jp
 import yourAIDevToolSucks from '@/images/your-ai-dev-tool-sucks.jpeg'
 import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-tool.jpeg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
@@ -18,6 +20,19 @@ export const meta = {
   image: hackerEvaluation,
 }
 
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

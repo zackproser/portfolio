@@ -1,10 +1,26 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'How to work with CircleCI more effectively',
   description: 'Pro tips for working with CircleCI configurations',
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
