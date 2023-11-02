@@ -3,6 +3,8 @@ import Image from 'next/image'
 import { Button } from '@/components/Button'
 import reactLambdaPipeline from '@/images/lambda-ci-cd.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
     author: "Zachary Proser", 
     date: "2021-04-05", 
@@ -12,9 +14,24 @@ export const meta = {
     image: reactLambdaPipeline
 }
 
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
 <Image src={meta.image} alt={meta.title} />
 
 <Button href={meta.href}>Read the article</Button>
+
 
