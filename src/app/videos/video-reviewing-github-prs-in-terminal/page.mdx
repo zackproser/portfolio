@@ -5,6 +5,8 @@ import Image from 'next/image'
 import hackerReviewingCode from '@/images/hacker-reviewing-code.png'
 import hackerReviewingCode2 from '@/images/hacker-reviewing-code-2.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2022-06-15",
@@ -12,6 +14,22 @@ export const meta = {
   description: "Discover the power of terminal-based GitHub pull request reviews using open-source tools gh-dash and the neovim plugin Octo. Learn how these tools can streamline your review process, enhance collaboration, and save time. In this video tutorial, we'll demonstrate how to harness the benefits of a terminal workflow, including powerful command-line functionality, customization options, offline access, and cross-platform compatibility", 
   image: hackerReviewingCode
 }
+
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+ }
+
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
