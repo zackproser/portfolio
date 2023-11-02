@@ -8,6 +8,8 @@ import flashback from '@/images/flashback.jpeg'
 import rewiringMyBrain from '@/images/rewiring-my-brain.jpeg'
 import theLightWasYou from '@/images/the-light-was-you.jpeg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-15',
@@ -15,6 +17,21 @@ export const meta = {
   description: 'There are only two people I am aware of named Zachary Proser, with that exact spelling. This article is only for Zachary Proser.',
   image: zacharyLight
 }
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
