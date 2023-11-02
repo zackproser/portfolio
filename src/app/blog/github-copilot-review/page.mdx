@@ -6,12 +6,28 @@ import githubCopilot2 from '@/images/github-copilot-review-2.jpeg'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-07',
   title: 'GitHub Copilot review', 
   description: 'I got Copilot access for free as an active GitHub open-source maintainer, but would I pay for it?',
   image: githubCopilot,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
