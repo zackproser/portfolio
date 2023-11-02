@@ -2,6 +2,8 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2023-10-19",
@@ -9,6 +11,22 @@ export const meta = {
   description: "Vector databases explained, featuring clowns, embeddings, neural networks, feature extraction, semantic search and Retrieval Augmented Generation (RAG).",
   image: whatIsAVectorDB
 }
+
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

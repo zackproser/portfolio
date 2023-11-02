@@ -2,12 +2,28 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import aiChatbot from '@/images/building-an-ai-chatbot.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2023-06-30",
   title: "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
   description: "How I built an Office chatbot that can answer any question about the office",
   image: aiChatbot
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
