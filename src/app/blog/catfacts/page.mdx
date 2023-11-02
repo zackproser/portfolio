@@ -5,6 +5,8 @@ import Link from 'next/link'
 import catfactsBlog from '@/images/catfacts-screens/catfacts-blog.png'
 import catfactsScreenshot from '@/images/catfacts-screens/catfacts.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
     author: "Zachary Proser",
     date: "2018-01-08",
@@ -13,6 +15,19 @@ export const meta = {
     image: catfactsBlog
 }
 
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 

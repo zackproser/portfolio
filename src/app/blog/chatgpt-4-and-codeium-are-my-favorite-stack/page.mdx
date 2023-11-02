@@ -11,12 +11,28 @@ import aiDirectEnhancement from '@/images/ai-direct-enhancement.jpeg'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-10',
   title: 'ChatGPT4 and Codeium are still my favorite dev assistant stack', 
   description: 'As of October 10th, 2023, ChatGPT4 and Codeium are still my favorite AI-assisted dev tool stack. Here is why',
   image: myFavoriteAIStack
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
