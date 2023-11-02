@@ -8,6 +8,8 @@ import holyComputer from '@/images/holy-computer.png'
 import vercelFunctionsLogging from '@/images/vercel-functions-logging.png'
 import vercelIntegratedAnalytics from '@/images/vercel-integrated-analytics.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import NextJSErrors from '@/images/next-js-errors.png'
 
 export const meta = {
@@ -16,6 +18,20 @@ export const meta = {
   title: "Maintaining this site no longer fucking sucks",
   description: "After re-doing my personal website in next.js and deploying to Vercel, I reflect on how much better the developer experience has become.",
   image: holyComputer 
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
