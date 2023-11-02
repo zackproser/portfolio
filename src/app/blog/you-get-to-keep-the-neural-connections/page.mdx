@@ -7,6 +7,8 @@ import shelvingADistributedSystem from '@/images/shelving-a-distributed-system.j
 import puttingTheRefArchDown from '@/images/putting-the-ref-arch-down.jpeg'
 import yourExperienceComesWithYou from '@/images/your-experience-comes-with-you.jpeg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
@@ -15,6 +17,20 @@ export const meta = {
   title: 'You get to keep the neural connections', 
   description: 'Going the extra mile only to be unrewarded by your company feels like a personal slight and a waste of your time. It is not.',
   image: puttingTheRefArchDown,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

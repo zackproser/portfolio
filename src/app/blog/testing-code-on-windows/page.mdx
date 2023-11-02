@@ -2,6 +2,8 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/Button'
 import wikka from '@/images/wikka.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
     author: "Zachary Proser", 
     date: "2022-07-05",
@@ -11,6 +13,19 @@ export const meta = {
     image: wikka,
 }
 
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
