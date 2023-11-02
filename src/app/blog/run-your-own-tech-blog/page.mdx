@@ -12,6 +12,8 @@ import bloggingWebPerformance from '@/images/blogging-web-performance.png'
 import bloggingGetsFaster from '@/images/blogging-gets-faster.png'
 import bloggingWaving from '@/images/blogging-waving.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
@@ -21,6 +23,20 @@ export const meta = {
   description: 'Control your own destiny, build your personal brand, and master web technologies by running your own tech blog.',
   image: bloggingPeacefully,
 }
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+ }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
