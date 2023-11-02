@@ -2,12 +2,28 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import ragPart2 from '@/images/typescript-rag-livestream-part2.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2023-08-16",
   title: "Part #2 Live code review: Pinecone Vercel starter template and Retrieval Augmented Generation (RAG).",
   description: "Part #2 of our Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
   image: ragPart2
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
