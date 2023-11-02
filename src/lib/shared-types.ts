@@ -4,6 +4,7 @@ export interface Article {
   author: string
   date: string
   type?: string
+  image?: string
 }
 
 export interface ArticleWithSlug extends Article {
