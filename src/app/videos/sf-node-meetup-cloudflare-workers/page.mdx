@@ -2,12 +2,28 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import workersTalk from '@/images/cloudflare-workers-talk.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2018-06-01",
   title: "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
   description: "How we dogfooded Cloudflare workers on the API team",
   image: workersTalk
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
