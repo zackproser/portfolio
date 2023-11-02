@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import quakeInFargate from '@/images/quake-in-fargate.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
     author: "Zachary Proser", 
     date: "2022-04-15", 
@@ -11,6 +13,20 @@ export const meta = {
     description: "A tutorial, along with working Terraform code and Dockerfile, that you can use to deploy and operate your own Quake 3 server in an ECS task.",
     href: "https://medium.com/@zackproser/how-to-run-a-quake-server-in-an-aws-fargate-task-aac75c3ab81f",
     image: quakeInFargate
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

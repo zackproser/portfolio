@@ -14,6 +14,8 @@ import civitAI from '@/images/civitai.png'
 import whyCreateAIImages from '@/images/why-create-ai-images.jpeg'
 import haterade from '@/images/haterade.jpeg'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 export const meta = {
@@ -22,6 +24,20 @@ export const meta = {
   title: 'How to generate images with AI', 
   description: 'I have used StableDiffusion, AUTOMATIC111, DALLE and Discord bots to generate images in every style for blog posts. You can too.',
   image: aiImageGeneration,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

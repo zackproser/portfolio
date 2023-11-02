@@ -5,6 +5,8 @@ import OfficeOracle from '@/images/michael-scott-oracle.png'
 import OfficeOracle2 from '@/images/michael-scott-oracle-2.png'
 import OfficeOracle3 from '@/images/office-oracle-3.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 import Image from 'next/image'
 
 export const meta = {
@@ -13,6 +15,20 @@ export const meta = {
   title: "Office Oracle - a complete AI Chatbot leveraging langchain, Pinecone.io and OpenAI",
   description: "I open sourced my next.js AI chatbot and the Jupyter notebooks I used to build it, plus created a video series walking through it all on YouTube",
   image: OfficeOracle2,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
