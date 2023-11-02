@@ -8,12 +8,28 @@ import neotreeDemo from '@/images/neotree.gif'
 import ripgrepDemo from '@/images/ripgrep.gif'
 import symbolOutlineDemo from '@/images/symboloutline.gif'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: "Zachary Proser",
   date: "2022-04-27",
   title: "Terminal velocity - how to get faster as a developer ",
   description: "I obssess a decent amount over my own developer productivity and my customized tmux, neovim and awesome window manager linux setup, and now I pass my best learnings on to you",
   image: myCustomDevSetup
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />

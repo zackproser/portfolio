@@ -11,12 +11,28 @@ import releaseYourWork from '@/images/release-your-work.png'
 import bullshit from '@/images/bullshit.png'
 import ConsultingCTA from '@/components/ConsultingCTA'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-25',
   title: 'Wash three walls with one bucket', 
   description: 'Design your side projects, blog posts and even your fun experiments to triangulate multiple learning paths simultaneously. Then, use them to build out your portfolio.',
   image: washThreeWallsWithOneBucket,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props}></ArticleLayout>

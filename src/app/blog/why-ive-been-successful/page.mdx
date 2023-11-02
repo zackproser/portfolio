@@ -3,12 +3,28 @@ import Image from 'next/image'
 import gruntworkPromotions from '@/images/gruntwork-promotions.png'
 import layeredLearningPhases from '@/images/successful/layered-learning-phases.png'
 
+import { generateOgUrl } from '@/utils/ogUrl'
+
 export const meta = {
   author: 'Zachary Proser', 
   date: '2023-03-20', 
   title: "Why I've been successful lately, and what I'm planning to do about it", 
   description: "In the past 3 years, I've been promoted 3 times. I reflect on the habits and activities that helped me improve the most. ",
   image: gruntworkPromotions,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
 }
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
