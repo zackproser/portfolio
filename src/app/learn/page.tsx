@@ -1,11 +1,15 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
+
+import Image from 'next/image';
+import Link from 'next/link';
+
+import githubSignin from '@/images/github-signin.png';
 
 import { Container } from '@/components/Container'
 import LoginButton from '@/components/login-btn'
 
-import Image from "next/image"
 import zpSchoolForHackers from '@/images/zp-school-for-hackers.png'
 
 export default function LearningHome() {
@@ -14,7 +18,12 @@ export default function LearningHome() {
   if (!session) {
     return (
       <>
-        <LoginButton />
+        <Container className="mt-9">
+          <Link onClick={() => signIn()} href="/learn" className="text-sm font-semibold leading-6 text-white">
+            <Image width={1200} src={githubSignin} alt="Github Signin" />
+          </Link>
+          <LoginButton />
+        </Container>
       </>
     );
   }
