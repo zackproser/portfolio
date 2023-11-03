@@ -1,6 +1,5 @@
 'use client'
 
-import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
@@ -36,50 +35,11 @@ export function ArticleLayout({
     slug?: string
   }
 }) {
-  const router = useRouter()
 
-  const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''))
-
-  let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
-
-  if (meta.image && meta.image.src) {
-    ogURL = `${ogURL}&image=${meta.image.src}`
-  }
-
-  if (meta.description) {
-    const sanitizedDescription = encodeURIComponent(
-      meta.description.replace(/'/g, '')
-    )
-    ogURL = `${ogURL}&description=${sanitizedDescription}`
-  }
-
-  let root = '/blog/'
-  if (meta?.type == 'video') {
-    root = '/videos/'
-  }
-
-  const builtURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug ?? ''}`
-  const postURL = new URL(builtURL)
+  const router = useRouter();
 
   return (
     <>
-      <Head>
-        <title>{`${meta.title} - Zachary Proser`}</title>
-        <meta name="description" content={meta.description} />
-        <meta name="og:image" content={ogURL} />
-        <title>{meta.title}</title>
-        <meta property="og:title" content={meta.title} />
-        <meta name="description" content={meta.description} />
-        <meta name="og:image" content={ogURL} />
-        <meta name="og:url" content={postURL.toString()} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="zackproser.com" />
-        <meta property="twitter:url" content={postURL.toString()} />
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
-        <meta name="twitter:image" content={ogURL} />
-      </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-2xl">
@@ -114,4 +74,3 @@ export function ArticleLayout({
     </>
   )
 }
-
