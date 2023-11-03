@@ -140,7 +140,7 @@ function MobileNavigation(
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
                 <MobileNavItem href="/testimonials">Testimonials</MobileNavItem>
                 <MobileNavItem href="/contact">Contact</MobileNavItem>
-                <SparkleNavItem href="/learn">Learn</SparkleNavItem>
+                <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
               </ul>
             </nav>
           </Popover.Panel>
