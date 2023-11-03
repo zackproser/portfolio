@@ -8,6 +8,8 @@ import { useTheme } from 'next-themes'
 import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
 
+import SparkleNavItem from '@/components/SparkleNavItem';
+
 import { Container } from '@/components/Container'
 import avatarImage from '@/images/zachary-proser.png'
 
@@ -138,6 +140,7 @@ function MobileNavigation(
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
                 <MobileNavItem href="/testimonials">Testimonials</MobileNavItem>
                 <MobileNavItem href="/contact">Contact</MobileNavItem>
+                <SparkleNavItem href="/learn">Learn</SparkleNavItem>
               </ul>
             </nav>
           </Popover.Panel>
@@ -186,6 +189,7 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
         <NavItem href="/projects">Projects</NavItem>
         <NavItem href="/testimonials">Testimonials</NavItem>
         <NavItem href="/contact">Contact</NavItem>
+        <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
       </ul>
     </nav>
   )
