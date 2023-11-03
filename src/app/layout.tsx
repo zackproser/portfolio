@@ -1,5 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 
+import AuthProvider from '../lib/auth/AuthProvider';
+
 import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
@@ -56,14 +58,16 @@ export default function RootLayout({
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
       </head>
-      <body className="flex h-full bg-zinc-50 dark:bg-black">
-        <Providers>
-          <div className="flex w-full">
-            <Layout>{children}</Layout>
-            <Analytics />
-          </div>
-        </Providers>
-      </body>
+      <AuthProvider>
+        <body className="flex h-full bg-zinc-50 dark:bg-black">
+          <Providers>
+            <div className="flex w-full">
+              <Layout>{children}</Layout>
+              <Analytics />
+            </div>
+          </Providers>
+        </body>
+      </AuthProvider>
     </html>
   )
 }
