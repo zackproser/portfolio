@@ -1,7 +1,9 @@
-import NextAuth from "next-auth"
+import NextAuth, { type AuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 
-const handler = NextAuth({
+// export this because react server components also need it in order to call 
+// getServerSession
+export const authOptions = {
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
@@ -14,6 +16,8 @@ const handler = NextAuth({
       return true
     }
   }
-})
+} as AuthOptions
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }
