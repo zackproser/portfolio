@@ -1,0 +1,37 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+
+import gitGoing from '@/images/git-going-hero.png'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Git Going', 
+  description: 'The missing git manual every engineer needs regardless of specialization',
+  image: gitGoing,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={gitGoing} alt="Git is the one super power every developer needs" />
+<figcaption>It's time to Git Going!</figcaption>
+
+## Git for your monkey ass
