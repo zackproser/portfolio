@@ -26,6 +26,10 @@ export async function getAllCourses() {
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
 
+export async function getSegmentContent(course: string, segment: string) {
+  return (await import(`src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
+}
+
 export async function getCourseSegments(course: string) {
   const segmentDirs = fs.readdirSync(path.join(process.cwd(), `src/app/learn/courses/${course}`)).filter((dir: string) => dir != 'page.mdx');
   const segmentMetas = await Promise.all(segmentDirs.map(async (dir) => {
@@ -34,3 +38,4 @@ export async function getCourseSegments(course: string) {
   }));
   return segmentMetas.filter(meta => meta != undefined);
 }
+
