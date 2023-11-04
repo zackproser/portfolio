@@ -1,0 +1,45 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { generateOgUrl } from '@/utils/ogUrl'
+import comingOutOfYourShell from '@/images/coming-out-of-your-shell.png'
+import comingOutOfYourShell2 from '@/images/coming-out-of-your-shell-2.png'
+import { Button } from '@/components/Button'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Coming out of your shell', 
+  description: 'Supercharge your command line skills with a new shell',
+  image: comingOutOfYourShell, 
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Don&apos;t stick to the default terminal
+
+<img src={comingOutOfYourShell2.src} />
+
+Have you ever heard of ZSH? Alacrity? Butterfish? 
+
+In this course you'll learn to install, configure and leverage powerful custom shells to supercharge your command line skills.
+
+<Button 
+  variant={"green"}
+  href={`/learn/courses/coming-out-of-your-shell/0`}
+>
+Coming out of your shell - start course
+</Button>
+

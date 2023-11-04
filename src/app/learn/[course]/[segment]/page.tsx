@@ -27,7 +27,9 @@ export default async function Page({ params }: PageProps) {
         segments={segments}
         currentSegment={segment}
       >
-        {segmentContent()}
+        <p className="prose text-white">
+          {segmentContent()}
+        </p>
       </ModuleBrowser>
     </SimpleLayout>
   )
