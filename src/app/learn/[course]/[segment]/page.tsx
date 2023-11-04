@@ -24,6 +24,7 @@ export default async function Page({ params }: PageProps) {
       intro={''}
     >
       <ModuleBrowser
+        course={course}
         segments={segments}
         currentSegment={segment}
       >
