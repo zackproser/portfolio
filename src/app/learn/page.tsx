@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth/auth-options";
 
 import { SimpleLayout } from '@/components/SimpleLayout';
 import GithubSignin from '@/components/github-signin';
