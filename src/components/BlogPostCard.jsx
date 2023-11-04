@@ -11,6 +11,10 @@ export function BlogPostCard({ article }) {
     root = '/videos/'
   }
 
+  if (article?.type == 'course') {
+    root = '/learn/courses/'
+  }
+
   return (
     <article key={article.slug} className="flex flex-col items-start justify-between">
       <div className="relative w-full">
