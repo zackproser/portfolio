@@ -2,6 +2,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import { generateOgUrl } from '@/utils/ogUrl'
 import Image from 'next/image'
 import gitGoingHero from '@/images/git-going-hero.png'
+import gitIsYourSaveButton from '@/images/git-is-your-save-button.png'
 import { Button } from '@/components/Button'
 
 export const meta = {
@@ -34,9 +35,16 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 
 Yet everyone needs git. Learning git well is one of the best ways to differentiate yourself to hiring managers.
 
+## Git is your save button!
+
+Never lose work once you learn how to use git. While git has a lot of complex advanced features and configuration options, learning the basic workflow for being effective 
+doesn't take long, and this course will show you everything you need to know with a hands-on project.  
+
+<img src={gitIsYourSaveButton.src} alt="Git is your save button"/>
+
 <Button 
   variant={"green"}
-  href={`/learn/courses/git-going/0`}
+  href={`/learn/git-going/0`}
 >
 Git Going - start course
 </Button>
