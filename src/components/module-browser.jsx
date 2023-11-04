@@ -1,5 +1,3 @@
-'use server'
-
 import Link from "next/link"
 
 export default async function ModuleBrowser({ segments, currentSegment, children }) {
@@ -22,8 +20,9 @@ export default async function ModuleBrowser({ segments, currentSegment, children
             ))}
           </nav>
         </div>
+        {/* children is the markdown content for this segment */}
         <div
-          className="flex flex-grow items-center justify-center"
+          className="flex flex-grow items-start justify-center pl-8 pr-8 pt-2"
         >
           {children}
         </div>
