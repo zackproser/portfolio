@@ -13,6 +13,7 @@ async function importArticle(
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    type: 'course',
     ...meta,
   }
 }
@@ -21,11 +22,7 @@ export async function getAllCourses() {
   let articleFilenames = await glob('*/page.mdx', {
     cwd: './src/app/learn/courses',
   })
-
-  console.log(`getAllCourses: ${articleFilenames}`)
-
   let articles = await Promise.all(articleFilenames.map(importArticle))
-
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
 

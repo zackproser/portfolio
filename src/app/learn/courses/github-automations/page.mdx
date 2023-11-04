@@ -1,14 +1,16 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+
+import githubAutomations from '@/images/github-automations2.png'
+
 import { generateOgUrl } from '@/utils/ogUrl'
-import Image from 'next/image'
-import gitGoingHero from '../../../../images/git-going-hero.png'
 
 export const meta = {
   author: 'Zachary Proser',
   date: '2023-10-18',
-  title: 'Git Going', 
-  description: 'The missing git manual every engineer needs regardless of specialization',
-  image: gitGoingHero, 
+  title: 'GitHub Automations', 
+  description: 'Become an open-source maintenance wizard with GitHub Automations!',
+  image: githubAutomations,
 }
 
 export const metadata = {
@@ -27,9 +29,7 @@ export const metadata = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-## Most developers don't understand git... 
+<Image src={githubAutomations} alt="Do not fear GitHub Actions, use them!" />
+<figcaption>Time to automate with GitHub!</figcaption>
 
-<img src={gitGoingHero.src} />
-
-Yet everyone needs git. Learning git well is one of the best ways to differentiate yourself to hiring managers.
-
+## GitHub Automations for your monkey ass
