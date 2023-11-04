@@ -1,5 +1,6 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import  Image  from 'next/image'
+import { Button } from '@/components/Button'
 
 import githubAutomations from '@/images/github-automations2.png'
 
@@ -29,7 +30,15 @@ export const metadata = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-<Image src={githubAutomations} alt="Do not fear GitHub Actions, use them!" />
+<img src={githubAutomations.src}  alt="GitHub Automations course"/>
 <figcaption>Time to automate with GitHub!</figcaption>
 
-## GitHub Automations for your monkey ass
+## GitHub Automations help you maintain software more effectively with less effort 
+
+<Button 
+  variant={"green"}
+  href={`/learn/courses/github-automations/0`}
+>
+GitHub Automations - start course
+</Button>
+

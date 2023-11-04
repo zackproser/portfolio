@@ -1,9 +1,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import  Image  from 'next/image'
-
 import takingCommand from '@/images/taking-command.png'
-
 import { generateOgUrl } from '@/utils/ogUrl'
+import { Button } from '@/components/Button'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -29,7 +28,16 @@ export const metadata = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-<Image src={takingCommand} alt="Building your own command line tools is a useful way to empower your whole team" />
+<img src={takingCommand.src} alt="Building your own command line tools is a useful way to empower your whole team" />
 <figcaption>Time to build a command line tool!</figcaption>
 
-## CLIs for your monkey ass 
+## Project-based practice: building a command line tool in Go 
+
+
+
+<Button 
+  variant={"green"}
+  href={`/learn/courses/taking-command/0`}
+>
+Taking Command - start course
+</Button>

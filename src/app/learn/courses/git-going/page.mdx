@@ -1,7 +1,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { generateOgUrl } from '@/utils/ogUrl'
 import Image from 'next/image'
-import gitGoingHero from '../../../../images/git-going-hero.png'
+import gitGoingHero from '@/images/git-going-hero.png'
+import { Button } from '@/components/Button'
 
 export const meta = {
   author: 'Zachary Proser',
@@ -32,4 +33,11 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 <img src={gitGoingHero.src} />
 
 Yet everyone needs git. Learning git well is one of the best ways to differentiate yourself to hiring managers.
+
+<Button 
+  variant={"green"}
+  href={`/learn/courses/git-going/0`}
+>
+Git Going - start course
+</Button>
 
