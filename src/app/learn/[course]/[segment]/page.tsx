@@ -1,5 +1,5 @@
-import ModuleBrowser from '@/components/module-browser'
-import { SimpleLayout } from '@/components/SimpleLayout'
+import CourseBrowser from '@/components/CourseBrowser'
+import { Container } from '@/components/Container'
 import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
 interface PageProps {
@@ -19,19 +19,13 @@ export default async function Page({ params }: PageProps) {
   console.log(`Segments from Page: ${JSON.stringify(segments)}`);
 
   return (
-    <SimpleLayout
-      title={course}
-      intro={''}
-    >
-      <ModuleBrowser
+    <Container>
+      <CourseBrowser
         course={course}
         segments={segments}
-        currentSegment={segment}
-      >
-        <p className="prose text-white">
-          {segmentContent()}
-        </p>
-      </ModuleBrowser>
-    </SimpleLayout>
+        currentSegment={segment}>
+        <p>{segmentContent()}</p>
+      </CourseBrowser>
+    </Container>
   )
 }
