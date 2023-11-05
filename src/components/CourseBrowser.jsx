@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
 function renderSegmentLink(segment, index, course, currentSegment) {
+
+
   let conditionalStyle, svgElement;
 
   if (index < currentSegment) {
@@ -24,7 +26,7 @@ function renderSegmentLink(segment, index, course, currentSegment) {
     );
   } else if (index === currentSegment) {
     // Case 2: Segment is the current segment
-    conditionalStyle = "bg-blue-200 dark:bg-blue-700";
+    conditionalStyle = "bg-blue-200 dark:bg-blue-700 bg-blue-100 dark:bg-blue-900";
     svgElement = (
       <svg
         className="ml-2 h-5 w-5 text-blue-500 dark:text-blue-300"
@@ -60,13 +62,16 @@ export default function CourseBrowser({
   currentSegment,
   children
 }) {
+
+  const currentSegmentNumber = Number(currentSegment)
+
   return (
     <section className="flex mt-12 h-screen bg-gray-100 dark:bg-gray-900">
       <aside className="w-64 bg-white dark:bg-gray-800 overflow-auto flex-shrink-0" style={{ minWidth: '16rem' }}>
         <div className="p-6 space-y-2">
           <h2 className="text-xl font-bold">{course}</h2>
           <ul className="space-y-1 text-sm">
-            {segments.map((segment, index) => renderSegmentLink(segment, index, course, currentSegment))}
+            {segments.map((segment, index) => renderSegmentLink(segment, index, course, currentSegmentNumber))}
           </ul>
         </div>
       </aside>
