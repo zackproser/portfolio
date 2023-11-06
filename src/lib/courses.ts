@@ -1,6 +1,6 @@
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
-import fs from 'fs'
+import { promises as fs } from 'fs';
 import path from 'path'
 
 async function importArticle(
@@ -30,12 +30,52 @@ export async function getSegmentContent(course: string, segment: string) {
   return (await import(`src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
 }
 
-export async function getCourseSegments(course: string) {
-  const segmentDirs = fs.readdirSync(path.join(process.cwd(), `src/app/learn/courses/${course}`)).filter((dir: string) => dir != 'page.mdx');
-  const segmentMetas = await Promise.all(segmentDirs.map(async (dir) => {
-    const { meta } = await import(`src/app/learn/courses/${course}/${dir}/page.mdx`);
-    return meta;
+export interface ArticleWithHeader extends Article {
+  header?: string;
+  dir?: string
+}
+
+// Define a type for the grouped segments
+type GroupedSegments = {
+  [header: string]: ArticleWithHeader[];
+};
+
+export async function getCourseSegments(course: string): Promise<GroupedSegments> {
+  const segmentDirs = await fs.readdir(path.join(process.cwd(), `src/app/learn/courses/${course}`));
+  const filteredSegmentDirs = segmentDirs.filter((dir) => dir.match(/^\d+$/));
+
+  const segments = await Promise.all(filteredSegmentDirs.map(async (dir) => {
+    try {
+      const module = await import(`src/app/learn/courses/${course}/${dir}/page.mdx`);
+      const meta: ArticleWithHeader | undefined = module.meta;
+      if (!meta) {
+        // Handle the case where meta is undefined
+        // You could return null or undefined here, or skip the segment entirely
+        return null;
+      }
+      return {
+        dir,
+        meta,
+      };
+    } catch (error) {
+      console.error(`Error importing segment: ${dir}`, error);
+      // Handle or log the error as needed
+      return null;
+    }
   }));
-  return segmentMetas.filter(meta => meta != undefined);
+
+  // Filter out null values that may have been returned due to missing meta
+  const validSegments = segments.filter((segment): segment is { dir: string; meta: ArticleWithHeader } => segment !== null);
+
+  const groupedSegments = validSegments.reduce<GroupedSegments>((acc, { dir, meta }) => {
+    const header = meta.header ?? 'Other'; // Default header if not specified
+    if (!acc[header]) {
+      acc[header] = [];
+    }
+    acc[header].push({ ...meta, dir });
+    return acc;
+  }, {});
+
+  return groupedSegments;
 }
 
