@@ -72,8 +72,8 @@ export default function CourseBrowser({
   };
 
   return (
-    <section className="flex mt-12 h-screen bg-gray-100 dark:bg-gray-900">
-      <aside className="w-64 bg-white dark:bg-gray-800 overflow-auto flex-shrink-0" style={{ minWidth: '16rem' }}>
+    <section className="flex mt-12 h-screen">
+      <aside className="w-64 overflow-auto flex-shrink-0" style={{ minWidth: '16rem' }}>
         <div className="p-6 space-y-2">
           <h2 className="text-xl font-bold">{course}</h2>
           {
