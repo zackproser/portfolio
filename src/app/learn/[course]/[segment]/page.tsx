@@ -13,16 +13,16 @@ export default async function Page({ params }: PageProps) {
   console.log(`Page: ${JSON.stringify(params)}`);
 
   const { course, segment } = params;
-  const segments = await getCourseSegments(course);
+  const groupedSegments = await getCourseSegments(course);
   const segmentContent = await getSegmentContent(course, segment);
 
-  console.log(`Segments from Page: ${JSON.stringify(segments)}`);
+  console.log(`Segments from Page: ${JSON.stringify(groupedSegments)}`);
 
   return (
     <Container>
       <CourseBrowser
         course={course}
-        segments={segments}
+        groupedSegments={groupedSegments}
         currentSegment={segment}>
         <p>{segmentContent()}</p>
       </CourseBrowser>
