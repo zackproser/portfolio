@@ -46,8 +46,8 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
 
   const segments = await Promise.all(filteredSegmentDirs.map(async (dir) => {
     try {
-      const module = await import(`src/app/learn/courses/${course}/${dir}/page.mdx`);
-      const meta: ArticleWithHeader | undefined = module.meta;
+      const segment = await import(`src/app/learn/courses/${course}/${dir}/page.mdx`);
+      const meta: ArticleWithHeader | undefined = segment.meta;
       if (!meta) {
         // Handle the case where meta is undefined
         // You could return null or undefined here, or skip the segment entirely
