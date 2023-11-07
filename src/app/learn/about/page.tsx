@@ -31,7 +31,7 @@ const features: Feature[] = [
   { name: 'Get hired', description: 'Get your next job by leveraging your portfolio and new skills' },
 ]
 
-export function Features({ features }: FeaturesProps) {
+function Features({ features }: FeaturesProps) {
   return (
     <div className="bg-white dark:bg-gray-800">
       <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
@@ -41,7 +41,7 @@ export function Features({ features }: FeaturesProps) {
           </h2>
           <div className="mt-4 p-6 max-w-lg mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md space-y-4">
             <p className="text-gray-900 dark:text-white text-lg">
-              Zachary Proser's School for Hackers is a project-based learning program with two goals:
+              Zachary Proser&apos;s School for Hackers is a project-based learning program with two goals:
             </p>
             <ul className="list-disc space-y-2 pl-5 text-gray-600 dark:text-gray-400">
               <li className="text-sm sm:text-base">
@@ -107,7 +107,94 @@ export function Features({ features }: FeaturesProps) {
   )
 }
 
-export default function Component() {
+const actions = [
+  {
+    title: 'Projects',
+    href: '#',
+    image: projects,
+    description: 'Real projects designed by a Staff-level software engineer'
+  },
+  {
+    title: 'Advice',
+    href: '#',
+    image: advice,
+    description: 'Exclusive guidance and career advice available only to students'
+  },
+  {
+    title: 'Community',
+    href: '#',
+    image: community,
+    description: 'Learn from and network with other students'
+  },
+  {
+    title: 'Portfolio',
+    href: '#',
+    image: portfolio,
+    description: 'Courses are designed to roll up into your portfolio, building your online presence and helping you stand-out to hiring managers'
+  },
+  {
+    title: 'Marketable skills',
+    href: '#',
+    image: skills,
+    description: 'From Infrastructure as Code to software engineering, CI/CD, automation, deployments, command line tools and more'
+  },
+  {
+    title: 'Mentorship',
+    href: '#',
+    image: mentorship,
+    description: 'Get pair-coding and real-time help from teachers'
+  },
+  {
+    title: 'Get hired',
+    href: '#',
+    image: getHired,
+    description: 'Get your next job by leveraging your portfolio and new skills'
+  }
+]
+
+function Benefits() {
+  return (
+    <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-gray-200 shadow sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0">
+      {actions.map((action, actionIdx) => (
+        <div
+          key={action.title}
+          className={'group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500'}
+        >
+          <div>
+            <span
+              className={'inline-flex rounded-lg p-3 ring-4 ring-white'}
+            >
+              <Image src={action.image} className="w-60" alt={action.title} aria-hidden="true" />
+            </span>
+          </div>
+          <div className="mt-8">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              <a href={action.href} className="focus:outline-none">
+                {/* Extend touch target to entire panel */}
+                <span className="absolute inset-0" aria-hidden="true" />
+                {action.title}
+              </a>
+            </h3>
+            <p className="mt-2 text-sm text-gray-500">
+              {action.description}
+            </p>
+          </div>
+          <span
+            className="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400"
+            aria-hidden="true"
+          >
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+            </svg>
+          </span>
+        </div>
+      ))
+      }
+    </div >
+  )
+}
+
+export default function Page() {
   return (
     <Container>
       <section className="w-full py-12 md:py-24 lg:py-32">
@@ -203,5 +290,3 @@ export default function Component() {
     </Container>
   )
 }
-
-
