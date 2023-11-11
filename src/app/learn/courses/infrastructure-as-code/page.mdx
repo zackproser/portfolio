@@ -1,0 +1,46 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { generateOgUrl } from '@/utils/ogUrl'
+import Image from 'next/image'
+import infraAsCode from '@/images/infrastructure-as-code.png'
+import { Button } from '@/components/Button'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Infrastructure as Code', 
+  description: 'Learn to stand up infrastructure in AWS using infrastructure as code',
+  image: infraAsCode, 
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Build systems in the cloud - quickly 
+
+<Image src={infraAsCode} alt="Infrastructure as Code" />
+
+Infrastructure as code is a critical skill these days. Practitioners are able to define and bring up reproducible copies of architectures on cloud providers 
+such as AWS and Google Cloud.
+
+This course will get you hands on with CloudFormation, Terraform and Pulumi. 
+
+<Button 
+  variant={"green"}
+  href={`/learn/infrastructure-as-code/0`}
+>
+Infrastructure as code intro - start course
+</Button>
+

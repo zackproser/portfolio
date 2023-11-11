@@ -5,10 +5,33 @@ import wakka from '@/images/wakka.png'
 
 export function BlogPostCard({ article }) {
 
+  const StatusBadge = ({ status }) => {
+    console.log(`StatusBadge: ${status}`)
+    return status ? (
+      <span className="inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white bg-green-700 hover:bg-gray-800 ring-2 ring-offset-2 ring-offset-gray-800 ring-green-500 shadow-md transition duration-300 ease-in-out">
+        <svg className="h-2 w-2 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
+          <circle cx={3} cy={3} r={3} />
+        </svg>
+        {status}
+      </span>
+    ) : (
+      <span className="inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white bg-orange-500 hover:bg-gray-800 ring-2 ring-offset-2 ring-offset-gray-800 ring-yellow-500 shadow-md transition duration-300 ease-in-out">
+        <svg className="h-2 w-2 fill-yellow-500" viewBox="0 0 6 6" aria-hidden="true" >
+          <circle cx={3} cy={3} r={3} />
+        </svg>
+        Coming soon!
+      </span>
+    )
+  }
+
   let root = '/blog/'
 
   if (article?.type == 'video') {
     root = '/videos/'
+  }
+
+  if (article?.type == 'course') {
+    root = '/learn/courses/'
   }
 
   return (
@@ -35,10 +58,12 @@ export function BlogPostCard({ article }) {
               <span className="absolute inset-0 " />
               {article.title}
             </Link>
+            {}
           </h3>
           <Link href={`${root}${article.slug}`}><p className="mt-5 line-clamp-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 ">{article.description}</p></Link>
+          {(article.type && article.type == 'course') ? <StatusBadge status={article.status} /> : null}
         </div>
-      </div>
+      </div >
     </article >
   )
 }

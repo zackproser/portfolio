@@ -1,0 +1,43 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import  Image  from 'next/image'
+import takingCommand from '@/images/taking-command.png'
+import { generateOgUrl } from '@/utils/ogUrl'
+import { Button } from '@/components/Button'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Taking Command', 
+  description: 'Project: building a command line tool in Golang',
+  image: takingCommand,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image width={1200} height={600} src={takingCommand.src} alt="Building your own command line tools is a useful way to empower your whole team" />
+<figcaption>Time to build a command line tool!</figcaption>
+
+## Project-based practice: building a command line tool in Go 
+
+
+
+<Button 
+  variant={"green"}
+  href={`/learn/courses/taking-command/0`}
+>
+Taking Command - start course
+</Button>
