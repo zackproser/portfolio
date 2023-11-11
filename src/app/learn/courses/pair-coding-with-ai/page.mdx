@@ -1,0 +1,46 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { generateOgUrl } from '@/utils/ogUrl'
+import Image from 'next/image'
+import pairCodingWithAI from '@/images/pair-coding-with-ai.png'
+import { Button } from '@/components/Button'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Pair coding with AI', 
+  description: 'If you have never paired with AI, you may be missing out. Learn the most effective techniques to enhancing your own capabilities',
+  image: pairCodingWithAI,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={pairCodingWithAI}  alt="Pair coding with AI" />
+
+## More than the sum of its parts... 
+
+Learning how to effectively leverage AI to help you code, design systems, generate high quality images in any style and more 
+can make you more productive, and can even make your work more enjoyable and less stressful.
+
+This course shows you how. 
+
+<Button 
+  variant={"green"}
+  href={`/learn/pair-coding-with-ai/0`}
+>
+Pair coding with AI - start course
+</Button>
+
