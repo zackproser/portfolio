@@ -1,9 +1,13 @@
-
+import { sql } from "@vercel/postgres";
 import { type AuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 
-// export this because react server components also need it in order to call 
-// getServerSession
+declare module "next-auth" {
+  interface Profile {
+    login?: string;
+  }
+}
+
 export const authOptions = {
   providers: [
     GithubProvider({
@@ -14,9 +18,28 @@ export const authOptions = {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       console.log(`signIn callback: %o, %o, %o, %o, %o`, user, account, profile, email, credentials)
-      return true
+
+      // Extract GitHub profile ID from 'account' 
+      const githubUsername: string = profile && profile.login! ? profile.login! : 'unknown';
+
+      console.log(`githubUsername after sign-in: ${githubUsername}`)
+
+      const githubId = -1;
+
+      // Placeholder student ID (unknown at this point)
+      const unknownStudentId = -1;
+
+      // Insert login record into 'logins' table
+      try {
+        await sql`
+          INSERT INTO logins (student_id, login_id, github_username) VALUES (${unknownStudentId}, ${githubId}, ${githubUsername})
+        `;
+      } catch (error) {
+        console.error('Error inserting login record:', error);
+      }
+
+      return true;
     }
   }
-} as AuthOptions
-
+} as AuthOptions;
 
