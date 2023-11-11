@@ -32,7 +32,8 @@ export async function getSegmentContent(course: string, segment: string) {
 
 export interface ArticleWithHeader extends Article {
   header?: string;
-  dir?: string
+  dir?: string;
+  status?: string;
 }
 
 // Define a type for the grouped segments
