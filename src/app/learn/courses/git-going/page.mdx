@@ -1,0 +1,52 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { generateOgUrl } from '@/utils/ogUrl'
+import Image from 'next/image'
+import gitGoingHero from '@/images/git-going-hero.png'
+import gitIsYourSaveButton from '@/images/git-is-your-save-button.png'
+import { Button } from '@/components/Button'
+
+export const meta = {
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Git Going', 
+  description: 'The missing git manual every engineer needs regardless of specialization',
+  image: gitGoingHero, 
+  status: 'in-progress'
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Most developers don't understand git... 
+
+<Image width={1200} height={600} src={gitGoingHero.src} />
+
+Yet everyone needs git. Learning git well is one of the best ways to differentiate yourself to hiring managers.
+
+## Git is your save button!
+
+Never lose work once you learn how to use git. While git has a lot of complex advanced features and configuration options, learning the basic workflow for being effective 
+doesn't take long, and this course will show you everything you need to know with a hands-on project.  
+
+<Image width={1200} height={600} src={gitIsYourSaveButton.src} alt="Git is your save button"/>
+
+<Button 
+  variant={"green"}
+  href={`/learn/git-going/0`}
+>
+Git Going - start course
+</Button>
+
