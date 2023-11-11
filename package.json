@@ -23,6 +23,7 @@
     "@types/webpack-env": "^1.18.1",
     "@vercel/analytics": "^1.1.0-beta.5",
     "@vercel/og": "^0.5.11",
+    "@vercel/postgres": "^0.5.1",
     "autoprefixer": "^10.4.12",
     "cheerio": "^1.0.0-rc.12",
     "clsx": "^1.2.1",
