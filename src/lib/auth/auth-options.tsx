@@ -22,17 +22,10 @@ export const authOptions = {
       // Extract GitHub profile ID from 'account' 
       const githubUsername: string = profile && profile.login! ? profile.login! : 'unknown';
 
-      console.log(`githubUsername after sign-in: ${githubUsername}`)
-
-      const githubId = -1;
-
-      // Placeholder student ID (unknown at this point)
-      const unknownStudentId = -1;
-
       // Insert login record into 'logins' table
       try {
         await sql`
-          INSERT INTO logins (student_id, login_id, github_username) VALUES (${unknownStudentId}, ${githubId}, ${githubUsername})
+          INSERT INTO logins (github_username) VALUES (${githubUsername})
         `;
       } catch (error) {
         console.error('Error inserting login record:', error);
