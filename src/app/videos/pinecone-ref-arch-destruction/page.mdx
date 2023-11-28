@@ -1,0 +1,40 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconeRefArchDestruction from '@/images/pinecone-ref-arch-destruction.jpg'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-11-27",
+  title: "Destroying the Pinecone AWS Reference Architecture",
+  description: "I demonstrate how to destroy the Pinecone AWS Reference Architecture using Pulumi",
+  image: pineconeRefArchDestruction
+}
+
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/bxWWxKUIa3s"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I demonstrate how to destroy a deployed Pinecone AWS Reference Architecture using Pulumi.
