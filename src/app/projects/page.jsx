@@ -11,6 +11,7 @@ import logoCloudflare from '@/images/logos/cloudflare.svg'
 import nuke from '@/images/nuke.png'
 import panthalia from '@/images/panthalia-logo.png'
 import automations from '@/images/logos/automations.svg'
+import pineconeRefArch from '@/images/pinecone-ref-arch-blueprint.jpeg'
 
 import { generateOgUrl } from '@/utils/ogUrl'
 
@@ -38,6 +39,13 @@ export const metadata = {
 };
 
 const projects = [
+  {
+    name: 'Pinecone\'s first AWS Reference Architecture',
+    description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
+    link: { href: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi', label: 'github' },
+    logo: pineconeRefArch,
+  },
+
   {
     name: 'panthalia',
     description: 'Panthalia is an AI-assisted mobile blogging platform for creating media-rich posts on the go',

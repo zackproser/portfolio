@@ -1,0 +1,40 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconeRefArchDeploy2 from '@/images/pinecone-ref-arch-deployment-part-2.jpg'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-11-27",
+  title: "Deploying the Pinecone AWS Reference Architecture - Part 2",
+  description: "I deploy the Pinecone AWS Reference Architecture end to end in this three part video series",
+  image: pineconeRefArchDeploy2
+}
+
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/X17MJe9OU7k"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+In this three part video series, I deploy the Pinecone AWS Reference Architecture with Pulumi from start to finish.
