@@ -1,0 +1,54 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+import comicStrip1 from '@/images/comic-strip-1.png'
+import comicStrip2 from '@/images/comic-strip-2.png'
+import comicStrip3 from '@/images/comic-strip-3.png'
+import comicStrip4 from '@/images/comic-strip-4.png'
+import comicStrip5 from '@/images/comic-strip-5.png'
+import comicStrip6 from '@/images/comic-strip-6.png'
+import comicStrip7 from '@/images/comic-strip-7.png'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2023-11-30",
+  title: "Comic strip: long day at the office",
+  description: "A wordless comic strip about a typically brutal day at work, that nevertheless has a positive ending",
+  image: comicStrip4,
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<Image src={comicStrip1} alt="A tough morning at the office" />
+
+<Image src={comicStrip2} alt="A tough midday at the office" />
+
+<Image src={comicStrip3} alt="A tough evening at the office" />
+
+<Image src={comicStrip4} alt="A tough evening at the office" />
+
+<Image src={comicStrip5} alt="A tough end to a day at the office. Coming downstairs" />
+
+<Image src={comicStrip6} alt="A surprising distraction" />
+
+<Image src={comicStrip7} alt="A great day overall" />
