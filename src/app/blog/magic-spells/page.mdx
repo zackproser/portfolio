@@ -1,0 +1,116 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import eqVictory from '@/images/eq-victory.png'
+import playingEq from '@/images/playing-eq.png'
+import eqDeath from '@/images/eq-death.png'
+import eqDeathAgain from '@/images/eq-death-again.png'
+import persistence from '@/images/eq-persistence.png'
+import playNonstop from '@/images/play-nonstop.png'
+import victory from '@/images/victory.png'
+import youngEnchantment from '@/images/young-enchantment.png'
+import youngDeveloper from '@/images/young-developer.png'
+import youngDeveloperErrors from '@/images/young-adult-dev-errors.png'
+import youngAdultSpeed from '@/images/young-adult-speed.png'
+import youngAdultErrorsAgain from '@/images/young-adult-developer-errors-again.png'
+import youngDeveloperSuccess from '@/images/young-developer-success.png'
+import youngDeveloperVictory from '@/images/young-developer-victory.png'
+import youngAdultVictory from '@/images/young-adult-victory.png'
+import youngDeveloperEnchantment from '@/images/young-adult-enchantment.png'
+import oldDeveloperSpeed from '@/images/old-developer-speed.png'
+import oldDeveloperErrors from '@/images/old-developer-errors.png'
+import oldDeveloperSpeedAgain from '@/images/old-developer-speed-again.png'
+import veryOldDeveloperSpeed from '@/images/very-old-developer-speed.png'
+import oldEnchantment from '@/images/old-enchantment.png'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2023-12-3",
+    title: "Comic: Magic spells", 
+    description: "A comic strip about casting magic spells",
+    image: eqVictory
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={playingEq} alt="Playing EQ" />
+
+
+<Image src={eqDeath} alt="EQ Death" />
+
+
+<Image src={eqDeathAgain} alt="EQ Death Again" />
+
+
+<Image src={persistence} alt="Peristence" />
+
+
+<Image src={playNonstop} alt="Play nonstop" />
+
+
+<Image src={victory} alt="victory" />
+
+
+<Image src={eqVictory} alt="EverQuest victory" />
+
+
+<Image src={youngEnchantment} alt="Young enchantment" />
+
+
+<Image src={youngDeveloper} alt="Young developer" />
+
+
+<Image src={youngDeveloperErrors} alt="Young developer getting errors" />
+
+
+<Image src={youngAdultSpeed} alt="Young adult developer persistence" />
+
+
+<Image src={youngAdultErrorsAgain} alt="Young adult developer errors again" />
+
+
+<Image src={youngDeveloperSuccess} alt="Young adult developer success" />
+
+
+<Image src={youngDeveloperVictory} alt="Young adult developer victory" />
+
+
+<Image src={youngAdultVictory} alt="Young adult developer total victory" />
+
+
+<Image src={youngDeveloperEnchantment} alt="Young adult developer enchantment" />
+
+
+<Image src={oldDeveloperSpeed} alt="Old developer speed" />
+
+
+<Image src={oldDeveloperErrors} alt="Old developer errors" />
+
+
+<Image src={oldDeveloperSpeedAgain} alt="Old developer speed again" />
+
+
+<Image src={veryOldDeveloperSpeed} alt="Very old developer speed" />
+
+
+<Image src={oldEnchantment} alt="Old developer content" />
+
+
