@@ -1,0 +1,92 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import { Tweet } from 'react-tweet'
+
+import a16z1 from '@/images/a16z-1.jpg'
+import a16z2 from '@/images/a16z-2.jpg'
+import a16z3 from '@/images/a16z-3.jpg'
+import a16z4 from '@/images/a16z-4.jpg'
+import a16z5 from '@/images/a16z-5.jpg'
+import a16z6 from '@/images/a16z-6.jpg'
+import a16z7 from '@/images/a16z-7.jpg'
+import a16z8 from '@/images/a16z-8.jpg'
+import a16z9 from '@/images/a16z-9.jpg'
+import a16z10 from '@/images/a16z-10.jpg'
+import a16z11 from '@/images/a16z-11.jpg'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2023-12-6",
+    title: "Talk @ a16z: Navigating from Jupyter Notebooks to production", 
+    description: "I introduced the new Pinecone AWS Reference Architecture with Pulumi and explained infrastructure as code",
+    image: a16z1
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={a16z1} alt="Navigating from Jupyter Notebooks to Production 1" />
+
+On December 6th, 2023, Pinecone and Cohere held a joint meetup at the Andreesen Horowitz offices in downtown San Francisco. 
+
+I was one of the speakers, along with Jay Alammar from Cohere and Kat Morgan from Pulumi.
+
+I gave a talk titled, "Navigating from Jupyter Notebooks to production" that announced the [Pinecone AWS Reference Architecture with Pulumi](/blog/pinecone-reference-architecture-launch).
+
+<Tweet id="1732228822626619637" />
+
+I used a an extended mountaineering metaphor to compare getting the kernel of your application working in a Jupyter Notebook to arriving at base camp. 
+
+<Image src={a16z2} alt="Navigating from Jupyter Notebooks to Production 2" />
+
+In some ways, you're so close to production and yet still so far away, because you need to come up with good solutions for secrets, logging, monitoring, autoscaling, networking, and on and on. 
+
+<Image src={a16z3} alt="Navigating from Jupyter Notebooks to Production 3" />
+
+<Image src={a16z4} alt="Navigating from Jupyter Notebooks to Production 4" />
+
+I then announced the Pinecone AWS Reference Architecture using Pulumi and talked through what it was and how it can help folks get into production with high-scale use cases for Pinecone faster. 
+
+<Image src={a16z5} alt="Navigating from Jupyter Notebooks to Production 5" />
+
+Using Pulumi, I was able to build the initial version of the Pinecone AWS Reference Architecture in about a month, start to finish.
+
+<Image src={a16z6} alt="Navigating from Jupyter Notebooks to Production 6" />
+
+<Image src={a16z7} alt="Navigating from Jupyter Notebooks to Production 7" />
+
+I gave a brief introduction to Infrastructure as Code (IaC) and explained why it's a very powerful tool for working with cloud providers such as AWS or GCP.
+
+<Image src={a16z8} alt="Navigating from Jupyter Notebooks to Production 8" />
+
+<Image src={a16z9} alt="Navigating from Jupyter Notebooks to Production 9" />
+
+I also candidly explained the pitfalls of introducing IaC to a team that doesn't have much cloud development experience, and explained how easy it is for cognitive load and overall complexity to skyrocket past the point of the offering being useful. 
+
+I related my experiences around mitigating the pitfall of added complexity by intentionally cross-training your entire team in working with IaC and deploying and destroying any architectures you may produce together.
+
+The default is for this knowledge to become siloed across one or two developers who originally worked on the system, but the key is to ensure everyone on the team is equally confident in working with IaC and cloud providers, via cross-training and practice.
+
+<Image src={a16z10} alt="Navigating from Jupyter Notebooks to Production 10" />
+
+<Image src={a16z11} alt="Navigating from Jupyter Notebooks to Production 11" />
+
+The event was great and we had nearly 125 folks show up to network, eat and listen to our talks. A huge thank you to the folks at Andreesen and Horowitz for their hospitality, support and excellent venue.
