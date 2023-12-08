@@ -4,6 +4,7 @@ import rehypePrism from '@mapbox/rehype-prism'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['react-tweet'],
   experimental: {
     appDir: true,
   },
