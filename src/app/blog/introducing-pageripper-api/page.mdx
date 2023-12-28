@@ -1,0 +1,132 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import pageripperBot from '@/images/pageripper-bot.png'
+import pageripperExtracting from '@/images/pageripper-2.png'
+import pageripperSurfing from '@/images/pageripper-surfing.png'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2023-12-28",
+    title: "Pageripper API: a commercial data-extraction service", 
+    description: "I built an API that extracts data from webpages, even if they're rendered with Javascript. It's defined via Pulumi and deployed on AWS.",
+    image: pageripperBot
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={pageripperBot} alt="Pageripper API a commercial data-extraction service" />
+
+## Introduction
+
+[Pageripper is a commercial API](https://rapidapi.com/zackproser/api/pageripper/) that extracts data from webpages, even if they're rendered with Javascript. Pageripper extracts: 
+* links 
+* email addresses
+* Twitter handles 
+
+from any public website. 
+
+## Who is it for?
+
+Pageripper is a tool for data analysts, digital marketers, web developers and more who need to reliably retrieve links from websites. 
+
+<Image src={pageripperExtracting} alt="Pageripper extracts data from websites such as links, email addresses and Twitter handles" />
+
+Pageripper is often ideal for folks who could write their own data extraction API themselves, but don't want the hassle of hosting or maintaining it. 
+
+## A simple example 
+
+Let's look at an example. Suppose we want to extract all the links from the New York times homepage:
+
+```bash
+curl -X POST \
+  -H 'Content-type: application/json' \
+  -d '{"options": {"includeUrls": true, "waitUntil":"domcontentloaded"}, "url": "https://nytimes.com"}' \
+  <pageripper-api-root>/extracts
+```
+
+We'd then get back: 
+
+```bash
+{
+  "emails": [],
+  "twitterHandles": [],
+  "urls": [url1, url2, url3]
+}
+```
+
+You can optionally request email addresses and Twitter handles, too. And you can specify which network event Puppeteer should wait for when fetching a site to extract data from.
+
+## What problem is Pageripper solving?
+
+As Javascript-heavy websites have become increasingly popular over the years, we've seen a sharp rise in Single Page Applications (SPAs). These sites behave differently from traditional 
+dynamic websites that might be rendered by the backend. In the name of increased performance and optimizing for the end user experience, SPAs send a single minimal HTML file that links to a Javascript bundle. 
+
+This Javascript bundle contains the entirety of the frontend application's logic for rendering the UI, including all links. While this approach vastly improves loading times and reducing the overall time until 
+a given site is interactive for the end user, it complicates data-extraction tasks such as getting all the links out of a given page. 
+
+<Image src={pageripperSurfing} alt="Pageripper handles even Javascript-rendered sites" />
+
+This is due to the fact that, while dynamic sites tend to render the complete 
+HTML of a given document on the backend and then send it to the requesting client when it's complete, including all its links and other HTML elements, SPAs send the requesting client a Javascript bundle which is 
+then responsible for rendering the UI, meaning that links are not available to the requesting client in the original HTML page fetch. 
+
+The Pageripper API addresses this challenge by using Chrome's Pupeteer project under the hood. This means that the API renders sites in exactly the same way a fully fledged web browser, such as Chrome, would. 
+
+This enables extraction of data such as links, email addresses and Twitter handles, even from sites that are rendered entirely in Javasscript. Pageripper even enables you to tweak and tune Pupeteer's behavior on a per-request basis 
+in order to specify which network events to wait for. This additional control allows users to get the best data-extraction experience from a much wider array of sites on the public internet.
+
+## Scalability and performance 
+
+Pageripper is a Node.js project written in TypeScript that is Dockerized into a container. The container includes Puppeteer and a headless Chrome browser as a dependency, which it uses to render websites. 
+
+The API is defined as an ECS service for scalability and deployed on AWS behind a load balancer. 
+
+Pageripper is defined via Infrastructure as Code (IaC) with Pulumi. Additional capacity can be added quickly in order to meet demand. 
+
+## Key features and benefits 
+
+Pageripper allows you to fetch and extract data from any public website. On a per-request basis, you can even pass options to tweak and tune Puppeteer's own behavior, such as which network event to wait for when fetching a site to extract 
+data from. 
+
+## Use cases 
+
+Pageripper is ideal for getting usable data out of large pages. For example, a conference site might publish the contact information and company websites for speakers at an upcoming event that you're attending. Pageripper is ideal for fetching this 
+data from the page and making it available to you easily so that you can process it further according to your needs. 
+
+## Integration and usage 
+
+[Pageripper is currently available via RapidAPI](https://rapidapi.com/zackproser/api/pageripper/). The [API's OpenAPI spec](https://github.com/zackproser/pageripper-v2/blob/main/spec/swagger.yml) is available in the public GitHub repository. 
+
+You can test out the API from RapidAPI if you're curious to kick the tires. In the future, there will likely be client SDKs generated for various languages to ease integration. 
+
+## Pricing and Commercial uses
+
+Pageripper is available for commercial use. There are currently [three pricing plans](https://rapidapi.com/zackproser/api/pageripper/pricing) to support different needs and scaling requirements. 
+
+## Getting started 
+
+* [RapidAPI page](https://rapidapi.com/zackproser/api/pageripper) (test, sign-up for, and get API keys to use the API)
+* [API Documentation](https://zackproser.github.io/pageripper-v2/)
+
+Please give Pageripper a shot and let me know what you think!
+
