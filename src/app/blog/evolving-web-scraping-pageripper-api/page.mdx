@@ -5,6 +5,7 @@ import Image from 'next/image'
 import pageripperBot from '@/images/pageripper-javascript.png'
 import serverSideScraping from '@/images/serverside-scraping.png'
 import clientSideScraping from '@/images/clientside-scraping.png'
+import pageripperPuppeteer from '@/images/pageripper-puppeteer.png'
 
 import { generateOgUrl } from '@/utils/ogUrl'
 
@@ -62,6 +63,8 @@ However, when we're dealing with a client-side rendered (CSR) site, we need to e
 ### Pageripper’s Approach
 
 Pageripper handles both the client-side and server-side rendered sites by employing Puppeteer under the hood. Puppeteer is project that simplifies running a headless browser in Node.js. 
+
+<Image src={pageripperPuppeteer} alt="Pageripper uses Puppeteer to handle client-side rendered sites" />
 
 In addition, Pageripper allows users to tweak the behavior of Puppeteer on a per-request basis. This means that you can specify which network event to wait on when scraping a given site. 
 
