@@ -50,13 +50,54 @@ These two flow diagrams illustrate the difference: when you're scraping a server
 
 ### Scraping a server-side rendered site 
 
+Here's an example of what we might see if we fetch a server-side rendered (SSR) page: 
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSR Example</title>
+</head>
+<body>
+    <h1>Server-Side Rendered Page</h1>
+    <p>This is an example of a server-side rendered page.</p>
+    <ul>
+        <li><a href="/link1">Link 1</a></li>
+        <li><a href="/link2">Link 2</a></li>
+        <li><a href="/link3">Link 3</a></li>
+    </ul>
+    <!-- All content is already in the HTML -->
+</body>
+</html>
+
+```
+
 There's not much to do after we receive the requested page, since we can access whatever CSS selectors or elements we want - they're all already rendered.
 
 <Image src={serverSideScraping} alt="In many ways, scraping a server-side rendered site is simpler" />
 
 ### Scraping a client-side rendered site
 
-However, when we're dealing with a client-side rendered (CSR) site, we need to employ a browser or Javascript engine to run the code bundle responsible for rendering elements...
+However, when we're dealing with a client-side rendered (CSR) site, we need to employ a browser or Javascript engine to run the code bundle responsible for rendering elements. 
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSR Example</title>
+    <script src="app.js"></script> <!-- Link to the JavaScript bundle -->
+</head>
+<body>
+    <h1>Client-Side Rendered Page</h1>
+    <div id="content">
+        <!-- Content will be loaded and rendered by JavaScript -->
+    </div>
+</body>
+</html>
+```
+That's because the HTML that we're sent is an intentionally minimal shell that includes the Single Page Application's Javascript bundle: 
 
 <Image src={clientSideScraping} alt="Scraping from a Javascript-heavy site is more involved" />
 
@@ -66,14 +107,28 @@ Pageripper handles both the client-side and server-side rendered sites by employ
 
 <Image src={pageripperPuppeteer} alt="Pageripper uses Puppeteer to handle client-side rendered sites" />
 
+This means that Pageripper can browse the web the same way you do - and see the same results for any given site that you do when loading it in a browser - even those sites that 
+render their content after pageload via Javascript.
+
 In addition, Pageripper allows users to tweak the behavior of Puppeteer on a per-request basis. This means that you can specify which network event to wait on when scraping a given site. 
 
 For example, if you're using Pageripper to scrape a server-side rendered (SSR) site, you can likely get away with passing a `waitUntilEvent` parameter of `domcontentloaded`, meaning that Puppeteer will only 
-wait until the DOM content is loaded before scraping. This is noticeably faster most of the time. 
+wait until the DOM content is loaded before scraping. This is noticeably faster most of the time: 
+
+```bash
+curl -X POST \
+  -H 'Content-type: application/json' \
+  -d '{"options": {"includeUrls": true, "waitUntil":"domcontentloaded"}, "url": "https://nytimes.com"}' \
+  <pageripper-api-root>/extracts
+```
 
 However, when you're dealing with a Javascript-heavy or Client-side rendered site, you could pass `waitUntilEvent` as `networkidle0` to wait until the network is idle (there are no resources left to download) before rendering and scraping the content.
 
 ```bash
+curl -X POST \
+  -H 'Content-type: application/json' \
+  -d '{"options": {"includeUrls": true, "waitUntil":"networkidle0"}, "url": "https://zackproser.com"}' \
+  <pageripper-api-root>/extracts
 ```
 
 ### Future Roadmap
