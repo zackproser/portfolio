@@ -81,19 +81,18 @@ You can optionally request email addresses and Twitter handles, too. And you can
 As Javascript-heavy websites have become increasingly popular over the years, we've seen a sharp rise in Single Page Applications (SPAs). These sites behave differently from traditional 
 dynamic websites that might be rendered by the backend. In the name of increased performance and optimizing for the end user experience, SPAs send a single minimal HTML file that links to a Javascript bundle. 
 
+<Image src={pageripperSurfing} alt="Pageripper handles even Javascript-rendered sites" />
+
 This Javascript bundle contains the entirety of the frontend application's logic for rendering the UI, including all links. While this approach vastly improves loading times and reducing the overall time until 
 a given site is interactive for the end user, it complicates data-extraction tasks such as getting all the links out of a given page. 
 
-<Image src={pageripperSurfing} alt="Pageripper handles even Javascript-rendered sites" />
-
-This is due to the fact that, while dynamic sites tend to render the complete 
-HTML of a given document on the backend and then send it to the requesting client when it's complete, including all its links and other HTML elements, SPAs send the requesting client a Javascript bundle which is 
-then responsible for rendering the UI, meaning that links are not available to the requesting client in the original HTML page fetch. 
+For more detail and a demonstration of what scrapers see under the hood when fetching these two different site architectures, see [Evolving web scraping: How Pageripper handles Javascript-heavy sites](/blog/evolving-web-scraping-pageripper-api).
 
 The Pageripper API addresses this challenge by using Chrome's Pupeteer project under the hood. This means that the API renders sites in exactly the same way a fully fledged web browser, such as Chrome, would. 
 
-This enables extraction of data such as links, email addresses and Twitter handles, even from sites that are rendered entirely in Javasscript. Pageripper even enables you to tweak and tune Pupeteer's behavior on a per-request basis 
-in order to specify which network events to wait for. This additional control allows users to get the best data-extraction experience from a much wider array of sites on the public internet.
+This enables extraction of data such as links, email addresses and Twitter handles, even from sites that are rendered entirely in Javascript. 
+
+Pageripper lets you tweak Pupeteer's behavior on a per-request basis in order to specify which network events to wait for. This additional control allows users to get the best data-extraction experience from a much wider array of sites on the public internet.
 
 ## Scalability and performance 
 
