@@ -9,6 +9,8 @@ import sadDeveloperTwo from '@/images/sad-developer2.png'
 import gitXargsChecks from '@/images/git-xargs-checks.png'
 import pageripperChecks from '@/images/pageripper-checks.png'
 import cicdAutomations from '@/images/cicd-automations.png'
+import pageripperTests from '@/images/pageripper-tests.png'
+import pageripperSwaggerUI from '@/images/pageripper-swagger-ui.png'
 
 import pulumiPreview from '@/images/pulumi-pr-preview.png'
 
@@ -108,51 +110,58 @@ Let's take a look at the workflows I've configured for Pageripper.
 
 ### On pull request
 
-**Tests run**
+**Jest unit tests are run**
 
 Tests run on every pull request, and tests run quickly. Unit tests are defined in jest. 
 
-Developers get feedback on their changes in a minute or less, so they know that 
+<Image src={pageripperTests} alt="Pageripper tests use Jest" />
 
-#### npm build 
+Developers get feedback on their changes in a minute or less, tightening the overall iteration cycle.
+
+**npm build**
 
 It's possible for your unit tests to pass but your application build to still fail due to any number of things: from dependency issues to incorrect configurations and more. 
 
 For that reason, whenever tests are run, the workflow also runs an `npm build` to ensure the application builds successfully.
 
-#### docker build 
+**docker build**
 
 The Pageripper API is Dockerized because it's running on AWS Elastic Container Service (ECS). Because Pageripper uses Puppeteer, which uses Chromium or an installation of the Chrome browser, building the Docker image is a bit involved and 
 also takes a while. 
 
 I want to know immediately if the build is broken, so if and only if the tests all pass, then a test docker build is done via GitHub actions as well. 
 
-#### OpenAPI spec validation 
+**OpenAPI spec validation**
 
-For consistency and the many downstream benefits (documentation and SDK generation, for example), I maintain an OpenAPI spec for Pageripper. On every pull request, this spec is validated to ensure no changes or typos broke anything. This spec is used 
-for a couple of things: 
+For consistency and the many downstream benefits (documentation and SDK generation, for example), I maintain an OpenAPI spec for Pageripper. 
+
+On every pull request, this spec is validated to ensure no changes or typos broke anything. 
+
+This spec is used for a couple of things: 
 
 - Generating the Swagger UI for the API documentation that is hosted on GitHub pages and integrated with the repository
 - Generating the test requests and the documentation and examples on RapidAPI, where Pageripper is listed
 - Running dredd to validate that the API correctly implements the spec 
 
-#### Pulumi preview 
+**Pulumi preview**
 
 Pageripper uses Pulumi and Infrastructure as Code (IaC) to manage not just the packaging of the application into a Docker container, but the orchestration of all other supporting infrastructure and AWS resources that comprise a functioning production API service.
 
 This means that on every pull request we can run `pulumi preview` to get a delta of the changes that Pulumi will make to our AWS account on the next deployment. 
 
-<Image src={pulumiPreview} alt="Pulumi preview" />
-
 To further reduce friction, I've configured the Pulumi GitHub application to run on my repository, so that the output of `pulumi preview` can be added directly to my pull request as a comment: 
 
-
+<Image src={pulumiPreview} alt="Pulumi preview" />
 
 ### On merge to main
 
-#### OpenAPI spec is automatically published
+**OpenAPI spec is automatically published**
 
-#### Pulumi deployment to AWS
+A workflow converts the latest OpenAPI spec into a Swagger UI site that details the various API endpoints, and expected request and response format: 
+
+<Image src={pageripperSwaggerUI} alt="Via GitHub pages, my repository automatically publishes the latest API docs" />
+
+**Pulumi deployment to AWS**
 
 The latest changes are deployed to AWS via the `pulumi update` command. This means that what's at the HEAD of the repository's main branch is what's in production at any given time.
 
@@ -160,5 +169,13 @@ This also means that developers never need to:
 * Worry about maintaining the credentials for deployments themselves 
 * Worry about maintaining the deployment pipeline themselves via scripts
 * Worry about their team members being able to follow the same deployment process
-* Worry about scheduling deployments for certain days of the week - they can deploy multiple times a day 
+* Worry about scheduling deployments for certain days of the week - they can deploy multiple times a day, with confidence
 
+
+## Thanks for reading
+
+If you're interested in automating more of your API development lifecycle, have a look at the workflows in the [Pageripper repository](https://github.com/zackproser/pageripper-v2).
+
+And if you need help configuring CI/CD for the ultimate velocity and developer producitvity, feel free to reach out!
+
+<ConsultingCTA body={"Make your developer workflow buttery smooth and lightning fast"} />
