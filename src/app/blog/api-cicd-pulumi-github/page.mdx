@@ -48,23 +48,27 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 
 [Pageripper is a commercial API](https://rapidapi.com/zackproser/api/pageripper/) that extracts data from webpages, even if they're rendered with Javascript. 
 
-In this post, I'll detail the Continuous Integration and Continuous Delivery (CI/CD) automations I've configured via GitHub Actions for my Pageripper project, explain how they work and why they make working on this project delightful.
+In this post, I'll detail the Continuous Integration and Continuous Delivery (CI/CD) automations I've configured via GitHub Actions for [my Pageripper project](https://github.com/zackproser/pageripper-v2), explain how they work and why they make working Pageripper delightful (and fast).
 
 <Image src={pageripperChecks} alt="CI/CD automations for Pageripper" />
 
 ## Why care about developer experience? 
 
-As a busy open-source developer, I find working on well-automated repositories delightful. I've noticed that tasks on repositories that are 
-correctly instrumented and automated feel significantly less onerous, because I can focus on logic and UX, and not need to worry about wrestling with configuration or installing some funky toolchain. 
+Working on well-automated repositories is delightful. 
+
+Focusing on the logic and UX of my changes allows me to do my best work, while the repository handles the tedium of running tests and publishing releases.
 
 <Image src={developerDelightTwo} alt="Developer delight and project velocity are related" />
 
-When I was working on [git-xargs](https://github.com/gruntwork-io/git-xargs), a popular open-source project that we produced at Gruntwork.io, which was also set up with a great CI/CD pipeline, I found community pull requests, new features and bug fixes 
-to be easier to work on, because I just opened my pull request, iterated on any test failures, then merged with confidence to get a new release. 
+At Gruntwork.io, we published [git-xargs](https://github.com/gruntwork-io/git-xargs), a tool for multiplexing changes across many repositories simultaneously. 
+
+Working on this project was a delight, because we spent the time to implement an excellent CI/CD pipeline that handled running tests and publishing releases. 
+
+As a result, reviewing and merging pull requests, adding new features and fixing bugs was significantly snappier, and felt easier to do. 
 
 <Image src={gitXargsChecks} alt="Working on well-automated repositories is faster and easier" />
 
-So, why should you care about developer experience? Let's consider what happens when it's a mess: 
+So, why should you care about developer experience? Let's consider what happens when it's a mess...
 
 ## What happens when your developer experience sucks
 
@@ -82,9 +86,11 @@ is clear for the production line is critical to success.
 
 ## What are CI/CD automations?
 
-<Image src={cicdAutomations} alt="CI/CD automations for Pageripper" />
+Continuous Integration is about constantly merging into your project verified and tested units of incremental value. 
 
-Continuous Integration is about constantly merging into your project verified and tested units of incremental value. You add a new feature, test it locally and then push it up on a branch and open a pull request. 
+You add a new feature, test it locally and then push it up on a branch and open a pull request. 
+
+<Image src={cicdAutomations} alt="CI/CD automations for Pageripper" />
 
 Without needing to do anything else, the automation workflows kick in and run the projects tests for you, verifying you haven't broken anything.
 
