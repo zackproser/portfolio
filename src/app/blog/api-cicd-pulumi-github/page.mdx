@@ -1,0 +1,181 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import developerDelight from '@/images/developer-delight.png'
+import developerDelightTwo from '@/images/developer-delight2.png'
+import sadDeveloper from '@/images/sad-developer.png'
+import sadDeveloperTwo from '@/images/sad-developer2.png'
+import gitXargsChecks from '@/images/git-xargs-checks.png'
+import pageripperChecks from '@/images/pageripper-checks.png'
+import cicdAutomations from '@/images/cicd-automations.png'
+import pageripperTests from '@/images/pageripper-tests.png'
+import pageripperSwaggerUI from '@/images/pageripper-swagger-ui.png'
+
+import pulumiPreview from '@/images/pulumi-pr-preview.png'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2024-01-01",
+    title: "A Blueprint for Modern API Development: Repositories developers want to work on", 
+    description: "Developer delight === project velocity ?",
+    image: developerDelight
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={developerDelight} alt="Developer delight and project velocity are related" />
+
+## Introduction
+
+[Pageripper is a commercial API](https://rapidapi.com/zackproser/api/pageripper/) that extracts data from webpages, even if they're rendered with Javascript. 
+
+In this post, I'll detail the Continuous Integration and Continuous Delivery (CI/CD) automations I've configured via GitHub Actions for [my Pageripper project](https://github.com/zackproser/pageripper-v2), explain how they work and why they make working Pageripper delightful (and fast).
+
+<Image src={pageripperChecks} alt="CI/CD automations for Pageripper" />
+
+## Why care about developer experience? 
+
+Working on well-automated repositories is delightful. 
+
+Focusing on the logic and UX of my changes allows me to do my best work, while the repository handles the tedium of running tests and publishing releases.
+
+<Image src={developerDelightTwo} alt="Developer delight and project velocity are related" />
+
+At Gruntwork.io, we published [git-xargs](https://github.com/gruntwork-io/git-xargs), a tool for multiplexing changes across many repositories simultaneously. 
+
+Working on this project was a delight, because we spent the time to implement an excellent CI/CD pipeline that handled running tests and publishing releases. 
+
+As a result, reviewing and merging pull requests, adding new features and fixing bugs was significantly snappier, and felt easier to do. 
+
+<Image src={gitXargsChecks} alt="Working on well-automated repositories is faster and easier" />
+
+So, why should you care about developer experience? Let's consider what happens when it's a mess...
+
+## What happens when your developer experience sucks
+
+I've seen work slow to a crawl because the repositories were a mess: long-running tests that took over 45 minutes to complete a run and that were flaky. 
+
+Even well-intentioned and experienced developers experience a 
+slow-down effect when dealing with repositories that lack CI/CD or have problematic, flaky builds and ultimately untrustable pipelines.
+
+<Image src={sadDeveloper} alt="When your pipelines don't work" />
+
+Taking the time to correctly set up your repositories up front is a case of slowing down to go faster. Ultimately, it's a matter of project velocity. 
+
+Developer time is limited and expensive, so making sure the path 
+is clear for the production line is critical to success. 
+
+## What are CI/CD automations?
+
+Continuous Integration is about constantly merging into your project verified and tested units of incremental value. 
+
+You add a new feature, test it locally and then push it up on a branch and open a pull request. 
+
+<Image src={cicdAutomations} alt="CI/CD automations for Pageripper" />
+
+Without needing to do anything else, the automation workflows kick in and run the projects tests for you, verifying you haven't broken anything.
+
+If the tests pass, you merge them in, which prompts more automation to deploy your latest code to production. 
+
+In this way, developers get to focus on logic, features, UX and doing the right thing from a code perspective. The pipeline instruments the guardrails that everyone needs in order to move very quickly. 
+
+And that's what this is all about at the end of the day. Mature pipelines allow you to move faster. Safety begets speed. 
+
+<ConsultingCTA body={"Need help configuring API pipelines, or increasing developer velocity and delight?"}/>
+
+## Pageripper's automations
+
+Let's take a look at the workflows I've configured for Pageripper.
+
+### On pull request
+
+**Jest unit tests are run**
+
+Tests run on every pull request, and tests run quickly. Unit tests are defined in jest. 
+
+<Image src={pageripperTests} alt="Pageripper tests use Jest" />
+
+Developers get feedback on their changes in a minute or less, tightening the overall iteration cycle.
+
+**npm build**
+
+It's possible for your unit tests to pass but your application build to still fail due to any number of things: from dependency issues to incorrect configurations and more. 
+
+For that reason, whenever tests are run, the workflow also runs an `npm build` to ensure the application builds successfully.
+
+**docker build**
+
+The Pageripper API is Dockerized because it's running on AWS Elastic Container Service (ECS). Because Pageripper uses Puppeteer, which uses Chromium or an installation of the Chrome browser, building the Docker image is a bit involved and 
+also takes a while. 
+
+I want to know immediately if the build is broken, so if and only if the tests all pass, then a test docker build is done via GitHub actions as well. 
+
+**OpenAPI spec validation**
+
+For consistency and the many downstream benefits (documentation and SDK generation, for example), I maintain an OpenAPI spec for Pageripper. 
+
+On every pull request, this spec is validated to ensure no changes or typos broke anything. 
+
+This spec is used for a couple of things: 
+
+- Generating the Swagger UI for the API documentation that is hosted on GitHub pages and integrated with the repository
+- Generating the test requests and the documentation and examples on RapidAPI, where Pageripper is listed
+- Running dredd to validate that the API correctly implements the spec 
+
+**Pulumi preview**
+
+Pageripper uses Pulumi and Infrastructure as Code (IaC) to manage not just the packaging of the application into a Docker container, but the orchestration of all other supporting infrastructure and AWS resources that comprise a functioning production API service.
+
+This means that on every pull request we can run `pulumi preview` to get a delta of the changes that Pulumi will make to our AWS account on the next deployment. 
+
+To further reduce friction, I've configured the Pulumi GitHub application to run on my repository, so that the output of `pulumi preview` can be added directly to my pull request as a comment: 
+
+<Image src={pulumiPreview} alt="Pulumi preview" />
+
+### On merge to main
+
+**OpenAPI spec is automatically published**
+
+A workflow converts the latest OpenAPI spec into a Swagger UI site that details the various API endpoints, and expected request and response format: 
+
+<Image src={pageripperSwaggerUI} alt="Via GitHub pages, my repository automatically publishes the latest API docs" />
+
+**Pulumi deployment to AWS**
+
+The latest changes are deployed to AWS via the `pulumi update` command. This means that what's at the HEAD of the repository's main branch is what's in production at any given time.
+
+This also means that developers never need to: 
+* Worry about maintaining the credentials for deployments themselves 
+* Worry about maintaining the deployment pipeline themselves via scripts
+* Worry about their team members being able to follow the same deployment process
+* Worry about scheduling deployments for certain days of the week - they can deploy multiple times a day, with confidence
+
+
+## Thanks for reading
+
+If you're interested in automating more of your API development lifecycle, have a look at the workflows in the [Pageripper repository](https://github.com/zackproser/pageripper-v2).
+
+And if you need help configuring CI/CD for the ultimate velocity and developer producitvity, feel free to reach out!
+
+<ConsultingCTA body={"Make your developer workflow buttery smooth and lightning fast"} />
