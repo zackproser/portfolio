@@ -1,0 +1,135 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import cyberpunkTree from '@/images/cyberpunk-tree.png'
+import a16z2 from '@/images/a16z-2.jpg'
+import a16z11 from '@/images/a16z-11.jpg'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2024-01-08",
+    title: "2023 Wins: A Personal Retrospective", 
+    description: "I had a lot of growth and success to celebrate professionally",
+    image: cyberpunkTree
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={cyberpunkTree} alt="In retrospect, 2023 was pretty nuts" />
+
+## Catching a breath
+
+Well into the second week of the year, the obligations mount, as anticipated. But before the year gets too far underway, I want to take a moment to pause and reflect on 
+what I accomplished last year and what I consider my biggest wins for last year. 
+
+I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. I also put out a lot of original articles and YouTube demos that I'm proud of. 
+
+I also landed a Staff Developer Advocate role at Pinecone.io, where I shipped a separate set of articles on Generative AI and machine learning, plus webinars, open-source improvements and Pinecone's first AWS Reference Architecture.
+
+This is mostly for myself, but I publish it online in case it helps anyone else or sparks a conversation or connection. 
+
+## The beginning of my "Year in AI"
+
+In January 2023, I continued doing two things I had been doing for years, namely: open-sourcing side projects and tools and writing or making videos about them. 
+
+However, for some reason I felt a surge of enthusiasm around sharing my projects, perhaps because I was beginning to experiment with LLMs and realizing the productivity and support they could unlock.
+
+So, I put a little extra polish into the blog posts and YouTube videos that shared my latest experiments with ChatGPT. 
+
+As I wrote in [maintaining this site no longer fucking sucks](/blog/maintaining-this-site-no-longer-fucking-sucks), I also re-did this site for the Nth time, this time using the latest Next.js, Tailwind and Tailwind UI template and deploying on Vercel.
+
+## My blogging finally got me somewhere
+
+Writing about what I learn and ship in tech has been an important tool for expanding my understanding and skill set for my entire career, but this was perhaps the year it most noticeably impacted my life. 
+
+In the beginning of the year I was working at Gruntwork.io, doing large scale AWS deployments for customers using Terraform, but as I wrote in [You get to keep the neural connections](you-get-to-keep-the-neural-connections), it came time for the next adventure. 
+
+And as I wrote about in [Run your own tech blog](run-your-own-tech-blog), one of the key benefits of doing a lot of writing about your open-source projects and learnings is that you have high quality work samples ever at the ready.
+
+This year, in the middle of working an intense job as a tech lead, I managed to do some self-directed job hunting in a down market, start with 5 promising opportunities and ultimately winnow the companies I wanted to work 
+for down to two. 
+
+I received two excellent offers in hand at the same time and was able to take my pick: [I chose to start at Pinecone as a Staff Developer Advocate](https://www.zackproser.com/blog/i-am-joining-pinecone-io). 
+
+In the break between Gruntwork.io and Pinecone.io, I took one week to experiment with Retrieval Augmented Generation and built a Michael Scott from the office chatbot. I open-sourced the [data prep](https://github.com/zackproser/office-oracle-data-bench) and [quality testing](https://github.com/zackproser/office-oracle-db-test-notebook) Jupyter Notebooks I built for this project 
+plus the [chatbot Next.js application](https://github.com/zackproser/office-oracle) itself, as I wrote about in my [Office Oracle](/blog/office-oracle-overview) post.
+
+## I shipped like crazy at Pinecone
+
+### Articles
+
+Once I started at Pinecone, I shipped a bunch of articles on Generative AI, machine learning and thought pieces on the future of AI and development: 
+
+* [Retrieval Augmented Generation](https://www.pinecone.io/learn/retrieval-augmented-generation/)
+* [AI Powered and built with...JavaScript?](https://www.pinecone.io/learn/javascript-ai)
+* [How to use Jupyter Notebooks to do Machine Learning and AI tasks](https://www.pinecone.io/learn/jupyter-notebooks)
+* [The Pain and Poetry of Python](https://www.pinecone.io/blog/pain-poetry-python/)
+* [Making it easier to maintain open-source projects with CodiumAI and Pinecone](https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/)
+
+### Videos 
+
+* [Semantic Search with TypeScript and Pinecone](https://www.youtube.com/watch?v=4Tt4LhJ6tD8)
+* [Live code review: Pinecone Vercel starter template and RAG - Part 1](https://www.youtube.com/watch?v=pPbTzgUV-UA)
+* [Live code review: Pinecone Vercel starter template and RAG - Part 2](https://www.youtube.com/watch?v=FrlG83du31Q)
+* [What is a Vector Database?](https://www.youtube.com/watch?v=wc3Lh-eiNBM)
+* [Deploying the Pinecone AWS Reference Architecture - Part 1](https://www.youtube.com/watch?v=ySznARngHts)
+* [Deploying the Pinecone AWS Reference Architecture - Part 2](https://www.youtube.com/watch?v=X17MJe9OU7k)
+* [Deploying the Pinecone AWS Reference Architecture - Part 3](https://www.youtube.com/watch?v=ArH4H1cGfzk)
+* [How to destroy the Pinecone AWS Reference Architecture](https://www.youtube.com/watch?v=bxWWxKUIa3s)
+* [How to deploy a Jump host into the Pinecone AWS Reference Architecture](https://www.youtube.com/watch?v=gIO76I0JTnY)
+
+### Projects
+
+* [Introducing Pinecone's AWS Reference Architecture with Pulumi](https://www.pinecone.io/blog/aws-reference-architecture/)
+* [Exploring Pinecone's AWS Reference Architecture](https://www.pinecone.io/learn/aws-reference-architecture/)
+* [GitHub: Pinecone AWS Reference Architecture with Pulumi](https://github.com/pinecone-io/aws-reference-architecture-pulumi)
+
+## My personal writing was picked up, more than once 
+
+This was equally unexpected, thrilling and wonderful. I did not know these people or outlets, but they found something of value in what I had to say. Each of these surprised netted me a group of new newsletter and YouTube subscribers. 
+
+* Daniel Messier included my rant [Maintaining this site fucking sucks](/blog/maintaining-this-site-fucking-sucks) in his Unsupervised Learning newsletter
+* The Changelog picked up my [Run your own tech blog post](/blog/run-your-own-tech-blog)
+* Habr picked up and translated my [First see if you've got the programming bug](first-see-if-youve-got-the-bug) post. This resulted in about 65 new YouTube subscribers.
+
+## Consulting wins 
+
+I started being tapped for my insight into Generative AI, developer tooling and vector databases. 
+
+Initially, this came in the form of various think tanks and research firms asking me to join calls as an expert, and 
+to give my opinions and share my experiences as an experienced software developer experimenting with the first raft of AI-assisted developer tooling.
+
+Realizing the opportunity at hand, I quickly gave [my about page](/about) a face lift, making it more clear that I do limited engagements for my key areas of interest. 
+
+By the end of the year, I had successfully completed several such engagements, but was also beginning to see an uptick in direct outreach, not mediated by any third party.
+
+## Personal wins
+
+There were many reasons I wanted to work at Pinecone as a developer advocate. One of those many reasons was that the role involved some flying and some public speaking, both of which I have some phobia around. 
+
+<Image src={a16z2} alt="Zachary Proser giving a talk" />
+
+I intentionally wanted to go to the places that scare me, and I am pleased to report that even after just a couple of sessions of exposure therapy this last year, I'm already feeling better about both.
+
+<Image src={a16z11} alt="Zachary Proser giving a speech" />
