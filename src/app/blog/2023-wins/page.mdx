@@ -3,8 +3,15 @@ import { Button } from '@/components/Button'
 import Image from 'next/image'
 
 import cyberpunkTree from '@/images/cyberpunk-tree.png'
+import pausingToReflect from '@/images/pausing-to-reflect.png'
 import a16z2 from '@/images/a16z-2.jpg'
 import a16z11 from '@/images/a16z-11.jpg'
+import emailOctopusStats from '@/images/email-octopus-stats.png'
+import youtubeStats from '@/images/youtube-stats.png'
+import aboutPageRefresh from '@/images/about-page-refresh.png'
+import bloggingPeacefully from '@/images/blogging-peacefully.png'
+import linkedinStats from '@/images/linkedin-stats.png'
+import vercelStats from '@/images/vercel-stats.png'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -40,10 +47,12 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 
 ## Catching a breath
 
-Well into the second week of the year, the obligations mount, as anticipated. But before the year gets too far underway, I want to take a moment to pause and reflect on 
+Well into the second week of the year, the anticipated obligations mount. But before the year gets too far underway, I want to take a moment to pause and reflect on 
 what I accomplished last year and what I consider my biggest wins for last year. 
 
-I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. I also put out a lot of original articles and YouTube demos that I'm proud of. 
+<Image src={pausingToReflect} alt="I'm pausing to reflect" />
+
+I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. I also put out a lot of original open-source projects, articles and YouTube demos that I'm proud of. 
 
 I also landed a Staff Developer Advocate role at Pinecone.io, where I shipped a separate set of articles on Generative AI and machine learning, plus webinars, open-source improvements and Pinecone's first AWS Reference Architecture.
 
@@ -62,6 +71,8 @@ As I wrote in [maintaining this site no longer fucking sucks](/blog/maintaining-
 ## My blogging finally got me somewhere
 
 Writing about what I learn and ship in tech has been an important tool for expanding my understanding and skill set for my entire career, but this was perhaps the year it most noticeably impacted my life. 
+
+<Image src={bloggingPeacefully} alt="I'm blogging happily" />
 
 In the beginning of the year I was working at Gruntwork.io, doing large scale AWS deployments for customers using Terraform, but as I wrote in [You get to keep the neural connections](you-get-to-keep-the-neural-connections), it came time for the next adventure. 
 
@@ -111,7 +122,39 @@ This was equally unexpected, thrilling and wonderful. I did not know these peopl
 
 * Daniel Messier included my rant [Maintaining this site fucking sucks](/blog/maintaining-this-site-fucking-sucks) in his Unsupervised Learning newsletter
 * The Changelog picked up my [Run your own tech blog post](/blog/run-your-own-tech-blog)
-* Habr picked up and translated my [First see if you've got the programming bug](first-see-if-youve-got-the-bug) post. This resulted in about 65 new YouTube subscribers.
+* Habr picked up and translated my [First see if you've got the programming bug](first-see-if-youve-got-the-bug) post into Russian. This resulted in about 65 new YouTube subscribers and new readers from Russian-speaking countries.
+
+## The new subscribers and followers kept coming
+
+### My site traffic saw healthy regular growth and some spikes...
+
+<Image src={vercelStats} alt="My site traffic growth" />
+
+### EmailOctopus Newsletter cleared 200...
+
+When I rebuilt the latest version of my portfolio site, I wired up a custom integration with EmailOctopus so that I could have total control over how my Newsletter experience looks and behaves within my site. 
+
+<Image src={emailOctopusStats} alt="My EmailOctopus newsletter growth" />
+
+In a way, this is the channel I'm most excited about because it's the channel I have the most control over. These folks signed up directly to hear from me, so growing this audience is critcal for reaching my goals.
+
+### YouTube went from 0 to over 150...
+
+<Image src={youtubeStats} alt="My YouTube channel subscriber growth" />
+
+I tend to do demos and technical walkthroughs on [my YouTube channel](https://youtube.com/@zackproser). The various unexpected re-shares of my content to other networks led to a spike in YouTube subscribers. 
+
+I went from effectively no YouTube subscribers at the beginning of the year to 156 at the end of 2023.
+
+### LinkedIn
+
+LinkedIn remained the most valuable channel for sharing technical and thought leadership content with my audience. 
+
+<Image src={linkedinStats} alt="My LinkedIn channel subscriber growth" />
+
+I saw the highest engagement on this platform, consistently since the beginning of the year. 
+
+I made the subtle but important tweak of linking directly to my newsletter subscription page that appeared to immediately make an impact  in terms of signup velocity.
 
 ## Consulting wins 
 
@@ -119,6 +162,8 @@ I started being tapped for my insight into Generative AI, developer tooling and 
 
 Initially, this came in the form of various think tanks and research firms asking me to join calls as an expert, and 
 to give my opinions and share my experiences as an experienced software developer experimenting with the first raft of AI-assisted developer tooling.
+
+<Image src={aboutPageRefresh} alt="My about page refresh" />
 
 Realizing the opportunity at hand, I quickly gave [my about page](/about) a face lift, making it more clear that I do limited engagements for my key areas of interest. 
 
