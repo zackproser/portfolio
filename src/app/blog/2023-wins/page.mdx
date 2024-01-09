@@ -15,6 +15,8 @@ import bloggingPeacefully from '@/images/blogging-peacefully.png'
 import linkedinStats from '@/images/linkedin-stats.png'
 import redditPosts from '@/images/reddit-posts.png'
 import vercelStats from '@/images/vercel-stats.png'
+import commitsOnPortfolio from '@/images/commits-on-portfolio.png'
+import initToWinIt from '@/images/init-to-win-it.png'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -50,7 +52,7 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 
 ## I'm a recovering WHAT!??!
 
-After writing this post myself, I was getting ready to share it online when I decided to ask Anthropic's Claude for help coming up with a better title than my original: 
+After I wrote this post, I was about to share it online when I asked Anthropic's Claude for help coming up with a better title than my original: 
 
 > "2023 Wins: A personal retrospective" 
 
@@ -66,20 +68,23 @@ Intrigued, I decided to ask Claude how it arrived at that title:
 
 <Image src={thanksClaude} alt="Thanks Claude" />
 
-You may still be learning, Claude, but you're more on the money than you may realize. **Dries eyes and sniffles**.
+You may still be learning, Claude, but you're also able to psychoanalyze someone fairly accurately based on a single blog post. **Dries eyes and sniffles**. 
+
+A perfect bookend to my first year of working with AI models and AI-enhanced developer tooling daily.
 
 And now, onto the retro and stats!
 
 ## Catching a breath
 
-Well into the second week of the year, the anticipated obligations mount. But before the year gets too far underway, I want to take a moment to pause and reflect on 
-what I accomplished last year and what I consider my biggest wins. 
-
 <Image src={pausingToReflect} alt="I'm pausing to reflect" />
 
-I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. I also put out a lot of original open-source projects, articles and YouTube demos that I'm proud of. 
+I want to reflect on what I accomplished last year and what I consider my biggest wins: 
 
-I also landed a Staff Developer Advocate role at Pinecone.io, where I shipped a separate set of articles on Generative AI and machine learning, plus webinars, open-source improvements to our clients and applications, and Pinecone's first AWS Reference Architecture.
+* I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. 
+
+* I open-sourced several projects, many articles and YouTube demos and tutorials that I'm proud of. 
+
+* I landed a Staff Developer Advocate role at Pinecone.io, where I shipped a separate set of articles on Generative AI and machine learning, plus webinars, open-source improvements to our clients and applications, and Pinecone's first AWS Reference Architecture in Pulumi.
 
 ## The beginning of my "Year in AI"
 
@@ -87,9 +92,17 @@ In January 2023, I continued doing two things I had been doing for years, namely
 
 However, for some reason I felt a surge of enthusiasm around sharing my projects, perhaps because I was beginning to experiment with LLMs and realizing the productivity and support gains they could unlock.
 
-So, I put a little extra polish into the blog posts and YouTube videos that shared my latest experiments with ChatGPT. 
+So, I put a little extra polish into [the blog posts](/blog/) and [YouTube videos](/videos/) that shared my latest experiments with ChatGPT. Early in the year, I wrote [Can ChatGPT4 and GitHub Copilot help me produce a more complete side project more quickly?](/blog/chatgpt-4-experiment-ai-development).
 
 As I wrote in [maintaining this site no longer fucking sucks](/blog/maintaining-this-site-no-longer-fucking-sucks), I also re-did this site for the Nth time, this time using the latest Next.js, Tailwind and a Tailwind UI template, that I promptly hacked up to my own needs, and deployed my new site to Vercel.
+
+Here's my commit graph for the year on [my portfolio project](https://github.com/zackproser/portfolio):
+
+<Image src={commitsOnPortfolio} alt="I'm committing to this site" />
+
+Which makes it less hard to believe that it was only 9 months ago I started building this version of the site in this incredibly hard to read screenshot of my first commit on the project:
+
+<Image src={initToWinIt} alt="I'm init to win it" />
 
 ## My blogging finally got me somewhere
 
