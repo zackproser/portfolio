@@ -1,58 +1,66 @@
--- Create 'students' table first as it is referenced by other tables
-CREATE TABLE IF NOT EXISTS students (
+-- Students Table
+CREATE TABLE Students (
     student_id SERIAL PRIMARY KEY,
-    github_username VARCHAR(255) UNIQUE NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL
+    github_username VARCHAR(255),
+    full_name VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    billing_id INTEGER -- Note: This will be removed as it's not needed anymore
 );
 
--- Create 'billing' table, references 'students'
-CREATE TABLE IF NOT EXISTS billing (
+-- Billing Table
+CREATE TABLE Billing (
     billing_id SERIAL PRIMARY KEY,
-    student_id INT UNIQUE NOT NULL,
+    student_id INTEGER REFERENCES Students(student_id),
     payment_method VARCHAR(255),
-    subscription_status VARCHAR(255),
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
+    subscription_status VARCHAR(50)
 );
 
--- Add 'billing_id' to 'students' table as a foreign key
-ALTER TABLE students ADD COLUMN IF NOT EXISTS billing_id INT;
-ALTER TABLE students ADD CONSTRAINT fk_billing_id FOREIGN KEY (billing_id) REFERENCES billing(billing_id);
-
--- Create 'courses' table
-CREATE TABLE IF NOT EXISTS courses (
+-- Courses Table
+CREATE TABLE Courses (
     course_id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(255),
     description TEXT,
-    content_mdx TEXT
+    content_mdx TEXT -- Link to the MDX file for the course content
 );
 
--- Create 'github_profiles' table, references 'students'
-CREATE TABLE IF NOT EXISTS github_profiles (
-    github_id SERIAL PRIMARY KEY,
-    github_username VARCHAR(255) UNIQUE NOT NULL,
-    student_id INT UNIQUE NOT NULL,
-    avatar_url TEXT,
-    followers_count INT,
-    -- Include other GitHub-related fields here
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
-);
-
--- Create 'course_progress' table, references 'students' and 'courses'
-CREATE TABLE IF NOT EXISTS course_progress (
+-- Course Progress Table
+CREATE TABLE CourseProgress (
     progress_id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL,
-    course_id INT NOT NULL,
-    current_section INT,
-    completed_sections JSON,
-    FOREIGN KEY (student_id) REFERENCES students(student_id),
-    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+    student_id INTEGER REFERENCES Students(student_id),
+    course_id INTEGER REFERENCES Courses(course_id),
+    current_section INTEGER,
+    completed_sections JSON -- Stores completed sections
 );
 
--- Create 'logins' table, references 'students' and 'github_profiles'
-CREATE TABLE IF NOT EXISTS logins (
-    login_id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL,
-    github_username VARCHAR(255) NOT NULL,
-    login_timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+-- GitHub Profiles Table
+CREATE TABLE GitHubProfiles (
+    github_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES Students(student_id),
+    avatar_url TEXT,
+    followers_count INTEGER
 );
+
+-- Course Enrollments Table
+CREATE TABLE CourseEnrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES Students(student_id),
+    course_id INTEGER REFERENCES Courses(course_id),
+    enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(student_id, course_id)
+);
+
+-- Stripe Payments Table
+CREATE TABLE StripePayments (
+    payment_id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES Students(student_id),
+    stripe_payment_id VARCHAR(255), -- Stripe's payment ID
+    amount DECIMAL(10, 2), -- Total amount paid
+    payment_status VARCHAR(50),
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Optional: Indexes for faster queries (depending on your query patterns)
+-- CREATE INDEX idx_student_email ON Students(email);
+-- CREATE INDEX idx_course_title ON Courses(title);
+-- CREATE INDEX idx_stripe_payment_status ON StripePayments(payment_status);
+
