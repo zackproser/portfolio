@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useSearchParams } from 'next/navigation'
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
@@ -11,16 +12,29 @@ import { Container } from '@/components/Container'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string)
 
-const SomePage = () => {
+const CheckoutPage = () => {
+  const searchParams = useSearchParams()
+  const product = searchParams.get('product');
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
-    fetch("/api/checkout-sessions", {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret))
-  }, []);
+
+    const payload = {
+      product
+    }
+
+    if (product) {
+      fetch(`/api/checkout-sessions`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+        .then((res) => res.json())
+        .then((data) => setClientSecret(data.clientSecret));
+    }
+  }, [product]); // useEffect will re-run when 'product' changes
 
   return (
     <Container className="mt-16 sm:mt-32">
@@ -38,5 +52,5 @@ const SomePage = () => {
   )
 };
 
-export default SomePage;
+export default CheckoutPage;
 

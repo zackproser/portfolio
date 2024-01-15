@@ -3,23 +3,28 @@ import React, { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 
 import { Container } from '@/components/Container'
+import PurchaseSuccess from '@/components/PurchaseSuccess'
 
-export default function Return() {
+import { getProductDetails } from '@/utils/productUtils';
+
+export default function CheckoutSuccess() {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState('');
 
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const sessionId = urlParams.get('session_id');
+  const productName = urlParams.get('product');
+
+  const productDetails = getProductDetails(productName);
 
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const sessionId = urlParams.get('session_id');
-
     fetch(`/api/checkout-sessions?session_id=${sessionId}`, {
       method: "GET",
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('return page fetched json:')
+        console.log('success page fetched json:')
         console.log(data);
         setStatus(data.status);
         setCustomerEmail(data.customer_email);
@@ -35,13 +40,10 @@ export default function Return() {
   if (status === 'paid' || status === 'complete') {
     return (
       <Container className="mt-16 sm:mt-32">
-        <section id="success">
-          <p>
-            We appreciate your business! A confirmation email will be sent to {customerEmail}.
-
-            If you have any questions, please email <a href="mailto:orders@zackproser.com">orders@zackproser.com</a>.
-          </p>
-        </section>
+        <PurchaseSuccess
+          customerEmail={customerEmail}
+          productName={productDetails.fullName}
+        />
       </Container>
     )
   }
