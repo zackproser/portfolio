@@ -10,6 +10,7 @@ import { getProductDetails } from '@/utils/productUtils';
 export default function CheckoutSuccess() {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState(0);
 
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -28,6 +29,7 @@ export default function CheckoutSuccess() {
         console.log(data);
         setStatus(data.status);
         setCustomerEmail(data.customer_email);
+        setPaymentAmount(data.amount_total);
       });
   }, []);
 
@@ -41,6 +43,7 @@ export default function CheckoutSuccess() {
         body: JSON.stringify({
           sessionId,
           customerEmail,
+          paymentAmount,
           courseId: productDetails.courseId,
         }),
       })
@@ -52,7 +55,7 @@ export default function CheckoutSuccess() {
           }
         })
     }
-  }, [status, sessionId, customerEmail, productDetails.courseId])
+  }, [status, sessionId, customerEmail, paymentAmount, productDetails.courseId])
 
   if (status === 'open') {
     return (

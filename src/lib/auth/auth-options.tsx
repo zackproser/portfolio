@@ -24,43 +24,53 @@ export const authOptions = {
       const userFullName: string = profile && profile.name ? profile.name : 'unknown';
       const userEmailAddress: string = profile && profile.email ? profile.email : 'unknown';
 
-      // Insert login record into 'logins' table
-      try {
-        await sql`
-          INSERT INTO logins (github_username) VALUES (${githubUsername})
-        `;
-      } catch (error) {
-        console.error('Error inserting login record:', error);
-      }
+      console.log(`signIn callback githubUsername: ${githubUsername}, userFullName: ${userFullName}, userEmailAddress: ${userEmailAddress}`)
 
-      // Check if student record already exists
-      const existingStudent = await sql`
+      try {
+        // Check if student record already exists
+        const existingStudent = await sql`
       SELECT * 
       FROM students 
       WHERE github_username = ${githubUsername}
     `;
 
-      let studentId;
+        let studentId;
 
-      if (existingStudent.rowCount > 0) {
-        // Student found, use id
-        studentId = existingStudent.rows[0].student_id;
-      } else {
-        // Create new student 
-        const createRes = await sql`
+        if (existingStudent.rowCount > 0) {
+          // Student found, use id
+          studentId = existingStudent.rows[0].student_id;
+        } else {
+          // Create new student 
+          const createRes = await sql`
         INSERT INTO students (github_username, full_name, email)
         VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
         RETURNING student_id
       `;
-        studentId = createRes.rows[0].student_id;
+          studentId = createRes.rows[0].student_id;
+        }
+
+        // Insert login record into 'logins' table
+        await sql`
+          INSERT INTO logins (student_id) VALUES (${studentId})
+        `;
+      } catch (error) {
+        console.error(error);
       }
 
       return true;
     },
     async session({ session, user, token }) {
-      console.log(`session method callback: %o, %o, %o`, session, user, token)
+      /*console.log(`session method callback: %o, %o, %o`, session, user, token)
+
+      console.log(`session.user.email: ${session!.user!.email}`)
+
+      if (session!.user!.email) {
+        const studentLookup = await sql`select github_username from students where email = ${session!.user!.email}`;
+        console.log(`THIS IS BE GITHUB_USERNAME OF: ${studentLookup.rows[0].github_username}`)
+      }*/
+
       return {
-        wakka: true,
+        wakkak: 'willingly',
         ...session,
       }
     }
