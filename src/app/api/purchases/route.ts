@@ -4,9 +4,9 @@ import { sql } from '@vercel/postgres';
 
 export async function POST(req: NextRequest) {
 
-  console.log(`[POST] /api/payments`)
+  console.log(`[POST] /api/purchases`)
 
-  const { sessionId, customerEmail, courseId } = await req.json()
+  const { sessionId, customerEmail, courseId, paymentAmount } = await req.json()
 
   console.log(`[POST] sessionId: ${sessionId}`)
   console.log(`[POST] customerEmail: ${customerEmail}`)
@@ -22,8 +22,7 @@ export async function POST(req: NextRequest) {
   VALUES (
     (SELECT student_id FROM Students WHERE email = ${customerEmail}),
     ${sessionId},
-    -- Get amount from Stripe API  
-    10,
+    ${paymentAmount},
     'paid'
   )
   RETURNING *  

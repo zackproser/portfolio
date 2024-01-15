@@ -19,6 +19,9 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 const CheckoutPage = () => {
 
   const { data: session, status } = useSession();
+
+  console.log(`CheckoutPage: session: ${JSON.stringify(session)}`);
+
   const searchParams = useSearchParams();
   const [clientSecret, setClientSecret] = useState('');
 
