@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS Students, Courses, CourseEnrollments, StripePayments, Login
 CREATE TABLE Students (
   student_id SERIAL PRIMARY KEY,
   github_username VARCHAR(255),
+  full_name VARCHAR(255),
   email VARCHAR(255) UNIQUE, 
   avatar_url TEXT,
   followers_count INTEGER
