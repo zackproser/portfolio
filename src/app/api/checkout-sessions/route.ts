@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getProductDetails } from '@/utils/productUtils';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -6,24 +7,30 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 export async function POST(req: NextRequest) {
-
   console.log(`checkout-sessions POST`)
 
+  const data = await req.json();
+
+  let productName: string = data.product ?? 'unknown';
+
+  const productDetails = getProductDetails(productName);
+
+  if (!productDetails) {
+    throw new Error('Invalid product name');
+  }
+
   try {
-    // Create Checkout Sessions from body params.
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded',
       line_items: [
         {
-          // Provide the exact Price ID (for example, pr_1234) of
-          // the product you want to sell
-          price: 'price_1OYaktEDHFkvZ1e9OIvcUsdD',
+          price: productDetails.priceId,
           quantity: 1,
         },
       ],
       mode: 'payment',
       return_url:
-        `${req.headers.get('origin')}/return?session_id={CHECKOUT_SESSION_ID}`,
+        `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&product=${productName}`,
     });
 
 
@@ -57,6 +64,10 @@ export async function GET(req: NextRequest) {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    console.log(`session: ${JSON.stringify(session)}`)
+
+    const product = req.nextUrl.searchParams.get('product');
+
     if (!session.customer_details) {
       throw new Error('Customer details are missing in the session');
     }
@@ -64,6 +75,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse(JSON.stringify({
       status: session.payment_status,
       customer_email: session.customer_details.email,
+      product: product
     }), {
       status: 200,
     });
