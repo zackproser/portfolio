@@ -18,9 +18,9 @@
     "priceId": "price_1OYdHGEDHFkvZ1e9vZ3l3eoX",
     "courseId": 3
   },
-  "fullstack-javascript": {
-    "fullName": "Full-Stack JavaScript: From Front to Back",
-    "description": "Become a full-stack developer mastering JavaScript ecosystems.",
+  "git-going": {
+    "fullName": "Git Going",
+    "description": "Master git surgery before you arrive on the front lines",
     "priceId": "price_1OYr2DEDHFkvZ1e9ZYPj31GO",
     "courseId": 4
   }
