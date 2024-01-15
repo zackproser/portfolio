@@ -1,4 +1,3 @@
-// File: components/BuyButton.tsx
 import React from 'react';
 
 const BuyButton = () => {
