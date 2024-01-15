@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Container } from '@/components/Container'
 import { useSession } from "next-auth/react"
 
-import GithubSignin from '@/components/github-signin';
 import { loadStripe } from '@stripe/stripe-js';
 import { useSearchParams } from 'next/navigation'
 
