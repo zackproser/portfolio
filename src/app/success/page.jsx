@@ -31,6 +31,29 @@ export default function CheckoutSuccess() {
       });
   }, []);
 
+  useEffect(() => {
+    if (status === 'paid' || status === 'complete') {
+      fetch('/api/purchases', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId,
+          customerEmail,
+          courseId: productDetails.courseId,
+        }),
+      })
+        .then(res => {
+          if (res.ok) {
+            console.log('Purchase updated successfully!')
+          } else {
+            console.log('Error updating purchase')
+          }
+        })
+    }
+  }, [status, sessionId, customerEmail, productDetails.courseId])
+
   if (status === 'open') {
     return (
       redirect('/')
@@ -54,6 +77,5 @@ export default function CheckoutSuccess() {
         <h1>Default condition!</h1>
       </section>
     </Container>
-
   );
 }
