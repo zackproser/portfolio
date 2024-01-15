@@ -2,32 +2,27 @@
   "intro-to-react": {
     "fullName": "React Fundamentals: Building Web Apps",
     "description": "Dive into React basics and build robust web applications.",
-    "priceId": "price_1OYcgfEDHFkvZ1e9Y3hMbnff"
+    "priceId": "price_1OYcgfEDHFkvZ1e9Y3hMbnff", 
+    "courseId": 0
   },
   "node-essentials": {
     "fullName": "Node.js Essentials: Backend Development",
     "description": "Learn the fundamentals of backend development with Node.js.",
-    "priceId": "price_1OYdGtEDHFkvZ1e9ROX5hHDj"
+    "priceId": "price_1OYdGtEDHFkvZ1e9ROX5hHDj", 
+    "courseId": 1
+
   },
   "docker-deployment": {
     "fullName": "Containerizing Applications with Docker",
     "description": "Deploy applications seamlessly using Docker containerization.",
-    "priceId": "price_1OYdHGEDHFkvZ1e9vZ3l3eoX"
+    "priceId": "price_1OYdHGEDHFkvZ1e9vZ3l3eoX",
+    "courseId": 2
   },
   "fullstack-javascript": {
     "fullName": "Full-Stack JavaScript: From Front to Back",
     "description": "Become a full-stack developer mastering JavaScript ecosystems.",
-    "priceId": "dev_price_fullstackJs"
-  },
-  "cloud-computing-aws": {
-    "fullName": "Cloud Computing with AWS",
-    "description": "Harness the power of cloud computing using Amazon Web Services.",
-    "priceId": "dev_price_awsCloud"
-  },
-  "advanced-css-design": {
-    "fullName": "Advanced CSS for Modern Web Design",
-    "description": "Create stunning web interfaces with advanced CSS techniques.",
-    "priceId": "dev_price_advancedCSS"
+    "priceId": "price_1OYr2DEDHFkvZ1e9ZYPj31GO",
+    "courseId": 3
   }
 }
 
