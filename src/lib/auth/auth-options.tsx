@@ -60,20 +60,34 @@ export const authOptions = {
       return true;
     },
     async session({ session, user, token }) {
-      /*console.log(`session method callback: %o, %o, %o`, session, user, token)
+      console.log(`session method callback: %o, %o, %o`, session, user, token)
 
       console.log(`session.user.email: ${session!.user!.email}`)
 
-      if (session!.user!.email) {
-        const studentLookup = await sql`select github_username from students where email = ${session!.user!.email}`;
-        console.log(`THIS IS BE GITHUB_USERNAME OF: ${studentLookup.rows[0].github_username}`)
-      }*/
+      const userId = await getUserIdFromEmail(session!.user!.email!);
+
+      // Add purchased courses to the session object
+      session!.user!.purchased_courses = await getPurchasedCourses(Number(userId));
+
+      console.log(`session before return: %o`, session)
 
       return {
-        wakkak: 'willingly',
         ...session,
       }
     }
   }
 } as AuthOptions;
 
+async function getUserIdFromEmail(email: string): Promise<number | null> {
+  // Implement logic to fetch user ID from the database based on email
+  // Return the user ID or null if not found
+  const userRes = await sql`SELECT student_id FROM students WHERE email = ${email}`;
+  return userRes.rowCount > 0 ? userRes.rows[0].student_id : null;
+}
+
+async function getPurchasedCourses(userId: number): Promise<number[]> {
+  // Implement logic to fetch purchased courses from the database
+  // Return an array of course IDs or details
+  const purchasesRes = await sql`SELECT course_id from CourseEnrollments WHERE student_id = ${userId}`;
+  return purchasesRes.rows.map(row => row.course_id);
+}
