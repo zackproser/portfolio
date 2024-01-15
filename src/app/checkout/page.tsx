@@ -1,23 +1,39 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { Container } from '@/components/Container'
+import { useSession } from "next-auth/react"
+
+import GithubSignin from '@/components/github-signin';
 import { loadStripe } from '@stripe/stripe-js';
 import { useSearchParams } from 'next/navigation'
+
+import { redirect } from 'next/navigation'
+
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
 } from '@stripe/react-stripe-js';
-import { Container } from '@/components/Container'
-
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string)
 
 const CheckoutPage = () => {
-  const searchParams = useSearchParams()
-  const product = searchParams.get('product');
+
+  const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
   const [clientSecret, setClientSecret] = useState('');
 
+  // Redirect if not logged in
   useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect('/api/auth/signin');
+    }
+  }, [status]);
+
+
+  // Fetch client secret if logged in and product specified
+  useEffect(() => {
+    const product = searchParams.get('product');
 
     const payload = {
       product
@@ -34,11 +50,14 @@ const CheckoutPage = () => {
         .then((res) => res.json())
         .then((data) => setClientSecret(data.clientSecret));
     }
-  }, [product]); // useEffect will re-run when 'product' changes
+
+  }, [session, searchParams]);
 
   return (
     <Container className="mt-16 sm:mt-32">
+
       <div id="checkout" className="bg-zinc-50 dark:bg-black">
+
         {clientSecret && (
           <EmbeddedCheckoutProvider
             stripe={stripePromise}
@@ -47,10 +66,11 @@ const CheckoutPage = () => {
             <EmbeddedCheckout />
           </EmbeddedCheckoutProvider>
         )}
+
       </div>
+
     </Container>
   )
 };
 
 export default CheckoutPage;
-
