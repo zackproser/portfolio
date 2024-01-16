@@ -1,23 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { redirect } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
 
 import { Container } from '@/components/Container'
 import PurchaseSuccess from '@/components/PurchaseSuccess'
 
-import { getProductDetails } from '@/utils/productUtils';
-
 export default function CheckoutSuccess() {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState('');
-  const [paymentAmount, setPaymentAmount] = useState(0);
 
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const sessionId = urlParams.get('session_id');
-  const productName = urlParams.get('product');
-
-  const productDetails = getProductDetails(productName);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('session_id');
+  const productSlug = searchParams.get('product');
 
   useEffect(() => {
     fetch(`/api/checkout-sessions?session_id=${sessionId}`, {
@@ -29,7 +23,6 @@ export default function CheckoutSuccess() {
         console.log(data);
         setStatus(data.status);
         setCustomerEmail(data.customer_email);
-        setPaymentAmount(data.amount_total);
       });
   }, []);
 
@@ -43,8 +36,7 @@ export default function CheckoutSuccess() {
         body: JSON.stringify({
           sessionId,
           customerEmail,
-          paymentAmount,
-          courseId: productDetails.courseId,
+          productSlug
         }),
       })
         .then(res => {
@@ -55,7 +47,7 @@ export default function CheckoutSuccess() {
           }
         })
     }
-  }, [status, sessionId, customerEmail, paymentAmount, productDetails.courseId])
+  }, [status, sessionId, customerEmail, productSlug]);
 
   if (status === 'open') {
     return (
@@ -68,17 +60,10 @@ export default function CheckoutSuccess() {
       <Container className="mt-16 sm:mt-32">
         <PurchaseSuccess
           customerEmail={customerEmail}
-          productName={productDetails.fullName}
+          productName={productSlug.replace('-', ' ')}
         />
       </Container>
     )
   }
 
-  return (
-    <Container className="mt-16 sm:mt-32">
-      <section id="success">
-        <h1>Default condition!</h1>
-      </section>
-    </Container>
-  );
 }
