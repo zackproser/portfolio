@@ -1,20 +1,22 @@
-import devProducts from './devProducts.json';
-import prodProducts from './prodProducts.json';
+import { sql } from "@vercel/postgres";
 
 interface ProductDetails {
-  fullName: string;
+  title: string;
   description: string;
-  priceId: string;
+  price_id: string;
 }
 
-interface Products {
-  [key: string]: ProductDetails;
+async function getProductDetails(slug: string): Promise<ProductDetails | null> {
+  const result = await sql`
+    SELECT title, description, price_id
+    FROM Courses
+    WHERE slug = ${slug}
+  `;
+  return result.rowCount > 0 ? result.rows[0] as ProductDetails : null;
 }
 
-const isProduction = process.env.NODE_ENV === 'production';
-const products: Products = isProduction ? prodProducts : devProducts;
-
-export function getProductDetails(productName: string) {
-  return products[productName] || null;
-}
+export {
+  type ProductDetails,
+  getProductDetails
+};
 
