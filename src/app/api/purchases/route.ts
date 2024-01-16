@@ -6,11 +6,19 @@ export async function POST(req: NextRequest) {
 
   console.log(`[POST] /api/purchases`)
 
-  const { sessionId, customerEmail, courseId, paymentAmount } = await req.json()
+  const { sessionId, customerEmail, productSlug } = await req.json()
 
   console.log(`[POST] sessionId: ${sessionId}`)
   console.log(`[POST] customerEmail: ${customerEmail}`)
-  console.log(`[POST] courseId: ${courseId}`)
+  console.log(`[POST] productSlug: ${productSlug}`)
+
+  const studentRes = await sql`SELECT student_id FROM Students WHERE email = ${customerEmail}`
+  const studentId = studentRes.rows[0].student_id
+  console.log(`Retrieved student_id: ${studentId} for email: ${customerEmail}`)
+
+  if (studentId === null) {
+    throw new Error(`Could not find student_id for user email: ${customerEmail}`)
+  }
 
   const stripePaymentResult = await sql`
   INSERT INTO StripePayments (
@@ -20,18 +28,22 @@ export async function POST(req: NextRequest) {
     payment_status
   )
   VALUES (
-    (SELECT student_id FROM Students WHERE email = ${customerEmail}),
+    ${studentId},
     ${sessionId},
-    ${paymentAmount},
+    0,
     'paid'
   )
   RETURNING *  
 `
 
+  const courseRes = await sql`SELECT course_id FROM courses where slug = ${productSlug}`
+  const courseId = courseRes.rows[0].course_id
+  console.log(`Retrieved course_id: ${courseId} for slug: ${productSlug}`)
+
   const courseEnrollmentResult = await sql`
   INSERT INTO CourseEnrollments (student_id, course_id)
   VALUES (
-    (SELECT student_id FROM Students WHERE email = ${customerEmail}),
+    ${studentId},
     ${courseId}
   )
   RETURNING *

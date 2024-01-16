@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProductDetails } from '@/utils/productUtils';
+import { getProductDetails, ProductDetails } from '@/utils/productUtils';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json();
 
-  let productName: string = data.product ?? 'unknown';
+  let productSlug: string = data.product ?? 'unknown';
 
-  const productDetails = getProductDetails(productName);
+  const productDetails: ProductDetails | null = await getProductDetails(productSlug);
 
   if (!productDetails) {
     throw new Error('Invalid product name');
@@ -24,13 +24,13 @@ export async function POST(req: NextRequest) {
       ui_mode: 'embedded',
       line_items: [
         {
-          price: productDetails.priceId,
+          price: productDetails.price_id,
           quantity: 1,
         },
       ],
       mode: 'payment',
       return_url:
-        `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&product=${productName}`,
+        `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&product=${productSlug}`,
     });
 
 
