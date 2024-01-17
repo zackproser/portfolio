@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-
 import { sql } from '@vercel/postgres';
+
+import EmailTemplate from '@/components/TransactionalEmail';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
 
@@ -12,9 +16,10 @@ export async function POST(req: NextRequest) {
   console.log(`[POST] customerEmail: ${customerEmail}`)
   console.log(`[POST] productSlug: ${productSlug}`)
 
-  const studentRes = await sql`SELECT student_id FROM Students WHERE email = ${customerEmail}`
+  const studentRes = await sql`SELECT student_id, full_name FROM Students WHERE email = ${customerEmail}`
   const studentId = studentRes.rows[0].student_id
-  console.log(`Retrieved student_id: ${studentId} for email: ${customerEmail}`)
+  const fullName = studentRes.rows[0].full_name
+  console.log(`Retrieved student_id: ${studentId} and full_name: ${fullName} for email: ${customerEmail}`)
 
   if (studentId === null) {
     throw new Error(`Could not find student_id for user email: ${customerEmail}`)
@@ -48,6 +53,28 @@ export async function POST(req: NextRequest) {
   )
   RETURNING *
 `
+  // Send transactional email letting the user know their purchase was successful 
+  // This also results in them having an email they can search for / find later as 
+  // another way to access their course
+  const emailTemplate = EmailTemplate({
+    fullName,
+    productSlug
+  })
+
+  const { data, error } = await resend.emails.send({
+    from: 'Orders <hello@orders.zackproser.com>',
+    to: [customerEmail],
+    subject: `${fullName}, class is in session!`,
+    react: emailTemplate,
+  });
+
+  if (error) {
+    return new NextResponse(JSON.stringify({ error: `Error sending email: ${error.message}` }), {
+      status: 400,
+    })
+  }
+
+  console.log(`Email sent to ${customerEmail}: ${data}`)
 
   return NextResponse.json({
     message: 'Database updated successfully'
