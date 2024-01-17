@@ -4,11 +4,12 @@ interface ProductDetails {
   title: string;
   description: string;
   price_id: string;
+  course_id: string;
 }
 
 async function getProductDetails(slug: string): Promise<ProductDetails | null> {
   const result = await sql`
-    SELECT title, description, price_id
+    SELECT title, description, price_id, course_id
     FROM Courses
     WHERE slug = ${slug}
   `;
