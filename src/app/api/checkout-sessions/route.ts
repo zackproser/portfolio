@@ -1,13 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProductDetails, ProductDetails } from '@/utils/productUtils';
-import Stripe from 'stripe';
 
+import { redirect } from 'next/navigation';
+
+import { getProductDetails, ProductDetails } from '@/utils/productUtils';
+
+import { Resend } from 'resend';
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2023-10-16',
 });
 
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth/auth-options";
+
+import { EmailTemplate } from '@/components/TransactionalEmail'
+
 export async function POST(req: NextRequest) {
   console.log(`checkout-sessions POST`)
+
+  const nextSession = await getServerSession(authOptions);
+
+  if (!nextSession) {
+    redirect('/api/auth/signin')
+  }
+
+  const customerEmail = nextSession.user.email as unknown as string;
+  const customerName = nextSession.user.name as unknown as string;
 
   const data = await req.json();
 
@@ -32,6 +52,20 @@ export async function POST(req: NextRequest) {
       return_url:
         `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&product=${productSlug}`,
     });
+
+
+    // Send transactional email to customer
+    const { data, error } = await resend.emails.send({
+      //from: 'Orders <orders@zackproser.com>',
+      from: 'Onboarding <onboarding@resend.dev>',
+      to: [customerEmail],
+      subject: `${customerName}, class is in session!`,
+      react: EmailTemplate({ firstName: customerName, courseName: productSlug }),
+      text: "Your purchased course is ready!"
+    });
+
+    console.log(`data: ${JSON.stringify(data)}`)
+    console.log(`error: ${JSON.stringify(error)}`)
 
 
     return new NextResponse(JSON.stringify({ clientSecret: session.client_secret }), {
