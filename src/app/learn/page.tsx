@@ -113,17 +113,12 @@ function Features({ features }: FeaturesProps) {
 
 export default async function LearnPage() {
 
-  const session = await getServerSession(authOptions);
-
   return (
     <Container>
       <section className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Learn by doing</h2>
-            {session!.user.purchased_courses.map((course) => (
-              <h2>You boughta: {course}</h2>
-            ))}
             <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
               We believe in project-based learning for real skill-building. We help you display every completed project on your website to create a
               real-world portfolio and get hired.
