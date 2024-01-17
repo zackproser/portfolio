@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { redirect } from 'next/navigation';
 
 import { getProductDetails, ProductDetails } from '@/utils/productUtils';
-
-import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -15,8 +11,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/auth-options";
 
-import { EmailTemplate } from '@/components/TransactionalEmail'
-
+// POST creates a new Stripe Checkout session, which results in the Checkout 
+// embedded form being rendered
 export async function POST(req: NextRequest) {
   console.log(`checkout-sessions POST`)
 
@@ -26,13 +22,10 @@ export async function POST(req: NextRequest) {
     redirect('/api/auth/signin')
   }
 
-  const customerEmail = nextSession.user.email as unknown as string;
-  const customerName = nextSession.user.name as unknown as string;
-
+  // Look up the product information based on the slug that was passed into this route 
+  // from the frontend
   const data = await req.json();
-
   let productSlug: string = data.product ?? 'unknown';
-
   const productDetails: ProductDetails | null = await getProductDetails(productSlug);
 
   if (!productDetails) {
@@ -52,21 +45,6 @@ export async function POST(req: NextRequest) {
       return_url:
         `${req.headers.get('origin')}/success?session_id={CHECKOUT_SESSION_ID}&product=${productSlug}`,
     });
-
-
-    // Send transactional email to customer
-    const { data, error } = await resend.emails.send({
-      //from: 'Orders <orders@zackproser.com>',
-      from: 'Onboarding <onboarding@resend.dev>',
-      to: [customerEmail],
-      subject: `${customerName}, class is in session!`,
-      react: EmailTemplate({ firstName: customerName, courseName: productSlug }),
-      text: "Your purchased course is ready!"
-    });
-
-    console.log(`data: ${JSON.stringify(data)}`)
-    console.log(`error: ${JSON.stringify(error)}`)
-
 
     return new NextResponse(JSON.stringify({ clientSecret: session.client_secret }), {
       status: 200,
@@ -138,4 +116,3 @@ export async function OPTIONS() {
     }
   });
 }
-
