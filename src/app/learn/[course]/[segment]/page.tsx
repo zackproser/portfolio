@@ -60,7 +60,7 @@ export default async function Page({ params }: PageProps) {
         course={course}
         groupedSegments={groupedSegments}
         currentSegment={segment}>
-        <p>{segmentContent()}</p>
+        {segmentContent()}
       </CourseBrowser>
     </Container>
   )
