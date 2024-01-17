@@ -1,6 +1,3 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/auth-options";
-
 import Image from 'next/image';
 
 import { Container } from "@/components/Container";
