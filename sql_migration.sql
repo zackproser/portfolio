@@ -1,7 +1,13 @@
 -- Drop tables if they exist
 DROP TABLE IF EXISTS Students, Courses, CourseEnrollments, StripePayments, Logins;
 
--- Create updated tables
+-- Create ENUM type for course status
+CREATE TYPE course_status AS ENUM (
+  'coming-soon',
+  'in-progress',
+  'available'
+);
+
 CREATE TABLE Students (
   student_id SERIAL PRIMARY KEY,
   github_username VARCHAR(255),
@@ -16,8 +22,8 @@ CREATE TABLE Courses (
   title VARCHAR(255),
   description TEXT,
   slug VARCHAR(255) UNIQUE,
-  status VARCHAR(50),
-  price_id VARCHAR(255) -- Assuming price_id is a string like 'price_1OYcgfEDHFkvZ1e9Y3hMbnff'
+  status course_status, -- Using ENUM type
+  price_id VARCHAR(255)
 );
 
 CREATE TABLE CourseEnrollments (
