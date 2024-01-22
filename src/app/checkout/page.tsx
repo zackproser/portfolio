@@ -30,6 +30,8 @@ const CheckoutPage = () => {
 	const [productTitle, setProductTitle] = useState("");
 	const [productStatus, setProductStatus] = useState("");
 	const [userEmail, setUserEmail] = useState("");
+	const [productId, setProductId] = useState(0);
+	const [purchasedCourses, setPurchasedCourses] = useState<number[]>([]);
 
 	// If user is not signed in, redirect them to sign in page
 	useEffect(() => {
@@ -38,18 +40,34 @@ const CheckoutPage = () => {
 		}
 	}, [status, session]);
 
-	// If user is signed in, get their email
 	useEffect(() => {
+		// If user is signed in, get their email and purchased courses
 		if (session) {
 			setUserEmail(session.user.email as unknown as string);
+			const purchasedCourses = session.user.purchased_courses;
+			if (
+				Array.isArray(purchasedCourses) &&
+				purchasedCourses.every((item) => typeof item === "number")
+			) {
+				setPurchasedCourses(purchasedCourses);
+			} else {
+				// Handle the case where purchased_courses is not an array of numbers
+				console.error("purchased_courses is not an array of numbers");
+			}
 		}
 	}, [session]);
 
 	// Product validity check: ensure product is available for sale
 	// Otherwise, redirect user to the product-specific waitinglist
 	useEffect(() => {
-		fetch(`/api/products?product=${productSlug}`).then((res) => {
-			res.json().then((data) => {
+		fetch(`/api/products?product=${productSlug}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+			.then((res) => res.json())
+			.then((data) => {
 				console.log(`data: ${JSON.stringify(data)}`);
 
 				const { title, status } = data;
@@ -57,19 +75,35 @@ const CheckoutPage = () => {
 				setProductTitle(title);
 				setProductStatus(status);
 			});
-		});
+	}, [productSlug]);
 
-		console.log(`productStatus: ${productStatus}`);
+	if (
+		productStatus === CourseStatus.InProgress ||
+		productStatus === CourseStatus.ComingSoon
+	) {
+		return redirect(
+			`/waitinglist?product=${productSlug}&productName=${productTitle}&email=${userEmail}`,
+		);
+	}
 
-		if (
-			productStatus === CourseStatus.InProgress ||
-			productStatus === CourseStatus.ComingSoon
-		) {
-			return redirect(
-				`/waitinglist?product=${productSlug}&productName=${productTitle}&email=${userEmail}`,
-			);
+	// If user has already purchased the course, redirect them to start learning
+	useEffect(() => {
+		if (productSlug) {
+			fetch(`/api/products?product=${productSlug}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					setProductId(data.course_id);
+				});
 		}
-	}, [productSlug, productTitle, productStatus, userEmail]);
+		if (purchasedCourses.includes(productId)) {
+			return redirect(`/learn/${productSlug}/0`);
+		}
+	});
 
 	// Fetch client secret if logged in and product specified
 	useEffect(() => {

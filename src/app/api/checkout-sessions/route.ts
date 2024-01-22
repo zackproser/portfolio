@@ -57,8 +57,30 @@ export async function POST(req: NextRequest) {
 		productDetails.status === "in-progress" ||
 		productDetails.status === "coming-soon"
 	) {
-		redirect(
-			`/waitinglist?product=${productSlug}&productName=${productDetails.title}&email=${userEmail}`,
+		return new NextResponse(
+			JSON.stringify({
+				error: "Product not yet available for sale.",
+			}),
+			{
+				status: 400,
+			},
+		);
+	}
+
+	// If the user has already purchased this course, then we redirect them to the
+	// interactive private course route
+	if (
+		nextSession.user.purchased_courses.includes(
+			Number(productDetails.course_id),
+		)
+	) {
+		return new NextResponse(
+			JSON.stringify({
+				error: "User already purchased this product.",
+			}),
+			{
+				status: 409,
+			},
 		);
 	}
 
