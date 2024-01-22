@@ -1,31 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { sql } from '@vercel/postgres';
+import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@vercel/postgres";
 
-import EmailTemplate from '@/components/TransactionalEmail';
-import { Resend } from 'resend';
+import EmailTemplate from "@/components/TransactionalEmail";
+import { Resend } from "resend";
+import { render } from "@react-email/render";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
+	console.log(`[POST] /api/purchases`);
 
-  console.log(`[POST] /api/purchases`)
+	const { sessionId, customerEmail, productSlug } = await req.json();
 
-  const { sessionId, customerEmail, productSlug } = await req.json()
+	console.log(`[POST] sessionId: ${sessionId}`);
+	console.log(`[POST] customerEmail: ${customerEmail}`);
+	console.log(`[POST] productSlug: ${productSlug}`);
 
-  console.log(`[POST] sessionId: ${sessionId}`)
-  console.log(`[POST] customerEmail: ${customerEmail}`)
-  console.log(`[POST] productSlug: ${productSlug}`)
+	const studentRes =
+		await sql`SELECT student_id, full_name FROM Students WHERE email = ${customerEmail}`;
+	const studentId = studentRes.rows[0].student_id;
+	const fullName = studentRes.rows[0].full_name;
+	console.log(
+		`Retrieved student_id: ${studentId} and full_name: ${fullName} for email: ${customerEmail}`,
+	);
 
-  const studentRes = await sql`SELECT student_id, full_name FROM Students WHERE email = ${customerEmail}`
-  const studentId = studentRes.rows[0].student_id
-  const fullName = studentRes.rows[0].full_name
-  console.log(`Retrieved student_id: ${studentId} and full_name: ${fullName} for email: ${customerEmail}`)
+	if (studentId === null) {
+		throw new Error(
+			`Could not find student_id for user email: ${customerEmail}`,
+		);
+	}
 
-  if (studentId === null) {
-    throw new Error(`Could not find student_id for user email: ${customerEmail}`)
-  }
-
-  const stripePaymentResult = await sql`
+	const stripePaymentResult = await sql`
   INSERT INTO StripePayments (
     student_id, 
     stripe_payment_id,
@@ -39,47 +44,57 @@ export async function POST(req: NextRequest) {
     'paid'
   )
   RETURNING *  
-`
+`;
 
-  const courseRes = await sql`SELECT course_id FROM courses where slug = ${productSlug}`
-  const courseId = courseRes.rows[0].course_id
-  console.log(`Retrieved course_id: ${courseId} for slug: ${productSlug}`)
+	const courseRes =
+		await sql`SELECT course_id FROM courses where slug = ${productSlug}`;
+	const courseId = courseRes.rows[0].course_id;
+	console.log(`Retrieved course_id: ${courseId} for slug: ${productSlug}`);
 
-  const courseEnrollmentResult = await sql`
+	const courseEnrollmentResult = await sql`
   INSERT INTO CourseEnrollments (student_id, course_id)
   VALUES (
     ${studentId},
     ${courseId}
   )
   RETURNING *
-`
-  // Send transactional email letting the user know their purchase was successful 
-  // This also results in them having an email they can search for / find later as 
-  // another way to access their course
-  const emailTemplate = EmailTemplate({
-    fullName,
-    productSlug
-  })
+`;
+	// Send transactional email letting the user know their purchase was successful
+	// This also results in them having an email they can search for / find later as
+	// another way to access their course
+	const emailTemplate = EmailTemplate({
+		fullName,
+		productSlug,
+	});
 
-  const { data, error } = await resend.emails.send({
-    from: 'Orders <hello@orders.zackproser.com>',
-    to: [customerEmail],
-    subject: `${fullName}, class is in session!`,
-    react: emailTemplate,
-  });
+	const html = render(emailTemplate, {
+		pretty: true,
+	});
 
-  if (error) {
-    return new NextResponse(JSON.stringify({ error: `Error sending email: ${error.message}` }), {
-      status: 400,
-    })
-  }
+	const { data, error } = await resend.emails.send({
+		from: "Orders <hello@orders.zackproser.com>",
+		to: [customerEmail],
+		subject: `${fullName}, class is in session!`,
+		html,
+	});
 
-  console.log(`Email sent to ${customerEmail}: ${data}`)
+	if (error) {
+		return new NextResponse(
+			JSON.stringify({ error: `Error sending email: ${error.message}` }),
+			{
+				status: 400,
+			},
+		);
+	}
 
-  return NextResponse.json({
-    message: 'Database updated successfully'
-  }, {
-    status: 200,
-  })
+	console.log(`Email sent to ${customerEmail}: ${data}`);
 
+	return NextResponse.json(
+		{
+			message: "Database updated successfully",
+		},
+		{
+			status: 200,
+		},
+	);
 }
