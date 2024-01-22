@@ -36,7 +36,7 @@ const CheckoutPage = () => {
 	// If user is not signed in, redirect them to sign in page
 	useEffect(() => {
 		if (status === "unauthenticated" || session === null) {
-			return redirect("/api/auth/signin");
+			redirect("/api/auth/signin");
 		}
 	}, [status, session]);
 
@@ -81,29 +81,41 @@ const CheckoutPage = () => {
 		productStatus === CourseStatus.InProgress ||
 		productStatus === CourseStatus.ComingSoon
 	) {
-		return redirect(
+		redirect(
 			`/waitinglist?product=${productSlug}&productName=${productTitle}&email=${userEmail}`,
 		);
 	}
 
+	useEffect(() => {
+		if (!productSlug) return;
+
+		let isSubscribed = true; // To handle potential memory leak
+
+		fetch(`/api/products?product=${productSlug}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				if (isSubscribed) {
+					setProductId(data.course_id);
+				}
+			});
+
+		// Clean up function to set isSubscribed to false when component unmounts
+		return () => {
+			isSubscribed = false;
+		};
+	}, [productSlug]);
+
 	// If user has already purchased the course, redirect them to start learning
 	useEffect(() => {
-		if (productSlug) {
-			fetch(`/api/products?product=${productSlug}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					setProductId(data.course_id);
-				});
-		}
 		if (purchasedCourses.includes(productId)) {
-			return redirect(`/learn/${productSlug}/0`);
+			redirect(`/learn/${productSlug}/0`);
 		}
-	});
+	}, [purchasedCourses, productId, productSlug]);
 
 	// Fetch client secret if logged in and product specified
 	useEffect(() => {
