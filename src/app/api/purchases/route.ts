@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-import EmailTemplate from "@/components/TransactionalEmail";
-import { Resend } from "resend";
-import { render } from "@react-email/render";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+//import EmailTemplate from "@/components/TransactionalEmail";
+import EmailTemplate from "@/components/test";
+import { resend } from "../../../lib/resend";
 
 export async function POST(req: NextRequest) {
-	console.log(`[POST] /api/purchases`);
+	console.log("[POST] /api/purchases");
 
 	const { sessionId, customerEmail, productSlug } = await req.json();
 
@@ -62,20 +60,21 @@ export async function POST(req: NextRequest) {
 	// Send transactional email letting the user know their purchase was successful
 	// This also results in them having an email they can search for / find later as
 	// another way to access their course
-	const emailTemplate = EmailTemplate({
+	/*const emailTemplate = EmailTemplate({
 		fullName,
 		productSlug,
-	});
+	});*/
 
-	const html = render(emailTemplate, {
-		pretty: true,
+	const emailTemplate = EmailTemplate({
+		name: fullName,
 	});
 
 	const { data, error } = await resend.emails.send({
 		from: "Orders <hello@orders.zackproser.com>",
 		to: [customerEmail],
 		subject: `${fullName}, class is in session!`,
-		html,
+		react: emailTemplate,
+		text: "This is the text form",
 	});
 
 	if (error) {

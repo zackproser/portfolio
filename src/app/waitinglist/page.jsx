@@ -7,7 +7,7 @@ import { Container } from "@/components/Container";
 
 import ProductWaitinglistForm from "@/components/ProductWaitinglistForm";
 
-export const WaitinglistPage = () => {
+export default function Page() {
   const [userEmail, setUserEmail] = useState("");
   const [productSlug, setProductSlug] = useState("");
   const [productName, setProductName] = useState("");
@@ -41,6 +41,4 @@ export const WaitinglistPage = () => {
       />
     </Container>
   );
-};
-
-export default WaitinglistPage;
+}
