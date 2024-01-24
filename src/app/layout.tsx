@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import AuthProvider from '../lib/auth/AuthProvider';
 
 import { type Metadata } from 'next'
@@ -64,6 +64,7 @@ export default function RootLayout({
             <div className="flex w-full">
               <Layout>{children}</Layout>
               <Analytics />
+              <SpeedInsights />
             </div>
           </Providers>
         </body>
