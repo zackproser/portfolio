@@ -1,0 +1,44 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar2.png'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+  author: "Zachary Proser",
+  date: "2024-1-24",
+  title: "Pinecone & Pulumi webinar: Scaling AI Apps",
+  description: "I co-hosted a webinar with Pulumi about productionizing AI applications",
+  image: pineconePulumiWebinar
+}
+
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/D0cOJNf0pCQ"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I co-hosted a webinar with Pulumi's Engin Diri about: 
+* The Pinecone AWS Reference Architecture, 
+* How it's been updated to use Pinecone Serverless and the Pinecone Pulumi provider
+* How to deploy an AI application to production using infrastructure as code
+
