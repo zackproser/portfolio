@@ -3,7 +3,7 @@ import { sql } from "@vercel/postgres";
 
 //import EmailTemplate from "@/components/TransactionalEmail";
 import EmailTemplate from "@/components/test";
-import { resend } from "../../../lib/resend";
+import resend from "../../../lib/resend";
 
 export async function POST(req: NextRequest) {
 	console.log("[POST] /api/purchases");
