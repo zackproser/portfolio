@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 	}
 
 	const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
-	const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID;
+	const emailOctopusListId = process.env.EMAIL_OCTOPUS_WAITINGLIST_LIST_ID;
 	const newMemberEmailAddress = body.email;
 	const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`;
 
