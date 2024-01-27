@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-//import EmailTemplate from "@/components/TransactionalEmail";
-import EmailTemplate from "@/components/test";
-import resend from "../../../lib/resend";
+import { sendReceiptEmail } from "@/lib/postmark";
 
 export async function POST(req: NextRequest) {
 	console.log("[POST] /api/purchases");
@@ -60,33 +58,9 @@ export async function POST(req: NextRequest) {
 	// Send transactional email letting the user know their purchase was successful
 	// This also results in them having an email they can search for / find later as
 	// another way to access their course
-	/*const emailTemplate = EmailTemplate({
-		fullName,
-		productSlug,
-	});*/
+	sendReceiptEmail();
 
-	const emailTemplate = EmailTemplate({
-		name: fullName,
-	});
-
-	const { data, error } = await resend.emails.send({
-		from: "Orders <hello@orders.zackproser.com>",
-		to: [customerEmail],
-		subject: `${fullName}, class is in session!`,
-		react: emailTemplate,
-		text: "This is the text form",
-	});
-
-	if (error) {
-		return new NextResponse(
-			JSON.stringify({ error: `Error sending email: ${error.message}` }),
-			{
-				status: 400,
-			},
-		);
-	}
-
-	console.log(`Email sent to ${customerEmail}: ${data}`);
+	console.log(`Email sent to ${customerEmail}`);
 
 	return NextResponse.json(
 		{
