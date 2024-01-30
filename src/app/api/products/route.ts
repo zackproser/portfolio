@@ -1,21 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/auth-options";
 import { getProductDetails, ProductDetails } from "@/utils/productUtils";
 
 export async function GET(req: NextRequest) {
 	console.log("GET /products");
-
-	const session = await getServerSession(authOptions);
-
-	if (!session) {
-		return new NextResponse(
-			JSON.stringify({ error: "Not signed into GitHub" }),
-			{
-				status: 403,
-			},
-		);
-	}
 
 	const productSlug = req.nextUrl.searchParams.get("product");
 
