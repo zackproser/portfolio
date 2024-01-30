@@ -27,7 +27,7 @@ export default function PurchaseSuccess({
       </section>
       <div className="flex gap-4 mt-10">
         <Button variant="green" href={courseUrl}>Start your course</Button>
-        <Button variant="secondary" href={"/learn"}>Return to course listing</Button>
+        <Button variant="secondary" href={"/learn"}>Return to all courses</Button>
       </div>
     </div>
   )
