@@ -99,8 +99,8 @@ export async function POST(req: NextRequest) {
 				Total: "150",
 				SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
 				ActionURL: "",
-				CompanyName: "Online Learning Platform",
-				CompanyAddress: "123 Education Blvd, City, State, 12345",
+				CompanyName: "Zachary Proser's School for Hackers",
+				CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
 			},
 		};
 
