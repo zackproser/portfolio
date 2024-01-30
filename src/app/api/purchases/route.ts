@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
 				},
 				Total: "150",
 				SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-				ActionURL: "",
+				ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/learn/${productSlug}/0`,
 				CompanyName: "Zachary Proser's School for Hackers",
 				CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
 			},
