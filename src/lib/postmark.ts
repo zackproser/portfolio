@@ -1,8 +1,7 @@
-import postmark from "postmark";
-
+import { ServerClient } from "postmark";
 import { type MessageSendingResponse } from "postmark/dist/client/models";
 
-const client = new postmark.ServerClient(
+const client = new ServerClient(
 	process.env.POSTMARK_API_KEY as unknown as string,
 );
 
