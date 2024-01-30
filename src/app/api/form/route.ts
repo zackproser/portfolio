@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 
-  // Get data submitted in the request's body.
-  const body = await req.json();
+// Get data submitted in the request's body.
+const body = await req.json();
 
-  // If email is missing, return an error.
-  if (body.email == "") {
-    return new NextResponse(JSON.stringify({ data: `Error: no valid email found in request` }), { status: 400 });
-  }
+// If email is missing, return an error.
+if (body.email == "") {
+  return new NextResponse(JSON.stringify({ data: `Error: no valid email found in request` }), { status: 400 });
+}
+
+
+
 
   const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
   const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID;
