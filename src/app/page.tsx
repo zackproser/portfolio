@@ -12,7 +12,7 @@ import {
   GitHubIcon,
   InstagramIcon,
   LinkedInIcon,
-  TwitterIcon,
+  TwitterIcon
 } from '@/components/SocialIcons'
 import wikka from '@/images/photos/wikka.png'
 import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.png'
@@ -27,10 +27,10 @@ import { generateOgUrl } from '@/utils/ogUrl'
 
 const data = {
   title: 'Homepage',
-  description: 'Full-stack open-source hacker, technical writer and developer advocate.',
-};
+  description: 'Full-stack open-source hacker, technical writer and developer advocate.'
+}
 
-const ogUrl = generateOgUrl(data);
+const ogUrl = generateOgUrl(data)
 
 export const metadata = {
   openGraph: {
@@ -40,17 +40,15 @@ export const metadata = {
     siteName: 'Zack Proser&apos;s portfolio',
     images: [
       {
-        url: ogUrl,
+        url: ogUrl
       }
     ],
     locale: 'en_US',
-    type: 'website',
-  },
-};
+    type: 'website'
+  }
+}
 
-
-
-function SocialLink({
+function SocialLink ({
   icon: Icon,
   ...props
 }: React.ComponentPropsWithoutRef<typeof Link> & {
@@ -63,9 +61,9 @@ function SocialLink({
   )
 }
 
-function Photos() {
+function Photos () {
   const images = [wikka, optimizerBlogImg, canyonRunnerImg, teaTutorImg, terraformAssocImg]
-  let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+  const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -75,7 +73,7 @@ function Photos() {
             key={image.src}
             className={clsx(
               'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 sm:w-72 sm:rounded-2xl',
-              rotations[imageIndex % rotations.length],
+              rotations[imageIndex % rotations.length]
             )}
           >
             <Image
@@ -91,8 +89,8 @@ function Photos() {
   )
 }
 
-export default async function Home() {
-  let articles = (await getAllArticles()).slice(0, 10)
+export default async function Home () {
+  const articles = (await getAllArticles()).slice(0, 10)
 
   return (
     <>
@@ -102,7 +100,7 @@ export default async function Home() {
             Let&apos;s level up!
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I acquire and share knowledge. I <Link href={"https://github.com/zackproser"} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={"/about"} className="text-green-500 font-extrabold"> read more about me here</Link>.
+            I acquire and share knowledge. I <Link href={'https://github.com/zackproser'} className="text-green-500 font-extrabold"> open-source </Link>the majority of my work. You can <Link href={'/about'} className="text-green-500 font-extrabold"> read more about me here</Link>.
           </p>
           <Newsletter />
           <div className="mt-6 flex gap-6">

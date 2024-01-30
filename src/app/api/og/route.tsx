@@ -1,36 +1,36 @@
-import { NextRequest } from 'next/server';
-import { ImageResponse } from '@vercel/og';
+import { type NextRequest } from 'next/server'
+import { ImageResponse } from '@vercel/og'
 
-export const runtime = 'edge';
+export const runtime = 'edge'
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
-  return Buffer.from(buffer).toString('base64');
-};
+  return Buffer.from(buffer).toString('base64')
+}
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url || '');
+export async function GET (request: NextRequest) {
+  const { searchParams } = new URL(request.url || '')
 
-  const title = searchParams.get('title') || 'Portfolio, blog, videos and open-source projects';
-  const image = searchParams.get('image') || searchParams.get('amp;image');
-  const description = searchParams.get('description') || searchParams.get('amp;description');
+  const title = searchParams.get('title') || 'Portfolio, blog, videos and open-source projects'
+  const image = searchParams.get('image') || searchParams.get('amp;image')
+  const description = searchParams.get('description') || searchParams.get('amp;description')
 
   const profileImageData = await fetch(new URL('/public/zack.png', import.meta.url)).then(
-    (res) => res.arrayBuffer(),
-  );
+    async (res) => await res.arrayBuffer()
+  )
 
-  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
-  const ultimateURL = image ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL;
+  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url)
+  const ultimateURL = image ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL
 
-  let postImageData;
+  let postImageData
   try {
-    postImageData = await fetch(ultimateURL).then((res) => res.arrayBuffer());
+    postImageData = await fetch(ultimateURL).then(async (res) => await res.arrayBuffer())
   } catch (err) {
-    console.log(`og API route err: ${err} `);
+    console.log(`og API route err: ${err} `)
     return
   }
 
-  const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`;
-  const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`;
+  const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`
+  const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`
 
   return new (ImageResponse as any)(
     <div
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       <div
         tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
+          backgroundImage: 'linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)'
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
@@ -89,5 +89,3 @@ export async function GET(request: NextRequest) {
     </div>
   )
 }
-
-

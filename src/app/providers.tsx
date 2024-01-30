@@ -4,8 +4,8 @@ import { createContext, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { ThemeProvider, useTheme } from 'next-themes'
 
-function usePrevious<T>(value: T) {
-  let ref = useRef<T>()
+function usePrevious<T> (value: T) {
+  const ref = useRef<T>()
 
   useEffect(() => {
     ref.current = value
@@ -14,28 +14,28 @@ function usePrevious<T>(value: T) {
   return ref.current
 }
 
-function ThemeWatcher() {
-  let { resolvedTheme, setTheme } = useTheme();
+function ThemeWatcher () {
+  const { resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => {
     // Check if the user has previously selected light mode
-    const userSelectedLight = window.localStorage.getItem('theme') === 'light';
+    const userSelectedLight = window.localStorage.getItem('theme') === 'light'
 
     if (userSelectedLight) {
-      setTheme('light');  // If so, set theme to light
+      setTheme('light') // If so, set theme to light
     } else {
-      setTheme('dark');  // Otherwise, default to dark
+      setTheme('dark') // Otherwise, default to dark
     }
-  }, [setTheme]);
+  }, [setTheme])
 
-  return null;
+  return null
 }
 
-export const AppContext = createContext<{ previousPathname?: string | null }>({});
+export const AppContext = createContext<{ previousPathname?: string | null }>({})
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  let pathname = usePathname()
-  let previousPathname = usePrevious(pathname)
+export function Providers ({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const previousPathname = usePrevious(pathname)
 
   return (
     <AppContext.Provider value={{ previousPathname }}>

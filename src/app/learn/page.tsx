@@ -1,9 +1,9 @@
-import Link from "next/link";
-import Image from 'next/image';
+import Link from 'next/link'
+import Image from 'next/image'
 
-import { Container } from "@/components/Container";
-import CourseIndex from '@/components/CourseIndex';
-import { Button } from "@/components/Button";
+import { Container } from '@/components/Container'
+import CourseIndex from '@/components/CourseIndex'
+import { Button } from '@/components/Button'
 
 import projectBasedLearning from '@/images/project-based-learning.png'
 import advice from '@/images/advice.png'
@@ -14,14 +14,14 @@ import skills from '@/images/skills.png'
 import community from '@/images/community.png'
 import mentorship from '@/images/mentorship.png'
 
-type Feature = {
+interface Feature {
   name: string
   description: string
 }
 
-type FeaturesProps = {
-  features: Feature[];
-};
+interface FeaturesProps {
+  features: Feature[]
+}
 
 const features: Feature[] = [
   { name: 'Projects', description: 'Real projects designed by a Staff-level software engineer' },
@@ -30,10 +30,10 @@ const features: Feature[] = [
   { name: 'Portfolio', description: 'Courses are designed to roll up into your portfolio, building your online presence and helping you stand-out to hiring managers' },
   { name: 'Marketable skills', description: 'From Infrastructure as Code to software engineering, CI/CD, automation, deployments, command line tools and more' },
   { name: 'Mentorship', description: 'Get pair-coding and real-time help from teachers' },
-  { name: 'Get hired', description: 'Get your next job by leveraging your portfolio and new skills' },
+  { name: 'Get hired', description: 'Get your next job by leveraging your portfolio and new skills' }
 ]
 
-function Features({ features }: FeaturesProps) {
+function Features ({ features }: FeaturesProps) {
   return (
     <div className="">
       <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 py-24 sm:px-6 sm:py-32 lg:max-w-7xl lg:grid-cols-2 lg:px-8">
@@ -154,7 +154,7 @@ const actions = [
   }
 ]
 
-export default function Page() {
+export default function Page () {
   return (
     <Container>
       <section className="w-full py-12 md:py-24 lg:py-32">

@@ -1,6 +1,6 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import AuthProvider from '../lib/auth/AuthProvider';
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import AuthProvider from '../lib/auth/AuthProvider'
 
 import { type Metadata } from 'next'
 
@@ -16,23 +16,22 @@ export const metadata: Metadata = {
   title: {
     template: '%s - Zachary Proser',
     default:
-      'Zachary Proser - Open-source hacker, writer, and life-long learner',
+      'Zachary Proser - Open-source hacker, writer, and life-long learner'
   },
   description:
     'I’m Zachary, a staff developer advocate at Pinecone.io where we build a high-scale vector database which is critcal infrastructure for the AI-boom',
   alternates: {
     types: {
-      'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
-    },
-  },
+      'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`
+    }
+  }
 }
 
-export default function RootLayout({
-  children,
+export default function RootLayout ({
+  children
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>

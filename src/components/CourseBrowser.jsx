@@ -1,16 +1,16 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-function renderSegmentLink(segment, course, currentSegment) {
-  let conditionalStyle, svgElement;
+function renderSegmentLink (segment, course, currentSegment) {
+  let conditionalStyle, svgElement
 
   // Use segment.dir as the identifier for the segment, not the index in the array
-  const segmentDir = segment.dir; // assuming `dir` is a string that corresponds to the segment's directory name or identifier
+  const segmentDir = segment.dir // assuming `dir` is a string that corresponds to the segment's directory name or identifier
 
   // Use the parsed integer of segmentDir for comparison
-  const segmentIndex = parseInt(segmentDir, 10);
+  const segmentIndex = parseInt(segmentDir, 10)
 
   if (segmentIndex < currentSegment) {
-    conditionalStyle = "bg-green-200 dark:bg-green-700";
+    conditionalStyle = 'bg-green-200 dark:bg-green-700'
     svgElement = (
       <svg
         className="ml-2 h-5 w-5 text-green-500 dark:text-green-300"
@@ -20,9 +20,9 @@ function renderSegmentLink(segment, course, currentSegment) {
       >
         <polyline points="20 6 9 17 4 12" />
       </svg>
-    );
+    )
   } else if (segmentIndex === currentSegment) {
-    conditionalStyle = "bg-blue-200 dark:bg-blue-700";
+    conditionalStyle = 'bg-blue-200 dark:bg-blue-700'
     svgElement = (
       <svg
         className="ml-2 h-5 w-5 text-blue-500 dark:text-blue-300"
@@ -33,10 +33,10 @@ function renderSegmentLink(segment, course, currentSegment) {
         <circle cx="12" cy="12" r="10" strokeWidth="2" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l2 2" />
       </svg>
-    );
+    )
   } else {
-    conditionalStyle = "hover:bg-gray-200 dark:hover:bg-gray-700";
-    svgElement = null; // Or an appropriate placeholder if needed
+    conditionalStyle = 'hover:bg-gray-200 dark:hover:bg-gray-700'
+    svgElement = null // Or an appropriate placeholder if needed
   }
 
   return (
@@ -48,16 +48,15 @@ function renderSegmentLink(segment, course, currentSegment) {
         </span>
       </Link>
     </li>
-  );
+  )
 }
 
-export default function CourseBrowser({
+export default function CourseBrowser ({
   course,
   groupedSegments,
   currentSegment,
   children
 }) {
-
   const currentSegmentNumber = Number(currentSegment)
 
   const renderSegments = (segments, header, course, currentSegmentNumber) => {
@@ -68,8 +67,8 @@ export default function CourseBrowser({
           {segments.map(segment => renderSegmentLink(segment, course, currentSegmentNumber))}
         </ul>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <section className="flex mt-12 h-screen">
@@ -89,5 +88,5 @@ export default function CourseBrowser({
         </article>
       </main>
     </section>
-  );
+  )
 }

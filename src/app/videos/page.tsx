@@ -10,9 +10,9 @@ import { generateOgUrl } from '@/utils/ogUrl'
 const data = {
   title: 'Videos',
   description: 'All of my latest Twitch streams, YouTube videos, how-tos, talks, webinars, demos, and code walkthroughs'
-};
+}
 
-const ogUrl = generateOgUrl(data);
+const ogUrl = generateOgUrl(data)
 
 export const metadata: Metadata = {
   openGraph: {
@@ -22,16 +22,16 @@ export const metadata: Metadata = {
     siteName: 'Zack Proser&apos;s portfolio',
     images: [
       {
-        url: ogUrl,
+        url: ogUrl
       }
     ],
     locale: 'en_US',
-    type: 'website',
-  },
-};
+    type: 'website'
+  }
+}
 
-export default async function ArticlesIndex() {
-  let articles = await getAllVideos()
+export default async function ArticlesIndex () {
+  const articles = await getAllVideos()
 
   return (
     <SimpleLayout

@@ -1,26 +1,25 @@
-// Note: this isn't working properly yet, but it would make sense to use it instead of inlining all the JSX 
+// Note: this isn't working properly yet, but it would make sense to use it instead of inlining all the JSX
 // in the API route. It would also make the logic and styles for uniform image generation more portable
 
-import React from 'react';
+import React from 'react'
 
-type OpengraphImageProps = {
-  title: string;
-  description: string | null;
-  profileImageData: ArrayBuffer;
-  postImageData: ArrayBuffer;
-};
+interface OpengraphImageProps {
+  title: string
+  description: string | null
+  profileImageData: ArrayBuffer
+  postImageData: ArrayBuffer
+}
 
 const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
-  return Buffer.from(buffer).toString('base64');
-};
+  return Buffer.from(buffer).toString('base64')
+}
 
 const OpengraphImage: React.FC<OpengraphImageProps> = async ({
   title,
   description,
   profileImageData,
-  postImageData,
+  postImageData
 }) => {
-
   const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`
   const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`
 
@@ -29,7 +28,7 @@ const OpengraphImage: React.FC<OpengraphImageProps> = async ({
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
         backgroundImage:
-          'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)',
+          'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
       }}
     >
       <div tw="flex flex-col md:flex-row w-full">
@@ -50,7 +49,7 @@ const OpengraphImage: React.FC<OpengraphImageProps> = async ({
         tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
           backgroundImage:
-            `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`,
+            'linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)'
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
@@ -80,7 +79,7 @@ const OpengraphImage: React.FC<OpengraphImageProps> = async ({
         <h1 tw="text-white text-3xl pb-2">zackproser.com</h1>
       </div>
     </div >
-  );
+  )
 }
 
-export default OpengraphImage;
+export default OpengraphImage

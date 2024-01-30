@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
+import React from 'react'
+import Link from 'next/link'
 
-const SparkleNavItem = function({
+const SparkleNavItem = function ({
   href,
   title,
   children
@@ -15,8 +15,7 @@ const SparkleNavItem = function({
       </Link>
       <div className="absolute top-0 right-0 sparkle"></div>
     </li>
-  );
-};
+  )
+}
 
-export default SparkleNavItem;
-
+export default SparkleNavItem

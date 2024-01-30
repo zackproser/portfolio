@@ -1,18 +1,18 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/auth-options";
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth/auth-options'
 
-import { SimpleLayout } from '@/components/SimpleLayout';
-import GithubSignin from '@/components/github-signin';
+import { SimpleLayout } from '@/components/SimpleLayout'
+import GithubSignin from '@/components/github-signin'
 
-import Image from 'next/image';
+import Image from 'next/image'
 import { Container } from '@/components/Container'
-import { Button } from '@/components/Button';
-import CourseIndex from '@/components/CourseIndex';
+import { Button } from '@/components/Button'
+import CourseIndex from '@/components/CourseIndex'
 
 import zpSchoolForHackers from '@/images/zp-school-for-hackers.png'
 
-export default async function LearningHome() {
-  const session = await getServerSession(authOptions);
+export default async function LearningHome () {
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     return (
@@ -21,7 +21,7 @@ export default async function LearningHome() {
           <GithubSignin></GithubSignin>
         </Container>
       </>
-    );
+    )
   }
 
   return (
@@ -45,7 +45,7 @@ export default async function LearningHome() {
           <Button
             className="mt-4"
             variant="green"
-            href={`/learn/about`}
+            href={'/learn/about'}
           >
             Learn more
           </Button>

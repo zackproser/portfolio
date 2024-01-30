@@ -12,9 +12,9 @@ const data = {
   description:
     'All of my technical tutorials, deep-dives, and developer rants'
 
-};
+}
 
-const ogUrl = generateOgUrl(data);
+const ogUrl = generateOgUrl(data)
 
 export const metadata: Metadata = {
   openGraph: {
@@ -24,16 +24,16 @@ export const metadata: Metadata = {
     siteName: 'Zack Proser&apos;s portfolio',
     images: [
       {
-        url: ogUrl,
+        url: ogUrl
       }
     ],
     locale: 'en_US',
-    type: 'website',
-  },
-};
+    type: 'website'
+  }
+}
 
-export default async function ArticlesIndex() {
-  let articles = await getAllArticles()
+export default async function ArticlesIndex () {
+  const articles = await getAllArticles()
 
   return (
     <SimpleLayout

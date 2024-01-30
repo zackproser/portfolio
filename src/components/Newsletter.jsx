@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/Button'
 import { useSearchParams } from 'next/navigation'
 
-function MailIcon(props) {
+function MailIcon (props) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -27,9 +27,8 @@ function MailIcon(props) {
   )
 }
 
-export const Newsletter = function() {
-
-  const [formSuccess, setSuccess] = useState(false);
+export const Newsletter = function () {
+  const [formSuccess, setSuccess] = useState(false)
 
   // Get access to the router in order to fetch query params off it
   const searchParams = useSearchParams()
@@ -37,11 +36,9 @@ export const Newsletter = function() {
   const referrer = searchParams.get('referrer') || 'unknown/direct'
 
   const sendFormSubmissionEvent = () => {
-
-    gtag("event", "sign_up", {
-      method: "newsletter"
-    });
-
+    gtag('event', 'sign_up', {
+      method: 'newsletter'
+    })
   }
 
   // Handle the submit event on form submit.
@@ -64,13 +61,13 @@ export const Newsletter = function() {
       body: JSON.stringify(data),
       // Tell the server we're sending JSON.
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       // The method is POST because we are sending data.
-      method: 'POST',
+      method: 'POST'
     }).then(() => {
       // Send the GA4 event for newsletter subscription
-      sendFormSubmissionEvent();
+      sendFormSubmissionEvent()
       // Update the form UI to show the user their subscription was successful
       setSuccess(true)
     }).catch((e) => {
@@ -80,13 +77,11 @@ export const Newsletter = function() {
 
   return (
     formSuccess
-      ?
-      <h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+      ? <h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <span className="ml-3"> 🔥 You are awesome! 🔥 Thank you for subscribing 🥳 </span>
       </h2>
 
-      :
-      <form
+      : <form
         onSubmit={handleSubmit}
         className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
       >

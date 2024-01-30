@@ -6,7 +6,7 @@ import logoGrunty from '@/images/logos/grunty.png'
 import logoPinecone from '@/images/logos/pinecone-logo.png'
 import logoBrightcontext from '@/images/logos/brightcontext.png'
 
-function BriefcaseIcon(props) {
+function BriefcaseIcon (props) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -29,8 +29,8 @@ function BriefcaseIcon(props) {
   )
 }
 
-export default function CV() {
-  let resume = [
+export default function CV () {
+  const resume = [
     {
       company: 'Pinecone.io',
       title: 'Staff Developer Advocate',
@@ -38,8 +38,8 @@ export default function CV() {
       start: '2023',
       end: {
         label: 'Present',
-        dateTime: new Date().getFullYear(),
-      },
+        dateTime: new Date().getFullYear()
+      }
     },
     {
       company: 'Gruntwork.io',
@@ -53,22 +53,22 @@ export default function CV() {
       title: 'Senior Software Engineer',
       logo: logoCloudflare,
       start: '2017',
-      end: '2020',
+      end: '2020'
     },
     {
       company: 'Cloudmark',
       title: 'Software Engineer',
       logo: logoCloudmark,
       start: '2015',
-      end: '2017',
+      end: '2017'
     },
     {
       company: 'BrightContext',
       title: 'Software Engineer',
       logo: logoBrightcontext,
       start: '2012',
-      end: '2014',
-    },
+      end: '2014'
+    }
   ]
 
   return (

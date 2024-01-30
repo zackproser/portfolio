@@ -1,9 +1,9 @@
 import { Container } from '@/components/Container'
 
-export function SimpleLayout({
+export function SimpleLayout ({
   title,
   intro,
-  children,
+  children
 }: {
   title: string
   intro: string

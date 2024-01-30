@@ -4,19 +4,19 @@ import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
 interface PageProps {
   params: {
-    course: string;
-    segment: string;
-  };
+    course: string
+    segment: string
+  }
 }
 
-export default async function Page({ params }: PageProps) {
-  console.log(`Page: ${JSON.stringify(params)}`);
+export default async function Page ({ params }: PageProps) {
+  console.log(`Page: ${JSON.stringify(params)}`)
 
-  const { course, segment } = params;
-  const groupedSegments = await getCourseSegments(course);
-  const segmentContent = await getSegmentContent(course, segment);
+  const { course, segment } = params
+  const groupedSegments = await getCourseSegments(course)
+  const segmentContent = await getSegmentContent(course, segment)
 
-  console.log(`Segments from Page: ${JSON.stringify(groupedSegments)}`);
+  console.log(`Segments from Page: ${JSON.stringify(groupedSegments)}`)
 
   return (
     <Container>

@@ -6,9 +6,8 @@ import {
   LinkedInIcon,
   TwitterIcon,
   TwitchIcon,
-  YouTubeIcon,
+  YouTubeIcon
 } from '@/components/SocialIcons'
-
 
 const FollowButtons = () => (
   <div className="mt-5 p-2">
@@ -44,8 +43,6 @@ const FollowButtons = () => (
       </Link>
     </div>
   </div >
-);
+)
 
-
-export default FollowButtons;
-
+export default FollowButtons

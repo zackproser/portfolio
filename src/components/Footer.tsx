@@ -2,9 +2,9 @@ import Link from 'next/link'
 
 import { ContainerInner, ContainerOuter } from '@/components/Container'
 
-function NavLink({
+function NavLink ({
   href,
-  children,
+  children
 }: {
   href: string
   children: React.ReactNode
@@ -19,7 +19,7 @@ function NavLink({
   )
 }
 
-export function Footer() {
+export function Footer () {
   return (
     <footer className="mt-32 flex-none">
       <ContainerOuter>
