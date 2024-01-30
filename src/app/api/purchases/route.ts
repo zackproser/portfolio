@@ -1,16 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
 
-import { sendReceiptEmail } from "@/lib/postmark";
+import { ProductDetails } from "@/utils/productUtils";
+
+import { sendReceiptEmail, SendReceiptEmailInput } from "@/lib/postmark";
 
 export async function POST(req: NextRequest) {
 	console.log("[POST] /api/purchases");
 
 	const { sessionId, customerEmail, productSlug } = await req.json();
 
-	console.log(`[POST] sessionId: ${sessionId}`);
-	console.log(`[POST] customerEmail: ${customerEmail}`);
-	console.log(`[POST] productSlug: ${productSlug}`);
+	// Get the product details
+	let productDetails: ProductDetails | null = null;
+	try {
+		const response = await fetch("/api/products?product=${productSlug}");
+		if (!response.ok) {
+			return NextResponse.json(JSON.stringify({ error: "Product not found" }), {
+				status: 400,
+			});
+		}
+		productDetails = await response.json();
+	} catch (error: unknown) {
+		if (error instanceof Error) {
+			console.log(`Error fetching product details: ${error.message}`);
+			return NextResponse.json(
+				JSON.stringify({ error: "An unknown error occured" }),
+				{
+					status: 500,
+				},
+			);
+		}
+	}
+
+	if (!productDetails) {
+		return NextResponse.json(JSON.stringify({ error: "Product not found" }), {
+			status: 400,
+		});
+	}
 
 	const studentRes =
 		await sql`SELECT student_id, full_name FROM Students WHERE email = ${customerEmail}`;
@@ -58,13 +84,49 @@ export async function POST(req: NextRequest) {
 	// Send transactional email letting the user know their purchase was successful
 	// This also results in them having an email they can search for / find later as
 	// another way to access their course
-	sendReceiptEmail();
 
-	console.log(`Email sent to ${customerEmail}`);
+	// Create the SendReceiptEmail input
+	const sendReceiptEmailInput: SendReceiptEmailInput = {
+		From: "orders@zackproser.com",
+		To: customerEmail,
+		TemplateAlias: "receipt",
+		TemplateModel: {
+			CustomerName: fullName,
+			ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/courses/${productSlug}`,
+			ProductName:
+				productDetails.title ?? "Zachary Proser's School for Hackers",
+			Date: String(new Date().toLocaleDateString("en-US")),
+			ReceiptDetails: {
+				Description: productDetails.description,
+				Amount: "150",
+				SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
+			},
+			Total: "150",
+			SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
+			ActionURL: "",
+			CompanyName: "Zachary Proser's School for Hackers",
+			CompanyAddress: "2416 Dwight Way Berkeley CA, 94710",
+		},
+	};
+
+	// Send the receipt email to the purchasing user
+	sendReceiptEmail(sendReceiptEmailInput)
+		.then((messageSendingResponse) => {
+			if (messageSendingResponse.MessageID) {
+				console.log(
+					`Successfully sent receipt email to ${customerEmail} with MessageID: ${messageSendingResponse.MessageID}`,
+				);
+			}
+		})
+		.catch((error: unknown) => {
+			if (error instanceof Error) {
+				console.error(error.message);
+			}
+		});
 
 	return NextResponse.json(
 		{
-			message: "Database updated successfully",
+			message: "Successfully processed purchase",
 		},
 		{
 			status: 200,
