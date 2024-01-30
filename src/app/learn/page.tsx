@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from 'next/image';
 
 import { Container } from "@/components/Container";
@@ -109,52 +108,8 @@ function Features({ features }: FeaturesProps) {
   )
 }
 
-const actions = [
-  {
-    title: 'Projects',
-    href: '#',
-    image: projects,
-    description: 'Real projects designed by a Staff-level software engineer'
-  },
-  {
-    title: 'Advice',
-    href: '#',
-    image: advice,
-    description: 'Exclusive guidance and career advice available only to students'
-  },
-  {
-    title: 'Community',
-    href: '#',
-    image: community,
-    description: 'Learn from and network with other students'
-  },
-  {
-    title: 'Portfolio',
-    href: '#',
-    image: portfolio,
-    description: 'Courses are designed to roll up into your portfolio, building your online presence and helping you stand-out to hiring managers'
-  },
-  {
-    title: 'Marketable skills',
-    href: '#',
-    image: skills,
-    description: 'From Infrastructure as Code to software engineering, CI/CD, automation, deployments, command line tools and more'
-  },
-  {
-    title: 'Mentorship',
-    href: '#',
-    image: mentorship,
-    description: 'Get pair-coding and real-time help from teachers'
-  },
-  {
-    title: 'Get hired',
-    href: '#',
-    image: getHired,
-    description: 'Get your next job by leveraging your portfolio and new skills'
-  }
-]
+export default async function LearnPage() {
 
-export default function Page() {
   return (
     <Container>
       <section className="w-full py-12 md:py-24 lg:py-32">
