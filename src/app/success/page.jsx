@@ -58,6 +58,7 @@ export default function CheckoutSuccess() {
 				<PurchaseSuccess
 					customerEmail={customerEmail}
 					productName={productSlug.replace("-", " ")}
+					courseUrl={`/learn/${productSlug}/0`}
 				/>
 			</Container>
 		);
