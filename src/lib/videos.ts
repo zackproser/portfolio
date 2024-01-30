@@ -1,11 +1,11 @@
-import { Article, ArticleWithSlug } from './shared-types'
+import { type Article, type ArticleWithSlug } from './shared-types'
 
 import glob from 'fast-glob'
 
-async function importArticle(
-  articleFilename: string,
+async function importArticle (
+  articleFilename: string
 ): Promise<ArticleWithSlug> {
-  let { meta } = (await import(`../app/videos/${articleFilename}`)) as {
+  const { meta } = (await import(`../app/videos/${articleFilename}`)) as {
     default: React.ComponentType
     meta: Article
   }
@@ -13,16 +13,16 @@ async function importArticle(
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
     type: 'video',
-    ...meta,
+    ...meta
   }
 }
 
-export async function getAllVideos() {
-  let articleFilenames = await glob('*/page.mdx', {
-    cwd: './src/app/videos',
+export async function getAllVideos (): Promise<ArticleWithSlug[]> {
+  const articleFilenames = await glob('*/page.mdx', {
+    cwd: './src/app/videos'
   })
 
-  let articles = await Promise.all(articleFilenames.map(importArticle))
+  const articles = await Promise.all(articleFilenames.map(importArticle))
 
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
