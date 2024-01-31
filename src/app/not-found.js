@@ -2,7 +2,7 @@ import { Container } from '@/components/Container';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import wizard404 from '@/images/404-wizard.jpeg';
+import wizard404 from '@/images/404-wizard.webp';
 
 import { generateOgUrl } from '@/utils/ogUrl'
 

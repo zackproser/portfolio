@@ -9,7 +9,7 @@ import { Container } from '@/components/Container'
 import { Button } from '@/components/Button';
 import CourseIndex from '@/components/CourseIndex';
 
-import zpSchoolForHackers from '@/images/zp-school-for-hackers.png'
+import zpSchoolForHackers from '@/images/zp-school-for-hackers.webp'
 
 export default async function LearningHome() {
   const session = await getServerSession(authOptions);
