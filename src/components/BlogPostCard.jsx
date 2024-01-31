@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import wakka from '@/images/wakka.png'
+import wakka from '@/images/wakka.webp'
 
 export function BlogPostCard({ article }) {
 
