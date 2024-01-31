@@ -14,11 +14,11 @@ import {
   LinkedInIcon,
   TwitterIcon,
 } from '@/components/SocialIcons'
-import wikka from '@/images/photos/wikka.png'
-import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.png'
-import optimizerBlogImg from '@/images/optimizer-blog.png'
-import terraformAssocImg from '@/images/terraform-associate.png'
-import teaTutorImg from '@/images/teatutor-logo.png'
+import wikka from '@/images/photos/wikka.webp'
+import canyonRunnerImg from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
+import optimizerBlogImg from '@/images/optimizer-blog.webp'
+import terraformAssocImg from '@/images/terraform-associate.webp'
+import teaTutorImg from '@/images/teatutor-logo.webp'
 import { getAllArticles } from '@/lib/articles'
 // Instead of needing to constantly update my static site, do the calculation of years that I've been working in tech in JS
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
