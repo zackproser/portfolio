@@ -1,0 +1,32 @@
+name: Enforce WEBP Image Format                                                            
+                                                                                               
+    on:                                                                                        
+      pull_request:                                                                            
+        paths:                                                                                 
+          - '**.png'                                                                           
+          - '**.jpg'                                                                           
+          - '**.jpeg'                                                                          
+          - '**.gif'                                                                           
+          - '**.bmp'                                                                           
+          - '**.tiff'                                                                          
+          - '**.ico'                                                                           
+                                                                                               
+    jobs:                                                                                      
+      check-images:                                                                            
+        runs-on: ubuntu-latest                                                                 
+        steps:                                                                                 
+          - name: Checkout code                                                                
+            uses: actions/checkout@v2                                                          
+                                                                                               
+          - name: Check for non-WEBP images                                                    
+            run: |                                                                             
+              files=$(git diff --name-only ${{ github.event.before }} ${{                      
+  github.sha }} -- '*.png' '*.jpg' '*.jpeg' '*.gif' '*.bmp' '*.tiff' '*.ico')                  
+              if [ -n "$files" ]; then                                                         
+                echo "The following non-WEBP image files have been found in the                
+  pull request:"                                                                               
+                echo "$files"                                                                  
+                exit 1                                                                         
+              else                                                                             
+                echo "No non-WEBP images found. Proceeding..."                                 
+              fi                          
