@@ -11,8 +11,7 @@ import clsx from 'clsx'
 import SparkleNavItem from '@/components/SparkleNavItem';
 
 import { Container } from '@/components/Container'
-import avatarImage from '@/images/zachary-proser.png'
-
+import avatarImage from '@/images/zachary-proser.webp'
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
