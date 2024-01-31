@@ -5,14 +5,14 @@ import { Container } from "@/components/Container";
 import CourseIndex from '@/components/CourseIndex';
 import { Button } from "@/components/Button";
 
-import projectBasedLearning from '@/images/project-based-learning.png'
-import advice from '@/images/advice.png'
-import projects from '@/images/projects.png'
-import portfolio from '@/images/portfolio.png'
-import getHired from '@/images/get-hired.png'
-import skills from '@/images/skills.png'
-import community from '@/images/community.png'
-import mentorship from '@/images/mentorship.png'
+import projectBasedLearning from '@/images/project-based-learning.webp'
+import advice from '@/images/advice.webp'
+import projects from '@/images/projects.webp'
+import portfolio from '@/images/portfolio.webp'
+import getHired from '@/images/get-hired.webp'
+import skills from '@/images/skills.webp'
+import community from '@/images/community.webp'
+import mentorship from '@/images/mentorship.webp'
 
 type Feature = {
   name: string

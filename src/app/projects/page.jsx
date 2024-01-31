@@ -8,10 +8,10 @@ import logoCosmos from '@/images/logos/cosmos.svg'
 import logoPlanetaria from '@/images/logos/planetaria.svg'
 import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
-import nuke from '@/images/nuke.png'
-import panthalia from '@/images/panthalia-logo.png'
+import nuke from '@/images/nuke.webp'
+import panthalia from '@/images/panthalia-logo.webp'
 import automations from '@/images/logos/automations.svg'
-import pineconeRefArch from '@/images/pinecone-ref-arch-blueprint.jpeg'
+import pineconeRefArch from '@/images/pinecone-ref-arch-blueprint.webp'
 
 import { generateOgUrl } from '@/utils/ogUrl'
 
