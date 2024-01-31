@@ -1,9 +1,9 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 
-import opengraphFallbackImg from '@/images/og.png'
-import opengraphPreview from '@/images/opengraph-preview.png'
-import opengraphSequence from '@/images/opengraph-sequence.png'
+import opengraphFallbackImg from '@/images/og.webp'
+import opengraphPreview from '@/images/opengraph-preview.webp'
+import opengraphSequence from '@/images/opengraph-sequence.webp'
 
 import { generateOgUrl } from '@/utils/ogUrl'
 
@@ -86,13 +86,13 @@ Example dynamically rendered opengraph images for posts:
 
 src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
     ?title=Retrieval Augmented Generation (RAG)
-    &image=/_next/static/media/retrieval-augmented-generation.2337c1a1.png`}
+    &image=/_next/static/media/retrieval-augmented-generation.2337c1a1.webp`}
 ```
 
 <Image 
     width={1200}
     height={630}
-    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=Retrieval Augmented Generation (RAG)&image=/_next/static/media/retrieval-augmented-generation.2337c1a1.png`} 
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=Retrieval Augmented Generation (RAG)&image=/_next/static/media/retrieval-augmented-generation.2337c1a1.webp`} 
     alt="Retrieval Augmented Generation post" 
 />
 
@@ -101,13 +101,13 @@ src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
 
 src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
     ?title='AI-powered and built with...JavaScript?
-    &image=/_next/static/media/javascript-ai.71499014.png`}
+    &image=/_next/static/media/javascript-ai.71499014.webp`}
 ```
 
 <Image 
     width={1200}
     height={630}
-    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=A-powered and built with...JavaScript?&image=/_next/static/media/javascript-ai.71499014.png`} 
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=A-powered and built with...JavaScript?&image=/_next/static/media/javascript-ai.71499014.webp`} 
     alt="AI-powered and built with JavaScript post" 
 />
 
@@ -171,14 +171,14 @@ export default async function handler(request) {
 
   // My profile image is stored in /public so that we don't need to rely on an external host like GitHub 
   // that might go down
-  const profileImageFetchURL = new URL('/public/zack.png', import.meta.url);
+  const profileImageFetchURL = new URL('/public/zack.webp', import.meta.url);
 
   const profileImageData = await fetch(profileImageFetchURL).then(
     (res) => res.arrayBuffer(),
   );
 
   // This is the fallback image I use if the current post doesn't have an image for whatever reason (like it's the homepage)
-  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
+  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.webp', import.meta.url);
 
   // This is the URL to the image on my site 
   const ultimateURL = hasImage ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL
@@ -193,7 +193,7 @@ export default async function handler(request) {
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
-        background_image: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
+        background_image: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.webp)'
       }}
     >
       <div tw="flex flex-col md:flex-row w-full">
@@ -213,7 +213,7 @@ export default async function handler(request) {
       <div
         tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          background_image: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
+          background_image: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.webp)`
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
