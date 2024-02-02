@@ -28,7 +28,6 @@ export function Footer() {
             <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
               <div className="flex flex-col sm:flex-row gap-6 text-xl font-medium text-zinc-800 dark:text-zinc-200">
                 <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-                  <NavLink href="/about">About</NavLink>
                   <NavLink href="/blog">Blog</NavLink>
                   <NavLink href="/videos">Videos</NavLink>
                 </div>
@@ -36,6 +35,7 @@ export function Footer() {
                   <NavLink href="/projects">Projects</NavLink>
                   <NavLink href="/testimonials">Testimonials</NavLink>
                   <NavLink href="/contact">Contact</NavLink>
+                  <NavLink href="https://changelog.zackproser.com">Changelog</NavLink>
                 </div>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
