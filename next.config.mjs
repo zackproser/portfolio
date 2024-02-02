@@ -21,7 +21,17 @@ const nextConfig = {
     "@react-email/render",
     "@react-email/html",
   ],
-};
+  async redirects() {
+    // Permanently redirect what was my old /about page to the homepage
+    return [
+      {
+        source: '/about',
+        destination: '/',
+        permanent: true,
+      },
+    ]
+  },
+}
 
 const withMDX = nextMDX({
   extension: /\.mdx?$/,
