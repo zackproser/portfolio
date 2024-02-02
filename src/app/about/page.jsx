@@ -16,7 +16,7 @@ import {
 } from "@/components/SocialIcons";
 import RenderNumYearsExperience from "@/components/NumYearsExperience";
 
-import portraitImage from "@/images/zachary-proser.png";
+import portraitImage from '@/images/zachary-proser.webp'
 
 import { generateOgUrl } from "@/utils/ogUrl";
 
