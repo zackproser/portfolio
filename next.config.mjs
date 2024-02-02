@@ -15,7 +15,16 @@ const nextConfig = {
       'zackproser.com',
       'www.zackproser.com'
     ],
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/about',
+        destination: '/',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 const withMDX = nextMDX({
