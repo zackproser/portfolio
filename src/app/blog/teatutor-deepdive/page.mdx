@@ -124,12 +124,12 @@ It looks like this, and I return this command when the app reaches its displayin
 
 ```go
 func sendWindowSizeMsg() tea.Msg {
- time.Sleep(500 * time.Millisecond)
- width, height, _ := term.GetSize(0)
- return tea.WindowSizeMsg{
-  Width:  width,
-  Height: height,
- }
+    time.Sleep(500 * time.Millisecond)
+    width, height, _: = term.GetSize(0)
+    return tea.WindowSizeMsg {
+        Width: width,
+        Height: height,
+    }
 }
 ```
 
@@ -146,38 +146,40 @@ Imagine the model’s cursor field is an int , and that it is incremented each t
 In this scenario, it’s easy to accidentally advance the cursor beyond the bounds of the model’s backing slice, leading to a panic when you press enter, because you’re trying to access an index in the slice that is out of bounds.
 
 I tackled this problem by creating separate methods on the model for each of the navigational directions:
-
-```go
-case "down", "j":     
-  m = m.SelectionCursorDown()  
-case "up", "k":                                
-  m = m.SelectionCursorUp()
-case "left", "h":                                
-  m = m.PreviousQuestion()   
-case "right", "l":                                
-  m = m.NextQuestion()                               
-```
+```go 
+case "down", "j":
+    m = m.SelectionCursorDown()
+case "up", "k":
+    m = m.SelectionCursorUp()
+case "left", "h":
+    m = m.PreviousQuestion()
+case "right", "l":
+    m = m.NextQuestion()
+````
 
 Within each of these directional helper methods, I encapsulate all of the logic to safely increment the internal value for cursor — including re-setting it to a reasonable value if it should somehow exceed the bounds of its backing slice:
 
 Here’s the example implementation of SelectionCursorUp :
-```go
-func (m model) SelectionCursorDown() model {
-  if m.playingIntro {  
-    return m                              
-   }  
-   m.cursor++                              
-   if m.categorySelection {                               
-     if m.cursor >= len(m.categories) {
-        m.cursor = 0                               
-     }  else {                               
-     if m.cursor >= len(m.QuestionBank[m.current].Choices){ 
-          m.cursor = 0                               
-     }                              
-   } 
-   return m 
+
+```go 
+func(m model) SelectionCursorDown() model {
+    if m.playingIntro {
+        return m
+    }
+    m.cursor++
+        if m.categorySelection {
+        if m.cursor >= len(m.categories) {
+            m.cursor = 0
+        } else {
+            if m.cursor >= len(m.QuestionBank[m.current].Choices) {
+                m.cursor = 0
+            }
+        }
+        return m
+    }
 }
 ```
+
 If we somehow end up with a cursor value that exceeds the actual length of the backing slice, we just set the cursor to 0. The inverse logic is implemented for all other directional navigation functionality.
 
 ## Split your View method into many sub-views
@@ -188,22 +190,22 @@ There are several boolean values the model has to represent whether a particular
 
 I found that when working with multiple views, it’s nice to have your sub-views split out into separate functions that you can then conditionally return depending on your own app’s requirements.
 
-```go
-func (m model) View() string {
- s := strings.Builder{}if m.displayingResults {
-  s.WriteString(m.RenderResultsView())
- } else if m.playingIntro {
-  s.WriteString(m.RenderIntroView())
- } else if m.categorySelection {
-  s.WriteString(m.RenderCategorySelectionView())
- } else {
-  s.WriteString(m.RenderQuizView())
-  s.WriteString(m.RenderQuizProgressView())
- }
- return s.String()
+```go 
+func(m model) View() string {
+    s: = strings.Builder {}
+    if m.displayingResults {
+        s.WriteString(m.RenderResultsView())
+    } else if m.playingIntro {
+        s.WriteString(m.RenderIntroView())
+    } else if m.categorySelection {
+        s.WriteString(m.RenderCategorySelectionView())
+    } else {
+        s.WriteString(m.RenderQuizView())
+        s.WriteString(m.RenderQuizProgressView())
+    }
+    return s.String()
 }
 ```
-
 This would also work well with a switch statement.
 
 That’s all for this post! Thanks for reading and keep an eye out for the next post in the series!
