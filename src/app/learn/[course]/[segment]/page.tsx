@@ -2,6 +2,15 @@ import CourseBrowser from '@/components/CourseBrowser'
 import { Container } from '@/components/Container'
 import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
+import { redirect } from 'next/navigation'
+
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth/auth-options'
+
+import { getProductDetails, ProductDetails } from '@/utils/productUtils';
+
+import { userPurchasedCourse } from '@/lib/queries'
+
 interface PageProps {
   params: {
     course: string;
@@ -10,9 +19,36 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  console.log(`Page: ${JSON.stringify(params)}`);
+  const session = await getServerSession(authOptions);
+
+  // Users must be logged in to view this page
+  if (!session) {
+    redirect('/api/auth/signin');
+  }
 
   const { course, segment } = params;
+
+  const userEmail = session.user.email as unknown as string
+
+  // Determine if user has bought the course they are trying to access 
+  // If they have not, redirect them to to the checkout page for that product
+  // 
+  // First, fetch the product details for the current course
+  const productDetails: ProductDetails | null = await getProductDetails(course);
+
+  // If the requested course doesn't exist, return the 404 page
+  if (!productDetails) {
+    redirect('/not-found')
+  }
+
+  // If the user is requesting a course they didn't purchase, redirect them to buy it 
+  const userDidPurchase = await userPurchasedCourse(userEmail, Number(productDetails.course_id));
+
+  if (!userDidPurchase) {
+    redirect(`/checkout?product=${course}`)
+  }
+
+  // Fetch the content segments that assemble into the digital course
   const groupedSegments = await getCourseSegments(course);
   const segmentContent = await getSegmentContent(course, segment);
 
@@ -24,7 +60,7 @@ export default async function Page({ params }: PageProps) {
         course={course}
         groupedSegments={groupedSegments}
         currentSegment={segment}>
-        <p>{segmentContent()}</p>
+        {segmentContent()}
       </CourseBrowser>
     </Container>
   )
