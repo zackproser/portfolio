@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
 	// Get data submitted in the request's body.
-	const body = await req.json();
+	const { email, referrer, productSlug } = await req.json();
 
 	// If email is missing, return an error.
-	if (body.email === "") {
+	if (email === "") {
 		return new NextResponse(
 			JSON.stringify({ data: "Error: no valid email found in request" }),
 			{ status: 400 },
@@ -13,16 +13,17 @@ export async function POST(req: NextRequest) {
 	}
 
 	const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
-	const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID;
-	const newMemberEmailAddress = body.email;
+	const emailOctopusListId = process.env.EMAIL_OCTOPUS_WAITINGLIST_LIST_ID;
+	const newMemberEmailAddress = email;
 	const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`;
 
 	const data = {
 		api_key: emailOctopusAPIKey,
 		email_address: newMemberEmailAddress,
 		fields: {
-			Referrer: body.referrer,
+			Referrer: referrer,
 		},
+		tags: [productSlug],
 		status: "SUBSCRIBED",
 	};
 
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
 		console.dir(await response.json());
 		return new NextResponse(
 			JSON.stringify({
-				data: `Think we successfully subscribed ${body.email}`,
+				data: `Think we successfully subscribed ${email}`,
 			}),
 			{ status: 200 },
 		);
