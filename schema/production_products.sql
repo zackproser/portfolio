@@ -12,7 +12,7 @@ VALUES
     'Git Going',
     'The only course you need to become proficient using git',
     'git-going',
-    'available',
+    'in-progress',
     'price_1OfOEBEDHFkvZ1e9CnStOFqZ'
   ),
   (
