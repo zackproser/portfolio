@@ -8,18 +8,8 @@ const nextConfig = {
   images: {
     domains: ["localhost", "zackproser.com", "www.zackproser.com"],
   },
-  experimental: {
-    serverComponentsExternalPackages: [
-      "@react-email/components",
-      "@react-email/render",
-      "@react-email/html",
-    ],
-  },
   transpilePackages: [
     "react-tweet",
-    "@react-email/components",
-    "@react-email/render",
-    "@react-email/html",
   ],
   async redirects() {
     // Permanently redirect what was my old /about page to the homepage
