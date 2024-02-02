@@ -1,0 +1,47 @@
+# This workflow keeps the staging branch up to date with the main branch
+# by creating a pull request against staging with the latest changes from main 
+# whenever there was a merge to main that didn't go through staging, such as 
+# small feature branches, new blog posts, etc.
+# name: Update Staging with Main branch changes                             
+on:                                                                       
+  push:                                                                   
+    branches:                                                             
+      - main                                                              
+                                                                          
+jobs:                                                                     
+  update-staging:                                                         
+    runs-on: ubuntu-latest                                                
+    steps:                                                                
+      - name: Checkout repository                                         
+        uses: actions/checkout@v2                                         
+                                                                          
+      # Get information about the last merge commit                       
+      - name: Get Last Merge Commit                                       
+        id: last_merge_commit                                             
+        run: |                                                            
+          merge_commit_sha=$(git log -1 --format=format:%H --merges)      
+          echo "Merge Commit SHA: $merge_commit_sha"                      
+          merge_commit_message=$(git log -1 --format=format:%B --merges)  
+          echo "::set-output name=sha::$merge_commit_sha"                 
+          echo "::set-output name=message::$merge_commit_message"         
+                                                                          
+      # Optional: Check for a keyword in merge commit message to decide   
+      - name: Check if Merge is from Staging                              
+        id: check_merge                                                   
+        run: |                                                            
+          if [[ "${{ steps.last_merge_commit.outputs.message }}" ==                                                                                                                       
+*"Merge pull request #"*"from user/staging"* ]]; then                                                                                                                                       
+            echo "Merge is from staging branch. Skip PR creation."        
+            echo "::set-output name=skip::true"                           
+          else                                                            
+            echo "Merge is NOT from staging branch."                      
+            echo "::set-output name=skip::false"                          
+          fi                                                              
+                                                                          
+      - name: Create pull request                                         
+        if: steps.check_merge.outputs.skip != 'true'                      
+        uses: repo-sync/pull-request@v2                                   
+        with:                                                             
+          destination_branch: "staging"                                   
+          source_branch: "main"                                           
+          github_token: ${{ secrets.GITHUB_TOKEN }}

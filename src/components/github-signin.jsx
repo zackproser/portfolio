@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import githubSignin from '@/images/github-signin.png';
+import githubSignin from '@/images/github-signin.webp';
 
 export default function Component() {
           const handleClick = (e) => {
