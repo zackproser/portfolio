@@ -1,0 +1,110 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import codeiumVsChatGPT from '@/images/codeium-vs-chatgpt-review.webp'
+import codeiumChat from '@/images/codeium-chat.webp'
+import chatGPTDALLE from '@/images/codeium-vs-chatgpt-dalle-3.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { generateOgUrl } from '@/utils/ogUrl'
+
+export const meta = {
+    author: "Zachary Proser", 
+    date: "2024-2-02",
+    title: "Codeium vs ChatGPT", 
+    description: "What's the difference between Codeium and ChatGPT and which should you use?",
+    image: codeiumVsChatGPT 
+}
+
+export const metadata = {
+  openGraph: {
+    title: meta.title,
+    description: meta.description,
+    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
+    siteName: "Zack Proser portfolio",
+    images: [
+      {
+        url: `${generateOgUrl(meta)}`,
+      }
+    ]
+  }
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+--- 
+
+<Image src={meta.image} alt="Announcing the Pinecone AWS Reference Architecture"/>
+
+Codeium began its life as an AI developer tool that offered code-completion for software developers, and 
+ChatGPT was originally a general purpose AI language model that could assist with a variety of tasks. 
+
+But as I write this post on February 2nd, 2024, some of these two products' unique capabilities are beginning to 
+overlap. What are the key differences and what do you need to know in order to get the most out of them both? 
+
+When you're finished reading this post you'll understand why these tools are so powerful, which capabilities remain unique to each, 
+and how you can use them to level up your development or technical workflow.
+
+## Codeium vs ChatGPT - capabilities at a glance 
+
+
+|   | Code generation  | Image generation  | Chat capabilities  | Code completion  | General purpose chat | Runs in IDEs |
+|---|---|---|---|---|---|---|
+| **Codeium**  | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **ChatGPT**  | ✅ | ✅ | ✅ | ✅ | ✅ | ✴️  |
+
+**Legend**
+| Supported | Not supported | Requires extra tooling |
+|---|---|---|
+|    ✅    | ❌ | ✴️  |
+
+## How developers use Codeium
+
+Codeium is installed in developer's integrated development environments (IDEs) such as VSCode or Neovim, and 
+as they write code, documentation and fix bugs, Codeium is aware of the context of the files being edited and can suggest autocompletions that developers can either accept, 
+reject or cycle through. 
+
+As I initially wrote in my [Codeium review in 2023](/blog/codeium-review), I've found Codeium's overall quality of suggestions to be higher than GitHub's Copilot. Codeium is one 
+of my favorite tools and I have it installed on all of my development machines because: 
+ 
+* It's free for individual developers
+* It works across every possible file type I edit, from YAML to Go, JavaScript, Dockerfiles, shell scripts, etc
+* Its suggestions are of superlative quality, across the various auto-completion tools I've tried
+
+ChatGPT is OpenAI's groundbreaking model that is available via a browser interface and API, and a slew of 
+developer command line tools and helpers that wrap and call the API. 
+
+The overall capabilities list is beginning to blend together a bit, because Codeium now has free chat functionality - and from some initial testing, it does quite well with the kinds of 
+coding asisstant tasks I would normally delegate to ChatGPT: 
+
+<Image src={codeiumChat} alt="Codeium's free chat interface" />
+
+## Should you use Codeium or ChatGPT?
+
+Honestly, why not both? As I wrote in [Codeium and ChatGPT are all I need](/blog/chatgpt-4-and-codeium-are-my-favorite-stack), these two tools are incredibly powerful on their own, 
+and they're even more powerful when combined.
+
+I expect that over time we'll begin to see more comprehensive suites of AI tools and assistants that share context, 
+private knowledge bases and are explicitly aware of one another. 
+
+Until then, I'm getting great effect by combining my favorite tools in my daily workflow.
+
+<ConsultingCTA 
+  title={"AI Engineer for hire"} 
+  body={"I help teams and companies grok AI, pipelines and generative applications"}
+/>
+
+## How do I use Codeium and ChatGPT together? 
+
+As I write this blog post on my Linux laptop in Neovim, I first tab over to Firefox to ask ChatGPT to generate me a hero image I can use in this blog post. I do this in the chat.openai.com 
+web interface, because that interface is tightly integrated with DALLE, OpenAI's image generating model. 
+
+<Image src={chatGPTDALLE} alt="ChatGPT's still has the upper hand in image generation" />
+
+I'll let it do a first few iterations, giving notes as we go, and as I write, until we 
+get the right image dialed in. 
+
+Meanwhile, as I write out this blog post in Neovim, Codeium is constantly suggesting completions, which is generally less useful when I'm writing prose, but very useful whenever I'm coding, writing 
+documentation, writing scripts, etc. 
+
