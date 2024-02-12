@@ -12,7 +12,12 @@ import '@/styles/global.css'
 
 import Script from 'next/script'
 
-export async function generateMetadata({ params }) {
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata({ params }: Props) {
   return {
     title: {
       template: '%s - AI Engineer',
