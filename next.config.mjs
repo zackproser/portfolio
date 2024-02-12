@@ -19,6 +19,25 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/software/teatutor-deepdive',
+        destination: '/blog/teatutor-deepdive',
+        permanent: true,
+      },
+      {
+        source: '/blog/video-reviewing-github-prs-in-terminal',
+        destination: '/videos/video-reviewing-github-prs-in-terminal',
+        permanent: true,
+      },
+      {
+        source: '/blog/modern-deployment',
+        destination: '/blog/api-cicd-pulumi-github',
+      },
+      {
+        source: '/blog/video-aws-vault-intro',
+        destination: '/videos/video-aws-vault-intro',
+        permanent: true,
+      }
     ]
   },
 }
