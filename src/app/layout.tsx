@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import AuthProvider from '../lib/auth/AuthProvider';
 
@@ -34,19 +35,8 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="en" className="h-full antialiased">
       <head>
-        <Script async={true} strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-DFX9S1FRMB"></Script>
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`
-          <!-- Google tag (gtag.js) -->
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-DFX9S1FRMB');
-          `}
-        </Script>
         <link
           rel="alternate"
           type="application/rss+xml"
@@ -68,6 +58,7 @@ export default function RootLayout({
             </div>
           </Providers>
         </body>
+        <GoogleAnalytics gaId="G-DFX9S1FRMB" />
       </AuthProvider>
     </html>
   )
