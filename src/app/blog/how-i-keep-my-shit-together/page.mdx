@@ -19,31 +19,17 @@ import iceBath from '@/images/ice-bath.webp'
 import familyWalk from '@/images/family-walk.webp'
 import sleepingHacker from '@/images/sleeping-hacker.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/ogUrl'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-09-30",
   title: "How I keep my shit together",
   description: "Practices and protocols that keep me humming along, healthy and productive on a given day",
   image: keepingItTogether,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={keepingItTogether} alt="Keeping it together" />
 
