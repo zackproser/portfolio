@@ -11,7 +11,7 @@ export function createMetadata({ author, date, title, description, image }) {
       siteName: "Zack Proser portfolio",
       images: [
         {
-          url: generateOgUrl({ title, description }),
+          url: generateOgUrl({ title, description, image }),
         },
       ],
     },
