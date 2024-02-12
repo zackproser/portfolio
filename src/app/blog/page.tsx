@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
 import { getAllArticles } from '@/lib/articles'
@@ -5,9 +6,9 @@ import { BlogPostCard } from '@/components/BlogPostCard'
 
 import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata: unknown = createMetadata({
-  title: "Zachary Proser's Blog",
-  description: "Staff AI engineer's technical writing and development blog"
+export const metadata: Metadata = createMetadata({
+  title: "Zachary Proser - Blog",
+  description: "Staff AI engineer - technical writing and development blog"
 });
 
 export default async function ArticlesIndex() {
