@@ -256,7 +256,7 @@ function ArrowLeftIcon(props) {
 
 export function ArticleLayout({
   children,
-  meta,
+  metadata,
   isRssFeed = false,
   previousPathname,
 }) {
@@ -266,35 +266,35 @@ export function ArticleLayout({
     return children
   }
 
-  const sanitizedTitle = encodeURIComponent(meta.title.replace(/'/g, ''));
+  const sanitizedTitle = encodeURIComponent(metadata.title.replace(/'/g, ''));
 
   // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
   let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
 
   // If the post includes an image, append it as a query param to the final opengraph endpoint
-  if (meta.image && meta.image.src) {
-    ogURL = ogURL + `&image=${meta.image.src}`
+  if (metadata.image && metadata.image.src) {
+    ogURL = ogURL + `&image=${metadata.image.src}`
   }
 
   console.log(`ArticleLayout ogURL: ${ogURL}`);
 
   let root = '/blog/'
-  if (meta?.type == 'video') {
+  if (metadata?.type == 'video') {
     root = '/videos/'
   }
 
-  const builtURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${meta.slug ?? null}`
+  const builtURL = `${process.env.NEXT_PUBLIC_SITE_URL}${root}${metadata.slug ?? null}`
   const postURL = new URL(builtURL)
 
   return (
     <>
       <Head>
-        <title>{`${meta.title} - Zachary Proser`}</title>
-        <meta name="description" content={meta.description} />
+        <title>{`${metadata.title} - Zachary Proser`}</title>
+        <meta name="description" content={metadata.description} />
         <meta name="og:image" content={ogURL} />
-        <title>{meta.title}</title>
-        <meta property="og:title" content={meta.title} />
-        <meta name="description" content={meta.description} />
+        <title>{metadata.title}</title>
+        <meta property="og:title" content={metadata.title} />
+        <meta name="description" content={metadata.description} />
         <meta name="og:image" content={ogURL} />
         <meta name="og:url" content={postURL} />
         <meta property="og:type" content="website" />
@@ -302,8 +302,8 @@ export function ArticleLayout({
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="zackproser.com" />
         <meta property="twitter:url" content={postURL} />
-        <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
+        <meta name="twitter:title" content={metadata.title} />
+        <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={ogURL} />
 
       </Head>
@@ -323,14 +323,14 @@ export function ArticleLayout({
             <article>
               <header className="flex flex-col">
                 <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                  {meta.title}
+                  {metadata.title}
                 </h1>
                 <time
-                  dateTime={meta.date}
+                  dateTime={metadata.date}
                   className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
                 >
                   <span className="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
-                  <span className="ml-3">{formatDate(meta.date)}</span>
+                  <span className="ml-3">{formatDate(metadata.date)}</span>
                 </time>
               </header>
               <Prose className="mt-8">{children}</Prose>
@@ -348,5 +348,3 @@ export function ArticleLayout({
 ## Thanks for reading
 
 If you enjoyed this post or found it helpful in anyway, do me a favor and share the URL somewhere on social media so that you can see my opengraph image in action 🙌😁. 
-
-

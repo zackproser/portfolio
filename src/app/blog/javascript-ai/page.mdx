@@ -14,14 +14,14 @@ export const metadata = createMetadata({
     image: JSAI
 })
 
-export default (props) => <ArticleLayout meta={metadata} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
-<Image src={meta.image} alt="JavaScript for AI"/>
+<Image src={metadata.image} alt="JavaScript for AI"/>
 
 This was the second article I published while working at Pinecone: 
 
-<Button href={meta.href}>Read article</Button>
+<Button href={metadata.href}>Read article</Button>
 
 
