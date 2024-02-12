@@ -19,6 +19,34 @@
   animation: glow-animation 2s infinite alternate;
 }
 
+@keyframes traceBorder {
+  0% { box-shadow: 0 0 1px 1px #21fc0d; }
+  25% { box-shadow: 0 1px 1px 1px #21fc0d; }
+  50% { box-shadow: 1px 0 1px 1px #21fc0d; }
+  75% { box-shadow: 0 -1px 1px 1px #21fc0d; }
+  100% { box-shadow: -1px 0 1px 1px #21fc0d; }
+}
+
+.tracer-glow {
+  animation: traceBorder 3s infinite linear;
+  position: relative;
+}
+
+.tracer-glow:before {
+  content: '';
+  position: absolute;
+  top: -2px; right: -2px; bottom: -2px; left: -2px;
+  z-index: -1;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: linear-gradient(#21fc0d, #21fc0d) padding-box, 
+              radial-gradient(circle closest-side, #21fc0d, transparent) border-box;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 2px, 2px 100%, 100% 100%;
+  animation: traceBorder 4s infinite linear;
+}
+
 .sparkle {
   width: 10px;
   height: 10px;
