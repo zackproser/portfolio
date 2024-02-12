@@ -20,4 +20,3 @@ export function generateOgUrl({
 
   return `${ogBaseURL}?${ogURLParts.join('&')}`;
 }
-
