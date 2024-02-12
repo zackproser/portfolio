@@ -32,6 +32,7 @@ const nextConfig = {
       {
         source: '/blog/modern-deployment',
         destination: '/blog/api-cicd-pulumi-github',
+        permanent: true,
       },
       {
         source: '/blog/video-aws-vault-intro',
