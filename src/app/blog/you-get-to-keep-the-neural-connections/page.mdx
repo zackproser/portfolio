@@ -7,33 +7,19 @@ import shelvingADistributedSystem from '@/images/shelving-a-distributed-system.w
 import puttingTheRefArchDown from '@/images/putting-the-ref-arch-down.webp'
 import yourExperienceComesWithYou from '@/images/your-experience-comes-with-you.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-14',
   title: 'You get to keep the neural connections', 
   description: 'Going the extra mile only to be unrewarded by your company feels like a personal slight and a waste of your time. It is not.',
   image: puttingTheRefArchDown,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={puttingTheRefArchDown} alt="Today we live in a golden age of AI-assisted image generation" />
 <figcaption>Going the extra mile only to be unrewarded by your company feels like a personal slight and a waste of your time. It is not.</figcaption>
