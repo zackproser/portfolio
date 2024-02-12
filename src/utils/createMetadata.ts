@@ -1,6 +1,16 @@
 import { generateOgUrl } from '@/utils/ogUrl'
 
-export function createMetadata({ author, date, title, description, image }) {
+interface MetadataParams {
+  author?: string
+  date?: string
+  title?: string
+  description?: string
+  image?: string
+}
+
+import { Metadata } from 'next'
+
+export function createMetadata({ author, date, title, description, image }: MetadataParams): Metadata {
   const baseMeta = {
     author: author ?? 'Zachary Proser',
     date: date ?? new Date(),
