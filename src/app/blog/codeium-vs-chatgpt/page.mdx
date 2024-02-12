@@ -11,31 +11,18 @@ import projectBasedLearning from '@/images/project-based-learning.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2024-2-02",
     title: "Codeium vs ChatGPT", 
     description: "What's the difference between Codeium and ChatGPT and which should you use?",
     image: codeiumVsChatGPT 
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 

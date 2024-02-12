@@ -14,33 +14,19 @@ import civitAI from '@/images/civitai.webp'
 import whyCreateAIImages from '@/images/why-create-ai-images.webp'
 import haterade from '@/images/haterade.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/ogUrl'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-14',
   title: 'How to generate images with AI', 
   description: 'I have used StableDiffusion, AUTOMATIC111, DALLE and Discord bots to generate images in every style for blog posts. You can too.',
   image: aiImageGeneration,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={aiImageGeneration} alt="Today we live in a golden age of AI-assisted image generation" />
 <figcaption>You can generate images using AI for free online through a variety of methods</figcaption>

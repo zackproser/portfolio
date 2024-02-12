@@ -8,33 +8,19 @@ import agentForgettingPrompting from '@/images/agent-forgetting-its-prompting.we
 import yourAIDevToolSucks from '@/images/your-ai-dev-tool-sucks.webp'
 import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-tool.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-09',
   title: 'The top bugs all AI developer tools are suffering from', 
   description: 'I have evaluated everything from ChatGPT to CoPilot to Codeium to Cursor, to Sourcegraph Cody to CodiumAI. All suffer from the same bugs',
   image: hackerEvaluation,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={hackerConfused} alt="A confused developer trying to make sense of Cursor's strange output" />
 <figcaption>A confused hacker trying to figure out why the AI-assisted IDE Cursor just broke his entire file by inlining its generated code in the wrong place</figcaption>

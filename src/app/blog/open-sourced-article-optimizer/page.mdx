@@ -4,31 +4,18 @@ import HeroImage from './symfony-optimizer-splash.webp'
 import ExampleReport from './article-optimizer-example-report.webp'
 import OptimizerBlog from '@/images/optimizer-blog.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'A powerful and open source content optimizer',
   description: 'A full technical deep-dive on my optimizer app and its features',
   image: OptimizerBlog, 
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={HeroImage} />
 

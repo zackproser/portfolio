@@ -4,31 +4,18 @@ import wisdomseekerHome from '@/images/wisdomseeker-screens/wisdomseeker-home.we
 import wisdomseekerSuccess from '@/images/wisdomseeker-screens/wisdomseeker-success.webp'
 import wisdomseekerLoop from '@/images/wisdomseeker-screens/wisdomseeker-loop.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2011-09-02', 
   title: 'Wisdomseeker',
   description: 'A wikipedia crawling application', 
   image: wisdomseekerHome
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={wisdomseekerHome} />
 
