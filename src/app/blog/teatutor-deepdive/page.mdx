@@ -3,31 +3,17 @@ import Image from 'next/image'
 import teatutorLogo from '@/images/teatutor-logo.webp'
 import bubbleViewportExample from '@/images/bubble-viewport-example.gif'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadat({
  author: "Zachary Proser",
  date: "2022-10-21", 
  title: "Teatutor Deep Dive",
  description: "Teatutor is a Golang CLI leveraging the Bubbletea Terminal User Interface (TUI) library from Charm.sh. It can be served over an SSH connection.",
  image: teatutorLogo,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={teatutorLogo} alt="Tea Tutor Bubbletea SSH Quiz Application"/>
 

@@ -5,31 +5,17 @@ import simpleStepsGif from '@/images/stages.gif'
 import elmArchitecture from '@/images/elm-architecture.svg'
 import bubbleteaStagesGif from '@/images/bubbletea-stages.gif'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
  author: "Zachary Proser",
  date: "2023-04-25", 
  title: "The Bubbletea (TUI) State Machine pattern",
  description: "Combining a lightweight state machine plus the Bubbletea charm library leads to a very powerful pattern for tooling that needs to orchestrate slow or expensive steps.",
  image: bubbleteaStagesGif,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## A powerful pattern for CLI's that orchestrate complex deployments or workflows 
 
