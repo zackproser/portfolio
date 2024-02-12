@@ -5,31 +5,17 @@ import opengraphFallbackImg from '@/images/og.webp'
 import opengraphPreview from '@/images/opengraph-preview.webp'
 import opengraphSequence from '@/images/opengraph-sequence.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-08-22",
     title: "Opengraph dynamic social images", 
     description: "I built a custom opengraph image with '@vercel/og' that includes a fallback image for index pages",
     image: opengraphFallbackImg
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image 
     width={1200}
