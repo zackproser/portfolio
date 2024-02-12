@@ -1,7 +1,13 @@
 import { generateOgUrl } from '@/utils/ogUrl'
 
 export function createMetadata({ author, date, title, description, image }) {
-  const baseMeta = { author, date, title, description, image };
+  const baseMeta = {
+    author: author ?? 'Zachary Proser',
+    date: date ?? new Date(),
+    title: title ?? 'Zack Proser portfolio',
+    description: description ?? 'Full-stack open-source hacker and technical writer',
+    image: image ?? '',
+  };
   return {
     ...baseMeta,
     metadataBase: new URL('https://zackproser.com'),
@@ -45,4 +51,3 @@ export function createMetadata({ author, date, title, description, image }) {
     }
   };
 }
-

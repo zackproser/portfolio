@@ -1,14 +1,14 @@
-import { type Metadata } from 'next'
-
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
 import { getAllArticles } from '@/lib/articles'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
-export const metadata: Metadata = {
-  title: "Zachary Proser&apos;s Blog",
-  description: "Staff AI engineer&apos;s technical writing and development blog"
-}
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata: unknown = createMetadata({
+  title: "Zachary Proser's Blog",
+  description: "Staff AI engineer's technical writing and development blog"
+});
 
 export default async function ArticlesIndex() {
   let articles = await getAllArticles()
