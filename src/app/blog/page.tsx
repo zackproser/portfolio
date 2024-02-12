@@ -1,4 +1,4 @@
-import { type Metadata } from 'next'
+import { ResolvingMetadata, type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
@@ -11,12 +11,36 @@ const data = {
   title: 'Articles',
   description:
     'All of my technical tutorials, deep-dives, and developer rants'
-
 };
 
 const ogUrl = generateOgUrl(data);
 
-export const metadata: Metadata = {
+type Props = {
+  params: { id: string },
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+
+  const parentMetadata = await parent;
+
+  console.log(`parentMetadata: %o`, parentMetadata)
+
+  const previousImages = parentMetadata.openGraph?.images || [];
+
+  return {
+    title: parentMetadata.title,
+    openGraph: {
+      images: [...previousImages]
+    }
+  }
+
+}
+
+/*export const metadata: Metadata = {
   openGraph: {
     title: data.title,
     description: data.description,
@@ -30,7 +54,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
-};
+};*/
 
 export default async function ArticlesIndex() {
   let articles = await getAllArticles()
