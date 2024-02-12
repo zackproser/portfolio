@@ -3,7 +3,6 @@ import { Button } from '@/components/Button'
 import Image from 'next/image'
 
 import shipLikeCrazy from '@/images/ship-like-crazy.webp'
-import pausingToReflect from '@/images/pausing-to-reflect.webp'
 import a16z2 from '@/images/a16z-2.webp'
 import a16z11 from '@/images/a16z-11.webp'
 import emailOctopusStats from '@/images/email-octopus-stats.webp'
@@ -28,13 +27,13 @@ export const metadata = createMetadata({
     image: shipLikeCrazy
 });
 
-export default (props) => <ArticleLayout meta={metadata} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
 ## Catching a breath
 
-<Image src={pausingToReflect} alt="I'm pausing to reflect" />
+<Image src={shipLikeCrazy} alt="I'm pausing to reflect" />
 
 I want to reflect on what I accomplished last year and what I consider my biggest wins: 
 

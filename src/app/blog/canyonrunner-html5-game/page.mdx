@@ -15,31 +15,17 @@ import multipleEndings from '@/images/canyonrunner-screens/CanyonRunner-Two-Diff
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2019-02-28",
   title: "CanyonRunner - a complete HTML5 game",
   description: "I open sourced my first HTML5 game as a resource for other developers working with Phaser.js or wanting to build their own game",
   image: canyonRunnerBlog,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Link
   href="https://canyonrunner.pages.dev">

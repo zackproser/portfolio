@@ -11,31 +11,17 @@ import autopullrequestExample from '@/images/autopullrequest-example.webp'
 
 import Image from 'next/image'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-05-24",
   title: "Automations - shell scripts leveraging OpenAI to make your developer workflow buttery smooth and way more fun",
   description: "I have open sourced my automations project, which is a collection of shell scripts that automatically handle git operations, provide local code reviews, pull requests, and more!",
   image: automationsGif,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={automationsGif} alt="Automations open source project" />
 
