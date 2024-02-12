@@ -8,9 +8,9 @@ import autogitStashedChangesGif from '@/images/autogit-stashed-changes.gif'
 
 import Image from 'next/image'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = {
   author: "Zachary Proser",
   date: "2023-05-15",
   title: "Autogit - never forget to pull the latest changes again",
@@ -18,21 +18,7 @@ export const meta = {
   image: autogitGif,
 }
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 Even experienced programmers make mistakes - lately I've been forgetting to git pull on my local repos when working quickly, leading my poor colleague Max to have to Slack me messages like this while we're on pair-coding calls:
 

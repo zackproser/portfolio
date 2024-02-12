@@ -7,31 +7,17 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
  author: "Zachary Proser",
  date: "2023-9-9",
  title: "Glossary of tech phrases",
  description: "If you're coming from Hacker News, I've learned that I need to spell out at the beginning that this post is partly facetious...",
  image: frustration
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} /> 
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
 <Image src={frustration} alt="frustration"/>
 

@@ -14,11 +14,11 @@ export async function GET(request: NextRequest) {
   const image = searchParams.get('image') || searchParams.get('amp;image');
   const description = searchParams.get('description') || searchParams.get('amp;description');
 
-  const profileImageData = await fetch(new URL('/public/zack.webp', import.meta.url)).then(
+  const profileImageData = await fetch(new URL('/public/zack.png', import.meta.url)).then(
     (res) => res.arrayBuffer(),
   );
 
-  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.webp', import.meta.url);
+  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
   const ultimateURL = image ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL;
 
   let postImageData;
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
-        backgroundImage: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.webp)'
+        backgroundImage: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
       }}
     >
       <div tw="flex flex-col md:flex-row w-full">
@@ -56,14 +56,18 @@ export async function GET(request: NextRequest) {
       <div
         tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.webp)`
+          backgroundImage: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
           <div tw="flex flex-col">
-            <h2 tw="pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
+
+            <h2 tw="pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left whitespace-normal break-words"
+              style={{ maxWidth: '600px' }}
+            >
               <span tw="text-white font-extrabold">{title}</span>
             </h2>
+
             {description && (
               <p tw="pl-2 text-1xl sm:text-2xl font-extrabold tracking-tight text-white text-left break-words"
                 style={{ maxWidth: '600px' }}
@@ -89,5 +93,3 @@ export async function GET(request: NextRequest) {
     </div>
   )
 }
-
-

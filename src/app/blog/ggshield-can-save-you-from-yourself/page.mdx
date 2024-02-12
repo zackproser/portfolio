@@ -10,31 +10,18 @@ import gitGuardian from '@/images/gitguardian-logo.webp'
 import ggShieldFindingASecret from '@/images/ggshield-pre-commit-scan.webp'
 import ggShieldPreventingEscape from '@/images/ggshield-preventing-a-secret-from-escaping.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-07-18",
   title: "ggshield can save you from yourself. Never accidentally commit secrets again",
   description: "Stop yourself from committing a secret to git with ggshield",
   image: leakingASecret,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={leakingASecret} alt="ggshield can save you from yourself. Never accidentally commit secrets again" />
 <figcaption>A developer watching the API key they accidentally committed to GitHub migrating throughout the internet - thinking of the Slack messages they're about to have to send...</figcaption>

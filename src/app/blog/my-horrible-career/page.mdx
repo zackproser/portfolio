@@ -4,36 +4,22 @@ import Image from 'next/image'
 import Link from 'next/link'
 import myHorribleCareer from '@/images/my-horrible-career.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2024-2-06",
     title: "My first book credit! My Horrible Career", 
     description: "What started out as an extended conversation with my mentor about career trajectory became a book!",
     image: myHorribleCareer 
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
 <Link href={"https://bitfieldconsulting.com/golang/my-horrible-career"}>
-<Image src={meta.image} alt="I interviewed John Arundel about his horrible career"/>
+<Image src={metadata.image} alt="I interviewed John Arundel about his horrible career"/>
 </Link>
 
 I've [written before](/blog/why-ive-been-successful) about how one of the best things I ever did for my career was to hire 

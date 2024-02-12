@@ -23,31 +23,17 @@ import oldDeveloperSpeedAgain from '@/images/old-developer-speed-again.webp'
 import veryOldDeveloperSpeed from '@/images/very-old-developer-speed.webp'
 import oldEnchantment from '@/images/old-enchantment.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-12-3",
     title: "Comic: Magic spells", 
     description: "A comic strip about casting magic spells",
     image: eqVictory
-}
+});
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 

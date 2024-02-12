@@ -3,35 +3,21 @@ import Image from 'next/image'
 import { Button } from '@/components/Button'
 import reactLambdaPipeline from '@/images/lambda-ci-cd.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2021-04-05", 
     title: "How to build a React.js and Lambda app with Git push continuous deployment", 
     description: "An open-source example repository and technical deep-dive on using AWS SAM, Golang, CodePipeline and CloudFormation to automate continuous delivery.",
     href: "https://zackproser.substack.com/p/how-to-build-a-reactjs-and-lambda",
     image: reactLambdaPipeline
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+<Image src={metadata.image} alt={metadata.title} />
 
-<Image src={meta.image} alt={meta.title} />
-
-<Button href={meta.href}>Read the article</Button>
+<Button href={metadata.href}>Read the article</Button>
 
 
