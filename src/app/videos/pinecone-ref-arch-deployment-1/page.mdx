@@ -2,33 +2,17 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import pineconeRefArchDeploy1 from '@/images/pinecone-ref-arch-deploy-part-1.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-11-27",
   title: "Deploying the Pinecone AWS Reference Architecture - Part 1",
   description: "I deploy the Pinecone AWS Reference Architecture end to end in this three part video series",
   image: pineconeRefArchDeploy1
-}
+})
 
-
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   className="youtube-video"
