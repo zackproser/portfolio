@@ -18,31 +18,17 @@ import initToWinIt from '@/images/init-to-win-it.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2024-01-08",
     title: "Keep Calm and Ship Like Crazy: My 2023 Wins and Lessons",
     description: "I had a lot of growth and success to celebrate professionally in 2023",
     image: shipLikeCrazy
-}
+});
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout meta={metadata} {...props} />
 
 --- 
 
