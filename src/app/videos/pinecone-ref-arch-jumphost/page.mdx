@@ -2,33 +2,17 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import pineconeRefArchJumphost from '@/images/pinecone-ref-arch-jumphost.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-11-27",
   title: "Deploying a jump host for the Pinecone AWS Reference Architecture",
   description: "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
   image: pineconeRefArchJumphost
-}
+})
 
-
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   className="youtube-video"
