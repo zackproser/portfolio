@@ -1,60 +1,14 @@
-import { ResolvingMetadata, type Metadata } from 'next'
+import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
 import { getAllArticles } from '@/lib/articles'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
-import { generateOgUrl } from '@/utils/ogUrl'
-
-const data = {
-  title: 'Articles',
-  description:
-    'All of my technical tutorials, deep-dives, and developer rants'
-};
-
-const ogUrl = generateOgUrl(data);
-
-type Props = {
-  params: { id: string },
-  searchParams: { [key: string]: string | string[] | undefined }
+export const metadata: Metadata = {
+  title: "Zachary Proser&apos;s Blog",
+  description: "Staff AI engineer&apos;s technical writing and development blog"
 }
-
-export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-
-  const parentMetadata = await parent;
-
-  console.log(`parentMetadata: %o`, parentMetadata)
-
-  const previousImages = parentMetadata.openGraph?.images || [];
-
-  return {
-    title: parentMetadata.title,
-    openGraph: {
-      images: [...previousImages]
-    }
-  }
-
-}
-
-/*export const metadata: Metadata = {
-  openGraph: {
-    title: data.title,
-    description: data.description,
-    url: ogUrl,
-    siteName: 'Zack Proser&apos;s portfolio',
-    images: [
-      {
-        url: ogUrl,
-      }
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-};*/
 
 export default async function ArticlesIndex() {
   let articles = await getAllArticles()
