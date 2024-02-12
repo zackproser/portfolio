@@ -19,6 +19,38 @@
   animation: glow-animation 2s infinite alternate;
 }
 
+@keyframes traceBorder {
+  0%, 100% {
+    box-shadow: 0 0 1px #21fc0d;
+  }
+  12.5% {
+    box-shadow: 0 -1px 1px #21fc0d;
+  }
+  25% {
+    box-shadow: 1px -1px 1px #21fc0d;
+  }
+  37.5% {
+    box-shadow: 1px 0 1px #21fc0d;
+  }
+  50% {
+    box-shadow: 1px 1px 1px #21fc0d;
+  }
+  62.5% {
+    box-shadow: 0 1px 1px #21fc0d;
+  }
+  75% {
+    box-shadow: -1px 1px 1px #21fc0d;
+  }
+  87.5% {
+    box-shadow: -1px 0 1px #21fc0d;
+  }
+}
+
+.tracer-glow {
+  position: relative;
+  animation: traceBorder 3s infinite linear;
+}
+
 .sparkle {
   width: 10px;
   height: 10px;
