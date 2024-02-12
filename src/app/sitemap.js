@@ -9,7 +9,6 @@ const excludeDirs = ['api'];
 function getRoutes() {
   const fullPath = path.join(process.cwd(), baseDir);
   const entries = fs.readdirSync(fullPath, { withFileTypes: true });
-  console.log(`entries: ${entries.map((e) => console.log(`%o`, e))}`);
   let routes = [];
 
   entries.forEach(entry => {
