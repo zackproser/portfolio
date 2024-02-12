@@ -7,7 +7,10 @@ export function generateOgUrl({
 
   const ogTitle = encodeURIComponent(title.replace(/'/g, ''));
   const ogDescription = description ? encodeURIComponent(description.replace(/'/g, '')) : '';
-  const ogImage = image.src || '';
+  // Fix me
+  // Temporarily, intentionally omit images so that the fallback image can be rendered
+  //const ogImage = image.src || '';
+  const ogImage = '';
 
   const ogURLParts = [
     `title=${ogTitle}`,
