@@ -5,7 +5,7 @@ import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
 import comicStrip1 from '@/images/comic-strip-1.webp'
 import comicStrip2 from '@/images/comic-strip-2.webp'
@@ -15,29 +15,15 @@ import comicStrip5 from '@/images/comic-strip-5.webp'
 import comicStrip6 from '@/images/comic-strip-6.webp'
 import comicStrip7 from '@/images/comic-strip-7.webp'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-11-30",
   title: "Comic strip: long day at the office",
   description: "A wordless comic strip about a typically brutal day at work, that nevertheless has a positive ending",
   image: comicStrip4,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={comicStrip1} alt="A tough morning at the office" />
 
