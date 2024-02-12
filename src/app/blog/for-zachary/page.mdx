@@ -8,33 +8,17 @@ import flashback from '@/images/flashback.webp'
 import rewiringMyBrain from '@/images/rewiring-my-brain.webp'
 import theLightWasYou from '@/images/the-light-was-you.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-15',
   title: 'For Zachary', 
   description: 'There are only two people I am aware of named Zachary Proser, with that exact spelling. This article is only for Zachary Proser.',
   image: zacharyLight
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
-
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 There are only two people I am aware of named Zachary Proser, with that exact spelling. This article is only for Zachary Proser, but it is published live on the internet for other reasons. 
 

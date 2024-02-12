@@ -9,31 +9,17 @@ import pineconeVectorDatabases from '@/images/pinecone-vector-databases.webp'
 import technicalStorytelling from '@/images/technical-storytelling.webp'
 import pineconeHiring from '@/images/pinecone-hiring.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-07-23",
   title: "I'm joining Pinecone.io as a Staff Developer Advocate!",
   description: "Making the pivot from pure software engineering to developer advocacy",
   image: joiningPinecone,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={joiningPinecone} alt="Joining Pinecone.io as a developer advocate" />
 
