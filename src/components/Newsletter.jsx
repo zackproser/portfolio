@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import { useState } from "react";
-import { Button } from "@/components/Button";
 import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/Button";
 
 function MailIcon(props) {
 	return (
