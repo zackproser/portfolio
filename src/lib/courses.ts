@@ -8,7 +8,7 @@ async function importArticle(
 ): Promise<ArticleWithSlug> {
   let { metadata } = (await import(`../app/learn/courses/${articleFilename}`)) as {
     default: React.ComponentType
-    meta: Article
+    metadata: Article
   }
 
   return {
