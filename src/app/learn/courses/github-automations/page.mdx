@@ -4,31 +4,17 @@ import { Button } from '@/components/Button'
 
 import githubAutomations from '@/images/github-automations2.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-18',
   title: 'GitHub Automations', 
   description: 'Become an open-source maintenance wizard with GitHub Automations!',
   image: githubAutomations,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image width={1200} height={600} src={githubAutomations.src}  alt="GitHub Automations course"/>
 <figcaption>Time to automate with GitHub!</figcaption>

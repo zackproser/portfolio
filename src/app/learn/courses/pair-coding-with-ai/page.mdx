@@ -1,32 +1,19 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-import { generateOgUrl } from '@/utils/ogUrl'
 import Image from 'next/image'
 import pairCodingWithAI from '@/images/pair-coding-with-ai.webp'
 import { Button } from '@/components/Button'
 
-export const meta = {
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-18',
   title: 'Pair coding with AI', 
   description: 'If you have never paired with AI, you may be missing out. Learn the most effective techniques to enhancing your own capabilities',
   image: pairCodingWithAI,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={pairCodingWithAI}  alt="Pair coding with AI" />
 
