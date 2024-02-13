@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 
 function MailIcon(props) {
@@ -30,11 +31,9 @@ export const Newsletter = () => {
 	const [formSuccess, setSuccess] = useState(false);
 
 	// Get access to the router in order to fetch query params off it
-	//const searchParams = useSearchParams();
+	const searchParams = useSearchParams();
 
-	//const referrer = searchParams.get("referrer") || "unknown/direct";
-	//
-	const referrer = "unknown/direct";
+	const referrer = searchParams.get("referrer") || "unknown/direct";
 
 	const sendFormSubmissionEvent = () => {
 		gtag("event", "sign_up", {
