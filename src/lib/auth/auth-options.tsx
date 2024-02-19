@@ -58,22 +58,22 @@ export const authOptions = {
           if (githubUsername) {
             existingStudent = await sql`
             SELECT * 
-            FROM students 
+            FROM users 
             WHERE github_username = ${githubUsername}
           `;
           } else if (userEmailAddress) {
             existingStudent = await sql`
             SELECT *
-            FROM students
+            FROM users
             WHERE email = ${userEmailAddress}
           `;
           }
 
-          let studentId;
+          let userId;
 
           if (existingStudent && existingStudent.rowCount > 0) {
             // Student found, use id
-            studentId = existingStudent.rows[0].student_id;
+            userId = existingStudent.rows[0].id;
           } else {
             // Create new student
             let createValues;
@@ -89,17 +89,12 @@ export const authOptions = {
             }
 
             const createRes = await sql`
-            INSERT INTO students (github_username, full_name, email)
+            INSERT INTO users (github_username, full_name, email)
             VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
-            RETURNING student_id
+            RETURNING id
           `;
-            studentId = createRes.rows[0].student_id;
+            userId = createRes.rows[0].id;
           }
-
-          // Insert login record into 'logins' table
-          await sql`
-          INSERT INTO logins (student_id) VALUES (${studentId})
-        `;
         } catch (error) {
           console.error(error);
         }

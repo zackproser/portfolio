@@ -41,11 +41,11 @@ export async function POST(req: NextRequest) {
 		}
 
 		// Look up the purchasing student's ID
-		const studentRes = await sql`SELECT student_id, full_name FROM        
-  Students WHERE email = ${customerEmail} `;
+		const studentRes = await sql`SELECT id, full_name FROM        
+  users WHERE email = ${customerEmail} `;
 		if (studentRes.rowCount === 0) {
 			return NextResponse.json(
-				{ error: "Student not found" },
+				{ error: "User not found" },
 				{
 					status: 404,
 				},
