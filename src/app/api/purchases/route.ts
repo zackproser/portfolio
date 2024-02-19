@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		// Look up the purchasing student's ID
-		const studentRes = await sql`SELECT id, full_name FROM        
+		const studentRes = await sql`SELECT id, name FROM        
   users WHERE email = ${customerEmail} `;
 		if (studentRes.rowCount === 0) {
 			return NextResponse.json(
@@ -52,10 +52,10 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		const { student_id: studentId, full_name: fullName } = studentRes.rows[0];
+		const { id, name } = studentRes.rows[0];
 
-		console.log(`Retrieved student_id: ${studentId} and full_name:
-			${fullName} for email: ${customerEmail} `);
+		console.log(`Retrieved user id: ${id} and name:
+			${name} for email: ${customerEmail} `);
 
 		// Look up the course ID
 		const courseRes = await sql`SELECT course_id FROM courses WHERE slug =
@@ -72,14 +72,14 @@ export async function POST(req: NextRequest) {
 		const { course_id: courseId } = courseRes.rows[0];
 
 		await sql`                                                            
-          INSERT INTO StripePayments(student_id, stripe_payment_id, amount,
+          INSERT INTO StripePayments(user_id, stripe_payment_id, amount,
 				payment_status)
-		VALUES(${studentId}, ${sessionId}, 0, 'paid')
+		VALUES(${id}, ${sessionId}, 0, 'paid')
 			`;
 
 		await sql`                                                            
-          INSERT INTO CourseEnrollments(student_id, course_id)
-		VALUES(${studentId}, ${courseId})                                  
+          INSERT INTO CourseEnrollments(user_id, course_id)
+		VALUES(${id}, ${courseId})                                  
         `;
 
 		const sendReceiptEmailInput: SendReceiptEmailInput = {
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
 			To: customerEmail,
 			TemplateAlias: "receipt",
 			TemplateModel: {
-				CustomerName: fullName,
+				CustomerName: name,
 				ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL} /courses/${productSlug} `,
 				ProductName: productDetails.title ?? "Online Learning Platform",
 				Date: new Date().toLocaleDateString("en-US"),

@@ -80,7 +80,7 @@ export const authOptions = {
             if (githubUsername) {
               createValues = {
                 github_username: githubUsername,
-                full_name: userFullName
+                name: userFullName
               };
             } else if (userEmailAddress) {
               createValues = {
@@ -89,7 +89,7 @@ export const authOptions = {
             }
 
             const createRes = await sql`
-            INSERT INTO users (github_username, full_name, email)
+            INSERT INTO users (github_username, name, email)
             VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
             RETURNING id
           `;
