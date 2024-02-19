@@ -4,7 +4,7 @@ import GithubProvider from "next-auth/providers/github"
 import EmailProvider from "next-auth/providers/email"
 import { getUserIdFromEmail, getPurchasedCourses } from "@/lib/queries";
 import PostgresAdapter from "@auth/pg-adapter"
-import { Pool } from 'pg'
+import { createPool } from '@vercel/postgres';
 
 declare module "next-auth" {
   interface Profile {
@@ -12,16 +12,7 @@ declare module "next-auth" {
   }
 }
 
-const pool = new Pool({
-  host: process.env.POSTGRES_HOST,
-  user: process.env.POSTGRES_USER,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-  ssl: {
-    rejectUnauthorized: false
-  }
-})
+const pool = createPool();
 
 export const authOptions = {
   adapter: PostgresAdapter(pool),
@@ -31,9 +22,16 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-    }),
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD
+        }
+      },
+      from: process.env.EMAIL_FROM
+    })
   ],
 
   callbacks: {
