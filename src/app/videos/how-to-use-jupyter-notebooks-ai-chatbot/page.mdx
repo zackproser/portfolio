@@ -4,15 +4,17 @@ import Link from 'next/link'
 
 import aiChatbot from '@/images/ai-chatbot-jupyter-notebooks.webp'
 
-export const meta = {
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-07-03",
   title: "How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic",
   description: "How you can shorten your iteration cycles with Jupyter notebooks when building data-rich apps",
   image: aiChatbot
-}
+})
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   class="youtube-video"

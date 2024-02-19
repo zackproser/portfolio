@@ -8,31 +8,18 @@ import pairingSocials from '@/images/chatgpt4-screens/ChatGPT4-pairing-socials.w
 import aiSupport from '@/images/ai-support.webp'
 import aiSupport2 from '@/images/ai-support-2.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-04-10',
   title: 'Can ChatGPT-4 and GitHub Copilot help me produce a more complete side project more quickly?', 
   description: 'As a Senior Software Engineer, I&apos;m always looking for ways to refine my skills and optimize my workflow. This weekend, I experimented with integrating ChatGPT-4 into my developer toolkit alongside GitHub Copilot, which I&apos;ve been using for several months. The goal? To see if these AI-powered tools could help me complete a side project more quickly. ',
   image: aiSupport2
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={aiSupport2} alt="Requesting AI support!" />
 <figcaption>Chat GPT-4 pointing out one of my bugs while I work</figcaption>

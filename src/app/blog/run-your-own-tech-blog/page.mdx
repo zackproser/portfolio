@@ -12,33 +12,19 @@ import bloggingWebPerformance from '@/images/blogging-web-performance.webp'
 import bloggingGetsFaster from '@/images/blogging-gets-faster.webp'
 import bloggingWaving from '@/images/blogging-waving.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-18',
   title: 'Run your own tech blog', 
   description: 'Control your own destiny, build your personal brand, and master web technologies by running your own tech blog.',
   image: bloggingPeacefully,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={bloggingPeacefully} alt="Blogging is a very worthwhile hobby, especially if you're trying to grow your tech career" />
 <figcaption>Blogging is a very worthwhile hobby, especially if you're trying to grow your tech career. Here are some ways I've recently benefited from this blog:</figcaption>
