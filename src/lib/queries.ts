@@ -4,7 +4,7 @@ async function getUserIdFromEmail(email: string): Promise<number | null> {
   // Implement logic to fetch user ID from the database based on email
   // Return the user ID or null if not found
   const userRes = await sql`SELECT id FROM users WHERE email = ${email}`;
-  return userRes.rowCount > 0 ? userRes.rows[0].student_id : null;
+  return userRes.rowCount > 0 ? userRes.rows[0].id : null;
 }
 
 async function getPurchasedCourses(userId: number): Promise<number[]> {

@@ -53,6 +53,7 @@ export const authOptions = {
         console.log(`signIn callback githubUsername: ${githubUsername}, userFullName: ${userFullName}, userEmailAddress: ${userEmailAddress}`);
 
         try {
+          console.log('Checking if user already exists in database...')
           // Check if student record already exists
           let existingStudent;
           if (githubUsername) {
@@ -69,11 +70,13 @@ export const authOptions = {
           `;
           }
 
+          console.log(`existingStudent: %o`, existingStudent);
           let userId;
 
           if (existingStudent && existingStudent.rowCount > 0) {
             // Student found, use id
             userId = existingStudent.rows[0].id;
+            console.log(`Found existing student with id: ${userId}`);
           } else {
             // Create new student
             let createValues;
@@ -88,17 +91,18 @@ export const authOptions = {
               };
             }
 
+            console.log(`Creating new user with values: %o`, createValues);
+
             const createRes = await sql`
-            INSERT INTO users (github_username, name, email)
-            VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
-            RETURNING id
+              INSERT INTO users (github_username, name, email)
+              VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
+              RETURNING id
           `;
             userId = createRes.rows[0].id;
           }
         } catch (error) {
           console.error(error);
         }
-
         return true;
       }
     },
@@ -109,6 +113,8 @@ export const authOptions = {
       console.log(`session.user.email: ${session!.user!.email}`);
 
       const userId = await getUserIdFromEmail(session!.user!.email!);
+
+      console.log(`userId: ${userId}`);
 
       // Add purchased courses to the session object
       session!.user!.purchased_courses = await getPurchasedCourses(Number(userId));
