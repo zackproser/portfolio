@@ -1,34 +1,20 @@
 import { CourseLayout } from '@/components/CourseLayout'
-import { generateOgUrl } from '@/utils/ogUrl'
 import Image from 'next/image'
 import gitGoingHero from '@/images/git-going-hero.webp'
 import gitIsYourSaveButton from '@/images/git-is-your-save-button.webp'
 import { Button } from '@/components/Button'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-18',
   title: 'Git Going', 
   description: 'The missing git manual every engineer needs regardless of specialization',
   image: gitGoingHero, 
   status: 'in-progress'
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <CourseLayout meta={meta} {...props} />
+export default (props) => <CourseLayout metadata={metadata} {...props} />
 
 ## Most developers don't understand git... 
 
@@ -45,4 +31,3 @@ doesn't take long, and this course will show you everything you need to know wit
 >
 Git Going - start course
 </Button>
-

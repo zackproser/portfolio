@@ -6,31 +6,17 @@ import pageripperBot from '@/images/pageripper-bot.webp'
 import pageripperExtracting from '@/images/pageripper-2.webp'
 import pageripperSurfing from '@/images/pageripper-surfing.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-12-28",
     title: "Pageripper API: a commercial data-extraction service", 
     description: "I built an API that extracts data from webpages, even if they're rendered with Javascript. It's defined via Pulumi and deployed on AWS.",
     image: pageripperBot
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 

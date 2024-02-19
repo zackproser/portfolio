@@ -5,15 +5,15 @@ import glob from 'fast-glob'
 async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  let { meta } = (await import(`../app/videos/${articleFilename}`)) as {
+  let { metadata } = (await import(`../app/videos/${articleFilename}`)) as {
     default: React.ComponentType
-    meta: Article
+    metadata: Article
   }
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
     type: 'video',
-    ...meta,
+    ...metadata,
   }
 }
 
