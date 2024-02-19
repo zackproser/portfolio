@@ -3,15 +3,12 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import AuthProvider from '../lib/auth/AuthProvider';
 
-import { type Metadata } from 'next'
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
-
-import Script from 'next/script'
 
 type Props = {
   params: { id: string }
@@ -41,7 +38,7 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased dark">
       <head>
         <link
           rel="alternate"
@@ -55,7 +52,9 @@ export default function RootLayout({
         />
       </head>
       <AuthProvider>
-        <body className="flex h-full bg-zinc-50 dark:bg-black">
+        <body
+          suppressHydrationWarning={true}
+          className="flex h-full bg-zinc-50 dark:bg-black">
           <Providers>
             <div className="flex w-full">
               <Layout>{children}</Layout>
