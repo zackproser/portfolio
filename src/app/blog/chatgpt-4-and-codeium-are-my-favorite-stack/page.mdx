@@ -11,31 +11,18 @@ import aiDirectEnhancement from '@/images/ai-direct-enhancement.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2023-10-10',
   title: 'ChatGPT4 and Codeium are still my favorite dev assistant stack', 
   description: 'As of October 10th, 2023, ChatGPT4 and Codeium are still my favorite AI-assisted dev tool stack. Here is why',
   image: myFavoriteAIStack
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={myFavoriteAIStack} alt="As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it" />
 <figcaption>As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it.</figcaption>
@@ -131,7 +118,6 @@ I'm able to get that information out of it now, but it just takes a good bit of 
 when to raise its hand to point out something that's going to cause the build to fail, and when to keep quiet because even if it knows better that's just my personal coding style preference so better to leave it alone. 
 
 <ConsultingCTA />
-
 
 We're not quite there yet, but all of the base ingredients to create this experience are. 
 

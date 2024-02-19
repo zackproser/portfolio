@@ -1,36 +1,15 @@
-import { type Metadata } from 'next'
-
+import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { type ArticleWithSlug } from '@/lib/shared-types'
 import { getAllArticles } from '@/lib/articles'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-const data = {
-  title: 'Articles',
-  description:
-    'All of my technical tutorials, deep-dives, and developer rants'
-
-};
-
-const ogUrl = generateOgUrl(data);
-
-export const metadata: Metadata = {
-  openGraph: {
-    title: data.title,
-    description: data.description,
-    url: ogUrl,
-    siteName: 'Zack Proser&apos;s portfolio',
-    images: [
-      {
-        url: ogUrl,
-      }
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = createMetadata({
+  title: "Zachary Proser - Blog",
+  description: "Staff AI engineer - technical writing and development blog"
+});
 
 export default async function ArticlesIndex() {
   let articles = await getAllArticles()

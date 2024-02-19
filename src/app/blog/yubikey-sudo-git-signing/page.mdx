@@ -11,31 +11,18 @@ import keyboardCamera from '@/images/keyboard-camera.webp'
 import keyboardCameraCloseup from '@/images/keyboard-cam-closeup.webp'
 import gitCommitSigningSequence from '@/images/git-commit-signing-yubikey-sequence.webp'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-05-07",
   title: "Passwordless sudo and verified GitHub commit signing with Yubikey - a pair-coder's dream",
   description: "If you're like me, you can't type your complex password correctly when your entire team is staring at you on a pair call. And now, you no longer have to.",
   image: stressedTyping,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
 
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 If you're like me - you can't type your complex password correctly when your entire team is staring at you on a pair coding call.
 

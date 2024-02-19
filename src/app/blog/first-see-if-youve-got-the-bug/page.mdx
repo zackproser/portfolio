@@ -20,33 +20,19 @@ import descentCoverArt from '@/images/descent.webp'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { generateOgUrl } from '@/utils/ogUrl'
+import { createMetadata } from '@/utils/createMetadata'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
-export const meta = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-07-17",
   title: "First, find out if you've got the programming bug",
   description: "I get this question a lot: how do I get into coding? This is my best advice.",
   image: sparkOfLearning,
-}
+})
 
-export const metadata = {
-  openGraph: {
-    title: meta.title,
-    description: meta.description,
-    url: "${process.env.NEXT_PUBLIC_SITE_URL}", 
-    siteName: "Zack Proser portfolio",
-    images: [
-      {
-        url: `${generateOgUrl(meta)}`,
-      }
-    ]
-  }
-}
-
-export default (props) => <ArticleLayout meta={meta} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={foundTheSpark} />
 
