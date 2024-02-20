@@ -2,10 +2,16 @@
 INSERT INTO Courses (title, description, slug, status, price_id)
 VALUES
   (
+    'Generative AI Bootcamp',
+    'Generative AI - and its opportunities and challenges - explained simply, even if you are not technical',
+    'generative-ai-bootcamp',
+    'available',
+    'price_1OlivsEDHFkvZ1e944NaDWP5'
+  ),
+  (
     'Emotional Intelligence for Developers',
     'Develop emotional intelligence skills specifically tailored for software developers',
-    'emotional-intelligence-for-developers',
-    'coming-soon',
+    'emotional-intelligence-for-developers', 'coming-soon',
     'price_1OZK3DEDHFkvZ1e9wO7luQv7'
   ),
   (
