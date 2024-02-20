@@ -60,6 +60,14 @@ export default function CourseBrowser({
 
   const currentSegmentNumber = Number(currentSegment)
 
+  // Calculate the total number of segments across all groups
+  const totalSegments = Object.values(groupedSegments).reduce((acc, segments) => acc + segments.length, 0);
+
+  // If there's 1 or less segments, just return the children
+  if (totalSegments <= 1) {
+    return <>{children}</>;
+  }
+
   const renderSegments = (segments, header, course, currentSegmentNumber) => {
     return (
       <>

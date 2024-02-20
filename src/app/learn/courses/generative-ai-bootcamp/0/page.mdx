@@ -1,0 +1,34 @@
+import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
+import { ArticleLayout } from '@/components/ArticleLayout';
+import { timeElapsedSinceJanuary2023 } from '@/components/timeSince';
+
+import Image from 'next/image';
+
+export const metadata = {
+    header: "Introduction",
+    title: "Generative AI Bootcamp",
+    description: "Generative AI Bootcamp",
+}
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+## Generative AI Bootcamp 
+
+Non technical folks welcome! This course outlines the challenges and opportunities of the Generative AI boom. 
+
+It is designed to be easily digestible, even if you're not a professional computer nerd - even if you really don't care for computers.
+
+<Image width={800} height={600} src={generativeAIBootcamp} alt="Generative AI is here"/>
+
+This course is ideal for investors, strategists, marketing experts, and anyone who wants to learn more about Generative AI.
+
+## Opportunities
+
+Generative AI is projected to see an annual growth rate of 37% from 2023 to 2030, according to Forbes.
+
+## Challenges
+
+## My Thoughts: As a developer
+
+
+I've been hacking alongside generative AI {timeElapsedSinceJanuary2023()}

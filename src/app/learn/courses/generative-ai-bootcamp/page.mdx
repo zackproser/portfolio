@@ -1,0 +1,23 @@
+import { CourseLayout } from '@/components/CourseLayout'
+import Image from 'next/image'
+import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
+import { Button } from '@/components/Button'
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Generative AI Bootcamp', 
+  description: 'Generative AI Bootcamp',
+  image: generativeAIBootcamp, 
+  status: 'in-progress'
+})
+
+export default (props) => <CourseLayout metadata={metadata} {...props} />
+
+## Generative AI is setting the world on fire
+
+<Image src={generativeAIBootcamp} alt="Generative AI Bootcamp" />
+
+Learn the opportunities and challenges presented by this groundbreaking technology, plus get hands-on insight from 
+a Staff developer who assesses and experiments with AI developer tools daily. 
