@@ -1,6 +1,7 @@
 import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
 import { ArticleLayout } from '@/components/ArticleLayout';
 import { timeElapsedSinceJanuary2023 } from '@/components/timeSince';
+import zacharyProser from '@/images/zachary-proser.webp'
 
 import Image from 'next/image';
 
@@ -14,13 +15,48 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Generative AI Bootcamp 
 
-Non technical folks welcome! This course outlines the challenges and opportunities of the Generative AI boom. 
+Non technical folks welcome! This course outlines the challenges and opportunities of the Generative AI boom, with a particular focus on 
+AI-assisted developer tools. 
 
-It is designed to be easily digestible, even if you're not a professional computer nerd - even if you really don't care for computers.
+This course provides the basics to understand the "why" behind the current moment AI is experiencing.
 
-<Image width={800} height={600} src={generativeAIBootcamp} alt="Generative AI is here"/>
+It is designed to be easily digestible, even if you're not technical at all. 
+
+<Image width={400} height={400} src={generativeAIBootcamp} alt="Generative AI is here"/>
 
 This course is ideal for investors, strategists, marketing experts, and anyone who wants to learn more about Generative AI.
+
+## Table of contents
+
+* [Instructor introduction](#instructor-introduction)
+* [Opportunities](#opportunities)
+* [Challenges](#challenges)
+* [My thoughts: As a developer](#my-thoughts-as-a-developer)
+* Introduction to AI
+* Historical Context
+* Core Technologies
+* Generative AI Breakthroughs
+* Applications of Generative AI
+* Ethical Considerations and Challenges
+* Understanding Hallucination
+* Retrieval Augmented Generation (RAG)
+* The Future of AI
+* My Favorite Tools
+* Developer's Perspective
+
+## Instructor Introduction
+
+Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io, where we build the most performant cloud-native vector database 
+that provides long-term memory for AI applications. 
+
+<Image src={zacharyProser} alt="Zachary Proser" width={300} height={300} />
+
+My full title at Pinecone is "Staff Developer Advocate (open-source)", meaning that I build AI applications and pipelines in public to help 
+evangelize our vector database, as well as maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications. 
+
+I also wrote Pinecone's first production example in the AWS Reference Architecture with Pulumi, which demonstrates how to perform 
+semantic search at scale with Pinecone when you need to keep a traditional database like PostgreSQL in sync with your vector database.
+
 
 ## Opportunities
 
