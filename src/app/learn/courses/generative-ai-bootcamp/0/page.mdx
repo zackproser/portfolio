@@ -16,7 +16,7 @@ import pulumiAI from '@/images/pulumi-ai-example.webp'
 
 export const metadata = {
     header: "Introduction",
-    title: "Generative AI Bootcamp",
+    title: "Generative AI Bootcamp: Dev Tools",
     description: "Generative AI Bootcamp",
 }
 
@@ -27,11 +27,16 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 Non technical folks and computer nerds are equally welcome here. This course outlines the challenges and opportunities of the Generative AI boom, with a particular focus on 
 AI-assisted developer tools. 
 
-This course provides the basics to understand the "why" behind the current moment AI is experiencing.
-
-It is designed to be easily digestible, even if you're not technical at all. 
-
 <Image width={400} height={400} src={generativeAIBootcamp} alt="Generative AI is here"/>
+
+## What you'll learn
+
+When you're finished with this course, you'll have the knowledge you need to: 
+* Understand and discuss Generative AI, its opportunities and challenges
+* Understand and discuss Large Language Models (LLMs) and the role they play in Generative AI
+* Understand how Generative AI is appearing in Developer-facing tools and Integrated Development Environments (IDEs)
+* Speak intelligently about how Generative AI is disrupting creative pursuits like software development, writing and the visual arts
+* Challenges and opportunities: where Generative AI is already making a difference to businesses, and challenges that can slow its adoption
 
 This course is ideal for investors, strategists, marketing experts, and anyone who wants to learn more about Generative AI.
 
@@ -65,11 +70,14 @@ semantic search at scale with Pinecone when you need to keep a traditional datab
 In this course, we'll examine exactly how and why Generative AI is able to do this, and what it means for creative types like software developers, artists, writers, designers and for creative industry in general.
 
 <Image src={aiImageGeneration} alt="Generative AI is here" width={800} />
+<figcaption>Generative AI instantly fulfills complex requests for software, images, text, and even video.</figcaption>
 
 <Callout title={"Explain the transformative impact of Generative AI"} type={"Focus"} body={"We'll begin our discussion by understanding what Generative AI is and why it is so powerful"}/>
 
 Around January of 2023, Generative AI caused astonishment and existential dread for many creatives, allowing anyone with an internet connection to instantly conjure working code in any language, as well as images of any style, translations, and more,
-simply by asking for them in natural human language: 
+simply by asking for them in natural human language. 
+
+For example, you can ask a Generative AI tool: 
 
 > Write me a JavaScript class representing a typical saas app user, and include methods for updating and deleting the user's profile. 
 
@@ -138,17 +146,38 @@ a bit longer than a few seconds to write this out.
 
 ## Generative AI is not just text or code...
 
-The same scenario was true for images:
+The same was true for images. Here's an example of me asking ChatGPT4 to generate me an image with the following prompt: 
+
+> I'm creating a video game about horses enhanced with Jetpacks. Please generate me a beautiful, cheerful and friendly sprite of a horse with a jetpack strapped onto its back that would be suitable for use in my HTML5 game.  Use a bright, cheery and professional retro pixel-art style. 
 
 <Image src={genAiExampleImageGeneration} alt="Generative AI can generate images as well as text" width={800} />
+<figcaption>I can use Large Language Models (LLMs) like ChatGPT to generate pixel art and other asses for my web and gaming projects.</figcaption>
 
-Why is this such a big deal?
+Within a few moments, I got back a workable image that was more or less on the money given my prompt. 
 
-Prior to the proliferation of LLMs and Generative AI models, you needed to have some pixel art skills, and be proficient in use of photo editing / creation software such as Photoshop, Illustrator, or GIMP in order to produce this image. You'd also need a 
-considerable amount of skill and time, and the same caveats apply about hydration and caffeine.
+I didn't have to open my image editor, spend hours tweaking pixels using specialized tools, or hit up my designer or digital artist friends for assistance.
 
-<Callout title={"Generative AI democratizes capabilities that previously belonged only to specialized practictioners"} type={"PracticalInsights"} body={"Before the advent of Generative AI, you more or less needed to be a software developer to produce working code. You more or less needed to be a skilled visual or digital artist to produce images. But Generative AI makes these skills (with significant caveats that we'll discuss shortly) available on-demand to everyone."}/>
+### Why is this such a big deal?
 
+Prior to the proliferation of LLMs and Generative AI models, you needed to have some pixel art skills, and be proficient in use of photo editing / creation software such as Photoshop, Illustrator, or GIMP in order to produce this image. 
+
+You would also need a considerable amount of skill and time, and the same caveats apply about hydration and caffeine.
+
+<Callout title={"Generative AI democratizes capabilities that previously belonged only to specialized practictioners"} type={"PracticalInsights"} body={"Before the advent of Generative AI, you needed to be a specialist to produce specialized outputs. But Generative AI is turning this requirement on its head."}/>
+
+You needed to be a software developer to produce working code. 
+
+You needed to be a visual artist to produce images, or a digital artist to produce pixel art, video game assets, logos, etc.
+
+With Generative AI on the scene, this is no longer strictly true. 
+
+**There are some major caveats to understand around this piece** such as why Generative AI is currently a huge boon to senior and above level developers, but commonly misleading and actively harmful to junior developers, but in general it holds true.
+
+<Callout title={"How my developer friends and I started using Gen AI"} type={"PracticalInsights"} body={"Since the initial release of ChatGPT, my colleagues and I began experimenting with the tool as a means to enhance and streamline our many day to day development tasks. Here's what stood out as winning use cases for us:"}/>
+
+* Asking the LLM to write scripts to perform one-off tasks (migrating data, cleaning up projects, taking backups of databases, etc)
+* Asking the LLM to explain a giant and complex stack trace (error) that came from a piece of code we're working with
+* Asking the LLM to take some unstructured input (raw files, log streams, security audits, etc), extract insights and return a simple list of key-value pairs
 
 <Callout title={"Generative AI seminal links"} type={"GoDeeper"} body={"If you wish to go deeper on key aspects of the LLM boom, these links will help"}/>
 
@@ -179,9 +208,20 @@ Pulumi AI generates working Pulumi programs that describe infrastructure as code
 
 <Image src={pulumiAI} alt="Pulumi AI can write working Pulumi programs in any supported language" />
 
-Generative AI is powerful because it enables development use cases that were previously out of reach due to being too technically complex for one developer to build out on their own.
+## Generative AI accelerates professionals and specialists
 
 <Callout title={"Before and after the Generative AI boom"} type={"PracticalInsights"} body={"It's helpful to consider what major tasks looked like before and after Gen AI"}/>
+
+Generative AI is powerful because it enables development use cases that were previously out of reach due to being too technically complex for one developer to build out on their own.
+
+I've experienced this phenomenon myself. I have been pair-coding alongside Generative AI models for {timeElapsedSinceJanuary2023()}, and in that time **I have started work on more ambitious applications** than I normally would have tackled as side proejcts. 
+
+**I have gotten unstuck faster** when faced with a complex or confusing failure scenario, because I was able to talk through the problem with ChatGPT and discuss alternative approaches. ChatGPT4 responds to me 
+with the quality of response and breadth of experience that I previously only would have expected from senior and staff level engineers.
+
+**I have enjoyed my work more**, because now I have a supremely helpful colleague who is always available, in my time zone. Gen AI is never busy, never frustrated or overwhelmed, and is more likely to have read widely and deeply on a given 
+technology subject than a human engineer.
+
 
 <Callout title={"How a Staff Software Engineer uses Generative AI"} type={"PracticalInsights"} body={"I've collected some of the most interesting conversations I've had with ChatGPT over time while building out complex applications."}/>
 
@@ -196,7 +236,7 @@ Generative AI is powerful because it enables development use cases that were pre
 
 <Callout title={"A Large Language Model (LLM) is like a super-nerd librarian"} type={"Metaphor"} body={"Large Language Models such as ChatGPT have read MOST of the content humans have written, from literature to software across all major languages. When we're discussing Generative AI, a Large Language Model is one component in most pipelines or application stacks. They can synthesize information across billions of books and languages in seconds."}/>
 
-<Callout title={"Visuals: How LLMs process information"} type={"Visuals"} body={"Large Language Models such as ChatGPT have read MOST of the content humans have written, from literature to software across all major languages. When we're discussing Generative AI, a Large Language Model is one component in most pipelines or application stacks. They can synthesize information across billions of books and languages in seconds."}/>
+<Callout title={"Hallucination: The primary downside of of LLMs"} type={"Metaphor"} body={"Hallcinations are the wrinkle in this amazing technology"}/>
 
 <Callout title={"In-depth articles and videos on LLMs"} type={"GoDeeper"} body={"Links for understanding LLMs in depth"}/>
 
