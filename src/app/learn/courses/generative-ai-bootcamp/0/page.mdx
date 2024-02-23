@@ -1,9 +1,18 @@
-import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
+import Image from 'next/image';
+import Link from 'next/link';
+
 import { ArticleLayout } from '@/components/ArticleLayout';
 import { timeElapsedSinceJanuary2023 } from '@/components/timeSince';
-import zacharyProser from '@/images/zachary-proser.webp'
 
-import Image from 'next/image';
+import Callout from '@/components/Callout';
+
+import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
+import zacharyProser from '@/images/zachary-proser.webp'
+import a16z2 from '@/images/a16z-2.webp'
+import aiImageGeneration from '@/images/ai-image-generation.webp'
+import genAiExampleImageGeneration from '@/images/gen-ai-image-generation-example.webp'
+import vercelV0Dev from '@/images/vercel-v0-dev.webp'
+import pulumiAI from '@/images/pulumi-ai-example.webp'
 
 export const metadata = {
     header: "Introduction",
@@ -13,9 +22,9 @@ export const metadata = {
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-## Generative AI Bootcamp 
+## Welcome, all! 
 
-Non technical folks welcome! This course outlines the challenges and opportunities of the Generative AI boom, with a particular focus on 
+Non technical folks and computer nerds are equally welcome here. This course outlines the challenges and opportunities of the Generative AI boom, with a particular focus on 
 AI-assisted developer tools. 
 
 This course provides the basics to understand the "why" behind the current moment AI is experiencing.
@@ -26,37 +35,202 @@ It is designed to be easily digestible, even if you're not technical at all.
 
 This course is ideal for investors, strategists, marketing experts, and anyone who wants to learn more about Generative AI.
 
-## Table of contents
-
-* [Instructor introduction](#instructor-introduction)
-* [Opportunities](#opportunities)
-* [Challenges](#challenges)
-* [My thoughts: As a developer](#my-thoughts-as-a-developer)
-* Introduction to AI
-* Historical Context
-* Core Technologies
-* Generative AI Breakthroughs
-* Applications of Generative AI
-* Ethical Considerations and Challenges
-* Understanding Hallucination
-* Retrieval Augmented Generation (RAG)
-* The Future of AI
-* My Favorite Tools
-* Developer's Perspective
-
 ## Instructor Introduction
 
 Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io, where we build the most performant cloud-native vector database 
 that provides long-term memory for AI applications. 
 
-<Image src={zacharyProser} alt="Zachary Proser" width={300} height={300} />
+<Image src={zacharyProser} alt="Zachary Proser" />
 
 My full title at Pinecone is "Staff Developer Advocate (open-source)", meaning that I build AI applications and pipelines in public to help 
-evangelize our vector database, as well as maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications. 
+evangelize our vector database, as well as maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications, which demonstrate 
+machine learning and AI techniques such as semantic search and Retrieval Augmented Generation (RAG).
 
-I also wrote Pinecone's first production example in the AWS Reference Architecture with Pulumi, which demonstrates how to perform 
+<Image src={a16z2} alt="Zachary Proser" />
+<figcaption>Speaking at Andreesen Horowitz about taking Generative AI applications to production with the AWS Reference Architecture I created.</figcaption>
+
+I also wrote [Pinecone's first production example](https://www.pinecone.io/blog/aws-reference-architecture/) in the [AWS Reference Architecture with Pulumi](https://github.com/pinecone-io/aws-reference-architecture-pulumi), which demonstrates how to perform 
 semantic search at scale with Pinecone when you need to keep a traditional database like PostgreSQL in sync with your vector database.
 
+## Table of contents
+
+* <Link href={"#instructor-introduction"}>Instructor Introduction</Link>
+* <Link href={"#introduction-to-generative-ai"}>Introduction to Generative AI</Link>
+* <Link href={""}></Link>
+
+## Introduction to Generative AI
+
+<Callout title={"Generative AI is like a genie capable of fulfilling complex creative requests instantly"} type={"Metaphor"} body={"You can ask Generative AI to write code, translate English to Russian, make images in a variety of styles, rewrite your resume to target a new role, or help you think through complex scenarios."}/>
+
+In this course, we'll examine exactly how and why Generative AI is able to do this, and what it means for creative types like software developers, artists, writers, designers and for creative industry in general.
+
+<Image src={aiImageGeneration} alt="Generative AI is here" width={800} />
+
+<Callout title={"Explain the transformative impact of Generative AI"} type={"Focus"} body={"We'll begin our discussion by understanding what Generative AI is and why it is so powerful"}/>
+
+Around January of 2023, Generative AI caused astonishment and existential dread for many creatives, allowing anyone with an internet connection to instantly conjure working code in any language, as well as images of any style, translations, and more,
+simply by asking for them in natural human language: 
+
+> Write me a JavaScript class representing a typical saas app user, and include methods for updating and deleting the user's profile. 
+
+To which a Large Language Model (LLM) such as ChatGPT would instantly respond: 
+
+> To represent a typical SaaS app user in JavaScript, we can define a class named User with properties that might include an ID, name, email, and any other relevant information. For updating and deleting the user's profile, we can include methods within the class to handle these actions. Here's a sample implementation:
+
+The Large Language Model would continue, writing the following code out to the user's screen in seconds:
+
+```javascript
+
+class User {
+    constructor(id, name, email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    // Update user profile in the database
+    async updateProfile({ name, email }) {
+        if (name) this.name = name;
+        if (email) this.email = email;
+
+        try {
+            await sql`UPDATE users SET name = ${this.name}, email = ${this.email} WHERE id = ${this.id}`;
+            console.log('User profile updated successfully.');
+        } catch (error) {
+            console.error('Error updating user profile:', error);
+            // Handle error (e.g., rollback transaction, log error, etc.)
+        }
+    }
+
+    // Delete user profile from the database
+    async deleteProfile() {
+        try {
+            await sql`DELETE FROM users WHERE id = ${this.id}`;
+            console.log(`User with ID ${this.id} deleted successfully.`);
+        } catch (error) {
+            console.error('Error deleting user profile:', error);
+            // Handle error
+        }
+    }
+
+    // Method to display user info - useful for debugging
+    displayUserInfo() {
+        console.log(`User ID: ${this.id}, Name: ${this.name}, Email: ${this.email}`);
+    }
+}
+
+// Example usage (inside an async function or top-level await in a module)
+const user = new User(1, 'John Doe', 'john.doe@example.com');
+user.displayUserInfo(); // Display initial user info
+
+// Update user info
+await user.updateProfile({ name: 'Jane Doe', email: 'jane.doe@example.com' });
+user.displayUserInfo(); // Display updated user info
+
+// Delete user
+await user.deleteProfile();
+```
+
+Prior to the widespread availability of these tools, you more or less needed to understand Javascript, its most recent syntax changes, object oriented programming conventions and database abstractions, at a minimum, to produce this code. 
+
+You also needed to have recently gotten some sleep, be more or less hydrated and have already had your caffeine - if you drink it - in order to create this simple example. And even the most highly-skilled keyboard-driven developers would have taken 
+a bit longer than a few seconds to write this out. 
+
+## Generative AI is not just text or code...
+
+The same scenario was true for images:
+
+<Image src={genAiExampleImageGeneration} alt="Generative AI can generate images as well as text" width={800} />
+
+Why is this such a big deal?
+
+Prior to the proliferation of LLMs and Generative AI models, you needed to have some pixel art skills, and be proficient in use of photo editing / creation software such as Photoshop, Illustrator, or GIMP in order to produce this image. You'd also need a 
+considerable amount of skill and time, and the same caveats apply about hydration and caffeine.
+
+<Callout title={"Generative AI democratizes capabilities that previously belonged only to specialized practictioners"} type={"PracticalInsights"} body={"Before the advent of Generative AI, you more or less needed to be a software developer to produce working code. You more or less needed to be a skilled visual or digital artist to produce images. But Generative AI makes these skills (with significant caveats that we'll discuss shortly) available on-demand to everyone."}/>
+
+
+<Callout title={"Generative AI seminal links"} type={"GoDeeper"} body={"If you wish to go deeper on key aspects of the LLM boom, these links will help"}/>
+
+
+* [Attention is all you need]
+* []
+* 
+* 
+
+
+<Callout title={"Real-world Generative AI applications"} type={"PracticalInsights"} body={"I've collected some of the best examples of real-world Generative AI applications"}/>
+
+### v0.dev
+<Image src={vercelV0Dev} alt="Vercel's v0.dev tool which generates user interfaces in React in response to natural language queries" width={800} />
+Vercel's v0.dev tool which generates user interfaces in React in response to natural language queries.
+
+In the above example, I prompted the app with: 
+
+> A beautiful pricing page with three large columns showing my free, pro and enterprise tiers of service for my new saas news offering 
+
+and the app immediately produced three separate versions that I can continue to iterate on in natural language, asking for visual refinements to the layout, style, colors, font-size and more.
+
+Prior to Gen AI, all of this work would have been done by hand by a technical designer sitting closely with at least one frontend developer.
+
+### Pulumi AI
+
+Pulumi AI generates working Pulumi programs that describe infrastructure as code in response to natural language prompts
+
+<Image src={pulumiAI} alt="Pulumi AI can write working Pulumi programs in any supported language" />
+
+Generative AI is powerful because it enables development use cases that were previously out of reach due to being too technically complex for one developer to build out on their own.
+
+<Callout title={"Before and after the Generative AI boom"} type={"PracticalInsights"} body={"It's helpful to consider what major tasks looked like before and after Gen AI"}/>
+
+<Callout title={"How a Staff Software Engineer uses Generative AI"} type={"PracticalInsights"} body={"I've collected some of the most interesting conversations I've had with ChatGPT over time while building out complex applications."}/>
+
+* 
+* 
+*
+*
+
+## Understanding the Power of Large Language Models (LLMs)
+
+<Callout title={"Simplify the concept of LLMs and their role in driving Generative AI advancements"} type={"Focus"} body={"LLMs"}/>
+
+<Callout title={"A Large Language Model (LLM) is like a super-nerd librarian"} type={"Metaphor"} body={"Large Language Models such as ChatGPT have read MOST of the content humans have written, from literature to software across all major languages. When we're discussing Generative AI, a Large Language Model is one component in most pipelines or application stacks. They can synthesize information across billions of books and languages in seconds."}/>
+
+<Callout title={"Visuals: How LLMs process information"} type={"Visuals"} body={"Large Language Models such as ChatGPT have read MOST of the content humans have written, from literature to software across all major languages. When we're discussing Generative AI, a Large Language Model is one component in most pipelines or application stacks. They can synthesize information across billions of books and languages in seconds."}/>
+
+<Callout title={"In-depth articles and videos on LLMs"} type={"GoDeeper"} body={"Links for understanding LLMs in depth"}/>
+
+<Callout title={"How LLMs are being used"} type={"PracticalInsights"} body={"Examples of LLMs already implemented"}/>
+
+    Practical Insights Widget: Insights into how LLMs are being used in various industries.
+
+## Generative AI in Software Development: Codeium vs. GitHub Copilot
+
+    Focus: Compare and contrast these tools to highlight their unique offerings and benefits.
+    Metaphor: Each tool as a "specialized co-pilot," guiding developers through the coding journey with their unique strengths.
+    Visuals: Side-by-side feature comparison and user interface screenshots.
+    Go Deeper Widget: Reviews and comprehensive comparisons of both tools.
+    Practical Insights Widget: Personal anecdotes on using these tools in software projects.
+
+## Navigating Challenges: Hallucinations and Ethical Considerations
+
+    Focus: Discuss the limitations and ethical challenges associated with Generative AI.
+    Metaphor: AI hallucinations as "foggy mirrors," reflecting reality with potential distortions.
+    Visuals: Annotated examples of AI-generated content, distinguishing between accurate and hallucinated outputs.
+    Go Deeper Widget: Scholarly articles and ethical discussions on AI hallucinations.
+    Practical Insights Widget: Strategies for mitigating hallucinations and ethical dilemmas.
+
+## My thoughts as a Developer
+    My favorite tools
+    Where I see this going 
+    It's really hard to write production-ready code that handles the business requirements correctly and that also is workable by other humans
+    What I pay for now 
+        - Kapwing AI 
+        - OpenAI Plus
+        - OpusClip
+    What I would pay for in the future
+        * Intelligent dev assistant 
+        * Aware of my contexts: GitHub repos, websites I use, internal tools, personal notes, engineering log books
 
 ## Opportunities
 
