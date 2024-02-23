@@ -5,7 +5,7 @@ const calloutStyles = {
   Focus: { bgGradient: 'bg-gradient-to-l from-blue-100 to-blue-600', emoji: '🔍', emojiSize: 'text-3xl' },
   Metaphor: { bgGradient: 'bg-gradient-to-l from-purple-100 to-purple-600', emoji: '🧞', emojiSize: 'text-3xl' },
   Visuals: { bgGradient: 'bg-gradient-to-l from-yellow-100 to-yellow-600', emoji: '🖼️', emojiSize: 'text-3xl' },
-  GoDeeper: { bgGradient: 'bg-gradient-to-l from-pink-100 to-pink-600', emoji: '🔍', emojiSize: 'text-3xl' },
+  GoDeeper: { bgGradient: 'bg-gradient-to-l from-pink-100 to-pink-600', emoji: '⛏️', emojiSize: 'text-3xl' },
   PracticalInsights: { bgGradient: 'bg-gradient-to-l from-blue-100 to-blue-600', emoji: '💡', emojiSize: 'text-3xl' },
   SpecialCallout: { bgGradient: 'bg-gradient-to-l from-yellow-100 to-yellow-600', emoji: '🌟', emojiSize: 'text-3xl' },
 };
