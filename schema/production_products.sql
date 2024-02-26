@@ -2,7 +2,7 @@
 INSERT INTO Courses (title, description, slug, status, price_id)
 VALUES
   (
-    'Generative AI Bootcamp',
+    'Generative AI Bootcamp: Dev Tools',
     'Generative AI - and its opportunities and challenges - explained simply, even if you are not technical',
     'generative-ai-bootcamp',
     'available',
