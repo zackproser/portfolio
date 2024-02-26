@@ -17,6 +17,9 @@ import genAIHow from '@/images/generative-ai-how.webp'
 import genAIMoment from '@/images/generative-ai-moment.webp'
 import tmuxFlow from '@/images/tmux-flow.gif'
 import codingAutocomplete from '@/images/coding-autocomplete.webp'
+import learningGenerations from '@/images/learning-generations.webp'
+import vscodeHomepage from '@/images/vscode-homepage.webp'
+import githubCopilotDemo from '@/images/github-copilot-example.webp'
 
 export const metadata = {
     header: "Introduction",
@@ -28,10 +31,11 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Welcome, all! 
 
-Non technical folks and computer nerds are equally welcome here. This course introduces Generative AI, and its many opportunitites and challenges, with a particular focus on 
-AI-assisted developer tools. 
+Non technical folks and computer nerds are equally welcome here. 
 
-<Image width={400} height={400} src={generativeAIBootcamp} alt="Generative AI is here"/>
+This course introduces Generative AI, and its many opportunitites and challenges, with a particular focus on AI-assisted developer tools. 
+
+<Image width={800} src={generativeAIBootcamp} alt="Generative AI is here"/>
 
 ## Table of contents
 
@@ -44,13 +48,12 @@ When you're finished with this course, you'll have the knowledge you need to:
 * Understand and discuss Large Language Models (LLMs) and the role they play in Generative AI
 * Understand how Generative AI is appearing in Developer-facing tools and Integrated Development Environments (IDEs)
 * Speak intelligently about how Generative AI is disrupting creative pursuits like software development, writing and the visual arts
-* Work with the many challenges and opportunities introduced by Generative AI
 
 This course is ideal for investors, strategists, marketing experts, and anyone who wants to learn more about Generative AI.
 
 ## Instructor Introduction
 
-Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io, where we build the most performant cloud-native vector database 
+Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database 
 that provides long-term memory for AI applications. 
 
 <Image src={zacharyProser} alt="Zachary Proser" />
@@ -64,6 +67,8 @@ I also maintain our many open-source examples such as Jupyter Notebooks and Type
 
 I also wrote [Pinecone's first production example](https://www.pinecone.io/blog/aws-reference-architecture/) in the [AWS Reference Architecture with Pulumi](https://github.com/pinecone-io/aws-reference-architecture-pulumi), which demonstrates how to perform 
 semantic search at scale with Pinecone when you need to keep a traditional database like PostgreSQL in sync with your vector database.
+
+I have been a full stack open-source developer since 2012.
 
 # Generative AI
 
@@ -150,7 +155,7 @@ a bit longer than a few seconds to write this out.
 
 ## GenAI is not just for text or code...
 
-The same was true for images. Here's an example of me asking ChatGPT4 to generate me an image with the following prompt: 
+Here's an example of me asking ChatGPT4 to generate me an image with the following prompt: 
 
 > I'm creating a video game about horses enhanced with Jetpacks. Please generate me a beautiful, cheerful and friendly sprite of a horse with a jetpack strapped onto its back that would be suitable for use in my HTML5 game.  Use a bright, cheery and professional retro pixel-art style. 
 
@@ -172,22 +177,32 @@ For example, by learning from millions of images and captions, an AI can generat
 
 The key technique that makes this possible involves training machine learning models using deep neural networks that can recognize complex patterns.
 
+Imagine you have a very smart robot that you want to teach to understand and use human language. To do this, you give the robot a huge pile of books, articles, and conversations to read over and over again. 
+
+Each time the robot goes through all this information, it's like it's completing a grade in school, learning a little more about how words fit together and how they can be used to express ideas.
+
+<Image src={learningGenerations} alt="Learning generations" />
+
+In each "grade" or cycle, the robot pays attention to what it got right and what it got wrong, trying to improve. Think of it like learning to play a video game or a sport; the more you practice, the better you get. The robot is doing something similar with language, trying to get better at understanding and generating it each time it goes through all the information.
+
+This process of going through the information, learning from mistakes, and trying again is repeated many times, just like going through many grades in school. For a model as capable as ChatGPT 4, the cost to perform this training can exceed $100 million, as OpenAI's Sam Altman has shared.
+
+With each "generation" of learning, the robot gets smarter and better at using language, much like how you get smarter and learn more as you move up in school grades.
+
 ## Why is GenAI having its moment right now? 
 
 <Image src={genAIMoment} alt="GenAI is having its moment right now" width={800} />
 <figcaption>GenAI is the confluence of many complimentary components and approaches reaching maturity at the same time</figcaption>
 
-* Availability of massive datasets and computing power to train extremely robust models, some with billions of parameters
-* New architectures like transformers that are very effective for language and generation
-* Progressive improvements across computer vision, natural language processing, and AI in general
+* **Data**: Availability of massive datasets and computing power to train extremely robust models, some with billions of parameters
+* **Advanced architectures**: New architectures like transformers that are very effective for language and generation
+* **Progressive advancement of the state of the art**: Progressive improvements across computer vision, natural language processing, and AI in general
 
 ## Why is GenAI such a big deal?
 
 Prior to the proliferation of LLMs and Generative AI models, you needed to have some pixel art skills, and be proficient in use of photo editing / creation software such as Photoshop, Illustrator, or GIMP in order to produce high quality pixel art. 
 
-You would also need a considerable amount of skill and time, and the same caveats apply about hydration and caffeine.
-
-<Callout title={"Generative AI democratizes capabilities that previously belonged only to specialized practictioners"} type={"PracticalInsights"} body={"Before the advent of Generative AI, you needed to be a specialist to produce specialized outputs. But Generative AI is turning this requirement on its head."}/>
+<Callout title={"Generative AI democratizes specialized outputs"} type={"PracticalInsights"} body={"Before the advent of Generative AI, you needed to be a specialist to produce specialized outputs. But Generative AI is turning this requirement on its head."}/>
 
 Prior to Gen AI, you needed to be a software developer to produce working code. 
 
@@ -202,26 +217,21 @@ employ the generated outputs to good effect.
 
 Generative AI lowers the barrier for people to produce specialized digital outputs. 
 
-<Callout title={"How my developer friends and I started using Gen AI"} type={"PracticalInsights"} body={"Since the initial release of ChatGPT, my colleagues and I began experimenting with the tool as a means to enhance and streamline our many day to day development tasks. Here's what stood out as winning use cases for us:"}/>
-
-* Asking the LLM to write scripts to perform one-off tasks (migrating data, cleaning up projects, taking backups of databases, etc)
-* Asking the LLM to explain a giant and complex stack trace (error) that came from a piece of code we're working with
-* Asking the LLM to take some unstructured input (raw files, log streams, security audits, etc), extract insights and return a simple list of key-value pairs
-
 <Callout title={"Generative AI seminal links"} type={"GoDeeper"} body={"If you wish to go deeper on key aspects of the LLM boom, these links will help"}/>
 
-
-* [Attention is all you need]
-* []
-* 
-* 
+* [MIT News: Explained - Generative AI](https://news.mit.edu/2023/explained-generative-ai-1109)
+* [McKinsey - The State of AI in 2023: Generative AI's breakout year](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2023-generative-ais-breakout-year)
+* [McKinsey - What is ChatGPT, DALL-E and generative AI?](https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-is-generative-ai)
+* [Accenture - What is Generative AI?](https://www.accenture.com/us-en/insights/generative-ai)
 
 ## GenAI in the wild - successful use cases
 
-<Callout title={"Real-world Generative AI applications"} type={"PracticalInsights"} body={"I've collected some of the best examples of real-world Generative AI applications"}/>
+Since the initial explosion of interest around GenAI, most companies have sprinted toward integrating generative AI models into their products and services, with varying success.
+
+Here's a look at some of the tools leveraging Generative AI successfully to accelerate their end users:
 
 ### v0.dev
-<Image src={vercelV0Dev} alt="Vercel's v0.dev tool which generates user interfaces in React in response to natural language queries" width={800} />
+<Image src={vercelV0Dev} alt="Vercel's v0.dev tool generates user interfaces in React in response to natural language queries" width={800} />
 Vercel's v0.dev tool which generates user interfaces in React in response to natural language queries.
 
 In the above example, I prompted the app with: 
@@ -234,17 +244,22 @@ Prior to Gen AI, all of this work would have been done by hand by a technical de
 
 ### Pulumi AI
 
-Pulumi AI generates working Pulumi programs that describe infrastructure as code in response to natural language prompts
+Pulumi AI generates working Pulumi programs that describe infrastructure as code in response to natural language prompts. 
+
+There are some current pain points, such as the tool 
+strongly favoring older versions of Pulumi code which are now "deprecated" or slated for removal, but in general this tool is capable of saving a developer a lot of time 
+by outining the patterns to get a tricky configuration working with AWS.
 
 <Image src={pulumiAI} alt="Pulumi AI can write working Pulumi programs in any supported language" />
 
-## GenAI accelerates specialists
+## Insight: GenAI accelerates specialists
 
 If Generative AI opens the door for non-specialists to create specialized outputs, it simultaneously **accelerates specialists**.
 
 Generative AI is powerful because it enables development use cases that were previously out of reach due to being too technically complex for one developer to build out on their own.
 
-I've experienced this phenomenon myself. I have been pair-coding alongside Generative AI models for {timeElapsedSinceJanuary2023()}, and in that time **I have started work on more ambitious applications** than I normally would have tackled as side proejcts. 
+I've experienced this phenomenon myself. I have been pair-coding alongside Generative AI models for {timeElapsedSinceJanuary2023()}, and in that time **I have started work on more ambitious applications** than I normally would have tackled as side proejcts. I have also 
+completed more side projects as a result.
 
 **I have gotten unstuck faster** when faced with a complex or confusing failure scenario, because I was able to talk through the problem with ChatGPT and discuss alternative approaches. ChatGPT4 responds to me 
 with the quality of response and breadth of experience that I previously only would have expected from senior and staff level engineers.
@@ -255,10 +270,13 @@ technology subject than a human engineer.
 **I employ careful scrutiny** to weed out hallucinations. Because I've been developing software and working at both small and large Sillicon Valley companies since 2012, I am able to instantly detect when ChatGPT or a similar tool is hallucinating, out of its depth or 
 poorly suited to a particular task due to insufficient training data. 
 
-<Callout title={"How a Staff Software Engineer uses Generative AI"} type={"PracticalInsights"} body={"I've collected some of the most interesting conversations I've had with ChatGPT over time while building out complex applications."}/>
-* 
-*
-*
+<Callout title={"How a Staff Software Engineer uses Generative AI"} type={"PracticalInsights"} body={"I've collected some of the most interesting conversations I've had with ChatGPT over time while building out complex applications. You can read these chats to better see and understand exactly how I interact with a model as advanced as ChatGPT 4"}/>
+
+* [Sanity checking a change from an SEO perspective before making it](https://chat.openai.com/share/961aefe0-321e-40e0-9f20-838fb5f787bb)
+* [Help me configure a new GitHub Action for my repository that automatically validates my API specification](https://chat.openai.com/share/c032ebb5-2ac1-4d5a-89b5-7c5d0918acb6)
+* [Cooperatively build a complex React component for my digital school](https://chat.openai.com/share/0596186c-67d0-4dca-b396-787e28e05375)
+* [Collaboratively update a microservice's database access pattern](https://chat.openai.com/share/d2f721ff-678a-4a2c-9963-bbec88881886)
+* [Collaboratively upgrading a section of my React application to use a new pattern](https://chat.openai.com/share/93993cd8-904d-456c-87fd-a786b8079d57)
 
 # Large Language Models (LLMs)
 
@@ -266,48 +284,59 @@ poorly suited to a particular task due to insufficient training data.
 
 <Callout title={"Simplify the concept of LLMs and their role in driving Generative AI advancements"} type={"Focus"} body={"LLMs"}/>
 
-Large Language Models (LLMs) are the engines behind the scenes of Generative AI, making sense of vast amounts of text data. Imagine them as the brain of Generative AI, capable of understanding, generating, and manipulating language based on the patterns they've learned from extensive datasets. Their role is pivotal in enabling machines to perform tasks that require human-like language understanding, from writing code to composing poetry.
+Large Language Models (LLMs) are the brains behind Generative AI, capable of understanding, generating, and manipulating language based on the patterns they've learned from extensive datasets. 
+
+Their role is pivotal in enabling machines to perform tasks that require human-like language understanding, from writing code to composing poetry.
 
 <Callout title={"A Large Language Model (LLM) is like a super-nerd librarian"} type={"Metaphor"} body={"Large Language Models such as ChatGPT have read MOST of the content humans have written, from literature to software across all major languages. When we're discussing Generative AI, a Large Language Model is one component in most pipelines or application stacks. They can synthesize information across billions of books and languages in seconds."}/>
 
-Think of LLMs as the ultimate librarian, but with a superpower: instant recall of every book, article, and document ever written. They don't just store information; they understand context, draw connections, and create new content that's coherent and contextually relevant. This makes LLMs invaluable in driving forward the capabilities of Generative AI, enabling it to generate content that feels surprisingly human.
+Think of LLMs as the ultimate librarian, but with a superpower: instant recall of every book, article, and document ever written. They don't just store information; they understand context, draw connections, and create new content that's coherent and contextually relevant. 
+
+This makes LLMs invaluable in driving forward the capabilities of Generative AI, enabling it to generate content that feels surprisingly human.
 
 ## Hallucination: the primary challenge of LLMs
 
-<Callout title={"Hallucination: The primary downside of of LLMs"} type={"Metaphor"} body={"Hallcinations are the wrinkle in this amazing technology"}/>
+<Callout title={"Hallucination: The primary downside of of LLMs"} type={"Metaphor"} body={"Hallcinations are the wrinkle in this amazing technology. Hallucinations have spawned entire architectures, such as Retrieval Augmented Generation (RAG) and they're the primary reason why we say that LLMs 'make mistakes'."}/>
 
-One of the main challenges with LLMs is "hallucination," where the model generates information that's plausible but factually incorrect or nonsensical. This is akin to a brilliant storyteller getting carried away with their imagination. While often creative, these hallucinations can be misleading, making it crucial to use LLMs with a critical eye, especially in applications requiring high accuracy.
+One of the main challenges with LLMs is "hallucination," where the model generates information that's plausible but factually incorrect or nonsensical. 
+
+This is akin to a brilliant storyteller getting carried away with their imagination. While often creative, these hallucinations can be misleading, making it crucial to use LLMs with a critical eye, especially in applications requiring high accuracy.
 
 Hallucinations refer to when an AI like ChatGPT generates responses that seem plausible but don't actually reflect truth or reality. The system is essentially "making things up" based on patterns learned from its language data - hence "hallucinating".
 
+The critical challenge here is that hallucination is more or less inextricable from the LLM behaviors we find valuable - and LLMs **do not know when they do not know something**. This is precisely why it can be so dangerous for 
+junior or less experienced developers, for example, to blindly follow what an LLM says when they are attempting to pair code with one. 
+
+Without a sufficient understanding of the target space, its challenges and potential issues, it's possible to make a tremendous mess by following the hallucinations of an AI model.
+
 ### Why does hallucination happen?
-LLMs like ChatGPT have been trained on massive text datasets, but have no actual connection to the real world. They don't have human experiences or knowledge of facts. Their goal is to produce outputs that look reasonable based on all the text they've seen. So sometimes the AI will confidently fill in gaps by fabricating information rather than saying "I don't know."
+LLMs like ChatGPT have been trained on massive text datasets, but have no actual connection to the real world. They don't have human experiences or knowledge of facts. 
+
+Their goal is to produce outputs that look reasonable based on all the text they've seen. So sometimes the AI will confidently fill in gaps by fabricating information rather than saying "I don't know."
+
+This is one of the reasons you'll often see LLMs referred to as "stochastic parrots". They are attempting to generate the next best word based on all of the words and writing they have ever seen.
 
 ### Should this impact trust in LLMs?
 
-Yes, hallucinations mean we can't fully rely on LLMs for complete accuracy and truthfulness. They may get core ideas directionally right, but details could be invented. So think of them more as an aid for content generation rather than necessarily fact sources. LLMs don't have true reasoning capacity comparable to humans. Approaching them with appropriate trust and skepticism is wise as capabilities continue advancing.
+Yes, hallucinations mean we can't fully rely on LLMs for complete accuracy and truthfulness. They may get core ideas directionally right, but details could be invented. 
 
-<Callout title={"In-depth articles and videos on LLMs"} type={"GoDeeper"} body={"Links for understanding LLMs in depth"}/>
-
-For those looking to dive deeper into the world of LLMs, a wealth of resources is available, ranging from scholarly articles to informative video content. These resources can help unravel the complexities of LLMs, providing insights into their workings, the science behind them, and their implications for the future of technology and society.
-
-<Callout title={"How LLMs are being used"} type={"PracticalInsights"} body={"Examples of LLMs already implemented"}/>
-
-LLMs are already transforming industries by powering applications in content generation, language translation, code development, and more. Their ability to understand and generate human-like text has led to innovative tools that enhance productivity, creativity, and communication across various domains.
+Think of them more as an aid for content generation rather than necessarily fact sources. LLMs don't have true reasoning capacity comparable to humans. Approaching them with appropriate trust and skepticism is wise as capabilities continue advancing.
 
 # GenAI meets software development: AI Dev Tools
 
 ## What is a developer's IDE?
 
-IDE stands for Integrated Development Environment. It is a robust text editor designed specifically for programmers' needs in coding. IDEs provide features like syntax highlighting, autocompletion of code, and boilerplate text insertion to accelerate the coding process.
+IDE stands for Integrated Development Environment. It is a text editor designed specifically for programmers' needs. IDEs provide syntax highlighting, autocompletion of code, and boilerplate text insertion to accelerate the coding process.
 
-In addition, most modern IDEs are highly customizable to match individual developers' preferences. Through plugins and configuration changes, programmers can customize keyboard shortcuts, interface color themes, extensions that analyze code or connect to databases, and more based on their workflow.
+Most modern IDEs are highly customizable. Through plugins and configuration changes, developers customize keyboard shortcuts, interface color themes, extensions that analyze code or connect to databases, and more based on their workflow.
 
-Two very popular and customizable IDEs are Visual Studio Code (VSCode) from Microsoft and Neovim. In VSCode, developers can install all sorts of plugins from a central marketplace - plugins to lint and format their code, run tests, interface with version control systems, and countless others. There is also rich support for changing the visual theme and layout.
+Two very popular IDEs are Visual Studio Code (VSCode) from Microsoft and Neovim, which is open-source and maintained by a community of developers. 
+
+In VSCode, developers can install all sorts of plugins from a central marketplace - plugins to lint and format their code, run tests, interface with version control systems, and countless others. There is also rich support for changing the visual theme and layout.
 
 Neovim is another IDE centered around modal editing optimized for speed and keyboard usage over mice. Its users can create key mappings to quickly manipulate files and code under-the-hood entirely from the keyboard. It embraces Vim language and edit commands for coding efficiency.
 
-For example, the following gif demonstrates a custom IDE using `tmux` and Neovim: 
+For example, the following gif demonstrates a custom IDE using `tmux` and Neovim (my personal preference): 
 
 <Image src={tmuxFlow} alt="Tmux is a powerful terminal multiplexer favored by many developers" />
 <figcaption>My personal preference is to combine tmux with Neovim for a highly flexible setup that expands and contracts to the size of my current task.</figcaption>
@@ -327,34 +356,37 @@ VSCode and Neovim have strong followings in their ability to adapt to diverse wo
 
 <Callout title={"Compare and contrast - Codeium and GitHub Copilot"} type={"Focus"} body={"LLMs"}/>
 
-Codeium and GitHub Copilot represent the cutting edge of Generative AI in software development, both leveraging LLMs to suggest code completions and solutions. While GitHub Copilot is built on OpenAI's Codex, Codeium offers its unique AI-driven approach. The key differences lie in their integration capabilities, coding style adaptations, and the breadth of languages and frameworks they support, making each tool uniquely valuable depending on the developer's needs.
+Codeium and GitHub Copilot represent the cutting edge of Generative AI in software development, both leveraging LLMs to suggest code completions and solutions. 
+
+While GitHub Copilot is built on OpenAI's Codex, Codeium offers its unique AI-driven approach. The key differences lie in their integration capabilities, coding style adaptations, and the breadth of languages and frameworks they support, making each tool uniquely valuable depending on the developer's needs.
+
+<Image src={githubCopilotDemo}  alt="GitHub Copilot demo" />
 
 These tools, while serving the common purpose of enhancing coding efficiency through AI-assisted suggestions, exhibit distinct features and use cases that cater to different aspects of the development workflow.
 
-<Callout title={"Compare and contrast - Codeium and GitHub Copilot"} type={"GoDeeper"} body={"I've written about both of these tools before!"}/>
+<Callout title={"Compare and contrast - Codeium and GitHub Copilot"} type={"GoDeeper"} body={"I've written about both of these tools before, quite extensively! While I have tried and continue to experiment with both, my personal preference has been for Codeium - as it offers fantastic autocompletion suggestions and works on every file type I encounter in a given work day."}/>
 
 * [Codeium review](/blog/codeium-review)
-*
-*
+* [Codeium vs ChatGPT](/blog/codeium-vs-chatgpt)
+* [GitHub Copilot review](/blog/github-copilot-review)
+* [ChatGPT 4 and Codeium are still all I need](/blog/chatgpt-4-and-codeium-are-my-favorite-stack)
+* [The top bugs all AI developer tools are suffering from](/blog/top-ai-dev-tools-bugs)
 
-Codeium, praised for its seamless integration within popular code editors like VSCode and Neovim, operates as a context-aware assistant, offering real-time code suggestions and completions directly in the IDE. Its ability to understand the surrounding code and comments enables it to provide highly relevant suggestions, making it an indispensable tool for speeding up the coding process. Notably, Codeium stands out for its free access to individual developers, making it an attractive option for those looking to leverage AI without incurring additional costs​
+Codeium, praised for its seamless integration within popular code editors like VSCode and Neovim, operates as a context-aware assistant, offering real-time code suggestions and completions directly in the IDE. 
 
-On the other hand, GitHub Copilot, while also offering code suggestions, brings the power of GitHub's vast code repositories into the equation, potentially offering more diverse and context-rich coding insights. As a product of GitHub, it is deeply integrated with the platform's ecosystem, potentially offering smoother workflows for developers who are heavily invested in using GitHub for version control and collaboration.
+Its ability to understand the surrounding code and comments enables it to provide highly relevant suggestions, making it an indispensable tool for speeding up the coding process. 
 
-Both tools exemplify the advancements in AI's ability to understand and generate human-like code, but they also highlight the importance of user preference and workflow integration. Developers might find Codeium's IDE integration and free access more aligned with their daily coding activities, while others might prefer the extensive repository knowledge and collaborative features offered by GitHub Copilot.
+Notably, Codeium stands out for its free access to individual developers, making it an attractive option for those looking to leverage AI without incurring additional costs, whereas GitHub has been perpetually cagey about its Copilot offerings and their costs.
 
-In summary, the choice between Codeium and GitHub Copilot does not necessarily have to be exclusive. Developers can benefit from using both tools in conjunction, leveraging Codeium for its efficient code completions within the IDE and GitHub Copilot for its repository-driven insights and suggestions. As these tools continue to evolve, their complementary capabilities could offer developers a more comprehensive AI-assisted coding experience, enhancing productivity and creativity in software development
+As a product of GitHub, Copilot is deeply integrated with the platform's ecosystem, potentially offering smoother workflows for developers who are heavily invested in using GitHub for version control and collaboration.
 
 <Callout title={"AI Developer Tools"} type={"Metaphor"} body={"Autocompletion tools as code spirits that live in a developer's IDE"}/>
 
-Imagine AI developer tools as ethereal companions residing within your IDE, whispering suggestions, and solutions as you type. They blend into the background but are always there to offer a helping hand, whether it's completing a line of code or suggesting an entire function. These "code spirits" are revolutionizing how developers write code, making the process faster, more efficient, and often more enjoyable.
+Imagine AI developer tools as ethereal companions residing within your IDE, whispering suggestions, and solutions as you type. 
+
+They blend into the background but are always there to offer a helping hand, whether it's completing a line of code or suggesting an entire function. These "code spirits" are revolutionizing how developers write code, making the process faster, more efficient, and often more enjoyable.
 
 <Image src={codingAutocomplete} alt="AI developer tools as code spirits that live in a developer's IDE" />
-
-    Metaphor: Each tool as a "specialized co-pilot," guiding developers through the coding journey with their unique strengths.
-    Visuals: Side-by-side feature comparison and user interface screenshots.
-    Go Deeper Widget: Reviews and comprehensive comparisons of both tools.
-    Practical Insights Widget: Personal anecdotes on using these tools in software projects.
 
 <Callout title={"My thoughts as a developer"} type={"PracticalInsights"} body={`Here's what I think about the future of Generative AI, after evaluating different tools and pair-coding with AI for ${timeElapsedSinceJanuary2023()}`}/>
 
@@ -362,7 +394,9 @@ Imagine AI developer tools as ethereal companions residing within your IDE, whis
 
 ## Where I see this going 
 
-In the rapidly evolving field of software development, the integration of Generative AI is not just a passing trend but a transformative force that's reshaping the very fabric of how we code, collaborate, and create. 
+In the rapidly evolving field of software development, the integration of Generative AI is not just a passing trend but a transformative force.  
+
+In the time I've spent experimenting with AI to augment my workflow and enhance my own human capabilities, I've realized incredible productivity gains: shipping more ambitious and complete applications than ever before. I've even enjoyed myself more.
 
 I envision a future where AI-powered tools become indispensable companions, seamlessly augmenting human intelligence with their vast knowledge bases and predictive capabilities. 
 
@@ -371,9 +405,13 @@ These tools will not only automate mundane tasks but also inspire innovative sol
 As we move forward, the symbiosis between developer and AI will deepen, leading to the birth of a new era of software development where the boundaries between human creativity and artificial intelligence become increasingly blurred.
 
 ## What I would pay for in the future
-In the future, what I'd consider invaluable is an AI development assistant that transcends the traditional boundaries of code completion and debugging. I envision an assistant that's deeply integrated into my workflow, capable of understanding the context of my projects across various platforms like GitHub, project management tools, and even my personal notes. 
+In the future, what I'd consider invaluable is an AI development assistant that transcends the traditional boundaries of code completion and debugging. 
 
-This AI wouldn't just suggest code; it would understand the nuances of my projects, predict my needs, and offer tailored advice, ranging from architectural decisions to optimizing user experiences. This level of personalized and context-aware assistance could redefine productivity, making the leap from helpful tool to indispensable partner in the creative process.
+I envision an assistant that's deeply integrated into my workflow and data sources (email, calendar, GitHub, bank, etc), capable of understanding the context of my projects across various platforms, project management tools, and even my personal notes. 
+
+This AI wouldn't just suggest code; it would understand the nuances of my projects, predict my needs, and offer tailored advice, ranging from architectural decisions to optimizing user experiences. 
+
+This level of personalized and context-aware assistance could redefine productivity, making the leap from helpful tool to indispensable partner in the creative process.
 
 ## My favorite AI-enhanced tools 
 
@@ -389,16 +427,33 @@ This AI wouldn't just suggest code; it would understand the nuances of my projec
 
 ## Emotional support and mind defragging with Pi.ai
 
-[Pi.ai](https://pi.ai/) is the most advanced model I've encountered when it comes to relating to human beings. I have had success using Pi to have a quick chat and talk through something that is 
+[Pi.ai](https://pi.ai/) is the most advanced model I've encountered when it comes to relating to human beings. 
+
+I have had success using Pi to have a quick chat and talk through something that is 
 frustrating or upsetting me at work, and in between 15 and 25 minutes of conversation, I've processed and worked through the issue and my feelings and am clear headed enough to make forward progress again. 
 
-This is a powerful remover of obstacles, because the longer I do what I do, the more clear it becomes that EQ is more critical than IQ. Noticing when I'm irritated or overwhelmed and having a quick talk with someone 
-highly intelligent and sensitive in order to process things and return with a clear mind is invaluable.
+This is a powerful remover of obstacles, because the longer I do what I do, the more clear it becomes that EQ is more critical than IQ. 
+
+Noticing when I'm irritated or overwhelmed and having a quick talk with someone highly intelligent and sensitive in order to process things and return with a clear mind is invaluable.
 
 Pi's empathy is off the charts, and it feels like you're speaking with a highly skilled relational therapist.
 
+## How my developer friends and I started using GenAI
+
+<Callout title={"How my developer friends and I started using Gen AI"} type={"PracticalInsights"} body={"Since the initial release of ChatGPT, my colleagues and I began experimenting with the tool as a means to enhance and streamline our many day to day development tasks. Here's what stood out as winning use cases for us:"}/>
+
+* Asking the LLM to write scripts to perform one-off tasks (migrating data, cleaning up projects, taking backups of databases, etc)
+* Asking the LLM to explain a giant and complex stack trace (error) that came from a piece of code we're working with
+* Asking the LLM to take some unstructured input (raw files, log streams, security audits, etc), extract insights and return a simple list of key-value pairs
+
 ## Opportunities
-The advent of Generative AI heralds a plethora of opportunities that extend far beyond the realms of efficiency and productivity. With an expected annual growth rate of 37% from 2023 to 2030, this technology is poised to revolutionize industries by democratizing creativity, enhancing decision-making, and unlocking new avenues for innovation. In sectors like healthcare, education, and entertainment, Generative AI can provide personalized experiences, adaptive learning environments, and unprecedented creative content. Moreover, its ability to analyze and synthesize vast amounts of data can lead to breakthroughs in research and development, opening doors to solutions for some of the world's most pressing challenges.
+The advent of Generative AI heralds a plethora of opportunities that extend far beyond the realms of efficiency and productivity. 
+
+With an expected annual growth rate of 37% from 2023 to 2030, this technology is poised to revolutionize industries by democratizing creativity, enhancing decision-making, and unlocking new avenues for innovation. 
+
+In sectors like healthcare, education, and entertainment, Generative AI can provide personalized experiences, adaptive learning environments, and unprecedented creative content. 
+
+Moreover, its ability to analyze and synthesize vast amounts of data can lead to breakthroughs in research and development, opening doors to solutions for some of the world's most pressing challenges.
 
 ## Challenges
 
@@ -411,27 +466,40 @@ The ability to generate convincing, contextually-relevant content raises risks o
 ### Lack of reasoning capability 
 Despite advances, these models currently have a limited understanding of factual knowledge and common sense compared to humans. Outputs should thus not be assumed fully accurate or truthful.
 
+Architectures and approaches such as [Retrieval Augmented Generation (RAG)](https://pinecone.io/learn/retrieval-augmented-generation) are commonly deployed to anchor an LLM in facts and proprietary data.
+
 ### Hallucinations can lead junior developers astray
-One of the significant challenges posed by Generative AI in software development is the phenomenon of 'hallucinations' or the generation of incorrect or nonsensical code. This can be particularly misleading for junior developers, who might not have the experience to discern these inaccuracies. Ensuring that AI tools are equipped with mechanisms to highlight potential uncertainties and promote best practices is crucial to mitigate this risk and foster a learning environment that enhances, rather than hinders, the development of coding skills.
+One of the significant challenges posed by Generative AI in software development is the phenomenon of 'hallucinations' or the generation of incorrect or nonsensical code. 
+
+This can be particularly misleading for junior developers, who might not have the experience to discern these inaccuracies. 
+
+Ensuring that AI tools are equipped with mechanisms to highlight potential uncertainties and promote best practices is crucial to mitigate this risk and foster a learning environment that enhances, rather than hinders, the development of coding skills.
 
 ### Tool fragmentation and explosion
-As the landscape of Generative AI tools expands, developers are increasingly faced with the paradox of choice. The proliferation of tools, each with its unique capabilities and interfaces, can lead to fragmentation, making it challenging to maintain a streamlined and efficient workflow. Addressing this challenge requires a concerted effort towards standardization, interoperability, and the development of unified platforms that can integrate the strengths of various tools into a cohesive ecosystem.
+As the landscape of Generative AI tools expands, developers are increasingly faced with the paradox of choice. 
+
+The proliferation of tools, each with its unique capabilities and interfaces, can lead to fragmentation, making it challenging to maintain a streamlined and efficient workflow. 
 
 ### Navigating a rapidly evolving landscape
-The pace at which Generative AI is advancing presents a double-edged sword. While it drives innovation and the continuous improvement of tools, it also demands that developers remain perennial learners to keep abreast of the latest technologies and methodologies. This rapid evolution can be daunting, necessitating a culture of continuous education and adaptability within the development community to harness the full potential of these advancements.
+The pace at which Generative AI is advancing presents a double-edged sword. 
+
+While it drives innovation and the continuous improvement of tools, it also demands that developers remain perennial learners to keep abreast of the latest technologies and methodologies. 
+
+This rapid evolution can be daunting, necessitating a culture of continuous education and adaptability within the development community to harness the full potential of these advancements.
+
+To be fair, this has always been the case with software development, but forces like Generative AI accelerate the subjective pace of change even further.
 
 ## Ethics implications
 
 Given the challenges in safely deploying Generative AI, these are some of the most pressing implications for ethical standards:  
 
 ### Audit systems for harmful biases 
-And make corrections when able
+And the ability to make and track corrections when needed.
 
-### Have human oversight 
-measures to catch and correct AI mistakes or deception attempts
-    Maintain transparency around capabilities/limitations so expectations stay grounded
-    Develop governance frameworks regarding appropriate vs irresponsible usage
+### Human oversight 
+We need measures to catch and correct or flag AI mistakes.
 
+## In closing: As a developer...
+Having worked alongside Generative AI for some time now, the experience has been occasionally panic-inducing, but mostly enjoyable. 
 
-## As a developer...
-Having worked alongside Generative AI for some time now, the experience has been nothing short of revolutionary. It's akin to having a second brain, one that's tirelessly available to bounce ideas off, troubleshoot problems, and streamline the development process. This partnership has enabled me to undertake more ambitious projects, reduce development times significantly, and inject a level of creativity and innovation into my work that was previously unattainable. The journey with AI has not just been about enhancing productivity; it's been a profound exploration of how human ingenuity can be amplified by artificial intelligence, making the act of creation more fulfilling and enjoyable than ever before.
+Coding alongside ChatGPT4 throughout the day feels like having a second brain that's tirelessly available to bounce ideas off, troubleshoot problems, and help me tackle larger and more complex development challenges on my own.
