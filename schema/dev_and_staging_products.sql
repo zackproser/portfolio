@@ -6,7 +6,7 @@ VALUES
     'Generative AI - and its opportunities and challenges - explained simply, even if you are not technical',
     'generative-ai-bootcamp',
     'available',
-    'price_1OoCXBEDHFkvZ1e9OYVKDvh8',
+    'price_1OoCXBEDHFkvZ1e9OYVKDvh8'
 
   ),
   (
