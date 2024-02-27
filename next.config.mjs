@@ -1,6 +1,9 @@
 import nextMDX from "@next/mdx";
 import remarkGfm from "remark-gfm";
+import remarkToc from "remark-toc";
 import rehypePrism from "@mapbox/rehype-prism";
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -52,8 +55,18 @@ const nextConfig = {
 const withMDX = nextMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypePrism],
+    remarkPlugins: [remarkGfm, remarkToc],
+    rehypePlugins: [rehypePrism, rehypeSlug, [
+      rehypeAutolinkHeadings,
+      {
+        behaviour: 'append',
+        properties: {
+          ariaHidden: true,
+          tabIndex: -1,
+          className: 'hash-link'
+        }
+      }
+    ]],
   },
 });
 
