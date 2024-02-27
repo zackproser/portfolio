@@ -266,6 +266,14 @@ function Avatar({
 }
 
 export function Header() {
+
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    // Set dark mode by default on client-side
+    setTheme('dark');
+  }, [setTheme]);
+
   let isHomePage = usePathname() === '/'
 
   let headerRef = useRef<React.ElementRef<'div'>>(null)

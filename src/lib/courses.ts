@@ -6,14 +6,16 @@ import path from 'path'
 async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/learn/courses/${articleFilename}`)) as {
+  let { metadata, status } = (await import(`../app/learn/courses/${articleFilename}`)) as {
     default: React.ComponentType
-    metadata: Article
+    metadata: Article,
+    status: string,
   }
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
     type: 'course',
+    status,
     ...metadata,
   }
 }
