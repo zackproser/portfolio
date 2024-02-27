@@ -29,7 +29,7 @@ const primaryFeatures = [
   {
     name: 'Intro to Generative AI',
     description:
-      'I provide a clear and complete introduction to Generative AI, how it works, why it&apos;s having a moment right now, and its many opportunities and challenges',
+      'I provide a clear and complete introduction to Generative AI, how it works, why it is having a moment right now, and its many opportunities and challenges',
     href: '#',
     icon: UsersIcon,
   },
