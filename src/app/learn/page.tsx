@@ -195,9 +195,9 @@ export default async function LearnPage() {
         </div>
       </section>
       <Image src={projectBasedLearning} alt="Project-based learning for the win" />
-      <Features features={features} />
-      <h2 className="text-2xl font-semibold">Courses</h2>
+      <h2 className="text-2xl font-semibold mt-5 py-5">Courses</h2>
       <CourseIndex />
+      <Features features={features} />
     </Container>
   )
 }
