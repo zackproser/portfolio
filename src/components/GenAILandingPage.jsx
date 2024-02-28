@@ -8,16 +8,41 @@ import {
   LockClosedIcon,
   ServerIcon,
 } from '@heroicons/react/20/solid'
+
 import { BoltIcon, CalendarDaysIcon, UsersIcon } from '@heroicons/react/24/outline'
 
+import Callout from '@/components/Callout'
 import CV from '@/components/CV'
-
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
 import genAIHero from '@/images/gen-ai-hero.webp'
 import genAIScreenshot1 from '@/images/generative-ai-screenshot-1.webp'
 import genAIScreenshot2 from '@/images/generative-ai-screenshot-2.webp'
-
+import zacharyProser from '@/images/zachary-proser.webp'
+import a16z2 from '@/images/a16z-2.webp'
+const learnings = [
+  {
+    name: 'Generative AI',
+    description:
+      'You will be able to speak intelligently about Generative AI, and its many opportunities and challenges',
+    href: '#',
+    icon: BoltIcon,
+  },
+  {
+    name: 'Large Language Models (LLMs)',
+    description:
+      'You will be able to understand and discusss Large Language Models and the role they play in Generative AI',
+    href: '#',
+    icon: BoltIcon,
+  },
+  {
+    name: 'Developer-facing tools',
+    description:
+      'You will understand how Generative AI is appearing in developer-facing tools and Integrated Development Environments (IDEs)',
+    href: '#',
+    icon: BoltIcon,
+  },
+]
 const primaryFeatures = [
   {
     name: 'Staff level developer on the front lines',
@@ -73,101 +98,13 @@ const secondaryFeatures = [
     icon: ServerIcon,
   },
 ]
+
 const stats = [
   { id: 1, name: 'Source repositories', value: '101' },
   { id: 2, name: 'Languages used', value: '7+' },
   { id: 3, name: 'Years of development experience', value: RenderNumYearsExperience() },
-  { id: 4, name: 'Years spent doing open-source development', value: RenderNumYearsExperience() },
+  { id: 4, name: 'Pages of high-quality content', value: '18+' },
 ]
-const footerNavigation = {
-  solutions: [
-    { name: 'Hosting', href: '#' },
-    { name: 'Data Services', href: '#' },
-    { name: 'Uptime Monitoring', href: '#' },
-    { name: 'Enterprise Services', href: '#' },
-  ],
-  support: [
-    { name: 'Pricing', href: '#' },
-    { name: 'Documentation', href: '#' },
-    { name: 'Guides', href: '#' },
-    { name: 'API Reference', href: '#' },
-  ],
-  company: [
-    { name: 'About', href: '#' },
-    { name: 'Blog', href: '#' },
-    { name: 'Jobs', href: '#' },
-    { name: 'Press', href: '#' },
-    { name: 'Partners', href: '#' },
-  ],
-  legal: [
-    { name: 'Claim', href: '#' },
-    { name: 'Privacy', href: '#' },
-    { name: 'Terms', href: '#' },
-  ],
-  social: [
-    {
-      name: 'Facebook',
-      href: '#',
-      icon: (props) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path
-            fillRule="evenodd"
-            d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: 'Instagram',
-      href: '#',
-      icon: (props) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path
-            fillRule="evenodd"
-            d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: 'X',
-      href: '#',
-      icon: (props) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61788L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823ZM11.5541 13.0956L10.8574 12.0991L5.31391 4.16971H7.70053L12.1742 10.5689L12.8709 11.5655L18.6861 19.8835H16.2995L11.5541 13.096V13.0956Z" />
-        </svg>
-      ),
-    },
-    {
-      name: 'GitHub',
-      href: '#',
-      icon: (props) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path
-            fillRule="evenodd"
-            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: 'YouTube',
-      href: '#',
-      icon: (props) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path
-            fillRule="evenodd"
-            d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-    },
-  ],
-}
 
 export default function GenAILandingPage() {
   return (
@@ -234,34 +171,28 @@ export default function GenAILandingPage() {
 
         <Image src={genAIHero} alt="Gen AI" />
 
-        {/* Feature section */}
+        {/* What you will learn */}
         <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold leading-7 text-indigo-400">Get up to speed faster</h2>
             <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Everything you need to understand Generative AI and AI Developer Tooling
+              What you will learn
             </p>
             <p className="mt-6 text-lg leading-8 text-gray-300">
-              I&apos;ve been experimenting with Generative AI and pair-coding alongside AI everyday since January of 2023.
+              When you are finished with this course, you will understand:
             </p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-              {primaryFeatures.map((feature) => (
-                <div key={feature.name} className="flex flex-col">
+              {learnings.map((learning) => (
+                <div key={learning.name} className="flex flex-col">
                   <dt className="text-base font-semibold leading-7 text-white">
                     <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500">
-                      <feature.icon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <learning.icon className="h-6 w-6 text-white" aria-hidden="true" />
                     </div>
-                    {feature.name}
+                    {learning.name}
                   </dt>
                   <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-300">
-                    <p className="flex-auto">{feature.description}</p>
-                    <p className="mt-6">
-                      <a href={feature.href} className="text-sm font-semibold leading-6 text-indigo-400">
-                        Learn more <span aria-hidden="true">→</span>
-                      </a>
-                    </p>
+                    <p className="flex-auto">{learning.description}</p>
                   </dd>
                 </div>
               ))}
@@ -269,14 +200,18 @@ export default function GenAILandingPage() {
           </div>
         </div>
 
+
         {/* Feature section */}
         <div className="mt-32 sm:mt-56">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center">
-              <h2 className="text-base font-semibold leading-7 text-indigo-400">Everything you need</h2>
+              <h2 className="text-base font-semibold leading-7 text-indigo-400">Simple but powerful explanations</h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Not technical? No problem.</p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
-                I have gone out of my way to ensure this course is accessible even to non-technical folks. I have also included several long-running chats with ChatGPT4, so that you can see how a Staff developer interacts with GenAI while coding.
+                I have gone out of my way to ensure this course is accessible even to non-technical folks, using simple language and metaphors across 18+ pages of
+                high-quality content.<br /><br />
+
+                I have also linked off to several of my personal long-running chats with ChatGPT4, so that you can see how a Staff developer interacts with GenAI while coding.
               </p>
             </div>
           </div>
@@ -305,6 +240,54 @@ export default function GenAILandingPage() {
               ))}
             </dl>
           </div>
+          <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-20 md:mt-24 lg:px-8">
+
+            <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Information-dense</p>
+            <p>I have packed the Generative AI bootcamp course with the following types of information:</p>
+            <Callout type={"PracticalInsights"} title={"Things I have figured out from first-hand experience"} body={"Reading high-level reports from analysts is helpful, but there is no substitute for first-hand experience. I experiment with and code alongside AI-assisted developer tools each and every day. I'm always experimenting with new workflows and entrants. Expect to find things I have learned the hard way from hands-on experience in Practical Insights."} />
+            <Callout type={"Focus"} title={"The main idea in the current section"} body={"To help you understand the key ideas more quickly, I call them out in advance and reinforce them throughout. You'll find these focus widgets throughout, keeping you on track."} />
+            <Callout type={"GoDeeper"} title={"Links to further reading, videos, and deployed examples"} body={"In my various travels and many research experiments, I come across a great deal of primary sources and excellent in-depth content. Wherever there's an option to take a detour and learn more, I'll call out the links in these Go Deeper sections."} />
+            <Callout type={"Metaphor"} title={"Understand complex concepts more quickly with helpful metaphors"} body={"In order to facillitate your learning, I include helpful metaphors to demystify complex-sounding concepts."} />
+          </div>
+        </div>
+
+        <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
+          {/* Flex container */}
+          <div className="flex flex-col lg:flex-row">
+
+            {/* Text content */}
+            <div className="flex-1">
+              <h2 className="text-base font-semibold leading-8 text-indigo-400">Introducing your instructor</h2>
+
+              <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                I eat, sleep and breathe code.
+              </p>
+              <p className="mt-6 text-lg leading-8 text-gray-300">
+
+                Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database
+                that provides long-term memory for AI applications.
+
+              </p>
+              <p className="mt-6 text-lg leading-8 text-gray-300">
+
+                My full title at Pinecone is "Staff Developer Advocate (open-source)". I build AI applications and pipelines in public to demonstrate the power and flexibility of Pinecone's vector database.
+
+              </p>
+              <p className="mt-6 text-lg leading-8 text-gray-300">
+                I also maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications, which demonstrate machine learning and AI techniques such as semantic search and Retrieval Augmented Generation (RAG).
+              </p>
+            </div>
+
+            {/* Profile photo */}
+            <div className="flex-1 ml-20">
+              <Image src={zacharyProser} alt="Zachary Proser" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
+          <Image src={a16z2} alt="Zachary Proser" />
+          <figcaption className="mt-6">Me speaking at Andreesen Horowitz about the distributed semantic search system I built on AWS using Infrastructure as Code.</figcaption>
         </div>
 
 
@@ -312,9 +295,11 @@ export default function GenAILandingPage() {
         <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
           {/* Flex container */}
           <div className="flex flex-col lg:flex-row">
+
             {/* Text content */}
             <div className="flex-1">
               <h2 className="text-base font-semibold leading-8 text-indigo-400">My track record</h2>
+
               <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Trustworthy information from someone who knows what they are doing
               </p>
@@ -404,8 +389,8 @@ export default function GenAILandingPage() {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
 
