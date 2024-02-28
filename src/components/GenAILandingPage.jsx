@@ -264,13 +264,13 @@ export default function GenAILandingPage() {
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
 
-                Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database
+                Hi, I&apos;m Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database
                 that provides long-term memory for AI applications.
 
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
 
-                My full title at Pinecone is "Staff Developer Advocate (open-source)". I build AI applications and pipelines in public to demonstrate the power and flexibility of Pinecone's vector database.
+                My full title at Pinecone is Staff Developer Advocate (open-source). I build AI applications and pipelines in public to demonstrate the power and flexibility of Pinecone&apos;s vector database.
 
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
