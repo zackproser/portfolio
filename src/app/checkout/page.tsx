@@ -9,6 +9,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
 
 import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react"
 
 import {
 	EmbeddedCheckoutProvider,
@@ -32,13 +33,6 @@ const CheckoutPage = () => {
 	const [userEmail, setUserEmail] = useState("");
 	const [productId, setProductId] = useState(0);
 	const [purchasedCourses, setPurchasedCourses] = useState<number[]>([]);
-
-	// If user is not signed in, redirect them to sign in page
-	useEffect(() => {
-		if (status === "unauthenticated" || session === null) {
-			redirect("/api/auth/signin");
-		}
-	}, [status, session]);
 
 	useEffect(() => {
 		// If user is signed in, get their email and purchased courses
@@ -77,6 +71,16 @@ const CheckoutPage = () => {
 			});
 	}, [productSlug]);
 
+	// If user is not signed in, redirect them to sign in page, while passing the 
+	// correct callbackUrl so that the user is finally redirected to the checkout
+	useEffect(() => {
+		if (status === "unauthenticated" || session === null) {
+			signIn('', { callbackUrl: `/learn/${productSlug}/0` })
+		}
+	}, [status, session]);
+
+
+	// If the product is not ready yet, redirect them to the waitinglist page
 	if (
 		productStatus === CourseStatus.InProgress ||
 		productStatus === CourseStatus.ComingSoon
