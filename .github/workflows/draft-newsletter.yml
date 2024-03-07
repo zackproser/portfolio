@@ -20,8 +20,11 @@ jobs:
         id: fetch-headlines
         run: |
           npx ts-node src/utils/newsletterResearchHeadlines.ts
-
-          HEADLINES=$(cat headlines.json)
+          
+          # TODO - fix parsing of JSON 
+          # cat headlines.json
+          # Define an array literal in bash
+          HEADLINES=('AI Goes Nuts', 'Hot new AI models break records', 'AI disrupting digital work')
 
           echo "headlines=$HEADLINES" >> $GITHUB_STATE
 
