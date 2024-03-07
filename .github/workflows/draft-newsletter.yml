@@ -26,7 +26,7 @@ jobs:
         id: analyze-headlines
         uses: onmax/oai-createcompletion-githubaction@v1.0
         with:
-          model: gpt-4-turbo-preview
+          model: gpt-4
           prompt: |
             Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:
             ${{ steps.fetch-headlines.outputs.headlines }}
