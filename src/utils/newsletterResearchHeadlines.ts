@@ -1,8 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const axios = require('axios');
-const { format } = require('date-fns');
-const fs = require('fs');
 
 interface Headline {
   title: string;
