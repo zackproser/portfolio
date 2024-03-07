@@ -1,0 +1,103 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import beaker from '@/images/beaker.webp'
+import genAICourseTeaser from '@/images/gen-ai-course-teaser.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-03-07",
+    title: "Episode 1: Newsletter overhaul, Codeium vs ChatGPT and my first book credit!", 
+    description: "Starting fresh with a new and improved newsletter experience.",
+    image: beaker
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+## Table of contents
+
+## Starting fresh with episode 1 
+
+Why Episode 1? I've decided to invest more time and effort into my newsletter. All future episodes will now be 
+available on my newsletter archive at [https://zackproser.com/newsletter](https://zackproser.com/newsletter).
+
+Going forward, each of my newsletter episodes will include: 
+
+* My work - posts, videos, open-source projects I've recently shipped
+* What's abuzz in the news - new AI models, open-source models, LLMs, GPTs, custom GPTs and more
+* My favorite tools - a good snapshot of the AI-enhanced and other developer tooling I'm enamored with at the moment 
+
+
+I will aim to publish and send a new episode every two weeks. 
+
+## My work 
+
+### The Generative AI Bootcamp: Developer Tooling course is now available
+
+I've released my first course!
+
+<Link href={'/learn/courses/generative-ai-bootcamp'}>
+<Image src={genAICourseTeaser} alt="The Generative AI Bootcamp: Developer Tooling" />
+</Link>
+
+The [Generative AI Bootcamp: DevTools course](/learn/courses/generative-ai-bootcamp) is designed for semi and non-technical folks who want to understand: 
+
+* What Generative AI is 
+* Which professions and skillsets it is disrupting, why and how
+* Which AI-enhanced developer tooling on the scene is working and why
+
+This course is especially designed for investors, analysts and market researchers looking to understand the opportunities and challenges of Generative AI as it relates to Developer Tooling, Integrated Developer Environments (IDEs), etc.
+
+### 2023 Wins - My year in review 
+
+[2023 was a big year for me](/blog/2023-wins), including a career pivot to a new role, a new company and my first formal entry into the AI space. 
+
+I reflect on my wins and learnings from the previous year. 
+
+### Testing Pinecone Serverless at Scale with the AWS Reference Architecture 
+
+[I updated the Pinecone AWS Reference Architecture to use Pinecone Serverless](/blog/pinecone-reference-architecture-scaling), making for an excellent test bed for 
+putting Pinecone through its paces at scale. 
+
+Just keep an eye on your AWS bill!
+
+### Codeium vs ChatGPT
+
+I get asked often enough about the differences between Codeium for code completion (intelligent autocomplete) and ChatGPT4, that I figured I should just write a 
+[comprehensive comparison](/blog/codeium-vs-chatgpt) of their capabilities and utility. 
+
+### My first book credit - My Horrible Career
+
+What started out as an extended conversation with my programming mentor John Arundel became [a whole book!](/blog/my-horrible-career)
+
+### How to build a sitemap for Next.js that captures static and dynamic routes
+
+Some [old-school tutorial content](/blog/how-to-next-js-sitemap) for my Next.js and Vercel fans.
+
+## What's abuzz in the news
+
+### Anthropic releases Claude 3 family of models
+
+I've been experimenting with Claude 3 Opus, their most intelligent model, to see how it slots in for high-level architecture discussions and code generation compared to ChatGPT 4. 
+
+So far, so good, but I'll have more thoughts and observations here soon. Watch this space!
+
+## My favorite tools
+
+### High-level code completion 
+
+Currently neck and neck between ChatGPT 4 and Anthropic's Claude 3 Opus. Stay tuned for more thoughts.
+
+### Autocomplete / code completion 
+
+[Codeium!](/blog/codeium-review)
+
+### AI-assisted video editing
+
+[Kapwing AI](https://kapwing.com)
+
+That's all for this episode! If you liked this content or found it helpful in any way, please pass it on to someone you know who could benefit.
