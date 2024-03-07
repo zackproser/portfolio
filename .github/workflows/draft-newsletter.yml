@@ -36,15 +36,15 @@ jobs:
       #     openai_api_key: ${{ secrets.OPENAI_API_KEY }}
       #
       - name: Analyze Headlines 
-          id: analyze-headlines
-          uses: cahaseler/openai-chatgpt-action@v1
-          with:
-            apiKey: ${{ secrets.OPENAI_API_KEY }}
-            prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:'
-            input: '${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
-            model: 'gpt-4'
-            temperature: 1
-            max_tokens: 4500 
+        id: analyze-headlines
+        uses: cahaseler/openai-chatgpt-action@v1
+        with:
+          apiKey: ${{ secrets.OPENAI_API_KEY }}
+          prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:'
+          input: '${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
+          model: 'gpt-4'
+          temperature: 1
+          max_tokens: 4500 
 
       - name: Show response from OpenAI CreateCompletion
         run: |
