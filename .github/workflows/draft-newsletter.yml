@@ -27,6 +27,7 @@ jobs:
           HEADLINES=('AI Goes Nuts', 'Hot new AI models break records', 'AI disrupting digital work')
 
           echo "headlines=$HEADLINES" >> $GITHUB_STATE
+          echo "headlines=$HEADLINES" >> $GITHUB_OUTPUT
 
       - name: Analyze Headlines
         id: analyze-headlines 
