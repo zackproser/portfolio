@@ -21,7 +21,7 @@ jobs:
         run: |
           npx ts-node src/utils/newsletterResearchHeadlines.ts
 
-          echo "{headlines}=$(cat headlines.json)" >> $GITHUB_STATE"
+          echo "{headlines}=$(cat headlines.json)" >> $GITHUB_STATE
 
       - name: Analyze Headlines
         id: analyze-headlines 
