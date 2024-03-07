@@ -23,15 +23,20 @@ jobs:
 
       - name: Analyze Headlines
         id: analyze-headlines
-        uses: openai-api/gpt-4-action@v1
+        uses: onmax/oai-createcompletion-githubaction@v1.0
         with:
-          api_key: ${{ secrets.OPENAI_API_KEY }}
-          model: gpt-4
+          model: gpt-4-turbo-preview
           prompt: |
             Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:
             ${{ steps.fetch-headlines.outputs.headlines }}
+          max_tokens: 4500
           temperature: 0.7
-          max_tokens: 500
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Show response from OpenAI CreateCompletion
+        run: |
+          echo '${{ steps.analyze-headlines.outputs.response }}'
+          echo '${{ fromJson(steps.analyze-headlines.outputs.response).texts }}'
 
       - name: Create Newsletter Draft
         id: create-newsletter-draft
@@ -40,7 +45,7 @@ jobs:
           {
             "title": "Newsletter Draft",
             "description": "A new newsletter draft",
-            "headlines": "${{ steps.analyze-headlines.outputs.summary }}"
+            "headlines": "${{ fromJson(steps.analyze-headlines.outputs.response).texts[0] }}"
           }
           EOF
           echo "::set-output name=newsletter-file::$(ls src/app/newsletter/*/page.mdx)"
@@ -84,11 +89,11 @@ jobs:
         if: steps.check-open-pull-request.outputs.open-pr-url == ''
         uses: dawidd6/action-send-mail@v2
         with:
-          server_address: smtp.postmarkapp.com
+          server_address: ${{secrets.EMAIL_SERVER_ADDRESS}}          
           server_port: 587
           username: ${{secrets.EMAIL_USERNAME}}
           password: ${{secrets.EMAIL_PASSWORD}}
-          subject: Newsletter Draft Ready for Review
+          subject: Newsletter draft ready for review
           body: |
             A new newsletter draft has been created and is ready for review.
             Pull Request: ${{ steps.create-pull-request.outputs.pull-request-url }}
@@ -99,11 +104,11 @@ jobs:
         if: steps.check-open-pull-request.outputs.open-pr-url != ''
         uses: dawidd6/action-send-mail@v2
         with:
-          server_address: smtp.example.com
+          server_address: ${{secrets.EMAIL_SERVER_ADDRESS}}          
           server_port: 587
           username: ${{secrets.EMAIL_USERNAME}}
           password: ${{secrets.EMAIL_PASSWORD}}
-          subject: Reminder - Newsletter Draft Pending Review
+          subject: Reminder - Newsletter draft pending review
           body: |
             This is a friendly reminder that you have an open newsletter draft waiting for your review.
             Please review and merge the changes when you have a moment.
