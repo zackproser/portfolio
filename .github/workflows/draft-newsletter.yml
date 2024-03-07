@@ -20,19 +20,31 @@ jobs:
         id: fetch-headlines
         run: |
           npx ts-node src/utils/newsletterResearchHeadlines.ts
-          echo "::set-output name=headlines::$(cat headlines.json)"
 
-      - name: Analyze Headlines
-        id: analyze-headlines
-        uses: onmax/oai-createcompletion-githubaction@v1.0
-        with:
-          model: gpt-4
-          prompt: |
-            Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:
-            ${{ steps.fetch-headlines.outputs.headlines }}
-          max_tokens: 4500
-          temperature: 0.7
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          echo "{headlines}=$(cat headlines.json)" >> $GITHUB_STATE"
+
+      # - name: Analyze Headlines
+      #   id: analyze-headlines
+      #   uses: onmax/oai-createcompletion-githubaction@v1.0
+      #   with:
+      #     model: gpt-4
+      #     prompt: |
+      #       Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:
+      #       ${{ steps.fetch-headlines.outputs.headlines }}
+      #     max_tokens: 4500
+      #     temperature: 0.7
+      #     openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+      #
+      - name: Analyze Headlines 
+          id: analyze-headlines
+          uses: cahaseler/openai-chatgpt-action@v1
+          with:
+            apiKey: ${{ secrets.OPENAI_API_KEY }}
+            prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:'
+            input: '${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
+            model: 'gpt-4'
+            temperature: 1
+            max_tokens: 4500 
 
       - name: Show response from OpenAI CreateCompletion
         run: |
