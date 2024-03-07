@@ -73,13 +73,19 @@ async function fetchRedditPosts(): Promise<Headline[]> {
 
 async function run(): Promise<void> {
   try {
-    const [gitHubHeadlines, arXivHeadlines, redditHeadlines] = await Promise.all([
+    // TODO: Re-enable the other data sources once API access is sorted out
+    /*const [gitHubHeadlines, arXivHeadlines, redditHeadlines] = await Promise.all([
       fetchGitHubTrending(),
       fetchArXivPapers(),
       fetchRedditPosts(),
     ]);
 
     const allHeadlines = [...gitHubHeadlines, ...arXivHeadlines, ...redditHeadlines];
+    */
+
+    const gitHubHeadlines = await fetchGitHubTrending();
+
+    const allHeadlines = [...gitHubHeadlines];
     core.setOutput('headlines', JSON.stringify(allHeadlines));
 
     // Save headlines to a file
