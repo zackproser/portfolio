@@ -31,8 +31,8 @@ jobs:
       - name: Analyze Headlines
         id: analyze-headlines 
         uses: austenstone/openai-completion-action@main
-        model: gpt-4
         with:
+          model: gpt-4 
           prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines: ${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
