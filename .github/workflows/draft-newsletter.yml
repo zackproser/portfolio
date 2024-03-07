@@ -84,7 +84,7 @@ jobs:
         if: steps.check-open-pull-request.outputs.open-pr-url == ''
         uses: dawidd6/action-send-mail@v2
         with:
-          server_address: smtp.example.com
+          server_address: smtp.postmarkapp.com
           server_port: 587
           username: ${{secrets.EMAIL_USERNAME}}
           password: ${{secrets.EMAIL_PASSWORD}}
