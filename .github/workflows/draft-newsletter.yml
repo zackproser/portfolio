@@ -1,0 +1,112 @@
+name: Draft Newsletter
+
+on:
+  schedule:
+    - cron: '0 0 1,15 * *'  # Run on the 1st and 15th of every month
+  workflow_dispatch:
+
+jobs:
+  draft-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+
+      - name: Fetch Headlines
+        id: fetch-headlines
+        run: |
+          npx ts-node src/utils/newsletterResearchHeadlines.ts
+          echo "::set-output name=headlines::$(cat headlines.json)"
+
+      - name: Analyze Headlines
+        id: analyze-headlines
+        uses: openai-api/gpt-4-action@v1
+        with:
+          api_key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-4
+          prompt: |
+            Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines:
+            ${{ steps.fetch-headlines.outputs.headlines }}
+          temperature: 0.7
+          max_tokens: 500
+
+      - name: Create Newsletter Draft
+        id: create-newsletter-draft
+        run: |
+          npx ts-node src/utils/createNewsletterDraft.ts <<EOF
+          {
+            "title": "Newsletter Draft",
+            "description": "A new newsletter draft",
+            "headlines": "${{ steps.analyze-headlines.outputs.summary }}"
+          }
+          EOF
+          echo "::set-output name=newsletter-file::$(ls src/app/newsletter/*/page.mdx)"
+
+      - name: Commit Newsletter Draft
+        run: |
+          git config --global user.email "zackproser@gmail.com"
+          git config --global user.name "Zachary Proser"
+          git add ${{ steps.create-newsletter-draft.outputs.newsletter-file }}
+          git commit -m "Add newsletter draft"
+        env:
+          GIT_AUTHOR_NAME: Zachary Proser
+          GIT_AUTHOR_EMAIL: zackproser@gmail.com
+          GIT_COMMITTER_NAME: Zachary Proser
+          GIT_COMMITTER_EMAIL: zackproser@gmail.com
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Check for Open Pull Request
+        id: check-open-pull-request
+        run: |
+          OPEN_PR_URL=$(gh pr list --state open --json url --jq '.[0].url')
+          echo "::set-output name=open-pr-url::$OPEN_PR_URL"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Create Pull Request
+        if: steps.check-open-pull-request.outputs.open-pr-url == ''
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          branch: newsletter-draft
+          title: New Newsletter Draft
+          body: |
+            A new newsletter draft has been created.
+            Please review and merge the changes.
+          base: main
+          commit-message: Add new newsletter draft
+
+      - name: Send Email Notification for New Draft
+        if: steps.check-open-pull-request.outputs.open-pr-url == ''
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: smtp.example.com
+          server_port: 587
+          username: ${{secrets.EMAIL_USERNAME}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: Newsletter Draft Ready for Review
+          body: |
+            A new newsletter draft has been created and is ready for review.
+            Pull Request: ${{ steps.create-pull-request.outputs.pull-request-url }}
+          to: zackproser@gmail.com
+          from: GitHub Actions <actions@github.com>
+
+      - name: Send Reminder Email for Open Draft
+        if: steps.check-open-pull-request.outputs.open-pr-url != ''
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: smtp.example.com
+          server_port: 587
+          username: ${{secrets.EMAIL_USERNAME}}
+          password: ${{secrets.EMAIL_PASSWORD}}
+          subject: Reminder - Newsletter Draft Pending Review
+          body: |
+            This is a friendly reminder that you have an open newsletter draft waiting for your review.
+            Please review and merge the changes when you have a moment.
+            Pull Request: ${{ steps.check-open-pull-request.outputs.open-pr-url }}
+          to: zackproser@gmail.com
+          from: GitHub Actions <actions@github.com>
