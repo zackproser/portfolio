@@ -16,33 +16,33 @@ jobs:
       - run: npm install -g pnpm
       - run: pnpm install --frozen-lockfile
 
-      - name: Fetch Headlines
-        id: fetch-headlines
-        run: |
-          npx ts-node src/utils/newsletterResearchHeadlines.ts
-          
-          # TODO - fix parsing of JSON 
-          # cat headlines.json
-          # Define an array literal in bash
-          HEADLINES=('AI Goes Nuts', 'Hot new AI models break records', 'AI disrupting digital work')
-
-          echo "headlines=$HEADLINES" >> $GITHUB_STATE
-          echo "headlines=$HEADLINES" >> $GITHUB_OUTPUT
-
-      - name: Analyze Headlines
-        id: analyze-headlines 
-        uses: austenstone/openai-completion-action@main
-        with:
-          model: gpt-4 
-          prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines: ${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-      - name: Show response from OpenAI CreateCompletion
-        run: |
-          echo '${{ steps.analyze-headlines.outputs.response }}'
-          echo '${{ fromJson(steps.analyze-headlines.outputs.response).texts }}'
-
+      # - name: Fetch Headlines
+      #   id: fetch-headlines
+      #   run: |
+      #     npx ts-node src/utils/newsletterResearchHeadlines.ts
+      #     
+      #     # TODO - fix parsing of JSON 
+      #     # cat headlines.json
+      #     # Define an array literal in bash
+      #     HEADLINES=('AI Goes Nuts', 'Hot new AI models break records', 'AI disrupting digital work')
+      #
+      #     echo "headlines=$HEADLINES" >> $GITHUB_STATE
+      #     echo "headlines=$HEADLINES" >> $GITHUB_OUTPUT
+      #
+      # - name: Analyze Headlines
+      #   id: analyze-headlines 
+      #   uses: austenstone/openai-completion-action@main
+      #   with:
+      #     model: gpt-4 
+      #     prompt: 'Please analyze the following headlines and provide a summary of any trends, important new topics, or major headlines: ${{ fromJson(steps.fetch-headlines.outputs.headlines) }}'
+      #   env:
+      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      #
+      # - name: Show response from OpenAI CreateCompletion
+      #   run: |
+      #     echo '${{ steps.analyze-headlines.outputs.response }}'
+      #     echo '${{ fromJson(steps.analyze-headlines.outputs.response).texts }}'
+      #
       - name: Create Newsletter Draft
         id: create-newsletter-draft
         run: |
@@ -50,7 +50,8 @@ jobs:
           {
             "title": "Newsletter Draft",
             "description": "A new newsletter draft",
-            "headlines": "${{ fromJson(steps.analyze-headlines.outputs.response).texts[0] }}"
+            "headlines": ["One", "Two", "Three"]
+            #"headlines": "${{ fromJson(steps.analyze-headlines.outputs.response).texts[0] }}"
           }
           EOF
           echo "::set-output name=newsletter-file::$(ls src/app/newsletter/*/page.mdx)"
