@@ -33,6 +33,10 @@ export function BlogPostCard({ article }) {
     root = '/learn/courses/'
   }
 
+  if (article?.type == 'newsletter') {
+    root = '/newsletter/'
+  }
+
   return (
     <article key={article.slug} className="flex flex-col items-start justify-between">
       <div className="relative w-full">
