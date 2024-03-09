@@ -1,0 +1,149 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import Callout from '@/components/Callout'
+import vectorDatabasesCompared from '@/images/vector-databases-examined.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-3-9",
+    title: "Vector Databases Compared: Pinecone, Milvus, Chroma, weaviate and more", 
+    description: "How do the different vector databases compare?",
+    image: vectorDatabasesCompared 
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+<Callout type={"SpecialCallout"} title="Claiming my bias upfront" body={"I am a Staff Developer Advocate at Pinecone.io. That said, I've done my best to create a faithful representation of the facts here, all of which I have verified myself. If you see anything here that is inaccurate or misleading, I'll be happy to update it after verifying."} />
+
+## Table of contents
+
+## Deployment Options
+
+Pinecone is the odd one out in this regard. Because Pinecone is a fully-managed service for performance and scalbility reasons, you can't run an instance locally. 
+
+| Vector Database | Local Deployment | Cloud Deployment | On-Premises Deployment |
+|-----------------|------------------|------------------|-----------------------|
+| Pinecone        | ❌               | ✅ (Managed)     | ❌                    |
+| Milvus          | ✅               | ✅ (Self-hosted) | ✅                    |
+| Chroma          | ✅               | ✅ (Self-hosted) | ✅                    |
+| Weaviate        | ✅               | ✅ (Self-hosted) | ✅                    |
+| Faiss           | ✅               | ❌               | ✅                    |
+| Elasticsearch   | ✅               | ✅ (Self-hosted) | ✅                    |
+| Qdrant          | ✅               | ✅ (Self-hosted) | ✅                    |
+
+## Scalability
+
+| Vector Database | Horizontal Scaling | Vertical Scaling | Distributed Architecture |
+|-----------------|--------------------|-----------------|-----------------------|
+| Pinecone        | ✅                 | ✅              | ✅                    |
+| Milvus          | ✅                 | ✅              | ✅                    |
+| Chroma          | ✅                 | ✅              | ✅                    |
+| Weaviate        | ✅                 | ✅              | ✅                    |
+| Faiss           | ❌                 | ✅              | ❌                    |
+| Elasticsearch   | ✅                 | ✅              | ✅                    |
+| Qdrant          | ✅                 | ✅              | ✅                    |
+
+## Performance and benchmarking
+
+| Vector Database | Indexing Speed | Query Speed | Latency |
+|-----------------|----------------|-------------|---------|
+| Pinecone        | High           | High        | Low     |
+| Milvus          | High           | High        | Low     |
+| Chroma          | High           | High        | Low     |
+| Weaviate        | High           | High        | Low     |
+| Faiss           | High           | High        | Low     |
+| Elasticsearch   | Moderate       | High        | Low     |
+| Qdrant          | High           | High        | Low     |
+
+## Data Management
+
+Pinecone supports "collections" which are like checkpoints or save states on your indexes. You can use collections to create new indexes. Generally speaking, they're a 
+convenience method for moving lots of data between indexes.
+
+| Vector Database | Data Import | Data Update/Deletion | Data Backup/Restore |
+|-----------------|-------------|----------------------|---------------------|
+| Pinecone        | ✅          | ✅                   | ✅                  |
+| Milvus          | ✅          | ✅                   | ✅                  |
+| Chroma          | ✅          | ✅                   | ✅                  |
+| Weaviate        | ✅          | ✅                   | ✅                  |
+| Faiss           | ✅          | ✅                   | ❌                  |
+| Elasticsearch   | ✅          | ✅                   | ✅                  |
+| Qdrant          | ✅          | ✅                   | ✅                  |
+
+## Vector Similarity Search
+
+| Vector Database | Distance Metrics | ANN Algorithms | Filtering | Post-Processing |
+|-----------------|------------------|----------------|-----------|-----------------|
+| Pinecone        | Cosine, Euclidean, Dot Product | HNSW | ✅ | ✅ |
+| Milvus          | Euclidean, Cosine, IP, L2, Hamming, Jaccard, Tanimoto | HNSW, IVF_FLAT, IVF_SQ8, IVF_PQ, RNSG, ANNOY | ✅ | ✅ |
+| Chroma          | Cosine, Euclidean, Dot Product | HNSW | ✅ | ✅ |
+| Weaviate        | Cosine | HNSW | ✅ | ✅ |
+| Faiss           | L2, Cosine, IP, L1, Linf | IVF, HNSW, IMI, PQ | ❌ | ❌ |
+| Elasticsearch   | Cosine, Dot Product, L1, L2 | HNSW | ✅ | ✅ |
+| Qdrant          | Cosine, Dot Product, L2 | HNSW | ✅ | ✅ |
+
+## Integration and API
+
+| Vector Database | Language SDKs | REST API | GraphQL API |
+|-----------------|---------------|----------|-------------|
+| Pinecone        | Python, Node.js, Go, Rust | ✅ | ❌ |
+| Milvus          | Python, Java, Go, C++, Node.js, RESTful | ✅ | ❌ |
+| Chroma          | Python | ✅ | ❌ |
+| Weaviate        | Python, Java, Go, JavaScript, .NET | ✅ | ✅ |
+| Faiss           | C++, Python | ❌ | ❌ |
+| Elasticsearch   | Java, Python, Go, Ruby, PHP, Rust, Perl | ✅ | ❌ |
+| Qdrant          | Python, Rust | ✅ | ❌ |
+
+## Security
+
+| Vector Database | Authentication | Data Encryption | Access Control |
+|-----------------|----------------|-----------------|----------------|
+| Pinecone        | ✅             | ✅              | ✅             |
+| Milvus          | ✅             | ✅              | ✅             |
+| Chroma          | ❌             | ❌              | ❌             |
+| Weaviate        | ✅             | ✅              | ✅             |
+| Faiss           | ❌             | ❌              | ❌             |
+| Elasticsearch   | ✅             | ✅              | ✅             |
+| Qdrant          | ✅             | ✅              | ✅             |
+
+## Community and Ecosystem
+
+| Vector Database | Open-Source | Community Support | Integration with Frameworks |
+|-----------------|-------------|-------------------|------------------------------|
+| Pinecone        | ❌          | ✅                | ✅                          |
+| Milvus          | ✅          | ✅                | ✅                          |
+| Chroma          | ✅          | ✅                | ✅                          |
+| Weaviate        | ✅          | ✅                | ✅                          |
+| Faiss           | ✅          | ✅                | ✅                          |
+| Elasticsearch   | ✅          | ✅                | ✅                          |
+| Qdrant          | ✅          | ✅                | ✅                          |
+
+## Pricing
+
+| Vector Database | Free Tier | Pay-as-you-go | Enterprise Plans |
+|-----------------|-----------|---------------|------------------|
+| Pinecone        | ✅        | ✅            | ✅               |
+| Milvus          | ✅        | ❌            | ❌               |
+| Chroma          | ✅        | ❌            | ❌               |
+| Weaviate        | ✅        | ❌            | ✅               |
+| Faiss           | ✅        | ❌            | ❌               |
+| Elasticsearch   | ✅        | ✅            | ✅               |
+| Qdrant          | ✅        | ❌            | ❌               |
+
+## Additional Features
+
+| Vector Database | Metadata Support | Batch Processing | Kubernetes Integration | Monitoring and Logging |
+|-----------------|------------------|------------------|-----------------------|------------------------|
+| Pinecone        | ✅               | ✅               | ✅                    | ✅                     |
+| Milvus          | ✅               | ✅               | ✅                    | ✅                     |
+| Chroma          | ✅               | ✅               | ❌                    | ❌                     |
+| Weaviate        | ✅               | ✅               | ✅                    | ✅                     |
+| Faiss           | ❌               | ✅               | ❌                    | ❌                     |
+| Elasticsearch   | ✅               | ✅               | ✅                    | ✅                     |
+| Qdrant          | ✅               | ✅               | ✅                    | ✅                     |
