@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { Tiktoken } from "tiktoken/lite";
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
 
@@ -17,10 +16,15 @@ export async function POST(req: NextRequest) {
       throw new Error('Encoding not loaded');
     }
 
+    const words = inputText.split(' ');
     const tokens = encoding.encode(inputText);
 
-    return NextResponse.json({ tokens: Array.from(tokens) }, { status: 200 });
+    const tokenData = words.map((word: string, index: number) => ({
+      word,
+      token: tokens[index] ?? 0,
+    }));
 
+    return NextResponse.json({ tokenData }, { status: 200 });
   } catch (error) {
     console.error('Error generating tokens:', error);
     return NextResponse.json({ error }, { status: 500 });
