@@ -17,8 +17,13 @@ export async function POST(req: NextRequest) {
       throw new Error('Encoding not loaded');
     }
 
+    console.log(`inputText: ${inputText}`);
+
     const tokens = encoding.encode(inputText);
     console.log(`Generated tokens: %o`, tokens);
+
+    const test = encoding.encode("hello world");
+    console.log(`test: %o`, test);
 
     return NextResponse.json({ tokens: Array.from(tokens) }, { status: 200 });
   } catch (error) {
