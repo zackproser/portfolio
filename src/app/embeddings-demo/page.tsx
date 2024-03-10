@@ -13,7 +13,7 @@ const getColorForToken = (token: number) => {
 function EmbeddingsDemo() {
   const [inputText, setInputText] = useState('');
   const [tokens, setTokens] = useState<Uint32Array>(() => new Uint32Array());
-  const [embeddings, setEmbeddings] = useState<Uint32Array>(() => new Uint32Array());
+  const [embeddings, setEmbeddings] = useState<Float32Array>(() => new Float32Array());
 
   const debouncedGenerateTokens = debounce(async () => {
     try {
@@ -49,7 +49,7 @@ function EmbeddingsDemo() {
       });
 
       const data = await response.json();
-      setEmbeddings(new Uint32Array(data.embeddings));
+      setEmbeddings(new Float32Array(data.embeddings));
     } catch (error) {
       console.error('Error generating embeddings:', error);
       // Handle error state
@@ -98,7 +98,7 @@ function EmbeddingsDemo() {
           {embeddings.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-zinc-200 mb-2">Embeddings:</h3>
-              <pre className="bg-zinc-800 rounded-md p-4 text-sm overflow-x-auto text-zinc-200">
+              <pre className="bg-zinc-800 rounded-md p-4 text-sm overflow-auto text-zinc-200 max-h-80">
                 {JSON.stringify(Array.from(embeddings), null, 2)}
               </pre>
             </div>
