@@ -10,7 +10,7 @@ import { createMetadata } from '@/utils/createMetadata'
 export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2024-3-9",
-    title: "Vector Databases Compared: Pinecone, Milvus, Chroma, weaviate and more", 
+    title: "Vector Databases Compared: Pinecone, Milvus, Chroma, Weaviate, FAISS, and more", 
     description: "How do the different vector databases compare?",
     image: vectorDatabasesCompared 
 })
@@ -27,6 +27,8 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 Pinecone is the odd one out in this regard. Because Pinecone is a fully-managed service for performance and scalbility reasons, you can't run an instance locally. 
 
+Milvus, Chroma, Weaviate, Faiss, Elasticsearch and Qdrant can all be run locally; most provide Docker images for doing so.
+
 | Vector Database | Local Deployment | Cloud Deployment | On-Premises Deployment |
 |-----------------|------------------|------------------|-----------------------|
 | Pinecone        | ❌               | ✅ (Managed)     | ❌                    |
@@ -38,6 +40,10 @@ Pinecone is the odd one out in this regard. Because Pinecone is a fully-managed 
 | Qdrant          | ✅               | ✅ (Self-hosted) | ✅                    |
 
 ## Scalability
+
+Meaningful scalability metrics require defined constraints. The following is a quick look at which scaling schemes each vector database supports. 
+
+Stay tuned for performance and benchmarking stats.
 
 | Vector Database | Horizontal Scaling | Vertical Scaling | Distributed Architecture |
 |-----------------|--------------------|-----------------|-----------------------|
@@ -51,19 +57,13 @@ Pinecone is the odd one out in this regard. Because Pinecone is a fully-managed 
 
 ## Performance and benchmarking
 
-| Vector Database | Indexing Speed | Query Speed | Latency |
-|-----------------|----------------|-------------|---------|
-| Pinecone        | High           | High        | Low     |
-| Milvus          | High           | High        | Low     |
-| Chroma          | High           | High        | Low     |
-| Weaviate        | High           | High        | Low     |
-| Faiss           | High           | High        | Low     |
-| Elasticsearch   | Moderate       | High        | Low     |
-| Qdrant          | High           | High        | Low     |
+Coming soon!
 
 ## Data Management
 
-Pinecone supports "collections" which are like checkpoints or save states on your indexes. You can use collections to create new indexes. Generally speaking, they're a 
+Pinecone supports "collections" which are like checkpoints or save states on your indexes. 
+
+You can use collections to create new indexes. Generally speaking, they're a 
 convenience method for moving lots of data between indexes.
 
 | Vector Database | Data Import | Data Update/Deletion | Data Backup/Restore |
@@ -78,29 +78,41 @@ convenience method for moving lots of data between indexes.
 
 ## Vector Similarity Search
 
+One of the reasons vector databases are so useful is that they can tell us about the relationships between things and how similar or dissimilar they are. 
+
+There are a variety of distance metrics that allow vector databases to do this, and different vector databases will implement various distance metrics.
+
+For a helpful introduction to how the different distance metrics compare, check out [Pinecone's guide here](https://www.pinecone.io/learn/vector-similarity/).
+
 | Vector Database | Distance Metrics | ANN Algorithms | Filtering | Post-Processing |
 |-----------------|------------------|----------------|-----------|-----------------|
-| Pinecone        | Cosine, Euclidean, Dot Product | HNSW | ✅ | ✅ |
+| Pinecone        | Cosine, Euclidean, Dot Product | Proprietary (Pinecone Graph Algorithm) | ✅ | ✅ |
 | Milvus          | Euclidean, Cosine, IP, L2, Hamming, Jaccard, Tanimoto | HNSW, IVF_FLAT, IVF_SQ8, IVF_PQ, RNSG, ANNOY | ✅ | ✅ |
 | Chroma          | Cosine, Euclidean, Dot Product | HNSW | ✅ | ✅ |
 | Weaviate        | Cosine | HNSW | ✅ | ✅ |
 | Faiss           | L2, Cosine, IP, L1, Linf | IVF, HNSW, IMI, PQ | ❌ | ❌ |
-| Elasticsearch   | Cosine, Dot Product, L1, L2 | HNSW | ✅ | ✅ |
-| Qdrant          | Cosine, Dot Product, L2 | HNSW | ✅ | ✅ |
+| Elasticsearch   | Cosine, Dot Product, L1, L2 | HNSW | ✅ | ✅ | ✅ | ✅ |
+| Qdrant          | Cosine, Dot Product, L2 | HNSW | ✅ | ✅ | ✅ |
 
 ## Integration and API
 
-| Vector Database | Language SDKs | REST API | GraphQL API |
-|-----------------|---------------|----------|-------------|
-| Pinecone        | Python, Node.js, Go, Rust | ✅ | ❌ |
-| Milvus          | Python, Java, Go, C++, Node.js, RESTful | ✅ | ❌ |
-| Chroma          | Python | ✅ | ❌ |
-| Weaviate        | Python, Java, Go, JavaScript, .NET | ✅ | ✅ |
-| Faiss           | C++, Python | ❌ | ❌ |
-| Elasticsearch   | Java, Python, Go, Ruby, PHP, Rust, Perl | ✅ | ❌ |
-| Qdrant          | Python, Rust | ✅ | ❌ |
+While REST APIs are more commonly encountered, GRPC APIs are geared toward performance and throughput in latency critical scenarios or when its necessary to move large amounts of data quickly. 
+
+Depending on your requirements and network, GRPC can be several times faster than REST.
+
+| Vector Database | Language SDKs | REST API | GraphQL API | GRPC API |
+|-----------------|---------------|----------|-------------|---------|
+| Pinecone        | Python, Node.js, Go, Rust | ✅ | ❌ | ✅  |
+| Milvus          | Python, Java, Go, C++, Node.js, RESTful | ✅ | ❌ | ✅  |
+| Chroma          | Python | ✅ | ❌ | ❌ |
+| Weaviate        | Python, Java, Go, JavaScript, .NET | ✅ | ✅ | ✅ |
+| Faiss           | C++, Python | ❌ | ❌ | ✅ |
+| Elasticsearch   | Java, Python, Go, Ruby, PHP, Rust, Perl | ✅ | ❌ | ❌ |
+| Qdrant          | Python, Rust | ✅ | ❌ | ✅ |
 
 ## Security
+
+Pinecone encrypts vectors in flight and at rest.
 
 | Vector Database | Authentication | Data Encryption | Access Control |
 |-----------------|----------------|-----------------|----------------|
@@ -114,6 +126,11 @@ convenience method for moving lots of data between indexes.
 
 ## Community and Ecosystem
 
+Pinecone itself is not open-source, meaning that you cannot browse to the source code for the core database or supporting services or contribute to them. 
+
+That said, [Pinecone is very active in terms of open-source](https://github.com/pinecone-io/), publishing client SDKs in the multiple languages, as well as 
+tools like [Canopy](https://github.com/pinecone-io/canopy), which facilitates creating a [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) (RAG) app very quickly.
+
 | Vector Database | Open-Source | Community Support | Integration with Frameworks |
 |-----------------|-------------|-------------------|------------------------------|
 | Pinecone        | ❌          | ✅                | ✅                          |
@@ -125,6 +142,11 @@ convenience method for moving lots of data between indexes.
 | Qdrant          | ✅          | ✅                | ✅                          |
 
 ## Pricing
+
+Pinecone offers a free tier which allows you to create and maintain one index, and to store roughly 100,000 vectors in it. 
+
+Since Pinecone is fully-managed, you must either use the free tier or pay for access to 
+higher tier plans.
 
 | Vector Database | Free Tier | Pay-as-you-go | Enterprise Plans |
 |-----------------|-----------|---------------|------------------|
@@ -138,12 +160,32 @@ convenience method for moving lots of data between indexes.
 
 ## Additional Features
 
-| Vector Database | Metadata Support | Batch Processing | Kubernetes Integration | Monitoring and Logging |
-|-----------------|------------------|------------------|-----------------------|------------------------|
-| Pinecone        | ✅               | ✅               | ✅                    | ✅                     |
-| Milvus          | ✅               | ✅               | ✅                    | ✅                     |
-| Chroma          | ✅               | ✅               | ❌                    | ❌                     |
-| Weaviate        | ✅               | ✅               | ✅                    | ✅                     |
-| Faiss           | ❌               | ✅               | ❌                    | ❌                     |
-| Elasticsearch   | ✅               | ✅               | ✅                    | ✅                     |
-| Qdrant          | ✅               | ✅               | ✅                    | ✅                     |
+Metadata is any arbitrary strings, numbers, or objects that you want to associate with a vector. You can think of it like a JavaScript object: 
+
+```javascript
+{
+  "category": "shoes",
+  "color": "blue",
+  "size": 10,
+}
+```
+
+You define your metadata in your application code and attach it to a vector at upsert time, meaning when you make your request to your vector database to store a vector. 
+
+Metadata is an incredibly powerful concept and very complimentary with core vector database features; it's the link between ambiguous human language and structured data.
+
+This is the foundation of the architecture where a human user asks for a product and the AI shopping assistant immediately returns the items they're describing. 
+
+| Vector Database | Metadata Support | Batch Processing |  Monitoring and Logging |
+|-----------------|------------------|------------------|-------------------------|
+| Pinecone        | ✅               | ✅               |  ✅                     |
+| Milvus          | ✅               | ✅               |  ✅                     |
+| Chroma          | ✅               | ✅               |  ❌                     |
+| Weaviate        | ✅               | ✅               |  ✅                     |
+| Faiss           | ❌               | ✅               |  ❌                     |
+| Elasticsearch   | ✅               | ✅               |  ✅                     |
+| Qdrant          | ✅               | ✅               |  ✅                     | 
+
+## Check back soon
+
+I'm treating this post as a living piece of content - so it will receive some updates over time. Be sure to bookmark / share it if you'd like to stay up-to-date.
