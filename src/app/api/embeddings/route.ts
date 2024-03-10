@@ -10,15 +10,18 @@ export async function POST(req: NextRequest) {
 
   try {
     const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
+      model: 'text-embedding-ada-002',
       input: inputText,
     });
 
     const generatedEmbeddings = response.data[0].embedding;
     console.log(`Generated embeddings: %o`, generatedEmbeddings);
-    return NextResponse.json({ embeddings: generatedEmbeddings }, { status: 200 })
+
+    return NextResponse.json({ embeddings: generatedEmbeddings }, { status: 200 });
   } catch (error) {
     console.error('Error generating embeddings:', error);
-    return NextResponse.json({ error }, { status: 500 })
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
+
+
