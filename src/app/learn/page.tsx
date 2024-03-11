@@ -117,8 +117,7 @@ export default async function LearnPage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Learn by doing</h2>
             <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
-              I believe in project-based learning for real skill-building, because it's the exact process I followed to get to where I am today.
-              real-world portfolio and get hired.
+              I know that project-based learning builds real skills, because it is the exact process I followed to get to where I am today.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
