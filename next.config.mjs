@@ -50,6 +50,14 @@ const nextConfig = {
       }
     ]
   },
+  webpack(config, { isServer, dev }) {
+    config.experiments = {
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    return config;
+  },
 }
 
 const withMDX = nextMDX({
