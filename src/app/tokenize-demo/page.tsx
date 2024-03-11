@@ -4,15 +4,15 @@ import { Container } from '@/components/Container'
 import { Suspense, useState } from 'react';
 import debounce from 'lodash/debounce';
 
-const getColorForToken = (token: number) => {
-  const tokenId = token;
+const getColorForToken = (token: string) => {
+  const tokenId = token.charCodeAt(0);
   const hue = (tokenId * 137.508) % 360;
   return `hsl(${hue}, 50%, 80%)`;
 };
 
 function TokenizationDemo() {
   const [inputText, setInputText] = useState('');
-  const [tokenData, setTokenData] = useState<{ word: string; token: number }[]>([]);
+  const [tokens, setTokens] = useState<number[]>([]);
 
   const debouncedGenerateTokens = debounce(async () => {
     try {
@@ -25,7 +25,8 @@ function TokenizationDemo() {
       });
 
       const data = await response.json();
-      setTokenData(data.tokenData);
+      console.log(`data: %o`, data.tokens);
+      setTokens(data.tokens);
     } catch (error) {
       console.error('Error generating tokens:', error);
       // Handle error state
@@ -34,51 +35,66 @@ function TokenizationDemo() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    debouncedGenerateTokens();
+    //debouncedGenerateTokens();
   };
 
   return (
     <Container className="mt-16 lg:mt-32">
       <div className="mx-auto max-w-2xl">
         <h1 className="text-4xl font-bold mb-8">Tokenization Demo</h1>
-        <p className="mb-6">Welcome to my Tokenization Demo! </p>
         <p className="mb-6">This interactive demo showcases the process of tokenization, a fundamental technique used in natural language processing (NLP) and generative AI.</p>
-        <p className="mb-6">In this demo, you can enter any text into the input field below and see how it is broken down into individual tokens, along with their corresponding token IDs.</p>
-        <h2 className="text-2xl font-semibold text-zinc-200 mb-4"><span className="text-green-400">Try it out!</span> Type in some text</h2>
+        <p className="mb-6">Enter any text into the input field below...</p>
         <div className="mb-6">
-          <label htmlFor="input-text" className="block text-lg font-medium text-zinc-200">
-            Type any text to see how it is tokenized
-          </label>
           <input
             type="text"
             id="input-text"
             name="input-text"
-            value={inputText}
             onChange={handleInputChange}
-            className="mt-1 block w-full rounded-md border-zinc-600 bg-zinc-800 text-zinc-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            value={inputText}
+            className="mt-1 block w-full rounded-md border-zinc-600 bg-gray-300 text-zinc-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
 
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-zinc-200 mb-4">Tokenized Output:</h2>
+          <p className="text-zinc-200 mb-6">As you type, your sentence is split into words, the way us humans tend to see and read them:</p>
           <div className="inline-block">
-            {tokenData.map(({ word, token }, index) => (
+            {inputText.split(' ').map((word, index) => (
               <span
                 key={index}
                 className="inline-block px-3 py-2 text-lg font-bold text-white text-shadow"
                 style={{
-                  backgroundColor: getColorForToken(token),
+                  backgroundColor: getColorForToken(word),
                   textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
                   margin: '0 4px',
                 }}
               >
                 {word}
-                <div className="text-sm font-semibold text-zinc-300">{token}</div>
               </span>
             ))}
           </div>
+          <br />
+          <p className="text-zinc-200 mt-6 mb-6">But how does a machine see them? Click the button below to tokenize your text, which will convert your words into token IDs for a given vocabulary.</p>
+          <button
+            className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mb-6"
+            onClick={() => debouncedGenerateTokens()}
+          >
+            Tokenize text
+          </button>
+          <p className="text-zinc-200 mb-6">These are the "token IDs" that the `tiktoken` library assigned to your words. This is closer to how ChatGPT and other LLMs "see" your text when you write a prompt in natural language:</p>
+          <div>
+            {Object.entries(tokens).map(([key, value]) => (
+              <span
+                key={key}
+                className="inline-block px-3 py-2 text-lg font-bold text-white text-shadow"
+                style={{
+                  backgroundColor: getColorForToken(key),
+                  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+                  margin: '0 4px',
+                }}
+              >{value} </span>
+            ))}
+          </div>
         </div>
-
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-200 mb-4">What is Tokenization?</h2>
           <p className="text-zinc-200 mb-6">
