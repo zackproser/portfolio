@@ -16,15 +16,12 @@ export async function POST(req: NextRequest) {
       throw new Error('Encoding not loaded');
     }
 
-    const words = inputText.split(' ');
+    console.log(`TEST`)
+    console.log(`inputText: ${inputText}`)
     const tokens = encoding.encode(inputText);
+    console.log(`tokens: %o`, tokens);
 
-    const tokenData = words.map((word: string, index: number) => ({
-      word,
-      token: tokens[index] ?? 0,
-    }));
-
-    return NextResponse.json({ tokenData }, { status: 200 });
+    return NextResponse.json({ tokens }, { status: 200 });
   } catch (error) {
     console.error('Error generating tokens:', error);
     return NextResponse.json({ error }, { status: 500 });
