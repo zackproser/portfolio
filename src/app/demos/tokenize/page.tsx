@@ -2,7 +2,6 @@
 
 import { Container } from '@/components/Container'
 import { Suspense, useState } from 'react';
-import debounce from 'lodash/debounce';
 
 const getColorForToken = (token: string) => {
   const tokenId = token.charCodeAt(0);
@@ -14,7 +13,7 @@ function TokenizationDemo() {
   const [inputText, setInputText] = useState('');
   const [tokens, setTokens] = useState<number[]>([]);
 
-  const debouncedGenerateTokens = debounce(async () => {
+  const generateTokens = async () => {
     try {
       const response = await fetch('/api/tokens', {
         method: 'POST',
@@ -31,11 +30,10 @@ function TokenizationDemo() {
       console.error('Error generating tokens:', error);
       // Handle error state
     }
-  }, 250);
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    //debouncedGenerateTokens();
   };
 
   return (
@@ -51,7 +49,7 @@ function TokenizationDemo() {
             name="input-text"
             onChange={handleInputChange}
             value={inputText}
-            className="mt-1 block w-full rounded-md border-zinc-600 bg-gray-300 text-zinc-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="mt-1 block w-full rounded-md bg-gray-400 border border-zinc-600 placeholder-gray-400 text-white focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
           />
         </div>
 
@@ -76,11 +74,11 @@ function TokenizationDemo() {
           <p className="text-zinc-200 mt-6 mb-6">But how does a machine see them? Click the button below to tokenize your text, which will convert your words into token IDs for a given vocabulary.</p>
           <button
             className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mb-6"
-            onClick={() => debouncedGenerateTokens()}
+            onClick={() => generateTokens()}
           >
             Tokenize text
           </button>
-          <p className="text-zinc-200 mb-6">These are the "token IDs" that the `tiktoken` library assigned to your words. This is closer to how ChatGPT and other LLMs "see" your text when you write a prompt in natural language:</p>
+          <p className="text-zinc-200 mb-6">These are the token IDs that the tiktoken library assigned to your words. This is closer to how ChatGPT and other LLMs see your text when you write a prompt in natural language:</p>
           <div>
             {Object.entries(tokens).map(([key, value]) => (
               <span
@@ -116,11 +114,11 @@ function TokenizationDemo() {
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-zinc-200 mb-4">The Tiktoken library</h2>
           <p className="text-zinc-200 mb-6">
-            In this demo, we are using the Tiktoken library for tokenization. Tiktoken is a popular tokenization library developed by OpenAI, one of the leading organizations in the field of AI research and development. It is designed to work seamlessly with OpenAI's language models, such as GPT-3 and its variants.
+            In this demo, we are using the Tiktoken library for tokenization. Tiktoken is a popular tokenization library developed by OpenAI, one of the leading organizations in the field of AI research and development. It is designed to work seamlessly with OpenAI language models, such as GPT-3 and its variants.
           </p>
 
           <p className="text-zinc-200 mb-6">
-            Tiktoken provides a fast and efficient way to tokenize text using the same algorithm and vocabulary as OpenAI's models. It offers support for various encoding schemes, including the commonly used "cl100k_base" encoding, which has a vocabulary of approximately 100,000 tokens.
+            Tiktoken provides a fast and efficient way to tokenize text using the same algorithm and vocabulary as OpenAI&apos;s models. It offers support for various encoding schemes, including the commonly used cl100k_base encoding, which has a vocabulary of approximately 100,000 tokens. This is the exact vocabulary used in this demo.
           </p>
 
           <p className="text-zinc-200 mb-6">

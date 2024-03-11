@@ -39,7 +39,6 @@
     "feed": "^4.2.2",
     "handlebars": "^4.7.8",
     "js-tiktoken": "^1.0.10",
-    "lodash": "^4.17.21",
     "next": "^13.4.16",
     "next-auth": "^4.24.5",
     "next-router-mock": "^0.9.3",
