@@ -117,8 +117,7 @@ export default async function LearnPage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Learn by doing</h2>
             <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
-              We believe in project-based learning for real skill-building. We help you display every completed project on your website to create a
-              real-world portfolio and get hired.
+              I know that project-based learning builds real skills, because it is the exact process I followed to get to where I am today.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
@@ -194,10 +193,8 @@ export default async function LearnPage() {
           </div>
         </div>
       </section>
-      <Image src={projectBasedLearning} alt="Project-based learning for the win" />
-      <h2 className="text-2xl font-semibold mt-5 py-5">Courses</h2>
+      <h2 className="text-3xl font-semibold mt-5 py-5 text-center">Courses</h2>
       <CourseIndex />
-      <Features features={features} />
     </Container>
   )
 }
