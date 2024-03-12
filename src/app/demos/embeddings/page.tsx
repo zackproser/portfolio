@@ -41,7 +41,7 @@ function EmbeddingsDemo() {
       <div className="mx-auto max-w-2xl">
         <h1 className="text-4xl font-bold mb-8">Embeddings Demo</h1>
         <p className="mb-6">This interactive demo showcases the process of converting natural language into vectors or embeddings, a fundamental technique used in natural language processing (NLP) and generative AI.</p>
-        <p className="mb-6">This interactive demo lets you type in any text you'd like and instantly convert it to embeddings. Click the button below to see how your text gets mapped to a numerical representation that captures its semantic meaning.</p>
+        <p className="mb-6">This interactive demo lets you type in any text you like and instantly convert it to embeddings. Click the button below to see how your text gets mapped to a numerical representation that captures its semantic meaning.</p>
         <div className="mb-6">
           <input
             type="text"
@@ -87,14 +87,6 @@ function EmbeddingsDemo() {
           <h2 className="text-2xl font-semibold text-zinc-200 mb-4">What are embeddings or vectors?</h2>
           <p className="text-zinc-200 mb-6">
             Embeddings are a powerful machine learning technique that allow computers to understand and represent the meaning and relationships between words and phrases. With embeddings, each word or chunk of text is mapped to a vector of numbers in a high-dimensional space, such that words with similar meanings are located close together.</p>
-
-          <p className="text-zinc-200 mb-6"></p>
-
-          <p className="text-zinc-200 mb-6"></p>
-
-          <p className="text-zinc-200 mb-6"></p>
-
-          <p className="text-zinc-200 mb-6"></p>
         </div>
 
         <div className="mb-6">
@@ -104,7 +96,7 @@ function EmbeddingsDemo() {
           </p>
 
           <p className="text-zinc-200 mb-6">
-            For example, the model might frequently see phrases like "the king sits on his throne" and "the queen sits on her throne". From many examples like this, it learns that "king" and "queen" have similar meanings and usage patterns. The model represents this similarity by assigning "king" and "queen" vectors that are close together in the embedding space.
+            For example, the model might frequently see phrases like &lquot;the king sits on his throne&rquot; and &lquot;the queen sits on her throne&rquot. From many examples like this, it learns that king and queen have similar meanings and usage patterns. The model represents this similarity by assigning king and queen vectors that are close together in the embedding space.
           </p>
 
           <p className="text-zinc-200 mb-6">
@@ -119,14 +111,14 @@ function EmbeddingsDemo() {
           <p className="text-zinc-200 mb-6">
             Embeddings are incredibly powerful because they allow machine learning models to understand language in a more flexible, nuanced way than just memorizing specific words and phrases. By capturing the semantic relationships between words, embeddings enable all sorts of natural language tasks like analogical reasoning, sentiment analysis, named entity recognition, and more.
           </p>
-          <p className="text-zinc-200 mb-6">We're seeing a boom in embeddings and their applications right now due to several factors:</p>
+          <p className="text-zinc-200 mb-6">We&apos;re seeing a boom in embeddings and their applications right now due to several factors:</p>
 
           <p className="text-zinc-200 mb-6"> 1. The rise of transformers and attention-based language models like BERT that generate even richer, more contextual embeddings</p>
           <p className="text-zinc-200 mb-6"> 2. Ever-increasing amounts of text data to train huge embeddings models</p>
           <p className="text-zinc-200 mb-6"> 3. More powerful hardware and techniques for training massive models</p>
           <p className="text-zinc-200 mb-6"> 4. Creative new applications for embeddings, like using them for semantic search, knowledge retrieval, multi-modal learning, and more</p>
 
-          <p className="text-zinc-200 mb-6">Embeddings are quickly becoming an essential tool that will power the next wave of natural language AI systems. They're a core reason behind the rapid progress in natural language processing and the explosion of generative AI tools we're seeing today.</p>
+          <p className="text-zinc-200 mb-6">Embeddings are quickly becoming an essential tool that will power the next wave of natural language AI systems. They&apos;re a core reason behind the rapid progress in natural language processing and the explosion of generative AI tools we are seeing today.</p>
         </div >
       </div >
     </Container >
