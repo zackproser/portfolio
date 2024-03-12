@@ -3,7 +3,7 @@ import path from 'path';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const baseDir = 'src/app';
-const dynamicDirs = ['blog', 'videos', 'newsletter']
+const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos']
 const excludeDirs = ['api'];
 
 function getRoutes() {
