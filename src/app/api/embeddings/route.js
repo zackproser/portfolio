@@ -4,7 +4,12 @@ import embeddings from "@themaximalist/embeddings.js";
 export async function POST(req) {
   const { inputText } = await req.json();
   try {
-    const generatedEmbeddings = await embeddings(inputText);
+    let generatedEmbeddings;
+    if (process.env.VERCEL_ENV === 'production') {
+      generatedEmbeddings = await embeddings(inputText, { cache: false });
+    } else {
+      generatedEmbeddings = await embeddings(inputText);
+    }
     return NextResponse.json({ embeddings: generatedEmbeddings }, { status: 200 });
   } catch (error) {
     console.error('Error generating embeddings:', error);
