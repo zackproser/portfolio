@@ -7,6 +7,10 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Indicate that these packages should not be bundled by webpack
+  experimental: {
+    serverComponentsExternalPackages: ['sharp', 'onnxruntime-node'],
+  },
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   images: {
     domains: ["localhost", "zackproser.com", "www.zackproser.com"],

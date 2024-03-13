@@ -14,6 +14,7 @@ function EmbeddingsDemo() {
   const [embeddings, setEmbeddings] = useState<number[]>([]);
 
   const generateTokens = async () => {
+
     try {
       const response = await fetch('/api/embeddings', {
         method: 'POST',
