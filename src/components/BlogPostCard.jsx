@@ -37,6 +37,10 @@ export function BlogPostCard({ article }) {
     root = '/newsletter/'
   }
 
+  if (article?.type == 'demo') {
+    root = '/demos/'
+  }
+
   return (
     <article key={article.slug} className="flex flex-col items-start justify-between">
       <div className="relative w-full">
@@ -45,6 +49,8 @@ export function BlogPostCard({ article }) {
             src={article.image ?? wakka}
             alt={article.slug}
             className="aspect-[16/9] w-full rounded-2xl bg-gray-50 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
+            width={500}
+            height={500}
           />
         </Link>
         <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />

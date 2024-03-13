@@ -33,8 +33,10 @@ export function Footer() {
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 md:gap-6">
                   <NavLink href="/projects">Projects</NavLink>
+                  <NavLink href="/newsletter">Newsletter</NavLink>
                   <NavLink href="/testimonials">Testimonials</NavLink>
                   <NavLink href="/contact">Contact</NavLink>
+                  <NavLink href="/demos">Demos</NavLink>
                   <NavLink href="https://changelog.zackproser.com">Changelog</NavLink>
                 </div>
               </div>
