@@ -78,7 +78,6 @@ function EmbeddingsDemo() {
           >
             Convert text to embeddings
           </button>
-          <p className="text-zinc-200 mb-6">These are the token IDs that the tiktoken library assigned to your words. This is closer to how ChatGPT and other LLMs see your text when you write a prompt in natural language:</p>
           <div className="overflow-y-scroll h-64">
             {embeddings}
           </div>
