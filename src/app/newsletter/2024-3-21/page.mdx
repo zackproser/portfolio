@@ -1,0 +1,84 @@
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import beaker from '@/images/beaker.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-03-21",
+    title: "Episode 2: Interactive Machine Learning demos, vector databases compared, and developer anxiety", 
+    description: "Introducing a new section of my site - interactive demos!",
+    image: beaker
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+## Table of contents
+
+## Welcome to Episode 2 
+
+In today's episode, we're looking at interactive machine learning demos, vector databases compared, and developer anxiety.
+
+## My work 
+
+### Introducing - interactive AI demos
+
+I've added a new section to my site, [demos](https://zackproser.com/demos). To kick things off, I built two interactive demos: 
+
+1. [Tokenization demo](https://zackproser.com/demos/tokenize)
+2. [Embeddings demo](https://zackproser.com/demos/embeddings)
+
+
+Both demos allow you to enter freeform text and then convert it to a different representation that machines can understand. 
+
+The tokenization demo shows you how the `tiktoken` library converts your natural language into token IDs from a given vocabulary, while the embeddings demo shows you how text is converted to an array of floating point numbers representing the `features` that the 
+embedding model extracted from your input data.
+
+I'm planning to do a lot more with this section in the future. Some initial ideas: 
+* Create a nice intro page linking all the demos together in a sequence that helps you to iteratively build up important machine learning and AI concepts
+* Add more demos - I plan to ship a new vector database demonstration using Pinecone shortly that will introduce the high level concepts involved in working with vector databases and potentially even demonstrate visualizing high-dimensional vector space
+* Take requests - If you have ideas for new demos, or aspects of machine learning or AI pipelines that you find confusing, let me know by responding to this email.
+
+### Vector databases compared
+
+I wrote [a new post comparing top vector database offerings](https://zackproser.com/blog/vector-databases-compared). I'm treating this as a living document, meaning that I'll likely 
+add to and refine it over time.
+
+## What's abuzz in the news
+
+Here's what I've come across and have been reading lately. The common theme is developer anxiety: the velocity of changes and new generative AI models and AI-assisted developer tooling, combined with ongoing 
+industry layoffs and the announcement of "AI software developer" Devin, has many developers looking to the future with deep concern and worry. 
+
+Some have wondered aloud if their careers are already over, some are adopting the changes in order to continue growing their careers, and still others remain deeply skeptical of AI's ability to replace all of the squishy aspects to our jobs that don't fit in a nice spec.
+
+What's my plan? As usual, I intend to keep on learning, publishing and growing. I've been hacking alongside "AI" for a year and a half now, and so far my productivity and job satification have only improved. 
+
+Are we going to need less individual programmers at some unknown point in the future? Probably. Does that mean that there won't be opportunities for people who are hungry and willing to learn? Probably not.
+
+### Recommended reading
+
+* [The AI Gold Rush](https://digitopoly.org/2024/03/07/the-ai-gold-rush/)
+* [The Top 100 GenAI Consumer Apps](https://a16z.com/100-gen-ai-apps/)
+* [Can You Replace Your Software Engineers With AI?](https://www.htormey.org/can-you-replace-your-software-engineers-with-ai/)
+* [Developers are on edge](https://world.hey.com/dhh/developers-are-on-edge-4dfcf9c1)
+
+## My favorite tools
+
+### High-level code completion 
+
+I am still ping-ponging back and forth between ChatGPT 4 and Anthropic's Claude 3 Opus. I am generally impressed by Claude 3 Opus, but even with the premium subscription, I'm finding some the limits to be noticeably dear, if you will. Several days in a row now I've gotten the 
+warning about butting up against my message sending limits. At least for what I'm using them both for right now: architecture sanity checks and boilerplate code generation, it's not yet the case that one is so obviously superior that I'm ready to change up my workflow. 
+
+### Autocomplete / code completion 
+
+[Codeium!](/blog/codeium-review)
+
+### AI-assisted video editing
+
+[Kapwing AI](https://kapwing.com)
+
+That's all for this episode! If you liked this content or found it helpful in any way, please pass it on to someone you know who could benefit.
