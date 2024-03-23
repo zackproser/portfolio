@@ -17,7 +17,7 @@ const generateIndexName = () => {
 interface Section {
   title: string;
   loading: boolean;
-  content: (sections: Section[], handleAction: (data: any) => Promise<void>) => void;
+  content: (sections: Section[], handleAction: (data: any) => Promise<void>) => React.ReactNode;
 }
 
 const Demo = () => {
