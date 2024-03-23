@@ -17,7 +17,7 @@ const generateIndexName = () => {
 interface Section {
   title: string;
   loading: boolean;
-  content: (sections: Section[], handleCreateIndex: (indexName: string) => Promise<void>) => React.ReactNode;
+  content: (sections: Section[], handleAction: (data: any) => Promise<void>) => void;
 }
 
 const Demo = () => {
@@ -77,6 +77,56 @@ const Demo = () => {
           <p className="mb-4 mt-6">You can also use indexes as an organizational tool, by creating a new index for each of your use cases or apps.</p>
         </div>
       ),
+    },
+    {
+      title: 'Add Vectors',
+      loading: false,
+      content: (sections, handleAddVectors) => {
+        const phrases = [
+          {
+            text: 'The quick brown fox jumps over the lazy dog',
+            vectors: [/* Embedding vectors for the first phrase */],
+          },
+          {
+            text: 'To be or not to be, that is the question',
+            vectors: [/* Embedding vectors for the second phrase */],
+          },
+          {
+            text: 'A picture is worth a thousand words',
+            vectors: [/* Embedding vectors for the third phrase */],
+          },
+        ];
+        return (
+          <div className="p-4 text-gray-300">
+            <p className="mb-4">
+              In this section, you can add vectors to your index by clicking on the buttons below.
+              Each button corresponds to a well-known phrase, and the associated vectors will be
+              upserted to your index.
+            </p>
+            <div className="space-y-4">
+              {phrases.map((phrase, index) => (
+                <button
+                  key={index}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded block w-full"
+                  onClick={() => handleAddVectors(phrase.vectors)}
+                  disabled={sections[1].loading}
+                >
+                  {sections[1].loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 mr-3 inline"
+                      viewBox="0 0 24 24"
+                    >
+                      {/* Loading spinner SVG */}
+                    </svg>
+                  ) : (
+                    phrase.text
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: 'Add Vectors',
