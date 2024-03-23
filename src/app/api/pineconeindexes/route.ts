@@ -12,7 +12,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const pinecone = new Pinecone();
+    console.log(`Creating index ${name} with dimension ${dimension}`);
+
+    const pinecone = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY as unknown as string
+    });
 
     await pinecone.createIndex({
       name,
@@ -20,15 +24,11 @@ export async function POST(req: NextRequest) {
       metric: 'cosine',
       spec: {
         pod: {
-          environment: 'aws',
-          pods: 2,
-          podType: 'p1.x2',
-          metadataConfig: {
-            indexed: ['product_type'],
-          },
-        },
+          environment: 'us-west1-gcp',
+          podType: 'p1.x1',
+          pods: 1
+        }
       },
-
       // This option tells the client not to throw if the index already exists.
       suppressConflicts: true,
 
