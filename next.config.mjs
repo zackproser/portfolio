@@ -18,6 +18,11 @@ const nextConfig = {
     // Permanently redirect what was my old /about page to the homepage
     return [
       {
+        source: '/subscribe\.',
+        destination: '/subscribe',
+        permanent: true
+      },
+      {
         source: '/:path*',
         has: [{ type: 'host', value: 'www.zackproser.com' }],
         destination: 'https://zackproser.com/:path*',
