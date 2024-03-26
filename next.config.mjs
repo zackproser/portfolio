@@ -15,8 +15,12 @@ const nextConfig = {
     "react-tweet",
   ],
   async redirects() {
-    // Permanently redirect what was my old /about page to the homepage
     return [
+      {
+        source: '/newsletter\.',
+        destination: '/newsletter',
+        permanent: true
+      },
       {
         source: '/subscribe\.',
         destination: '/subscribe',
