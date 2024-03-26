@@ -4,20 +4,18 @@ import React, { useState } from 'react';
 import { Container } from '@/components/Container'
 
 const generateNamespace = () => {
-  // Generate a random index name
   const characters = 'abcdefghijklmnopqrstuvwxyz';
-  let indexName = '';
+  let namespace = '';
   for (let i = 0; i < 10; i++) {
-    indexName += characters.charAt(Math.floor(Math.random() * characters.length));
+    namespace += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  // Append the timestamp to the index name
-  return `${indexName}-${String(new Date().getTime())}`;
+  return `${namespace}-${String(new Date().getTime())}`;
 }
 
 interface Section {
   title: string;
   loading: boolean;
-  content: (sections: Section[]) => React.ReactNode;
+  content: () => React.ReactNode;
   action?: (data: any) => void;
 }
 
@@ -26,11 +24,14 @@ const Demo = () => {
   const [indexName, setIndexName] = useState('vector-database-demo');
   const [namespace, setNamespace] = useState(generateNamespace());
   const [upsertingVectors, setUpsertingVectors] = useState(false);
+  const [selectedPhrases, setSelectedPhrases] = useState<string[]>([]);
+  const [metadata, setMetadata] = useState<{ [key: string]: string }>({});
+
   const [sections, setSections] = useState<Section[]>([
     {
       title: 'Step 1: Create an Index',
       loading: false,
-      content: (sections) => (
+      content: () => (
         <div className="p-4 text-gray-300">
           <p className="mb-4">
             An index is a data structure that enables efficient search and retrieval of vectors. Normally, you'd create your own index, but for the purposes of this demo,
@@ -86,7 +87,7 @@ const Demo = () => {
     {
       title: 'Step 2: Create a Namespace',
       loading: false,
-      content: (sections) => (
+      content: () => (
         <div className="p-4 text-gray-300">
           <p className="mb-4">
             In this section, you will create a new namespace within your index. A namespace is like a partition or divider - it's suitable for organizing vectors by use case or app, and for implementing multi-tenancy,
@@ -115,108 +116,126 @@ const Demo = () => {
       ),
     },
     {
-      title: 'Add Vectors',
+      title: 'Step 3: Add Vectors',
       loading: false,
-      content: (sections) => {
+      content: () => {
         const phrases = [
           {
             text: 'The quick brown fox jumps over the lazy dog',
-            vectors: [{
-              "embeddings": [
-                0.01, 0.2, 0.3
-              ]
-            }],
+            vectors: [0.1, 0.2, 0.3],
           },
           {
             text: 'To be or not to be, that is the question',
-            vectors: [
-              0.01, 0.2, 0.3
-            ],
+            vectors: [0.1, 0.2, 0.3],
           },
           {
             text: 'A picture is worth a thousand words',
-            vectors: [
-              0.01, 0.2, 0.3
-            ],
+            vectors: [0.1, 0.2, 0.3],
           },
         ];
+
+        const handlePhraseSelection = (phrase: string) => {
+          if (selectedPhrases.includes(phrase)) {
+            setSelectedPhrases(selectedPhrases.filter((p) => p !== phrase));
+          } else {
+            setSelectedPhrases([...selectedPhrases, phrase]);
+          }
+        };
+
+        const handleMetadataChange = (key: string, value: string) => {
+          setMetadata({ ...metadata, [key]: value });
+        };
+
+        const handleAddVectorsClick = () => {
+          const vectorsToUpsert = phrases
+            .filter((phrase) => selectedPhrases.includes(phrase.text))
+            .map((phrase) => ({
+              vectors: phrase.vectors,
+              metadata: metadata,
+            }));
+
+          handleUpsertVectors(vectorsToUpsert);
+        };
+
         return (
           <div className="p-4 text-gray-300">
             <p className="mb-4">
-              In this section, you can add vectors to your index by clicking on the buttons below.
-              Each button corresponds to a well-known phrase, and the associated vectors will be
-              upserted to your index.
+              Select one or more phrases below to add their associated vectors to your index. The vectors are generated
+              by an embedding model that extracts features from the text.
             </p>
-            <div className="space-y-4">
+            <div className="space-y-4 mb-6">
               {phrases.map((phrase, index) => (
                 <button
                   key={index}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded block w-full"
-                  onClick={() => handleUpsertVectors(phrase.vectors)}
-                  disabled={sections[1].loading}
+                  className={`bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded block w-full ${selectedPhrases.includes(phrase.text) ? 'ring-2 ring-blue-500' : ''
+                    }`}
+                  onClick={() => handlePhraseSelection(phrase.text)}
+                  disabled={sections[2].loading}
                 >
-                  {sections[1].loading ? (
-                    <svg
-                      className="animate-spin h-5 w-5 mr-3 inline"
-                      viewBox="0 0 24 24"
-                    >
-                      {/* Loading spinner SVG */}
-                    </svg>
-                  ) : (
-                    phrase.text
-                  )}
+                  {phrase.text}
                 </button>
               ))}
             </div>
+            {selectedPhrases.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold mb-2">Selected Phrases</h3>
+                <ul className="list-disc pl-6">
+                  {selectedPhrases.map((phrase, index) => (
+                    <li key={index}>{phrase}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">Metadata (Optional)</h3>
+              <div className="space-y-2">
+                <div>
+                  <label htmlFor="metadataKey" className="block font-medium">
+                    Key
+                  </label>
+                  <input
+                    type="text"
+                    id="metadataKey"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    value={metadata.key || ''}
+                    onChange={(e) => handleMetadataChange('key', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="metadataValue" className="block font-medium">
+                    Value
+                  </label>
+                  <input
+                    type="text"
+                    id="metadataValue"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    value={metadata.value || ''}
+                    onChange={(e) => handleMetadataChange('value', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+              onClick={handleAddVectorsClick}
+              disabled={sections[2].loading || selectedPhrases.length === 0}
+            >
+              {sections[2].loading ? (
+                <svg className="animate-spin h-5 w-5 mr-3 inline" viewBox="0 0 24 24">
+                  {/* Loading spinner SVG */}
+                </svg>
+              ) : (
+                'Add Vectors'
+              )}
+            </button>
           </div>
         );
       },
     },
     {
-      title: 'Metadata',
-      loading: false,
-      content: (sections, handleCreateIndex) => (
-        <div className="p-4 text-gray-300">
-          <p className="mb-4">
-            In this section, you will add metadata to the vectors. Metadata allows you to associate
-            additional information with the vectors for querying purposes.
-          </p>
-          {/* Add form or input fields for adding metadata */}
-          <button
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-            onClick={() => handleSectionCompletion(3)}
-            disabled={sections[2].loading}
-          >
-            {sections[2].loading ? (
-              <svg
-                className="animate-spin h-5 w-5 mr-3 inline"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-            ) : (
-              'Add Metadata'
-            )}
-          </button>
-        </div>
-      ),
-    },
-    {
       title: 'Query',
       loading: false,
-      content: (sections, handleCreateIndex) => (
+      content: () => (
         <div className="p-4 text-gray-300">
           <p className="mb-4">
             In this section, you can perform a similarity search on the index. Enter a query phrase
@@ -257,10 +276,10 @@ const Demo = () => {
     {
       title: 'Clean Up',
       loading: false,
-      content: (sections, handleCreateIndex) => (
+      content: () => (
         <div className="p-4 text-gray-300">
           <p className="mb-4">
-            In this section, you can clean up the demo by deleting the index you created.
+            In this section, you can clean up the demo by deleting the namespace you created.
           </p>
           <button
             className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded"
@@ -287,7 +306,7 @@ const Demo = () => {
                 />
               </svg>
             ) : (
-              'Delete Index'
+              'Delete Namespace'
             )}
           </button>
         </div>
@@ -315,11 +334,10 @@ const Demo = () => {
     handleSectionCompletion(2);
   }
 
-  const handleUpsertVectors = async (vectors: number[]) => {
+  const handleUpsertVectors = async (vectorsToUpsert: any[]) => {
     console.log(`handleUpsertVectors: ${namespace}`);
     setUpsertingVectors(true);
 
-    // Update section 1 to show loading state is true 
     try {
       const response = await fetch('/api/pineconenamespaces', {
         method: 'POST',
@@ -327,18 +345,19 @@ const Demo = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          vectors,
+          vectorsToUpsert,
         }),
       });
 
       if (response.ok) {
-        handleSectionCompletion(1);
+        handleSectionCompletion(3);
       } else {
-        console.error('Error creating namespace:', response.statusText);
+        console.error('Error upserting vectors:', response.statusText);
       }
     } catch (error) {
-      console.error('Error creating namespace:', error);
+      console.error('Error upserting vectors:', error);
     } finally {
+      setUpsertingVectors(false);
     }
   };
 
@@ -372,12 +391,12 @@ const Demo = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-            {expandedSection === index && <div>{section.content(sections)}</div>}
+            {expandedSection === index && <div>{section.content()}</div>}
           </div>
         ))}
       </div>
     </Container>
   );
-};
+}
 
 export default Demo;
