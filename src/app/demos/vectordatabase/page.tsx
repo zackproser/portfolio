@@ -152,12 +152,28 @@ const Demo = () => {
         };
 
         const handleMetadataChange = (key: string, value: string) => {
-          setMetadata({ ...metadata, [key]: value });
+          setMetadata((prevMetadata) => ({
+            ...prevMetadata,
+            [key]: value,
+          }));
         };
 
         const handleMetadataDelete = (key: string) => {
-          const { [key]: _, ...rest } = metadata;
-          setMetadata(rest);
+          setMetadata((prevMetadata) => {
+            const { [key]: _, ...rest } = prevMetadata;
+            return rest;
+          });
+        };
+
+        const handleAddMetadata = () => {
+          if (metadata.key && metadata.value) {
+            setMetadata((prevMetadata) => ({
+              ...prevMetadata,
+              [metadata.key]: metadata.value,
+              key: '',
+              value: '',
+            }));
+          }
         };
 
         const handleAddVectorsClick = () => {
@@ -181,7 +197,9 @@ const Demo = () => {
               {phrases.map((phrase, index) => (
                 <div
                   key={index}
-                  className={`border rounded-md p-4 ${selectedPhrases.includes(phrase.text) ? 'bg-green-100 border-green-500' : 'border-gray-700'
+                  className={`border rounded-md p-4 ${selectedPhrases.includes(phrase.text)
+                    ? 'bg-green-800 border-green-600 text-white'
+                    : 'border-gray-700'
                     }`}
                 >
                   <label className="flex items-center">
@@ -201,66 +219,71 @@ const Demo = () => {
             </div>
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-2">Metadata (Optional)</h3>
+              <p className="text-sm text-gray-400 mb-2">
+                Metadata allows you to associate additional information with your vectors, enabling more precise querying, filtering, and categorization based on specific attributes or properties. By attaching relevant metadata to your vectors, you can enhance the functionality and usefulness of your vector database, making it easier to retrieve and work with specific subsets of vectors that match certain criteria.
+              </p>
               <div className="space-y-2">
                 {Object.entries(metadata).map(([key, value]) => (
-                  <div key={key} className="flex items-center">
-                    <input
-                      type="text"
-                      className="mt-1 block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      value={key}
-                      onChange={(e) => handleMetadataChange(e.target.value, value)}
-                    />
-                    <span className="mx-2">:</span>
-                    <input
-                      type="text"
-                      className="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      value={value}
-                      onChange={(e) => handleMetadataChange(key, e.target.value)}
-                    />
-                    <button
-                      className="ml-2 text-red-500 hover:text-red-700"
-                      onClick={() => handleMetadataDelete(key)}
-                    >
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
+                  key !== 'key' && key !== 'value' && (
+                    <div key={key} className="flex items-center mb-2">
+                      <input
+                        type="text"
+                        className="mt-1 block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        value={key}
+                        onChange={(e) => handleMetadataChange(e.target.value, value)}
+                      />
+                      <span className="mx-2">:</span>
+                      <input
+                        type="text"
+                        className="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        value={value}
+                        onChange={(e) => handleMetadataChange(key, e.target.value)}
+                      />
+                      <button
+                        className="ml-2 text-red-500 hover:text-red-700 text-sm"
+                        onClick={() => handleMetadataDelete(key)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )
                 ))}
                 <div className="flex items-center">
                   <input
                     type="text"
                     className="mt-1 block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Key"
-                    value={metadata.newKey || ''}
-                    onChange={(e) => handleMetadataChange('newKey', e.target.value)}
+                    value={metadata.key || ''}
+                    onChange={(e) => handleMetadataChange('key', e.target.value)}
                   />
                   <span className="mx-2">:</span>
                   <input
                     type="text"
                     className="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                     placeholder="Value"
-                    value={metadata.newValue || ''}
-                    onChange={(e) => handleMetadataChange('newValue', e.target.value)}
+                    value={metadata.value || ''}
+                    onChange={(e) => handleMetadataChange('value', e.target.value)}
                   />
                   <button
-                    className="ml-2 text-blue-500 hover:text-blue-700"
-                    onClick={() => {
-                      handleMetadataChange(metadata.newKey, metadata.newValue);
-                      handleMetadataChange('newKey', '');
-                      handleMetadataChange('newValue', '');
-                    }}
+                    className="ml-2 text-blue-500 hover:text-blue-700 text-sm"
+                    onClick={handleAddMetadata}
                   >
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
+                    Add
                   </button>
                 </div>
               </div>
-              {Object.keys(metadata).length > 0 && (
+              {Object.keys(metadata).filter((key) => key !== 'key' && key !== 'value').length > 0 && (
                 <div className="mt-4">
                   <h4 className="text-lg font-semibold mb-2">Metadata Preview</h4>
-                  <pre className="text-sm text-gray-500">{JSON.stringify(metadata, null, 2)}</pre>
+                  <pre className="text-sm text-gray-500">
+                    {JSON.stringify(
+                      Object.entries(metadata)
+                        .filter(([key]) => key !== 'key' && key !== 'value')
+                        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
+                      null,
+                      2
+                    )}
+                  </pre>
                 </div>
               )}
             </div>
