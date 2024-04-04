@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import introToVectors from '@/images/introduction-to-vectors.webp'
 import featureExtraction from '@/images/feature-extraction.webp'
+import highDimensionalVectorSpace from '@/images/high-dimensional-vector-space.webp'
+import neuralNetwork from '@/images/neural-network.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -49,6 +51,9 @@ When we pass this string of natural language into an embedding model, the model 
 Each value in this vector is a floating-point number, typically ranging from -1 to 1. These numbers represent the presence or absence of specific features in the input data. For example, one dimension of the vector might correspond to the concept of "speed," while another might represent "animal." The embedding model learns to assign higher values to dimensions that are more strongly associated with the input data, and lower values to dimensions that are less relevant.
 
 So, in our example, the embedding vector might have a high value in the "speed" dimension (capturing the concept of "quick"), a moderate value in the "animal" dimension (representing "fox" and "dog"), and relatively low values in dimensions that are less relevant to the input text (like "technology" or "politics").
+
+<Image src={highDimensionalVectorSpace} alt="High dimensional vector space"/>
+<figcaption>High dimensional vector space - each point is a vector and their distance from one another represents their similarity.</figcaption>
 
 The true power of embeddings lies in their ability to capture complex relationships and similarities between different pieces of data. By representing data as dense vectors in a high-dimensional space, embedding models can learn to group similar items together and separate dissimilar items. This enables machines to perform tasks like semantic similarity analysis, clustering, and classification with remarkable accuracy and efficiency.
 
@@ -137,6 +142,8 @@ The concept of embeddings has its roots in the field of natural language process
 
 Word2Vec revolutionized NLP by demonstrating that neural networks could be trained to produce dense vector representations of words, capturing their semantic similarities and relationships in a highly efficient and scalable manner. The key insight behind Word2Vec was that the meaning of a word could be inferred from its context – that is, the words that typically appear around it in a sentence or document.
 
+<Image src={neuralNetwork} alt="Neural network"/>
+
 By training a shallow neural network to predict the context words given a target word (or vice versa), Word2Vec was able to learn highly meaningful word embeddings that captured semantic relationships like synonymy, antonymy, and analogy. For example, the embedding for the word "king" would be more similar to the embedding for "queen" than to the embedding for "car," reflecting their semantic relatedness.
 
 The success of Word2Vec sparked a wave of research into neural embedding models, leading to the development of more advanced techniques like GloVe (Global Vectors for Word Representation) and FastText. These models built upon the core ideas of Word2Vec, incorporating additional information like global word co-occurrence statistics and subword information to further improve the quality and robustness of the learned embeddings.
@@ -177,23 +184,20 @@ To this end, researchers are exploring techniques like few-shot learning, meta-l
 
 If you're excited about the potential of embeddings and want to dive deeper into this fascinating field, there are many excellent resources available to help you get started. Here are a few recommended readings and educational materials:
 
-Research Papers:
+### Research Papers
 
-    "Efficient Estimation of Word Representations in Vector Space" by Tomas Mikolov, et al. (Word2Vec)
-    "GloVe: Global Vectors for Word Representation" by Jeffrey Pennington, et al.
-    "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" by Jacob Devlin, et al.
+* ["Efficient Estimation of Word Representations in Vector Space" by Tomas Mikolov, et al. (Word2Vec)](https://arxiv.org/abs/1301.3781)
+* ["GloVe: Global Vectors for Word Representation" by Jeffrey Pennington, et al.](https://nlp.stanford.edu/pubs/glove.pdf)
+* ["BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding" by Jacob Devlin, et al.](https://arxiv.org/abs/1810.04805)
 
-Books:
+### Books
 
-    "Deep Learning" by Ian Goodfellow, Yoshua Bengio, and Aaron Courville (chapters on representation learning and embeddings)
-    "Mining of Massive Datasets" by Jure Leskovec, Anand Rajaraman, and Jeff Ullman (chapters on dimensionality reduction and embeddings)
+* ["Deep Learning" by Ian Goodfellow, Yoshua Bengio, and Aaron Courville (chapters on representation learning and embeddings)](https://www.deeplearningbook.org/)
+* ["Mining of Massive Datasets" by Jure Leskovec, Anand Rajaraman, and Jeff Ullman (chapters on dimensionality reduction and embeddings)](http://www.mmds.org/)
 
-Online Courses and Tutorials:
+### Online demos
 
-    Coursera: "Natural Language Processing with Deep Learning" by Stanford University
-    Udacity: "Intro to Machine Learning" and "Deep Learning" nanodegree programs
-    fast.ai: "Practical Deep Learning for Coders" course
-    TensorFlow: "Vector Representations of Words" tutorial
+* [Embeddings demo](/demos/embeddings)
 
 By investing time in learning about embeddings and experimenting with different techniques and models, you'll be well-equipped to harness their power in your own projects and contribute to the exciting field of AI and machine learning.
 
@@ -201,7 +205,4 @@ By investing time in learning about embeddings and experimenting with different 
 
 Embeddings are a fundamental building block of modern artificial intelligence, enabling machines to understand and reason about complex data in ways that were once thought impossible. By learning dense, continuous vector representations of the key features and relationships in data, embedding models provide a powerful framework for a wide range of AI applications, from natural language processing and computer vision to recommendation systems and anomaly detection.
 
-As we've seen in this post, the concept of embeddings has a rich history and a bright future, with ongoing research pushing the boundaries of what's possible in terms of multimodal learning, domain specialization, interpretability, and efficiency. Whether you're a seasoned AI practitioner or a curious newcomer, there's never been a better time to dive into the world of embeddings and explore their potential for transforming your field.
-
-If you're eager to learn more, be sure to check out the recommended resources and join the vibrant community of researchers and practitioners who are driving innovation in this exciting field. The future of AI is bright, and embeddings are sure to play a central role in shaping it.
-
+As we've seen in this post, the concept of embeddings has a rich history and a bright future, with ongoing research pushing the boundaries of what's possible in terms of multimodal learning, domain specialization, interpretability, and efficiency. 
