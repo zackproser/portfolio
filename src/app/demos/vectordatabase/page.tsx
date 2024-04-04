@@ -1234,11 +1234,12 @@ const Demo = () => {
   const handleGenerateEmbeddings = async () => {
     console.log(`handleGenerateEmbeddings`)
     setEmbeddingProgress(0);
-    setEmbeddingsGenerated(false);
 
     for (let i = 0; i < 100; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 20));
-      setEmbeddingProgress(i + 1);
+      setTimeout(() => {
+
+        setEmbeddingProgress(i + 1);
+      }, 1000);
     }
 
     setEmbeddingsGenerated(true);
@@ -1246,7 +1247,7 @@ const Demo = () => {
 
   const handleUpsert = async () => {
     const vectorsToUpsert = phrases
-      .filter((phrase) => selectedPhrases.includes(phrase.text))
+      .filter((phrase) => phrase.selected)
       .map((phrase) => ({
         vectors: phrase.vectors,
         metadata: metadata,
@@ -1383,6 +1384,7 @@ const Demo = () => {
                 </div>
               ))}
             </div>
+            <span>embeddingProgress: {embeddingProgress}</span>
             <button
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded mb-4"
               onClick={handleGenerateEmbeddings}
