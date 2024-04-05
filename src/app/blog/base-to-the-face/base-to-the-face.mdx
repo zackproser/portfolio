@@ -1,0 +1,20 @@
+
+import baseballPickupGameDevolvingIntoImage from '/src/images/baseball-pickup-game-devolving-into.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Base to the face",
+ author: "Zachary Proser",
+ date: "2024-4-5",
+ description: "And a face on every base",
+ image: baseballPickupGameDevolvingIntoImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+Chase
