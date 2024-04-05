@@ -1,0 +1,20 @@
+
+import anAnimalGivingUpImage from '/src/images/an-animal-giving-up.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Process wakka",
+ author: "Zachary Proser",
+ date: "2024-4-5",
+ description: "Summary",
+ image: anAnimalGivingUpImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+Immediate
