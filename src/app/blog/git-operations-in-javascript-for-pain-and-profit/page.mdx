@@ -1,0 +1,22 @@
+
+import aJavascriptDeveloperExhaustedAfImage from '/src/images/a-javascript-developer-exhausted-af.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Git operations in JavaScript for pain and profit ",
+ author: "Zachary Proser",
+ date: "2024-4-6",
+ description: "I recently found myself in a situation that called for a pure JavaScript implementation of git. Here is the story of how I came through this experience changed forever. ",
+ image: aJavascriptDeveloperExhaustedAfImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+## Table of contents
+
+## How it started
