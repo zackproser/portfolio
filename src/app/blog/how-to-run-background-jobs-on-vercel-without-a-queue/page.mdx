@@ -1,5 +1,5 @@
 
-import aYoungProgrammerDrunkWithPowerImage from '/src/images/a-young-programmer-drunk-with-power.png' 
+import aYoungProgrammerDrunkWithPowerImage from '@/images/drunk-with-power.webp' 
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
@@ -17,18 +17,46 @@ export const metadata = {
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
-##The Setup 
+<Image src={metadata.image} alt={metadata.title} />
 
-My open-source app, Panthalia, empowers me to author media rich blog posts in a streamlined fashion even while traveling and away from my keyboard 
+## Table of contents
 
-## The problem 
+## The context 
 
-I need to clone and perform updates to my portfolio Next.js website from Panthalia. 
+One of the best things about being a developer is being able to build your own tools to your own specifications. 
 
-This means performing long running git operations and image generation routines in my Vercel functions 
+I've made a [video](/videos/panthalia-intro) before about my open-source app, [Panthalia](https://github.com/zackproser/panthalia), empowers me to author media rich blog posts in a streamlined fashion even while traveling and away from my keyboard, by 
+programmatically making changes to my portfolio site project.
+
+My portfolio site, which you're currently reading on zackproser.com, is [also a Next.js project that is open-source and stored on GitHub](https://github.com/zackproser/portfolio).
+
+## The problem(s)
+
+The entire purpose of Panthalia is to be the ideal mobile-first interface to my own portfolio website, specifically its blog posts. 
+
+The idea is that I'm out and about doing errands,
+I'm struck by a new post idea, and I decide to just commence the entire post right then and there from my phone. 
+
+This means that Panthalia will need to: 
+
+1. clone my portfolio site (uses git and takes a while)
+1. add the content I create via the mobile interface (implemented in Node)
+1. write the changes to the filesystem in the right place (implemented in Node)
+1. commit them on my behalf (uses git and requires credentials)
+1. push them up to GitHub on a new branch and then open a pull request against my `main` branch using the GitHub API ()
+
+In other words, Panthalia needs to perform long running git operations and image generation routines in my Vercel functions. 
+
+This would be fine except for a couple of problems: 
+
+1. Vercel functions can run for maximum of 5 minutes on the Pro plan 
+1. Vercel functions are JavaScript only 
+1. Vercel functions are not like Docker images or EC2 instances - you cannot just install whatever you want (such as git)
+
 
 ## The solution 
 
-Create functions that you fire and forget from your main API route which accepts jobs. 
+1. Create functions that you fire and forget from your main API route which accepts jobs. 
+1. Use `isomorphic-git` an impressive open-source project that re-implements git in pure JavaScript. (Yes, it works great)
 
 These functions call separate API routes to perform long running tasks even after the initial API response has been returned to the client.
