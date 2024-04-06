@@ -1,0 +1,34 @@
+
+import aYoungProgrammerDrunkWithPowerImage from '/src/images/a-young-programmer-drunk-with-power.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "How to Run background jobs on Vercel without a queue ",
+ author: "Zachary Proser",
+ date: "2024-4-6",
+ description: "I recently needed to figure out how to have my Vercel API route accept a new job and return a response immediately while still performing long running processing in the background. This is what I learned. ",
+ image: aYoungProgrammerDrunkWithPowerImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+##The Setup 
+
+My open-source app, Panthalia, empowers me to author media rich blog posts in a streamlined fashion even while traveling and away from my keyboard 
+
+## The problem 
+
+I need to clone and perform updates to my portfolio Next.js website from Panthalia. 
+
+This means performing long running git operations and image generation routines in my Vercel functions 
+
+## The solution 
+
+Create functions that you fire and forget from your main API route which accepts jobs. 
+
+These functions call separate API routes to perform long running tasks even after the initial API response has been returned to the client.
