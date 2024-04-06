@@ -1,0 +1,118 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import dimensionality from '@/images/dimensionality.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-4-04",
+    title: "Introduction to dimensionality in machine learning", 
+    description: "Dimensionality refers to the number of features a given embedding model extracts",
+    image: dimensionality 
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+<Image src={metadata.image} alt="Introduction to dimensionality"/>
+
+## Table of contents 
+
+## Understanding Dimensionality in Vectors: A Comprehensive Guide 📈
+
+In the realm of machine learning and data science, [vectors](/blog/introduction-to-embeddings) play a crucial role in representing and processing data. 
+
+One fundamental concept related to vectors is dimensionality. In this article, we'll explore what dimensionality means, provide simple examples to demonstrate its significance, and discuss its importance in the context of vector databases and machine learning models.
+## What is Dimensionality? 🌍
+
+Dimensionality refers to the number of components or features that make up a vector. In other words, it represents the size or length of a vector. Each component of a vector corresponds to a specific attribute or variable in the data.
+
+For example, let's consider a vector representing a person's characteristics:
+
+`[age, height, weight]`
+
+In this case, the vector has a dimensionality of 3, as it consists of three components: age, height, and weight.
+
+## Simple Examples 🎨
+
+To further illustrate the concept of dimensionality, let's look at a few more examples:
+
+### A vector representing the coordinates of a point in a 2D plane:
+
+`[x, y]`
+
+This vector has a dimensionality of 2.
+
+
+### A vector representing the RGB color values of a pixel:
+
+`[red, green, blue]`
+
+This vector has a dimensionality of 3.
+
+
+### A vector representing the features of a text document:
+
+`[word_count, sentiment_score, topic_relevance]`
+
+This vector has a dimensionality of 3.
+
+As you can see, the dimensionality of a vector depends on the number of attributes or features it represents.
+
+## Importance of Dimensionality 
+
+Dimensionality plays a crucial role in vector databases and machine learning models. Here are a few reasons why:
+
+* Vector Similarity: Vector databases often rely on similarity measures, such as cosine similarity or Euclidean distance, to compare and retrieve similar vectors. The dimensionality of the vectors directly affects the accuracy and efficiency of these similarity calculations.
+* Model Compatibility: Machine learning models, such as neural networks, expect input vectors to have a specific dimensionality. Mismatching the dimensionality of input vectors with the model's expected input shape can lead to errors or incorrect results.
+* Computational Complexity: The dimensionality of vectors impacts the computational complexity of operations performed on them. Higher-dimensional vectors require more memory and computational resources, which can affect the performance and scalability of vector-based systems.
+
+## Dimensionality Reduction Techniques in Machine Learning
+
+In machine learning, managing the dimensionality of data is crucial for optimizing model performance. High-dimensional data can overwhelm models, making them slow and less interpretable. To counter this, dimensionality reduction techniques are employed. These include:
+
+* Feature Selection: Identifying and retaining only the most relevant features, discarding the rest.
+* Matrix Factorization: Techniques like Principal Component Analysis (PCA) break down data into its constituent parts, keeping only the most significant ones.
+* Manifold Learning: Projects high-dimensional data into a lower-dimensional space, preserving essential structures or relationships.
+* Autoencoders: A type of neural network that learns a compressed, dense representation of the input data.
+
+Each technique has its applications, strengths, and considerations. Integrating these into your data preprocessing pipeline can lead to more efficient and interpretable models, significantly impacting outcomes in machine learning projects.
+
+## Mismatching Dimensions 
+
+When working with vector databases or machine learning models, it's crucial to ensure that the dimensionality of vectors matches the expected input shape. Mismatching dimensions can lead to various issues:
+
+* Incompatibility: If the dimensionality of input vectors doesn't match the expected input shape of a model, it will raise an error or fail to process the data correctly.
+* Incorrect Results: Even if a model manages to handle mismatched dimensions, the results may be incorrect or meaningless. The model might make predictions based on incomplete or irrelevant information.
+* Performance Degradation: Mismatched dimensions can lead to inefficient memory usage and increased computational overhead, resulting in slower performance and reduced scalability.
+
+To avoid these issues, it's essential to preprocess and align the dimensionality of vectors before feeding them into vector databases or machine learning models.
+
+## Generating Sample Vectors in Python 🐍
+
+Python provides various libraries and tools for generating sample vectors of arbitrary length. Here's an example using the NumPy library:
+
+```python
+
+import numpy as np
+
+# Generate a random vector of length 5
+vector = np.random.rand(5)
+print(vector)
+```
+
+Output:
+
+`[0.64589411 0.43758721 0.891773   0.96366276 0.38344152]`
+
+You can customize the length of the vector by modifying the argument passed to np.random.rand(). Additionally, you can generate vectors with specific distributions or patterns using other NumPy functions like np.zeros(), np.ones(), or np.linspace().
+
+## Wrapping up 
+
+Dimensionality is a fundamental concept in the world of vectors and plays a vital role in vector databases and machine learning models. Understanding what dimensionality means, its importance, and the consequences of mismatching dimensions is crucial for effectively working with vector-based systems.
+
+
