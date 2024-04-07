@@ -1,0 +1,180 @@
+
+import vercelBackgroundJobs from '@/images/vercel-background-jobs.webp' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "How to Run background jobs on Vercel without a queue ",
+ author: "Zachary Proser",
+ date: "2024-4-6",
+ description: "I recently needed to figure out how to have my Vercel API route accept a new job and return a response immediately while still performing long running processing in the background. This is what I learned. ",
+ image: vercelBackgroundJobs,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={metadata.image} alt={metadata.title} />
+
+## Table of contents
+
+Have you ever wanted to return a response immediately from a Vercel API route while still performing long-running tasks in the background? Would you rather not pay for a queue or add another component to your architecture? 
+
+In this post I'll demonstrate how you can keep your job-accepting API route snappy while still performing long-running or resource intensive processing in the background - without impacting your end-users. 
+## The problems
+
+I recently needed to solve the following problems with my Next.js application deployed on Vercel: 
+1. **I needed my job-accepting API route to return a response quickly**. I have a mobile client that allows me to author new blog posts quickly. I wanted the create new post API call to return immediately. This was actually critical to the design. The application I'm developing for myself allows me to rapidly initiate several blog posts at once, because I have ideas for posts in bursts of several at one time, most often when I'm not sitting at my computer. Therefore, capturing the kernel of each post quickly and then moving onto the next one is paramount to success - I wasn't willing to wait 3 minutes to be able to capture my next idea.
+2. **I had expensive and slow work to perform in the background for each new job**. As part of creating the new post, I had a few long-running tasks that needed to proceed in the background to bootstrap the new content. These jobs included: 
+		A. **Git operations** to clone my site, make modifications to it and push them up on a new branch, then programatically open a pull request using my GitHub token. Upon successul opening of the pull request, insert a new record in Postgres to associate the pull request with the post. This could all take a few minutes.
+		B. **Image generation** operations: Contacting OpenAI's Image generation route with my prompt and params, awaiting a response, writing the raw image data (returned as a base64 encoded string) to a local file, pushing it to my S3 bucket, storing the S3 bucket location in Postgres to associate the image with the post. This tends to take around 30 seconds or more depending on many factors.
+3. **I wasn't willing to block the main client flow** on a long-running API call. In three minutes of waiting, I could have captured another three or four post ideas and initial paragraphs.
+4. **Time is not unlimited.** Vercel capped function invocation timeouts at 5 minutes for Pro plan users. I didn't want to risk doing so much work in one API route that it was likely I'd hit the timeout. I wanted to divvy up the work.
+
+## Solution - create fire-and-forget functions that call other API routes 
+
+The solution is to use something I'm referring to as a fire and forget function. Forget, in the sense that we're not awaiting the response from the long-running process. 
+
+Here's what my fire-and-forget function looks like in Panthalia: 
+
+```javascript
+import Post from '../types/posts';
+
+export async function startBackgroundJobs(post: Post) {
+  
+  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+
+  try {
+    await fetch(`${baseUrl}/api/jobs`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(post),
+    }).then(() => {
+      console.log(`Finished updating existing post via git`)
+    })
+  } catch (error) {
+    console.log(`error: ${error}`);
+  }
+}
+
+```
+
+This is a React Server Component (RSC) by default because it does not include the `'use client'` directive at the top of the file, and because Next.js routes default to being server components. 
+
+Because this is a server component, we actually have to determine the `${baseUrl}` for our API call - whereas you may be familiar with calling fetch on a partial API route like so: 
+
+`await fetch('/api/jobs', {})`
+
+in our server component we must supply a fully qualified URL to fetch. 
+
+The `startBackgroundJobs` function is really just an API call to a separate route, `/api/jobs` which POSTs to that route the information about the new post including its ID.
+
+Everything that other route needs to start processing work in a separate invocation. Meanwhile, the `startBackgroundJobs` call itself is quick because it's making a request and returning, and the overall API route itself can immediately after return a response to the client who made the initial create post request. 
+
+Here's what my API route looks like: 
+
+```javascript
+import { sql } from '@vercel/postgres';
+import { NextResponse } from 'next/server';
+import { startBackgroundJobs } from '../../lib/jobs'
+import Post from "../../types/posts";
+
+import { getServerSession } from "next-auth/next"
+import { authOptions } from '../../lib/auth/options'
+import { imagePrompt } from '../../types/images';
+
+// This route accepts new blog posts created by the Panthalia client
+// It calls a function, `startBackgroundJobs` which itself calls a separate 
+// API route, passing the information necessary to continue processing 
+// long-running jobs that will operate on the post data
+// Meanwhile, the client receives a response immediately and is freed up to
+// create more posts
+export async function POST(request: Request) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const formData = await request.json()
+
+    const {
+      title,
+      slug,
+      summary,
+      content,
+      ...formImagePrompts
+    } = formData
+
+    // Query to insert new blog post into the database
+    const result = await sql`
+      INSERT INTO posts(
+      title,
+      slug,
+      summary,
+      content,
+      status
+    )
+      VALUES(
+      ${title},
+      ${slug},
+      ${summary},
+      ${content},
+      'drafting'
+    )
+      RETURNING *;
+    `;
+
+    // Save the postId so we can use it to update the record with the pull request URL once it's available
+    const newPost: Post = {
+      id: result.rows[0].id,
+      title,
+      slug,
+      summary,
+      content,
+      gitbranch: null,
+      githubpr: null,
+    }
+
+    const promptsToProcess = formImagePrompts.imagePrompts as imagePrompt[]
+
+    // Query to insert images into the database
+    for (const promptToProcess of promptsToProcess) {
+    
+      const imgInsertResult = await sql`
+        INSERT INTO 
+        images(
+          post_id,
+          prompt_text)
+         VALUES(
+          ${newPost.id},
+          ${promptToProcess.text}
+        )
+      `
+    }
+
+    // Fire and forget the initial post setup (git operations) and the image generation tasks
+    startBackgroundJobs(newPost);
+
+    return NextResponse.json({ result, success: true }, { status: 200 });
+
+  } catch (error) {
+
+    console.log(`error: ${error} `);
+
+    return NextResponse.json({ error }, { status: 500 });
+
+  }
+}
+
+```
+
+## Wrapping up 
+
+And there you have it. Using this pattern, you can return a response to your client immediately to keep your application quick and responsive, while simultaneously handling longer-running jobs in a separate execution context.
