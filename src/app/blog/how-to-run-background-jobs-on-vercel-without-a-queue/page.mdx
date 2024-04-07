@@ -1,5 +1,5 @@
 
-import aYoungProgrammerDrunkWithPowerImage from '@/images/drunk-with-power.webp' 
+import vercelBackgroundJobs from '@/images/vercel-background-jobs.webp' 
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
@@ -12,7 +12,7 @@ export const metadata = {
  author: "Zachary Proser",
  date: "2024-4-6",
  description: "I recently needed to figure out how to have my Vercel API route accept a new job and return a response immediately while still performing long running processing in the background. This is what I learned. ",
- image: aYoungProgrammerDrunkWithPowerImage,
+ image: vercelBackgroundJobs,
 } 
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
@@ -25,14 +25,14 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 One of the best things about being a developer is being able to build your own tools to your own specifications. 
 
-I've made a [video](/videos/panthalia-intro) before about my open-source app, [Panthalia](https://github.com/zackproser/panthalia), empowers me to author media rich blog posts in a streamlined fashion even while traveling and away from my keyboard, by 
-programmatically making changes to my portfolio site project.
+I've made a [video](/videos/panthalia-intro) before about how my open-source app, [Panthalia](https://github.com/zackproser/panthalia), empowers me to author media rich blog posts in a streamlined fashion even while traveling and away from my keyboard, by 
+converting the words I speak and type into my phone into fully fledged blog posts on my site [zackproser.com](https://zackproser.com).
 
-My portfolio site, which you're currently reading on zackproser.com, is [also a Next.js project that is open-source and stored on GitHub](https://github.com/zackproser/portfolio).
+Zackproser.com or, my portfolio site, as I refer to it is [also a Next.js project that is open-source and stored on GitHub](https://github.com/zackproser/portfolio).
 
 ## The problem(s)
 
-The entire purpose of Panthalia is to be the ideal mobile-first interface to my own portfolio website, specifically its blog posts. 
+Panthalia is designed to be the ideal mobile-first interface for publishing blog posts on my personal website.
 
 The idea is that I'm out and about doing errands,
 I'm struck by a new post idea, and I decide to just commence the entire post right then and there from my phone. 
