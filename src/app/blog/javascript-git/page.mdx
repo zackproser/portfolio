@@ -1,0 +1,187 @@
+
+import drunkWithPower from '@/images/drunk-with-power.webp' 
+import panthaliaGitFlow from '@/images/panthalia-git-flow.webp'
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Git operations in JavaScript for pain and profit",
+ author: "Zachary Proser",
+ date: "2024-4-7",
+ description: "You can run git wherever JavaScript is accepted. Should you?",
+ image: drunkWithPower,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={metadata.image} alt={metadata.title} />
+
+What do you do if you need to run git in a context where you cannot install whatever you want? What if you need to run git 
+in a serverless environment that only supports JavaScript?
+
+In [How to run background jobs on Vercel without a queue](/blog/how-to-run-background-jobs-on-vercel-without-a-queue), I wrote about how to keep the API route that accepts new jobs snappy and responsive using fire-and-forget functions.
+
+In this post, I'll demonstrate how you can use `isomorphic-git` even where you can't install git via a traditional package manager like `apt`, ship a new Docker image or update the build script. In this case, we're running 
+git within our Vercel serverless functions.
+
+## Table of contents
+
+
+## The problem
+
+I'm developing a tool for myself to streamline my blog post authoring workflow, called [Panthalia](https://github.com/zackproser/panthalia).
+
+The mobile client allows me to author new blog posts rapidly, because I tend to have several new post ideas at one time. This means the name of the game is capture speed.
+
+<Image src={panthaliaGitFlow} alt="Panthalia workflow" />
+<figcaption>The workflow that Panthalia performs to make changes to my website that hosts my blog</figcaption>
+
+As you can see in the above flow diagram, Panthalia makes changes to my site via git. It clones my site, adds new posts, pushes changes up on a new branch and uses a GitHub token to open pull requests. 
+
+## Running git where you can't run git
+
+Git is required in this flow. Sure, there are some funky ways I could leverage GitHub's API to modify content out of band, but for reliability and atomic operations, I wanted to use git. 
+
+My portfolio site which hosts my blog, and Panthalia, which modifies my site via git, are both Next.js projects deployed on Vercel. 
+
+This means that any API routes I create in these two apps will be automatically split out into Vercel serverless functions upon deployment. 
+
+I can't modify their build scripts. I can't use apt to install git. I can't update a Docker image to include the tools I need. It's JavaScript or bust. 
+
+Enter the impressive [`isomorphic-git`](https://www.npmjs.com/package/isomorphic-git) project. You can `npm install` or `pnpm add isomorphic-git` like any other package to install it.
+
+`isomorphic-git` allows you to clone, fetch, stage and commit changes and operate on branches using a familiar API.
+
+## Git operations in JavaScript
+
+Let's take a look at the method that clones my site and creates a new branch based on the new blog post title: 
+
+```javascript
+// Convenience method to clone my portfolio repo and checkout the supplied branch
+export async function cloneRepoAndCheckoutBranch(branchName: string) {
+  try {
+    // Wipe away previous clones and re-clone
+    await freshClone();
+    // Check if the branch already exists locally, if not, fetch it
+    const localBranches = await git.listBranches({ fs, dir: clonePath });
+    if (!localBranches.includes(branchName)) {
+      console.log(`Branch ${branchName} not found locally. Fetching...`);
+      await git.fetch({
+        fs,
+        http,
+        dir: clonePath,
+        ref: branchName,
+        depth: 1,
+        singleBranch: true,
+        onAuth: () => ({ username: 'git', password: process.env.GITHUB_TOKEN }),
+      });
+    }
+
+    // Checkout the existing branch
+    await git.checkout({
+      fs,
+      dir: clonePath,
+      ref: branchName,
+    });
+
+    console.log(`Successfully checked out branch: ${branchName}`);
+
+  } catch (err) {
+    console.log(`cloneRepoAndCheckoutBranch: Error during git operations: ${err}`);
+    return null;
+  }
+}
+```
+
+Here are the convenience methods I created to simplify wiping any pre-existing clones and starting afresh. 
+
+```javascript
+// Convenience method to wipe previous repo and re-clone it fresh
+export async function freshClone() {
+  // Blow away any previous clones 
+  await wipeClone();
+
+  // Clone the repo
+  await cloneRepo();
+}
+
+// Convenience method to clone my portfolio repo and checkout the main branch
+export async function cloneRepo() {
+  await git.clone({
+    fs,
+    http,
+    dir: clonePath,
+    url: 'https://github.com/zackproser/portfolio.git',
+    singleBranch: true,
+    depth: 1,
+    ref: 'main',
+  });
+
+  console.log('Repo successfully cloned.');
+}
+
+// Wipe the clone directory
+export async function wipeClone() {
+  if (fs.existsSync(clonePath)) {
+    await rmdir(process.env.CLONE_PATH, { recursive: true });
+    console.log('Previously existing clone directory removed.');
+  } else {
+    console.log('No clone directory to remove...');
+  }
+}
+```
+
+## Git in the time of serverless
+
+Vercel's serverless functions do expose a filesystem that you can write to. I set a `CLONE_PATH` environment variable that defaults to `/tmp/repo`. 
+
+There are also timing considerations. Vercel functions can run for up to 5 minutes on the Pro plan, so I don't wany any particular API route's work to be 
+terminated due to a timeout. 
+
+That's why I perform a shallow clone - meaning only the latest commit - and I configure the `singleBranch` option to only grab the main branch. 
+
+Given that my portfolio site has a decent amount of history and a lot of images, these two changes cut down 
+cloning time from a few minutes to about 30 seconds.
+
+There's also the asynchronous nature of the compute environment Vercel functions are running in. 
+
+One of the reasons I do a full wipe and clone is that 
+I always want my operations to be idempotent, but I can't be sure whether a given serverless function invocation will or will not have access to a previously cloned repo
+in the temporary directory. 
+
+
+## Authentication considerations with JavaScript-based git
+
+My portfolio site, [github.com/zackproser/portfolio](https://github.com/zackproser/portfolio) is open-source and public, so I don't need any credentials to clone it. 
+
+However, once Panthalia has cloned my repo, created a new branch and committed the changes to add my new blog post, it does need to present a 
+GitHub token when pushing my changes. 
+
+You present a token using the `onAuth` callback in `isomorphic-git`. I recommend storing your GitHub token as an environment variable locally and in Vercel: 
+
+```javascript
+// Push the commit
+await git.push({
+  fs,
+  http,
+  dir: process.env.CLONE_PATH,
+  remote: 'origin',
+  ref: branchName,
+  force: true,
+  onAuth: () => ({ username: 'git', password: process.env.GITHUB_TOKEN }),
+  }).then(() => {
+   console.log(`Successfully git pushed changes.`);
+  })
+
+```
+
+## Wrapping up
+
+I knew that I wanted to ship Next.js and deploy it on Vercel because the developer experience is so delightful (and fast). This meant that I couldn't use the traditional git client 
+in the JavaScript serverless function context. 
+
+The [isomorphic-git project](https://isomorphic-git.org/) allows me to implement a complete programmatic git workflow in my Next.js app running on Vercel, and it works very well.
