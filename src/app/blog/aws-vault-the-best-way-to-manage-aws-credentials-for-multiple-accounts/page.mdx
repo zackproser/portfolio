@@ -1,0 +1,52 @@
+
+import aBeautifulAndBrightPixelArtImImage from '/src/images/a-beautiful-and-bright-pixel-art-im.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "aws-vault - the best way to manage AWS credentials for multiple accounts",
+ author: "Zachary Proser",
+ date: "2024-4-8",
+ description: "aws-vault is an excellent open-source tool written in Golang that allows you to manage the credentials for multiple AWS accounts securely. ",
+ image: aBeautifulAndBrightPixelArtImImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+One of the best open-source tools for working with AWS that you haven't heard about is aws-vault. 
+
+https://github.com/99designs/aws-vault
+
+Back at Gruntwork, where we did complex multi-account deployments into AWS for customers everyday, aws-vault was a standard issue tool.
+
+Here's what aws-vault can do for you: 
+
+**Prevent you from hard-coding or exposing your permanent AWS credentials** like your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY - aws-vault contacts AWS's Secure Token Service (STS) in order to obtain and use temporary credentials that you can use to allow your scripts or command to interact with AWS resources securely. 
+
+It uses your operating systems secure keychain or equivalent secret store to keep your actual secrets safe. 
+
+If these credentials get popped somehow, they expire shortly. If you hard code your keys or write them into your shell environment, you're always at risk of accidentally exposing them, which is triply bad if these are credentials to your customer's accounts.
+
+ **Sanely manage multiple AWS accounts easily** - each with its own custom alias. This allows you to `$ aws-vault exec staging -- aws s3 ls` in order to list all your S3 buckets in your staging account. Switching to prod is then as easy as `$ aws-vault exec prod -- aws s3 ls` 
+
+**Interoperate with AWS IAM credentials and IAM roles**
+aws-vault supports both IAM credentials (for individual IAM users) as well as IAM roles, which are preferred from a security and auditability perspective. For example: 
+
+[default]
+region = us-east-1
+
+[profile jonsmith]
+mfa_serial = arn:aws:iam::111111111111:mfa/jonsmith
+
+[profile foo-readonly]
+source_profile = jonsmith
+role_arn = arn:aws:iam::22222222222:role/ReadOnly
+
+[profile foo-admin]
+source_profile = jonsmith
+role_arn = arn:aws:iam::22222222222:role/Administrator
+mfa_serial = arn:aws:iam::111111111111:mfa/jonsmith
