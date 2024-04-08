@@ -1,5 +1,4 @@
-
-import aBeautifulAndBrightPixelArtImImage from '/src/images/a-beautiful-and-bright-pixel-art-im.png' 
+import awsVault from '/src/images/aws-vault.webp' 
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
@@ -12,7 +11,7 @@ export const metadata = {
  author: "Zachary Proser",
  date: "2024-4-8",
  description: "aws-vault is an excellent open-source tool written in Golang that allows you to manage the credentials for multiple AWS accounts securely. ",
- image: aBeautifulAndBrightPixelArtImImage,
+ image: awsVault,
 } 
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
@@ -23,6 +22,10 @@ https://github.com/99designs/aws-vault
 
 Back at Gruntwork, where we did complex multi-account deployments into AWS for customers everyday, aws-vault was a standard issue tool.
 
+## Table of contents
+
+## aws-vault makes you more secure 
+
 Here's what aws-vault can do for you: 
 
 **Prevent you from hard-coding or exposing your permanent AWS credentials** like your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY - aws-vault contacts AWS's Secure Token Service (STS) in order to obtain and use temporary credentials that you can use to allow your scripts or command to interact with AWS resources securely. 
@@ -31,10 +34,11 @@ It uses your operating systems secure keychain or equivalent secret store to kee
 
 If these credentials get popped somehow, they expire shortly. If you hard code your keys or write them into your shell environment, you're always at risk of accidentally exposing them, which is triply bad if these are credentials to your customer's accounts.
 
- **Sanely manage multiple AWS accounts easily** - each with its own custom alias. This allows you to `$ aws-vault exec staging -- aws s3 ls` in order to list all your S3 buckets in your staging account. Switching to prod is then as easy as `$ aws-vault exec prod -- aws s3 ls` 
+**Sanely manage multiple AWS accounts easily** - each with its own custom alias. This allows you to `$ aws-vault exec staging -- aws s3 ls` in order to list all your S3 buckets in your staging account. Switching to prod is then as easy as `$ aws-vault exec prod -- aws s3 ls` 
 
-**Interoperate with AWS IAM credentials and IAM roles**
+## Interoperate with AWS IAM credentials and IAM roles
 aws-vault supports both IAM credentials (for individual IAM users) as well as IAM roles, which are preferred from a security and auditability perspective. For example: 
+
 
 [default]
 region = us-east-1
@@ -50,3 +54,22 @@ role_arn = arn:aws:iam::22222222222:role/ReadOnly
 source_profile = jonsmith
 role_arn = arn:aws:iam::22222222222:role/Administrator
 mfa_serial = arn:aws:iam::111111111111:mfa/jonsmith
+
+
+## aws-vault makes you faster
+
+In addition to the security benefits, aws-vault makes you faster: 
+
+### Logging in to the console via aws-vault 
+
+aws-vault exec login <profile-name>
+
+### Logging into the console via aws-vault when using container tabs
+
+Need to paste the login string into a browser tab? Perhaps because you're using separate browser tabs for each account?
+
+Pass the `-s` flag to get the full string back, which you can then pipe to a copy utility (which will change depending on your platform) `pbcopy` (on Osx) or `xsel` (on Linux).
+
+### Quickly executing arbitrary commands via the AWS command line tool
+
+`aws-vault exec aws -- aws s3 ls`
