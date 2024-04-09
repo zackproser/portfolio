@@ -1,0 +1,29 @@
+
+import UnknownImage from '/src/images/undefined.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Trace the system in your head ",
+ author: "Zachary Proser",
+ date: "2024-4-9",
+ description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
+ image: UnknownImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+Trace the whole system in your head
+
+even the parts that don't belong to your team
+
+especially the joints where your teams code integrates 
+
+
+we'll call him Tom because his real name is Tom. 
+
+He knew everyone's systems better than they did and could facilitate and cut through the bs in meetings due to his deeper technical knowledge
