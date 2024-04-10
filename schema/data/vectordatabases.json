@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Pinecone",
+    "open_source": false,
+    "run_locally": false,
+    "fully_managed": true,
+    "sdks": ["Python", "Java"],
+    "performance": "High",
+    "scalability": "Auto-scaling",
+    "support": "Dedicated support for enterprise",
+    "community": "Growing"
+  },
+  {
+    "name": "Chroma",
+    "open_source": false,
+    "run_locally": true,
+    "fully_managed": false,
+    "sdks": ["Python"],
+    "performance": "High",
+    "scalability": "Manual scaling",
+    "support": "Community support",
+    "community": "Emerging"
+  },
+  {
+    "name": "Weaviate",
+    "open_source": true,
+    "run_locally": true,
+    "fully_managed": false,
+    "sdks": ["Python", "Go"],
+    "performance": "Moderate to High",
+    "scalability": "Manual scaling",
+    "support": "Community and commercial support",
+    "community": "Strong"
+  }
+]
+
