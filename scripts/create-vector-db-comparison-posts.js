@@ -13,8 +13,6 @@ const extractDateFromContent = (content) => {
 };
 
 const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
-const currentDate = new Date();
-const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
 const generatePostContent = (db1, db2, existingDate) => {
 
@@ -32,7 +30,7 @@ import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
 export const metadata = {
   title: "${db1.name} vs ${db2.name}",
   author: "Zachary Proser",
-  date: "${formattedDate}",
+  date: "${dateToUse}",
   description: "A detailed comparison of the ${db1.name} and ${db2.name} vector databases",
   image: vectorDatabasesCompared
 }
