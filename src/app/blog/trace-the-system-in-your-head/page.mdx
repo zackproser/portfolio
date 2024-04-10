@@ -1,0 +1,49 @@
+import traceTheSystem from '/src/images/trace-the-system-in-your-head.webp' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Trace the system in your head",
+ author: "Zachary Proser",
+ date: "2024-4-10",
+ description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
+ image: traceTheSystem,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={traceTheSystem} alt="Trace the system in your head" height={600} />
+
+One of the best engineering managers I've ever worked with was at Cloudflare.
+
+Let's call him Tom, because [his real name is Thomas Hill](https://www.linkedin.com/in/thomas-hill-6ab4b06/). 
+
+What did Tom do in his free time when he first arrived at Cloudflare? Read version control. 
+
+Especially the joints where his team's code integrated with that of other teams.
+
+What was the result of his lucubration?
+
+Tom knew everyone's systems better than they did and could facilitate and cut through the bullshit in meetings due to his deeper technical knowledge.
+
+When he found himself in a contentious debate, or in a situation where another EM was trying to foist something onto his team that didn't really belong to us, Tom 
+had the upper hand because he'd already done all the research. 
+
+I remember being somewhat in awe of this ability of Tom's. Someone from the security team might wander into our sector wanting to know more about how API keys were generated and managed. 
+
+Tom recited it from memory even though he was not expected to be shipping code himself.
+
+There are a couple of caveats to this approach: 
+
+1. You need to work at a large enough organization to have multiple teams but central version control
+2. You need to care enough to be good at what you do. This won't work if you're trying to phone it in
+
+The longer I do this job, the more I notice the most effective developers and technical leaders doing the same thing. They have an impressive map of their company's territory in their heads. 
+
+They can point you to where you need to go - even if they haven't committed to the repositories they're referring to. 
+
+Trace the whole system in your head. Even the parts that don't belong to your team!
