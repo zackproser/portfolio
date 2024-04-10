@@ -1,0 +1,252 @@
+[{
+    "name": "Pinecone",
+    "deployment": {
+      "local": false,
+      "cloud": true,
+      "on_premises": false
+    },
+    "scalability": {
+      "horizontal": true,
+      "vertical": false,
+      "distributed": true
+    },
+    "data_management": {
+      "import": true,
+      "update_deletion": true,
+      "backup_restore": false
+    },
+    "vector_similarity_search": {
+      "distance_metrics": ["Cosine", "Euclidean"],
+      "ann_algorithms": ["Custom"],
+      "filtering": true,
+      "post_processing": false
+    },
+    "integration_api": {
+      "sdks": ["Python"],
+      "rest_api": true,
+      "graphql_api": false,
+      "grpc_api": false
+    },
+    "security": {
+      "authentication": true,
+      "encryption": true,
+      "access_control": true
+    },
+    "community_ecosystem": {
+      "open_source": false,
+      "community_support": true,
+      "integration_frameworks": []
+    },
+    "pricing": {
+      "free_tier": true,
+      "pay_as_you_go": true,
+      "enterprise_plans": true
+    },
+    "additional_features": {
+      "metadata_support": true,
+      "batch_processing": true,
+      "monitoring_logging": true
+    }
+  },
+  {
+    "name": "Weaviate",
+    "deployment": {
+      "local": true,
+      "cloud": true,
+      "on_premises": true
+    },
+    "scalability": {
+      "horizontal": true,
+      "vertical": true,
+      "distributed": true
+    },
+    "data_management": {
+      "import": true,
+      "update_deletion": true,
+      "backup_restore": true
+    },
+    "vector_similarity_search": {
+      "distance_metrics": ["Cosine", "Euclidean", "Jaccard"],
+      "ann_algorithms": ["HNSW", "Beam Search"],
+      "filtering": true,
+      "post_processing": true
+    },
+    "integration_api": {
+      "sdks": ["Python", "Go", "JavaScript"],
+      "rest_api": true,
+      "graphql_api": true,
+      "grpc_api": false
+    },
+    "security": {
+      "authentication": true,
+      "encryption": true,
+      "access_control": true
+    },
+    "community_ecosystem": {
+      "open_source": true,
+      "community_support": true,
+      "integration_frameworks": ["TensorFlow", "PyTorch"]
+    },
+    "pricing": {
+      "free_tier": false,
+      "pay_as_you_go": false,
+      "enterprise_plans": true
+    },
+    "additional_features": {
+      "metadata_support": true,
+      "batch_processing": true,
+      "monitoring_logging": true
+    }
+  },
+  {
+    "name": "FAISS",
+    "deployment": {
+      "local": true,
+      "cloud": false,
+      "on_premises": true
+    },
+    "scalability": {
+      "horizontal": false,
+      "vertical": true,
+      "distributed": false
+    },
+    "data_management": {
+      "import": true,
+      "update_deletion": true,
+      "backup_restore": false
+    },
+    "vector_similarity_search": {
+      "distance_metrics": ["Euclidean", "Inner Product"],
+      "ann_algorithms": ["IVF", "HNSW", "Flat"],
+      "filtering": false,
+      "post_processing": false
+    },
+    "integration_api": {
+      "sdks": ["Python"],
+      "rest_api": false,
+      "graphql_api": false,
+      "grpc_api": false
+    },
+    "security": {
+      "authentication": false,
+      "encryption": false,
+      "access_control": false
+    },
+    "community_ecosystem": {
+      "open_source": true,
+      "community_support": true,
+      "integration_frameworks": []
+    },
+    "pricing": {
+      "free_tier": true,
+      "pay_as_you_go": false,
+      "enterprise_plans": false
+    },
+    "additional_features": {
+      "metadata_support": false,
+      "batch_processing": true,
+      "monitoring_logging": false
+    }
+  },
+  {
+    "name": "Chroma",
+    "deployment": {
+      "local": true,
+      "cloud": true,
+      "on_premises": true
+    },
+    "scalability": {
+      "horizontal": true,
+      "vertical": true,
+      "distributed": true
+    },
+    "data_management": {
+      "import": true,
+      "update_deletion": true,
+      "backup_restore": true
+    },
+    "vector_similarity_search": {
+      "distance_metrics": ["Cosine", "Euclidean"],
+      "ann_algorithms": ["Custom"],
+      "filtering": true,
+      "post_processing": true
+    },
+    "integration_api": {
+      "sdks": ["Python"],
+      "rest_api": true,
+      "graphql_api": false,
+      "grpc_api": false
+    },
+    "security": {
+      "authentication": true,
+      "encryption": true,
+      "access_control": true
+    },
+    "community_ecosystem": {
+      "open_source": true,
+      "community_support": true,
+      "integration_frameworks": []
+    },
+    "pricing": {
+      "free_tier": false,
+      "pay_as_you_go": true,
+      "enterprise_plans": true
+    },
+    "additional_features": {
+      "metadata_support": true,
+      "batch_processing": true,
+      "monitoring_logging": true
+    }
+  },
+  {
+    "name": "Milvus",
+    "deployment": {
+      "local": true,
+      "cloud": true,
+      "on_premises": true
+    },
+    "scalability": {
+      "horizontal": true,
+      "vertical": false,
+      "distributed": true
+    },
+    "data_management": {
+      "import": true,
+      "update_deletion": true,
+      "backup_restore": true
+    },
+    "vector_similarity_search": {
+      "distance_metrics": ["Euclidean", "Cosine", "Jaccard"],
+      "ann_algorithms": ["IVF", "HNSW", "Flat"],
+      "filtering": true,
+      "post_processing": true
+    },
+    "integration_api": {
+      "sdks": ["Python", "Java", "Go"],
+      "rest_api": true,
+      "graphql_api": false,
+      "grpc_api": false
+    },
+    "security": {
+      "authentication": true,
+      "encryption": false,
+      "access_control": true
+    },
+    "community_ecosystem": {
+      "open_source": true,
+      "community_support": true,
+      "integration_frameworks": ["PyTorch", "TensorFlow"]
+    },
+    "pricing": {
+      "free_tier": true,
+      "pay_as_you_go": false,
+      "enterprise_plans": true
+    },
+    "additional_features": {
+      "metadata_support": true,
+      "batch_processing": true,
+      "monitoring_logging": true
+    }
+  }
+]
+
