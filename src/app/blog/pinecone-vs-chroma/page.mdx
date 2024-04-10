@@ -1,0 +1,87 @@
+
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
+
+export const metadata = {
+  title: "Pinecone vs Chroma",
+  author: "Zachary Proser",
+  date: "2024-4-10",
+  description: "A detailed comparison of the Pinecone and Chroma vector databases",
+  image: vectorDatabasesCompared
+}
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={vectorDatabasesCompared} alt="vector databases compared" />
+
+## Table of contents
+
+## vector database comparison: Pinecone vs Chroma
+
+This page contains a detailed comparison of the Pinecone and Chroma vector databases.
+
+You can also check out my [detailed breakdown of the most popular vector databases here](/blog/vector-databases-compared). 
+
+## Deployment Options
+  | Feature | Pinecone | Chroma |
+| ---------| -------------| -------------|
+| Local Deployment | ❌ | ✅ |
+| Cloud Deployment | ✅ | ✅ |
+| On - Premises Deployment | ❌ | ✅ |
+
+## Scalability
+  | Feature | Pinecone | Chroma |
+| ---------| -------------| -------------|
+| Horizontal Scaling | ✅ | ✅ |
+| Vertical Scaling | ❌ | ✅ |
+| Distributed Architecture | ✅ | ✅ |
+
+## Data Management
+  | Feature | Pinecone | Chroma |
+| ---------| -------------| -------------|
+| Data Import | ✅ | ✅ |
+| Data Update / Deletion | ✅ | ✅ |
+| Data Backup / Restore | ❌ | ✅ |
+
+## Security
+  | Feature | Pinecone | Chroma |
+| ---------| -------------| -------------|
+| Authentication | ✅ | ✅ |
+| Data Encryption | ✅ | ✅ |
+| Access Control | ✅ | ✅ |
+
+## Vector Similarity Search
+| Feature | Pinecone | Chroma |
+|---------|-------------|-------------|
+| Distance Metrics | Cosine, Euclidean | Cosine, Euclidean |
+| ANN Algorithms | Custom | Custom |
+| Filtering | ✅ | ✅ |
+| Post-Processing | ❌ | ✅ |
+
+## Integration and API
+| Feature | Pinecone | Chroma |
+|---------|-------------|-------------|
+| Language SDKs | Python | Python |
+| REST API | ✅ | ✅ |
+| GraphQL API | ❌ | ❌ |
+| GRPC API | ❌ | ❌ |
+
+## Community and Ecosystem
+| Feature | Pinecone | Chroma |
+|---------|-------------|-------------|
+| Open-Source | ❌ | ✅ |
+| Community Support | ✅ | ✅ |
+| Integration with Frameworks | ✅ | ✅ |
+
+## Pricing
+| Feature | Pinecone | Chroma |
+|---------|-------------|-------------|
+| Free Tier | ✅ | ❌ |
+| Pay-as-you-go | ✅ | ✅ |
+| Enterprise Plans | ✅ | ✅ |
+  
