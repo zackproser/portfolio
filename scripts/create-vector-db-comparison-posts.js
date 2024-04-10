@@ -6,11 +6,20 @@ const databases = require('../schema/data/vectordatabases.json')
 const checkMark = '✅';
 const crossMark = '❌';
 
+const extractDateFromContent = (content) => {
+  const dateRegex = /date: "(\d{4}-\d{1,2}-\d{1,2})"/;
+  const match = content.match(dateRegex);
+  return match ? match[1] : null;
+};
+
 const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
 const currentDate = new Date();
 const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
-const generatePostContent = (db1, db2) => {
+const generatePostContent = (db1, db2, existingDate) => {
+
+  const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
+
   return `
 
 import { ArticleLayout } from '@/components/ArticleLayout'
@@ -18,17 +27,21 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
 
 export const metadata = {
   title: "${db1.name} vs ${db2.name}",
   author: "Zachary Proser",
   date: "${formattedDate}",
   description: "A detailed comparison of the ${db1.name} and ${db2.name} vector databases",
+  image: vectorDatabasesCompared
 }
 
-## Table of contents
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
+<Image src={vectorDatabasesCompared} alt="vector databases compared" />
+
+## Table of contents
 
 ## vector database comparison: ${db1.name} vs ${db2.name}
 
@@ -93,8 +106,6 @@ You can also check out my [detailed breakdown of the most popular vector databas
 | Free Tier | ${featureSupported(db1.pricing.free_tier)} | ${featureSupported(db2.pricing.free_tier)} |
 | Pay-as-you-go | ${featureSupported(db1.pricing.pay_as_you_go)} | ${featureSupported(db2.pricing.pay_as_you_go)} |
 | Enterprise Plans | ${featureSupported(db1.pricing.enterprise_plans)} | ${featureSupported(db2.pricing.enterprise_plans)} |
-
-
   `
 };
 
@@ -112,13 +123,23 @@ const combinations = generateCombinations(databases);
 
 combinations.forEach(([db1, db2], _index) => {
   try {
-    const content = generatePostContent(db1, db2);
     const dir = path.join(process.env.PWD, `/src/app/blog/${db1.name.toLowerCase()}-vs-${db2.name.toLowerCase()}`)
     const filename = `${dir}/page.mdx`
-    console.log(`Create directory: ${dir}`)
-    fs.mkdirSync(dir, { recursive: true });
-    console.log(`Writing content: ${content} to path: ${filename}`)
+
+    let existingDate = null;
+
+    if (fs.existsSync(filename)) {
+      const existingContent = fs.readFileSync(filename, 'utf8');
+      existingDate = extractDateFromContent(existingContent);
+    }
+
+    const content = generatePostContent(db1, db2, existingDate);
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
+    console.log(`Generated content for ${db1.name} vs ${db2.name} and wrote to ${filename}`);
   } catch (error) {
     console.error(`Error generating post for: ${db1.name} vs ${db2.name}: ${error}`);
   }
