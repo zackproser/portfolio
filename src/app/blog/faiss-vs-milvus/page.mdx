@@ -8,10 +8,10 @@ import Link from 'next/link'
 import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
 
 export const metadata = {
-  title: "Pinecone vs Chroma",
+  title: "FAISS vs Milvus",
   author: "Zachary Proser",
   date: "2024-4-10",
-  description: "A detailed comparison of the Pinecone and Chroma vector databases",
+  description: "A detailed comparison of the FAISS and Milvus vector databases",
   image: vectorDatabasesCompared
 }
 
@@ -21,67 +21,67 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Table of contents
 
-## vector database comparison: Pinecone vs Chroma
+## vector database comparison: FAISS vs Milvus
 
-This page contains a detailed comparison of the Pinecone and Chroma vector databases.
+This page contains a detailed comparison of the FAISS and Milvus vector databases.
 
 You can also check out my [detailed breakdown of the most popular vector databases here](/blog/vector-databases-compared). 
 
 ## Deployment Options
-  | Feature | Pinecone | Chroma |
+  | Feature | FAISS | Milvus |
 | ---------| -------------| -------------|
-| Local Deployment | ❌ | ✅ |
-| Cloud Deployment | ✅ | ✅ |
-| On - Premises Deployment | ❌ | ✅ |
+| Local Deployment | ✅ | ✅ |
+| Cloud Deployment | ❌ | ❌ |
+| On - Premises Deployment | ✅ | ✅ |
 
 ## Scalability
-  | Feature | Pinecone | Chroma |
+  | Feature | FAISS | Milvus |
 | ---------| -------------| -------------|
-| Horizontal Scaling | ✅ | ✅ |
-| Vertical Scaling | ❌ | ✅ |
-| Distributed Architecture | ✅ | ✅ |
+| Horizontal Scaling | ❌ | ✅ |
+| Vertical Scaling | ✅ | ❌ |
+| Distributed Architecture | ❌ | ✅ |
 
 ## Data Management
-  | Feature | Pinecone | Chroma |
+  | Feature | FAISS | Milvus |
 | ---------| -------------| -------------|
 | Data Import | ✅ | ✅ |
 | Data Update / Deletion | ✅ | ✅ |
 | Data Backup / Restore | ❌ | ✅ |
 
 ## Security
-  | Feature | Pinecone | Chroma |
+  | Feature | FAISS | Milvus |
 | ---------| -------------| -------------|
-| Authentication | ✅ | ✅ |
-| Data Encryption | ✅ | ✅ |
-| Access Control | ✅ | ✅ |
+| Authentication | ❌ | ✅ |
+| Data Encryption | ❌ | ❌ |
+| Access Control | ❌ | ✅ |
 
 ## Vector Similarity Search
-| Feature | Pinecone | Chroma |
+| Feature | FAISS | Milvus |
 |---------|-------------|-------------|
-| Distance Metrics | Cosine, Euclidean | Cosine, Euclidean |
-| ANN Algorithms | Custom | Custom |
-| Filtering | ✅ | ✅ |
+| Distance Metrics | Euclidean, Inner Product | Euclidean, Cosine, Jaccard |
+| ANN Algorithms | IVF, HNSW, Flat | IVF, HNSW, Flat |
+| Filtering | ❌ | ✅ |
 | Post-Processing | ❌ | ✅ |
 
 ## Integration and API
-| Feature | Pinecone | Chroma |
+| Feature | FAISS | Milvus |
 |---------|-------------|-------------|
-| Language SDKs | Python | Python |
-| REST API | ✅ | ✅ |
+| Language SDKs |  | Python, Java, Go |
+| REST API | ❌ | ✅ |
 | GraphQL API | ❌ | ❌ |
 | GRPC API | ❌ | ❌ |
 
 ## Community and Ecosystem
-| Feature | Pinecone | Chroma |
+| Feature | FAISS | Milvus |
 |---------|-------------|-------------|
-| Open-Source | ❌ | ✅ |
+| Open-Source | ✅ | ✅ |
 | Community Support | ✅ | ✅ |
 | Integration with Frameworks | ✅ | ✅ |
 
 ## Pricing
-| Feature | Pinecone | Chroma |
+| Feature | FAISS | Milvus |
 |---------|-------------|-------------|
-| Free Tier | ✅ | ❌ |
-| Pay-as-you-go | ✅ | ✅ |
-| Enterprise Plans | ✅ | ✅ |
+| Free Tier | ✅ | ✅ |
+| Pay-as-you-go | ❌ | ❌ |
+| Enterprise Plans | ❌ | ✅ |
   
