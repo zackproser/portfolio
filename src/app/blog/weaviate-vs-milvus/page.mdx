@@ -1,0 +1,87 @@
+
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
+
+export const metadata = {
+  title: "Weaviate vs Milvus",
+  author: "Zachary Proser",
+  date: "2024-4-10",
+  description: "A detailed comparison of the Weaviate and Milvus vector databases",
+  image: vectorDatabasesCompared
+}
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={vectorDatabasesCompared} alt="vector databases compared" />
+
+## Table of contents
+
+## vector database comparison: Weaviate vs Milvus
+
+This page contains a detailed comparison of the Weaviate and Milvus vector databases.
+
+You can also check out my [detailed breakdown of the most popular vector databases here](/blog/vector-databases-compared). 
+
+## Deployment Options
+  | Feature | Weaviate | Milvus |
+| ---------| -------------| -------------|
+| Local Deployment | ✅ | ✅ |
+| Cloud Deployment | ✅ | ❌ |
+| On - Premises Deployment | ✅ | ✅ |
+
+## Scalability
+  | Feature | Weaviate | Milvus |
+| ---------| -------------| -------------|
+| Horizontal Scaling | ✅ | ✅ |
+| Vertical Scaling | ✅ | ❌ |
+| Distributed Architecture | ✅ | ✅ |
+
+## Data Management
+  | Feature | Weaviate | Milvus |
+| ---------| -------------| -------------|
+| Data Import | ✅ | ✅ |
+| Data Update / Deletion | ✅ | ✅ |
+| Data Backup / Restore | ✅ | ✅ |
+
+## Security
+  | Feature | Weaviate | Milvus |
+| ---------| -------------| -------------|
+| Authentication | ✅ | ✅ |
+| Data Encryption | ✅ | ❌ |
+| Access Control | ✅ | ✅ |
+
+## Vector Similarity Search
+| Feature | Weaviate | Milvus |
+|---------|-------------|-------------|
+| Distance Metrics | Cosine, Euclidean, Jaccard | Euclidean, Cosine, Jaccard |
+| ANN Algorithms | HNSW, Beam Search | IVF, HNSW, Flat |
+| Filtering | ✅ | ✅ |
+| Post-Processing | ✅ | ✅ |
+
+## Integration and API
+| Feature | Weaviate | Milvus |
+|---------|-------------|-------------|
+| Language SDKs | Python, Go, JavaScript | Python, Java, Go |
+| REST API | ✅ | ✅ |
+| GraphQL API | ✅ | ❌ |
+| GRPC API | ❌ | ❌ |
+
+## Community and Ecosystem
+| Feature | Weaviate | Milvus |
+|---------|-------------|-------------|
+| Open-Source | ✅ | ✅ |
+| Community Support | ✅ | ✅ |
+| Integration with Frameworks | ✅ | ✅ |
+
+## Pricing
+| Feature | Weaviate | Milvus |
+|---------|-------------|-------------|
+| Free Tier | ❌ | ✅ |
+| Pay-as-you-go | ❌ | ❌ |
+| Enterprise Plans | ✅ | ✅ |
+  
