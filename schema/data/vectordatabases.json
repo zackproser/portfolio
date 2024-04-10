@@ -183,7 +183,7 @@
       "access_control": true
     },
     "community_ecosystem": {
-      "open_source": false,
+      "open_source": true,
       "community_support": true,
       "integration_frameworks": []
     },
