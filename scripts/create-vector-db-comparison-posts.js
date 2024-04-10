@@ -27,7 +27,14 @@ export const metadata = {
   description: "A detailed comparison of the ${db1.name} and ${db2.name} vector databases",
 }
 
-# Comparison: ${db1.name} vs ${db2.name}
+## Table of contents
+
+
+## vector database comparison: ${db1.name} vs ${db2.name}
+
+This page contains a detailed comparison of the ${db1.name} and ${db2.name} vector databases.
+
+You can also check out my [detailed breakdown of the most popular vector databases here](/blog/vector-databases-compared). 
 
 ## Deployment Options
   | Feature | ${db1.name} | ${db2.name} |
@@ -56,6 +63,38 @@ export const metadata = {
 | Authentication | ${featureSupported(db1.security.authentication)} | ${featureSupported(db2.security.authentication)} |
 | Data Encryption | ${featureSupported(db1.security.encryption)} | ${featureSupported(db2.security.encryption)} |
 | Access Control | ${featureSupported(db1.security.access_control)} | ${featureSupported(db2.security.access_control)} |
+
+## Vector Similarity Search
+| Feature | ${db1.name} | ${db2.name} |
+|---------|-------------|-------------|
+| Distance Metrics | ${db1.vector_similarity_search.distance_metrics.join(', ')} | ${db2.vector_similarity_search.distance_metrics.join(', ')} |
+| ANN Algorithms | ${db1.vector_similarity_search.ann_algorithms.join(', ')} | ${db2.vector_similarity_search.ann_algorithms.join(', ')} |
+| Filtering | ${featureSupported(db1.vector_similarity_search.filtering)} | ${featureSupported(db2.vector_similarity_search.filtering)} |
+| Post-Processing | ${featureSupported(db1.vector_similarity_search.post_processing)} | ${featureSupported(db2.vector_similarity_search.post_processing)} |
+
+## Integration and API
+| Feature | ${db1.name} | ${db2.name} |
+|---------|-------------|-------------|
+| Language SDKs | ${db1.integration_api.sdks.join(', ')} | ${db2.integration_api.sdks.join(', ')} |
+| REST API | ${featureSupported(db1.integration_api.rest_api)} | ${featureSupported(db2.integration_api.rest_api)} |
+| GraphQL API | ${featureSupported(db1.integration_api.graphql_api)} | ${featureSupported(db2.integration_api.graphql_api)} |
+| GRPC API | ${featureSupported(db1.integration_api.grpc_api)} | ${featureSupported(db2.integration_api.grpc_api)} |
+
+## Community and Ecosystem
+| Feature | ${db1.name} | ${db2.name} |
+|---------|-------------|-------------|
+| Open-Source | ${featureSupported(db1.community_ecosystem.open_source)} | ${featureSupported(db2.community_ecosystem.open_source)} |
+| Community Support | ${featureSupported(db1.community_ecosystem.community_support)} | ${featureSupported(db2.community_ecosystem.community_support)} |
+| Integration with Frameworks | ${featureSupported(db1.community_ecosystem.integration_frameworks)} | ${featureSupported(db2.community_ecosystem.integration_frameworks)} |
+
+## Pricing
+| Feature | ${db1.name} | ${db2.name} |
+|---------|-------------|-------------|
+| Free Tier | ${featureSupported(db1.pricing.free_tier)} | ${featureSupported(db2.pricing.free_tier)} |
+| Pay-as-you-go | ${featureSupported(db1.pricing.pay_as_you_go)} | ${featureSupported(db2.pricing.pay_as_you_go)} |
+| Enterprise Plans | ${featureSupported(db1.pricing.enterprise_plans)} | ${featureSupported(db2.pricing.enterprise_plans)} |
+
+
   `
 };
 
