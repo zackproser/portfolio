@@ -1,43 +1,62 @@
 const fs = require('fs');
 const path = require('path');
+
 const databases = require('../schema/data/vectordatabases.json')
+
+const checkMark = '✅';
+const crossMark = '❌';
+
+const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
+const currentDate = new Date();
+const formattedDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
 
 const generatePostContent = (db1, db2) => {
   return `
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+export const metadata = {
+  title: "${db1.name} vs ${db2.name}",
+  author: "Zachary Proser",
+  date: "${formattedDate}",
+  description: "A detailed comparison of the ${db1.name} and ${db2.name} vector databases",
+}
+
 # Comparison: ${db1.name} vs ${db2.name}
 
-## Open Source
-- ${db1.name}: ${db1.open_source ? 'Yes' : 'No'}
-- ${db2.name}: ${db2.open_source ? 'Yes' : 'No'}
-
-## Run Locally
-- ${db1.name}: ${db1.run_locally ? 'Yes' : 'No'}
-- ${db2.name}: ${db2.run_locally ? 'Yes' : 'No'}
-
-## Fully Managed
-- ${db1.name}: ${db1.fully_managed ? 'Yes' : 'No'}
-- ${db2.name}: ${db2.fully_managed ? 'Yes' : 'No'}
-
-## SDKs
-- ${db1.name}: ${db1.sdks.join(', ')}
-- ${db2.name}: ${db2.sdks.join(', ')}
-
-## Performance
-- ${db1.name}: ${db1.performance}
-- ${db2.name}: ${db2.performance}
+## Deployment Options
+  | Feature | ${db1.name} | ${db2.name} |
+| ---------| -------------| -------------|
+| Local Deployment | ${featureSupported(db1.deployment.local)} | ${featureSupported(db2.deployment.local)} |
+| Cloud Deployment | ${featureSupported(db1.deployment.cloud)} | ${featureSupported(db2.deployment.cloud)} |
+| On - Premises Deployment | ${featureSupported(db1.deployment.on_premises)} | ${featureSupported(db2.deployment.on_premises)} |
 
 ## Scalability
-- ${db1.name}: ${db1.scalability}
-- ${db2.name}: ${db2.scalability}
+  | Feature | ${db1.name} | ${db2.name} |
+| ---------| -------------| -------------|
+| Horizontal Scaling | ${featureSupported(db1.scalability.horizontal)} | ${featureSupported(db2.scalability.horizontal)} |
+| Vertical Scaling | ${featureSupported(db1.scalability.vertical)} | ${featureSupported(db2.scalability.vertical)} |
+| Distributed Architecture | ${featureSupported(db1.scalability.distributed)} | ${featureSupported(db2.scalability.distributed)} |
 
-## Support
-- ${db1.name}: ${db1.support}
-- ${db2.name}: ${db2.support}
+## Data Management
+  | Feature | ${db1.name} | ${db2.name} |
+| ---------| -------------| -------------|
+| Data Import | ${featureSupported(db1.data_management.import)} | ${featureSupported(db2.data_management.import)} |
+| Data Update / Deletion | ${featureSupported(db1.data_management.update_deletion)} | ${featureSupported(db2.data_management.update_deletion)} |
+| Data Backup / Restore | ${featureSupported(db1.data_management.backup_restore)} | ${featureSupported(db2.data_management.backup_restore)} |
 
-## Community
-- ${db1.name}: ${db1.community}
-- ${db2.name}: ${db2.community}
-`;
+## Security
+  | Feature | ${db1.name} | ${db2.name} |
+| ---------| -------------| -------------|
+| Authentication | ${featureSupported(db1.security.authentication)} | ${featureSupported(db2.security.authentication)} |
+| Data Encryption | ${featureSupported(db1.security.encryption)} | ${featureSupported(db2.security.encryption)} |
+| Access Control | ${featureSupported(db1.security.access_control)} | ${featureSupported(db2.security.access_control)} |
+  `
 };
 
 const generateCombinations = (databases) => {
@@ -62,6 +81,6 @@ combinations.forEach(([db1, db2], _index) => {
     console.log(`Writing content: ${content} to path: ${filename}`)
     fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
   } catch (error) {
-    console.error(`Error generating post for: ${db1.name} vs ${db2.name}`);
+    console.error(`Error generating post for: ${db1.name} vs ${db2.name}: ${error}`);
   }
 });
