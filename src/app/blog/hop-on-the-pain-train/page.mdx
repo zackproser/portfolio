@@ -1,0 +1,38 @@
+import dontPlayItSafe from '@/images/dont-play-it-safe.webp' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Hop on the pain train",
+ author: "Zachary Proser",
+ date: "2024-4-10",
+ description: "Some junior engineers are so afraid of breaking something, they paradoxically stagnage themselves",
+ image: dontPlayItSafe,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={dontPlayItSafe} alt="Dont play it safe" />
+<figcaption>Junior developers playing it real safe to avoid falling into traps</figcaption>
+
+I've noticed some junior engineers are so worried about playing it safe, not making a mistake, 
+not breaking anything, that they paradoxically end up hobbling themselves and stagnating their growth.
+
+Stagnating and failing to grow to your fullest *actually will make you more likely to be fired*.
+
+Symptoms of this condition include: avoiding raising your hand for things that seem scary like deployments, cutting releases, migrations, or feature development for tricky projects.  
+
+I think this is a real shame, because it's actually the safest and most opportune time to take the risks, make the mistakes, and learn the painful lessons 
+that will stand by you and guide you for the rest of your career.
+
+If this sounds like something you may be doing, if you currently believe you need to get N more evolutions or skills in place before you start going after what you really want to do, I invite you to rethink that. 
+
+Companies hiring you expect you to struggle and grow. They know that you are still trending toward your full potential. They may even have used that as justification to pay you less. 
+
+When the next seemingly scary migration, release, project, customer call, planning exercise, speaking event or presentation comes up...
+
+<span className="font-bold text-4xl">HOP ON THE PAIN TRAIN</span>
