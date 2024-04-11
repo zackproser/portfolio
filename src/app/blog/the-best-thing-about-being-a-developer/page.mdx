@@ -1,5 +1,5 @@
-
-import UnknownImage from '/src/images/undefined.png' 
+import bestThingAboutBeingADeveloper from '/src/images/ideal-developer-workspace.webp'
+import buildingYourOwnTools from '/src/images/building-your-own-tools.webp'
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
@@ -10,29 +10,58 @@ import Link from 'next/link'
 export const metadata = {
  title: "The best thing about being a developer ",
  author: "Zachary Proser",
- date: "2024-4-9",
+ date: "2024-4-11",
  description: "The best thing about being a developer is being able to build your own tools, to your exact specifications. ",
- image: UnknownImage,
+ image: bestThingAboutBeingADeveloper,
 } 
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
+<Image src={metadata.image} alt="The best thing about being a software developer" />
+
+## Table of contents 
+
 ## Building your own tools 
 
-Being able to build my own tools is one of the things I most appreciate about being a software developer.
+One of my favorite things about being a developer is creating my own tools. 
 
-## it's good practice 
+In some fases, this means building a tool that only I can access - one that supports login with GitHub but only allows `zackproser` through. 
 
-You're still building software and picking up new experiences when you work on pet projects 
+Most recently, I've been building [Panthalia](https://github.com/zackproser), but this post is about the benefits of building your own tools as a developer. 
 
-You quicky pick up on what UX sucks - having a janky
+## Building tools is good practice 
 
-## it's fun
+You're still building software and picking up new experiences when you work on pet projects. 
 
-## it's a singular feeling 
+You're more free when you're hacking on something for yourself. 
 
-to one day realize that the tool you've been hacking on for a while has finally turned a corner and is able to solve the original use case you set out to solve. 
+You can feel free to try out a new framework, language or architecture. 
 
-## it can be lucrative 
+## Eating your own dogdood makes you sensitive to dogfood taste 
 
-some developers polish relentlessly until their project starts getting real adoption and becomes a real revenue stream for them
+When you are both a tool's creator and primary user, you quickly pick up on which UX patterns suck.
+
+Having a janky workflow around saving your content will eventually bother you enough that you'll fix it and make it more robust. 
+
+I believe this helps you to have more compassion for the experience of end users when you're building something that is intended for wider consumption. 
+
+## It's fun
+
+<Image src={buildingYourOwnTools} alt="Building your own software tools" />
+
+Especially as the functionality you originally desired begins to take shape.
+
+## It's a singular feeling
+
+To one day realize that the tool you've been hacking on for a while has finally turned a corner and is able to solve the original use case you set out to solve. 
+
+## Tool development can be lucrative 
+
+Some developers polish relentlessly until their project starts getting real adoption and becomes a real revenue stream for them. 
+
+But this isn't the only way that building your own tools can make you money. 
+
+The skills and experience you pick up while hacking are applicable to full-time jobs, part-time gigs and contracts. In my experience, the best developers are 
+those who are constantly scratching their own technical itches by trying things out in code. 
+
+A little bit down the road, when you're using at your day job what you learned in your spare personal hacking time, you'll see the value of contantly building things for practice.
