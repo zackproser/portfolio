@@ -1,90 +1,217 @@
-[
-  {
-    "name": "GitHub Copilot",
-    "icon": "@/images/tools/github-copilot.svg",
-    "category": "Code Autocompletion",
-    "open_source": {
-      "client": false,
-      "backend": false,
-      "model": false
+{
+  "categories": [
+    {
+      "name": "Code Autocompletion",
+      "description": "Code autocompletion tools save developers time and effort by automatically suggesting and completing code snippets based on the context of the code being written."
     },
-    "ide_support": {
-      "vs_code": true,
-      "visual_studio": true,
-      "neovim": true,
-      "jetbrains": true
+    {
+      "name": "Intelligent Terminals / Shells",
+      "description": "Intelligent terminals and shells enhance the command-line experience with features like command completion, advanced history search, and AI-powered assistance."
     },
-    "pricing": "Subscription-based",
-    "free_tier": false,
-    "chat_interface": false,
-    "auto_transcription": false,
-    "image_generation": false,
-    "review_link": null
-  },
-  {
-    "name": "Codium",
-    "icon": "@/images/tools/codium.svg",
-    "category": "Code Autocompletion",
-    "open_source": {
-      "client": true,
-      "backend": false,
-      "model": false
+    {
+      "name": "Video Editing",
+      "description": "AI-assisted video editing tools simplify the video editing process by offering features like automatic transcription, editing via transcription, and intelligent suggestions."
+    }
+  ],
+  "tools": [
+    {
+      "name": "GitHub Copilot",
+      "icon": "@/images/tools/github-copilot.svg",
+      "category": "Code Autocompletion",
+      "description": "GitHub Copilot is an AI-powered code completion tool that helps developers write code faster by providing intelligent suggestions based on the context of their code.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ]
+      },
+      "free_tier": false,
+      "chat_interface": false,
+      "creator": "GitHub",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://github.com/features/copilot"
     },
-    "ide_support": {
-      "vs_code": true,
-      "visual_studio": false,
-      "neovim": false,
-      "jetbrains": false
+    {
+      "name": "Warp",
+      "icon": "@/images/tools/warp.svg",
+      "category": "Intelligent Terminals / Shells",
+      "description": "Warp is a modern terminal with AI-powered features like command completion, advanced history search, and collaboration capabilities.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Basic",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "$10 per month"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "command_completion": true,
+      "advanced_history": true,
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.warp.dev/"
     },
-    "pricing": "Free",
-    "free_tier": true,
-    "chat_interface": false,
-    "auto_transcription": false,
-    "image_generation": false,
-    "review_link": "/blog/codeium-review"
-  },
-  {
-    "name": "Warp",
-    "icon": "@/images/tools/warp.svg",
-    "category": "Terminal / Intelligent Shells",
-    "open_source": {
-      "client": false,
-      "backend": false,
-      "model": false
+    {
+      "name": "Descript",
+      "icon": "@/images/tools/descript.svg",
+      "category": "Video Editing",
+      "description": "Descript is a powerful video editing tool that allows users to edit videos by editing the transcript, making the process more intuitive and accessible.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Creator",
+            "price": "$12 per month"
+          },
+          {
+            "name": "Pro",
+            "price": "$24 per month"
+          }
+        ]
+      },
+      "free_tier": false,
+      "works_in_browser": true,
+      "supports_autotranscribe": true,
+      "edit_via_transcription": true,
+      "review_link": null,
+      "homepage_link": "https://www.descript.com/"
     },
-    "ide_support": {
-      "vs_code": false,
-      "visual_studio": false,
-      "neovim": false,
-      "jetbrains": false
+    {
+      "name": "Aider",
+      "icon": "@/images/tools/aider.svg",
+      "category": "Intelligent Terminals / Shells",
+      "description": "Aider is an AI-powered command-line tool that enables real-time pair programming with GPT models. It allows developers to edit and commit code directly in their local git repositories, offering features like voice commands and automatic commit generation with sensible messages.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Standard",
+            "price": "Free with optional paid upgrades for advanced features"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "command_completion": true,
+      "advanced_history": false,
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://aider.chat"
     },
-    "pricing": "Free with paid upgrades",
-    "free_tier": true,
-    "chat_interface": true,
-    "auto_transcription": false,
-    "image_generation": false,
-    "review_link": null
-  },
-  {
-    "name": "Descript",
-    "icon": "@/images/tools/descript.svg",
-    "category": "Video Editing",
-    "open_source": {
-      "client": false,
-      "backend": false,
-      "model": false
+    {
+      "name": "Codeium",
+      "icon": "@/images/tools/codeium.svg",
+      "category": "Code Autocompletion",
+      "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ]
+      },
+     "free_tier": true,
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "chat_interface": true,
+      "creator": "Codeium",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://codeium.com"
     },
-    "ide_support": {
-      "vs_code": false,
-      "visual_studio": false,
-      "neovim": false,
-      "jetbrains": false
-    },
-    "pricing": "Subscription-based",
-    "free_tier": false,
-    "chat_interface": false,
-    "auto_transcription": true,
-    "image_generation": false,
-    "review_link": null
-  }
-]
+    {
+      "name": "Kapwing",
+      "icon": "@/images/tools/kapwing.svg",
+      "category": "Video Editing",
+      "description": "Kapwing is an online video editor that supports a range of editing tools and features, including trimming, subtitles, and effects, with a focus on simplicity and accessibility.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "Kapwing",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.kapwing.com"
+    }
+  ]
+}
