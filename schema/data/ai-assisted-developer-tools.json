@@ -8,29 +8,18 @@
       "backend": false,
       "model": false
     },
-    "ide_support": [
-      {
-        "name": "Visual Studio Code",
-        "icon": "@/images/ides/vscode.svg"
-      },
-      {
-        "name": "Visual Studio",
-        "icon": "@/images/ides/visual-studio.svg"
-      },
-      {
-        "name": "Neovim",
-        "icon": "@/images/ides/neovim.svg"
-      },
-      {
-        "name": "JetBrains IDEs",
-        "icon": "@/images/ides/jetbrains.svg"
-      }
-    ],
+    "ide_support": {
+      "vs_code": true,
+      "visual_studio": true,
+      "neovim": true,
+      "jetbrains": true
+    },
     "pricing": "Subscription-based",
     "free_tier": false,
     "chat_interface": false,
     "auto_transcription": false,
-    "image_generation": false
+    "image_generation": false,
+    "review_link": null
   },
   {
     "name": "Codium",
@@ -41,17 +30,18 @@
       "backend": false,
       "model": false
     },
-    "ide_support": [
-      {
-        "name": "Visual Studio Code",
-        "icon": "@/images/ides/vscode.svg"
-      }
-    ],
+    "ide_support": {
+      "vs_code": true,
+      "visual_studio": false,
+      "neovim": false,
+      "jetbrains": false
+    },
     "pricing": "Free",
     "free_tier": true,
     "chat_interface": false,
     "auto_transcription": false,
-    "image_generation": false
+    "image_generation": false,
+    "review_link": "/blog/codeium-review"
   },
   {
     "name": "Warp",
@@ -62,12 +52,18 @@
       "backend": false,
       "model": false
     },
-    "ide_support": [],
+    "ide_support": {
+      "vs_code": false,
+      "visual_studio": false,
+      "neovim": false,
+      "jetbrains": false
+    },
     "pricing": "Free with paid upgrades",
     "free_tier": true,
     "chat_interface": true,
     "auto_transcription": false,
-    "image_generation": false
+    "image_generation": false,
+    "review_link": null
   },
   {
     "name": "Descript",
@@ -78,11 +74,17 @@
       "backend": false,
       "model": false
     },
-    "ide_support": [],
+    "ide_support": {
+      "vs_code": false,
+      "visual_studio": false,
+      "neovim": false,
+      "jetbrains": false
+    },
     "pricing": "Subscription-based",
     "free_tier": false,
     "chat_interface": false,
     "auto_transcription": true,
-    "image_generation": false
+    "image_generation": false,
+    "review_link": null
   }
 ]
