@@ -57,7 +57,7 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
+      "review_link": "/blog/github-copilot-review",
       "homepage_link": "https://github.com/features/copilot"
     },
     {
@@ -177,7 +177,7 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
+      "review_link": "/blog/codeium-review",
       "homepage_link": "https://codeium.com"
     },
     {
@@ -200,18 +200,334 @@
         ]
       },
       "free_tier": true,
-      "chat_interface": false,
+      "works_in_browser": true,
+      "supports_autotranscribe": true,
+      "edit_via_transcription": true,
       "creator": "Kapwing",
-      "language_support": {
-        "python": false,
-        "javascript": false,
-        "java": false,
-        "cpp": false
-      },
-      "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
       "homepage_link": "https://www.kapwing.com"
-    }
+    },
+
+{
+  "name": "Cody",
+  "icon": "@/images/tools/cody.svg",
+  "category": "Code Autocompletion",
+  "description": "Cody is an AI coding assistant that leverages Sourcegraph’s code graph to provide context-aware code completion, helping developers write, understand, and fix code more efficiently.",
+  "open_source": {
+    "client": true,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": true,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "free",
+    "tiers": [
+      {
+        "name": "Standard",
+        "price": "Free"
+      },
+      {
+        "name": "Pro",
+        "price": "Subscription based - contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "Sourcegraph",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://sourcegraph.com/cody"
+},
+{
+  "name": "Mods",
+  "icon": "@/images/tools/mods.svg",
+  "category": "Intelligent Terminals / Shells",
+  "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
+  "open_source": {
+    "client": true,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": false,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": true,
+    "emacs": true,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "free",
+    "tiers": []
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "Charm.sh",
+  "language_support": {
+    "python": false,
+    "javascript": false,
+    "java": false,
+    "cpp": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": true,
+  "review_link": null,
+  "homepage_link": "https://github.com/charmbracelet/mods"
+},
+{
+  "name": "Cursor",
+  "icon": "@/images/tools/cursor.svg",
+  "category": "Code Autocompletion",
+  "description": "Cursor is an AI-powered code editor designed for pair-programming with AI. It enhances the coding experience by offering features like real-time AI assistance, inline chat, and auto-debugging within the editor.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "free",
+    "tiers": [
+      {
+        "name": "Standard",
+        "price": "Free"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "Anysphere",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": false,
+    "cpp": false
+  },
+  "supports_local_model": true,
+  "supports_offline_use": true,
+  "review_link": null,
+  "homepage_link": "https://cursor.sh"
+},
+{
+  "name": "OpusClip",
+  "icon": "@/images/tools/opusclip.svg",
+  "category": "Video Editing",
+  "description": "OpusClip is an AI-powered video repurposing tool that transforms long videos into viral short clips. It leverages advanced AI to analyze video content, extracting and rearranging key moments into cohesive and engaging short videos optimized for social media platforms.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": false,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Free",
+        "price": "Free, limited features"
+      },
+      {
+        "name": "Pro",
+        "price": "Subscription based, contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "works_in_browser": true,
+  "supports_autotranscribe": true,
+  "edit_via_transcription": true,
+  "creator": "Opus Studio",
+  "language_support": {
+    "python": false,
+    "javascript": false,
+    "java": false,
+    "cpp": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://www.opus.pro"
+},
+{
+  "name": "Tabnine",
+  "icon": "@/images/tools/tabnine.svg",
+  "category": "Code Autocompletion",
+  "description": "Tabnine is an AI-powered code assistant that enhances software development by providing real-time predictive code completions. It supports a wide array of programming languages and integrates with numerous IDEs to increase coding efficiency.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": true,
+    "visual_studio": true,
+    "vim": true,
+    "emacs": true,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Basic",
+        "price": "Free"
+      },
+      {
+        "name": "Pro",
+        "price": "$12 per month per seat"
+      },
+      {
+        "name": "Business",
+        "price": "$30 per month per seat"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "Codota",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://www.tabnine.com"
+},
+{
+  "name": "MutableAI",
+  "icon": "@/images/tools/mutableai.svg",
+  "category": "Code Autocompletion",
+  "description": "MutableAI is an AI-accelerated software development tool that streamlines coding processes. It features AI autocomplete, prompt-driven development, and automatic generation of unit tests, transforming prototypes into production-quality code efficiently.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Basic",
+        "price": "Free"
+      },
+      {
+        "name": "Pro",
+        "price": "Starting from $10 per month"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "MutableAI Corp",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": false,
+    "cpp": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://mutable.ai"
+},
+{
+  "name": "CodiumAI",
+  "icon": "@/images/tools/codiumai.svg",
+  "category": "Code Testing",
+  "description": "CodiumAI is an AI-powered IDE extension that helps developers generate meaningful tests for their code, offering automated suggestions for code improvements and bug detection. It integrates into the development environment to assist in code review, suggesting modifications and enhancements.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Developer",
+        "price": "Free"
+      },
+      {
+        "name": "Teams",
+        "price": "$19 per user/month"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "CodiumAI",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true,
+    "typescript": true,
+    "go": true,
+    "php": true,
+    "swift": true,
+    "csharp": true
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://www.codium.ai"
+}
   ]
 }
