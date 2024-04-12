@@ -183,11 +183,9 @@ ${tableOfContents}
 
 ${categorySections}
 
-## Conclusion
+## Remember to bookmark and share 
 
-In this post, we compared and reviewed several AI-assisted developer tools, highlighting their features, capabilities, and differences. Each tool has its strengths and weaknesses, and the choice of tool depends on factors such as your development environment, programming languages, and specific needs.
-
-Consider trying out these tools to see which one best fits your workflow and enhances your productivity as a developer.
+This page will be updated regularly with new information, revisions and enhancements. Be sure to share it and check back frequently.
 `;
 };
 
