@@ -167,7 +167,15 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Introduction
 
-This post provides a comprehensive comparison and review of various AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools. We'll explore their features, capabilities, and suitability for different development workflows.
+Here's a comprehensive comparison AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools. Reviews are linked when available.
+
+I recommend using the Table of Contents below to jump to the section you're most interested in. 
+
+At the top level, this page is separated by tool categories. Beneath each category is an aspect I find worthy of consideration for the category that tool is in. 
+
+Each aspect has a table displaying each tool and how it measures up in a direct feature for feature comparison.  
+
+This page will be updated regularly in the future, so please bookmark it, share it with friends and check back frequently for the latest information. 
 
 ## Table of Contents
 
