@@ -1,0 +1,88 @@
+[
+  {
+    "name": "GitHub Copilot",
+    "icon": "@/images/tools/github-copilot.svg",
+    "category": "Code Autocompletion",
+    "open_source": {
+      "client": false,
+      "backend": false,
+      "model": false
+    },
+    "ide_support": [
+      {
+        "name": "Visual Studio Code",
+        "icon": "@/images/ides/vscode.svg"
+      },
+      {
+        "name": "Visual Studio",
+        "icon": "@/images/ides/visual-studio.svg"
+      },
+      {
+        "name": "Neovim",
+        "icon": "@/images/ides/neovim.svg"
+      },
+      {
+        "name": "JetBrains IDEs",
+        "icon": "@/images/ides/jetbrains.svg"
+      }
+    ],
+    "pricing": "Subscription-based",
+    "free_tier": false,
+    "chat_interface": false,
+    "auto_transcription": false,
+    "image_generation": false
+  },
+  {
+    "name": "Codium",
+    "icon": "@/images/tools/codium.svg",
+    "category": "Code Autocompletion",
+    "open_source": {
+      "client": true,
+      "backend": false,
+      "model": false
+    },
+    "ide_support": [
+      {
+        "name": "Visual Studio Code",
+        "icon": "@/images/ides/vscode.svg"
+      }
+    ],
+    "pricing": "Free",
+    "free_tier": true,
+    "chat_interface": false,
+    "auto_transcription": false,
+    "image_generation": false
+  },
+  {
+    "name": "Warp",
+    "icon": "@/images/tools/warp.svg",
+    "category": "Terminal / Intelligent Shells",
+    "open_source": {
+      "client": false,
+      "backend": false,
+      "model": false
+    },
+    "ide_support": [],
+    "pricing": "Free with paid upgrades",
+    "free_tier": true,
+    "chat_interface": true,
+    "auto_transcription": false,
+    "image_generation": false
+  },
+  {
+    "name": "Descript",
+    "icon": "@/images/tools/descript.svg",
+    "category": "Video Editing",
+    "open_source": {
+      "client": false,
+      "backend": false,
+      "model": false
+    },
+    "ide_support": [],
+    "pricing": "Subscription-based",
+    "free_tier": false,
+    "chat_interface": false,
+    "auto_transcription": true,
+    "image_generation": false
+  }
+]
