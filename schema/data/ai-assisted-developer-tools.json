@@ -481,7 +481,7 @@
 {
   "name": "CodiumAI",
   "icon": "@/images/tools/codiumai.svg",
-  "category": "Code Testing",
+  "category": "Code Autocompletion",
   "description": "CodiumAI is an AI-powered IDE extension that helps developers generate meaningful tests for their code, offering automated suggestions for code improvements and bug detection. It integrates into the development environment to assist in code review, suggesting modifications and enhancements.",
   "open_source": {
     "client": false,
@@ -528,6 +528,99 @@
   "supports_offline_use": false,
   "review_link": null,
   "homepage_link": "https://www.codium.ai"
+},
+{
+  "name": "Grit.io",
+  "icon": "@/images/tools/grit.io.svg",
+  "category": "Code Maintenance",
+  "description": "Grit.io is an AI-powered tool that automates the management of technical debt by using static analysis and machine learning to generate pull requests for code cleanup and migration. It focuses on enhancing code quality and speeding up development cycles.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": false,
+    "visual_studio": true,
+    "vim": false,
+    "emacs": false,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Free",
+        "price": "Free, basic features"
+      },
+      {
+        "name": "Team",
+        "price": "Contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "Grit Inc",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://www.grit.io"
+},
+{
+  "name": "Adrenaline AI",
+  "icon": "@/images/tools/adrenaline-ai.svg",
+  "category": "Code Autocompletion",
+  "description": "Adrenaline AI leverages static analysis, vector search, and advanced language models to provide comprehensive code explanations, help with debugging, and enhance overall coding workflows.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": true,
+    "visual_studio": true,
+    "vim": false,
+    "emacs": false,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Free Trial",
+        "price": "Free, limited time"
+      },
+      {
+        "name": "Pro",
+        "price": "Subscription based, contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "Adrenaline Tech",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true,
+    "typescript": true
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://useadrenaline.com"
 }
   ]
 }
