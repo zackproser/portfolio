@@ -10,22 +10,60 @@ const extractDateFromContent = (content) => {
 };
 
 const generateAttributeTable = (categoryTools, attribute) => {
-  const formattedAttribute = attribute.replace(/_/g, ' ');
-  const tableHeader = `| Tool | ${formattedAttribute.charAt(0).toUpperCase() + formattedAttribute.slice(1)} |`;
-  const tableSeparator = `|------|------|`;
-  const tableRows = categoryTools.map((tool) => {
-    const value = tool[attribute];
-    const formattedValue = typeof value === 'boolean' ? (value ? '✅' : '❌') : value;
-    return `| <img src="${tool.icon}" alt="${tool.name}" width="24" height="24" /> ${tool.name} | ${formattedValue} |`;
-  });
+  if (attribute === 'ide_support') {
+    const ides = ['vs_code', 'visual_studio', 'neovim', 'jetbrains'];
+    const formattedIDEs = ides.map(ide => ide.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '));
+    const tableHeader = `| Tool | ${formattedIDEs.join(' | ')} |`;
+    const tableSeparator = `|------|${'-|'.repeat(ides.length)}`;
+    const tableRows = categoryTools.map((tool) => {
+      const rowValues = ides.map((ide) => tool.ide_support[ide] ? '✅' : '❌').join(' | ');
+      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">(read review)</Link>` : '';
+      return `| <img src="${tool.icon}" alt="${tool.name}" width="24" height="24" /> ${tool.name} ${reviewLink} | ${rowValues} |`;
+    });
 
-  return `
+    return `
+### IDE Support
+
+${tableHeader}
+${tableSeparator}
+${tableRows.join('\n')}
+`;
+  } else if (attribute === 'open_source') {
+    const openSourceAttributes = ['client', 'backend', 'model'];
+    const tableHeader = `| Tool | ${openSourceAttributes.map(attr => attr.charAt(0).toUpperCase() + attr.slice(1)).join(' | ')} |`;
+    const tableSeparator = `|------|${'-|'.repeat(openSourceAttributes.length)}`;
+    const tableRows = categoryTools.map((tool) => {
+      const rowValues = openSourceAttributes.map((attr) => tool.open_source[attr] ? '✅' : '❌').join(' | ');
+      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">(read review)</Link>` : '';
+      return `| ${tool.name} ${reviewLink} | ${rowValues} |`;
+    });
+
+    return `
+### Open Source
+
+${tableHeader}
+${tableSeparator}
+${tableRows.join('\n')}
+`;
+  } else {
+    const formattedAttribute = attribute.replace(/_/g, ' ');
+    const tableHeader = `| Tool | ${formattedAttribute.charAt(0).toUpperCase() + formattedAttribute.slice(1)} |`;
+    const tableSeparator = `|------|------|`;
+    const tableRows = categoryTools.map((tool) => {
+      const value = tool[attribute];
+      const formattedValue = typeof value === 'boolean' ? (value ? '✅' : '❌') : value;
+      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">(read review)</Link>` : '';
+      return `| ${tool.name} ${reviewLink} | ${formattedValue} |`;
+    });
+
+    return `
 ### ${formattedAttribute.charAt(0).toUpperCase() + formattedAttribute.slice(1)}
 
 ${tableHeader}
 ${tableSeparator}
 ${tableRows.join('\n')}
 `;
+  }
 };
 
 const generateCategorySection = (category, tools) => {
@@ -68,6 +106,7 @@ const generatePostContent = (tools, existingDate) => {
   return `
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
+import Link from 'next/link'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
 export const metadata = {
@@ -82,13 +121,13 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
 
-## Table of Contents
-
-${categories.map((category) => `- [${category.name}](#${category.name.toLowerCase().replace(/\s/g, '-')})`).join('\n')}
-
 ## Introduction
 
 This post provides a comprehensive comparison and review of various AI-assisted developer tools, including code autocompletion, terminal tools, and video editing tools. We'll explore their features, capabilities, and suitability for different development workflows.
+
+## Table of Contents
+
+${categories.map((category) => `- [${category.name}](#${category.name.toLowerCase().replace(/\s/g, '-')})`).join('\n')}
 
 ${categorySections}
 
