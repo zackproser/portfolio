@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js",
-    "build": "next build",
+    "build": "npm run prebuild && next build",
     "start": "next start",
     "lint": "next lint"
   },
