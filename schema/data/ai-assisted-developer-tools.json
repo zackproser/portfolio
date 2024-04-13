@@ -140,7 +140,7 @@
     },
     {
       "name": "Codeium",
-      "icon": "@/images/tools/codeium.svg",
+      "icon": "/images/tools/codeium.png",
       "category": "Code Autocompletion",
       "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
       "open_source": {
@@ -626,6 +626,184 @@
   "supports_offline_use": false,
   "review_link": null,
   "homepage_link": "https://useadrenaline.com"
+},
+{
+  "name": "Amazon CodeWhisperer",
+  "icon": "@/images/tools/codewhisperer.svg",
+  "category": "Code Autocompletion",
+  "description": "CodeWhisperer is an AI-powered pair programming tool developed by Amazon, similar to GitHub Copilot. It provides real-time code suggestions, ranging from snippets to entire functions, tailored to the developer's current context in the IDE. It supports multiple programming languages and integrates with various IDEs, helping to accelerate development and improve code quality.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": false,
+    "visual_studio": true,
+    "vim": false,
+    "emacs": false,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "free",
+    "tiers": [
+      {
+        "name": "Individual",
+        "price": "Free"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "Amazon Web Services",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://aws.amazon.com/codewhisperer/"
+},
+{
+  "name": "Figstack",
+  "icon": "@/images/tools/figstack.svg",
+  "category": "Code Autocompletion",
+  "description": "Figstack is an AI-driven coding assistant that enhances developer productivity by providing features such as code explanation, language translation, docstring generation, and time complexity analysis. It's designed to help developers quickly understand and document code in any programming language.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "freemium",
+    "tiers": [
+      {
+        "name": "Basic",
+        "price": "Free"
+      },
+      {
+        "name": "Pro",
+        "price": "Contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "Figstack Inc",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true,
+    "typescript": false
+  },
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://www.figstack.com"
+},
+{
+  "name": "aiXcoder",
+  "icon": "@/images/tools/aixcoder.svg",
+  "category": "Code Autocompletion",
+  "description": "aiXcoder is an AI-driven programming assistant that enhances coding efficiency by predicting code snippets based on the context of your existing code. It supports deep learning to provide intelligent code completions and suggestions, helping developers write more accurate and efficient code.",
+  "open_source": {
+    "client": false,
+    "backend": false,
+    "model": false
+  },
+  "ide_support": {
+    "vs_code": true,
+    "jetbrains": true,
+    "neovim": false,
+    "visual_studio": true,
+    "vim": false,
+    "emacs": false,
+    "intellij": true
+  },
+  "pricing": {
+    "model": "contact for pricing",
+    "tiers": [
+      {
+        "name": "Free",
+        "price": "Basic features"
+      },
+      {
+        "name": "Pro",
+        "price": "Advanced features"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "aiXcoder Inc",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true
+  },
+  "supports_local_model": true,
+  "supports_offline_use": true,
+  "review_link": null,
+  "homepage_link": "https://www.aixcoder.com"
+},
+{
+  "name": "Plandex",
+  "icon": "@/images/tools/plandex.svg",
+  "category": "Intelligent Terminals / Shells",
+  "description": "Plandex is an open-source, terminal-based AI coding engine that handles complex programming tasks by breaking them into manageable subtasks. It uses long-running agents to automate and streamline workflows, helping users tackle large-scale projects efficiently. Plandex supports various operating systems including Mac, Linux, FreeBSD, and Windows.",
+  "open_source": true,
+  "ide_support": {
+    "vs_code": false,
+    "jetbrains": false,
+    "neovim": false,
+    "visual_studio": false,
+    "vim": false,
+    "emacs": false,
+    "intellij": false
+  },
+  "pricing": {
+    "model": "freemium",
+    "tiers": [
+      {
+        "name": "Free Trial",
+        "price": "Limited free account"
+      },
+      {
+        "name": "Paid",
+        "price": "Contact for pricing"
+      }
+    ]
+  },
+  "free_tier": true,
+  "chat_interface": false,
+  "creator": "Dane",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": false
+  },
+  "advanced_history": true,
+  "supports_local_model": true,
+  "supports_offline_use": true,
+  "review_link": null,
+  "homepage_link": "https://plandex.ai"
 }
   ]
 }
