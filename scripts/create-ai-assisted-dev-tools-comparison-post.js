@@ -9,6 +9,26 @@ const extractDateFromContent = (content) => {
   return match ? match[1] : null;
 };
 
+const renderReviewLink = (reviewLink) => {
+  if (reviewLink) {
+    return `<Link href="${reviewLink}" alt="AI developer tool review">📖 Review</Link>`;
+  }
+  return 'Coming soon';
+}
+
+const generateToolTable = (categoryTools) => {
+  const tableHeader = `| Tool | Category | Review | Homepage`;
+  const tableSeparator = `|------|------|------|------|`;
+  const tableRows = categoryTools.map((tool) => {
+    return `| ${tool.name} | ${tool.category} | ${renderReviewLink(tool.review_link)} | ${tool.homepage_link} |`;
+  });
+  return `
+${tableHeader}
+${tableSeparator}
+${tableRows.join('\n')}
+`;
+}
+
 const generateAttributeTable = (categoryTools, attribute) => {
   if (attribute === 'ide_support') {
     const ides = ['vs_code', 'jetbrains', 'neovim', 'visual_studio', 'vim', 'emacs', 'intellij'];
@@ -17,9 +37,7 @@ const generateAttributeTable = (categoryTools, attribute) => {
     const tableSeparator = `|------|${'-|'.repeat(ides.length)}`;
     const tableRows = categoryTools.map((tool) => {
       const rowValues = ides.map((ide) => tool.ide_support[ide] ? '✅' : '❌').join(' | ');
-      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">📚 review</Link>` : '';
-      const homepageLink = tool.homepage_link ? `<Link href="${tool.homepage_link}">🏠 homepage</Link>` : '';
-      return `| ${tool.name} ${reviewLink} ${homepageLink} | ${rowValues} |`;
+      return `| ${tool.name} | ${rowValues} |`;
     });
 
     return `
@@ -33,9 +51,7 @@ ${tableRows.join('\n')}
     const tableSeparator = `|------|${'-|'.repeat(openSourceAttributes.length)}`;
     const tableRows = categoryTools.map((tool) => {
       const rowValues = openSourceAttributes.map((attr) => tool.open_source[attr] ? '✅' : '❌').join(' | ');
-      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">📚 review</Link>` : '';
-      const homepageLink = tool.homepage_link ? `<Link href="${tool.homepage_link}">🏠 homepage</Link>` : '';
-      return `| ${tool.name} ${reviewLink} ${homepageLink} | ${rowValues} |`;
+      return `| ${tool.name} | ${rowValues} |`;
     });
 
     return `
@@ -49,9 +65,7 @@ ${tableRows.join('\n')}
     const tableSeparator = `|------|${'-|'.repeat(languages.length)}`;
     const tableRows = categoryTools.map((tool) => {
       const rowValues = languages.map((lang) => tool.language_support[lang] ? '✅' : '❌').join(' | ');
-      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">📚 review</Link>` : '';
-      const homepageLink = tool.homepage_link ? `<Link href="${tool.homepage_link}">🏠 homepage</Link>` : '';
-      return `| ${tool.name} ${reviewLink} ${homepageLink} | ${rowValues} |`;
+      return `| ${tool.name} | ${rowValues} |`;
     });
 
     return `
@@ -64,9 +78,7 @@ ${tableRows.join('\n')}
     const tableSeparator = `|------|-------|------|`;
     const tableRows = categoryTools.map((tool) => {
       const tiers = tool.pricing.tiers.map((tier) => `${tier.name}: ${tier.price}`).join(', ');
-      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">📚 review</Link>` : '';
-      const homepageLink = tool.homepage_link ? `<Link href="${tool.homepage_link}">🏠 homepage</Link>` : '';
-      return `| ${tool.name} ${reviewLink} ${homepageLink} | ${tool.pricing.model} | ${tiers} |`;
+      return `| ${tool.name} | ${tool.pricing.model} | ${tiers} |`;
     });
 
     return `
@@ -81,9 +93,7 @@ ${tableRows.join('\n')}
     const tableRows = categoryTools.map((tool) => {
       const value = tool[attribute];
       const formattedValue = typeof value === 'boolean' ? (value ? '✅' : '❌') : value;
-      const reviewLink = tool.review_link ? `<Link href="${tool.review_link}">📚 review</Link>` : '';
-      const homepageLink = tool.homepage_link ? `<Link href="${tool.homepage_link}">🏠 homepage</Link>` : '';
-      return `| ${tool.name} ${reviewLink} ${homepageLink} | ${formattedValue} |`;
+      return `| ${tool.name} | ${formattedValue} |`;
     });
 
     return `
@@ -127,6 +137,8 @@ ${attributeSections}
 const generatePostContent = (categories, tools, existingDate) => {
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
 
+  const toolTable = generateToolTable(tools);
+
   const categorySections = categories.map((category) => {
     return generateCategorySection(category);
   }).join('\n');
@@ -142,9 +154,9 @@ const generatePostContent = (categories, tools, existingDate) => {
     const attributeLinks = formattedAttributes.map((attr) => `  - [${attr.charAt(0).toUpperCase() + attr.slice(1)}](#${attr.replace(/\s/g, '-').toLowerCase()})`).join('\n');
 
     return `
-- [${category.name}](#${category.name.replace(/\s/g, '-').toLowerCase()})
+      - [${category.name}](#${category.name.replace(/\s/g, '-').toLowerCase()})
 ${attributeLinks}
-`;
+    `;
   }).join('\n');
 
   return `
@@ -171,7 +183,7 @@ Here's a comprehensive comparison AI-assisted developer tools, including code au
 
 I recommend using the Table of Contents below to jump to the section you're most interested in. 
 
-At the top level, this page is separated by tool categories. Beneath each category is an aspect I find worthy of consideration for the category that tool is in. 
+At the top level, this page is separated by tool categories.Beneath each category is an aspect I find worthy of consideration for the category that tool is in. 
 
 Each aspect has a table displaying each tool and how it measures up in a direct feature for feature comparison.  
 
@@ -179,13 +191,15 @@ This page will be updated regularly in the future, so please bookmark it, share 
 
 ## Table of Contents
 
-${tableOfContents}
+## Tools and reviews
+
+${toolTable}
 
 ${categorySections}
 
 ## Remember to bookmark and share 
 
-This page will be updated regularly with new information, revisions and enhancements. Be sure to share it and check back frequently.
+This page will be updated regularly with new information, revisions and enhancements.Be sure to share it and check back frequently.
 `;
 };
 

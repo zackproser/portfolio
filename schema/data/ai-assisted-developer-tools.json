@@ -143,7 +143,11 @@
       "icon": "@/images/tools/codeium.svg",
       "category": "Code Autocompletion",
       "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
-      "open_source": false,
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
+      },
       "pricing": {
         "model": "subscription",
         "tiers": [
@@ -287,9 +291,10 @@
     "java": false,
     "cpp": false
   },
-  "supports_local_model": false,
+  "supports_local_model": true,
   "supports_offline_use": true,
   "review_link": null,
+  "advanced_history": true,
   "homepage_link": "https://github.com/charmbracelet/mods"
 },
 {
@@ -511,7 +516,7 @@
     ]
   },
   "free_tier": true,
-  "chat_interface": false,
+  "chat_interface": true,
   "creator": "CodiumAI",
   "language_support": {
     "python": true,
@@ -532,7 +537,7 @@
 {
   "name": "Grit.io",
   "icon": "@/images/tools/grit.io.svg",
-  "category": "Code Maintenance",
+  "category": "Code Autocompletion",
   "description": "Grit.io is an AI-powered tool that automates the management of technical debt by using static analysis and machine learning to generate pull requests for code cleanup and migration. It focuses on enhancing code quality and speeding up development cycles.",
   "open_source": {
     "client": false,
