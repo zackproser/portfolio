@@ -2,6 +2,13 @@
 INSERT INTO Courses (title, description, slug, status, price_id)
 VALUES
   (
+    'Build Your First Portfolio Website with GitHub Pages',
+    'A beginner-friendly course on building and deploying a static portfolio website using HTML, CSS and GitHub Pages.',
+    'first-portfolio-website-with-github-pages',
+    'available',
+    'price_1P5VqREDHFkvZ1e91gHHWYl9'
+  ),
+  (
     'Generative AI Bootcamp: Dev Tools',
     'Generative AI - and its opportunities and challenges - explained simply, even if you are not technical',
     'generative-ai-bootcamp',
