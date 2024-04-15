@@ -11,9 +11,6 @@ import { getProductDetails, ProductDetails } from '@/utils/productUtils';
 
 import { userPurchasedCourse } from '@/lib/queries'
 
-import { MDXRemote } from 'next-mdx-remote/rsc';
-
-
 interface PageProps {
   params: {
     course: string;
@@ -54,7 +51,6 @@ export default async function Page({ params }: PageProps) {
   // Fetch the content segments that assemble into the digital course
   const groupedSegments = await getCourseSegments(course);
   const segmentContent = await getSegmentContent(course, segment);
-  console.log(`segmentContent: %o`, segmentContent);
 
   return (
     <Container>

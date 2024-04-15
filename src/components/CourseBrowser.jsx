@@ -91,8 +91,8 @@ export default function CourseBrowser({
           }
         </div>
       </aside>
-      <main className="flex-grow p-6">
-        <article className="prose lg:prose-lg dark:prose-dark max-w-none">
+      <main className="flex-grow p-6 overflow-y-scroll">
+        <article className="prose lg:prose-lg dark:text-white dark:prose-dark max-w-none">
           {children}
         </article>
       </main>
