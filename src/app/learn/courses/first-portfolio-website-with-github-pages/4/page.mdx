@@ -1,0 +1,25 @@
+import Image from 'next/image';
+import gitIsYourSaveButton from '@/images/git-is-your-save-button-3.webp'
+
+export const meta = {
+  header: "Saving and moving code",
+  title: "Creating your first repository",
+}
+
+## Creating your first repository 
+
+Navigate to the directory of your project and run the following command to initialize a new Git repository:
+
+```bash
+git init
+```
+
+This command creates a new .git folder in your project, tracking all changes made to files in this directory.
+Committing Your First Change
+
+Add a file to the repository, like an index.html, then track it with Git using the following commands:
+
+```bash
+git add index.html
+git commit -m "Add initial HTML file"
+```
