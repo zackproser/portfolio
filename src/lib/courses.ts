@@ -1,7 +1,10 @@
+import { compileMDX } from 'next-mdx-remote/rsc'
+import path from 'path'
+import remarkGfm from 'remark-gfm'
+
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import { promises as fs } from 'fs';
-import path from 'path'
 
 async function importArticle(
   articleFilename: string,
@@ -29,7 +32,24 @@ export async function getAllCourses() {
 }
 
 export async function getSegmentContent(course: string, segment: string) {
-  return (await import(`src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
+  try {
+    const filename = path.resolve(process.cwd(), 'src', 'app', 'learn', 'courses', course, segment, 'page.mdx')
+    const source = await fs.readFile(filename, { encoding: 'utf-8' })
+    return await compileMDX({
+      source,
+      options: {
+        parseFrontmatter: true,
+        mdxOptions: {
+          // @ts-ignore any
+          rehypePlugins: [],
+          remarkPlugins: [remarkGfm],
+        },
+      },
+    })
+  } catch (error) {
+    console.error(`Error fetching course: ${course} and segment '${segment}': `, error)
+    throw error
+  }
 }
 
 export interface ArticleWithHeader extends Article {
@@ -61,7 +81,7 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
         meta,
       };
     } catch (error) {
-      console.error(`Error importing segment: ${dir}`, error);
+      console.error(`Error importing segment: ${dir} `, error);
       // Handle or log the error as needed
       return null;
     }
