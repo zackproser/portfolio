@@ -1,33 +1,77 @@
 import Image from 'next/image';
-import gitIsYourSaveButton from '@/images/git-is-your-save-button-3.webp'
 
 export const meta = {
-  header: "Saving and moving code",
-  title: "Version control with git",
-  description: "A beginner-friendly course on building and deploying a static portfolio website using HTML, CSS, and GitHub Pages.",
+  header: "Setting Up",
+  title: "Preparing Your Development Environment",
+  description: "Learn how to set up your local development environment and get familiar with the essential tools for building your static portfolio website.",
 }
 
-## Using Git for Version Control
+## Preparing Your Development Environment
 
-Welcome to the second section of our course. Here, you will learn about Git, a crucial tool for any developer, which allows you to track changes in your files and coordinate work on those files among multiple people.
+Before we start coding our portfolio website, it's essential to have a well-prepared development environment. In this section, we'll guide you through the tools you'll need and provide step-by-step instructions on how to set them up on your computer.
+Essential Tools
 
-## What is Git?
+To develop your static website, you'll need the following tools:
 
-Git is a distributed version control system that helps you keep track of your code changes and collaborate with others. It allows you to revert back to previous versions of your work and manage different versions of your projects efficiently.
+* Text Editor: A text editor is where you'll write your HTML, CSS, and other code files. We recommend using Visual Studio Code, a free and powerful code editor with many useful features for web development.
+* Web Browser: You'll use a web browser to view and test your website locally. Modern browsers like Google Chrome, Mozilla Firefox, or Microsoft Edge are recommended for their robust developer tools.
+* Git: Git is a version control system that allows you to track changes to your code, collaborate with others, and manage your project effectively. It's an essential tool for any developer.
 
-<img src="/zack-proser-dev-advocate.webp" alt="Git is your save button" />
+## Setting Up Visual Studio Code
 
-## Learning Objectives
+Visual Studio Code is a lightweight and customizable code editor that's perfect for web development. Here's how to install it on your operating system:
 
-- Understand the concept of version control.
-- Learn to initialize a Git repository.
-- Know how to commit changes and push them to a remote repository (like GitHub).
+### Windows
+1. Visit the Visual Studio Code website and click on the "Download" button.
+1. Once the installer is downloaded, run it and follow the installation wizard's prompts.
+1. After the installation is complete, launch Visual Studio Code from the Start menu or desktop shortcut.
 
-## Setting Up Git
+### MacOSX
+1. Visit the Visual Studio Code website and click on the "Download" button.
+1. Once the ZIP file is downloaded, double-click on it to extract the application.
+1. Drag the Visual Studio Code application to your Applications folder.
+1. Launch Visual Studio Code from the Applications folder or using Spotlight search.
 
-First, ensure that Git is installed on your computer. You can download it from [git-scm.com](https://git-scm.com). After installation, set up your user name and email in your terminal:
+### Linux
+1. Visit the Visual Studio Code website and click on the ".deb" or ".rpm" download link, depending on your Linux distribution.
+1. Once the package is downloaded, open a terminal and navigate to the directory containing the downloaded file.
+1. Run the following command to install Visual Studio Code:
+1. For .deb packages: sudo dpkg -i code_*.deb
+1. For .rpm packages: sudo rpm -i code_*.rpm
+1. After the installation is complete, launch Visual Studio Code from your application launcher or by typing code in the terminal.
 
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
+## Creating a Project Folder
+
+Before we start coding, let's create a folder to store our project files:
+
+1. Open your file explorer and navigate to a location where you want to create your project folder.
+1. Create a new folder and name it something like my-portfolio.
+1. Open Visual Studio Code and click on "File" -> "Open Folder" (or "Open" on macOS).
+1. Select the my-portfolio folder you just created and click "Open".
+
+## Introduction to Git
+
+Git is a version control system that helps you keep track of changes to your code and collaborate with others. Here's how to set it up:
+
+1. Visit the Git website and download the installer for your operating system.
+1. Run the installer and follow the installation wizard's prompts. You can leave the default settings as they are.
+1. Once the installation is complete, open a terminal or command prompt.
+1. Configure your Git username and email address by running the following commands:
+
 ```
+  git config --global user.name "Your Name"
+  git config --global user.email "youremail@example.com"
+```
+Replace Your Name with your desired username and youremail@example.com with your email address.
+
+## Setting Up GitHub
+
+GitHub is a web-based platform that hosts Git repositories and provides collaboration features. Here's how to create an account:
+
+1. Visit the GitHub website and click on the "Sign up" button.
+1. Fill in the required information (username, email, and password) and click on "Create account".
+1. Follow the on-screen instructions to complete the account setup process.
+
+## Conclusion
+
+Congratulations! You've now set up your development environment with Visual Studio Code, Git, and GitHub. You're ready to start building your static portfolio website.
