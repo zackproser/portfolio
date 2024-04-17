@@ -1,0 +1,32 @@
+
+import UnknownImage from '/src/images/undefined.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "How do you write so fast?",
+ author: "Zachary Proser",
+ date: "2024-4-17",
+ description: "Sometimes someone will ask me how I am able to write new content so quickly. This is my answer. ",
+ image: UnknownImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+There are two reasons I'm able to write quickly:
+
+## Writing in my head
+
+I mostly write new articles in my head while I'm walking around doing other things. 
+
+This means that I am always turning over new ideas or the fragments or seeds that contain the whole post. 
+
+Thereforey primary task here is really rapid capture: I'll either write a note in Obsidian under in progress writing or I'll create the post and pull request using Panthalia
+
+## I instrument the process constantly
+
+I built my own tool, Panthalia, which allows me to go from idea fragment to open pull request in seconds
