@@ -2,24 +2,22 @@ import Image from 'next/image';
 import gitIsYourSaveButton from '@/images/git-is-your-save-button-3.webp'
 
 export const meta = {
-  header: "Saving and moving code",
-  title: "Creating your first repository",
+  header: "Version control with Git",
+  title: "Set up Git",
 }
 
-## Creating your first repository 
+## Introduction to Git
 
-Navigate to the directory of your project and run the following command to initialize a new Git repository:
+Git is a version control system that helps you keep track of changes to your code and collaborate with others. Here's how to set it up:
 
-```bash
-git init
+1. Visit the Git website and download the installer for your operating system.
+1. Run the installer and follow the installation wizard's prompts. You can leave the default settings as they are.
+1. Once the installation is complete, open a terminal or command prompt.
+1. Configure your Git username and email address by running the following commands:
+
 ```
-
-This command creates a new .git folder in your project, tracking all changes made to files in this directory.
-Committing Your First Change
-
-Add a file to the repository, like an index.html, then track it with Git using the following commands:
-
-```bash
-git add index.html
-git commit -m "Add initial HTML file"
+  git config --global user.name "Your Name"
+  git config --global user.email "youremail@example.com"
 ```
+Replace Your Name with your desired username and youremail@example.com with your email address.
+
