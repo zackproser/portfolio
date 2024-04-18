@@ -1,68 +1,97 @@
 import Image from 'next/image';
 
-
 export const meta = {
   header: "Introduction to HTML and CSS",
-  title: "Introduction to CSS",
-  description: "Learn the basics of CSS, which allows you to style and control the presentation of your HTML elements",
+  title: "Introduction to HTML",
+  description: "Learn the basics of HTML, the backbone of every website, and start structuring your static portfolio website.",
 }
 
-## CSS: Painting Your Website
+## HTML: The structure of your website 
 
-If HTML is the foundation and structure of your house, CSS is the paint, decor, and design that makes it visually appealing. 
+HTML is the backbone of any website. It allows you to structure your web content using various elements, such as:
 
-CSS (Cascading Style Sheets) allows you to control the presentation of your HTML elements, bringing your website to life with colors, fonts, layouts, and more.
+* Headings (`<h1>` to `<h6>`) to create titles and subtitles.
+* Paragraphs (`<p>`) to organize text content.
+* Links (`<a>`) to connect web pages or external resources.
+* Images (`<img>`) to display visual content.
 
-## How CSS Works
+Here's a basic example of an HTML document:
 
-CSS works by selecting HTML elements and applying styles to them. You can select elements by their tag names, classes, IDs, or other attributes. Here's a simple example that changes the color and alignment of a heading and paragraph:
-
-```css
-
-h1 {
-  color: blue;
-  text-align: center;
-}
-
-p {
-  color: gray;
-  text-align: center;
-}
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your First Web Page</title>
+</head>
+<body>
+  <h1>Welcome to My Portfolio</h1>
+  <p>This is the beginning of your professional web presence.</p>
+</body>
+</html>
 ```
 
-In this example, we've selected all `(<h1>)` elements and applied a blue color and center alignment. Similarly, we've selected all paragraph `(<p>)` elements and applied a gray color and center alignment.
+Let's break down the key components:
 
-## Connecting CSS to Your HTML
+* `<!DOCTYPE html>`: Declares the document type as HTML5.
+* `<html>`: The root element that contains the entire HTML document.
+* `<head>`: Provides metadata and links to external resources (CSS, JavaScript).
+* `<title>`: Specifies the title of the web page, which appears in the browser's title bar.
+* `<body>`: Contains the visible content of the web page.
 
-To use CSS with your HTML, you can either:
+## Structuring Your Portfolio
 
-* Write CSS directly in your HTML file using the `<style>` tag in the `<head>` section.
-* Create a separate CSS file and link it to your HTML file using the `<link>` tag in the `<head>` section.
+Using HTML, you can create a basic structure for your portfolio website. Here's an example:
 
-For better organization and maintainability, it's recommended to use a separate CSS file, especially as your website grows.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Portfolio</title>
+</head>
+<body>
+  <header>
+    <h1>Your Name</h1>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
 
-## Exploring CSS Properties
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Write a brief introduction about yourself.</p>
+    </section>
 
-CSS offers a wide range of properties to style your elements. Some common properties include:
+    <section id="projects">
+      <h2>My Projects</h2>
+      <ul>
+        <li>Project 1</li>
+        <li>Project 2</li>
+        <li>Project 3</li>
+      </ul>
+    </section>
 
-* color: Sets the text color.
-* background-color: Sets the background color of an element.
-* font-family: Specifies the font for text.
-* font-size: Sets the size of the text.
-* padding: Adds space inside an element's borders.
-* margin: Adds space outside an element's borders.
-* border: Sets a border around an element.
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <p>Include your contact information or a contact form.</p>
+    </section>
+  </main>
 
-## Let's Practice!
+  <footer>
+    <p>&copy; 2023 Your Name. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+```
 
-Here's an interactive example where you can modify the CSS and see the changes in real-time:
-
-<iframe width="100%" height="300" src="//jsfiddle.net/zackproser/r4w76any/1/embedded/html,css,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
-
-Try experimenting with different CSS properties and values to see how they affect the appearance of the elements. You can also target specific elements using classes or IDs to apply different styles to them.
+In this example, we've used semantic HTML elements like `<header>`, `<nav>`, `<main>`, `<section>`, and `<footer>` to create a meaningful structure for your portfolio website.
 
 ## Conclusion
 
-CSS is a powerful tool that allows you to transform your plain HTML structure into an attractive and visually engaging website. By mastering CSS, you'll be able to create beautiful designs, customize layouts, and enhance the user experience of your static portfolio website.
+HTML is the foundation of every website, allowing you to structure and organize your content. By understanding the basics of HTML, you're now ready to start building your static portfolio website.
 
-In the next section, we'll dive into version control with Git and learn how to manage your website's codebase effectively.
+In the next section, we'll explore CSS (Cascading Style Sheets), which will allow you to add style and visual appeal to your HTML structure, bringing your website to life.
