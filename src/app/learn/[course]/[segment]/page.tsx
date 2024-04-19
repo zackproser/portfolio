@@ -1,4 +1,6 @@
+import { Layout } from '@/components/Layout';
 import CourseBrowser from '@/components/CourseBrowser'
+
 import { CourseContainer } from '@/components/CourseContainer'
 import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
@@ -18,7 +20,7 @@ interface PageProps {
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function DigitalCourse({ params }: PageProps) {
   const session = await getServerSession(authOptions);
 
   // Users must be logged in to view this page
@@ -63,3 +65,7 @@ export default async function Page({ params }: PageProps) {
     </CourseContainer>
   )
 }
+
+DigitalCourse.getLayout = function getLayout(page: React.ReactNode) {
+  return <Layout includeFixedDiv={false}>{page}</Layout>;
+};
