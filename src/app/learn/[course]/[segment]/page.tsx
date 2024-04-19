@@ -66,6 +66,4 @@ export default async function DigitalCourse({ params }: PageProps) {
   )
 }
 
-DigitalCourse.getLayout = function getLayout(page: React.ReactNode) {
-  return <Layout includeFixedDiv={false}>{page}</Layout>;
-};
+
