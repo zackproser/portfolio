@@ -1,5 +1,5 @@
 import CourseBrowser from '@/components/CourseBrowser'
-import { Container } from '@/components/Container'
+import { CourseContainer } from '@/components/CourseContainer'
 import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
 import { redirect } from 'next/navigation'
@@ -53,13 +53,13 @@ export default async function Page({ params }: PageProps) {
   const segmentContent = await getSegmentContent(course, segment);
 
   return (
-    <Container>
+    <CourseContainer>
       <CourseBrowser
         course={course}
         groupedSegments={groupedSegments}
         currentSegment={segment}>
         {segmentContent.content}
       </CourseBrowser>
-    </Container>
+    </CourseContainer>
   )
 }

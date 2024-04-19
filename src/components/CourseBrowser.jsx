@@ -40,7 +40,7 @@ function renderSegmentLink(segment, course, currentSegment) {
   }
 
   return (
-    <li key={segment.dir} className="px-4 py-2">
+    <li key={segment.dir} className="py-2">
       <Link href={`/learn/${course}/${segmentIndex}`}>
         <span className={`block p-2 rounded ${conditionalStyle}`}>
           {segment.title}
@@ -71,7 +71,7 @@ export default function CourseBrowser({
   const renderSegments = (segments, header, course, currentSegmentNumber) => {
     return (
       <>
-        <h3 className="px-4 py-2 text-lg font-semibold">{header}</h3>
+        <h3 className="py-2 text-lg font-semibold">{header}</h3>
         <ul className="space-y-1 text-sm">
           {segments.map(segment => renderSegmentLink(segment, course, currentSegmentNumber))}
         </ul>
