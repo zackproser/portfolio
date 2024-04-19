@@ -83,7 +83,8 @@ export default function CourseBrowser({
     <section className="flex mt-12 h-screen">
       <aside className="w-64 overflow-auto flex-shrink-0" style={{ minWidth: '16rem' }}>
         <div className="p-6 space-y-2">
-          <h2 className="text-xl font-bold">{course}</h2>
+          <h2 className="text-xl">Course: {course.replaceAll('-', ' ')}</h2>
+          <hr />
           {
             Object.entries(groupedSegments).map(([header, segments]) => (
               renderSegments(segments, header, course, currentSegmentNumber)
