@@ -11,7 +11,7 @@ function renderSegmentLink(segment, course, currentSegment) {
   console.log(`segmentPath: ${segmentPath}`)
 
   // Determine if the current segment is active based on the full path
-  const isActive = segmentPath === currentSegment;
+  const isActive = segment.position === currentSegment.position;
 
   if (isActive) {
     conditionalStyle = "bg-blue-200 dark:bg-blue-700";
