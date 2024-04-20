@@ -88,8 +88,8 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
 
     return groupedSegments;
   } catch (error) {
-    if (error instanceof Error && error.code === 'ENOENT') {
-      console.error(`Course configuration file not found for ${course}`);
+    if (error instanceof Error) {
+      console.error(`Course configuration file not found for ${course}: ${error}`);
       // You can return a default configuration or throw a specific error
       return {};
     } else {
