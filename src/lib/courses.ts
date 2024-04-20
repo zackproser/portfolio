@@ -75,7 +75,7 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
         try {
           const segmentSource = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`)).default;
           console.log(`segmentSource: %o`, segmentSource)
-          const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx?raw`)).default
+          const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`))
           console.log(`meta: %o`, meta)
           groupedSegments[header.title].push({
             ...meta,

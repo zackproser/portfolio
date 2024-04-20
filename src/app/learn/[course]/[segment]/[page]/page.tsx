@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Layout } from '@/components/Layout';
 import CourseBrowser from '@/components/CourseBrowser'
 
@@ -67,7 +65,7 @@ export default async function DigitalCourse({ params }: PageProps) {
         course={course}
         groupedSegments={groupedSegments}
         currentSegment={segment}>
-        {segmentContent.content}
+        {segmentContent()}
       </CourseBrowser>
     </CourseContainer>
   )
