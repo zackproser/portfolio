@@ -1,10 +1,14 @@
 import Link from 'next/link';
 
 function renderSegmentLink(segment, course, currentSegment) {
+  console.log(`segment: %o`, segment)
+  console.log(`currentSegment: %o`, currentSegment)
   let conditionalStyle, svgElement;
 
   // Construct the full path for the segment using both segment and page
-  const segmentPath = `/${segment.segment}/${segment.page}`;
+  const segmentPath = `/${segment.segment}/${segment.page}/`;
+
+  console.log(`segmentPath: ${segmentPath}`)
 
   // Determine if the current segment is active based on the full path
   const isActive = segmentPath === currentSegment;
@@ -24,7 +28,7 @@ function renderSegmentLink(segment, course, currentSegment) {
     );
   } else {
     // Check if segmentPath is lexically less than currentSegment to determine if it's a past segment
-    const isPastSegment = segmentPath < currentSegment;
+    const isPastSegment = segment.position < currentSegment.position;
     conditionalStyle = isPastSegment ? "bg-green-200 dark:bg-green-700" : "hover:bg-gray-200 dark:hover:bg-gray-700";
     svgElement = isPastSegment ? (
       <svg

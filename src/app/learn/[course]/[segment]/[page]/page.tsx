@@ -54,6 +54,18 @@ export default async function DigitalCourse({ params }: PageProps) {
   // Fetch the content segments that assemble into the digital course
   const groupedSegments = await getCourseSegments(course);
   console.log(`groupedSegments: %o`, groupedSegments)
+
+  let currentSegment
+
+  const segmentArrays = Object.values(groupedSegments)
+  segmentArrays.reduce((acc, val) => acc.concat(val), []).forEach((seg) => {
+    if (seg.segment === segment && seg.page === page) {
+      currentSegment = seg
+    }
+  }) 
+
+  console.log(`currentSegment after filtering: %o`, currentSegment)
+
   const segmentContent = await getSegmentContent(course, segment, page);
   console.log(`segmentContent: %o`, segmentContent)
 
@@ -62,7 +74,7 @@ export default async function DigitalCourse({ params }: PageProps) {
       <CourseBrowser
         course={course}
         groupedSegments={groupedSegments}
-        currentSegment={segment}>
+        currentSegment={currentSegment}>
         {segmentContent()}
       </CourseBrowser>
     </CourseContainer>

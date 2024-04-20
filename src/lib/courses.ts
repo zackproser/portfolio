@@ -12,6 +12,7 @@ export interface ArticleWithHeader extends Article {
 }
 
 type Segment = {
+  position?: number;
   title?: string;
   course?: string;  
   segment?: string;
@@ -62,6 +63,7 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
   try {
     const courseConfig = JSON.parse(await fs.readFile(courseConfigPath, 'utf-8'));
     const groupedSegments: GroupedSegments = {};
+    let i = 0;
 
     for (const header of courseConfig.headers) {
       groupedSegments[header.title] = [];
@@ -73,11 +75,13 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
         const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`))
         try {
           groupedSegments[header.title].push({
+            position: i,
             title: meta.title,
             course,
             segment,
             page
           });
+          i++
         } catch (error) {
           console.error(`Error loading segment ${segment} for course ${course}:`, error);
           // You can skip the segment or handle the error as needed
