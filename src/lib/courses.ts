@@ -7,13 +7,19 @@ import dynamic from "next/dynamic";
 
 export interface ArticleWithHeader extends Article {
   header?: string;
-  dir?: string;
   status?: string;
   content?: string;
 }
 
+type Segment = {
+  title?: string;
+  course?: string;  
+  segment?: string;
+  page?: string;
+}
+
 type GroupedSegments = {
-  [header: string]: ArticleWithHeader[];
+  [header: string]: Segment[];
 };
 
 async function importArticle(
@@ -52,7 +58,6 @@ export async function getSegmentContent(course: string, segment: string, page: s
 export async function getCourseSegments(course: string): Promise<GroupedSegments> {
   const courseDir = path.join(process.cwd(), `src/app/learn/courses/${course}`);
   const courseConfigPath = path.join(courseDir, 'course.json');
-  console.log(`courseConfigPath: ${courseConfigPath}`);
 
   try {
     const courseConfig = JSON.parse(await fs.readFile(courseConfigPath, 'utf-8'));
@@ -65,13 +70,13 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
         const parts = pathEnd.split('/')
         const segment = parts[0]
         const page = parts[1]
-        const segmentPath = path.join(courseDir, segment);
+        const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`))
         try {
-          const segmentSource = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`)).default;
-          const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`));
           groupedSegments[header.title].push({
-            ...meta,
-            content: segmentSource,
+            title: meta.title,
+            course,
+            segment,
+            page
           });
         } catch (error) {
           console.error(`Error loading segment ${segment} for course ${course}:`, error);

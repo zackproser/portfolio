@@ -3,25 +3,13 @@ import Link from 'next/link';
 function renderSegmentLink(segment, course, currentSegment) {
   let conditionalStyle, svgElement;
 
-  // Use segment.dir as the identifier for the segment, not the index in the array
-  const segmentDir = segment.dir; // assuming `dir` is a string that corresponds to the segment's directory name or identifier
+  // Construct the full path for the segment using both segment and page
+  const segmentPath = `/${segment.segment}/${segment.page}`;
 
-  // Use the parsed integer of segmentDir for comparison
-  const segmentIndex = parseInt(segmentDir, 10);
+  // Determine if the current segment is active based on the full path
+  const isActive = segmentPath === currentSegment;
 
-  if (segmentIndex < currentSegment) {
-    conditionalStyle = "bg-green-200 dark:bg-green-700";
-    svgElement = (
-      <svg
-        className="ml-2 h-5 w-5 text-green-500 dark:text-green-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    );
-  } else if (segmentIndex === currentSegment) {
+  if (isActive) {
     conditionalStyle = "bg-blue-200 dark:bg-blue-700";
     svgElement = (
       <svg
@@ -35,13 +23,27 @@ function renderSegmentLink(segment, course, currentSegment) {
       </svg>
     );
   } else {
-    conditionalStyle = "hover:bg-gray-200 dark:hover:bg-gray-700";
-    svgElement = null; // Or an appropriate placeholder if needed
+    // Check if segmentPath is lexically less than currentSegment to determine if it's a past segment
+    const isPastSegment = segmentPath < currentSegment;
+    conditionalStyle = isPastSegment ? "bg-green-200 dark:bg-green-700" : "hover:bg-gray-200 dark:hover:bg-gray-700";
+    svgElement = isPastSegment ? (
+      <svg
+        className="ml-2 h-5 w-5 text-green-500 dark:text-green-300"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ) : null; // Or an appropriate placeholder if needed
   }
 
+  // Build the full URL path for the link
+  const urlPath = `/learn/${course}${segmentPath}`;
+
   return (
-    <li key={segment.dir} className="py-2">
-      <Link href={`/learn/${course}/${segmentIndex}`}>
+    <li key={segmentPath} className="py-2">
+      <Link href={urlPath}>
         <span className={`block p-2 rounded ${conditionalStyle}`}>
           {segment.title}
           {svgElement}
@@ -57,9 +59,6 @@ export default function CourseBrowser({
   currentSegment,
   children
 }) {
-
-  const currentSegmentNumber = Number(currentSegment)
-
   // Calculate the total number of segments across all groups
   const totalSegments = Object.values(groupedSegments).reduce((acc, segments) => acc + segments.length, 0);
 
@@ -68,12 +67,12 @@ export default function CourseBrowser({
     return <>{children}</>;
   }
 
-  const renderSegments = (segments, header, course, currentSegmentNumber) => {
+  const renderSegments = (segments, header, course, currentSegment) => {
     return (
       <>
         <h3 className="py-2 text-lg font-semibold">{header}</h3>
         <ul className="space-y-1 text-sm">
-          {segments.map(segment => renderSegmentLink(segment, course, currentSegmentNumber))}
+          {segments.map(segment => renderSegmentLink(segment, course, currentSegment))}
         </ul>
       </>
     );
@@ -87,7 +86,7 @@ export default function CourseBrowser({
           <hr />
           {
             Object.entries(groupedSegments).map(([header, segments]) => (
-              renderSegments(segments, header, course, currentSegmentNumber)
+              renderSegments(segments, header, course, currentSegment)
             ))
           }
         </div>
@@ -100,3 +99,4 @@ export default function CourseBrowser({
     </section>
   );
 }
+

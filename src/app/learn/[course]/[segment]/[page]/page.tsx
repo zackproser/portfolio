@@ -56,7 +56,6 @@ export default async function DigitalCourse({ params }: PageProps) {
   console.log(`groupedSegments: %o`, groupedSegments)
   const segmentContent = await getSegmentContent(course, segment, page);
   console.log(`segmentContent: %o`, segmentContent)
-  console.log(`segmentContent.content: %o`, segmentContent)
 
   return (
     <CourseContainer>
