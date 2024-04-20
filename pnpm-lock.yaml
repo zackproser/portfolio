@@ -44,9 +44,6 @@ dependencies:
   '@stripe/stripe-js':
     specifier: ^2.3.0
     version: 2.3.0
-  '@types/mdx':
-    specifier: ^2.0.9
-    version: 2.0.9
   '@types/node':
     specifier: ^20.4.7
     version: 20.4.7
@@ -175,6 +172,9 @@ devDependencies:
   '@tailwindcss/typography':
     specifier: ^0.5.10
     version: 0.5.10(tailwindcss@3.3.3)
+  '@types/mdx':
+    specifier: ^2.0.9
+    version: 2.0.9
   eslint:
     specifier: ^8.45.0
     version: 8.45.0
@@ -835,7 +835,6 @@ packages:
 
   /@types/mdx@2.0.9:
     resolution: {integrity: sha512-OKMdj17y8Cs+k1r0XFyp59ChSOwf8ODGtMQ4mnpfz5eFDk1aO41yN3pSKGuvVzmWAkFp37seubY1tzOVpwfWwg==}
-    dev: false
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}

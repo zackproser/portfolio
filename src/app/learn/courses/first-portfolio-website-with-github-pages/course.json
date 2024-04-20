@@ -1,0 +1,18 @@
+{
+  "headers": [
+    {
+      "title": "Introduction to Web Development and Static Sites",
+      "segments": [
+        "intro/what-you-will-learn",
+        "intro/static-vs-dynamic-websites"
+      ]
+    },
+    {
+      "title": "Introduction to HTML and CSS",
+      "segments": [
+        "html-and-css/intro-to-html",
+        "html-and-css/intro-to-css"
+      ]
+    }
+  ]
+}

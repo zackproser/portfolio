@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { Layout } from '@/components/Layout';
 import CourseBrowser from '@/components/CourseBrowser'
 
@@ -17,6 +19,7 @@ interface PageProps {
   params: {
     course: string;
     segment: string;
+    page: string;
   };
 }
 
@@ -28,7 +31,8 @@ export default async function DigitalCourse({ params }: PageProps) {
     redirect('/api/auth/signin');
   }
 
-  const { course, segment } = params;
+  const { course, segment, page } = params;
+  console.log(`DigitalCourse sees: course: ${course}, segment: ${segment}, page: ${page}`)
 
   const userEmail = session.user.email as unknown as string
 
@@ -52,7 +56,10 @@ export default async function DigitalCourse({ params }: PageProps) {
 
   // Fetch the content segments that assemble into the digital course
   const groupedSegments = await getCourseSegments(course);
-  const segmentContent = await getSegmentContent(course, segment);
+  console.log(`groupedSegments: %o`, groupedSegments)
+  const segmentContent = await getSegmentContent(course, segment, page);
+  console.log(`segmentContent: %o`, segmentContent)
+  console.log(`segmentContent.content: %o`, segmentContent)
 
   return (
     <CourseContainer>
@@ -65,5 +72,3 @@ export default async function DigitalCourse({ params }: PageProps) {
     </CourseContainer>
   )
 }
-
-
