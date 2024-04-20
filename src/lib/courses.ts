@@ -1,10 +1,20 @@
-import { compileMDX } from 'next-mdx-remote/rsc'
 import path from 'path'
 import remarkGfm from 'remark-gfm'
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import { promises as fs } from 'fs';
 import dynamic from "next/dynamic";
+
+export interface ArticleWithHeader extends Article {
+  header?: string;
+  dir?: string;
+  status?: string;
+  content?: string;
+}
+
+type GroupedSegments = {
+  [header: string]: ArticleWithHeader[];
+};
 
 async function importArticle(
   articleFilename: string,
@@ -39,26 +49,13 @@ export async function getSegmentContent(course: string, segment: string, page: s
   }
 }
 
-export interface ArticleWithHeader extends Article {
-  header?: string;
-  dir?: string;
-  status?: string;
-  content?: string;
-}
-
-// Define a type for the grouped segments
-type GroupedSegments = {
-  [header: string]: ArticleWithHeader[];
-};
-
 export async function getCourseSegments(course: string): Promise<GroupedSegments> {
   const courseDir = path.join(process.cwd(), `src/app/learn/courses/${course}`);
   const courseConfigPath = path.join(courseDir, 'course.json');
-  console.log(`courseConfigPath: ${courseConfigPath}`)
+  console.log(`courseConfigPath: ${courseConfigPath}`);
 
   try {
     const courseConfig = JSON.parse(await fs.readFile(courseConfigPath, 'utf-8'));
-    console.log(`courseConfig: %o`, courseConfig)
     const groupedSegments: GroupedSegments = {};
 
     for (const header of courseConfig.headers) {
@@ -67,16 +64,11 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
       for (const pathEnd of header.segments) {
         const parts = pathEnd.split('/')
         const segment = parts[0]
-        const page = parts[1] 
+        const page = parts[1]
         const segmentPath = path.join(courseDir, segment);
-        console.log(`course: ${course}`)
-        console.log(`segment: ${segment}`)
-        console.log(`page: ${page}`)
         try {
           const segmentSource = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`)).default;
-          console.log(`segmentSource: %o`, segmentSource)
-          const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`))
-          console.log(`meta: %o`, meta)
+          const { meta } = (await import(`src/app/learn/courses/${course}/${segment}/${page}.mdx`));
           groupedSegments[header.title].push({
             ...meta,
             content: segmentSource,
@@ -91,7 +83,7 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
 
     return groupedSegments;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && error.code === 'ENOENT') {
       console.error(`Course configuration file not found for ${course}`);
       // You can return a default configuration or throw a specific error
       return {};

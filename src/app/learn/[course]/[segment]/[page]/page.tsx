@@ -30,7 +30,6 @@ export default async function DigitalCourse({ params }: PageProps) {
   }
 
   const { course, segment, page } = params;
-  console.log(`DigitalCourse sees: course: ${course}, segment: ${segment}, page: ${page}`)
 
   const userEmail = session.user.email as unknown as string
 
