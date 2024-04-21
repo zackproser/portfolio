@@ -30,6 +30,12 @@
         "create-static-site/install-ruby",
         "create-static-site/jekyl-intro"
       ]
+    },
+    {
+      "title":"Deploying with GitHub Pages",
+      "segments": [
+        "github-pages/go-live"
+      ]
     }
   ]
 }
