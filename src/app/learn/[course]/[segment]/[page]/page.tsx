@@ -56,9 +56,8 @@ export default async function DigitalCourse({ params }: PageProps) {
   console.log(`groupedSegments: %o`, groupedSegments)
 
   let currentSegment
-
-  const segmentArrays = Object.values(groupedSegments)
-  segmentArrays.reduce((acc, val) => acc.concat(val), []).forEach((seg) => {
+  
+  Object.values(groupedSegments).reduce((acc, val) => acc.concat(val), []).forEach((seg) => {
     if (seg.segment === segment && seg.page === page) {
       currentSegment = seg
     }
