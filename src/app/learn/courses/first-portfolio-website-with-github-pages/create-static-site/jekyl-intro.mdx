@@ -2,9 +2,67 @@ import Image from 'next/image';
 
 export const meta = {
   header: "Static sites with Jekyl",
-  title: "What is Jekyl?",
+  title: "Scaffold your site with Jekyl",
 }
 
 ## Getting Started with Jekyll
 
-Jekyll is a popular static site generator that's perfect for GitHub Pages because it integrates seamlessly with the platform. In this section, we'll guide you through installing Jekyll, its dependencies, verifying your installation, and scaffolding your initial site. Let's dive in!
+Jekyll is a popular static site generator that's perfect for GitHub Pages because it integrates seamlessly with the platform. In this section, I'll guide you through installing Jekyll, its dependencies, verifying your installation, and scaffolding your initial site. 
+
+Once Ruby and Bundler are set up, you can install Jekyll:
+
+```
+gem install jekyll
+```
+
+## Verify the Installation
+
+Check that Jekyll has been installed correctly by running:
+
+```
+jekyll -v
+```
+
+This command should return the version of Jekyll installed on your system. If you see the version number, you're ready to proceed.
+
+## Create a New Jekyll Site
+
+Now, let’s scaffold a new Jekyll site in your repository directory. Navigate to the directory where you want your site to be (it can be the directory you cloned earlier):
+
+```
+cd your-username.github.io
+```
+
+Then run the following command to create a new Jekyll site:
+
+```
+jekyll new --force .
+```
+
+The --force flag tells Jekyll to scaffold a new site in the current directory, even though it’s not empty (as it already contains the .git folder and possibly a README file).
+
+## Build and Serve Your Site Locally
+
+To see your Jekyll site in action locally, build and serve it by running:
+
+```
+bundle exec jekyll serve
+```
+
+This command builds your site and starts a local server. By default, your new Jekyll site should be available at http://localhost:4000. Open this URL in your browser to see your site.
+
+## Explore Your New Jekyll Site
+
+When you open your site locally, you will see a basic Jekyll theme with some sample posts. Explore the files in your project directory:
+
+* `_posts/`: Directory where your blog posts are stored. Posts are written in Markdown.
+* `_config.yml`: Configuration file for your Jekyll site. You can set options like your site’s name, description, and theme here.
+* `index.markdown`: The homepage for your site, written in Markdown.
+
+Feel free to modify the Markdown files or the configuration to see how changes affect your site.
+
+## Next Steps
+
+You now have a basic Jekyll site running locally and are familiar with the primary components of a Jekyll project. The next step is to customize your site, add your content, and when ready, push these changes to your GitHub repository to publish them via GitHub Pages. 
+
+In the following sections, we’ll cover how to customize your site's look and feel and how to publish it to the world.

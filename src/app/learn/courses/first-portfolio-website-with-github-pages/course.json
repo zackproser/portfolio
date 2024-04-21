@@ -11,7 +11,24 @@
       "title": "Introduction to HTML and CSS",
       "segments": [
         "html-and-css/intro-to-html",
-        "html-and-css/intro-to-css"
+        "html-and-css/intro-to-css",
+        "html-and-css/lets-try-it"
+      ]
+    },
+    {
+      "title":"Set up your development environment",
+      "segments": [
+        "dev-environment/setup-visual-studio-code",
+        "version-control/setup-git",
+        "version-control/setup-github",
+        "version-control/create-first-repository"
+      ]
+    },
+    {
+      "title":"Creating a static site",
+      "segments": [
+        "create-static-site/install-ruby",
+        "create-static-site/jekyl-intro"
       ]
     }
   ]

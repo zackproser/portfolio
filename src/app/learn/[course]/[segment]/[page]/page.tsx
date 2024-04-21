@@ -63,8 +63,6 @@ export default async function DigitalCourse({ params }: PageProps) {
     }
   }) 
 
-  console.log(`currentSegment after filtering: %o`, currentSegment)
-
   const segmentContent = await getSegmentContent(course, segment, page);
   console.log(`segmentContent: %o`, segmentContent)
 

@@ -6,4 +6,17 @@ export const meta = {
   title: "Install Ruby",
 }
 
-## Installing Ruby 
+## Install Ruby and Bundler
+
+Jekyll is built on Ruby, so you'll need to have Ruby installed on your system along with Bundler, which manages Ruby gems.
+
+## Install Ruby:
+* **Windows**: Download and install Ruby using RubyInstaller. During installation, check the box to add Ruby to your PATH.
+* **macOS/Linux**: Ruby usually comes pre-installed on these platforms. You can check by typing ruby -v in your terminal. If it’s not installed or you need an upgrade, use a package manager like Homebrew for macOS (brew install ruby) or apt-get for Ubuntu (sudo apt-get install ruby-full).
+
+Install Bundler:
+After installing Ruby, install Bundler by running:
+
+```bash
+gem install bundler
+```
