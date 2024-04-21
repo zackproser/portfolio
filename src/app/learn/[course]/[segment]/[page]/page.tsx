@@ -1,5 +1,7 @@
+import { Layout } from '@/components/Layout';
 import CourseBrowser from '@/components/CourseBrowser'
-import { Container } from '@/components/Container'
+
+import { CourseContainer } from '@/components/CourseContainer'
 import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
 import { redirect } from 'next/navigation'
@@ -15,10 +17,11 @@ interface PageProps {
   params: {
     course: string;
     segment: string;
+    page: string;
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function DigitalCourse({ params }: PageProps) {
   const session = await getServerSession(authOptions);
 
   // Users must be logged in to view this page
@@ -26,7 +29,7 @@ export default async function Page({ params }: PageProps) {
     redirect('/api/auth/signin');
   }
 
-  const { course, segment } = params;
+  const { course, segment, page } = params;
 
   const userEmail = session.user.email as unknown as string
 
@@ -50,18 +53,27 @@ export default async function Page({ params }: PageProps) {
 
   // Fetch the content segments that assemble into the digital course
   const groupedSegments = await getCourseSegments(course);
-  const segmentContent = await getSegmentContent(course, segment);
+  console.log(`groupedSegments: %o`, groupedSegments)
 
-  console.log(`Segments from Page: ${JSON.stringify(groupedSegments)}`);
+  let currentSegment
+  
+  Object.values(groupedSegments).reduce((acc, val) => acc.concat(val), []).forEach((seg) => {
+    if (seg.segment === segment && seg.page === page) {
+      currentSegment = seg
+    }
+  }) 
+
+  const segmentContent = await getSegmentContent(course, segment, page);
+  console.log(`segmentContent: %o`, segmentContent)
 
   return (
-    <Container>
+    <CourseContainer>
       <CourseBrowser
         course={course}
         groupedSegments={groupedSegments}
-        currentSegment={segment}>
+        currentSegment={currentSegment}>
         {segmentContent()}
       </CourseBrowser>
-    </Container>
+    </CourseContainer>
   )
 }

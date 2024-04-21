@@ -1,27 +1,19 @@
 import Link from 'next/link';
 
 function renderSegmentLink(segment, course, currentSegment) {
+  console.log(`segment: %o`, segment)
+  console.log(`currentSegment: %o`, currentSegment)
   let conditionalStyle, svgElement;
 
-  // Use segment.dir as the identifier for the segment, not the index in the array
-  const segmentDir = segment.dir; // assuming `dir` is a string that corresponds to the segment's directory name or identifier
+  // Construct the full path for the segment using both segment and page
+  const segmentPath = `/${segment.segment}/${segment.page}/`;
 
-  // Use the parsed integer of segmentDir for comparison
-  const segmentIndex = parseInt(segmentDir, 10);
+  console.log(`segmentPath: ${segmentPath}`)
 
-  if (segmentIndex < currentSegment) {
-    conditionalStyle = "bg-green-200 dark:bg-green-700";
-    svgElement = (
-      <svg
-        className="ml-2 h-5 w-5 text-green-500 dark:text-green-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-    );
-  } else if (segmentIndex === currentSegment) {
+  // Determine if the current segment is active based on the full path
+  const isActive = segment.position === currentSegment.position;
+
+  if (isActive) {
     conditionalStyle = "bg-blue-200 dark:bg-blue-700";
     svgElement = (
       <svg
@@ -35,13 +27,27 @@ function renderSegmentLink(segment, course, currentSegment) {
       </svg>
     );
   } else {
-    conditionalStyle = "hover:bg-gray-200 dark:hover:bg-gray-700";
-    svgElement = null; // Or an appropriate placeholder if needed
+    // Check if segmentPath is lexically less than currentSegment to determine if it's a past segment
+    const isPastSegment = segment.position < currentSegment.position;
+    conditionalStyle = isPastSegment ? "bg-green-200 dark:bg-green-700" : "hover:bg-gray-200 dark:hover:bg-gray-700";
+    svgElement = isPastSegment ? (
+      <svg
+        className="ml-2 h-5 w-5 text-green-500 dark:text-green-300"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ) : null; // Or an appropriate placeholder if needed
   }
 
+  // Build the full URL path for the link
+  const urlPath = `/learn/${course}${segmentPath}`;
+
   return (
-    <li key={segment.dir} className="px-4 py-2">
-      <Link href={`/learn/${course}/${segmentIndex}`}>
+    <li key={segmentPath} className="py-2">
+      <Link href={urlPath}>
         <span className={`block p-2 rounded ${conditionalStyle}`}>
           {segment.title}
           {svgElement}
@@ -57,9 +63,6 @@ export default function CourseBrowser({
   currentSegment,
   children
 }) {
-
-  const currentSegmentNumber = Number(currentSegment)
-
   // Calculate the total number of segments across all groups
   const totalSegments = Object.values(groupedSegments).reduce((acc, segments) => acc + segments.length, 0);
 
@@ -68,12 +71,12 @@ export default function CourseBrowser({
     return <>{children}</>;
   }
 
-  const renderSegments = (segments, header, course, currentSegmentNumber) => {
+  const renderSegments = (segments, header, course, currentSegment) => {
     return (
       <>
-        <h3 className="px-4 py-2 text-lg font-semibold">{header}</h3>
+        <h3 className="py-2 text-lg font-semibold">{header}</h3>
         <ul className="space-y-1 text-sm">
-          {segments.map(segment => renderSegmentLink(segment, course, currentSegmentNumber))}
+          {segments.map(segment => renderSegmentLink(segment, course, currentSegment))}
         </ul>
       </>
     );
@@ -83,19 +86,21 @@ export default function CourseBrowser({
     <section className="flex mt-12 h-screen">
       <aside className="w-64 overflow-auto flex-shrink-0" style={{ minWidth: '16rem' }}>
         <div className="p-6 space-y-2">
-          <h2 className="text-xl font-bold">{course}</h2>
+          <h2 className="text-xl">Course: {course.replaceAll('-', ' ')}</h2>
+          <hr />
           {
             Object.entries(groupedSegments).map(([header, segments]) => (
-              renderSegments(segments, header, course, currentSegmentNumber)
+              renderSegments(segments, header, course, currentSegment)
             ))
           }
         </div>
       </aside>
-      <main className="flex-grow p-6">
-        <article className="prose lg:prose-lg dark:prose-dark max-w-none">
+      <main className="flex-grow p-6 overflow-y-scroll">
+        <article className="prose lg:prose-lg dark:prose-invert dark:prose-dark max-w-none">
           {children}
         </article>
       </main>
     </section>
   );
 }
+

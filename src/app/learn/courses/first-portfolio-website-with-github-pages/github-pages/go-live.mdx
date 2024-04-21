@@ -1,0 +1,100 @@
+export const meta = {
+  header: "Deploying with GitHub Pages",
+  title: "Let's go live!",
+  description: "Learn the basics of CSS, which allows you to style and control the presentation of your HTML elements",
+}
+
+## Deploying Your Static Site with GitHub Pages
+
+Deploying your static site with GitHub Pages is a straightforward process, allowing you to share your new Jekyll site with the world. GitHub Pages hosts your site directly from your GitHub repository at no additional cost. Here’s how to deploy your site.
+
+## Configure Jekyll for GitHub Pages
+
+Before deploying, make sure your Jekyll site is ready for GitHub Pages:
+
+### Edit _config.yml:
+
+Open the _config.yml file in your site’s root directory. You'll need to ensure a few settings are correctly configured:
+
+Set the baseurl to "" (especially important if you're using a project site which we aren't in this case).
+
+Ensure the url is set to `https://your-username.github.io`, replacing `your-username` with your actual GitHub username.
+
+    
+## Use a GitHub Pages-Compatible Theme:
+
+Ensure your site’s theme is compatible with GitHub Pages. You can choose from several supported themes or simply use the default theme.
+
+Add the GitHub Pages Gem:
+Add the following line to your site's Gemfile:
+
+```ruby
+gem "github-pages", group: :jekyll_plugins
+````
+Then run `bundle update` to install dependencies.
+
+## Push Your Site to GitHub
+
+If you haven’t already, push your Jekyll site’s files to your GitHub repository:
+
+### Add Your Changes:
+
+Navigate to your site's directory in your terminal and run:
+
+```
+git add .
+```
+
+Commit Your Changes:
+
+```
+git commit -m "Prepare site for deployment"
+```
+
+## Push to GitHub
+
+```
+git push origin main
+```
+
+## Enable GitHub Pages
+
+Now, enable GitHub Pages in your repository settings:
+
+Go to Your Repository on GitHub: Open your repository on the GitHub website.
+
+Settings: Navigate to the "Settings" tab.
+
+Pages: Scroll down to the "Pages" section in the settings menu.
+
+Source: Select the branch you want to deploy (usually main or master). If you've organized your site’s files into a /docs folder, specify that; otherwise, choose the root.
+
+Save: Click "Save" or "Choose theme" to apply and save your settings. GitHub will now build and deploy your site.
+
+## Check Your Deployed Site
+
+After you save your settings in the GitHub Pages section, GitHub will build your site. This may take a minute or two. You can monitor the build progress under the "Actions" tab. Once the build completes:
+
+Visit Your Site: Go to https://your-username.github.io to view your deployed site online.
+
+## Update and Redeploy
+
+Any time you make changes to your site locally, you'll need to push those changes to GitHub to update your live site:
+
+### Commit Changes
+
+After making changes, commit them:
+
+```
+git commit -am "Update site content"
+```
+
+Push Changes:
+
+```
+git push origin main
+```
+
+GitHub will automatically rebuild and redeploy your site whenever you push changes to the repository.
+
+Congratulations! You've successfully deployed your static site using GitHub Pages. This platform provides an easy and cost-effective way to host your projects, portfolios, blogs, and more. Continue to enhance your site and push updates as you create new content.
