@@ -1,0 +1,223 @@
+
+import updatedCodeiumAnalysis from '@/images/updated-codeium-analysis.webp' 
+import codeiumDashboard from '@/images/codeium-dashboard.webp'
+import codeiumContextModule from '@/images/codeium-context-module-workflow.webp'
+import astroLive from '@/images/astro-live.webp'
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Updated Codeium analysis and review",
+ author: "Zachary Proser",
+ date: "2024-4-24",
+ description: "It's been about a year since I last looked at Codeium - what has changed?",
+ image: updatedCodeiumAnalysis,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={metadata.image} alt="How do you write so fast?" />
+<figcaption>Codeium is still my favorite AI-assisted autocomplete tool. Here's a look at why, and at the company behind it.</figcaption>
+
+## Table of contents
+
+
+## Reviewing Codeium almost a year later
+
+I initially reviewed Codeium [here](https://zackproser.com/blog/codeium-review), almost one year ago, when it became my daily-driver code completion tool. 
+
+Now, I’m revisiting Codeium. I’ll explain why I still prefer Codeium over other tools and what improvements the Codeium team has made in the past year. 
+
+### How I code and what I work on
+
+While I have VSCode and Cursor installed and will occasionally jump between IDEs, for the most part I code in Neovim, and run the [AstroNvim](https://astronvim.com/) project. 
+
+<Image src={astroLive} alt="AstroNvim is my favorite IDE" />
+<figcaption>AstroNvim is an open-source project that composes Neovim plugins together using a Lua API to create a full fledged IDE experience in your terminal. And Codeium's Neovim integration works well here.</figcaption>
+
+[AstroNvim](https://astronvim.com/) is an open-source community-maintained configuration of Neovim plugins and associated config to turn stock Neovim into an IDE similar to VSCode.
+
+These days, I primarily work with the Next.js framework, and ship JavaScript, Typescript, Python, and more while working on full stack applications, data science Jupyter Notebooks, and large scale distributed systems defined via Infrastructure as Code.
+
+<Image src={codeiumDashboard} alt="Codeium dashboard shows your completions and streaks" />
+<figcaption>Codeium's dashboard keeps track of your completions and streaks.</figcaption>
+
+## Why Codeium is Still My Favorite Tool
+
+### High-quality code completion
+
+Codeium offers precise, contextually appropriate code completion suggestions. 
+
+This feature speeds up the development process and reduces errors, making coding more efficient. 
+
+### **Proprietary context-aware model leads to higher accuracy**
+
+<Image src={codeiumContextModule} alt="Codeium's context module is a big part of why it all works so well" />
+
+Codeium’s proprietary model ([ContextModule](https://codeium.com/blog/context-aware-everything-more-advanced-realtime-context-than-github-copilot)) takes into account: 
+
+1. The list of files you currently have open
+2. The repo-wide context of every file in your project
+
+In addition to ContextModule, designed to determine the most relevant inputs and state to present to the LLM, Codeium employs reranking and prompt building to achieve high-quality suggestions. 
+
+Reranking uses Codeium secret sauce and precomputed embeddings (vector representations of natural language and code) to determine the relative importance of contextual snippets that **could** be fed to the LLM. 
+
+Finally, in the prompt building step 
+
+### Widest support for different file types
+
+A standout feature of Codeium is its versatility. It seamlessly works across various file types—from Dockerfiles to application code and even prose, providing support wherever needed.
+
+At the time of writing, [Codeium supports over **seventy** different file types, whereas GitHub Copilot supports far fewer.](https://codeium.com/compare/comparison-copilot-codeium)
+
+### **Support for Neovim**
+
+Codeium's early support for [Neovim](https://github.com/neovim/neovim) is noteworthy, because most AI-assisted developer tooling entrants initially introduce support for VSCode only.
+
+[Neovim](https://github.com/neovim/neovim) users often find that AI-assisted tools lag in compatibility. Still, Codeium's integration here is robust and effective, enhancing the development experience for a broader audience and winning the Codeium team some hacker street-cred.
+
+## Codeium - Key Features and Updates
+
+### **AI-Powered Autocomplete**
+
+Codeium offers a sophisticated autocomplete feature that significantly accelerates coding by predicting the next lines of code based on the current context. This feature supports over 70 programming languages, ensuring wide applicability across different development environments.
+
+This feature is the core value add for Codeium, and it continues to work very well.
+
+### **Intelligent Code Search**
+
+Codeium is teasing the addition of [AI-assisted code search](https://codeium.com/about_codeium_search) to their offerings. There’s currently a landing page to sign-up [here](https://codeium.com/waitlist/codeium-search).
+
+I haven’t been able to try this out yet.
+
+If this works anything like GitHub’s relatively recently overhauled code search feature, I’ll be very interested in trying it out. 
+
+**That said, I do already have shortcuts configured in my preferred IDE, Neovim, for finding symbols, navigating projects efficiently, going from method or function to the call sites referencing them, etc.** I wouldn't consider this a must-have feature as a result, but I can see it increasing the overall value proposition of Codeium.
+
+### **AI-Driven Chat Functionality**
+
+Another innovative feature of Codeium is its AI-powered chat, which acts like a coding assistant within the IDE. This tool can assist with code refactoring, bug fixes, and even generating documentation, making it a versatile helper for both seasoned developers and those new to a language or framework.
+
+I tend not to lean on this feature very much when I’m coding - preferring to accept the code completion suggestions Codeium makes as I go. 
+
+That said, when I last evaluated Codeium’s and Copilot’s chat features they were quite similar.
+
+Codeium’s AI-assisted chat functionality enables you to: 
+
+- **Generate** code in response to a natural language request
+- **Explain** existing code that you may be unfamiliar with
+- **Refactor** existing code in response to a natural language request
+- **Translate** existing code from one language to another.
+
+### **Integration with Major IDEs**
+
+Codeium prides itself on its broad compatibility with major Integrated Development Environments (IDEs), including Visual Studio Code, JetBrains, and even unique setups like Chrome extensions. This ensures that developers can leverage Codeium’s capabilities within their preferred tools without needing to switch contexts.
+
+## **Recent Updates and Enhancements**
+
+As part of its commitment to continuous improvement, Codeium regularly updates its features and expands its language model capabilities. 
+
+Recent updates may include enhanced machine learning models for more accurate code suggestions and additional tools for code management and review processes.
+
+Codeium documents all of its changes as Changeset blog posts on its official blog: https://codeium.com
+
+### Series B
+
+Codeium announced a $65M Series B round, making them one of the best funded companies in the Gen-AI for software development space.
+
+### Partnerships
+
+Codeium announced a set of strategic partnerships at the beginning of 2024: 
+
+- Dell (on-premise infrastructure)
+- Atlassian (Source code management and knowledge stores)
+- MongoDB (Developer communities with domain-specific languages (DSLs))
+
+### Termium - code completion in the terminal
+
+A.K.A “Codeium in the terminal”. [Termium](https://codeium.com/blog/termium-codeium-in-terminal-launch) is the application of the same proprietary model to a new environment where developers could use some support: the command line prompt. 
+
+Used by developers to access remote machines, manage deployments of as many as one or thousands of servers, issues cloud environment commands, run database migrations and much more. 
+
+This prototype feature puts Codeium in direct competition with the [Warp AI-enhanced terminal](https://zackproser.com/blog/warp-ai-terminal-review) offering.
+
+The Codeium team are being rightfully cautious about announcing and promoting this integration, because making mistakes in the terminal could be exceedingly costly for developers and the companies that employ them. 
+
+That said, because Codeium was intentionally built as a layer between the terminal and the end-user developer, intercepting and intelligently debugging stack traces before they even make it back to the developer does seem like a winning prospect.
+
+### Codeium Live: free, forever up-to-date in-browser chat
+
+Codeium released a prototype feature called [Codeium Live](https://codeium.com/blog/codeium-live), which allows developers to index and chat with external libraries from their browser. 
+
+This is a useful feature for any developer attempting to ramp up on a new dependency, which is something most working developers are doing regularly.
+
+Codeium Live solves a common problem of hallucination in foundation models. Even though models such as OpenAI’s ChatGPT4 are amongst the best in terms of overall intelligence and accuracy of responses, they still suffer from out of date training data that doesn’t capture massive upgrades projects such as Next.js have undergone. 
+
+This means that asking for code samples or explanations from ChatGPT4 is likely to result in hallucinations - whereas Codeium Live is regularly updated with fresh source code for the dependencies and libraries it has indexed.
+
+### Multi repository context awareness for self-hosted customers
+
+This will allow developers to reference code in non-active private repositories as part of their Chat experience, as well as allow the Codeium context awareness engine to retrieve context automatically from other, potentially highly relevant, repositories at inference time. 
+
+## Usability and Developer Experience
+
+### **User Testimonials, Reviews and Awards**
+
+Codeium was [the only AI code assistant to be included in Forbe’s AI 50 list of the top private AI companies in the world.](https://codeium.com/blog/codeium-forbes-ai-50) 
+
+Codeium was highlighted for: 
+
+- Being the first AI assistant to GA [in-IDE chat](https://codeium.com/chat), [context awareness](https://codeium.com/blog/context-aware-everything-more-advanced-realtime-context-than-github-copilot), and more capabilities
+- Near 5-star ratings on all extension marketplaces
+- Broadest [IDE](https://codeium.com/download) and language availability out of any AI assistant
+- Unique personalization capabilities that tailor Codeium’s system to every company’s and individual’s specific codebases, semantics & syntax, and best
+practices (see [this](https://codeium.com/blog/context-aware-everything-more-advanced-realtime-context-than-github-copilot), [this](https://codeium.com/blog/finetuning-with-codeium-for-enterprises), [this](https://codeium.com/blog/codeium-context-pinning-launch), [this](https://codeium.com/blog/introducing-at-mentions) and [this](https://codeium.com/blog/remote-indexing-multirepo-announcement))
+- Working with the leading companies in every vertical, including regulated industries like finance, defense, and healthcare due to our self-hosted deployment and our better compliance guarantees (this and this).
+- Case studies with [Anduril](https://codeium.com/blog/anduril-case-study), [Dell](https://infohub.delltechnologies.com/p/making-the-case-for-software-development-with-ai/), [Clearwater Analytics](https://codeium.com/blog/clearwater-analytics-case-study), and [Vector Informatik](https://codeium.com/blog/vector-informatik-case-study) to highlight the broad appeal
+- [Dell](https://codeium.com/blog/dell-codeium-partnership-announcement), [Atlassian](https://codeium.com/blog/atlassian-codeium-announcement), [MongoDB](https://codeium.com/blog/mongodb-codeium-partnership-announcement), [CodeSandbox](https://codeium.com/blog/codesandbox-codeium-partnership-announcement), and more as strategic partners
+
+Feedback from users highlights Codeium's impact on improving coding efficiency and workflow. Many report that its autocomplete and search features significantly reduce the time spent on coding and debugging, which is especially valuable in large projects. 
+
+The positive reception is evident in numerous reviews where developers express satisfaction with the seamless integration and time-saving capabilities of Codeium. [Codeium has been generally well-received on Product Hunt](https://www.producthunt.com/products/codeium), earning high praise for its extensive features and ease of use, particularly among users of JetBrains IDEs like Goland and PyCharm. 
+
+It's also noted for being effective across various IDEs, including VSCode, and for supporting a wide range of programming languages. 
+
+Users appreciate its ability to significantly enhance coding efficiency and the fact that it offers these powerful tools for free. It holds a rating of 4.75 out of 5 based on 28 reviews, indicating strong user satisfaction.
+
+In comparison, GitHub Copilot also receives positive feedback but tends 
+to be more appreciated within the GitHub community and those who heavily use Visual Studio Code. Copilot is praised for its context-aware code suggestions and seamless integration with GitHub's ecosystem, making it a favored choice for developers already embedded in that environment. 
+
+However, Copilot is a paid service, which contrasts with Codeium’s free offering, and this could be a deciding factor for individual developers or startups operating with limited budgets.
+
+## Pricing and Accessibility
+
+### **Free Access for Individual Developers**
+
+Codeium is uniquely positioned in the market by offering its full suite of features for free to individual developers. 
+
+This approach not only democratizes access to advanced coding tools but also allows a broad spectrum of developers to enhance their coding capabilities without financial barriers.
+
+By contrast, GitHub’s Copilot starts at $10 per month for individuals. GitHub may grant active open-source maintainers free access to GitHub Copilot on a discretionary basis.
+
+### **Enterprise Solutions**
+
+For teams and businesses, Codeium offers tailored plans that provide additional features such as deployment in a virtual private cloud (VPC), advanced security options, and dedicated support. These plans are priced per seat, which allows businesses to scale their usage based on team size and needs.
+
+## Security and Privacy
+
+### **Data Privacy**
+
+One of Codeium’s strongest selling points is its commitment to privacy. Unlike some competitors, Codeium does not train its AI models on user data. This approach addresses growing concerns about data privacy within the development community.
+
+### **Security Features**
+
+Codeium provides robust security features, including end-to-end encryption for data transmission and storage. For enterprise users, there are additional security measures such as role-based access controls and compliance with industry-standard security protocols.
+
+### **Transparency and Trust**
+
+Codeium’s transparent approach to handling user data and its proactive communication about privacy practices have helped it build trust within the developer community. This is particularly important in an era where data breaches and privacy violations are common.
