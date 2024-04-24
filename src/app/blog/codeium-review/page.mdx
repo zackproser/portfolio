@@ -10,6 +10,8 @@ import ConsultingCTA from '@/components/ConsultingCTA'
 
 import { createMetadata } from '@/utils/createMetadata'
 
+import Callout from '@/components/Callout'
+
 export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2023-05-29",
@@ -23,6 +25,10 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 ## Codeium is a GitHub Copilot alternative that I'm trying out 
 
 <Image src={codeiumExample} alt="Codeium example" />
+
+<Callout type={"GoDeeper"} title={"Updated analysis available"} body={"I've since written an updated and more in-depth analysis of Codeium, how it differs from its competitors and why it's still my favorite tool"} />
+
+<Link href={"/blog/codeium-analysis-4-2024"}>Read my updated Codeium analysis</Link>
 
 The world of A.I. enhanced developer tooling moves very quickly, but you still may not yet have heard of Codeium, an open source and free alternative to GitHub's Copilot.
 
