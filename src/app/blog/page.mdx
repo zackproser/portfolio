@@ -1,0 +1,20 @@
+
+import undefinedImStillThinkingOfAMaImage from '/src/images/undefined-im-still-thinking-of-a-ma.png' 
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "",
+ author: "Zachary Proser",
+ date: "2024-4-25",
+ description: "",
+ image: undefinedImStillThinkingOfAMaImage,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+
