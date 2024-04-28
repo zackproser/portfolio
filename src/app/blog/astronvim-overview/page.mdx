@@ -1,6 +1,8 @@
 import astronvimLogo from '@/images/astronvim.webp'
 import astronvimLive from '@/images/astro-live.webp' 
 import astronvim3Columns from '@/images/astronvim-3-columns.webp'
+import itsAnIDE from '@/images/its-an-ide.webp'
+import luaConfig from '@/images/astronvim-lua-config.webp'
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
@@ -61,6 +63,9 @@ with one another online.
 
 ## Why would I do this to myself? 
 
+<Image src={itsAnIDE} alt="I SWEAR GUYS ITS LIKE A FULL IDE IN YOUR TERMINAL" />
+<figcaption>SERIOUSLY IT'S LIKE A FULL IDE RIGHT IN YOUR TERMINAL AND ALL YOU HAVE TO DO IS...</figcaption>
+
 Around now you may be starting to say to yourself, "Self, I think this guy is losing it, and/or something of sadist". And you'd be right. But there's actually more than one reason 
 I willfully continue to do this to myself: 
 
@@ -84,15 +89,24 @@ all of the major IDEs, paid and free, their own period of careful contemplation 
 
 Tmux, and the ability it grants me to effortlessly resize my workflow to the scope of my current task, are for me.
 
-### AstroNvim is highly extensible
+### AstroNvim is highly extensible and Neovim's community is prolific
 
 It takes some time to become comfortable with Lua syntax if you've never seen it before. It takes some head-scratching, quitting, killing Neovim, re-opening it and trying hotkeys again before your first few 
 plugins install smoothly. 
+
+<Image src={luaConfig} alt="Configuring your AstroNvim theme with Lua" />
+<figcaption>This is all the code required to flip your colorscheme to `Catpuccin`</figcaption>
 
 But after a little bit it's pretty comfortable and fun to find new Neovim plugins and install, combine and configure them to your liking. 
 
 Everything from AI-enhanced tool integrations to spellcheckers, link utilities that 
 open the source code under your cursor in GitHub for you and copy the URL to your clipboard and much more are available as open-source Neovim plugins on GitHub.
+
+For example, right after OpenAI initially set the world on fire with ChatGPT, [this handy Neovim plugin emerged on GitHub: NeoAI](https://github.com/bryley/neoai). As you can see, it integrates directly in Neovim, so you can 
+copy paste the example config from the project README and modify it to your heart's content.
+
+There's a ton of tools now that allow you to interact with OpenAI and a wide range of local models, but my point is that this is only one of many amazing free community-provided 
+Neovim plugins that popped up essentially immediately to address fellow Neovim users' needs.
 
 ## What are my favorite customizations? 
 
