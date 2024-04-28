@@ -6,9 +6,9 @@ export default function GiscusComponent() {
   return (
     <Giscus
       repo="zackproser/portfolio"
-      repoid="R_kgDOJaEONw"
+      repoId="R_kgDOJaEONw"
       category="Announcements"
-      categoryid="DIC_kwDOJaEON84CfAgN"
+      categoryId="DIC_kwDOJaEON84CfAgN"
       mapping="pathname"
       strict="0"
       reactions-enabled="1"
