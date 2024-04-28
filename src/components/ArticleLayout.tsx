@@ -2,6 +2,7 @@ import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
 import GiscusWrapper from '@/components/GiscusWrapper';
 import FollowButtons from '@/components/FollowButtons'
+import { Suspense } from 'react'
 
 export function ArticleLayout({
   children,
@@ -40,8 +41,10 @@ export function ArticleLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
-            <GiscusWrapper />
-            < FollowButtons />
+            <Suspense fallback={<div>Loading...</div>}>
+              <GiscusWrapper />
+            </Suspense>
+            <FollowButtons />
           </div>
         </div>
       </Container>
