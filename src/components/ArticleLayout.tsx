@@ -1,5 +1,6 @@
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
+import GiscusWrapper from '@/components/GiscusWrapper';
 import FollowButtons from '@/components/FollowButtons'
 
 export function ArticleLayout({
@@ -39,6 +40,7 @@ export function ArticleLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
+            <GiscusWrapper />
             < FollowButtons />
           </div>
         </div>
