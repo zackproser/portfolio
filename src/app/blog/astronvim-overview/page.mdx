@@ -1,0 +1,103 @@
+import astronvimLogo from '@/images/astronvim.webp'
+import astronvimLive from '@/images/astro-live.webp' 
+import astronvim3Columns from '@/images/astronvim-3-columns.webp'
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = {
+ title: "Why I use Neovim's AstroNvim project as my daily driver IDE",
+ author: "Zachary Proser",
+ date: "2024-4-28",
+ description: "Why do I use an open-source IDE-like Neovim experience glued together with Lua?",
+ image: astronvimLogo,
+} 
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={metadata.image} alt="AstroNvim is a community-maintained open-source project for Neovim" />
+<figcaption>For the last couple of years, I've been happily using the community open-source project AstroNvim, which extends Neovim into a full-fledged IDE experience</figcaption>
+
+## Table of contents
+
+## What is AstroNvim?  
+
+AstroNvim is [an open-source project](https://github.com/AstroNvim/AstroNvim) that tastefully composes 
+many open-source Lua plugins for Neovim together to create a complete Integrated Development Environment (IDE) experience
+in your terminal. 
+
+Think of it like vim extended with filetree, LSP support, git integrations, language symbol lookups and more.
+
+Here's what AstroNvim looks like when I'm running it in a tmux session:
+
+<Image src={astronvimLive} alt="This is what it looks like when I'm hacking with AstroNvim" />
+
+In other words, think of VSCode or one of JetBrains' IDE offerings, but completely free, with no sign-up required and you're also 
+on your own when things go bad. 
+
+That last part is not entirely true, of course, because you've got the whole helpful community in GitHub and elsewhere who share configurations, bug reports, patches and workarounds 
+with one another online.
+
+<Image src={astronvim3Columns} alt="This is what AstroNvim looks like out of the box" />
+<figcaption>If you do not configure AstroNvim at all, it comes out of the box with batteries included - everything from debugger to support for any programming language or syntax</figcaption>
+
+## What does AstroNvim configure out of the box?
+
+- Common plugin specifications with [AstroCommunity](https://github.com/AstroNvim/astrocommunity)
+- Statusline, Winbar, and Tabline with [Heirline](https://github.com/rebelot/heirline.nvim)
+- Plugin management with [lazy.nvim](https://github.com/folke/lazy.nvim)
+- Package management with [mason.nvim](https://github.com/williamboman/mason.nvim)
+- File explorer with [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
+- Autocompletion with [Cmp](https://github.com/hrsh7th/nvim-cmp)
+- Git integration with [Gitsigns](https://github.com/lewis6991/gitsigns.nvim)
+- Terminal with [Toggleterm](https://github.com/akinsho/toggleterm.nvim)
+- Fuzzy finding with [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+- Syntax highlighting with [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- Formatting and linting with [none-ls](https://github.com/nvimtools/none-ls.nvim)
+- Language Server Protocol with [Native LSP](https://github.com/neovim/nvim-lspconfig)
+
+## Why would I do this to myself? 
+
+Around now you may be starting to say to yourself, "Self, I think this guy is losing it, and/or something of sadist". And you'd be right. But there's actually more than one reason 
+I willfully continue to do this to myself: 
+
+### AstroNvim is free
+
+I pay for enough software subscriptions as it is.  I still have VSCode, Cursor, and even some Jetbrains IDEs installed and lying around, I generally do not find myself reaching for them 
+unless they're the only places I can run a particular extension I need.
+
+### AstroNvim is fast 
+
+I am one of those people who spends the few seconds it takes VSCode to fire all your plugins' phone-home-and-notify subsystems screaming in his head. 
+
+Being greeted by the stuttering multi-layered wall of opaque notifications that do not idenitfy which extension they're talking about every time I have the audacity to open a file for editing is just the wrong kind of abuse in my book.
+
+I like that, despite AstroNvim including plenty of the functionality I need to get my job done effectively, it remains snappy on boot and when loading large files. 
+
+### AstroNvim plays well with Tmux
+
+It's even snappy when I have multiple instances of Neovim open in different tmux panes. I've arrived at my tmux-based workflow after many years of careful considerations, cycling through new tools and approaches and giving 
+all of the major IDEs, paid and free, their own period of careful contemplation and editing time both at work and on personal projects. 
+
+Tmux, and the ability it grants me to effortlessly resize my workflow to the scope of my current task, are for me.
+
+### AstroNvim is highly extensible
+
+It takes some time to become comfortable with Lua syntax if you've never seen it before. It takes some head-scratching, quitting, killing Neovim, re-opening it and trying hotkeys again before your first few 
+plugins install smoothly. 
+
+But after a little bit it's pretty comfortable and fun to find new Neovim plugins and install, combine and configure them to your liking. 
+
+Everything from AI-enhanced tool integrations to spellcheckers, link utilities that 
+open the source code under your cursor in GitHub for you and copy the URL to your clipboard and much more are available as open-source Neovim plugins on GitHub.
+
+## What are my favorite customizations? 
+
+Luckily, because AstroNvim itself is open-source, and the [project docs recommend using the provided config template repository to store your personal customizations](https://docs.astronvim.com/configuration/manage_user_config/), you don't have to ask me
+to see [my config](https://github.com/zackproser/astronvim_config). 
+
+Hell, you can even jump directly to [the commit](https://github.com/zackproser/astronvim_config/commit/ec850dd06fae803219f786c3ab1099bb8645c731) where I installed my favorite Gruvbox dark theme.
+
