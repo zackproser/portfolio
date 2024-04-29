@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/Button";
 
 function MailIcon(props) {
@@ -27,15 +27,11 @@ function MailIcon(props) {
 	);
 }
 
-export const Newsletter = () => {
-	const [formSuccess, setSuccess] = useState(false);
+export default function Newsletter({ title, body }) {
+  const referrer = usePathname()
+  const [formSuccess, setSuccess] = useState(false);
 
-	// Get access to the router in order to fetch query params off it
-	const searchParams = useSearchParams();
-
-	const referrer = searchParams.get("referrer") || "unknown/direct";
-
-	const sendFormSubmissionEvent = () => {
+  const sendFormSubmissionEvent = () => {
 		gtag("event", "sign_up", {
 			method: "newsletter",
 		});
@@ -87,14 +83,14 @@ export const Newsletter = () => {
 	) : (
 		<form
 			onSubmit={handleSubmit}
-			className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 tracer-glow"
+			className="rounded-2xl border border-zinc-100 mb-6 p-6 dark:border-zinc-700/40 tracer-glow"
 		>
-			<h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+			<h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100 not-prose">
 				<MailIcon className="h-6 w-6 flex-none" />
-				<span className="ml-3">Supercharge your development skills ⚡</span>
+				<span className="ml-3">{title ?? 'Supercharge your development skills'} ⚡</span>
 			</h2>
 			<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-				I publish technical content for developers who want to skill up
+				{body ?? 'I publish technical content for developers who want to skill up'}
 			</p>
 			<div className="mt-6 flex">
 				<input
