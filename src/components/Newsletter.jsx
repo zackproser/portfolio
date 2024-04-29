@@ -90,7 +90,7 @@ export default function Newsletter({ title, body }) {
 				<span className="ml-3">{title ?? 'Supercharge your development skills'} ⚡</span>
 			</h2>
 			<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-				{body ?? 'I publish technical content for developers who want to skill up'}
+				{body ?? 'I publish technical content for developers who want to skill up, and break down AI, vector databases and tools for investors'}
 			</p>
 			<div className="mt-6 flex">
 				<input
