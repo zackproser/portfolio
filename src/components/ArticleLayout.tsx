@@ -1,6 +1,7 @@
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
 import GiscusWrapper from '@/components/GiscusWrapper';
+import NewsletterWrapper from '@/components/NewsletterWrapper';
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
 
@@ -41,6 +42,7 @@ export function ArticleLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
+            <NewsletterWrapper title={'If you made it this far, you can do anything!'} body={'I publish deep technical content for developers who want to skill up'} />
             <Suspense fallback={<div>Loading...</div>}>
               <GiscusWrapper />
             </Suspense>

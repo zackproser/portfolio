@@ -1,5 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-import { Newsletter } from '@/components/Newsletter'
+import Newsletter  from '@/components/NewsletterWrapper'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -59,7 +59,7 @@ I've always been a writer, but since January of 2023, I've found myself increasi
 
 I also enhanced my production pipeline, modernizing my portfolio site and migrating to Vercel for more rapid iteration, as <Link href={"/blog/maintaining-this-site-no-longer-fucking-sucks"}> I wrote about here</Link>. 
 
-<Newsletter />
+<Newsletter title={null} body={null} />
 
 My game plan was simple: continue to do my day job as an open source developer, continue to learn in public, but also capture my best learnings, insights, favorite new tech stacks and tools via <Link href={"https://zackproser.com/blog"}>my blog</Link>, <Link href={"https://youtube.com/@zackproser"}>YouTube channel</Link> and even <Link href={"https://twitch.tv/zackproser"}>Twitch!</Link>
 
