@@ -1,7 +1,7 @@
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
-import { Newsletter } from '@/components/Newsletter'
+import Newsletter from '@/components/Newsletter'
 import FollowButtons from '@/components/FollowButtons'
 
 function ArrowLeftIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -59,7 +59,7 @@ export function CourseLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
-            <Newsletter />
+            <Newsletter title={'Be notified when the next course drops!'} body={'I build project-based learning courses for developers who want to level up'} />
             <FollowButtons />
           </div>
         </div>
