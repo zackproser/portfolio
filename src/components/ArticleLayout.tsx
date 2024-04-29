@@ -42,7 +42,7 @@ export function ArticleLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
-            <NewsletterWrapper title={'If you made it this far, you can do anything!'} body={'I publish deep technical content for developers who want to skill up'} />
+            <NewsletterWrapper title={'If you made it this far, you can do anything!'} body={null} />
             <Suspense fallback={<div>Loading...</div>}>
               <GiscusWrapper />
             </Suspense>
