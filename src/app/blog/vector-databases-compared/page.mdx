@@ -2,7 +2,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 import Link from 'next/link'
-import Callout from '@/components/Callout'
+import Newsletter from '@/components/NewsletterWrapper'
 import vectorDatabasesCompared from '@/images/vector-databases-examined.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
@@ -19,7 +19,7 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
-<Callout type={"SpecialCallout"} title="Claiming my bias upfront" body={"I am a Staff Developer Advocate at Pinecone.io. That said, I've done my best to create a faithful representation of the facts here, all of which I have verified myself. If you see anything here that is inaccurate or misleading, I'll be happy to update it after verifying."} />
+<Newsletter title={'I break down AI, vector databases and dev tools'} body={'Subscribe to my free newsletter to stay up to date'} />
 
 ## Table of contents
 
