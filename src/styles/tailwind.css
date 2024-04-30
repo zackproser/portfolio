@@ -1,4 +1,4 @@
+@import './gruvbox.css';
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
-@import './gruvbox.css';
 @import 'tailwindcss/utilities';
