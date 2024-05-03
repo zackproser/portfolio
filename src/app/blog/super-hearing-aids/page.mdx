@@ -1,0 +1,67 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import superHearingAids from '@/images/super-hearing-aids-party.webp'
+import superHearingAidsStreet from '@/images/super-hearing-aids-street.webp'
+import superHearingAidsSafetyAlert from '@/images/super-hearing-aid-safety-alert.webp'
+import superHearingAidsLifeAlert from '@/images/super-hearing-aid-life-alert.webp'
+import superHearingAidsBluetooth from '@/images/super-hearing-aids-bluetooth.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-05-02",
+    title: "Tech I wish existed: super hearing aids",
+    description: "I want comfortable hearing aids with long battery life that extend my senses and intelligence",
+    image: superHearingAids
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+## Tell me where to send my money 
+
+In this post I will dream big about "super hearing aids" that extend my senses and enhance my intelligence. I don't believe we're that far off from this product existing, so if you know 
+of something similar, feel free to leave a comment at the bottom of this page. 
+
+### LLM onboard with vector storage and internet access
+
+They need to be small enough to be comfortably worn, yet I expect unreasonably long battery life. They should be hard to notice yet unobstrusively enhance their wearer's senses and intelligence. 
+
+<Image src={superHearingAids} alt="Super hearing aids enhance your senses and intelligence" />
+
+For example, an onboard LLM could auto translates any incoming language to my native tongue, help me remember important facts, dates, alert me that I'm going to be late...
+
+They can be subtly signaled to start or stop listening and recording things and then eventually rules can be set based on context (never record inside my home).
+
+### Pushes me real time alerts that relate to my safety or my family's safety 
+
+<Image src={superHearingAidsStreet} alt="Super hearing aids help keep you alive" />
+
+In essence, the super hearing aids are a blend of our best state of the art technologies that are easy to keep on me all day and which attempts to help keep me alive.
+
+They will remind me how to retrace my steps and guide me back to where I parked my car, but also alert me to dangers I might not be aware of on my own. Even giving me 
+advance warning on a danger I would otherwise detect myself but later on would be advantageous. 
+
+<Image src={superHearingAidsSafetyAlert} alt="Super hearing aids push safety alerts to the user" />
+
+This includes alerting me of events nearby such as shootings, extreme weather, traffic congestion, police reports that are relevant to my immediate safety, etc.
+
+They could automatically call and route family and EMTs to my location if I fell ill or lost consciousness...
+
+<Image src={superHearingAidsLifeAlert} alt="Super hearing aids could function as auto life alerts" />
+
+### Seamlessly connects and disconnects from entertainment systems
+
+<Image src={superHearingAidsBluetooth} alt="Super hearing aids seamlessly connect to entertainment systems" />
+
+* Bluetooth or similar tech to connect to my television across the room, my game console when I'm playing
+* Auto modulates volumes for my connected devices so I can easily talk to and hear the person I'm sitting with while connected to our game session on the TV
+* If requested, auto transcribes for as long as needed to the cloud or my private data store
+
+
