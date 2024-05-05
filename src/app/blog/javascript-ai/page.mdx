@@ -1,16 +1,17 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
+import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
 import JSAI from '@/images/javascript-ai.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
+
+export const href = "https://www.pinecone.io/learn/javascript-ai"
 
 export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-08-11",
     title: "AI-powered and built with...JavaScript?", 
     description: "6 Technology trends position JavaScript developers to reap the rewards of the GenAI boom",
-    href: "https://www.pinecone.io/learn/javascript-ai",
     image: JSAI
 })
 
@@ -22,6 +23,4 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 This was the second article I published while working at Pinecone: 
 
-<Button href={metadata.href}>Read article</Button>
-
-
+<Button href={href} variant="green">Read article</Button>
