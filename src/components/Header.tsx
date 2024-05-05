@@ -138,8 +138,8 @@ function MobileNavigation(
                 <MobileNavItem href="/newsletter">Newsletter</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
                 <MobileNavItem href="/contact">Contact</MobileNavItem>
-                <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
-                <SparkleNavItem glowColor={"#3fe291"} href="https://sponsor.zackproser.com" title="Hire me">Hire me</SparkleNavItem>
+                <SparkleNavItem href="/learn">Learn</SparkleNavItem>
+                <SparkleNavItem glowColor={"#3fe291"} href="https://sponsor.zackproser.com">Hire me</SparkleNavItem>
               </ul>
             </nav>
           </Popover.Panel>
@@ -187,8 +187,8 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
         <NavItem href="/newsletter">Newsletter</NavItem>
         <NavItem href="/projects">Projects</NavItem>
         <NavItem href="/contact">Contact</NavItem>
-        <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
-        <SparkleNavItem className="whitespace-nowrap px-4 py-2 text-sm md:text-base bg-green-500 text-white rounded-full shadow-md" glowColor={"#3fe291"} href="https://sponsor.zackproser.com" title="Hire me">Hire</SparkleNavItem>
+        <SparkleNavItem href="/learn">Learn</SparkleNavItem>
+        <SparkleNavItem className="whitespace-nowrap px-4 py-2 text-sm md:text-base bg-green-500 text-white rounded-full shadow-md" glowColor={"#3fe291"} href="https://sponsor.zackproser.com">Hire</SparkleNavItem>
       </ul>
     </nav>
   )
