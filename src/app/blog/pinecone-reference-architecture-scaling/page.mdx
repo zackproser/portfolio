@@ -5,12 +5,13 @@ import pineconeRefArch from '@/images/pinecone-refarch-logo.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
+export const href = "https://www.pinecone.io/learn/scaling-pinecone-serverless/"
+
 export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2024-1-23",
     title: "Testing Pinecone Serverless at Scale with the AWS Reference Architecture", 
     description: "A step-by-step walkthrough on how to generate arbitrary system load and flex Pinecone Serverless",
-    href: "https://www.pinecone.io/learn/scaling-pinecone-serverless/",
     image: pineconeRefArch
 })
 
@@ -25,4 +26,4 @@ use the tools provided in the repository to generate test records to flex the sy
 
 This is the eigth article I wrote while working at Pinecone: 
 
-<Button href={metadata.href}>Read article</Button>
+<Button href={href} variant="green">Read article</Button>

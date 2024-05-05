@@ -5,12 +5,13 @@ import PPP from '@/images/pain-poetry-python.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
+export const href = "https://pinecone.io/blog/pain-poetry-python"
+
 export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-09-01",
     title: "The Pain and Poetry of Python", 
     description: "A history of package management and virtualenvs in Python and why we migrated the Pinecone Python client to Poetry",
-    href: "https://pinecone.io/blog/pain-poetry-python",
     image: PPP
 })
 
@@ -22,6 +23,6 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 This was the fourth article I published while working at Pinecone: 
 
-<Button href={metadata.href}>Read article</Button>
+<Button href={href} variant="green">Read article</Button>
 
 
