@@ -13,26 +13,27 @@ const variantStyles = {
 }
 
 type ButtonProps = {
-  variant?: keyof typeof variantStyles
+  variant?: keyof typeof variantStyles;
 } & (
-    | (React.ComponentPropsWithoutRef<'button'> & { href?: undefined })
-    | React.ComponentPropsWithoutRef<typeof Link>
-  )
+  | (React.ComponentPropsWithoutRef<'button'> & { href?: undefined })
+  | React.ComponentPropsWithRef<'a'> & { href: string }
+);
 
 export function Button({
   variant = 'primary',
   className,
+  href,
   ...props
 }: ButtonProps) {
-  className = clsx(
+  const classes = clsx(
     'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
     variantStyles[variant],
     className,
-  )
+  );
 
-  return typeof props.href === 'undefined' ? (
-    <button className={className} {...props} />
+  return href ? (
+    <Link href={href} className={classes} {...props}></Link>
   ) : (
-    <Link className={className} {...props} />
-  )
+    <button className={classes} {...props}></button>
+  );
 }
