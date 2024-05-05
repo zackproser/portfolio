@@ -8,15 +8,19 @@
   width: 100%;
 }
 
+:root {
+  --glow-color: #FFD700; 
+}
+
 @keyframes glow-animation {
   0% {
-    text-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700, 0 0 15px #FFD700, 0 0 20px #FFD700;
+    text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 15px var(--glow-color), 0 0 20px var(--glow-color);
   }
   50% {
-    text-shadow: 0 0 10px #FFD700, 0 0 15px #FFD700, 0 0 20px #FFD700, 0 0 25px #FFD700, 0 0 30px #FFD700;
+    text-shadow: 0 0 10px var(--glow-color), 0 0 15px var(--glow-color), 0 0 20px var(--glow-color), 0 0 25px var(--glow-color), 0 0 30px var(--glow-color);
   }
   100% {
-    text-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700, 0 0 15px #FFD700, 0 0 20px #FFD700;
+    text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 15px var(--glow-color), 0 0 20px var(--glow-color);
   }
 }
 
@@ -60,6 +64,14 @@
   width: 10px;
   height: 10px;
   background-color: #FFD700;
+  clip-path: polygon(50% 0%, 61.8% 35.4%, 98.1% 35.4%, 68.3% 57.3%, 79.9% 91.6%, 50% 70.9%, 20.1% 91.6%, 31.7% 57.3%, 1.9% 35.4%, 38.2% 35.4%);
+  animation: sparkle-animation 2s infinite alternate;
+}
+
+.sparkle-green {
+  width: 10px;
+  height: 10px;
+  background-color: #3fe291;
   clip-path: polygon(50% 0%, 61.8% 35.4%, 98.1% 35.4%, 68.3% 57.3%, 79.9% 91.6%, 50% 70.9%, 20.1% 91.6%, 31.7% 57.3%, 1.9% 35.4%, 38.2% 35.4%);
   animation: sparkle-animation 2s infinite alternate;
 }
