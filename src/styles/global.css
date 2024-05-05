@@ -68,6 +68,14 @@
   animation: sparkle-animation 2s infinite alternate;
 }
 
+.sparkle-green {
+  width: 10px;
+  height: 10px;
+  background-color: #3fe291;
+  clip-path: polygon(50% 0%, 61.8% 35.4%, 98.1% 35.4%, 68.3% 57.3%, 79.9% 91.6%, 50% 70.9%, 20.1% 91.6%, 31.7% 57.3%, 1.9% 35.4%, 38.2% 35.4%);
+  animation: sparkle-animation 2s infinite alternate;
+}
+
 @keyframes sparkle-animation {
   0% {
     opacity: 0;

@@ -133,13 +133,13 @@ function MobileNavigation(
             </div>
             <nav className="mt-6">
               <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
+                <SparkleNavItem href="https://sponsor.zackproser.com">Hire me</SparkleNavItem>
                 <MobileNavItem href="/blog">Blog</MobileNavItem>
                 <MobileNavItem href="/videos">Videos</MobileNavItem>
                 <MobileNavItem href="/newsletter">Newsletter</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
                 <MobileNavItem href="/contact">Contact</MobileNavItem>
                 <SparkleNavItem href="/learn">Learn</SparkleNavItem>
-                <SparkleNavItem glowColor={"#3fe291"} href="https://sponsor.zackproser.com">Hire me</SparkleNavItem>
               </ul>
             </nav>
           </Popover.Panel>
@@ -182,13 +182,13 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
   return (
     <nav {...props}>
       <ul className="flex flex-nowrap rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
+        <SparkleNavItem href="https://sponsor.zackproser.com">Hire</SparkleNavItem>
         <NavItem href="/blog">Blog</NavItem>
         <NavItem href="/videos">Videos</NavItem>
         <NavItem href="/newsletter">Newsletter</NavItem>
         <NavItem href="/projects">Projects</NavItem>
         <NavItem href="/contact">Contact</NavItem>
         <SparkleNavItem href="/learn">Learn</SparkleNavItem>
-        <SparkleNavItem className="whitespace-nowrap px-4 py-2 text-sm md:text-base bg-green-500 text-white rounded-full shadow-md" glowColor={"#3fe291"} href="https://sponsor.zackproser.com">Hire</SparkleNavItem>
       </ul>
     </nav>
   )
