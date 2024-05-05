@@ -40,6 +40,12 @@ export const metadata = {
 
 const projects = [
   {
+    name: 'This Next.js site / app',
+    description: 'I have been maintaining, upgrading, building features into a re-styling this portfolio site for the past 12 years for practice and learning',
+    link: { href: 'https://github.com/zackproser/portfolio', label: 'github'},
+    logo: logoOpenShuttle
+  }, 
+  {
     name: 'Pinecone\'s first AWS Reference Architecture',
     description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
     link: { href: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi', label: 'github' },
