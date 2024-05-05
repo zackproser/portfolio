@@ -1,16 +1,17 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
+import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
 import OctocatSearch from '@/images/octocat-similar-issues-search.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
+
+export const href = "https://pinecone.io/blog/codiumai-pinecone-similar-issues"
 
 export const metadata = createMetadata({
     author: "Zachary Proser", 
     date: "2023-09-20",
     title: "Making it easier to maintain open-source projects with CodiumAI and Pinecone", 
     description: "CodiumAI's PR-agent integration leverages Pinecone under the hood to perform semantic search for similar GitHub issues",
-    href: "https://pinecone.io/blog/codiumai-pinecone-similar-issues",
     image: OctocatSearch
 })
 
@@ -22,6 +23,6 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 This was the fifth article I published while working at Pinecone: 
 
-<Button href={metadata.href}>Read article</Button>
+<Button href={href} variant="green">Read article</Button>
 
 
