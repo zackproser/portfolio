@@ -137,11 +137,9 @@ function MobileNavigation(
                 <MobileNavItem href="/videos">Videos</MobileNavItem>
                 <MobileNavItem href="/newsletter">Newsletter</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
-                <MobileNavItem href="/testimonials">Testimonials</MobileNavItem>
                 <MobileNavItem href="/contact">Contact</MobileNavItem>
-                <MobileNavItem href="/demos">Demos</MobileNavItem>
                 <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
-                <MobileNavItem href="https://changelog.zackproser.com">Changelog</MobileNavItem>
+                <SparkleNavItem glowColor={"#3fe291"} href="https://sponsor.zackproser.com" title="Hire me">Hire me</SparkleNavItem>
               </ul>
             </nav>
           </Popover.Panel>
@@ -183,16 +181,14 @@ function NavItem({
 function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
   return (
     <nav {...props}>
-      <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
+      <ul className="flex flex-nowrap rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
         <NavItem href="/blog">Blog</NavItem>
         <NavItem href="/videos">Videos</NavItem>
         <NavItem href="/newsletter">Newsletter</NavItem>
         <NavItem href="/projects">Projects</NavItem>
-        <NavItem href="/testimonials">Testimonials</NavItem>
         <NavItem href="/contact">Contact</NavItem>
-        <NavItem href="/demos">Demos</NavItem>
         <SparkleNavItem href="/learn" title="Learn">Learn</SparkleNavItem>
-        <NavItem href="https://changelog.zackproser.com">Changelog</NavItem>
+        <SparkleNavItem className="whitespace-nowrap px-4 py-2 text-sm md:text-base bg-green-500 text-white rounded-full shadow-md" glowColor={"#3fe291"} href="https://sponsor.zackproser.com" title="Hire me">Hire</SparkleNavItem>
       </ul>
     </nav>
   )
