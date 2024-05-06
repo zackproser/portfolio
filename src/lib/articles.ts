@@ -15,12 +15,18 @@ async function importArticle(
   }
 }
 
-export async function getAllArticles() {
+// Extend getAllArticles to accept an optional array of slugs
+export async function getAllArticles(matchingSlugs?: string[]) {
   let articleFilenames = await glob('*/page.mdx', {
     cwd: './src/app/blog',
-  })
+  });
 
-  let articles = await Promise.all(articleFilenames.map(importArticle))
+  let articles = await Promise.all(articleFilenames.map(importArticle));
 
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  // Filter articles to include only those whose slug is in matchingSlugs
+  if (matchingSlugs && matchingSlugs.length > 0) {
+    articles = articles.filter(article => matchingSlugs.includes(article.slug));
+  }
+
+  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
 }
