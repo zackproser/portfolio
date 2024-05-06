@@ -1,0 +1,14 @@
+{
+   "nextjs-collection": [
+      "data-driven-pages-next-js", 
+      "how-to-next-js-sitemap",
+      "javascript-git",
+      "how-to-run-background-jobs-on-vercel-without-a-queue", 
+      "javascript-ai",
+      "opengraph-integration"
+   ],
+   "security-collection": [
+      "ggshield-can-save-you-from-yourself", 
+      "yubikey-sudo-git-signing"
+   ]
+}
