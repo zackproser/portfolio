@@ -1,14 +1,22 @@
 {
-   "nextjs-collection": [
-      "data-driven-pages-next-js", 
-      "how-to-next-js-sitemap",
-      "javascript-git",
-      "how-to-run-background-jobs-on-vercel-without-a-queue", 
-      "javascript-ai",
-      "opengraph-integration"
-   ],
-   "security-collection": [
-      "ggshield-can-save-you-from-yourself", 
-      "yubikey-sudo-git-signing"
-   ]
+   "nextjs": {
+      "image": "nextjs-data-driven-website.webp",
+      "description":"Next.js, how-to's, design patterns, and tips for using Vercel",
+      "slugs": [
+         "data-driven-pages-next-js", 
+         "how-to-next-js-sitemap",
+         "javascript-git",
+         "how-to-run-background-jobs-on-vercel-without-a-queue", 
+         "javascript-ai",
+         "opengraph-integration"
+      ]
+   },
+   "security": {
+      "image": "ggshield-preventing-a-secret-from-escaping.webp",
+      "description": "I have worked in security companies most of my career. Here are tips I have picked up for staying secure.",
+      "slugs": [
+         "ggshield-can-save-you-from-yourself", 
+         "yubikey-sudo-git-signing"
+      ]
+   }
 }
