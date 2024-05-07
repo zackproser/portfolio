@@ -1,4 +1,51 @@
 {
+   "ai": {
+      "image":"ai-assisted-dev-tools.webp",
+      "description": "All things A.I., which is to say Machine Learning / software :)",
+      "slugs": [
+         "top-ai-dev-tools-bugs",
+         "how-developers-evaluate-ai-coding-tools",
+         "how-to-generate-images-with-ai",
+         "introduction-to-dimensionality",
+         "introduction-to-embeddings"
+      ]
+   },
+   "rants": {
+      "image": "sisyphus-crt-monitor-2.webp",
+      "description": "Unhinged and profane rants by yours truly",
+      "slugs":[
+         "maintaining-this-site-fucking-sucks",
+         "maintaining-this-site-no-longer-fucking-sucks"
+      ]
+
+   },
+   "reviews": {
+      "image":"codeium-vs-chatgpt-review.webp",
+      "description": "Reviews I've written on tools, services and other tech",
+      "slugs": [
+         "codeium-vs-chatgpt",
+         "warp-ai-terminal-review",
+         "codeium-analysis-4-2024",
+         "codeium-review"
+      ]
+   },
+   "comics": {
+      "image": "playing-eq.webp",
+      "description": "Comic strips",
+      "slugs": [
+         "magic-spells",
+         "comic-strip-long-day"
+      ]
+   },
+   "projects": {
+      "image":"teatutor-logo.webp",
+      "description": "Project spotlight posts",
+      "slugs": [
+         "teatutor-deepdive",
+         "git-xargs-software",
+         "introducing-pageripper-api"
+      ]
+   },
    "pinecone": {
       "image": "joining-pinecone.webp", 
       "description": "Joining Pinecone, articles, series and projects shipped for Pinecone",
@@ -32,7 +79,6 @@
       "description": "Some real hacker shit",
       "slugs": [
          "quake-in-fargate",
-         "teatutor-deepdive",
          "testing-code-on-windows"
       ]
    },
@@ -57,7 +103,7 @@
          "the-best-thing-about-being-a-developer"
       ]
    },
-   "nextjs": {
+   "nextjs-and-vercel": {
       "image": "nextjs-data-driven-website.webp",
       "description":"Next.js, how-to's, design patterns, and tips for using Vercel",
       "slugs": [
@@ -66,6 +112,7 @@
          "javascript-git",
          "how-to-run-background-jobs-on-vercel-without-a-queue", 
          "javascript-ai",
+         "javascript-git",
          "opengraph-integration"
       ]
    },
@@ -74,7 +121,8 @@
       "description": "I have worked in security companies most of my career. Here are tips I have picked up for staying secure.",
       "slugs": [
          "ggshield-can-save-you-from-yourself", 
-         "yubikey-sudo-git-signing"
+         "yubikey-sudo-git-signing",
+         "aws-vault-open-source-tool"
       ]
    }
 }
