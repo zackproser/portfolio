@@ -25,6 +25,10 @@ export function BlogPostCard({ article }) {
 
   let root = '/blog/'
 
+  if (article?.type == 'collection') {
+    root = '/collections/'
+  }
+
   if (article?.type == 'video') {
     root = '/videos/'
   }
