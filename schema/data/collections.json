@@ -1,4 +1,32 @@
 {
+   
+   "pinecone": {
+      "image": "joining-pinecone.webp", 
+      "description": "Joining Pinecone, articles, series and projects shipped for Pinecone",
+      "slugs":[
+         "i-am-joining-pinecone-io",
+         "retrieval-augmented-generation",
+         "pain-poetry-python",
+         "javascript-ai",
+         "codeium-ai-pinecone-pr-agent",
+         "pinecone-reference-architecture-launch",
+         "pinecone-reference-architecture-technical-walkthrough",
+         "pinecone-reference-architecture-scaling",
+         "vector-databases-ci-cd"
+      ]
+   },
+   "personal": {
+      "image": "zachary-light.webp",
+      "description": "Articles about me, my life and/or how I work",
+      "slugs": [
+         "how-i-keep-my-shit-together",
+         "you-get-to-keep-the-neural-connections",
+         "how-do-you-write-so-fast",
+         "comic-strip-long-day",
+         "magic-spells",
+         "for-zachary"
+      ]
+   },
    "nextjs": {
       "image": "nextjs-data-driven-website.webp",
       "description":"Next.js, how-to's, design patterns, and tips for using Vercel",
@@ -18,5 +46,5 @@
          "ggshield-can-save-you-from-yourself", 
          "yubikey-sudo-git-signing"
       ]
-   }
+   },
 }
