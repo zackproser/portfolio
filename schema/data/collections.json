@@ -8,10 +8,39 @@
          "pain-poetry-python",
          "javascript-ai",
          "codeium-ai-pinecone-pr-agent",
+         "how-to-use-jupyter-notebooks",
          "pinecone-reference-architecture-launch",
          "pinecone-reference-architecture-technical-walkthrough",
          "pinecone-reference-architecture-scaling",
          "vector-databases-ci-cd"
+      ]
+   },
+   "career-advice": {
+      "image":"you-get-to-keep-the-neural-connections.webp",
+      "description":"Things I learned the hard way so you don't have to",
+      "slugs": [
+         "run-your-own-tech-blog",
+         "why-ive-been-successful",
+         "you-get-to-keep-the-neural-connections",
+         "trace-the-system-in-your-head",
+         "wash-three-walls-with-one-bucket",
+         "hop-on-the-pain-train"
+      ]
+   },
+   "spectacular-hacks": {
+      "image": "automations.gif",
+      "description": "Some real hacker shit",
+      "slugs": [
+         "quake-in-fargate",
+         "teatutor-deepdive",
+         "testing-code-on-windows"
+      ]
+   },
+   "flights-of-fancy": {
+      "image": "super-hearing-aid-safety-alert.webp",
+      "description": "Imaginings, ruminations, and anxious technical fever dreams",
+      "slugs": [
+         "super-hearing-aids"
       ]
    },
    "personal": {
@@ -23,7 +52,9 @@
          "how-do-you-write-so-fast",
          "comic-strip-long-day",
          "magic-spells",
-         "for-zachary"
+         "for-zachary",
+         "programmer-emotions",
+         "the-best-thing-about-being-a-developer"
       ]
    },
    "nextjs": {

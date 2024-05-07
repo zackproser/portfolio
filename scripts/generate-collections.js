@@ -29,7 +29,7 @@ import { BlogPostCard } from '@/components/BlogPostCard'
 import { getAllArticles } from '@/lib/articles'
 
 export const metadata = {
-  title: "${title}",
+  title: "${title.toUpperCase()}",
   description: "${collection.description}",
   image: collectionImage, 
 }
@@ -38,7 +38,7 @@ export default async function CollectionPage() {
   let articles = await getAllArticles(${JSON.stringify(collection.slugs)})
 
   return (
-    <SimpleLayout title="${title} collection">
+    <SimpleLayout title="${title.charAt(0).toUpperCase() + title.slice(1)} collection">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {articles.map(article => (
           <BlogPostCard key={article.slug} article={article} />
