@@ -5,6 +5,8 @@ import Link from 'next/link'
 import Newsletter from '@/components/NewsletterWrapper'
 import vectorDatabasesCompared from '@/images/vector-databases-examined.webp'
 
+import Callout from '@/components/Callout'
+
 import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata = createMetadata({
@@ -18,6 +20,8 @@ export const metadata = createMetadata({
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
+
+<Callout type={"SpecialCallout"} title={"Claiming my bias upfront"} body={"I am a Staff Developer Advocate at Pinecone.io. That said, I believe this information is up to date and correct, and I'm happy to make any corrections if you see anything inaccurate."} />
 
 <Newsletter title={'I break down AI, vector databases and dev tools'} body={'Subscribe to my free newsletter to stay up to date'} />
 
