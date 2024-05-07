@@ -1,33 +1,44 @@
 const fs = require('fs');
 const path = require('path');
 
-const collections = require('../schema/data/collections.json'); // Ensure the path to your collections JSON is correct
+const collections = require('../schema/data/collections.json'); 
 
 const collectionNameDir  = (collectionName) => {
   const parts = collectionName.split('-')
   if (parts.length > 0) {
     return parts[0]
   }
-  return 'unknown'
+  return collectionName 
 }
 
 function generateCollectionPages() {
-  Object.entries(collections).forEach(([collectionName, slugs]) => {
+  Object.entries(collections).forEach(([collectionName, collection]) => {
     const title = collectionName.replace(/-/g, ' ');
     const collectionDir = collectionNameDir(collectionName)
     const dir = path.join(process.env.PWD, `/src/app/collections/${collectionDir}`);
     const filename = `${dir}/page.jsx`;
 
     const content = `
+
+import Image from 'next/image'
+
+import collectionImage from "@/images/${collection.image}"
+
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { getAllArticles } from '@/lib/articles'
 
+export const metadata = {
+  title: "${title}",
+  description: "${collection.description}",
+  image: collectionImage, 
+}
+
 export default async function CollectionPage() {
-  let articles = await getAllArticles(${JSON.stringify(slugs)})
+  let articles = await getAllArticles(${JSON.stringify(collection.slugs)})
 
   return (
-    <SimpleLayout title="${title}">
+    <SimpleLayout title="${title} collection">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {articles.map(article => (
           <BlogPostCard key={article.slug} article={article} />
@@ -46,5 +57,39 @@ export default async function CollectionPage() {
   });
 }
 
-generateCollectionPages();
+function generateCollectionIndexPage() {
+  Object.entries(collections).forEach(([collectionName, slugs]) => {
+    const title = "Writing collections"
+    const name = collectionNameDir(collectionName)
+    const dir = path.join(process.env.PWD, '/src/app/collections')
+    const filename = path.join(dir, 'page.jsx')
 
+    const content = `
+import { SimpleLayout } from '@/components/SimpleLayout'
+import { BlogPostCard } from '@/components/BlogPostCard'
+import { getAllCollections } from '@/lib/collections'
+
+export default async function CollectionPage() {
+  let collections = await getAllCollections()
+
+  return (
+    <SimpleLayout title="${title}">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {collections.map(collection => (
+          <BlogPostCard key={collection.slug} article={collection} />
+        ))}
+      </div>
+    </SimpleLayout>
+  );
+}
+`;
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filename, content, 'utf8');
+    console.log(`Generated collection index page at ${filename}`);
+  })
+}
+
+generateCollectionPages();
+generateCollectionIndexPage();
