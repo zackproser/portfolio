@@ -1,5 +1,4 @@
 {
-   
    "pinecone": {
       "image": "joining-pinecone.webp", 
       "description": "Joining Pinecone, articles, series and projects shipped for Pinecone",
@@ -46,5 +45,5 @@
          "ggshield-can-save-you-from-yourself", 
          "yubikey-sudo-git-signing"
       ]
-   },
+   }
 }
