@@ -59,7 +59,8 @@
          "pinecone-reference-architecture-launch",
          "pinecone-reference-architecture-technical-walkthrough",
          "pinecone-reference-architecture-scaling",
-         "vector-databases-ci-cd"
+         "vector-databases-ci-cd",
+         "rag-evaluation"
       ]
    },
    "career-advice": {
