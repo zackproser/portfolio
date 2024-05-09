@@ -1,4 +1,5 @@
 import { openai } from '@ai-sdk/openai';
+import { PineconeRecord } from "@pinecone-database/pinecone"
 import { StreamingTextResponse, streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
 
