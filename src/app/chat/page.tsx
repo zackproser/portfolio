@@ -26,6 +26,13 @@ export default function Chat() {
       setArticle(parsedArticle);
     },
     headers: {},
+    onFinish() {
+      // Log the user's question
+      gtag("event", "chat_question", {
+        event_category: "chat",
+        event_label: input,
+      });
+    }
   });
 
   const handlePrepopulatedQuestion = (question: string) => {
@@ -34,6 +41,11 @@ export default function Chat() {
         value: question,
       },
     } as React.ChangeEvent<HTMLInputElement>);
+
+    gtag("event", "chat_use_precanned_question", {
+      event_category: "chat",
+      event_label: question,
+    });
 
     const customSubmitEvent = {
       preventDefault: () => { },
