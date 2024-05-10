@@ -53,6 +53,9 @@ dependencies:
   '@stripe/stripe-js':
     specifier: ^2.3.0
     version: 2.3.0
+  '@types/gtag.js':
+    specifier: ^0.0.19
+    version: 0.0.19
   '@types/mdx':
     specifier: ^2.0.9
     version: 2.0.9
@@ -920,6 +923,10 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+    dev: false
+
+  /@types/gtag.js@0.0.19:
+    resolution: {integrity: sha512-KHoDzrf9rSd0mooKN576PjExpdk/XRrNu4RQnmigsScSTSidwyOUe9kDrHz9UPKjiBrx2QEsSkexbJSgS0j72w==}
     dev: false
 
   /@types/hast@2.3.5:
