@@ -15,6 +15,19 @@ export async function importArticle(
   }
 }
 
+export async function importArticleMetadata(
+  articleFilename: string,
+): Promise<ArticleWithSlug> {
+  const { metadata } = await import(`../app/blog/${articleFilename}`) as {
+    metadata: Article;
+  };
+
+  return {
+    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    ...metadata,
+  };
+}
+
 // Extend getAllArticles to accept an optional array of slugs
 export async function getAllArticles(matchingSlugs?: string[]) {
   let articleFilenames = await glob('*/page.mdx', {

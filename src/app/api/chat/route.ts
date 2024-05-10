@@ -2,7 +2,7 @@ import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { StreamingTextResponse, streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
-import { importArticle } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
 
 export async function POST(req: Request) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   const localBlogPath = `${blogPath}/page.mdx`
   console.log(`localBlogPath ${localBlogPath}`)
 
-  //const article = await importArticle(localBlogPath)
+  const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
 
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
   const contextText = docs.join("\n").substring(0, 3000)
@@ -58,5 +58,19 @@ export async function POST(req: Request) {
     prompt: lastMessage.content,
   });
 
-  return new StreamingTextResponse(result.toAIStream());
+
+  console.log(`sanityCheck: %o`, { slug, ...metadata })
+
+  const serializedArticle = Buffer.from(
+    JSON.stringify({
+      slug,
+      ...metadata
+    })
+  ).toString('base64')
+
+  return new StreamingTextResponse(result.toAIStream(), {
+    headers: {
+      "x-sources": serializedArticle ?? 'PUNKED'
+    }
+  });
 }
