@@ -4,6 +4,7 @@ import { StreamingTextResponse, streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
 import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
+import { ArticleWithSlug } from '@/lib/shared-types';
 
 export const maxDuration = 300;
 
@@ -18,29 +19,35 @@ export async function POST(req: Request) {
   // Get the context from the last message
   const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
 
-  let blogUrls: string[] = [];
+  // Create a new set for blog urls
+  let blogUrls = new Set<string>()
+
   let docs: string[] = [];
 
   (context as PineconeRecord[]).forEach(match => {
-    blogUrls.push((match.metadata as Metadata).source);
+    const source = (match.metadata as Metadata).source
+    // Ensure source is a blog url, meaning it contains the path src/app/blog
+    if (!source.includes('src/app/blog')) return
+    blogUrls.add((match.metadata as Metadata).source);
     docs.push((match.metadata as Metadata).text);
   });
 
-  let firstBlogUrl = blogUrls.shift() || 'unknown'
+  let relatedBlogPosts: ArticleWithSlug[] = []
 
-  const blogPath = path.basename(firstBlogUrl.replace('page.mdx', ''))
-  const localBlogPath = `${blogPath}/page.mdx`
-  console.log(`localBlogPath ${localBlogPath}`)
-
-  const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
-
+  // Loop through all the blog urls and get the metadata for each
+  for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
+    const localBlogPath = `${blogPath}/page.mdx`
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+  }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
   const contextText = docs.join("\n").substring(0, 3000)
 
   const prompt = `
-          Zachary Proser is a Staff developer, open-source maintainer and technical writer 
+          Zachary Proser is a Staff developer, open - source maintainer and technical writer 
           Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
-          Zachary Proser is a well-behaved and well-mannered individual.
+          Zachary Proser is a well - behaved and well - mannered individual.
           Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
           Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
           Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
@@ -60,14 +67,8 @@ export async function POST(req: Request) {
     prompt: lastMessage.content,
   });
 
-
-  console.log(`sanityCheck: %o`, { slug, ...metadata })
-
   const serializedArticle = Buffer.from(
-    JSON.stringify({
-      slug,
-      ...metadata
-    })
+    JSON.stringify(relatedBlogPosts)
   ).toString('base64')
 
   return new StreamingTextResponse(result.toAIStream(), {
