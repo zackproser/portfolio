@@ -5,6 +5,8 @@ import { Metadata, getContext } from '../../services/context'
 import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
 
+export const maxDuration = 300;
+
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
