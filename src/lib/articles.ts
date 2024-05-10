@@ -1,7 +1,7 @@
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 
-async function importArticle(
+export async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
   let { metadata } = (await import(`../app/blog/${articleFilename}`)) as {

@@ -29,14 +29,13 @@ export function Footer() {
               <div className="flex flex-col sm:flex-row gap-6 text-xl font-medium text-zinc-800 dark:text-zinc-200">
                 <div className="flex flex-col md:flex-row gap-2 md:gap-6">
                   <NavLink href="/blog">Blog</NavLink>
+                  <NavLink href="/chat">Chat</NavLink>
                   <NavLink href="/videos">Videos</NavLink>
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 md:gap-6">
                   <NavLink href="/projects">Projects</NavLink>
                   <NavLink href="/newsletter">Newsletter</NavLink>
-                  <NavLink href="/testimonials">Testimonials</NavLink>
                   <NavLink href="/contact">Contact</NavLink>
-                  <NavLink href="/demos">Demos</NavLink>
                   <NavLink href="https://changelog.zackproser.com">Changelog</NavLink>
                 </div>
               </div>
