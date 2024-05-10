@@ -4,13 +4,11 @@ import { useChat } from 'ai/react';
 import { useState } from 'react';
 import { clsx } from 'clsx';
 import { SimpleLayout } from '@/components/SimpleLayout';
-import Image from 'next/image';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
 
 export default function Chat() {
   const [article, setArticle] = useState<ArticleWithSlug | null>(null);
-  const [heroImage, setHeroImage] = useState('');
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     onResponse(response) {
@@ -29,8 +27,8 @@ export default function Chat() {
       title="Chat with my writing!"
       intro="This experience uses Pinecone, OpenAI and LangChain..."
     >
-      <div className="flex flex-col flex-1 w-full max-w-3xl mx-auto">
-        <div className="flex-1 px-6 py-4 overflow-y-scroll">
+      <div className="flex flex-col md:flex-row flex-1 w-full max-w-5xl mx-auto">
+        <div className="flex-1 px-6 py-4">
           {messages.map((m) => (
             <div
               key={m.id}
@@ -49,20 +47,24 @@ export default function Chat() {
               {m.content}
             </div>
           ))}
-          {heroImage && (
-            <Image src={heroImage} width={300} height={300} alt="Hero Image" />
-          )}
-          {article && <BlogPostCard key={article.slug} article={article} />}
         </div>
-        <form onSubmit={handleSubmit} className="mt-auto mb-8">
-          <input
-            className="w-full p-2 border border-gray-300 rounded shadow-xl"
-            value={input}
-            placeholder="Ask the Ghost of Zachary Proser's Writing something..."
-            onChange={handleInputChange}
-          />
-        </form>
+        <div className="md:w-1/3 px-6 py-4">
+          {article && (
+            <div>
+              <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
+              <BlogPostCard key={article.slug} article={article} />
+            </div>
+          )}
+        </div>
       </div>
+      <form onSubmit={handleSubmit} className="mt-auto mb-8 px-6">
+        <input
+          className="w-full p-2 border border-gray-300 rounded shadow-xl"
+          value={input}
+          placeholder="Ask the Ghost of Zachary Proser's Writing something..."
+          onChange={handleInputChange}
+        />
+      </form>
     </SimpleLayout>
   );
 }
