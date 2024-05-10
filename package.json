@@ -28,6 +28,7 @@
     "@pinecone-database/pinecone": "^2.2.0",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.3.0",
+    "@types/gtag.js": "^0.0.19",
     "@types/mdx": "^2.0.9",
     "@types/node": "^20.4.7",
     "@types/react": "^18.2.18",
