@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 300;
+
 export async function POST(req: NextRequest) {
 	// Get data submitted in the request's body.
 	const body = await req.json();
