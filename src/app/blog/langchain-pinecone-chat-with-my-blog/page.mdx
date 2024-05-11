@@ -1,0 +1,61 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import chatWithMyBlog  from '@/images/chat-with-my-blog.webp'
+import chatWithMyBlogRelatedPosts from '@/images/chat-with-my-blog-2.webp'
+import chatWithBlogFlowchart from '@/images/chat-with-blog-flowchart.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-05-10",
+    title: "I wrote a custom RAG pipeline for my blog with LangChain and Pinecone",
+    description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
+    image: chatWithMyBlog
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+## How to build a chat-with-your-blog RAG pipeline 
+
+<Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
+
+I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing and ask me questions I've already answered even when I'm not around.
+
+My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds, enabling people to find what they want. This requires a clever 
+use of headers, to send component rendering data as a base64 encoded header to the frontend. 
+
+<Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
+
+## Table of contents
+
+Best of all, this site is completely open-source, so you can view and borrow my implementation. 
+
+When you're done with this blog post, you'll have the code and understanding you need to build your own similar experience.
+
+I'm sharing: 
+
+* **How to build the knowledgebase**: The Jupyter Notebook I created for data pre-processing, embedding and upserting
+* **How to use embeddings and do vector search on relevant blog posts**: All related application code
+* **How to use the Vercel AI SDK to stream chat responses**: And how to send data like related blog posts to the frontend separately from your streaming text response
+
+## High level architecture
+
+Here's a flowchart describing how the feature works end to end. 
+
+<Image src={chatWithBlogFlowchart} alt="Chat with my blog flowchart" />
+
+## Data ingest: Reading all your blog's MDX files
+
+For the data processing pieces, I like to use separate Jupyter Notebooks because it's faster to iterate and because you can 
+cleanly maintain the data ingest and upsert code in a separate project. 
+
+## Evolving to update the knowledgebase programatically with CI/CD
+
+Using GitHub Actions
