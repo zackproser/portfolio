@@ -5,6 +5,8 @@ import Image from 'next/image'
 import chatWithMyBlog  from '@/images/chat-with-my-blog.webp'
 import chatWithMyBlogRelatedPosts from '@/images/chat-with-my-blog-2.webp'
 import chatWithBlogFlowchart from '@/images/chat-with-blog-flowchart.webp'
+import ragWithSources from '@/images/rag-with-sources.webp'
+import pineconeConsole from '@/images/pinecone-console-rag-pipeline.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -27,7 +29,7 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
 <Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
-My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
+My solution recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
 with citations. 
 
 This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's StreamingTextResponse.
@@ -241,7 +243,7 @@ export { getMatchesFromEmbeddings };
 Completing the RAG loop means injecting our retrieved items into the prompt that is sent to OpenAI 
 when we ask for a chat completion. 
 
-First, let's look at the raw retrieved docs look like: 
+First, let's look at the raw matches retrieved by Pinecone: 
 
 ```javascript
 {
@@ -431,7 +433,79 @@ export default function Chat() {
 ...
 ```
 
-## The complete client-side page
+### Providing prepopulated questions
+
+To make the experience more intuitive and easier for users, I added some pre-canned questions you can double-click to submit:
+
+```javascript
+
+// The questions are defined as an array of strings
+const prepopulatedQuestions = [
+  "What is the programming bug?",
+  "Why do you love Next.js so much?",
+  "What do you do at Pinecone?",
+  "How can I become a better developer?",
+  "What is ggshield and why is it important?"
+];
+
+...
+
+// The handler for clicking one of the pre-canned question buttons
+const handlePrepopulatedQuestion = (question: string) => {
+  handleInputChange({
+    target: {
+      value: question,
+    },
+  } as React.ChangeEvent<HTMLInputElement>);
+
+  gtag("event", "chat_use_precanned_question", {
+    event_category: "chat",
+    event_label: question,
+  });
+
+  setIsLoading(true); // Set loading state here to indicate submission is processing
+
+  const customSubmitEvent = {
+    preventDefault: () => { },
+  } as unknown as React.FormEvent<HTMLFormElement>;
+
+  // Submit immediately after updating the input
+  handleSubmit(customSubmitEvent);
+};
+```
+
+The questions are pre-defined and defining them in this way makes it easy to add or 
+remove entries. 
+
+When a user clicks a pre-canned question, it's first set as the user's input. If they click 
+the button again or hit enter to submit the form, their question is asked, and an 'I am thinking' 
+animation is shown to indicate that the backend is working on it. 
+
+I also fire a custom event to log the user's question, to make it easier for me to keep tabs on 
+how the experience is working, what kinds of questions folks are asking, and if there are any issues 
+that need to be addressed via the prompt or otherwise.
+
+### Tying it all together: chat plus related blog posts 
+
+In addition to displaying the LLM's and the user's messages, the frontend also displays related blog posts
+each time the backend responds with a new StreamingTextResponse. 
+
+By unpacking the x-sources header, the frontend can immediately render the related posts. This is RAG with 
+citation of sources. Instead of related blog posts, this could be links to the exact section in a corpus of legal 
+text or medical documents. 
+
+The overall experience is richer because the user is able to have a conversation while also getting visually appealling 
+pointers toward further reading that is highly relevant to their query.
+
+<Image src={ragWithSources} alt="RAG with sources" />
+
+## Full API route and client-side code
+
+Tying it all together, here's the complete API route and client-side code: 
+
+### Client-side
+
+Here's the complete client-side code:
 
 ```javascript
 'use client';
@@ -569,12 +643,7 @@ export default function Chat() {
 }
 ````
 
-
-
-
-## Entire API route
-
-Tying it all together, my `/api/chat` route looks like this:
+### Entire API route
 
 ```javascript
 
@@ -657,10 +726,135 @@ export async function POST(req: Request) {
   });
 }
 ```
-## Data ingest: Reading all your blog's MDX files
+## Data ingest: Converting all your blog's MDX files into a knowledgebase
 
-Coming soon! Stay tuned.
+How do you turn your entire blog into a knowledgebase to begin with? In this section I'll give you a complete Jupyter Notebook 
+that handles this for you, plus allows you to run sanity checks against your data. 
 
-## Evolving to update the knowledgebase programatically with CI/CD
+I like to do my initial data ingest and pre-processing in a Jupyter Notebook, for a couple of reasons: 
+
+* It's faster to iterate in a Jupyter Notebook
+* Once I have the pipeline working, I can keep my Notebook separate from application code
+* Having a separate Notebook makes it easier to make future changes to the pipeline
+
+[Here's the Jupyter Notebook](https://github.com/zackproser/ingest-portfolio) I used to create my chat with my blog feature.
+I'll break down each section and explain what it's doing below.
+
+Let's look at the Python code that performs the data ingest, conversion to embeddings and upserts to Pinecone:
+
+```python
+
+# Clone my repository which contains my site 
+# and all the *.MDX files comprising my blog
+!git clone https://github.com/zackproser/portfolio.git
+
+# Pip install all dependencies
+!pip install langchain_community langchain_pinecone langchain_openai unstructured langchainhub
+
+# Import packages
+from langchain_pinecone import PineconeVectorStore
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.document_loaders import DirectoryLoader
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+import os
+import glob
+
+# Use LangChain's DirectoryLoader to grab all my MDX files 
+# across all subdirectories in my portfolio project. Use 
+# multi-threading for efficiency and show progress
+loader = DirectoryLoader('portfolio', glob="**/*.mdx", show_progress=True, use_multithreading=True)
+
+docs = loader.load()
+
+docs
+```
+
+By this point I have cloned my site and loaded all its MDX files into memory. 
+
+I print them out as a sanity check.
+
+Now it's time to: 
+* Split all my MDX documents into chunks
+* Convert each chunk to embeddings (vectors) using OpenAI
+* Upsert these embeddings into my Pinecone vectorstore to create the knowledgebase my RAG pipeline will consult
+
+```python
+from google.colab import userdata
+# Set the API keys
+os.environ['OPENAI_API_KEY'] = userdata.get('OPENAI_API_KEY')
+os.environ['PINECONE_API_KEY'] = userdata.get('PINECONE_API_KEY')
+
+# Assuming you've already imported necessary libraries and blog_posts is populated as above
+
+# Initialize embeddings and the vector store
+embeddings = OpenAIEmbeddings()
+index_name = "zack-portfolio"
+
+# Split the documents into chunks
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+split_docs = text_splitter.split_documents(docs)
+
+# Create a vector store for the documents using the specified embeddings
+vectorstore = PineconeVectorStore.from_documents(split_docs, embeddings, index_name=index_name)
+
+# Ask a query that is likely to score a hit against your corpus of text or data
+# In my case, I have a blog post where I talk about "the programming bug"
+query = "What is the programming bug?"
+vectorstore.similarity_search(query)
+```
+
+With these steps done, I again run a sanity check to make sure everything looks good, by 
+asking my vectorstore for the most similar document to my query. As expected, it returns 
+my blog post where I talk about the programming bug.
+
+The next cells provide a handy sanity check and allow me to come back to my Notebook and 
+query my existing Pinecone index without having to re-run the entire notebook or the ingest 
+and upsert:
+
+```python
+# Pinecone Index sanity checks
+from pinecone import Pinecone, ServerlessSpec
+
+# Initialize Pinecone client
+pc = Pinecone(api_key=os.environ.get('PINECONE_API_KEY'))
+
+# Set the name of your Pinecone Index here
+index_name = 'zack-portfolio'
+
+index = pc.Index(index_name)
+
+# This sanity check call should return stats for your Pinecone index, such as:
+# {'dimension: 1536,
+#  'index_fullness': 0.0,
+#  'namespaces': {'', {'vector_count': 862}},
+#  'total_vector_count': 862}
+#
+index.describe_index_stats()
+```
+The above code connects to my existing Pinecone index and describes its stats.
+
+To sanity check that my RAG pipeline's knowledgebase is healthy, I can run the following 
+cell to connect to my Pinecone index and query it easily: 
+
+```python
+# Query the Pinecone index for related documents
+query = "What is the programming bug?"
+
+embeddings =  OpenAIEmbeddings()
+vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
+
+vectorstore.similarity_search(query)
+```
+In this way, my Notebook serves as both an easy means of performing the ingest and upserts, 
+but also as a tool for checking that my RAG pipeline's knowledgebase is healthy. 
+
+However, note that you can also use the [Pinecone Console](https://app.pinecone.io) to query and manage your index.
+
+<Image src={pineconeConsole} alt="Pinecone Console" />
+
+## Coming Soon: Updating the knowledgebase programatically via CI/CD
+
+How do you ensure that new posts you write make their way seamlessly into your knowledgebase?
 
 Coming soon! Stay tuned.
