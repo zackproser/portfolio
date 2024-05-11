@@ -27,16 +27,16 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
 <Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
-My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds, enabling people to find what they want. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
+My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
 with citations. 
 
-This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend. 
+This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's StreamingTextResponse.
+
+<Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
 
 Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
 
 When you're done reading this blog post, you'll have the code and understanding you need to build your own similar experience.
-
-<Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
 
 ## Table of contents
 
@@ -52,7 +52,7 @@ Here's a flowchart describing how the feature works end to end.
 
 <Image src={chatWithBlogFlowchart} alt="Chat with my blog flowchart" />
 
-Let's talk through it from the user's perspective. They ask a question on my chat interface. Their question is sent to my `/api/chat` route. 
+Let's talk through it from the user's perspective. They ask a question on my client-side chat interface. Their question is sent to my `/api/chat` route. 
 
 The chat route first converts the user's natural language query to embeddings, and then performs a vector search against Pinecone. 
 
@@ -105,22 +105,13 @@ Note the length of this array is `1536`. This is the dimensionality (or number o
 
 Since the embedding model I'm using for this application outputs 1536 dimensions, when I created my Pinecone index, I also set it to 1536 dimensions as well.
 
-Pinecone's vector database returns the items most semantically relevant to the user's query. These items are chunks of blog posts, but their metadata contains the path on disk of the blog post they came from: 
+Let's look at how this works in the server-side API route.
 
-```
-// Imagine metadata like a JavaScript object
-{
-  "text": "In this article I reflect back on the year...",
-  "source": "src/app/blog/2023-wins/page.mdx"
-}
-```
-
-Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
-it answer as me - or at least as my writing. Let's see how I do this in my server-side API route.
-
-### Server side
+## Server side
 
 We'll step through the server-side API route section by section, building up to the complete route at the end. 
+
+### Retrieval phase
 
 When the `/api/chat` route receives a request, I pop the latest user message off the request body and hand it to my context retrieval service: 
 
@@ -132,10 +123,9 @@ export async function POST(req: Request) {
   // Get the last message
   const lastMessage = messages[messages.length - 1]
 
-  console.log(`lastMessage: %o`, lastMessage)
-
-  // Get the context from the last message, specifying that we want to use a maxtokens value of 3000
-  // and we're only interested in items scored as 0.8 relevance or higher by Pinecone
+  // Get the context from the last message, specifying that we want to use 
+  // a maxtokens value of 3000 and that we're only interested 
+  // in items scored as 0.8 relevance or higher by Pinecone
   const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
   ... 
 
@@ -167,7 +157,11 @@ export const getContext = async (message: string, namespace: string, maxTokens =
 }
 ```
 
-The `getContext` function is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functions, which are also defined in separate 'services' files: 
+The `getContext` function's job is to convert the user's message to a vector and retrieve the most relevant items from Pinecone.
+
+It is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functions, which are also defined in separate 'services' files. 
+
+Here's the `getEmbeddings` function, which is a thin wrapper around OpenAI's embeddings endpoint: 
 
 ```javascript
 import { OpenAIApi, Configuration } from "openai-edge";
@@ -194,7 +188,10 @@ export async function getEmbeddings(input: string) {
 }
 ```
 
-and `getMatchesFromEmbeddings`:
+So far, we've received the user's query and converted it into a `query vector` that we can send into Pinecone's vector database 
+for similarity search. 
+
+The `getMatchesFromEmbeddings` function demonstrates how we use Pinecone to execute our query and return the nearest neighbors:
 
 ```javascript
 import { Pinecone, type ScoredPineconeRecord } from "@pinecone-database/pinecone";
@@ -239,14 +236,62 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
 
 export { getMatchesFromEmbeddings };
 ```
+
+### Enriching the response with related blog posts
  
-We use our context service to convert the user's query into a query embedding and query our Pinecone vector database for related documents, which are chunks of blog posts. 
+Pinecone returns the most relevant vectors based on our query. But how do we turn those vectors into something meaningful to our application? 
 
-Because we used langchains directory loader, the source of each blog post, meaning its filepath on disk such as:
+The bridge between ambiguous natural language and structured data is metadata. 
 
-portfolio/src/app/blog/2023-wins
+Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
 
-We can use this to look up blog posts using the same logic as usual
+```
+// Imagine metadata like a JavaScript object
+{
+  "text": "In this article I reflect back on the year...",
+  "source": "src/app/blog/2023-wins/page.mdx"
+}
+```
+
+Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
+it answer as me - or at least as my writing: 
+
+```javascript
+// Create a new set for blog urls
+let blogUrls = new Set<string>()
+
+let docs: string[] = [];
+  
+(context as PineconeRecord[]).forEach(match => {
+    const source = (match.metadata as Metadata).source
+    // Ensure source is a blog url, meaning it contains the path src/app/blog
+    if (!source.includes('src/app/blog')) return
+    blogUrls.add((match.metadata as Metadata).source);
+    docs.push((match.metadata as Metadata).text);
+});
+
+let relatedBlogPosts: ArticleWithSlug[] = []
+
+// Loop through all the blog urls and get the metadata for each
+for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
+    const localBlogPath = `${blogPath}/page.mdx`
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+}
+```
+
+I can reuse my existing article loader to look up related blog posts by their path, but how can I package and send them to the frontend? 
+
+Let's now examine the full `/api/chat` route see how it all fits together.
+
+### Sending extra data with headers when using streaming text response 
+
+If the API route looks up the related blog posts, but then returns a streaming text response, how can it simultaneously send the blog posts to the frontend?
+
+With a clever use of headers, we can package our related blog posts data by base64 encoding their JSON representation. 
+
+The frontend then unpacks this header using the On response callback and uses it to render the blog posts, again reusing the same code that renders my posts on my blog's index page.
 
 ```javascript
 
@@ -469,14 +514,6 @@ export default function Chat() {
   );
 }
 ````
-
-## Sending extra data with headers when using streaming text response 
-
-If the API route looks up the related blog posts, but then returns a streaming text response, how can it simultaneously send the blog posts to the frontend?
-
-With a clever use of headers, we can package our related blog posts data by base64 encoding their JSON representation. 
-
-The frontend then unpacks this header using the On response callback and uses it to render the blog posts, again reusing the same code that renders my posts on my blog's index page.
 
 ## Data ingest: Reading all your blog's MDX files
 
