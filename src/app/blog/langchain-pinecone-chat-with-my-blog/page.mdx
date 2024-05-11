@@ -335,95 +335,60 @@ return new StreamingTextResponse(result.toAIStream(), {
 
 The frontend then unpacks this header using the On response callback and uses it to render the blog posts, again reusing the same code that renders my posts on my blog's index page.
 
+## Client side 
 
+### Unpacking the x-sources header
 
-## Entire API route
+We can use the `onResponse` callback function exported by the `useChat` hook from Vercel's AI SDK:
 
-Tying it all together, my `/api/chat` route looks like this:
+The LLM's response will still be streamed to the frontend as it's available, but we'll be able to access the 
+headers once we receive the initial response from the server.
+
+This allows us to grab the custom `x-sources` header, base64 decode it and then use it the resulting JSON payload 
+to render my related blog posts. 
+
+My favorite part of this is that it's re-using the display code I already use for my blog posts elsewhere on my site.
 
 ```javascript
 
-import { openai } from '@ai-sdk/openai';
-import { PineconeRecord } from "@pinecone-database/pinecone"
-import { StreamingTextResponse, streamText } from 'ai';
-import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles'
-import path from 'path';
+'use client';
+
+import { useChat } from 'ai/react';
+import { useState } from 'react';
+import { clsx } from 'clsx';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
+import { LoadingAnimation } from '@/components/LoadingAnimation';
 
-// Allow this serverless function to run for up to 5 minutes
-export const maxDuration = 300;
+...
 
-export async function POST(req: Request) {
-  const { messages } = await req.json();
+export default function Chat() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
 
-  // Get the last message
-  const lastMessage = messages[messages.length - 1]
-
-  // Get the context from the last message
-  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
-
-  // Create a new set for blog urls
-  let blogUrls = new Set<string>()
-
-  let docs: string[] = [];
-
-  (context as PineconeRecord[]).forEach(match => {
-    const source = (match.metadata as Metadata).source
-    // Ensure source is a blog url, meaning it contains the path src/app/blog
-    if (!source.includes('src/app/blog')) return
-    blogUrls.add((match.metadata as Metadata).source);
-    docs.push((match.metadata as Metadata).text);
-  });
-
-  let relatedBlogPosts: ArticleWithSlug[] = []
-
-  // Loop through all the blog urls and get the metadata for each
-  for (const blogUrl of blogUrls) {
-    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const localBlogPath = `${blogPath}/page.mdx`
-    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
-    relatedBlogPosts.push({ slug, ...metadata });
-  }
-  // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
-  const contextText = docs.join("\n").substring(0, 3000)
-
-  const prompt = `
-          Zachary Proser is a Staff developer, open - source maintainer and technical writer 
-          Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
-          Zachary Proser is a well - behaved and well - mannered individual.
-          Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
-          Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
-          Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
-          START CONTEXT BLOCK
-          ${contextText}
-          END OF CONTEXT BLOCK
-          Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
-          If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
-          Zachary will not apologize for previous responses, but instead will indicated new information was gained.
-          Zachary will not invent anything that is not drawn directly from the context.
-          Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
-`;
-
-  const result = await streamText({
-    model: openai('gpt-4-turbo'),
-    system: prompt,
-    prompt: lastMessage.content,
-  });
-
-  const serializedArticles = Buffer.from(
-    JSON.stringify(relatedBlogPosts)
-  ).toString('base64')
-
-  return new StreamingTextResponse(result.toAIStream(), {
-    headers: {
-      "x-sources": serializedArticles
+  const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
+    onResponse(response) {
+      const sourcesHeader = response.headers.get('x-sources');
+      const parsedArticles: ArticleWithSlug[] = sourcesHeader
+        ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
+        : [];
+      setArticles(parsedArticles);
+      setIsLoading(false);
+    },
+    headers: {},
+    onFinish() {
+      // Log the user's question
+      gtag("event", "chat_question", {
+        event_category: "chat",
+        event_label: input,
+      });
     }
   });
-}
+...
 ```
 
-## Client side 
+## The complete client-side page
 
 ```javascript
 'use client';
@@ -560,6 +525,95 @@ export default function Chat() {
   );
 }
 ````
+
+
+
+
+## Entire API route
+
+Tying it all together, my `/api/chat` route looks like this:
+
+```javascript
+
+import { openai } from '@ai-sdk/openai';
+import { PineconeRecord } from "@pinecone-database/pinecone"
+import { StreamingTextResponse, streamText } from 'ai';
+import { Metadata, getContext } from '../../services/context'
+import { importArticleMetadata } from '@/lib/articles'
+import path from 'path';
+import { ArticleWithSlug } from '@/lib/shared-types';
+
+// Allow this serverless function to run for up to 5 minutes
+export const maxDuration = 300;
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  // Get the last message
+  const lastMessage = messages[messages.length - 1]
+
+  // Get the context from the last message
+  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
+
+  // Create a new set for blog urls
+  let blogUrls = new Set<string>()
+
+  let docs: string[] = [];
+
+  (context as PineconeRecord[]).forEach(match => {
+    const source = (match.metadata as Metadata).source
+    // Ensure source is a blog url, meaning it contains the path src/app/blog
+    if (!source.includes('src/app/blog')) return
+    blogUrls.add((match.metadata as Metadata).source);
+    docs.push((match.metadata as Metadata).text);
+  });
+
+  let relatedBlogPosts: ArticleWithSlug[] = []
+
+  // Loop through all the blog urls and get the metadata for each
+  for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
+    const localBlogPath = `${blogPath}/page.mdx`
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+  }
+  // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
+  const contextText = docs.join("\n").substring(0, 3000)
+
+  const prompt = `
+          Zachary Proser is a Staff developer, open - source maintainer and technical writer 
+          Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
+          Zachary Proser is a well - behaved and well - mannered individual.
+          Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
+          Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
+          Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
+          START CONTEXT BLOCK
+          ${contextText}
+          END OF CONTEXT BLOCK
+          Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
+          If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
+          Zachary will not apologize for previous responses, but instead will indicated new information was gained.
+          Zachary will not invent anything that is not drawn directly from the context.
+          Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
+`;
+
+  const result = await streamText({
+    model: openai('gpt-4-turbo'),
+    system: prompt,
+    prompt: lastMessage.content,
+  });
+
+  const serializedArticles = Buffer.from(
+    JSON.stringify(relatedBlogPosts)
+  ).toString('base64')
+
+  return new StreamingTextResponse(result.toAIStream(), {
+    headers: {
+      "x-sources": serializedArticles
+    }
+  });
+}
+```
 
 ## Data ingest: Reading all your blog's MDX files
 
