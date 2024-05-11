@@ -24,7 +24,7 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## How to build a chat-with-your-blog RAG pipeline 
 
-I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing and ask me questions I've already answered even when I'm not around.
+I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
 <Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
 My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds, enabling people to find what they want. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
@@ -32,9 +32,9 @@ with citations.
 
 This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend. 
 
-Best of all, this site is completely open-source, so you can view and borrow my implementation. 
+Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
 
-When you're done with this blog post, you'll have the code and understanding you need to build your own similar experience.
+When you're done reading this blog post, you'll have the code and understanding you need to build your own similar experience.
 
 <Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
 
@@ -54,8 +54,9 @@ Here's a flowchart describing how the feature works end to end.
 
 Let's talk through it from the user's perspective. They ask a question on my chat interface. Their question is sent to my `/api/chat` route. 
 
-The chat route first converts the user's natural language query to embeddings, and then performs a vector search against Pinecone. Embeddings or vectors are
-lists of floating point numbers that represent semantic meaning and the relationships between entities in data in a format that is efficient for machines and Large Language Models to parse.
+The chat route first converts the user's natural language query to embeddings, and then performs a vector search against Pinecone. 
+
+Embeddings or vectors are lists of floating point numbers that represent semantic meaning and the relationships between entities in data in a format that is efficient for machines and Large Language Models to parse.
 
 For example, in the following log statements, you can see the user's query, 'How can I become a better developer?', and the query embedding which is an array of floats representing that sentence. 
 
@@ -100,8 +101,9 @@ embedding: [
 ]
 ```
 
-Importantly, note the length of this array is `1536`. This is the dimensionality (or number of dimensions) expressed by the embedding model, which was `text-embedding-ada-002`. Since the 
-embedding model I'm using for this application outputs 1536 dimensions, when I created my Pinecone index, I also set it to 1536 dimensions as well.
+Note the length of this array is `1536`. This is the dimensionality (or number of dimensions) expressed by the embedding model, which was `text-embedding-ada-002`. 
+
+Since the embedding model I'm using for this application outputs 1536 dimensions, when I created my Pinecone index, I also set it to 1536 dimensions as well.
 
 Pinecone's vector database returns the items most semantically relevant to the user's query. These items are chunks of blog posts, but their metadata contains the path on disk of the blog post they came from: 
 
@@ -114,11 +116,131 @@ Pinecone's vector database returns the items most semantically relevant to the u
 ```
 
 Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
-it answer as me - or at least as my writing.
+it answer as me - or at least as my writing. Let's see how I do this in my server-side API route.
 
 ### Server side
 
-On the server side, we use our context service to convert the user's query into a query embedding and query our Pinecone vector database for related documents, which are chunks of blog posts. 
+We'll step through the server-side API route section by section, building up to the complete route at the end. 
+
+When the `/api/chat` route receives a request, I pop the latest user message off the request body and hand it to my context retrieval service: 
+
+```javascript
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  // Get the last message
+  const lastMessage = messages[messages.length - 1]
+
+  console.log(`lastMessage: %o`, lastMessage)
+
+  // Get the context from the last message, specifying that we want to use a maxtokens value of 3000
+  // and we're only interested in items scored as 0.8 relevance or higher by Pinecone
+  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
+  ... 
+
+```
+
+Here's what the context service looks like:
+
+```javascript
+import type { PineconeRecord } from "@pinecone-database/pinecone";
+import { getEmbeddings } from './embeddings';
+import { getMatchesFromEmbeddings } from "./pinecone";
+
+export type Metadata = {
+  source: string,
+  text: string,
+}
+
+// The function `getContext` is used to retrieve the context of a given message
+export const getContext = async (message: string, namespace: string, maxTokens = 3000, minScore = 0.7, getOnlyText = true): Promise<PineconeRecord[]> => {
+
+  // Get the embeddings of the input message
+  const embedding = await getEmbeddings(message);
+
+  // Retrieve the matches for the embeddings from the specified namespace
+  const matches = await getMatchesFromEmbeddings(embedding, 10, namespace);
+
+  // Filter out the matches that have a score lower than the minimum score
+  return matches.filter(m => m.score && m.score > minScore);
+}
+```
+
+The `getContext` function is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functions, which are also defined in separate 'services' files: 
+
+```javascript
+import { OpenAIApi, Configuration } from "openai-edge";
+
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+})
+const openai = new OpenAIApi(config)
+
+export async function getEmbeddings(input: string) {
+  try {
+    const response = await openai.createEmbedding({
+      model: "text-embedding-ada-002",
+      input: input.replace(/\n/g, ' ')
+    })
+
+    const result = await response.json();
+    return result.data[0].embedding as number[]
+
+  } catch (e) {
+    console.log("Error calling OpenAI embedding API: ", e);
+    throw new Error(`Error calling OpenAI embedding API: ${e}`);
+  }
+}
+```
+
+and `getMatchesFromEmbeddings`:
+
+```javascript
+import { Pinecone, type ScoredPineconeRecord } from "@pinecone-database/pinecone";
+
+export type Metadata = {
+  url: string,
+  text: string,
+  chunk: string,
+  hash: string
+}
+
+// The function `getMatchesFromEmbeddings` is used to retrieve matches for the given embeddings
+const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, namespace: string): Promise<ScoredPineconeRecord<Metadata>[]> => {
+  // Obtain a client for Pinecone
+  const pinecone = new Pinecone();
+
+  const indexName: string = process.env.PINECONE_INDEX || '';
+  if (indexName === '') {
+    throw new Error('PINECONE_INDEX environment variable not set')
+  }
+  // Get the Pinecone index
+  const index = pinecone!.Index<Metadata>(indexName);
+
+  // Get the namespace
+  const pineconeNamespace = index.namespace(namespace ?? '')
+  // console.log("embeddings", JSON.stringify(embeddings))
+
+  try {
+    // Query the index with the defined request
+    const queryResult = await pineconeNamespace.query({
+      vector: embeddings,
+      topK,
+      includeMetadata: true,
+    })
+    return queryResult.matches || []
+  } catch (e) {
+    // Log the error and throw it
+    console.log("Error querying embeddings: ", e)
+    throw new Error(`Error querying embeddings: ${e}`)
+  }
+}
+
+export { getMatchesFromEmbeddings };
+```
+ 
+We use our context service to convert the user's query into a query embedding and query our Pinecone vector database for related documents, which are chunks of blog posts. 
 
 Because we used langchains directory loader, the source of each blog post, meaning its filepath on disk such as:
 
