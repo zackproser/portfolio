@@ -157,7 +157,7 @@ export const getContext = async (message: string, namespace: string, maxTokens =
 }
 ```
 
-The `getContext` function's job is to convert the user's message to a vector and retrieve the most relevant items from Pinecone.
+The `getContext` function's job is to convert the user's message to vectors and retrieve the most relevant items from Pinecone.
 
 It is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functions, which are also defined in separate 'services' files. 
 
@@ -217,7 +217,6 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
 
   // Get the namespace
   const pineconeNamespace = index.namespace(namespace ?? '')
-  // console.log("embeddings", JSON.stringify(embeddings))
 
   try {
     // Query the index with the defined request
@@ -238,6 +237,46 @@ export { getMatchesFromEmbeddings };
 ```
 
 ### Injecting context into the prompt
+
+Completing the RAG loop means injecting our retrieved items into the prompt that is sent to OpenAI 
+when we ask for a chat completion. 
+
+First, let's look at the raw retrieved docs look like: 
+
+```javascript
+{
+    id: 'b10c8904-3cff-4fc5-86fc-eec5b1517dab',
+    score: 0.826505,
+    values: [ [length]: 0 ],
+    sparseValues: undefined,
+    metadata: {
+      source: 'portfolio/src/app/blog/data-driven-pages-next-js/page.mdx',
+      text: 'While the full script is quite long and complex, breaking it down into logical sections helps us focus on the key takeaways:\n' +
+        '\n' +
+        '1. Generating data-driven pages with Next.js allows us to create rich, informative content that is easy to update and maintain over time. 1. By separating the data (in this case, the categories and tools) from the presentation logic, we can create a flexible and reusable system for generating pages based on that data. 1. Using a script to generate the page content allows us to focus on the high-level structure and layout of the page, while still providing the ability to customize and tweak individual sections as needed. 1. By automating the process of generating and saving the page content, we can save time and reduce the risk of errors or inconsistencies.\n' +
+        '\n' +
+        'While the initial setup and scripting can be complex, the benefits in terms of time savings, consistency, and maintainability are well worth the effort.'
+    }
+  },
+  {
+    id: 'b78bcb7c-c1a6-48a3-ac6b-ab58263b6ac1',
+    score: 0.825771391,
+    values: [ [length]: 0 ],
+    sparseValues: undefined,
+    metadata: {
+      source: 'portfolio/src/app/blog/run-your-own-tech-blog/page.mdx',
+      text: 'I wanted the ability to author code blocks of any kind directly in my post and I wanted outstanding image support with all the lazy-loading, performance optimized, responsive image goodness that Next.js bakes into its easy to use `<Image>` component.\n' +
+        '\n' +
+        'I also knew I wanted to host my site on Vercel and that I wanted my site to be completely static once built, with serverless functions to handle things like form submissions so that I could customize my own email list tie-in and have more excuses to learn the Next.js framework and Vercel platform well.\n' +
+        '\n' +
+        '<Image src={bloggingWebPerformance} alt="Web performance monitoring" /> <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
+    }
+  },
+```
+
+For any given query, we'll get between 0 and 10 relevant docs from our Pinecone vector search. 
+
+Next, we'll collapse them into a single string of text that goes into the center of the prompt for our LLM:
 
 ```javascript
 
@@ -268,6 +307,10 @@ const result = await streamText({
 });
 
 ```
+Notice we pass our combined prompt and context as the `system` prompt, meaning the set of instructions intended to set our LLM's behavior. 
+
+The user's query is sent raw in the prompt field, so that the pre-instructed and context-aware LLM can answer their question on behalf of my writing.
+
 
 ### Enriching the response with related blog posts
  
