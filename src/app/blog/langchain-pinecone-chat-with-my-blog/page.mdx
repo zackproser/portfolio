@@ -6,6 +6,7 @@ import chatWithMyBlog  from '@/images/chat-with-my-blog.webp'
 import chatWithMyBlogRelatedPosts from '@/images/chat-with-my-blog-2.webp'
 import chatWithBlogFlowchart from '@/images/chat-with-blog-flowchart.webp'
 import ragWithSources from '@/images/rag-with-sources.webp'
+import pineconeConsole from '@/images/pinecone-console-rag-pipeline.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -728,7 +729,7 @@ export async function POST(req: Request) {
 ## Data ingest: Converting all your blog's MDX files into a knowledgebase
 
 How do you turn your entire blog into a knowledgebase to begin with? In this section I'll give you a complete Jupyter Notebook 
-that handles this for you, plus allows you to run sanity checks against your data.
+that handles this for you, plus allows you to run sanity checks against your data. 
 
 I like to do my initial data ingest and pre-processing in a Jupyter Notebook, for a couple of reasons: 
 
@@ -846,7 +847,11 @@ vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
 vectorstore.similarity_search(query)
 ```
 In this way, my Notebook serves as both an easy means of performing the ingest and upserts, 
-but also as a tool for checking that my RAG pipeline's knowledgebase is healthy.
+but also as a tool for checking that my RAG pipeline's knowledgebase is healthy. 
+
+However, note that you can also use the [Pinecone Console](https://app.pinecone.io) to query and manage your index.
+
+<Image src={pineconeConsole} alt="Pinecone Console" />
 
 ## Coming Soon: Updating the knowledgebase programatically via CI/CD
 
