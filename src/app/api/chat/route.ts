@@ -6,6 +6,7 @@ import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
 import { ArticleWithSlug } from '@/lib/shared-types';
 
+// Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
 
 export async function POST(req: Request) {
@@ -67,13 +68,13 @@ export async function POST(req: Request) {
     prompt: lastMessage.content,
   });
 
-  const serializedArticle = Buffer.from(
+  const serializedArticles = Buffer.from(
     JSON.stringify(relatedBlogPosts)
   ).toString('base64')
 
   return new StreamingTextResponse(result.toAIStream(), {
     headers: {
-      "x-sources": serializedArticle ?? 'PUNKED'
+      "x-sources": serializedArticles
     }
   });
 }
