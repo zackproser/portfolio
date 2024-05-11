@@ -1,0 +1,666 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import chatWithMyBlog  from '@/images/chat-with-my-blog.webp'
+import chatWithMyBlogRelatedPosts from '@/images/chat-with-my-blog-2.webp'
+import chatWithBlogFlowchart from '@/images/chat-with-blog-flowchart.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-05-10",
+    title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
+    description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
+    image: chatWithMyBlog
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+## How to build a chat-with-your-blog RAG pipeline 
+
+I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
+
+<Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
+My solution seamlessly recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
+with citations. 
+
+This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's StreamingTextResponse.
+
+<Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
+
+Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
+
+When you're done reading this blog post, you'll have the code and understanding you need to build your own similar experience.
+
+## Table of contents
+
+I'm sharing: 
+
+* **How to build the knowledgebase**: The Jupyter Notebook I created for data pre-processing, embedding and upserting
+* **How to use embeddings and do vector search on relevant blog posts**: All related application code
+* **How to use the Vercel AI SDK to stream chat responses**: And how to send data like related blog posts to the frontend separately from your streaming text response
+
+## Architecture and data flow
+
+Here's a flowchart describing how the feature works end to end. 
+
+<Image src={chatWithBlogFlowchart} alt="Chat with my blog flowchart" />
+
+Let's talk through it from the user's perspective. They ask a question on my client-side chat interface. Their question is sent to my `/api/chat` route. 
+
+The chat route first converts the user's natural language query to embeddings, and then performs a vector search against Pinecone. 
+
+Embeddings or vectors are lists of floating point numbers that represent semantic meaning and the relationships between entities in data in a format that is efficient for machines and Large Language Models to parse.
+
+For example, in the following log statements, you can see the user's query, 'How can I become a better developer?', and the query embedding which is an array of floats representing that sentence. 
+
+```bash 
+lastMessage: { role: 'user', content: 'How can I become a better developer?' }
+embedding: [
+     0.009916313,       -0.0019545625,   0.026496282,
+    -0.028132506,        -0.021284115,   0.013426278,
+    -0.015333008,        -0.005908222,  -0.014989928,
+    -0.016731715,         0.028396413,  0.0018885859,
+     0.032935616,        0.0054661776,   -0.00295741,
+    -0.017035209,         0.031748034,  0.0034736784,
+     0.009936105,         -0.01504271,  -0.019291615,
+    -0.015029514,         0.020347245,   -0.02570456,
+    -0.015544133,        0.0021937285,   0.004928467,
+      -0.0082471,        0.0056146253,  -0.021336896,
+       0.0437822,       -0.0033565694,    0.00989652,
+    -0.015966386,       -0.0073630107,  0.0068417937,
+  -0.00090470683,        0.0022531077,     0.0122255,
+    -0.008293283,          0.02934648,  0.0019116777,
+    -0.008088755,        -0.018842973,  0.0058389464,
+    0.0066801505,          -0.0207563,  -0.024833666,
+    -0.029953465,         0.008167927,  -0.005779567,
+     0.011057711,       -0.0105892755,  -0.034334324,
+     -0.00614244,         0.025519826,  -0.022814777,
+      0.02314466,      -0.00035029557, -0.0022992913,
+   0.00027236046,         0.014963537, 0.00081192696,
+     0.014739216,        -0.008689144,   0.014369747,
+    -0.028501976,         0.014554481, 0.00046224994,
+    -0.002061775,         0.020505589,    0.02624557,
+    0.0042357105,         0.012601568,  0.0130897965,
+   -0.0019842521,       -0.0125619825, -0.0141586205,
+    0.0028815365,        -0.006627369,  0.0037507808,
+     -0.00605667,        -0.029372869,   0.031114656,
+    -0.003935516,         0.015121882,   0.019397179,
+       0.0045491,        -0.017985275,  -0.022867559,
+  -0.00087501726,         0.010899367,    0.02902979,
+       0.0184867,       0.00044163218,  -0.009058614,
+   -0.0016733365,         0.010622264,  -0.017840127,
+   -0.0037210914, ... 1436 more items,
+  [length]: 1536
+]
+```
+
+Note the length of this array is `1536`. This is the dimensionality (or number of dimensions) expressed by the embedding model, which was `text-embedding-ada-002`. 
+
+Since the embedding model I'm using for this application outputs 1536 dimensions, when I created my Pinecone index, I also set it to 1536 dimensions as well.
+
+Let's look at how this works in the server-side API route.
+
+## Server side
+
+We'll step through the server-side API route section by section, building up to the complete route at the end. 
+
+### Retrieval phase
+
+When the `/api/chat` route receives a request, I pop the latest user message off the request body and hand it to my context retrieval service: 
+
+```javascript
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  // Get the last message
+  const lastMessage = messages[messages.length - 1]
+
+  // Get the context from the last message, specifying that we want to use 
+  // a maxtokens value of 3000 and that we're only interested 
+  // in items scored as 0.8 relevance or higher by Pinecone
+  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
+  ... 
+
+```
+
+Here's what the context service looks like:
+
+```javascript
+import type { PineconeRecord } from "@pinecone-database/pinecone";
+import { getEmbeddings } from './embeddings';
+import { getMatchesFromEmbeddings } from "./pinecone";
+
+export type Metadata = {
+  source: string,
+  text: string,
+}
+
+// The function `getContext` is used to retrieve the context of a given message
+export const getContext = async (message: string, namespace: string, maxTokens = 3000, minScore = 0.7, getOnlyText = true): Promise<PineconeRecord[]> => {
+
+  // Get the embeddings of the input message
+  const embedding = await getEmbeddings(message);
+
+  // Retrieve the matches for the embeddings from the specified namespace
+  const matches = await getMatchesFromEmbeddings(embedding, 10, namespace);
+
+  // Filter out the matches that have a score lower than the minimum score
+  return matches.filter(m => m.score && m.score > minScore);
+}
+```
+
+The `getContext` function's job is to convert the user's message to vectors and retrieve the most relevant items from Pinecone.
+
+It is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functions, which are also defined in separate 'services' files. 
+
+Here's the `getEmbeddings` function, which is a thin wrapper around OpenAI's embeddings endpoint: 
+
+```javascript
+import { OpenAIApi, Configuration } from "openai-edge";
+
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+})
+const openai = new OpenAIApi(config)
+
+export async function getEmbeddings(input: string) {
+  try {
+    const response = await openai.createEmbedding({
+      model: "text-embedding-ada-002",
+      input: input.replace(/\n/g, ' ')
+    })
+
+    const result = await response.json();
+    return result.data[0].embedding as number[]
+
+  } catch (e) {
+    console.log("Error calling OpenAI embedding API: ", e);
+    throw new Error(`Error calling OpenAI embedding API: ${e}`);
+  }
+}
+```
+
+So far, we've received the user's query and converted it into a `query vector` that we can send into Pinecone's vector database 
+for similarity search. 
+
+The `getMatchesFromEmbeddings` function demonstrates how we use Pinecone to execute our query and return the nearest neighbors:
+
+```javascript
+import { Pinecone, type ScoredPineconeRecord } from "@pinecone-database/pinecone";
+
+export type Metadata = {
+  url: string,
+  text: string,
+  chunk: string,
+  hash: string
+}
+
+// The function `getMatchesFromEmbeddings` is used to retrieve matches for the given embeddings
+const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, namespace: string): Promise<ScoredPineconeRecord<Metadata>[]> => {
+  // Obtain a client for Pinecone
+  const pinecone = new Pinecone();
+
+  const indexName: string = process.env.PINECONE_INDEX || '';
+  if (indexName === '') {
+    throw new Error('PINECONE_INDEX environment variable not set')
+  }
+  // Get the Pinecone index
+  const index = pinecone!.Index<Metadata>(indexName);
+
+  // Get the namespace
+  const pineconeNamespace = index.namespace(namespace ?? '')
+
+  try {
+    // Query the index with the defined request
+    const queryResult = await pineconeNamespace.query({
+      vector: embeddings,
+      topK,
+      includeMetadata: true,
+    })
+    return queryResult.matches || []
+  } catch (e) {
+    // Log the error and throw it
+    console.log("Error querying embeddings: ", e)
+    throw new Error(`Error querying embeddings: ${e}`)
+  }
+}
+
+export { getMatchesFromEmbeddings };
+```
+
+### Injecting context into the prompt
+
+Completing the RAG loop means injecting our retrieved items into the prompt that is sent to OpenAI 
+when we ask for a chat completion. 
+
+First, let's look at the raw retrieved docs look like: 
+
+```javascript
+{
+    id: 'b10c8904-3cff-4fc5-86fc-eec5b1517dab',
+    score: 0.826505,
+    values: [ [length]: 0 ],
+    sparseValues: undefined,
+    metadata: {
+      source: 'portfolio/src/app/blog/data-driven-pages-next-js/page.mdx',
+      text: 'While the full script is quite long and complex, breaking it down into logical sections helps us focus on the key takeaways:\n' +
+        '\n' +
+        '1. Generating data-driven pages with Next.js allows us to create rich, informative content that is easy to update and maintain over time. 1. By separating the data (in this case, the categories and tools) from the presentation logic, we can create a flexible and reusable system for generating pages based on that data. 1. Using a script to generate the page content allows us to focus on the high-level structure and layout of the page, while still providing the ability to customize and tweak individual sections as needed. 1. By automating the process of generating and saving the page content, we can save time and reduce the risk of errors or inconsistencies.\n' +
+        '\n' +
+        'While the initial setup and scripting can be complex, the benefits in terms of time savings, consistency, and maintainability are well worth the effort.'
+    }
+  },
+  {
+    id: 'b78bcb7c-c1a6-48a3-ac6b-ab58263b6ac1',
+    score: 0.825771391,
+    values: [ [length]: 0 ],
+    sparseValues: undefined,
+    metadata: {
+      source: 'portfolio/src/app/blog/run-your-own-tech-blog/page.mdx',
+      text: 'I wanted the ability to author code blocks of any kind directly in my post and I wanted outstanding image support with all the lazy-loading, performance optimized, responsive image goodness that Next.js bakes into its easy to use `<Image>` component.\n' +
+        '\n' +
+        'I also knew I wanted to host my site on Vercel and that I wanted my site to be completely static once built, with serverless functions to handle things like form submissions so that I could customize my own email list tie-in and have more excuses to learn the Next.js framework and Vercel platform well.\n' +
+        '\n' +
+        '<Image src={bloggingWebPerformance} alt="Web performance monitoring" /> <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
+    }
+  },
+```
+
+For any given query, we'll get between 0 and 10 relevant docs from our Pinecone vector search. 
+
+Next, we'll collapse them into a single string of text that goes into the center of the prompt for our LLM:
+
+```javascript
+
+// Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
+const contextText = docs.join("\n").substring(0, 3000)
+
+const prompt = `
+        Zachary Proser is a Staff developer, open - source maintainer and technical writer 
+        Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
+        Zachary Proser is a well - behaved and well - mannered individual.
+        Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
+        Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
+        Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
+        START CONTEXT BLOCK
+        ${contextText}
+        END OF CONTEXT BLOCK
+        Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
+        If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
+        Zachary will not apologize for previous responses, but instead will indicated new information was gained.
+        Zachary will not invent anything that is not drawn directly from the context.
+        Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
+`;
+
+const result = await streamText({
+  model: openai('gpt-4-turbo'),
+  system: prompt,
+  prompt: lastMessage.content,
+});
+
+```
+Notice we pass our combined prompt and context as the `system` prompt, meaning the set of instructions intended to set our LLM's behavior. 
+
+The user's query is sent raw in the prompt field, so that the pre-instructed and context-aware LLM can answer their question on behalf of my writing.
+
+
+### Enriching the response with related blog posts
+ 
+Pinecone returns the most relevant vectors based on our query. But how do we turn those vectors into something meaningful to our application? 
+
+The bridge between ambiguous natural language and structured data is metadata. 
+
+Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
+
+```
+// Imagine metadata like a JavaScript object
+{
+  "text": "In this article I reflect back on the year...",
+  "source": "src/app/blog/2023-wins/page.mdx"
+}
+```
+
+Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
+it answer as me - or at least as my writing: 
+
+```javascript
+// Create a new set for blog urls
+let blogUrls = new Set<string>()
+
+let docs: string[] = [];
+  
+(context as PineconeRecord[]).forEach(match => {
+    const source = (match.metadata as Metadata).source
+    // Ensure source is a blog url, meaning it contains the path src/app/blog
+    if (!source.includes('src/app/blog')) return
+    blogUrls.add((match.metadata as Metadata).source);
+    docs.push((match.metadata as Metadata).text);
+});
+
+let relatedBlogPosts: ArticleWithSlug[] = []
+
+// Loop through all the blog urls and get the metadata for each
+for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
+    const localBlogPath = `${blogPath}/page.mdx`
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+}
+```
+
+I can reuse my existing article loader to look up related blog posts by their path, but how can I package and send them to the frontend? 
+
+### Sending extra data with headers when using streaming text response 
+
+If the API route looks up the related blog posts, but then returns a streaming text response, how can it simultaneously send the blog posts to the frontend?
+
+With a clever use of headers, we can package our related blog posts data by base64 encoding their JSON representation. 
+
+```javascript
+const serializedArticles = Buffer.from(
+    JSON.stringify(relatedBlogPosts)
+).toString('base64')
+
+return new StreamingTextResponse(result.toAIStream(), {
+  headers: {
+    "x-sources": serializedArticles
+  }
+});
+```
+
+The frontend then unpacks this header using the On response callback and uses it to render the blog posts, again reusing the same code that renders my posts on my blog's index page.
+
+## Client side 
+
+### Unpacking the x-sources header
+
+We can use the `onResponse` callback function exported by the `useChat` hook from Vercel's AI SDK:
+
+The LLM's response will still be streamed to the frontend as it's available, but we'll be able to access the 
+headers once we receive the initial response from the server.
+
+This allows us to grab the custom `x-sources` header, base64 decode it and then use it the resulting JSON payload 
+to render my related blog posts. 
+
+My favorite part of this is that it's re-using the display code I already use for my blog posts elsewhere on my site.
+
+```javascript
+
+'use client';
+
+import { useChat } from 'ai/react';
+import { useState } from 'react';
+import { clsx } from 'clsx';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { BlogPostCard } from '@/components/BlogPostCard';
+import { ArticleWithSlug } from '@/lib/shared-types';
+import { LoadingAnimation } from '@/components/LoadingAnimation';
+
+...
+
+export default function Chat() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+
+  const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
+    onResponse(response) {
+      const sourcesHeader = response.headers.get('x-sources');
+      const parsedArticles: ArticleWithSlug[] = sourcesHeader
+        ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
+        : [];
+      setArticles(parsedArticles);
+      setIsLoading(false);
+    },
+    headers: {},
+    onFinish() {
+      // Log the user's question
+      gtag("event", "chat_question", {
+        event_category: "chat",
+        event_label: input,
+      });
+    }
+  });
+...
+```
+
+## The complete client-side page
+
+```javascript
+'use client';
+
+import { useChat } from 'ai/react';
+import { useState } from 'react';
+import { clsx } from 'clsx';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { BlogPostCard } from '@/components/BlogPostCard';
+import { ArticleWithSlug } from '@/lib/shared-types';
+import { LoadingAnimation } from '@/components/LoadingAnimation';
+
+const prepopulatedQuestions = [
+  "What is the programming bug?",
+  "Why do you love Next.js so much?",
+  "What do you do at Pinecone?",
+  "How can I become a better developer?",
+  "What is ggshield and why is it important?"
+];
+
+export default function Chat() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+
+  const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
+    onResponse(response) {
+      const sourcesHeader = response.headers.get('x-sources');
+      const parsedArticles: ArticleWithSlug[] = sourcesHeader
+        ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
+        : [];
+      console.log(`parsedArticle %o`, parsedArticles);
+      setArticles(parsedArticles);
+      setIsLoading(false);
+    },
+    headers: {},
+    onFinish() {
+      // Log the user's question
+      gtag("event", "chat_question", {
+        event_category: "chat",
+        event_label: input,
+      });
+    }
+  });
+
+  const userFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setIsLoading(true); // Set loading state here
+    handleSubmit(e);
+  };
+
+  const handlePrepopulatedQuestion = (question: string) => {
+    handleInputChange({
+      target: {
+        value: question,
+      },
+    } as React.ChangeEvent<HTMLInputElement>);
+
+    gtag("event", "chat_use_precanned_question", {
+      event_category: "chat",
+      event_label: question,
+    });
+
+    setIsLoading(true); // Set loading state here to indicate submission is processing
+
+    const customSubmitEvent = {
+      preventDefault: () => { },
+    } as unknown as React.FormEvent<HTMLFormElement>;
+
+    // Submit immediately after updating the input
+    handleSubmit(customSubmitEvent);
+  };
+
+  return (
+    <SimpleLayout
+      title="Chat with my writing!"
+      intro="This experience uses Pinecone, OpenAI and LangChain..."
+    >
+      {isLoading && (<LoadingAnimation />)}
+      <div className="flex flex-col md:flex-row flex-1 w-full max-w-5xl mx-auto">
+        <div className="flex-1 px-6">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className="mb-4 whitespace-pre-wrap text-lg leading-relaxed"
+            >
+              <span
+                className={clsx('font-bold', {
+                  'text-blue-700': m.role === 'user',
+                  'text-green-700': m.role !== 'user',
+                })}
+              >
+                {m.role === 'user'
+                  ? 'You: '
+                  : "The Ghost of Zachary Proser's Writing: "}
+              </span>
+              {m.content}
+            </div>
+          ))}
+        </div>
+        <div className="md:w-1/3 px-6 py-4">
+          {Array.isArray(articles) && (articles.length > 0) && (
+            <div className="">
+              <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
+              {(articles as ArticleWithSlug[]).map((article) => (
+                <BlogPostCard key={article.slug} article={article} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="mt-4 px-6">
+        <h3 className="mb-2 text-lg font-semibold">Example Questions:</h3>
+        <p>Double-click to ask one of these questions, or type your own below and hit enter.</p>
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {prepopulatedQuestions.map((question, index) => (
+            <button
+              key={index}
+              className="px-3 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50"
+              onClick={() => handlePrepopulatedQuestion(question)}
+            >
+              {question}
+            </button>
+          ))}
+        </div>
+      </div>
+      <form onSubmit={userFormSubmit} className="mt-4 mb-8 px-6">
+        <input
+          className="w-full p-2 border border-gray-300 rounded shadow-xl"
+          value={input}
+          placeholder="Ask the Ghost of Zachary Proser's Writing something..."
+          onChange={handleInputChange}
+        />
+      </form>
+    </SimpleLayout>
+  );
+}
+````
+
+
+
+
+## Entire API route
+
+Tying it all together, my `/api/chat` route looks like this:
+
+```javascript
+
+import { openai } from '@ai-sdk/openai';
+import { PineconeRecord } from "@pinecone-database/pinecone"
+import { StreamingTextResponse, streamText } from 'ai';
+import { Metadata, getContext } from '../../services/context'
+import { importArticleMetadata } from '@/lib/articles'
+import path from 'path';
+import { ArticleWithSlug } from '@/lib/shared-types';
+
+// Allow this serverless function to run for up to 5 minutes
+export const maxDuration = 300;
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  // Get the last message
+  const lastMessage = messages[messages.length - 1]
+
+  // Get the context from the last message
+  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
+
+  // Create a new set for blog urls
+  let blogUrls = new Set<string>()
+
+  let docs: string[] = [];
+
+  (context as PineconeRecord[]).forEach(match => {
+    const source = (match.metadata as Metadata).source
+    // Ensure source is a blog url, meaning it contains the path src/app/blog
+    if (!source.includes('src/app/blog')) return
+    blogUrls.add((match.metadata as Metadata).source);
+    docs.push((match.metadata as Metadata).text);
+  });
+
+  let relatedBlogPosts: ArticleWithSlug[] = []
+
+  // Loop through all the blog urls and get the metadata for each
+  for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
+    const localBlogPath = `${blogPath}/page.mdx`
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+  }
+  // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
+  const contextText = docs.join("\n").substring(0, 3000)
+
+  const prompt = `
+          Zachary Proser is a Staff developer, open - source maintainer and technical writer 
+          Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
+          Zachary Proser is a well - behaved and well - mannered individual.
+          Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
+          Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
+          Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
+          START CONTEXT BLOCK
+          ${contextText}
+          END OF CONTEXT BLOCK
+          Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
+          If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
+          Zachary will not apologize for previous responses, but instead will indicated new information was gained.
+          Zachary will not invent anything that is not drawn directly from the context.
+          Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
+`;
+
+  const result = await streamText({
+    model: openai('gpt-4-turbo'),
+    system: prompt,
+    prompt: lastMessage.content,
+  });
+
+  const serializedArticles = Buffer.from(
+    JSON.stringify(relatedBlogPosts)
+  ).toString('base64')
+
+  return new StreamingTextResponse(result.toAIStream(), {
+    headers: {
+      "x-sources": serializedArticles
+    }
+  });
+}
+```
+## Data ingest: Reading all your blog's MDX files
+
+Coming soon! Stay tuned.
+
+## Evolving to update the knowledgebase programatically with CI/CD
+
+Coming soon! Stay tuned.
