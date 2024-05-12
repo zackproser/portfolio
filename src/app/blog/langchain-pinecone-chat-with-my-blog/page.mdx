@@ -22,31 +22,24 @@ export const metadata = createMetadata({
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
---- 
-
-## How to build a chat-with-your-blog RAG pipeline 
-
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
 <Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
+
 My solution recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
 with citations. 
 
-This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's StreamingTextResponse.
+And in this blog post, I'm giving you everything you need to build your own similar experience:
+
+* the ingest and data processing code in a Jupyter Notebook, so you can convert your blog to a knowledgebase
+* the server-side API route code that handles embeddings, context retrieval via vector search, and chat
+* the client-side chat interface that [you can play with here](/chat)
 
 <Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
 
 Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
 
-When you're done reading this blog post, you'll have the code and understanding you need to build your own similar experience.
-
 ## Table of contents
-
-I'm sharing: 
-
-* **How to build the knowledgebase**: The Jupyter Notebook I created for data pre-processing, embedding and upserting
-* **How to use embeddings and do vector search on relevant blog posts**: All related application code
-* **How to use the Vercel AI SDK to stream chat responses**: And how to send data like related blog posts to the frontend separately from your streaming text response
 
 ## Architecture and data flow
 
@@ -237,13 +230,31 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
 
 export { getMatchesFromEmbeddings };
 ```
+### Retrieving related blog posts
 
-### Injecting context into the prompt
+Pinecone's vector database returns the most relevant vectors based on our query, but how do we turn those vectors 
+into something meaningful to our application? 
 
-Completing the RAG loop means injecting our retrieved items into the prompt that is sent to OpenAI 
-when we ask for a chat completion. 
+If I'm just getting back a list of floating point numbers, how do I go from that to the blog thumbnail and relative 
+URL I want to render for the user?
 
-First, let's look at the raw matches retrieved by Pinecone: 
+The bridge between ambiguous natural language and structured data is metadata. 
+
+Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
+
+```
+// Imagine metadata like a JavaScript object
+{
+  "text": "In this article I reflect back on the year...",
+  "source": "src/app/blog/2023-wins/page.mdx"
+}
+```
+Metadata is a simple but powerful concept that allows you to store whatever data you like alongside your vectors. Store data 
+you need later, foreign keys to other systems, or information that enriches your application.
+
+In my case, I wanted to look up and offer the blog posts that are most relevant to the user's query. How does this actually work under the hood?
+
+First, let's look at the raw matches. As you can see in this print out of two retrieved vectors, I have the filepath (`source`) of the post in my metadata:
 
 ```javascript
 {
@@ -275,63 +286,8 @@ First, let's look at the raw matches retrieved by Pinecone:
     }
   },
 ```
-
-For any given query, we'll get between 0 and 10 relevant docs from our Pinecone vector search. 
-
-Next, we'll collapse them into a single string of text that goes into the center of the prompt for our LLM:
-
-```javascript
-
-// Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
-const contextText = docs.join("\n").substring(0, 3000)
-
-const prompt = `
-        Zachary Proser is a Staff developer, open - source maintainer and technical writer 
-        Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
-        Zachary Proser is a well - behaved and well - mannered individual.
-        Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
-        Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
-        Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
-        START CONTEXT BLOCK
-        ${contextText}
-        END OF CONTEXT BLOCK
-        Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
-        If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
-        Zachary will not apologize for previous responses, but instead will indicated new information was gained.
-        Zachary will not invent anything that is not drawn directly from the context.
-        Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
-`;
-
-const result = await streamText({
-  model: openai('gpt-4-turbo'),
-  system: prompt,
-  prompt: lastMessage.content,
-});
-
-```
-Notice we pass our combined prompt and context as the `system` prompt, meaning the set of instructions intended to set our LLM's behavior. 
-
-The user's query is sent raw in the prompt field, so that the pre-instructed and context-aware LLM can answer their question on behalf of my writing.
-
-
-### Enriching the response with related blog posts
- 
-Pinecone returns the most relevant vectors based on our query. But how do we turn those vectors into something meaningful to our application? 
-
-The bridge between ambiguous natural language and structured data is metadata. 
-
-Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
-
-```
-// Imagine metadata like a JavaScript object
-{
-  "text": "In this article I reflect back on the year...",
-  "source": "src/app/blog/2023-wins/page.mdx"
-}
-```
-
 Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
-it answer as me - or at least as my writing: 
+it to answer as me - or at least as my writing: 
 
 ```javascript
 // Create a new set for blog urls
@@ -360,9 +316,21 @@ for (const blogUrl of blogUrls) {
 
 I can reuse my existing article loader to look up related blog posts by their path, but how can I package and send them to the frontend? 
 
-### Sending extra data with headers when using streaming text response 
+### Sending extra data with headers when using StreamingTextResponse 
 
-If the API route looks up the related blog posts, but then returns a streaming text response, how can it simultaneously send the blog posts to the frontend?
+This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's `StreamingTextResponse`.
+
+To level set a bit, a streaming response is one where the connection between the server and client is kept open, and chunks of text are streamed back to the client as they become available. This kind of connection is preferable
+when you have a lot of data to send, or when the speed with which your experience becomes interactive is critical. 
+
+As you've noticed from using ChatGPT and its kin, they begin to respond to you immediately and you can see the text response progressively filling in your screen in real-time. Why? 
+
+Because it's actually going to take three full minutes to finish answering your question, and if you saw nothing but a spinner for that long you'd have an existential crisis or at least hit the back button.
+
+We're writing an interface in the context of a chat scenario, and humans don't like chatting with partners that don't appear responsive. Now we're square on why we want a `StreamingTextResponse` sent back to the client, 
+but this introduces yet another problem as it solves several others.
+
+If the API route looks up the related blog posts, but then returns a `StreamingTextResponse`, how can it simultaneously send the blog posts to the frontend?
 
 With a clever use of headers, we can package our related blog posts data by base64 encoding their JSON representation. 
 
@@ -377,14 +345,60 @@ return new StreamingTextResponse(result.toAIStream(), {
   }
 });
 ```
+This means the JSON payload describing all my related blogs is a single base64 encoded string that will be sent in the `x-sources` header to the frontend. 
 
-The frontend then unpacks this header using the On response callback and uses it to render the blog posts, again reusing the same code that renders my posts on my blog's index page.
+The frontend then unpacks this header using the `onResponse` callback and uses it to render the blog posts, again reusing the same code that renders my posts on my [blog's index page](/blog).
+
+## Injecting retrieved context into the prompt 
+
+Completing the RAG loop means injecting our retrieved items into the prompt that is sent to OpenAI when we ask for a chat completion. 
+
+My prompt is also defined in the chat API route. Note the `START CONTEXT BLOCK` and `END OF CONTEXT BLOCK` tags at the beginning and end of the prompt.
+
+Retrieval Augmented Generation is all about accurately retrieving up to date or proprietary data and providing it alongside instructions to an LLM at inference time.
+
+For any given query, we'll get between 0 and 10 relevant docs from our Pinecone vector search. 
+
+Next, we'll collapse them into a single string of text that goes into the center of the prompt for our LLM:
+
+```javascript
+
+// Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
+const contextText = docs.join("\n").substring(0, 3000)
+
+const prompt = `
+        Zachary Proser is a Staff software engineer, open - source maintainer and technical writer 
+        Zachary Proser's traits include expert knowledge, helpfulness, cleverness, and articulateness.
+        Zachary Proser is a well - behaved and well - mannered individual.
+        Zachary Proser is always friendly, kind, and inspiring, and he is eager to provide vivid and thoughtful responses to the user.
+        Zachary Proser is a Staff Developer Advocate at Pinecone.io, the leader in vector storage.
+        Zachary Proser builds and maintains open source applications, Jupyter Notebooks, and distributed systems in AWS
+        START CONTEXT BLOCK
+        ${contextText}
+        END OF CONTEXT BLOCK
+        Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
+        If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
+        Zachary will not apologize for previous responses, but instead will indicate new information was gained.
+        Zachary will not invent anything that is not drawn directly from the context.
+        Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
+`;
+
+const result = await streamText({
+  model: openai('gpt-4-turbo'),
+  system: prompt,
+  prompt: lastMessage.content,
+});
+
+```
+Notice we pass our combined prompt and context as the `system` prompt, meaning the set of instructions intended to set our LLM's behavior. 
+
+The user's query is sent raw in the prompt field, so that the pre-instructed and context-aware LLM can answer their question on behalf of my writing.
 
 ## Client side 
 
 ### Unpacking the x-sources header
 
-We can use the `onResponse` callback function exported by the `useChat` hook from Vercel's AI SDK:
+We can use the `onResponse` callback function exported by the `useChat` hook from Vercel's AI SDK.
 
 The LLM's response will still be streamed to the frontend as it's available, but we'll be able to access the 
 headers once we receive the initial response from the server.
