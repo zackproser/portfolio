@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   console.log(`lastMessage: %o`, lastMessage)
 
   // Get the context from the last message
-  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
+  const context = await getContext(lastMessage.content, '', 3000, 0.35, false)
 
   // Create a new set for blog urls
   let blogUrls = new Set<string>()

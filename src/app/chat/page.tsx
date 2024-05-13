@@ -13,7 +13,8 @@ const prepopulatedQuestions = [
   "Why do you love Next.js so much?",
   "What do you do at Pinecone?",
   "How can I become a better developer?",
-  "What is ggshield and why is it important?"
+  "What is ggshield and why is it important?",
+  "How can I use AI to complete side projects more quickly?"
 ];
 
 export default function Chat() {
