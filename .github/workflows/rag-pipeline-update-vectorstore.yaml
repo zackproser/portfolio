@@ -49,7 +49,7 @@ jobs:
           
           # Manually load changed documents
           changed_files = os.getenv('CHANGED_MDX_FILES').split()
-          docs = [{'page_content': open(file, 'r').read(), 'name': file, metadata: {}} for file in changed_files if file.endswith('.mdx')]
+          docs = [{'page_content': open(file, 'r').read(), 'name': file, 'metadata': {}} for file in changed_files if file.endswith('.mdx')]
           
           # Initialize embeddings and vector store
           embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
