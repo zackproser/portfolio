@@ -62,6 +62,7 @@ jobs:
         if: env.CHANGED_MDX_FILES
         run: |
           python -c "
+          import os
           from pinecone import Pinecone
           pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
           index = pc.Index('zack-portfolio-3072')
