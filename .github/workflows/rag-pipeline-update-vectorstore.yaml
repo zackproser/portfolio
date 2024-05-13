@@ -1,0 +1,63 @@
+name: Upsert embeddings for changed MDX files 
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.mdx'
+
+jobs:
+  update_embeddings:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    
+    - name: Install dependencies
+      run: |
+        pip install langchain_community langchain_pinecone langchain_openai unstructured langchainhub
+
+    - name: Set API keys from secrets
+      run: |
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+        echo "PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }}" >> $GITHUB_ENV
+
+    - name: Detect changed MDX files
+      id: files
+      run: |
+        echo "changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} '**/*.mdx')" >> $GITHUB_ENV
+        echo "::set-output name=changed::$(if [ -z "$changed_files" ]; then echo 'false'; else echo 'true'; fi)"
+
+    - name: Process and upsert blog embeddings if changed
+      if: steps.files.outputs.changed == 'true'
+      run: |
+        python -c "
+        from langchain_pinecone import PineconeVectorStore
+        from langchain_openai import OpenAIEmbeddings
+        from langchain_community.document_loaders import ManualLoader
+        
+        # Manually load changed documents
+        changed_files = os.getenv('changed_files').split()
+        docs = [{'text': open(file, 'r').read(), 'name': file} for file in changed_files]
+        
+        # Initialize embeddings and vector store
+        embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
+        index_name = 'zack-portfolio-3072'
+        vectorstore = PineconeVectorStore(embeddings, index_name=index_name)
+        vectorstore.upsert_documents(docs)
+        "
+
+    - name: Verify and log vector store status
+      if: steps.files.outputs.changed == 'true'
+      run: |
+        from pinecone import Pinecone
+        pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
+        index = pc.Index('zack-portfolio-3072')
+        print(index.describe_index_stats())
+
