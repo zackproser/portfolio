@@ -43,9 +43,9 @@ jobs:
         if: env.CHANGED_MDX_FILES
         run: |
           python -c "
+          import os
           from langchain_pinecone import PineconeVectorStore
           from langchain_openai import OpenAIEmbeddings
-          from langchain_community.document_loaders import ManualLoader
           
           # Manually load changed documents
           changed_files = os.getenv('CHANGED_MDX_FILES').split()
