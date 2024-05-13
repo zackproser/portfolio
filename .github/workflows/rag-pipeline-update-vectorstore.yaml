@@ -20,7 +20,6 @@ jobs:
         uses: tj-actions/changed-files@v44
 
       - name: List all changed files
-        id: list-files
         run: |
           echo "Changed MDX Files:"
           CHANGED_MDX_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep '\.mdx$')
@@ -37,7 +36,7 @@ jobs:
       - name: Install dependencies
         if: env.CHANGED_MDX_FILES
         run: |
-          pip install langchain_community langchain_pinecone langchain_openai unstructured langchainhub
+          pip install langchain_community langchain_pinecone langchain_openai langchain unstructured langchainhub
 
       - name: Process and upsert blog embeddings if changed
         if: env.CHANGED_MDX_FILES
@@ -46,10 +45,11 @@ jobs:
           import os
           from langchain_pinecone import PineconeVectorStore
           from langchain_openai import OpenAIEmbeddings
-          
+          from langchain.docstore.document import Document
+
           # Manually load changed documents
           changed_files = os.getenv('CHANGED_MDX_FILES').split()
-          docs = [{'page_content': open(file, 'r').read(), 'name': file, 'metadata': {}} for file in changed_files if file.endswith('.mdx')]
+          docs = [Document(page_content=open(file, 'r').read(), metadata={'source': 'local', 'name': file}) for file in changed_files if file.endswith('.mdx')]
           
           # Initialize embeddings and vector store
           embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
@@ -65,3 +65,4 @@ jobs:
           pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
           index = pc.Index('zack-portfolio-3072')
           print(index.describe_index_stats())
+
