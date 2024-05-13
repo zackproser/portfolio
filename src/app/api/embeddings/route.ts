@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const response = await openai.embeddings.create({
-      model: 'text-embedding-ada-002',
+      model: 'text-embedding-3-small',
       input: inputText,
     });
 
