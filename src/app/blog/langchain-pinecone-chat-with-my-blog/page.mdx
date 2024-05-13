@@ -876,4 +876,88 @@ However, note that you can also use the [Pinecone Console](https://app.pinecone.
 
 How do you ensure that new posts you write make their way seamlessly into your knowledgebase?
 
-Coming soon! Stay tuned.
+By leveraging GitHub Actions to perform the same steps we did in our ingest and data processing Jupyter Notebook.
+
+The steps break down a bit differently in the GitHub Actions version. The main difference here is that we're not trying to load every MDX file in the site anymore. 
+
+Instead, we want to do the opposite, and only do the work (and spend the money) to embed and upsert new documents and changes to existing MDX files. This prevents the CI/CD 
+job from taking too long and doing superfluous work as my blow grows.
+
+This is why we need to manually create our LangChain documents in the upsert step, because we're no longer using the DirectoryLoader.
+
+You'll need to export your `PINECONE_API_KEY` and `OPENAI_API_KEY` as repository secrets in GitHub to use this action:
+
+```python
+name: Upsert embeddings for changed MDX files 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changed_files:
+    runs-on: ubuntu-latest
+    name: Process Changed Blog Embeddings
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensures a full clone of the repository
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+
+      - name: List all changed files
+        run: |
+          echo "Changed MDX Files:"
+          CHANGED_MDX_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep '\.mdx$')
+          echo "$CHANGED_MDX_FILES"
+          echo "CHANGED_MDX_FILES<<EOF" >> $GITHUB_ENV
+          echo "$CHANGED_MDX_FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Set API keys from secrets
+        run: |
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        if: env.CHANGED_MDX_FILES
+        run: |
+          pip install langchain_community langchain_pinecone langchain_openai langchain unstructured langchainhub
+
+      - name: Process and upsert blog embeddings if changed
+        if: env.CHANGED_MDX_FILES
+        run: |
+          python -c "
+          import os
+          from langchain_pinecone import PineconeVectorStore
+          from langchain_openai import OpenAIEmbeddings
+          from langchain.docstore.document import Document
+
+          # Manually load changed documents
+          changed_files = os.getenv('CHANGED_MDX_FILES').split()
+          docs = [Document(page_content=open(file, 'r').read(), metadata={'source': 'local', 'name': file}) for file in changed_files if file.endswith('.mdx')]
+          
+          # Initialize embeddings and vector store
+          embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
+          index_name = 'zack-portfolio-3072'
+          vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
+          vectorstore.add_documents(docs)
+          "
+
+      - name: Verify and log vector store status
+        if: env.CHANGED_MDX_FILES
+        run: |
+          python -c "
+          import os
+          from pinecone import Pinecone
+          pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
+          index = pc.Index('zack-portfolio-3072')
+          print(index.describe_index_stats())
+ 
+```
+
+That's it for now. Thanks for reading! If you were helped in any way by this post or found it interesting, please leave a comment or like below or share it with a friend. Thank you!
