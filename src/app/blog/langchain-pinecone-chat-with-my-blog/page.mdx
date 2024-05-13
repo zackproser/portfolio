@@ -761,12 +761,13 @@ Let's look at the Python code that performs the data ingest, conversion to embed
 !git clone https://github.com/zackproser/portfolio.git
 
 # Pip install all dependencies
-!pip install langchain_community langchain_pinecone langchain_openai unstructured langchainhub
+!pip install langchain_community langchain_pinecone langchain_openai unstructured langchainhub langchain-text-splitters
 
 # Import packages
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.document_loaders import DirectoryLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 import os
@@ -800,7 +801,10 @@ os.environ['PINECONE_API_KEY'] = userdata.get('PINECONE_API_KEY')
 # Assuming you've already imported necessary libraries and blog_posts is populated as above
 
 # Initialize embeddings and the vector store
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-large"
+)
+
 index_name = "zack-portfolio"
 
 # Split the documents into chunks
@@ -853,7 +857,10 @@ cell to connect to my Pinecone index and query it easily:
 # Query the Pinecone index for related documents
 query = "What is the programming bug?"
 
-embeddings =  OpenAIEmbeddings()
+embeddings =  OpenAIEmbeddings(
+    model="text-embedding-3-large"
+)
+
 vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
 
 vectorstore.similarity_search(query)
