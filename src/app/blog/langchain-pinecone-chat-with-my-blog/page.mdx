@@ -872,7 +872,7 @@ However, note that you can also use the [Pinecone Console](https://app.pinecone.
 
 <Image src={pineconeConsole} alt="Pinecone Console" />
 
-## Coming Soon: Updating the knowledgebase programatically via CI/CD
+## Updating the knowledgebase programatically via CI/CD
 
 How do you ensure that new posts you write make their way seamlessly into your knowledgebase?
 
@@ -944,7 +944,7 @@ jobs:
           # Initialize embeddings and vector store
           embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
           index_name = 'zack-portfolio-3072'
-          vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
+          vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name
           vectorstore.add_documents(docs)
           "
 
@@ -957,7 +957,7 @@ jobs:
           pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
           index = pc.Index('zack-portfolio-3072')
           print(index.describe_index_stats())
- 
+          "
 ```
 
-That's it for now. Thanks for reading! If you were helped in any way by this post or found it interesting, please leave a comment or like below or share it with a friend. Thank you!
+That's it for now. Thanks for reading! If you were helped in any way by this post or found it interesting, please leave a comment or like below or share it with a friend. 🙇
