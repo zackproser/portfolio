@@ -54,7 +54,7 @@ jobs:
           # Initialize embeddings and vector store
           embeddings = OpenAIEmbeddings(model='text-embedding-3-large')
           index_name = 'zack-portfolio-3072'
-          vectorstore = PineconeVectorStore(embeddings=embeddings, index_name=index_name)
+          vectorstore = PineconeVectorStore(embedding=embeddings, index_name=index_name)
           vectorstore.upsert_documents(docs)
           "
 
