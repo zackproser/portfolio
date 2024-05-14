@@ -284,7 +284,7 @@ First, let's look at the raw matches. As you can see in this print out of two re
     }
   },
 ```
-Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4 turbo) at inference time, allowing 
+Therefore, when Pinecone returns the most relevant items, I can use them to build a list of recommended blog posts and provide proprietary context to the LLM (ChatGPT 4o) at inference time, allowing 
 it to answer as me - or at least as my writing: 
 
 ```javascript
@@ -382,7 +382,7 @@ const prompt = `
 `;
 
 const result = await streamText({
-  model: openai('gpt-4-turbo'),
+  model: openai('gpt-4o'),
   system: prompt,
   prompt: lastMessage.content,
 });
@@ -722,7 +722,7 @@ export async function POST(req: Request) {
 `;
 
   const result = await streamText({
-    model: openai('gpt-4-turbo'),
+    model: openai('gpt-4o'),
     system: prompt,
     prompt: lastMessage.content,
   });
