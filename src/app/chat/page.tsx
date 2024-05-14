@@ -3,6 +3,7 @@
 import { useChat } from 'ai/react';
 import { useState } from 'react';
 import { clsx } from 'clsx';
+import { track } from '@vercel/analytics'
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
@@ -38,6 +39,7 @@ export default function Chat() {
         event_category: "chat",
         event_label: input,
       });
+      track("chat", { question: input })
     }
   });
 
@@ -57,6 +59,8 @@ export default function Chat() {
       event_category: "chat",
       event_label: question,
     });
+
+    track("chat-precanned", { question })
 
     setIsLoading(true); // Set loading state here to indicate submission is processing
 

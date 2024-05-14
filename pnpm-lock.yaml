@@ -69,8 +69,8 @@ dependencies:
     specifier: ^8.0.417
     version: 8.0.417
   '@vercel/analytics':
-    specifier: 1.1.0-beta.5
-    version: 1.1.0-beta.5
+    specifier: 1.2.2
+    version: 1.2.2(next@13.4.19)(react@18.2.0)
   '@vercel/og':
     specifier: ^0.5.11
     version: 0.5.11
@@ -1114,8 +1114,20 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: false
 
-  /@vercel/analytics@1.1.0-beta.5:
-    resolution: {integrity: sha512-AieTb7zA8j6N7QBmwBhHW5XWGoH2F7qLCJRG1uwhpzxGLqd0PYoboZrrGy63S/PVxw+bsyloGz0ceXpOKoa2VQ==}
+  /@vercel/analytics@1.2.2(next@13.4.19)(react@18.2.0):
+    resolution: {integrity: sha512-X0rctVWkQV1e5Y300ehVNqpOfSOufo7ieA5PIdna8yX/U7Vjz0GFsGf4qvAhxV02uQ2CVt7GYcrFfddXXK2Y4A==}
+    peerDependencies:
+      next: '>= 13'
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      next: 13.4.19(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      server-only: 0.0.1
     dev: false
 
   /@vercel/og@0.5.11:
@@ -5153,6 +5165,10 @@ packages:
   /seroval@1.0.5:
     resolution: {integrity: sha512-TM+Z11tHHvQVQKeNlOUonOWnsNM+2IBwZ4vwoi4j3zKzIpc5IDw8WPwCfcc8F17wy6cBcJGbZbFOR0UCuTZHQA==}
     engines: {node: '>=10'}
+    dev: false
+
+  /server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: false
 
   /sharp@0.32.6:
