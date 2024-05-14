@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/Button';
+import { track } from '@vercel/analytics';
 
 export default function ConsultingCTA({
   title = "Hacker for hire",
@@ -23,6 +24,10 @@ export default function ConsultingCTA({
             onClick={() => {
               // Capture google analytics event
               gtag("event", "click_book_consult_inline_cta", {
+                event_category: "advertising",
+                event_label: "consulting_inline_cta",
+              })
+              track('consulting-cta', {
                 event_category: "advertising",
                 event_label: "consulting_inline_cta",
               })
