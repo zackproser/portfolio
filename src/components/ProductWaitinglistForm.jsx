@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/Button";
+import { track } from "@vercel/analytics";
 
 function MailIcon(props) {
 	return (
@@ -44,6 +45,10 @@ export const ProductWaitinglistForm = ({
 			method: "waitinglist",
 			product: productSlug,
 		});
+		track("waitinglist-signup", {
+			method: "waitinglist",
+			product: productSlug,
+		})
 	};
 
 	const handleEmailChange = (event) => {

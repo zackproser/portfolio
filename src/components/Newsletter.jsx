@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/Button";
+import { track } from "@vercel/analytics";
 
 function MailIcon(props) {
 	return (
@@ -28,13 +29,17 @@ function MailIcon(props) {
 }
 
 export default function Newsletter({ title, body }) {
-  const referrer = usePathname()
-  const [formSuccess, setSuccess] = useState(false);
+	const referrer = usePathname()
+	const [formSuccess, setSuccess] = useState(false);
 
-  const sendFormSubmissionEvent = () => {
+	const sendFormSubmissionEvent = () => {
 		gtag("event", "sign_up", {
 			method: "newsletter",
 		});
+
+		track("newsletter-signup", {
+			method: "newsletter",
+		})
 	};
 
 	// Handle the submit event on form submit.
