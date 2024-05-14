@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Image from 'next/image';
 import { Button } from '@/components/Button';
+import { track } from '@vercel/analytics';
 
 
 import hackerForHire from '@/images/hacker-for-hire.webp'
@@ -18,6 +19,11 @@ export default function ConsultingCaptureModal({ delay }) {
         console.log('ConsultingCaptureModal firing...');
         // Capture google analytics event 
         gtag("event", "display_consulting_modal", {
+          event_category: "advertising",
+          event_label: "consulting_modal",
+        });
+
+        track('display_consulting_modal', {
           event_category: "advertising",
           event_label: "consulting_modal",
         });
