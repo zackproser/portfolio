@@ -16,7 +16,7 @@ export default function ArticleSearch({ articles }: { articles: ArticleWithSlug[
 
   const debouncedTrack = debounce((query: string) => {
     track('blog-search', { term: query })
-  }, 300)
+  }, 600)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleSearchChange(e.target.value)
