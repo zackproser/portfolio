@@ -17,7 +17,7 @@ export default async function ArticlesIndex() {
       title="I write to learn, and publish to share."
       intro="All of my technical tutorials, musings and developer rants"
     >
-      <ArticleSearch articles={articles} />
+      <ArticleSearch articles={JSON.parse(JSON.stringify(articles))} />
     </SimpleLayout>
   )
 }
