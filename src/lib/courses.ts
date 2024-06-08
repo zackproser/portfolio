@@ -29,7 +29,7 @@ export async function getAllCourses() {
 }
 
 export async function getSegmentContent(course: string, segment: string) {
-  return (await import(`src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
+  return (await import(`../../src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
 }
 
 export interface ArticleWithHeader extends Article {
