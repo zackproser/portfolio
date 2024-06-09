@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "@/components/Container";
 import { useSession } from "next-auth/react";
-import { auth } from "../auth"
-
 
 import { CourseStatus } from "@/utils/productUtils";
 

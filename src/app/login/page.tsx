@@ -22,7 +22,7 @@ export default async function SignInPage() {
                     await signIn(provider.id);
                   } catch (error) {
                     if (error instanceof AuthError) {
-                      return redirect(`${SIGNIN_ERROR_URL}?error=${error.type}`);
+                      return redirect(`/api/auth/error?error=${error.type}`);
                     }
                     throw error;
                   }
@@ -89,7 +89,7 @@ export default async function SignInPage() {
   );
 }
 
-function ProviderIcon({ provider, ...props }) {
+function ProviderIcon({ provider, ...props }: { provider: string } & React.SVGProps<SVGSVGElement>) {
   switch (provider) {
     case 'GitHub':
       return (
