@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import { signIn, providerMap } from "../../../auth";
+import { signIn } from "../../../auth";
 import { AuthError } from "next-auth";
 import Link from "next/link";
 
-export default async function SignInPage() {
+export default function SignInPage() {
   return (
     <div className="flex h-screen items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -48,11 +48,10 @@ export default async function SignInPage() {
               </div>
             </div>
             <form
-              action={async () => {
+              action={async (formData) => {
                 "use server";
                 try {
-                  const email = document.getElementById("email").value;
-                  await signIn("email", { email });
+                  await signIn("email", { email: formData.get("email") });
                 } catch (error) {
                   if (error instanceof AuthError) {
                     return redirect(`/api/auth/error?error=${error.type}`);
@@ -67,13 +66,14 @@ export default async function SignInPage() {
                 </label>
                 <input
                   id="email"
+                  name="email"
                   type="email"
-                  placeholder="me@example.com"
+                  placeholder="m@example.com"
                   className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                 />
               </div>
               <button className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-                Get a magic link sent to your email
+                Sign in with Email
               </button>
             </form>
           </div>
