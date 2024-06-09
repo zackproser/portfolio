@@ -2,6 +2,8 @@ import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
+import { SessionProvider } from "next-auth/react"
+
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 
@@ -52,13 +54,15 @@ export default function RootLayout({
       <body
         suppressHydrationWarning={true}
         className="flex h-full bg-gray-100 dark:bg-black">
-        <Providers>
-          <div className="flex w-full">
-            <Layout>{children}</Layout>
-            <Analytics />
-            <SpeedInsights />
-          </div>
-        </Providers>
+        <SessionProvider>
+          <Providers>
+            <div className="flex w-full">
+              <Layout>{children}</Layout>
+              <Analytics />
+              <SpeedInsights />
+            </div>
+          </Providers>
+        </SessionProvider>
       </body>
       <GoogleAnalytics gaId="G-DFX9S1FRMB" />
     </html>
