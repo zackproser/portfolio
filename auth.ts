@@ -2,6 +2,7 @@ import { sql } from "@vercel/postgres";
 import { getUserIdFromEmail, getPurchasedCourses } from "@/lib/queries";
 import NextAuth, { NextAuthConfig } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
+import type { Provider } from 'next-auth/providers'
 import EmailProvider from 'next-auth/providers/email'
 import PostgresAdapter from "@auth/pg-adapter"
 import { createPool } from '@vercel/postgres';
@@ -14,25 +15,39 @@ declare module "next-auth" {
 
 const pool = createPool();
 
+const providers: Provider[] = [
+  GitHub({
+    clientId: process.env.GITHUB_ID,
+    clientSecret: process.env.GITHUB_SECRET
+  }),
+  EmailProvider({
+    server: {
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      auth: {
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD
+      }
+    },
+    from: process.env.EMAIL_FROM
+  })
+]
+
+export const providerMap = providers.map((provider) => {
+  if (typeof provider === "function") {
+    const providerData = provider()
+    return { id: providerData.id, name: providerData.name }
+  } else {
+    return { id: provider.id, name: provider.name }
+  }
+})
+
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PostgresAdapter(pool),
-  providers: [
-    GitHub({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET
-    }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
-      },
-      from: process.env.EMAIL_FROM
-    })
-  ],
+  pages: {
+    signIn: '/login'
+  },
+  providers,
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account) {
