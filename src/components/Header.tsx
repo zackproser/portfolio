@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
+import { track } from '@vercel/analytics'
 
 import SparkleNavItem from '@/components/SparkleNavItem';
 
@@ -204,8 +205,9 @@ function ThemeToggle() {
   let [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    track("theme-toggle", { theme: otherTheme })
     setMounted(true)
-  }, [])
+  }, [otherTheme])
 
   return (
     <button
