@@ -43,7 +43,7 @@ export default function CV() {
     },
     {
       company: 'Gruntwork.io',
-      title: 'Tech Lead & Senior Software Engineer',
+      title: 'Tech Lead',
       logo: logoGrunty,
       start: '2020',
       end: '2023'
