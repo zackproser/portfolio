@@ -1,8 +1,8 @@
 import { sql } from "@vercel/postgres";
-import { type AuthOptions } from "next-auth"
-import GithubProvider from "next-auth/providers/github"
-import EmailProvider from "next-auth/providers/email"
 import { getUserIdFromEmail, getPurchasedCourses } from "@/lib/queries";
+import NextAuth, { NextAuthConfig } from 'next-auth'
+import GitHub from 'next-auth/providers/github'
+import EmailProvider from 'next-auth/providers/email'
 import PostgresAdapter from "@auth/pg-adapter"
 import { createPool } from '@vercel/postgres';
 
@@ -14,12 +14,12 @@ declare module "next-auth" {
 
 const pool = createPool();
 
-export const authOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PostgresAdapter(pool),
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+    GitHub({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET
     }),
     EmailProvider({
       server: {
@@ -33,7 +33,6 @@ export const authOptions = {
       from: process.env.EMAIL_FROM
     })
   ],
-
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account) {
@@ -106,7 +105,6 @@ export const authOptions = {
         return true;
       }
     },
-
     async session({ session, user, token }) {
       console.log(`session method callback: %o, %o, %o`, session, user, token);
 
@@ -126,5 +124,4 @@ export const authOptions = {
       };
     }
   }
-
-} as AuthOptions;
+} as NextAuthConfig)
