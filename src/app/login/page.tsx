@@ -1,42 +1,42 @@
 import { redirect } from "next/navigation";
-import { signIn, auth, providerMap } from "../../../auth";
+import { signIn, providerMap } from "../../../auth";
 import { AuthError } from "next-auth";
 import Link from "next/link";
 
 export default async function SignInPage() {
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 px-4 dark:bg-gray-950">
+    <div className="flex h-screen items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
         <div className="p-6 space-y-4">
-          <h1 className="text-2xl font-bold text-center">Welcome back!</h1>
+          <h1 className="text-2xl font-bold text-center">Almost there!</h1>
           <p className="text-center text-gray-500 dark:text-gray-400">
-            Sign in to your account to continue using zackproser.com.
+            Sign in to your account to purchase or use courses on zackproser.com.
+          </p>
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            Already have a GitHub account? Use that - otherwise, you can sign-in using your email.
           </p>
           <div className="space-y-4">
-            {Object.values(providerMap).map((provider) => (
-              <form
-                key={provider.id}
-                action={async () => {
-                  "use server"
-                  try {
-                    await signIn(provider.id);
-                  } catch (error) {
-                    if (error instanceof AuthError) {
-                      return redirect(`/api/auth/error?error=${error.type}`);
-                    }
-                    throw error;
+            <form
+              action={async () => {
+                "use server";
+                try {
+                  await signIn("github");
+                } catch (error) {
+                  if (error instanceof AuthError) {
+                    return redirect(`/api/auth/error?error=${error.type}`);
                   }
-                }}
+                  throw error;
+                }
+              }}
+            >
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
               >
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
-                >
-                  <ProviderIcon provider={provider.name} className="mr-2 h-4 w-4" />
-                  Sign in with {provider.name}
-                </button>
-              </form>
-            ))}
+                <ProviderIcon provider="GitHub" className="mr-2 h-4 w-4" />
+                Sign in with GitHub
+              </button>
+            </form>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -47,49 +47,43 @@ export default async function SignInPage() {
                 </span>
               </div>
             </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-              />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Password
+            <form
+              action={async () => {
+                "use server";
+                try {
+                  const email = document.getElementById("email").value;
+                  await signIn("email", { email });
+                } catch (error) {
+                  if (error instanceof AuthError) {
+                    return redirect(`/api/auth/error?error=${error.type}`);
+                  }
+                  throw error;
+                }
+              }}
+            >
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email
                 </label>
-                <Link href="#" className="text-sm font-medium text-primary hover:underline dark:text-primary-light">
-                  Forgot password?
-                </Link>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="me@example.com"
+                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
+                />
               </div>
-              <input
-                id="password"
-                type="password"
-                className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-              />
-            </div>
-            <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-              Sign in
-            </button>
+              <button className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                Get a magic link sent to your email
+              </button>
+            </form>
           </div>
-        </div>
-        <div className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          Don&apos;t have an account?{" "}
-          <Link href="#" className="font-medium text-primary hover:underline dark:text-primary-light">
-            Sign up
-          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-function ProviderIcon({ provider, ...props }: { provider: string } & React.SVGProps<SVGSVGElement>) {
+function ProviderIcon({ provider, ...props }: { provider: string; className?: string }) {
   switch (provider) {
     case 'GitHub':
       return (
