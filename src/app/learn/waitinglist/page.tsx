@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/auth-options";
+import { auth } from '../../../../auth'
 
 import { SimpleLayout } from '@/components/SimpleLayout';
 import GithubSignin from '@/components/github-signin';
@@ -12,7 +11,7 @@ import CourseIndex from '@/components/CourseIndex';
 import zpSchoolForHackers from '@/images/zp-school-for-hackers.webp'
 
 export default async function LearningHome() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session) {
     return (

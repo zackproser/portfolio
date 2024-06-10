@@ -2,6 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { SignIn } from "@/components/sign-in";
+
+import { auth } from '../../auth'
 
 import { Container } from "@/components/Container";
 import Newsletter from "@/components/NewsletterWrapper";
@@ -55,7 +58,10 @@ function MailIcon(props) {
 	);
 }
 
-export default function About() {
+export default async function About() {
+
+	const session = await auth();
+
 	return (
 		<>
 			<Head>
@@ -78,6 +84,12 @@ export default function About() {
 						</div>
 					</div>
 					<div className="lg:order-first lg:row-span-2">
+						{session?.user && (
+							<div className="flex items-center space-x-2">
+								<span role="img" aria-label="wave">👋</span>
+								<span className="text-green-500 font-bold">Nice to see you again! You are signed in.</span>
+							</div>
+						)}
 						<h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
 							Hi, I&apos;m Zachary
 						</h1>

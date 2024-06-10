@@ -4,8 +4,7 @@ import { getCourseSegments, getSegmentContent } from '@/lib/courses'
 
 import { redirect } from 'next/navigation'
 
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth/auth-options'
+import { auth } from '../../../../../auth'
 
 import { getProductDetails, ProductDetails } from '@/utils/productUtils';
 
@@ -19,7 +18,7 @@ interface PageProps {
 }
 
 export default async function Page({ params }: PageProps) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   // Users must be logged in to view this page
   if (!session) {
