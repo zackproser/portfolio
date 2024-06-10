@@ -75,9 +75,9 @@ const CheckoutPage = () => {
 	// correct callbackUrl so that the user is finally redirected to the checkout
 	useEffect(() => {
 		if (status === "unauthenticated" || session === null) {
-			signIn('', { callbackUrl: `/learn/${productSlug}/0` })
+			signIn('', { callbackUrl: `/checkout?product=${productSlug}` })
 		}
-	}, [status, session]);
+	}, [status, session, productSlug]);
 
 
 	// If the product is not ready yet, redirect them to the waitinglist page
