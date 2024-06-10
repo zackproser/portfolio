@@ -8,15 +8,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 	apiVersion: "2023-10-16",
 });
 
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/auth-options";
+import { auth } from '../../../../auth'
 
 // POST creates a new Stripe Checkout session, which results in the Checkout
 // embedded form being rendered
 export async function POST(req: NextRequest) {
 	console.log("checkout-sessions POST");
 
-	const nextSession = await getServerSession(authOptions);
+	const nextSession = await auth();
 
 	if (!nextSession) {
 		return new NextResponse(

@@ -1,8 +1,8 @@
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import AuthProvider from '../lib/auth/AuthProvider';
 
+import { SessionProvider } from "next-auth/react"
 
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
@@ -51,10 +51,10 @@ export default function RootLayout({
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
       </head>
-      <AuthProvider>
-        <body
-          suppressHydrationWarning={true}
-          className="flex h-full bg-gray-100 dark:bg-black">
+      <body
+        suppressHydrationWarning={true}
+        className="flex h-full bg-gray-100 dark:bg-black">
+        <SessionProvider>
           <Providers>
             <div className="flex w-full">
               <Layout>{children}</Layout>
@@ -62,9 +62,9 @@ export default function RootLayout({
               <SpeedInsights />
             </div>
           </Providers>
-        </body>
-        <GoogleAnalytics gaId="G-DFX9S1FRMB" />
-      </AuthProvider>
+        </SessionProvider>
+      </body>
+      <GoogleAnalytics gaId="G-DFX9S1FRMB" />
     </html>
   )
 }
