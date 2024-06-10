@@ -1,8 +1,9 @@
 import { sql } from "@vercel/postgres";
-import { type AuthOptions } from "next-auth"
-import GithubProvider from "next-auth/providers/github"
-import EmailProvider from "next-auth/providers/email"
 import { getUserIdFromEmail, getPurchasedCourses } from "@/lib/queries";
+import NextAuth, { NextAuthConfig } from 'next-auth'
+import GitHub from 'next-auth/providers/github'
+import type { Provider } from 'next-auth/providers'
+import EmailProvider from 'next-auth/providers/email'
 import PostgresAdapter from "@auth/pg-adapter"
 import { createPool } from '@vercel/postgres';
 
@@ -14,26 +15,39 @@ declare module "next-auth" {
 
 const pool = createPool();
 
-export const authOptions = {
-  adapter: PostgresAdapter(pool),
-  providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-    }),
-    EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD
-        }
-      },
-      from: process.env.EMAIL_FROM
-    })
-  ],
+const providers: Provider[] = [
+  GitHub({
+    clientId: process.env.GITHUB_ID,
+    clientSecret: process.env.GITHUB_SECRET
+  }),
+  EmailProvider({
+    server: {
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      auth: {
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD
+      }
+    },
+    from: process.env.EMAIL_FROM
+  })
+]
 
+export const providerMap = providers.map((provider) => {
+  if (typeof provider === "function") {
+    const providerData = provider()
+    return { id: providerData.id, name: providerData.name }
+  } else {
+    return { id: provider.id, name: provider.name }
+  }
+})
+
+export const { auth, handlers, signIn, signOut } = NextAuth({
+  adapter: PostgresAdapter(pool),
+  pages: {
+    signIn: '/login'
+  },
+  providers,
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account) {
@@ -106,7 +120,6 @@ export const authOptions = {
         return true;
       }
     },
-
     async session({ session, user, token }) {
       console.log(`session method callback: %o, %o, %o`, session, user, token);
 
@@ -126,5 +139,4 @@ export const authOptions = {
       };
     }
   }
-
-} as AuthOptions;
+} as NextAuthConfig)
