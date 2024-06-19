@@ -1,9 +1,7 @@
 import Head from "next/head";
 import { Suspense } from "react";
 import Link from "next/link";
-
 import { auth } from '../../auth'
-
 import { Container } from "@/components/Container";
 import Newsletter from "@/components/NewsletterWrapper";
 import CV from "@/components/CV";
@@ -15,13 +13,9 @@ import {
 	YouTubeIcon,
 	SocialLink,
 } from "@/components/SocialIcons";
-
 import { MailIcon } from '@/components/icons'
-
 import RenderNumYearsExperience from "@/components/NumYearsExperience";
-
 import RandomImage from '@/components/RandomImage'
-
 import { generateOgUrl } from "@/utils/ogUrl";
 
 const data = {

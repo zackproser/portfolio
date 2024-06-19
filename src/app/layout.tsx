@@ -38,7 +38,7 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="en" className="h-full antialiased dark">
+    <html lang="en" className="h-full antialiased">
       <head>
         <link
           rel="alternate"
