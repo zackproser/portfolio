@@ -155,7 +155,7 @@ const DesktopNav = ({ navItems }) => (
                 <div className="grid w-[400px] gap-4 p-4">
                   {item.children.map((child) => (
                     child.sparkle ? (
-                      <SparkleNavItem key={child.label} href={child.href}>
+                      <SparkleNavItem variant={'green'} key={child.label} href={child.href}>
                         <child.icon className="h-5 w-5 text-muted-foreground group-hover:text-accent-foreground" />
                         <div>
                           <div className="font-medium">{child.label}</div>
@@ -179,7 +179,7 @@ const DesktopNav = ({ navItems }) => (
             </NavigationMenuItem>
           ) : (
             item.sparkle ? (
-              <SparkleNavItem key={item.label} href={item.href}>
+              <SparkleNavItem variant={'green'} key={item.label} href={item.href}>
                 {item.label}
               </SparkleNavItem>
             ) : (
@@ -196,7 +196,7 @@ const DesktopNav = ({ navItems }) => (
         </NavigationMenuLink>
       </NavigationMenuList>
     </NavigationMenu>
-  </nav>
+  </nav >
 );
 
 const MobileNav = ({ navItems }) => (
@@ -236,7 +236,7 @@ const MobileNav = ({ navItems }) => (
               </Collapsible>
             ) : (
               item.sparkle ? (
-                <SparkleNavItem key={item.label} href={item.href}>
+                <SparkleNavItem variant={"green"} key={item.label} href={item.href}>
                   {item.label}
                 </SparkleNavItem>
               ) : (
@@ -246,6 +246,7 @@ const MobileNav = ({ navItems }) => (
               )
             )
           )}
+          <ThemeToggle />
         </nav>
       </div>
     </SheetContent>
