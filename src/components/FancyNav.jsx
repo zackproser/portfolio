@@ -77,39 +77,43 @@ const navHierarchy = [
         description: 'What is it like working with me?',
         icon: UsersIcon,
       },
-      {
-        label: 'Press',
-        href: '/press',
-        description: 'In the news',
-        icon: FileTextIcon,
-      }
     ],
   },
   {
     label: 'Demos',
     children: [
       {
-        label: 'Interactive demos',
-        href: '/demos',
-        description: 'Explore my work and projects.',
+        label: 'Chat with my blog',
+        href: '/chat',
+        description: 'Custom RAG pipeline',
+        icon: BoxIcon,
+      },
+      {
+        label: 'Intro to tokenization',
+        href: '/demos/tokenize',
+        description: 'How do LLMs see text?',
+        icon: BoxIcon,
+      },
+      {
+        label: 'Intro to embeddings',
+        href: '/demos/tokenize',
+        description: 'Learn what vectors are',
         icon: BoxIcon,
       },
     ],
   },
   {
     label: 'Contact',
-    children: [
-      {
-        label: 'Get in Touch',
-        href: '/contact',
-        description: 'Reach out to me directly.',
-        icon: UsersIcon,
-      },
-    ],
+    href: '/contact',
   },
   {
     label: 'Learn',
     href: '/learn',
+    sparkle: true, // Added sparkle
+  },
+  {
+    label: 'Hire me',
+    href: 'https://sponsor.zackproser.com',
     sparkle: true, // Added sparkle
   },
 ];
