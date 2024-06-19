@@ -1,12 +1,9 @@
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
 import { SessionProvider } from "next-auth/react"
-
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
-
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
 
@@ -38,7 +35,7 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="en" className="h-full antialiased dark">
+    <html lang="en" className="h-full antialiased">
       <head>
         <link
           rel="alternate"
