@@ -71,10 +71,10 @@ export default async function About() {
 								<span className="text-green-500 font-bold">Nice to see you again! You are signed in.</span>
 							</div>
 						)}
-						<h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+						<h1 className="text-4xl font-bold tracking-tight text-black dark:text-zinc-100 sm:text-5xl">
 							Hi, I&apos;m Zachary
 						</h1>
-						<div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+						<div className="mt-6 space-y-7 text-base text-black dark:text-zinc-400">
 							<p>
 								I&apos;m a staff developer advocate at{" "}
 								<Link
