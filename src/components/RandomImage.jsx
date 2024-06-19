@@ -57,7 +57,11 @@ const RandomImage = () => {
   if (!selectedImage) return null;
 
   return (
-    <div className="relative w-full h-full" onClick={setRandomImage} style={{ cursor: 'pointer' }}>
+    <div
+      className="relative w-full h-full"
+      onMouseOver={setRandomImage}
+      onClick={setRandomImage}
+      style={{ cursor: 'pointer' }}>
       <Image
         src={selectedImage}
         alt="Zachary Motherfucking Proser"
