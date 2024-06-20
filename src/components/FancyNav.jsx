@@ -66,6 +66,12 @@ const navHierarchy = [
         description: 'Explore my work and projects.',
         icon: BoxIcon,
       },
+      {
+        label: 'Collections',
+        href: '/collections',
+        description: 'See my writing organized by theme',
+        icon: FileTextIcon,
+      }
     ],
   },
   {
