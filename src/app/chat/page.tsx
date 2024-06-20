@@ -1,13 +1,15 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { clsx } from 'clsx';
-import { track } from '@vercel/analytics'
+import { track } from '@vercel/analytics';
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
+import SearchForm from '@/components/SearchForm';
+import RandomImage from '@/components/RandomImage';
 
 const prepopulatedQuestions = [
   "What is the programming bug?",
@@ -21,7 +23,6 @@ const prepopulatedQuestions = [
 export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
-
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     onResponse(response) {
       const sourcesHeader = response.headers.get('x-sources');
@@ -34,50 +35,46 @@ export default function Chat() {
     },
     headers: {},
     onFinish() {
-      // Log the user's question
       gtag("event", "chat_question", {
         event_category: "chat",
         event_label: input,
       });
-      track("chat", { question: input })
+      track("chat", { question: input });
+    },
+    onError() {
+      setIsLoading(false); // Stop loading if there's an error
     }
   });
 
-  const userFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true); // Set loading state here
-    handleSubmit(e);
-  };
-
-  const handlePrepopulatedQuestion = (question: string) => {
-    handleInputChange({
-      target: {
-        value: question,
-      },
-    } as React.ChangeEvent<HTMLInputElement>);
+  const handleSearch = async (query: string) => {
+    setInput(query);
 
     gtag("event", "chat_use_precanned_question", {
       event_category: "chat",
-      event_label: question,
+      event_label: query,
     });
 
-    track("chat-precanned", { question })
-
-    setIsLoading(true); // Set loading state here to indicate submission is processing
+    track("chat-precanned", { question: query });
 
     const customSubmitEvent = {
       preventDefault: () => { },
     } as unknown as React.FormEvent<HTMLFormElement>;
 
-    // Submit immediately after updating the input
-    handleSubmit(customSubmitEvent);
+    await handleSubmit(customSubmitEvent);
   };
+
 
   return (
     <SimpleLayout
-      title="Chat with my writing!"
+      title="Chat with me"
       intro="This experience uses Pinecone, OpenAI and LangChain..."
     >
-      {isLoading && (<LoadingAnimation />)}
+      <div className="max-w-xs max-w-sm px-2.5 mb-8">
+        <Suspense>
+          <RandomImage />
+        </Suspense>
+      </div>
+      {isLoading && messages?.length > 0 && (<LoadingAnimation />)}
       <div className="flex flex-col md:flex-row flex-1 w-full max-w-5xl mx-auto">
         <div className="flex-1 px-6">
           {messages.map((m) => (
@@ -111,28 +108,23 @@ export default function Chat() {
         </div>
       </div>
       <div className="mt-4 px-6">
-        <h3 className="mb-2 text-lg font-semibold">Example Questions:</h3>
-        <p>Double-click to ask one of these questions, or type your own below and hit enter.</p>
-        <div className="flex flex-wrap justify-center gap-2 mb-4">
-          {prepopulatedQuestions.map((question, index) => (
-            <button
-              key={index}
-              className="px-3 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-opacity-50"
-              onClick={() => handlePrepopulatedQuestion(question)}
-            >
-              {question}
-            </button>
-          ))}
-        </div>
-      </div>
-      <form onSubmit={userFormSubmit} className="mt-4 mb-8 px-6">
-        <input
-          className="w-full p-2 border border-gray-300 rounded shadow-xl"
-          value={input}
-          placeholder="Ask the Ghost of Zachary Proser's Writing something..."
-          onChange={handleInputChange}
+        <SearchForm
+          suggestedSearches={prepopulatedQuestions}
+          onSearch={handleSearch}
+          setIsLoading={setIsLoading}
         />
-      </form>
+      </div>
+      <div className="mt-4 px-6 flex justify-end">
+        <button
+          onClick={() => {
+            location.reload();
+          }}
+          className="px-3 py-2 bg-green-500 text-white rounded shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50"
+        >
+          Clear Chat
+        </button>
+      </div>
     </SimpleLayout>
   );
 }
+
