@@ -1,6 +1,6 @@
 # Zachary Proser's portfolio  
 
-This is my personal portfolio website. 
+![Zack Proser's portfolio](./public/zackproser-com-screenshot.png)
 
 ## Development 
 
@@ -8,4 +8,3 @@ This is my personal portfolio website.
 npm i
 npm run dev
 ```
-## Test 
