@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useChat } from 'ai/react';
 import { useState, Suspense } from 'react';
 import { clsx } from 'clsx';
@@ -23,7 +24,7 @@ const prepopulatedQuestions = [
 export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
-  const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
+  const { messages, input, setInput, handleSubmit } = useChat({
     onResponse(response) {
       const sourcesHeader = response.headers.get('x-sources');
       const parsedArticles: ArticleWithSlug[] = sourcesHeader
@@ -42,7 +43,7 @@ export default function Chat() {
       track("chat", { question: input });
     },
     onError() {
-      setIsLoading(false); // Stop loading if there's an error
+      setIsLoading(false);
     }
   });
 
@@ -69,6 +70,7 @@ export default function Chat() {
       title="Chat with me"
       intro="This experience uses Pinecone, OpenAI and LangChain..."
     >
+      <p className="m-4 p-4 prose dark:text-white">Learn how to build this <Link href="/blog/langchain-pinecone-chat-with-my-blog">with my tutorial</Link></p>
       <div className="max-w-xs max-w-sm px-2.5 mb-8">
         <Suspense>
           <RandomImage />
