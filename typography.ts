@@ -27,7 +27,7 @@ export default function typographyStyles({ theme }: PluginUtils) {
     },
     DEFAULT: {
       css: {
-        '--tw-prose-body': theme('colors.zinc.600'),
+        '--tw-prose-body': theme('colors.black'),
         '--tw-prose-headings': theme('colors.zinc.900'),
         '--tw-prose-links': theme('colors.teal.500'),
         '--tw-prose-links-hover': theme('colors.teal.600'),
@@ -71,8 +71,8 @@ export default function typographyStyles({ theme }: PluginUtils) {
         color: 'var(--tw-prose-body)',
         lineHeight: theme('lineHeight.7'),
         '> *': {
-          marginTop: theme('spacing.10'),
-          marginBottom: theme('spacing.10'),
+          marginTop: theme('spacing.6'),
+          marginBottom: theme('spacing.6'),
         },
         p: {
           marginTop: theme('spacing.7'),
@@ -87,7 +87,7 @@ export default function typographyStyles({ theme }: PluginUtils) {
         h2: {
           fontSize: theme('fontSize.xl')[0],
           lineHeight: theme('lineHeight.7'),
-          marginTop: theme('spacing.20'),
+          marginTop: theme('spacing.4'),
           marginBottom: theme('spacing.4'),
         },
         h3: {
