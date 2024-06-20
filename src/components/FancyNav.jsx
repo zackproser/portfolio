@@ -70,7 +70,7 @@ const navHierarchy = [
         label: 'Collections',
         href: '/collections',
         description: 'See my writing organized by theme',
-        icon: UsersIcon,
+        icon: FileTextIcon,
       }
     ],
   },
