@@ -41,7 +41,7 @@ import Bubbletea from '@/images/bubbletea-stages.gif'
 import SponsorMe from '@/images/sponsor-me.webp'
 import Pageripper from '@/images/pageripper-bot.webp'
 import OfficeOracle from '@/images/office-oracle-screenshot.webp'
-import CanyonRunner from '@/images/canyonrunner-title-screen.webp'
+import CanyonRunner from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
 
 const projects = [
   {
