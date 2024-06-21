@@ -55,7 +55,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
           onClick={(e: FormEvent) => {
             handleSubmit(e).then(() => setIsLoading(true));
           }}
-          className={`absolute top-1/2 transform -translate-y-1/2 -right-14 w-12 h-12 flex items-center justify-center bg-indigo-800 text-white rounded-full ${!query && 'opacity-50 bg-gray-600 cursor-not-allowed'}`}
+          className={`absolute top-1/2 transform -translate-y-1/2 -right-14 w-12 h-12 flex items-center justify-center bg-emerald-600 text-white rounded-full ${!query && 'opacity-50 bg-gray-600 cursor-not-allowed'}`}
           disabled={!query}
         >
           ➔
