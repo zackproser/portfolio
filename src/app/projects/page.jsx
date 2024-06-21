@@ -40,6 +40,8 @@ import LegalSemanticSearch from '@/images/legal-semantic-search.webp'
 import Bubbletea from '@/images/bubbletea-stages.gif'
 import SponsorMe from '@/images/sponsor-me.webp'
 import Pageripper from '@/images/pageripper-bot.webp'
+import OfficeOracle from '@/images/office-oracle-screenshot.webp'
+import CanyonRunner from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
 
 const projects = [
   {
@@ -71,6 +73,13 @@ const projects = [
     stacks: ['AWS', 'Pulumi', 'Pinecone', 'Infrastructure as Code']
   },
   {
+    name: 'CanyonRunner HTML5 game',
+    description: 'A complete game with multple levels, endings, mobile and desktop modes and a story.',
+    link: '/blog/canyonrunner-html5-game',
+    logo: CanyonRunner,
+    stacks: ['Phaser.js', 'Game', 'Javascript', 'HTML5']
+  },
+  {
     name: 'Pageripper API',
     description: 'A productionized commercial API that uses Chromium and Puppeteer to scrape data from websites and return it in a structured format.',
     link: '/blog/introducing-pageripper-api',
@@ -97,6 +106,13 @@ const projects = [
     link: 'https://github.com/zackproser/automations',
     logo: Automations,
     stacks: ['Shell', 'AI', 'Developer Tools']
+  },
+  {
+    name: 'Office oracle',
+    description: 'A Retrieval Augmented Generation chatbot trained on the entire Office television series',
+    link: 'https://github.com/zackproser/office-oracle',
+    logo: OfficeOracle,
+    stacks: ['RAG', 'OpenAI', 'Chatbot', 'Next.js']
   },
   {
     name: 'cloud-nuke',
