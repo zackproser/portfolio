@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
 import Link from 'next/link';
+import { Container } from '@/components/Container';
+import { useState, useEffect, Suspense } from 'react';
 import { useChat } from 'ai/react';
-import { useState, Suspense } from 'react';
-import { clsx } from 'clsx';
 import { track } from '@vercel/analytics';
-import { SimpleLayout } from '@/components/SimpleLayout';
+import { clsx } from 'clsx';
+import RandomImage from '@/components/RandomImage';
+import SearchForm from '@/components/SearchForm';
+import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
-import { LoadingAnimation } from '@/components/LoadingAnimation';
-import SearchForm from '@/components/SearchForm';
-import RandomImage from '@/components/RandomImage';
 
 const prepopulatedQuestions = [
   "What is the programming bug?",
@@ -21,9 +21,10 @@ const prepopulatedQuestions = [
   "How can I use AI to complete side projects more quickly?"
 ];
 
-export default function Chat() {
+export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+
   const { messages, input, setInput, handleSubmit } = useChat({
     onResponse(response) {
       const sourcesHeader = response.headers.get('x-sources');
@@ -64,69 +65,80 @@ export default function Chat() {
     await handleSubmit(customSubmitEvent);
   };
 
-
   return (
-    <SimpleLayout
-      title="Chat with me"
-      intro="This experience uses Pinecone, OpenAI and LangChain..."
-    >
-      <p className="m-4 p-4 prose dark:text-white">Learn how to build this <Link href="/blog/langchain-pinecone-chat-with-my-blog">with my tutorial</Link></p>
-      <div className="max-w-xs max-w-sm px-2.5 mb-8">
-        <Suspense>
-          <RandomImage />
-        </Suspense>
-      </div>
-      {isLoading && messages?.length > 0 && (<LoadingAnimation />)}
-      <div className="flex flex-col md:flex-row flex-1 w-full max-w-5xl mx-auto">
-        <div className="flex-1 px-6">
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className="mb-4 whitespace-pre-wrap text-lg leading-relaxed"
-            >
-              <span
-                className={clsx('font-bold', {
-                  'text-blue-700': m.role === 'user',
-                  'text-green-700': m.role !== 'user',
-                })}
-              >
-                {m.role === 'user'
-                  ? 'You: '
-                  : "The Ghost of Zachary Proser's Writing: "}
-              </span>
-              {m.content}
-            </div>
-          ))}
+    <Container>
+      <div className="max-w-7xl mx-auto mt-16 sm:mt-32">
+        <div className="flex flex-col md:flex-row items-start mb-12">
+          <div className="flex-1 pl-8">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl mb-6">
+              Chat with me
+            </h1>
+            <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
+              This experience uses Pinecone, OpenAI and LangChain...
+            </p>
+            <p className="prose dark:text-white">
+              Learn how to build this <Link href="/blog/langchain-pinecone-chat-with-my-blog" className="text-emerald-500 hover:text-emerald-600">with my tutorial</Link>
+            </p>
+          </div>
+          <div className="mt-6 md:mt-0 w-full md:w-80 h-80">
+            <Suspense fallback={<div className="w-full h-full bg-gray-200 rounded-lg pr-8 mr-8"></div>}>
+              <RandomImage />
+            </Suspense>
+          </div>
         </div>
-        <div className="md:w-1/3 px-6 py-4">
-          {Array.isArray(articles) && (articles.length > 0) && (
-            <div className="">
-              <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
-              {(articles as ArticleWithSlug[]).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="m-4 pb-8 p-6">
-        <SearchForm
-          suggestedSearches={prepopulatedQuestions}
-          onSearch={handleSearch}
-          setIsLoading={setIsLoading}
-        />
-      </div>
-      <div className="mt-4 px-6 flex justify-end">
-        <button
-          onClick={() => {
-            location.reload();
-          }}
-          className="px-3 py-2 bg-green-500 text-white rounded shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-opacity-50"
-        >
-          Clear Chat
-        </button>
-      </div>
-    </SimpleLayout>
-  );
-}
 
+        {/* Chat interface */}
+        <div className="mb-8">
+          <SearchForm
+            suggestedSearches={prepopulatedQuestions}
+            onSearch={handleSearch}
+            setIsLoading={setIsLoading}
+          />
+        </div>
+
+        {isLoading && messages?.length > 0 && <LoadingAnimation />}
+
+        {/* Chat messages and related posts */}
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-1 pr-0 md:pr-6 mb-6 md:mb-0">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className="mb-4 whitespace-pre-wrap text-lg leading-relaxed"
+              >
+                <span
+                  className={clsx('font-bold', {
+                    'text-blue-700': m.role === 'user',
+                    'text-green-700': m.role !== 'user',
+                  })}
+                >
+                  {m.role === 'user'
+                    ? 'You: '
+                    : "The Ghost of Zachary Proser's Writing: "}
+                </span>
+                {m.content}
+              </div>
+            ))}
+          </div>
+          <div className="md:w-1/3">
+            {Array.isArray(articles) && (articles.length > 0) && (
+              <div className="">
+                <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
+                {(articles as ArticleWithSlug[]).map((article) => (
+                  <BlogPostCard key={article.slug} article={article} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="mt-8 flex justify-end">
+          <button
+            onClick={() => { location.reload(); }}
+            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+          >
+            Clear Chat
+          </button>
+        </div>
+      </div>
+    </Container>);
+}
