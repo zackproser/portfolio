@@ -24,6 +24,16 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
+Here's a quick demo of it in action - or [you can try it out yourself](/chat): 
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/ii4aUE-6Okk" 
+  title="Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel" 
+  frameborder="0" 
+  allow="fullscreen;">
+ </iframe>
+
 <Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
 
 My solution recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
