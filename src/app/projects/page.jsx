@@ -37,6 +37,9 @@ import Octocat from '@/images/octocat.webp'
 import Teatutor from '@/images/teatutor-logo.webp'
 import QuakeInFargate from '@/images/quake-in-fargate.webp'
 import LegalSemanticSearch from '@/images/legal-semantic-search.webp'
+import Bubbletea from '@/images/bubbletea-stages.gif'
+import SponsorMe from '@/images/sponsor-me.webp'
+import Pageripper from '@/images/pageripper-bot.webp'
 
 const projects = [
   {
@@ -54,11 +57,32 @@ const projects = [
     stacks: ['Next.js', 'React', 'Tailwind CSS']
   },
   {
+    name: 'Sponsorship site',
+    description: 'I built a site allowing folks to hire me, sponsor my projects and learn about the kind of work I do.',
+    link: 'https://sponsor.zackproser.com',
+    logo: SponsorMe,
+    stacks: ['Next.js', 'React', 'Tailwind CSS']
+  },
+  {
     name: 'Pinecone\'s first AWS Reference Architecture',
     description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
     link: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi',
     logo: RefArch,
     stacks: ['AWS', 'Pulumi', 'Pinecone', 'Infrastructure as Code']
+  },
+  {
+    name: 'Pageripper API',
+    description: 'A productionized commercial API that uses Chromium and Puppeteer to scrape data from websites and return it in a structured format.',
+    link: '/blog/introducing-pageripper-api',
+    logo: Pageripper,
+    stacks: ['Chromium', 'Puppeteer', 'Javascript']
+  },
+  {
+    name: 'Bubbletea State Machine pattern',
+    description: 'Bubbletea is a Golang Terminal UI (TUI) library. While working at the DevOps automation startup Gruntwork.io, I found and popularized the Bubbletea State Machine pattern for complex deployments.',
+    link: '/blog/bubbletea-state-machine',
+    logo: Bubbletea,
+    stacks: ['Golang', 'TUI', 'DevOps', 'CLI', 'Automation']
   },
   {
     name: 'panthalia',
@@ -87,6 +111,13 @@ const projects = [
     link: 'https://github.com/gruntwork-io/git-xargs',
     logo: GitXargs,
     stacks: ['Git', 'Automation', 'DevOps']
+  },
+  {
+    name: 'cf-terraforming',
+    description: 'While at Cloudflare, I helped build cf-terraforming, a tool that reads your Cloudflare API configuration and generates valid Terraform to match it, allowing rapid adoption of Infrastructure as Code.',
+    link: 'https://github.com/cloudflare/cf-terraforming',
+    logo: Octocat,
+    stacks: ['Golang', 'Automation', 'DevOps']
   },
   {
     name: 'procrastiproxy',
