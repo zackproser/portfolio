@@ -1,18 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
-
-import { Card } from '@/components/Card'
+import Link from 'next/link'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import logoAnimaginary from '@/images/logos/animaginary.svg'
-import logoCosmos from '@/images/logos/cosmos.svg'
-import logoPlanetaria from '@/images/logos/planetaria.svg'
-import logoOpenShuttle from '@/images/logos/open-shuttle.svg'
-import logoCloudflare from '@/images/logos/cloudflare.svg'
-import nuke from '@/images/nuke.webp'
-import panthalia from '@/images/panthalia-logo.webp'
-import automations from '@/images/logos/automations.svg'
-import pineconeRefArch from '@/images/pinecone-ref-arch-blueprint.webp'
-
 import { generateOgUrl } from '@/utils/ogUrl'
 
 const data = {
@@ -27,7 +16,7 @@ export const metadata = {
     title: data.title,
     description: data.description,
     url: ogUrl,
-    siteName: 'Zack Proser&apos;s portfolio',
+    siteName: 'Zack Proser\'s portfolio',
     images: [
       {
         url: ogUrl,
@@ -38,91 +27,126 @@ export const metadata = {
   },
 };
 
+import RefArch from '@/images/pinecone-refarch-logo.webp'
+import NextJSPortfolio from '@/images/zackproser-com-screenshot.webp'
+import Panthalia from '@/images/panthalia-logo.webp'
+import Automations from '@/images/automations.gif'
+import CloudNuke from '@/images/cloud-nuke-intro.webp'
+import GitXargs from '@/images/git-xargs-demo.gif'
+import Octocat from '@/images/octocat.webp'
+import Teatutor from '@/images/teatutor-logo.webp'
+import QuakeInFargate from '@/images/quake-in-fargate.webp'
+import LegalSemanticSearch from '@/images/legal-semantic-search.webp'
+
 const projects = [
   {
+    name: 'Pinecone: Legal semantic search',
+    description: 'An official Pinecone sample app demonstrating how to build a custom knowledge base over your data. Leverages Voyage embeddings model for the legal documents.',
+    link: 'https://docs.pinecone.io/examples/sample-apps/legal-semantic-search',
+    logo: LegalSemanticSearch,
+    stacks: ['Next.js', 'React', 'Tailwind CSS']
+  },
+  {
     name: 'This Next.js site / app',
-    description: 'I have been maintaining, upgrading, building features into a re-styling this portfolio site for the past 12 years for practice and learning',
-    link: { href: 'https://github.com/zackproser/portfolio', label: 'github'},
-    logo: logoOpenShuttle
-  }, 
+    description: 'I have been maintaining, upgrading, building features into, and re-styling this portfolio site for the past 12 years for practice and learning. It is now a full-stack e-commerce site, blog, demo garden and learning center with a Stripe integration and auth system.',
+    link: 'https://github.com/zackproser/portfolio',
+    logo: NextJSPortfolio,
+    stacks: ['Next.js', 'React', 'Tailwind CSS']
+  },
   {
     name: 'Pinecone\'s first AWS Reference Architecture',
     description: 'The Pinecone AWS Reference Architecture is a production-ready distributed system that demonstrates Pinecone and AWS best practices at scale',
-    link: { href: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi', label: 'github' },
-    logo: pineconeRefArch,
+    link: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi',
+    logo: RefArch,
+    stacks: ['AWS', 'Pulumi', 'Pinecone', 'Infrastructure as Code']
   },
-
   {
     name: 'panthalia',
     description: 'Panthalia is an AI-assisted mobile blogging platform for creating media-rich posts on the go',
-    link: { href: 'https://github.com/zackproser/panthalia', label: 'github' },
-    logo: panthalia,
+    link: 'https://github.com/zackproser/panthalia',
+    logo: Panthalia,
+    stacks: ['AI', 'Mobile', 'Blogging']
   },
   {
     name: 'automations',
     description: 'Shell scripts leveraging generative A.I. to make developer workflows buttery smooth and way more fun',
-    link: { href: 'https://github.com/zackproser/automations', label: 'github' },
-    logo: automations,
+    link: 'https://github.com/zackproser/automations',
+    logo: Automations,
+    stacks: ['Shell', 'AI', 'Developer Tools']
   },
   {
     name: 'cloud-nuke',
     description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion',
-    link: { href: 'https://github.com/gruntwork-io/cloud-nuke', label: 'github' },
-    logo: nuke,
+    link: 'https://github.com/gruntwork-io/cloud-nuke',
+    logo: CloudNuke,
+    stacks: ['AWS', 'Cloud Management', 'Go']
   },
   {
     name: 'git-xargs',
-    description:
-      'Make the same change across many GitHub repositories quickly. Run any command or script on multiple repos.',
-    link: { href: 'https://github.com/gruntwork-io/git-xargs', label: 'github' },
-    logo: logoPlanetaria,
+    description: 'Make the same change across many GitHub repositories quickly. Run any command or script on multiple repos.',
+    link: 'https://github.com/gruntwork-io/git-xargs',
+    logo: GitXargs,
+    stacks: ['Git', 'Automation', 'DevOps']
   },
   {
     name: 'procrastiproxy',
-    description:
-      'A Golang proxy that can be easily deployed to block distracting websites during a time window you configure.',
-    link: { href: 'https://github.com/zackproser/procrastiproxy', label: 'github' },
-    logo: logoAnimaginary,
+    description: 'A Golang proxy that can be easily deployed to block distracting websites during a time window you configure.',
+    link: 'https://github.com/zackproser/procrastiproxy',
+    logo: Octocat,
+    stacks: ['Go', 'Proxy', 'Productivity']
   },
   {
     name: 'Teatutor',
-    description:
-      'Configure and deploy custom quizzes over ssh. Written in Golang and leveraging Terminal User Interface (TUI) library Bubbletea.',
-    link: { href: 'https://github.com/zackproser/teatutor', label: 'github.com' },
-    logo: logoOpenShuttle,
+    description: 'Configure and deploy custom quizzes over ssh. Written in Golang and leveraging Terminal User Interface (TUI) library Bubbletea.',
+    link: 'https://github.com/zackproser/teatutor',
+    logo: Teatutor,
+    stacks: ['Go', 'SSH', 'TUI']
   },
   {
     name: 'sizeof',
-    description:
-      'A Golang command line interface (CLI) and experiment - co-authored with ChatGPT4 via Neovim AI plugins that turned me into an AI-enhanced developer.',
-    link: { href: 'https://github.com/zackproser/sizeof', label: 'github.com' },
-    logo: logoCosmos,
+    description: 'A Golang command line interface (CLI) and experiment - co-authored with ChatGPT4 via Neovim AI plugins that turned me into an AI-enhanced developer.',
+    link: 'https://github.com/zackproser/sizeof',
+    logo: Octocat,
+    stacks: ['Go', 'CLI', 'AI']
   },
   {
     name: 'cf-terraforming',
-    description:
-      'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account.',
-    link: { href: 'https://github.com/cloudflare/cf-terraforming', label: 'github.com' },
-    logo: logoCloudflare,
+    description: 'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account.',
+    link: 'https://github.com/cloudflare/cf-terraforming',
+    logo: Octocat,
+    stacks: ['Terraform', 'Cloudflare', 'Infrastructure as Code']
   },
   {
     name: 'Quake in AWS Fargate',
-    description:
-      'An Infrastructure as Code tutorial, where I demonstrate how to define and launch a game server as code, and even connect to it from your laptop to game with your co-workers.',
-    link: { href: 'https://github.com/zackproser/quake-in-fargate', label: 'github.com' },
-    logo: logoOpenShuttle,
+    description: 'An Infrastructure as Code tutorial, where I demonstrate how to define and launch a game server as code, and even connect to it from your laptop to game with your co-workers.',
+    link: 'https://github.com/zackproser/quake-in-fargate',
+    logo: QuakeInFargate,
+    stacks: ['AWS', 'Fargate', 'IaC', 'Gaming']
   }
-
 ]
 
-function LinkIcon(props) {
+function ProjectCard({ project }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
-      <path
-        d="M15.712 11.823a.75.75 0 1 0 1.06 1.06l-1.06-1.06Zm-4.95 1.768a.75.75 0 0 0 1.06-1.06l-1.06 1.06Zm-2.475-1.414a.75.75 0 1 0-1.06-1.06l1.06 1.06Zm4.95-1.768a.75.75 0 1 0-1.06 1.06l1.06-1.06Zm3.359.53-.884.884 1.06 1.06.885-.883-1.061-1.06Zm-4.95-2.12 1.414-1.415L12 6.344l-1.415 1.413 1.061 1.061Zm0 3.535a2.5 2.5 0 0 1 0-3.536l-1.06-1.06a4 4 0 0 0 0 5.656l1.06-1.06Zm4.95-4.95a2.5 2.5 0 0 1 0 3.535L17.656 12a4 4 0 0 0 0-5.657l-1.06 1.06Zm1.06-1.06a4 4 0 0 0-5.656 0l1.06 1.06a2.5 2.5 0 0 1 3.536 0l1.06-1.06Zm-7.07 7.07.176.177 1.06-1.06-.176-.177-1.06 1.06Zm-3.183-.353.884-.884-1.06-1.06-.884.883 1.06 1.06Zm4.95 2.121-1.414 1.414 1.06 1.06 1.415-1.413-1.06-1.061Zm0-3.536a2.5 2.5 0 0 1 0 3.536l1.06 1.06a4 4 0 0 0 0-5.656l-1.06 1.06Zm-4.95 4.95a2.5 2.5 0 0 1 0-3.535L6.344 12a4 4 0 0 0 0 5.656l1.06-1.06Zm-1.06 1.06a4 4 0 0 0 5.657 0l-1.061-1.06a2.5 2.5 0 0 1-3.535 0l-1.061 1.06Zm7.07-7.07-.176-.177-1.06 1.06.176.178 1.06-1.061Z"
-        fill="currentColor"
-      />
-    </svg>
+    <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
+      <div className="flex-shrink-0">
+        <Image className="h-48 w-full object-cover" src={project.logo} alt={project.name} width={500} height={300} />
+      </div>
+      <div className="flex-1 bg-white dark:bg-gray-800 p-6 flex flex-col justify-between">
+        <div className="flex-1">
+          <Link href={project.link} className="block mt-2">
+            <p className="text-xl font-semibold text-gray-900 dark:text-white">{project.name}</p>
+            <p className="mt-3 text-base text-zinc-600 dark:text-gray-400">{project.description}</p>
+          </Link>
+        </div>
+        <div className="mt-6 flex flex-wrap">
+          {project.stacks.map((stack) => (
+            <span key={stack} className="px-2 py-1 text-sm font-medium text-white bg-emerald-600 rounded-full mr-2 mb-2">
+              {stack}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -137,35 +161,15 @@ export default function Projects() {
         />
       </Head>
       <SimpleLayout
-        title="Things I’ve built"
-        intro="I’ve worked on tons of small and large projects over the years but these are the ones that I’m most proud of. I open source most of my code."
+        title="Things I've built"
+        intro="I've worked on tons of small and large projects over the years but these are the ones that I'm most proud of. I open source most of my code."
       >
-        <ul
-          role="list"
-          className="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="mt-6 grid gap-16 pt-10 lg:grid-cols-2 lg:gap-x-5 lg:gap-y-12">
           {projects.map((project) => (
-            <Card as="li" key={project.name}>
-              <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                <Image
-                  src={project.logo}
-                  alt=""
-                  className="h-8 w-8"
-                  unoptimized
-                />
-              </div>
-              <h2 className="mt-6 text-base font-semibold text-zinc-800 dark:text-zinc-100">
-                <Card.Link href={project.link.href}>{project.name}</Card.Link>
-              </h2>
-              <Card.Description>{project.description}</Card.Description>
-              <p className="relative z-10 mt-6 flex text-sm font-medium text-zinc-400 transition group-hover:text-teal-500 dark:text-zinc-200">
-                <LinkIcon className="h-6 w-6 flex-none" />
-                <span className="ml-2">{project.link.label}</span>
-              </p>
-            </Card>
+            <ProjectCard key={project.name} project={project} />
           ))}
-        </ul>
-      </SimpleLayout >
+        </div>
+      </SimpleLayout>
     </>
   )
 }
