@@ -109,7 +109,7 @@ export default function Chat() {
           )}
         </div>
       </div>
-      <div className="mt-4 px-6">
+      <div className="m-4 pb-8 p-6">
         <SearchForm
           suggestedSearches={prepopulatedQuestions}
           onSearch={handleSearch}
