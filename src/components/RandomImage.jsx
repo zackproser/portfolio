@@ -58,7 +58,7 @@ const RandomImage = () => {
 
   return (
     <div
-      className="relative w-full h-full"
+      className="relative w-full h-full mb-4 pb-4"
       onMouseOver={setRandomImage}
       onClick={setRandomImage}
       style={{ cursor: 'pointer' }}>
@@ -66,7 +66,7 @@ const RandomImage = () => {
         src={selectedImage}
         alt="Zachary Motherfucking Proser"
         sizes="(min-width: 1024px) 32rem, 20rem"
-        className="aspect-square mb-4 pb-4 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+        className="aspect-square rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
       />
     </div>
   );
