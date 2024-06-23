@@ -34,8 +34,8 @@ export default function Page() {
         <meta name="description" content={data.description} />
       </Head>
       <SimpleLayout
-        title="My publications"
-        intro="Links to published works">
+        title="Published works"
+        intro="">
         <Publications />
       </SimpleLayout>
     </>
