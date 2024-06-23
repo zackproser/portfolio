@@ -42,6 +42,8 @@ import SponsorMe from '@/images/sponsor-me.webp'
 import Pageripper from '@/images/pageripper-bot.webp'
 import OfficeOracle from '@/images/office-oracle-screenshot.webp'
 import CanyonRunner from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
+import CLIProject from '@/images/open-source-cli-project.webp'
+import GolangProject from '@/images/open-source-golang-project.webp'
 
 const projects = [
   {
@@ -118,7 +120,7 @@ const projects = [
     name: 'cloud-nuke',
     description: 'Efficiently find and destroy your AWS resources by type, by region and with support for regex based inclusion or exclusion',
     link: 'https://github.com/gruntwork-io/cloud-nuke',
-    logo: CloudNuke,
+    logo: CLIProject,
     stacks: ['AWS', 'Cloud Management', 'Go']
   },
   {
@@ -132,7 +134,7 @@ const projects = [
     name: 'cf-terraforming',
     description: 'While at Cloudflare, I helped build cf-terraforming, a tool that reads your Cloudflare API configuration and generates valid Terraform to match it, allowing rapid adoption of Infrastructure as Code.',
     link: 'https://github.com/cloudflare/cf-terraforming',
-    logo: Octocat,
+    logo: GolangProject,
     stacks: ['Golang', 'Automation', 'DevOps']
   },
   {
@@ -157,13 +159,6 @@ const projects = [
     stacks: ['Go', 'CLI', 'AI']
   },
   {
-    name: 'cf-terraforming',
-    description: 'While I was an engineer at Cloudflare, I worked on cf-terraforming, an open source "reverse terraform" tool, that can generate valid Terraform configuration based on your existant Cloudflare API settings in your account.',
-    link: 'https://github.com/cloudflare/cf-terraforming',
-    logo: Octocat,
-    stacks: ['Terraform', 'Cloudflare', 'Infrastructure as Code']
-  },
-  {
     name: 'Quake in AWS Fargate',
     description: 'An Infrastructure as Code tutorial, where I demonstrate how to define and launch a game server as code, and even connect to it from your laptop to game with your co-workers.',
     link: 'https://github.com/zackproser/quake-in-fargate',
@@ -176,7 +171,7 @@ function ProjectCard({ project }) {
   return (
     <div className="flex flex-col rounded-lg shadow-lg overflow-hidden">
       <div className="flex-shrink-0">
-        <Image className="h-48 w-full object-cover" src={project.logo} alt={project.name} width={500} height={300} />
+        <Image className="h-72 w-full object-cover" src={project.logo} alt={project.name} width={500} height={300} />
       </div>
       <div className="flex-1 bg-white dark:bg-gray-800 p-6 flex flex-col justify-between">
         <div className="flex-1">

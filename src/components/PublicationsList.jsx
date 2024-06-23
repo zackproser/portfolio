@@ -22,10 +22,66 @@ const publications = [
 
   },
   {
+    title: "Test Pinecone Serverless at Scale with the AWS Reference Architecture",
+    date: "2024-01-23",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/scaling-pinecone-serverless/"
+  },
+  {
+    title: "Launch Production-grade architectures using Pinecone's vector database in minutes with the AWS Reference Architecture",
+    date: "2023-11-27",
+    publication: "Pinecone engineering blog",
+    url: "https://www.pinecone.io/blog/aws-reference-architecture/"
+  },
+  {
+    title: "Exploring the Pinecone AWS Reference Architecture",
+    date: "2023-11-27",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/aws-reference-architecture/"
+  },
+
+  {
     title: "Making it easier to maintain open-source projects with CodiumAI and Pinecone",
     date: "2023-09-27",
     publication: "Pinecone learning center",
     url: "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
+  },
+  {
+    title: "The Pain and Poetry of Python",
+    date: "2023-08-31",
+    publication: "Pinecone engineering blog",
+    url: "https://www.pinecone.io/blog/pain-poetry-python"
+  },
+  {
+    title: "How to use Jupyter Notebooks for Machine Learning and AI",
+    date: "2023-08-23",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/jupyter-notebooks/"
+  },
+
+  {
+    title: "Retrieval Augmented Generation (RAG)",
+    date: "2023-08-03",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/retrieval-augmented-generation",
+  },
+  {
+    title: "AI-powered and built with...JavaScript?",
+    date: "2024-08-11",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/javascript-ai/",
+  },
+  {
+    title: "How to securely store secrets in BitWarden CLI and load them into your ZSH shell when needed",
+    date: "2022-10-27",
+    publication: "Gruntwork enginering blog",
+    url: "https://blog.gruntwork.io/how-to-securely-store-secrets-in-bitwarden-cli-and-load-them-into-your-zsh-shell-when-needed-f12d4d040df",
+  },
+  {
+    title: "How to write code on Mac or Linux but test on Windows with hot-reloading",
+    date: "2022-7-05",
+    publication: "Gruntwork enginering blog",
+    url: "https://blog.gruntwork.io/how-to-write-code-on-mac-or-linux-but-test-on-windows-with-hot-reloading-b218de5383d1"
   },
   {
     title: "Introducing cf-terraforming",
