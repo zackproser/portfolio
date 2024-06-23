@@ -28,6 +28,24 @@ const publications = [
     url: "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
   },
   {
+    title: "The Pain and Poetry of Python",
+    date: "2023-08-31",
+    publication: "Pinecone engineering blog",
+    url: "https://www.pinecone.io/blog/pain-poetry-python"
+  },
+  {
+    title: "Retrieval Augmented Generation (RAG)",
+    date: "2023-08-03",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/retrieval-augmented-generation",
+  },
+  {
+    title: "AI-powered and built with...JavaScript?",
+    date: "2024-08-11",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/javascript-ai/",
+  },
+  {
     title: "Introducing cf-terraforming",
     date: "2019-02-15",
     publication: "Cloudflare Blog",
