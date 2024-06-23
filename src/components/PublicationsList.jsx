@@ -22,6 +22,12 @@ const publications = [
 
   },
   {
+    title: "Making it easier to maintain open-source projects with CodiumAI and Pinecone",
+    date: "2023-09-27",
+    publication: "Pinecone learning center",
+    url: "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
+  },
+  {
     title: "Introducing cf-terraforming",
     date: "2019-02-15",
     publication: "Cloudflare Blog",
