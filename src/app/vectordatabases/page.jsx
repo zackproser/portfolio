@@ -16,9 +16,16 @@ export default function GalleryPage() {
   const router = useRouter();
   const allDatabases = getDatabases();
   const [filteredDatabases, setFilteredDatabases] = useState(allDatabases);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleFilter = (filtered) => {
+  const handleFilter = (filtered, term) => {
     setFilteredDatabases(filtered);
+    setSearchTerm(term);
+  };
+
+  const handleReset = () => {
+    setFilteredDatabases(allDatabases);
+    setSearchTerm('');
   };
 
   const handleCompareClick = (dbName) => {
@@ -36,7 +43,12 @@ export default function GalleryPage() {
       title="Vector Databases"
       intro="Explore and compare vector databases"
     >
-      <SearchFilter databases={allDatabases} onFilter={handleFilter} />
+      <SearchFilter 
+        databases={allDatabases} 
+        onFilter={handleFilter} 
+        onReset={handleReset}
+        searchTerm={searchTerm}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredDatabases.map((db, index) => {
           const logo = getLogoById(db.logoId);
