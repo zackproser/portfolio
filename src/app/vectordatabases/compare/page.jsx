@@ -7,7 +7,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown, ChevronUp, Share2, X, RefreshCw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Share2, X, RefreshCw, Clipboard } from 'lucide-react';
 import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
 import { track } from '@vercel/analytics';
@@ -230,11 +230,20 @@ export default function ComparePage({ searchParams }) {
     }
   };
 
+  const [shareButtonText, setShareButtonText] = useState('Share');
+  const [shareButtonIcon, setShareButtonIcon] = useState(<Share2 className="mr-2 h-4 w-4" />);
+
   const shareComparison = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-      alert('Comparison URL copied to clipboard!');
+      setShareButtonText('Copied to clipboard!');
+      setShareButtonIcon(<Clipboard className="mr-2 h-4 w-4" />);
       track('share_comparison', { databases: selectedDbNames });
+
+      setTimeout(() => {
+        setShareButtonText('Share');
+        setShareButtonIcon(<Share2 className="mr-2 h-4 w-4" />);
+      }, 2500);
     });
   };
 
@@ -253,7 +262,7 @@ export default function ComparePage({ searchParams }) {
 
   return (
     <Container>
-      <h1 className="text-3xl font-bold mb-4">Vector Database Comparison</h1>
+      <h1 className="text-3xl font-bold pt-8 mb-4">Vector Database Comparison</h1>
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <p className="font-semibold">Comparing:</p>
         {selectedDatabases.map((db, index) => (
@@ -268,6 +277,10 @@ export default function ComparePage({ searchParams }) {
         ))}
         <Button variant="outline" onClick={resetComparison}>
           <RefreshCw className="mr-2 h-4 w-4" /> Reset
+        </Button>
+        <Button variant="outline" className="bg-green-500 text-white hover:bg-green-600" onClick={shareComparison}>
+          {shareButtonIcon}
+          {shareButtonText}
         </Button>
       </div>
       <div className="mb-4">
