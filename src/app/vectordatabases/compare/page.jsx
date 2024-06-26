@@ -6,16 +6,51 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp, Share2, X, RefreshCw } from 'lucide-react';
 import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
-import ComparisonForm from '@/components/ComparisonForm';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
 import { track } from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Line, Bar } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
+
+const formatFieldName = (fieldName) => {
+  return fieldName.split('_').map((word, index) => 
+    index === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word
+  ).join(' ');
+};
+
+const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
+  const handleToggle = (dbName) => {
+    const newSelection = selectedDbs.includes(dbName)
+      ? selectedDbs.filter(name => name !== dbName)
+      : [...selectedDbs, dbName];
+    onChange(newSelection);
+  };
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {databases.map(db => (
+        <div key={db.name} className="flex items-center space-x-2">
+          <Checkbox
+            id={db.name}
+            checked={selectedDbs.includes(db.name)}
+            onCheckedChange={() => handleToggle(db.name)}
+          />
+          <label
+            htmlFor={db.name}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {db.name}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function ComparePage({ searchParams }) {
   const router = useRouter();
@@ -110,7 +145,7 @@ export default function ComparePage({ searchParams }) {
           <TableBody>
             {Object.keys(selectedDatabases[0].business_info).map(key => (
               <TableRow key={key}>
-                <TableCell className="font-medium">{key.replace(/_/g, ' ').charAt(0).toUpperCase() + key.replace(/_/g, ' ').slice(1)}</TableCell>
+                <TableCell className="font-medium">{formatFieldName(key)}</TableCell>
                 {selectedDatabases.map((db, index) => (
                   <TableCell key={db.name}>
                     {key === 'funding_rounds' ? (
@@ -143,7 +178,7 @@ export default function ComparePage({ searchParams }) {
       <AccordionTrigger className="text-xl">
         <div className="flex items-center">
           <span className="text-2xl mr-2">{getEmoji(category)}</span>
-          <span>{category}</span>
+          <span>{formatFieldName(category)}</span>
         </div>
         <p className="text-sm text-gray-600 ml-2">{categories[category].description}</p>
       </AccordionTrigger>
@@ -162,7 +197,7 @@ export default function ComparePage({ searchParams }) {
             {Object.entries(selectedDatabases[0][category]).map(([feature, _]) => (
               <TableRow key={feature}>
                 <TableCell className="font-medium">
-                  <span className="text-xl mr-2">{getEmoji(feature)}</span> {feature}
+                  <span className="text-2xl mr-2">{getEmoji(feature)}</span> {formatFieldName(feature)}
                   <p className="text-xs text-gray-600">{features[feature]?.description}</p>
                 </TableCell>
                 {selectedDatabases.map((db, index) => {
@@ -212,6 +247,10 @@ export default function ComparePage({ searchParams }) {
     router.push('/vectordatabases/compare');
   };
 
+  const handleDatabaseSelection = (newSelection) => {
+    router.push(`/vectordatabases/compare?dbs=${newSelection.join(',')}`);
+  };
+
   return (
     <Container>
       <h1 className="text-3xl font-bold mb-4">Vector Database Comparison</h1>
@@ -231,14 +270,13 @@ export default function ComparePage({ searchParams }) {
           <RefreshCw className="mr-2 h-4 w-4" /> Reset
         </Button>
       </div>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-grow">
-          <p className="text-sm text-gray-600 mb-2">Select up to 3 databases to compare:</p>
-          <ComparisonForm databases={allDatabases} selectedDbs={selectedDbNames} />
-        </div>
-        <Button onClick={shareComparison} className="ml-2 bg-green-500 text-white hover:bg-green-600">
-          <Share2 className="mr-2 h-4 w-4" /> Share
-        </Button>
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 mb-2">Select vector databases to compare:</p>
+        <DatabaseSelector
+          databases={allDatabases}
+          selectedDbs={selectedDbNames}
+          onChange={handleDatabaseSelection}
+        />
       </div>
       {selectedDatabases.length > 0 && (
         <>

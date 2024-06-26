@@ -1,19 +1,19 @@
 'use client'
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { track } from '@vercel/analytics';
-import { Container } from '@/components/Container';
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { getDatabases } from '@/lib/getDatabases';
-import { getEmoji } from '@/lib/emojiMapping';
 import { getLogoById } from '@/lib/logoImports';
 import SearchFilter from '@/components/SearchFilter';
+import { Button } from "@/components/ui/button";
+import { DiffIcon, SearchIcon } from "lucide-react";
 
 export default function GalleryPage() {
+  const router = useRouter();
   const allDatabases = getDatabases();
   const [filteredDatabases, setFilteredDatabases] = useState(allDatabases);
 
@@ -23,10 +23,12 @@ export default function GalleryPage() {
 
   const handleCompareClick = (dbName) => {
     track('compare_click', { database: dbName });
+    router.push(`/vectordatabases/compare?db=${encodeURIComponent(dbName)}`);
   };
 
   const handleDetailsClick = (dbName) => {
     track('details_click', { database: dbName });
+    router.push(`/vectordatabases/detail/${encodeURIComponent(dbName)}`);
   };
 
   return (
@@ -40,55 +42,37 @@ export default function GalleryPage() {
           const logo = getLogoById(db.logoId);
           return (
             <Card key={index} className="flex flex-col dark:bg-zinc-800">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center space-x-4">
                 {logo && (
                   <Image
                     src={logo}
                     alt={`${db.name} logo`}
-                    width={50}
-                    height={50}
-                    className="mb-2"
+                    width={40}
+                    height={40}
                   />
                 )}
                 <CardTitle>{db.name}</CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-sm text-gray-600 dark:text-zinc-400 mb-2">{db.description}</p>
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {db.deployment.cloud && <Badge variant="outline">{getEmoji('cloud')} Cloud</Badge>}
-                  {db.deployment.local && <Badge variant="outline">{getEmoji('local')} Local</Badge>}
-                  {db.deployment.on_premises && <Badge variant="outline">{getEmoji('on_premises')} On-Premises</Badge>}
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm">
-                    {getEmoji('scalability')} Scalability: {Object.entries(db.scalability).filter(([_, v]) => v).map(([k]) => k).join(', ')}
-                  </p>
-                  <p className="text-sm">
-                    {getEmoji('vector_similarity_search')} Metrics: {db.vector_similarity_search.distance_metrics.join(', ')}
-                  </p>
-                  <p className="text-sm">
-                    {getEmoji('integration_api')} SDKs: {db.integration_api.sdks.join(', ')}
-                  </p>
-                  <p className="text-sm">
-                    {getEmoji('pricing')} Pricing: {Object.entries(db.pricing).filter(([_, v]) => v).map(([k]) => k.replace('_', ' ')).join(', ')}
-                  </p>
-                </div>
+                <p className="text-sm text-gray-600 dark:text-zinc-400">{db.description}</p>
               </CardContent>
-              <div className="p-4 mt-auto">
-                <Link
-                  href={`/vectordatabases/compare?dbs=${db.name}`}
-                  className="text-blue-500 hover:underline mr-4"
+              <div className="p-4 mt-auto flex justify-between">
+                <Button
+                  variant="primary"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
                   onClick={() => handleCompareClick(db.name)}
                 >
+                  <DiffIcon className="w-4 h-4 mr-2" />
                   Compare
-                </Link>
-                <Link
-                  href={`/vectordatabases/detail/${db.name}`}
-                  className="text-blue-500 hover:underline"
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800"
                   onClick={() => handleDetailsClick(db.name)}
                 >
+                  <SearchIcon className="w-4 h-4 mr-2" />
                   Details
-                </Link>
+                </Button>
               </div>
             </Card>
           );
