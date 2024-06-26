@@ -157,6 +157,224 @@
   },
   "databases": [
     {
+  "name": "Weaviate",
+  "logoId": "weaviate",
+  "description": "Weaviate is an open-source vector database that allows you to store, index, and search data objects and their vector representations.",
+  "deployment": {
+    "local": true,
+    "cloud": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": true
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
+    "ann_algorithms": ["HNSW"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Python", "JavaScript", "Go"],
+    "rest_api": true,
+    "graphql_api": true,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["LangChain", "Haystack"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": true,
+    "enterprise_plans": true
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Supports real-time machine learning model inference and AI-powered search capabilities.",
+    "performance_metric": "Can search through millions of objects in milliseconds."
+  },
+  "business_info": {
+    "company_name": "Weaviate B.V.",
+    "founded": 2019,
+    "headquarters": "Amsterdam, Netherlands",
+    "total_funding": "unknown",
+    "latest_valuation": "unknown",
+    "funding_rounds": [],
+    "key_people": [
+      {
+        "name": "Bob van Luijt",
+        "position": "Co-founder & CEO"
+      },
+      {
+        "name": "Etienne Dilocker",
+        "position": "Co-founder & CTO"
+      }
+    ],
+    "employee_count": "11-50"
+  }
+},
+    {
+  "name": "Deep Lake",
+  "logoId": "deeplake",
+  "description": "Deep Lake is an AI database that provides storage, querying, and vector search capabilities for deep-learning and LLM-based applications.",
+  "deployment": {
+    "local": true,
+    "cloud": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": true
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Euclidean", "Cosine"],
+    "ann_algorithms": ["HNSW"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Python", "JavaScript"],
+    "rest_api": true,
+    "graphql_api": false,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["LangChain", "LlamaIndex", "Weights & Biases"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": true,
+    "enterprise_plans": true
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Supports data streaming during training and has integrations with popular AI tools.",
+    "performance_metric": "Optimized for large-scale deep learning and LLM-based applications."
+  },
+  "business_info": {
+    "company_name": "Deep Lake Inc.",
+    "founded": "unknown",
+    "headquarters": "unknown",
+    "total_funding": "unknown",
+    "latest_valuation": "unknown",
+    "funding_rounds": [],
+    "key_people": [
+      {
+        "name": "unknown",
+        "position": "unknown"
+      }
+    ],
+    "employee_count": "unknown"
+  }
+},
+    {
+  "name": "Vespa",
+  "logoId": "vespa",
+  "description": "Vespa is an open-source data serving engine that enables large-scale, low-latency computation over data.",
+  "deployment": {
+    "local": true,
+    "cloud": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": true
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Cosine", "Euclidean", "Inner Product"],
+    "ann_algorithms": ["HNSW"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Java", "Python", "JavaScript"],
+    "rest_api": true,
+    "graphql_api": false,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["Apache Flink", "TensorFlow"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": true,
+    "enterprise_plans": true
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Supports real-time machine learning model inference and large-scale data processing.",
+    "performance_metric": "High scalability and performance for low-latency data serving."
+  },
+  "business_info": {
+    "company_name": "Vespa",
+    "founded": 2017,
+    "headquarters": "Sunnyvale, CA",
+    "total_funding": "unknown",
+    "latest_valuation": "unknown",
+    "funding_rounds": [],
+    "key_people": [
+      {
+        "name": "Jon Bratseth",
+        "position": "Lead Developer"
+      }
+    ],
+    "employee_count": "unknown"
+  }
+},
+
+    {
       "name": "Pinecone",
       "logoId": "pinecone",
       "description": "Pinecone is a managed vector database designed for machine learning applications, offering high performance and scalability.",
