@@ -1,9 +1,18 @@
-const databases = require('../../schema/data/vectordatabases.json');
+const data = require('../../schema/data/vectordatabases.json');
 
 export function getDatabases() {
-  return databases;
+  return data.databases;
 }
 
+export function getCategories() {
+  return data.categories;
+}
+
+export function getFeatures() {
+  return data.features;
+}
+
+
 export function getDatabase(name) {
-  return databases.find(db => db.name.toLowerCase() === name.toLowerCase());
+  return data.databases.find(db => db.name.toLowerCase() === name.toLowerCase());
 }
