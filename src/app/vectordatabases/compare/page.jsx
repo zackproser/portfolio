@@ -206,7 +206,7 @@ export default function ComparePage({ searchParams }) {
                     <TableCell key={db.name}>
                       {typeof value === 'boolean' ? (
                         <span className={value ? 'text-green-600' : 'text-red-600'}>
-                          {getEmoji(value.toString())} {value ? 'Yes' : 'No'}
+                          {getEmoji(value.toString())}
                         </span>
                       ) : (
                         value?.toString() ?? ''
