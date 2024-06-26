@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { track } from '@vercel/analytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function ComparisonForm({ databases, selectedDbs }) {
@@ -11,8 +12,10 @@ export default function ComparisonForm({ databases, selectedDbs }) {
     let newSelectedDbs;
     if (selectedDbs.includes(dbName)) {
       newSelectedDbs = selectedDbs.filter(name => name !== dbName);
+      track('database_deselected', { database: dbName });
     } else if (selectedDbs.length < 3) {
       newSelectedDbs = [...selectedDbs, dbName];
+      track('database_selected', { database: dbName });
     } else {
       return;
     }
