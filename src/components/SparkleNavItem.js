@@ -13,7 +13,6 @@ const SparkleNavItem = function({
   variant,
   glowColor = '#FFD700' // Default gold color
 }) {
-  console.log(`variant: ${variant}`)
   return (
     <li className="relative group" style={{ '--glow-color': variant === 'green' ? greenGlow : glowColor }}>
       <Link href={href} className={variant === 'green' ? variants.green : "block px-3 py-2 text-lg font-bold transition duration-300 ease-in-out transform group-hover:scale-105 glow"}>
