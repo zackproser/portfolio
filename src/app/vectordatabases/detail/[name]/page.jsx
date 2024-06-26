@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
-import { Container } from '@/components/Container';
+import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { getDatabase, getCategories, getFeatures } from '../../../../lib/getDatabases';
-import { getEmoji } from '../../../../lib/emojiMapping';
-import { getLogoById } from '../../../../lib/logoImports';
-
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { getDatabase, getCategories, getFeatures } from '@/lib/getDatabases';
+import { getEmoji } from '@/lib/emojiMapping';
+import { getLogoById } from '@/lib/logoImports';
 
 export default async function DetailPage({ params }) {
   const database = getDatabase(params.name);
@@ -17,7 +18,6 @@ export default async function DetailPage({ params }) {
   }
 
   const logoSrc = await getLogoById(database.logoId);
-
 
   const renderSection = (title, data) => (
     <Card className="mb-8">
@@ -37,7 +37,7 @@ export default async function DetailPage({ params }) {
               {getEmoji(key)} {key}: {' '}
               {typeof value === 'boolean'
                 ? (value ? getEmoji('yes') : getEmoji('no'))
-                : (typeof value === 'string' ? `${value} ${getEmoji(value)}` : value.toString())}
+                : (Array.isArray(value) ? value.join(', ') : value.toString())}
             </p>
             {features[key] && (
               <>
@@ -51,8 +51,61 @@ export default async function DetailPage({ params }) {
     </Card>
   );
 
+  const renderBusinessInfo = () => (
+    <Card className="mb-8">
+      <CardHeader>
+        <CardTitle className="text-2xl">{getEmoji('business')} Business Information</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableBody>
+            {Object.entries(database.business_info).map(([key, value]) => (
+              <TableRow key={key}>
+                <TableCell className="font-medium">{key.replace('_', ' ')}</TableCell>
+                <TableCell>
+                  {key === 'funding_rounds' ? (
+                    <ul>
+                      {value.map((round, index) => (
+                        <li key={index}>
+                          {round.date}: {round.amount} (Series {round.series})
+                        </li>
+                      ))}
+                    </ul>
+                  ) : key === 'key_people' ? (
+                    <ul>
+                      {value.map((person, index) => (
+                        <li key={index}>
+                          {person.name} - {person.position}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    value
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+
+  const renderSDKs = () => (
+    <div className="flex flex-wrap gap-2 mb-4">
+      {database.integration_api.sdks.map(sdk => (
+        <Badge key={sdk} variant="outline">
+          {sdk}
+        </Badge>
+      ))}
+    </div>
+  );
+
   return (
-    <Container>
+    <SimpleLayout
+      title={`Spotlight on vector database`}
+      intro={database.name}
+    >
       <div className="mb-8">
         {logoSrc && (
           <Image
@@ -66,12 +119,30 @@ export default async function DetailPage({ params }) {
         <h1 className="text-3xl font-bold text-center mt-4">{database.name}</h1>
         <p className="text-xl text-gray-600 mt-2 text-center">{database.description}</p>
       </div>
+
+      {renderBusinessInfo()}
+
       {Object.entries(database).map(([key, value]) => {
-        if (typeof value === 'object' && value !== null && key !== 'specific_details') {
+        if (typeof value === 'object' && value !== null && key !== 'specific_details' && key !== 'business_info') {
+          if (key === 'integration_api') {
+            return (
+              <Card key={key} className="mb-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl">{getEmoji(key)} {key}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="mb-2">Supported SDKs:</p>
+                  {renderSDKs()}
+                  {renderSection(key, value)}
+                </CardContent>
+              </Card>
+            );
+          }
           return renderSection(key, value);
         }
         return null;
       })}
+
       {database.specific_details && (
         <Card className="mb-8">
           <CardHeader>
@@ -87,6 +158,6 @@ export default async function DetailPage({ params }) {
           </CardContent>
         </Card>
       )}
-    </Container>
+    </SimpleLayout>
   );
 }

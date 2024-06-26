@@ -210,71 +210,46 @@
       "specific_details": {
         "unique_feature": "Pinecone offers hybrid search combining vector similarity with metadata filtering.",
         "performance_metric": "Can handle billions of vectors with sub-second query times."
-      }
-    },
-    {
-      "name": "Weaviate",
-      "logo": "/logos/weaviate.webp",
-      "description": "Weaviate is an open-source vector database that allows you to store objects and vector embeddings from various ML-models and scale seamlessly into billions of data objects.",
-      "deployment": {
-        "local": true,
-        "cloud": true,
-        "on_premises": true
       },
-      "scalability": {
-        "horizontal": true,
-        "vertical": true,
-        "distributed": true
-      },
-      "data_management": {
-        "import": true,
-        "update_deletion": true,
-        "backup_restore": true
-      },
-      "vector_similarity_search": {
-        "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
-        "ann_algorithms": ["HNSW"],
-        "filtering": true,
-        "post_processing": true
-      },
-      "integration_api": {
-        "sdks": ["Python", "JavaScript", "Go", "Java"],
-        "rest_api": true,
-        "graphql_api": true,
-        "grpc_api": false
-      },
-      "security": {
-        "authentication": true,
-        "encryption": true,
-        "access_control": true
-      },
-      "community_ecosystem": {
-        "open_source": true,
-        "community_support": true,
-        "integration_frameworks": ["PyTorch", "TensorFlow", "Hugging Face", "OpenAI"]
-      },
-      "pricing": {
-        "free_tier": true,
-        "pay_as_you_go": true,
-        "enterprise_plans": true
-      },
-      "additional_features": {
-        "metadata_support": true,
-        "batch_processing": true,
-        "monitoring_logging": true
-      },
-      "specific_details": {
-        "unique_feature": "Modular architecture with pluggable distance metrics, embedders, and storage engines.",
-        "performance_metric": "Can efficiently handle hundreds of millions of objects with millisecond query times."
-      }
+      "business_info": {
+      "company_name": "Pinecone Systems Inc.",
+      "founded": 2019,
+      "headquarters": "San Francisco, CA",
+      "total_funding": "$138M",
+      "latest_valuation": "~$750M (2023)",
+      "funding_rounds": [
+        {
+          "date": "2023-03-14",
+          "amount": "$100M",
+          "series": "B"
+        },
+        {
+          "date": "2021-02-10",
+          "amount": "$28M",
+          "series": "A"
+        },
+        {
+          "date": "2020-07-01",
+          "amount": "$10M",
+          "series": "Seed"
+        }
+      ],
+      "key_people": [
+        {
+          "name": "Edo Liberty",
+          "position": "Founder & CEO"
+        }
+      ],
+      "employee_count": "50-100"
+    }
     },
     {
       "name": "Milvus",
-      "logo": "/logos/milvus.webp",
+      "logoId": "milvus",
       "description": "Milvus is an open-source vector database built to power embedding similarity search and AI applications.",
       "deployment": {
-        "local": true,
         "cloud": true,
+        "local": true,
         "on_premises": true
       },
       "scalability": {
@@ -294,7 +269,7 @@
         "post_processing": true
       },
       "integration_api": {
-        "sdks": ["Python", "Java", "Go", "RESTful", "Node.js"],
+        "sdks": ["python", "java", "go", "javascript"],
         "rest_api": true,
         "graphql_api": false,
         "grpc_api": true
@@ -302,12 +277,17 @@
       "security": {
         "authentication": true,
         "encryption": true,
-        "access_control": true
+        "access_control": true,
+        "soc2_compliance": "Unknown",
+        "gdpr_compliance": true,
+        "encrypted_at_rest": true,
+        "encrypted_in_transit": true,
+        "multitenancy": true
       },
       "community_ecosystem": {
         "open_source": true,
         "community_support": true,
-        "integration_frameworks": ["Spark", "Airflow"]
+        "integration_frameworks": ["LangChain", "Haystack"]
       },
       "pricing": {
         "free_tier": true,
@@ -319,18 +299,129 @@
         "batch_processing": true,
         "monitoring_logging": true
       },
+      "business_info": {
+        "company_name": "Zilliz",
+        "founded": 2017,
+        "headquarters": "San Francisco, CA",
+        "total_funding": "$113M",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [
+          {
+            "date": "2022-08-31",
+            "amount": "$60M",
+            "series": "B"
+          },
+          {
+            "date": "2020-11-04",
+            "amount": "$43M",
+            "series": "A+"
+          },
+          {
+            "date": "2019-11-30",
+            "amount": "$10M",
+            "series": "A"
+          }
+        ],
+        "key_people": [
+          {
+            "name": "Charles Xie",
+            "position": "Founder & CEO"
+          }
+        ],
+        "employee_count": "51-200"
+      },
       "specific_details": {
         "unique_feature": "Supports both CPU and GPU index building and search acceleration.",
         "performance_metric": "Can handle billions of vectors with millisecond-level search latency."
       }
     },
     {
+      "name": "FAISS",
+      "logoId": "faiss",
+      "description": "FAISS (Facebook AI Similarity Search) is a library for efficient similarity search and clustering of dense vectors.",
+      "deployment": {
+        "cloud": false,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": false,
+        "vertical": true,
+        "distributed": false
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": false
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["L2", "Inner Product"],
+        "ann_algorithms": ["FLAT", "IVF", "HNSW", "PQ"],
+        "filtering": false,
+        "post_processing": false
+      },
+      "integration_api": {
+        "sdks": ["python", "c++"],
+        "rest_api": false,
+        "graphql_api": false,
+        "grpc_api": false
+      },
+      "security": {
+        "authentication": false,
+        "encryption": false,
+        "access_control": false,
+        "soc2_compliance": false,
+        "gdpr_compliance": false,
+        "encrypted_at_rest": false,
+        "encrypted_in_transit": false,
+        "multitenancy": false
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": []
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": false,
+        "enterprise_plans": false
+      },
+      "additional_features": {
+        "metadata_support": false,
+        "batch_processing": true,
+        "monitoring_logging": false
+      },
+      "business_info": {
+        "company_name": "Meta (Facebook) AI Research",
+        "founded": 2017,
+        "headquarters": "Menlo Park, CA",
+        "total_funding": "N/A (Part of Meta)",
+        "latest_valuation": "N/A (Part of Meta)",
+        "funding_rounds": [],
+        "key_people": [
+          {
+            "name": "Hervé Jégou",
+            "position": "Research Scientist"
+          },
+          {
+            "name": "Matthijs Douze",
+            "position": "Research Engineer"
+          }
+        ],
+        "employee_count": "N/A (Part of Meta)"
+      },
+      "specific_details": {
+        "unique_feature": "Optimized for memory usage and speed, with GPU support.",
+        "performance_metric": "Can search through billions of vectors in milliseconds."
+      }
+    },
+    {
       "name": "Qdrant",
-      "logo": "/logos/qdrant.webp",
+      "logoId": "qdrant",
       "description": "Qdrant is a vector similarity search engine and database with extended filtering support.",
       "deployment": {
-        "local": true,
         "cloud": true,
+        "local": true,
         "on_premises": true
       },
       "scalability": {
@@ -344,13 +435,13 @@
         "backup_restore": true
       },
       "vector_similarity_search": {
-        "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
+        "distance_metrics": ["Cosine", "Euclid", "Dot"],
         "ann_algorithms": ["HNSW"],
         "filtering": true,
         "post_processing": true
       },
       "integration_api": {
-        "sdks": ["Python", "Rust", "JavaScript"],
+        "sdks": ["python", "rust", "javascript"],
         "rest_api": true,
         "graphql_api": false,
         "grpc_api": true
@@ -358,7 +449,12 @@
       "security": {
         "authentication": true,
         "encryption": true,
-        "access_control": true
+        "access_control": true,
+        "soc2_compliance": "Unknown",
+        "gdpr_compliance": "Unknown",
+        "encrypted_at_rest": true,
+        "encrypted_in_transit": true,
+        "multitenancy": true
       },
       "community_ecosystem": {
         "open_source": true,
@@ -375,67 +471,110 @@
         "batch_processing": true,
         "monitoring_logging": true
       },
+      "business_info": {
+        "company_name": "Qdrant Solutions",
+        "founded": 2021,
+        "headquarters": "Berlin, Germany",
+        "total_funding": "Unknown",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [],
+        "key_people": [
+          {
+            "name": "Andrey Vasnetsov",
+            "position": "Founder"
+          }
+        ],
+        "employee_count": "11-50"
+      },
       "specific_details": {
         "unique_feature": "Extended filtering capabilities with custom payload and numeric filters.",
         "performance_metric": "Can handle millions of vectors with low-millisecond query times."
       }
     },
     {
-  "name": "Chroma",
-  "logo": "/logos/chroma.webp",
-  "description": "Chroma is an open-source embedding database designed for building AI applications with language models, offering simplicity and ease of use.",
-  "deployment": {
-    "local": true,
-    "cloud": true,
-    "on_premises": true
-  },
-  "scalability": {
-    "horizontal": true,
-    "vertical": true,
-    "distributed": true
-  },
-  "data_management": {
-    "import": true,
-    "update_deletion": true,
-    "backup_restore": true
-  },
-  "vector_similarity_search": {
-    "distance_metrics": ["Cosine", "Euclidean", "IP"],
-    "ann_algorithms": ["HNSW"],
-    "filtering": true,
-    "post_processing": true
-  },
-  "integration_api": {
-    "sdks": ["Python"],
-    "rest_api": true,
-    "graphql_api": false,
-    "grpc_api": false
-  },
-  "security": {
-    "authentication": true,
-    "encryption": true,
-    "access_control": true
-  },
-  "community_ecosystem": {
-    "open_source": true,
-    "community_support": true,
-    "integration_frameworks": ["LangChain", "LlamaIndex"]
-  },
-  "pricing": {
-    "free_tier": true,
-    "pay_as_you_go": true,
-    "enterprise_plans": true
-  },
-  "additional_features": {
-    "metadata_support": true,
-    "batch_processing": true,
-    "monitoring_logging": true
-  },
-  "specific_details": {
-    "unique_feature": "Seamless integration with popular LLM frameworks and simple API for quick prototyping.",
-    "performance_metric": "Optimized for datasets up to millions of items with quick query times.",
-    "ease_of_use": "Designed for simplicity, making it easy for developers to get started with vector search.",
-    "data_persistence": "Supports both in-memory and persistent storage options.",
-    "embedding_support": "Built-in support for text embedding using various models."
-  }
-}]}
+      "name": "Chroma",
+      "logoId": "chroma",
+      "description": "Chroma is an open-source embedding database for building AI applications with language models and embeddings.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["L2", "IP", "Cosine"],
+        "ann_algorithms": ["HNSW"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["python", "javascript"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": false
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true,
+        "soc2_compliance": "Unknown",
+        "gdpr_compliance": "Unknown",
+        "encrypted_at_rest": true,
+        "encrypted_in_transit": true,
+        "multitenancy": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": ["LangChain", "LlamaIndex"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": true,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "business_info": {
+        "company_name": "Chroma",
+        "founded": 2022,
+        "headquarters": "San Francisco, CA",
+        "total_funding": "$18M",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [
+          {
+            "date": "2023-03-14",
+            "amount": "$18M",
+            "series": "Seed"
+          }
+        ],
+        "key_people": [
+          {
+            "name": "Jeff Huber",
+            "position": "Co-founder & CEO"
+          },
+          {
+            "name": "Anton Troynikov",
+            "position": "Co-founder & CTO"
+          }
+        ],
+        "employee_count": "11-50"
+      },
+      "specific_details": {
+        "unique_feature": "Designed for simplicity and ease of use in AI applications, with a focus on embedding management.",
+        "performance_metric": "Optimized for datasets up to billions of embeddings with efficient query times."
+      }
+    }
+    ]}
