@@ -4,7 +4,9 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { getDatabase, getCategories, getFeatures } from '@/lib/getDatabases';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { getDatabase, getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
 import { getLogoById } from '@/lib/logoImports';
 import { createMetadata } from '@/utils/createMetadata';
@@ -73,18 +75,18 @@ export default async function DetailPage({ params }) {
                 <TableCell className="font-medium">{key.replace('_', ' ')}</TableCell>
                 <TableCell>
                   {key === 'funding_rounds' ? (
-                    <ul>
+                    <ul className="list-disc pl-5">
                       {value.map((round, index) => (
-                        <li key={index}>
-                          {round.date}: {round.amount} (Series {round.series})
+                        <li key={index} className="mb-2">
+                          <span className="font-semibold">{round.date}:</span> {round.amount} (Series {round.series})
                         </li>
                       ))}
                     </ul>
                   ) : key === 'key_people' ? (
-                    <ul>
+                    <ul className="list-disc pl-5">
                       {value.map((person, index) => (
-                        <li key={index}>
-                          {person.name} - {person.position}
+                        <li key={index} className="mb-2">
+                          <span className="font-semibold">{person.name}</span> - {person.position}
                         </li>
                       ))}
                     </ul>
@@ -99,6 +101,62 @@ export default async function DetailPage({ params }) {
       </CardContent>
     </Card>
   );
+
+  const renderFeatureComparison = () => {
+    const allDatabases = getDatabases();
+    const features = getFeatures();
+    const featureCategories = getCategories();
+
+    return (
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-2xl">{getEmoji('comparison')} Feature Comparison</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="deployment">
+            <TabsList className="mb-4 flex flex-wrap">
+              {Object.keys(featureCategories).map((category) => (
+                <TabsTrigger key={category} value={category} className="mb-2">
+                  {getEmoji(category)} {category}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {Object.entries(featureCategories).map(([category, { description, importance }]) => (
+              <TabsContent key={category} value={category}>
+                <p className="mb-2 text-sm text-gray-600">{description}</p>
+                <p className="mb-4 text-xs text-gray-500">Why it's important: {importance}</p>
+                {Object.entries(database[category]).map(([feature, value]) => (
+                  <div key={feature} className="mb-4">
+                    <div className="flex justify-between items-center mb-2 flex-wrap">
+                      <span className="font-semibold mr-2 break-all">{getEmoji(feature)} {feature}</span>
+                      <Badge variant={value ? "success" : "secondary"}>
+                        {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value}
+                      </Badge>
+                    </div>
+                    {features[feature] && (
+                      <>
+                        <p className="text-sm text-gray-600">{features[feature].description}</p>
+                        <p className="text-xs text-gray-500 mt-1">Why it matters: {features[feature].importance}</p>
+                      </>
+                    )}
+                    <div className="mt-2 flex items-center">
+                      <Progress 
+                        value={allDatabases.filter(db => db[category][feature]).length / allDatabases.length * 100} 
+                        className="flex-grow"
+                      />
+                      <span className="ml-2 text-sm text-gray-500">
+                        {Math.round(allDatabases.filter(db => db[category][feature]).length / allDatabases.length * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderSDKs = () => (
     <div className="flex flex-wrap gap-2 mb-4">
@@ -130,6 +188,7 @@ export default async function DetailPage({ params }) {
       </div>
 
       {renderBusinessInfo()}
+      {renderFeatureComparison()}
 
       {Object.entries(database).map(([key, value]) => {
         if (typeof value === 'object' && value !== null && key !== 'specific_details' && key !== 'business_info') {
