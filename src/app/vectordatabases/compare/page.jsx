@@ -5,7 +5,7 @@ import { Container } from '@/components/Container';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import ComparisonForm from '@/components/ComparisonForm';
-import { getDatabases } from '../../lib/getDatabases';
+import { getDatabases } from '../../../lib/getDatabases';
 
 export default function ComparePage({ searchParams }) {
   const databases = getDatabases();

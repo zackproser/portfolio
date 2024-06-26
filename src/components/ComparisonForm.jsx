@@ -16,7 +16,7 @@ export default function ComparisonForm({ databases, selectedDbs }) {
     } else {
       return;
     }
-    router.push(`/compare?dbs=${newSelectedDbs.join(',')}`, { scroll: false });
+    router.push(`/vectordatabases/compare?dbs=${newSelectedDbs.join(',')}`, { scroll: false });
   };
 
   return (
