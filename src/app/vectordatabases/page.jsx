@@ -22,10 +22,10 @@ export default function GalleryPage() {
               <p>Deployment: {Object.entries(db.deployment).filter(([_, v]) => v).map(([k]) => k).join(', ')}</p>
               <p>Scalability: {Object.entries(db.scalability).filter(([_, v]) => v).map(([k]) => k).join(', ')}</p>
               <div className="mt-4">
-                <Link href={`/compare?dbs=${db.name}`} className="text-blue-500 hover:underline">
+                <Link href={`/vectordatabases/compare?dbs=${db.name}`} className="text-blue-500 hover:underline">
                   Compare
                 </Link>
-                <Link href={`/detail/${db.name}`} className="ml-4 text-blue-500 hover:underline">
+                <Link href={`/vectordatabases/detail/${db.name}`} className="ml-4 text-blue-500 hover:underline">
                   Details
                 </Link>
               </div>
