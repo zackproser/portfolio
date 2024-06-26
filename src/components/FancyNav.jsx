@@ -92,7 +92,7 @@ const navHierarchy = [
     ],
   },
   {
-    label: 'Demos',
+    label: 'Interactive',
     children: [
       {
         label: 'Chat with my blog',
@@ -108,11 +108,23 @@ const navHierarchy = [
       },
       {
         label: 'Intro to embeddings',
-        href: '/demos/tokenize',
+        href: '/demos/embeddings',
         description: 'Learn what vectors are',
         icon: BoxIcon,
       },
-    ],
+      {
+        label: 'Vector Databases',
+        href: '/vectordatabases',
+        description: 'Discover vector databases',
+        icon: BoxIcon,
+      },
+      {
+        label: 'Compare Vector DBs',
+        href: '/vectordatabases/compare',
+        description: 'Compare multiple vector databases',
+        icon: BoxIcon,
+      }
+   ],
   },
   {
     label: 'Contact',
