@@ -39,7 +39,7 @@ export default function ComparePage({ searchParams }) {
         </AccordionTrigger>
         <AccordionContent forceMount>
           <p className="mb-2">{categories[category].description}</p>
-          <p className="text-sm text-gray-600 mb-4">Why it's important: {categories[category].importance}</p>
+          <p className="text-sm text-gray-600 mb-4">Why it&apos;s important: {categories[category].importance}</p>
           <Table>
             <TableHeader>
               <TableRow>
