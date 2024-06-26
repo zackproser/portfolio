@@ -2,11 +2,20 @@ import React from 'react';
 import Image from 'next/image';
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { getDatabase, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
 import { getLogoById } from '@/lib/logoImports';
+import { createMetadata } from '@/utils/createMetadata';
+
+export const generateMetadata = async ({ params }) => {
+  const database = getDatabase(params.name);
+  return createMetadata({
+    title: `${database.name} - Vector Database Details`,
+    description: database.description,
+  });
+};
 
 export default async function DetailPage({ params }) {
   const database = getDatabase(params.name);
