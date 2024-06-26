@@ -1,48 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Container } from '@/components/Container';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { getDatabases, getCategories, getFeatures } from '../../../lib/getDatabases';
+import { getEmoji } from '../../../lib/emojiMapping';
 import ComparisonForm from '@/components/ComparisonForm';
-import { getDatabases } from '../../../lib/getDatabases';
+import RadarChart from '@/components/ComparisonChart';
 
 export default function ComparePage({ searchParams }) {
   const databases = getDatabases();
+  const categories = getCategories();
+  const features = getFeatures();
   const selectedDbs = searchParams.dbs ? searchParams.dbs.split(',') : [];
 
-  const renderFeatureComparison = (feature) => (
-    <TableRow key={feature}>
-      <TableCell>{feature}</TableCell>
-      {selectedDbs.map(dbName => {
-        const db = databases.find(d => d.name === dbName);
-        return (
-          <TableCell key={dbName}>
-            {typeof db[feature] === 'object'
-              ? Object.entries(db[feature]).filter(([_, v]) => v).map(([k]) => k).join(', ')
-              : String(db[feature])}
-          </TableCell>
-        );
-      })}
-    </TableRow>
-  );
+  // State to keep track of open/closed sections
+  const [openSections, setOpenSections] = useState(Object.keys(categories));
 
-  const chartData = selectedDbs.map(dbName => {
-    const db = databases.find(d => d.name === dbName);
-    return {
-      name: db.name,
-      features: Object.values(db).filter(v => typeof v === 'object').reduce((acc, curr) => acc + Object.values(curr).filter(Boolean).length, 0)
-    };
-  });
+  const toggleSection = (category) => {
+    setOpenSections(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
 
-  return (
-    <Container>
-      <h1 className="text-2xl font-bold mb-4">Vector Database Comparison</h1>
-
-      <ComparisonForm databases={databases} selectedDbs={selectedDbs} />
-
-      {selectedDbs.length > 0 && (
-        <>
+  const renderComparison = (category) => (
+    <Accordion
+      type="multiple"
+      value={openSections}
+      onValueChange={setOpenSections}
+      className="mb-4"
+    >
+      <AccordionItem value={category}>
+        <AccordionTrigger onClick={() => toggleSection(category)}>
+          {getEmoji(category)} {category}
+        </AccordionTrigger>
+        <AccordionContent forceMount>
+          <p className="mb-2">{categories[category].description}</p>
+          <p className="text-sm text-gray-600 mb-4">Why it's important: {categories[category].importance}</p>
           <Table>
             <TableHeader>
               <TableRow>
@@ -53,23 +50,40 @@ export default function ComparePage({ searchParams }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Object.keys(databases[0]).filter(key => key !== 'name').map(renderFeatureComparison)}
+              {Object.entries(databases[0][category]).map(([feature, _]) => (
+                <TableRow key={feature}>
+                  <TableCell>
+                    {getEmoji(feature)} {feature}
+                    <p className="text-xs text-gray-600">{features[feature]?.description}</p>
+                  </TableCell>
+                  {selectedDbs.map(dbName => {
+                    const db = databases.find(d => d.name === dbName);
+                    const value = db[category][feature];
+                    return (
+                      <TableCell key={dbName}>
+                        {typeof value === 'boolean' ? (value ? '✅' : '❌') : value.toString()}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
 
-          <div className="mt-8">
-            <h2 className="text-xl font-bold mb-4">Feature Comparison Chart</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="features" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
+  return (
+    <Container>
+      <h1 className="text-3xl font-bold mb-4">Vector Database Comparison</h1>
+      <ComparisonForm databases={databases} selectedDbs={selectedDbs} />
+      {selectedDbs.length > 0 && (
+        <>
+          <div className="flex justify-center mb-8">
+            <RadarChart databases={databases} selectedDbs={selectedDbs} width={400} height={300} />
           </div>
+          {Object.keys(categories).map(renderComparison)}
         </>
       )}
     </Container>
