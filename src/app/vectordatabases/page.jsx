@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { track } from '@vercel/analytics';
 import { Container } from '@/components/Container';
+import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDatabases } from '@/lib/getDatabases';
@@ -19,15 +21,25 @@ export default function GalleryPage() {
     setFilteredDatabases(filtered);
   };
 
+  const handleCompareClick = (dbName) => {
+    track('compare_click', { database: dbName });
+  };
+
+  const handleDetailsClick = (dbName) => {
+    track('details_click', { database: dbName });
+  };
+
   return (
-    <Container>
-      <h1 className="text-3xl font-bold mb-4">Vector Database Gallery</h1>
+    <SimpleLayout
+      title="Vector Databases"
+      intro="Explore and compare vector databases"
+    >
       <SearchFilter databases={allDatabases} onFilter={handleFilter} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredDatabases.map((db, index) => {
           const logo = getLogoById(db.logoId);
           return (
-            <Card key={index} className="flex flex-col">
+            <Card key={index} className="flex flex-col dark:bg-zinc-800">
               <CardHeader>
                 {logo && (
                   <Image
@@ -41,7 +53,7 @@ export default function GalleryPage() {
                 <CardTitle>{db.name}</CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-sm text-gray-600 mb-2">{db.description}</p>
+                <p className="text-sm text-gray-600 dark:text-zinc-400 mb-2">{db.description}</p>
                 <div className="flex flex-wrap gap-1 mb-2">
                   {db.deployment.cloud && <Badge variant="outline">{getEmoji('cloud')} Cloud</Badge>}
                   {db.deployment.local && <Badge variant="outline">{getEmoji('local')} Local</Badge>}
@@ -63,10 +75,18 @@ export default function GalleryPage() {
                 </div>
               </CardContent>
               <div className="p-4 mt-auto">
-                <Link href={`/vectordatabases/compare?dbs=${db.name}`} className="text-blue-500 hover:underline mr-4">
+                <Link
+                  href={`/vectordatabases/compare?dbs=${db.name}`}
+                  className="text-blue-500 hover:underline mr-4"
+                  onClick={() => handleCompareClick(db.name)}
+                >
                   Compare
                 </Link>
-                <Link href={`/vectordatabases/detail/${db.name}`} className="text-blue-500 hover:underline">
+                <Link
+                  href={`/vectordatabases/detail/${db.name}`}
+                  className="text-blue-500 hover:underline"
+                  onClick={() => handleDetailsClick(db.name)}
+                >
                   Details
                 </Link>
               </div>
@@ -74,6 +94,6 @@ export default function GalleryPage() {
           );
         })}
       </div>
-    </Container>
+    </SimpleLayout>
   );
 }
