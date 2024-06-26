@@ -14,6 +14,7 @@ import { track } from '@vercel/analytics';
 import { useRouter } from 'next/navigation';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+import { createMetadata } from '@/utils/createMetadata';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -62,7 +63,7 @@ export default function ComparePage({ searchParams }) {
 
   const [openSections, setOpenSections] = useState([]);
 
-  const getDbColor = (index) => `hsla(${index * 360 / selectedDatabases.length}, 70%, 70%, 0.8)`;
+  const getDbColor = (index) => `hsla(${index * 360 / selectedDatabases.length}, 80%, 40%, 0.9)`;
 
   const getFundingData = () => {
     const labels = [];
@@ -127,7 +128,7 @@ export default function ComparePage({ searchParams }) {
     <AccordionItem value="business_info">
       <AccordionTrigger className="text-xl">
         <div className="flex items-center">
-          <span className="text-2xl mr-2">{getEmoji('business')}</span>
+          <span className="text-2xl mr-2">{getEmoji('business_information')}</span>
           <span>Business Information</span>
         </div>
         <p className="text-sm text-gray-600 ml-2">Compare key business metrics and funding details</p>
@@ -327,3 +328,4 @@ export default function ComparePage({ searchParams }) {
     </Container>
   );
 }
+
