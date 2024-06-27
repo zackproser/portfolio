@@ -6,9 +6,9 @@ import { getDatabaseByName } from '@/lib/getDatabases';
 import { getLogoById } from '@/lib/logoImports';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { emojiMapper } from '@/lib/emojiMapping';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { getEmoji } from '@/lib/emojiMapping';
 import { sentenceCase } from '@/utils/sentencesCase'; 
 import Link from 'next/link';
 
@@ -16,24 +16,14 @@ export default function DatabaseDetailPage({ params }) {
   const database = getDatabaseByName(decodeURIComponent(params.name));
   const logo = getLogoById(database.logoId);
 
-  const [expandedSections, setExpandedSections] = useState({});
+  const [openSections, setOpenSections] = useState([]);
 
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
-  };
-
-  const expandAll = () => {
-    const expanded = {};
-    Object.keys(database).forEach(key => {
-      if (typeof database[key] === 'object') {
-        expanded[key] = true;
-      }
-    });
-    setExpandedSections(expanded);
-  };
-
-  const collapseAll = () => {
-    setExpandedSections({});
+  const toggleAllSections = () => {
+    if (openSections.length === sectionOrder.length) {
+      setOpenSections([]);
+    } else {
+      setOpenSections(sectionOrder);
+    }
   };
 
   const renderSectionContent = (key, value) => {
@@ -120,47 +110,41 @@ export default function DatabaseDetailPage({ params }) {
             <Button variant="outline">Start Comparison</Button>
           </Link>
         </div>
-        <div className="space-x-2">
-          <Button onClick={expandAll} variant="outline">Expand All</Button>
-          <Button onClick={collapseAll} variant="outline">Collapse All</Button>
-        </div>
+        <Button onClick={toggleAllSections}>
+          {openSections.length === sectionOrder.length ? (
+            <>
+              <ChevronUp className="mr-2 h-4 w-4" /> Collapse All
+            </>
+          ) : (
+            <>
+              <ChevronDown className="mr-2 h-4 w-4" /> Expand All
+            </>
+          )}
+        </Button>
       </div>
-      <div className="space-y-4">
+
+      <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {sectionOrder.map(key => {
           const value = database[key];
           if (typeof value === 'object' && value !== null) {
-            const isExpanded = expandedSections?.[key];
-            const emoji = emojiMapper?.[key];
-            if (!value) return null;
+            const emoji = getEmoji(key);
             return (
-              <Card key={key} className="dark:bg-zinc-800">
-                <CardHeader 
-                  className="flex flex-row items-center space-x-4 cursor-pointer"
-                  onClick={() => toggleSection(key)}
-                >
-                  {emoji && (
-                    <span role="img" aria-label={`${key} emoji`} className="text-2xl">
-                      {emoji}
-                    </span>
-                  )}
-                  <CardTitle className="capitalize">{key.replace(/_/g, ' ')}</CardTitle>
-                  {isExpanded ? (
-                    <ChevronUpIcon className="ml-auto" />
-                  ) : (
-                    <ChevronDownIcon className="ml-auto" />
-                  )}
-                </CardHeader>
-                {isExpanded && (
-                  <CardContent>
-                    {renderSectionContent(key, value)}
-                  </CardContent>
-                )}
-              </Card>
+              <AccordionItem value={key} key={key}>
+                <AccordionTrigger className="text-xl">
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-2">{emoji}</span>
+                    <span>{sentenceCase(key)}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {renderSectionContent(key, value)}
+                </AccordionContent>
+              </AccordionItem>
             );
           }
           return null;
         })}
-      </div>
+      </Accordion>
     </SimpleLayout>
   );
 }
