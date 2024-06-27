@@ -1,172 +1,166 @@
-import React from 'react';
-import Image from 'next/image';
-import { SimpleLayout } from '@/components/SimpleLayout'
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { getDatabase, getCategories, getFeatures } from '@/lib/getDatabases';
-import { getEmoji } from '@/lib/emojiMapping';
+'use client'
+
+import React, { useState } from 'react';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { getDatabaseByName } from '@/lib/getDatabases';
 import { getLogoById } from '@/lib/logoImports';
-import { createMetadata } from '@/utils/createMetadata';
+import Image from 'next/image';
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { emojiMapper } from '@/lib/emojiMapping';
+import { sentenceCase } from '@/utils/sentencesCase'; 
+import Link from 'next/link';
 
-export const generateMetadata = async ({ params }) => {
-  const database = getDatabase(params.name);
-  return createMetadata({
-    title: `${database.name} - Vector Database Details`,
-    description: database.description,
-  });
-};
+export default function DatabaseDetailPage({ params }) {
+  const database = getDatabaseByName(decodeURIComponent(params.name));
+  const logo = getLogoById(database.logoId);
 
-export default async function DetailPage({ params }) {
-  const database = getDatabase(params.name);
-  const categories = getCategories();
-  const features = getFeatures();
+  const [expandedSections, setExpandedSections] = useState({});
 
-  if (!database) {
-    return <div>Database not found</div>;
-  }
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
-  const logoSrc = await getLogoById(database.logoId);
+  const expandAll = () => {
+    const expanded = {};
+    Object.keys(database).forEach(key => {
+      if (typeof database[key] === 'object') {
+        expanded[key] = true;
+      }
+    });
+    setExpandedSections(expanded);
+  };
 
-  const renderSection = (title, data) => (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle className="text-2xl">{getEmoji(title)} {title}</CardTitle>
-        {categories[title] && (
-          <>
-            <p className="text-gray-600">{categories[title].description}</p>
-            <p className="text-sm text-gray-500 mt-2">Why it&apos;s important: {categories[title].importance}</p>
-          </>
-        )}
-      </CardHeader>
-      <CardContent>
-        {Object.entries(data).map(([key, value]) => (
-          <div key={key} className="mb-4">
-            <p className="font-semibold">
-              {getEmoji(key)} {key}: {' '}
-              {typeof value === 'boolean'
-                ? (value ? getEmoji('yes') : getEmoji('no'))
-                : (Array.isArray(value) ? value.join(', ') : value.toString())}
-            </p>
-            {features[key] && (
-              <>
-                <p className="text-sm text-gray-600 ml-6">{features[key].description}</p>
-                <p className="text-xs text-gray-500 ml-6 mt-1">Why it matters: {features[key].importance}</p>
-              </>
-            )}
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  );
+  const collapseAll = () => {
+    setExpandedSections({});
+  };
 
-  const renderBusinessInfo = () => (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle className="text-2xl">{getEmoji('business')} Business Information</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableBody>
-            {Object.entries(database.business_info).map(([key, value]) => (
-              <TableRow key={key}>
-                <TableCell className="font-medium">{key.replace('_', ' ')}</TableCell>
-                <TableCell>
-                  {key === 'funding_rounds' ? (
-                    <ul>
-                      {value.map((round, index) => (
-                        <li key={index}>
-                          {round.date}: {round.amount} (Series {round.series})
-                        </li>
-                      ))}
-                    </ul>
-                  ) : key === 'key_people' ? (
-                    <ul>
-                      {value.map((person, index) => (
-                        <li key={index}>
-                          {person.name} - {person.position}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    value
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  );
+  const renderSectionContent = (key, value) => {
+    if (typeof value === 'string') {
+      return <p>{value}</p>;
+    }
 
-  const renderSDKs = () => (
-    <div className="flex flex-wrap gap-2 mb-4">
-      {database.integration_api.sdks.map(sdk => (
-        <Badge key={sdk} variant="outline">
-          {sdk}
-        </Badge>
-      ))}
-    </div>
-  );
+    if (Array.isArray(value)) {
+      return (
+        <ul className="list-disc list-inside">
+          {value.map((item, index) => (
+            <li key={index}>{typeof item === 'object' ? renderSectionContent(key, item) : item}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      return (
+        <div className="space-y-2">
+          {Object.entries(value).map(([subKey, subValue]) => (
+            <div key={subKey}>
+              <strong>{sentenceCase(subKey)}:</strong>{' '}
+              {renderHumanReadableValue(subKey, subValue)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return value.toString();
+  };
+
+  const renderHumanReadableValue = (key, value) => {
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+    if (typeof value === 'object') {
+      return renderSectionContent(key, value);
+    }
+    return value.toString();
+  };
+
+  const sectionOrder = [
+    'business_info',
+    'deployment',
+    'scalability',
+    'data_management',
+    'vector_similarity_search',
+    'integration_api',
+    'security',
+    'community_ecosystem',
+    'pricing',
+    'additional_features',
+    'specific_details'
+  ];
 
   return (
     <SimpleLayout
-      title={`Spotlight on vector database`}
-      intro={database.name}
+      title={''}
+      intro={''}
     >
-      <div className="mb-8">
-        {logoSrc && (
+      <div className="flex items-center space-x-4 mb-6">
+        {logo && (
           <Image
-            src={logoSrc}
+            src={logo}
             alt={`${database.name} logo`}
-            width={200}
-            height={200}
-            className="mx-auto"
+            width={60}
+            height={60}
           />
         )}
-        <h1 className="text-3xl font-bold text-center mt-4">{database.name}</h1>
-        <p className="text-xl text-gray-600 mt-2 text-center">{database.description}</p>
+        <h1 className="text-3xl font-bold">{database.name}</h1>
       </div>
 
-      {renderBusinessInfo()}
-
-      {Object.entries(database).map(([key, value]) => {
-        if (typeof value === 'object' && value !== null && key !== 'specific_details' && key !== 'business_info') {
-          if (key === 'integration_api') {
+      <div className="mb-4 flex justify-between items-center">
+        <div className="space-x-2">
+          <Link href="/vectordatabases">
+            <Button variant="outline">Back to Gallery</Button>
+          </Link>
+          <Link href={`/vectordatabases/compare?databases=${database.name}`}>
+            <Button variant="outline">Start Comparison</Button>
+          </Link>
+        </div>
+        <div className="space-x-2">
+          <Button onClick={expandAll} variant="outline">Expand All</Button>
+          <Button onClick={collapseAll} variant="outline">Collapse All</Button>
+        </div>
+      </div>
+      <div className="space-y-4">
+        {sectionOrder.map(key => {
+          const value = database[key];
+          if (typeof value === 'object' && value !== null) {
+            const isExpanded = expandedSections?.[key];
+            const emoji = emojiMapper?.[key];
+            if (!value) return null;
             return (
-              <Card key={key} className="mb-8">
-                <CardHeader>
-                  <CardTitle className="text-2xl">{getEmoji(key)} {key}</CardTitle>
+              <Card key={key} className="dark:bg-zinc-800">
+                <CardHeader 
+                  className="flex flex-row items-center space-x-4 cursor-pointer"
+                  onClick={() => toggleSection(key)}
+                >
+                  {emoji && (
+                    <span role="img" aria-label={`${key} emoji`} className="text-2xl">
+                      {emoji}
+                    </span>
+                  )}
+                  <CardTitle className="capitalize">{key.replace(/_/g, ' ')}</CardTitle>
+                  {isExpanded ? (
+                    <ChevronUpIcon className="ml-auto" />
+                  ) : (
+                    <ChevronDownIcon className="ml-auto" />
+                  )}
                 </CardHeader>
-                <CardContent>
-                  <p className="mb-2">Supported SDKs:</p>
-                  {renderSDKs()}
-                  {renderSection(key, value)}
-                </CardContent>
+                {isExpanded && (
+                  <CardContent>
+                    {renderSectionContent(key, value)}
+                  </CardContent>
+                )}
               </Card>
             );
           }
-          return renderSection(key, value);
-        }
-        return null;
-      })}
-
-      {database.specific_details && (
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-2xl">{getEmoji('additional')} Additional Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {Object.entries(database.specific_details).map(([key, value]) => (
-              <p key={key} className="mb-2">
-                <span className="font-semibold">{key.replace('_', ' ')}: </span>
-                {value}
-              </p>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+          return null;
+        })}
+      </div>
     </SimpleLayout>
   );
 }
