@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 const vectorDatabasesData = require('../schema/data/vectordatabases.json');
-
 const databases = vectorDatabasesData.databases;
 
 // Add debugging to check the databases array
@@ -21,7 +20,6 @@ const extractDateFromContent = (content) => {
 const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
 
 const generatePostContent = (db1, db2, existingDate) => {
-
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
 
   return `
@@ -150,6 +148,7 @@ combinations.forEach(([db1, db2], _index) => {
     if (fs.existsSync(filename)) {
       const existingContent = fs.readFileSync(filename, 'utf8');
       existingDate = extractDateFromContent(existingContent);
+      console.log(`Existing date for ${db1.name} vs ${db2.name}: ${existingDate}`);
     }
 
     const content = generatePostContent(db1, db2, existingDate);
