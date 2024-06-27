@@ -119,9 +119,15 @@ const navHierarchy = [
         icon: BoxIcon,
       },
       {
-        label: 'Compare Vector DBs',
+        label: 'Vector DB comparison tool',
         href: '/vectordatabases/compare',
         description: 'Compare multiple vector databases',
+        icon: BoxIcon,
+      },
+      {
+        label: 'Comparisons',
+        href: '/comparisons',
+        description: 'Compare various AI tools and technologies',
         icon: BoxIcon,
       }
    ],
