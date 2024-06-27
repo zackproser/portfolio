@@ -1,82 +1,65 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { cn } from '@/lib/utils' // Assuming you have a utility function for combining classes
 
 import wakka from '@/images/wakka.webp'
 
+const StatusBadge = ({ status }) => {
+  const isActive = !!status;
+  return (
+    <span className={cn(
+      "inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white",
+      "ring-2 ring-offset-2 ring-offset-gray-800 shadow-md transition duration-300 ease-in-out",
+      isActive ? "bg-green-700 hover:bg-gray-800 ring-green-500" : "bg-orange-500 hover:bg-gray-800 ring-yellow-500"
+    )}>
+      <svg className={cn("h-2 w-2", isActive ? "fill-green-500" : "fill-yellow-500")} viewBox="0 0 6 6" aria-hidden="true">
+        <circle cx={3} cy={3} r={3} />
+      </svg>
+      {isActive ? status : "Coming soon!"}
+    </span>
+  )
+}
+
+const rootPaths = {
+  collection: '/collections/',
+  video: '/videos/',
+  course: '/learn/courses/',
+  newsletter: '/newsletter/',
+  demo: '/demos/',
+  default: '/blog/'
+}
+
 export function BlogPostCard({ article }) {
-
-  const StatusBadge = ({ status }) => {
-    return status ? (
-      <span className="inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white bg-green-700 hover:bg-gray-800 ring-2 ring-offset-2 ring-offset-gray-800 ring-green-500 shadow-md transition duration-300 ease-in-out">
-        <svg className="h-2 w-2 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
-          <circle cx={3} cy={3} r={3} />
-        </svg>
-        {status}
-      </span>
-    ) : (
-      <span className="inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white bg-orange-500 hover:bg-gray-800 ring-2 ring-offset-2 ring-offset-gray-800 ring-yellow-500 shadow-md transition duration-300 ease-in-out">
-        <svg className="h-2 w-2 fill-yellow-500" viewBox="0 0 6 6" aria-hidden="true" >
-          <circle cx={3} cy={3} r={3} />
-        </svg>
-        Coming soon!
-      </span>
-    )
-  }
-
-  let root = '/blog/'
-
-  if (article?.type == 'collection') {
-    root = '/collections/'
-  }
-
-  if (article?.type == 'video') {
-    root = '/videos/'
-  }
-
-  if (article?.type == 'course') {
-    root = '/learn/courses/'
-  }
-
-  if (article?.type == 'newsletter') {
-    root = '/newsletter/'
-  }
-
-  if (article?.type == 'demo') {
-    root = '/demos/'
-  }
+  const root = rootPaths[article?.type] || rootPaths.default;
 
   return (
-    <article key={article.slug} className="flex flex-col items-start justify-between">
-      <div className="relative w-full">
-        <Link href={`${root}${article.slug}`}>
-          <Image
-            src={article.image ?? wakka}
-            alt={article.slug}
-            className="aspect-[16/9] w-full rounded-2xl bg-gray-50 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
-            width={500}
-            height={500}
-          />
-        </Link>
-        <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
-      </div>
-      <div className="max-w-xl">
-        <div className="flex items-center gap-x-4 text-xs">
-          <time className="text-gray-50">
-            {article.date}
-          </time>
-        </div>
-        <div className="group relative">
-          <h3 className="mt-3 text-lg font-semibold leading-6 text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600">
-            <Link href={`${root}${article.slug}`} >
-              <span className="absolute inset-0 " />
+    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800">
+      <Link href={`${root}${article.slug}`} className="relative w-full">
+        <Image
+          src={article.image ?? wakka}
+          alt={article.title}
+          className="aspect-[16/9] w-full rounded-t-lg object-cover"
+          width={500}
+          height={281}
+        />
+        <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
+      </Link>
+      <div className="flex-1 p-6 flex flex-col justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
+            <time dateTime={article.date}>{article.date}</time>
+          </div>
+          <Link href={`${root}${article.slug}`} className="block mt-3 group">
+            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out">
               {article.title}
-            </Link>
-            {}
-          </h3>
-          <Link href={`${root}${article.slug}`}><p className="mt-5 line-clamp-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 ">{article.description}</p></Link>
-          {(article.type && article.type == 'course') ? <StatusBadge status={article.status} /> : null}
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 line-clamp-3">
+              {article.description}
+            </p>
+          </Link>
         </div>
-      </div >
-    </article >
+        {article.type === 'course' && <StatusBadge status={article.status} />}
+      </div>
+    </article>
   )
 }
