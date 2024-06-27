@@ -30,7 +30,7 @@ export default function GalleryPage() {
 
   const handleCompareClick = (dbName) => {
     track('compare_click', { database: dbName });
-    router.push(`/vectordatabases/compare?db=${encodeURIComponent(dbName)}`);
+    router.push(`/vectordatabases/compare?dbs=${encodeURIComponent(dbName)}`);
   };
 
   const handleDetailsClick = (dbName) => {

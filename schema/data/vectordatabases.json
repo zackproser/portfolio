@@ -215,8 +215,8 @@
     "company_name": "Weaviate B.V.",
     "founded": 2019,
     "headquarters": "Amsterdam, Netherlands",
-    "total_funding": "unknown",
-    "latest_valuation": "unknown",
+    "total_funding": "$50M",
+    "latest_valuation": "$200M",
     "funding_rounds": [],
     "key_people": [
       {
@@ -391,7 +391,7 @@
       "data_management": {
         "import": true,
         "update_deletion": true,
-        "backup_restore": false
+        "backup_restore": true
       },
       "vector_similarity_search": {
         "distance_metrics": ["Cosine", "Euclidean"],
@@ -400,10 +400,10 @@
         "post_processing": false
       },
       "integration_api": {
-        "sdks": ["Python"],
+        "sdks": ["Python", "TypeScript", "Go", "Terraform"],
         "rest_api": true,
         "graphql_api": false,
-        "grpc_api": false
+        "grpc_api": true
       },
       "security": {
         "authentication": true,
@@ -413,7 +413,7 @@
       "community_ecosystem": {
         "open_source": false,
         "community_support": true,
-        "integration_frameworks": []
+        "integration_frameworks": ["LangChain", "Haystack", "LlamaIndex", "Airflow"]
       },
       "pricing": {
         "free_tier": true,
@@ -458,7 +458,7 @@
           "position": "Founder & CEO"
         }
       ],
-      "employee_count": "50-100"
+      "employee_count": "160"
     }
     },
     {
@@ -496,7 +496,7 @@
         "authentication": true,
         "encryption": true,
         "access_control": true,
-        "soc2_compliance": "Unknown",
+        "soc2_compliance": false,
         "gdpr_compliance": true,
         "encrypted_at_rest": true,
         "encrypted_in_transit": true,
@@ -668,8 +668,8 @@
         "authentication": true,
         "encryption": true,
         "access_control": true,
-        "soc2_compliance": "Unknown",
-        "gdpr_compliance": "Unknown",
+        "soc2_compliance": true,
+        "gdpr_compliance": true,
         "encrypted_at_rest": true,
         "encrypted_in_transit": true,
         "multitenancy": true
@@ -794,5 +794,247 @@
         "unique_feature": "Designed for simplicity and ease of use in AI applications, with a focus on embedding management.",
         "performance_metric": "Optimized for datasets up to billions of embeddings with efficient query times."
       }
-    }
+    },
+    {
+  "name": "Elasticsearch",
+  "logoId": "elasticsearch",
+  "description": "Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases, including vector search.",
+  "deployment": {
+    "cloud": true,
+    "local": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": true
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Cosine", "Dot Product", "L2 Norm"],
+    "ann_algorithms": ["HNSW"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Java", "Python", "JavaScript", "Ruby", "Go", "PHP", ".NET"],
+    "rest_api": true,
+    "graphql_api": false,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true,
+    "soc2_compliance": true,
+    "gdpr_compliance": true,
+    "encrypted_at_rest": true,
+    "encrypted_in_transit": true,
+    "multitenancy": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["LangChain", "Haystack"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": true,
+    "enterprise_plans": true
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Combines full-text search capabilities with vector search, allowing for hybrid queries.",
+    "performance_metric": "Can handle billions of documents with sub-second query times."
+  },
+  "business_info": {
+    "company_name": "Elastic N.V.",
+    "founded": 2012,
+    "headquarters": "Mountain View, CA",
+    "total_funding": "Unknown",
+    "latest_valuation": "Unknown",
+    "funding_rounds": [],
+    "key_people": [
+      {
+        "name": "Shay Banon",
+        "position": "Founder & CTO"
+      },
+      {
+        "name": "Ash Kulkarni",
+        "position": "CEO"
+      }
+    ],
+    "employee_count": "2000+"
+  }
+},
+    {
+  "name": "pgvector",
+  "logoId": "pgvector",
+  "description": "pgvector is an open-source extension for PostgreSQL that adds support for vector similarity search, enabling AI applications and embeddings directly within PostgreSQL.",
+  "deployment": {
+    "cloud": true,
+    "local": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": false
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Euclidean", "Inner Product", "Cosine"],
+    "ann_algorithms": ["IVFFlat"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Python", "Ruby", "Node.js"],
+    "rest_api": false,
+    "graphql_api": false,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true,
+    "soc2_compliance": "Unknown",
+    "gdpr_compliance": "Unknown",
+    "encrypted_at_rest": true,
+    "encrypted_in_transit": true,
+    "multitenancy": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["LangChain", "LlamaIndex"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": false,
+    "enterprise_plans": false
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Integrates vector search capabilities directly into PostgreSQL, allowing for combined relational and vector queries.",
+    "performance_metric": "Can handle millions of vectors with query times varying based on index and hardware."
+  },
+  "business_info": {
+    "company_name": "PostgreSQL Global Development Group",
+    "founded": "Unknown",
+    "headquarters": "Distributed (Open Source Project)",
+    "total_funding": "N/A (Open Source Project)",
+    "latest_valuation": "N/A (Open Source Project)",
+    "funding_rounds": [],
+    "key_people": [
+      {
+        "name": "Andrew Gierth",
+        "position": "pgvector maintainer"
+      }
+    ],
+    "employee_count": "N/A (Open Source Project)"
+  }
+},
+    {
+  "name": "Redis",
+  "logoId": "redis",
+  "description": "Redis is an open-source, in-memory data structure store that can be used as a database, cache, and message broker. With the RediSearch module, it offers vector similarity search capabilities.",
+  "deployment": {
+    "cloud": true,
+    "local": true,
+    "on_premises": true
+  },
+  "scalability": {
+    "horizontal": true,
+    "vertical": true,
+    "distributed": true
+  },
+  "data_management": {
+    "import": true,
+    "update_deletion": true,
+    "backup_restore": true
+  },
+  "vector_similarity_search": {
+    "distance_metrics": ["Cosine", "IP", "L2"],
+    "ann_algorithms": ["HNSW"],
+    "filtering": true,
+    "post_processing": true
+  },
+  "integration_api": {
+    "sdks": ["Python", "Java", "JavaScript", "Go", "C#", "Ruby"],
+    "rest_api": true,
+    "graphql_api": false,
+    "grpc_api": false
+  },
+  "security": {
+    "authentication": true,
+    "encryption": true,
+    "access_control": true,
+    "soc2_compliance": true,
+    "gdpr_compliance": true,
+    "encrypted_at_rest": true,
+    "encrypted_in_transit": true,
+    "multitenancy": true
+  },
+  "community_ecosystem": {
+    "open_source": true,
+    "community_support": true,
+    "integration_frameworks": ["LangChain", "Haystack"]
+  },
+  "pricing": {
+    "free_tier": true,
+    "pay_as_you_go": true,
+    "enterprise_plans": true
+  },
+  "additional_features": {
+    "metadata_support": true,
+    "batch_processing": true,
+    "monitoring_logging": true
+  },
+  "specific_details": {
+    "unique_feature": "Combines high-performance in-memory data storage with vector search capabilities, allowing for real-time vector operations.",
+    "performance_metric": "Can handle millions of vectors with sub-millisecond query times due to in-memory processing."
+  },
+  "business_info": {
+    "company_name": "Redis Ltd.",
+    "founded": 2011,
+    "headquarters": "Mountain View, CA",
+    "total_funding": "$347M",
+    "latest_valuation": "Unknown",
+    "funding_rounds": [
+      {
+        "date": "2021-04-07",
+        "amount": "$110M",
+        "series": "G"
+      }
+    ],
+    "key_people": [
+      {
+        "name": "Ofer Bengal",
+        "position": "Co-founder & CEO"
+      },
+      {
+        "name": "Yiftach Shoolman",
+        "position": "Co-founder & CTO"
+      }
+    ],
+    "employee_count": "500-1000"
+  }
+}
     ]}
