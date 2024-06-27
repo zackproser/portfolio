@@ -21,6 +21,7 @@ const generatePostContent = (db1, db2, existingDate) => {
   return `
 
 import { ArticleLayout } from '@/components/ArticleLayout'
+import CrossLinkCallout from '@/components/CrossLinkCallout'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -38,6 +39,14 @@ export const metadata = {
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
 <Image src={vectorDatabasesCompared} alt="vector databases compared" />
+
+<CrossLinkCallout
+  title="Compare Vector Databases Dynamically"
+  description="Use our interactive tool to compare ${db1.name}, ${db2.name}, and other vector databases side by side."
+  linkText="Compare Vector Databases"
+  linkHref="/vectordatabases/compare"
+  variant="info"
+/>
 
 ## Table of contents
 
