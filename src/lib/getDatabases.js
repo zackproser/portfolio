@@ -12,6 +12,9 @@ export function getFeatures() {
   return data.features;
 }
 
+export function getDatabaseByName(name) {
+  return data.databases.find(db => db.name.toLowerCase() === name.toLowerCase());
+}
 
 export function getDatabase(name) {
   return data.databases.find(db => db.name.toLowerCase() === name.toLowerCase());
