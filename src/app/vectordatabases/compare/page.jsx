@@ -26,25 +26,16 @@ const formatFieldName = (fieldName) => {
 };
 
 const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
-  const handleToggle = (dbName) => {
-    const newSelection = selectedDbs.includes(dbName)
-      ? selectedDbs.filter(name => name !== dbName)
-      : [...selectedDbs, dbName];
-    onChange(newSelection);
-  };
+  const availableDatabases = databases.filter(db => !selectedDbs.includes(db.name));
 
   return (
     <div className="flex flex-wrap gap-2">
-      {databases.map(db => (
+      {availableDatabases.map(db => (
         <Badge
           key={db.name}
-          variant={selectedDbs.includes(db.name) ? "default" : "outline"}
-          className={`text-sm py-2 px-3 cursor-pointer transition-all ${
-            selectedDbs.includes(db.name) 
-              ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-              : "bg-background text-foreground hover:bg-secondary"
-          }`}
-          onClick={() => handleToggle(db.name)}
+          variant="outline"
+          className="text-sm py-2 px-3 cursor-pointer transition-all bg-background text-foreground hover:bg-secondary"
+          onClick={() => onChange([...selectedDbs, db.name])}
         >
           {db.name}
         </Badge>
@@ -290,7 +281,7 @@ export default function ComparePage({ searchParams }) {
         </Button>
       </div>
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-2">Select vector databases to compare:</p>
+        <p className="text-sm text-gray-600 mb-2">Select additional vector databases to compare:</p>
         <DatabaseSelector
           databases={allDatabases}
           selectedDbs={selectedDbNames}
