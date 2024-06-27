@@ -35,7 +35,9 @@ export default function DatabaseDetailPage({ params }) {
       return (
         <ul className="list-disc list-inside">
           {value.map((item, index) => (
-            <li key={index}>{typeof item === 'object' ? renderSectionContent(key, item) : item}</li>
+            <li key={index}>
+              {typeof item === 'object' ? renderSectionContent(key, item) : item}
+            </li>
           ))}
         </ul>
       );
@@ -62,9 +64,13 @@ export default function DatabaseDetailPage({ params }) {
       return value ? 'Yes' : 'No';
     }
     if (Array.isArray(value)) {
-      return value.join(', ');
+      return value.map((item, index) => (
+        <div key={index}>
+          {typeof item === 'object' ? renderSectionContent(key, item) : item}
+        </div>
+      ));
     }
-    if (typeof value === 'object') {
+    if (typeof value === 'object' && value !== null) {
       return renderSectionContent(key, value);
     }
     return value.toString();
