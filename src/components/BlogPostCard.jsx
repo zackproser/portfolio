@@ -26,15 +26,17 @@ const rootPaths = {
   course: '/learn/courses/',
   newsletter: '/newsletter/',
   demo: '/demos/',
+  comparison: '/comparisons/', // Add this line
   default: '/blog/'
 }
 
 export function BlogPostCard({ article }) {
   const root = rootPaths[article?.type] || rootPaths.default;
+  const href = article.type === 'comparison' ? `${root}${article.slug}` : `${root}${article.slug}`;
 
   return (
     <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800">
-      <Link href={`${root}${article.slug}`} className="relative w-full">
+      <Link href={href} className="relative w-full">
         <Image
           src={article.image ?? wakka}
           alt={article.title}
@@ -49,7 +51,7 @@ export function BlogPostCard({ article }) {
           <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
             <time dateTime={article.date}>{article.date}</time>
           </div>
-          <Link href={`${root}${article.slug}`} className="block mt-3 group">
+          <Link href={href} className="block mt-3 group">
             <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out">
               {article.title}
             </h3>
