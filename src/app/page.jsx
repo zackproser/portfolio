@@ -52,7 +52,7 @@ export default async function About() {
 				<title>About - Zachary Proser</title>
 				<meta
 					name="description"
-					content="I’m Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
+					content="I'm Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
 				/>
 			</Head>
 			<Container className="mt-16 sm:mt-32">
@@ -101,48 +101,27 @@ export default async function About() {
 						</div>
 					</div>
 					<div className="lg:pl-20">
-						<ul role="list">
-							<SocialLink
-								href="https://twitter.com/zackproser"
-								icon={TwitterIcon}
-								className="mt-4"
-							>
-								Follow me on Twitter
+						<ul role="list" className="space-y-4">
+							<SocialLink href="https://twitter.com/zackproser" icon={TwitterIcon}>
+								Follow on Twitter
 							</SocialLink>
-							<SocialLink
-								href="https://youtube.com/@zackproser"
-								icon={YouTubeIcon}
-								className="mt-4"
-							>
+							<SocialLink href="https://youtube.com/@zackproser" icon={YouTubeIcon}>
 								Subscribe to my YouTube channel
 							</SocialLink>
-							<SocialLink
-								href="https://instagram.com/zackproser"
-								icon={InstagramIcon}
-								className="mt-4"
-							>
+							<SocialLink href="https://instagram.com/zackproser" icon={InstagramIcon}>
 								Follow me on Instagram
 							</SocialLink>
-							<SocialLink
-								href="https://github.com/zackproser"
-								icon={GitHubIcon}
-								className="mt-4"
-							>
-								Follow me on GitHub
+							<SocialLink href="https://github.com/zackproser" icon={GitHubIcon}>
+								Follow on GitHub
 							</SocialLink>
-							<SocialLink
-								href="https://linkedin.com/in/zackproser"
-								icon={LinkedInIcon}
-								className="mt-4"
-							>
-								Follow me on LinkedIn
+							<SocialLink href="https://linkedin.com/in/zackproser" icon={LinkedInIcon}>
+								Follow on LinkedIn
 							</SocialLink>
 							<SocialLink
 								href="mailto:zackproser@gmail.com"
 								icon={MailIcon}
-								className="mt-4 dark:border-zinc-700/40"
 							>
-								Drop me an email
+								zackproser@gmail.com
 							</SocialLink>
 						</ul>
 					</div>
