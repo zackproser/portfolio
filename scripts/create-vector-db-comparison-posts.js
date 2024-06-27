@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const databases = require('../schema/data/vectordatabases.json')
+const vectorDatabasesData = require('../schema/data/vectordatabases.json');
+
+const databases = vectorDatabasesData.databases;
+
+// Add debugging to check the databases array
+console.log('Number of databases:', databases.length);
+console.log('First database:', JSON.stringify(databases[0], null, 2));
 
 const checkMark = '✅';
 const crossMark = '❌';
@@ -21,7 +27,7 @@ const generatePostContent = (db1, db2, existingDate) => {
   return `
 
 import { ArticleLayout } from '@/components/ArticleLayout'
-import CrossLinkCallout from '@/components/CrossLinkCallout'
+import  CrossLinkCallout from '@/components/CrossLinkCallout'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -42,7 +48,7 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <CrossLinkCallout
   title="Compare Vector Databases Dynamically"
-  description="Use our interactive tool to compare ${db1.name}, ${db2.name}, and other vector databases side by side."
+  description="Use my interactive tool to compare ${db1.name}, ${db2.name}, and other vector databases side by side."
   linkText="Compare Vector Databases"
   linkHref="/vectordatabases/compare"
   variant="info"
@@ -127,6 +133,12 @@ const generateCombinations = (databases) => {
 };
 
 const combinations = generateCombinations(databases);
+
+// Add debugging to check the generated combinations
+console.log('Number of combinations:', combinations.length);
+if (combinations.length > 0) {
+  console.log('First combination:', JSON.stringify(combinations[0], null, 2));
+}
 
 combinations.forEach(([db1, db2], _index) => {
   try {
