@@ -6,6 +6,9 @@ import milvusLogo from '@/images/logos/milvus_logo.svg'
 import metaLogo from '@/images/logos/meta.webp'
 import qdrantLogo from '@/images/logos/qdrant.webp'
 import chromaLogo from '@/images/logos/chroma.webp'
+import elasticsearchLogo from '@/images/logos/elasticsearch.svg'
+import pgvectorLogo from '@/images/logos/pgvector.svg'
+import redisLogo from '@/images/logos/redis.svg'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -15,7 +18,10 @@ const logoMap = {
   milvus: milvusLogo,
   faiss: metaLogo,
   qdrant: qdrantLogo,
-  chroma: chromaLogo
+  chroma: chromaLogo,
+  elasticsearch: elasticsearchLogo,
+  pgvector: pgvectorLogo,
+  redis: redisLogo
 };
 
 export function getLogoById(id) {

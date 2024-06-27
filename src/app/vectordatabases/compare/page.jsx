@@ -1,12 +1,13 @@
 'use client'
 
+import Link from 'next/link'
 import React, { useState } from 'react';
 import { Container } from '@/components/Container';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Share2, X, RefreshCw, Clipboard } from 'lucide-react';
 import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
@@ -25,29 +26,19 @@ const formatFieldName = (fieldName) => {
 };
 
 const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
-  const handleToggle = (dbName) => {
-    const newSelection = selectedDbs.includes(dbName)
-      ? selectedDbs.filter(name => name !== dbName)
-      : [...selectedDbs, dbName];
-    onChange(newSelection);
-  };
+  const availableDatabases = databases.filter(db => !selectedDbs.includes(db.name));
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {databases.map(db => (
-        <div key={db.name} className="flex items-center space-x-2">
-          <Checkbox
-            id={db.name}
-            checked={selectedDbs.includes(db.name)}
-            onCheckedChange={() => handleToggle(db.name)}
-          />
-          <label
-            htmlFor={db.name}
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            {db.name}
-          </label>
-        </div>
+    <div className="flex flex-wrap gap-2">
+      {availableDatabases.map(db => (
+        <Badge
+          key={db.name}
+          variant="outline"
+          className="text-sm py-2 px-3 cursor-pointer transition-all bg-background text-foreground hover:bg-secondary"
+          onClick={() => onChange([...selectedDbs, db.name])}
+        >
+          {db.name}
+        </Badge>
       ))}
     </div>
   );
@@ -263,8 +254,13 @@ export default function ComparePage({ searchParams }) {
 
   return (
     <Container>
-      <h1 className="text-3xl font-bold pt-8 mb-4">Vector Database Comparison</h1>
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div class="flex justify-between items-center">
+        <h1 className="text-3xl font-bold pt-8 mb-4">Compare Vector Databases</h1>
+        <Link href="/vectordatabases">
+            ← Back to Gallery
+        </Link>
+      </div>
+            <div className="flex flex-wrap items-center gap-2 mb-4">
         <p className="font-semibold">Comparing:</p>
         {selectedDatabases.map((db, index) => (
           <Button
@@ -285,7 +281,7 @@ export default function ComparePage({ searchParams }) {
         </Button>
       </div>
       <div className="mb-4">
-        <p className="text-sm text-gray-600 mb-2">Select vector databases to compare:</p>
+        <p className="text-sm text-gray-600 mb-2">Select additional vector databases to compare:</p>
         <DatabaseSelector
           databases={allDatabases}
           selectedDbs={selectedDbNames}
