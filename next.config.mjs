@@ -59,6 +59,61 @@ const nextConfig = {
         source: '/blog/video-aws-vault-intro',
         destination: '/videos/video-aws-vault-intro',
         permanent: true,
+      }, 
+      {
+        source: '/blog/weaviate-vs-chroma',
+        destination: '/comparisons/weaviate-vs-chroma',
+        permanent: true,
+      },
+      {
+        source: '/blog/pinecone-vs-chroma',
+        destination: '/comparisons/pinecone-vs-chroma',
+        permanent: true,
+      },
+      {
+        source: '/blog/weaviate-vs-milvus',
+        destination: '/comparisons/weaviate-vs-milvus',
+        permanent: true,
+      },
+      {
+        source: '/blog/chroma-vs-milvus',
+        destination: '/comparisons/chroma-vs-milvus',
+        permanent: true
+      },
+      {
+        source: '/blog/faiss-vs-chroma', 
+        destination: '/comparisons/faiss-vs-chroma',
+        permanent: true
+      },
+      {
+        source: '/blog/faiss-vs-milvus',
+        destination: '/comparisons/faiss-vs-milvus',
+        permanent: true
+      },
+      {
+        source: '/blog/pinecone-vs-faiss',
+        destination: '/comparisons/pinecone-vs-faiss',
+        permanent: true
+      },
+      {
+        source: '/blog/pinecone-vs-milvus',
+        destination: '/comparisons/pinecone-vs-weaviate',
+        permanent: true
+      },
+      {
+        source: '/blog/pinecone-vs-weaviate',
+        destination: '/comparisons/pinecone-vs-weaviate',
+        permanent: true
+      },
+      {
+        source: '/blog/weaviate-vs-faiss',
+        destination: '/comparisons/weaviate-vs-faiss',
+        permanent: true
+      },
+      {
+        source: '/blog/weaviate-vs-milvus',
+        destination: '/comparisons/weaviate-vs-milvus',
+        permanent: true
       }
     ]
   },
