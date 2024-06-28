@@ -49,16 +49,14 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 <CrossLinkCallout
   title="Compare Vector Databases Dynamically"
   description="Use my interactive tool to compare ${db1.name}, ${db2.name}, and other vector databases side by side."
-  linkText="Compare Vector Databases"
-  linkHref="/vectordatabases/compare"
+  linkText="Compare ${db1.name} and ${db2.name} vector databases"
+  linkHref="/vectordatabases/compare?dbs=${encodeURIComponent(db1.name)},${encodeURIComponent(db2.name)}"
   variant="info"
 />
 
 # ${db1.name} vs ${db2.name}
 
 This page contains a detailed comparison of the ${db1.name} and ${db2.name} vector databases.
-
-## Table of contents
 
 ## Deployment Options
   | Feature | ${db1.name} | ${db2.name} |
