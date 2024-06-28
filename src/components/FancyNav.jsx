@@ -77,6 +77,12 @@ const navHierarchy = [
         href: '/collections',
         description: 'See my writing organized by theme',
         icon: FileTextIcon,
+      },
+      {
+        label: 'Comparisons',
+        href: '/comparisons',
+        description: 'Compare various AI tools and technologies',
+        icon: BoxIcon,
       }
     ],
   },
@@ -124,12 +130,7 @@ const navHierarchy = [
         description: 'Compare multiple vector databases',
         icon: BoxIcon,
       },
-      {
-        label: 'Comparisons',
-        href: '/comparisons',
-        description: 'Compare various AI tools and technologies',
-        icon: BoxIcon,
-      }
+      
    ],
   },
   {
