@@ -11,7 +11,7 @@ const CrossLinkCallout = ({ title, description, linkText, linkHref, variant = 'i
 
   return (
     <div className={`p-4 my-6 rounded-lg border-2 shadow-md ${variantStyles[variant]}`}>
-      <h3 className="text-lg font-bold mb-2">{title}</h3>
+      <h3 className="text-lg text-white font-bold mb-2">{title}</h3>
       <p className="mb-3 text-base">{description}</p>
       <Link 
         href={linkHref} 
