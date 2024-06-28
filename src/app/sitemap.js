@@ -3,7 +3,7 @@ import path from 'path';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const baseDir = 'src/app';
-const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases'];
+const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'comparisons'];
 const excludeDirs = ['api', 'rss'];
 const excludeFiles = ['[name]'];
 
@@ -23,7 +23,8 @@ function getRoutes() {
       } else if (entry.isFile()) {
         if ((entry.name === 'page.jsx' || entry.name === 'page.tsx' || entry.name.endsWith('.mdx')) 
             && !excludeFiles.some(exclude => entryRelativePath.includes(exclude))) {
-          routes.push(`/${relativePath}`);
+          const routePath = `/${relativePath.replace(/\\/g, '/')}`;
+          routes.push(routePath.replace(/\/page$/, ''));
         }
       }
     });
@@ -46,6 +47,9 @@ function getRoutes() {
   // Add RSS feed routes
   routes.push('/rss/feed.json');
   routes.push('/rss/feed.xml');
+
+  // Log the routes for debugging
+  console.log('Generated routes:', routes);
 
   return routes.map(route => ({
     url: `${baseUrl}${route}`,
