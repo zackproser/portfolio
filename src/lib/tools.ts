@@ -1,4 +1,3 @@
-import { Tool } from '@/types/Tool'
 import glob from 'fast-glob'
 
 export async function importTool(
