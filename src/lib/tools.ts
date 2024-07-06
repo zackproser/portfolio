@@ -1,4 +1,5 @@
 import glob from 'fast-glob'
+const tools = await getAllTools()
 
 export async function importTool(
   toolFilename: string,
@@ -23,14 +24,3 @@ export async function getAllTools() {
   return tools.sort((a, z) => +new Date(z.date) - +new Date(a.date));
 }
 
-export async function getCategories(): Promise<string[]> {
-  const tools = await getAllTools()
-  const categories = new Set(tools.flatMap(tool => tool.categories || []))
-  return Array.from(categories).sort()
-}
-
-export async function getFeatures(): Promise<string[]> {
-  const tools = await getAllTools()
-  const features = new Set(tools.flatMap(tool => Object.keys(tool)))
-  return Array.from(features).sort()
-}
