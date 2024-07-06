@@ -1,14 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Tool } from '@/types/Tool'
+import { ArticleWithSlug } from '@/lib/shared-types'
 import DevToolCard from './DevToolCard'
 
-export default function DevToolSearch({ tools }: { tools: Tool[] }) {
+export default function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredTools = tools.filter(tool =>
-    tool.slug.toLowerCase().includes(searchTerm.toLowerCase())
+    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
