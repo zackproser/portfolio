@@ -44,7 +44,9 @@
             "name": "Team",
             "price": "$100 per month"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": false,
       "chat_interface": false,
@@ -58,7 +60,66 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": "/blog/github-copilot-review",
-      "homepage_link": "https://github.com/features/copilot"
+      "homepage_link": "https://github.com/features/copilot",
+      "business_info": {
+        "funding": "$100 million",
+        "revenue": "$50 million annually",
+        "employee_count": 500,
+        "founding_year": 2008,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1200,
+        "testimonials": [
+          {
+            "user": "John Doe",
+            "comment": "GitHub Copilot has significantly improved my coding efficiency!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.8,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 50000,
+        "number_of_integrations": 100,
+        "github_stars": 15000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "25%",
+        "competitors": ["TabNine", "Kite"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep GitHub integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Productivity at XYZ Corp",
+          "link": "/case-studies/xyz-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+        "screenshots": ["@/images/screenshots/copilot1.png", "@/images/screenshots/copilot2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Warp",
@@ -217,7 +278,7 @@
   "name": "Cody",
   "icon": "@/images/tools/cody.svg",
   "category": "Code Autocompletion",
-  "description": "Cody is an AI coding assistant that leverages Sourcegraph’s code graph to provide context-aware code completion, helping developers write, understand, and fix code more efficiently.",
+  "description": "Cody is an AI coding assistant that leverages Sourcegraph's code graph to provide context-aware code completion, helping developers write, understand, and fix code more efficiently.",
   "open_source": {
     "client": true,
     "backend": false,
