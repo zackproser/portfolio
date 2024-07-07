@@ -89,6 +89,9 @@ export default function ComparePage({ searchParams }) {
       return null;
     }
 
+    const categoryData = selectedTools[0][category];
+    const features = (typeof categoryData === 'object' && categoryData) ? Object.keys(categoryData) : [category];
+
     return (
       <AccordionItem value={category} key={category}>
         <AccordionTrigger className="text-xl">
@@ -101,21 +104,19 @@ export default function ComparePage({ searchParams }) {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Feature</TableHead>
                 {selectedTools.map((tool, index) => (
                   <TableHead key={tool.name} style={{ color: getToolColor(index) }}>{tool.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {selectedTools[0] && selectedTools[0][category] && Object.entries(selectedTools[0][category]).map(([feature, _]) => (
+              {features.map((feature) => (
                 <TableRow key={feature}>
                   <TableCell className="font-medium">
                     <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
                   </TableCell>
-                  {selectedTools.map((tool, index) => {
-                    const value = tool[category];
-                    return renderCellValue(value)
-                  })}
+                  {selectedTools.map((tool) => renderCellValue((typeof categoryData === 'object' && categoryData)? tool[category][feature] : tool[category]))}
                 </TableRow>
               ))}
             </TableBody>
@@ -126,18 +127,29 @@ export default function ComparePage({ searchParams }) {
   };
 
   const renderCellValue = (value) => {
-    console.log(`renderCellValue: %o`, value)
     if (typeof value === 'boolean') {
       return (
-        <span className={value ? 'text-green-600' : 'text-red-600'}>
+        <TableCell className={value ? 'text-green-600' : 'text-red-600'}>
           {getEmoji(value.toString())}
-        </span>
+        </TableCell>
       );
     }
     if (typeof value === 'object' && value !== null) {
-      return JSON.stringify(value);
+      return (
+        <TableCell>
+          {Object.entries(value).map(([key, val]) => (
+            <div key={key}>
+              <span className="font-medium">{sentenceCase(key)}:</span>{' '}
+              {typeof val === 'boolean' ? getEmoji(val.toString()) : val.toString()}
+            </div>
+          ))}
+        </TableCell>
+      );
     }
-    return value?.toString() ?? '';
+    if (typeof value === 'string') {
+      return <TableCell>{value}</TableCell>;
+    }
+    return <TableCell>{value?.toString() ?? ''}</TableCell>;
   };
 
   return (
