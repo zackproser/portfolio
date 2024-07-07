@@ -83,7 +83,28 @@ const emojiMap = {
   community_ecosystem: '🌐',
   pricing: '💰',
   additional_features: '➕',
-  business_information: '🏢', // New entry for Business Information category
+  business_information: '🏢',
+
+  // Chat Interface
+  chat_interface: '💬',
+
+  // Creator
+  creator: '👤',
+
+  // Language Support
+  language_support: '🌐',
+
+  // Supports Local Model
+  supports_local_model: '🏠',
+
+  // Supports Offline Use
+  supports_offline_use: '📴',
+
+  // Review Link
+  review_link: '🔗',
+
+  // Homepage Link
+  homepage_link: '🏠',
 
   // Other
   description: '📝',
