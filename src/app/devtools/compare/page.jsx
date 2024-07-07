@@ -116,7 +116,13 @@ export default function ComparePage({ searchParams }) {
                   <TableCell className="font-medium">
                     <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
                   </TableCell>
-                  {selectedTools.map((tool) => renderCellValue((typeof categoryData === 'object' && categoryData)? tool[category][feature] : tool[category]))}
+                  {selectedTools.map((tool) => (
+                    <TableCell key={tool.name}>
+                      {tool[category] && tool[category][feature] !== undefined
+                        ? renderCellValue((typeof categoryData === 'object' && categoryData) ? tool[category][feature] : tool[category])
+                        : 'N/A'}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
