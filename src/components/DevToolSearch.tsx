@@ -8,7 +8,7 @@ export default function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredTools = tools.filter(tool =>
-    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     tool.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 

@@ -134,22 +134,50 @@ export default function ComparePage({ searchParams }) {
         </TableCell>
       );
     }
-    if (typeof value === 'object' && value !== null) {
+    if (Array.isArray(value)) {
       return (
         <TableCell>
-          {Object.entries(value).map(([key, val]) => (
-            <div key={key}>
-              <span className="font-medium">{sentenceCase(key)}:</span>{' '}
-              {typeof val === 'boolean' ? getEmoji(val.toString()) : val.toString()}
+          {value.map((item, index) => (
+            <div key={index}>
+              {typeof item === 'object' ? renderNestedObject(item) : renderValue(item)}
             </div>
           ))}
         </TableCell>
       );
     }
-    if (typeof value === 'string') {
-      return <TableCell>{value}</TableCell>;
+    if (typeof value === 'object' && value !== null) {
+      return <TableCell>{renderNestedObject(value)}</TableCell>;
     }
-    return <TableCell>{value?.toString() ?? ''}</TableCell>;
+    return <TableCell>{renderValue(value)}</TableCell>;
+  };
+
+  const renderValue = (value) => {
+    if (typeof value === 'string' && isValidURL(value)) {
+      return (
+        <Link href={value} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+          {value}
+        </Link>
+      );
+    }
+    return value?.toString() ?? '';
+  };
+
+  const renderNestedObject = (obj) => {
+    return Object.entries(obj).map(([key, val]) => (
+      <div key={key} className="mb-1">
+        <span className="font-medium">{sentenceCase(key)}:</span>{' '}
+        {typeof val === 'object' ? renderNestedObject(val) : renderValue(val)}
+      </div>
+    ));
+  };
+
+  const isValidURL = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   return (
