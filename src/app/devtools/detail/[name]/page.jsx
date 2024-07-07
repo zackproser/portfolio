@@ -24,7 +24,7 @@ export default function ToolDetailPage({ params }) {
     );
   }
 
-  const [openSections, setOpenSections] = useState([]);
+  const [openSections, setOpenSections] = useState(Object.keys(tool)); // Initialize with all keys
 
   const toggleAllSections = () => {
     if (openSections.length === Object.keys(tool).length) {
