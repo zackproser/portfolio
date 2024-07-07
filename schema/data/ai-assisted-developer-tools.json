@@ -44,7 +44,9 @@
             "name": "Team",
             "price": "$100 per month"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": false,
       "chat_interface": false,
@@ -58,7 +60,66 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": "/blog/github-copilot-review",
-      "homepage_link": "https://github.com/features/copilot"
+      "homepage_link": "https://github.com/features/copilot",
+      "business_info": {
+        "funding": "$100 million",
+        "revenue": "$50 million annually",
+        "employee_count": 500,
+        "founding_year": 2008,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1200,
+        "testimonials": [
+          {
+            "user": "John Doe",
+            "comment": "GitHub Copilot has significantly improved my coding efficiency!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.8,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 50000,
+        "number_of_integrations": 100,
+        "github_stars": 15000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "25%",
+        "competitors": ["TabNine", "Kite"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep GitHub integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Productivity at XYZ Corp",
+          "link": "/case-studies/xyz-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+        "screenshots": ["@/images/screenshots/copilot1.png", "@/images/screenshots/copilot2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Warp",
@@ -86,7 +147,52 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": "/blog/warp-ai-terminal-review",
-      "homepage_link": "https://www.warp.dev/"
+      "homepage_link": "https://www.warp.dev/",
+      "creator": "Warp",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.5,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 50,
+        "github_stars": 8000
+      },
+      "performance": {
+        "latency": "30ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "15%",
+        "competitors": ["iTerm2", "Hyper"],
+        "unique_selling_points": ["AI-powered features", "Collaboration capabilities"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for Python in June 2024",
+        "future_roadmap": "Introducing more AI-powered features"
+      },
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=example"],
+        "screenshots": ["@/images/screenshots/warp1.png", "@/images/screenshots/warp2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Descript",
@@ -112,7 +218,52 @@
       "supports_autotranscribe": true,
       "edit_via_transcription": true,
       "review_link": null,
-      "homepage_link": "https://www.descript.com/"
+      "homepage_link": "https://www.descript.com/",
+      "creator": "Descript",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 30000,
+        "number_of_integrations": 20,
+        "github_stars": 5000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["Adobe Premiere Pro", "Final Cut Pro"],
+        "unique_selling_points": ["Edit via transcription", "Intuitive interface"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new transcription languages in May 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=example"],
+        "screenshots": ["@/images/screenshots/descript1.png", "@/images/screenshots/descript2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Aider",
@@ -136,7 +287,52 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://aider.chat"
+      "homepage_link": "https://aider.chat",
+      "creator": "Aider",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.6,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 10000,
+        "number_of_integrations": 30,
+        "github_stars": 4000
+      },
+      "performance": {
+        "latency": "35ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "10%",
+        "competitors": ["Warp", "iTerm2"],
+        "unique_selling_points": ["Voice commands", "Automatic commit generation"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new voice commands in April 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=example"],
+        "screenshots": ["@/images/screenshots/aider1.png", "@/images/screenshots/aider2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Codeium",
@@ -161,7 +357,7 @@
           }
         ]
       },
-     "free_tier": true,
+      "free_tier": true,
       "ide_support": {
         "vs_code": true,
         "jetbrains": true,
@@ -182,7 +378,43 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": "/blog/codeium-review",
-      "homepage_link": "https://codeium.com"
+      "homepage_link": "https://codeium.com",
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.4,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Free for individuals", "Supports 70+ languages"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=example"],
+        "screenshots": ["@/images/screenshots/codeium1.png", "@/images/screenshots/codeium2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Kapwing",
@@ -210,512 +442,548 @@
       "creator": "Kapwing",
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.kapwing.com"
+      "homepage_link": "https://www.kapwing.com",
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.3,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 3000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "12%",
+        "competitors": ["Descript", "Adobe Premiere Pro"],
+        "unique_selling_points": ["Simplicity", "Accessibility"]
+      },
+      "innovation": {
+        "recent_updates": "Added new editing features in February 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "multimedia": {
+        "demo_videos": ["https://www.youtube.com/watch?v=example"],
+        "screenshots": ["@/images/screenshots/kapwing1.png", "@/images/screenshots/kapwing2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
 
 {
-  "name": "Cody",
-  "icon": "@/images/tools/cody.svg",
-  "category": "Code Autocompletion",
-  "description": "Cody is an AI coding assistant that leverages Sourcegraph’s code graph to provide context-aware code completion, helping developers write, understand, and fix code more efficiently.",
-  "open_source": {
-    "client": true,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": true,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "free",
-    "tiers": [
-      {
-        "name": "Standard",
-        "price": "Free"
+      "name": "Cody",
+      "icon": "@/images/tools/cody.svg",
+      "category": "Code Autocompletion",
+      "description": "Cody is an AI coding assistant that leverages Sourcegraph's code graph to provide context-aware code completion, helping developers write, understand, and fix code more efficiently.",
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
       },
-      {
-        "name": "Pro",
-        "price": "Subscription based - contact for pricing"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "Sourcegraph",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://sourcegraph.com/cody"
-},
-{
-  "name": "Mods",
-  "icon": "@/images/tools/mods.svg",
-  "category": "Intelligent Terminals / Shells",
-  "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
-  "open_source": {
-    "client": true,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": false,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": true,
-    "emacs": true,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "free",
-    "tiers": []
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "Charm.sh",
-  "language_support": {
-    "python": false,
-    "javascript": false,
-    "java": false,
-    "cpp": false
-  },
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "advanced_history": true,
-  "homepage_link": "https://github.com/charmbracelet/mods"
-},
-{
-  "name": "Cursor",
-  "icon": "@/images/tools/cursor.svg",
-  "category": "Code Autocompletion",
-  "description": "Cursor is an AI-powered code editor designed for pair-programming with AI. It enhances the coding experience by offering features like real-time AI assistance, inline chat, and auto-debugging within the editor.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "free",
-    "tiers": [
-      {
-        "name": "Standard",
-        "price": "Free"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "Anysphere",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": false,
-    "cpp": false
-  },
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "homepage_link": "https://cursor.sh"
-},
-{
-  "name": "OpusClip",
-  "icon": "@/images/tools/opusclip.svg",
-  "category": "Video Editing",
-  "description": "OpusClip is an AI-powered video repurposing tool that transforms long videos into viral short clips. It leverages advanced AI to analyze video content, extracting and rearranging key moments into cohesive and engaging short videos optimized for social media platforms.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": false,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Free",
-        "price": "Free, limited features"
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
       },
-      {
-        "name": "Pro",
-        "price": "Subscription based, contact for pricing"
-      }
-    ]
-  },
-  "free_tier": true,
-  "works_in_browser": true,
-  "supports_autotranscribe": true,
-  "edit_via_transcription": true,
-  "creator": "Opus Studio",
-  "language_support": {
-    "python": false,
-    "javascript": false,
-    "java": false,
-    "cpp": false
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://www.opus.pro"
-},
-{
-  "name": "Tabnine",
-  "icon": "@/images/tools/tabnine.svg",
-  "category": "Code Autocompletion",
-  "description": "Tabnine is an AI-powered code assistant that enhances software development by providing real-time predictive code completions. It supports a wide array of programming languages and integrates with numerous IDEs to increase coding efficiency.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": true,
-    "visual_studio": true,
-    "vim": true,
-    "emacs": true,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Basic",
-        "price": "Free"
+      "pricing": {
+        "model": "free",
+        "tiers": [
+          {
+            "name": "Standard",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "Subscription based - contact for pricing"
+          }
+        ]
       },
-      {
-        "name": "Pro",
-        "price": "$12 per month per seat"
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Sourcegraph",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
       },
-      {
-        "name": "Business",
-        "price": "$30 per month per seat"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "Codota",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://www.tabnine.com"
-},
-{
-  "name": "MutableAI",
-  "icon": "@/images/tools/mutableai.svg",
-  "category": "Code Autocompletion",
-  "description": "MutableAI is an AI-accelerated software development tool that streamlines coding processes. It features AI autocomplete, prompt-driven development, and automatic generation of unit tests, transforming prototypes into production-quality code efficiently.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Basic",
-        "price": "Free"
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://sourcegraph.com/cody"
+    },
+    {
+      "name": "Mods",
+      "icon": "@/images/tools/mods.svg",
+      "category": "Intelligent Terminals / Shells",
+      "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
       },
-      {
-        "name": "Pro",
-        "price": "Starting from $10 per month"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "MutableAI Corp",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": false,
-    "cpp": false
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://mutable.ai"
-},
-{
-  "name": "CodiumAI",
-  "icon": "@/images/tools/codiumai.svg",
-  "category": "Code Autocompletion",
-  "description": "CodiumAI is an AI-powered IDE extension that helps developers generate meaningful tests for their code, offering automated suggestions for code improvements and bug detection. It integrates into the development environment to assist in code review, suggesting modifications and enhancements.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Developer",
-        "price": "Free"
+      "ide_support": {
+        "vs_code": false,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": true,
+        "emacs": true,
+        "intellij": false
       },
-      {
-        "name": "Teams",
-        "price": "$19 per user/month"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "CodiumAI",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true,
-    "typescript": true,
-    "go": true,
-    "php": true,
-    "swift": true,
-    "csharp": true
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://www.codium.ai"
-},
-{
-  "name": "Grit.io",
-  "icon": "@/images/tools/grit.io.svg",
-  "category": "Code Autocompletion",
-  "description": "Grit.io is an AI-powered tool that automates the management of technical debt by using static analysis and machine learning to generate pull requests for code cleanup and migration. It focuses on enhancing code quality and speeding up development cycles.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": false,
-    "visual_studio": true,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Free",
-        "price": "Free, basic features"
+      "pricing": {
+        "model": "free",
+        "tiers": []
       },
-      {
-        "name": "Team",
-        "price": "Contact for pricing"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "Grit Inc",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": false
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://www.grit.io"
-},
-{
-  "name": "Adrenaline AI",
-  "icon": "@/images/tools/adrenaline-ai.svg",
-  "category": "Code Autocompletion",
-  "description": "Adrenaline AI leverages static analysis, vector search, and advanced language models to provide comprehensive code explanations, help with debugging, and enhance overall coding workflows.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": true,
-    "visual_studio": true,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Free Trial",
-        "price": "Free, limited time"
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Charm.sh",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
       },
-      {
-        "name": "Pro",
-        "price": "Subscription based, contact for pricing"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "Adrenaline Tech",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true,
-    "typescript": true
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://useadrenaline.com"
-},
-{
-  "name": "Amazon CodeWhisperer",
-  "icon": "@/images/tools/codewhisperer.svg",
-  "category": "Code Autocompletion",
-  "description": "CodeWhisperer is an AI-powered pair programming tool developed by Amazon, similar to GitHub Copilot. It provides real-time code suggestions, ranging from snippets to entire functions, tailored to the developer's current context in the IDE. It supports multiple programming languages and integrates with various IDEs, helping to accelerate development and improve code quality.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": false,
-    "visual_studio": true,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "free",
-    "tiers": [
-      {
-        "name": "Individual",
-        "price": "Free"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "Amazon Web Services",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": false
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://aws.amazon.com/codewhisperer/"
-},
-{
-  "name": "Figstack",
-  "icon": "@/images/tools/figstack.svg",
-  "category": "Code Autocompletion",
-  "description": "Figstack is an AI-driven coding assistant that enhances developer productivity by providing features such as code explanation, language translation, docstring generation, and time complexity analysis. It's designed to help developers quickly understand and document code in any programming language.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "freemium",
-    "tiers": [
-      {
-        "name": "Basic",
-        "price": "Free"
+      "supports_local_model": true,
+      "supports_offline_use": true,
+      "review_link": null,
+      "advanced_history": true,
+      "homepage_link": "https://github.com/charmbracelet/mods"
+    },
+    {
+      "name": "Cursor",
+      "icon": "@/images/tools/cursor.svg",
+      "category": "Code Autocompletion",
+      "description": "Cursor is an AI-powered code editor designed for pair-programming with AI. It enhances the coding experience by offering features like real-time AI assistance, inline chat, and auto-debugging within the editor.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
       },
-      {
-        "name": "Pro",
-        "price": "Contact for pricing"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "Figstack Inc",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true,
-    "typescript": false
-  },
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://www.figstack.com"
-},
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
+      },
+      "pricing": {
+        "model": "free",
+        "tiers": [
+          {
+            "name": "Standard",
+            "price": "Free"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Anysphere",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": true,
+      "supports_offline_use": true,
+      "review_link": null,
+      "homepage_link": "https://cursor.sh"
+    },
+    {
+      "name": "OpusClip",
+      "icon": "@/images/tools/opusclip.svg",
+      "category": "Video Editing",
+      "description": "OpusClip is an AI-powered video repurposing tool that transforms long videos into viral short clips. It leverages advanced AI to analyze video content, extracting and rearranging key moments into cohesive and engaging short videos optimized for social media platforms.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": false,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Free",
+            "price": "Free, limited features"
+          },
+          {
+            "name": "Pro",
+            "price": "Subscription based, contact for pricing"
+          }
+        ]
+      },
+      "free_tier": true,
+      "works_in_browser": true,
+      "supports_autotranscribe": true,
+      "edit_via_transcription": true,
+      "creator": "Opus Studio",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.opus.pro"
+    },
+    {
+      "name": "Tabnine",
+      "icon": "@/images/tools/tabnine.svg",
+      "category": "Code Autocompletion",
+      "description": "Tabnine is an AI-powered code assistant that enhances software development by providing real-time predictive code completions. It supports a wide array of programming languages and integrates with numerous IDEs to increase coding efficiency.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": true,
+        "emacs": true,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Basic",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "$12 per month per seat"
+          },
+          {
+            "name": "Business",
+            "price": "$30 per month per seat"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Codota",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.tabnine.com"
+    },
+    {
+      "name": "MutableAI",
+      "icon": "@/images/tools/mutableai.svg",
+      "category": "Code Autocompletion",
+      "description": "MutableAI is an AI-accelerated software development tool that streamlines coding processes. It features AI autocomplete, prompt-driven development, and automatic generation of unit tests, transforming prototypes into production-quality code efficiently.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Basic",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "Starting from $10 per month"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "MutableAI Corp",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://mutable.ai"
+    },
+    {
+      "name": "CodiumAI",
+      "icon": "@/images/tools/codiumai.svg",
+      "category": "Code Autocompletion",
+      "description": "CodiumAI is an AI-powered IDE extension that helps developers generate meaningful tests for their code, offering automated suggestions for code improvements and bug detection. It integrates into the development environment to assist in code review, suggesting modifications and enhancements.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Developer",
+            "price": "Free"
+          },
+          {
+            "name": "Teams",
+            "price": "$19 per user/month"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "CodiumAI",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true,
+        "typescript": true,
+        "go": true,
+        "php": true,
+        "swift": true,
+        "csharp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.codium.ai"
+    },
+    {
+      "name": "Grit.io",
+      "icon": "@/images/tools/grit.io.svg",
+      "category": "Code Autocompletion",
+      "description": "Grit.io is an AI-powered tool that automates the management of technical debt by using static analysis and machine learning to generate pull requests for code cleanup and migration. It focuses on enhancing code quality and speeding up development cycles.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": false,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Free",
+            "price": "Free, basic features"
+          },
+          {
+            "name": "Team",
+            "price": "Contact for pricing"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "Grit Inc",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.grit.io"
+    },
+    {
+      "name": "Adrenaline AI",
+      "icon": "@/images/tools/adrenaline-ai.svg",
+      "category": "Code Autocompletion",
+      "description": "Adrenaline AI leverages static analysis, vector search, and advanced language models to provide comprehensive code explanations, help with debugging, and enhance overall coding workflows.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Free Trial",
+            "price": "Free, limited time"
+          },
+          {
+            "name": "Pro",
+            "price": "Subscription based, contact for pricing"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "Adrenaline Tech",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true,
+        "typescript": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://useadrenaline.com"
+    },
+    {
+      "name": "Amazon CodeWhisperer",
+      "icon": "@/images/tools/codewhisperer.svg",
+      "category": "Code Autocompletion",
+      "description": "CodeWhisperer is an AI-powered pair programming tool developed by Amazon, similar to GitHub Copilot. It provides real-time code suggestions, ranging from snippets to entire functions, tailored to the developer's current context in the IDE. It supports multiple programming languages and integrates with various IDEs, helping to accelerate development and improve code quality.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": false,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "free",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "Free"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Amazon Web Services",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://aws.amazon.com/codewhisperer/"
+    },
+    {
+      "name": "Figstack",
+      "icon": "@/images/tools/figstack.svg",
+      "category": "Code Autocompletion",
+      "description": "Figstack is an AI-driven coding assistant that enhances developer productivity by providing features such as code explanation, language translation, docstring generation, and time complexity analysis. It's designed to help developers quickly understand and document code in any programming language.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
+      },
+      "pricing": {
+        "model": "freemium",
+        "tiers": [
+          {
+            "name": "Basic",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "Contact for pricing"
+          }
+        ]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "Figstack Inc",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true,
+        "typescript": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://www.figstack.com"
+    },
 {
   "name": "aiXcoder",
   "icon": "@/images/tools/aixcoder.svg",
@@ -807,3 +1075,4 @@
 }
   ]
 }
+

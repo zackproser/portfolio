@@ -13,6 +13,7 @@ type Props = {
 }
 
 export async function generateMetadata({ params }: Props) {
+  console.log(`generateMetadata: %o`, params)
   return {
     title: {
       template: '%s - AI Engineer',
@@ -24,7 +25,6 @@ export async function generateMetadata({ params }: Props) {
         'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
       },
     },
-
   }
 }
 
