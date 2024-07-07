@@ -9,7 +9,7 @@ export async function importTool(
   }
 
   return {
-    slug: toolFilename.replace('/page.mdx', ''),
+    slug: toolFilename.replace('/page.mdx', '').toLowerCase().replace(/ /g, '-'),
     ...metadata,
   }
 }
@@ -23,4 +23,3 @@ export async function getAllTools() {
 
   return tools.sort((a, z) => +new Date(z.date) - +new Date(a.date));
 }
-

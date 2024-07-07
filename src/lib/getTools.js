@@ -9,5 +9,7 @@ export function getCategories() {
 }
 
 export function getToolByName(name) {
-    return data.tools.find(tool => tool.name.toLowerCase() === name.toLowerCase())
+  const normalizedName = name.toLowerCase().replace(/-/g, ' ');
+  const tool = data.tools.find(tool => tool.slug === normalizedName || tool.name.toLowerCase() === normalizedName);
+  return tool
 }
