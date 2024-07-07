@@ -4,18 +4,26 @@ import { useState } from 'react'
 import { ArticleWithSlug } from '@/lib/shared-types'
 import DevToolCard from './DevToolCard'
 
-export default function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
+export default function DevToolSearch({ tools }: { tools: any[] }) {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredTools = tools.filter(tool =>
-    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchTerm.toLowerCase())
+  // Cast tools to ArticleWithSlug
+  const castedTools: ArticleWithSlug[] = tools.map(tool => ({
+    slug: tool.slug || tool.name.toLowerCase().replace(/\s+/g, '-'),
+    title: tool.name,
+    content: tool.description,
+    // Add other necessary properties if needed
+  }))
+
+  const filteredTools = castedTools.filter(tool =>
+    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.content.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const renderToolDetails = (tool: ArticleWithSlug) => (
     <div>
-      <h2>{tool.name}</h2>
-      <p>{tool.description}</p>
+      <h2>{tool.title}</h2>
+      <p>{tool.content}</p>
       {tool.pricing && (
         <div>
           <h3>Pricing</h3>
