@@ -101,7 +101,6 @@ export default function ComparePage({ searchParams }) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Feature</TableHead>
                 {selectedTools.map((tool, index) => (
                   <TableHead key={tool.name} style={{ color: getToolColor(index) }}>{tool.name}</TableHead>
                 ))}
@@ -113,11 +112,10 @@ export default function ComparePage({ searchParams }) {
                   <TableCell className="font-medium">
                     <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
                   </TableCell>
-                  {selectedTools.map((tool) => (
-                    <TableCell key={`${tool.name}-${feature}`}>
-                      {renderCellValue(tool[category]?.[feature])}
-                    </TableCell>
-                  ))}
+                  {selectedTools.map((tool, index) => {
+                    const value = tool[category];
+                    return renderCellValue(value)
+                  })}
                 </TableRow>
               ))}
             </TableBody>
@@ -128,6 +126,7 @@ export default function ComparePage({ searchParams }) {
   };
 
   const renderCellValue = (value) => {
+    console.log(`renderCellValue: %o`, value)
     if (typeof value === 'boolean') {
       return (
         <span className={value ? 'text-green-600' : 'text-red-600'}>
