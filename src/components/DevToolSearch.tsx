@@ -12,7 +12,7 @@ export default function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
     tool.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const renderToolDetails = (tool) => (
+  const renderToolDetails = (tool: ArticleWithSlug) => (
     <div>
       <h2>{tool.name}</h2>
       <p>{tool.description}</p>
