@@ -11,46 +11,22 @@ export default function DevToolSearch({ tools }: { tools: any[] }) {
   const castedTools: ArticleWithSlug[] = tools.map(tool => ({
     slug: tool.slug || tool.name.toLowerCase().replace(/\s+/g, '-'),
     title: tool.name,
-    content: tool.description,
-    // Add other necessary properties if needed
+    description: tool.description, 
+    author: tool.author || 'Unknown', 
+    date: tool.date || new Date().toISOString(), 
   }))
 
   const filteredTools = castedTools.filter(tool =>
-    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.content.toLowerCase().includes(searchTerm.toLowerCase())
+    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) 
   )
 
   const renderToolDetails = (tool: ArticleWithSlug) => (
     <div>
-      <h2>{tool.title}</h2>
-      <p>{tool.content}</p>
-      {tool.pricing && (
-        <div>
-          <h3>Pricing</h3>
-          <p>Model: {tool.pricing.model}</p>
-          {tool.pricing.tiers && (
-            <ul>
-              {tool.pricing.tiers.map((tier, index) => (
-                <li key={index}>{tier.name}: {tier.price}</li>
-              ))}
-            </ul>
-          )}
-          {tool.pricing.discounts && <p>Discounts: {tool.pricing.discounts}</p>}
-          {tool.pricing.payment_methods && (
-            <p>Payment Methods: {tool.pricing.payment_methods.join(', ')}</p>
-          )}
-        </div>
-      )}
-      {tool.business_info && (
-        <div>
-          <h3>Business Information</h3>
-          <p>Funding: {tool.business_info.funding}</p>
-          <p>Revenue: {tool.business_info.revenue}</p>
-          <p>Employees: {tool.business_info.employee_count}</p>
-          <p>Founded: {tool.business_info.founding_year}</p>
-          <p>Headquarters: {tool.business_info.headquarters}</p>
-        </div>
-      )}
+      <h2 className="text-xl font-bold">{tool.title}</h2>
+      <p className="mt-2 text-gray-600">{tool.description}</p>
+      <div className="">
+
+      </div>
     </div>
   )
 
