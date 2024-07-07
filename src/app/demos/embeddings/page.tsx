@@ -54,7 +54,7 @@ function EmbeddingsDemo() {
         </div>
 
         <div className="mb-6">
-          <p className="text-zinc-200 mb-6">As you type, your sentence is split into words, the way us humans tend to see and read them:</p>
+          <p className="mb-6">As you type, your sentence is split into words, the way us humans tend to see and read them:</p>
           <div className="inline-block">
             {inputText.split(' ').map((word, index) => (
               <span
@@ -71,7 +71,7 @@ function EmbeddingsDemo() {
             ))}
           </div>
           <br />
-          <p className="text-zinc-200 mt-6 mb-6">But how does a machine understand the defining features of your text? Click the button below to convert your text to embeddings.</p>
+          <p className="mt-6 mb-6">But how does a machine understand the defining features of your text? Click the button below to convert your text to embeddings.</p>
           <button
             className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mb-6"
             onClick={() => generateTokens()}
@@ -83,22 +83,22 @@ function EmbeddingsDemo() {
           </div>
         </div>
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-zinc-200 mb-4">What are embeddings or vectors?</h2>
-          <p className="text-zinc-200 mb-6">
+          <h2 className="text-2xl font-semibold mb-4">What are embeddings or vectors?</h2>
+          <p className="mb-6">
             Embeddings are a powerful machine learning technique that allow computers to understand and represent the meaning and relationships between words and phrases. With embeddings, each word or chunk of text is mapped to a vector of numbers in a high-dimensional space, such that words with similar meanings are located close together.</p>
         </div>
 
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-zinc-200 mb-4">How embeddings models work</h2>
-          <p className="text-zinc-200 mb-6">
+          <h2 className="text-2xl font-semibold mb-4">How embeddings models work</h2>
+          <p className="mb-6">
             Under the hood, embeddings models like word2vec or GloVe are trained on massive amounts of text data, like all the articles on Wikipedia. The model learns the patterns of which words tend to appear in similar contexts.
           </p>
 
-          <p className="text-zinc-200 mb-6">
+          <p className="mb-6">
             For example, the model might frequently see phrases like &lquot;the king sits on his throne&rquot; and &lquot;the queen sits on her throne&rquot. From many examples like this, it learns that king and queen have similar meanings and usage patterns. The model represents this similarity by assigning king and queen vectors that are close together in the embedding space.
           </p>
 
-          <p className="text-zinc-200 mb-6">
+          <p className="mb-6">
             By doing this for all words across a huge corpus, the model builds up a rich understanding of the relationships between words based on the contexts they appear in. The resulting embedding vectors miraculously seem to capture analogies and hierarchical relationships.
           </p>
         </div>
@@ -106,18 +106,18 @@ function EmbeddingsDemo() {
 
 
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-zinc-200 mb-4">Why embeddings are powerful and having a moment</h2>
-          <p className="text-zinc-200 mb-6">
+          <h2 className="text-2xl font-semibold mb-4">Why embeddings are powerful and having a moment</h2>
+          <p className="mb-6">
             Embeddings are incredibly powerful because they allow machine learning models to understand language in a more flexible, nuanced way than just memorizing specific words and phrases. By capturing the semantic relationships between words, embeddings enable all sorts of natural language tasks like analogical reasoning, sentiment analysis, named entity recognition, and more.
           </p>
-          <p className="text-zinc-200 mb-6">We&apos;re seeing a boom in embeddings and their applications right now due to several factors:</p>
+          <p className="mb-6">We&apos;re seeing a boom in embeddings and their applications right now due to several factors:</p>
 
-          <p className="text-zinc-200 mb-6"> 1. The rise of transformers and attention-based language models like BERT that generate even richer, more contextual embeddings</p>
-          <p className="text-zinc-200 mb-6"> 2. Ever-increasing amounts of text data to train huge embeddings models</p>
-          <p className="text-zinc-200 mb-6"> 3. More powerful hardware and techniques for training massive models</p>
-          <p className="text-zinc-200 mb-6"> 4. Creative new applications for embeddings, like using them for semantic search, knowledge retrieval, multi-modal learning, and more</p>
+          <p className="mb-6"> 1. The rise of transformers and attention-based language models like BERT that generate even richer, more contextual embeddings</p>
+          <p className="mb-6"> 2. Ever-increasing amounts of text data to train huge embeddings models</p>
+          <p className="mb-6"> 3. More powerful hardware and techniques for training massive models</p>
+          <p className="mb-6"> 4. Creative new applications for embeddings, like using them for semantic search, knowledge retrieval, multi-modal learning, and more</p>
 
-          <p className="text-zinc-200 mb-6">Embeddings are quickly becoming an essential tool that will power the next wave of natural language AI systems. They&apos;re a core reason behind the rapid progress in natural language processing and the explosion of generative AI tools we are seeing today.</p>
+          <p className="mb-6">Embeddings are quickly becoming an essential tool that will power the next wave of natural language AI systems. They&apos;re a core reason behind the rapid progress in natural language processing and the explosion of generative AI tools we are seeing today.</p>
         </div >
       </div >
     </Container >
