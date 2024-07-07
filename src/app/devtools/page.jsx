@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { track } from '@vercel/analytics'
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function DevToolsIndex() {
   const router = useRouter();
@@ -48,9 +49,13 @@ export default function DevToolsIndex() {
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredTools.map((tool, index) => (
-          <div key={index} className="flex flex-col dark:bg-zinc-800 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold">{tool.name}</h3>
-            <p className="text-sm text-gray-600 dark:text-zinc-400">{tool.description}</p>
+          <Card key={index} className="flex flex-col dark:bg-zinc-800">
+            <CardHeader className="flex flex-row items-center space-x-4">
+              <CardTitle>{tool.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <p className="text-sm text-gray-600 dark:text-zinc-400">{tool.description}</p>
+            </CardContent>
             <div className="p-4 mt-auto flex justify-between">
               <Button
                 variant="primary"
@@ -69,7 +74,7 @@ export default function DevToolsIndex() {
                 Details
               </Button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </SimpleLayout>
