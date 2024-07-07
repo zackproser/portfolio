@@ -13,6 +13,7 @@ type Props = {
 }
 
 export async function generateMetadata({ params }: Props) {
+  console.log(`generateMetadata: %o`, params)
   return {
     title: {
       template: '%s - AI Engineer',
