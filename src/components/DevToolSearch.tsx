@@ -43,7 +43,6 @@ export default function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
           <p>Headquarters: {tool.business_info.headquarters}</p>
         </div>
       )}
-      {/* Add more sections for other new properties */}
     </div>
   )
 

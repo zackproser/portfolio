@@ -16,7 +16,7 @@ export default function DevToolCard({ tool }: { tool: Tool }) {
           Details
         </Link>
         <Link
-          href={`/comparisons/${tool.slug}`}
+          href={`/devtools/compare?tools=${tool.slug}`}
           className="block px-4 py-2 text-center text-blue-500 bg-white border border-blue-500 rounded hover:bg-blue-50"
         >
           Compare
