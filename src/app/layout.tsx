@@ -25,7 +25,6 @@ export async function generateMetadata({ params }: Props) {
         'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
       },
     },
-
   }
 }
 
