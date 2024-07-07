@@ -5,7 +5,7 @@ export default function DevToolCard({ tool }: { tool: Tool }) {
   return (
     <div className="flex flex-col justify-between p-6 bg-white rounded-lg shadow-md">
       <div>
-        <h3 className="text-xl font-semibold">{tool.title}</h3>
+        <h3 className="text-xl font-semibold dark:text-zinc-800">{tool.slug}</h3>
         <p className="mt-2 text-gray-600">{tool.description}</p>
       </div>
       <div className="mt-4 space-y-2">
