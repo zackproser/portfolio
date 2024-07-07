@@ -1,5 +1,5 @@
 import glob from 'fast-glob'
-const tools = await getAllTools()
+import { Article, ArticleWithSlug } from '@/lib/shared-types'
 
 export async function importTool(
   toolFilename: string,
