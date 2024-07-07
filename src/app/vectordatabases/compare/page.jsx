@@ -245,6 +245,7 @@ export default function ComparePage({ searchParams }) {
   };
 
   const resetComparison = () => {
+    setOpenSections([]);
     router.push('/vectordatabases/compare');
   };
 

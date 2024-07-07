@@ -130,7 +130,12 @@ const navHierarchy = [
         description: 'Compare multiple vector databases',
         icon: BoxIcon,
       },
-      
+      {
+        label: 'AI-assisted developer tools',
+        href: '/devtools',
+        description: 'Explore AI-powered tools for developers',
+        icon: BoxIcon,
+      },
    ],
   },
   {

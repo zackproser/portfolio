@@ -3,13 +3,13 @@ import path from 'path';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const baseDir = 'src/app';
-const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'comparisons'];
+const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons'];
 const excludeDirs = ['api', 'rss'];
 const excludeFiles = ['[name]'];
 
 function getRoutes() {
   const fullPath = path.join(process.cwd(), baseDir);
-  let routes = [];
+  let routes = new Set(); // Use a Set to store unique routes
 
   function addRoutesRecursively(currentPath, relativePath = '') {
     const entries = fs.readdirSync(currentPath, { withFileTypes: true });
@@ -24,7 +24,7 @@ function getRoutes() {
         if ((entry.name === 'page.jsx' || entry.name === 'page.tsx' || entry.name.endsWith('.mdx')) 
             && !excludeFiles.some(exclude => entryRelativePath.includes(exclude))) {
           const routePath = `/${relativePath.replace(/\\/g, '/')}`;
-          routes.push(routePath.replace(/\/page$/, ''));
+          routes.add(routePath.replace(/\/page$/, '')); // Add to Set
         }
       }
     });
@@ -35,7 +35,7 @@ function getRoutes() {
 
   entries.forEach(entry => {
     if (entry.isDirectory() && !excludeDirs.includes(entry.name)) {
-      routes.push(`/${entry.name}`);
+      routes.add(`/${entry.name}`); // Add to Set
 
       if (dynamicDirs.includes(entry.name)) {
         const subDir = path.join(fullPath, entry.name);
@@ -45,13 +45,14 @@ function getRoutes() {
   });
 
   // Add RSS feed routes
-  routes.push('/rss/feed.json');
-  routes.push('/rss/feed.xml');
+  routes.add('/rss/feed.json');
+  routes.add('/rss/feed.xml');
 
-  // Log the routes for debugging
-  console.log('Generated routes:', routes);
+  // Convert Set to Array and log the routes for debugging
+  const uniqueRoutes = Array.from(routes);
+  console.log('Generated routes:', uniqueRoutes);
 
-  return routes.map(route => ({
+  return uniqueRoutes.map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
