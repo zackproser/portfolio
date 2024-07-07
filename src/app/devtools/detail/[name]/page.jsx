@@ -13,7 +13,8 @@ import Link from 'next/link';
 
 export default function ToolDetailPage({ params }) {
   const tool = getToolByName(params.name);
-  
+  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); // Initialize with all keys or empty array
+
   if (!tool) {
     return (
       <SimpleLayout title="Tool Not Found" intro="The requested tool could not be found.">
@@ -23,8 +24,6 @@ export default function ToolDetailPage({ params }) {
       </SimpleLayout>
     );
   }
-
-  const [openSections, setOpenSections] = useState(Object.keys(tool)); // Initialize with all keys
 
   const toggleAllSections = () => {
     if (openSections.length === Object.keys(tool).length) {
