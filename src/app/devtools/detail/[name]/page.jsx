@@ -12,6 +12,7 @@ import { sentenceCase } from '@/utils/sentencesCase';
 import Link from 'next/link';
 import { getLogoById } from '@/lib/logoImports';
 import IDESupportBlade from '@/components/IDESupportBlade';
+import PricingDetails from '@/components/PricingDetails';
 
 export default function ToolDetailPage({ params }) {
   const toolName = decodeURIComponent(params.name); 
@@ -139,6 +140,8 @@ export default function ToolDetailPage({ params }) {
 
       <IDESupportBlade ideSupport={tool.ide_support} />
 
+      <PricingDetails pricing={tool.pricing} />
+
       <div className="mb-4 flex justify-between items-center">
         <div className="space-x-2">
           <Link href="/devtools">
@@ -168,7 +171,7 @@ export default function ToolDetailPage({ params }) {
 
       <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {Object.entries(tool || {}).map(([key, value]) => {
-          if (key !== 'name' && key !== 'icon' && key !== 'multimedia' && key !== 'category' && key !== 'description' && key !== 'ide_support') {
+          if (key !== 'name' && key !== 'icon' && key !== 'multimedia' && key !== 'category' && key !== 'description' && key !== 'ide_support' && key !== 'pricing') {
             const emoji = getEmoji(key);
             return (
               <AccordionItem value={key} key={key}>
