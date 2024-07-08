@@ -13,12 +13,13 @@ import Link from 'next/link';
 import { getLogoById } from '@/lib/logoImports';
 import IDESupportBlade from '@/components/IDESupportBlade';
 import PricingDetails from '@/components/PricingDetails';
+import OpenSourceStatus from '@/components/OpenSourceStatus';
 
 export default function ToolDetailPage({ params }) {
   const toolName = decodeURIComponent(params.name); 
   const tool = getToolByName(toolName);
   const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); // Initialize with all keys or empty array
-  const toolLogo = getLogoById(toolName.toLowerCase());
+  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null; // Check if toolName exists
   console.log(`toolLogo: %o`, toolLogo)
 
   if (!tool) {
@@ -108,12 +109,14 @@ export default function ToolDetailPage({ params }) {
     return null;
   };
 
+  const excludedSections = ['name', 'icon', 'multimedia', 'category', 'description', 'ide_support', 'pricing', 'open_source', 'free_tier'];
+
   return (
     <SimpleLayout
-      title={``}
-      intro={``}
+      title={''}
+      intro={''}
     >
-      <div className="flex items-center space-x-6 mb-6">
+      <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-6">
           <h1 className="text-4xl font-bold">{tool.name}</h1>
           {toolLogo && (
@@ -126,36 +129,45 @@ export default function ToolDetailPage({ params }) {
             />
           )}
         </div>
-        <div className="flex flex-col space-y-4">
-          <div>
-            <strong>Category:</strong> {tool.category}
-          </div>
-          <div>
-            <strong>Description:</strong> {tool.description}
-          </div>
+        <div className="flex space-x-2">
+          <Link href="/devtools">
+            <Button variant="solid" className="bg-blue-500 text-white hover:bg-blue-600">
+              🏠 Back to Gallery
+            </Button>
+          </Link>
+          <Link href={`/devtools/compare?tools=${encodeURIComponent(tool.name)}`}>
+            <Button variant="solid" className="bg-green-500 text-white hover:bg-green-600">
+              🔍 Compare
+            </Button>
+          </Link>
+          {tool.review_link && (
+            <Link href={tool.review_link}>
+              <Button variant="solid" className="bg-yellow-500 text-white hover:bg-yellow-600">
+                📖 Read My Review
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col space-y-4 mb-6">
+        <div>
+          <strong>Category:</strong> {tool.category}
+        </div>
+        <div>
+          <strong>Description:</strong> {tool.description}
         </div>
       </div>
 
       {renderMultimediaSection()}
 
-      <IDESupportBlade ideSupport={tool.ide_support} />
+      {tool.ide_support && <IDESupportBlade ideSupport={tool.ide_support} />}
 
-      <PricingDetails pricing={tool.pricing} />
+      {tool.pricing && <PricingDetails pricing={tool.pricing} />}
+
+      {tool.open_source && <OpenSourceStatus openSource={tool.open_source} />}
 
       <div className="mb-4 flex justify-between items-center">
-        <div className="space-x-2">
-          <Link href="/devtools">
-            <Button variant="outline">Back to Gallery</Button>
-          </Link>
-          <Link href={`/devtools/compare?tools=${encodeURIComponent(tool.name)}`}>
-            <Button variant="outline">Compare</Button>
-          </Link>
-          {tool.review_link && (
-            <Link href={tool.review_link}>
-              <Button variant="outline">Read Review</Button>
-            </Link>
-          )}
-        </div>
         <Button onClick={toggleAllSections}>
           {openSections.length === Object.keys(tool).length ? (
             <>
@@ -171,7 +183,7 @@ export default function ToolDetailPage({ params }) {
 
       <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {Object.entries(tool || {}).map(([key, value]) => {
-          if (key !== 'name' && key !== 'icon' && key !== 'multimedia' && key !== 'category' && key !== 'description' && key !== 'ide_support' && key !== 'pricing') {
+          if (!excludedSections.includes(key)) {
             const emoji = getEmoji(key);
             return (
               <AccordionItem value={key} key={key}>
