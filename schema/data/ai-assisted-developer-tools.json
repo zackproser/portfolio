@@ -142,7 +142,8 @@
             "name": "Pro",
             "price": "$10 per month"
           }
-        ]
+        ], 
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -191,7 +192,7 @@
       },
       "multimedia": {
         "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/warp1.png", "@/images/screenshots/warp2.png"]
+        "screenshots": ["https://placehold.co/600x400"]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
