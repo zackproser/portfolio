@@ -12,7 +12,8 @@ import { sentenceCase } from '@/utils/sentencesCase';
 import Link from 'next/link';
 
 export default function ToolDetailPage({ params }) {
-  const tool = getToolByName(params.name);
+  const toolName = decodeURIComponent(params.name); // Decode the URL parameter
+  const tool = getToolByName(toolName);
   const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); // Initialize with all keys or empty array
 
   if (!tool) {
