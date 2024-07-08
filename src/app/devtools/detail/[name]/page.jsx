@@ -56,15 +56,18 @@ export default function ToolDetailPage({ params }) {
           ))}
         </div>
         <div className="flex flex-wrap gap-4 mt-4">
-          {tool.multimedia.screenshots && tool.multimedia.screenshots.map((screenshot, index) => (
-            <div key={index} className="flex-none w-1/4 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
-              <Image
-                src={screenshot}
-                alt={`Screenshot ${index + 1}`}
-                width={320}
-                height={180}
-                className="rounded-lg"
-              />
+          {tool.multimedia.blog_posts && tool.multimedia.blog_posts.map((post, index) => (
+            <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-4">Blog posts</h2>
+            <div key={index} className="flex-none w-1/4 p-4 text-wrap border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800">
+              <Link
+                target='_blank'
+                href={post}
+                className="rounded-lg text-wrap"
+              >
+              📖 {post}
+              </Link>
+            </div>
             </div>
           ))}
         </div>
