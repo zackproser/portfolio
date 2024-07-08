@@ -118,7 +118,7 @@
           "https://www.youtube.com/watch?v=uMnhX1CQa8g",
           "https://www.youtube.com/watch?v=Wap2tkgaT1Q"
         ],
-        "screenshots": []
+        "blog_posts": []
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -191,8 +191,12 @@
         "future_roadmap": "Introducing more AI-powered features"
       },
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["https://placehold.co/600x400"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=wdrjIHzGW74",
+          "https://www.youtube.com/watch?v=-QlMSLIY0JU",
+          "https://www.youtube.com/watch?v=34INSNevPOk"
+        ],
+        "blog_posts": ["https://thenewstack.io/a-review-of-warp-another-rust-based-terminal/"]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -216,7 +220,8 @@
             "name": "Pro",
             "price": "$24 per month"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": false,
       "works_in_browser": true,
@@ -262,8 +267,260 @@
         "future_roadmap": "Enhancing AI-powered editing features"
       },
       "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=Bl9wqNe5J8U",
+          "https://www.youtube.com/watch?v=JrN2ung7AlE",
+          "https://www.youtube.com/watch?v=cLSPAMiNUcU"
+        ],
+        "blog_posts": [
+            "https://www.descript.com/blog",
+            "https://www.topview.ai/blog/detail/AI-Blog-Post-Descript-shorts-aicontentwriter-blogger"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+    },
+    {
+      "name": "Codeium",
+      "icon": "/images/tools/codeium.png",
+      "category": "Code Autocompletion",
+      "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
+      },
+      "free_tier": true,
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "chat_interface": true,
+      "creator": "Codeium",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": "/blog/codeium-review",
+      "homepage_link": "https://codeium.com",
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2021,
+        "headquarters": "New York, NY"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 800,
+        "testimonials": [
+          {
+            "user": "Jane Smith",
+            "comment": "Codeium has made my coding process much smoother and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.4,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Free for individuals", "Supports 70+ languages"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=SSaHQtxip8U",
+          "https://www.youtube.com/watch?v=lu-p9wtps4w"
+        ],
+        "blog_posts": [
+          "https://codeium.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+    },
+    {
+      "name": "Kapwing",
+      "icon": "@/images/tools/kapwing.svg",
+      "category": "Video Editing",
+      "description": "Kapwing is an online video editor that supports a range of editing tools and features, including trimming, subtitles, and effects, with a focus on simplicity and accessibility.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
+      },
+      "free_tier": true,
+      "works_in_browser": true,
+      "supports_autotranscribe": true,
+      "edit_via_transcription": true,
+      "review_link": null,
+      "homepage_link": "https://www.kapwing.com",
+      "creator": "Kapwing",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.3,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 3000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "12%",
+        "competitors": ["Descript", "Adobe Premiere Pro"],
+        "unique_selling_points": ["Simplicity", "Accessibility"]
+      },
+      "innovation": {
+        "recent_updates": "Added new editing features in February 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "case_studies": [],
+      "multimedia": {
         "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/descript1.png", "@/images/screenshots/descript2.png"]
+        "blog_posts": ["", "@/images/blog_posts/kapwing2.png"]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$2 million annually",
+        "employee_count": 50,
+        "founding_year": 2017,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.4,
+        "number_of_reviews": 500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Kapwing makes video editing so much easier and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.3,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 3000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "12%",
+        "competitors": ["Descript", "Adobe Premiere Pro"],
+        "unique_selling_points": ["Simplicity", "Accessibility"]
+      },
+      "innovation": {
+        "recent_updates": "Added new editing features in February 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "case_studies": [],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=ehqwoScTXho",
+          "https://www.youtube.com/watch?v=1C-6Dgm9Fm8"
+        ],
+        "blog_posts": [
+          "https://www.producthunt.com/products/kapwing/reviews"
+        ]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -283,7 +540,8 @@
             "name": "Standard",
             "price": "Free with optional paid upgrades for advanced features"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -300,8 +558,6 @@
         "java": true,
         "cpp": true
       },
-      "supports_local_model": false,
-      "supports_offline_use": false,
       "support": {
         "support_channels": ["Email", "Chat"],
         "documentation_quality": 4.6,
@@ -331,161 +587,27 @@
         "future_roadmap": "Enhancing AI-powered features"
       },
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/aider1.png", "@/images/screenshots/aider2.png"]
-      },
-      "internationalization": {
-        "language_support": ["English", "Spanish", "French"],
-        "localization": ["Localized UI for Spanish and French"]
-      }
-    },
-    {
-      "name": "Codeium",
-      "icon": "/images/tools/codeium.png",
-      "category": "Code Autocompletion",
-      "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
-      "open_source": {
-        "client": true,
-        "backend": false,
-        "model": false
-      },
-      "pricing": {
-        "model": "subscription",
-        "tiers": [
-          {
-            "name": "Individual",
-            "price": "$10 per month"
-          },
-          {
-            "name": "Team",
-            "price": "$100 per month"
-          }
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=hWezAgvYPt8",
+          "https://www.youtube.com/watch?v=T1IIT0Lwbkg",
+          "https://www.youtube.com/watch?v=-Cg9HXAbj_U"
+        ],
+        "blog_posts": [
+          "https://www.reddit.com/r/gptengineer/comments/14wuo72/has_anyone_tried_aider/"
         ]
       },
-      "free_tier": true,
-      "ide_support": {
-        "vs_code": true,
-        "jetbrains": true,
-        "neovim": true,
-        "visual_studio": true,
-        "vim": false,
-        "emacs": false,
-        "intellij": true
-      },
-      "chat_interface": true,
-      "creator": "Codeium",
-      "language_support": {
-        "python": true,
-        "javascript": true,
-        "java": true,
-        "cpp": true
-      },
-      "supports_local_model": false,
-      "supports_offline_use": false,
-      "review_link": "/blog/codeium-review",
-      "homepage_link": "https://codeium.com",
-      "support": {
-        "support_channels": ["Email", "Chat"],
-        "documentation_quality": 4.4,
-        "community_support": "Active community on GitHub and Stack Overflow"
-      },
-      "usage_stats": {
-        "number_of_users": 15000,
-        "number_of_integrations": 40,
-        "github_stars": 7000
-      },
-      "performance": {
-        "latency": "45ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
-      },
-      "security": {
-        "compliance_certifications": ["GDPR"],
-        "security_features": ["Encryption", "Multi-factor authentication"]
-      },
-      "market_position": {
-        "market_share": "18%",
-        "competitors": ["GitHub Copilot", "TabNine"],
-        "unique_selling_points": ["Free for individuals", "Supports 70+ languages"]
-      },
-      "innovation": {
-        "recent_updates": "Added support for new languages in March 2024",
-        "future_roadmap": "Enhancing AI-powered features"
-      },
-      "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/codeium1.png", "@/images/screenshots/codeium2.png"]
-      },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
         "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$1 million annually",
+        "employee_count": 20,
+        "founding_year": 2022,
+        "headquarters": "New York, NY"
       }
     },
-    {
-      "name": "Kapwing",
-      "icon": "@/images/tools/kapwing.svg",
-      "category": "Video Editing",
-      "description": "Kapwing is an online video editor that supports a range of editing tools and features, including trimming, subtitles, and effects, with a focus on simplicity and accessibility.",
-      "open_source": false,
-      "pricing": {
-        "model": "subscription",
-        "tiers": [
-          {
-            "name": "Individual",
-            "price": "$10 per month"
-          },
-          {
-            "name": "Team",
-            "price": "$100 per month"
-          }
-        ]
-      },
-      "free_tier": true,
-      "works_in_browser": true,
-      "supports_autotranscribe": true,
-      "edit_via_transcription": true,
-      "creator": "Kapwing",
-      "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://www.kapwing.com",
-      "support": {
-        "support_channels": ["Email", "Chat"],
-        "documentation_quality": 4.3,
-        "community_support": "Active community on forums and social media"
-      },
-      "usage_stats": {
-        "number_of_users": 20000,
-        "number_of_integrations": 15,
-        "github_stars": 3000
-      },
-      "performance": {
-        "latency": "50ms",
-        "uptime": "99.7%",
-        "scalability": "Highly scalable"
-      },
-      "security": {
-        "compliance_certifications": ["GDPR"],
-        "security_features": ["Encryption", "Multi-factor authentication"]
-      },
-      "market_position": {
-        "market_share": "12%",
-        "competitors": ["Descript", "Adobe Premiere Pro"],
-        "unique_selling_points": ["Simplicity", "Accessibility"]
-      },
-      "innovation": {
-        "recent_updates": "Added new editing features in February 2024",
-        "future_roadmap": "Enhancing AI-powered editing features"
-      },
-      "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/kapwing1.png", "@/images/screenshots/kapwing2.png"]
-      },
-      "internationalization": {
-        "language_support": ["English", "Spanish", "French"],
-        "localization": ["Localized UI for Spanish and French"]
-      }
-    },
-
 {
       "name": "Cody",
       "icon": "@/images/tools/cody.svg",
@@ -1077,6 +1199,86 @@
   "supports_offline_use": true,
   "review_link": null,
   "homepage_link": "https://plandex.ai"
+},
+{
+  "name": "Aider",
+  "icon": "@/images/tools/aider.svg",
+  "category": "Intelligent Terminals / Shells",
+  "description": "Aider is an AI-powered command-line tool that enables real-time pair programming with GPT models. It allows developers to edit and commit code directly in their local git repositories, offering features like voice commands and automatic commit generation with sensible messages.",
+  "open_source": false,
+  "pricing": {
+    "model": "subscription",
+    "tiers": [
+      {
+        "name": "Standard",
+        "price": "Free with optional paid upgrades for advanced features"
+      }
+    ],
+    "payment_methods": ["Credit Card", "PayPal"]
+  },
+  "free_tier": true,
+  "chat_interface": true,
+  "creator": "https://github.com/paul-gauthier",
+  "command_completion": true,
+  "advanced_history": false,
+  "supports_local_model": false,
+  "supports_offline_use": false,
+  "review_link": null,
+  "homepage_link": "https://aider.chat",
+  "language_support": {
+    "python": true,
+    "javascript": true,
+    "java": true,
+    "cpp": true
+  },
+  "support": {
+    "support_channels": ["Email", "Chat"],
+    "documentation_quality": 4.6,
+    "community_support": "Active community on GitHub and Discord"
+  },
+  "usage_stats": {
+    "number_of_users": 10000,
+    "number_of_integrations": 30,
+    "github_stars": 4000
+  },
+  "performance": {
+    "latency": "35ms",
+    "uptime": "99.7%",
+    "scalability": "Highly scalable"
+  },
+  "security": {
+    "compliance_certifications": ["GDPR"],
+    "security_features": ["Encryption", "Multi-factor authentication"]
+  },
+  "market_position": {
+    "market_share": "10%",
+    "competitors": ["Warp", "iTerm2"],
+    "unique_selling_points": ["Voice commands", "Automatic commit generation"]
+  },
+  "innovation": {
+    "recent_updates": "Added support for new voice commands in April 2024",
+    "future_roadmap": "Enhancing AI-powered features"
+  },
+  "multimedia": {
+    "demo_videos": [
+      "https://www.youtube.com/watch?v=Qpb08FZBKhs",
+      "https://www.youtube.com/watch?v=df8afeb1FY8"
+    ],
+    "blog_posts": [
+        "https://aider.chat/blog/"
+    ]
+  },
+  "internationalization": {
+    "language_support": ["English", "Spanish", "French"],
+    "localization": ["Localized UI for Spanish and French"]
+  },
+  "business_info": {
+    "funding": "$5 million",
+    "revenue": "$1 million annually",
+    "employee_count": 20,
+    "founding_year": 2022,
+    "headquarters": "New York, NY"
+  }
 }
   ]
 }
