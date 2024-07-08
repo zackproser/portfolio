@@ -16,7 +16,7 @@
   "tools": [
     {
       "name": "GitHub Copilot",
-      "icon": "@/images/tools/github-copilot.svg",
+      "icon": "@/images/devtools/github-copilot-logo.webp",
       "category": "Code Autocompletion",
       "description": "GitHub Copilot is an AI-powered code completion tool that helps developers write code faster by providing intelligent suggestions based on the context of their code.",
       "open_source": {
@@ -113,8 +113,12 @@
         }
       ],
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
-        "screenshots": ["@/images/screenshots/copilot1.png", "@/images/screenshots/copilot2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=RDd71IUIgpg",
+          "https://www.youtube.com/watch?v=uMnhX1CQa8g",
+          "https://www.youtube.com/watch?v=Wap2tkgaT1Q"
+        ],
+        "screenshots": []
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],

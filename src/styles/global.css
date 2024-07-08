@@ -23,6 +23,11 @@
   }
 }
 
+.grayscale {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
 .glow {
   animation: glow-animation 2s infinite alternate;
 }
