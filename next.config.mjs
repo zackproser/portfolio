@@ -16,7 +16,8 @@ const nextConfig = {
       "localhost", 
       "zackproser.com", 
       "www.zackproser.com",
-      "img.youtube.com"
+      "img.youtube.com", 
+      "placehold.co"
     ],
   },
   transpilePackages: [
