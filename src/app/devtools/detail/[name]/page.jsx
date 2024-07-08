@@ -168,7 +168,7 @@ export default function ToolDetailPage({ params }) {
 
       <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {Object.entries(tool || {}).map(([key, value]) => {
-          if (key !== 'name' && key !== 'icon' && key !== 'multimedia' && key !== 'category' && key !== 'description') {
+          if (key !== 'name' && key !== 'icon' && key !== 'multimedia' && key !== 'category' && key !== 'description' && key !== 'ide_support') {
             const emoji = getEmoji(key);
             return (
               <AccordionItem value={key} key={key}>
