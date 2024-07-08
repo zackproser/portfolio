@@ -14,6 +14,8 @@ import { getLogoById } from '@/lib/logoImports';
 import IDESupportBlade from '@/components/IDESupportBlade';
 import PricingDetails from '@/components/PricingDetails';
 import OpenSourceStatus from '@/components/OpenSourceStatus';
+import LanguageSupportBlade from '@/components/LanguageSupportBlade';
+import BusinessInfoBlade from '@/components/BusinessInfoBlade';
 
 export default function ToolDetailPage({ params }) {
   const toolName = decodeURIComponent(params.name); 
@@ -31,14 +33,6 @@ export default function ToolDetailPage({ params }) {
       </SimpleLayout>
     );
   }
-
-  const toggleAllSections = () => {
-    if (openSections.length === Object.keys(tool).length) {
-      setOpenSections([]);
-    } else {
-      setOpenSections(Object.keys(tool));
-    }
-  };
 
   const renderMultimediaSection = () => {
     if (!tool.multimedia) return null;
@@ -109,7 +103,8 @@ export default function ToolDetailPage({ params }) {
     return null;
   };
 
-  const excludedSections = ['name', 'icon', 'multimedia', 'category', 'description', 'ide_support', 'pricing', 'open_source', 'free_tier'];
+  const includedSections = [
+  ];
 
   return (
     <SimpleLayout
@@ -150,40 +145,27 @@ export default function ToolDetailPage({ params }) {
         </div>
       </div>
 
-      <div className="flex flex-col space-y-4 mb-6">
-        <div>
-          <strong>Category:</strong> {tool.category}
-        </div>
-        <div>
-          <strong>Description:</strong> {tool.description}
-        </div>
-      </div>
+      <BusinessInfoBlade 
+        category={tool.category} 
+        description={tool.description} 
+        creator={tool.creator} 
+        supportsLocalModel={tool.supports_local_model} 
+        supportsOfflineUse={tool.supports_offline_use} 
+      />
 
       {renderMultimediaSection()}
 
       {tool.ide_support && <IDESupportBlade ideSupport={tool.ide_support} />}
+      
+      {tool.language_support && <LanguageSupportBlade languageSupport={tool.language_support} />}
 
       {tool.pricing && <PricingDetails pricing={tool.pricing} />}
 
       {tool.open_source && <OpenSourceStatus openSource={tool.open_source} />}
 
-      <div className="mb-4 flex justify-between items-center">
-        <Button onClick={toggleAllSections}>
-          {openSections.length === Object.keys(tool).length ? (
-            <>
-              <ChevronUp className="mr-2 h-4 w-4" /> Collapse All
-            </>
-          ) : (
-            <>
-              <ChevronDown className="mr-2 h-4 w-4" /> Expand All
-            </>
-          )}
-        </Button>
-      </div>
-
       <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {Object.entries(tool || {}).map(([key, value]) => {
-          if (!excludedSections.includes(key)) {
+          if (includedSections.includes(key)) {
             const emoji = getEmoji(key);
             return (
               <AccordionItem value={key} key={key}>

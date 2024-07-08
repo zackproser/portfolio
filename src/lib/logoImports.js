@@ -16,6 +16,11 @@ import intellijLogo from '@/images/devtools/intellij.webp'
 import neovimLogo from '@/images/devtools/neovim.webp'
 import emacsLogo from '@/images/devtools/emacs.webp'
 import vimLogo from '@/images/devtools/vim.webp'
+import pythonLogo from '@/images/languages/python.webp'
+import javascriptLogo from '@/images/languages/javascript.webp'
+import javaLogo from '@/images/languages/java.webp'
+import cppLogo from '@/images/languages/cpp.webp'
+import rubyLogo from '@/images/languages/ruby.webp'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -36,7 +41,12 @@ const logoMap = {
   intellij: intellijLogo,
   neovim: neovimLogo,
   emacs: emacsLogo,
-  vim: vimLogo
+  vim: vimLogo,
+  python: pythonLogo,
+  javascript: javascriptLogo,
+  java: javaLogo,
+  cpp: cppLogo,
+  ruby: rubyLogo
 };
 
 export function getLogoById(id) {
