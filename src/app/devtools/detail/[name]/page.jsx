@@ -109,12 +109,13 @@ export default function ToolDetailPage({ params }) {
   };
 
   const includedSections = [
+    // Add any sections you want to include here
   ];
 
   return (
     <SimpleLayout
-      title={''}
-      intro={''}
+      title={tool.name}
+      intro={tool.description}
     >
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-6">
