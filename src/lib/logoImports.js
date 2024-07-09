@@ -21,6 +21,11 @@ import javascriptLogo from '@/images/languages/javascript.webp'
 import javaLogo from '@/images/languages/java.webp'
 import cppLogo from '@/images/languages/cpp.webp'
 import rubyLogo from '@/images/languages/ruby.webp'
+import typescriptLogo from '@/images/languages/typescript.webp'
+import goLogo from '@/images/languages/go.webp'
+import phpLogo from '@/images/languages/php.webp'
+import swiftLogo from '@/images/languages/swift.webp'
+import csharpLogo from '@/images/languages/csharp.webp'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -46,7 +51,12 @@ const logoMap = {
   javascript: javascriptLogo,
   java: javaLogo,
   cpp: cppLogo,
-  ruby: rubyLogo
+  ruby: rubyLogo,
+  typescript: typescriptLogo,
+  go: goLogo,
+  php: phpLogo,
+  swift: swiftLogo,
+  csharp: csharpLogo
 };
 
 export function getLogoById(id) {
