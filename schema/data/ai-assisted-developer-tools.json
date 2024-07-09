@@ -1389,6 +1389,8 @@
       ],
       "multimedia": {
         "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
         ],
         "blog_posts": [
           "https://www.grit.io/blog"
@@ -1429,7 +1431,9 @@
             "name": "Pro",
             "price": "Subscription based, contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -1444,7 +1448,71 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://useadrenaline.com"
+      "homepage_link": "https://useadrenaline.com",
+      "business_info": {
+        "funding": "$15 million",
+        "revenue": "$7 million annually",
+        "employee_count": 60,
+        "founding_year": 2021,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 900,
+        "testimonials": [
+          {
+            "user": "John Smith",
+            "comment": "Adrenaline AI has greatly improved my debugging process!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 25000,
+        "number_of_integrations": 70,
+        "github_stars": 9000
+      },
+      "performance": {
+        "latency": "35ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Comprehensive code explanations", "Advanced debugging assistance"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for TypeScript in June 2024",
+        "future_roadmap": "Expanding language support and adding more AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at GHI Corp",
+          "link": "/case-studies/ghi-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
+        ],
+        "blog_posts": [
+          "https://useadrenaline.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Amazon CodeWhisperer",
@@ -1472,7 +1540,9 @@
             "name": "Individual",
             "price": "Free"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -1486,7 +1556,70 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://aws.amazon.com/codewhisperer/"
+      "homepage_link": "https://aws.amazon.com/codewhisperer/",
+      "business_info": {
+        "funding": "$50 million",
+        "revenue": "$20 million annually",
+        "employee_count": 200,
+        "founding_year": 2013,
+        "headquarters": "Seattle, WA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Jane Doe",
+            "comment": "CodeWhisperer has transformed the way I code, making it much more efficient!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 30000,
+        "number_of_integrations": 80,
+        "github_stars": 10000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep AWS integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at ABC Corp",
+          "link": "/case-studies/abc-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=j8BoVmHKFlI"
+        ],
+        "blog_posts": [
+          "https://aws.amazon.com/blogs/machine-learning/introducing-amazon-codewhisperer/"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Figstack",
@@ -1518,7 +1651,9 @@
             "name": "Pro",
             "price": "Contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -1533,177 +1668,81 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.figstack.com"
-    },
-{
-  "name": "aiXcoder",
-  "icon": "@/images/tools/aixcoder.svg",
-  "category": "Code Autocompletion",
-  "description": "aiXcoder is an AI-driven programming assistant that enhances coding efficiency by predicting code snippets based on the context of your existing code. It supports deep learning to provide intelligent code completions and suggestions, helping developers write more accurate and efficient code.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": false,
-    "visual_studio": true,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "contact for pricing",
-    "tiers": [
-      {
-        "name": "Free",
-        "price": "Basic features"
+      "homepage_link": "https://www.figstack.com",
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$2 million annually",
+        "employee_count": 30,
+        "founding_year": 2019,
+        "headquarters": "San Francisco, CA"
       },
-      {
-        "name": "Pro",
-        "price": "Advanced features"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "aiXcoder Inc",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true
-  },
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "homepage_link": "https://www.aixcoder.com"
-},
-{
-  "name": "Plandex",
-  "icon": "@/images/tools/plandex.svg",
-  "category": "Intelligent Terminals / Shells",
-  "description": "Plandex is an open-source, terminal-based AI coding engine that handles complex programming tasks by breaking them into manageable subtasks. It uses long-running agents to automate and streamline workflows, helping users tackle large-scale projects efficiently. Plandex supports various operating systems including Mac, Linux, FreeBSD, and Windows.",
-  "open_source": true,
-  "ide_support": {
-    "vs_code": false,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "freemium",
-    "tiers": [
-      {
-        "name": "Free Trial",
-        "price": "Limited free account"
+      "user_reviews": {
+        "average_rating": 4.4,
+        "number_of_reviews": 500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Figstack has made understanding and documenting code so much easier!"
+          }
+        ]
       },
-      {
-        "name": "Paid",
-        "price": "Contact for pricing"
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.5,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Code explanation", "Language translation", "Docstring generation"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
+        ],
+        "blog_posts": [
+          "https://www.figstack.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "multimedia":{
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=pieDcHKEjVw"
+        ],
+        "blog_posts":[
+            "https://www.figstack.com/",
+            "https://deepgram.com/ai-apps/figstack"
+        ]
       }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "Dane",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": false
-  },
-  "advanced_history": true,
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "homepage_link": "https://plandex.ai"
-},
-{
-  "name": "Aider",
-  "icon": "@/images/tools/aider.svg",
-  "category": "Intelligent Terminals / Shells",
-  "description": "Aider is an AI-powered command-line tool that enables real-time pair programming with GPT models. It allows developers to edit and commit code directly in their local git repositories, offering features like voice commands and automatic commit generation with sensible messages.",
-  "open_source": false,
-  "pricing": {
-    "model": "subscription",
-    "tiers": [
-      {
-        "name": "Standard",
-        "price": "Free with optional paid upgrades for advanced features"
-      }
-    ],
-    "payment_methods": ["Credit Card", "PayPal"]
-  },
-  "free_tier": true,
-  "chat_interface": true,
-  "creator": "https://github.com/paul-gauthier",
-  "command_completion": true,
-  "advanced_history": false,
-  "supports_local_model": false,
-  "supports_offline_use": false,
-  "review_link": null,
-  "homepage_link": "https://aider.chat",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true
-  },
-  "support": {
-    "support_channels": ["Email", "Chat"],
-    "documentation_quality": 4.6,
-    "community_support": "Active community on GitHub and Discord"
-  },
-  "usage_stats": {
-    "number_of_users": 10000,
-    "number_of_integrations": 30,
-    "github_stars": 4000
-  },
-  "performance": {
-    "latency": "35ms",
-    "uptime": "99.7%",
-    "scalability": "Highly scalable"
-  },
-  "security": {
-    "compliance_certifications": ["GDPR"],
-    "security_features": ["Encryption", "Multi-factor authentication"]
-  },
-  "market_position": {
-    "market_share": "10%",
-    "competitors": ["Warp", "iTerm2"],
-    "unique_selling_points": ["Voice commands", "Automatic commit generation"]
-  },
-  "innovation": {
-    "recent_updates": "Added support for new voice commands in April 2024",
-    "future_roadmap": "Enhancing AI-powered features"
-  },
-  "multimedia": {
-    "demo_videos": [
-      "https://www.youtube.com/watch?v=Qpb08FZBKhs",
-      "https://www.youtube.com/watch?v=df8afeb1FY8"
-    ],
-    "blog_posts": [
-        "https://aider.chat/blog/"
-    ]
-  },
-  "internationalization": {
-    "language_support": ["English", "Spanish", "French"],
-    "localization": ["Localized UI for Spanish and French"]
-  },
-  "business_info": {
-    "funding": "$5 million",
-    "revenue": "$1 million annually",
-    "employee_count": 20,
-    "founding_year": 2022,
-    "headquarters": "New York, NY"
-  }
-}
+    }
   ]
 }
 
