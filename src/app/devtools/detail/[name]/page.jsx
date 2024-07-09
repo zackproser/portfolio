@@ -20,8 +20,8 @@ import BusinessInfoBlade from '@/components/BusinessInfoBlade';
 export default function ToolDetailPage({ params }) {
   const toolName = decodeURIComponent(params.name); 
   const tool = getToolByName(toolName);
-  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); // Initialize with all keys or empty array
-  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null; // Check if toolName exists
+  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); 
+  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null; 
   console.log(`toolLogo: %o`, toolLogo)
 
   if (!tool) {
@@ -57,15 +57,17 @@ export default function ToolDetailPage({ params }) {
         </div>
         <div className="flex flex-wrap gap-4 mt-4">
           {tool.multimedia.blog_posts && tool.multimedia.blog_posts.map((post, index) => (
-            <div key={index} className="mb-6 w-full">
-              <h2 className="text-2xl font-bold mb-4">Blog posts</h2>
-              <div className="flex-none w-full sm:w-1/2 lg:w-1/3 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800 bg-white">
+            <div key={index} className="flex-none w-1/3 mb-6">
+              <div className="p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800">
                 <Link
                   target='_blank'
                   href={post}
-                  className="block rounded-lg text-wrap overflow-hidden"
+                  className="block rounded-lg text-wrap"
                 >
-                  <div className="text-lg font-semibold mb-2 truncate">📖 {post}</div>
+                  <div className="flex items-center space-x-4">
+                    <div className="text-2xl">📖</div>
+                    <div className="text-lg font-semibold truncate">{post}</div>
+                  </div>
                 </Link>
               </div>
             </div>
