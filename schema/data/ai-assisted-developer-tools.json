@@ -130,7 +130,11 @@
       "icon": "@/images/tools/warp.svg",
       "category": "Intelligent Terminals / Shells",
       "description": "Warp is a modern terminal with AI-powered features like command completion, advanced history search, and collaboration capabilities.",
-      "open_source": false,
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
       "pricing": {
         "model": "subscription",
         "tiers": [
