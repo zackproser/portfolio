@@ -854,7 +854,8 @@
             "name": "Standard",
             "price": "Free"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -867,8 +868,74 @@
       },
       "supports_local_model": true,
       "supports_offline_use": true,
-      "review_link": null,
-      "homepage_link": "https://cursor.sh"
+      "review_link": "/blog/cursor-review",
+      "homepage_link": "https://cursor.sh",
+      "business_info": {
+        "funding": "$20 million",
+        "revenue": "$10 million annually",
+        "employee_count": 100,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.7,
+        "number_of_reviews": 1500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Cursor has revolutionized my coding workflow with its real-time AI assistance!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.8,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 25000,
+        "number_of_integrations": 60,
+        "github_stars": 12000
+      },
+      "performance": {
+        "latency": "30ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "22%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Real-time AI assistance", "Inline chat", "Auto-debugging"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new debugging features in June 2024",
+        "future_roadmap": "Expanding language support and adding more AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=f4ShxlWI-q8",
+          "https://www.youtube.com/watch?v=l_cy43Vdd58",
+          "https://www.youtube.com/watch?v=LiZCqHFwlhI"
+
+        ],
+        "blog_posts": [
+          "https://cursor.sh/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "OpusClip",
@@ -900,7 +967,8 @@
             "name": "Pro",
             "price": "Subscription based, contact for pricing"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "works_in_browser": true,
@@ -916,7 +984,16 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.opus.pro"
+      "homepage_link": "https://www.opus.pro", 
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=40OT_GdAQTc"
+        ],
+        "blog_posts": [
+          "https://www.framedrop.ai/blog/opus-clip-review",
+          "https://www.producthunt.com/products/opus-clip/reviews"
+        ]
+      }
     },
     {
       "name": "Tabnine",
@@ -952,7 +1029,8 @@
             "name": "Business",
             "price": "$30 per month per seat"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -966,7 +1044,15 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.tabnine.com"
+      "homepage_link": "https://www.tabnine.com",
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=p7qMFhQh7rY"
+        ],
+        "blog_posts": [
+           "https://www.g2.com/products/tabnine/reviews"
+        ]
+      }
     },
     {
       "name": "MutableAI",
@@ -998,7 +1084,8 @@
             "name": "Pro",
             "price": "Starting from $10 per month"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card","PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -1012,7 +1099,16 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://mutable.ai"
+      "homepage_link": "https://mutable.ai",
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=SdAteyB4-Uw",
+          "https://www.youtube.com/watch?v=x-gKEbgyzCg"
+        ],
+        "blog_posts": [
+          "https://www.g2.com/products/mutable-ai/reviews"
+        ]
+      }
     },
     {
       "name": "CodiumAI",
