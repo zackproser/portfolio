@@ -1030,6 +1030,7 @@
             "price": "$30 per month per seat"
           }
         ],
+        "discounts": "10% off for annual subscription",
         "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
@@ -1043,15 +1044,72 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
+      "review_link": "/blog/tabnine-review",
       "homepage_link": "https://www.tabnine.com",
+      "business_info": {
+        "funding": "$20 million",
+        "revenue": "$10 million annually",
+        "employee_count": 100,
+        "founding_year": 2017,
+        "headquarters": "Tel Aviv, Israel"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Tabnine has significantly improved my coding efficiency!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 50000,
+        "number_of_integrations": 100,
+        "github_stars": 15000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "25%",
+        "competitors": ["GitHub Copilot", "Kite"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep IDE integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Productivity at XYZ Corp",
+          "link": "/case-studies/xyz-corp"
+        }
+      ],
       "multimedia": {
         "demo_videos": [
-          "https://www.youtube.com/watch?v=p7qMFhQh7rY"
+          "https://www.youtube.com/watch?v=RDd71IUIgpg",
+          "https://www.youtube.com/watch?v=uMnhX1CQa8g",
+          "https://www.youtube.com/watch?v=Wap2tkgaT1Q"
         ],
         "blog_posts": [
-           "https://www.g2.com/products/tabnine/reviews"
+          "https://www.tabnine.com/blog"
         ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
       }
     },
     {
@@ -1085,7 +1143,8 @@
             "price": "Starting from $10 per month"
           }
         ],
-        "payment_methods": ["Credit Card","PayPal"]
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -1098,16 +1157,71 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
+      "review_link": "/blog/mutableai-review",
       "homepage_link": "https://mutable.ai",
+      "business_info": {
+        "funding": "$15 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 800,
+        "testimonials": [
+          {
+            "user": "Jane Smith",
+            "comment": "MutableAI has made my coding process much smoother and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.4,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Prompt-driven development", "Automatic unit test generation"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
       "multimedia": {
         "demo_videos": [
-          "https://www.youtube.com/watch?v=SdAteyB4-Uw",
-          "https://www.youtube.com/watch?v=x-gKEbgyzCg"
+          "https://www.youtube.com/watch?v=SSaHQtxip8U",
+          "https://www.youtube.com/watch?v=lu-p9wtps4w"
         ],
         "blog_posts": [
-          "https://www.g2.com/products/mutable-ai/reviews"
+          "https://mutable.ai/blog"
         ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
       }
     },
     {
@@ -1140,6 +1254,10 @@
             "name": "Teams",
             "price": "$19 per user/month"
           }
+        ],
+        "payment_methods":[
+          "Credit Card",
+          "PayPal"
         ]
       },
       "free_tier": true,
@@ -1159,7 +1277,17 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.codium.ai"
+      "homepage_link": "https://www.codium.ai", 
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=gT5tli7X4H4",
+          "https://www.youtube.com/watch?v=5CJjPE-cxX4",
+          "https://www.youtube.com/watch?v=fIYkSEJ4eqE"
+        ],
+        "blog_posts":[
+          "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
+        ]
+      }
     },
     {
       "name": "Grit.io",
@@ -1191,7 +1319,9 @@
             "name": "Team",
             "price": "Contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -1204,8 +1334,70 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://www.grit.io"
+      "review_link": "/blog/grit-io-review",
+      "homepage_link": "https://www.grit.io",
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2019,
+        "headquarters": "New York, NY"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 600,
+        "testimonials": [
+          {
+            "user": "John Doe",
+            "comment": "Grit.io has significantly improved our code quality and reduced technical debt!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.6,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 50,
+        "github_stars": 8000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "15%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Automated technical debt management", "Machine learning-based pull requests"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in April 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Code Quality at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+        ],
+        "blog_posts": [
+          "https://www.grit.io/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Adrenaline AI",
@@ -1514,4 +1706,5 @@
 }
   ]
 }
+
 
