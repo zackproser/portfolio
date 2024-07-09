@@ -12,7 +12,13 @@ const nextConfig = {
   },
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   images: {
-    domains: ["localhost", "zackproser.com", "www.zackproser.com"],
+    domains: [
+      "localhost", 
+      "zackproser.com", 
+      "www.zackproser.com",
+      "img.youtube.com", 
+      "placehold.co"
+    ],
   },
   transpilePackages: [
     "react-tweet",

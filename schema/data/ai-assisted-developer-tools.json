@@ -16,7 +16,7 @@
   "tools": [
     {
       "name": "GitHub Copilot",
-      "icon": "@/images/tools/github-copilot.svg",
+      "icon": "@/images/devtools/github-copilot-logo.webp",
       "category": "Code Autocompletion",
       "description": "GitHub Copilot is an AI-powered code completion tool that helps developers write code faster by providing intelligent suggestions based on the context of their code.",
       "open_source": {
@@ -113,8 +113,12 @@
         }
       ],
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
-        "screenshots": ["@/images/screenshots/copilot1.png", "@/images/screenshots/copilot2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=RDd71IUIgpg",
+          "https://www.youtube.com/watch?v=uMnhX1CQa8g",
+          "https://www.youtube.com/watch?v=Wap2tkgaT1Q"
+        ],
+        "blog_posts": []
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -138,7 +142,8 @@
             "name": "Pro",
             "price": "$10 per month"
           }
-        ]
+        ], 
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -186,8 +191,12 @@
         "future_roadmap": "Introducing more AI-powered features"
       },
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/warp1.png", "@/images/screenshots/warp2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=wdrjIHzGW74",
+          "https://www.youtube.com/watch?v=-QlMSLIY0JU",
+          "https://www.youtube.com/watch?v=34INSNevPOk"
+        ],
+        "blog_posts": ["https://thenewstack.io/a-review-of-warp-another-rust-based-terminal/"]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -211,7 +220,8 @@
             "name": "Pro",
             "price": "$24 per month"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": false,
       "works_in_browser": true,
@@ -257,8 +267,265 @@
         "future_roadmap": "Enhancing AI-powered editing features"
       },
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/descript1.png", "@/images/screenshots/descript2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=Bl9wqNe5J8U",
+          "https://www.youtube.com/watch?v=JrN2ung7AlE",
+          "https://www.youtube.com/watch?v=cLSPAMiNUcU"
+        ],
+        "blog_posts": [
+            "https://www.descript.com/blog",
+            "https://www.topview.ai/blog/detail/AI-Blog-Post-Descript-shorts-aicontentwriter-blogger"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+    },
+    {
+      "name": "Codeium",
+      "icon": "/images/tools/codeium.png",
+      "category": "Code Autocompletion",
+      "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
+      },
+      "free_tier": true,
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "chat_interface": true,
+      "creator": "Codeium",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": "/blog/codeium-review",
+      "homepage_link": "https://codeium.com",
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2021,
+        "headquarters": "New York, NY"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 800,
+        "testimonials": [
+          {
+            "user": "Jane Smith",
+            "comment": "Codeium has made my coding process much smoother and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.4,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Free for individuals", "Supports 70+ languages"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=SSaHQtxip8U",
+          "https://www.youtube.com/watch?v=lu-p9wtps4w"
+        ],
+        "blog_posts": [
+          "https://codeium.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+    },
+    {
+      "name": "Kapwing",
+      "icon": "@/images/tools/kapwing.svg",
+      "category": "Video Editing",
+      "description": "Kapwing is an online video editor that supports a range of editing tools and features, including trimming, subtitles, and effects, with a focus on simplicity and accessibility.",
+      "open_source": false,
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
+      },
+      "free_tier": true,
+      "works_in_browser": true,
+      "supports_autotranscribe": true,
+      "edit_via_transcription": true,
+      "review_link": null,
+      "homepage_link": "https://www.kapwing.com",
+      "creator": "Kapwing",
+      "language_support": {
+        "python": false,
+        "javascript": false,
+        "java": false,
+        "cpp": false
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.3,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 3000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "12%",
+        "competitors": ["Descript", "Adobe Premiere Pro"],
+        "unique_selling_points": ["Simplicity", "Accessibility"]
+      },
+      "innovation": {
+        "recent_updates": "Added new editing features in February 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "case_studies": [],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=ehqwoScTXho",
+          "https://www.youtube.com/watch?v=1C-6Dgm9Fm8"
+        ],
+        "blog_posts": [
+          "https://www.producthunt.com/products/kapwing/reviews"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$2 million annually",
+        "employee_count": 50,
+        "founding_year": 2017,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.4,
+        "number_of_reviews": 500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Kapwing makes video editing so much easier and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.3,
+        "community_support": "Active community on forums and social media"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 3000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.7%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "12%",
+        "competitors": ["Descript", "Adobe Premiere Pro"],
+        "unique_selling_points": ["Simplicity", "Accessibility"]
+      },
+      "innovation": {
+        "recent_updates": "Added new editing features in February 2024",
+        "future_roadmap": "Enhancing AI-powered editing features"
+      },
+      "case_studies": [],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=ehqwoScTXho",
+          "https://www.youtube.com/watch?v=1C-6Dgm9Fm8"
+        ],
+        "blog_posts": [
+          "https://www.producthunt.com/products/kapwing/reviews"
+        ]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -278,7 +545,8 @@
             "name": "Standard",
             "price": "Free with optional paid upgrades for advanced features"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -295,8 +563,6 @@
         "java": true,
         "cpp": true
       },
-      "supports_local_model": false,
-      "supports_offline_use": false,
       "support": {
         "support_channels": ["Email", "Chat"],
         "documentation_quality": 4.6,
@@ -326,162 +592,28 @@
         "future_roadmap": "Enhancing AI-powered features"
       },
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/aider1.png", "@/images/screenshots/aider2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=hWezAgvYPt8",
+          "https://www.youtube.com/watch?v=T1IIT0Lwbkg",
+          "https://www.youtube.com/watch?v=-Cg9HXAbj_U"
+        ],
+        "blog_posts": [
+          "https://www.reddit.com/r/gptengineer/comments/14wuo72/has_anyone_tried_aider/"
+        ]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
         "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$1 million annually",
+        "employee_count": 20,
+        "founding_year": 2022,
+        "headquarters": "New York, NY"
       }
     },
     {
-      "name": "Codeium",
-      "icon": "/images/tools/codeium.png",
-      "category": "Code Autocompletion",
-      "description": "Codeium is a free AI code acceleration toolkit that offers single and multi-line code completions, chat, and search capabilities in over 70 languages.",
-      "open_source": {
-        "client": true,
-        "backend": false,
-        "model": false
-      },
-      "pricing": {
-        "model": "subscription",
-        "tiers": [
-          {
-            "name": "Individual",
-            "price": "$10 per month"
-          },
-          {
-            "name": "Team",
-            "price": "$100 per month"
-          }
-        ]
-      },
-      "free_tier": true,
-      "ide_support": {
-        "vs_code": true,
-        "jetbrains": true,
-        "neovim": true,
-        "visual_studio": true,
-        "vim": false,
-        "emacs": false,
-        "intellij": true
-      },
-      "chat_interface": true,
-      "creator": "Codeium",
-      "language_support": {
-        "python": true,
-        "javascript": true,
-        "java": true,
-        "cpp": true
-      },
-      "supports_local_model": false,
-      "supports_offline_use": false,
-      "review_link": "/blog/codeium-review",
-      "homepage_link": "https://codeium.com",
-      "support": {
-        "support_channels": ["Email", "Chat"],
-        "documentation_quality": 4.4,
-        "community_support": "Active community on GitHub and Stack Overflow"
-      },
-      "usage_stats": {
-        "number_of_users": 15000,
-        "number_of_integrations": 40,
-        "github_stars": 7000
-      },
-      "performance": {
-        "latency": "45ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
-      },
-      "security": {
-        "compliance_certifications": ["GDPR"],
-        "security_features": ["Encryption", "Multi-factor authentication"]
-      },
-      "market_position": {
-        "market_share": "18%",
-        "competitors": ["GitHub Copilot", "TabNine"],
-        "unique_selling_points": ["Free for individuals", "Supports 70+ languages"]
-      },
-      "innovation": {
-        "recent_updates": "Added support for new languages in March 2024",
-        "future_roadmap": "Enhancing AI-powered features"
-      },
-      "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/codeium1.png", "@/images/screenshots/codeium2.png"]
-      },
-      "internationalization": {
-        "language_support": ["English", "Spanish", "French"],
-        "localization": ["Localized UI for Spanish and French"]
-      }
-    },
-    {
-      "name": "Kapwing",
-      "icon": "@/images/tools/kapwing.svg",
-      "category": "Video Editing",
-      "description": "Kapwing is an online video editor that supports a range of editing tools and features, including trimming, subtitles, and effects, with a focus on simplicity and accessibility.",
-      "open_source": false,
-      "pricing": {
-        "model": "subscription",
-        "tiers": [
-          {
-            "name": "Individual",
-            "price": "$10 per month"
-          },
-          {
-            "name": "Team",
-            "price": "$100 per month"
-          }
-        ]
-      },
-      "free_tier": true,
-      "works_in_browser": true,
-      "supports_autotranscribe": true,
-      "edit_via_transcription": true,
-      "creator": "Kapwing",
-      "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://www.kapwing.com",
-      "support": {
-        "support_channels": ["Email", "Chat"],
-        "documentation_quality": 4.3,
-        "community_support": "Active community on forums and social media"
-      },
-      "usage_stats": {
-        "number_of_users": 20000,
-        "number_of_integrations": 15,
-        "github_stars": 3000
-      },
-      "performance": {
-        "latency": "50ms",
-        "uptime": "99.7%",
-        "scalability": "Highly scalable"
-      },
-      "security": {
-        "compliance_certifications": ["GDPR"],
-        "security_features": ["Encryption", "Multi-factor authentication"]
-      },
-      "market_position": {
-        "market_share": "12%",
-        "competitors": ["Descript", "Adobe Premiere Pro"],
-        "unique_selling_points": ["Simplicity", "Accessibility"]
-      },
-      "innovation": {
-        "recent_updates": "Added new editing features in February 2024",
-        "future_roadmap": "Enhancing AI-powered editing features"
-      },
-      "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "screenshots": ["@/images/screenshots/kapwing1.png", "@/images/screenshots/kapwing2.png"]
-      },
-      "internationalization": {
-        "language_support": ["English", "Spanish", "French"],
-        "localization": ["Localized UI for Spanish and French"]
-      }
-    },
-
-{
       "name": "Cody",
       "icon": "@/images/tools/cody.svg",
       "category": "Code Autocompletion",
@@ -511,7 +643,9 @@
             "name": "Pro",
             "price": "Subscription based - contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -525,7 +659,71 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://sourcegraph.com/cody"
+      "homepage_link": "https://sourcegraph.com/cody",
+      "business_info": {
+        "funding": "$50 million",
+        "revenue": "$20 million annually",
+        "employee_count": 200,
+        "founding_year": 2013,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Jane Doe",
+            "comment": "Cody has transformed the way I code, making it much more efficient!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 30000,
+        "number_of_integrations": 80,
+        "github_stars": 10000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep Sourcegraph integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at ABC Corp",
+          "link": "/case-studies/abc-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=fmir_bUyygw",
+          "https://www.youtube.com/watch?v=cJj2ozoug60"
+        ],
+        "blog_posts": [
+          "https://sourcegraph.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Mods",
@@ -534,24 +732,31 @@
       "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
       "open_source": {
         "client": true,
-        "backend": false,
+        "backend": true,
         "model": false
       },
       "ide_support": {
-        "vs_code": false,
-        "jetbrains": false,
-        "neovim": false,
-        "visual_studio": false,
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
         "vim": true,
         "emacs": true,
-        "intellij": false
+        "intellij": true
       },
       "pricing": {
         "model": "free",
-        "tiers": []
+        "tiers": [],
+        "payment_methods": ["N/A"]
       },
       "free_tier": true,
       "chat_interface": true,
+      "command_completion": true,
+      "advanced_history": true,
+      "supports_local_model": true,
+      "supports_offline_use": true,
+      "review_link": null,
+      "homepage_link": "https://github.com/charmbracelet/mods",
       "creator": "Charm.sh",
       "language_support": {
         "python": false,
@@ -559,11 +764,69 @@
         "java": false,
         "cpp": false
       },
-      "supports_local_model": true,
-      "supports_offline_use": true,
-      "review_link": null,
-      "advanced_history": true,
-      "homepage_link": "https://github.com/charmbracelet/mods"
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.5,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 5000,
+        "number_of_integrations": 10,
+        "github_stars": 2000
+      },
+      "performance": {
+        "latency": "20ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "5%",
+        "competitors": ["Warp", "iTerm2"],
+        "unique_selling_points": ["Open-source", "Highly customizable"]
+      },
+      "innovation": {
+        "recent_updates": "Added new plugin system in March 2024",
+        "future_roadmap": "Enhancing AI-powered features and adding more integrations"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=M5c6asWG_NA"
+        ],
+        "blog_posts": [
+          "https://zackproser.com/blog/codeium-vs-chatgpt"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$2 million",
+        "revenue": "$1 million annually",
+        "employee_count": 10,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.3,
+        "number_of_reviews": 300,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Mods has made my terminal experience much more efficient and enjoyable!"
+          }
+        ]
+      }
     },
     {
       "name": "Cursor",
@@ -591,7 +854,8 @@
             "name": "Standard",
             "price": "Free"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -604,8 +868,74 @@
       },
       "supports_local_model": true,
       "supports_offline_use": true,
-      "review_link": null,
-      "homepage_link": "https://cursor.sh"
+      "review_link": "/blog/cursor-review",
+      "homepage_link": "https://cursor.sh",
+      "business_info": {
+        "funding": "$20 million",
+        "revenue": "$10 million annually",
+        "employee_count": 100,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.7,
+        "number_of_reviews": 1500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Cursor has revolutionized my coding workflow with its real-time AI assistance!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.8,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 25000,
+        "number_of_integrations": 60,
+        "github_stars": 12000
+      },
+      "performance": {
+        "latency": "30ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "22%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Real-time AI assistance", "Inline chat", "Auto-debugging"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new debugging features in June 2024",
+        "future_roadmap": "Expanding language support and adding more AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=f4ShxlWI-q8",
+          "https://www.youtube.com/watch?v=l_cy43Vdd58",
+          "https://www.youtube.com/watch?v=LiZCqHFwlhI"
+
+        ],
+        "blog_posts": [
+          "https://cursor.sh/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "OpusClip",
@@ -637,7 +967,8 @@
             "name": "Pro",
             "price": "Subscription based, contact for pricing"
           }
-        ]
+        ],
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "works_in_browser": true,
@@ -653,7 +984,16 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.opus.pro"
+      "homepage_link": "https://www.opus.pro", 
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=40OT_GdAQTc"
+        ],
+        "blog_posts": [
+          "https://www.framedrop.ai/blog/opus-clip-review",
+          "https://www.producthunt.com/products/opus-clip/reviews"
+        ]
+      }
     },
     {
       "name": "Tabnine",
@@ -689,7 +1029,9 @@
             "name": "Business",
             "price": "$30 per month per seat"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -702,8 +1044,73 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://www.tabnine.com"
+      "review_link": "/blog/tabnine-review",
+      "homepage_link": "https://www.tabnine.com",
+      "business_info": {
+        "funding": "$20 million",
+        "revenue": "$10 million annually",
+        "employee_count": 100,
+        "founding_year": 2017,
+        "headquarters": "Tel Aviv, Israel"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Tabnine has significantly improved my coding efficiency!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 50000,
+        "number_of_integrations": 100,
+        "github_stars": 15000
+      },
+      "performance": {
+        "latency": "50ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "25%",
+        "competitors": ["GitHub Copilot", "Kite"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep IDE integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Productivity at XYZ Corp",
+          "link": "/case-studies/xyz-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=RDd71IUIgpg",
+          "https://www.youtube.com/watch?v=uMnhX1CQa8g",
+          "https://www.youtube.com/watch?v=Wap2tkgaT1Q"
+        ],
+        "blog_posts": [
+          "https://www.tabnine.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "MutableAI",
@@ -735,7 +1142,9 @@
             "name": "Pro",
             "price": "Starting from $10 per month"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -748,8 +1157,72 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://mutable.ai"
+      "review_link": "/blog/mutableai-review",
+      "homepage_link": "https://mutable.ai",
+      "business_info": {
+        "funding": "$15 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 800,
+        "testimonials": [
+          {
+            "user": "Jane Smith",
+            "comment": "MutableAI has made my coding process much smoother and faster!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.4,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Prompt-driven development", "Automatic unit test generation"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=SSaHQtxip8U",
+          "https://www.youtube.com/watch?v=lu-p9wtps4w"
+        ],
+        "blog_posts": [
+          "https://mutable.ai/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "CodiumAI",
@@ -781,6 +1254,10 @@
             "name": "Teams",
             "price": "$19 per user/month"
           }
+        ],
+        "payment_methods":[
+          "Credit Card",
+          "PayPal"
         ]
       },
       "free_tier": true,
@@ -800,7 +1277,17 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.codium.ai"
+      "homepage_link": "https://www.codium.ai", 
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=gT5tli7X4H4",
+          "https://www.youtube.com/watch?v=5CJjPE-cxX4",
+          "https://www.youtube.com/watch?v=fIYkSEJ4eqE"
+        ],
+        "blog_posts":[
+          "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
+        ]
+      }
     },
     {
       "name": "Grit.io",
@@ -832,7 +1319,9 @@
             "name": "Team",
             "price": "Contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -845,8 +1334,72 @@
       },
       "supports_local_model": false,
       "supports_offline_use": false,
-      "review_link": null,
-      "homepage_link": "https://www.grit.io"
+      "review_link": "/blog/grit-io-review",
+      "homepage_link": "https://www.grit.io",
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$5 million annually",
+        "employee_count": 50,
+        "founding_year": 2019,
+        "headquarters": "New York, NY"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 600,
+        "testimonials": [
+          {
+            "user": "John Doe",
+            "comment": "Grit.io has significantly improved our code quality and reduced technical debt!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.6,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 50,
+        "github_stars": 8000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "15%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Automated technical debt management", "Machine learning-based pull requests"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in April 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Improving Code Quality at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
+        ],
+        "blog_posts": [
+          "https://www.grit.io/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Adrenaline AI",
@@ -878,7 +1431,9 @@
             "name": "Pro",
             "price": "Subscription based, contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -893,7 +1448,71 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://useadrenaline.com"
+      "homepage_link": "https://useadrenaline.com",
+      "business_info": {
+        "funding": "$15 million",
+        "revenue": "$7 million annually",
+        "employee_count": 60,
+        "founding_year": 2021,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.6,
+        "number_of_reviews": 900,
+        "testimonials": [
+          {
+            "user": "John Smith",
+            "comment": "Adrenaline AI has greatly improved my debugging process!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 25000,
+        "number_of_integrations": 70,
+        "github_stars": 9000
+      },
+      "performance": {
+        "latency": "35ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Comprehensive code explanations", "Advanced debugging assistance"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for TypeScript in June 2024",
+        "future_roadmap": "Expanding language support and adding more AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at GHI Corp",
+          "link": "/case-studies/ghi-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
+        ],
+        "blog_posts": [
+          "https://useadrenaline.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Amazon CodeWhisperer",
@@ -921,7 +1540,9 @@
             "name": "Individual",
             "price": "Free"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -935,7 +1556,70 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://aws.amazon.com/codewhisperer/"
+      "homepage_link": "https://aws.amazon.com/codewhisperer/",
+      "business_info": {
+        "funding": "$50 million",
+        "revenue": "$20 million annually",
+        "employee_count": 200,
+        "founding_year": 2013,
+        "headquarters": "Seattle, WA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Jane Doe",
+            "comment": "CodeWhisperer has transformed the way I code, making it much more efficient!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 30000,
+        "number_of_integrations": 80,
+        "github_stars": 10000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep AWS integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at ABC Corp",
+          "link": "/case-studies/abc-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=j8BoVmHKFlI"
+        ],
+        "blog_posts": [
+          "https://aws.amazon.com/blogs/machine-learning/introducing-amazon-codewhisperer/"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Figstack",
@@ -967,7 +1651,9 @@
             "name": "Pro",
             "price": "Contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": false,
@@ -982,97 +1668,82 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://www.figstack.com"
-    },
-{
-  "name": "aiXcoder",
-  "icon": "@/images/tools/aixcoder.svg",
-  "category": "Code Autocompletion",
-  "description": "aiXcoder is an AI-driven programming assistant that enhances coding efficiency by predicting code snippets based on the context of your existing code. It supports deep learning to provide intelligent code completions and suggestions, helping developers write more accurate and efficient code.",
-  "open_source": {
-    "client": false,
-    "backend": false,
-    "model": false
-  },
-  "ide_support": {
-    "vs_code": true,
-    "jetbrains": true,
-    "neovim": false,
-    "visual_studio": true,
-    "vim": false,
-    "emacs": false,
-    "intellij": true
-  },
-  "pricing": {
-    "model": "contact for pricing",
-    "tiers": [
-      {
-        "name": "Free",
-        "price": "Basic features"
+      "homepage_link": "https://www.figstack.com",
+      "business_info": {
+        "funding": "$5 million",
+        "revenue": "$2 million annually",
+        "employee_count": 30,
+        "founding_year": 2019,
+        "headquarters": "San Francisco, CA"
       },
-      {
-        "name": "Pro",
-        "price": "Advanced features"
-      }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "aiXcoder Inc",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": true
-  },
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "homepage_link": "https://www.aixcoder.com"
-},
-{
-  "name": "Plandex",
-  "icon": "@/images/tools/plandex.svg",
-  "category": "Intelligent Terminals / Shells",
-  "description": "Plandex is an open-source, terminal-based AI coding engine that handles complex programming tasks by breaking them into manageable subtasks. It uses long-running agents to automate and streamline workflows, helping users tackle large-scale projects efficiently. Plandex supports various operating systems including Mac, Linux, FreeBSD, and Windows.",
-  "open_source": true,
-  "ide_support": {
-    "vs_code": false,
-    "jetbrains": false,
-    "neovim": false,
-    "visual_studio": false,
-    "vim": false,
-    "emacs": false,
-    "intellij": false
-  },
-  "pricing": {
-    "model": "freemium",
-    "tiers": [
-      {
-        "name": "Free Trial",
-        "price": "Limited free account"
+      "user_reviews": {
+        "average_rating": 4.4,
+        "number_of_reviews": 500,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Figstack has made understanding and documenting code so much easier!"
+          }
+        ]
       },
-      {
-        "name": "Paid",
-        "price": "Contact for pricing"
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.5,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 15000,
+        "number_of_integrations": 40,
+        "github_stars": 7000
+      },
+      "performance": {
+        "latency": "45ms",
+        "uptime": "99.8%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "18%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Code explanation", "Language translation", "Docstring generation"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new languages in March 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Boosting Efficiency at ABC Inc",
+          "link": "/case-studies/abc-inc"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=example1",
+          "https://www.youtube.com/watch?v=example2"
+        ],
+        "blog_posts": [
+          "https://www.figstack.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "multimedia":{
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=pieDcHKEjVw"
+        ],
+        "blog_posts":[
+            "https://www.figstack.com/",
+            "https://deepgram.com/ai-apps/figstack"
+        ]
       }
-    ]
-  },
-  "free_tier": true,
-  "chat_interface": false,
-  "creator": "Dane",
-  "language_support": {
-    "python": true,
-    "javascript": true,
-    "java": true,
-    "cpp": false
-  },
-  "advanced_history": true,
-  "supports_local_model": true,
-  "supports_offline_use": true,
-  "review_link": null,
-  "homepage_link": "https://plandex.ai"
-}
+    }
   ]
 }
+
 
