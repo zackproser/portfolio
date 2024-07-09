@@ -13,6 +13,63 @@ import { getTools } from '@/lib/getTools';
 import { getEmoji } from '@/lib/emojiMapping';
 import { track } from '@vercel/analytics';
 import { sentenceCase } from '@/utils/sentencesCase';
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import OpenSourceStatus from '@/components/OpenSourceStatus';
+import PricingDetails from '@/components/PricingDetails';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const BarCharts = ({ selectedTools }) => {
+  const data = {
+    labels: selectedTools.map(tool => tool.name),
+    datasets: [
+      {
+        label: 'Employee Count',
+        data: selectedTools.map(tool => tool.business_info.employee_count),
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Funding',
+        data: selectedTools.map(tool => parseFloat(tool.business_info.funding.replace(/[^0-9.-]+/g, ""))),
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Revenue',
+        data: selectedTools.map(tool => parseFloat(tool.business_info.revenue.replace(/[^0-9.-]+/g, ""))),
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return (
+    <div className="mb-4">
+      <Bar data={data} />
+      <h2 className="text-2xl font-bold mt-4">Business Metrics</h2>
+    </div>
+  );
+};
 
 const ToolSelector = ({ tools, selectedTools, onChange }) => {
   const availableTools = tools.filter(tool => !selectedTools.includes(tool.name));
@@ -46,6 +103,9 @@ export default function ComparePage({ searchParams }) {
   const [openSections, setOpenSections] = useState([]);
   const [shareButtonText, setShareButtonText] = useState('Share');
   const [shareButtonIcon, setShareButtonIcon] = useState(<Share2 className="mr-2 h-4 w-4" />);
+  const [isBusinessMetricsGlanceExpanded, setIsBusinessMetricsGlanceExpanded] = useState(true);
+  const [isBusinessMetricsDetailExpanded, setIsBusinessMetricsDetailExpanded] = useState(true);
+  const [isOpenSourceExpanded, setIsOpenSourceExpanded] = useState(true);
 
   const getToolColor = (index) => `hsla(${index * 360 / selectedTools.length}, 80%, 40%, 0.9)`;
 
@@ -84,8 +144,20 @@ export default function ComparePage({ searchParams }) {
     router.push(`/devtools/compare?tools=${newSelection.join(',')}`);
   };
 
+  const toggleBusinessMetricsGlancePanel = () => {
+    setIsBusinessMetricsGlanceExpanded(!isBusinessMetricsGlanceExpanded);
+  };
+
+  const toggleBusinessMetricsDetailPanel = () => {
+    setIsBusinessMetricsDetailExpanded(!isBusinessMetricsDetailExpanded);
+  };
+
+  const toggleOpenSourcePanel = () => {
+    setIsOpenSourceExpanded(!isOpenSourceExpanded);
+  };
+
   const renderComparison = (category) => {
-    if (category === 'name' || category === 'icon' || category === 'category' || category === 'description') {
+    if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'open_source' || category === 'pricing') {
       return null;
     }
 
@@ -224,6 +296,116 @@ export default function ComparePage({ searchParams }) {
       </div>
       {selectedTools.length > 0 && (
         <>
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Business Metrics at a Glance</h2>
+              <Button onClick={toggleBusinessMetricsGlancePanel}>
+                {isBusinessMetricsGlanceExpanded ? (
+                  <>
+                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
+                  </>
+                )}
+              </Button>
+            </div>
+            {isBusinessMetricsGlanceExpanded && <BarCharts selectedTools={selectedTools} />}
+          </div>
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Business Metrics</h2>
+              <Button onClick={toggleBusinessMetricsDetailPanel}>
+                {isBusinessMetricsDetailExpanded ? (
+                  <>
+                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
+                  </>
+                )}
+              </Button>
+            </div>
+            {isBusinessMetricsDetailExpanded && (
+              <table className="table-auto w-full mt-2">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2">Tool</th>
+                    <th className="px-4 py-2">Employee Count</th>
+                    <th className="px-4 py-2">Funding</th>
+                    <th className="px-4 py-2">Revenue</th>
+                    <th className="px-4 py-2">Founding Year</th>
+                    <th className="px-4 py-2">Headquarters</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedTools.map((tool) => (
+                    <tr key={tool.name}>
+                      <td className="border px-4 py-2">{tool.name}</td>
+                      <td className="border px-4 py-2">{tool.business_info.employee_count}</td>
+                      <td className="border px-4 py-2">{tool.business_info.funding}</td>
+                      <td className="border px-4 py-2">{tool.business_info.revenue}</td>
+                      <td className="border px-4 py-2">{tool.business_info.founding_year}</td>
+                      <td className="border px-4 py-2">{tool.business_info.headquarters}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Open Source Status</h2>
+              <Button onClick={toggleOpenSourcePanel}>
+                {isOpenSourceExpanded ? (
+                  <>
+                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
+                  </>
+                )}
+              </Button>
+            </div>
+            {isOpenSourceExpanded && (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tool</TableHead>
+                    <TableHead>Open Source Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedTools.map((tool) => (
+                    <TableRow key={tool.name}>
+                      <TableCell>{tool.name}</TableCell>
+                      <TableCell>
+                        {tool.open_source ? (
+                          <OpenSourceStatus openSource={tool.open_source} />
+                        ) : (
+                          'Not Open Source'
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">Pricing</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedTools.map((tool) => (
+                <div key={tool.name} className="border rounded-lg p-4">
+                  <h3 className="text-xl font-semibold mb-2">{tool.name}</h3>
+                  <PricingDetails pricing={tool.pricing} />
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Detailed Comparison</h2>
             <Button onClick={toggleAllSections}>
