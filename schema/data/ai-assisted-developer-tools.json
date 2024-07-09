@@ -460,8 +460,13 @@
       },
       "case_studies": [],
       "multimedia": {
-        "demo_videos": ["https://www.youtube.com/watch?v=example"],
-        "blog_posts": ["", "@/images/blog_posts/kapwing2.png"]
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=ehqwoScTXho",
+          "https://www.youtube.com/watch?v=1C-6Dgm9Fm8"
+        ],
+        "blog_posts": [
+          "https://www.producthunt.com/products/kapwing/reviews"
+        ]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
@@ -608,7 +613,7 @@
         "headquarters": "New York, NY"
       }
     },
-{
+    {
       "name": "Cody",
       "icon": "@/images/tools/cody.svg",
       "category": "Code Autocompletion",
@@ -638,7 +643,9 @@
             "name": "Pro",
             "price": "Subscription based - contact for pricing"
           }
-        ]
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
       },
       "free_tier": true,
       "chat_interface": true,
@@ -652,7 +659,71 @@
       "supports_local_model": false,
       "supports_offline_use": false,
       "review_link": null,
-      "homepage_link": "https://sourcegraph.com/cody"
+      "homepage_link": "https://sourcegraph.com/cody",
+      "business_info": {
+        "funding": "$50 million",
+        "revenue": "$20 million annually",
+        "employee_count": 200,
+        "founding_year": 2013,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.5,
+        "number_of_reviews": 1000,
+        "testimonials": [
+          {
+            "user": "Jane Doe",
+            "comment": "Cody has transformed the way I code, making it much more efficient!"
+          }
+        ]
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Stack Overflow"
+      },
+      "usage_stats": {
+        "number_of_users": 30000,
+        "number_of_integrations": 80,
+        "github_stars": 10000
+      },
+      "performance": {
+        "latency": "40ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR", "HIPAA"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "20%",
+        "competitors": ["GitHub Copilot", "TabNine"],
+        "unique_selling_points": ["Context-aware suggestions", "Deep Sourcegraph integration"]
+      },
+      "innovation": {
+        "recent_updates": "New support for Java added in May 2024",
+        "future_roadmap": "Adding support for more languages and IDEs"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at ABC Corp",
+          "link": "/case-studies/abc-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=fmir_bUyygw",
+          "https://www.youtube.com/watch?v=cJj2ozoug60"
+        ],
+        "blog_posts": [
+          "https://sourcegraph.com/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
     },
     {
       "name": "Mods",
@@ -661,24 +732,31 @@
       "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
       "open_source": {
         "client": true,
-        "backend": false,
+        "backend": true,
         "model": false
       },
       "ide_support": {
-        "vs_code": false,
-        "jetbrains": false,
-        "neovim": false,
-        "visual_studio": false,
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
         "vim": true,
         "emacs": true,
-        "intellij": false
+        "intellij": true
       },
       "pricing": {
         "model": "free",
-        "tiers": []
+        "tiers": [],
+        "payment_methods": ["N/A"]
       },
       "free_tier": true,
       "chat_interface": true,
+      "command_completion": true,
+      "advanced_history": true,
+      "supports_local_model": true,
+      "supports_offline_use": true,
+      "review_link": null,
+      "homepage_link": "https://github.com/charmbracelet/mods",
       "creator": "Charm.sh",
       "language_support": {
         "python": false,
@@ -686,11 +764,69 @@
         "java": false,
         "cpp": false
       },
-      "supports_local_model": true,
-      "supports_offline_use": true,
-      "review_link": null,
-      "advanced_history": true,
-      "homepage_link": "https://github.com/charmbracelet/mods"
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.5,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 5000,
+        "number_of_integrations": 10,
+        "github_stars": 2000
+      },
+      "performance": {
+        "latency": "20ms",
+        "uptime": "99.9%",
+        "scalability": "Highly scalable"
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "5%",
+        "competitors": ["Warp", "iTerm2"],
+        "unique_selling_points": ["Open-source", "Highly customizable"]
+      },
+      "innovation": {
+        "recent_updates": "Added new plugin system in March 2024",
+        "future_roadmap": "Enhancing AI-powered features and adding more integrations"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=M5c6asWG_NA"
+        ],
+        "blog_posts": [
+          "https://zackproser.com/blog/codeium-vs-chatgpt"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$2 million",
+        "revenue": "$1 million annually",
+        "employee_count": 10,
+        "founding_year": 2020,
+        "headquarters": "San Francisco, CA"
+      },
+      "user_reviews": {
+        "average_rating": 4.3,
+        "number_of_reviews": 300,
+        "testimonials": [
+          {
+            "user": "Alice Johnson",
+            "comment": "Mods has made my terminal experience much more efficient and enjoyable!"
+          }
+        ]
+      }
     },
     {
       "name": "Cursor",

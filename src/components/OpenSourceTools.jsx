@@ -6,10 +6,10 @@ const OpenSourceTools = () => {
 
   return (
     <div className="mt-4 mb-8">
-      <h2 className="text-xl font-bold mb-4">🛠️ Open Source Tools</h2>
+      <h2 className="text-xl font-bold mb-4">🛠️ Open Source Tools Wakkaz</h2>
       <div className="space-y-4">
         {openSourceTools.map((tool, index) => (
-          <div key={index} className="p-4 bg-gray-800 rounded-lg shadow-lg text-gray-300">
+          <div key={index} className="p-4 bg-emerald-800 dark:bg-zinc-800 rounded-lg shadow-lg text-white">
             <div className="flex items-center mb-2">
               <img src={tool.icon} alt={`${tool.name} logo`} className="w-8 h-8 mr-2" />
               <strong className="text-lg">{tool.name}</strong>

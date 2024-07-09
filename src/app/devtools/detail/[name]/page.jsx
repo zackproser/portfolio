@@ -57,17 +57,17 @@ export default function ToolDetailPage({ params }) {
         </div>
         <div className="flex flex-wrap gap-4 mt-4">
           {tool.multimedia.blog_posts && tool.multimedia.blog_posts.map((post, index) => (
-            <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-4">Blog posts</h2>
-            <div key={index} className="flex-none w-1/4 p-4 text-wrap border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800">
-              <Link
-                target='_blank'
-                href={post}
-                className="rounded-lg text-wrap"
-              >
-              📖 {post}
-              </Link>
-            </div>
+            <div key={index} className="mb-6 w-full">
+              <h2 className="text-2xl font-bold mb-4">Blog posts</h2>
+              <div className="flex-none w-full sm:w-1/2 lg:w-1/3 p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800 bg-white">
+                <Link
+                  target='_blank'
+                  href={post}
+                  className="block rounded-lg text-wrap overflow-hidden"
+                >
+                  <div className="text-lg font-semibold mb-2 truncate">📖 {post}</div>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
