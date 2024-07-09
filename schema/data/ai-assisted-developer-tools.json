@@ -130,7 +130,11 @@
       "icon": "@/images/tools/warp.svg",
       "category": "Intelligent Terminals / Shells",
       "description": "Warp is a modern terminal with AI-powered features like command completion, advanced history search, and collaboration capabilities.",
-      "open_source": false,
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
       "pricing": {
         "model": "subscription",
         "tiers": [
@@ -201,6 +205,13 @@
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
         "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$2 million annually",
+        "employee_count": 50,
+        "founding_year": 2017,
+        "headquarters": "San Francisco, CA"
       }
     },
     {
@@ -280,6 +291,13 @@
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
         "localization": ["Localized UI for Spanish and French"]
+      },
+      "business_info": {
+        "funding": "$50 million",
+        "revenue": "$10 million annually",
+        "employee_count": 50,
+        "founding_year": 2016,
+        "headquarters": "New York, NY"
       }
     },
     {
@@ -993,6 +1011,13 @@
           "https://www.framedrop.ai/blog/opus-clip-review",
           "https://www.producthunt.com/products/opus-clip/reviews"
         ]
+      },
+      "business_info": {
+        "funding": "$10 million",
+        "revenue": "$2 million annually",
+        "employee_count": 50,
+        "founding_year": 2017,
+        "headquarters": "San Francisco, CA"
       }
     },
     {
@@ -1287,6 +1312,13 @@
         "blog_posts":[
           "https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/"
         ]
+      },
+      "business_info": {
+        "funding": "$1 million",
+        "revenue": "$1 million annually",
+        "founding_year": 2022,
+        "headquarters":"Tel Aviv, Israel",
+        "employee_count": 20
       }
     },
     {
@@ -1672,7 +1704,7 @@
       "business_info": {
         "funding": "$5 million",
         "revenue": "$2 million annually",
-        "employee_count": 30,
+        "employee_count": 50,
         "founding_year": 2019,
         "headquarters": "San Francisco, CA"
       },
