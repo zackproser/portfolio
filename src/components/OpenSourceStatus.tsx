@@ -1,6 +1,14 @@
 import React from 'react';
 
-const OpenSourceStatus = ({ openSource }) => {
+interface OpenSourceProps {
+  openSource: {
+    client: boolean;
+    backend: boolean;
+    model: boolean;
+  };
+}
+
+const OpenSourceStatus: React.FC<OpenSourceProps> = ({ openSource }) => {
   return (
     <div className="mt-4 mb-8">
       <h2 className="text-xl font-bold mb-4">🛠️ Open Source Status</h2>
