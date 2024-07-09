@@ -9,6 +9,23 @@ import chromaLogo from '@/images/logos/chroma.webp'
 import elasticsearchLogo from '@/images/logos/elasticsearch.svg'
 import pgvectorLogo from '@/images/logos/pgvector.svg'
 import redisLogo from '@/images/logos/redis.svg'
+import githubCopilotLogo from '@/images/devtools/github-copilot-logo.webp'
+import vscodeLogo from '@/images/devtools/vscode.webp'
+import jetbrainsLogo from '@/images/devtools/jetbrains.webp'
+import intellijLogo from '@/images/devtools/intellij.webp'
+import neovimLogo from '@/images/devtools/neovim.webp'
+import emacsLogo from '@/images/devtools/emacs.webp'
+import vimLogo from '@/images/devtools/vim.webp'
+import pythonLogo from '@/images/languages/python.webp'
+import javascriptLogo from '@/images/languages/javascript.webp'
+import javaLogo from '@/images/languages/java.webp'
+import cppLogo from '@/images/languages/cpp.webp'
+import rubyLogo from '@/images/languages/ruby.webp'
+import typescriptLogo from '@/images/languages/typescript.webp'
+import goLogo from '@/images/languages/go.webp'
+import phpLogo from '@/images/languages/php.webp'
+import swiftLogo from '@/images/languages/swift.webp'
+import csharpLogo from '@/images/languages/csharp.webp'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -21,9 +38,28 @@ const logoMap = {
   chroma: chromaLogo,
   elasticsearch: elasticsearchLogo,
   pgvector: pgvectorLogo,
-  redis: redisLogo
+  redis: redisLogo,
+  github_copilot: githubCopilotLogo, 
+  vs_code: vscodeLogo,
+  jetbrains: jetbrainsLogo,
+  visual_studio: vscodeLogo,
+  intellij: intellijLogo,
+  neovim: neovimLogo,
+  emacs: emacsLogo,
+  vim: vimLogo,
+  python: pythonLogo,
+  javascript: javascriptLogo,
+  java: javaLogo,
+  cpp: cppLogo,
+  ruby: rubyLogo,
+  typescript: typescriptLogo,
+  go: goLogo,
+  php: phpLogo,
+  swift: swiftLogo,
+  csharp: csharpLogo
 };
 
 export function getLogoById(id) {
-  return logoMap[id] || null;
+  const formattedId = id.replace(/\s+/g, '_'); 
+  return logoMap[formattedId] || null;
 }

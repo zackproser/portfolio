@@ -10,10 +10,19 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { getEmoji } from '@/lib/emojiMapping';
 import { sentenceCase } from '@/utils/sentencesCase'; 
 import Link from 'next/link';
+import { getLogoById } from '@/lib/logoImports';
+import IDESupportBlade from '@/components/IDESupportBlade';
+import PricingDetails from '@/components/PricingDetails';
+import OpenSourceStatus from '@/components/OpenSourceStatus';
+import LanguageSupportBlade from '@/components/LanguageSupportBlade';
+import BusinessInfoBlade from '@/components/BusinessInfoBlade';
 
 export default function ToolDetailPage({ params }) {
-  const tool = getToolByName(params.name);
-  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); // Initialize with all keys or empty array
+  const toolName = decodeURIComponent(params.name); 
+  const tool = getToolByName(toolName);
+  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); 
+  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null; 
+  console.log(`toolLogo: %o`, toolLogo)
 
   if (!tool) {
     return (
@@ -25,12 +34,47 @@ export default function ToolDetailPage({ params }) {
     );
   }
 
-  const toggleAllSections = () => {
-    if (openSections.length === Object.keys(tool).length) {
-      setOpenSections([]);
-    } else {
-      setOpenSections(Object.keys(tool));
-    }
+  const renderMultimediaSection = () => {
+    if (!tool.multimedia) return null;
+
+    return (
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold mb-4">Reviews and discussion</h2>
+        <div className="flex flex-wrap gap-4">
+          {tool.multimedia.demo_videos && tool.multimedia.demo_videos.map((video, index) => (
+            <div key={index} className="flex-none w-1/4 shadow-lg hover:shadow-2xl transition-shadow duration-300">
+              <a href={video} target="_blank" rel="noopener noreferrer">
+                <Image
+                  src={`https://img.youtube.com/vi/${video.split('v=')[1]}/0.jpg`}
+                  alt="YouTube Video"
+                  width={320}
+                  height={180}
+                  className="rounded-lg"
+                />
+              </a>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-4 mt-4">
+          {tool.multimedia.blog_posts && tool.multimedia.blog_posts.map((post, index) => (
+            <div key={index} className="flex-none w-1/3 mb-6">
+              <div className="p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800">
+                <Link
+                  target='_blank'
+                  href={post}
+                  className="block rounded-lg text-wrap"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="text-2xl">📖</div>
+                    <div className="text-lg font-semibold truncate">{post}</div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const renderSectionContent = (key, value) => {
@@ -64,48 +108,69 @@ export default function ToolDetailPage({ params }) {
     return null;
   };
 
+  const includedSections = [
+  ];
+
   return (
     <SimpleLayout
-      title={tool.name}
-      intro={`Details for ${tool.name}`}
+      title={''}
+      intro={''}
     >
-      <div className="flex items-center space-x-4 mb-6">
-        {tool.image && (
-          <Image
-            src={tool.image}
-            alt={`${tool.name} logo`}
-            width={60}
-            height={60}
-          />
-        )}
-        <h1 className="text-3xl font-bold">{tool.name}</h1>
-      </div>
-
-      <div className="mb-4 flex justify-between items-center">
-        <div className="space-x-2">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center space-x-6">
+          <h1 className="text-4xl font-bold">{tool.name}</h1>
+          {toolLogo && (
+            <Image
+              src={toolLogo}
+              alt={`${tool.name} logo`}
+              width={60}
+              height={60}
+              className="rounded-full border border-gray-300"
+            />
+          )}
+        </div>
+        <div className="flex space-x-2">
           <Link href="/devtools">
-            <Button variant="outline">Back to Gallery</Button>
+            <Button variant="solid" className="bg-blue-500 text-white hover:bg-blue-600">
+              🏠 Back to Gallery
+            </Button>
           </Link>
           <Link href={`/devtools/compare?tools=${encodeURIComponent(tool.name)}`}>
-            <Button variant="outline">Compare</Button>
-         </Link>
-        </div>
-        <Button onClick={toggleAllSections}>
-          {openSections.length === Object.keys(tool).length ? (
-            <>
-              <ChevronUp className="mr-2 h-4 w-4" /> Collapse All
-            </>
-          ) : (
-            <>
-              <ChevronDown className="mr-2 h-4 w-4" /> Expand All
-            </>
+            <Button variant="solid" className="bg-green-500 text-white hover:bg-green-600">
+              🔍 Compare
+            </Button>
+          </Link>
+          {tool.review_link && (
+            <Link href={tool.review_link}>
+              <Button variant="solid" className="bg-yellow-500 text-white hover:bg-yellow-600">
+                📖 Read My Review
+              </Button>
+            </Link>
           )}
-        </Button>
+        </div>
       </div>
+
+      <BusinessInfoBlade 
+        category={tool.category} 
+        description={tool.description} 
+        creator={tool.creator} 
+        supportsLocalModel={tool.supports_local_model} 
+        supportsOfflineUse={tool.supports_offline_use} 
+      />
+
+      {renderMultimediaSection()}
+
+      {tool.ide_support && <IDESupportBlade ideSupport={tool.ide_support} />}
+      
+      {tool.language_support && <LanguageSupportBlade languageSupport={tool.language_support} />}
+
+      {tool.pricing && <PricingDetails pricing={tool.pricing} />}
+
+      {tool.open_source && <OpenSourceStatus openSource={tool.open_source} />}
 
       <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
         {Object.entries(tool || {}).map(([key, value]) => {
-          if (key !== 'name' && key !== 'image') {
+          if (includedSections.includes(key)) {
             const emoji = getEmoji(key);
             return (
               <AccordionItem value={key} key={key}>
