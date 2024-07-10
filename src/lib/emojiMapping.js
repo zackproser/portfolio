@@ -3,16 +3,79 @@ const emojiMap = {
   local: '💻',
   cloud: '☁️',
   on_premises: '🏢',
+  founding_year: '🏛️',
+  funding: '💰',
 
   // Scalability
   horizontal: '↔️',
   vertical: '↕️',
   distributed: '🌐',
 
+  user_reviews: '👥',
+
+  // Support
+  support_channels: '📞',
+  documentation_quality: '📚',
+  community_support: '🌐',
+
+  // Usage Stats
+  number_of_users: '👥',
+  number_of_integrations: '🔗',
+  github_stars: '⭐',
+
+  // Performance
+  latency: '⏱️',
+  uptime: '📈',
+  scalability: '📊',
+
+  // Market Position
+  market_share: '📊',
+  competitors: '🏢',
+  unique_selling_points: '💡',
+
+  // Innovation
+  recent_updates: '🆕',
+  future_roadmap: '🛣️',
+
+  // Case Studies
+  case_studies: '📖',
+
+  // Multimedia
+  demo_videos: '🎥',
+  blog_posts: '📝',
+
+  // Internationalization
+  language_support: '🌐',
+  localization: '🌍',
+
+  usage_stats: '📊',
+  performance: '🚀',
+  market_position: '📈',
+  innovation: '💡',
+  multimedia: '🎬',
+  internationalization: '🌍',
+  works_in_browser: '🌐',
+  supports_autotranscribe: '🗣️',
+  edit_via_transcription: '✍️',
+
+  support: '🛠️',
+  support_channels: '📞',
+  documentation_quality: '📚',
+  community_support: '🌐',
+  average_rating: '⭐',
+  number_of_reviews: '📝',
   // Data Management
   import: '📥',
   update_deletion: '🔄',
   backup_restore: '💾',
+  // Usage Stats
+  number_of_users: '👥',
+  number_of_integrations: '🔗',
+  github_stars: '⭐',
+  // Market Position
+  market_share: '📊',
+  competitors: '🏢',
+  unique_selling_points: '💡',
 
   // Vector Similarity Search
   distance_metrics: '📏',

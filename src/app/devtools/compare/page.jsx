@@ -24,7 +24,6 @@ import {
   Legend,
 } from 'chart.js';
 import OpenSourceStatus from '@/components/OpenSourceStatus';
-import PricingDetails from '@/components/PricingDetails';
 
 ChartJS.register(
   CategoryScale,
@@ -35,8 +34,67 @@ ChartJS.register(
   Legend
 );
 
+const getToolColor = (index, totalTools) => `hsla(${index * 360 / totalTools}, 80%, 40%, 0.9)`;
+
+const renderCellValue = (value) => {
+  if (typeof value === 'boolean') {
+    return (
+      <span className={value ? 'text-green-600' : 'text-red-600'}>
+        {getEmoji(value.toString())}
+      </span>
+    );
+  }
+  if (Array.isArray(value)) {
+    return (
+      <div>
+        {value.map((item, index) => (
+          <div key={index}>
+            {typeof item === 'object' ? renderNestedObject(item) : renderValue(item)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (typeof value === 'object' && value !== null) {
+    if (value.client !== undefined && value.backend !== undefined && value.model !== undefined) {
+      return <OpenSourceStatus openSource={value} />;
+    }
+    return renderNestedObject(value);
+  }
+  return renderValue(value);
+};
+
+const renderValue = (value) => {
+  if (typeof value === 'string' && isValidURL(value)) {
+    return (
+      <Link href={value} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+        {value}
+      </Link>
+    );
+  }
+  return value?.toString() ?? '';
+};
+
+const renderNestedObject = (obj) => {
+  return Object.entries(obj).map(([key, val]) => (
+    <div key={key} className="mb-1">
+      <span className="font-medium">{sentenceCase(key)}:</span>{' '}
+      {typeof val === 'object' ? renderNestedObject(val) : renderValue(val)}
+    </div>
+  ));
+};
+
+const isValidURL = (string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
 const BarCharts = ({ selectedTools }) => {
-  const data = {
+  const businessData = {
     labels: selectedTools.map(tool => tool.name),
     datasets: [
       {
@@ -63,10 +121,85 @@ const BarCharts = ({ selectedTools }) => {
     ],
   };
 
+  const userCountData = {
+    labels: selectedTools.map(tool => tool.name),
+    datasets: [
+      {
+        label: 'User Count',
+        data: selectedTools.map(tool => tool.usage_stats.number_of_users),
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return (
+    <div className="mb-4 flex flex-wrap">
+      <div className="w-full md:w-1/2 p-2">
+        <Bar data={businessData} options={{ responsive: true, maintainAspectRatio: false }} height={300} />
+      </div>
+      <div className="w-full md:w-1/2 p-2">
+        <Bar data={userCountData} options={{ responsive: true, maintainAspectRatio: false }} height={300} />
+      </div>
+      <table className="table-auto w-full mt-2">
+        <thead>
+          <tr>
+            <th className="px-4 py-2">Tool</th>
+            <th className="px-4 py-2">Employee Count</th>
+            <th className="px-4 py-2">Funding</th>
+            <th className="px-4 py-2">Revenue</th>
+            <th className="px-4 py-2">User Count</th>
+            <th className="px-4 py-2">Founding Year</th>
+            <th className="px-4 py-2">Headquarters</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedTools.map((tool) => (
+            <tr key={tool.name}>
+              <td className="border px-4 py-2">{tool.name}</td>
+              <td className="border px-4 py-2">{tool.business_info.employee_count}</td>
+              <td className="border px-4 py-2">{tool.business_info.funding}</td>
+              <td className="border px-4 py-2">{tool.business_info.revenue}</td>
+              <td className="border px-4 py-2">{tool.usage_stats.number_of_users}</td>
+              <td className="border px-4 py-2">{tool.business_info.founding_year}</td>
+              <td className="border px-4 py-2">{tool.business_info.headquarters}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const BusinessInfo = ({ selectedTools }) => {
   return (
     <div className="mb-4">
-      <Bar data={data} />
-      <h2 className="text-2xl font-bold mt-4">Business Metrics</h2>
+      <h2 className="text-2xl font-bold mb-2">Business Info</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Feature</TableHead>
+            {selectedTools.map((tool, index) => (
+              <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Object.keys(selectedTools[0].business_info).map((feature) => (
+            <TableRow key={feature}>
+              <TableCell className="font-medium">
+                <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
+              </TableCell>
+              {selectedTools.map((tool) => (
+                <TableCell key={tool.name}>
+                  {renderCellValue(tool.business_info[feature])}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
@@ -103,11 +236,6 @@ export default function ComparePage({ searchParams }) {
   const [openSections, setOpenSections] = useState([]);
   const [shareButtonText, setShareButtonText] = useState('Share');
   const [shareButtonIcon, setShareButtonIcon] = useState(<Share2 className="mr-2 h-4 w-4" />);
-  const [isBusinessMetricsGlanceExpanded, setIsBusinessMetricsGlanceExpanded] = useState(true);
-  const [isBusinessMetricsDetailExpanded, setIsBusinessMetricsDetailExpanded] = useState(true);
-  const [isOpenSourceExpanded, setIsOpenSourceExpanded] = useState(true);
-
-  const getToolColor = (index) => `hsla(${index * 360 / selectedTools.length}, 80%, 40%, 0.9)`;
 
   const toggleAllSections = () => {
     if (openSections.length === Object.keys(selectedTools[0] || {}).length) {
@@ -144,20 +272,8 @@ export default function ComparePage({ searchParams }) {
     router.push(`/devtools/compare?tools=${newSelection.join(',')}`);
   };
 
-  const toggleBusinessMetricsGlancePanel = () => {
-    setIsBusinessMetricsGlanceExpanded(!isBusinessMetricsGlanceExpanded);
-  };
-
-  const toggleBusinessMetricsDetailPanel = () => {
-    setIsBusinessMetricsDetailExpanded(!isBusinessMetricsDetailExpanded);
-  };
-
-  const toggleOpenSourcePanel = () => {
-    setIsOpenSourceExpanded(!isOpenSourceExpanded);
-  };
-
   const renderComparison = (category) => {
-    if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'open_source' || category === 'pricing') {
+    if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'business_info') {
       return null;
     }
 
@@ -178,7 +294,7 @@ export default function ComparePage({ searchParams }) {
               <TableRow>
                 <TableHead>Feature</TableHead>
                 {selectedTools.map((tool, index) => (
-                  <TableHead key={tool.name} style={{ color: getToolColor(index) }}>{tool.name}</TableHead>
+                  <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -204,60 +320,6 @@ export default function ComparePage({ searchParams }) {
     );
   };
 
-  const renderCellValue = (value) => {
-    if (typeof value === 'boolean') {
-      return (
-        <TableCell className={value ? 'text-green-600' : 'text-red-600'}>
-          {getEmoji(value.toString())}
-        </TableCell>
-      );
-    }
-    if (Array.isArray(value)) {
-      return (
-        <TableCell>
-          {value.map((item, index) => (
-            <div key={index}>
-              {typeof item === 'object' ? renderNestedObject(item) : renderValue(item)}
-            </div>
-          ))}
-        </TableCell>
-      );
-    }
-    if (typeof value === 'object' && value !== null) {
-      return <TableCell>{renderNestedObject(value)}</TableCell>;
-    }
-    return <TableCell>{renderValue(value)}</TableCell>;
-  };
-
-  const renderValue = (value) => {
-    if (typeof value === 'string' && isValidURL(value)) {
-      return (
-        <Link href={value} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-          {value}
-        </Link>
-      );
-    }
-    return value?.toString() ?? '';
-  };
-
-  const renderNestedObject = (obj) => {
-    return Object.entries(obj).map(([key, val]) => (
-      <div key={key} className="mb-1">
-        <span className="font-medium">{sentenceCase(key)}:</span>{' '}
-        {typeof val === 'object' ? renderNestedObject(val) : renderValue(val)}
-      </div>
-    ));
-  };
-
-  const isValidURL = (string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  };
-
   return (
     <Container>
       <div className="flex justify-between items-center">
@@ -272,7 +334,7 @@ export default function ComparePage({ searchParams }) {
           <Button
             key={tool.name}
             variant="outline"
-            style={{ color: getToolColor(index) }}
+            style={{ color: getToolColor(index, selectedTools.length) }}
             onClick={() => removeTool(tool.name)}
           >
             {tool.name} <X className="ml-2 h-4 w-4" />
@@ -294,118 +356,10 @@ export default function ComparePage({ searchParams }) {
           onChange={handleToolSelection}
         />
       </div>
+      <BarCharts selectedTools={selectedTools} />
       {selectedTools.length > 0 && (
         <>
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Business Metrics at a Glance</h2>
-              <Button onClick={toggleBusinessMetricsGlancePanel}>
-                {isBusinessMetricsGlanceExpanded ? (
-                  <>
-                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
-                  </>
-                )}
-              </Button>
-            </div>
-            {isBusinessMetricsGlanceExpanded && <BarCharts selectedTools={selectedTools} />}
-          </div>
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Business Metrics</h2>
-              <Button onClick={toggleBusinessMetricsDetailPanel}>
-                {isBusinessMetricsDetailExpanded ? (
-                  <>
-                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
-                  </>
-                )}
-              </Button>
-            </div>
-            {isBusinessMetricsDetailExpanded && (
-              <table className="table-auto w-full mt-2">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Tool</th>
-                    <th className="px-4 py-2">Employee Count</th>
-                    <th className="px-4 py-2">Funding</th>
-                    <th className="px-4 py-2">Revenue</th>
-                    <th className="px-4 py-2">Founding Year</th>
-                    <th className="px-4 py-2">Headquarters</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedTools.map((tool) => (
-                    <tr key={tool.name}>
-                      <td className="border px-4 py-2">{tool.name}</td>
-                      <td className="border px-4 py-2">{tool.business_info.employee_count}</td>
-                      <td className="border px-4 py-2">{tool.business_info.funding}</td>
-                      <td className="border px-4 py-2">{tool.business_info.revenue}</td>
-                      <td className="border px-4 py-2">{tool.business_info.founding_year}</td>
-                      <td className="border px-4 py-2">{tool.business_info.headquarters}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Open Source Status</h2>
-              <Button onClick={toggleOpenSourcePanel}>
-                {isOpenSourceExpanded ? (
-                  <>
-                    <ChevronUp className="mr-2 h-4 w-4" /> Collapse
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-2 h-4 w-4" /> Expand
-                  </>
-                )}
-              </Button>
-            </div>
-            {isOpenSourceExpanded && (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Tool</TableHead>
-                    <TableHead>Open Source Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {selectedTools.map((tool) => (
-                    <TableRow key={tool.name}>
-                      <TableCell>{tool.name}</TableCell>
-                      <TableCell>
-                        {tool.open_source ? (
-                          <OpenSourceStatus openSource={tool.open_source} />
-                        ) : (
-                          'Not Open Source'
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </div>
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Pricing</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {selectedTools.map((tool) => (
-                <div key={tool.name} className="border rounded-lg p-4">
-                  <h3 className="text-xl font-semibold mb-2">{tool.name}</h3>
-                  <PricingDetails pricing={tool.pricing} />
-                </div>
-              ))}
-            </div>
-          </div>
+          <BusinessInfo selectedTools={selectedTools} />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Detailed Comparison</h2>
             <Button onClick={toggleAllSections}>
@@ -428,3 +382,4 @@ export default function ComparePage({ searchParams }) {
     </Container>
   );
 }
+
