@@ -200,7 +200,7 @@ const ToolSelector = ({ tools, selectedTools, onChange }) => {
 };
 
 const renderComparison = (category, selectedTools) => {
-  if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'business_info') {
+  if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'business_info' || category === 'user_reviews') {
     return null;
   }
 
@@ -229,7 +229,7 @@ const renderComparison = (category, selectedTools) => {
             {features.map((feature) => (
               <TableRow key={feature}>
                 <TableCell className="font-medium">
-                  <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
+                  {sentenceCase(feature)}
                 </TableCell>
                 {selectedTools.map((tool) => (
                   <TableCell key={tool.name}>
