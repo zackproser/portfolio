@@ -36,6 +36,9 @@ ChartJS.register(
 const getToolColor = (index, totalTools) => `hsla(${index * 360 / totalTools}, 80%, 40%, 0.9)`;
 
 const renderCellValue = (value) => {
+  if (value === undefined || value === null) {
+    return 'N/A';
+  }
   if (typeof value === 'boolean') {
     return (
       <span className={value ? 'text-green-600' : 'text-red-600'}>
@@ -231,10 +234,8 @@ const renderComparison = (category, selectedTools) => {
                 {selectedTools.map((tool) => (
                   <TableCell key={tool.name}>
                     {category === 'open_source' 
-                      ? renderOpenSourceStatus(tool[category][feature])
-                      : tool[category] && tool[category][feature] !== undefined
-                        ? renderCellValue((typeof categoryData === 'object' && categoryData) ? tool[category][feature] : tool[category])
-                        : 'N/A'}
+                      ? renderOpenSourceStatus(tool[category])
+                      : renderCellValue(typeof categoryData === 'object' ? tool[category]?.[feature] : tool[category])}
                   </TableCell>
                 ))}
               </TableRow>
@@ -247,6 +248,20 @@ const renderComparison = (category, selectedTools) => {
 };
 
 const renderOpenSourceStatus = (status) => {
+  if (typeof status === 'object') {
+    return (
+      <div>
+        {Object.entries(status).map(([key, value]) => (
+          <div key={key}>
+            <span className="font-medium">{sentenceCase(key)}:</span>{' '}
+            <span className={value ? 'text-green-600' : 'text-red-600'}>
+              {value ? '✓' : '✗'}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
   return (
     <span className={status ? 'text-green-600' : 'text-red-600'}>
       {status ? '✓' : '✗'}
