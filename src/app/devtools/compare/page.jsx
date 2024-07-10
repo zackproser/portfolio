@@ -23,7 +23,6 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import OpenSourceStatus from '@/components/OpenSourceStatus';
 
 ChartJS.register(
   CategoryScale,
@@ -153,7 +152,7 @@ const BusinessInfo = ({ selectedTools }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Feature</TableHead>
+            <TableHead>Tool</TableHead>
             {selectedTools.map((tool, index) => (
               <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
             ))}
@@ -194,6 +193,64 @@ const ToolSelector = ({ tools, selectedTools, onChange }) => {
         </Badge>
       ))}
     </div>
+  );
+};
+
+const renderComparison = (category, selectedTools) => {
+  if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'business_info') {
+    return null;
+  }
+
+  const categoryData = selectedTools[0][category];
+  const features = (typeof categoryData === 'object' && categoryData) ? Object.keys(categoryData) : [category];
+
+  return (
+    <AccordionItem value={category} key={category}>
+      <AccordionTrigger className="text-xl">
+        <div className="flex items-center">
+          <span className="text-2xl mr-2">{getEmoji(category)}</span>
+          <span>{sentenceCase(category)}</span>
+        </div>
+      </AccordionTrigger>
+      <AccordionContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tool</TableHead>
+              {selectedTools.map((tool, index) => (
+                <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {features.map((feature) => (
+              <TableRow key={feature}>
+                <TableCell className="font-medium">
+                  <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
+                </TableCell>
+                {selectedTools.map((tool) => (
+                  <TableCell key={tool.name}>
+                    {category === 'open_source' 
+                      ? renderOpenSourceStatus(tool[category][feature])
+                      : tool[category] && tool[category][feature] !== undefined
+                        ? renderCellValue((typeof categoryData === 'object' && categoryData) ? tool[category][feature] : tool[category])
+                        : 'N/A'}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
+
+const renderOpenSourceStatus = (status) => {
+  return (
+    <span className={status ? 'text-green-600' : 'text-red-600'}>
+      {status ? '✓' : '✗'}
+    </span>
   );
 };
 
@@ -244,54 +301,6 @@ export default function ComparePage({ searchParams }) {
 
   const handleToolSelection = (newSelection) => {
     router.push(`/devtools/compare?tools=${newSelection.join(',')}`);
-  };
-
-  const renderComparison = (category) => {
-    if (category === 'name' || category === 'icon' || category === 'category' || category === 'description' || category === 'business_info') {
-      return null;
-    }
-
-    const categoryData = selectedTools[0][category];
-    const features = (typeof categoryData === 'object' && categoryData) ? Object.keys(categoryData) : [category];
-
-    return (
-      <AccordionItem value={category} key={category}>
-        <AccordionTrigger className="text-xl">
-          <div className="flex items-center">
-            <span className="text-2xl mr-2">{getEmoji(category)}</span>
-            <span>{sentenceCase(category)}</span>
-          </div>
-        </AccordionTrigger>
-        <AccordionContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Feature</TableHead>
-                {selectedTools.map((tool, index) => (
-                  <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {features.map((feature) => (
-                <TableRow key={feature}>
-                  <TableCell className="font-medium">
-                    <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
-                  </TableCell>
-                  {selectedTools.map((tool) => (
-                    <TableCell key={tool.name}>
-                      {tool[category] && tool[category][feature] !== undefined
-                        ? renderCellValue((typeof categoryData === 'object' && categoryData) ? tool[category][feature] : tool[category])
-                        : 'N/A'}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </AccordionContent>
-      </AccordionItem>
-    );
   };
 
   return (
@@ -349,11 +358,10 @@ export default function ComparePage({ searchParams }) {
             </Button>
           </div>
           <Accordion type="multiple" value={openSections} onValueChange={setOpenSections}>
-            {Object.keys(selectedTools[0] || {}).map(renderComparison)}
+            {Object.keys(selectedTools[0] || {}).map(category => renderComparison(category, selectedTools))}
           </Accordion>
         </>
       )}
     </Container>
   );
 }
-
