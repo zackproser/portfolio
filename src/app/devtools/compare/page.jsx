@@ -142,32 +142,6 @@ const BarCharts = ({ selectedTools }) => {
       <div className="w-full md:w-1/2 p-2">
         <Bar data={userCountData} options={{ responsive: true, maintainAspectRatio: false }} height={300} />
       </div>
-      <table className="table-auto w-full mt-2">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Tool</th>
-            <th className="px-4 py-2">Employee Count</th>
-            <th className="px-4 py-2">Funding</th>
-            <th className="px-4 py-2">Revenue</th>
-            <th className="px-4 py-2">User Count</th>
-            <th className="px-4 py-2">Founding Year</th>
-            <th className="px-4 py-2">Headquarters</th>
-          </tr>
-        </thead>
-        <tbody>
-          {selectedTools.map((tool) => (
-            <tr key={tool.name}>
-              <td className="border px-4 py-2">{tool.name}</td>
-              <td className="border px-4 py-2">{tool.business_info.employee_count}</td>
-              <td className="border px-4 py-2">{tool.business_info.funding}</td>
-              <td className="border px-4 py-2">{tool.business_info.revenue}</td>
-              <td className="border px-4 py-2">{tool.usage_stats.number_of_users}</td>
-              <td className="border px-4 py-2">{tool.business_info.founding_year}</td>
-              <td className="border px-4 py-2">{tool.business_info.headquarters}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
