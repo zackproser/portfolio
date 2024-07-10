@@ -14,8 +14,8 @@ export default async function ComparisonsIndex() {
 
   return (
     <SimpleLayout
-      title="Vector Database Comparisons"
-      intro="Compare different vector databases to find the best fit for your needs"
+      title="Vector Database and Dev tools compared"
+      intro="Compare different vector databases and devtools to find the best fit for your needs"
     >
       <ComparisonSearch comparisons={JSON.parse(JSON.stringify(comparisons))} />
     </SimpleLayout>
