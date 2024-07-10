@@ -84,7 +84,7 @@
         "community_support": "Active community on GitHub and Stack Overflow"
       },
       "usage_stats": {
-        "number_of_users": 50000,
+        "number_of_users": 13000000,
         "number_of_integrations": 100,
         "github_stars": 15000
       },
@@ -348,21 +348,11 @@
       "review_link": "/blog/codeium-review",
       "homepage_link": "https://codeium.com",
       "business_info": {
-        "funding": "$10 million",
+        "funding": "$65 million",
         "revenue": "$5 million annually",
         "employee_count": 50,
         "founding_year": 2021,
         "headquarters": "New York, NY"
-      },
-      "user_reviews": {
-        "average_rating": 4.6,
-        "number_of_reviews": 800,
-        "testimonials": [
-          {
-            "user": "Jane Smith",
-            "comment": "Codeium has made my coding process much smoother and faster!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -370,14 +360,9 @@
         "community_support": "Active community on GitHub and Stack Overflow"
       },
       "usage_stats": {
-        "number_of_users": 15000,
+        "number_of_users": 300000,
         "number_of_integrations": 40,
         "github_stars": 7000
-      },
-      "performance": {
-        "latency": "45ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR"],
@@ -1018,6 +1003,11 @@
         "employee_count": 50,
         "founding_year": 2017,
         "headquarters": "San Francisco, CA"
+      },
+      "usage_stats": {
+        "number_of_users": 20000,
+        "number_of_integrations": 15,
+        "github_stars": 250
       }
     },
     {
@@ -1319,7 +1309,11 @@
         "founding_year": 2022,
         "headquarters":"Tel Aviv, Israel",
         "employee_count": 20
-      }
+      },
+      "usage_stats":{
+        "number_of_users":20000,
+        "github_stars": 250
+      } 
     },
     {
       "name": "Grit.io",
