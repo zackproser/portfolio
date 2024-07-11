@@ -117,7 +117,7 @@ export default function ToolDetailPage({ params }) {
       title={tool.name}
       intro={tool.description}
     >
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 space-y-4 md:space-y-0">
         <div className="flex items-center space-x-6">
           <h1 className="text-4xl font-bold">{tool.name}</h1>
           {toolLogo && (
@@ -130,20 +130,20 @@ export default function ToolDetailPage({ params }) {
             />
           )}
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <Link href="/devtools">
-            <Button variant="solid" className="bg-blue-500 text-white hover:bg-blue-600">
+            <Button variant="solid" className="bg-blue-500 text-white hover:bg-blue-600 w-full sm:w-auto">
               🏠 Back to Gallery
             </Button>
           </Link>
           <Link href={`/devtools/compare?tools=${encodeURIComponent(tool.name)}`}>
-            <Button variant="solid" className="bg-green-500 text-white hover:bg-green-600">
+            <Button variant="solid" className="bg-green-500 text-white hover:bg-green-600 w-full sm:w-auto">
               🔍 Compare
             </Button>
           </Link>
           {tool.review_link && (
             <Link href={tool.review_link}>
-              <Button variant="solid" className="bg-yellow-500 text-white hover:bg-yellow-600">
+              <Button variant="solid" className="bg-yellow-500 text-white hover:bg-yellow-600 w-full sm:w-auto">
                 📖 Read My Review
               </Button>
             </Link>
