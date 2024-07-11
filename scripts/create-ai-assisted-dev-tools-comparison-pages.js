@@ -22,6 +22,7 @@ const generateComparisonPageContent = (tool1, tool2, existingDate) => {
 
   return `
 import { ArticleLayout } from '@/components/ArticleLayout'
+import CrossLinkCallout from '@/components/CrossLinkCallout'
 import Image from 'next/image'
 import Link from 'next/link'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
@@ -40,6 +41,14 @@ export const metadata = {
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
+
+<CrossLinkCallout
+  title="Compare AI-Assisted Developer Tools Dynamically"
+  description="Use my interactive tool to compare ${tool1.name}, ${tool2.name}, and other AI-assisted developer tools side by side."
+  linkText="Compare ${tool1.name} and ${tool2.name}"
+  linkHref="/devtools/compare?tools=${encodeURIComponent(tool1.name)},${encodeURIComponent(tool2.name)}"
+  variant="info"
+/>
 
 # ${tool1.name} vs ${tool2.name}
 
