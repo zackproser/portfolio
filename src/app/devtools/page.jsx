@@ -9,6 +9,9 @@ import { track } from '@vercel/analytics'
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Image from 'next/image'
+import { CodeIcon } from 'lucide-react' // Import a default icon
+import { getLogoById } from '@/lib/logoImports'
 
 export default function DevToolsIndex() {
   const router = useRouter();
@@ -51,6 +54,17 @@ export default function DevToolsIndex() {
         {filteredTools.map((tool, index) => (
           <Card key={index} className="flex flex-col dark:bg-zinc-800">
             <CardHeader className="flex flex-row items-center space-x-4">
+              {tool.name && getLogoById(tool.name) ? (
+                <Image
+                  src={getLogoById(tool.name)}
+                  alt={`${tool.name} icon`}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              ) : (
+                <CodeIcon className="w-10 h-10 text-gray-400" />
+              )}
               <CardTitle>{tool.name}</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">

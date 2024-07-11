@@ -26,6 +26,22 @@ import goLogo from '@/images/languages/go.webp'
 import phpLogo from '@/images/languages/php.webp'
 import swiftLogo from '@/images/languages/swift.webp'
 import csharpLogo from '@/images/languages/csharp.webp'
+import warpLogo from '@/images/devtools/warp.webp'
+import descriptLogo from '@/images/devtools/descript.webp'
+import codeiumLogo from '@/images/devtools/codeium.webp'
+import kapwingLogo from '@/images/devtools/kapwing.webp'
+import aiderLogo from '@/images/devtools/aider.webp'
+import codyLogo from '@/images/devtools/cody.webp'
+import modsLogo from '@/images/devtools/mods.webp'
+import cursorLogo from '@/images/devtools/cursor.webp'
+import opusclipLogo from '@/images/devtools/opusclip.webp'
+import tabnineLogo from '@/images/devtools/tabnine.webp'
+import mutableLogo from '@/images/devtools/mutable.webp'
+import codiumaiLogo from '@/images/devtools/codeiumai.webp'
+import gritioLogo from '@/images/devtools/gritio.webp'
+import adrenalineLogo from '@/images/devtools/adrenaline.webp'
+import codewhispererLogo from '@/images/devtools/codewhisperer.webp'
+import figstackLogo from '@/images/devtools/figstack.webp'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -56,10 +72,28 @@ const logoMap = {
   go: goLogo,
   php: phpLogo,
   swift: swiftLogo,
-  csharp: csharpLogo
+  csharp: csharpLogo,
+  warp: warpLogo,
+  descript: descriptLogo,
+  codeium: codeiumLogo,
+  kapwing: kapwingLogo,
+  aider: aiderLogo,
+  cody: codyLogo,
+  mods: modsLogo,
+  cursor: cursorLogo,
+  opusclip: opusclipLogo,
+  tabnine: tabnineLogo,
+  mutableai: mutableLogo,
+  codiumai: codiumaiLogo,
+  gritio: gritioLogo,
+  grit_io: gritioLogo,
+  'grit.io': gritioLogo,
+  adrenaline_ai: adrenalineLogo,
+  amazon_codewhisperer: codewhispererLogo,
+  figstack: figstackLogo
 };
 
 export function getLogoById(id) {
-  const formattedId = id.replace(/\s+/g, '_'); 
+  const formattedId = id.toLowerCase().replace(/\s+/g, '_').replace(/\./g, '');
   return logoMap[formattedId] || null;
 }
