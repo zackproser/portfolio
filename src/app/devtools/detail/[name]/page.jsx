@@ -40,36 +40,48 @@ export default function ToolDetailPage({ params }) {
     return (
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-4">Reviews and discussion</h2>
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tool.multimedia.demo_videos && tool.multimedia.demo_videos.map((video, index) => (
-            <div key={index} className="flex-none w-1/4 shadow-lg hover:shadow-2xl transition-shadow duration-300">
-              <a href={video} target="_blank" rel="noopener noreferrer">
+            <div key={index} className="overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-zinc-800">
+              <a href={video} target="_blank" rel="noopener noreferrer" className="block">
                 <Image
                   src={`https://img.youtube.com/vi/${video.split('v=')[1]}/0.jpg`}
                   alt="YouTube Video"
                   width={320}
                   height={180}
-                  className="rounded-lg"
+                  className="w-full object-cover aspect-video"
                 />
+                <div className="p-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                    <span>Watch video</span>
+                  </div>
+                </div>
               </a>
             </div>
           ))}
-        </div>
-        <div className="flex flex-wrap gap-4 mt-4">
           {tool.multimedia.blog_posts && tool.multimedia.blog_posts.map((post, index) => (
-            <div key={index} className="flex-none w-1/3 mb-6">
-              <div className="p-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 dark:bg-zinc-800">
-                <Link
-                  target='_blank'
-                  href={post}
-                  className="block rounded-lg text-wrap"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="text-2xl">📖</div>
-                    <div className="text-lg font-semibold truncate">{post}</div>
+            <div key={index} className="overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-zinc-800">
+              <Link
+                href={post}
+                target="_blank"
+                className="block p-4"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="text-3xl">📖</div>
+                  <div>
+                    <div className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 truncate">
+                      {new URL(post).hostname}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      {post}
+                    </div>
                   </div>
-                </Link>
-              </div>
+                </div>
+              </Link>
             </div>
           ))}
         </div>
