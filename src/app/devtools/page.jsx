@@ -8,7 +8,9 @@ import { useRouter } from 'next/navigation'
 import { track } from '@vercel/analytics'
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Image from 'next/image'
+import { CodeIcon } from 'lucide-react' // Import a default icon
+import { getLogoById } from '@/lib/logoImports'
 
 export default function DevToolsIndex() {
   const router = useRouter();
@@ -47,34 +49,45 @@ export default function DevToolsIndex() {
         onReset={handleReset}
         searchTerm={searchTerm}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTools.map((tool, index) => (
-          <Card key={index} className="flex flex-col dark:bg-zinc-800">
-            <CardHeader className="flex flex-row items-center space-x-4">
-              <CardTitle>{tool.name}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow">
-              <p className="text-sm text-gray-600 dark:text-zinc-400">{tool.description}</p>
-            </CardContent>
-            <div className="p-4 mt-auto flex justify-between">
-              <Button
-                variant="primary"
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-                onClick={() => handleCompareClick(tool.name)}
-              >
-                <DiffIcon className="w-4 h-4 mr-2" />
-                Compare
-              </Button>
-              <Button
-                variant="secondary"
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800"
-                onClick={() => handleDetailsClick(tool.name)}
-              >
-                <SearchIcon className="w-4 h-4 mr-2" />
-                Details
-              </Button>
+          <article key={index} className="flex flex-col overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-zinc-800">
+            <div className="p-6 flex-grow flex flex-col">
+              <header className="flex items-center space-x-4 mb-4">
+                {tool.name && getLogoById(tool.name) ? (
+                  <Image
+                    src={getLogoById(tool.name)}
+                    alt={`${tool.name} icon`}
+                    width={48}
+                    height={48}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <CodeIcon className="w-12 h-12 text-gray-400" />
+                )}
+                <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">{tool.name}</h3>
+              </header>
+              <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 flex-grow">{tool.description}</p>
+              <div className="flex justify-between mt-auto">
+                <Button
+                  variant="outline"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={() => handleCompareClick(tool.name)}
+                >
+                  <DiffIcon className="w-4 h-4 mr-2" />
+                  Compare
+                </Button>
+                <Button
+                  variant="outline"
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+                  onClick={() => handleDetailsClick(tool.name)}
+                >
+                  <SearchIcon className="w-4 h-4 mr-2" />
+                  Details
+                </Button>
+              </div>
             </div>
-          </Card>
+          </article>
         ))}
       </div>
     </SimpleLayout>
