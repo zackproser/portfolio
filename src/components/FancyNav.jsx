@@ -131,9 +131,15 @@ const navHierarchy = [
         icon: BoxIcon,
       },
       {
-        label: 'AI-assisted developer tools',
+        label: 'AI-enhanced developer tools',
         href: '/devtools',
-        description: 'Explore AI-powered tools for developers',
+        description: 'Discover and compare AI-powered tools for developers',
+        icon: BoxIcon,
+      },
+      {
+        label: 'AI devtool comparison tool',
+        href: '/devtools/compare',
+        description: 'Compare multiple AI-powered developer tools',
         icon: BoxIcon,
       },
    ],
