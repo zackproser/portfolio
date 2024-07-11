@@ -287,19 +287,19 @@
     "performance_metric": "Optimized for large-scale deep learning and LLM-based applications."
   },
   "business_info": {
-    "company_name": "Deep Lake Inc.",
-    "founded": "unknown",
-    "headquarters": "unknown",
-    "total_funding": "unknown",
+    "company_name": "Activeloop Inc.",
+    "founded": 2019,
+    "headquarters": "Mountain View, California, USA",
+    "total_funding": "$8.8M",
     "latest_valuation": "unknown",
     "funding_rounds": [],
     "key_people": [
       {
-        "name": "unknown",
-        "position": "unknown"
+        "name": "Davit Buniatyan",
+        "position": "Founder & CEO"
       }
     ],
-    "employee_count": "unknown"
+    "employee_count": "11-50"
   }
 },
     {
@@ -358,11 +358,11 @@
     "performance_metric": "High scalability and performance for low-latency data serving."
   },
   "business_info": {
-    "company_name": "Vespa",
+    "company_name": "Verizon Media",
     "founded": 2017,
     "headquarters": "Sunnyvale, CA",
-    "total_funding": "unknown",
-    "latest_valuation": "unknown",
+    "total_funding": "N/A (part of Verizon Media)",
+    "latest_valuation": "N/A (part of Verizon Media)",
     "funding_rounds": [],
     "key_people": [
       {
@@ -370,11 +370,10 @@
         "position": "Lead Developer"
       }
     ],
-    "employee_count": "unknown"
+    "employee_count": "N/A (part of Verizon Media)"
   }
-},
-
-    {
+  },
+  {
       "name": "Pinecone",
       "logoId": "pinecone",
       "description": "Pinecone is a managed vector database designed for machine learning applications, offering high performance and scalability.",
@@ -394,13 +393,13 @@
         "backup_restore": true
       },
       "vector_similarity_search": {
-        "distance_metrics": ["Cosine", "Euclidean"],
+        "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
         "ann_algorithms": ["Custom"],
         "filtering": true,
         "post_processing": false
       },
       "integration_api": {
-        "sdks": ["Python", "TypeScript", "Go", "Terraform"],
+        "sdks": ["Python", "TypeScript", "Go", "Terraform", "Java"],
         "rest_api": true,
         "graphql_api": false,
         "grpc_api": true
@@ -413,7 +412,7 @@
       "community_ecosystem": {
         "open_source": false,
         "community_support": true,
-        "integration_frameworks": ["LangChain", "Haystack", "LlamaIndex", "Airflow"]
+        "integration_frameworks": ["LangChain", "Haystack", "LlamaIndex", "Airflow", "Databricks"]
       },
       "pricing": {
         "free_tier": true,
@@ -690,10 +689,10 @@
         "monitoring_logging": true
       },
       "business_info": {
-        "company_name": "Qdrant Solutions",
+        "company_name": "Qdrant",
         "founded": 2021,
         "headquarters": "Berlin, Germany",
-        "total_funding": "Unknown",
+        "total_funding": "$2M",
         "latest_valuation": "Unknown",
         "funding_rounds": [],
         "key_people": [
@@ -859,8 +858,8 @@
     "company_name": "Elastic N.V.",
     "founded": 2012,
     "headquarters": "Mountain View, CA",
-    "total_funding": "Unknown",
-    "latest_valuation": "Unknown",
+    "total_funding": "$104M",
+    "latest_valuation": "$2.5B (at IPO in 2018)",
     "funding_rounds": [],
     "key_people": [
       {
@@ -1016,7 +1015,7 @@
     "founded": 2011,
     "headquarters": "Mountain View, CA",
     "total_funding": "$347M",
-    "latest_valuation": "Unknown",
+    "latest_valuation": "$2B (as of 2021)",
     "funding_rounds": [
       {
         "date": "2021-04-07",
