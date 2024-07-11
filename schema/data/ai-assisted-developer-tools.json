@@ -63,20 +63,10 @@
       "homepage_link": "https://github.com/features/copilot",
       "business_info": {
         "funding": "$100 million",
-        "revenue": "$50 million annually",
-        "employee_count": 500,
+        "revenue": "$100 million annually",
+        "employee_count": 5595,
         "founding_year": 2008,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.5,
-        "number_of_reviews": 1200,
-        "testimonials": [
-          {
-            "user": "John Doe",
-            "comment": "GitHub Copilot has significantly improved my coding efficiency!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -87,11 +77,6 @@
         "number_of_users": 13000000,
         "number_of_integrations": 100,
         "github_stars": 15000
-      },
-      "performance": {
-        "latency": "50ms",
-        "uptime": "99.9%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR", "HIPAA"],
@@ -139,12 +124,20 @@
         "model": "subscription",
         "tiers": [
           {
-            "name": "Basic",
+            "name": "Free",
             "price": "Free"
           },
           {
             "name": "Pro",
-            "price": "$10 per month"
+            "price": "$15 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$22 per month"
+          },
+          {
+            "name":"Enterprise",
+            "price":"Custom"
           }
         ], 
         "payment_methods": ["Credit Card", "PayPal"]
@@ -164,8 +157,6 @@
         "java": true,
         "cpp": true
       },
-      "supports_local_model": false,
-      "supports_offline_use": false,
       "support": {
         "support_channels": ["Email", "Chat"],
         "documentation_quality": 4.5,
@@ -175,11 +166,6 @@
         "number_of_users": 20000,
         "number_of_integrations": 50,
         "github_stars": 8000
-      },
-      "performance": {
-        "latency": "30ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR"],
@@ -207,10 +193,10 @@
         "localization": ["Localized UI for Spanish and French"]
       },
       "business_info": {
-        "funding": "$10 million",
-        "revenue": "$2 million annually",
+        "funding": "$73 million",
+        "revenue": "$9.5 million",
         "employee_count": 50,
-        "founding_year": 2017,
+        "founding_year": 2020,
         "headquarters": "San Francisco, CA"
       }
     },
@@ -293,11 +279,11 @@
         "localization": ["Localized UI for Spanish and French"]
       },
       "business_info": {
-        "funding": "$50 million",
-        "revenue": "$10 million annually",
-        "employee_count": 50,
-        "founding_year": 2016,
-        "headquarters": "New York, NY"
+        "funding": "$100 million",
+        "revenue": "$28 million annually",
+        "employee_count": 100,
+        "founding_year": 2017,
+        "headquarters": "San Francisco, CA"
       }
     },
     {
@@ -349,10 +335,10 @@
       "homepage_link": "https://codeium.com",
       "business_info": {
         "funding": "$65 million",
-        "revenue": "$5 million annually",
+        "revenue": "$3.6 million annually",
         "employee_count": 50,
         "founding_year": 2021,
-        "headquarters": "New York, NY"
+        "headquarters": "Sacramento, CA"
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -407,12 +393,20 @@
         "model": "subscription",
         "tiers": [
           {
-            "name": "Individual",
-            "price": "$10 per month"
+            "name":"Free",
+            "price": "Free"
           },
           {
-            "name": "Team",
-            "price": "$100 per month"
+            "name": "Pro",
+            "price": "$16 per month"
+          },
+          {
+            "name": "Business",
+            "price": "$50 per month"
+          },
+          {
+            "name":"Enterprise",
+            "price":"Custom"
           }
         ],
         "discounts": "10% off for annual subscription",
@@ -439,7 +433,7 @@
         "community_support": "Active community on forums and social media"
       },
       "usage_stats": {
-        "number_of_users": 20000,
+        "number_of_users": 100000,
         "number_of_integrations": 15,
         "github_stars": 3000
       },
@@ -476,21 +470,11 @@
         "localization": ["Localized UI for Spanish and French"]
       },
       "business_info": {
-        "funding": "$5 million",
-        "revenue": "$2 million annually",
+        "funding": "$12.7 million",
+        "revenue": "$6.2 million annually",
         "employee_count": 50,
         "founding_year": 2017,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.4,
-        "number_of_reviews": 500,
-        "testimonials": [
-          {
-            "user": "Alice Johnson",
-            "comment": "Kapwing makes video editing so much easier and faster!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -498,7 +482,7 @@
         "community_support": "Active community on forums and social media"
       },
       "usage_stats": {
-        "number_of_users": 20000,
+        "number_of_users": 100000,
         "number_of_integrations": 15,
         "github_stars": 3000
       },
@@ -545,8 +529,8 @@
         "model": "subscription",
         "tiers": [
           {
-            "name": "Standard",
-            "price": "Free with optional paid upgrades for advanced features"
+            "name": "Free",
+            "price": "Free and open source"
           }
         ],
         "payment_methods": ["Credit Card", "PayPal"]
@@ -564,7 +548,11 @@
         "python": true,
         "javascript": true,
         "java": true,
-        "cpp": true
+        "cpp": true,
+        "swift": true,
+        "php":true,
+        "csharp":true,
+        "go":true
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -572,14 +560,9 @@
         "community_support": "Active community on GitHub and Discord"
       },
       "usage_stats": {
-        "number_of_users": 10000,
+        "number_of_users": 5000,
         "number_of_integrations": 30,
         "github_stars": 4000
-      },
-      "performance": {
-        "latency": "35ms",
-        "uptime": "99.7%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR"],
@@ -609,11 +592,11 @@
         "localization": ["Localized UI for Spanish and French"]
       },
       "business_info": {
-        "funding": "$5 million",
-        "revenue": "$1 million annually",
-        "employee_count": 20,
-        "founding_year": 2022,
-        "headquarters": "New York, NY"
+        "funding": "$0 (open source project)",
+        "revenue": "$0 (open source project)",
+        "employee_count": 1,
+        "founding_year": 2023,
+        "headquarters": "San Diego, CA"
       }
     },
     {
@@ -664,21 +647,11 @@
       "review_link": null,
       "homepage_link": "https://sourcegraph.com/cody",
       "business_info": {
-        "funding": "$50 million",
-        "revenue": "$20 million annually",
-        "employee_count": 200,
+        "funding": "$248 million",
+        "revenue": "$15 million annually",
+        "employee_count": 206,
         "founding_year": 2013,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.5,
-        "number_of_reviews": 1000,
-        "testimonials": [
-          {
-            "user": "Jane Doe",
-            "comment": "Cody has transformed the way I code, making it much more efficient!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -814,24 +787,14 @@
         "localization": ["Localized UI for Spanish and French"]
       },
       "business_info": {
-        "funding": "$2 million",
-        "revenue": "$1 million annually",
-        "employee_count": 10,
-        "founding_year": 2020,
+        "funding": "$9.5 million",
+        "revenue": "$0",
+        "employee_count": 25,
+        "founding_year": 2019,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.3,
-        "number_of_reviews": 300,
-        "testimonials": [
-          {
-            "user": "Alice Johnson",
-            "comment": "Mods has made my terminal experience much more efficient and enjoyable!"
-          }
-        ]
       }
     },
-    {
+     {
       "name": "Cursor",
       "icon": "@/images/tools/cursor.svg",
       "category": "Code Autocompletion",
@@ -854,8 +817,16 @@
         "model": "free",
         "tiers": [
           {
-            "name": "Standard",
+            "name": "Hobby",
             "price": "Free"
+          },
+          {
+            "name":"Pro",
+            "price":"$20 per month"
+          },
+          {
+            "name":"Business",
+            "price":"$40 per month"
           }
         ],
         "payment_methods": ["Credit Card", "PayPal"]
@@ -867,28 +838,23 @@
         "python": true,
         "javascript": true,
         "java": false,
-        "cpp": false
+        "cpp": false,
+        "php":true,
+        "csharp":true,
+        "go":true,
+        "swift":true,
+        "typescript":true
       },
       "supports_local_model": true,
       "supports_offline_use": true,
       "review_link": "/blog/cursor-review",
       "homepage_link": "https://cursor.sh",
       "business_info": {
-        "funding": "$20 million",
-        "revenue": "$10 million annually",
+        "funding": "$8 million",
+        "revenue": "$7.8 million annually",
         "employee_count": 100,
         "founding_year": 2020,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.7,
-        "number_of_reviews": 1500,
-        "testimonials": [
-          {
-            "user": "Alice Johnson",
-            "comment": "Cursor has revolutionized my coding workflow with its real-time AI assistance!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -896,14 +862,9 @@
         "community_support": "Active community on GitHub and Discord"
       },
       "usage_stats": {
-        "number_of_users": 25000,
+        "number_of_users": 10000,
         "number_of_integrations": 60,
         "github_stars": 12000
-      },
-      "performance": {
-        "latency": "30ms",
-        "uptime": "99.9%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR", "HIPAA"],
@@ -967,8 +928,12 @@
             "price": "Free, limited features"
           },
           {
-            "name": "Pro",
-            "price": "Subscription based, contact for pricing"
+            "name": "Starter",
+            "price": "$15 per month"
+          },
+          {
+            "name":"Pro",
+            "price":"$29 per month"
           }
         ],
         "payment_methods": ["Credit Card", "PayPal"]
@@ -998,10 +963,10 @@
         ]
       },
       "business_info": {
-        "funding": "$10 million",
-        "revenue": "$2 million annually",
-        "employee_count": 50,
-        "founding_year": 2017,
+        "funding": "$18 million",
+        "revenue": "$100,000 annually",
+        "employee_count": 35,
+        "founding_year": 2022,
         "headquarters": "San Francisco, CA"
       },
       "usage_stats": {
@@ -1041,8 +1006,8 @@
             "price": "$12 per month per seat"
           },
           {
-            "name": "Business",
-            "price": "$30 per month per seat"
+            "name": "Enterprise",
+            "price": "$39 per month per seat"
           }
         ],
         "discounts": "10% off for annual subscription",
@@ -1062,21 +1027,11 @@
       "review_link": "/blog/tabnine-review",
       "homepage_link": "https://www.tabnine.com",
       "business_info": {
-        "funding": "$20 million",
-        "revenue": "$10 million annually",
-        "employee_count": 100,
-        "founding_year": 2017,
+        "funding": "$25 million",
+        "revenue": "$5.8 million annually",
+        "employee_count": 67,
+        "founding_year": 2013,
         "headquarters": "Tel Aviv, Israel"
-      },
-      "user_reviews": {
-        "average_rating": 4.5,
-        "number_of_reviews": 1000,
-        "testimonials": [
-          {
-            "user": "Alice Johnson",
-            "comment": "Tabnine has significantly improved my coding efficiency!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1087,11 +1042,6 @@
         "number_of_users": 50000,
         "number_of_integrations": 100,
         "github_stars": 15000
-      },
-      "performance": {
-        "latency": "50ms",
-        "uptime": "99.9%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR", "HIPAA"],
@@ -1151,17 +1101,21 @@
         "tiers": [
           {
             "name": "Basic",
-            "price": "Free"
+            "price": "$2 per month and up"
           },
           {
-            "name": "Pro",
-            "price": "Starting from $10 per month"
+            "name": "Premium",
+            "price": "$15 per month"
+          },
+          {
+            "name":"Enterprise",
+            "price":"Custom"
           }
         ],
         "discounts": "10% off for annual subscription",
         "payment_methods": ["Credit Card", "PayPal"]
       },
-      "free_tier": true,
+      "free_tier": false,
       "chat_interface": false,
       "creator": "MutableAI Corp",
       "language_support": {
@@ -1175,21 +1129,11 @@
       "review_link": "/blog/mutableai-review",
       "homepage_link": "https://mutable.ai",
       "business_info": {
-        "funding": "$15 million",
-        "revenue": "$5 million annually",
-        "employee_count": 50,
-        "founding_year": 2020,
+        "funding": "private",
+        "revenue": "$0",
+        "employee_count": 5,
+        "founding_year": 2021,
         "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.6,
-        "number_of_reviews": 800,
-        "testimonials": [
-          {
-            "user": "Jane Smith",
-            "comment": "MutableAI has made my coding process much smoother and faster!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1200,11 +1144,6 @@
         "number_of_users": 15000,
         "number_of_integrations": 40,
         "github_stars": 7000
-      },
-      "performance": {
-        "latency": "45ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR"],
@@ -1219,12 +1158,6 @@
         "recent_updates": "Added support for new languages in March 2024",
         "future_roadmap": "Enhancing AI-powered features"
       },
-      "case_studies": [
-        {
-          "title": "Boosting Efficiency at ABC Inc",
-          "link": "/case-studies/abc-inc"
-        }
-      ],
       "multimedia": {
         "demo_videos": [
           "https://www.youtube.com/watch?v=SSaHQtxip8U",
@@ -1268,6 +1201,10 @@
           {
             "name": "Teams",
             "price": "$19 per user/month"
+          },
+          {
+            "name":"Enterprise",
+            "price":"Let's talk"
           }
         ],
         "payment_methods":[
@@ -1304,11 +1241,11 @@
         ]
       },
       "business_info": {
-        "funding": "$1 million",
-        "revenue": "$1 million annually",
+        "funding": "$10.6 million",
+        "revenue": "$0",
         "founding_year": 2022,
         "headquarters":"Tel Aviv, Israel",
-        "employee_count": 20
+        "employee_count": 15 
       },
       "usage_stats":{
         "number_of_users":20000,
@@ -1338,12 +1275,16 @@
         "model": "subscription",
         "tiers": [
           {
-            "name": "Free",
-            "price": "Free, basic features"
+            "name": "CLI",
+            "price": "Free"
           },
           {
             "name": "Team",
-            "price": "Contact for pricing"
+            "price": "$39 / contributor"
+          },
+          {
+            "name":"Enterprise",
+            "price":"Book a demo"
           }
         ],
         "discounts": "10% off for annual subscription",
@@ -1363,21 +1304,11 @@
       "review_link": "/blog/grit-io-review",
       "homepage_link": "https://www.grit.io",
       "business_info": {
-        "funding": "$10 million",
-        "revenue": "$5 million annually",
-        "employee_count": 50,
-        "founding_year": 2019,
+        "funding": "$7 million",
+        "revenue": "$0",
+        "employee_count": 10,
+        "founding_year": 2022,
         "headquarters": "New York, NY"
-      },
-      "user_reviews": {
-        "average_rating": 4.5,
-        "number_of_reviews": 600,
-        "testimonials": [
-          {
-            "user": "John Doe",
-            "comment": "Grit.io has significantly improved our code quality and reduced technical debt!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1387,12 +1318,7 @@
       "usage_stats": {
         "number_of_users": 20000,
         "number_of_integrations": 50,
-        "github_stars": 8000
-      },
-      "performance": {
-        "latency": "40ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
+        "github_stars": 2800 
       },
       "security": {
         "compliance_certifications": ["GDPR"],
@@ -1455,7 +1381,7 @@
           },
           {
             "name": "Pro",
-            "price": "Subscription based, contact for pricing"
+            "price": "$10 per month"
           }
         ],
         "discounts": "10% off for annual subscription",
@@ -1476,21 +1402,11 @@
       "review_link": null,
       "homepage_link": "https://useadrenaline.com",
       "business_info": {
-        "funding": "$15 million",
-        "revenue": "$7 million annually",
-        "employee_count": 60,
-        "founding_year": 2021,
-        "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.6,
-        "number_of_reviews": 900,
-        "testimonials": [
-          {
-            "user": "John Smith",
-            "comment": "Adrenaline AI has greatly improved my debugging process!"
-          }
-        ]
+        "funding": "$2.4 million",
+        "revenue": "$0",
+        "employee_count": 5,
+        "founding_year": 2023,
+        "headquarters": "Brooklyn, NY"
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1501,11 +1417,6 @@
         "number_of_users": 25000,
         "number_of_integrations": 70,
         "github_stars": 9000
-      },
-      "performance": {
-        "latency": "35ms",
-        "uptime": "99.9%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR", "HIPAA"],
@@ -1584,21 +1495,11 @@
       "review_link": null,
       "homepage_link": "https://aws.amazon.com/codewhisperer/",
       "business_info": {
-        "funding": "$50 million",
-        "revenue": "$20 million annually",
+        "funding": "$0",
+        "revenue": "$80 billion annually",
         "employee_count": 200,
         "founding_year": 2013,
         "headquarters": "Seattle, WA"
-      },
-      "user_reviews": {
-        "average_rating": 4.5,
-        "number_of_reviews": 1000,
-        "testimonials": [
-          {
-            "user": "Jane Doe",
-            "comment": "CodeWhisperer has transformed the way I code, making it much more efficient!"
-          }
-        ]
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1609,11 +1510,6 @@
         "number_of_users": 30000,
         "number_of_integrations": 80,
         "github_stars": 10000
-      },
-      "performance": {
-        "latency": "40ms",
-        "uptime": "99.9%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR", "HIPAA"],
@@ -1670,12 +1566,16 @@
         "model": "freemium",
         "tiers": [
           {
-            "name": "Basic",
+            "name": "Free",
             "price": "Free"
           },
           {
-            "name": "Pro",
-            "price": "Contact for pricing"
+            "name": "Starter",
+            "price": "$9 per month"
+          },
+          {
+            "name":"Unlimited",
+            "price":"$29 per month"
           }
         ],
         "discounts": "10% off for annual subscription",
@@ -1696,21 +1596,11 @@
       "review_link": null,
       "homepage_link": "https://www.figstack.com",
       "business_info": {
-        "funding": "$5 million",
-        "revenue": "$2 million annually",
-        "employee_count": 50,
-        "founding_year": 2019,
-        "headquarters": "San Francisco, CA"
-      },
-      "user_reviews": {
-        "average_rating": 4.4,
-        "number_of_reviews": 500,
-        "testimonials": [
-          {
-            "user": "Alice Johnson",
-            "comment": "Figstack has made understanding and documenting code so much easier!"
-          }
-        ]
+        "funding": "private",
+        "revenue": "$0",
+        "employee_count": 9,
+        "founding_year": 2021,
+        "headquarters": "Ithaca, NY"
       },
       "support": {
         "support_channels": ["Email", "Chat"],
@@ -1721,11 +1611,6 @@
         "number_of_users": 15000,
         "number_of_integrations": 40,
         "github_stars": 7000
-      },
-      "performance": {
-        "latency": "45ms",
-        "uptime": "99.8%",
-        "scalability": "Highly scalable"
       },
       "security": {
         "compliance_certifications": ["GDPR"],
