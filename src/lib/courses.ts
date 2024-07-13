@@ -22,14 +22,14 @@ async function importArticle(
 
 export async function getAllCourses() {
   let articleFilenames = await glob('*/page.mdx', {
-    cwd: './src/app/learn/courses',
+    cwd: path.join(process.cwd(), 'src/app/learn/dookie'),
   })
   let articles = await Promise.all(articleFilenames.map(importArticle))
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
 
 export async function getSegmentContent(course: string, segment: string) {
-  return (await import(`../../src/app/learn/courses/${course}/${segment}/page.mdx`)).default;
+  return (await import(`../app/learn/courses/${course}/${segment}/page.mdx`)).default;
 }
 
 export interface ArticleWithHeader extends Article {
@@ -81,4 +81,3 @@ export async function getCourseSegments(course: string): Promise<GroupedSegments
 
   return groupedSegments;
 }
-

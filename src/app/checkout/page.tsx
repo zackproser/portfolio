@@ -77,7 +77,7 @@ const CheckoutPage = () => {
 		if (status === "unauthenticated" || session === null) {
 			signIn('', { callbackUrl: `/learn/${productSlug}/0` })
 		}
-	}, [status, session]);
+	}, [productSlug, status, session]);
 
 
 	// If the product is not ready yet, redirect them to the waitinglist page
