@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { getAllComparisons } from '@/lib/comparisons'
 import { createMetadata } from '@/utils/createMetadata'
