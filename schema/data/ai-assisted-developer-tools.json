@@ -845,7 +845,7 @@
         "community_support": "Active community on GitHub and Discord"
       },
       "usage_stats": {
-        "number_of_users": 5000,
+        "number_of_users": 100,
         "number_of_integrations": 30,
         "github_stars": 146
       },
@@ -865,12 +865,10 @@
       "case_studies": [],
       "multimedia": {
         "demo_videos": [
-          "https://www.youtube.com/watch?v=hWezAgvYPt8",
-          "https://www.youtube.com/watch?v=T1IIT0Lwbkg",
-          "https://www.youtube.com/watch?v=-Cg9HXAbj_U"
+          "https://www.youtube.com/watch?v=8h4zpeK6LOA"
         ],
         "blog_posts": [
-          "https://www.reddit.com/r/gptengineer/comments/14wuo72/has_anyone_tried_aider/"
+          "https://medium.com/codeintegrity-engineering/transforming-qa-mutahunter-and-the-power-of-llm-enhanced-mutation-testing-18c1ea19add8"
         ]
       },
       "internationalization": {
