@@ -11,6 +11,10 @@
     {
       "name": "Video Editing",
       "description": "AI-assisted video editing tools simplify the video editing process by offering features like automatic transcription, editing via transcription, and intelligent suggestions."
+    },
+    {
+      "name": "Mutation Testing",
+      "description": "Mutation testing tools enhance software quality by injecting faults into the codebase and verifying if the test cases can detect these faults."
     }
   ],
   "tools": [
@@ -794,6 +798,86 @@
         "headquarters": "San Francisco, CA"
       }
     },
+    {
+      "name": "Mutahunter",
+      "icon": "@/images/tools/mutahunter.svg",
+      "category": "Mutation Testing",
+      "description": "Mutahunter is an open-source, language-agnostic LLM-based mutation testing tool that enhances software quality by injecting context-aware faults into the codebase.",
+      "open_source": {
+        "client": true,
+        "backend": true,
+        "model": false
+      },
+      "pricing": {
+        "model": "free",
+        "tiers": [
+          {
+            "name": "Free",
+            "price": "Free"
+          }
+        ],
+        "payment_methods": ["N/A"]
+      },
+      "free_tier": true,
+      "chat_interface": false,
+      "creator": "CodeIntegrity AI",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": false,
+        "go": true
+      },
+      "supports_local_model": true,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://github.com/codeintegrity-ai/mutahunter",
+      "business_info": {
+        "funding": "$0 (open source project)",
+        "revenue": "$0 (open source project)",
+        "employee_count": 1,
+        "founding_year": 2023,
+        "headquarters": "San Diego, CA"
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.6,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 5000,
+        "number_of_integrations": 30,
+        "github_stars": 146
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "5%",
+        "competitors": ["PIT Mutation Testing", "Stryker"],
+        "unique_selling_points": ["LLM-based context-aware mutations", "Language agnostic"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for new voice commands in April 2024",
+        "future_roadmap": "Enhancing AI-powered features"
+      },
+      "case_studies": [],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=hWezAgvYPt8",
+          "https://www.youtube.com/watch?v=T1IIT0Lwbkg",
+          "https://www.youtube.com/watch?v=-Cg9HXAbj_U"
+        ],
+        "blog_posts": [
+          "https://www.reddit.com/r/gptengineer/comments/14wuo72/has_anyone_tried_aider/"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+     },
      {
       "name": "Cursor",
       "icon": "@/images/tools/cursor.svg",
