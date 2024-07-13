@@ -22,7 +22,7 @@ async function importArticle(
 
 export async function getAllCourses() {
   let articleFilenames = await glob('*/page.mdx', {
-    cwd: path.join(process.cwd(), 'src/app/learn/dookie'),
+    cwd: path.join(process.cwd(), 'src/app/learn/courses'),
   })
   let articles = await Promise.all(articleFilenames.map(importArticle))
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
