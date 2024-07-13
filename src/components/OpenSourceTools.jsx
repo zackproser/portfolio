@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image'
 import data from '../../schema/data/ai-assisted-developer-tools.json';
 
 const OpenSourceTools = () => {
@@ -11,7 +12,7 @@ const OpenSourceTools = () => {
         {openSourceTools.map((tool, index) => (
           <div key={index} className="p-4 bg-emerald-800 dark:bg-zinc-800 rounded-lg shadow-lg text-white">
             <div className="flex items-center mb-2">
-              <img src={tool.icon} alt={`${tool.name} logo`} className="w-8 h-8 mr-2" />
+              <Image src={tool.icon} alt={`${tool.name} logo`} className="w-8 h-8 mr-2" />
               <strong className="text-lg">{tool.name}</strong>
             </div>
             <p>{tool.description}</p>
