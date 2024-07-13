@@ -114,6 +114,8 @@ const generateCategorySection = (category) => {
     attributes = ['open_source', 'pricing', 'free_tier', 'chat_interface', 'command_completion', 'advanced_history', 'supports_local_model', 'supports_offline_use'];
   } else if (category.name === 'Video Editing') {
     attributes = ['open_source', 'pricing', 'free_tier', 'works_in_browser', 'supports_autotranscribe', 'edit_via_transcription'];
+  } else if (category.name === 'Mutation Testing') {
+    attributes = ['open_source', 'language_support', 'supports_local_model', 'supports_offline_use', 'pricing'];
   }
 
   const attributeSections = attributes.map((attribute) => {
@@ -148,7 +150,9 @@ const generatePostContent = (categories, tools, existingDate) => {
       ? ['open_source', 'ide_support', 'pricing', 'free_tier', 'chat_interface', 'creator', 'language_support', 'supports_local_model', 'supports_offline_use']
       : category.name === 'Intelligent Terminals / Shells'
         ? ['open_source', 'pricing', 'free_tier', 'chat_interface', 'command_completion', 'advanced_history', 'supports_local_model', 'supports_offline_use']
-        : ['open_source', 'pricing', 'free_tier', 'works_in_browser', 'supports_autotranscribe', 'edit_via_transcription'];
+        : category.name === 'Video Editing'
+          ? ['open_source', 'pricing', 'free_tier', 'works_in_browser', 'supports_autotranscribe', 'edit_via_transcription']
+          : ['open_source', 'language_support', 'supports_local_model', 'supports_offline_use', 'pricing'];
 
     const formattedAttributes = attributes.map((attr) => attr.replace(/_/g, ' '));
     const attributeLinks = formattedAttributes.map((attr) => `  - [${attr.charAt(0).toUpperCase() + attr.slice(1)}](#${attr.replace(/\s/g, '-').toLowerCase()})`).join('\n');
