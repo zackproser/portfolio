@@ -1,0 +1,69 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+
+import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
+import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
+import vercelPythonDataTooLong from '@/images/vercel-python-data-too-long.webp'
+
+export const metadata = {
+  title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
+  author: "Zachary Proser",
+  date: "2024-7-28",
+  description: "I trained a neural net to recognize hand-drawn digits then built a Next.js app to playing with it",
+  image: mnistMindMapper
+}
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
+
+<Image src={mnistMindMapper} alt={"The MNIST mind mapper"} />
+
+## Table of contents
+
+## Overview
+
+I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
+
+I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
+to play with it, because interacting with something is more engaging than reading a text description of it.
+
+This article details the many issues I encountered along the way to building and successfully deploying my original vision.
+
+## The "MNIST mind-mapper" app
+
+You can watch this short demo to see how the app works:
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/fxRJVDzw7KM" 
+  title="Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
+
+Difficulties, obstacles, blockers, incompatibilties, etc are prime source of learning. Struggle brings strength.
+
+<Image src={mnistMindMapperFlow} alt={"The MNIST mind mapper"} />
+
+## Open source code
+
+I open source most of my work, and this project is no exception: 
+* [pytorch-mnist - model training repo](https://github.com/zackproser/pytorch-mnist)
+* [mnist-mind-mapper application](https://github.com/zackproser/mnist-mind-mapper)
+
+## First challenge: Vercel's Python support is immature.
+
+Vercel's beta support for the Python runtime for use in backend functions is very exciting. I believe the ability to deploy a mixed app with a Next.js frontend and a Python backend has huge potential. 
+
+The Machine Learning ecosystem is at home in Python. 
+
+Unfortunately, the docs Vercel has for using their Python runtime are very sparse, the examples are light and most of the new concepts are not sufficiently explained. You have to read through the existing 
+Vercel templates to understand how everything fits together.
+
+<Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
+
+Errors are also opaque
+
+## Converting to ONNX and trying again
+
