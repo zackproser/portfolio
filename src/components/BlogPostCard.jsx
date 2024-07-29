@@ -26,7 +26,7 @@ const rootPaths = {
   course: '/learn/courses/',
   newsletter: '/newsletter/',
   demo: '/demos/',
-  comparison: '/comparisons/', // Add this line
+  comparison: '/comparisons/',
   default: '/blog/'
 }
 

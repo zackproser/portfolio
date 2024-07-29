@@ -10,6 +10,7 @@ import neuralNetwork from '@/images/pytorch-mnist-neural-network.webp'
 import modalDashboard from '@/images/modal-dashboard.webp'
 import pytorchMNISTLogo from '@/images/pytorch-mnist-logo.webp'
 import MNISTMindMapperLogo from '@/images/MNIST-mind-mapper-hero.webp'
+import MNISTTestImage from '@/images/mnist-test-images.webp'
 
 export const metadata = {
   title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
@@ -180,6 +181,52 @@ print(f"Accuracy on test set: {100 * correct / total:.2f}%")
 torch.save(model.state_dict(), "mnist_model.pth")
 
 ```
+
+With the training complete, I wanted to quickly sanity check the trained network's performance on the intended task, so I created a simple FAST API server that exposes a `/test_images` route: 
+
+You can view the entire `main.py` file in [the repository](https://github.com/zackproser/pytorch-mnist/blob/main/main.py), but we'll examine the route itself here, which runs a self-test and shares 
+the output as a PNG image like so: 
+
+<Image src={MNISTTestImage} alt={"MNIST test image"} />
+
+```python
+app = FastAPI()
+
+@app.get("/test_images")
+async def test_images():
+    # Load test dataset
+    from torchvision import datasets
+    test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=10, shuffle=True)
+
+    # Get first batch of images
+    images, labels = next(iter(test_loader))
+
+    fig, axs = plt.subplots(2, 5, figsize=(12, 6))
+    fig.suptitle('Sample Test Images with Predictions')
+
+    for i, (image, label) in enumerate(zip(images, labels)):
+        output = model(image.unsqueeze(0).to(device))
+        _, predicted = torch.max(output.data, 1)
+        
+        ax = axs[i // 5, i % 5]
+        ax.imshow(image.squeeze().numpy(), cmap='gray')
+        ax.set_title(f'Pred: {predicted.item()}, True: {label.item()}')
+        ax.axis('off')
+
+    plt.tight_layout()
+    
+    # Save the plot to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp:
+        plt.savefig(tmp.name, format='png')
+        tmp_path = tmp.name
+
+    plt.close()  # Close the plot to free up memory
+    
+    return FileResponse(tmp_path, media_type="image/png", filename="test_images.png")
+```
+
+Now I had a trained and working neural network and I was ready to deploy it. Here's where all the fun began.
 
 ## First challenge: Vercel's Python support is immature
 
