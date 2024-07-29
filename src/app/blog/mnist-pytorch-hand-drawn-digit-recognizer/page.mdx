@@ -6,6 +6,7 @@ import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
 import vercelPythonDataTooLong from '@/images/vercel-python-data-too-long.webp'
 import vercelPythonGithubExcludeFiles from '@/images/vercel-python-github-exclude-files.webp'
 import neuralNetwork from '@/images/pytorch-mnist-neural-network.webp'
+import modalDashboard from '@/images/modal-dashboard.webp'
 
 export const metadata = {
   title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
@@ -33,8 +34,6 @@ You can watch this short demo to see how the app works:
   allow="fullscreen;">
 </iframe>
 
-I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
-
 ## Overview
 
 I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
@@ -43,6 +42,8 @@ I've been an application and infrastructure developer for the majority of my car
 
 I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
 to play with it, because interacting with something is more engaging than reading a text description of it.
+
+I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
 
 This article details the steps I took and the many issues I encountered along the way to building and successfully deploying my original vision.
 
@@ -170,9 +171,11 @@ Errors are also opaque. The showstopper for getting my Python backend deployed s
 
 <Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
 
-I was pretty sure that pytorch and torchvision were likely blowing out the 4.5MB size limit on serverless functions, but there wasn't a great way to confirm this.
+I was pretty sure that pytorch and torchvision were likely blowing out the 4.5MB size limit on serverless functions, but there wasn't a great way to confirm this. My model/weights file was just under 400KB.
 
-Things that you'd expect to be extensively documented, such as how to get around common bundling issues, or how to deploy a Python backend with PyTorch and a custom model, but alas:
+Things that you'd expect to be extensively documented, such as how to get around common bundling issues, or how to deploy a Python backend with PyTorch and a custom model, are also sorely needed.
+
+You find extremely important details like this hiding out in 4 year old GitHub issue comment threads: 
 
 <Image src={vercelPythonGithubExcludeFiles} alt={""} />
 
@@ -181,5 +184,18 @@ Things that you'd expect to be extensively documented, such as how to get around
 <a href="https://onnx.ai" target="_blank">ONNX, (which stands for Open Neural Network Exchange)</a> is a fascinating project that defines a common language for machine learning models, to allow Cloud providers and developers to more easily 
 write and deploy models.
 
-You can convert a PyTorch model to ONNX using the `torch.onnx.export` function. ONNX CAN sometimes reduce the size of the exported model, so I tried 
+You can convert a PyTorch model to ONNX using the `torch.onnx.export` function. ONNX CAN sometimes reduce the size of the exported model, so I decided to give it a shot.
 
+I also was happy to take any excuse to play around with ONNX after reading about it. After converting the model to the ONNX format, I tested everything again locally to ensure the app still 
+functioned as intended. The potential size savings from ONNX did not end up making a difference in my case, and I got the same error. 
+
+## Finding a Python backend host in Modal.com
+
+In researching platforms that host your Python code as cloud functions, I found modal.com which was lightweight and fast to set up. 
+
+<Image src={modalDashboard} alt={"Modal.com dashboard"} />
+
+I ended up converting the local version of my Fast API Python backend to a file I named `modal_function.py` which I 
+then deployed like so: 
+
+`modal deploy modal_function.py`
