@@ -1,5 +1,6 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
+import { BlogPostCard } from '@/components/BlogPostCard'
 
 import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
 import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
@@ -51,15 +52,30 @@ This article details the steps I took and the many issues I encountered along th
 
 ## Open source code
 
-I open source most of my work, and this project is no exception: 
-* [pytorch-mnist - model training repo](https://github.com/zackproser/pytorch-mnist)
-* [mnist-mind-mapper application](https://github.com/zackproser/mnist-mind-mapper)
+I open source most of my work, and this project is no exception:
 
-PyTorch MNIST is the repo for training the model. 
-<Image src={pytorchMNISTLogo} alt={"The PyTorch MNIST logo"} />
-
-The MNIST mind mapper app is built using PyTorch and Next.js. It uses the model that was trained via the pytorch-mnist repo.
-<Image src={MNISTMindMapperLogo} alt={"The MNIST mind mapper logo"} />
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <BlogPostCard
+    article={{
+      type: 'default',
+      slug: 'https://github.com/zackproser/pytorch-mnist',
+      title: 'pytorch-mnist - model training repo',
+      description: 'Repository for training the PyTorch MNIST model',
+      image: pytorchMNISTLogo,
+      date: '2024-07-28'
+    }}
+  />
+  <BlogPostCard
+    article={{
+      type: 'default',
+      slug: 'https://github.com/zackproser/mnist-mind-mapper',
+      title: 'mnist-mind-mapper application',
+      description: 'The MNIST mind mapper app built using PyTorch and Next.js',
+      image: MNISTMindMapperLogo,
+      date: '2024-07-28'
+    }}
+  />
+</div>
 
 ## App flow diagram
 
