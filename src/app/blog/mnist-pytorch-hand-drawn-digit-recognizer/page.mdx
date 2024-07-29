@@ -199,3 +199,10 @@ I ended up converting the local version of my Fast API Python backend to a file 
 then deployed like so: 
 
 `modal deploy modal_function.py`
+
+Of course, my prefence would be for the backend to be hosted on Vercel, so that I could colocate the frontend and backend code and have a simpler deployment model, but modal.com ended up 
+being exactly what I wanted in the absence of that. 
+
+Modal.com lets you sign up quickly, install their CLI and deploy your Python code as a serverless function or a deployed REST API, or an ephemeral testing endpoint. So far, it's been great.
+
+There is the issue of cold starts, because Modal will spin down your container when your service is not receiving traffic, but overall I've been impressed with the developer experience. 
