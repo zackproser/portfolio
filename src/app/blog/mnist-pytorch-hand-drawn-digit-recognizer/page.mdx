@@ -28,42 +28,64 @@ to play with it, because interacting with something is more engaging than readin
 
 This article details the many issues I encountered along the way to building and successfully deploying my original vision.
 
-## The "MNIST mind-mapper" app
-
-You can watch this short demo to see how the app works:
-
-<iframe 
-  class="youtube-video"
-  src="https://www.youtube.com/embed/fxRJVDzw7KM" 
-  title="Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel" 
-  frameborder="0" 
-  allow="fullscreen;">
-</iframe>
-
-I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
-
-Difficulties, obstacles, blockers, incompatibilties, etc are prime source of learning. Struggle brings strength.
-
-<Image src={mnistMindMapperFlow} alt={"The MNIST mind mapper"} />
-
 ## Open source code
 
 I open source most of my work, and this project is no exception: 
 * [pytorch-mnist - model training repo](https://github.com/zackproser/pytorch-mnist)
 * [mnist-mind-mapper application](https://github.com/zackproser/mnist-mind-mapper)
 
+## Demo of the "MNIST mind-mapper" app in action
+
+You can watch this short demo to see how the app works:
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/fxRJVDzw7KM" 
+  title="MNIST mind mapper demo" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
+
+## App flow diagram
+
+Let's step through how the app works, end to end:
+
+<Image src={mnistMindMapperFlow} alt={"The MNIST mind mapper"} />
+
+The frontend exposes a small drawable canvas, which the user scribbles on. 
+
+On a regular interval, the frontend captures what the user drew, using the `toDataURL` method:
+
+```typescript
+ /**
+  * Returns the content of the current canvas as an image that you can use as a source for another canvas or an HTML element.
+  * @param type The standard MIME type for the image format to return. If you do not specify this parameter, the default value is a PNG format image.
+  *
+  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/HTMLCanvasElement/toDataURL)
+  */
+ toDataURL(type?: string, quality?: any): string;
+```
+
+This image is sent to the backend API, which wraps the trained neural network. The backend runs inference on the image, and returns the predicted digit, which the frontend displays.
+
 ## First challenge: Vercel's Python support is immature.
 
 Vercel's beta support for the Python runtime for use in backend functions is very exciting. I believe the ability to deploy a mixed app with a Next.js frontend and a Python backend has huge potential. 
 
-The Machine Learning ecosystem is at home in Python. 
+The Python ecosystem is rich with popular machine learning libraries, utilities and datasets. Meanwhile, JavaScript provides an excellent way to provide charts, graphs, data visualizations, games and other interactive representations of complex data models.
+
+I'm personally very excited to build a ton of example applications with Python backends and TypeScript frontends on Vercel. But we're not quite there yet. 
 
 Unfortunately, the docs Vercel has for using their Python runtime are very sparse, the examples are light and most of the new concepts are not sufficiently explained. You have to read through the existing 
 Vercel templates to understand how everything fits together.
 
+Errors are also opaque. The showstopper for getting my Python backend deployed successfully on Vercel was an unintuitive error message: `data too long`. 
+
 <Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
 
-Errors are also opaque
+I was pretty sure that pytorch and torchvision were likely blowing 
 
 ## Converting to ONNX and trying again
 
