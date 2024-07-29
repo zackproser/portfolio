@@ -31,12 +31,15 @@ const rootPaths = {
 }
 
 export function BlogPostCard({ article }) {
-  const root = rootPaths[article?.type] || rootPaths.default;
-  const href = article.type === 'comparison' ? `${root}${article.slug}` : `${root}${article.slug}`;
+  const isExternalLink = article.slug.startsWith('http://') || article.slug.startsWith('https://');
+  const href = isExternalLink ? article.slug : `${rootPaths[article?.type] || rootPaths.default}${article.slug}`;
+
+  const LinkComponent = isExternalLink ? 'a' : Link;
+  const linkProps = isExternalLink ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
 
   return (
     <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800">
-      <Link href={href} className="relative w-full">
+      <LinkComponent {...linkProps} className="relative w-full">
         <Image
           src={article.image ?? wakka}
           alt={article.title}
@@ -45,20 +48,20 @@ export function BlogPostCard({ article }) {
           height={281}
         />
         <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
-      </Link>
+      </LinkComponent>
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
             <time dateTime={article.date}>{article.date}</time>
           </div>
-          <Link href={href} className="block mt-3 group">
+          <LinkComponent {...linkProps} className="block mt-3 group">
             <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out">
               {article.title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 line-clamp-3">
               {article.description}
             </p>
-          </Link>
+          </LinkComponent>
         </div>
         {article.type === 'course' && <StatusBadge status={article.status} />}
       </div>
