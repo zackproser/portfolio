@@ -4,12 +4,14 @@ import Image from 'next/image'
 import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
 import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
 import vercelPythonDataTooLong from '@/images/vercel-python-data-too-long.webp'
+import vercelPythonGithubExcludeFiles from '@/images/vercel-python-github-exclude-files.webp'
+import neuralNetwork from '@/images/pytorch-mnist-neural-network.webp'
 
 export const metadata = {
   title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
   author: "Zachary Proser",
   date: "2024-7-28",
-  description: "I trained a neural net to recognize hand-drawn digits then built a Next.js app to playing with it",
+  description: "I trained a neural net to recognize hand-drawn digits, then built a Next.js UI for it",
   image: mnistMindMapper
 }
 
@@ -18,21 +20,6 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 <Image src={mnistMindMapper} alt={"The MNIST mind mapper"} />
 
 ## Table of contents
-
-## Overview
-
-I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
-
-I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
-to play with it, because interacting with something is more engaging than reading a text description of it.
-
-This article details the many issues I encountered along the way to building and successfully deploying my original vision.
-
-## Open source code
-
-I open source most of my work, and this project is no exception: 
-* [pytorch-mnist - model training repo](https://github.com/zackproser/pytorch-mnist)
-* [mnist-mind-mapper application](https://github.com/zackproser/mnist-mind-mapper)
 
 ## Demo of the "MNIST mind-mapper" app in action
 
@@ -47,6 +34,23 @@ You can watch this short demo to see how the app works:
 </iframe>
 
 I knew it would be important to go beyond the working neural net, because issues often arise at the seams, when you're fitting system components together.
+
+## Overview
+
+I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
+
+<Image src={neuralNetwork} alt={"A neural network"} />
+
+I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
+to play with it, because interacting with something is more engaging than reading a text description of it.
+
+This article details the steps I took and the many issues I encountered along the way to building and successfully deploying my original vision.
+
+## Open source code
+
+I open source most of my work, and this project is no exception: 
+* [pytorch-mnist - model training repo](https://github.com/zackproser/pytorch-mnist)
+* [mnist-mind-mapper application](https://github.com/zackproser/mnist-mind-mapper)
 
 ## App flow diagram
 
@@ -70,7 +74,89 @@ On a regular interval, the frontend captures what the user drew, using the `toDa
 
 This image is sent to the backend API, which wraps the trained neural network. The backend runs inference on the image, and returns the predicted digit, which the frontend displays.
 
-## First challenge: Vercel's Python support is immature.
+## Step 1: Model training
+
+The following code is all that's needed with pytorch to: 
+
+1. Define a simple neural network architecture 
+2. Load the MNIST dataset
+3. Train the neural network
+4. Save the model to disk so that it can be loaded and reused later
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+# 1. Create a simple neural net
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Linear(28 * 28, 128)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return x
+
+# 2. Load the MNIST dataset
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+
+train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
+
+# 3. Train the neural network
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = SimpleNN().to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+num_epochs = 5
+
+for epoch in range(num_epochs):
+    model.train()
+    for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+        
+        if batch_idx % 100 == 0:
+            print(f"Epoch {epoch+1}/{num_epochs}, Batch {batch_idx}/{len(train_loader)}, Loss: {loss.item():.4f}")
+
+# Test the model
+model.eval()
+correct = 0
+total = 0
+
+with torch.no_grad():
+    for data, target in test_loader:
+        data, target = data.to(device), target.to(device)
+        output = model(data)
+        _, predicted = torch.max(output.data, 1)
+        total += target.size(0)
+        correct += (predicted == target).sum().item()
+
+print(f"Accuracy on test set: {100 * correct / total:.2f}%")
+
+# Save the model
+torch.save(model.state_dict(), "mnist_model.pth")
+
+```
+
+## First challenge: Vercel's Python support is immature
 
 Vercel's beta support for the Python runtime for use in backend functions is very exciting. I believe the ability to deploy a mixed app with a Next.js frontend and a Python backend has huge potential. 
 
@@ -78,14 +164,22 @@ The Python ecosystem is rich with popular machine learning libraries, utilities 
 
 I'm personally very excited to build a ton of example applications with Python backends and TypeScript frontends on Vercel. But we're not quite there yet. 
 
-Unfortunately, the docs Vercel has for using their Python runtime are very sparse, the examples are light and most of the new concepts are not sufficiently explained. You have to read through the existing 
-Vercel templates to understand how everything fits together.
+Unfortunately, the docs Vercel has for using their Python runtime are very sparse, the examples are light and most of the new concepts are not sufficiently explained. You have to read through the Python Vercel templates to understand how everything fits together.
 
 Errors are also opaque. The showstopper for getting my Python backend deployed successfully on Vercel was an unintuitive error message: `data too long`. 
 
 <Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
 
-I was pretty sure that pytorch and torchvision were likely blowing 
+I was pretty sure that pytorch and torchvision were likely blowing out the 4.5MB size limit on serverless functions, but there wasn't a great way to confirm this.
+
+Things that you'd expect to be extensively documented, such as how to get around common bundling issues, or how to deploy a Python backend with PyTorch and a custom model, but alas:
+
+<Image src={vercelPythonGithubExcludeFiles} alt={""} />
 
 ## Converting to ONNX and trying again
+
+<a href="https://onnx.ai" target="_blank">ONNX, (which stands for Open Neural Network Exchange)</a> is a fascinating project that defines a common language for machine learning models, to allow Cloud providers and developers to more easily 
+write and deploy models.
+
+You can convert a PyTorch model to ONNX using the `torch.onnx.export` function. ONNX CAN sometimes reduce the size of the exported model, so I tried 
 
