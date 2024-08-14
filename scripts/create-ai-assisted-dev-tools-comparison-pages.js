@@ -27,8 +27,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 import AIToolComparison from '@/components/AIToolComparison'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = {
+export const metadata = createMetadata({
   title: "${tool1.name} vs ${tool2.name}",
   author: "Zachary Proser",
   date: "${dateToUse}",
@@ -36,7 +37,7 @@ export const metadata = {
   image: aiAssistedDevTools,
   type: "comparison",
   slug: "${slug}"
-}
+})
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
@@ -71,10 +72,7 @@ const generateCombinations = (tools) => {
 
 const combinations = generateCombinations(tools);
 
-console.log('Number of combinations:', combinations.length);
-if (combinations.length > 0) {
-  console.log('First combination:', JSON.stringify(combinations[0], null, 2));
-}
+const debug = process.argv.includes('--debug');
 
 combinations.forEach(([tool1, tool2], _index) => {
   try {
@@ -87,17 +85,29 @@ combinations.forEach(([tool1, tool2], _index) => {
     if (fs.existsSync(filename)) {
       const existingContent = fs.readFileSync(filename, 'utf8');
       existingDate = extractDateFromContent(existingContent);
-      console.log(`Existing date for ${tool1.name} vs ${tool2.name}: ${existingDate}`);
+      if (debug) {
+        console.log(`Existing date for ${tool1.name} vs ${tool2.name}: ${existingDate}`);
+      }
     }
 
     const content = generateComparisonPageContent(tool1, tool2, existingDate);
-
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
-    console.log(`Generated comparison page for ${tool1.name} vs ${tool2.name} and wrote to ${filename}`);
+    if (debug) {
+      console.log(`Generated comparison page for ${tool1.name} vs ${tool2.name} and wrote to ${filename}`);
+    }
   } catch (error) {
     console.error(`Error generating comparison page for: ${tool1.name} vs ${tool2.name}: ${error}`);
   }
 });
+
+if (debug) {
+  console.log(`Generated ${combinations.length} comparison pages`);
+}
+
+module.exports = {
+  generateCombinations,
+  slugify,
+};

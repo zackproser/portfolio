@@ -9,14 +9,15 @@ import { Newsletter } from '@/components/Newsletter'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = {
- title: "Why I use Neovim's AstroNvim project as my daily driver IDE",
- author: "Zachary Proser",
- date: "2024-4-28",
- description: "Why do I use an open-source IDE-like Neovim experience glued together with Lua?",
- image: astronvimLogo,
-} 
+export const metadata = createMetadata({
+  title: "Why I use Neovim's AstroNvim project as my daily driver IDE",
+  author: "Zachary Proser",
+  date: "2024-4-28",
+  description: "Why do I use an open-source IDE-like Neovim experience glued together with Lua?",
+  image: astronvimLogo,
+}) 
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
@@ -114,4 +115,3 @@ Luckily, because AstroNvim itself is open-source, and the [project docs recommen
 to see [my config](https://github.com/zackproser/astronvim_config). 
 
 Hell, you can even jump directly to [the commit](https://github.com/zackproser/astronvim_config/commit/ec850dd06fae803219f786c3ab1099bb8645c731) where I installed my favorite Gruvbox dark theme.
-
