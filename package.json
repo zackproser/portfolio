@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
+    "metadata-report": "node scripts/check-metadata.js --debug",
+    "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
     "build": "npm run prebuild && next build",
     "build-only": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "debug-comparisons": "node scripts/create-ai-assisted-dev-tools-comparison-pages.js --debug"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -16,6 +18,8 @@
     "@actions/github": "^6.0.0",
     "@ai-sdk/openai": "^0.0.10",
     "@auth/pg-adapter": "^0.6.0",
+    "@babel/parser": "^7.25.3",
+    "@babel/traverse": "^7.25.3",
     "@dqbd/tiktoken": "^1.0.13",
     "@giscus/react": "^3.0.0",
     "@headlessui/react": "^1.7.13",
