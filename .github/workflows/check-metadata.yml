@@ -1,4 +1,4 @@
-name: Check Metadata
+name: Metadata Check
 
 on:
   pull_request:
@@ -40,25 +40,15 @@ jobs:
         if [ $PARTIAL -gt 0 ] || [ $NO_METADATA -gt 0 ] || [ $ERRORS -gt 0 ]; then
           echo "Metadata issues found. Posting comment on PR."
           
-          # Extract partial metadata and no metadata lists
           PARTIAL_LIST=$(sed -n '/^### Partial Metadata Pages/,/^###/p' metadata-report.md | sed '$d')
           NO_METADATA_LIST=$(sed -n '/^### No Metadata Pages/,/^###/p' metadata-report.md | sed '$d')
           
-          # Prepare comment body
-          COMMENT=$(cat <<-EOF
-          ## Metadata Check Results
-
-          Metadata issues were found in this pull request. Please address them.
-
-          $PARTIAL_LIST
-
-          $NO_METADATA_LIST
-
-          For full details, please check the metadata-report.md artifact.
-          EOF
-          )
+          COMMENT="## Metadata Check Results\n\n"
+          COMMENT+="Metadata issues were found in this pull request. Please address them.\n\n"
+          COMMENT+="$PARTIAL_LIST\n\n"
+          COMMENT+="$NO_METADATA_LIST\n\n"
+          COMMENT+="For full details, please check the metadata-report.md artifact."
           
-          # Post comment on PR
           gh pr comment "${{ github.event.pull_request.number }}" --body "$COMMENT"
           
           exit 1
