@@ -2,7 +2,7 @@ name: Check Metadata
 
 on:
   pull_request:
-    branches: [main, master]
+    types: [opened, synchronize, reopened]
 
 jobs:
   check-metadata:
@@ -59,10 +59,7 @@ jobs:
           )
           
           # Post comment on PR
-          gh pr comment "${{ github.event.pull_request.number }}" --body "$(cat <<EOF
-$COMMENT
-EOF
-)"
+          gh pr comment "${{ github.event.pull_request.number }}" --body "$COMMENT"
           
           exit 1
         else
