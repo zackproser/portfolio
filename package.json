@@ -11,7 +11,7 @@
     "lint": "next lint",
     "debug-comparisons": "node scripts/create-ai-assisted-dev-tools-comparison-pages.js --debug",
     "check-metadata": "node scripts/check-metadata.js",
-    "metadata-debug": "node scripts/check-metadata.js --debug"
+    "debug-metadata": "node scripts/check-metadata.js --debug"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
