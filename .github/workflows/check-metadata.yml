@@ -1,0 +1,43 @@
+name: Check Metadata
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  check-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run metadata check
+      run: node scripts/check-metadata.js
+
+    - name: Upload metadata report
+      uses: actions/upload-artifact@v3
+      with:
+        name: metadata-report
+        path: metadata-report.md
+
+    - name: Check for metadata issues
+      run: |
+        PARTIAL=$(grep -c "⚠️ Partial metadata:" metadata-report.md || true)
+        NO_METADATA=$(grep -c "❌ No metadata:" metadata-report.md || true)
+        ERRORS=$(grep -c "🚫 Errors:" metadata-report.md || true)
+
+        if [ $PARTIAL -gt 0 ] || [ $NO_METADATA -gt 0 ] || [ $ERRORS -gt 0 ]; then
+          echo "Metadata issues found. Please check the metadata-report.md artifact for details."
+          exit 1
+        else
+          echo "No metadata issues found."
+        fi
