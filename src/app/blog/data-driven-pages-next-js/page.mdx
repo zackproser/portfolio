@@ -12,6 +12,7 @@ export const metadata = createMetadata({
     title: "Building data-driven pages with Next.js",
     description: "To effectively maintain richer and more complex web experiences, separate data from presentation.",
     image: dataDrivenPages,
+  slug: '/blog/data-driven-pages-next-js',
 });
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
@@ -135,7 +136,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
-export const metadata = {
+export const metadata = createMetadata({
   title: "The Giant List of AI-Assisted Developer Tools Compared and Reviewed",
   author: "Zachary Proser",
   date: "${dateToUse}",
