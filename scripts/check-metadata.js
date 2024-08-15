@@ -196,5 +196,38 @@ function writeReportAndLog(report) {
   console.log(`\nMetadata report generated: ${reportPath}`);
 }
 
+function generatePRComment(report) {
+  let comment = "## Metadata Check Results\n\n";
+  
+  if (report.partialMetadata.length > 0 || report.noMetadata.length > 0) {
+    comment += "Metadata issues were found in this pull request. Please address them.\n\n";
+    
+    if (report.partialMetadata.length > 0) {
+      comment += "### Pages with Partial Metadata:\n";
+      report.partialMetadata.forEach(page => {
+        comment += `- ${page.file}: Missing ${page.missingFields.join(', ')}\n`;
+      });
+      comment += "\n";
+    }
+    
+    if (report.noMetadata.length > 0) {
+      comment += "### Pages with No Metadata:\n";
+      report.noMetadata.forEach(page => {
+        comment += `- ${page}\n`;
+      });
+      comment += "\n";
+    }
+  } else {
+    comment += "No metadata issues found in this pull request. Great job!\n";
+  }
+  
+  comment += "\nFor full details, please check the metadata-report.md artifact.";
+  
+  return comment;
+}
+
 const report = generateReport();
 writeReportAndLog(report);
+
+// Add this line to generate and log the PR comment
+console.log(generatePRComment(report));
