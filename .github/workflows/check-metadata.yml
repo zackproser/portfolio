@@ -21,38 +21,24 @@ jobs:
       run: npm install
 
     - name: Run metadata check
-      run: node scripts/check-metadata.js
+      run: node scripts/check-metadata.js > pr_comment.md
 
-    - name: Upload metadata report
+    - name: Upload metadata reports
       uses: actions/upload-artifact@v3
       with:
-        name: metadata-report
-        path: metadata-report.md
+        name: metadata-reports
+        path: |
+          metadata-report.md
+          metadata-report.json
+          pr_comment.md
 
     - name: Check for metadata issues and post comment
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PARTIAL=$(grep -c "⚠️ Partial metadata:" metadata-report.md || true)
-        NO_METADATA=$(grep -c "❌ No metadata:" metadata-report.md || true)
-        ERRORS=$(grep -c "🚫 Errors:" metadata-report.md || true)
-
-        if [ $PARTIAL -gt 0 ] || [ $NO_METADATA -gt 0 ] || [ $ERRORS -gt 0 ]; then
+        if grep -q "Metadata issues were found" pr_comment.md; then
           echo "Metadata issues found. Posting comment on PR."
-          
-          PARTIAL_LIST=$(sed -n '/^### Partial Metadata Pages/,/^###/p' metadata-report.md | sed '$d')
-          NO_METADATA_LIST=$(sed -n '/^### No Metadata Pages/,/^###/p' metadata-report.md | sed '$d')
-          
-          COMMENT="## Metadata Check Results\n\n"
-          COMMENT+="Metadata issues were found in this pull request. Please address them.\n\n"
-          COMMENT+="| Page | Missing Fields |\n"
-          COMMENT+="|------|----------------|\n"
-          COMMENT+="$PARTIAL_LIST\n\n"
-          COMMENT+="$NO_METADATA_LIST\n\n"
-          COMMENT+="For full details, please check the metadata-report.md artifact."
-          
-          gh pr comment "${{ github.event.pull_request.number }}" --body "$COMMENT"
-          
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file pr_comment.md
           exit 1
         else
           echo "No metadata issues found."
