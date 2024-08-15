@@ -153,67 +153,51 @@ function analyzeAndAddToReport(filePath, report) {
 }
 
 function writeReportAndLog(report) {
-  const reportPath = path.join(process.cwd(), 'metadata-report.md');
+  let markdownReport = "# Metadata Check Report\n\n";
   
-  let reportContent = '';
-  
-  // Function to add content to both reportContent and console output
-  function addContent(content) {
-    reportContent += content;
-    console.log(content);
-  }
+  markdownReport += "## Summary\n\n";
+  markdownReport += `✅ Full Metadata: ${report.fullMetadata.length} pages\n`;
+  markdownReport += `⚠️ Partial Metadata: ${report.partialMetadata.length} pages\n`;
+  markdownReport += `❌ No Metadata: ${report.noMetadata.length} pages\n`;
+  markdownReport += `🚫 Errors: ${report.errors.length} pages\n\n`;
 
-  // Output Metadata Coverage Summary first
-  addContent('Metadata Coverage Summary:\n');
-  addContent('==========================\n');
-  addContent(`✅ Full metadata: ${report.fullMetadata.length} pages\n`);
-  addContent(`⚠️ Partial metadata: ${report.partialMetadata.length} pages\n`);
-  addContent(`❌ No metadata: ${report.noMetadata.length} pages\n`);
-  addContent(`🚫 Errors: ${report.errors.length} pages\n\n`);
+  markdownReport += "## Detailed Results\n\n";
+  markdownReport += generatePRComment(report);
 
-  addContent('---\n\n');
+  fs.writeFileSync('metadata-report.md', markdownReport);
+  console.log("\nMarkdown report generated: metadata-report.md");
 
-  // Function to add section to both reportContent and console output
-  function addSection(title, items, formatter = (item) => `- ${item}`) {
-    addContent(`${title}\n`);
-    addContent('='.repeat(title.length) + '\n');
-    items.forEach(item => {
-      const formattedItem = formatter(item);
-      addContent(formattedItem + '\n');
-    });
-    addContent('\n');
-  }
+  const jsonReport = JSON.stringify(report, null, 2);
+  fs.writeFileSync('metadata-report.json', jsonReport);
+  console.log("JSON report generated: metadata-report.json");
 
-  addSection(`No Metadata Pages (${report.noMetadata.length} total)`, report.noMetadata);
-  addSection(`Partial Metadata Pages (${report.partialMetadata.length} total)`, report.partialMetadata, 
-    (page) => `- ${page.file} (Missing: ${page.missingFields.join(', ')})`);
-  addSection(`Full Metadata Pages (${report.fullMetadata.length} total)`, report.fullMetadata);
-  addSection(`Pages with Errors (${report.errors.length} total)`, report.errors, 
-    (error) => `- ${error.file}: ${error.error}`);
-
-  fs.writeFileSync(reportPath, reportContent);
-
-  console.log(`\nMetadata report generated: ${reportPath}`);
+  console.log(generatePRComment(report));
 }
 
 function generatePRComment(report) {
-  let comment = "## Metadata Check Results\n\n";
+  let comment = "## Summary\n\n";
+  comment += `✅ Full Metadata: ${report.fullMetadata.length} pages\n`;
+  comment += `⚠️ Partial Metadata: ${report.partialMetadata.length} pages\n`;
+  comment += `❌ No Metadata: ${report.noMetadata.length} pages\n`;
+  comment += `🚫 Errors: ${report.errors.length} pages\n\n`;
+
+  comment += "## Detailed Results\n\n";
   
   if (report.partialMetadata.length > 0 || report.noMetadata.length > 0) {
     comment += "Metadata issues were found in this pull request. Please address them.\n\n";
     
     if (report.partialMetadata.length > 0) {
-      comment += "### Pages with Partial Metadata:\n";
+      comment += "Pages with Partial Metadata:\n";
       report.partialMetadata.forEach(page => {
-        comment += `- ${page.file}: Missing ${page.missingFields.join(', ')}\n`;
+        comment += `${page.file}: Missing ${page.missingFields.join(', ')}\n`;
       });
       comment += "\n";
     }
     
     if (report.noMetadata.length > 0) {
-      comment += "### Pages with No Metadata:\n";
+      comment += "Pages with No Metadata:\n";
       report.noMetadata.forEach(page => {
-        comment += `- ${page}\n`;
+        comment += `${page}\n`;
       });
       comment += "\n";
     }
@@ -221,13 +205,10 @@ function generatePRComment(report) {
     comment += "No metadata issues found in this pull request. Great job!\n";
   }
   
-  comment += "\nFor full details, please check the metadata-report.md artifact.";
+  comment += "For full details, please check the metadata-report.md artifact.";
   
   return comment;
 }
 
 const report = generateReport();
 writeReportAndLog(report);
-
-// Add this line to generate and log the PR comment
-console.log(generatePRComment(report));
