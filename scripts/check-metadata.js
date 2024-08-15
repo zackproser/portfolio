@@ -152,30 +152,10 @@ function analyzeAndAddToReport(filePath, report) {
   }
 }
 
-function writeReportAndLog(report) {
-  let markdownReport = "# Metadata Check Report\n\n";
-  
-  markdownReport += "## Summary\n\n";
-  markdownReport += `✅ Full Metadata: ${report.fullMetadata.length} pages\n`;
-  markdownReport += `⚠️ Partial Metadata: ${report.partialMetadata.length} pages\n`;
-  markdownReport += `❌ No Metadata: ${report.noMetadata.length} pages\n`;
-  markdownReport += `🚫 Errors: ${report.errors.length} pages\n\n`;
-
-  markdownReport += "## Detailed Results\n\n";
-  markdownReport += generatePRComment(report);
-
-  fs.writeFileSync('metadata-report.md', markdownReport);
-  console.log("\nMarkdown report generated: metadata-report.md");
-
-  const jsonReport = JSON.stringify(report, null, 2);
-  fs.writeFileSync('metadata-report.json', jsonReport);
-  console.log("JSON report generated: metadata-report.json");
-
-  console.log(generatePRComment(report));
-}
-
 function generatePRComment(report) {
-  let comment = "## Summary\n\n";
+  let comment = "# Metadata check results\n\n";
+
+  comment += "## Summary\n\n";
   comment += `✅ Full Metadata: ${report.fullMetadata.length} pages\n`;
   comment += `⚠️ Partial Metadata: ${report.partialMetadata.length} pages\n`;
   comment += `❌ No Metadata: ${report.noMetadata.length} pages\n`;
@@ -189,7 +169,7 @@ function generatePRComment(report) {
     if (report.partialMetadata.length > 0) {
       comment += "Pages with Partial Metadata:\n";
       report.partialMetadata.forEach(page => {
-        comment += `${page.file}: Missing ${page.missingFields.join(', ')}\n`;
+        comment += `* ${page.file}: Missing ${page.missingFields.join(', ')}\n`;
       });
       comment += "\n";
     }
@@ -197,7 +177,7 @@ function generatePRComment(report) {
     if (report.noMetadata.length > 0) {
       comment += "Pages with No Metadata:\n";
       report.noMetadata.forEach(page => {
-        comment += `${page}\n`;
+        comment += `* ${page}\n`;
       });
       comment += "\n";
     }
@@ -205,9 +185,23 @@ function generatePRComment(report) {
     comment += "No metadata issues found in this pull request. Great job!\n";
   }
   
-  comment += "For full details, please check the metadata-report.md artifact.";
+  comment += "For full details, please check the [metadata-report.md](../artifacts/metadata-reports/metadata-report.md) artifact.\n\n";
+
+  comment += "## Artifacts\n\n";
+  comment += "* metadata-report.md\n";
+  comment += "* metadata-report.json\n";
   
   return comment;
+}
+
+function writeReportAndLog(report) {
+  const markdownReport = generatePRComment(report);
+  fs.writeFileSync('metadata-report.md', markdownReport);
+
+  const jsonReport = JSON.stringify(report, null, 2);
+  fs.writeFileSync('metadata-report.json', jsonReport);
+
+  console.log(markdownReport);
 }
 
 const report = generateReport();
