@@ -6,11 +6,6 @@ import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
-import { Metadata, ResolvingMetadata } from 'next'
-
-
-
-
 
 export default function RootLayout({
   children,
