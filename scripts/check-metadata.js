@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
-const chalk = require('chalk');
 
 const { generateCombinations, slugify } = require('./create-ai-assisted-dev-tools-comparison-pages');
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
@@ -153,72 +152,49 @@ function analyzeAndAddToReport(filePath, report) {
   }
 }
 
-function writeReport(report) {
+function writeReportAndLog(report) {
   const reportPath = path.join(process.cwd(), 'metadata-report.md');
   
-  let reportContent = `# Metadata Coverage Summary\n\n`;
-  reportContent += `✅ Full metadata: ${report.fullMetadata.length} pages\n`;
-  reportContent += `⚠️ Partial metadata: ${report.partialMetadata.length} pages\n`;
-  reportContent += `❌ No metadata: ${report.noMetadata.length} pages\n`;
-  reportContent += `🚫 Errors: ${report.errors.length} pages\n\n`;
-
-  if (report.partialMetadata.length > 0) {
-    reportContent += `## Partial Metadata Pages (${report.partialMetadata.length} total)\n\n`;
-    reportContent += `| Page | Missing Fields |\n`;
-    reportContent += `|------|----------------|\n`;
-    report.partialMetadata.forEach(page => {
-      reportContent += `| ${page.file} | ${page.missingFields.join(', ')} |\n`;
-    });
-    reportContent += `\n`;
+  let reportContent = '';
+  
+  // Function to add content to both reportContent and console output
+  function addContent(content) {
+    reportContent += content;
+    console.log(content);
   }
 
-  if (report.noMetadata.length > 0) {
-    reportContent += `## No Metadata Pages (${report.noMetadata.length} total)\n\n`;
-    report.noMetadata.forEach(page => {
-      reportContent += `- ${page}\n`;
+  // Output Metadata Coverage Summary first
+  addContent('Metadata Coverage Summary:\n');
+  addContent('==========================\n');
+  addContent(`✅ Full metadata: ${report.fullMetadata.length} pages\n`);
+  addContent(`⚠️ Partial metadata: ${report.partialMetadata.length} pages\n`);
+  addContent(`❌ No metadata: ${report.noMetadata.length} pages\n`);
+  addContent(`🚫 Errors: ${report.errors.length} pages\n\n`);
+
+  addContent('---\n\n');
+
+  // Function to add section to both reportContent and console output
+  function addSection(title, items, formatter = (item) => `- ${item}`) {
+    addContent(`${title}\n`);
+    addContent('='.repeat(title.length) + '\n');
+    items.forEach(item => {
+      const formattedItem = formatter(item);
+      addContent(formattedItem + '\n');
     });
-    reportContent += `\n`;
+    addContent('\n');
   }
 
-  // Add detailed lists
-  reportContent += `## Detailed Report\n\n`;
-  reportContent += `### Full Metadata Pages (${report.fullMetadata.length} total)\n\n`;
-  report.fullMetadata.forEach(page => {
-    reportContent += `- ${page}\n`;
-  });
-
-  reportContent += `\n### Partial Metadata Pages (${report.partialMetadata.length} total)\n\n`;
-  report.partialMetadata.forEach(page => {
-    reportContent += `- ${page.file} (Missing: ${page.missingFields.join(', ')})\n`;
-  });
-
-  reportContent += `\n### No Metadata Pages (${report.noMetadata.length} total)\n\n`;
-  report.noMetadata.forEach(page => {
-    reportContent += `- ${page}\n`;
-  });
-
-  reportContent += `\n### Pages with Errors (${report.errors.length} total)\n\n`;
-  report.errors.forEach(error => {
-    reportContent += `- ${error.file}: ${error.error}\n`;
-  });
+  addSection(`No Metadata Pages (${report.noMetadata.length} total)`, report.noMetadata);
+  addSection(`Partial Metadata Pages (${report.partialMetadata.length} total)`, report.partialMetadata, 
+    (page) => `- ${page.file} (Missing: ${page.missingFields.join(', ')})`);
+  addSection(`Full Metadata Pages (${report.fullMetadata.length} total)`, report.fullMetadata);
+  addSection(`Pages with Errors (${report.errors.length} total)`, report.errors, 
+    (error) => `- ${error.file}: ${error.error}`);
 
   fs.writeFileSync(reportPath, reportContent);
 
-  // Log the summary first
-  console.log(`\n`)
-  console.log('Metadata Coverage Summary:');
-  console.log(`==========================`);
-  console.log(`✅ Full metadata: ${report.fullMetadata.length} pages`);
-  console.log(`⚠️ Partial metadata: ${report.partialMetadata.length} pages`);
-  console.log(`❌ No metadata: ${report.noMetadata.length} pages`);
-  console.log(`🚫 Errors: ${report.errors.length} pages`);
-
-  // Add a separation line
-  console.log('\n---');
-
-  // Log the report generation details
   console.log(`\nMetadata report generated: ${reportPath}`);
 }
 
 const report = generateReport();
-writeReport(report);
+writeReportAndLog(report);
