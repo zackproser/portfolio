@@ -1,6 +1,7 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import { BlogPostCard } from '@/components/BlogPostCard'
+import { createMetadata } from '@/utils/createMetadata'
 
 import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
 import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
@@ -12,13 +13,14 @@ import pytorchMNISTLogo from '@/images/pytorch-mnist-logo.webp'
 import MNISTMindMapperLogo from '@/images/MNIST-mind-mapper-hero.webp'
 import MNISTTestImage from '@/images/mnist-test-images.webp'
 
-export const metadata = {
+export const metadata = createMetadata({
   title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
   author: "Zachary Proser",
   date: "2024-7-28",
   description: "I trained a neural net to recognize hand-drawn digits, then built a Next.js UI for it",
-  image: mnistMindMapper
-}
+  image: mnistMindMapper,
+  slug: "/blog/mnist-pytorch-hand-drawn-digit-recognizer"
+});
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 

@@ -1,63 +1,76 @@
 import { generateOgUrl } from '@/utils/ogUrl'
+import { Metadata } from 'next'
+import { StaticImageData } from 'next/image'
 
 interface MetadataParams {
   author?: string
   date?: string
   title?: string
   description?: string
-  image?: string
+  image?: string | StaticImageData
 }
 
-import { Metadata } from 'next'
+// Default metadata
+const defaultMetadata: Metadata = {
+  title: {
+    template: '%s - Zachary Proser',
+    default: 'Zachary Proser - Full-stack AI engineer'
+  },
+  description: 'I build and advise on generative AI applications and pipelines',
+  openGraph: {
+    title: 'Zachary Proser - Full-stack AI engineer',
+    description: 'I build and advise on generative AI applications and pipelines',
+    url: 'https://www.zacharyproser.com',
+    siteName: 'Zachary Proser',
+    images: [
+      {
+        url: 'https://zackproser.com/api/og',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+}
 
-export function createMetadata({ author, date, title, description, image }: MetadataParams): Metadata {
-  const baseMeta = {
-    author: author ?? 'Zachary Proser',
-    date: date ?? new Date(),
-    title: title ?? 'Zack Proser portfolio',
-    description: description ?? 'Full-stack open-source hacker and technical writer',
-    image: image ?? '',
-  };
-  return {
-    ...baseMeta,
-    metadataBase: new URL('https://zackproser.com'),
-    category: 'technology',
-    generator: 'Next.js',
-    referrer: 'origin-when-cross-origin',
-    keywords: ['AI engineer', 'Generative AI', 'AI consultant', 'Staff AI developer'],
-    authors: [{ name: 'Zachary Proser' }],
-    creator: 'Zachary Proser',
-    publisher: 'Zachary Proser',
+type ExtendedMetadata = Metadata & {
+  image?: string | StaticImageData
+}
+
+export function createMetadata({ author, date, title, description, image }: MetadataParams): ExtendedMetadata {
+  const pageMetadata: Partial<ExtendedMetadata> = {
+    ...(image && { image }),
+    ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
+    ...(date && { date: String(date) }),
+    ...(title && { title }),
+    ...(description && { description }),
     openGraph: {
-      title,
-      description,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-      siteName: 'Zack Proser portfolio',
+      ...(title && { title }),
+      ...(description && { description }),
       images: [
         {
           url: generateOgUrl({ title, description, image }),
         },
       ],
-      locale: 'en_US',
-      type: 'website',
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
     },
     twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      creator: '@zackproser',
+      ...(title && { title }),
+      ...(description && { description }),
       images: [generateOgUrl({ title, description, image })],
-    }
+    },
+  };
+
+  return {
+    ...defaultMetadata,
+    ...pageMetadata,
+    openGraph: {
+      ...defaultMetadata.openGraph,
+      ...pageMetadata.openGraph,
+    },
+    twitter: {
+      ...defaultMetadata.twitter,
+      ...pageMetadata.twitter,
+    },
   };
 }

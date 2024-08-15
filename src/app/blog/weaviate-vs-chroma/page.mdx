@@ -5,15 +5,17 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { createMetadata } from '@/utils/createMetadata'
+
 import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
 
-export const metadata = {
+export const metadata = createMetadata({
   title: "Weaviate vs Chroma",
   author: "Zachary Proser",
   date: "2024-4-10",
   description: "A detailed comparison of the Weaviate and Chroma vector databases",
   image: vectorDatabasesCompared
-}
+})
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
