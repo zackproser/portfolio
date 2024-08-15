@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
+const chalk = require('chalk');
 
 const { generateCombinations, slugify } = require('./create-ai-assisted-dev-tools-comparison-pages');
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
