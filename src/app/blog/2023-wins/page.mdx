@@ -20,11 +20,12 @@ import ConsultingCTA from '@/components/ConsultingCTA'
 import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata = createMetadata({
-    author: "Zachary Proser", 
+    author: "Zachary Proser",
     date: "2024-01-08",
     title: "Keep Calm and Ship Like Crazy: My 2023 Wins and Lessons",
     description: "I had a lot of growth and success to celebrate professionally in 2023",
-    image: shipLikeCrazy
+    image: shipLikeCrazy,
+    slug: '/blog/2023-wins'
 });
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

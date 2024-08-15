@@ -12,14 +12,15 @@ import meerkatSpecs from '@/images/meerkat-specs.webp'
 import serval from '@/images/serval-ws.webp'
 import servalSpecs from '@/images/serval-ws-specs.webp' 
 import system76Support from '@/images/system76-support.webp'
+import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = {
+export const metadata = createMetadata({
   title: "Why I bought three System76 computers",
   author: "Zachary Proser",
   date: "2024-7-13",
   description: "In the past 4 years, I have bought and used 3 different system76 linux machines. Here's why.",
   image: linuxLaptop
-}
+});
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
