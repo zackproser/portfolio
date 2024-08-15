@@ -162,43 +162,41 @@ function writeReport(report) {
   reportContent += `🚫 Errors: ${report.errors.length} pages\n\n`;
 
   if (report.partialMetadata.length > 0) {
-    reportContent += `## Partial Metadata Pages (Top 5)\n\n`;
+    reportContent += `## Partial Metadata Pages (${report.partialMetadata.length} total)\n\n`;
     reportContent += `| Page | Missing Fields |\n`;
     reportContent += `|------|----------------|\n`;
-    report.partialMetadata.slice(0, 5).forEach(page => {
+    report.partialMetadata.forEach(page => {
       reportContent += `| ${page.file} | ${page.missingFields.join(', ')} |\n`;
     });
     reportContent += `\n`;
   }
 
   if (report.noMetadata.length > 0) {
-    reportContent += `## No Metadata Pages (Top 5)\n\n`;
-    report.noMetadata.slice(0, 5).forEach(page => {
+    reportContent += `## No Metadata Pages (${report.noMetadata.length} total)\n\n`;
+    report.noMetadata.forEach(page => {
       reportContent += `- ${page}\n`;
     });
     reportContent += `\n`;
   }
 
-  reportContent += `(Full lists available in detailed report)\n\n`;
-
   // Add detailed lists
   reportContent += `## Detailed Report\n\n`;
-  reportContent += `### Full Metadata Pages\n\n`;
+  reportContent += `### Full Metadata Pages (${report.fullMetadata.length} total)\n\n`;
   report.fullMetadata.forEach(page => {
     reportContent += `- ${page}\n`;
   });
 
-  reportContent += `\n### Partial Metadata Pages\n\n`;
+  reportContent += `\n### Partial Metadata Pages (${report.partialMetadata.length} total)\n\n`;
   report.partialMetadata.forEach(page => {
     reportContent += `- ${page.file} (Missing: ${page.missingFields.join(', ')})\n`;
   });
 
-  reportContent += `\n### No Metadata Pages\n\n`;
+  reportContent += `\n### No Metadata Pages (${report.noMetadata.length} total)\n\n`;
   report.noMetadata.forEach(page => {
     reportContent += `- ${page}\n`;
   });
 
-  reportContent += `\n### Pages with Errors\n\n`;
+  reportContent += `\n### Pages with Errors (${report.errors.length} total)\n\n`;
   report.errors.forEach(error => {
     reportContent += `- ${error.file}: ${error.error}\n`;
   });
