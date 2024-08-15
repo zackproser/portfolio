@@ -20,7 +20,7 @@ const defaultMetadata: Metadata = {
   openGraph: {
     title: 'Zachary Proser - Full-stack AI engineer',
     description: 'I build and advise on generative AI applications and pipelines',
-    url: 'https://www.zacharyproser.com',
+    url: 'https://zackproser.com',
     siteName: 'Zachary Proser',
     images: [
       {
