@@ -45,7 +45,9 @@ jobs:
           
           COMMENT="## Metadata Check Results\n\n"
           COMMENT+="Metadata issues were found in this pull request. Please address them.\n\n"
+          COMMENT+="\n### Partial Metadata Pages\n"
           COMMENT+="$PARTIAL_LIST\n\n"
+          COMMENT+="\n### No Metadata Pages\n"
           COMMENT+="$NO_METADATA_LIST\n\n"
           COMMENT+="For full details, please check the metadata-report.md artifact."
           
