@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "metadata-report": "node scripts/check-metadata.js --debug",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
     "build": "npm run prebuild && next build",
     "build-only": "next build",
     "start": "next start",
     "lint": "next lint",
-    "debug-comparisons": "node scripts/create-ai-assisted-dev-tools-comparison-pages.js --debug"
+    "debug-comparisons": "node scripts/create-ai-assisted-dev-tools-comparison-pages.js --debug",
+    "check-metadata": "node scripts/check-metadata.js",
+    "metadata-debug": "node scripts/check-metadata.js --debug"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
