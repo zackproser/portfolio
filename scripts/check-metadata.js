@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
+const readline = require('readline');
+const { resolveMetadata } = require('next/dist/lib/metadata/resolve-metadata');
 
 const { generateCombinations, slugify } = require('./create-ai-assisted-dev-tools-comparison-pages');
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
@@ -194,6 +196,77 @@ function generatePRComment(report) {
   return comment;
 }
 
+async function debugMetadata(report) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  const allPages = [
+    ...report.fullMetadata.map(file => ({ file, status: 'full' })),
+    ...report.partialMetadata.map(item => ({ file: item.file, status: 'partial', missingFields: item.missingFields })),
+    ...report.noMetadata.map(file => ({ file, status: 'none' })),
+    ...report.errors.map(item => ({ file: item.file, status: 'error', error: item.error }))
+  ];
+
+  for (const page of allPages) {
+    console.clear();
+    console.log(`File: ${page.file}`);
+    console.log(`Status: ${page.status}`);
+    
+    if (page.status === 'partial') {
+      console.log(`Missing fields: ${page.missingFields.join(', ')}`);
+    } else if (page.status === 'error') {
+      console.log(`Error: ${page.error}`);
+    }
+
+    if (page.status !== 'error') {
+      try {
+        const filePath = path.join(appDir, page.file);
+        console.log(`Full file path: ${filePath}`);
+        
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        console.log('\nFile content (first 500 characters):');
+        console.log(fileContent.slice(0, 500) + '...');
+
+        // Attempt to parse metadata
+        const metadata = parseMetadata(fileContent);
+        console.log('\nParsed Metadata:');
+        console.log(JSON.stringify(metadata, null, 2));
+
+      } catch (error) {
+        console.log(`Error resolving metadata: ${error.message}`);
+        console.log(`Stack trace: ${error.stack}`);
+      }
+    }
+
+    await new Promise(resolve => {
+      rl.question('Press Enter to continue, or type "q" to quit: ', (answer) => {
+        if (answer.toLowerCase() === 'q') {
+          rl.close();
+          process.exit(0);
+        }
+        resolve();
+      });
+    });
+  }
+
+  rl.close();
+}
+
+function parseMetadata(fileContent) {
+  const metadataRegex = /export\s+(const\s+metadata\s*=|async\s+function\s+generateMetadata\s*\(\s*\)\s*{[\s\S]*?return)\s*({[\s\S]*?})/;
+  const match = fileContent.match(metadataRegex);
+  
+  if (match) {
+    const metadataString = match[2];
+    // Simple parsing, this might need to be more robust
+    return JSON.parse(metadataString.replace(/'/g, '"'));
+  }
+  
+  return null;
+}
+
 function writeReportAndLog(report) {
   const markdownReport = generatePRComment(report);
   fs.writeFileSync('metadata-report.md', markdownReport);
@@ -204,5 +277,10 @@ function writeReportAndLog(report) {
   console.log(markdownReport);
 }
 
-const report = generateReport();
-writeReportAndLog(report);
+if (process.argv.includes('--debug')) {
+  const report = generateReport();
+  debugMetadata(report);
+} else {
+  const report = generateReport();
+  writeReportAndLog(report);
+}
