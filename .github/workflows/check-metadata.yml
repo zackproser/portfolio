@@ -59,7 +59,10 @@ jobs:
           )
           
           # Post comment on PR
-          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
+          gh pr comment "${{ github.event.pull_request.number }}" --body "$(cat <<EOF
+$COMMENT
+EOF
+)"
           
           exit 1
         else
