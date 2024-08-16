@@ -3,17 +3,18 @@ import buildingYourOwnTools from '/src/images/building-your-own-tools.webp'
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
+import { createMetadata } from '@/utils/createMetadata'
 
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
+export const metadata = createMetadata({
  title: "The best thing about being a developer ",
  author: "Zachary Proser",
  date: "2024-4-11",
  description: "The best thing about being a developer is being able to build your own tools, to your exact specifications. ",
  image: bestThingAboutBeingADeveloper,
-} 
+})
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 

@@ -6,13 +6,15 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
  title: "aws-vault - the best way to manage AWS credentials for multiple accounts",
  author: "Zachary Proser",
  date: "2024-4-8",
  description: "aws-vault is an excellent open-source tool written in Golang that allows you to manage the credentials for multiple AWS accounts securely. ",
  image: awsVault,
-} 
+});
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 

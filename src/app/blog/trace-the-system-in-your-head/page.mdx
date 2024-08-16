@@ -6,13 +6,15 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
  title: "Trace the system in your head",
  author: "Zachary Proser",
  date: "2024-4-10",
  description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
  image: traceTheSystem,
-} 
+})
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 

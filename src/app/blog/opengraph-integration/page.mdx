@@ -12,7 +12,8 @@ export const metadata = createMetadata({
     date: "2023-08-22",
     title: "Opengraph dynamic social images", 
     description: "I built a custom opengraph image with '@vercel/og' that includes a fallback image for index pages",
-    image: opengraphFallbackImg
+    image: opengraphFallbackImg,
+    slug: '/blog/opengraph-integration'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

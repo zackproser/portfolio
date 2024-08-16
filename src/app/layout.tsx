@@ -7,26 +7,6 @@ import { Layout } from '@/components/Layout'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
 
-type Props = {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
-}
-
-export async function generateMetadata({ params }: Props) {
-  return {
-    title: {
-      template: '%s - AI Engineer',
-      default: 'Zachary Proser - Full-stack AI engineer'
-    },
-    description: 'I build and advise on generative AI applications and pipelines',
-    alternates: {
-      types: {
-        'application/rss+xml': `${process.env.NEXT_PUBLIC_SITE_URL}/feed.xml`,
-      },
-    },
-  }
-}
-
 export default function RootLayout({
   children,
 }: {
