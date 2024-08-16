@@ -8,13 +8,15 @@ import { Newsletter } from '@/components/Newsletter'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
  title: "Warp AI terminal review",
  author: "Zachary Proser",
  date: "2024-4-13",
  description: "The Warp terminal is a serious boon for anyone looking for help on the command line, but it's not yet perfect",
  image: warpChat,
-} 
+})
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
