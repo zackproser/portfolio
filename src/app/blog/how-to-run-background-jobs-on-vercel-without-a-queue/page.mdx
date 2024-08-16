@@ -3,17 +3,18 @@ import vercelBackgroundJobs from '@/images/vercel-background-jobs.webp'
 
 import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
+import { createMetadata } from '@/utils/createMetadata'
 
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const metadata = {
+export const metadata = createMetadata({
  title: "How to Run background jobs on Vercel without a queue ",
  author: "Zachary Proser",
  date: "2024-4-7",
  description: "I recently needed to figure out how to have my Vercel API route accept a new job and return a response immediately while still performing long running processing in the background. This is what I learned. ",
  image: vercelBackgroundJobs,
-} 
+});
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 

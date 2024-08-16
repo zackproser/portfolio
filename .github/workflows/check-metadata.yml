@@ -1,0 +1,45 @@
+name: Metadata Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-metadata:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run metadata check
+      run: node scripts/check-metadata.js > pr_comment.md
+
+    - name: Upload metadata reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: metadata-reports
+        path: |
+          metadata-report.md
+          metadata-report.json
+          pr_comment.md
+
+    - name: Check for metadata issues and post comment
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if grep -q "Metadata issues were found" pr_comment.md; then
+          echo "Metadata issues found. Posting comment on PR."
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file pr_comment.md
+          exit 1
+        else
+          echo "No metadata issues found."
+        fi
