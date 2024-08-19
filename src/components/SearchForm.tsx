@@ -8,7 +8,6 @@ interface SearchFormProps {
 
 const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, setIsLoading }) => {
   const [query, setQuery] = useState<string>("");
-  const [suggestions] = useState<string[]>(suggestedSearches);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,10 +59,10 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
         >
           ➔
         </button>
-        {showSuggestions && suggestions.length > 0 && (
+        {showSuggestions && suggestedSearches.length > 0 && (
           <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
             <div className="px-4 py-2 text-gray-700 font-semibold">Popular searches</div>
-            {suggestions.map((suggestion, index) => (
+            {suggestedSearches.map((suggestion, index) => (
               <div
                 key={index}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700"
@@ -71,7 +70,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
                   setQuery(suggestion);
                   onSearch(suggestion);
                   setShowSuggestions(false);
-                  setIsLoading(true); // Ensure loading state is set when suggestion is clicked
+                  setIsLoading(true);
                 }}
               >
                 {suggestion}
@@ -85,4 +84,3 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
 };
 
 export default SearchForm;
-
