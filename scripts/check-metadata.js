@@ -195,8 +195,6 @@ function writeReportAndLog(report) {
   console.log(markdownReport);
 }
 
-const report = generateReport();
-writeReportAndLog(report);
 async function debugMetadata(report) {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -266,16 +264,6 @@ function parseMetadata(fileContent) {
   }
   
   return null;
-}
-
-function writeReportAndLog(report) {
-  const markdownReport = generatePRComment(report);
-  fs.writeFileSync('metadata-report.md', markdownReport);
-
-  const jsonReport = JSON.stringify(report, null, 2);
-  fs.writeFileSync('metadata-report.json', jsonReport);
-
-  console.log(markdownReport);
 }
 
 if (process.argv.includes('--debug')) {
