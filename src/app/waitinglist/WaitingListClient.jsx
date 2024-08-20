@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-
 import { Container } from "@/components/Container";
-
 import ProductWaitinglistForm from "@/components/ProductWaitinglistForm";
 
-export default function Page() {
+export default function WaitingListClient() {
   const [userEmail, setUserEmail] = useState("");
   const [productSlug, setProductSlug] = useState("");
   const [productName, setProductName] = useState("");
@@ -29,11 +27,9 @@ export default function Page() {
         Your thirst for knowledge is commendable!
       </h1>
 
-
       <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
         But hand-crafted project-based learning takes time.
       </p>
-
 
       <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
         Enter your email below to secure your spot on the waiting list, and we&apos;ll let you know as soon as{" "}
@@ -45,7 +41,6 @@ export default function Page() {
         productSlug={productSlug}
         productName={productName}
       />
-
     </Container>
   );
 }

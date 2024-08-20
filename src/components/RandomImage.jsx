@@ -64,7 +64,7 @@ const RandomImage = () => {
       style={{ cursor: 'pointer' }}>
       <Image
         src={selectedImage}
-        alt="Zachary Motherfucking Proser"
+        alt="Zachary Proser - full stack developer"
         sizes="(min-width: 1024px) 32rem, 20rem"
         className="aspect-square rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
       />

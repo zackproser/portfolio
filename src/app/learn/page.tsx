@@ -1,10 +1,11 @@
 import Image from 'next/image';
+import { Metadata } from 'next';
+import { createMetadata } from '@/utils/createMetadata';
 
 import { Container } from "@/components/Container";
 import CourseIndex from '@/components/CourseIndex';
 import { Button } from "@/components/Button";
 
-import projectBasedLearning from '@/images/project-based-learning.webp'
 import advice from '@/images/advice.webp'
 import projects from '@/images/projects.webp'
 import portfolio from '@/images/portfolio.webp'
@@ -12,6 +13,11 @@ import getHired from '@/images/get-hired.webp'
 import skills from '@/images/skills.webp'
 import community from '@/images/community.webp'
 import mentorship from '@/images/mentorship.webp'
+
+export const metadata: Metadata = createMetadata({
+  title: "Learn AI Development - School for Hackers",
+  description: "Project-based learning program to build real-world AI applications. Develop marketable skills, get mentorship, and build your portfolio to advance your career in AI development.",
+});
 
 type Feature = {
   name: string
