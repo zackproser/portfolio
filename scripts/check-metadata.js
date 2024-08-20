@@ -2,17 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
-const readline = require('readline');
-const { resolveMetadata } = require('next/dist/lib/metadata/resolve-metadata');
 
 const { generateCombinations, slugify } = require('./create-ai-assisted-dev-tools-comparison-pages');
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
 
 const appDir = path.join(process.cwd(), 'src', 'app');
 const expectedMetadataFields = ['title', 'description', 'openGraph', 'twitter', 'author', 'date', 'image'];
-
-// Add a debug flag
-const debug = process.argv.includes('--debug');
 
 function analyzeFile(filePath) {
   try {
@@ -27,9 +22,7 @@ function analyzeFile(filePath) {
         const metadataString = directMetadataMatch ? directMetadataMatch[1] : createMetadataMatch[1];
         const definedFields = metadataString.match(/(\w+):/g).map(field => field.replace(':', ''));
         
-        // Check if createMetadata is used
         if (createMetadataMatch) {
-          // Add fields that are always included in createMetadata
           definedFields.push('openGraph', 'twitter');
         }
         
@@ -60,7 +53,7 @@ function analyzeFile(filePath) {
         ExportDeclaration(path) {
           if (path.node.declaration && path.node.declaration.id && path.node.declaration.id.name === 'generateMetadata') {
             hasMetadata = true;
-            definedFields = ['dynamic']; // Assume dynamic metadata covers all fields
+            definedFields = ['dynamic'];
           }
         },
       });
@@ -76,11 +69,9 @@ function analyzeFile(filePath) {
 function handleDynamicPages() {
   const dynamicPages = [];
 
-  // Handle vector database comparison pages
   const vectorDbDir = path.join(process.cwd(), 'src', 'app', 'comparisons', 'vector-databases');
   dynamicPages.push(path.join(vectorDbDir, 'page.mdx'));
 
-  // Handle AI-assisted dev tools comparison pages
   const combinations = generateCombinations(tools);
   combinations.forEach(([tool1, tool2]) => {
     const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
@@ -88,7 +79,6 @@ function handleDynamicPages() {
     dynamicPages.push(path.join(comparisonDir, 'page.mdx'));
   });
 
-  // Handle the main AI-assisted dev tools comparison post
   const mainComparisonDir = path.join(process.cwd(), 'src', 'app', 'blog', 'ai-assisted-dev-tools-compared');
   dynamicPages.push(path.join(mainComparisonDir, 'page.mdx'));
 
@@ -120,7 +110,6 @@ function generateReport() {
 
   traverseDir(appDir);
 
-  // Handle dynamic pages
   const dynamicPages = handleDynamicPages();
   dynamicPages.forEach(pagePath => {
     analyzeAndAddToReport(pagePath, report);
@@ -187,13 +176,23 @@ function generatePRComment(report) {
     comment += "No metadata issues found in this pull request. Great job!\n";
   }
   
-  comment += "For full details, please check the [metadata-report.md](../artifacts/metadata-reports/metadata-report.md) artifact.\n\n";
+  comment += "For full details, please check the metadata-report.md artifact.\n\n";
 
   comment += "## Artifacts\n\n";
   comment += "* metadata-report.md\n";
   comment += "* metadata-report.json\n";
   
   return comment;
+}
+
+function writeReportAndLog(report) {
+  const markdownReport = generatePRComment(report);
+  fs.writeFileSync('metadata-report.md', markdownReport);
+
+  const jsonReport = JSON.stringify(report, null, 2);
+  fs.writeFileSync('metadata-report.json', jsonReport);
+
+  console.log(markdownReport);
 }
 
 async function debugMetadata(report) {
@@ -265,16 +264,6 @@ function parseMetadata(fileContent) {
   }
   
   return null;
-}
-
-function writeReportAndLog(report) {
-  const markdownReport = generatePRComment(report);
-  fs.writeFileSync('metadata-report.md', markdownReport);
-
-  const jsonReport = JSON.stringify(report, null, 2);
-  fs.writeFileSync('metadata-report.json', jsonReport);
-
-  console.log(markdownReport);
 }
 
 if (process.argv.includes('--debug')) {
