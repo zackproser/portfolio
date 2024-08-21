@@ -42,6 +42,7 @@ import gritioLogo from '@/images/devtools/gritio.webp'
 import adrenalineLogo from '@/images/devtools/adrenaline.webp'
 import codewhispererLogo from '@/images/devtools/codewhisperer.webp'
 import figstackLogo from '@/images/devtools/figstack.webp'
+import zedLogo from '@/images/devtools/zed.webp'
 
 const logoMap = {
   pinecone: pineconeLogo,
@@ -90,7 +91,8 @@ const logoMap = {
   'grit.io': gritioLogo,
   adrenaline_ai: adrenalineLogo,
   amazon_codewhisperer: codewhispererLogo,
-  figstack: figstackLogo
+  figstack: figstackLogo,
+  zed: zedLogo
 };
 
 export function getLogoById(id) {
