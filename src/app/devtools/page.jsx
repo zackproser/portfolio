@@ -9,8 +9,9 @@ import { track } from '@vercel/analytics'
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
 import Image from 'next/image'
-import { CodeIcon } from 'lucide-react' // Import a default icon
+import { CodeIcon } from 'lucide-react' 
 import { getLogoById } from '@/lib/logoImports'
+import heroImage from '@/images/ai-hacking.webp' 
 
 export default function DevToolsIndex() {
   const router = useRouter();
@@ -43,6 +44,15 @@ export default function DevToolsIndex() {
       title="AI-Assisted Developer Tools"
       intro="Compare different AI-assisted developer tools to find the best fit for your needs"
     >
+      <div className="relative w-full h-64 mb-8">
+        <Image
+          src={heroImage}
+          alt="AI Hacking"
+          layout="fill"
+          objectFit="cover"
+          className="rounded-lg"
+        />
+      </div>
       <DevToolSearchFilter 
         tools={allTools} 
         onFilter={handleFilter} 

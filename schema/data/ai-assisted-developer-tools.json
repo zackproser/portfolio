@@ -799,6 +799,112 @@
       }
     },
     {
+      "name": "Zed",
+      "icon": "@/images/tools/zed.png",
+      "category": "Code Autocompletion",
+      "description": "Zed is a high-performance, collaborative code editor designed to enhance developer productivity with features like real-time collaboration, AI-powered code completions, and a sleek, modern interface.",
+      "open_source": {
+        "client": true,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": false,
+        "jetbrains": false,
+        "neovim": false,
+        "visual_studio": false,
+        "vim": false,
+        "emacs": false,
+        "intellij": false
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Free",
+            "price": "Free"
+          },
+          {
+            "name": "Pro",
+            "price": "$20 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$50 per month"
+          }
+        ],
+        "discounts": "10% off for annual subscription",
+        "payment_methods": ["Credit Card", "PayPal"]
+      },
+      "free_tier": true,
+      "chat_interface": true,
+      "creator": "Zed Industries",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true,
+        "typescript": true,
+        "go": true,
+        "php": true,
+        "swift": true,
+        "csharp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": null,
+      "homepage_link": "https://zed.dev",
+      "business_info": {
+        "funding": "$12.5 million",
+        "revenue": "$1 million annually",
+        "employee_count": "11-50",
+        "founding_year": 2021,
+        "headquarters": "San Francisco, CA"
+      },
+      "support": {
+        "support_channels": ["Email", "Chat"],
+        "documentation_quality": 4.7,
+        "community_support": "Active community on GitHub and Discord"
+      },
+      "usage_stats": {
+        "number_of_users": 50000,
+        "number_of_integrations": 30,
+        "github_stars": 5000
+      },
+      "security": {
+        "compliance_certifications": ["GDPR"],
+        "security_features": ["Encryption", "Multi-factor authentication"]
+      },
+      "market_position": {
+        "market_share": "10%",
+        "competitors": ["VS Code", "Sublime Text"],
+        "unique_selling_points": ["Real-time collaboration", "High performance", "Modern interface"]
+      },
+      "innovation": {
+        "recent_updates": "Added support for TypeScript in June 2024",
+        "future_roadmap": "Expanding language support and adding more AI-powered features"
+      },
+      "case_studies": [
+        {
+          "title": "Enhancing Developer Productivity at DEF Corp",
+          "link": "/case-studies/def-corp"
+        }
+      ],
+      "multimedia": {
+        "demo_videos": [
+          "https://www.youtube.com/watch?v=JGz7Ou0Nwo8",
+          "https://www.youtube.com/watch?v=Fk08oNi0j1Y"
+        ],
+        "blog_posts": [
+          "https://zed.dev/blog"
+        ]
+      },
+      "internationalization": {
+        "language_support": ["English", "Spanish", "French"],
+        "localization": ["Localized UI for Spanish and French"]
+      }
+    },
+    {
       "name": "Mutahunter",
       "icon": "@/images/tools/mutahunter.svg",
       "category": "Mutation Testing",
@@ -1715,25 +1821,16 @@
       ],
       "multimedia": {
         "demo_videos": [
-          "https://www.youtube.com/watch?v=example1",
-          "https://www.youtube.com/watch?v=example2"
+          "https://www.youtube.com/watch?v=pieDcHKEjVw"
         ],
         "blog_posts": [
-          "https://www.figstack.com/blog"
+          "https://www.figstack.com/blog",
+          "https://deepgram.com/ai-apps/figstack"
         ]
       },
       "internationalization": {
         "language_support": ["English", "Spanish", "French"],
         "localization": ["Localized UI for Spanish and French"]
-      },
-      "multimedia":{
-        "demo_videos": [
-          "https://www.youtube.com/watch?v=pieDcHKEjVw"
-        ],
-        "blog_posts":[
-            "https://www.figstack.com/",
-            "https://deepgram.com/ai-apps/figstack"
-        ]
       }
     }
   ]
