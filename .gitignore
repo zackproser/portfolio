@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -37,3 +35,20 @@ headlines.json
 
 # metadata report
 metadata-report*
+
+# Generated pages (excluding page files)
+src/app/comparisons/*
+!src/app/comparisons/**/page.tsx
+!src/app/comparisons/**/page.jsx
+!src/app/comparisons/**/page.mdx
+
+src/app/collections/*
+!src/app/collections/**/page.tsx
+!src/app/collections/**/page.jsx
+!src/app/collections/**/page.mdx
+
+# Generated AI-assisted dev tools comparison pages
+src/app/devtools/compare/*
+!src/app/devtools/compare/**/page.tsx
+!src/app/devtools/compare/**/page.jsx
+!src/app/devtools/compare/**/page.mdx
