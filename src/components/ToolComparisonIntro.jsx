@@ -26,7 +26,7 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
             Hi, I'm Zachary, a Staff Software Engineer and expert in AI developer tooling.
           </p>
           <div className="flex flex-wrap gap-2">
-            <ButtonLink href="https://calendly.com/your-calendly-link" external>
+            <ButtonLink href="https://calendly.com/zackproser/60m" external>
               Book a call
             </ButtonLink>
             <ButtonLink href="/contact">
