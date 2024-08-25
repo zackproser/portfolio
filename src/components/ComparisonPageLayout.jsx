@@ -8,13 +8,13 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
   return (
     <SimpleLayout
       title={`${tool1.name} vs ${tool2.name}`}
-      intro="A detailed comparison of two AI-assisted developer tools."
+      intro="A detailed comparison of AI-assisted developer tools."
     >
       <ToolComparisonIntro tool1={tool1.name} tool2={tool2.name} />
       <BarCharts selectedTools={[tool1, tool2]} />
       {proseParagraphs.map((paragraph, index) => (
         <React.Fragment key={index}>
-          <p>{paragraph}</p>
+          {paragraph ? <p>{paragraph}</p> : <br />}
           {index === 2 && (
             <NewsletterWrapper 
               title="Stay updated on AI dev tools"
