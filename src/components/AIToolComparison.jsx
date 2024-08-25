@@ -91,7 +91,7 @@ const isValidURL = (string) => {
   }
 };
 
-const BarCharts = ({ selectedTools }) => {
+export const BarCharts = ({ selectedTools }) => {
   const businessData = {
     labels: selectedTools.map(tool => tool.name),
     datasets: [
@@ -144,7 +144,7 @@ const BarCharts = ({ selectedTools }) => {
   );
 };
 
-const BusinessInfo = ({ selectedTools }) => {
+export const BusinessInfo = ({ selectedTools }) => {
   return (
     <div className="mb-4">
       <h2 className="text-2xl font-bold mb-2">Business Info</h2>
@@ -246,7 +246,7 @@ const renderOpenSourceStatus = (status) => {
   );
 };
 
-const AIToolComparison = ({ tools, comparisonProse }) => {
+export const DetailedComparison = ({ tools }) => {
   const [openSections, setOpenSections] = useState([]);
 
   const toggleAllSections = () => {
@@ -259,22 +259,6 @@ const AIToolComparison = ({ tools, comparisonProse }) => {
 
   return (
     <div>
-      {comparisonProse && (
-        <div className="prose max-w-none mb-8">
-          <div 
-            style={{ 
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-              overflowWrap: 'break-word'
-            }}
-            className="text-base leading-7"
-          >
-            {comparisonProse}
-          </div>
-        </div>
-      )}
-      <BarCharts selectedTools={tools} />
-      <BusinessInfo selectedTools={tools} />
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Detailed Comparison</h2>
         <Button onClick={toggleAllSections}>
@@ -295,5 +279,3 @@ const AIToolComparison = ({ tools, comparisonProse }) => {
     </div>
   );
 };
-
-export default AIToolComparison;
