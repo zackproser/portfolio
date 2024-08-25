@@ -89,12 +89,16 @@ module.exports = {
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{reviewMention}/g, reviewMention));
 
+    proseParagraphs.push(''); // Add an empty string for a newline
+
     // Purpose
     proseParagraphs.push(getRandomSentence('purpose')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{purpose1}/g, tool1.description || 'assist developers')
       .replace(/{purpose2}/g, tool2.description || 'assist developers'));
+
+    proseParagraphs.push(''); // Add an empty string for a newline
 
     // Market Position
     if (tool1.market_position?.market_share && tool2.market_position?.market_share) {
@@ -103,6 +107,8 @@ module.exports = {
         .replace(/{tool2}/g, tool2.name || 'Tool 2')
         .replace(/{marketShare1}/g, tool1.market_position.market_share)
         .replace(/{marketShare2}/g, tool2.market_position.market_share));
+      
+      proseParagraphs.push(''); // Add an empty string for a newline
     }
 
     // Pricing
@@ -119,6 +125,8 @@ module.exports = {
       .replace(/{highestPrice2}/g, `$${price2.highest}`);
     proseParagraphs.push(pricingParagraph);
 
+    proseParagraphs.push(''); // Add an empty string for a newline
+
     // Language Support
     const languageSupportParagraph = getRandomSentence('languageSupport')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
@@ -128,6 +136,8 @@ module.exports = {
       .replace(/{topLanguages1}/g, getTopLanguages(tool1))
       .replace(/{topLanguages2}/g, getTopLanguages(tool2));
     proseParagraphs.push(languageSupportParagraph);
+
+    proseParagraphs.push(''); // Add an empty string for a newline
 
     // Unique Features
     const uniqueFeature1 = tool1.market_position?.unique_selling_points?.[0] || 'unique features';
@@ -139,6 +149,8 @@ module.exports = {
       .replace(/{uniqueFeature2}/g, uniqueFeature2);
     proseParagraphs.push(uniqueFeaturesParagraph);
 
+    proseParagraphs.push(''); // Add an empty string for a newline
+
     // Community and Support
     const communityAndSupportParagraph = getRandomSentence('communityAndSupport')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
@@ -148,6 +160,8 @@ module.exports = {
       .replace(/{supportChannels1}/g, tool1.support?.support_channels?.join(' and ') || 'various channels')
       .replace(/{supportChannels2}/g, tool2.support?.support_channels?.join(' and ') || 'various channels');
     proseParagraphs.push(communityAndSupportParagraph);
+
+    proseParagraphs.push(''); // Add an empty string for a newline
 
     // Conclusion
     proseParagraphs.push(getRandomSentence('conclusion')
