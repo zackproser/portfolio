@@ -1,10 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { generateComparison } = require('../src/templates/comparison-tool-prose.jsx');
 
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
-
-const checkMark = '✅';
-const crossMark = '❌';
 
 const extractDateFromContent = (content) => {
   const dateRegex = /date: "(\d{4}-\d{1,2}-\d{1,2})"/;
@@ -12,13 +10,13 @@ const extractDateFromContent = (content) => {
   return match ? match[1] : null;
 };
 
-const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
-
 const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
 const generateComparisonPageContent = (tool1, tool2, existingDate) => {
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
   const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
+
+  const comparisonProse = generateComparison(tool1, tool2);
 
   return `
 import { ArticleLayout } from '@/components/ArticleLayout'
@@ -53,7 +51,7 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 # ${tool1.name} vs ${tool2.name}
 
-This page contains a detailed comparison of ${tool1.name} and ${tool2.name}, two AI-assisted developer tools.
+${comparisonProse}
 
 <AIToolComparison tools={[${JSON.stringify(tool1)}, ${JSON.stringify(tool2)}]} />
 
