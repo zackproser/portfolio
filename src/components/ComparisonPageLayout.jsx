@@ -11,6 +11,8 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
       intro="A detailed comparison of AI-assisted developer tools."
     >
       <ToolComparisonIntro tool1={tool1.name} tool2={tool2.name} />
+      <h2 className="text-2xl font-bold mt-8 mb-4">Growth at a glance</h2>
+      <p>Let's start by breaking down the key metrics of each tool.</p>
       <BarCharts selectedTools={[tool1, tool2]} />
       {proseParagraphs.map((paragraph, index) => (
         <React.Fragment key={index}>
