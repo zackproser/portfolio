@@ -23,10 +23,10 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
         <div className="md:w-2/3 mb-6 md:mb-0">
           <h1 className="text-3xl font-bold text-white mb-3">AI Developer Tooling Expert</h1>
           <p className="text-lg text-white mb-4">
-            Hi, I'm Zachary, a Staff Software Engineer and expert in AI developer tooling.
+            Hi, I&apos;m Zachary, a Staff Software Engineer and expert in AI developer tooling.
           </p>
           <div className="flex flex-wrap gap-2">
-            <ButtonLink href="https://calendly.com/zackproser/60m" external>
+            <ButtonLink href="https://calendly.com/" external>
               Book a call
             </ButtonLink>
             <ButtonLink href="/contact">
