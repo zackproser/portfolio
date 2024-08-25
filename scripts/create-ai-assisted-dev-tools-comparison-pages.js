@@ -20,10 +20,7 @@ const generateComparisonPageContent = (tool1, tool2, existingDate) => {
 
   return `
 import { ArticleLayout } from '@/components/ArticleLayout'
-import CrossLinkCallout from '@/components/CrossLinkCallout'
-import Image from 'next/image'
-import Link from 'next/link'
-import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
+import ToolComparisonIntro from '@/components/ToolComparisonIntro'
 import AIToolComparison from '@/components/AIToolComparison'
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -32,28 +29,19 @@ export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "${dateToUse}",
   description: "A detailed comparison of ${tool1.name} and ${tool2.name}, two AI-assisted developer tools.",
-  image: aiAssistedDevTools,
   type: "comparison",
   slug: "${slug}"
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
+<ToolComparisonIntro tool1="${tool1.name}" tool2="${tool2.name}" />
 
-<CrossLinkCallout
-  title="Compare AI-Assisted Developer Tools Dynamically"
-  description="Use my interactive tool to compare ${tool1.name}, ${tool2.name}, and other AI-assisted developer tools side by side."
-  linkText="Compare ${tool1.name} and ${tool2.name}"
-  linkHref="/devtools/compare?tools=${encodeURIComponent(tool1.name)},${encodeURIComponent(tool2.name)}"
-  variant="info"
-/>
-
-# ${tool1.name} vs ${tool2.name}
+<AIToolComparison tools={[${JSON.stringify(tool1)}, ${JSON.stringify(tool2)}]} />
 
 ${comparisonProse}
 
-<AIToolComparison tools={[${JSON.stringify(tool1)}, ${JSON.stringify(tool2)}]} />
+Continue reading below for a detailed breakdown of each tool, including information about their backing companies, progress, funding, and more. You can also use our [interactive comparison tool](/devtools/compare?tools=${encodeURIComponent(tool1.name)},${encodeURIComponent(tool2.name)}) to explore these tools side by side.
 
 `;
 };
