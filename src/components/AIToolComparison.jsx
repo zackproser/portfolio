@@ -145,33 +145,54 @@ export const BarCharts = ({ selectedTools }) => {
 };
 
 export const BusinessInfo = ({ selectedTools }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const toggleExpansion = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div className="mb-4">
-      <h2 className="text-2xl font-bold mb-2">Business Info</h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Tool</TableHead>
-            {selectedTools.map((tool, index) => (
-              <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Object.keys(selectedTools[0].business_info).map((feature) => (
-            <TableRow key={feature}>
-              <TableCell className="font-medium">
-                <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
-              </TableCell>
-              {selectedTools.map((tool) => (
-                <TableCell key={tool.name}>
-                  {renderCellValue(tool.business_info[feature])}
-                </TableCell>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-bold">Business Info</h2>
+        <Button onClick={toggleExpansion}>
+          {isExpanded ? (
+            <>
+              <ChevronUp className="mr-2 h-4 w-4" /> Collapse
+            </>
+          ) : (
+            <>
+              <ChevronDown className="mr-2 h-4 w-4" /> Expand
+            </>
+          )}
+        </Button>
+      </div>
+      {isExpanded && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tool</TableHead>
+              {selectedTools.map((tool, index) => (
+                <TableHead key={tool.name} style={{ color: getToolColor(index, selectedTools.length) }}>{tool.name}</TableHead>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {Object.keys(selectedTools[0].business_info).map((feature) => (
+              <TableRow key={feature}>
+                <TableCell className="font-medium">
+                  <span className="text-2xl mr-2">{getEmoji(feature)}</span> {sentenceCase(feature)}
+                </TableCell>
+                {selectedTools.map((tool) => (
+                  <TableCell key={tool.name}>
+                    {renderCellValue(tool.business_info[feature])}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 };
