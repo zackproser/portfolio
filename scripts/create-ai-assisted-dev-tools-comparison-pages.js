@@ -4,6 +4,8 @@ const { generateComparison } = require('../src/templates/comparison-tool-prose.j
 
 const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
 
+console.log(tools)
+
 const extractDateFromContent = (content) => {
   const dateRegex = /date: "(\d{4}-\d{1,2}-\d{1,2})"/;
   const match = content.match(dateRegex);
@@ -13,15 +15,14 @@ const extractDateFromContent = (content) => {
 const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
 const generateComparisonPageContent = (tool1, tool2, existingDate) => {
+  console.log(`generateComparisonPageContent: %o, %o`,tool1, tool2);
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
   const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
 
-  const comparisonProse = generateComparison(tool1, tool2);
+  const proseParagraphs = generateComparison(tool1, tool2);
 
   return `
-import { ArticleLayout } from '@/components/ArticleLayout'
-import ToolComparisonIntro from '@/components/ToolComparisonIntro'
-import AIToolComparison from '@/components/AIToolComparison'
+import ComparisonPageLayout from '@/components/ComparisonPageLayout'
 import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata = createMetadata({
@@ -33,16 +34,13 @@ export const metadata = createMetadata({
   slug: "${slug}"
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export default function Page() {
+  const tool1 = ${JSON.stringify(tool1)}
+  const tool2 = ${JSON.stringify(tool2)}
+  const proseParagraphs = ${JSON.stringify(proseParagraphs)}
 
-<ToolComparisonIntro tool1="${tool1.name}" tool2="${tool2.name}" />
-
-<AIToolComparison tools={[${JSON.stringify(tool1)}, ${JSON.stringify(tool2)}]} />
-
-${comparisonProse}
-
-Continue reading below for a detailed breakdown of each tool, including information about their backing companies, progress, funding, and more. You can also use our [interactive comparison tool](/devtools/compare?tools=${encodeURIComponent(tool1.name)},${encodeURIComponent(tool2.name)}) to explore these tools side by side.
-
+  return <ComparisonPageLayout tool1={tool1} tool2={tool2} proseParagraphs={proseParagraphs} />
+}
 `;
 };
 

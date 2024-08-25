@@ -77,44 +77,38 @@ module.exports = {
       };
     };
 
-    let comparison = '';
+    let proseParagraphs = [];
 
     // Introduction
     const reviewMention = tool1.review_link || tool2.review_link
       ? ` For a more in-depth look, you can also check out ${tool1.review_link ? `my detailed review of ${tool1.name}` : ''}${tool1.review_link && tool2.review_link ? ' and ' : ''}${tool2.review_link ? `my comprehensive review of ${tool2.name}` : ''}.`
       : '';
 
-    comparison += getRandomSentence('intro')
+    proseParagraphs.push(getRandomSentence('intro')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
-      .replace(/{reviewMention}/g, reviewMention);
-
-    comparison += '\n\n'; // Add line breaks between sections
+      .replace(/{reviewMention}/g, reviewMention));
 
     // Purpose
-    comparison += getRandomSentence('purpose')
+    proseParagraphs.push(getRandomSentence('purpose')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{purpose1}/g, tool1.description || 'assist developers')
-      .replace(/{purpose2}/g, tool2.description || 'assist developers');
-
-    comparison += '\n\n'; // Add line breaks between sections
+      .replace(/{purpose2}/g, tool2.description || 'assist developers'));
 
     // Market Position
     if (tool1.market_position?.market_share && tool2.market_position?.market_share) {
-      comparison += getRandomSentence('marketPosition')
+      proseParagraphs.push(getRandomSentence('marketPosition')
         .replace(/{tool1}/g, tool1.name || 'Tool 1')
         .replace(/{tool2}/g, tool2.name || 'Tool 2')
         .replace(/{marketShare1}/g, tool1.market_position.market_share)
-        .replace(/{marketShare2}/g, tool2.market_position.market_share);
-
-      comparison += '\n\n'; // Add line breaks between sections
+        .replace(/{marketShare2}/g, tool2.market_position.market_share));
     }
 
     // Pricing
     const price1 = getLowestHighestPrice(tool1);
     const price2 = getLowestHighestPrice(tool2);
-    comparison += getRandomSentence('pricing')
+    const pricingParagraph = getRandomSentence('pricing')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{pricingModel1}/g, tool1.pricing?.model || 'flexible')
@@ -123,47 +117,43 @@ module.exports = {
       .replace(/{highestPrice1}/g, `$${price1.highest}`)
       .replace(/{lowestPrice2}/g, `$${price2.lowest}`)
       .replace(/{highestPrice2}/g, `$${price2.highest}`);
-
-    comparison += '\n\n'; // Add line breaks between sections
+    proseParagraphs.push(pricingParagraph);
 
     // Language Support
-    comparison += getRandomSentence('languageSupport')
+    const languageSupportParagraph = getRandomSentence('languageSupport')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{languageCount1}/g, Object.values(tool1.language_support || {}).filter(Boolean).length.toString())
       .replace(/{languageCount2}/g, Object.values(tool2.language_support || {}).filter(Boolean).length.toString())
       .replace(/{topLanguages1}/g, getTopLanguages(tool1))
       .replace(/{topLanguages2}/g, getTopLanguages(tool2));
-
-    comparison += '\n\n'; // Add line breaks between sections
+    proseParagraphs.push(languageSupportParagraph);
 
     // Unique Features
     const uniqueFeature1 = tool1.market_position?.unique_selling_points?.[0] || 'unique features';
     const uniqueFeature2 = tool2.market_position?.unique_selling_points?.[0] || 'unique features';
-    comparison += getRandomSentence('uniqueFeatures')
+    const uniqueFeaturesParagraph = getRandomSentence('uniqueFeatures')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{uniqueFeature1}/g, uniqueFeature1)
       .replace(/{uniqueFeature2}/g, uniqueFeature2);
-
-    comparison += '\n\n'; // Add line breaks between sections
+    proseParagraphs.push(uniqueFeaturesParagraph);
 
     // Community and Support
-    comparison += getRandomSentence('communityAndSupport')
+    const communityAndSupportParagraph = getRandomSentence('communityAndSupport')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2')
       .replace(/{communitySize1}/g, (tool1.usage_stats?.number_of_users || 0).toLocaleString())
       .replace(/{communitySize2}/g, (tool2.usage_stats?.number_of_users || 0).toLocaleString())
       .replace(/{supportChannels1}/g, tool1.support?.support_channels?.join(' and ') || 'various channels')
       .replace(/{supportChannels2}/g, tool2.support?.support_channels?.join(' and ') || 'various channels');
-
-    comparison += '\n\n'; // Add line breaks between sections
+    proseParagraphs.push(communityAndSupportParagraph);
 
     // Conclusion
-    comparison += getRandomSentence('conclusion')
+    proseParagraphs.push(getRandomSentence('conclusion')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
-      .replace(/{tool2}/g, tool2.name || 'Tool 2');
+      .replace(/{tool2}/g, tool2.name || 'Tool 2'));
 
-    return comparison;
+    return proseParagraphs;
   }
 };
