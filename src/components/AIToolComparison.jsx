@@ -246,7 +246,7 @@ const renderOpenSourceStatus = (status) => {
   );
 };
 
-const AIToolComparison = ({ tools }) => {
+const AIToolComparison = ({ tools, comparisonProse }) => {
   const [openSections, setOpenSections] = useState([]);
 
   const toggleAllSections = () => {
@@ -259,6 +259,20 @@ const AIToolComparison = ({ tools }) => {
 
   return (
     <div>
+      {comparisonProse && (
+        <div className="prose max-w-none mb-8">
+          <div 
+            style={{ 
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word'
+            }}
+            className="text-base leading-7"
+          >
+            {comparisonProse}
+          </div>
+        </div>
+      )}
       <BarCharts selectedTools={tools} />
       <BusinessInfo selectedTools={tools} />
       <div className="flex justify-between items-center mb-4">
