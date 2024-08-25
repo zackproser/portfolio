@@ -1,10 +1,10 @@
 const sentenceVariations = {
   intro: [
-    "In this comprehensive comparison, we'll explore the key features and differences between {tool1} and {tool2}, two popular AI-assisted developer tools that are changing how developers create software.",
-    "Today, we're diving deep into a detailed analysis of {tool1} and {tool2}, two prominent players in the AI-assisted development space that are changing the landscape of software engineering.",
-    "Let's take a closer look at {tool1} and {tool2}, two powerful AI-driven tools that are reshaping the future of coding and software development.",
-    "In this article, we'll compare and contrast {tool1} and {tool2}, two AI-powered developer tools.",
-    "Lets compare the strengths and weaknesses of {tool1} and {tool2}, two AI-assisted coding tools that are transforming the developer experience."
+    "In this comprehensive comparison, we'll explore the key features and differences between {tool1} and {tool2}, two popular AI-assisted developer tools that are changing how developers create software.{reviewMention}",
+    "Today, we're diving deep into a detailed analysis of {tool1} and {tool2}, two prominent players in the AI-assisted development space that are changing the landscape of software engineering.{reviewMention}",
+    "Let's take a closer look at {tool1} and {tool2}, two powerful AI-driven tools that are reshaping the future of coding and software development.{reviewMention}",
+    "In this article, we'll compare and contrast {tool1} and {tool2}, two AI-powered developer tools.{reviewMention}",
+    "Let's compare the strengths and weaknesses of {tool1} and {tool2}, two AI-assisted coding tools that are transforming the developer experience.{reviewMention}"
   ],
   purpose: [
     "{tool1} is designed to {purpose1}, while {tool2} focuses on {purpose2}, offering developers unique approaches to enhancing their workflow.",
@@ -80,9 +80,14 @@ module.exports = {
     let comparison = '';
 
     // Introduction
+    const reviewMention = tool1.review_link || tool2.review_link
+      ? ` For a more in-depth look, you can also check out ${tool1.review_link ? `my detailed review of ${tool1.name}` : ''}${tool1.review_link && tool2.review_link ? ' and ' : ''}${tool2.review_link ? `my comprehensive review of ${tool2.name}` : ''}.`
+      : '';
+
     comparison += getRandomSentence('intro')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
-      .replace(/{tool2}/g, tool2.name || 'Tool 2');
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{reviewMention}/g, reviewMention);
 
     comparison += '\n\n'; // Add line breaks between sections
 
@@ -158,17 +163,6 @@ module.exports = {
     comparison += getRandomSentence('conclusion')
       .replace(/{tool1}/g, tool1.name || 'Tool 1')
       .replace(/{tool2}/g, tool2.name || 'Tool 2');
-
-    // Conditional rendering for review links
-    if (tool1.review_link || tool2.review_link) {
-      comparison += '\n\nFor more in-depth analysis:';
-      if (tool1.review_link) {
-        comparison += `\n- Check out my detailed review of ${tool1.name || 'Tool 1'} [here](${tool1.review_link}).`;
-      }
-      if (tool2.review_link) {
-        comparison += `\n- Read my comprehensive review of ${tool2.name || 'Tool 2'} [here](${tool2.review_link}).`;
-      }
-    }
 
     return comparison;
   }
