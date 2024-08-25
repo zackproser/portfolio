@@ -1,13 +1,10 @@
-// Remove the import statement
-// const { Tool } = require('../types/Tool');
-
 const sentenceVariations = {
   intro: [
-    "In this comprehensive comparison, we'll explore the key features and differences between {tool1} and {tool2}, two popular AI-assisted developer tools that are revolutionizing the way we code.",
+    "In this comprehensive comparison, we'll explore the key features and differences between {tool1} and {tool2}, two popular AI-assisted developer tools that are changing how developers create software.",
     "Today, we're diving deep into a detailed analysis of {tool1} and {tool2}, two prominent players in the AI-assisted development space that are changing the landscape of software engineering.",
     "Let's take a closer look at {tool1} and {tool2}, two powerful AI-driven tools that are reshaping the future of coding and software development.",
-    "In this article, we'll compare and contrast {tool1} and {tool2}, two cutting-edge AI-powered developer tools that are making waves in the tech industry.",
-    "Join us as we examine the strengths and weaknesses of {tool1} and {tool2}, two innovative AI-assisted coding tools that are transforming the developer experience."
+    "In this article, we'll compare and contrast {tool1} and {tool2}, two AI-powered developer tools.",
+    "Lets compare the strengths and weaknesses of {tool1} and {tool2}, two AI-assisted coding tools that are transforming the developer experience."
   ],
   purpose: [
     "{tool1} is designed to {purpose1}, while {tool2} focuses on {purpose2}, offering developers unique approaches to enhancing their workflow.",
@@ -21,7 +18,6 @@ const sentenceVariations = {
     "{tool1} and {tool2} are competing for dominance in the AI-assisted development tools market, with {marketShare1} and {marketShare2} market shares respectively.",
     "The AI-powered developer tools landscape is currently led by {tool1} with {marketShare1} market share, closely followed by {tool2} with {marketShare2}.",
     "With {marketShare1} of the market, {tool1} is a major player in the AI-assisted coding tools space, while {tool2} is rapidly growing with its {marketShare2} market share.",
-    "{tool1} and {tool2} are neck-and-neck in the race for market dominance, holding {marketShare1} and {marketShare2} of the market share respectively."
   ],
   pricing: [
     "{tool1} offers a {pricingModel1} pricing model with tiers ranging from {lowestPrice1} to {highestPrice1}, while {tool2} provides a {pricingModel2} model with options from {lowestPrice2} to {highestPrice2}.",
