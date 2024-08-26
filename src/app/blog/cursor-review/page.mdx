@@ -1,0 +1,53 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import cursorConvoOne from '@/images/cursor-convo-1.webp'
+import cursorConvoTwo from '@/images/cursor-convo-2.webp'
+import cursorConvoThree from '@/images/cursor-convo-3.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-08-26",
+    title: "Cursor review: Changing the way I create software",
+    description: "I have been experimenting with AI assisted dev tools nonstop. Cursor probably had the biggest impact of all, so far.",
+    image: cursorConvoOne,
+    slug: '/blog/cursor-review'
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+The first time my colleague at Pinecone got me to try out Cursor, I hated it. VSCode always felt too heavy to me - the experience reminded me of running Windows. (Cursor is a fork of VSCode, with significant modifications).
+
+*Why am I clicking all of this garbage? What happened to all my beautiful terminal real estate?  Could you throw up any MORE toast notifications when I try to load a file to edit?*
+
+But today, Cursor is my daily driver, and I'm having more fun creating more ambitous software more quickly as a result. What changed?
+
+The reason Cursor I use cursor for professional and personal projects is the same reason that it's dominating and likely to eclipse autocompletion tools.
+
+## Autocomplete is not all you need
+
+Tools that began doing autocompletion using an LLM the developer's current context, such as [GitHub Copilot](/blog/github-copilot) or [Codeium](/blog/codeium-review) have a limit baked in: they're still expecting developers to write code. 
+
+Cursor had a bolder vision, and recognizes that the opportunity is not just about the LLMs available today, but ever advancing models specialized toward code generation and working with codebases.
+
+Cursor changed the primary interface to natural language. 
+
+## Natural language interfaces are the key disruptor
+
+<Image src={cursorConvoTwo} alt="Conversing with Cursor to build software more quickly" />
+
+In retrospect, I think the Cursor team's decision to use VSCode as the starting point makes a lot of sense. VSCode was is a fully featured IDE, meaning that it puts code front and center and offers programmers many rich tools for understanding, finding, 
+refactoring, debugging and writing code. 
+
+Cursor knew to focus on its core value proposition - allowing experienced developers to describe the changes they want in plain English - a massive force multiplier for those with enough background to know how they want their software architected. 
+
+A few well written paragraphs might take a developer a few minutes or less to write - but when they submit that prompt, Cursor is orchestrating the work of LLMs and the IDE itself to rapidly edit, refactor, and create new files as needed to reach the requested state. 
+
+I wish I could say otherwise, but I cannot code as fast as Claude 3.5 Sonnet when hooked up to the IDE's API. And now that I've been experimenting with this way of developing software for the past several months, I'm not sure I'd want to. 
+
+
