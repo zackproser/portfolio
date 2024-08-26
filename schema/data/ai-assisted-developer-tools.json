@@ -15,6 +15,10 @@
     {
       "name": "Mutation Testing",
       "description": "Mutation testing tools enhance software quality by injecting faults into the codebase and verifying if the test cases can detect these faults."
+    },
+    {
+      "name": "Enhanced IDE",
+      "description": "Enhanced IDE tools provide advanced features and integrations to improve the development experience within integrated development environments."
     }
   ],
   "tools": [
@@ -708,7 +712,7 @@
     {
       "name": "Mods",
       "icon": "@/images/tools/mods.svg",
-      "category": "Intelligent Terminals / Shells",
+      "category": "Enhanced IDE",
       "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
       "open_source": {
         "client": true,
