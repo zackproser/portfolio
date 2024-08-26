@@ -60,7 +60,7 @@ export default async function About() {
 					<div className="lg:pl-20">
 						<div className="max-w-xs px-2.5 lg:max-w-none">
 							<Suspense>
-								<RandomImage />
+								<RandomImage width={600} height={600} />
 							</Suspense>
 						</div>
 					</div>

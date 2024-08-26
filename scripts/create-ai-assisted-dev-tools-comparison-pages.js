@@ -56,6 +56,11 @@ const combinations = generateCombinations(tools);
 const debug = process.argv.includes('--debug');
 
 combinations.forEach(([tool1, tool2], _index) => {
+  if (!tool1 || !tool2) {
+    console.error(`Error: Invalid tool data for comparison`);
+    return;
+  }
+
   try {
     const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
     const dir = path.join(process.env.PWD, `/src/app/comparisons/${slug}`);
@@ -80,7 +85,7 @@ combinations.forEach(([tool1, tool2], _index) => {
       console.log(`Generated comparison page for ${tool1.name} vs ${tool2.name} and wrote to ${filename}`);
     }
   } catch (error) {
-    console.error(`Error generating comparison page for: ${tool1.name} vs ${tool2.name}: ${error}`);
+    console.error(`Error generating comparison page for: ${tool1?.name || 'Unknown'} vs ${tool2?.name || 'Unknown'}: ${error}`);
   }
 });
 

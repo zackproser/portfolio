@@ -82,7 +82,7 @@ export default function ChatPageClient() {
           </div>
           <div className="mt-6 md:mt-0 w-full md:w-80 h-80">
             <Suspense fallback={<div className="w-full h-full bg-gray-200 rounded-lg pr-8 mr-8"></div>}>
-              <RandomImage />
+              <RandomImage width={300} height={300} />
             </Suspense>
           </div>
         </div>
