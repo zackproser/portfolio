@@ -21,14 +21,19 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
           {index === 3 && (
             <NewsletterWrapper 
               className="mt-4 p-4 max--2xl mx-auto"
-              title="The straight dope.  Which AI tools are the future and which are on their way out?"
+              title="The straight dope.  Which AI tools are the future and which are on their way out."
               body="Subscribe for the latest insights and comparisons in AI-assisted development."
             />
           )}
         </React.Fragment>
       ))}
       <BusinessInfo selectedTools={[tool1, tool2]} />
-      <DetailedComparison tools={[tool1, tool2]} />
+      <DetailedComparison className="mt-8 p-4 max-w-2xl mx-auto" tools={[tool1, tool2]} />
+      <NewsletterWrapper 
+        className="mt-8 p-4 max-w-2xl mx-auto"
+        title="If you made it this far, you can do anything."
+        body="Get honest reviews of AI-assisted development from someone who codes every day."
+      />
     </SimpleLayout>
   );
 };

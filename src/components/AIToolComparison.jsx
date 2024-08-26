@@ -268,13 +268,13 @@ const renderOpenSourceStatus = (status) => {
 };
 
 export const DetailedComparison = ({ tools }) => {
-  const [openSections, setOpenSections] = useState(Object.keys(tools[0] || {}));
+  const [openSections, setOpenSections] = useState([]);
 
   const toggleAllSections = () => {
-    if (openSections.length === Object.keys(tools[0] || {}).length) {
-      setOpenSections([]);
-    } else {
+    if (openSections.length === 0) {
       setOpenSections(Object.keys(tools[0] || {}));
+    } else {
+      setOpenSections([]);
     }
   };
 
@@ -283,13 +283,13 @@ export const DetailedComparison = ({ tools }) => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Detailed Comparison</h2>
         <Button onClick={toggleAllSections}>
-          {openSections.length === Object.keys(tools[0] || {}).length ? (
+          {openSections.length === 0 ? (
             <>
-              <ChevronUp className="mr-2 h-4 w-4" /> Collapse All
+              <ChevronDown className="mr-2 h-4 w-4" /> Expand All
             </>
           ) : (
             <>
-              <ChevronDown className="mr-2 h-4 w-4" /> Expand All
+              <ChevronUp className="mr-2 h-4 w-4" /> Collapse All
             </>
           )}
         </Button>
