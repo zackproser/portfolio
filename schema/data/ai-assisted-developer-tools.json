@@ -18,7 +18,7 @@
     },
     {
       "name": "Enhanced IDE",
-      "description": "Enhanced IDE tools provide advanced features and integrations to improve the development experience within integrated development environments."
+      "description": "Enhanced IDE tools are more comprehensive than autocompletion tools. For example, enhanced IDEs may offer natural language interfaces, allowing experienced developers to craft software with extreme speed."
     }
   ],
   "tools": [
