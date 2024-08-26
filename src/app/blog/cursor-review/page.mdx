@@ -5,6 +5,8 @@ import Image from 'next/image'
 import cursorConvoOne from '@/images/cursor-convo-1.webp'
 import cursorConvoTwo from '@/images/cursor-convo-2.webp'
 import cursorConvoThree from '@/images/cursor-convo-3.webp'
+import cursorModelSwitch from '@/images/cursor-model-switching.webp'
+import codingWithCursor from '@/images/cursor-ai-assisted-coding.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -13,13 +15,11 @@ export const metadata = createMetadata({
     date: "2024-08-26",
     title: "Cursor review: Changing the way I create software",
     description: "I have been experimenting with AI assisted dev tools nonstop. Cursor probably had the biggest impact of all, so far.",
-    image: cursorConvoOne,
+    image: codingWithCursor,
     slug: '/blog/cursor-review'
 });
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
---- 
 
 The first time my colleague at Pinecone got me to try out Cursor, I hated it. VSCode always felt too heavy to me - the experience reminded me of running Windows. (Cursor is a fork of VSCode, with significant modifications).
 
@@ -50,4 +50,44 @@ A few well written paragraphs might take a developer a few minutes or less to wr
 
 I wish I could say otherwise, but I cannot code as fast as Claude 3.5 Sonnet when hooked up to the IDE's API. And now that I've been experimenting with this way of developing software for the past several months, I'm not sure I'd want to. 
 
+## Cursor is likely a preview of where the field is headed
+
+As my colleague, Roie Schwaber-Cohen and I argue in [Yes, Coding is changing, and humans are more important than ever](https://thenewstack.io/ai-coding-human-engineers-are-more-important-than-ever/), this shift is likely a boon for developers. It's already helping experienced developers create software faster.
+
+I remain fully responsible for the software that I'm shipping, and whether it's well architected, secure, and understandable by those who will use and maintain it. Yet, I am no longer writing every single line of code myself.
+
+## Things Cursor does very well. 
+
+Here are the things I believe we're already seeing competitors try to replicate. For example, this week Cursor raised 60m in funding, 
+and Codeium began advertising their new Forge feature, which is a step toward the fully-codebase aware natural language interfaces were discussing here.
+
+### At file, folder, codebase mentions
+
+If copy and pasting back and forth between ChatGPT.com is crawling, then Cursor's interface is sprinting. 
+
+Being able to discuss the code, architecture, a single file, or to tell Cursor to use a file as inspiration when 
+making other changes is my favorite feature of Cursor.
+
+<Image src={cursorConvoThree} alt="Mentioning a file in Cursor" />
+
+### Model interop 
+
+LLMs and models appear to be heading toward rapid commoditization. They're at least currently advancing rapidly enough that Cursor recognized you want to be able to change models on a per-request basis. 
+
+If Claude 3.5 Sonnet, the current champ of commercial LLMs for coding at this moment, failed to meet your needs in that last refactor request - you could try the exact same prompt with ChatGPT 4o in one click.
+
+<Image src={cursorModelSwitch} alt="Switching between models in Cursor" />
+
+I'm seeing this pattern in many popular projects. Users want control over which model they're running and want to be able to swap them quickly or provide their own API keys as needed to avoid limits.
+
+### Composer interface
+
+The idea here is even one more step toward coding in natural language. In this mode, developers can still at-mention files, but the idea is that pretty soon they won't need to. They'll just talk about what they want done, 
+and review the code changes that resulted.
+
+In actuality, this is currently hit or miss, undergoing rapid development and a glimpse at how the killer Dev UX is likely codebase-wide natural language interfaces for rapid refactoring.
+
+I expect this to be the next big thing, and I expect the Cursor team does, too. When I first saw GitHub's Copilot Workspaces teased, I was excited, as a person who has a few hundred open source repositories themselves and who maintains additional repositories for their employer. 
+
+Once all the kinks are worked out, I look forward to being able to rip through a dozen repos that all need fixes, updates, patches over my morning coffee.
 
