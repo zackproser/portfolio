@@ -20,7 +20,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
           {paragraph ? <p>{paragraph}</p> : <br />}
           {index === 3 && (
             <NewsletterWrapper 
-              className="mt-4 p-4 max--2xl mx-auto"
+              className="mt-6 mb-6 pt-6 pb-6 max--2xl mx-auto"
               title="The straight dope.  Which AI tools are the future and which are on their way out."
               body="Subscribe for the latest insights and comparisons in AI-assisted development."
             />

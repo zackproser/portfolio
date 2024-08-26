@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { generateComparison } = require('../src/templates/comparison-tool-prose.jsx');
 
-const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
+const { tools, categories } = require('../schema/data/ai-assisted-developer-tools.json');
 
 const extractDateFromContent = (content) => {
   const dateRegex = /date: "(\d{4}-\d{1,2}-\d{1,2})"/;
@@ -16,11 +16,12 @@ const generateComparisonPageContent = (tool1, tool2, existingDate) => {
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
   const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
 
-  const proseParagraphs = generateComparison(tool1, tool2);
+  const proseParagraphs = generateComparison(tool1, tool2, categories);
 
   return `
 import ComparisonPageLayout from '@/components/ComparisonPageLayout'
 import { createMetadata } from '@/utils/createMetadata'
+import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
 export const metadata = createMetadata({
   title: "${tool1.name} vs ${tool2.name}",
@@ -28,6 +29,7 @@ export const metadata = createMetadata({
   date: "${dateToUse}",
   description: "A detailed comparison of ${tool1.name} and ${tool2.name}, two AI-assisted developer tools.",
   type: "comparison",
+  image: aiAssistedDevTools,
   slug: "${slug}"
 })
 
