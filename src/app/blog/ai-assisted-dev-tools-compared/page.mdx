@@ -1,0 +1,441 @@
+
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import Link from 'next/link'
+import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  title: "The Giant List of AI-Assisted Developer Tools Compared and Reviewed",
+  author: "Zachary Proser",
+  date: "2024-8-25",
+  description: "A comprehensive comparison and review of AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools.",
+  image: aiAssistedDevTools
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
+
+## Introduction
+
+Here's a comprehensive comparison AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools. Reviews are linked when available.
+
+
+## Table of Contents
+
+1. [Code Autocompletion](#code-autocompletion)
+2. [Intelligent Terminals / Shells](#intelligent-terminals-/-shells)
+3. [Video Editing](#video-editing)
+4. [Mutation Testing](#mutation-testing)
+5. [Enhanced IDE](#enhanced-ide)
+
+
+## Tools and reviews
+
+
+| Tool | Category | Review | Homepage
+|------|------|------|------|
+| GitHub Copilot | Code Autocompletion | <Link href="/blog/github-copilot-review" alt="AI developer tool review">📖 Review</Link> | https://github.com/features/copilot |
+| Warp | Intelligent Terminals / Shells | <Link href="/blog/warp-ai-terminal-review" alt="AI developer tool review">📖 Review</Link> | https://www.warp.dev/ |
+| Descript | Video Editing | Coming soon | https://www.descript.com/ |
+| Codeium | Code Autocompletion | <Link href="/blog/codeium-review" alt="AI developer tool review">📖 Review</Link> | https://codeium.com |
+| Kapwing | Video Editing | Coming soon | https://www.kapwing.com |
+| Aider | Intelligent Terminals / Shells | Coming soon | https://aider.chat |
+| Cody | Code Autocompletion | Coming soon | https://sourcegraph.com/cody |
+| Mods | Enhanced IDE | Coming soon | https://github.com/charmbracelet/mods |
+| Zed | Code Autocompletion | Coming soon | https://zed.dev |
+| Mutahunter | Mutation Testing | Coming soon | https://github.com/codeintegrity-ai/mutahunter |
+| Cursor | Code Autocompletion | <Link href="/blog/cursor-review" alt="AI developer tool review">📖 Review</Link> | https://cursor.sh |
+| OpusClip | Video Editing | Coming soon | https://www.opus.pro |
+| Tabnine | Code Autocompletion | <Link href="/blog/tabnine-review" alt="AI developer tool review">📖 Review</Link> | https://www.tabnine.com |
+| MutableAI | Code Autocompletion | <Link href="/blog/mutableai-review" alt="AI developer tool review">📖 Review</Link> | https://mutable.ai |
+| CodiumAI | Code Autocompletion | Coming soon | https://www.codium.ai |
+| Grit.io | Code Autocompletion | <Link href="/blog/grit-io-review" alt="AI developer tool review">📖 Review</Link> | https://www.grit.io |
+| Adrenaline AI | Code Autocompletion | Coming soon | https://useadrenaline.com |
+| Amazon CodeWhisperer | Code Autocompletion | Coming soon | https://aws.amazon.com/codewhisperer/ |
+| Figstack | Code Autocompletion | Coming soon | https://www.figstack.com |
+
+
+
+## Code Autocompletion
+
+Code autocompletion tools save developers time and effort by automatically suggesting and completing code snippets based on the context of the code being written.
+
+
+### Open source
+
+
+| Tool | Client | Backend | Model |
+|------|-|-|-|
+| GitHub Copilot | ❌ | ❌ | ❌ |
+| Codeium | ✅ | ❌ | ❌ |
+| Cody | ✅ | ❌ | ❌ |
+| Zed | ✅ | ❌ | ❌ |
+| Cursor | ❌ | ❌ | ❌ |
+| Tabnine | ❌ | ❌ | ❌ |
+| MutableAI | ❌ | ❌ | ❌ |
+| CodiumAI | ❌ | ❌ | ❌ |
+| Grit.io | ❌ | ❌ | ❌ |
+| Adrenaline AI | ❌ | ❌ | ❌ |
+| Amazon CodeWhisperer | ❌ | ❌ | ❌ |
+| Figstack | ❌ | ❌ | ❌ |
+
+,
+### Ide support
+
+
+| Tool | Vs Code | Jetbrains | Neovim | Visual Studio | Vim | Emacs | Intellij |
+|------|-|-|-|-|-|-|-|
+| GitHub Copilot | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Codeium | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Cody | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Zed | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Cursor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Tabnine | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| MutableAI | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| CodiumAI | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Grit.io | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| Adrenaline AI | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Amazon CodeWhisperer | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
+| Figstack | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+,
+### Pricing
+
+
+| Tool | Model | Tiers |
+|------|-------|------|
+| GitHub Copilot | subscription | Individual: $10 per month, Team: $100 per month |
+| Codeium | subscription | Individual: $10 per month, Team: $100 per month |
+| Cody | free | Standard: Free, Pro: Subscription based - contact for pricing |
+| Zed | subscription | Free: Free, Pro: $20 per month, Team: $50 per month |
+| Cursor | free | Hobby: Free, Pro: $20 per month, Business: $40 per month |
+| Tabnine | subscription | Basic: Free, Pro: $12 per month per seat, Enterprise: $39 per month per seat |
+| MutableAI | subscription | Basic: $2 per month and up, Premium: $15 per month, Enterprise: Custom |
+| CodiumAI | subscription | Developer: Free, Teams: $19 per user/month, Enterprise: Let's talk |
+| Grit.io | subscription | CLI: Free, Team: $39 / contributor, Enterprise: Book a demo |
+| Adrenaline AI | subscription | Free Trial: Free, limited time, Pro: $10 per month |
+| Amazon CodeWhisperer | free | Individual: Free |
+| Figstack | freemium | Free: Free, Starter: $9 per month, Unlimited: $29 per month |
+
+,
+### Free tier
+
+
+| Tool | Free tier |
+|------|------|
+| GitHub Copilot | ❌ |
+| Codeium | ✅ |
+| Cody | ✅ |
+| Zed | ✅ |
+| Cursor | ✅ |
+| Tabnine | ✅ |
+| MutableAI | ❌ |
+| CodiumAI | ✅ |
+| Grit.io | ✅ |
+| Adrenaline AI | ✅ |
+| Amazon CodeWhisperer | ✅ |
+| Figstack | ✅ |
+
+,
+### Chat interface
+
+
+| Tool | Chat interface |
+|------|------|
+| GitHub Copilot | ❌ |
+| Codeium | ✅ |
+| Cody | ✅ |
+| Zed | ✅ |
+| Cursor | ✅ |
+| Tabnine | ✅ |
+| MutableAI | ❌ |
+| CodiumAI | ✅ |
+| Grit.io | ❌ |
+| Adrenaline AI | ❌ |
+| Amazon CodeWhisperer | ✅ |
+| Figstack | ❌ |
+
+,
+### Creator
+
+
+| Tool | Creator |
+|------|------|
+| GitHub Copilot | GitHub |
+| Codeium | Codeium |
+| Cody | Sourcegraph |
+| Zed | Zed Industries |
+| Cursor | Anysphere |
+| Tabnine | Codota |
+| MutableAI | MutableAI Corp |
+| CodiumAI | CodiumAI |
+| Grit.io | Grit Inc |
+| Adrenaline AI | Adrenaline Tech |
+| Amazon CodeWhisperer | Amazon Web Services |
+| Figstack | Figstack Inc |
+
+,
+### Language support
+
+
+| Tool | Python | Javascript | Java | Cpp |
+|------|-|-|-|-|
+| GitHub Copilot | ✅ | ✅ | ✅ | ✅ |
+| Codeium | ✅ | ✅ | ✅ | ✅ |
+| Cody | ✅ | ✅ | ✅ | ✅ |
+| Zed | ✅ | ✅ | ✅ | ✅ |
+| Cursor | ✅ | ✅ | ❌ | ❌ |
+| Tabnine | ✅ | ✅ | ✅ | ✅ |
+| MutableAI | ✅ | ✅ | ❌ | ❌ |
+| CodiumAI | ✅ | ✅ | ✅ | ✅ |
+| Grit.io | ✅ | ✅ | ✅ | ❌ |
+| Adrenaline AI | ✅ | ✅ | ✅ | ✅ |
+| Amazon CodeWhisperer | ✅ | ✅ | ✅ | ❌ |
+| Figstack | ✅ | ✅ | ✅ | ✅ |
+
+,
+### Supports local model
+
+
+| Tool | Supports local model |
+|------|------|
+| GitHub Copilot | ❌ |
+| Codeium | ❌ |
+| Cody | ❌ |
+| Zed | ❌ |
+| Cursor | ✅ |
+| Tabnine | ❌ |
+| MutableAI | ❌ |
+| CodiumAI | ❌ |
+| Grit.io | ❌ |
+| Adrenaline AI | ❌ |
+| Amazon CodeWhisperer | ❌ |
+| Figstack | ❌ |
+
+,
+### Supports offline use
+
+
+| Tool | Supports offline use |
+|------|------|
+| GitHub Copilot | ❌ |
+| Codeium | ❌ |
+| Cody | ❌ |
+| Zed | ❌ |
+| Cursor | ✅ |
+| Tabnine | ❌ |
+| MutableAI | ❌ |
+| CodiumAI | ❌ |
+| Grit.io | ❌ |
+| Adrenaline AI | ❌ |
+| Amazon CodeWhisperer | ❌ |
+| Figstack | ❌ |
+
+
+
+
+## Intelligent Terminals / Shells
+
+Intelligent terminals and shells enhance the command-line experience with features like command completion, advanced history search, and AI-powered assistance.
+
+
+### Open source
+
+
+| Tool | Client | Backend | Model |
+|------|-|-|-|
+| Warp | ❌ | ❌ | ❌ |
+| Aider | ❌ | ❌ | ❌ |
+
+,
+### Pricing
+
+
+| Tool | Model | Tiers |
+|------|-------|------|
+| Warp | subscription | Free: Free, Pro: $15 per month, Team: $22 per month, Enterprise: Custom |
+| Aider | subscription | Free: Free and open source |
+
+,
+### Free tier
+
+
+| Tool | Free tier |
+|------|------|
+| Warp | ✅ |
+| Aider | ✅ |
+
+,
+### Chat interface
+
+
+| Tool | Chat interface |
+|------|------|
+| Warp | ✅ |
+| Aider | ✅ |
+
+,
+### Command completion
+
+
+| Tool | Command completion |
+|------|------|
+| Warp | ✅ |
+| Aider | ✅ |
+
+,
+### Advanced history
+
+
+| Tool | Advanced history |
+|------|------|
+| Warp | ✅ |
+| Aider | ❌ |
+
+,
+### Supports local model
+
+
+| Tool | Supports local model |
+|------|------|
+| Warp | ❌ |
+| Aider | ❌ |
+
+,
+### Supports offline use
+
+
+| Tool | Supports offline use |
+|------|------|
+| Warp | ❌ |
+| Aider | ❌ |
+
+
+
+
+## Video Editing
+
+AI-assisted video editing tools simplify the video editing process by offering features like automatic transcription, editing via transcription, and intelligent suggestions.
+
+
+### Open source
+
+
+| Tool | Client | Backend | Model |
+|------|-|-|-|
+| Descript | ❌ | ❌ | ❌ |
+| Kapwing | ❌ | ❌ | ❌ |
+| OpusClip | ❌ | ❌ | ❌ |
+
+,
+### Pricing
+
+
+| Tool | Model | Tiers |
+|------|-------|------|
+| Descript | subscription | Creator: $12 per month, Pro: $24 per month |
+| Kapwing | subscription | Free: Free, Pro: $16 per month, Business: $50 per month, Enterprise: Custom |
+| OpusClip | subscription | Free: Free, limited features, Starter: $15 per month, Pro: $29 per month |
+
+,
+### Free tier
+
+
+| Tool | Free tier |
+|------|------|
+| Descript | ❌ |
+| Kapwing | ✅ |
+| OpusClip | ✅ |
+
+,
+### Works in browser
+
+
+| Tool | Works in browser |
+|------|------|
+| Descript | ✅ |
+| Kapwing | ✅ |
+| OpusClip | ✅ |
+
+,
+### Supports autotranscribe
+
+
+| Tool | Supports autotranscribe |
+|------|------|
+| Descript | ✅ |
+| Kapwing | ✅ |
+| OpusClip | ✅ |
+
+,
+### Edit via transcription
+
+
+| Tool | Edit via transcription |
+|------|------|
+| Descript | ✅ |
+| Kapwing | ✅ |
+| OpusClip | ✅ |
+
+
+
+
+## Mutation Testing
+
+Mutation testing tools enhance software quality by injecting faults into the codebase and verifying if the test cases can detect these faults.
+
+
+### Open source
+
+
+| Tool | Client | Backend | Model |
+|------|-|-|-|
+| Mutahunter | ✅ | ✅ | ❌ |
+
+,
+### Language support
+
+
+| Tool | Python | Javascript | Java | Cpp |
+|------|-|-|-|-|
+| Mutahunter | ✅ | ✅ | ✅ | ❌ |
+
+,
+### Supports local model
+
+
+| Tool | Supports local model |
+|------|------|
+| Mutahunter | ✅ |
+
+,
+### Supports offline use
+
+
+| Tool | Supports offline use |
+|------|------|
+| Mutahunter | ❌ |
+
+,
+### Pricing
+
+
+| Tool | Model | Tiers |
+|------|-------|------|
+| Mutahunter | free | Free: Free |
+
+
+
+
+## Enhanced IDE
+
+Enhanced IDE tools provide advanced features and integrations to improve the development experience within integrated development environments.
+
+
+
+
+## Remember to bookmark and share 
+
+This page will be updated regularly with new information, revisions and enhancements. Be sure to share it and check back frequently.
