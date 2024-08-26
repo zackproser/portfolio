@@ -34,7 +34,7 @@ const generateAttributeTable = (categoryTools, attribute) => {
     const tableHeader = `| Tool | ${formattedIDEs.join(' | ')} |`;
     const tableSeparator = `|------|${'-|'.repeat(ides.length)}`;
     const tableRows = categoryTools.map((tool) => {
-      const rowValues = ides.map((ide) => tool.ide_support[ide] ? '✅' : '❌').join(' | ');
+      const rowValues = ides.map((ide) => (tool.ide_support && tool.ide_support[ide]) ? '✅' : '❌').join(' | ');
       return `| ${tool.name} | ${rowValues} |`;
     });
 
@@ -48,7 +48,7 @@ ${tableRows.join('\n')}
     const tableHeader = `| Tool | ${openSourceAttributes.map(attr => attr.charAt(0).toUpperCase() + attr.slice(1)).join(' | ')} |`;
     const tableSeparator = `|------|${'-|'.repeat(openSourceAttributes.length)}`;
     const tableRows = categoryTools.map((tool) => {
-      const rowValues = openSourceAttributes.map((attr) => tool.open_source[attr] ? '✅' : '❌').join(' | ');
+      const rowValues = openSourceAttributes.map((attr) => (tool.open_source && tool.open_source[attr]) ? '✅' : '❌').join(' | ');
       return `| ${tool.name} | ${rowValues} |`;
     });
 
@@ -62,7 +62,7 @@ ${tableRows.join('\n')}
     const tableHeader = `| Tool | ${languages.map(lang => lang.charAt(0).toUpperCase() + lang.slice(1)).join(' | ')} |`;
     const tableSeparator = `|------|${'-|'.repeat(languages.length)}`;
     const tableRows = categoryTools.map((tool) => {
-      const rowValues = languages.map((lang) => tool.language_support[lang] ? '✅' : '❌').join(' | ');
+      const rowValues = languages.map((lang) => (tool.language_support && tool.language_support[lang]) ? '✅' : '❌').join(' | ');
       return `| ${tool.name} | ${rowValues} |`;
     });
 
@@ -75,8 +75,8 @@ ${tableRows.join('\n')}
     const tableHeader = `| Tool | Model | Tiers |`;
     const tableSeparator = `|------|-------|------|`;
     const tableRows = categoryTools.map((tool) => {
-      const tiers = tool.pricing.tiers.map((tier) => `${tier.name}: ${tier.price}`).join(', ');
-      return `| ${tool.name} | ${tool.pricing.model} | ${tiers} |`;
+      const tiers = tool.pricing && tool.pricing.tiers ? tool.pricing.tiers.map((tier) => `${tier.name}: ${tier.price}`).join(', ') : 'N/A';
+      return `| ${tool.name} | ${tool.pricing && tool.pricing.model ? tool.pricing.model : 'N/A'} | ${tiers} |`;
     });
 
     return `
@@ -90,7 +90,7 @@ ${tableRows.join('\n')}
     const tableSeparator = `|------|------|`;
     const tableRows = categoryTools.map((tool) => {
       const value = tool[attribute];
-      const formattedValue = typeof value === 'boolean' ? (value ? '✅' : '❌') : value;
+      const formattedValue = typeof value === 'boolean' ? (value ? '✅' : '❌') : (value || 'N/A');
       return `| ${tool.name} | ${formattedValue} |`;
     });
 
@@ -116,14 +116,15 @@ const generateCategorySection = (category) => {
     attributes = ['open_source', 'language_support', 'supports_local_model', 'supports_offline_use', 'pricing'];
   }
 
-  const attributeSections = attributes.map((attribute) => {
+  const attributeSections = attributes ? attributes.map((attribute) => {
+    if (!attribute) return ''; // Skip if attribute is undefined
     const formattedAttribute = attribute.replace(/_/g, ' ');
     return `
 ### ${formattedAttribute.charAt(0).toUpperCase() + formattedAttribute.slice(1)}
 
 ${generateAttributeTable(categoryTools, attribute)}
 `;
-  }).join('\n');
+  }).filter(section => section !== '') : []; // Filter out empty sections
 
   return `
 ## ${category.name}

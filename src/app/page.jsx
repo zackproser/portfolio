@@ -15,7 +15,7 @@ import {
 } from "@/components/SocialIcons";
 import { MailIcon } from '@/components/icons'
 import RenderNumYearsExperience from "@/components/NumYearsExperience";
-import RandomImage from '@/components/RandomImage'
+import RandomPortrait from '@/components/RandomPortrait'
 import { generateOgUrl } from "@/utils/ogUrl";
 
 const data = {
@@ -60,7 +60,7 @@ export default async function About() {
 					<div className="lg:pl-20">
 						<div className="max-w-xs px-2.5 lg:max-w-none">
 							<Suspense>
-								<RandomImage />
+								<RandomPortrait width={600} height={600} />
 							</Suspense>
 						</div>
 					</div>
