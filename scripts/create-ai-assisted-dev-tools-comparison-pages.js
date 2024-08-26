@@ -1,10 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { generateComparison } = require('../src/templates/comparison-tool-prose.jsx');
 
-const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
-
-const checkMark = '✅';
-const crossMark = '❌';
+const { tools, categories } = require('../schema/data/ai-assisted-developer-tools.json');
 
 const extractDateFromContent = (content) => {
   const dateRegex = /date: "(\d{4}-\d{1,2}-\d{1,2})"/;
@@ -12,51 +10,36 @@ const extractDateFromContent = (content) => {
   return match ? match[1] : null;
 };
 
-const featureSupported = (isSupported) => isSupported ? checkMark : crossMark;
-
 const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
 const generateComparisonPageContent = (tool1, tool2, existingDate) => {
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
   const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
 
+  const proseParagraphs = generateComparison(tool1, tool2, categories);
+
   return `
-import { ArticleLayout } from '@/components/ArticleLayout'
-import CrossLinkCallout from '@/components/CrossLinkCallout'
-import Image from 'next/image'
-import Link from 'next/link'
-import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
-import AIToolComparison from '@/components/AIToolComparison'
+import ComparisonPageLayout from '@/components/ComparisonPageLayout'
 import { createMetadata } from '@/utils/createMetadata'
+import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
 export const metadata = createMetadata({
   title: "${tool1.name} vs ${tool2.name}",
   author: "Zachary Proser",
   date: "${dateToUse}",
   description: "A detailed comparison of ${tool1.name} and ${tool2.name}, two AI-assisted developer tools.",
-  image: aiAssistedDevTools,
   type: "comparison",
+  image: aiAssistedDevTools,
   slug: "${slug}"
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export default function Page() {
+  const tool1 = ${JSON.stringify(tool1)}
+  const tool2 = ${JSON.stringify(tool2)}
+  const proseParagraphs = ${JSON.stringify(proseParagraphs, null, 2)}
 
-<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
-
-<CrossLinkCallout
-  title="Compare AI-Assisted Developer Tools Dynamically"
-  description="Use my interactive tool to compare ${tool1.name}, ${tool2.name}, and other AI-assisted developer tools side by side."
-  linkText="Compare ${tool1.name} and ${tool2.name}"
-  linkHref="/devtools/compare?tools=${encodeURIComponent(tool1.name)},${encodeURIComponent(tool2.name)}"
-  variant="info"
-/>
-
-# ${tool1.name} vs ${tool2.name}
-
-This page contains a detailed comparison of ${tool1.name} and ${tool2.name}, two AI-assisted developer tools.
-
-<AIToolComparison tools={[${JSON.stringify(tool1)}, ${JSON.stringify(tool2)}]} />
-
+  return <ComparisonPageLayout tool1={tool1} tool2={tool2} proseParagraphs={proseParagraphs} />
+}
 `;
 };
 
@@ -75,6 +58,11 @@ const combinations = generateCombinations(tools);
 const debug = process.argv.includes('--debug');
 
 combinations.forEach(([tool1, tool2], _index) => {
+  if (!tool1 || !tool2) {
+    console.error(`Error: Invalid tool data for comparison`);
+    return;
+  }
+
   try {
     const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
     const dir = path.join(process.env.PWD, `/src/app/comparisons/${slug}`);
@@ -99,7 +87,7 @@ combinations.forEach(([tool1, tool2], _index) => {
       console.log(`Generated comparison page for ${tool1.name} vs ${tool2.name} and wrote to ${filename}`);
     }
   } catch (error) {
-    console.error(`Error generating comparison page for: ${tool1.name} vs ${tool2.name}: ${error}`);
+    console.error(`Error generating comparison page for: ${tool1?.name || 'Unknown'} vs ${tool2?.name || 'Unknown'}: ${error}`);
   }
 });
 

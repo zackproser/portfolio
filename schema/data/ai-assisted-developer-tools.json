@@ -5,6 +5,10 @@
       "description": "Code autocompletion tools save developers time and effort by automatically suggesting and completing code snippets based on the context of the code being written."
     },
     {
+      "name": "Command-line tool",
+      "description": "Developers use command-line tools to interact with the computer's operating system and execute commands. They can be used to automate tasks, manage files, and perform other operations, and can be composed together to create more complex commands. The command line is also used to interact with remote computers."
+    },
+    {
       "name": "Intelligent Terminals / Shells",
       "description": "Intelligent terminals and shells enhance the command-line experience with features like command completion, advanced history search, and AI-powered assistance."
     },
@@ -15,6 +19,10 @@
     {
       "name": "Mutation Testing",
       "description": "Mutation testing tools enhance software quality by injecting faults into the codebase and verifying if the test cases can detect these faults."
+    },
+    {
+      "name": "Enhanced IDE",
+      "description": "Enhanced IDE tools are more comprehensive than autocompletion tools. For example, enhanced IDEs may offer natural language interfaces, allowing experienced developers to craft software with extreme speed."
     }
   ],
   "tools": [
@@ -526,7 +534,7 @@
     {
       "name": "Aider",
       "icon": "@/images/tools/aider.svg",
-      "category": "Intelligent Terminals / Shells",
+      "category": "Command-line tool",
       "description": "Aider is an AI-powered command-line tool that enables real-time pair programming with GPT models. It allows developers to edit and commit code directly in their local git repositories, offering features like voice commands and automatic commit generation with sensible messages.",
       "open_source": false,
       "pricing": {
@@ -708,7 +716,7 @@
     {
       "name": "Mods",
       "icon": "@/images/tools/mods.svg",
-      "category": "Intelligent Terminals / Shells",
+      "category": "Command-line tool",
       "description": "Mods by Charmbracelet is a tool that enhances software applications by allowing users to apply modifications or plugins that extend functionality.",
       "open_source": {
         "client": true,
