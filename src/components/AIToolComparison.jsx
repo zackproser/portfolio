@@ -154,7 +154,7 @@ export const BusinessInfo = ({ selectedTools }) => {
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-2xl font-bold">Business Info</h2>
+        <h2 className="text-2xl font-bold pt-4">Company profiles</h2>
         <Button onClick={toggleExpansion}>
           {isExpanded ? (
             <>
@@ -268,7 +268,7 @@ const renderOpenSourceStatus = (status) => {
 };
 
 export const DetailedComparison = ({ tools }) => {
-  const [openSections, setOpenSections] = useState([]);
+  const [openSections, setOpenSections] = useState(Object.keys(tools[0] || {}));
 
   const toggleAllSections = () => {
     if (openSections.length === Object.keys(tools[0] || {}).length) {

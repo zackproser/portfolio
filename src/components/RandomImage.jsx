@@ -56,19 +56,21 @@ const RandomImage = ({ width, height }) => {
 
   if (!selectedImage) return null;
 
+  const imageProps = width && height
+    ? { width, height }
+    : { fill: true, sizes: "(min-width: 1024px) 32rem, 20rem" };
+
   return (
     <div
-      className={`relative ${width && height ? '' : 'w-full h-full'} mb-4 pb-4`}
+      className={`relative ${width && height ? '' : 'w-full aspect-square'} mb-4 pb-4`}
       onMouseOver={setRandomImage}
       onClick={setRandomImage}
       style={{ cursor: 'pointer' }}>
       <Image
         src={selectedImage}
         alt="Zachary Proser - full stack developer"
-        width={width}
-        height={height}
-        sizes={width && height ? undefined : "(min-width: 1024px) 32rem, 20rem"}
-        className={`${width && height ? '' : 'aspect-square'} rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800`}
+        {...imageProps}
+        className={`${width && height ? '' : 'object-cover'} rounded-2xl bg-zinc-100 dark:bg-zinc-800`}
       />
     </div>
   );
