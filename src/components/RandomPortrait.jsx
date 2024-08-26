@@ -41,14 +41,14 @@ const imagePaths = [
   sixteen
 ];
 
-const RandomImage = ({ width, height }) => {
+const RandomPortrait = ({ width, height }) => {
   const [selectedImage, setSelectedImage] = useState('');
 
   useEffect(() => {
-    setRandomImage();
+    setRandomPortrait();
   }, []);
 
-  const setRandomImage = () => {
+  const setRandomPortrait = () => {
     track("random-image-avatar-click")
     const randomIndex = Math.floor(Math.random() * imagePaths.length);
     setSelectedImage(imagePaths[randomIndex]);
@@ -63,8 +63,8 @@ const RandomImage = ({ width, height }) => {
   return (
     <div
       className={`relative ${width && height ? '' : 'w-full aspect-square'} mb-4 pb-4`}
-      onMouseOver={setRandomImage}
-      onClick={setRandomImage}
+      onMouseOver={setRandomPortrait}
+      onClick={setRandomPortrait}
       style={{ cursor: 'pointer' }}>
       <Image
         src={selectedImage}
@@ -76,4 +76,4 @@ const RandomImage = ({ width, height }) => {
   );
 };
 
-export default RandomImage;
+export default RandomPortrait;

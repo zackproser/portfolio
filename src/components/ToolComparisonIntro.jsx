@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/Button'
-import RandomImage from './RandomImage'
+import RandomPortrait from './RandomPortrait'
 
 const ToolComparisonIntro = ({ tool1, tool2 }) => {
   return (
@@ -35,7 +35,7 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
           </div>
         </div>
         <div className="md:w-1/3">
-          <RandomImage width={240} height={240} />
+          <RandomPortrait width={240} height={240} />
         </div>
       </div>
     </div>
