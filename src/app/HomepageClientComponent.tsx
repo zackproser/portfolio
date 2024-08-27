@@ -63,10 +63,10 @@ const NeuralNetworkPulse = () => {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke="#4B5563"
+                stroke="#A0AEC0"
                 strokeWidth="1"
                 className={`transition-all duration-300 ${
-                  pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-green-400' : ''
+                  pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-green-400 stroke-[1.5px]' : ''
                 }`}
               />
             </svg>
@@ -208,7 +208,7 @@ export default function HomepageClientComponent({ mlProjects, aiDev, refArchitec
                     </form>
                   )}
                   <p className="text-xs text-gray-300">
-                    Stay updated with our latest AI breakthroughs and insights.
+                    Get the latest AI and ML projects, articles, and resources.
                   </p>
                 </div>
               </div>
