@@ -5,9 +5,6 @@ export default async function Page() {
   // Fetch all articles
   const allArticles = await getAllArticles()
 
-  console.log(`allArticles: %o`, allArticles)
-
-  // Define static arrays for each category
   const mlProjectSlugs = [
     'mnist-pytorch-hand-drawn-digit-recognizer',
     'langchain-pinecone-chat-with-my-blog',
