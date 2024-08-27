@@ -42,11 +42,6 @@ const nextConfig = {
         permanent: true
       },
       {
-        source: '/about',
-        destination: '/',
-        permanent: true,
-      },
-      {
         source: '/software/teatutor-deepdive',
         destination: '/blog/teatutor-deepdive',
         permanent: true,

@@ -11,6 +11,13 @@ import { BlogPostCard } from "@/components/BlogPostCard"
 
 const NeuralNetworkPulse = () => {
   const [pulseNodes, setPulseNodes] = useState([]);
+  const [nodeInfo, setNodeInfo] = useState({});
+
+  const phrases = [
+    "Activation", "Backprop", "Gradient", "Layer", "Neuron",
+    "Deep learning", "AI", "ML", "Neural net", "Tensor",
+    "Embedding", "Feature", "Epoch", "Batch", "Optimizer"
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +26,14 @@ const NeuralNetworkPulse = () => {
         const randomNode = Math.floor(Math.random() * 30);
         if (!newNodes.includes(randomNode)) {
           newNodes.push(randomNode);
+          // Generate random info for the pulsing node
+          setNodeInfo(prevInfo => ({
+            ...prevInfo,
+            [randomNode]: {
+              weight: Math.random().toFixed(2),
+              phrase: phrases[Math.floor(Math.random() * phrases.length)]
+            }
+          }));
         }
         return newNodes.slice(-5);  // Keep only the last 5 pulses
       });
@@ -32,20 +47,7 @@ const NeuralNetworkPulse = () => {
 
   return (
     <div className="relative w-[600px] h-[600px]">
-      {[...Array(nodes)].map((_, i) => {
-        const angle = (i / nodes) * 2 * Math.PI;
-        const x = radius * Math.cos(angle) + radius;
-        const y = radius * Math.sin(angle) + radius;
-        return (
-          <div
-            key={i}
-            className={`absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              pulseNodes.includes(i) ? 'scale-150 bg-green-400' : ''
-            }`}
-            style={{ left: x, top: y }}
-          />
-        );
-      })}
+      {/* Render lines first so they appear behind nodes */}
       {[...Array(nodes)].map((_, i) => {
         const angle = (i / nodes) * 2 * Math.PI;
         const x1 = radius * Math.cos(angle) + radius;
@@ -70,6 +72,43 @@ const NeuralNetworkPulse = () => {
             </svg>
           );
         });
+      })}
+      
+      {/* Render nodes */}
+      {[...Array(nodes)].map((_, i) => {
+        const angle = (i / nodes) * 2 * Math.PI;
+        const x = radius * Math.cos(angle) + radius;
+        const y = radius * Math.sin(angle) + radius;
+        return (
+          <div
+            key={i}
+            className={`absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+              pulseNodes.includes(i) ? 'scale-150 bg-green-400' : ''
+            }`}
+            style={{ left: x, top: y }}
+          />
+        );
+      })}
+
+      {/* Render info labels on top */}
+      {pulseNodes.map(i => {
+        const angle = (i / nodes) * 2 * Math.PI;
+        const x = radius * Math.cos(angle) + radius;
+        const y = radius * Math.sin(angle) + radius;
+        return (
+          <div
+            key={`info-${i}`}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+            style={{ left: x, top: y - 30 }}
+          >
+            <div className="bg-yellow-300 text-purple-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
+              {nodeInfo[i]?.weight}
+            </div>
+            <div className="bg-purple-600 text-yellow-300 px-1 rounded text-xs font-bold animate-pulse">
+              {nodeInfo[i]?.phrase}
+            </div>
+          </div>
+        );
       })}
     </div>
   );
