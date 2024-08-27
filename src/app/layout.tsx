@@ -3,7 +3,6 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SessionProvider } from "next-auth/react"
 import { Providers } from '@/app/providers'
-import { Layout } from '@/components/Layout'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
 
@@ -29,14 +28,12 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning={true}
-        className="flex h-full bg-gray-100 dark:bg-black">
+        className="min-h-full w-full">
         <SessionProvider>
           <Providers>
-            <div className="flex w-full">
-              <Layout>{children}</Layout>
-              <Analytics />
-              <SpeedInsights />
-            </div>
+            {children}
+            <Analytics />
+            <SpeedInsights />
           </Providers>
         </SessionProvider>
       </body>
