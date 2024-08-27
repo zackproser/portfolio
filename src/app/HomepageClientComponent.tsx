@@ -136,7 +136,18 @@ export default function HomepageClientComponent({
 }: HomepageClientComponentProps) {
   const [email, setEmail] = useState("")
   const [formSuccess, setFormSuccess] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const referrer = usePathname()
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768) // Adjust this breakpoint as needed
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const sendFormSubmissionEvent = () => {
     if (typeof window !== 'undefined' && 'gtag' in window) {
@@ -231,9 +242,11 @@ export default function HomepageClientComponent({
                   </p>
                 </div>
               </div>
-              <div className="flex-1 md:w-1/2 flex justify-center">
-                <NeuralNetworkPulse />
-              </div>
+              {!isMobile && (
+                <div className="flex-1 md:w-1/2 flex justify-center">
+                  <NeuralNetworkPulse />
+                </div>
+              )}
             </div>
           </div>
         </section>
