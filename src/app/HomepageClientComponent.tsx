@@ -10,8 +10,8 @@ import { track } from "@vercel/analytics"
 import { BlogPostCard } from "@/components/BlogPostCard"
 
 const NeuralNetworkPulse = () => {
-  const [pulseNodes, setPulseNodes] = useState([]);
-  const [nodeInfo, setNodeInfo] = useState({});
+  const [pulseNodes, setPulseNodes] = useState<number[]>([]);
+  const [nodeInfo, setNodeInfo] = useState<Record<number, { phrase: string, weight: number }>>({});
 
   const phrases = [
     "Activation", "Backprop", "Gradient", "Layer", "Neuron",
@@ -22,25 +22,28 @@ const NeuralNetworkPulse = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setPulseNodes(prevNodes => {
-        const newNodes = [...prevNodes];
-        const randomNode = Math.floor(Math.random() * 30);
+        const newNodes: number[] = [...prevNodes];
+        const randomNode: number = Math.floor(Math.random() * 30);
         if (!newNodes.includes(randomNode)) {
           newNodes.push(randomNode);
           // Generate random info for the pulsing node
           setNodeInfo(prevInfo => ({
             ...prevInfo,
             [randomNode]: {
-              weight: Math.random().toFixed(2),
-              phrase: phrases[Math.floor(Math.random() * phrases.length)]
+              phrase: phrases[Math.floor(Math.random() * phrases.length)],
+              weight: Number(Math.random().toFixed(2))  // Convert to number
             }
           }));
         }
-        return newNodes.slice(-5);  // Keep only the last 5 pulses
+        if (newNodes.length > 5) {
+          newNodes.shift();
+        }
+        return newNodes;
       });
     }, 250);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [phrases]); // Add phrases to the dependency array
 
   const nodes = 30;
   const radius = 240;
@@ -114,7 +117,23 @@ const NeuralNetworkPulse = () => {
   );
 };
 
-export default function HomepageClientComponent({ mlProjects, aiDev, refArchitectures }) {
+// Add type definitions for the props
+interface Article {
+  slug: string;
+  // Add other properties of the article object as needed
+}
+
+interface HomepageClientComponentProps {
+  mlProjects: Article[];
+  aiDev: Article[];
+  refArchitectures: Article[];
+}
+
+export default function HomepageClientComponent({ 
+  mlProjects, 
+  aiDev, 
+  refArchitectures 
+}: HomepageClientComponentProps) {
   const [email, setEmail] = useState("")
   const [formSuccess, setFormSuccess] = useState(false)
   const referrer = usePathname()
