@@ -127,27 +127,18 @@ interface HomepageClientComponentProps {
   mlProjects: Article[];
   aiDev: Article[];
   refArchitectures: Article[];
+  isMobile: boolean;
 }
 
 export default function HomepageClientComponent({ 
   mlProjects, 
   aiDev, 
-  refArchitectures 
+  refArchitectures,
+  isMobile
 }: HomepageClientComponentProps) {
   const [email, setEmail] = useState("")
   const [formSuccess, setFormSuccess] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
   const referrer = usePathname()
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768) // Adjust this breakpoint as needed
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   const sendFormSubmissionEvent = () => {
     if (typeof window !== 'undefined' && 'gtag' in window) {

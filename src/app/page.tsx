@@ -1,5 +1,7 @@
 import { getAllArticles } from "@/lib/articles"
 import HomepageClientComponent from './HomepageClientComponent'
+import { headers } from 'next/headers'
+import { UAParser } from 'ua-parser-js'
 
 export default async function Page() {
   // Fetch all articles
@@ -30,11 +32,17 @@ export default async function Page() {
     article.type === 'architecture'
   )
 
+  // Server-side mobile detection
+  const userAgent = headers().get('user-agent') || ''
+  const parser = new UAParser(userAgent)
+  const isMobile = parser.getDevice().type === 'mobile'
+
   return (
     <HomepageClientComponent
       mlProjects={mlProjects}
       aiDev={aiDev}
       refArchitectures={refArchitectures}
+      isMobile={isMobile}
     />
   )
 }
