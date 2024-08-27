@@ -28,12 +28,16 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning={true}
-        className="min-h-full w-full">
+        className="flex h-full bg-gray-100 dark:bg-black">
         <SessionProvider>
           <Providers>
-            {children}
-            <Analytics />
-            <SpeedInsights />
+            <div className="flex w-full">
+              <div className="flex flex-col min-h-screen w-full">
+                <main className="flex-grow">{children}</main>
+              </div>
+              <Analytics />
+              <SpeedInsights />
+            </div>
           </Providers>
         </SessionProvider>
       </body>
