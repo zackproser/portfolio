@@ -10,28 +10,21 @@ interface MetadataParams {
   image?: string | StaticImageData
 }
 
-// Default metadata
+// Update default metadata
 const defaultMetadata: Metadata = {
   title: {
-    template: '%s - Zachary Proser',
-    default: 'Zachary Proser - Full-stack AI engineer'
+    template: '%s - Modern Coding',
+    default: 'Modern Coding'
   },
-  description: 'I build and advise on generative AI applications and pipelines',
+  description: 'Empowering developers with machine learning insights and tools',
   openGraph: {
-    title: 'Zachary Proser - Full-stack AI engineer',
-    description: 'I build and advise on generative AI applications and pipelines',
+    title: 'Modern Coding',
+    description: 'Empowering developers with machine learning insights and tools',
     url: 'https://zackproser.com',
-    siteName: 'Zachary Proser',
-    images: [
-      {
-        url: 'https://zackproser.com/api/og',
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
+    siteName: 'Modern Coding',
+    // ... rest of the openGraph config ...
   },
+  // ... rest of the defaultMetadata ...
 }
 
 type ExtendedMetadata = Metadata & {
