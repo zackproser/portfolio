@@ -85,7 +85,7 @@ export default function About() {
 								</span>
 								.
 							</p>
-							<p>Read what it's like to work with me <Link className="text-green-500 font-bold" href="/testimonials">here</Link>.</p>
+							<p>Read what it&apos;s like to work with me <Link className="text-green-500 font-bold" href="/testimonials">here</Link>.</p>
 							<div className="mt-8">
 								<CV />
 							</div>
