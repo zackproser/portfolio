@@ -2,6 +2,12 @@ import { getAllArticles } from "@/lib/articles"
 import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  title: 'Modern Coding',
+  description: 'Supercharge your development workflow',
+});
 
 export default async function Page() {
   // Fetch all articles
