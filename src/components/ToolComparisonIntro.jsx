@@ -1,13 +1,13 @@
 'use client'
 
 import { Button } from '@/components/Button'
-import RandomPortrait from './RandomPortrait'
+// Removed import for RandomPortrait
 
 const ToolComparisonIntro = ({ tool1, tool2 }) => {
   return (
     <div className="bg-gradient-to-r from-blue-500 to-blue-800 p-6 rounded-3xl shadow-2xl mb-8">
       <div className="flex flex-col md:flex-row items-center justify-between mb-2">
-        <div className="md:w-2/3 mb-6 md:mb-0">
+        <div className="md:w-full mb-6 md:mb-0"> 
           <h1 className="text-3xl font-bold text-white mb-3">👋 Hi, I&apos;m Zachary</h1>
           <p className="text-lg text-white mb-6">
             I&apos;m a Staff Software Engineer and I use AI dev tools every day.
@@ -34,9 +34,7 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
             </Button>
           </div>
         </div>
-        <div className="md:w-1/3">
-          <RandomPortrait width={240} height={240} />
-        </div>
+        {/* Removed RandomPortrait */}
       </div>
     </div>
   )
