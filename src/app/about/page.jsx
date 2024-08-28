@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { Suspense } from "react";
 import Link from "next/link";
-import { auth } from '../../auth'
 import { Container } from "@/components/Container";
 import Newsletter from "@/components/NewsletterWrapper";
 import CV from "@/components/CV";
@@ -42,10 +41,7 @@ export const metadata = {
 	},
 };
 
-export default async function About() {
-
-	const session = await auth();
-
+export default function About() {
 	return (
 		<>
 			<Head>
@@ -65,12 +61,6 @@ export default async function About() {
 						</div>
 					</div>
 					<div className="lg:order-first lg:row-span-2">
-						{session?.user && (
-							<div className="flex items-center space-x-2">
-								<span role="img" aria-label="wave">👋</span>
-								<span className="text-green-500 font-bold">Nice to see you again! You are signed in.</span>
-							</div>
-						)}
 						<h1 className="text-4xl font-bold tracking-tight text-black dark:text-zinc-100 sm:text-5xl">
 							Hi, I&apos;m Zachary
 						</h1>
@@ -95,6 +85,7 @@ export default async function About() {
 								</span>
 								.
 							</p>
+							<p>Read what it&apos;s like to work with me <Link className="text-green-500 font-bold" href="/testimonials">here</Link>.</p>
 							<div className="mt-8">
 								<CV />
 							</div>

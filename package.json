@@ -49,6 +49,7 @@
     "@types/node": "^20.4.7",
     "@types/react": "^18.2.18",
     "@types/stripe": "^8.0.417",
+    "@types/ua-parser-js": "^0.7.39",
     "@vercel/analytics": "1.2.2",
     "@vercel/og": "^0.5.11",
     "@vercel/postgres": "^0.5.1",
@@ -92,6 +93,7 @@
     "tailwindcss": "^3.4.4",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.1.6",
+    "ua-parser-js": "^1.0.38",
     "zod": "^3.23.8"
   },
   "devDependencies": {
