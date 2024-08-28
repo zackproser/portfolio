@@ -185,26 +185,6 @@ export default function HomepageClientComponent({
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-teal-900">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link className="flex items-center justify-center" href="#">
-          <Brain className="h-6 w-6 text-white" />
-          <span className="ml-2 text-2xl font-bold text-white">Modern Coding</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
-            Research
-          </Link>
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="/projects">
-            Projects
-          </Link>
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
-            AI Dev
-          </Link>
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="/about">
-            About
-          </Link>
-        </nav>
-      </header>
       <main className="flex-1">
         <section className="w-full py-8 md:py-12 lg:py-16 relative overflow-hidden">
           <div className="container mx-auto px-4 md:px-6 relative z-10">

@@ -3,6 +3,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SessionProvider } from "next-auth/react"
 import { Providers } from '@/app/providers'
+import { SimpleNav } from '@/components/SimpleNav'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
 
@@ -11,7 +12,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <html lang="en" className="h-full antialiased">
       <head>
@@ -28,13 +28,13 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning={true}
-        className="flex h-full bg-gray-100 dark:bg-black">
+        className="flex h-full bg-gray-100 dark:bg-black"
+      >
         <SessionProvider>
           <Providers>
-            <div className="flex w-full">
-              <div className="flex flex-col min-h-screen w-full">
-                <main className="flex-grow">{children}</main>
-              </div>
+            <div className="flex w-full flex-col">
+              <SimpleNav />
+              <main className="flex-grow">{children}</main>
               <Analytics />
               <SpeedInsights />
             </div>
