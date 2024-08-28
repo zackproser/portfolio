@@ -32,21 +32,16 @@ export default async function Page() {
   try {
     // Fetch all articles matching the slugs
     const allArticles = await getAllArticles(allSlugs)
-    console.log('Fetched articles:', allArticles)
 
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
-    console.log('ML Projects:', mlProjects)
 
     const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
-    console.log('AI Dev:', aiDev)
 
     const refArchitectures = allArticles.filter(article => 
       refArchitectureSlugs.includes(article.slug) || 
       article.type === 'demo' || 
       article.type === 'architecture'
     )
-    console.log('Ref Architectures:', refArchitectures)
-
     // Server-side mobile detection
     const userAgent = headers().get('user-agent') || ''
     const parser = new UAParser(userAgent)
