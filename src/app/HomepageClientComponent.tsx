@@ -12,11 +12,12 @@ import { BlogPostCard } from "@/components/BlogPostCard"
 const NeuralNetworkPulse = () => {
   const [pulseNodes, setPulseNodes] = useState<number[]>([]);
   const [nodeInfo, setNodeInfo] = useState<Record<number, { phrase: string, weight: number }>>({});
+  const [isVisible, setIsVisible] = useState(false);
 
   const phrases = [
-    "Activation", "Backprop", "Gradient", "Layer", "Neuron",
-    "Deep learning", "AI", "ML", "Neural net", "Tensor",
-    "Embedding", "Feature", "Epoch", "Batch", "Optimizer"
+    "VSCode", "IntelliSense", "Git", "Terminal", "Debugger",
+    "Copilot", "Autocomplete", "Refactor", "Linter", "Snippets",
+    "<div>", "function()", "import React", "useState", "async/await"
   ];
 
   useEffect(() => {
@@ -45,11 +46,17 @@ const NeuralNetworkPulse = () => {
     return () => clearInterval(interval);
   }, [phrases]); // Add phrases to the dependency array
 
+  useEffect(() => {
+    // Delay the visibility to allow for a smooth transition
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const nodes = 30;
   const radius = 240;
 
   return (
-    <div className="relative w-[600px] h-[600px]">
+    <div className={`relative w-[600px] h-[600px] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       {/* Render lines first so they appear behind nodes */}
       {[...Array(nodes)].map((_, i) => {
         const angle = (i / nodes) * 2 * Math.PI;
@@ -208,7 +215,7 @@ export default function HomepageClientComponent({
                   Supercharge Your Development Workflow 
                 </h1>
                 <p className="text-lg text-gray-200 md:text-xl">
-                  Don't get left behind. Get the latest tools, frameworks, and techniques for AI and ML. 
+                  Coding is changing. Don't get left behind. Get the latest tools, frameworks, and techniques for AI-assisted development, plus projects, tutorials and demos to keep you in the know. 
                 </p>
                 <div className="w-full max-w-sm space-y-2">
                   {formSuccess ? (
@@ -223,8 +230,8 @@ export default function HomepageClientComponent({
                         className="flex-grow"
                         required
                       />
-                      <Button type="submit" className="bg-yellow-400 text-purple-900 hover:bg-yellow-300 transition-colors">
-                        Subscribe
+                      <Button type="submit" className="bg-yellow-400 font-bold text-white hover:bg-yellow-300 transition-colors">
+                        Count me in!
                       </Button>
                     </form>
                   )}
