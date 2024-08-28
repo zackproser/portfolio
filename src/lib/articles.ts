@@ -4,7 +4,7 @@ import glob from 'fast-glob'
 export async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/blog/${articleFilename}`)) as {
+  let { metadata } = (await import(`@/app/blog/${articleFilename}`)) as {
     default: React.ComponentType
     metadata: Article
   }
@@ -18,7 +18,7 @@ export async function importArticle(
 export async function importArticleMetadata(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  const { metadata } = await import(`../app/blog/${articleFilename}`) as {
+  const { metadata } = await import(`@/app/blog/${articleFilename}`) as {
     metadata: Article;
   };
 
