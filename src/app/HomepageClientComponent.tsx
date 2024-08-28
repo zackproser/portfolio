@@ -52,7 +52,7 @@ const NeuralNetworkPulse = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const nodes = 30;
+  const nodes = 15;
   const radius = 240;
 
   return (
@@ -84,7 +84,6 @@ const NeuralNetworkPulse = () => {
         });
       })}
       
-      {/* Render nodes */}
       {[...Array(nodes)].map((_, i) => {
         const angle = (i / nodes) * 2 * Math.PI;
         const x = radius * Math.cos(angle) + radius;
@@ -195,13 +194,13 @@ export default function HomepageClientComponent({
           <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
             Research
           </Link>
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
+          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="/projects">
             Projects
           </Link>
           <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
             AI Dev
           </Link>
-          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="#">
+          <Link className="text-sm font-medium text-white hover:text-yellow-300 transition-colors" href="/about">
             About
           </Link>
         </nav>
@@ -215,7 +214,7 @@ export default function HomepageClientComponent({
                   Supercharge Your Development Workflow 
                 </h1>
                 <p className="text-lg text-gray-200 md:text-xl">
-                  Coding is changing. Don't get left behind. Get the latest tools, frameworks, and techniques for AI-assisted development, plus projects, tutorials and demos to keep you in the know. 
+                  Coding is changing. Don't get left behind. 
                 </p>
                 <div className="w-full max-w-sm space-y-2">
                   {formSuccess ? (
@@ -236,7 +235,7 @@ export default function HomepageClientComponent({
                     </form>
                   )}
                   <p className="text-xs text-gray-300">
-                    Get the latest AI and ML projects, articles, and resources.
+                    Get the latest tools, frameworks, and techniques for AI-assisted development, plus projects, tutorials and demos to keep you in the know. 
                   </p>
                 </div>
               </div>
