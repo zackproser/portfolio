@@ -1,5 +1,6 @@
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
+import path from 'path'
 
 export async function importArticle(
   articleFilename: string,
@@ -31,7 +32,7 @@ export async function importArticleMetadata(
 // Extend getAllArticles to accept an optional array of slugs
 export async function getAllArticles(matchingSlugs?: string[]) {
   let articleFilenames = await glob('*/page.mdx', {
-    cwd: './src/app/blog',
+    cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
   });
 
   let articles = await Promise.all(articleFilenames.map(importArticle));
