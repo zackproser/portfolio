@@ -10,7 +10,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url || '');
 
-  const title = searchParams.get('title') || 'Portfolio, blog, videos and open-source projects';
+  const title = searchParams.get('title') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
   const image = searchParams.get('image') || searchParams.get('amp;image');
   const description = searchParams.get('description') || searchParams.get('amp;description');
 
