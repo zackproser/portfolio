@@ -10,9 +10,6 @@ export const metadata = createMetadata({
 });
 
 export default async function Page() {
-  // Fetch all articles
-  const allArticles = await getAllArticles()
-
   const mlProjectSlugs = [
     'mnist-pytorch-hand-drawn-digit-recognizer',
     'langchain-pinecone-chat-with-my-blog',
@@ -30,25 +27,42 @@ export default async function Page() {
     'pinecone-reference-architecture-scaling'
   ]
 
-  const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
-  const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
-  const refArchitectures = allArticles.filter(article => 
-    refArchitectureSlugs.includes(article.slug) || 
-    article.type === 'demo' || 
-    article.type === 'architecture'
-  )
+  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs]
 
-  // Server-side mobile detection
-  const userAgent = headers().get('user-agent') || ''
-  const parser = new UAParser(userAgent)
-  const isMobile = parser.getDevice().type === 'mobile'
+  try {
+    // Fetch all articles matching the slugs
+    const allArticles = await getAllArticles(allSlugs)
+    console.log('Fetched articles:', allArticles)
 
-  return (
-    <HomepageClientComponent
-      mlProjects={mlProjects}
-      aiDev={aiDev}
-      refArchitectures={refArchitectures}
-      isMobile={isMobile}
-    />
-  )
+    const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
+    console.log('ML Projects:', mlProjects)
+
+    const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
+    console.log('AI Dev:', aiDev)
+
+    const refArchitectures = allArticles.filter(article => 
+      refArchitectureSlugs.includes(article.slug) || 
+      article.type === 'demo' || 
+      article.type === 'architecture'
+    )
+    console.log('Ref Architectures:', refArchitectures)
+
+    // Server-side mobile detection
+    const userAgent = headers().get('user-agent') || ''
+    const parser = new UAParser(userAgent)
+    const isMobile = parser.getDevice().type === 'mobile'
+    console.log('Is Mobile:', isMobile)
+
+    return (
+      <HomepageClientComponent
+        mlProjects={mlProjects}
+        aiDev={aiDev}
+        refArchitectures={refArchitectures}
+        isMobile={isMobile}
+      />
+    )
+  } catch (error) {
+    console.error('Error in Page component:', error)
+    return null
+  }
 }
