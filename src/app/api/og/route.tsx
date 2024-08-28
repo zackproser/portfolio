@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const image = searchParams.get('image') || searchParams.get('amp;image');
   const description = searchParams.get('description') || searchParams.get('amp;description');
 
-  const profileImageData = await fetch(new URL('/public/zack.png', import.meta.url)).then(
+  const profileImageData = await fetch(new URL('/public/modern-coding-logo.png', import.meta.url)).then(
     (res) => res.arrayBuffer(),
   );
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     <div
       tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
-        backgroundImage: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.png)'
+        backgroundImage: 'linear-gradient(to bottom, rgba(75, 0, 130, 0.6), rgba(48, 25, 52, 0.4)), url(https://zackproser.com/alum.png)'
       }}
     >
       <div tw="flex flex-col md:flex-row w-full">
@@ -49,14 +49,14 @@ export async function GET(request: NextRequest) {
           />
         </div>
         <div tw="flex flex-col ml-4 items-center">
-          <h1 tw="text-4xl text-white">Zachary Proser</h1>
-          <h2 tw="text-3xl text-white">Staff Developer Advocate @Pinecone.io</h2>
+          <h1 tw="text-4xl text-white">Modern Coding</h1>
+          <h2 tw="text-3xl text-white">Supercharge your development workflow</h2>
         </div>
       </div>
       <div
         tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
+          backgroundImage: `linear-gradient(to right, rgba(75, 0, 130, 0.8), rgba(128, 0, 128, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
         }}
       >
         <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
