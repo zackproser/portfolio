@@ -1,10 +1,11 @@
 import { Article, ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
+import path from 'path'
 
 export async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/blog/${articleFilename}`)) as {
+  let { metadata } = (await import(`@/app/blog/${articleFilename}`)) as {
     default: React.ComponentType
     metadata: Article
   }
@@ -18,7 +19,7 @@ export async function importArticle(
 export async function importArticleMetadata(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  const { metadata } = await import(`../app/blog/${articleFilename}`) as {
+  const { metadata } = await import(`@/app/blog/${articleFilename}`) as {
     metadata: Article;
   };
 
@@ -31,7 +32,7 @@ export async function importArticleMetadata(
 // Extend getAllArticles to accept an optional array of slugs
 export async function getAllArticles(matchingSlugs?: string[]) {
   let articleFilenames = await glob('*/page.mdx', {
-    cwd: './src/app/blog',
+    cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
   });
 
   let articles = await Promise.all(articleFilenames.map(importArticle));
