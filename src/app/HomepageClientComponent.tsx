@@ -206,7 +206,7 @@ export default function HomepageClientComponent({
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="flex-grow"
+                        className="flex-grow bg-white"
                         required
                       />
                       <Button type="submit" className="bg-yellow-400 font-bold text-white hover:bg-yellow-300 transition-colors">
