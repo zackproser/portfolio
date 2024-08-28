@@ -6,9 +6,10 @@ import { useTheme } from 'next-themes'
 import { Brain, Sun, Moon } from 'lucide-react'
 
 const navItems = [
-  { label: 'Research', href: '#' },
+  { label: 'Research', href: '/blog' },
   { label: 'Projects', href: '/projects' },
-  { label: 'AI Dev', href: '#' },
+  { label: 'Publications', href: '/publications' },
+  { label: 'Videos', href: '/videos' },
   { label: 'About', href: '/about' },
 ]
 
