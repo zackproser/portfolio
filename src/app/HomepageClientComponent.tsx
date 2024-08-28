@@ -194,7 +194,7 @@ export default function HomepageClientComponent({
                   Supercharge Your Development Workflow 
                 </h1>
                 <p className="text-lg text-gray-200 md:text-xl">
-                  Coding is changing. Don't get left behind. 
+                  Coding is changing. Don&apos;t get left behind. 
                 </p>
                 <div className="w-full max-w-sm space-y-2">
                   {formSuccess ? (
