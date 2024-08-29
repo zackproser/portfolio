@@ -5,8 +5,8 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { generateOgUrl } from '@/utils/ogUrl'
 
 const data = {
-  title: 'My projects',
-  description: 'A selection of open-source projects, tools and applications I have built or maintained over the years',
+  title: 'Modern Coding - Projects',
+  description: 'Open-source projects, tools and apps',
 };
 
 const ogUrl = generateOgUrl(data);
@@ -16,7 +16,7 @@ export const metadata = {
     title: data.title,
     description: data.description,
     url: ogUrl,
-    siteName: 'Zack Proser\'s portfolio',
+    siteName: 'Modern Coding',
     images: [
       {
         url: ogUrl,

@@ -30,7 +30,7 @@ export const metadata = {
 		title: data.title,
 		description: data.description,
 		url: ogUrl,
-		siteName: "Zack Proser&apos;s portfolio",
+		siteName: "Modern Coding",
 		images: [
 			{
 				url: ogUrl,
