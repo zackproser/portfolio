@@ -1,4 +1,5 @@
 import { getAllArticles } from "@/lib/articles"
+import { getAllVideos } from "@/lib/videos"  // Import the new function
 import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
@@ -18,20 +19,34 @@ export default async function Page() {
 
   const aiDevSlugs = [
     'automations-project',
-    'how-are-embeddings-models-trained-for-rag',
-    'codeium-review'
+    'autocomplete-is-not-all-you-need',
+    'codeium-analysis-4-2024'
   ]
 
   const refArchitectureSlugs = [
     'pinecone-reference-architecture-launch',
-    'pinecone-reference-architecture-scaling'
+    'pinecone-reference-architecture-scaling',
+    'pinecone-reference-architecture-technical-walkthrough'
   ]
 
-  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs]
+  const careerAdviceSlugs = [
+    'run-your-own-tech-blog',
+    'wash-three-walls-with-one-bucket',
+    'you-get-to-keep-the-neural-connections'
+  ]
+
+  const videoSlugs = [
+    'how-to-build-chat-with-your-data-rag',
+    'how-to-use-chatgpt-in-your-terminal',
+    'what-is-a-vector-database'
+  ]
+
+  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
 
   try {
     // Fetch all articles matching the slugs
     const allArticles = await getAllArticles(allSlugs)
+    const allVideos = await getAllVideos(videoSlugs)  // Fetch all videos with matching slugs
 
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
 
@@ -42,6 +57,11 @@ export default async function Page() {
       article.type === 'demo' || 
       article.type === 'architecture'
     )
+
+    const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
+
+    const videos = allVideos.filter(video => videoSlugs.includes(video.slug))  // Filter videos
+
     // Server-side mobile detection
     const userAgent = headers().get('user-agent') || ''
     const parser = new UAParser(userAgent)
@@ -53,6 +73,8 @@ export default async function Page() {
         mlProjects={mlProjects}
         aiDev={aiDev}
         refArchitectures={refArchitectures}
+        careerAdvice={careerAdvice}
+        videos={videos}  // Added new prop
         isMobile={isMobile}
       />
     )
