@@ -4,8 +4,8 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import Publications from '@/components/PublicationsList'
 
 const data = {
-  title: 'My publications',
-  description: 'All my publications',
+  title: 'Modern Coding - Publications',
+  description: 'AI, The future, and how to prepare',
 };
 
 const ogUrl = generateOgUrl(data);
@@ -15,7 +15,7 @@ export const metadata = {
     title: data.title,
     description: data.description,
     url: ogUrl,
-    siteName: 'Zack Proser\'s portfolio',
+    siteName: 'Modern Coding',
     images: [
       {
         url: ogUrl,
