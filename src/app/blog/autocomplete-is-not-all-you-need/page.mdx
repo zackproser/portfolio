@@ -1,0 +1,59 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import futureOfSoftwareCreation from '@/images/future-of-software-creation.webp'
+import futureOfSoftwareInterfaces from '@/images/future-of-software-interfaces.webp'
+import cursorConversation from '@/images/cursor-convo-1.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-08-29",
+    title: "Autocomplete is not all you need: Why Cursor and Zed are going to dominate",
+    description: "AI assisted developer tooling is not created equally...",
+    image: futureOfSoftwareInterfaces,
+    slug: '/blog/autocomplete-is-not-all-you-need'
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+--- 
+
+I've spoken with many investors and analysts over the past year and a half about AI assisted developer tooling. With some exceptions, their questions tend to frame developer tooling 
+as a horse race. They want to know if Codeium has any chance of beating GitHub's Copilot, given GitHhub's resources and superior distribution story (how many millions of developers can they email whenever they want?).
+
+As someone who codes and builds systems every day, I've had enough of these conversations to see that folks on the outside looking in are trying to understand what makes one tool better or more effective than the other. 
+
+*But that's not the most important question.*
+
+The most important question is: how will developers create software in the future?  How will they *want to* create software?
+
+<Image src={futureOfSoftwareCreation} alt="The future of software interfaces" />
+
+<figcaption>Today, you can already talk to your laptop to build applications and systems. What will we have tomorrow?</figcaption>
+
+Specifically, I'm talking about interfaces. What is the the ideal near future interface for developers? Will they be typing in code or instructions? Speaking to an agent or group of agents?
+
+A year and a half ago, I started experimenting with [Codeium](/blog/codeium-review), and then essentially [every other tool I could get my hands on](/devtools).
+
+Codeium, GitHub Copilot (in its original form), and many other tools help developers code faster, by looking at what they've written and making suggestions. Autocomplete tools run where developers are coding and make predictions so that hopefully 
+the developer need only accept the suggestion and continue typing.
+
+And that's all well and good. And it became table stakes for developer tooling in about the first 8 months of the GenAI boom. 
+
+Cursor and Zed are two tools that are pushing the boundaries of what's possible in developer tooling *by changing the input from typing to plain English.*
+
+<Image src={cursorConversation} alt="Cursor conversation" />
+
+By the way, Cursor has its own autocomplete built-in, although folks who tend to adopt Cursor happily end up typing in less and less code (maybe more prose).
+
+I wrote about [my experience adopting Cursor here](/blog/cursor-review). Initially, I chafed against VSCode's UI and behavior, but once I had used Cursor for several weekend and evening hacking sessions, I simply 
+could not unsee my own productivity gains. 
+
+In fact, using Cursor has only pushed my expectations higher - and I suspect this year I'll be able to build an app by speaking into my phone while walking my dog.
+
+If I were just an autocomplete tool, I'd be extremely worried.
