@@ -5,7 +5,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import ArticleSearch from '@/components/ArticleSearch'
 
 export const metadata: Metadata = createMetadata({
-  title: "Zachary Proser - Blog",
+  title: "Modern Coding - Research",
   description: "Staff AI engineer - technical writing and development blog"
 });
 
