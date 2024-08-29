@@ -18,16 +18,23 @@ export default async function Page() {
 
   const aiDevSlugs = [
     'automations-project',
-    'how-are-embeddings-models-trained-for-rag',
-    'codeium-review'
+    'autocomplete-is-not-all-you-need',
+    'codeium-analysis-4-2024'
   ]
 
   const refArchitectureSlugs = [
     'pinecone-reference-architecture-launch',
-    'pinecone-reference-architecture-scaling'
+    'pinecone-reference-architecture-scaling',
+    'pinecone-reference-architecture-technical-walkthrough'
   ]
 
-  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs]
+  const careerAdviceSlugs = [
+    'run-your-own-tech-blog',
+    'wash-three-walls-with-one-bucket',
+    'you-get-to-keep-the-neural-connections'
+  ]
+
+  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
 
   try {
     // Fetch all articles matching the slugs
@@ -42,6 +49,9 @@ export default async function Page() {
       article.type === 'demo' || 
       article.type === 'architecture'
     )
+
+    const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
+
     // Server-side mobile detection
     const userAgent = headers().get('user-agent') || ''
     const parser = new UAParser(userAgent)
@@ -53,6 +63,7 @@ export default async function Page() {
         mlProjects={mlProjects}
         aiDev={aiDev}
         refArchitectures={refArchitectures}
+        careerAdvice={careerAdvice}
         isMobile={isMobile}
       />
     )

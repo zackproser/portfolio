@@ -140,6 +140,7 @@ export default function HomepageClientComponent({
   mlProjects, 
   aiDev, 
   refArchitectures,
+  careerAdvice,
   isMobile
 }: HomepageClientComponentProps) {
   const [email, setEmail] = useState("")
@@ -230,7 +231,7 @@ export default function HomepageClientComponent({
 
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Machine Learning Projects</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Open-source AI / ML / Pipelines Projects</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mlProjects.slice(0, 3).map((article) => (
                 <BlogPostCard key={article.slug} article={article} />
@@ -241,7 +242,7 @@ export default function HomepageClientComponent({
 
         <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">AI Assisted Development</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">AI-assisted Development</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {aiDev.slice(0, 3).map((article) => (
                 <BlogPostCard key={article.slug} article={article} />
@@ -251,6 +252,17 @@ export default function HomepageClientComponent({
         </section>
 
         <section className="bg-white dark:bg-gray-900 py-12">
+          <div className="container px-4 md:px-6 mx-auto">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Career Advice</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {careerAdvice.slice(0, 3).map((article) => (
+                <BlogPostCard key={article.slug} article={article} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Reference Architectures and Demos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -262,7 +274,6 @@ export default function HomepageClientComponent({
         </section>
       </main>
       <footer className="w-full py-6 bg-gray-800 text-white">
-        {/* ... footer content ... */}
       </footer>
     </div>
   )
