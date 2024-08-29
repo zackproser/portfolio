@@ -6,6 +6,10 @@ const baseDir = 'src/app';
 const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons'];
 const excludeDirs = ['api', 'rss'];
 const excludeFiles = ['[name]'];
+const dynamicDetailDirs = [
+  { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
+  { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
+];
 
 function getRoutes() {
   const fullPath = path.join(process.cwd(), baseDir);
@@ -41,6 +45,21 @@ function getRoutes() {
         const subDir = path.join(fullPath, entry.name);
         addRoutesRecursively(subDir, entry.name);
       }
+    }
+  });
+
+
+  // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
+  dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {
+    const jsonFilePath = path.join(process.cwd(), 'schema/data', jsonFile);
+    if (fs.existsSync(jsonFilePath)) {
+      const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
+      const detailNames = jsonData[key].map(item => item.name);
+
+      detailNames.forEach(name => {
+        const encodedName = encodeURIComponent(name);
+        routes.add(`/${base}/${detail}/${encodedName}`);
+      });
     }
   });
 
