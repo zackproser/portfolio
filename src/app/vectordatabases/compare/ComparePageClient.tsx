@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
@@ -9,13 +10,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Share2, X, RefreshCw, Clipboard } from 'lucide-react';
-import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
 import { track } from '@vercel/analytics';
-import { useRouter } from 'next/navigation';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import { createMetadata } from '@/utils/createMetadata';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -44,13 +42,8 @@ const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
   );
 };
 
-export default function ComparePage({ searchParams }) {
+export default function ComparePageClient({ allDatabases, categories, features, selectedDatabases, selectedDbNames }) {
   const router = useRouter();
-  const allDatabases = getDatabases();
-  const categories = getCategories();
-  const features = getFeatures();
-  const selectedDbNames = searchParams.dbs ? searchParams.dbs.split(',') : [];
-  const selectedDatabases = selectedDbNames.map(name => allDatabases.find(db => db.name === name));
 
   const [openSections, setOpenSections] = useState([]);
 
@@ -250,18 +243,18 @@ export default function ComparePage({ searchParams }) {
   };
 
   const handleDatabaseSelection = (newSelection) => {
-    router.push(`/vectordatabases/compare?dbs=${newSelection.join(',')}`);
+    router.push(`/vectordatabases/compare?dbs=${newSelection.join(',')}`, { scroll: false });
   };
 
   return (
     <Container>
-      <div class="flex justify-between items-center">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold pt-8 mb-4">Compare Vector Databases</h1>
         <Link href="/vectordatabases">
             ← Back to Gallery
         </Link>
       </div>
-            <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <p className="font-semibold">Comparing:</p>
         {selectedDatabases.map((db, index) => (
           <Button
@@ -325,4 +318,3 @@ export default function ComparePage({ searchParams }) {
     </Container>
   );
 }
-
