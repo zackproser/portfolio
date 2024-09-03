@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
@@ -9,23 +10,55 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Share2, X, RefreshCw, Clipboard } from 'lucide-react';
-import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import { getEmoji } from '@/lib/emojiMapping';
 import { track } from '@vercel/analytics';
-import { useRouter } from 'next/navigation';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import { createMetadata } from '@/utils/createMetadata';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
-const formatFieldName = (fieldName) => {
+interface Database {
+  name: string;
+  business_info: {
+    funding_rounds: Array<{ date: string; amount: string; series: string }>;
+    latest_valuation: string;
+    employee_count: string;
+    key_people: Array<{ name: string; position: string }>;
+    [key: string]: any;
+  };
+  [category: string]: { [feature: string]: any } | any;
+}
+
+interface Category {
+  description: string;
+  importance: string;
+}
+
+interface Feature {
+  description: string;
+}
+
+interface ComparePageClientProps {
+  allDatabases: Database[];
+  categories: { [key: string]: Category };
+  features: { [key: string]: Feature };
+  selectedDatabases: Database[];
+  selectedDbNames: string[];
+}
+
+interface DatabaseSelectorProps {
+  databases: Database[];
+  selectedDbs: string[];
+  onChange: (newSelection: string[]) => void;
+}
+
+const formatFieldName = (fieldName: string): string => {
   return fieldName.split('_').map((word, index) => 
     index === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word
   ).join(' ');
 };
 
-const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
+const DatabaseSelector: React.FC<DatabaseSelectorProps> = ({ databases, selectedDbs, onChange }) => {
   const availableDatabases = databases.filter(db => !selectedDbs.includes(db.name));
 
   return (
@@ -44,22 +77,23 @@ const DatabaseSelector = ({ databases, selectedDbs, onChange }) => {
   );
 };
 
-export default function ComparePage({ searchParams }) {
+export default function ComparePageClient({ 
+  allDatabases, 
+  categories, 
+  features, 
+  selectedDatabases, 
+  selectedDbNames 
+}: ComparePageClientProps) {
   const router = useRouter();
-  const allDatabases = getDatabases();
-  const categories = getCategories();
-  const features = getFeatures();
-  const selectedDbNames = searchParams.dbs ? searchParams.dbs.split(',') : [];
-  const selectedDatabases = selectedDbNames.map(name => allDatabases.find(db => db.name === name));
 
-  const [openSections, setOpenSections] = useState([]);
+  const [openSections, setOpenSections] = useState<string[]>([]);
 
-  const getDbColor = (index) => `hsla(${index * 360 / selectedDatabases.length}, 80%, 40%, 0.9)`;
+  const getDbColor = (index: number): string => `hsla(${index * 360 / selectedDatabases.length}, 80%, 40%, 0.9)`;
 
   const getFundingData = () => {
-    const labels = [];
+    const labels: string[] = [];
     const datasets = selectedDatabases.map((db, index) => {
-      const data = [];
+      const data: number[] = [];
       let cumulativeAmount = 0;
       db.business_info.funding_rounds.forEach(round => {
         const date = new Date(round.date);
@@ -104,7 +138,7 @@ export default function ComparePage({ searchParams }) {
     };
   };
 
-  const renderChart = (title, chartComponent) => (
+  const renderChart = (title: string, chartComponent: React.ReactNode) => (
     <Card className="mb-4 w-full md:w-1/3">
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
@@ -148,7 +182,7 @@ export default function ComparePage({ searchParams }) {
                       </ul>
                     ) : key === 'key_people' ? (
                       <ul>
-                        {db.business_info[key].map((person, i) => (
+                        {(db.business_info[key] as Array<{ name: string; position: string }>).map((person, i) => (
                           <li key={i}>{person.name}: {person.position}</li>
                         ))}
                       </ul>
@@ -165,7 +199,7 @@ export default function ComparePage({ searchParams }) {
     </AccordionItem>
   );
 
-  const renderComparison = (category) => (
+  const renderComparison = (category: string) => (
     <AccordionItem value={category} key={category}>
       <AccordionTrigger className="text-xl">
         <div className="flex items-center">
@@ -186,14 +220,14 @@ export default function ComparePage({ searchParams }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Object.entries(selectedDatabases[0][category]).map(([feature, _]) => (
+            {Object.entries(selectedDatabases[0][category] as { [feature: string]: any }).map(([feature, _]) => (
               <TableRow key={feature}>
                 <TableCell className="font-medium">
                   <span className="text-2xl mr-2">{getEmoji(feature)}</span> {formatFieldName(feature)}
                   <p className="text-xs text-gray-600">{features[feature]?.description}</p>
                 </TableCell>
                 {selectedDatabases.map((db, index) => {
-                  const value = db[category][feature];
+                  const value = (db[category] as { [feature: string]: any })[feature];
                   return (
                     <TableCell key={db.name}>
                       {typeof value === 'boolean' ? (
@@ -223,14 +257,14 @@ export default function ComparePage({ searchParams }) {
   };
 
   const [shareButtonText, setShareButtonText] = useState('Share');
-  const [shareButtonIcon, setShareButtonIcon] = useState(<Share2 className="mr-2 h-4 w-4" />);
+  const [shareButtonIcon, setShareButtonIcon] = useState<React.ReactNode>(<Share2 className="mr-2 h-4 w-4" />);
 
   const shareComparison = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
       setShareButtonText('Copied to clipboard!');
       setShareButtonIcon(<Clipboard className="mr-2 h-4 w-4" />);
-      track('share_comparison', { databases: selectedDbNames });
+      track('share_comparison', { databases: selectedDbNames.join(',') });
 
       setTimeout(() => {
         setShareButtonText('Share');
@@ -239,7 +273,7 @@ export default function ComparePage({ searchParams }) {
     });
   };
 
-  const removeDatabase = (dbName) => {
+  const removeDatabase = (dbName: string) => {
     const newSelectedDbs = selectedDbNames.filter(name => name !== dbName);
     router.push(`/vectordatabases/compare?dbs=${newSelectedDbs.join(',')}`);
   };
@@ -249,19 +283,19 @@ export default function ComparePage({ searchParams }) {
     router.push('/vectordatabases/compare');
   };
 
-  const handleDatabaseSelection = (newSelection) => {
-    router.push(`/vectordatabases/compare?dbs=${newSelection.join(',')}`);
+  const handleDatabaseSelection = (newSelection: string[]) => {
+    router.push(`/vectordatabases/compare?dbs=${newSelection.join(',')}`, { scroll: false });
   };
 
   return (
     <Container>
-      <div class="flex justify-between items-center">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold pt-8 mb-4">Compare Vector Databases</h1>
         <Link href="/vectordatabases">
             ← Back to Gallery
         </Link>
       </div>
-            <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <p className="font-semibold">Comparing:</p>
         {selectedDatabases.map((db, index) => (
           <Button
@@ -325,4 +359,3 @@ export default function ComparePage({ searchParams }) {
     </Container>
   );
 }
-
