@@ -37,6 +37,7 @@ import Octocat from '@/images/octocat.webp'
 import Teatutor from '@/images/teatutor-logo.webp'
 import QuakeInFargate from '@/images/quake-in-fargate.webp'
 import LegalSemanticSearch from '@/images/legal-semantic-search.webp'
+import PineconeAssistant from '@/images/pinecone-assistant.webp'
 import Bubbletea from '@/images/bubbletea-stages.gif'
 import SponsorMe from '@/images/sponsor-me.webp'
 import Pageripper from '@/images/pageripper-bot.webp'
@@ -47,11 +48,18 @@ import GolangProject from '@/images/open-source-golang-project.webp'
 
 const projects = [
   {
+    name: 'Pinecone: Assistant sample application',
+    description: 'An official Pinecone sample app demonstrating how to build a chat UI to connect to your existing assistant for RAG-backed Q&A',
+    link: 'https://docs.pinecone.io/examples/sample-apps/pinecone-assistant',
+    logo: PineconeAssistant,
+    stacks: ['Next.js', 'React', 'Tailwind CSS', 'Pinecone']
+  },
+  {
     name: 'Pinecone: Legal semantic search',
     description: 'An official Pinecone sample app demonstrating how to build a custom knowledge base over your data. Leverages Voyage embeddings model for the legal documents.',
     link: 'https://docs.pinecone.io/examples/sample-apps/legal-semantic-search',
     logo: LegalSemanticSearch,
-    stacks: ['Next.js', 'React', 'Tailwind CSS']
+    stacks: ['Next.js', 'React', 'Tailwind CSS', 'Pinecone']
   },
   {
     name: 'This Next.js site / app',
