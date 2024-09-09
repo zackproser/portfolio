@@ -3,6 +3,18 @@ import Link from 'next/link';
 
 const publications = [
   {
+    title: "Accelerating Legal Discovery and Analysis with Pinecone and Voyage AI",
+    date: "2024-08-21",
+    publication: "Pinecone Learning Center",
+    url: "https://www.pinecone.io/learn/legal-semantic-search/"
+  },
+  {
+    title: "When that Adhoc Script Turns Into a Production Pipeline",
+    date: "2024-07-23",
+    publication: "Prefect.io Blog",
+    url: "https://www.prefect.io/blog/when-that-adhoc-script-turns-into-a-production-data-pipeline"
+  },
+  {
     title: "Building Privacy-Aware AI Software with Vector Databases",
     date: "2024-06-18",
     publication: "The New Stack",
