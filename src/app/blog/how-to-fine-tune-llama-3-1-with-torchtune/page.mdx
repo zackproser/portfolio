@@ -12,6 +12,7 @@ import halloweenLora from '@/images/halloween-lora.webp'
 import pumpkinLora from '@/images/pumpkin-lora.webp'
 import neuralNetworkFineTuning from '@/images/neural-network-fine-tuning.webp'
 import neuralNetworkLoraAdaper from '@/images/neural-network-lora-adapter.webp'
+import googleColab from '@/images/google-colab.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -239,14 +240,17 @@ In the end, my `training_data.jsonl` file is full of entries like this:
 
 #### Lessons Learned
 
-Preparing the dataset was one of the most time-consuming parts of this project. Here are a few key takeaways:
+Preparing the dataset was one of the hardest parts of this project. Not because the work was complicated, but because it's difficult to discover 
+which dataset format a given model is trained on. 
+
+Here are some other takeaways:
 
 1. **Understand Your Data**: Know the structure and peculiarities of your source data (in my case, MDX files with front matter).
 2. **Clean Thoroughly**: Remove any artifacts that could confuse the model, like code snippets or markdown syntax.
 3. **Validate Your Output**: Always check a sample of your processed data to ensure it's formatted correctly. You could burn a bunch of training time and money on stupid errors - or run your dataset through a JSONL validator first.
 4. **Iterate**: Don't be afraid to refine your data processing pipeline as you learn more about what works and what doesn't.
 
-By taking the time to get the data preparation right, you set a solid foundation for the rest of your finetuning process. In the next section, we'll dive into the model selection process and why I chose Llama 3.1-8B-Instruct for this project.
+By taking the time to get the data preparation right, you set a solid foundation for the rest of your finetuning process. 
 
 ### The Rich Do Not Finetune Like You And I - The Power of LoRA
 
@@ -274,7 +278,7 @@ Imagine you're generating images of a pumpkin patch for a Halloween event. The b
 
 <Image src={pumpkinPatch} alt="Pumpkin Patch" />
 
-But you look up a spooky Halloween-themed LoRA adapter: 
+But you look up a spooky Halloween-themed LoRA adapter...
 
 <Image src={halloweenLora} alt="Halloween LoRA" />
 
@@ -286,18 +290,42 @@ This example illustrates how LoRA can efficiently steer a model towards a specif
 
 ###  Tools and Infrastructure
 
-For this project, I leveraged several key tools:
-
-- **PyTorch and torchtune**: As the foundational framework for model training and finetuning. Torchtune is a native PyTorch library that provides helpful "recipes" (YAML configuration templates) for various steps in the model lifecycle.
+- **PyTorch and torchtune**: Torchtune is a native PyTorch library that provides helpful "recipes" (YAML configuration templates) for various steps in the model lifecycle.
 - **Google Colab Pro**: For access to GPU resources necessary for efficient training. Specifically, I ran my finetuning tasks on an A100 GPU, which significantly accelerated the process.
 - **Weights and Biases (W&B)**: For logging and visualizing metrics during training runs.
 - **Hugging Face model hub**: For hosting my custom dataset and the finetuned model.
 
-I chose these tools for their compatibility (torchtune being a native PyTorch library), accessibility (Colab Pro for GPU access), and robust features for experiment tracking and model hosting.
+I chose these tools for their compatibility (torchtune being a native PyTorch library), accessibility (Colab Pro for easy and fast GPU access), and robust features for experiment tracking and model hosting.
 
 ## Fine-tuning Process: Leveraging Torchtune and Weights & Biases
 
-After preparing our dataset, the next crucial step is the actual fine-tuning process. For this project, I used Torchtune, a powerful library that simplifies the fine-tuning process, along with Weights & Biases (wandb) for experiment tracking. Here's a detailed breakdown of the process:
+### Why train on Google Colab?
+
+<Image src={googleColab} alt="Google Colab" />
+<figcaption>Even when paying for Google Colab Pro, it's pretty easy to max out your GPU or RAM usage when fine-tuning a Large Language Model.</figcaption>
+
+I intentionally chose to fine-tune my model on Google Colab because I wanted to understand what is tedious and difficult about doing so. There are many different tools and platforms and an increasing number of third party APIs designed to simplify fine-tuning. I did not want to use these - not at first.
+
+Llama 3.1 8B-instruct is a smaller Large Language Model that can do advanced language tasks with less computing power. This makes it easier for people with limited resources to customize the model for specific uses. 
+
+However, fine-tuning this model on platforms like Google Colab can still be challenging, even with powerful hardware:
+
+* **Limited GPU memory**: Even though the model is smaller, it still needs a lot of memory to fine-tune. Using larger batch sizes can quickly use up all available memory.
+* **Time limits**: Colab sessions have time limits, usually around 12 hours for free users. Longer fine-tuning tasks might be interrupted before they finish.
+* **Resource restrictions**: Heavy use of Colab can lead to less access to powerful GPUs or longer wait times.
+* **Setup errors**: Mistakes in preparing data or setting up the fine-tuning process might only show up later, wasting time and resources. 
+
+I easily nuked about $60 in mis-configured training runs before I got things right. This is exactly the kind of pain I went looking for. As a result, I learned to:
+
+* Plan my fine-tuning tasks carefully
+* Optimize my code for efficiency (choosing smaller batch sizes, quantizing weights, etc.)
+* Monitor my resource use via visualization and experiment tracking tools such as Weights & Biases
+* Be prepared for possible interruptions
+* Double-check my setup to avoid late-stage failures
+
+These steps help make the most of limited resources and increase the chances of successful fine-tuning.j
+
+ We're ready to get fine-tuning! 
 
 ### 1. Setting Up the Environment
 
