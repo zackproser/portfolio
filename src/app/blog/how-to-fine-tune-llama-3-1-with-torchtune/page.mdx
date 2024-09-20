@@ -6,8 +6,12 @@ import mlOps from '@/images/mlops.webp'
 import zpMLOps from '@/images/zp-mlops.webp'
 import zpLlama from '@/images/zp-llama.webp'
 import myWriting from '@/images/my-writing.webp'
+import civitai from '@/images/civitai.webp'
 import pumpkinPatch from '@/images/pumpkin-patch.webp'
+import halloweenLora from '@/images/halloween-lora.webp'
 import pumpkinLora from '@/images/pumpkin-lora.webp'
+import neuralNetworkFineTuning from '@/images/neural-network-fine-tuning.webp'
+import neuralNetworkLoraAdaper from '@/images/neural-network-lora-adapter.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -16,7 +20,7 @@ import { createMetadata } from '@/utils/createMetadata'
 export const metadata = createMetadata({
     author: "Zachary Proser",
     date: "2024-09-20",
-    title: "Teaching Llama 3.1 to Write Like Me: An LLM Fine-tuning Adventure with PyTorch, Torchtune, and Weights & Biases",
+    title: "Teaching Llama 3.1 to Write Like Me: An LLM Fine-tuning Adventure with Google Colab, Torchtune, and Weights & Biases",
     description: "I wanted hands-on experience with fine-tuning LLMs, so I used all my writing as training data.",
     image: mlOps,
     slug: '/blog/how-to-fine-tune-llama-3-1-with-torchtune'
@@ -24,37 +28,42 @@ export const metadata = createMetadata({
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
---- 
-
-<Image src={zpMLOps} alt="Getting hands on with MLOps" />
-<figcaption>Getting hands on with MLOps</figcaption>
+<Image src={mlOps} alt="Getting hands on with MLOps" />
+<figcaption>Getting hands on with MLOps as an application and infrastructure developer</figcaption>
 
 ## Table of contents
 
 ## Why I Wanted to Fine-Tune Llama 3.1
 Neural networks are too fascinating to ignore. As an application and infrastructure developer by background, I'm building side projects to get hands-on with neural networks, MLOps, and the intricacies of training models and building inference endpoints. 
 
-Recently, I trained a neural net to recognize hand-drawn digits, wrapped it in an inference endpoint, and turned it into a web app. 
+Recently, [I trained a neural net to recognize hand-drawn digits, wrapped it in an inference endpoint, and turned it into a web app.](/blog/mnist-pytorch-hand-drawn-digit-recognizer)
 
 <Image src={zpLlama} alt="Llama 3.1" />
 <figcaption>I want to fine-tune Llama 3.1 on my writing.</figcaption>
 
-Now, I want to scratch a fine-tuning itch. Can I show Meta's Llama 3.1-8B-Instruct model enough of my writing that it can write passages or articles in my style? I wanted to try Torchtune, a native PyTorch library that simplifies finetuning, evaluation, generation tasks, Weights and Biases, Google Colab Pro, and some beefy GPUs. I looked for tedium, frustration, and sharp edges and was not disappointed.
+Now, I want to scratch a fine-tuning itch. Can I show Meta's Llama 3.1-8B-Instruct model enough of my writing that it can write passages or articles in my style? 
 
-This post is the first in a series exploring the tools and techniques available for fine-tuning LLMs. In this initial installment, I’ll cover the basics of setting up the project, preparing the data, and completing my first finetuning run. Future posts will delve deeper into improving our results, evaluating the model's performance, and creating user-friendly interfaces for text generation.
+I wanted to try Torchtune, a native PyTorch library that simplifies finetuning, evaluation, generation tasks, Weights and Biases, Google Colab Pro, and some beefy GPUs. I looked for tedium, frustration, and sharp edges and was not disappointed.
+
+This post is the first in a series exploring the tools and techniques available for fine-tuning LLMs, covering data preparation, model selection and how to fine-tune LLMs using Torchtune. Future posts will delve deeper into improving our results, evaluating the model's performance, and creating user-friendly interfaces for text generation.
 
 The companion GitHub repository for this post is here. It contains the Jupyter Notebooks I used for this project and a utility script for cleaning my writing corpus.
 
 ## The Project: Teaching Llama 3.1 to Write Like Me
 
+<Image src={zpMLOps} alt="Getting hands on with MLOps" />
+<figcaption>Getting hands on with MLOps so that I can learn the patterns, tooling and infrastructure required for productionizing Large Language Models.</figcaption>
+
 ### Model Selection: Llama 3.1-8B-Instruct
 
 For this project, I chose Meta's Llama 3 as the base model. Specifically, I used the Llama 3.1-8B-instruct version. 
 
-```json
-Instruction: "Write a short story about a robot learning to cook."
-Response: "In a bustling kitchen of the future, Robot X-5 stood motionless, its optical sensors fixed on the sizzling pan before it..."
-```
+Instruction-trained models like Llama 3.1 are pre-trained on a massive corpus of diverse data, including books, web pages, and other resources. This makes them highly versatile and capable of generating a wide range of outputs, based on user instructions:
+
+> **Instruction**: "Write a short story about a robot learning to cook."
+>
+> **Response**: "In a bustling kitchen of the future, Robot X-5 stood motionless, its optical sensors fixed on the sizzling pan before it..."
+> 
 
 ### Data Preparation
 
@@ -98,7 +107,7 @@ Getting the dataset format right is crucial for several reasons:
 
 #### Preparing My Own Writing as Training Data
 
-My website is fully open-source and it's built with Next.js, and MDX for content. MDX is Markdown interspersed with JSX / JavaScript components.
+[My website](https://zackproser.com) is fully open-source and it's built with Next.js, and MDX for content. MDX is Markdown interspersed with JSX / JavaScript components.
 
 <Image src={myWriting} alt="My writing" />
 
@@ -218,6 +227,16 @@ This step creates an Alpaca-formatted entry for each processed MDX file and save
 I run this Data preparation Jupyter Notebook on Google Colab, so the final `training_data.jsonl` file is written to `/content/training_data.jsonl` by default, 
 allowing me to download it.
 
+In the end, my `training_data.jsonl` file is full of entries like this: 
+
+>
+> "**input**": "Write me an article about \"Terminal velocity - how to get faster as a developer\"", 
+> "**output**": "\"You could be the greatest architect in the world, but that won't matter much if it takes you forever to type 
+> everything into your computer.\" Hugo Posca\nWhy read this article?\nWhen you're finished reading this article, you'll understand 
+> the why and how behind my custom development setup, which has subjectively made me much faster and happier in my day to day work.\n
+> Here's a screenshot of my setup, captured from a streaming session..."
+>
+
 #### Lessons Learned
 
 Preparing the dataset was one of the most time-consuming parts of this project. Here are a few key takeaways:
@@ -235,17 +254,29 @@ Your choice in methods of fine-tuning Large Language Models is determined by you
 
 If your answer is no, you're probably looking at single or multi-device LoRA or qLoRA - two methods of "steering" a foundational model toward different outputs without incurring the massive resource and time needs of full fine-tuning. 
 
+<Image src={neuralNetworkFineTuning} alt="Neural Network Fine-Tuning" />
+<figcaption>Neural Network Full Parameter Fine-Tuning may provide the best results, but it requires resources far beyond the grasp of your average solo developer or even medium-sized company.</figcaption>
+
 The idea behind full fine-tuning is that you update all the weights of the model's parameters - and while it can potentially yield the best results, it requires resources far beyond the grasp of your average solo developer or even medium-sized company.
 
 Sam Altman has publicly stated that OpenAI spent around $100M on cloud resources (RAM and warm GPUs in cloud servers) to train ChatGPT 4. 
 
 The rest of us can look into PEFT or Parameter-efficient fine-tuning. For this project, I opted for LoRA, which stands for Low-Rank Adaptation. LoRA is a clever technique that allows you to "steer" a foundation model toward a specific domain or style. 
 
+<Image src={neuralNetworkLoraAdaper} alt="Neural Network LoRA Adapter" />
+<figcaption>LoRA is a clever technique that allows you to "steer" a foundation model toward a specific domain or style, without retraining the entire model or burning hundreds of millions of dollars in cloud resources.</figcaption>
+
 To make this concept more concrete, consider the example of civit.ai, a website that allows users to create and share LoRA adapters and base models for image generation. 
+
+<Image src={civitai} alt="Civit.ai" />
 
 Imagine you're generating images of a pumpkin patch for a Halloween event. The base model gives you traditional fall-themed images: pumpkins, hot cider, and hay bales.
 
 <Image src={pumpkinPatch} alt="Pumpkin Patch" />
+
+But you look up a spooky Halloween-themed LoRA adapter: 
+
+<Image src={halloweenLora} alt="Halloween LoRA" />
 
 By applying a Halloween-themed LoRA adapter alongside the base model's weights, you can add spooky elements to your generated images without retraining the entire model.
 
