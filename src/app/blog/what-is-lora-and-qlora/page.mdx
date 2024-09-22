@@ -1,0 +1,156 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import richFineTuning from '@/images/rich-fine-tuning.webp'
+import transferLearning from '@/images/transfer-learning.webp'
+import aiResourceGap from '@/images/ai-resource-gap.webp'
+import fineTuneAndroid from '@/images/fine-tune-android.webp'
+import peft from '@/images/peft.webp'
+import hackerJoy from '@/images/hacker-joy.webp'
+import pumpkinPatch from '@/images/pumpkin-patch.webp'
+import pumpkinLora from '@/images/pumpkin-lora.webp'
+import halloweenLora from '@/images/halloween-lora.webp'
+import civitai from '@/images/civitai.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-09-22",
+    title: "The Rich Don't Fine-tune Like You and Me: Intro to LoRA and QLoRA",
+    description: "LoRA and QLoRA are two important innovations related to fine-tuning large language models like Llama and GPT.",
+    image: richFineTuning,
+    slug: '/blog/what-is-lora-and-qlora'
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<Image src={richFineTuning} alt="Rich people fine-tuning models" />
+<figcaption>People with Hundreds of Millions of Dollars in Cloud Computing Credits to Burn</figcaption>
+
+Your choice in methods of fine-tuning Large Language Models is determined by your answer to the question: 
+
+> **"Do you have access to hundreds of millions of dollars in capital?"**
+
+If your answer is no, you're probably looking at single or multi-device LoRA or qLoRA - two methods of "steering" a foundational model toward different outputs without incurring the massive resource and time needs of full fine-tuning.
+
+Transfer learning enables models trained on large datasets to be adapted for specific tasks or domains through fine-tuning, a crucial aspect of modern AI development.
+
+<Image src={transferLearning} alt="Transfer learning" />
+<figcaption>Transfer learning is the process of taking a model trained on one task and using it for another task.</figcaption>
+
+However, the resource requirements for traditional fine-tuning methods starkly divide the AI community, separating those with access to enormous computational resources from those without.
+
+<Image src={aiResourceGap} alt="AI Resource Gap" />
+<figcaption>The AI Resource Gap: People with Hundreds of Millions of Dollars in Cloud Computing Credits vs. People with $0 in Cloud Computing Credits and Old Gaming Rigs Lying Around</figcaption>
+
+Fine-tuning is crucial because it allows us to take a general-purpose model and specialize it for particular applications, improving its performance on specific tasks without the need to train a new model from scratch. 
+
+For example, fine-tuning can be used to adapt a language model to generate more accurate customer support responses for a specific company or improve a medical image classifier's ability to detect certain diseases from X-rays.
+
+For those without access to vast financial resources, techniques like LoRA (Low-Rank Adaptation) and qLoRA (Quantized LoRA) have emerged as powerful alternatives. 
+
+These methods allow for efficient "steering" of foundational models towards desired outputs, bypassing the need for extensive computational resources and time typically associated with full fine-tuning.
+
+## The Resource Divide in AI Model Adaptation
+
+### Full Fine-tuning: The Resource-Intensive Approach
+
+Full fine-tuning is the process of updating all the weights of a pre-trained model's parameters to adapt it to a new task or domain. This method can potentially yield the best results, as it allows the model to adjust its entire knowledge base to the new data. 
+
+<Image src={fineTuneAndroid} alt="Fine-tuning on an Android" />
+<figcaption>Full Fine-Tuning: The Resource-Intensive Approach</figcaption>
+
+However, the resource requirements for this approach are staggering and often prohibitive for all but the largest tech companies and research institutions.
+
+To put this into perspective, consider the example of OpenAI's ChatGPT 4. Sam Altman, CEO of OpenAI, has publicly stated that the company spent around $100 million on cloud resources to train this model. This level of investment is simply not feasible for the vast majority of developers, researchers, or even medium-sized companies.
+
+<Image src={hackerJoy} alt="Hacker Joy" />
+<figcaption>A machine learning engineer burning through $100,000 of cloud computing credits on a single fine-tuning run.</figcaption>
+
+## PEFT: Democratizing Model Adaptation
+
+Given the prohibitive resource requirements of full fine-tuning, researchers have been actively seeking more efficient alternatives. This search has led to the development of Parameter-Efficient Fine-Tuning (PEFT) techniques. 
+
+PEFT methods aim to achieve comparable performance to full fine-tuning while updating only a small subset of the model's parameters.
+
+<Image src={peft} alt="PEFT" />
+<figcaption>Parameter Efficient Fine-Tuning: Democratizing Model Adaptation</figcaption>
+
+Several PEFT techniques have emerged in recent years, each with its own approach to efficient model adaptation:
+
+1. **Prefix Tuning**: This method prepends a trainable prefix to the input of each layer in the model. By optimizing only these prefixes, the model can be adapted to new tasks with minimal parameter updates.
+1. **Prompt Tuning**: Similar to prefix tuning, this technique focuses on optimizing a small set of continuous task-specific vectors (soft prompts) that are prepended to the input.
+1. **Adapter Layers**: This approach involves inserting small trainable modules (adapters) between the layers of a pre-trained model. Only these adapter layers are updated during fine-tuning, leaving the original model parameters unchanged.
+
+Among these PEFT techniques, one method has gained particular prominence due to its effectiveness and efficiency: Low-Rank Adaptation, or LoRA.
+
+
+## What is LoRA? 
+
+Low-Rank Adaptation (LoRA) is a technique that efficiently fine-tunes large language models without modifying all their parameters. 
+
+Developed by Microsoft, LoRA has gained traction for delivering similar performance to full fine-tuning while significantly reducing memory and computational costs. LoRA works by adding small, trainable rank decomposition matrices to the model's existing weights, allowing it to adapt to new tasks or domains without altering most of its original parameters.
+
+For a practical example, consider the image generation platform civit.ai, where users can create and share LoRA adapters. 
+
+<Image src={civitai} alt="Civit.ai, a website for sharing LoRA adapters and other models" />
+<figcaption>Civit.ai: A platform for creating and sharing LoRA adapters</figcaption>
+
+Suppose you want to generate images of a pumpkin patch for Halloween. A base model might produce fall-themed images—pumpkins, hot cider, and hay bales. 
+
+<Image src={pumpkinPatch} alt="Pumpkin Patch" />
+<figcaption>Your Standard run of the mill pumpkin patch</figcaption>
+
+However, by applying a Halloween-themed LoRA adapter, you can add spooky elements without retraining the entire model. 
+
+<Image src={halloweenLora} alt="Pumpkin Patch" />
+<figcaption>A LoRA adapter that will "steer" a base model toward a Halloween theme</figcaption>
+
+This method efficiently alters the output while keeping computational costs low. 
+
+<Image src={pumpkinLora} alt="Pumpkin Patch" />
+<figcaption>LoRA adapter result: A pumpkin patch with a Halloween theme</figcaption>
+
+The same technique can be applied to text generation models to adapt them to specific writing styles or topics.
+
+## How LoRA Works
+
+LoRA uses low-rank matrix decomposition to update a model's behavior efficiently. Instead of modifying the dense weight matrices of the pre-trained model, LoRA introduces two smaller matrices—down-projection and up-projection—alongside the original weights. 
+
+The down-projection reduces the input to a lower-dimensional space, and the up-projection maps it back. These matrices form a low-rank update, and only they are trained, leaving the original parameters unchanged. At inference, the LoRA updates merge with the original weights, resulting in no extra computational overhead.
+
+### Advantages of LoRA
+
+1. **Memory Efficiency**: LoRA reduces memory use by updating fewer parameters, allowing larger models to run on consumer hardware.
+1. **Faster Training**: With fewer parameters to update, training is faster, enabling quicker iterations.
+1. **Reduced Computational Requirements**: LoRA lowers the computational burden, making model adaptation accessible to more developers.
+1. **Flexibility**: LoRA adapters can be easily swapped or combined, enabling modular experimentation without retraining.
+1. **Preservation of Original Model**: Since LoRA doesn’t modify original weights, you can revert to the base model or switch adaptations seamlessly.
+
+### LoRA vs. Full Fine-tuning
+While LoRA offers substantial efficiency gains, it’s useful to compare its performance and resource requirements to full fine-tuning. Here’s a comparison table for clarity:
+
+| Aspect | Full Fine-tuning | LoRA |
+|--------|------------------|------|
+| Parameter Updates | All model parameters | Only LoRA matrices (typically < 1% of model size) |
+| Memory Requirements | Very High (Full model + gradients) | Low (Only LoRA parameters + gradients) |
+| Training Time | Long (Days to weeks for large models) | Short (Hours to days) |
+| Performance | Potentially highest | Comparable to full fine-tuning in many cases |
+| Flexibility | Limited (entire model is task-specific) | High (adapters can be swapped/combined) |
+| Hardware Requirements | High-end GPUs, often multiple | Can run on consumer-grade hardware |
+
+While full fine-tuning can potentially achieve the best performance, the trade-off in terms of resources and time is substantial. LoRA provides a compelling alternative that can achieve comparable results in many cases, with only a fraction of the resources.
+
+## Further Reading
+
+For those interested in diving deeper into LoRA and related techniques, here are some valuable resources:
+
+* **Original LoRA Paper**: "LoRA: Low-Rank Adaptation of Large Language Models" by Edward J. Hu et al. (2021) - https://arxiv.org/abs/2106.09685
+* **Hugging Face's PEFT Library Documentation**: https://huggingface.co/docs/peft/index
+* **"Parameter-Efficient Transfer Learning for NLP"** by Neil Houlsby et al. (2019) - https://arxiv.org/abs/1902.00751
+* **"The Power of Scale for Parameter-Efficient Prompt Tuning"** by Brian Lester et al. (2021) - https://arxiv.org/abs/2104.08691
+* **QLoRA Paper**: "QLoRA: Efficient Finetuning of Quantized LLMs" by Tim Dettmers et al. (2023) - https://arxiv.org/abs/2305.14314
+
+These resources provide a comprehensive overview of the current state of efficient fine-tuning techniques and their applications in natural language processing and beyond.
