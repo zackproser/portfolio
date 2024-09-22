@@ -1,11 +1,14 @@
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Space_Grotesk } from 'next/font/google'
 import { SessionProvider } from "next-auth/react"
 import { Providers } from '@/app/providers'
 import { SimpleNav } from '@/components/SimpleNav'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
+
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 export default function RootLayout({
   children,
@@ -34,7 +37,7 @@ export default function RootLayout({
           <Providers>
             <div className="flex w-full flex-col">
               <SimpleNav />
-              <main className="flex-grow">{children}</main>
+              <main className={`flex-grow ${spaceGrotesk.className}`}>{children}</main>
               <Analytics />
               <SpeedInsights />
             </div>

@@ -21,7 +21,7 @@ import { createMetadata } from '@/utils/createMetadata'
 export const metadata = createMetadata({
     author: "Zachary Proser",
     date: "2024-09-20",
-    title: "Teaching Llama 3.1 to Write Like Me: An LLM Fine-tuning Adventure with Google Colab, Torchtune, and Weights & Biases",
+    title: "Teaching Llama 3.1 to Write Like Me: An LLM Fine-tuning Adventure with An A100, Google Colab, Torchtune, and Weights & Biases",
     description: "I wanted hands-on experience with fine-tuning LLMs, so I used all my writing as training data.",
     image: mlOps,
     slug: '/blog/how-to-fine-tune-llama-3-1-with-torchtune'
@@ -35,20 +35,16 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 ## Table of contents
 
 ## Why I Wanted to Fine-Tune Llama 3.1
-Neural networks are too fascinating to ignore. As an application and infrastructure developer by background, I'm building side projects to get hands-on with neural networks, MLOps, and the intricacies of training models and building inference endpoints. 
+Neural networks fascinate me. As an application and infrastructure developer by background, I'm building [side projects to get hands-on with neural networks](/blog/mnist-pytorch-hand-drawn-digit-recognizer), MLOps, and the intricacies of training models and building inference endpoints. 
 
-Recently, [I trained a neural net to recognize hand-drawn digits, wrapped it in an inference endpoint, and turned it into a web app.](/blog/mnist-pytorch-hand-drawn-digit-recognizer)
+Now, I want to scratch a fine-tuning itch. Can I show Meta's Llama 3.1-8B-Instruct model enough of my writing that it can write passages or articles in my style? 
 
 <Image src={zpLlama} alt="Llama 3.1" />
 <figcaption>I want to fine-tune Llama 3.1 on my writing.</figcaption>
 
-Now, I want to scratch a fine-tuning itch. Can I show Meta's Llama 3.1-8B-Instruct model enough of my writing that it can write passages or articles in my style? 
+I looked for tedium, frustration, and sharp edges and was not disappointed.
 
-I wanted to try Torchtune, a native PyTorch library that simplifies finetuning, evaluation, generation tasks, Weights and Biases, Google Colab Pro, and some beefy GPUs. I looked for tedium, frustration, and sharp edges and was not disappointed.
-
-This post is the first in a series exploring the tools and techniques available for fine-tuning LLMs, covering data preparation, model selection and how to fine-tune LLMs using Torchtune. Future posts will delve deeper into improving our results, evaluating the model's performance, and creating user-friendly interfaces for text generation.
-
-The companion GitHub repository for this post is here. It contains the Jupyter Notebooks I used for this project and a utility script for cleaning my writing corpus.
+The companion GitHub repository for this post is here. It contains the Jupyter Notebooks I used for this project and utility scripts I created to clean my writing corpus.
 
 ## The Project: Teaching Llama 3.1 to Write Like Me
 
@@ -59,12 +55,16 @@ The companion GitHub repository for this post is here. It contains the Jupyter N
 
 For this project, I chose Meta's Llama 3 as the base model. Specifically, I used the Llama 3.1-8B-instruct version. 
 
-Instruction-trained models like Llama 3.1 are pre-trained on a massive corpus of diverse data, including books, web pages, and other resources. This makes them highly versatile and capable of generating a wide range of outputs, based on user instructions:
+Large Language Models like Llama 3.1 are pre-trained on a massive corpus of diverse data, including books and web pages. 
+
+Models that are instruction-trained are also fine-tuned on datasets of prompts and desired outputs:
 
 > **Instruction**: "Write a short story about a robot learning to cook."
 >
 > **Response**: "In a bustling kitchen of the future, Robot X-5 stood motionless, its optical sensors fixed on the sizzling pan before it..."
 > 
+
+This is important, because I intend to prompt my fine-tuned model in the same way.
 
 ### Data Preparation
 
@@ -323,10 +323,6 @@ I easily nuked about $60 in mis-configured training runs before I got things rig
 * Be prepared for possible interruptions
 * Double-check my setup to avoid late-stage failures
 
-These steps help make the most of limited resources and increase the chances of successful fine-tuning.j
-
- We're ready to get fine-tuning! 
-
 ### 1. Setting Up the Environment
 
 First, we need to install the necessary libraries:
@@ -342,9 +338,9 @@ import wandb
 wandb.login()
 ```
 
-### 2. Downloading the Base Model
+### 2. Downloading the Base Model from Hugging Face
 
-We use the `tune download` command to download the Meta-Llama-3.1-8B-Instruct model:
+We use the `tune download` command to download the Meta-Llama-3.1-8B-Instruct model from the Hugging Face Model Hub:
 
 ```python
 !tune download meta-llama/Meta-Llama-3.1-8B-Instruct --ignore-patterns=null
@@ -352,11 +348,55 @@ We use the `tune download` command to download the Meta-Llama-3.1-8B-Instruct mo
 
 This command downloads the model and its weights, storing them in `/tmp/Meta-Llama-3.1-8B-Instruct` by default.
 
-### 3. Configuring the Fine-tuning Process
+### 3. Configuring the Fine-tuning Process with Torchtune
 
-One of the most critical steps is setting up the configuration for fine-tuning. I used a YAML file to define all the parameters. Here's a breakdown of some key sections:
+Torchtune is an open-source library for fine-tuning Large Language Models. It provides a set of pre-configured recipes for various steps in the model lifecycle. 
+
+You access available recipes with the `tune ls` (show recipes) and the `tune cp` (copy recipe) commands: 
+
+```
+tune ls
+
+RECIPE                                   CONFIG
+full_finetune_single_device              llama2/7B_full_low_memory
+                                         mistral/7B_full_low_memory
+full_finetune_distributed                llama2/7B_full
+                                         llama2/13B_full
+                                         mistral/7B_full
+lora_finetune_single_device              llama2/7B_lora_single_device
+                                         llama2/7B_qlora_single_device
+                                         mistral/7B_lora_single_device
+...
+```
+
+You can then run `tune cp` to copy the recipe to your local directory as YAML, at which point you can edit the parameters to customize the recipe to your needs. 
+
+```bash
+❯ tune cp llama3_1/8B_qlora_single_device my_conf
+Copied file to my_conf.yaml
+```
+
+This results in the following configuration file. The defaults are all sensible, but you can override any of them to customize the fine-tuning process, 
+and doing exactly this is where I spent the bulk of my time in getting this project to work.
 
 ```yaml
+# Config for single device QLoRA with lora_finetune_single_device.py
+# using a Llama3.1 8B Instruct model
+#
+# This config assumes that you've run the following command before launching
+# this run:
+#   tune download meta-llama/Meta-Llama-3.1-8B-Instruct --output-dir /tmp/Meta-Llama-3.1-8B-Instruct --ignore-patterns "original/consolidated.00.pth"
+#
+# To launch on a single device, run the following command from root:
+#   tune run lora_finetune_single_device --config llama3_1/8B_qlora_single_device
+#
+# You can add specific overrides through the command line. For example
+# to override the checkpointer directory while launching training
+# you can run:
+#   tune run lora_finetune_single_device --config llama3_1/8B_qlora_single_device checkpointer.checkpoint_dir=<YOUR_CHECKPOINT_DIR>
+#
+# This config works only for training on single device.
+
 # Model Arguments
 model:
   _component_: torchtune.models.llama3_1.qlora_llama3_1_8b
@@ -366,26 +406,57 @@ model:
   lora_rank: 8
   lora_alpha: 16
 
+# Tokenizer
+tokenizer:
+  _component_: torchtune.models.llama3.llama3_tokenizer
+  path: /tmp/Meta-Llama-3.1-8B-Instruct/original/tokenizer.model
+
+checkpointer:
+  _component_: torchtune.utils.FullModelHFCheckpointer
+  checkpoint_dir: /tmp/Meta-Llama-3.1-8B-Instruct/
+  checkpoint_files: [
+    model-00001-of-00004.safetensors,
+    model-00002-of-00004.safetensors,
+    model-00003-of-00004.safetensors,
+    model-00004-of-00004.safetensors
+  ]
+  recipe_checkpoint: null
+  output_dir: /tmp/Meta-Llama-3.1-8B-Instruct/
+  model_type: LLAMA3
+resume_from_checkpoint: False
+
 # Dataset and Sampler
 dataset:
-  _component_: torchtune.datasets.instruct_dataset
-  source: json
-  data_files: 'training_data.jsonl'
-  template: torchtune.data.AlpacaInstructTemplate
-  train_on_input: True
-  split: train
+  _component_: torchtune.datasets.alpaca_cleaned_dataset
+seed: null
+shuffle: True
+batch_size: 2
+
+# Optimizer and Scheduler
+optimizer:
+  _component_: torch.optim.AdamW
+  weight_decay: 0.01
+  lr: 3e-4
+lr_scheduler:
+  _component_: torchtune.modules.get_cosine_schedule_with_warmup
+  num_warmup_steps: 100
+
+loss:
+  _component_: torch.nn.CrossEntropyLoss
 
 # Training
-epochs: 2
+epochs: 1
 max_steps_per_epoch: null
-gradient_accumulation_steps: 8
+gradient_accumulation_steps: 16
 compile: False
 
-# Logging
+# Logging - this is how you send your metrics to Weights & Biases for visualization and tracking
 output_dir: /tmp/qlora_finetune_output/
 metric_logger:
   _component_: torchtune.utils.metric_logging.WandBLogger
   project: write_like_me
+
+... truncated ...
 ```
 
 This configuration uses QLoRA (Quantized Low-Rank Adaptation) for efficient fine-tuning, specifies the dataset format, and sets up Weights & Biases for logging.
