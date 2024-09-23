@@ -11,6 +11,13 @@ export const metadata = createMetadata({
 });
 
 export default async function Page() {
+
+  const deepMLTutorialSlugs = [
+    'cloud-gpu-services-jupyter-notebook-reviewed',
+    'how-to-create-a-custom-alpaca-dataset',
+    'how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune'
+  ]
+
   const mlProjectSlugs = [
     'mnist-pytorch-hand-drawn-digit-recognizer',
     'langchain-pinecone-chat-with-my-blog',
@@ -41,12 +48,14 @@ export default async function Page() {
     'what-is-a-vector-database'
   ]
 
-  const allSlugs = [...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
+  const allSlugs = [...deepMLTutorialSlugs, ...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
 
   try {
     // Fetch all articles matching the slugs
     const allArticles = await getAllArticles(allSlugs)
     const allVideos = await getAllVideos(videoSlugs)  // Fetch all videos with matching slugs
+
+    const deepMLTutorials = allArticles.filter(article => deepMLTutorialSlugs.includes(article.slug))
 
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
 
@@ -70,6 +79,7 @@ export default async function Page() {
 
     return (
       <HomepageClientComponent
+        deepMLTutorials={deepMLTutorials}
         mlProjects={mlProjects}
         aiDev={aiDev}
         refArchitectures={refArchitectures}
