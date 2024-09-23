@@ -130,6 +130,7 @@ interface Article {
 }
 
 interface HomepageClientComponentProps {
+  deepMLTutorials: Article[]; 
   mlProjects: Article[];
   aiDev: Article[];
   refArchitectures: Article[];
@@ -139,6 +140,7 @@ interface HomepageClientComponentProps {
 }
 
 export default function HomepageClientComponent({ 
+  deepMLTutorials,
   mlProjects, 
   aiDev, 
   refArchitectures,
@@ -234,6 +236,17 @@ export default function HomepageClientComponent({
 
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Deep and Machine Learning Tutorials</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {deepMLTutorials.slice(0, 3).map((article) => (
+                <BlogPostCard key={article.slug} article={article} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gray-100 dark:bg-gray-800 py-12">
+          <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Open-source AI / ML / Pipelines Projects</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mlProjects.slice(0, 3).map((article) => (
@@ -243,7 +256,7 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-gray-100 dark:bg-gray-800 py-12">
+        <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">AI-assisted Development</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -276,7 +289,7 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-white dark:bg-gray-900 py-12">
+        <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Reference Architectures and Demos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -286,6 +299,7 @@ export default function HomepageClientComponent({
             </div>
           </div>
         </section>
+
       </main>
       <footer className="w-full py-6 bg-gray-800 text-white">
       </footer>
