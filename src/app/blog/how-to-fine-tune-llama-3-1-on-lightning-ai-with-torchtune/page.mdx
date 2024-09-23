@@ -92,11 +92,32 @@ This command downloads the model and its weights, storing them in `/tmp/Meta-Lla
 
 ## 5. Create and Modify Torchtune Configuration File
 
-Torchtune, integrated seamlessly with Lightning.ai, provides pre-configured recipes for various steps in the model lifecycle. 
+[Torchtune](https://github.com/pytorch/torchtune), a native PyTorch library, provides pre-configured recipes for various steps in the model lifecycle. 
 
-You can view available recipes using the `tune ls` command and copy a recipe using `tune cp`. 
+You access available recipes with the `tune ls` (show recipes) and the `tune cp` (copy recipe) commands: 
 
-For our fine-tuning process, we'll use a custom configuration file:
+```
+tune ls
+RECIPE                                   CONFIG
+full_finetune_single_device              llama2/7B_full_low_memory
+                                         mistral/7B_full_low_memory
+full_finetune_distributed                llama2/7B_full
+                                         llama2/13B_full
+                                         mistral/7B_full
+lora_finetune_single_device              llama2/7B_lora_single_device
+                                         llama2/7B_qlora_single_device
+                                         mistral/7B_lora_single_device
+...
+```
+
+You can then run `tune cp` to copy the recipe to your local directory as YAML, at which point you can edit the parameters to customize the recipe to your needs. 
+
+```bash
+❯ tune cp llama3_1/8B_qlora_single_device my_conf
+Copied file to my_conf.yaml
+```
+
+The following configuration file shows some of the key modifications I made:
 
 ```yaml
 # Config for single device QLoRA with lora_finetune_single_device.py
@@ -108,7 +129,7 @@ model:
   apply_lora_to_mlp: False
   apply_lora_to_output: False
   lora_rank: 8
-  lora_alpha: 8
+  lora_alpha: 16
 
 tokenizer:
   _component_: torchtune.models.llama3.llama3_tokenizer
@@ -129,6 +150,7 @@ max_seq_length: 2048  # Reduced to prevent OOM issues
 
 # ... (rest of the configuration)
 
+# Use Weights & Biases for logging
 metric_logger:
   _component_: torchtune.utils.metric_logging.WandBLogger
   project: write_like_me
@@ -160,9 +182,6 @@ dataset:
 ```
 
 See my article on [How to create a custom dataset for fine-tuning Llama 3.1](/blog/how-to-create-a-custom-alpaca-dataset) for more details on creating a custom dataset.
-  
-
-This configuration uses QLoRA (Quantized Low-Rank Adaptation) for efficient fine-tuning and sets up Weights & Biases for logging.
 
 ## 6. Run Fine-tuning sanity check against CPU 
 
@@ -172,11 +191,9 @@ Before we start the actual fine-tuning process, let's run a small test to ensure
 !tune run lora_finetune_single_device --config llama_wandb_qlora.yaml --max-steps 10
 ```
 
-This command will run a short fine-tuning job for just 10 steps. Check the Weights & Biases dashboard to confirm that metrics are being logged correctly.
+Running this smoke test against the CPU also ensures there are no configuration issues, such as missing files or wrong paths, (which don't appear until training is underway).
 
-Running this smoke test against the CPU also ensures there are no configuration issues that don't appear until training is underway.
-
-If everything looks good, we're ready to switch to a GPU-backed environment for the full fine-tuning run.
+If everything looks good, we're ready to switch to a GPU-backed environment for the real fine-tuning run.
 
 ## 7. Switch to a GPU-backed Environment
 
