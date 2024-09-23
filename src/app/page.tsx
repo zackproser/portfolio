@@ -84,7 +84,7 @@ export default async function Page() {
         aiDev={aiDev}
         refArchitectures={refArchitectures}
         careerAdvice={careerAdvice}
-        videos={videos}  // Added new prop
+        videos={videos}  
         isMobile={isMobile}
       />
     )
