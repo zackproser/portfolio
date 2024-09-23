@@ -1,0 +1,105 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import mlOps from '@/images/mlops.webp'
+import zpMLOps from '@/images/zp-mlops.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-09-22",
+    title: "MLOps Adventure - Learning to Fine-tune LLMs, create datasets and neural nets",
+    description: "I've been on an MLOps adventure lately, taking any excuse to get hands on with neural nets, fine-tuning, Hugging Face datasets and models.",
+    image: mlOps,
+    slug: '/blog/mlops-adventure'
+});
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<Image src={mlOps} alt="MLOps" />
+<figcaption>I've been on an MLOps adventure lately, taking any excuse to get hands on with neural nets, fine-tuning, and creating datasets.</figcaption>
+
+## Table of contents
+
+## Introduction
+
+Neural networks fascinate me. As an application and infrastructure developer by background, I'm building side projects to get hands-on with neural networks, MLOps, and the intricacies of training models and building inference endpoints.
+
+I'm going looking for tedium, frustration, and sharp edges and I'm rarely disappointed.
+
+<Image src={zpMLOps} alt="ZP MLOps" />
+<figcaption>I learn by building, so I've been doing a ton of MLOps focused projects lately</figcaption>
+
+## Cloud GPU Services and Jupyter Notebooks
+
+I started by [evaluating cloud GPU services for deep learning and fine-tuning](/blog/cloud-gpu-services-jupyter-notebook-reviewed).
+
+I learned that while there are numerous options available, each comes with its own set of trade-offs in terms of pricing, performance, and ease of use. 
+
+## Creating Custom Datasets
+
+I created a guide on [How to create a custom Alpaca instruction dataset for fine-tuning LLMs](/blog/how-to-create-a-custom-alpaca-dataset).
+
+I learned that creating a good dataset is paramount. It involves careful consideration of the data structure and target model, ensuring diversity in the instruction-output pairs, and maintaining consistency in the formatting. 
+
+
+## Fine-tuning LLama 3.1
+
+With a custom dataset in hand, the next logical step was to fine-tune a large language model. I chose LLama 3.1 for this task and documented the process in [How to Fine-tune LLama 3.1 on Lightning.ai with Torchtune](https://zackproser.com/blog/how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune).
+
+I gained practical experience in:
+
+- Preparing a model for fine-tuning
+- Configuring hyperparameters
+- Monitoring training progress
+
+This was incredibly tedious. I encountered numerous errors, from out-of-memory issues to unexpected convergence problems. Each obstacle, however, deepened my understanding of the intricacies involved in training large language models.
+
+## Model Adapters: LoRA and QLoRA
+
+Driven by Out of memory errors, I explored LoRA (Low-Rank Adaptation) and QLoRA (Quantized Low-Rank Adaptation), which I detailed in [The Rich Don't Fine-tune Like You and Me: Intro to LoRA and QLoRA](https://zackproser.com/blog/what-is-lora-and-qlora).
+
+I learned how LoRA allows for efficient fine-tuning of large models by updating only a small number of parameters. QLoRA took this a step further by introducing quantization, making it possible to fine-tune models on consumer-grade hardware.
+
+Implementing these techniques taught me about:
+
+- The trade-offs between model performance and computational efficiency
+- The importance of parameter-efficient fine-tuning methods
+- The potential of quantization in democratizing access to large language models
+
+## Building a RAG Pipeline on Custom Data 
+
+One of my most comprehensive projects was [building a Retrieval Augmented Generation (RAG) pipeline for my blog](/blog/langchain-pinecone-chat-with-my-blog):
+
+1. **Full ML Pipeline Implementation**: The project covers the entire lifecycle of an ML application, from data ingestion and processing to model deployment and serving.
+
+1. **Data Processing and Knowledge Base Creation**: The project shows how to convert an entire blog (with MDX files) into a searchable knowledge base, highlighting the importance of data preparation in ML projects.
+
+1. **Real-time AI Interaction**: By implementing a chat interface that interacts with the blog's content, the project showcases how to deploy ML models for real-time user interaction.
+
+1. **Streaming Responses and Frontend Integration**: The implementation includes handling streaming responses from language models and integrating them seamlessly with a React frontend.
+
+1. **MLOps Best Practices**: The project incorporates CI/CD practices, using GitHub Actions to automatically update the knowledge base when new blog posts are added.
+
+1. **Vector Search and Semantic Understanding**: By using Pinecone for vector search, the project demonstrates how to implement semantic search capabilities in an ML application.
+
+1. **Prompt Engineering**: The article discusses the nuances of crafting effective prompts for language models, an essential skill in working with LLMs.
+
+1. **Performance Optimization**: The project addresses challenges like efficient data retrieval and processing, crucial for maintaining good performance in ML applications.
+
+1. **Scalability Considerations**: By using cloud-based services and discussing potential improvements, the project touches on how to build scalable ML solutions.
+
+This RAG pipeline project is a prime example of applying MLOps principles to create a practical, user-facing application. It combines several aspects of machine learning engineering, from data processing and model integration to deployment and user interface design.
+
+## Future Directions
+
+Looking ahead, I'm excited to explore:
+
+1. **Computer Vision**: Delving into image processing, object detection, and facial recognition tasks.
+2. **Edge AI / Tiny ML**: Exploring the deployment of ML models on resource-constrained devices and edge computing scenarios.
+3. **Ensemble Methods**: Investigating techniques like Random Forests or Gradient Boosting for improved model performance.
+4. **MLOps at Scale**: Tackling the challenges of large-scale deployment, monitoring, and maintenance of ML systems in production environments.
+5. Developing more sophisticated custom datasets for various domains.
+6. Experimenting with different model architectures to solve complex problems.
