@@ -13,7 +13,7 @@ import { CodeIcon } from 'lucide-react'
 import { getLogoById } from '@/lib/logoImports'
 import heroImage from '@/images/ai-hacking.webp' 
 
-export default function DevToolsIndex() {
+export default function DevToolsPageClient() {
   const router = useRouter();
   const allTools = getTools();
   const [filteredTools, setFilteredTools] = useState(allTools);
