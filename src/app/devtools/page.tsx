@@ -4,7 +4,7 @@ import { getTools } from '@/lib/getTools'
 import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata: Metadata = createMetadata({
-  title: 'AI-Assisted Developer Tools',
+  title: 'AI-Assisted Developer Tools Compared',
   description: 'Compare different AI-assisted developer tools to find the best fit for your needs',
 });
 
