@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-export default function SearchFilter({ databases, onFilter }) {
-  const [search, setSearch] = useState('');
+export default function SearchFilter({ databases, onFilter, onReset, searchTerm: externalSearchTerm }) {
+  const [search, setSearch] = useState(externalSearchTerm || '');
   const [filters, setFilters] = useState({
     cloud: false,
     local: false,
@@ -13,9 +13,14 @@ export default function SearchFilter({ databases, onFilter }) {
     open_source: false,
   });
 
+  useEffect(() => {
+    setSearch(externalSearchTerm || '');
+  }, [externalSearchTerm]);
+
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    applyFilters(e.target.value, filters);
+    const newSearchTerm = e.target.value;
+    setSearch(newSearchTerm);
+    applyFilters(newSearchTerm, filters);
   };
 
   const handleFilterChange = (key) => {
@@ -45,7 +50,19 @@ export default function SearchFilter({ databases, onFilter }) {
       });
       return matchesSearch && matchesFilters;
     });
-    onFilter(filtered);
+    onFilter(filtered, searchTerm);
+  };
+
+  const handleReset = () => {
+    setSearch('');
+    setFilters({
+      cloud: false,
+      local: false,
+      on_premises: false,
+      free_tier: false,
+      open_source: false,
+    });
+    onReset();
   };
 
   return (
@@ -68,6 +85,7 @@ export default function SearchFilter({ databases, onFilter }) {
           </div>
         ))}
       </div>
+      <button onClick={handleReset}>Reset</button>
     </div>
   );
 }
