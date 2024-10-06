@@ -6,34 +6,42 @@ import Image from 'next/image';
 import { track } from '@vercel/analytics';
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { getDatabases } from '@/lib/getDatabases';
 import { getLogoById } from '@/lib/logoImports';
 import SearchFilter from '@/components/SearchFilter';
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
 
-export default function GalleryPage() {
+interface Database {
+  name: string;
+  description: string;
+  logoId: string;
+}
+
+interface VectorDatabasesPageClientProps {
+  initialDatabases: Database[];
+}
+
+export default function VectorDatabasesPageClient({ initialDatabases }: VectorDatabasesPageClientProps) {
   const router = useRouter();
-  const allDatabases = getDatabases();
-  const [filteredDatabases, setFilteredDatabases] = useState(allDatabases);
+  const [filteredDatabases, setFilteredDatabases] = useState(initialDatabases);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleFilter = (filtered, term) => {
+  const handleFilter = (filtered: Database[], term: string) => {
     setFilteredDatabases(filtered);
     setSearchTerm(term);
   };
 
   const handleReset = () => {
-    setFilteredDatabases(allDatabases);
+    setFilteredDatabases(initialDatabases);
     setSearchTerm('');
   };
 
-  const handleCompareClick = (dbName) => {
+  const handleCompareClick = (dbName: string) => {
     track('compare_click', { database: dbName });
     router.push(`/vectordatabases/compare?dbs=${encodeURIComponent(dbName)}`);
   };
 
-  const handleDetailsClick = (dbName) => {
+  const handleDetailsClick = (dbName: string) => {
     track('details_click', { database: dbName });
     router.push(`/vectordatabases/detail/${encodeURIComponent(dbName)}`);
   };
@@ -44,7 +52,7 @@ export default function GalleryPage() {
       intro="Explore and compare vector databases"
     >
       <SearchFilter 
-        databases={allDatabases} 
+        databases={initialDatabases} 
         onFilter={handleFilter} 
         onReset={handleReset}
         searchTerm={searchTerm}
@@ -70,7 +78,7 @@ export default function GalleryPage() {
               </CardContent>
               <div className="p-4 mt-auto flex justify-between">
                 <Button
-                  variant="primary"
+                  variant="secondary"
                   className="bg-blue-500 hover:bg-blue-600 text-white"
                   onClick={() => handleCompareClick(db.name)}
                 >
