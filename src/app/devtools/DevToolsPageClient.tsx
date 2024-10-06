@@ -1,43 +1,49 @@
 'use client'
 
-import { SimpleLayout } from '@/components/SimpleLayout'
-import { getTools } from '@/lib/getTools'
-import DevToolSearchFilter from '@/components/DevToolSearchFilter'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { track } from '@vercel/analytics'
-import { Button } from "@/components/ui/button";
-import { DiffIcon, SearchIcon } from "lucide-react";
 import Image from 'next/image'
-import { CodeIcon } from 'lucide-react' 
+import { track } from '@vercel/analytics'
+import { SimpleLayout } from '@/components/SimpleLayout'
+import DevToolSearchFilter from '@/components/DevToolSearchFilter'
+import { Button } from "@/components/ui/button"
+import { DiffIcon, SearchIcon, CodeIcon } from "lucide-react"
 import { getLogoById } from '@/lib/logoImports'
-import heroImage from '@/images/ai-hacking.webp' 
+import heroImage from '@/images/ai-hacking.webp'
 
-export default function DevToolsIndex() {
-  const router = useRouter();
-  const allTools = getTools();
-  const [filteredTools, setFilteredTools] = useState(allTools);
-  const [searchTerm, setSearchTerm] = useState('');
+interface Tool {
+  name: string
+  description: string
+}
 
-  const handleFilter = (filtered, term) => {
-    setFilteredTools(filtered);
-    setSearchTerm(term);
-  };
+interface DevToolsPageClientProps {
+  initialTools: Tool[]
+}
+
+export default function DevToolsPageClient({ initialTools }: DevToolsPageClientProps) {
+  const router = useRouter()
+  const [filteredTools, setFilteredTools] = useState(initialTools)
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const handleFilter = (filtered: Tool[], term: string) => {
+    setFilteredTools(filtered)
+    setSearchTerm(term)
+  }
 
   const handleReset = () => {
-    setFilteredTools(allTools);
-    setSearchTerm('');
-  };
+    setFilteredTools(initialTools)
+    setSearchTerm('')
+  }
 
-  const handleCompareClick = (toolName) => {
-    track('compare_click', { tool: toolName });
-    router.push(`/devtools/compare?tools=${encodeURIComponent(toolName)}`);
-  };
+  const handleCompareClick = (toolName: string) => {
+    track('compare_click', { tool: toolName })
+    router.push(`/devtools/compare?tools=${encodeURIComponent(toolName)}`)
+  }
 
-  const handleDetailsClick = (toolName) => {
-    track('details_click', { tool: toolName });
-    router.push(`/devtools/detail/${encodeURIComponent(toolName)}`);
-  };
+  const handleDetailsClick = (toolName: string) => {
+    track('details_click', { tool: toolName })
+    router.push(`/devtools/detail/${encodeURIComponent(toolName)}`)
+  }
 
   return (
     <SimpleLayout
@@ -54,7 +60,7 @@ export default function DevToolsIndex() {
         />
       </div>
       <DevToolSearchFilter 
-        tools={allTools} 
+        tools={initialTools} 
         onFilter={handleFilter} 
         onReset={handleReset}
         searchTerm={searchTerm}
