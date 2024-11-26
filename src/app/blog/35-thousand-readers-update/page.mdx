@@ -9,6 +9,9 @@ import thirtyFiveThousandReaders from '@/images/thirty-five-thousand-readers.web
 import googleClicks from '@/images/google-clicks.webp'
 import pagespeed from '@/images/pagespeed.webp'
 import markdown from '@/images/markdown.webp'
+import gitActivity from '@/images/2023-git-activity.webp'
+import typefully from '@/images/typefully.webp'
+import devtoolsComparison from '@/images/devtools-comparison.webp'
 
 export const metadata = createMetadata({
     author: "Zachary Proser",
@@ -46,7 +49,13 @@ Don't settle for "good enough." Regularly monitor your metrics and optimize load
 
 I spent time understanding Next.js and optimizing all of my content to be static whenever possible, even when it meant rewriting much of my application. 
 
-I serve lightweight images. 
+I optimize images for delivery using the cwebp utility to convert them into the efficient WebP format. For example, I converted `~/Downloads/2023-git-activity.jpg` to `src/images/2023-git-activity.webp` using:
+
+```bash
+cwebp -q 80 ~/Downloads/2023-git-activity.jpg -o src/images/2023-git-activity.webp
+```
+
+The output reduced the file size to 28 kilobytes while maintaining excellent quality. This ensures fast loading times without noticeable loss in image quality.
 
 Tech stack:
  * Nextjs & Tailwind 
@@ -65,6 +74,8 @@ Tech stack:
 
 ## 2. I iterated relentlessly on user experience 
 
+<Image src={gitActivity} alt="Git activity" />
+
 Engagement doesn't just come from good writing—it comes from readable writing. Cleaner layouts, better typography, and simplified navigation made my content easier to consume and share.
 
 Improving UX isn't a one-and-done task; it's an ongoing process. Over the past year, I experimented with:
@@ -72,12 +83,7 @@ Improving UX isn't a one-and-done task; it's an ongoing process. Over the past y
 * Streamlined layouts that focused on clarity over complexity
 * Simplified navigation, ensuring readers could quickly find the content they needed
 
-### Actionable Tip:
-
-View your blog from your readers' perspective. Ask yourself:
-* Is it easy to read?
-* Can users find what they're looking for?
-* Does your design serve the content—or distract from it?
+View your blog from your readers' perspective. Always consider if your content is easy to read, if users can find what they're looking for, and whether your design serves the content rather than distracting from it.
 
 ## 3. I consistently published and shared
 
@@ -88,19 +94,21 @@ Consistency is the lifeblood of blogging. I wrote whenever inspiration struck, c
 
 Publishing was only half the battle. Sharing was just as important. I shared my posts on LinkedIn, Twitter, and Reddit—even when the feedback wasn't always kind (hello, trolls 👋).
 
-### Actionable Tip:
+I found success using Typefully, a tool that allows you to schedule tweets, threads, Bluesky, Twitter, Mastodon, and LinkedIn posts simultaneously.
 
-Write regularly
+<Image src={typefully} alt="Typefully" />
+
+The key is to write regularly. Make it a habit, even if you're not publishing everything you write.
 
 ## 4. I built tools, not just blog posts
+
+<Image src={devtoolsComparison} alt="Devtools comparison" />
 
 Some of my most popular pages weren't articles—they were tools I built to solve real problems. Tools are a unique way to provide immediate value and drive sustained traffic.
 
 If you have the skills to build, do it. It's one of the best ways to stand out.
 
-### Actionable Tip:
-
-Think about common challenges your audience faces. Can you build a tool, calculator, or resource to help solve them?
+If you have technical skills, consider what common challenges your audience faces. Building tools, calculators, or resources to solve these problems can be more valuable than traditional blog posts.
 
 ## 5. I let analytics guide me 
 
@@ -112,9 +120,7 @@ Google Search Console became my feedback loop. By analyzing search performance, 
 
 This iterative approach kept my blog relevant and valuable to my readers.
 
-### Actionable Tip:
-
-Use tools like Google Analytics and Search Console to refine your strategy. Pay attention to search queries, click-through rates, and audience behavior.
+Make data-driven decisions by using tools like Google Analytics and Search Console to refine your strategy. Pay close attention to search queries, click-through rates, and audience behavior to understand what works and what doesn't.
 
 ## Finding success blogging 
 
