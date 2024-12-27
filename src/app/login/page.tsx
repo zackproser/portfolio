@@ -1,9 +1,27 @@
+'use client';
+
 import { redirect } from "next/navigation";
-import { signIn } from "../../../auth";
-import { AuthError } from "next-auth";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-export default function SignInPage() {
+export default function SignInPage({
+  searchParams: { callbackUrl },
+}: {
+  searchParams: { callbackUrl?: string }
+}) {
+  const finalCallbackUrl = callbackUrl || '/';
+
+  const handleGitHubSignIn = () => {
+    signIn("github", { callbackUrl: finalCallbackUrl });
+  };
+
+  const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    signIn("email", { email, callbackUrl: finalCallbackUrl });
+  };
+
   return (
     <div className="flex h-screen items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -16,27 +34,13 @@ export default function SignInPage() {
             Already have a GitHub account? Use that - otherwise, you can sign-in using your email.
           </p>
           <div className="space-y-4">
-            <form
-              action={async () => {
-                "use server";
-                try {
-                  await signIn("github");
-                } catch (error) {
-                  if (error instanceof AuthError) {
-                    return redirect(`/api/auth/error?error=${error.type}`);
-                  }
-                  throw error;
-                }
-              }}
+            <button
+              onClick={handleGitHubSignIn}
+              className="w-full py-2 px-4 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
             >
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
-              >
-                <ProviderIcon provider="GitHub" className="mr-2 h-4 w-4" />
-                Sign in with GitHub
-              </button>
-            </form>
+              <ProviderIcon provider="GitHub" className="mr-2 h-4 w-4" />
+              Sign in with GitHub
+            </button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -47,19 +51,7 @@ export default function SignInPage() {
                 </span>
               </div>
             </div>
-            <form
-              action={async (formData) => {
-                "use server";
-                try {
-                  await signIn("email", { email: formData.get("email") });
-                } catch (error) {
-                  if (error instanceof AuthError) {
-                    return redirect(`/api/auth/error?error=${error.type}`);
-                  }
-                  throw error;
-                }
-              }}
-            >
+            <form onSubmit={handleEmailSignIn}>
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Email
@@ -72,7 +64,10 @@ export default function SignInPage() {
                   className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
                 />
               </div>
-              <button className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+              <button 
+                type="submit"
+                className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
                 Sign in with Email
               </button>
             </form>
@@ -103,7 +98,6 @@ function ProviderIcon({ provider, ...props }: { provider: string; className?: st
           <path d="M9 18c-4.51 2-5-2-7-2" />
         </svg>
       );
-    // Add other providers' icons here
     default:
       return null;
   }
