@@ -10,6 +10,22 @@ import { createPool } from '@vercel/postgres';
 declare module "next-auth" {
   interface Profile {
     login?: string;
+    avatar_url?: string;
+  }
+  
+  interface User {
+    provider?: string;
+    image?: string | null;
+  }
+
+  interface Session {
+    user: {
+      id?: string | null;
+      email?: string | null;
+      image?: string | null;
+      provider?: string;
+      purchased_courses?: number[];
+    }
   }
 }
 
@@ -53,12 +69,27 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (account) {
         console.log(`signIn callback: %o, %o, %o, %o, %o`, user, account, profile, email, credentials);
 
-        let githubUsername, userFullName, userEmailAddress;
+        let githubUsername, userFullName, userEmailAddress, avatarUrl;
 
         if (account.provider === 'github') {
           // Extract GitHub profile info
           githubUsername = profile!.login!;
           userFullName = profile!.name!;
+          avatarUrl = profile!.avatar_url;
+          
+          // Update the user object with GitHub info
+          try {
+            await sql`
+              UPDATE users 
+              SET 
+                name = ${userFullName},
+                image = ${avatarUrl},
+                github_username = ${githubUsername}
+              WHERE email = ${user.email}
+            `;
+          } catch (error) {
+            console.error('Error updating user with GitHub info:', error);
+          }
         } else if (account.provider === 'email') {
           // Get email profile info
           userEmailAddress = user!.email!;
@@ -97,7 +128,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (githubUsername) {
               createValues = {
                 github_username: githubUsername,
-                name: userFullName
+                name: userFullName,
+                image: avatarUrl
               };
             } else if (userEmailAddress) {
               createValues = {
@@ -108,8 +140,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             console.log(`Creating new user with values: %o`, createValues);
 
             const createRes = await sql`
-              INSERT INTO users (github_username, name, email)
-              VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress})
+              INSERT INTO users (github_username, name, email, image)
+              VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress}, ${avatarUrl})
               RETURNING id
           `;
             userId = createRes.rows[0].id;
@@ -129,8 +161,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       console.log(`userId: ${userId}`);
 
+      // Get the full user record from the database
+      const { rows } = await sql`
+        SELECT * FROM users WHERE id = ${userId}
+      `;
+      const dbUser = rows[0];
+
       // Add purchased courses to the session object
       session!.user!.purchased_courses = await getPurchasedCourses(Number(userId));
+      
+      // Add provider and image from the database user
+      session!.user!.provider = dbUser.github_username ? 'GitHub' : 'Email';
+      session!.user!.image = dbUser.image;
 
       console.log(`session before return: %o`, session);
 
