@@ -17,7 +17,8 @@ const nextConfig = {
       "zackproser.com", 
       "www.zackproser.com",
       "img.youtube.com", 
-      "placehold.co"
+      "placehold.co",
+      "avatars.githubusercontent.com"
     ],
   },
   transpilePackages: [
