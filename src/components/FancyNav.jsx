@@ -45,6 +45,7 @@ import {
 } from './ui/collapsible';
 
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
+import { AuthStatus } from './AuthStatus'
 
 const navHierarchy = [
   {
@@ -215,6 +216,9 @@ const DesktopNav = ({ navItems }) => (
         <NavigationMenuLink className="pl-10 ml-10">
           <ThemeToggleWrapper />
         </NavigationMenuLink>
+        <NavigationMenuLink className="pl-2">
+          <AuthStatus />
+        </NavigationMenuLink>
       </NavigationMenuList>
     </NavigationMenu>
   </nav>
@@ -230,9 +234,15 @@ const MobileNav = ({ navItems }) => (
     </SheetTrigger>
     <SheetContent side="left">
       <div className="flex flex-col gap-6 p-6">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold" prefetch={false}>
-          <span>Zack Proser</span>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold" prefetch={false}>
+            <span>Zack Proser</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggleWrapper />
+            <AuthStatus />
+          </div>
+        </div>
         <nav className="grid gap-2">
           {navItems.map((item) =>
             item.children ? (

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Brain, Menu, X } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
+import { AuthStatus } from './AuthStatus'
 
 const navItems = [
   { label: 'Research', href: '/blog' },
@@ -51,7 +52,10 @@ export function SimpleNav() {
               {item.label}
             </Link>
           ))}
-          <ThemeToggleWrapper />
+          <div className="flex items-center gap-4">
+            <ThemeToggleWrapper />
+            <AuthStatus />
+          </div>
         </nav>
       </div>
       <NavigationEvents onRouteChange={handleRouteChange} />
