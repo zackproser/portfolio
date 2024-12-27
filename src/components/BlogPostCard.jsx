@@ -1,20 +1,33 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils' // Assuming you have a utility function for combining classes
+import { ClientSideIcon } from './ClientSideIcon'
 
 import wakka from '@/images/wakka.webp'
 
 const StatusBadge = ({ status }) => {
-  const isActive = !!status;
+  const isActive = status !== undefined && status !== null;
+  
   return (
     <span className={cn(
       "inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white",
       "ring-2 ring-offset-2 ring-offset-gray-800 shadow-md transition duration-300 ease-in-out",
       isActive ? "bg-green-700 hover:bg-gray-800 ring-green-500" : "bg-orange-500 hover:bg-gray-800 ring-yellow-500"
     )}>
-      <svg className={cn("h-2 w-2", isActive ? "fill-green-500" : "fill-yellow-500")} viewBox="0 0 6 6" aria-hidden="true">
-        <circle cx={3} cy={3} r={3} />
-      </svg>
+      <ClientSideIcon>
+        <svg 
+          className="h-2 w-2" 
+          viewBox="0 0 6 6" 
+          aria-hidden="true"
+        >
+          <circle 
+            cx={3} 
+            cy={3} 
+            r={3} 
+            className={isActive ? "fill-green-500" : "fill-yellow-500"}
+          />
+        </svg>
+      </ClientSideIcon>
       {isActive ? status : "Coming soon!"}
     </span>
   )
