@@ -1,8 +1,8 @@
 import { auth } from '../../../../auth'
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
-import { importArticle } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles'
 
 if (!process.env.STRIPE_SECRET_KEY) {
 	throw new Error('Missing STRIPE_SECRET_KEY')
@@ -43,17 +43,26 @@ export async function POST(req: Request) {
 			const articleSlug = product.replace('blog-', '')
 			
 			try {
-				const article = await importArticle(`${articleSlug}/page.mdx`)
+				const article = await importArticleMetadata(`${articleSlug}/page.mdx`)
+
+				if (!article.price) {
+					return NextResponse.json(
+						{ error: 'Article price not set' },
+						{ status: 400 }
+					)
+				}
 
 				const checkoutSession = await stripe.checkout.sessions.create({
 					mode: 'payment',
 					payment_method_types: ['card'],
+					ui_mode: 'embedded',
 					line_items: [
 						{
 							price_data: {
 								currency: 'usd',
 								product_data: {
 									name: article.title,
+									description: article.description,
 									metadata: {
 										type: 'article',
 										slug: articleSlug,
@@ -70,21 +79,23 @@ export async function POST(req: Request) {
 						slug: articleSlug,
 						userId: userId.toString()
 					},
-					success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${articleSlug}?success=true`,
-					cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${articleSlug}?canceled=true`,
+					return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
 				})
 
 				return NextResponse.json({ clientSecret: checkoutSession.client_secret })
 			} catch (error) {
+				console.error('Error creating checkout session for article:', error)
 				return NextResponse.json(
-					{ error: 'Article not found' },
+					{ error: 'Article not found or invalid' },
 					{ status: 404 }
 				)
 			}
 		}
 
-		// Handle existing course/product purchases
-		// ... your existing course checkout logic ...
+		return NextResponse.json(
+			{ error: 'Invalid product type' },
+			{ status: 400 }
+		)
 
 	} catch (error) {
 		console.error('Error creating checkout session:', error)
