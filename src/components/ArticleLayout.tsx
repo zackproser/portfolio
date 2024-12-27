@@ -1,27 +1,32 @@
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
-import GiscusWrapper from '@/components/GiscusWrapper';
-import NewsletterWrapper from '@/components/NewsletterWrapper';
+import GiscusWrapper from '@/components/GiscusWrapper'
+import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
+import ArticleContent from './ArticleContent'
 
-export function ArticleLayout({
-  children,
-  metadata,
-}: {
+interface ArticleLayoutProps {
   children: React.ReactNode
   metadata: {
     title: string
     description: string
+    author: string
     date: string
-    image?: {
-      src: string
-    },
-    type?: string
+    isPaid?: boolean
+    price?: number
     slug?: string
+    previewLength?: number
+    previewElements?: number
   }
-}) {
+}
 
+export function ArticleLayout({
+  children,
+  metadata,
+}: ArticleLayoutProps) {
+  console.log('Full metadata in ArticleLayout:', metadata)
+  
   return (
     <>
       <Container className="mt-16 lg:mt-32">
@@ -40,9 +45,23 @@ export function ArticleLayout({
                   <span className="ml-3">{metadata.date}</span>
                 </time>
               </header>
-              <Prose className="mt-8">{children}</Prose>
+              <Prose className="mt-8">
+                <ArticleContent
+                  isPaid={metadata.isPaid}
+                  price={metadata.price}
+                  slug={metadata.slug}
+                  title={metadata.title}
+                  previewLength={metadata.previewLength}
+                  previewElements={metadata.previewElements}
+                >
+                  {children}
+                </ArticleContent>
+              </Prose>
             </article>
-            <NewsletterWrapper title={'If you made it this far, you can do anything!'} body={'I publish technical content for developers who want to skill up, and break down AI, vector databases and tools for investors'} />
+            <NewsletterWrapper 
+              title={'If you made it this far, you can do anything!'} 
+              body={'I publish technical content for developers who want to skill up, and break down AI, vector databases and tools for investors'} 
+            />
             <Suspense fallback={<div>Loading...</div>}>
               <GiscusWrapper />
             </Suspense>
