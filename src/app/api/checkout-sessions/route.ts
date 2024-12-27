@@ -118,20 +118,24 @@ export async function GET(req: NextRequest) {
 		}
 
 		const session = await stripe.checkout.sessions.retrieve(sessionId);
-
 		console.log(`session: ${JSON.stringify(session)}`);
 
-		const product = req.nextUrl.searchParams.get("product");
-
-		if (!session.customer_details) {
-			throw new Error("Customer details are missing in the session");
+		// If payment is successful, record the purchase
+		if (session.payment_status === 'paid' && session.metadata?.type === 'article') {
+			const { userId, slug } = session.metadata;
+			
+			// Record the purchase in the database
+			await sql`
+				INSERT INTO articlepurchases (user_id, article_slug, stripe_payment_id, amount)
+				VALUES (${userId}, ${slug}, ${session.payment_intent as string}, ${session.amount_total})
+				ON CONFLICT (user_id, article_slug) DO NOTHING
+			`;
 		}
 
 		return new NextResponse(
 			JSON.stringify({
-				status: session.payment_status,
-				customer_email: session.customer_details.email,
-				product: product,
+				payment_status: session.payment_status,
+				metadata: session.metadata,
 			}),
 			{
 				status: 200,
