@@ -4,124 +4,24 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Brain } from "lucide-react"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { usePathname } from "next/navigation"
 import { track } from "@vercel/analytics"
 import { BlogPostCard } from "@/components/BlogPostCard"
+import dynamic from 'next/dynamic'
 
-const NeuralNetworkPulse = () => {
-  const [pulseNodes, setPulseNodes] = useState<number[]>([]);
-  const [nodeInfo, setNodeInfo] = useState<Record<number, { phrase: string, weight: number }>>({});
-  const [isVisible, setIsVisible] = useState(false);
-
-  const phrases = [
-    "VSCode", "IntelliSense", "Git", "Terminal", "Debugger",
-    "Copilot", "Autocomplete", "Refactor", "Linter", "Snippets",
-    "<div>", "function()", "import React", "useState", "async/await"
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPulseNodes(prevNodes => {
-        const newNodes: number[] = [...prevNodes];
-        const randomNode: number = Math.floor(Math.random() * 30);
-        if (!newNodes.includes(randomNode)) {
-          newNodes.push(randomNode);
-          // Generate random info for the pulsing node
-          setNodeInfo(prevInfo => ({
-            ...prevInfo,
-            [randomNode]: {
-              phrase: phrases[Math.floor(Math.random() * phrases.length)],
-              weight: Number(Math.random().toFixed(2))  // Convert to number
-            }
-          }));
-        }
-        if (newNodes.length > 5) {
-          newNodes.shift();
-        }
-        return newNodes;
-      });
-    }, 250);
-
-    return () => clearInterval(interval);
-  }, [phrases]); // Add phrases to the dependency array
-
-  useEffect(() => {
-    // Delay the visibility to allow for a smooth transition
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const nodes = 15;
-  const radius = 240;
-
-  return (
-    <div className={`relative w-[600px] h-[600px] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-      {/* Render lines first so they appear behind nodes */}
-      {[...Array(nodes)].map((_, i) => {
-        const angle = (i / nodes) * 2 * Math.PI;
-        const x1 = radius * Math.cos(angle) + radius;
-        const y1 = radius * Math.sin(angle) + radius;
-        return [...Array(nodes)].map((_, j) => {
-          const angle2 = (j / nodes) * 2 * Math.PI;
-          const x2 = radius * Math.cos(angle2) + radius;
-          const y2 = radius * Math.sin(angle2) + radius;
-          return (
-            <svg key={`${i}-${j}`} className="absolute top-0 left-0 w-full h-full">
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#A0AEC0"
-                strokeWidth="1"
-                className={`transition-all duration-300 ${
-                  pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-green-400 stroke-[1.5px]' : ''
-                }`}
-              />
-            </svg>
-          );
-        });
-      })}
-      
-      {[...Array(nodes)].map((_, i) => {
-        const angle = (i / nodes) * 2 * Math.PI;
-        const x = radius * Math.cos(angle) + radius;
-        const y = radius * Math.sin(angle) + radius;
-        return (
-          <div
-            key={i}
-            className={`absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              pulseNodes.includes(i) ? 'scale-150 bg-green-400' : ''
-            }`}
-            style={{ left: x, top: y }}
-          />
-        );
-      })}
-
-      {/* Render info labels on top */}
-      {pulseNodes.map(i => {
-        const angle = (i / nodes) * 2 * Math.PI;
-        const x = radius * Math.cos(angle) + radius;
-        const y = radius * Math.sin(angle) + radius;
-        return (
-          <div
-            key={`info-${i}`}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-            style={{ left: x, top: y - 30 }}
-          >
-            <div className="bg-yellow-300 text-purple-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
-              {nodeInfo[i]?.weight}
-            </div>
-            <div className="bg-purple-600 text-yellow-300 px-1 rounded text-xs font-bold animate-pulse">
-              {nodeInfo[i]?.phrase}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+// Dynamically import the NeuralNetworkPulse with no SSR
+const NeuralNetworkPulse = dynamic(
+  () => import('@/components/NeuralNetworkPulse').then(mod => mod.NeuralNetworkPulse),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-[600px] h-[600px] flex items-center justify-center">
+        <div className="animate-pulse text-gray-400">Loading visualization...</div>
+      </div>
+    )
+  }
+)
 
 // Add type definitions for the props
 interface Article {
@@ -227,7 +127,13 @@ export default function HomepageClientComponent({
               </div>
               {!isMobile && (
                 <div className="flex-1 md:w-1/2 flex justify-center">
-                  <NeuralNetworkPulse />
+                  <Suspense fallback={
+                    <div className="w-[600px] h-[600px] flex items-center justify-center">
+                      <div className="animate-pulse text-gray-400">Loading visualization...</div>
+                    </div>
+                  }>
+                    <NeuralNetworkPulse />
+                  </Suspense>
                 </div>
               )}
             </div>
