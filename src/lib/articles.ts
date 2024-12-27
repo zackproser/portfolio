@@ -19,13 +19,13 @@ export async function importArticle(
 export async function importArticleMetadata(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  const { metadata } = await import(`@/app/blog/${articleFilename}`) as {
-    metadata: Article;
+  const { articleMetadata } = await import(`@/app/blog/${articleFilename}`) as {
+    articleMetadata: Article;
   };
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...metadata,
+    ...articleMetadata,
   };
 }
 
