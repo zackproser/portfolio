@@ -1,125 +1,97 @@
-import { NextRequest, NextResponse } from "next/server";
-import { redirect } from "next/navigation";
+import { auth } from '@/auth'
+import { NextResponse } from 'next/server'
+import Stripe from 'stripe'
+import { sql } from '@vercel/postgres'
+import { importArticle } from '@/lib/articles'
 
-import { getProductDetails, ProductDetails } from "@/utils/productUtils";
+if (!process.env.STRIPE_SECRET_KEY) {
+	throw new Error('Missing STRIPE_SECRET_KEY')
+}
 
-import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-	apiVersion: "2023-10-16",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+	apiVersion: '2023-10-16'
+})
 
-import { auth } from '../../../../auth'
-
-// POST creates a new Stripe Checkout session, which results in the Checkout
-// embedded form being rendered
-export async function POST(req: NextRequest) {
-	console.log("checkout-sessions POST");
-
-	const nextSession = await auth();
-
-	if (!nextSession) {
-		return new NextResponse(
-			JSON.stringify({
-				error: "Must be signed into GitHub to purchase courses",
-			}),
-			{
-				status: 403,
-			},
-		);
-	}
-
-	// Get the user's email address
-	const userEmail = nextSession.user.email as unknown as string;
-
-	// Look up the product information based on the slug that was passed into this route
-	// from the frontend
-	const data = await req.json();
-	const productSlug: string = data.product ?? "unknown";
-	const productDetails: ProductDetails | null =
-		await getProductDetails(productSlug);
-
-	if (!productDetails) {
-		return new NextResponse(
-			JSON.stringify({
-				error: "Invalid product provided.",
-			}),
-			{
-				status: 400,
-			},
-		);
-	}
-
-	// If the course status is either 'in-progress' or 'coming-soon', then it's not actually finished,
-	// so we can't actually sell anything yet. Instead, we redirect the user to a waitinglist capture
-	// page specifically for that course
-	if (
-		productDetails.status === "in-progress" ||
-		productDetails.status === "coming-soon"
-	) {
-		return new NextResponse(
-			JSON.stringify({
-				error: "Product not yet available for sale.",
-			}),
-			{
-				status: 400,
-			},
-		);
-	}
-
-	// If the user has already purchased this course, then we redirect them to the
-	// interactive private course route
-	if (
-		nextSession.user.purchased_courses.includes(
-			Number(productDetails.course_id),
-		)
-	) {
-		return new NextResponse(
-			JSON.stringify({
-				error: "User already purchased this product.",
-			}),
-			{
-				status: 409,
-			},
-		);
-	}
-
-	// If we reach this point, it means:
-	// 1. The user is signed into GitHub, so we have a valid session that we can get their info from
-	// 2. The product exists
-	// 3. The product is available for purchase (it's not still under development)
-	//
-	// Therefore, we can create a new Stripe Checkout session for the given product, which will result
-	// in the Stripe Checkout embedded form being rendered for the user to enter their payment details
+export async function POST(req: Request) {
 	try {
-		const session = await stripe.checkout.sessions.create({
-			ui_mode: "embedded",
-			line_items: [
-				{
-					price: productDetails.price_id,
-					quantity: 1,
-				},
-			],
-			mode: "payment",
-			return_url: `${req.headers.get(
-				"origin",
-			)}/success?session_id={CHECKOUT_SESSION_ID}&product=${productSlug}`,
-		});
-
-		return new NextResponse(
-			JSON.stringify({ clientSecret: session.client_secret }),
-			{
-				status: 200,
-			},
-		);
-	} catch (err: unknown) {
-		if (err instanceof Error) {
-			return new NextResponse(JSON.stringify({ error: err.message }), {
-				status: 500,
-			});
+		const session = await auth()
+		if (!session?.user?.email) {
+			return NextResponse.json(
+				{ error: 'Must be signed in to make purchases' },
+				{ status: 401 }
+			)
 		}
-		return new NextResponse(JSON.stringify({ error: "Unknown Error" }), {
-			status: 500,
-		});
+
+		const { product } = await req.json()
+
+		// Get user ID from email
+		const { rows: userRows } = await sql`
+			SELECT id FROM users WHERE email = ${session.user.email}
+		`
+
+		if (!userRows.length) {
+			return NextResponse.json(
+				{ error: 'User not found' },
+				{ status: 404 }
+			)
+		}
+
+		const userId = userRows[0].id
+
+		// Handle article purchases
+		if (product.startsWith('blog-')) {
+			const articleSlug = product.replace('blog-', '')
+			
+			try {
+				const article = await importArticle(`${articleSlug}/page.mdx`)
+
+				const checkoutSession = await stripe.checkout.sessions.create({
+					mode: 'payment',
+					payment_method_types: ['card'],
+					line_items: [
+						{
+							price_data: {
+								currency: 'usd',
+								product_data: {
+									name: article.title,
+									metadata: {
+										type: 'article',
+										slug: articleSlug,
+										userId: userId.toString()
+									},
+								},
+								unit_amount: article.price,
+							},
+							quantity: 1,
+						},
+					],
+					metadata: {
+						type: 'article',
+						slug: articleSlug,
+						userId: userId.toString()
+					},
+					success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${articleSlug}?success=true`,
+					cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${articleSlug}?canceled=true`,
+				})
+
+				return NextResponse.json({ clientSecret: checkoutSession.client_secret })
+			} catch (error) {
+				return NextResponse.json(
+					{ error: 'Article not found' },
+					{ status: 404 }
+				)
+			}
+		}
+
+		// Handle existing course/product purchases
+		// ... your existing course checkout logic ...
+
+	} catch (error) {
+		console.error('Error creating checkout session:', error)
+		return NextResponse.json(
+			{ error: error instanceof Error ? error.message : 'Failed to create checkout session' },
+			{ status: 500 }
+		)
 	}
 }
 

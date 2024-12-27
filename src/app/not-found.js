@@ -38,7 +38,7 @@ export default function Custom404() {
         Whoops - we couldn&apos;t find that page!
       </h2>
       <div className="w-full">
-        <Image src={wizard404} alt="404 wizard" layout="responsive" />
+        <Image src={wizard404} alt="404 wizard" />
       </div>
       <Link href="/" className="block mt-8 mb-4 text-xl sm:text-2xl lg:text-3xl text-center leading-tight dark:text-zinc-400">
         Go Home?
