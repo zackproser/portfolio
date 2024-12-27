@@ -6,6 +6,9 @@ export interface Article {
   type?: string
   image?: string
   status?: string
+  isPaid?: boolean
+  price?: number
+  previewLength?: number
 }
 
 export interface ArticleWithSlug extends Article {

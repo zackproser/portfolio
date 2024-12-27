@@ -93,7 +93,7 @@ const CheckoutPage = () => {
 	useEffect(() => {
 		if (!productSlug) return;
 
-		let isSubscribed = true; // To handle potential memory leak
+		let isSubscribed = true;
 
 		fetch(`/api/products?product=${productSlug}`, {
 			method: "GET",
@@ -104,19 +104,35 @@ const CheckoutPage = () => {
 			.then((res) => res.json())
 			.then((data) => {
 				if (isSubscribed) {
-					setProductId(data.course_id);
+					setProductTitle(data.title);
+					setProductStatus(data.status);
+					
+					// Handle article products
+					if (data.type === 'article') {
+						setProductId(null); // Articles don't have course IDs
+					} else {
+						setProductId(data.course_id);
+					}
 				}
 			});
 
-		// Clean up function to set isSubscribed to false when component unmounts
 		return () => {
 			isSubscribed = false;
 		};
 	}, [productSlug]);
 
-	// If user has already purchased the course, redirect them to start learning
+	// Modify the purchase check for articles
 	useEffect(() => {
-		if (purchasedCourses.includes(productId)) {
+		if (productSlug?.startsWith('blog-')) {
+			// For articles, check purchase status differently
+			fetch(`/api/check-purchase?slug=${productSlug.replace('blog-', '')}`)
+				.then(res => res.json())
+				.then(data => {
+					if (data.purchased) {
+						redirect(`/blog/${productSlug.replace('blog-', '')}`);
+					}
+				});
+		} else if (purchasedCourses.includes(productId)) {
 			redirect(`/learn/${productSlug}/0`);
 		}
 	}, [purchasedCourses, productId, productSlug]);
