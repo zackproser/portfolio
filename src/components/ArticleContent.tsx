@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Paywall from './Paywall'
 import React from 'react'
@@ -35,14 +35,7 @@ export default function ArticleContent({
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(false)
 
-  useEffect(() => {
-    console.log('Session state:', { session, isPaid, slug })
-    if (session?.user?.email && isPaid) {
-      checkPurchaseStatus()
-    }
-  }, [session, slug])
-
-  const checkPurchaseStatus = async () => {
+  const checkPurchaseStatus = useCallback(async () => {
     try {
       console.log('Checking purchase status for:', { slug })
       const response = await fetch(`/api/check-purchase?slug=${slug}`)
@@ -59,7 +52,14 @@ export default function ArticleContent({
       console.error('Error checking purchase status:', error)
       setHasPurchased(false)
     }
-  }
+  }, [slug])
+
+  useEffect(() => {
+    console.log('Session state:', { session, isPaid, slug })
+    if (session?.user?.email && isPaid) {
+      checkPurchaseStatus()
+    }
+  }, [session, slug, isPaid, checkPurchaseStatus])
 
   if (!isPaid || hasPurchased) {
     return <>{children}</>
