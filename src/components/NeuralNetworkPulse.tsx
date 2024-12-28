@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 export const NeuralNetworkPulse = () => {
   const [pulseNodes, setPulseNodes] = useState<number[]>([]);
@@ -8,11 +8,11 @@ export const NeuralNetworkPulse = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  const phrases = [
+  const phrases = useMemo(() => [
     "VSCode", "IntelliSense", "Git", "Terminal", "Debugger",
     "Copilot", "Autocomplete", "Refactor", "Linter", "Snippets",
     "<div>", "function()", "import React", "useState", "async/await"
-  ];
+  ], []);
 
   useEffect(() => {
     setIsMounted(true);
