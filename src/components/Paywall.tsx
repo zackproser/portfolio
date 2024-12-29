@@ -4,14 +4,18 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { Button } from './Button'
 import { useRouter } from 'next/navigation'
+import { BlogPostCard } from './BlogPostCard'
+import { Article } from '@/lib/shared-types'
 
 interface PaywallProps {
   price: number
   slug: string
   title: string
+  paywallHeader?: string
+  article: Article & { slug: string }
 }
 
-export default function Paywall({ price, slug, title }: PaywallProps) {
+export default function Paywall({ price, slug, title, paywallHeader, article }: PaywallProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -35,17 +39,27 @@ export default function Paywall({ price, slug, title }: PaywallProps) {
   }
 
   return (
-    <div className="my-8 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
-      <h3 className="text-lg font-bold mb-4">Continue Reading</h3>
-      <p className="mb-4">
-        This article is available for ${(price / 100).toFixed(2)}. Purchase to read the full content.
-      </p>
-      <Button
-        onClick={handlePurchase}
-        disabled={loading}
-      >
-        {loading ? 'Processing...' : `Purchase for $${(price / 100).toFixed(2)}`}
-      </Button>
+    <div className="my-8 p-8 bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 rounded-xl shadow-xl border border-zinc-300 dark:border-zinc-700">
+      <h3 className="text-2xl font-bold mb-6 text-center text-zinc-900 dark:text-zinc-100">
+        {paywallHeader || "Hands-on knowledge is valuable"}
+      </h3>
+      
+      <div className="mb-8">
+        <BlogPostCard article={article} />
+      </div>
+
+      <div className="text-center">
+        <p className="mb-6 text-lg text-zinc-700 dark:text-zinc-300">
+          Purchase to read the full content and support its independent creator.
+        </p>
+        <Button
+          onClick={handlePurchase}
+          disabled={loading}
+          className="w-full sm:w-auto px-8 py-3 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
+        >
+          {loading ? 'Processing...' : `Purchase for $${(price / 100).toFixed(2)}`}
+        </Button>
+      </div>
     </div>
   )
 } 
