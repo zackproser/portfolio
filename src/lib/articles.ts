@@ -16,7 +16,6 @@ export async function importArticle(
       date?: string;
       image?: string | { src: string } | StaticImageData;
       author?: string;
-      type?: string;
     }
   }
 
@@ -28,13 +27,10 @@ export async function importArticle(
     if (typeof metadata.image === 'object' && 'src' in metadata.image) {
       imageUrl = metadata.image.src;
     } else if (typeof metadata.image === 'object' && 'default' in metadata.image) {
-      // Handle webpack imports which come as { default: { src: string } }
       imageUrl = (metadata.image as unknown as { default: { src: string } }).default.src;
     } else if (typeof metadata.image === 'string') {
-      // Handle both absolute paths and relative paths from src/images
       imageUrl = metadata.image.startsWith('/') ? metadata.image : `/images/${metadata.image}`;
     } else {
-      // Handle direct webpack imports
       imageUrl = (metadata.image as unknown as { src: string }).src;
     }
   }
@@ -46,7 +42,6 @@ export async function importArticle(
     author: metadata.author || 'Zachary Proser',
     date: metadata.date || new Date().toISOString().split('T')[0],
     image: imageUrl,
-    type: metadata.type || (rootPath === 'demos' ? 'demo' : 'blog'),
     // Commerce fields with defaults
     isPaid: metadata.isPaid || false,
     price: metadata.price,
@@ -65,7 +60,6 @@ export async function importArticleMetadata(
   return importArticle(articleFilename);
 }
 
-// Extend getAllArticles to accept an optional array of slugs
 export async function getAllArticles(matchingSlugs?: string[]) {
   // Get blog articles
   let blogFilenames = await glob('*/page.mdx', {
@@ -89,7 +83,7 @@ export async function getAllArticles(matchingSlugs?: string[]) {
 
   let articles = [...blogArticles, ...demoArticles];
 
-  // Filter articles to include only those whose slug is in matchingSlugs
+  // If we have specific slugs to match, filter by them
   if (matchingSlugs && matchingSlugs.length > 0) {
     articles = articles.filter(article => matchingSlugs.includes(article.slug));
   }
