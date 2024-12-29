@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Paywall from './Paywall'
 import React from 'react'
+import { Article } from '@/lib/shared-types'
 
 interface ArticleContentProps {
   children: React.ReactNode
@@ -13,6 +14,7 @@ interface ArticleContentProps {
   title?: string
   previewLength?: number
   previewElements?: number // Number of elements to show in preview
+  metadata?: Article & { slug: string }
 }
 
 export default function ArticleContent({ 
@@ -22,9 +24,9 @@ export default function ArticleContent({
   slug, 
   title,
   previewLength = 150,
-  previewElements = 3
+  previewElements = 3,
+  metadata
 }: ArticleContentProps) {
-  // Debug logs removed for cleaner build output
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(false)
 
@@ -74,6 +76,27 @@ export default function ArticleContent({
     return child
   })
 
+  // Get preview text for description
+  const previewText = React.Children.toArray(children)
+    .find(child => React.isValidElement(child) && child.type === 'p')
+  const previewDescription = React.isValidElement(previewText) && previewText.props?.children
+    ? React.Children.toArray(previewText.props.children)
+      .map(c => (typeof c === 'string' ? c : ''))
+      .join('')
+      .slice(0, 150) + '...'
+    : ''
+
+  // Construct article metadata if not provided
+  const articleData: Article & { slug: string } = metadata || {
+    slug: slug!,
+    title: title!,
+    type: 'blog',
+    date: new Date().toISOString().split('T')[0],
+    description: previewDescription,
+    author: 'Zachary Proser', // Required by Article type
+    image: undefined // Optional in Article type
+  }
+
   return (
     <>
       <div className="article-preview">
@@ -83,6 +106,7 @@ export default function ArticleContent({
         price={price!} 
         slug={slug!}
         title={title!}
+        article={articleData}
       />
     </>
   )
