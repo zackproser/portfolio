@@ -2,7 +2,8 @@ import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import ComparePageClient from './ComparePageClient';
 import { Database } from '@/lib/shared-types';
 
-export default function ComparePage({ searchParams }: { searchParams: { dbs?: string } }) {
+export default async function ComparePage(props: { searchParams: Promise<{ dbs?: string }> }) {
+  const searchParams = await props.searchParams;
   const allDatabases = getDatabases() as Database[];
   const categories = getCategories();
   const features = getFeatures();

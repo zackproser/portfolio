@@ -72,7 +72,7 @@ export default async function Page() {
     const videos = allVideos.filter(video => videoSlugs.includes(video.slug))  // Filter videos
 
     // Server-side mobile detection
-    const userAgent = headers().get('user-agent') || ''
+    const userAgent = (await headers()).get('user-agent') || ''
     const parser = new UAParser(userAgent)
     const isMobile = parser.getDevice().type === 'mobile'
     console.log('Is Mobile:', isMobile)

@@ -1,7 +1,8 @@
 import { getTools } from '@/lib/getTools';
 import ComparePage from './ComparePage';
 
-export async function generateMetadata({ searchParams }) {
+export async function generateMetadata(props) {
+  const searchParams = await props.searchParams;
   const allTools = getTools();
   const selectedToolNames = searchParams.tools 
     ? searchParams.tools.split(',').map(name => name.trim())
@@ -40,7 +41,8 @@ export async function generateMetadata({ searchParams }) {
   };
 }
 
-export default function Page({ searchParams }) {
+export default async function Page(props) {
+  const searchParams = await props.searchParams;
   const allTools = getTools();
   return <ComparePage searchParams={searchParams} allTools={allTools} />;
 }

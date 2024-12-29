@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Container } from "@/components/Container";
 import { useSession } from "next-auth/react";
 import { CourseStatus } from "@/utils/productUtils";
@@ -165,4 +165,10 @@ const CheckoutPage = () => {
 	);
 }
 
-export default CheckoutPage;
+export default function CheckoutPageWrapper() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<CheckoutPage />
+		</Suspense>
+	);
+}
