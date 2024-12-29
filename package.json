@@ -70,7 +70,7 @@
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.395.0",
     "micromatch": "^4.0.8",
-    "next": "^14.2.3",
+    "next": "^14.2.15",
     "next-auth": "5.0.0-beta.19",
     "next-router-mock": "^0.9.3",
     "next-themes": "^0.2.1",
