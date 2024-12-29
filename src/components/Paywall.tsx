@@ -4,18 +4,15 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { Button } from './Button'
 import { useRouter } from 'next/navigation'
-import { BlogPostCard } from './BlogPostCard'
-import { Article } from '@/lib/shared-types'
 
 interface PaywallProps {
   price: number
   slug: string
   title: string
   paywallHeader?: string
-  article: Article & { slug: string }
 }
 
-export default function Paywall({ price, slug, title, paywallHeader, article }: PaywallProps) {
+export default function Paywall({ price, slug, title, paywallHeader }: PaywallProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -43,10 +40,6 @@ export default function Paywall({ price, slug, title, paywallHeader, article }: 
       <h3 className="text-2xl font-bold mb-6 text-center text-zinc-900 dark:text-zinc-100">
         {paywallHeader || "Hands-on knowledge is valuable"}
       </h3>
-      
-      <div className="mb-8">
-        <BlogPostCard article={article} />
-      </div>
 
       <div className="text-center">
         <p className="mb-6 text-lg text-zinc-700 dark:text-zinc-300">
