@@ -1,41 +1,93 @@
-import { Article, ArticleWithSlug } from './shared-types'
+import { ArticleWithSlug, PaidArticle } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
+import { Metadata } from 'next'
+import { StaticImageData } from 'next/image'
 
 export async function importArticle(
   articleFilename: string,
+  rootPath: string = 'blog'
 ): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`@/app/blog/${articleFilename}`)) as {
-    default: React.ComponentType
-    metadata: Article
+  const importedData = await import(`@/app/${rootPath}/${articleFilename}`) as {
+    metadata: Metadata & { 
+      isPaid?: boolean; 
+      price?: number; 
+      previewLength?: number;
+      date?: string;
+      image?: string | { src: string } | StaticImageData;
+      author?: string;
+      type?: string;
+    }
   }
+
+  const { metadata } = importedData;
+
+  // Handle webpack-imported images
+  let imageUrl: string | undefined;
+  if (metadata.image) {
+    if (typeof metadata.image === 'object' && 'src' in metadata.image) {
+      imageUrl = metadata.image.src;
+    } else if (typeof metadata.image === 'object' && 'default' in metadata.image) {
+      // Handle webpack imports which come as { default: { src: string } }
+      imageUrl = (metadata.image as unknown as { default: { src: string } }).default.src;
+    } else if (typeof metadata.image === 'string') {
+      // Handle both absolute paths and relative paths from src/images
+      imageUrl = metadata.image.startsWith('/') ? metadata.image : `/images/${metadata.image}`;
+    } else {
+      // Handle direct webpack imports
+      imageUrl = (metadata.image as unknown as { src: string }).src;
+    }
+  }
+
+  // Convert Next.js metadata to our Article type
+  const normalizedMetadata: PaidArticle = {
+    title: typeof metadata.title === 'string' ? metadata.title : 'Untitled',
+    description: typeof metadata.description === 'string' ? metadata.description : '',
+    author: metadata.author || 'Zachary Proser',
+    date: metadata.date || new Date().toISOString().split('T')[0],
+    image: imageUrl,
+    type: metadata.type || (rootPath === 'demos' ? 'demo' : 'blog'),
+    // Commerce fields with defaults
+    isPaid: metadata.isPaid || false,
+    price: metadata.price,
+    previewLength: metadata.previewLength
+  };
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...metadata,
+    ...normalizedMetadata,
   }
 }
 
 export async function importArticleMetadata(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  const { articleMetadata } = await import(`@/app/blog/${articleFilename}`) as {
-    articleMetadata: Article;
-  };
-
-  return {
-    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...articleMetadata,
-  };
+  return importArticle(articleFilename);
 }
 
 // Extend getAllArticles to accept an optional array of slugs
 export async function getAllArticles(matchingSlugs?: string[]) {
-  let articleFilenames = await glob('*/page.mdx', {
+  // Get blog articles
+  let blogFilenames = await glob('*/page.mdx', {
     cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
   });
 
-  let articles = await Promise.all(articleFilenames.map(importArticle));
+  // Get demo articles
+  let demoFilenames = await glob('*/page.mdx', {
+    cwd: path.join(process.cwd(), 'src', 'app', 'demos'),
+  });
+
+  // Map blog articles
+  let blogArticles = await Promise.all(blogFilenames.map(filename => 
+    importArticle(filename, 'blog')
+  ));
+
+  // Map demo articles
+  let demoArticles = await Promise.all(demoFilenames.map(filename => 
+    importArticle(filename, 'demos')
+  ));
+
+  let articles = [...blogArticles, ...demoArticles];
 
   // Filter articles to include only those whose slug is in matchingSlugs
   if (matchingSlugs && matchingSlugs.length > 0) {

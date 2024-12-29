@@ -40,6 +40,7 @@ const rootPaths = {
   newsletter: '/newsletter/',
   demo: '/demos/',
   comparison: '/comparisons/',
+  tool: '/tools/',
   default: '/blog/'
 }
 
@@ -56,34 +57,41 @@ export function BlogPostCard({ article }) {
   const LinkComponent = isExternalLink ? 'a' : Link;
   const linkProps = isExternalLink ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
 
+  // Format the date
+  const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }) : '';
+
   return (
     <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800">
-      <LinkComponent {...linkProps} className="relative w-full">
-        <Image
-          src={image}
-          alt={title}
-          className="aspect-[16/9] w-full rounded-t-lg object-cover"
-          width={500}
-          height={281}
-        />
-        <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
-      </LinkComponent>
-      <div className="flex-1 p-6 flex flex-col justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
-            <time dateTime={date}>{date}</time>
-          </div>
-          <LinkComponent {...linkProps} className="block mt-3 group">
-            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out">
+      <LinkComponent {...linkProps} className="group">
+        <div className="relative w-full">
+          <Image
+            src={image}
+            alt={title}
+            className="aspect-[16/9] w-full rounded-t-lg object-cover"
+            width={500}
+            height={281}
+          />
+          <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
+        </div>
+        <div className="flex-1 p-6 flex flex-col justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
+              {formattedDate && <time dateTime={date}>{formattedDate}</time>}
+            </div>
+            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out mt-3">
               {title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 line-clamp-3">
               {description}
             </p>
-          </LinkComponent>
+          </div>
+          {type === 'course' && <StatusBadge status={status} />}
         </div>
-        {type === 'course' && <StatusBadge status={status} />}
-      </div>
+      </LinkComponent>
     </article>
   )
 }

@@ -1,12 +1,20 @@
-import { Article, ArticleWithSlug } from './shared-types'
+import { BaseArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
+import path from 'path'
 
-async function importArticle(
+export async function importCollection(
   articleFilename: string,
-): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/collections/${articleFilename}`)) as {
+): Promise<BaseArticleWithSlug> {
+  let { metadata } = (await import(`@/app/collections/${articleFilename}`)) as {
     default: React.ComponentType
-    metadata: Article
+    metadata: {
+      title: string
+      description: string
+      author: string
+      date: string
+      image?: string
+      status?: string
+    }
   }
 
   return {
@@ -16,17 +24,12 @@ async function importArticle(
   }
 }
 
-export async function getAllCollections(matchingSlugs?: string[]) {
+export async function getAllCollections() {
   let articleFilenames = await glob('*/page.jsx', {
-    cwd: './src/app/collections',
-  });
+    cwd: path.join(process.cwd(), 'src', 'app', 'collections'),
+  })
 
-  let articles = await Promise.all(articleFilenames.map(importArticle));
+  let articles = await Promise.all(articleFilenames.map(importCollection))
 
-  // Filter collections to include only those whose slug is in matchingSlugs
-  if (matchingSlugs && matchingSlugs.length > 0) {
-    articles = articles.filter(article => matchingSlugs.includes(article.slug));
-  }
-
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
+  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
