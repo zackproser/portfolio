@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
 `;
 
-  const result = await streamText({
+  const result = streamText({
     model: openai.chat('gpt-4o'),
     system: prompt,
     prompt: lastMessage.content,
@@ -72,5 +72,9 @@ export async function POST(req: Request) {
     JSON.stringify(relatedBlogPosts)
   ).toString('base64')
 
-  return result.toDataStreamResponse()
+  return result.toDataStreamResponse({
+    headers: {
+      'x-sources': serializedArticles
+    }
+  });
 }

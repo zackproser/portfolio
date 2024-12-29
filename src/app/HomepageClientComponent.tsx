@@ -45,12 +45,29 @@ export default function HomepageClientComponent({
   aiDev, 
   refArchitectures,
   careerAdvice,
-  videos,  
-  isMobile
+  videos,
+  isMobile: serverIsMobile
 }: HomepageClientComponentProps) {
   const [email, setEmail] = useState("")
   const [formSuccess, setFormSuccess] = useState(false)
   const referrer = usePathname()
+  const [isMobile, setIsMobile] = useState(serverIsMobile)
+
+  useEffect(() => {
+    // Update mobile state based on window width
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768) // Common breakpoint for mobile
+    }
+
+    // Set initial value
+    handleResize()
+
+    // Add event listener
+    window.addEventListener('resize', handleResize)
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const sendFormSubmissionEvent = () => {
     if (typeof window !== 'undefined' && 'gtag' in window) {

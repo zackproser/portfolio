@@ -1,95 +1,44 @@
-import { getAllArticles } from "@/lib/articles"
-import { getAllVideos } from "@/lib/videos"  // Import the new function
+import { Metadata } from 'next'
+import { getAllArticles } from '@/lib/articles'
+import { getAllVideos } from '@/lib/videos'
+import { createMetadata } from '@/utils/createMetadata'
 import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
-  title: 'Modern Coding',
-  description: 'Supercharge your development workflow',
+export const metadata: Metadata = createMetadata({
+  title: "Zachary Proser - Staff Developer",
+  description: "Staff Developer, open-source maintainer and technical writer"
 });
 
-export default async function Page() {
+export default async function Home() {
+  const allArticles = await getAllArticles()
 
-  const deepMLTutorialSlugs = [
-    'cloud-gpu-services-jupyter-notebook-reviewed',
-    'how-to-create-a-custom-alpaca-dataset',
-    'how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune'
-  ]
+  // Filter articles by type
+  const deepMLTutorials = allArticles.filter(article => article.type === 'deep-ml')
+  const mlProjects = allArticles.filter(article => article.type === 'ml-project')
+  const aiDev = allArticles.filter(article => article.type === 'ai-dev')
+  const refArchitectures = allArticles.filter(article => article.type === 'ref-arch')
+  const careerAdvice = allArticles.filter(article => article.type === 'career')
 
-  const mlProjectSlugs = [
-    'mnist-pytorch-hand-drawn-digit-recognizer',
-    'langchain-pinecone-chat-with-my-blog',
-    'rag-evaluation'
-  ]
+  // Get videos
+  const videos = await getAllVideos()
 
-  const aiDevSlugs = [
-    'automations-project',
-    'autocomplete-is-not-all-you-need',
-    'codeium-analysis-4-2024'
-  ]
+  // Use UAParser to detect mobile
+  const headersList = await headers()
+  const userAgent = headersList.get('user-agent') || ''
+  const parser = new UAParser(userAgent)
+  const isMobile = parser.getDevice().type === 'mobile'
 
-  const refArchitectureSlugs = [
-    'pinecone-reference-architecture-launch',
-    'pinecone-reference-architecture-scaling',
-    'pinecone-reference-architecture-technical-walkthrough'
-  ]
-
-  const careerAdviceSlugs = [
-    'run-your-own-tech-blog',
-    'wash-three-walls-with-one-bucket',
-    'you-get-to-keep-the-neural-connections'
-  ]
-
-  const videoSlugs = [
-    'how-to-build-chat-with-your-data-rag',
-    'how-to-use-chatgpt-in-your-terminal',
-    'what-is-a-vector-database'
-  ]
-
-  const allSlugs = [...deepMLTutorialSlugs, ...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
-
-  try {
-    // Fetch all articles matching the slugs
-    const allArticles = await getAllArticles(allSlugs)
-    const allVideos = await getAllVideos(videoSlugs)  // Fetch all videos with matching slugs
-
-    const deepMLTutorials = allArticles.filter(article => deepMLTutorialSlugs.includes(article.slug))
-
-    const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
-
-    const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
-
-    const refArchitectures = allArticles.filter(article => 
-      refArchitectureSlugs.includes(article.slug) || 
-      article.type === 'demo' || 
-      article.type === 'architecture'
-    )
-
-    const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
-
-    const videos = allVideos.filter(video => videoSlugs.includes(video.slug))  // Filter videos
-
-    // Server-side mobile detection
-    const userAgent = (await headers()).get('user-agent') || ''
-    const parser = new UAParser(userAgent)
-    const isMobile = parser.getDevice().type === 'mobile'
-    console.log('Is Mobile:', isMobile)
-
-    return (
-      <HomepageClientComponent
-        deepMLTutorials={deepMLTutorials}
-        mlProjects={mlProjects}
-        aiDev={aiDev}
-        refArchitectures={refArchitectures}
-        careerAdvice={careerAdvice}
-        videos={videos}  
-        isMobile={isMobile}
-      />
-    )
-  } catch (error) {
-    console.error('Error in Page component:', error)
-    return null
-  }
+  return (
+    <HomepageClientComponent
+      deepMLTutorials={deepMLTutorials}
+      mlProjects={mlProjects}
+      aiDev={aiDev}
+      refArchitectures={refArchitectures}
+      careerAdvice={careerAdvice}
+      videos={videos}
+      isMobile={isMobile}
+    />
+  )
 }
