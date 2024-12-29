@@ -24,20 +24,12 @@ export default function ArticleContent({
   previewLength = 150,
   previewElements = 3
 }: ArticleContentProps) {
-  console.log('ArticleContent props:', { 
-    isPaid, 
-    price, 
-    slug, 
-    title, 
-    previewLength,
-    previewElements
-  })
+  // Debug logs removed for cleaner build output
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(false)
 
   const checkPurchaseStatus = useCallback(async () => {
     try {
-      console.log('Checking purchase status for:', { slug })
       const response = await fetch(`/api/check-purchase?slug=${slug}`)
       
       if (!response.ok) {
@@ -45,8 +37,6 @@ export default function ArticleContent({
       }
       
       const data = await response.json()
-      console.log('Purchase status response:', data)
-      
       setHasPurchased(data.purchased)
     } catch (error) {
       console.error('Error checking purchase status:', error)
@@ -55,7 +45,6 @@ export default function ArticleContent({
   }, [slug])
 
   useEffect(() => {
-    console.log('Session state:', { session, isPaid, slug })
     if (session?.user?.email && isPaid) {
       checkPurchaseStatus()
     }
@@ -75,7 +64,7 @@ export default function ArticleContent({
           .join('')
         
         if (text.length > previewLength) {
-          return React.cloneElement(child, {
+          return React.cloneElement(child as React.ReactElement<{ children: React.ReactNode }>, {
             children: text.slice(0, previewLength) + '...'
           })
         }

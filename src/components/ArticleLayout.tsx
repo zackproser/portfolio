@@ -25,7 +25,7 @@ export function ArticleLayout({
   children,
   metadata,
 }: ArticleLayoutProps) {
-  console.log('Full metadata in ArticleLayout:', metadata)
+ // console.log('Full metadata in ArticleLayout:', metadata)
   
   return (
     <>

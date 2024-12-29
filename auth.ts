@@ -22,6 +22,7 @@ declare module "next-auth" {
     user: {
       id?: string | null;
       email?: string | null;
+      name?: string | null;
       image?: string | null;
       provider?: string;
       purchased_courses?: number[];

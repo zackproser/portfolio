@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { auth } from '../../../../auth'
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
