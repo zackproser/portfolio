@@ -7,9 +7,6 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   images: {
     domains: [

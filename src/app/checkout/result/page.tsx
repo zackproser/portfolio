@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { Article } from '@/lib/shared-types';
 
-export default function CheckoutResult() {
+function CheckoutResultPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
   const [article, setArticle] = useState<(Article & { slug: string }) | null>(null);
@@ -112,5 +112,13 @@ export default function CheckoutResult() {
         )}
       </div>
     </Container>
+  );
+}
+
+export default function CheckoutResultPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutResultPage />
+    </Suspense>
   );
 } 

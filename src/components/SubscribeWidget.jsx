@@ -1,13 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function SubscribeWidget() {
-
+function SubscribeWidgetInner() {
   const [formSuccess, setSuccess] = useState(false);
-
-  // Get access to the router in order to fetch query params off it
   const referrer = useSearchParams().get('referrer') || 'unknown/direct'
 
   // Handle the submit event on form submit.
@@ -98,4 +95,12 @@ export default function SubscribeWidget() {
         </div>
       </div>
   )
+}
+
+export default function SubscribeWidget() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubscribeWidgetInner />
+    </Suspense>
+  );
 }

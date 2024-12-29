@@ -1,6 +1,6 @@
+import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
-import { StreamingTextResponse, streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
 import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 `;
 
   const result = await streamText({
-    model: openai('gpt-4o'),
+    model: openai.chat('gpt-4o'),
     system: prompt,
     prompt: lastMessage.content,
   });
@@ -72,9 +72,5 @@ export async function POST(req: Request) {
     JSON.stringify(relatedBlogPosts)
   ).toString('base64')
 
-  return new StreamingTextResponse(result.toAIStream(), {
-    headers: {
-      "x-sources": serializedArticles
-    }
-  });
+  return result.toDataStreamResponse()
 }
