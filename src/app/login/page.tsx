@@ -1,14 +1,21 @@
-'use client';
+'use client';;
+import { use } from "react";
 
 import { redirect } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-export default function SignInPage({
-  searchParams: { callbackUrl },
-}: {
-  searchParams: { callbackUrl?: string }
-}) {
+export default function SignInPage(
+  props: {
+    searchParams: Promise<{ callbackUrl?: string }>
+  }
+) {
+  const searchParams = use(props.searchParams);
+
+  const {
+    callbackUrl
+  } = searchParams;
+
   const finalCallbackUrl = callbackUrl || '/';
 
   const handleGitHubSignIn = () => {

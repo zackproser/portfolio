@@ -11,13 +11,14 @@ import { getProductDetails, ProductDetails } from '@/utils/productUtils';
 import { userPurchasedCourse } from '@/lib/queries'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     course: string;
     segment: string;
-  };
+  }>;
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   const session = await auth();
 
   // Users must be logged in to view this page
