@@ -87,3 +87,12 @@ CREATE TABLE articlepurchases (
   UNIQUE(user_id, article_slug)
 );
 
+-- Create email notifications table
+CREATE TABLE IF NOT EXISTS email_notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    article_slug VARCHAR(255) NOT NULL,
+    email_type VARCHAR(50) NOT NULL,
+    sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, article_slug, email_type)
+);
