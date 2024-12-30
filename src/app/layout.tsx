@@ -1,5 +1,3 @@
-'use client'
-
 import { Noto_Sans } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleAnalytics } from '@next/third-parties/google'
@@ -13,7 +11,7 @@ import '@/styles/global.css'
 // Initialize the Noto Sans font
 const notoSans = Noto_Sans({
   subsets: ['latin'],
-  weight: ['400', '700'], // Add any weights you need
+  weight: ['400', '700'],
   variable: '--font-noto-sans',
 });
 
@@ -23,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`h-full antialiased ${notoSans.variable}`}>
+    <html lang="en" className={`h-full antialiased ${notoSans.variable}`} suppressHydrationWarning>
       <head>
         <link
           rel="alternate"
@@ -36,10 +34,7 @@ export default function RootLayout({
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
       </head>
-      <body
-        suppressHydrationWarning={true}
-        className={`flex h-full bg-gray-100 dark:bg-black font-sans`}
-      >
+      <body className="flex h-full bg-gray-100 dark:bg-black font-sans">
         <SessionProvider>
           <Providers>
             <div className="flex w-full flex-col">
@@ -50,8 +45,8 @@ export default function RootLayout({
             </div>
           </Providers>
         </SessionProvider>
+        <GoogleAnalytics gaId="G-DFX9S1FRMB" />
       </body>
-      <GoogleAnalytics gaId="G-DFX9S1FRMB" />
     </html>
   )
 }
