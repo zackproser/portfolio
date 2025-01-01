@@ -6,7 +6,15 @@ import { headers } from 'next/headers'
 import { importArticleMetadata } from '@/lib/articles'
 import { importCourse } from '@/lib/courses'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
-import { ArticleWithSlug } from '@/lib/shared-types'
+import { ArticleWithSlug, CourseContent, Content } from '@/lib/shared-types'
+
+type StripeMetadata = {
+	[key: string]: string;
+} & {
+	userId: string;
+	slug: string;
+	type: 'article' | 'course';
+}
 
 if (!process.env.STRIPE_SECRET_KEY) {
 	throw new Error('Missing STRIPE_SECRET_KEY')
@@ -28,7 +36,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		const body = await req.json()
-		const { slug, type } = body
+		const { slug, type } = body as { slug: string; type: 'article' | 'course' }
 
 		if (!slug || !type) {
 			return NextResponse.json(
@@ -43,7 +51,7 @@ export async function POST(req: NextRequest) {
 			userIdType: typeof session.user.id
 		})
 
-		let content: ArticleWithSlug | { title: string; description: string; slug: string; price: number };
+		let content: Content;
 		let price: number;
 
 		if (type === 'article') {
@@ -53,29 +61,38 @@ export async function POST(req: NextRequest) {
 			if (!articleContent) {
 				throw new Error(`No article found with slug ${articleSlug}`)
 			}
+			if (!articleContent.isPaid || !articleContent.price) {
+				throw new Error(`Article ${articleSlug} is not available for purchase`)
+			}
 			content = { ...articleContent, slug: articleSlug }
-			price = 500 // Fixed price for articles
+			price = articleContent.price // Price is already in cents
 		} else if (type === 'course') {
 			const courseResult = await sql`
-				SELECT title, description, slug, price FROM courses WHERE slug = ${slug}
+				SELECT title, description, slug, price_id FROM courses WHERE slug = ${slug}
 			`
 			if (courseResult.rows.length === 0) {
 				throw new Error(`No course found with slug ${slug}`)
 			}
 			const courseData = courseResult.rows[0]
-			if (!courseData.price || !courseData.title || !courseData.description || !courseData.slug) {
+			if (!courseData.price_id || !courseData.title || !courseData.description || !courseData.slug) {
 				throw new Error('Invalid course data returned from database')
 			}
 			content = {
 				title: courseData.title,
 				description: courseData.description,
 				slug: courseData.slug,
-				price: courseData.price,
+				price_id: courseData.price_id,
 				type: 'course'
 			}
-			price = content.price * 100
+			price = 0 // This will be handled by the price_id
 		} else {
 			throw new Error(`Invalid content type: ${type}`)
+		}
+
+		const metadata: StripeMetadata = {
+			userId: String(session.user.id),
+			slug: content.slug,
+			type
 		}
 
 		const params: Stripe.Checkout.SessionCreateParams = {
@@ -83,22 +100,22 @@ export async function POST(req: NextRequest) {
 			ui_mode: 'embedded',
 			line_items: [
 				{
-					price_data: {
-						currency: 'usd',
-						product_data: {
-							name: content.title,
-							description: content.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
+					...(type === 'article' ? {
+						price_data: {
+							currency: 'usd',
+							product_data: {
+								name: content.title,
+								description: content.description || 'Premium Article Access',
+							},
+							unit_amount: price,
 						},
-						unit_amount: price,
-					},
+					} : {
+						price: (content as CourseContent).price_id,
+					}),
 					quantity: 1,
 				},
 			],
-			metadata: {
-				userId: String(session.user.id),
-				slug: content.slug,
-				type
-			},
+			metadata,
 			return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
 		}
 
@@ -159,7 +176,7 @@ export async function GET(req: Request) {
 		console.log('Found user:', { email: user.email, name: user.name })
 
 		console.log('Attempting to get content details:', { type, slug })
-		let content: ArticleWithSlug | { title: string; description: string; slug: string; price: number };
+		let content: ArticleWithSlug | CourseContent;
 
 		if (type === 'article') {
 			console.log('Fetching article content')
@@ -170,20 +187,20 @@ export async function GET(req: Request) {
 			content = { ...articleContent, slug, type: 'article' }
 		} else if (type === 'course') {
 			const courseResult = await sql`
-				SELECT title, description, slug, price FROM courses WHERE slug = ${slug}
+				SELECT title, description, slug, price_id FROM courses WHERE slug = ${slug}
 			`
 			if (courseResult.rows.length === 0) {
 				throw new Error(`No course found with slug ${slug}`)
 			}
 			const courseData = courseResult.rows[0]
-			if (!courseData.price || !courseData.title || !courseData.description || !courseData.slug) {
+			if (!courseData.price_id || !courseData.title || !courseData.description || !courseData.slug) {
 				throw new Error('Invalid course data returned from database')
 			}
 			content = {
 				title: courseData.title,
 				description: courseData.description,
 				slug: courseData.slug,
-				price: courseData.price,
+				price_id: courseData.price_id,
 				type: 'course'
 			}
 		} else {
