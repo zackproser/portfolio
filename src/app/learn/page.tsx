@@ -19,6 +19,8 @@ export const metadata: Metadata = createMetadata({
   description: "Project-based learning program to build real-world AI applications. Develop marketable skills, get mentorship, and build your portfolio to advance your career in AI development.",
 });
 
+export const dynamic = 'force-static'
+
 type Feature = {
   name: string
   description: string

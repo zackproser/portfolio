@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const DynamicGiscus = dynamic(() => import('./Giscus'), { ssr: false });
+const DynamicGiscus = dynamic(() => import('./Giscus'));
 
 const GiscusWrapper = () => {
   return <DynamicGiscus />;

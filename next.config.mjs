@@ -7,9 +7,6 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   images: {
     domains: [
@@ -17,7 +14,8 @@ const nextConfig = {
       "zackproser.com", 
       "www.zackproser.com",
       "img.youtube.com", 
-      "placehold.co"
+      "placehold.co",
+      "avatars.githubusercontent.com"
     ],
   },
   transpilePackages: [

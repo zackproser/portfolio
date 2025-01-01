@@ -1,6 +1,7 @@
 import { generateOgUrl } from '@/utils/ogUrl'
 import { Metadata } from 'next'
 import { StaticImageData } from 'next/image'
+import { Article } from '@/lib/shared-types'
 
 interface MetadataParams {
   author?: string
@@ -8,6 +9,10 @@ interface MetadataParams {
   title?: string
   description?: string
   image?: string | StaticImageData
+  // Commerce params
+  isPaid?: boolean
+  price?: number
+  previewLength?: number
 }
 
 // Update default metadata
@@ -22,48 +27,51 @@ const defaultMetadata: Metadata = {
     description: 'Empowering developers with machine learning insights and tools',
     url: 'https://zackproser.com',
     siteName: 'Modern Coding',
-    // ... rest of the openGraph config ...
   },
-  // ... rest of the defaultMetadata ...
 }
 
-type ExtendedMetadata = Metadata & {
-  image?: string | StaticImageData
-}
+export function createMetadata({ 
+  author, 
+  date, 
+  title, 
+  description, 
+  image,
+  isPaid = false,
+  price,
+  previewLength
+}: MetadataParams): Metadata & { isPaid: boolean; price?: number; previewLength?: number } {
+  // Handle webpack-imported images
+  const imageUrl = typeof image === 'string' ? image : image?.src;
 
-export function createMetadata({ author, date, title, description, image }: MetadataParams): ExtendedMetadata {
-  const pageMetadata: Partial<ExtendedMetadata> = {
-    ...(image && { image }),
-    ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
-    ...(date && { date: String(date) }),
+  const seoMetadata: Metadata = {
+    ...defaultMetadata,
     ...(title && { title }),
     ...(description && { description }),
+    ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
+    ...(date && { date: String(date) }),
+    ...(imageUrl && { image: imageUrl }),
     openGraph: {
+      ...defaultMetadata.openGraph,
       ...(title && { title }),
       ...(description && { description }),
       images: [
         {
-          url: generateOgUrl({ title, description, image }),
+          url: generateOgUrl({ title, description, image: imageUrl }),
         },
       ],
     },
     twitter: {
       ...(title && { title }),
       ...(description && { description }),
-      images: [generateOgUrl({ title, description, image })],
+      images: [generateOgUrl({ title, description, image: imageUrl })],
     },
   };
 
+  // Add commerce fields
   return {
-    ...defaultMetadata,
-    ...pageMetadata,
-    openGraph: {
-      ...defaultMetadata.openGraph,
-      ...pageMetadata.openGraph,
-    },
-    twitter: {
-      ...defaultMetadata.twitter,
-      ...pageMetadata.twitter,
-    },
+    ...seoMetadata,
+    isPaid,
+    ...(price && { price }),
+    ...(previewLength && { previewLength }),
   };
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, use } from 'react';
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { getToolByName } from '@/lib/getTools';
 import Image from 'next/image';
@@ -17,11 +17,12 @@ import OpenSourceStatus from '@/components/OpenSourceStatus';
 import LanguageSupportBlade from '@/components/LanguageSupportBlade';
 import BusinessInfoBlade from '@/components/BusinessInfoBlade';
 
-export default function ToolDetailPage({ params }) {
-  const toolName = decodeURIComponent(params.name); 
+export default function ToolDetailPage(props) {
+  const params = use(props.params);
+  const toolName = decodeURIComponent(params.name);
   const tool = getToolByName(toolName);
-  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []); 
-  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null; 
+  const [openSections, setOpenSections] = useState(tool ? Object.keys(tool) : []);
+  const toolLogo = toolName ? getLogoById(toolName.toLowerCase()) : null;
   console.log(`toolLogo: %o`, toolLogo)
 
   if (!tool) {
