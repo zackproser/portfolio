@@ -7,10 +7,17 @@ import Link from 'next/link';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { Article } from '@/lib/shared-types';
 
+interface PurchasedContent {
+  title: string;
+  description: string;
+  slug: string;
+  type: 'article' | 'course';
+}
+
 function CheckoutResultPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
-  const [article, setArticle] = useState<(Article & { slug: string }) | null>(null);
+  const [content, setContent] = useState<PurchasedContent | null>(null);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
 
@@ -31,18 +38,24 @@ function CheckoutResultPage() {
         }
         if (data.payment_status === 'paid') {
           setStatus('success');
-          // Extract article slug from metadata
-          if (data.metadata?.slug) {
-            // Fetch article metadata
-            const res = await fetch(`/api/articles/${data.metadata.slug}`);
-            const articleData = await res.json();
-            if (articleData.error) {
-              throw new Error(articleData.error);
+          // Extract content info from metadata
+          if (data.metadata?.slug && data.metadata?.type) {
+            const { type, slug } = data.metadata;
+            // Fetch content metadata based on type
+            const endpoint = type === 'article' ? `/api/articles/${slug}` : `/api/courses/${slug}`;
+            const res = await fetch(endpoint);
+            const contentData = await res.json();
+            if (contentData.error) {
+              throw new Error(contentData.error);
             }
-            setArticle({ ...articleData, slug: data.metadata.slug });
+            setContent({ 
+              ...contentData, 
+              slug,
+              type 
+            });
           } else {
-            console.error('No article slug found in metadata:', data.metadata);
-            throw new Error('Article information not found');
+            console.error('Missing content metadata:', data.metadata);
+            throw new Error('Content information not found');
           }
         } else {
           console.error('Payment status:', data.payment_status);
@@ -90,23 +103,25 @@ function CheckoutResultPage() {
             🎉 Payment Successful!
           </h3>
           <p className="text-lg text-green-700 dark:text-green-300 mb-6">
-            Thank you for your purchase. Your article is now available.
+            Thank you for your purchase. Your {content?.type} is now available.
           </p>
         </div>
 
-        {article && (
+        {content && content.type === 'article' && (
           <div className="mb-8">
-            <BlogPostCard article={article} />
+            <BlogPostCard article={content as Article & { slug: string }} />
           </div>
         )}
 
-        {article && (
+        {content && (
           <div className="text-center">
             <Link
-              href={`/blog/${article.slug}`}
+              href={content.type === 'article' 
+                ? `/blog/${content.slug}` 
+                : `/learn/courses/${content.slug}/0`}
               className="inline-flex items-center px-6 py-3 text-lg font-medium rounded-lg shadow-lg text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
             >
-              Read Your Article →
+              {content.type === 'article' ? 'Read Your Article' : 'Start Learning'} →
             </Link>
           </div>
         )}
