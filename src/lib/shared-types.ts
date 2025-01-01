@@ -37,6 +37,18 @@ export interface DemoArticle extends BaseArticleWithSlug {
   type: 'demo'
 }
 
+// For courses, which use Stripe Price IDs
+export interface CourseContent {
+  title: string
+  description: string
+  slug: string
+  type: 'course'
+  price_id: string
+}
+
+// Union type for purchasable content
+export type Content = ArticleWithSlug | CourseContent;
+
 export interface Database {
   name: string;
   business_info: {

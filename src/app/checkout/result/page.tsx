@@ -38,28 +38,9 @@ function CheckoutResultPage() {
         }
         if (data.payment_status === 'paid') {
           setStatus('success');
-          // Extract content info from metadata
-          if (data.metadata?.slug && data.metadata?.type) {
-            const { type, slug } = data.metadata;
-            // Fetch content metadata based on type
-            const endpoint = type === 'article' ? `/api/articles/${slug}` : `/api/courses/${slug}`;
-            const res = await fetch(endpoint);
-            const contentData = await res.json();
-            if (contentData.error) {
-              throw new Error(contentData.error);
-            }
-            setContent({ 
-              ...contentData, 
-              slug,
-              type 
-            });
-          } else {
-            console.error('Missing content metadata:', data.metadata);
-            throw new Error('Content information not found');
-          }
+          setContent(data.content);
         } else {
-          console.error('Payment status:', data.payment_status);
-          throw new Error(`Payment not completed (status: ${data.payment_status})`);
+          throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
         }
       })
       .catch((err) => {

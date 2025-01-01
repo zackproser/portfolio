@@ -36,13 +36,13 @@ export async function POST(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session
     console.log('🎯 Session metadata:', session.metadata)
     
-    if (!session.metadata?.slug || !session.metadata?.userId) {
+    if (!session.metadata?.slug || !session.metadata?.userId || !session.metadata?.type) {
       console.error('🔴 Missing required metadata:', session.metadata)
       return NextResponse.json({ error: 'Missing required metadata' }, { status: 400 })
     }
     
-    const { slug, userId } = session.metadata
-    console.log('🎯 Processing completed checkout:', { slug, userId })
+    const { slug, userId, type } = session.metadata
+    console.log('🎯 Processing completed checkout:', { slug, userId, type })
 
     try {
       // Verify the user exists and get their details
@@ -57,110 +57,137 @@ export async function POST(req: Request) {
       const user = userResult.rows[0]
       console.log('🎯 Found user:', { email: user.email, name: user.name })
 
-      // 1. Record the purchase
-      console.log('🎯 Recording purchase in articlepurchases')
+      // 1. Record the purchase in the appropriate table
+      console.log('🎯 Recording purchase')
       try {
-        await sql`
-          INSERT INTO articlepurchases (
-            user_id, 
-            article_slug, 
-            stripe_payment_id,
-            amount
-          ) VALUES (
-            ${userId}::int, 
-            ${slug}, 
-            ${session.payment_intent as string},
-            ${session.amount_total! / 100}
-          )
-        `
+        if (type === 'article') {
+          await sql`
+            INSERT INTO articlepurchases (
+              user_id, 
+              article_slug, 
+              stripe_payment_id,
+              amount
+            ) VALUES (
+              ${userId}::int, 
+              ${slug}, 
+              ${session.payment_intent as string},
+              ${session.amount_total! / 100}
+            )
+          `
+        } else if (type === 'course') {
+          await sql`
+            INSERT INTO coursepurchases (
+              user_id, 
+              course_slug, 
+              stripe_payment_id,
+              amount
+            ) VALUES (
+              ${userId}::int, 
+              ${slug}, 
+              ${session.payment_intent as string},
+              ${session.amount_total! / 100}
+            )
+          `
+        }
         console.log('✅ Purchase recorded successfully')
       } catch (sqlError) {
         console.error('🔴 Failed to record purchase:', sqlError)
         throw sqlError
       }
 
-      // 3. Get article details
-      console.log('🎯 Fetching article details for slug:', slug)
+      // 2. Get content details
+      console.log('🎯 Fetching content details for slug:', slug)
       try {
-        const article = await importArticleMetadata(`${slug}/page.mdx`)
-        console.log('🎯 Found article:', { title: article?.title })
-        if (!article) {
-          throw new Error(`No article found with slug ${slug}`)
+        let content;
+        if (type === 'article') {
+          content = await importArticleMetadata(`${slug}/page.mdx`)
+        } else if (type === 'course') {
+          const courseResult = await sql`
+            SELECT title, description, slug FROM courses WHERE slug = ${slug}
+          `
+          if (courseResult.rows.length === 0) {
+            throw new Error(`No course found with slug ${slug}`)
+          }
+          content = courseResult.rows[0]
+        }
+        
+        console.log('🎯 Found content:', { title: content?.title })
+        if (!content) {
+          throw new Error(`No content found with slug ${slug}`)
         }
 
-        // 4. Check if we've already sent an email for this purchase
+        // 3. Check if we've already sent an email for this purchase
         console.log('🎯 Checking for existing email notification')
         const emailResult = await sql`
           SELECT id FROM email_notifications 
           WHERE user_id = ${userId}::int 
-          AND article_slug = ${slug} 
+          AND content_type = ${type}
+          AND content_slug = ${slug} 
           AND email_type = 'purchase_confirmation'
         `
         console.log('🎯 Existing email notifications found:', emailResult.rows.length)
 
-        if (emailResult.rows.length === 0) {
-          // 5. Send the email
-          console.log('🎯 Preparing to send email')
-          const emailInput: SendReceiptEmailInput = {
-            From: "purchases@zackproser.com",
-            To: user.email,
-            TemplateAlias: "receipt",
-            TemplateModel: {
-              CustomerName: user.name || 'Valued Customer',
-              ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug}`,
-              ProductName: article.title,
-              Date: new Date().toLocaleDateString('en-US'),
-              ReceiptDetails: {
-                Description: article.description || 'Premium Article Access',
-                Amount: `$${session.amount_total! / 100}`,
-                SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-              },
-              Total: `$${session.amount_total! / 100}`,
+        // Always attempt to send the email for purchases
+        console.log('🎯 Preparing to send email')
+        const emailInput: SendReceiptEmailInput = {
+          From: "purchases@zackproser.com",
+          To: user.email,
+          TemplateAlias: "receipt",
+          TemplateModel: {
+            CustomerName: user.name || 'Valued Customer',
+            ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
+            ProductName: content.title,
+            Date: new Date().toLocaleDateString('en-US'),
+            ReceiptDetails: {
+              Description: content.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
+              Amount: `$${session.amount_total! / 100}`,
               SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-              ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug}`,
-              CompanyName: "Modern Coding",
-              CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
             },
-          }
+            Total: `$${session.amount_total! / 100}`,
+            SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
+            ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
+            CompanyName: "Modern Coding",
+            CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
+          },
+        }
 
-          console.log('🎯 Sending email with input:', JSON.stringify(emailInput, null, 2))
-          try {
-            const emailResponse = await sendReceiptEmail(emailInput)
-            console.log('✅ Email sent successfully:', emailResponse)
+        console.log('🎯 Sending email with input:', JSON.stringify(emailInput, null, 2))
+        console.log('🎯 User email:', user.email)
+        console.log('🎯 Content title:', content.title)
+        console.log('🎯 NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL)
+        
+        try {
+          console.log('🎯 Attempting to send email...')
+          const emailResponse = await sendReceiptEmail(emailInput)
+          console.log('✅ Email sent successfully:', emailResponse)
 
-            // 6. Record that we sent the email
+          // Only record the email notification if we haven't before and the send was successful
+          if (emailResult.rows.length === 0) {
             console.log('🎯 Recording email notification')
             try {
               await sql`
-                INSERT INTO email_notifications (user_id, article_slug, email_type)
-                VALUES (${userId}::int, ${slug}, 'purchase_confirmation')
+                INSERT INTO email_notifications (user_id, content_type, content_slug, email_type)
+                VALUES (${userId}::int, ${type}, ${slug}, 'purchase_confirmation')
               `
               console.log('✅ Email notification recorded')
             } catch (sqlError) {
               console.error('🔴 Failed to record email notification:', sqlError)
               throw sqlError
             }
-          } catch (emailError) {
-            console.error('🔴 Failed to send email:', emailError)
-            throw emailError
           }
+        } catch (emailError) {
+          console.error('🔴 Failed to send email:', emailError)
+          throw emailError
         }
-      } catch (articleError) {
-        console.error('🔴 Error processing article:', articleError)
-        throw articleError
+      } catch (contentError) {
+        console.error('🔴 Error processing content:', contentError)
+        throw contentError
       }
-
     } catch (error) {
       console.error('🔴 Error processing purchase:', error)
-      return NextResponse.json(
-        { error: 'Error processing purchase' },
-        { status: 500 }
-      )
+      throw error
     }
-  } else {
-    console.log('ℹ️ Ignoring non-completed-checkout event')
   }
 
-  console.log('🎯 Webhook processed successfully')
   return NextResponse.json({ received: true })
 } 
