@@ -47,13 +47,15 @@ Here's an example of what we might see if we fetch a server-side rendered (SSR) 
     <title>SSR Example</title>
 </head>
 <body>
-    <h1>Server-Side Rendered Page</h1>
-    <p>This is an example of a server-side rendered page.</p>
-    <ul>
-        <li><a href="/link1">Link 1</a></li>
-        <li><a href="/link2">Link 2</a></li>
-        <li><a href="/link3">Link 3</a></li>
-    </ul>
+    <div id="root">
+        <h1>Server-Side Rendered Page</h1>
+        <p>This is an example of a server-side rendered page.</p>
+        <ul>
+            <li><a href="/link1">Link 1</a></li>
+            <li><a href="/link2">Link 2</a></li>
+            <li><a href="/link3">Link 3</a></li>
+        </ul>
+    </div>
     <!-- All content is already in the HTML -->
 </body>
 </html>
@@ -74,12 +76,14 @@ However, when we're dealing with a client-side rendered (CSR) site, we need to e
 <head>
     <meta charset="UTF-8">
     <title>CSR Example</title>
-    <script src="app.js"></script> <!-- Link to the JavaScript bundle -->
+    <script type="module" src="app.js"></script> <!-- Modern JavaScript module -->
 </head>
 <body>
-    <h1>Client-Side Rendered Page</h1>
-    <div id="content">
-        <!-- Content will be loaded and rendered by JavaScript -->
+    <div id="root">
+        <h1>Client-Side Rendered Page</h1>
+        <div id="content">
+            <!-- Content will be loaded and rendered by JavaScript -->
+        </div>
     </div>
 </body>
 </html>

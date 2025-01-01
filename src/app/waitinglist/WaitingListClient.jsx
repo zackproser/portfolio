@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Container } from "@/components/Container";
 import ProductWaitinglistForm from "@/components/ProductWaitinglistForm";
 
-export default function WaitingListClient() {
+function WaitingListClientInner() {
   const [userEmail, setUserEmail] = useState("");
   const [productSlug, setProductSlug] = useState("");
   const [productName, setProductName] = useState("");
@@ -42,5 +42,13 @@ export default function WaitingListClient() {
         productName={productName}
       />
     </Container>
+  );
+}
+
+export default function WaitingListClient() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WaitingListClientInner />
+    </Suspense>
   );
 }

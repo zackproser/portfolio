@@ -1,11 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { redirect, useSearchParams } from "next/navigation";
 
 import { Container } from "@/components/Container";
 import PurchaseSuccess from "@/components/PurchaseSuccess";
 
-export default function CheckoutSuccess() {
+export default function SuccessPageWrapper() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<SuccessPage />
+		</Suspense>
+	);
+}
+
+function SuccessPage() {
 	const [status, setStatus] = useState(null);
 	const [customerEmail, setCustomerEmail] = useState("");
 

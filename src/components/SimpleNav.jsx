@@ -2,9 +2,10 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { Brain, Sun, Moon, Menu, X } from 'lucide-react'
+import { Brain, Menu, X } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
+import { ThemeToggleWrapper } from './ThemeToggleWrapper'
+import { AuthStatus } from './AuthStatus'
 
 const navItems = [
   { label: 'Research', href: '/blog' },
@@ -16,22 +17,6 @@ const navItems = [
   { label: 'Videos', href: '/videos' },
   { label: 'About', href: '/about' },
 ]
-
-function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
-  const otherTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
-
-  return (
-    <button
-      type="button"
-      aria-label={`Switch to ${otherTheme} theme`}
-      className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
-      onClick={() => setTheme(otherTheme)}
-    >
-      {resolvedTheme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-    </button>
-  )
-}
 
 export function SimpleNav() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -67,7 +52,10 @@ export function SimpleNav() {
               {item.label}
             </Link>
           ))}
-          <ThemeToggle />
+          <div className="flex items-center gap-4">
+            <ThemeToggleWrapper />
+            <AuthStatus />
+          </div>
         </nav>
       </div>
       <NavigationEvents onRouteChange={handleRouteChange} />

@@ -1,13 +1,20 @@
-import { Article, ArticleWithSlug } from './shared-types'
-
+import { BaseArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
+import path from 'path'
 
-async function importArticle(
+export async function importNewsletter(
   articleFilename: string,
-): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/newsletter/${articleFilename}`)) as {
+): Promise<BaseArticleWithSlug> {
+  let { metadata } = (await import(`@/app/newsletter/${articleFilename}`)) as {
     default: React.ComponentType
-    metadata: Article
+    metadata: {
+      title: string
+      description: string
+      author: string
+      date: string
+      image?: string
+      status?: string
+    }
   }
 
   return {
@@ -18,11 +25,11 @@ async function importArticle(
 }
 
 export async function getAllNewsletters() {
-  let articleFilenames = await glob('*/page.mdx', {
-    cwd: './src/app/newsletter',
+  let newsletterFilenames = await glob('*/page.mdx', {
+    cwd: path.join(process.cwd(), 'src', 'app', 'newsletter'),
   })
 
-  let articles = await Promise.all(articleFilenames.map(importArticle))
+  let newsletters = await Promise.all(newsletterFilenames.map(importNewsletter))
 
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  return newsletters.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
