@@ -1,34 +1,57 @@
-import { Article, ArticleWithSlug } from './shared-types'
+import { BaseArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
+import { StaticImageData } from 'next/image'
 
-async function importArticle(
+export async function importVideo(
   articleFilename: string,
-): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`../app/videos/${articleFilename}`)) as {
+): Promise<BaseArticleWithSlug> {
+  let { metadata } = (await import(`@/app/videos/${articleFilename}`)) as {
     default: React.ComponentType
-    metadata: Article
+    metadata: {
+      title: string
+      description: string
+      author: string
+      date: string
+      image?: string | { src: string } | StaticImageData
+      status?: string
+    }
+  }
+
+  // Handle webpack-imported images
+  let imageUrl: string | undefined;
+  if (metadata.image) {
+    if (typeof metadata.image === 'object' && 'src' in metadata.image) {
+      imageUrl = metadata.image.src;
+    } else if (typeof metadata.image === 'object' && 'default' in metadata.image) {
+      // Handle webpack imports which come as { default: { src: string } }
+      imageUrl = (metadata.image as unknown as { default: { src: string } }).default.src;
+    } else if (typeof metadata.image === 'string') {
+      // Handle both absolute paths and relative paths from src/images
+      imageUrl = metadata.image.startsWith('/') ? metadata.image : `/images/${metadata.image}`;
+    } else {
+      // Handle direct webpack imports
+      imageUrl = (metadata.image as unknown as { src: string }).src;
+    }
   }
 
   return {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    title: metadata.title,
+    description: metadata.description,
+    author: metadata.author || 'Zachary Proser',
+    date: metadata.date,
+    image: imageUrl,
     type: 'video',
-    ...metadata,
   }
 }
 
-// Extend getAllVideos to accept an optional array of slugs
-export async function getAllVideos(matchingSlugs?: string[]) {
-  let articleFilenames = await glob('*/page.mdx', {
+export async function getAllVideos() {
+  let videoFilenames = await glob('*/page.mdx', {
     cwd: path.join(process.cwd(), 'src', 'app', 'videos'),
   })
 
-  let articles = await Promise.all(articleFilenames.map(importArticle))
+  let videos = await Promise.all(videoFilenames.map(importVideo))
 
-  // Filter articles to include only those whose slug is in matchingSlugs
-  if (matchingSlugs && matchingSlugs.length > 0) {
-    articles = articles.filter(article => matchingSlugs.includes(article.slug))
-  }
-
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  return videos.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }

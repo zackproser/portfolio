@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { type ArticleWithSlug } from '@/lib/shared-types'
+import { type ArticleWithSlug, type BaseArticleWithSlug } from '@/lib/shared-types'
 import { getAllVideos } from '@/lib/videos'
 import { BlogPostCard } from '@/components/BlogPostCard'
 
@@ -22,7 +22,7 @@ export default async function ArticlesIndex() {
     >
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {articles.map((article: ArticleWithSlug) => (
+          {articles.map((article: BaseArticleWithSlug) => (
             <BlogPostCard key={article.slug} article={article} />
           ))}
         </div>

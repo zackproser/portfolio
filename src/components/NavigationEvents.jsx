@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export function NavigationEvents({ onRouteChange }) {
+function NavigationEventsInner({ onRouteChange }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -12,4 +12,12 @@ export function NavigationEvents({ onRouteChange }) {
   }, [pathname, searchParams, onRouteChange])
 
   return null
+}
+
+export function NavigationEvents(props) {
+  return (
+    <Suspense fallback={null}>
+      <NavigationEventsInner {...props} />
+    </Suspense>
+  )
 }

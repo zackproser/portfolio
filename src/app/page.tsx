@@ -1,5 +1,5 @@
 import { getAllArticles } from "@/lib/articles"
-import { getAllVideos } from "@/lib/videos"  // Import the new function
+import { getAllVideos } from "@/lib/videos"
 import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
@@ -11,7 +11,6 @@ export const metadata = createMetadata({
 });
 
 export default async function Page() {
-
   const deepMLTutorialSlugs = [
     'cloud-gpu-services-jupyter-notebook-reviewed',
     'how-to-create-a-custom-alpaca-dataset',
@@ -48,31 +47,25 @@ export default async function Page() {
     'what-is-a-vector-database'
   ]
 
-  const allSlugs = [...deepMLTutorialSlugs, ...mlProjectSlugs, ...aiDevSlugs, ...refArchitectureSlugs, ...careerAdviceSlugs]
-
   try {
-    // Fetch all articles matching the slugs
-    const allArticles = await getAllArticles(allSlugs)
-    const allVideos = await getAllVideos(videoSlugs)  // Fetch all videos with matching slugs
+    // Fetch all articles and videos
+    const allArticles = await getAllArticles()
+    const allVideos = await getAllVideos()
 
     const deepMLTutorials = allArticles.filter(article => deepMLTutorialSlugs.includes(article.slug))
-
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
-
     const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
-
     const refArchitectures = allArticles.filter(article => 
       refArchitectureSlugs.includes(article.slug) || 
       article.type === 'demo' || 
       article.type === 'architecture'
     )
-
     const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
-
-    const videos = allVideos.filter(video => videoSlugs.includes(video.slug))  // Filter videos
+    const videos = allVideos.filter(video => videoSlugs.includes(video.slug))
 
     // Server-side mobile detection
-    const userAgent = headers().get('user-agent') || ''
+    const headersList = await headers()
+    const userAgent = headersList.get('user-agent') || ''
     const parser = new UAParser(userAgent)
     const isMobile = parser.getDevice().type === 'mobile'
     console.log('Is Mobile:', isMobile)

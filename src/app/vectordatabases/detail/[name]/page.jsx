@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, use } from 'react';
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { getDatabaseByName } from '@/lib/getDatabases';
 import { getLogoById } from '@/lib/logoImports';
@@ -12,7 +12,8 @@ import { getEmoji } from '@/lib/emojiMapping';
 import { sentenceCase } from '@/utils/sentencesCase'; 
 import Link from 'next/link';
 
-export default function DatabaseDetailPage({ params }) {
+export default function DatabaseDetailPage(props) {
+  const params = use(props.params);
   const database = getDatabaseByName(decodeURIComponent(params.name));
   const logo = getLogoById(database.logoId);
 
