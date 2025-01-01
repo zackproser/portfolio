@@ -1,10 +1,12 @@
 import { auth } from '../../../../auth'
-import { NextResponse, NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
+import { headers } from 'next/headers'
 import { importArticleMetadata } from '@/lib/articles'
 import { importCourse } from '@/lib/courses'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
+import { ArticleWithSlug } from '@/lib/shared-types'
 
 if (!process.env.STRIPE_SECRET_KEY) {
 	throw new Error('Missing STRIPE_SECRET_KEY')
@@ -16,142 +18,97 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req: NextRequest) {
 	try {
+		const headersList = headers()
 		const session = await auth()
-		if (!session?.user?.email) {
+		if (!session?.user?.email || !session?.user?.id) {
 			return NextResponse.json(
 				{ error: 'Must be signed in to make purchases' },
 				{ status: 401 }
 			)
 		}
 
-		const { product } = await req.json()
+		const body = await req.json()
+		const { slug, type } = body
 
-		// Get user ID from email
-		const { rows: userRows } = await sql`
-			SELECT id::int as id, email FROM users WHERE email = ${session.user.email}
-		`
-
-		if (!userRows.length) {
+		if (!slug || !type) {
 			return NextResponse.json(
-				{ error: 'User not found' },
-				{ status: 404 }
+				{ error: 'Missing required parameters' },
+				{ status: 400 }
 			)
 		}
 
-		const userId = userRows[0].id
-		console.log('Creating checkout session for user:', { userId, email: session.user.email, userIdType: typeof userId })
+		console.log('Creating checkout session for user:', {
+			userId: session.user.id,
+			email: session.user.email,
+			userIdType: typeof session.user.id
+		})
 
-		// First check if this is a course purchase by looking up the slug
-		const { rows: courseRows } = await sql`
-			SELECT course_id, title, description, price_id, slug
-			FROM courses 
-			WHERE slug = ${product}
-		`;
+		let content: ArticleWithSlug | { title: string; description: string; slug: string; price: number };
+		let price: number;
 
-		if (courseRows.length > 0) {
-			// Handle course purchase
-			try {
-				const course = courseRows[0];
-
-				if (!course.price_id) {
-					return NextResponse.json(
-						{ error: 'Course price not set' },
-						{ status: 400 }
-					)
-				}
-
-				const checkoutSession = await stripe.checkout.sessions.create({
-					mode: 'payment',
-					payment_method_types: ['card'],
-					ui_mode: 'embedded',
-					line_items: [
-						{
-							price: course.price_id,
-							quantity: 1,
-						},
-					],
-					metadata: {
-						type: 'course',
-						slug: course.slug,
-						userId: userId.toString(),
-						courseId: course.course_id.toString()
-					},
-					return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
-				})
-
-				return NextResponse.json({ clientSecret: checkoutSession.client_secret })
-			} catch (error) {
-				console.error('Error creating checkout session for course:', error)
-				return NextResponse.json(
-					{ error: 'Failed to create course checkout session' },
-					{ status: 500 }
-				)
+		if (type === 'article') {
+			console.log('Fetching article content')
+			const articleSlug = slug.replace('blog-', '')
+			const articleContent = await importArticleMetadata(`${articleSlug}/page.mdx`)
+			if (!articleContent) {
+				throw new Error(`No article found with slug ${articleSlug}`)
 			}
+			content = { ...articleContent, slug: articleSlug }
+			price = 500 // Fixed price for articles
+		} else if (type === 'course') {
+			const courseResult = await sql`
+				SELECT title, description, slug, price FROM courses WHERE slug = ${slug}
+			`
+			if (courseResult.rows.length === 0) {
+				throw new Error(`No course found with slug ${slug}`)
+			}
+			const courseData = courseResult.rows[0]
+			if (!courseData.price || !courseData.title || !courseData.description || !courseData.slug) {
+				throw new Error('Invalid course data returned from database')
+			}
+			content = {
+				title: courseData.title,
+				description: courseData.description,
+				slug: courseData.slug,
+				price: courseData.price,
+				type: 'course'
+			}
+			price = content.price * 100
+		} else {
+			throw new Error(`Invalid content type: ${type}`)
 		}
 
-		// Handle article purchases
-		if (product.startsWith('blog-')) {
-			const articleSlug = product.replace('blog-', '')
-			
-			try {
-				const article = await importArticleMetadata(`${articleSlug}/page.mdx`)
-
-				if (!article.price) {
-					return NextResponse.json(
-						{ error: 'Article price not set' },
-						{ status: 400 }
-					)
-				}
-
-				const checkoutSession = await stripe.checkout.sessions.create({
-					mode: 'payment',
-					payment_method_types: ['card'],
-					ui_mode: 'embedded',
-					line_items: [
-						{
-							price_data: {
-								currency: 'usd',
-								product_data: {
-									name: article.title,
-									description: article.description,
-									metadata: {
-										type: 'article',
-										slug: articleSlug,
-										userId: userId
-									},
-								},
-								unit_amount: article.price,
-							},
-							quantity: 1,
+		const params: Stripe.Checkout.SessionCreateParams = {
+			mode: 'payment',
+			ui_mode: 'embedded',
+			line_items: [
+				{
+					price_data: {
+						currency: 'usd',
+						product_data: {
+							name: content.title,
+							description: content.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
 						},
-					],
-					metadata: {
-						type: 'article',
-						slug: articleSlug,
-						userId: userId
+						unit_amount: price,
 					},
-					return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
-				})
-
-				return NextResponse.json({ clientSecret: checkoutSession.client_secret })
-			} catch (error) {
-				console.error('Error creating checkout session for article:', error)
-				return NextResponse.json(
-					{ error: 'Article not found or invalid' },
-					{ status: 404 }
-				)
-			}
+					quantity: 1,
+				},
+			],
+			metadata: {
+				userId: String(session.user.id),
+				slug: content.slug,
+				type
+			},
+			return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
 		}
 
-		return NextResponse.json(
-			{ error: 'Invalid product type' },
-			{ status: 400 }
-		)
+		const checkoutSession = await stripe.checkout.sessions.create(params)
 
+		return NextResponse.json({ clientSecret: checkoutSession.client_secret })
 	} catch (error) {
 		console.error('Error creating checkout session:', error)
 		return NextResponse.json(
-			{ error: error instanceof Error ? error.message : 'Failed to create checkout session' },
+			{ error: 'Failed to create checkout session' },
 			{ status: 500 }
 		)
 	}
@@ -159,188 +116,91 @@ export async function POST(req: NextRequest) {
 
 // Called by the /success page to get the payment status when rendering
 // the checkout success message
-export async function GET(req: NextRequest) {
-	console.log("=== Starting checkout-sessions GET ===");
-	console.log("Request URL:", req.url);
-	console.log("Search params:", Object.fromEntries(req.nextUrl.searchParams.entries()));
+export async function GET(req: Request) {
+	const headersList = headers()
+	const session = await auth()
+	if (!session?.user?.email) {
+		return NextResponse.json({ error: 'Must be signed in to view purchases' }, { status: 401 })
+	}
+
+	const { searchParams } = new URL(req.url)
+	const sessionId = searchParams.get('session_id')
+	console.log('=== Starting checkout-sessions GET ===')
+	console.log('Request URL:', req.url)
+	console.log('Search params:', { session_id: sessionId })
+
+	if (!sessionId) {
+		return NextResponse.json({ error: 'Missing session_id parameter' }, { status: 400 })
+	}
 
 	try {
-		const sessionId = req.nextUrl.searchParams.get("session_id");
-		if (!sessionId) {
-			console.error("No session_id in request params");
-			throw new Error("Session ID is missing");
-		}
-		console.log("Retrieved session_id:", sessionId);
+		const stripeSession = await stripe.checkout.sessions.retrieve(sessionId)
+		console.log('Stripe session retrieved:', {
+			payment_status: stripeSession.payment_status,
+			metadata: stripeSession.metadata,
+			amount_total: stripeSession.amount_total
+		})
 
-		const session = await stripe.checkout.sessions.retrieve(sessionId);
-		console.log("Stripe session retrieved:", {
-			payment_status: session.payment_status,
-			metadata: session.metadata,
-			amount_total: session.amount_total
-		});
-
-		// If payment is successful, record the purchase and send email
-		if (session.payment_status === 'paid' && session.metadata?.userId && session.metadata?.slug && session.metadata?.type) {
-			const { userId, slug, type, courseId } = session.metadata;
-			
-			console.log('Processing successful payment for:', { userId, slug, type });
-			
-			// Record the purchase in the database based on type
-			try {
-				if (type === 'article') {
-					await sql`
-						INSERT INTO articlepurchases (user_id, article_slug, stripe_payment_id, amount)
-						VALUES (${userId}::int, ${slug}, ${session.payment_intent as string}, ${session.amount_total})
-						ON CONFLICT (user_id, article_slug) DO NOTHING
-					`;
-				} else if (type === 'course') {
-					// Record in stripepayments for tracking
-					console.log('Course purchase verification - values:', {
-						userId,
-						courseId,
-						userIdType: typeof userId,
-						courseIdType: typeof courseId,
-						rawMetadata: session.metadata
-					});
-
-					// First insert into stripepayments
-					await sql`
-						INSERT INTO stripepayments (user_id, stripe_payment_id, amount, payment_status)
-							VALUES (${userId}, ${session.payment_intent as string}, ${session.amount_total}, 'completed')
-					`;
-					
-					// Then insert into courseenrollments
-					await sql`
-						INSERT INTO courseenrollments (user_id, course_id)
-						VALUES (${userId}, ${courseId})
-						ON CONFLICT (user_id, course_id) DO NOTHING
-					`;
-				}
-				console.log('Successfully recorded purchase');
-			} catch (sqlError) {
-				console.error('Failed to record purchase:', sqlError);
-				throw sqlError;
-			}
-
-			// Get user details
-			const userResult = await sql`
-				SELECT email, name FROM users WHERE id = ${userId}::int
-			`;
-			
-			if (userResult.rows.length === 0) {
-				throw new Error(`No user found with ID ${userId}`);
-			}
-			
-			const user = userResult.rows[0];
-			console.log('Found user:', { email: user.email, name: user.name });
-			
-			// Get content details based on type
-			console.log('Attempting to get content details:', { type, slug });
-			
-			let content;
-			if (type === 'article') {
-				console.log('Fetching article content');
-				content = await importArticleMetadata(`${slug}/page.mdx`);
-			} else if (type === 'course') {
-				console.log('Fetching course content from database');
-				// For courses, get the details from the database instead of MDX
-				const { rows } = await sql`
-					SELECT title, description, slug
-					FROM courses
-					WHERE slug = ${slug}
-				`;
-				
-				console.log('Course database query result:', { rowCount: rows.length, firstRow: rows[0] });
-				
-				if (!rows.length) {
-					console.error('No course found in database with slug:', slug);
-					throw new Error(`No course found with slug ${slug}`);
-				}
-				
-				content = {
-					title: rows[0].title,
-					description: rows[0].description,
-					slug: rows[0].slug,
-					type: 'course'
-				};
-				console.log('Created course content object:', content);
-			}
-
-			if (!content) {
-				console.error('Content lookup failed:', { type, slug });
-				throw new Error(`No content found with slug ${slug}`);
-			}
-			console.log('Successfully found content:', { title: content.title, type });
-
-			// Check if we've already sent an email
-			const emailResult = await sql`
-				SELECT id FROM email_notifications 
-				WHERE user_id = ${userId}::int 
-				AND content_type = ${type}
-				AND content_slug = ${slug}
-				AND email_type = 'purchase_confirmation'
-			`;
-
-			if (emailResult.rows.length === 0) {
-				// Prepare and send email
-				const emailInput: SendReceiptEmailInput = {
-					From: "purchases@zackproser.com",
-					To: user.email,
-					TemplateAlias: "receipt",
-					TemplateModel: {
-						CustomerName: user.name || 'Valued Customer',
-						ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
-						ProductName: content.title,
-						Date: new Date().toLocaleDateString('en-US'),
-						ReceiptDetails: {
-							Description: content.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
-							Amount: `$${session.amount_total! / 100}`,
-							SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-						},
-						Total: `$${session.amount_total! / 100}`,
-						SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-						ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
-						CompanyName: "Modern Coding",
-						CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
-					},
-				};
-
-				try {
-					const emailResponse = await sendReceiptEmail(emailInput);
-					console.log('✅ Email sent successfully:', emailResponse);
-					
-					// Record that we sent the email
-					await sql`
-						INSERT INTO email_notifications (user_id, content_type, content_slug, email_type)
-						VALUES (${userId}::int, ${type}, ${slug}, 'purchase_confirmation')
-					`;
-					console.log('✅ Recorded email notification');
-				} catch (emailError) {
-					console.error('Failed to send email:', emailError);
-					throw emailError;
-				}
-			}
+		if (stripeSession.payment_status !== 'paid') {
+			return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
 		}
 
-		return new NextResponse(
-			JSON.stringify({
-				payment_status: session.payment_status,
-				metadata: session.metadata,
-			}),
-			{
-				status: 200,
-			},
-		);
-	} catch (err: unknown) {
-		console.error('Error processing checkout completion:', err);
-		if (err instanceof Error) {
-			return new NextResponse(JSON.stringify({ error: err.message }), {
-				status: 500,
-			});
+		const { userId, slug, type } = stripeSession.metadata as { userId: string; slug: string; type: string }
+		console.log('Processing successful payment for:', { userId, slug, type })
+
+		console.log('userId:', userId)
+		const userResult = await sql`
+			SELECT id::int as id, email, name FROM users WHERE id = ${userId}::int
+		`
+		if (userResult.rows.length === 0) {
+			throw new Error(`No user found with ID ${userId}`)
 		}
-		return new NextResponse(JSON.stringify({ error: "Unknown Error" }), {
-			status: 500,
-		});
+		const user = userResult.rows[0]
+		console.log('Found user:', { email: user.email, name: user.name })
+
+		console.log('Attempting to get content details:', { type, slug })
+		let content: ArticleWithSlug | { title: string; description: string; slug: string; price: number };
+
+		if (type === 'article') {
+			console.log('Fetching article content')
+			const articleContent = await importArticleMetadata(`${slug}/page.mdx`)
+			if (!articleContent) {
+				throw new Error(`No article found with slug ${slug}`)
+			}
+			content = { ...articleContent, slug, type: 'article' }
+		} else if (type === 'course') {
+			const courseResult = await sql`
+				SELECT title, description, slug, price FROM courses WHERE slug = ${slug}
+			`
+			if (courseResult.rows.length === 0) {
+				throw new Error(`No course found with slug ${slug}`)
+			}
+			const courseData = courseResult.rows[0]
+			if (!courseData.price || !courseData.title || !courseData.description || !courseData.slug) {
+				throw new Error('Invalid course data returned from database')
+			}
+			content = {
+				title: courseData.title,
+				description: courseData.description,
+				slug: courseData.slug,
+				price: courseData.price,
+				type: 'course'
+			}
+		} else {
+			throw new Error(`Invalid content type: ${type}`)
+		}
+
+		console.log('Successfully found content:', { title: content.title, type, slug: content.slug })
+
+		return NextResponse.json({
+			content,
+			user: session.user,
+			session: stripeSession,
+			payment_status: stripeSession.payment_status
+		})
+	} catch (error) {
+		console.error('Error retrieving checkout session:', error)
+		return NextResponse.json({ error: 'Failed to retrieve checkout session' }, { status: 500 })
 	}
 }
 

@@ -4,6 +4,12 @@ import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
 import { createMetadata } from '@/utils/createMetadata'
+import { auth } from '../../auth'
+import { sql } from '@vercel/postgres'
+import { importArticleMetadata } from '@/lib/articles'
+import { importCourse } from '@/lib/courses'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata = createMetadata({
   title: 'Modern Coding',
