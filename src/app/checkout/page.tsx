@@ -89,8 +89,10 @@ const CheckoutPage = () => {
 		setLoading(true);
 		setError("");
 
+		const isArticle = productSlug.startsWith('blog-');
 		const payload = {
-			product: productSlug,
+			slug: isArticle ? productSlug.replace('blog-', '') : productSlug,
+			type: isArticle ? 'article' : 'course'
 		};
 
 		fetch("/api/checkout-sessions", {
