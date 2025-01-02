@@ -10,9 +10,18 @@ interface PaywallProps {
   slug: string
   title: string
   paywallHeader?: string
+  paywallBody?: string
+  buttonText?: string
 }
 
-export default function Paywall({ price, slug, title, paywallHeader }: PaywallProps) {
+export default function Paywall({ 
+  price, 
+  slug, 
+  title, 
+  paywallHeader, 
+  paywallBody,
+  buttonText 
+}: PaywallProps) {
   const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -25,7 +34,6 @@ export default function Paywall({ price, slug, title, paywallHeader }: PaywallPr
 
     setLoading(true)
     try {
-      // Add 'blog-' prefix to distinguish from course products
       router.push(`/checkout?product=blog-${slug}`)
     } catch (error) {
       console.error('Error:', error)
@@ -43,14 +51,14 @@ export default function Paywall({ price, slug, title, paywallHeader }: PaywallPr
 
       <div className="text-center">
         <p className="mb-6 text-lg text-zinc-700 dark:text-zinc-300">
-          Purchase to read the full content and support its independent creator.
+          {paywallBody || "Purchase to read the full content and support its independent creator."}
         </p>
         <Button
           onClick={handlePurchase}
           disabled={loading}
           className="w-full sm:w-auto px-8 py-3 text-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
         >
-          {loading ? 'Processing...' : `Purchase for $${(price / 100).toFixed(2)}`}
+          {loading ? 'Processing...' : buttonText || `Purchase for $${(price / 100).toFixed(2)}`}
         </Button>
       </div>
     </div>
