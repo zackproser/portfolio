@@ -14,6 +14,9 @@ export interface PaidArticle extends Article {
   isPaid: boolean
   price?: number
   previewLength?: number
+  paywallHeader?: string
+  paywallBody?: string
+  buttonText?: string
 }
 
 // Base article with slug, without paid properties
