@@ -18,6 +18,9 @@ interface ArticleLayoutProps {
     slug?: string
     previewLength?: number
     previewElements?: number
+    paywallHeader?: string
+    paywallBody?: string
+    buttonText?: string
   }
 }
 
@@ -25,8 +28,6 @@ export function ArticleLayout({
   children,
   metadata,
 }: ArticleLayoutProps) {
- // console.log('Full metadata in ArticleLayout:', metadata)
-  
   return (
     <>
       <Container className="mt-16 lg:mt-32">
@@ -53,6 +54,9 @@ export function ArticleLayout({
                   title={metadata.title}
                   previewLength={metadata.previewLength}
                   previewElements={metadata.previewElements}
+                  paywallHeader={metadata.paywallHeader}
+                  paywallBody={metadata.paywallBody}
+                  buttonText={metadata.buttonText}
                 >
                   {children}
                 </ArticleContent>

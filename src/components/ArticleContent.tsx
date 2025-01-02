@@ -12,7 +12,10 @@ interface ArticleContentProps {
   slug?: string
   title?: string
   previewLength?: number
-  previewElements?: number // Number of elements to show in preview
+  previewElements?: number
+  paywallHeader?: string
+  paywallBody?: string
+  buttonText?: string
 }
 
 export default function ArticleContent({ 
@@ -23,6 +26,9 @@ export default function ArticleContent({
   title,
   previewLength = 150,
   previewElements = 3,
+  paywallHeader,
+  paywallBody,
+  buttonText
 }: ArticleContentProps) {
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(false)
@@ -82,6 +88,9 @@ export default function ArticleContent({
         price={price!} 
         slug={slug!}
         title={title!}
+        paywallHeader={paywallHeader}
+        paywallBody={paywallBody}
+        buttonText={buttonText}
       />
     </>
   )
