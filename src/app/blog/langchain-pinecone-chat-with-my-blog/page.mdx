@@ -12,26 +12,35 @@ import ConsultingCTA from '@/components/ConsultingCTA'
 
 import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
+export const articleMetadata = {
     author: "Zachary Proser", 
     date: "2024-05-10",
     title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
     description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
     image: chatWithMyBlog,
-    slug: '/blog/langchain-pinecone-chat-with-my-blog'
-});
+    slug: 'langchain-pinecone-chat-with-my-blog',
+    isPaid: true,
+    price: 2000,
+    previewLength: 250,
+    previewElements: 37,
+    paywallHeader: "Master RAG Pipelines: The Most In-Demand Gen AI Skill",
+    paywallBody: "Every company wants developers who can build RAG applications. Get a complete, production-ready tutorial that teaches you exactly how to build a RAG pipeline with the latest tech stack: Vercel AI SDK, OpenAI embeddings, and Pinecone vector search.",
+    buttonText: "Level Up Your Gen AI Skills ($20)"
+};
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export const metadata = createMetadata(articleMetadata);
+
+export default (props) => <ArticleLayout metadata={articleMetadata} {...props} />
 
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
 Here's a quick demo of it in action - or [you can try it out yourself](/chat): 
 
 <iframe 
-  class="youtube-video"
+  className="youtube-video"
   src="https://www.youtube.com/embed/ii4aUE-6Okk" 
   title="Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel" 
-  frameborder="0" 
+  frameBorder="0" 
   allow="fullscreen;">
  </iframe>
 
@@ -178,7 +187,7 @@ const openai = new OpenAIApi(config)
 export async function getEmbeddings(input: string) {
   try {
     const response = await openai.createEmbedding({
-      model: "text-embedding-ada-002",
+      model: "text-embedding-3-large",
       input: input.replace(/\n/g, ' ')
     })
 
@@ -330,7 +339,7 @@ I can reuse my existing article loader to look up related blog posts by their pa
 This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's `StreamingTextResponse`.
 
 To level set a bit, a streaming response is one where the connection between the server and client is kept open, and chunks of text are streamed back to the client as they become available. This kind of connection is preferable
-when you have a lot of data to send, or when the speed with which your experience becomes interactive is critical. 
+when you have a lot of data to send, or when the speed with which your experience becomes interactive is critical.
 
 As you've noticed from using ChatGPT and its kin, they begin to respond to you immediately and you can see the text response progressively filling in your screen in real-time. Why? 
 
@@ -348,9 +357,9 @@ const serializedArticles = Buffer.from(
     JSON.stringify(relatedBlogPosts)
 ).toString('base64')
 
-return new StreamingTextResponse(result.toAIStream(), {
+return result.toDataStreamResponse({
   headers: {
-    "x-sources": serializedArticles
+    'x-sources': serializedArticles
   }
 });
 ```
@@ -387,7 +396,7 @@ const prompt = `
         END OF CONTEXT BLOCK
         Zachary will take into account any CONTEXT BLOCK that is provided in a conversation.
         If the context does not provide the answer to question, Zachary will say, "I'm sorry, but I don't know the answer to that question".
-        Zachary will not apologize for previous responses, but instead will indicate new information was gained.
+        Zachary will not apologize for previous responses, but instead will indicated new information was gained.
         Zachary will not invent anything that is not drawn directly from the context.
         Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
 `;
@@ -732,8 +741,8 @@ export async function POST(req: Request) {
           Zachary will not engage in any defamatory, overly negative, controversial, political or potentially offense conversations.
 `;
 
-  const result = await streamText({
-    model: openai('gpt-4o'),
+  const result = streamText({
+    model: openai.chat('gpt-4o'),
     system: prompt,
     prompt: lastMessage.content,
   });
@@ -742,9 +751,9 @@ export async function POST(req: Request) {
     JSON.stringify(relatedBlogPosts)
   ).toString('base64')
 
-  return new StreamingTextResponse(result.toAIStream(), {
+  return result.toDataStreamResponse({
     headers: {
-      "x-sources": serializedArticles
+      'x-sources': serializedArticles
     }
   });
 }
