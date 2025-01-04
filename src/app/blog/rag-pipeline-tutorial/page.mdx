@@ -1,0 +1,713 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+import customRagChat from '@/images/custom-rag-chat-screenshot.webp';
+import customRagFlowchart from '@/images/chat-with-blog-flowchart.webp';
+import googleColabSecrets from '@/images/rag-tutorial-colab-secrets.webp';
+import clonePortfolio from '@/images/rag-tutorial-clone-portfolio.webp';
+import docsSanity from '@/images/rag-tutorial-docs-sanity.webp';
+import queryIndex from '@/images/rag-tutorial-query-index.webp';
+
+import { createMetadata } from '@/utils/createMetadata';
+import { ArticleLayout } from '@/components/ArticleLayout';
+
+export const articleMetadata = {
+    author: "Zachary Proser", 
+    date: "2024-05-10",
+    title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
+    description: "Learn how to build a production-ready RAG pipeline that lets visitors chat with your content, complete with citations and related content suggestions",
+    image: customRagChat,
+    slug: 'langchain-pinecone-chat-with-my-blog',
+    isPaid: true,
+    price: 2000,
+    previewLength: 450,
+    previewElements: 37,
+    paywallHeader: "Building RAG Pipelines: The Most In-Demand Gen AI Skill",
+    paywallBody: "Every company wants developers who can build RAG applications. Get a complete, production-ready tutorial that teaches you exactly how to build a RAG pipeline with the latest tech stack: Vercel AI SDK, OpenAI embeddings, and Pinecone vector search.",
+    buttonText: "Unlock the full tutorial ($20)"
+};
+
+export const metadata = createMetadata(articleMetadata);
+
+export default (props) => <ArticleLayout metadata={articleMetadata} {...props} />
+
+This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
+
+Whether you're working with a corporate knowledge base, personal blog, or ticketing system, you'll learn how to create an AI-powered chat interface that provides accurate answers with citations.
+
+## Try It Yourself
+
+See the complete working demo at [/chat](/chat). This tutorial walks you through building this exact same experience:
+
+<Link href="/chat">
+<Image src={customRagChat} alt="Chat interface with related posts suggestions" />
+</Link>
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/ii4aUE-6Okk" 
+  title="Building an AI chatbot with LangChain, Pinecone.io and OpenAI" 
+  frameBorder="0" 
+  allow="fullscreen;">
+</iframe>
+
+<details>
+<summary>What skills will I learn? (Click to expand)</summary>
+
+- Data preprocessing and preparation with LangChain
+- Converting text to embeddings with OpenAI
+- Creating and managing vector databases with Pinecone
+- Implementing query embeddings and vector similarity search
+- Enriching LLM prompts with private context at runtime
+- Building streaming chat interfaces with Vercel AI SDK
+- Adding citations and related content suggestions
+</details>
+
+## System Architecture
+
+<details>
+<summary>How does the RAG pipeline work? (Click to expand)</summary>
+
+Let's understand the complete system we'll be creating:
+
+<Image src={customRagFlowchart} alt="RAG Pipeline Architecture" />
+
+This is a Retrieval Augmented Generation (RAG) pipeline that allows users to chat with your content. Here's how it works:
+
+1. When a user asks a question, their query is converted to a vector (embedding)
+2. This vector is used to search your Pinecone database for similar content
+3. The most relevant content is retrieved and injected into the LLM's prompt, the LLM generates a response based on your content, and the response is streamed back to the user along with citations
+</details>
+
+## Build Process Overview
+
+<details>
+<summary>What are the main steps we'll follow? (Click to expand)</summary>
+
+We'll build this system in the following order:
+
+1. **Data Processing**: First, we'll process your content (blog posts, documentation, etc.) into a format suitable for vector search. We'll use a Jupyter Notebook for this phase.
+
+2. **Vector Database Creation**: We'll convert your processed content into embeddings and store them in Pinecone, creating a searchable knowledge base.
+
+3. **Knowledge Base Testing**: We'll verify our setup by running semantic search queries against the vector database to ensure we get relevant results.
+
+4. **Backend Development**: We'll build the Next.js API that accepts user queries, converts queries to embeddings, retrieves relevant content from Pinecone, provides context to the LLM, and streams the response back to the user
+
+5. **Frontend Implementation**: Finally, we'll create the chat interface that accepts user input, makes API calls to our backend, displays streaming responses, and shows related content and citations
+</details>
+
+### Step 1: Load and configure the data processing notebook 
+
+I've created a [Jupyter Notebook](https://github.com/zackproser/ingest-portfolio/blob/main/ingest_portfolio.ipynb) that handles all the data preprocessing and vector database creation. 
+
+This notebook is designed to be easy to understand and customizable - you can swap out my example site with your own content source.
+
+1. First, open the [notebook in Google Colab with this direct link](https://colab.research.google.com/github/zackproser/ingest-portfolio/blob/main/ingest_portfolio.ipynb):
+
+2. Configure your API keys in Colab's secrets manager:
+
+* Obtain your OpenAI API key from [here](https://platform.openai.com/api-keys)
+* Obtain your Pinecone API key from [here](https://app.pinecone.io/organizations/-/projects/-/keys)
+
+Click the key icon in the left sidebar to add your secrets.
+
+Name your OpenAI API key secret `OPENAI_API_KEY` your Pinecone API key secret `PINECONE_API_KEY`.
+
+Ensure the **Notebook access** toggles are enabled for both secrets. This grants your notebook access to the secrets.
+
+<Image src={googleColabSecrets} alt="Google Colab Secrets" />
+
+Now that you've configured your secrets, we're ready to step through the notebook, understanding and executing each cell. 
+
+### Step 2: Clone the data source 
+
+The next cell clones my open source website which contains all my blog posts. Run it to pull down my site, which you can then view in the content sidebar: 
+
+<Image src={clonePortfolio} alt="Clone my portfolio" />
+
+### Step 3: Install dependencies
+
+The second and third cells install and import the necessary dependencies. Run them both.
+
+### Step 4: Loading blog posts into memory
+
+The next three cells use LangChain's DirectoryLoader to load all my blog posts into memory: 
+
+```python
+# Create a loader, reading from the portfolio directory, and looking for all .mdx files even if they're nested in subdirectories
+loader = DirectoryLoader('portfolio', glob="**/*.mdx", show_progress=True, use_multithreading=True)
+
+# Load the documents into memory
+docs = loader.load()
+
+# Sanity check: print the documents to make sure they loaded correctly
+docs
+```
+
+You should see the docs being loaded into memory and then printed out in the console.
+
+Note that you may need to run the `loader.load()` cell twice. 
+
+<Image src={docsSanity} alt="Sanity check: print the documents to make sure they loaded correctly" />
+
+### Step 5: Loading your Open AI and Pinecone API keys into the environment  
+
+The next cell loads your Open AI and Pinecone API keys into the environment by reading them out of the Google Colab secret store. 
+
+This step is necessary because subsequent cells will call the OpenAI and Pinecone SDKs, which in turn will examine the environment for the 
+the API keys.
+
+### Step 6: Creating a Pinecone index 
+
+The next cells creates a Pinecone index. Note that we must be careful to exactly match the dimensions of the embeddings we're using. 
+
+In my case, I'm using OpenAI's `text-embedding-3-large` model, which outputs 3072 dimensions. This means we must create a Pinecone index with a dimension of 3072. 
+```python
+from pinecone import Pinecone, ServerlessSpec
+
+# Initialize Pinecone client
+pc = Pinecone(api_key=os.environ.get('PINECONE_API_KEY'))
+
+# Set the name of your Pinecone Index here
+index_name = 'zack-portfolio'
+
+pc.create_index(
+    name=index_name,
+    dimension=3072,
+    metric='euclidean',
+    deletion_protection='enabled',
+    spec=ServerlessSpec(
+        cloud='aws',
+        region='us-east-1'
+    )
+)
+
+index = pc.Index(index_name)
+
+index.describe_index_stats()
+```
+If all went well, you should see the index stats printed out in the console:
+
+```javascript
+{'dimension': 3072,
+ 'index_fullness': 0.0,
+ 'namespaces': {},
+ 'total_vector_count': 0}
+```
+
+
+### Step 6: Creating a vectorstore with LangChain 
+
+This cell first sets up OpenAI embeddings. 
+
+```python
+# Initialize embeddings and the vector store
+embeddings = OpenAIEmbeddings(
+  model="text-embedding-3-large",
+)
+```
+<details>
+<summary>But what are embeddings? (Click to expand)</summary>
+
+Embeddings or vectors are lists of floating point numbers that represent semantic meaning and relationships between entities in data. We get embeddings by showing data 
+like text to an embedding model, a neural network that has been trained to extract the semantic meaning of input data. 
+
+For example, when a user asks a question, we'll convert their query into a vector (embedding) like this:
+
+```bash
+message: { role: 'user', content: 'How can I become a better developer?' }
+embedding: [
+   -0.033478674,         0.016010953,  -0.025884598,
+    0.021905465,         0.014864422,    0.01289509,
+    0.011276458,         0.004181462, -0.0009307125,
+  0.00026049835,          0.02156825,  -0.036796864,
+    // ... more dimensions
+  [length]: 3072
+]
+```
+
+So, by setting up OpenAI embeddings, we're supplying our OpenAI API key and getting ready to show the embedding model our text. 
+</details>
+
+**Understanding Chunking, and why it's important**
+
+We have our documents loaded into memory, but a critical step is missing: we need to split the documents into chunks. 
+
+```python
+# Split the documents into chunks
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+split_docs = text_splitter.split_documents(docs)
+```
+
+Chunking is the process of breaking up a document into smaller pieces. This is necessary because the embedding model can only handle a certain amount of input data at once due to token limits. 
+
+<details>
+<summary>I want to learn more about Chunking and pipeline performance (Click to expand)</summary>
+
+For example, OpenAI’s embedding models typically have a token limit that restricts the amount of text you can process in a single call. By splitting documents into manageable chunks, we ensure that each chunk can be embedded successfully without exceeding these limits.
+
+The `RecursiveCharacterTextSplitter` is a LangChain utility that helps achieve this. It breaks down the document into smaller pieces of the specified `chunk_size` while maintaining `chunk_overlap` to ensure that no important context is lost between consecutive chunks. This overlap can help preserve meaning when chunks are processed independently.
+
+In the example above, we’re splitting the documents into chunks of up to 1000 characters with no overlap. These chunks are then ready to be embedded individually using the embeddings model. This process enables us to represent large documents as a collection of embeddings that can be indexed or queried in a vector store for various applications, such as semantic search or recommendation systems.
+
+**Chunking and RAG Pipeline Performance**
+
+Chunking therefore also has important implications for the performance and accuracy of our RAG pipeline. Smaller, well-defined chunks allow the system to retrieve more relevant pieces of information when responding to a query, as the embeddings for each chunk can better represent specific ideas or concepts from the original document. This increases the precision of the retrieval process.
+
+At the same time, thoughtful chunking balances performance trade-offs. Larger chunks may retain more context within a single embedding but risk including irrelevant information, potentially diluting the relevance of retrieval. Conversely, overly small chunks could increase computational overhead and introduce unnecessary noise by retrieving too many fragmented pieces.
+
+By optimizing chunk size and overlap, we can strike a balance between retaining sufficient context and ensuring high retrieval precision. In practice, this process involves testing different configurations and evaluating the trade-offs between precision, recall, and computational efficiency.
+</details>
+
+Now, that we have an initialized embeddings model, chunked documents, and a Pinecone index, we're ready to tie it all together into a vector store that will be used to answer user queries at runtime. LangChain is doing a lot of the heavy lifting for us here. It's: 
+* Creating a new Pinecone index if it doesn't exist
+* Looping through the split_docs and embedding each chunk
+* Upserting the embeddings into the Pinecone index
+
+```python
+# Create a vector store for the documents using the specified embeddings
+vectorstore = PineconeVectorStore.from_documents(split_docs, embeddings, index_name=index_name)
+```
+
+Now that we've created the vector store, we can test it out by asking a query that is likely to score a hit against your corpus of text or data. 
+
+In my case, I have a blog post where I talk about "the programming bug". 
+
+Let's ask the vector store to find the most relevant chunks of content for this query. 
+
+Note, the final cell in the notebook is set up to make it easy to ask several different questions: 
+
+```python
+# Ask a query that is likely to score a hit against your corpus of text or data
+# In my case, I have a blog post where I talk about "the programming bug"
+query = "What is the programming bug?"
+vectorstore.similarity_search(query)
+```
+You should see the vector store return a list of chunks of content that are most relevant to the query. 
+
+And with that, we've successfully created a vector store and tested it out! We're ready to build the user-facing application that will use it.
+
+<Image src={queryIndex} alt="Querying the index" />
+
+### Step 2: Application Setup
+
+Now that our vector database is ready, let's build the application:
+
+1. Create a new Next.js project:
+```bash
+npx create-next-app@latest my-rag-app --typescript --tailwind --app
+cd my-rag-app
+```
+
+2. Configure MDX support. Create or update `next.config.js`:
+```javascript
+const withMDX = require('@next/mdx')()
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
+}
+
+module.exports = withMDX(nextConfig)
+```
+
+3. Install dependencies:
+```bash
+npm install @next/mdx @mdx-js/loader @mdx-js/react @pinecone-database/pinecone @vercel/ai ai openai-edge fast-glob
+```
+
+4. Create a simple example blog post at `src/app/blog/example-post/page.mdx`:
+```markdown
+export const metadata = {
+  title: 'Example Blog Post',
+  description: 'This is an example blog post to test our RAG pipeline',
+  author: 'Your Name',
+  date: '2024-01-01'
+}
+
+# Example Blog Post
+
+This is a simple blog post that we'll use to test our RAG pipeline. 
+
+## What is RAG?
+
+RAG (Retrieval Augmented Generation) is a powerful technique that combines the capabilities of large language models with your own data. It works by:
+
+1. Converting your content into vectors (embeddings)
+2. Storing these vectors in a database
+3. Finding relevant content when users ask questions
+4. Using this content to generate accurate, contextual responses
+
+## Benefits of RAG
+
+- More accurate responses based on your specific content
+- Reduced hallucination compared to pure LLM responses
+- Ability to cite sources and provide evidence
+- Always up-to-date with your latest content
+
+## Implementation Details
+
+The implementation involves several key components:
+- Vector database (Pinecone) for storing embeddings
+- OpenAI API for generating embeddings and responses
+- Next.js API routes for handling requests
+- React components for the user interface
+```
+
+5. Configure environment variables in `.env.local`:
+```bash
+OPENAI_API_KEY=your-key-here
+PINECONE_API_KEY=your-key-here
+PINECONE_INDEX=your-index-name
+```
+
+Your project structure should now look like this:
+```
+my-rag-app/
+├── next.config.js
+├── src/
+│   ├── app/
+│   │   ├── api/        # We'll create this next
+│   │   ├── chat/       # We'll create this next
+│   │   └── blog/       
+│   │       └── example-post/
+│   │           └── page.mdx
+│   └── lib/            # We'll create this next
+└── .env.local
+```
+
+### Step 3: Essential Types and Utilities
+
+1. First, create `src/lib/shared-types.ts`:
+```typescript
+export interface ArticleWithSlug {
+  slug: string
+  title: string
+  description: string
+  author: string
+  date: string
+  image?: string
+}
+```
+
+2. Create `src/lib/articles.ts` to handle article metadata loading:
+```typescript
+import { ArticleWithSlug } from './shared-types'
+import path from 'path'
+import glob from 'fast-glob'
+
+export async function importArticleMetadata(
+  articleFilename: string,
+): Promise<ArticleWithSlug> {
+  // Import the article's metadata
+  const importedData = await import(`@/app/blog/${articleFilename}`) as {
+    metadata: {
+      title: string
+      description: string
+      author: string
+      date: string
+      image?: string
+    }
+  }
+
+  const { metadata } = importedData
+
+  // Convert metadata to our ArticleWithSlug type
+  return {
+    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
+    title: metadata.title,
+    description: metadata.description,
+    author: metadata.author,
+    date: metadata.date,
+    image: metadata.image
+  }
+}
+
+export async function getAllArticles() {
+  // Get all MDX files in the blog directory
+  const blogFilenames = await glob('*/page.mdx', {
+    cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
+  })
+
+  // Import metadata for each article
+  const articles = await Promise.all(
+    blogFilenames.map(filename => importArticleMetadata(filename))
+  )
+
+  // Sort articles by date, newest first
+  return articles.sort((a, z) => 
+    new Date(z.date).getTime() - new Date(a.date).getTime()
+  )
+}
+```
+
+This is a simplified version of the article loader that:
+- Takes a filename (e.g., "my-post/page.mdx")
+- Imports the article's metadata from its MDX file
+- Converts the metadata into our `ArticleWithSlug` type
+- Includes a function to get all articles sorted by date
+- Returns the processed article data
+
+### Step 4: Backend Implementation
+
+Now create your API route at `src/app/api/chat/route.ts`:
+
+```typescript
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+import { PineconeRecord } from "@pinecone-database/pinecone";
+import { Metadata, getContext } from '../../services/context';
+import { importArticleMetadata } from '@/lib/articles';
+import path from 'path';
+import { ArticleWithSlug } from '@/lib/shared-types';
+
+export const maxDuration = 300;
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+  const lastMessage = messages[messages.length - 1];
+  
+  // Get context from Pinecone
+  const context = await getContext(lastMessage.content, '', 3000, 0.8, false);
+  
+  // Process matches and build response
+  let blogUrls = new Set<string>();
+  let docs: string[] = [];
+  
+  (context as PineconeRecord[]).forEach(match => {
+    const source = (match.metadata as Metadata).source;
+    if (!source.includes('src/app/blog')) return;
+    blogUrls.add((match.metadata as Metadata).source);
+    docs.push((match.metadata as Metadata).text);
+  });
+
+  // Build related posts list
+  let relatedBlogPosts: ArticleWithSlug[] = [];
+  for (const blogUrl of blogUrls) {
+    const blogPath = path.basename(blogUrl.replace('page.mdx', ''));
+    const localBlogPath = `${blogPath}/page.mdx`;
+    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    relatedBlogPosts.push({ slug, ...metadata });
+  }
+
+  // Create context for LLM
+  const contextText = docs.join("\n").substring(0, 3000);
+  const prompt = `
+    START CONTEXT BLOCK
+    ${contextText}
+    END OF CONTEXT BLOCK
+    
+    You are a helpful AI assistant. Use the context provided between the START CONTEXT BLOCK and END OF CONTEXT BLOCK tags to answer the user's question.
+    If the context doesn't contain the answer, say "I don't have enough information to answer that question."
+    Always cite your sources when possible.
+  `;
+
+  // Generate streaming response
+  const result = streamText({
+    model: openai.chat('gpt-4o'),
+    system: prompt,
+    prompt: lastMessage.content,
+  });
+
+  // Include related posts in response
+  const serializedArticles = Buffer.from(
+    JSON.stringify(relatedBlogPosts)
+  ).toString('base64');
+
+  return result.toDataStreamResponse({
+    headers: {
+      'x-sources': serializedArticles
+    }
+  });
+}
+```
+
+### Step 5: Testing the Backend
+
+Before moving on to the frontend, let's verify that our backend is working correctly:
+
+1. Start your development server if it's not already running:
+```bash
+npm run dev
+```
+
+2. Test the chat endpoint with curl:
+```bash
+curl -X POST http://localhost:3000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "What is RAG?"}
+    ]
+  }'
+```
+
+You should see a streaming response that includes:
+- A relevant answer about RAG based on your content
+- Base64-encoded related articles in the `x-sources` header
+- Citations from your content
+
+If you don't get a proper response, check:
+- Your environment variables are set correctly
+- The Pinecone index exists and contains your content
+- The OpenAI API key has sufficient credits
+
+### Step 6: Frontend Components
+
+Now that we've verified our backend is working, let's create the frontend components:
+
+1. Create `src/components/BlogPostCard.tsx`:
+```typescript
+import Link from 'next/link'
+import { ArticleWithSlug } from '@/lib/shared-types'
+
+export function BlogPostCard({ article }: { article: ArticleWithSlug }) {
+  const { slug, title, description, date } = article
+  
+  const formattedDate = new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+
+  return (
+    <article className="rounded-lg shadow-lg bg-white dark:bg-zinc-800 p-6">
+      <Link href={`/blog/${slug}`}>
+        <div className="flex flex-col">
+          <time className="text-sm text-gray-500 dark:text-gray-400">
+            {formattedDate}
+          </time>
+          <h3 className="mt-2 text-xl font-semibold text-zinc-800 dark:text-zinc-100">
+            {title}
+          </h3>
+          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            {description}
+          </p>
+        </div>
+      </Link>
+    </article>
+  )
+}
+```
+
+2. Create `src/app/blog/page.tsx`:
+```typescript
+import { ArticleWithSlug } from '@/lib/shared-types'
+import { BlogPostCard } from '@/components/BlogPostCard'
+
+// This is a simplified version - you'll want to implement your own 
+// data fetching logic based on your content structure
+async function getAllArticles(): Promise<ArticleWithSlug[]> {
+  // Example implementation - replace with your actual data fetching
+  return [
+    {
+      slug: 'example-post',
+      title: 'Example Post',
+      description: 'This is an example post',
+      author: 'Your Name',
+      date: '2024-01-01'
+    }
+  ]
+}
+
+export default async function BlogPage() {
+  const articles = await getAllArticles()
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-8">Blog Posts</h1>
+      <div className="grid gap-6 md:grid-cols-2">
+        {articles.map(article => (
+          <BlogPostCard key={article.slug} article={article} />
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+3. Create `src/app/chat/page.tsx`:
+```typescript
+'use client';
+
+import { useChat } from 'ai/react';
+import { useState } from 'react';
+import { ArticleWithSlug } from '@/lib/shared-types';
+
+export default function ChatPage() {
+  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    onResponse(response) {
+      const sourcesHeader = response.headers.get('x-sources');
+      const parsedArticles = sourcesHeader
+        ? JSON.parse(atob(sourcesHeader)) as ArticleWithSlug[]
+        : [];
+      setArticles(parsedArticles);
+    }
+  });
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <div className="flex flex-col space-y-4">
+        {messages.map(m => (
+          <div key={m.id} className={m.role === 'user' ? 'text-blue-600' : 'text-green-600'}>
+            <strong>{m.role === 'user' ? 'You:' : 'AI:'}</strong> {m.content}
+          </div>
+        ))}
+        
+        {articles.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">Related Articles:</h3>
+            <ul className="list-disc pl-5">
+              {articles.map(article => (
+                <li key={article.slug}>
+                  <a href={`/blog/${article.slug}`} className="text-blue-500 hover:underline">
+                    {article.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="mt-4">
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Ask a question..."
+          className="w-full p-2 border rounded"
+        />
+      </form>
+    </div>
+  );
+}
+```
+
+### Step 7: Deployment
+
+1. Create a new Vercel project:
+```bash
+vercel
+```
+
+2. Configure environment variables in Vercel:
+- `OPENAI_API_KEY`
+- `PINECONE_API_KEY`
+- `PINECONE_INDEX`
+
+3. Deploy:
+```bash
+vercel deploy --prod
+```
+
+### Next Steps
+
+- Add authentication to protect your API routes
+- Implement caching for frequently asked questions
+- Add error boundaries and loading states
+- Monitor and optimize your API usage
+
+That's it! You now have a production-ready RAG pipeline. For support or questions, feel free to reach out in the comments below. 
