@@ -19,13 +19,6 @@ export const articleMetadata = {
     description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
     image: chatWithMyBlog,
     slug: 'langchain-pinecone-chat-with-my-blog',
-    isPaid: true,
-    price: 2000,
-    previewLength: 250,
-    previewElements: 37,
-    paywallHeader: "Master RAG Pipelines: The Most In-Demand Gen AI Skill",
-    paywallBody: "Every company wants developers who can build RAG applications. Get a complete, production-ready tutorial that teaches you exactly how to build a RAG pipeline with the latest tech stack: Vercel AI SDK, OpenAI embeddings, and Pinecone vector search.",
-    buttonText: "Level Up Your Gen AI Skills ($20)"
 };
 
 export const metadata = createMetadata(articleMetadata);
@@ -334,9 +327,9 @@ for (const blogUrl of blogUrls) {
 
 I can reuse my existing article loader to look up related blog posts by their path, but how can I package and send them to the frontend? 
 
-### Sending extra data with headers when using StreamingTextResponse 
+### Sending extra data with headers when using toDataStreamResponse 
 
-This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's `StreamingTextResponse`.
+This recommended post functionality requires a clever use of headers, to send component rendering data as a base64 encoded header to the frontend, alongside Vercel's AI SDK's `DataStreamResponse`.
 
 To level set a bit, a streaming response is one where the connection between the server and client is kept open, and chunks of text are streamed back to the client as they become available. This kind of connection is preferable
 when you have a lot of data to send, or when the speed with which your experience becomes interactive is critical.
@@ -345,10 +338,10 @@ As you've noticed from using ChatGPT and its kin, they begin to respond to you i
 
 Because it's actually going to take three full minutes to finish answering your question, and if you saw nothing but a spinner for that long you'd have an existential crisis or at least hit the back button.
 
-We're writing an interface in the context of a chat scenario, and humans don't like chatting with partners that don't appear responsive. Now we're square on why we want a `StreamingTextResponse` sent back to the client, 
+We're writing an interface in the context of a chat scenario, and humans don't like chatting with partners that don't appear responsive. Now we're square on why we want a `DataStreamResponse` sent back to the client, 
 but this introduces yet another problem as it solves several others.
 
-If the API route looks up the related blog posts, but then returns a `StreamingTextResponse`, how can it simultaneously send the blog posts to the frontend?
+If the API route looks up the related blog posts, but then returns a `DataStreamResponse`, how can it simultaneously send the blog posts to the frontend?
 
 With a clever use of headers, we can package our related blog posts data by base64 encoding their JSON representation. 
 
@@ -520,7 +513,7 @@ that need to be addressed via the prompt or otherwise.
 ### Tying it all together: chat plus related blog posts 
 
 In addition to displaying the LLM's and the user's messages, the frontend also displays related blog posts
-each time the backend responds with a new StreamingTextResponse. 
+each time the backend responds with a new DataStreamResponse. 
 
 By unpacking the x-sources header, the frontend can immediately render the related posts. This is RAG with 
 citation of sources. Instead of related blog posts, this could be links to the exact section in a corpus of legal 
@@ -681,7 +674,7 @@ export default function Chat() {
 
 import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
-import { StreamingTextResponse, streamText } from 'ai';
+import { streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
 import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
