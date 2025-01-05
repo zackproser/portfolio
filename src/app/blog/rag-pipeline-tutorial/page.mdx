@@ -4,9 +4,10 @@ import Link from 'next/link';
 import customRagChat from '@/images/custom-rag-chat-screenshot.webp';
 import customRagFlowchart from '@/images/chat-with-blog-flowchart.webp';
 import googleColabSecrets from '@/images/rag-tutorial-colab-secrets.webp';
-import clonePortfolio from '@/images/rag-tutorial-clone-portfolio.webp';
-import docsSanity from '@/images/rag-tutorial-docs-sanity.webp';
-import queryIndex from '@/images/rag-tutorial-query-index.webp';
+import cloneExampleSite from '@/images/rag-pipeline-tutorial-clone-example-site.webp';
+import docsSanity from '@/images/rag-pipeline-tutorial-docs-sanity.webp';
+import queryIndex from '@/images/rag-pipeline-tutorial-query-index.webp';
+import chunking from '@/images/chunking.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
 import { ArticleLayout } from '@/components/ArticleLayout';
@@ -14,14 +15,14 @@ import { ArticleLayout } from '@/components/ArticleLayout';
 export const articleMetadata = {
     author: "Zachary Proser", 
     date: "2024-05-10",
-    title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
+    title: "Build a RAG pipeline with LangChain, OpenAI and Pinecone",
     description: "Learn how to build a production-ready RAG pipeline that lets visitors chat with your content, complete with citations and related content suggestions",
     image: customRagChat,
     slug: 'langchain-pinecone-chat-with-my-blog',
     isPaid: true,
     price: 2000,
     previewLength: 450,
-    previewElements: 37,
+    previewElements: 52,
     paywallHeader: "Building RAG Pipelines: The Most In-Demand Gen AI Skill",
     paywallBody: "Every company wants developers who can build RAG applications. Get a complete, production-ready tutorial that teaches you exactly how to build a RAG pipeline with the latest tech stack: Vercel AI SDK, OpenAI embeddings, and Pinecone vector search.",
     buttonText: "Unlock the full tutorial ($20)"
@@ -34,6 +35,10 @@ export default (props) => <ArticleLayout metadata={articleMetadata} {...props} /
 This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
 
 Whether you're working with a corporate knowledge base, personal blog, or ticketing system, you'll learn how to create an AI-powered chat interface that provides accurate answers with citations.
+
+## Complete Example Code
+
+The full source code for this tutorial is available in the [companion repository on GitHub](https://github.com/zackproser/rag-pipeline-tutorial). This repository contains a complete, working example that you can clone and run locally.
 
 ## Try It Yourself
 
@@ -50,6 +55,8 @@ See the complete working demo at [/chat](/chat). This tutorial walks you through
   frameBorder="0" 
   allow="fullscreen;">
 </iframe>
+
+## Table of contents
 
 <details>
 <summary>What skills will I learn? (Click to expand)</summary>
@@ -79,7 +86,7 @@ This is a Retrieval Augmented Generation (RAG) pipeline that allows users to cha
 3. The most relevant content is retrieved and injected into the LLM's prompt, the LLM generates a response based on your content, and the response is streamed back to the user along with citations
 </details>
 
-## Build Process Overview
+## Phase 1: Data processing
 
 <details>
 <summary>What are the main steps we'll follow? (Click to expand)</summary>
@@ -99,11 +106,11 @@ We'll build this system in the following order:
 
 ### Step 1: Load and configure the data processing notebook 
 
-I've created a [Jupyter Notebook](https://github.com/zackproser/ingest-portfolio/blob/main/ingest_portfolio.ipynb) that handles all the data preprocessing and vector database creation. 
+I've created a [Jupyter Notebook](https://github.com/zackproser/rag-pipeline-tutorial-notebook/blob/main/rag-pipeline-tutorial-notebook.ipynb) that handles all the data preprocessing and vector database creation. 
 
 This notebook is designed to be easy to understand and customizable - you can swap out my example site with your own content source.
 
-1. First, open the [notebook in Google Colab with this direct link](https://colab.research.google.com/github/zackproser/ingest-portfolio/blob/main/ingest_portfolio.ipynb):
+1. First, open the [notebook in Google Colab with this direct link](https://colab.research.google.com/github/zackproser/rag-pipeline-tutorial-notebook/blob/main/rag-pipeline-tutorial-notebook.ipynb):
 
 2. Configure your API keys in Colab's secrets manager:
 
@@ -122,9 +129,9 @@ Now that you've configured your secrets, we're ready to step through the noteboo
 
 ### Step 2: Clone the data source 
 
-The next cell clones my open source website which contains all my blog posts. Run it to pull down my site, which you can then view in the content sidebar: 
+The next cell clones [the open source companion example site](https://github.com/zackproser/rag-pipeline-tutorial) which contains the blog posts. Run it to pull down the site, which you can then view in the content sidebar: 
 
-<Image src={clonePortfolio} alt="Clone my portfolio" />
+<Image src={cloneExampleSite} alt="Clone my portfolio" />
 
 ### Step 3: Install dependencies
 
@@ -132,11 +139,11 @@ The second and third cells install and import the necessary dependencies. Run th
 
 ### Step 4: Loading blog posts into memory
 
-The next three cells use LangChain's DirectoryLoader to load all my blog posts into memory: 
+The next three cells use LangChain's DirectoryLoader to load the example site's blog posts into memory: 
 
 ```python
 # Create a loader, reading from the portfolio directory, and looking for all .mdx files even if they're nested in subdirectories
-loader = DirectoryLoader('portfolio', glob="**/*.mdx", show_progress=True, use_multithreading=True)
+loader = DirectoryLoader('rag-pipeline-tutorial', glob="**/*.md", show_progress=True, use_multithreading=True)
 
 # Load the documents into memory
 docs = loader.load()
@@ -147,7 +154,7 @@ docs
 
 You should see the docs being loaded into memory and then printed out in the console.
 
-Note that you may need to run the `loader.load()` cell twice. 
+Note that due to a quirk of the Google Colab environment / LangChain, you may need to run the `loader.load()` cell twice if you encounter an error the first time. 
 
 <Image src={docsSanity} alt="Sanity check: print the documents to make sure they loaded correctly" />
 
@@ -160,9 +167,11 @@ the API keys.
 
 ### Step 6: Creating a Pinecone index 
 
+Pinecone is a vector database that allows us to store and search for embeddings. Our vector database will be used to store the embeddings we create from our blog posts. 
+
 The next cells creates a Pinecone index. Note that we must be careful to exactly match the dimensions of the embeddings we're using. 
 
-In my case, I'm using OpenAI's `text-embedding-3-large` model, which outputs 3072 dimensions. This means we must create a Pinecone index with a dimension of 3072. 
+We're using OpenAI's `text-embedding-3-large` model, which outputs 3072 dimensions. This means we must create a Pinecone index with a dimension of 3072. 
 ```python
 from pinecone import Pinecone, ServerlessSpec
 
@@ -170,7 +179,7 @@ from pinecone import Pinecone, ServerlessSpec
 pc = Pinecone(api_key=os.environ.get('PINECONE_API_KEY'))
 
 # Set the name of your Pinecone Index here
-index_name = 'zack-portfolio'
+index_name = 'rag-pipeline-tutorial'
 
 pc.create_index(
     name=index_name,
@@ -197,7 +206,7 @@ If all went well, you should see the index stats printed out in the console:
 ```
 
 
-### Step 6: Creating a vectorstore with LangChain 
+### Step 7: Creating a vectorstore with LangChain 
 
 This cell first sets up OpenAI embeddings. 
 
@@ -230,35 +239,30 @@ embedding: [
 So, by setting up OpenAI embeddings, we're supplying our OpenAI API key and getting ready to show the embedding model our text. 
 </details>
 
-**Understanding Chunking, and why it's important**
+### Understanding Document Chunking
 
-We have our documents loaded into memory, but a critical step is missing: we need to split the documents into chunks. 
+After loading documents into memory, we need to split them into smaller, meaningful pieces. This chunking process is critical for RAG pipeline performance:
 
 ```python
 # Split the documents into chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000, 
+    chunk_overlap=0
+)
 split_docs = text_splitter.split_documents(docs)
 ```
 
-Chunking is the process of breaking up a document into smaller pieces. This is necessary because the embedding model can only handle a certain amount of input data at once due to token limits. 
+<Image src={chunking} alt="Document chunking visualization" />
 
-<details>
-<summary>I want to learn more about Chunking and pipeline performance (Click to expand)</summary>
+Chunking affects three key aspects of your RAG pipeline:
 
-For example, OpenAI’s embedding models typically have a token limit that restricts the amount of text you can process in a single call. By splitting documents into manageable chunks, we ensure that each chunk can be embedded successfully without exceeding these limits.
+1. **Retrieval Precision**: Smaller chunks allow for more precise matching. When a user asks "What are the benefits of RAG?", we want to retrieve just the relevant section, not an entire article.
 
-The `RecursiveCharacterTextSplitter` is a LangChain utility that helps achieve this. It breaks down the document into smaller pieces of the specified `chunk_size` while maintaining `chunk_overlap` to ensure that no important context is lost between consecutive chunks. This overlap can help preserve meaning when chunks are processed independently.
+2. **Context Window Management**: Each chunk must fit within the embedding model's token limit (for OpenAI's text-embedding-3-large, this is 8191 tokens).
 
-In the example above, we’re splitting the documents into chunks of up to 1000 characters with no overlap. These chunks are then ready to be embedded individually using the embeddings model. This process enables us to represent large documents as a collection of embeddings that can be indexed or queried in a vector store for various applications, such as semantic search or recommendation systems.
+3. **Answer Quality**: Chunks should preserve enough context to be meaningful. Too small, and they lose important context. Too large, and they include irrelevant information that can confuse the LLM.
 
-**Chunking and RAG Pipeline Performance**
-
-Chunking therefore also has important implications for the performance and accuracy of our RAG pipeline. Smaller, well-defined chunks allow the system to retrieve more relevant pieces of information when responding to a query, as the embeddings for each chunk can better represent specific ideas or concepts from the original document. This increases the precision of the retrieval process.
-
-At the same time, thoughtful chunking balances performance trade-offs. Larger chunks may retain more context within a single embedding but risk including irrelevant information, potentially diluting the relevance of retrieval. Conversely, overly small chunks could increase computational overhead and introduce unnecessary noise by retrieving too many fragmented pieces.
-
-By optimizing chunk size and overlap, we can strike a balance between retaining sufficient context and ensuring high retrieval precision. In practice, this process involves testing different configurations and evaluating the trade-offs between precision, recall, and computational efficiency.
-</details>
+Our chunk size of 1000 characters strikes a balance between these factors. The `RecursiveCharacterTextSplitter` intelligently breaks text at sentence boundaries to preserve readability.
 
 Now, that we have an initialized embeddings model, chunked documents, and a Pinecone index, we're ready to tie it all together into a vector store that will be used to answer user queries at runtime. LangChain is doing a lot of the heavy lifting for us here. It's: 
 * Creating a new Pinecone index if it doesn't exist
@@ -270,229 +274,154 @@ Now, that we have an initialized embeddings model, chunked documents, and a Pine
 vectorstore = PineconeVectorStore.from_documents(split_docs, embeddings, index_name=index_name)
 ```
 
-Now that we've created the vector store, we can test it out by asking a query that is likely to score a hit against your corpus of text or data. 
-
-In my case, I have a blog post where I talk about "the programming bug". 
-
-Let's ask the vector store to find the most relevant chunks of content for this query. 
-
-Note, the final cell in the notebook is set up to make it easy to ask several different questions: 
-
-```python
-# Ask a query that is likely to score a hit against your corpus of text or data
-# In my case, I have a blog post where I talk about "the programming bug"
-query = "What is the programming bug?"
-vectorstore.similarity_search(query)
-```
-You should see the vector store return a list of chunks of content that are most relevant to the query. 
-
-And with that, we've successfully created a vector store and tested it out! We're ready to build the user-facing application that will use it.
+As a sanity check, let's run a query against the index to see if it's working. We can ask, "What are some Kubernetes best practices?" and see if the index returns the relevant content:
 
 <Image src={queryIndex} alt="Querying the index" />
 
-### Step 2: Application Setup
+A good result should:
+- Have a similarity score above 0.7
+- Return content that semantically matches your query
+- Include proper metadata for source tracking
 
-Now that our vector database is ready, let's build the application:
+In the above screenshot, we see that the index returns a relevant result explaining some Kubernetes best practices. 
 
-1. Create a new Next.js project:
-```bash
-npx create-next-app@latest my-rag-app --typescript --tailwind --app
-cd my-rag-app
-```
+## Phase 2: Application development 
 
-2. Configure MDX support. Create or update `next.config.js`:
-```javascript
-const withMDX = require('@next/mdx')()
+Now that we have our vector database populated with embeddings, let's build the application that will use it. 
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx']
-}
+The system operates as a series of transformations, starting with a user's question and ending with a contextually-enriched response. 
 
-module.exports = withMDX(nextConfig)
-```
+Let's review the flow of the application:
 
-3. Install dependencies:
-```bash
-npm install @next/mdx @mdx-js/loader @mdx-js/react @pinecone-database/pinecone @vercel/ai ai openai-edge fast-glob
-```
+<Image src={customRagFlowchart} alt="RAG Pipeline Flowchart" />
 
-4. Create a simple example blog post at `src/app/blog/example-post/page.mdx`:
-```markdown
-export const metadata = {
-  title: 'Example Blog Post',
-  description: 'This is an example blog post to test our RAG pipeline',
-  author: 'Your Name',
-  date: '2024-01-01'
-}
+### Step 1. Create the supporting services 
 
-# Example Blog Post
+The application is built around three specialized services that work together to transform user questions into informed answers:
 
-This is a simple blog post that we'll use to test our RAG pipeline. 
-
-## What is RAG?
-
-RAG (Retrieval Augmented Generation) is a powerful technique that combines the capabilities of large language models with your own data. It works by:
-
-1. Converting your content into vectors (embeddings)
-2. Storing these vectors in a database
-3. Finding relevant content when users ask questions
-4. Using this content to generate accurate, contextual responses
-
-## Benefits of RAG
-
-- More accurate responses based on your specific content
-- Reduced hallucination compared to pure LLM responses
-- Ability to cite sources and provide evidence
-- Always up-to-date with your latest content
-
-## Implementation Details
-
-The implementation involves several key components:
-- Vector database (Pinecone) for storing embeddings
-- OpenAI API for generating embeddings and responses
-- Next.js API routes for handling requests
-- React components for the user interface
-```
-
-5. Configure environment variables in `.env.local`:
-```bash
-OPENAI_API_KEY=your-key-here
-PINECONE_API_KEY=your-key-here
-PINECONE_INDEX=your-index-name
-```
-
-Your project structure should now look like this:
-```
-my-rag-app/
-├── next.config.js
-├── src/
-│   ├── app/
-│   │   ├── api/        # We'll create this next
-│   │   ├── chat/       # We'll create this next
-│   │   └── blog/       
-│   │       └── example-post/
-│   │           └── page.mdx
-│   └── lib/            # We'll create this next
-└── .env.local
-```
-
-### Step 3: Essential Types and Utilities
-
-1. First, create `src/lib/shared-types.ts`:
+ #### The context service 
 ```typescript
-export interface ArticleWithSlug {
-  slug: string
-  title: string
-  description: string
-  author: string
-  date: string
-  image?: string
+// src/app/services/context.ts
+import { getEmbeddings } from './embeddings'
+import { queryPineconeVectorStore } from './pinecone'
+
+export interface Metadata {
+  source: string
+  text: string
+}
+
+export async function getContext(
+  query: string,
+  namespace: string = '',
+  maxTokens: number = 3000,
+  minScore: number = 0.7,
+  getOnlyText: boolean = true
+) {
+  const queryEmbeddings = await getEmbeddings(query)
+  return queryPineconeVectorStore(queryEmbeddings, namespace, minScore)
 }
 ```
 
-2. Create `src/lib/articles.ts` to handle article metadata loading:
+The context service coordinates the process of finding relevant information. When a user asks "What is RAG?", this service first converts that question into a vector, also known as a "query vector", then uses that vector to find similar content in our database. 
+
+The `maxTokens` parameter ensures we don't overflow the LLM's context window, while `minScore` filters out low-relevance matches.
+
+#### The embeddings service
 ```typescript
-import { ArticleWithSlug } from './shared-types'
-import path from 'path'
-import glob from 'fast-glob'
+// src/app/services/embeddings.ts
+import { OpenAIApi, Configuration } from 'openai-edge'
 
-export async function importArticleMetadata(
-  articleFilename: string,
-): Promise<ArticleWithSlug> {
-  // Import the article's metadata
-  const importedData = await import(`@/app/blog/${articleFilename}`) as {
-    metadata: {
-      title: string
-      description: string
-      author: string
-      date: string
-      image?: string
-    }
-  }
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+})
 
-  const { metadata } = importedData
+const openai = new OpenAIApi(config)
 
-  // Convert metadata to our ArticleWithSlug type
-  return {
-    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    title: metadata.title,
-    description: metadata.description,
-    author: metadata.author,
-    date: metadata.date,
-    image: metadata.image
-  }
+export async function getEmbeddings(text: string) {
+  const response = await openai.createEmbedding({
+    model: 'text-embedding-3-large',
+    input: text,
+  })
+  
+  const result = await response.json()
+  return result.data[0].embedding
 }
+```
 
-export async function getAllArticles() {
-  // Get all MDX files in the blog directory
-  const blogFilenames = await glob('*/page.mdx', {
-    cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
+This service converts text into high-dimensional vectors that capture semantic meaning. The `text-embedding-3-large` model maps each piece of text to a 3072-dimensional space where similar concepts cluster together. 
+
+This mathematical representation is what enables our system to understand that a question about "RAG pipelines" is relevant to content mentioning "retrieval augmented generation".
+
+#### The Pinecone service
+```typescript
+// src/app/services/pinecone.ts
+import { Pinecone } from '@pinecone-database/pinecone'
+
+const pc = new Pinecone({
+  apiKey: process.env.PINECONE_API_KEY!,
+})
+
+export async function queryPineconeVectorStore(
+  vector: number[],
+  namespace: string = '',
+  minScore: number = 0.7,
+) {
+  const index = pc.index(process.env.PINECONE_INDEX!)
+  
+  const results = await index.query({
+    vector,
+    namespace,
+    includeMetadata: true,
+    topK: 5,
   })
 
-  // Import metadata for each article
-  const articles = await Promise.all(
-    blogFilenames.map(filename => importArticleMetadata(filename))
-  )
-
-  // Sort articles by date, newest first
-  return articles.sort((a, z) => 
-    new Date(z.date).getTime() - new Date(a.date).getTime()
-  )
+  return results.matches?.filter(match => match.score > minScore) || []
 }
 ```
 
-This is a simplified version of the article loader that:
-- Takes a filename (e.g., "my-post/page.mdx")
-- Imports the article's metadata from its MDX file
-- Converts the metadata into our `ArticleWithSlug` type
-- Includes a function to get all articles sorted by date
-- Returns the processed article data
+The Pinecone service performs high-speed similarity search across millions of vectors. It returns the closest matches along with their metadata, which includes the original text and source. 
 
-### Step 4: Backend Implementation
+The `topK` parameter limits results to the 5 most relevant matches, while `minScore` ensures we only get meaningful matches above a 0.7 similarity threshold.
 
-Now create your API route at `src/app/api/chat/route.ts`:
+### Step 2. Create the chat API 
+
+The chat endpoint uses the context service and orchestrates the entire RAG process. 
+
+Each time a user asks a question, the chat endpoint will:
+
+1. Use the context service to find relevant content
+2. Construct a prompt that guides the LLM to use the context to answer the user's question
+3. Stream the response back to the user, along with metadata about the sources used to answer the question
 
 ```typescript
-import { streamText } from 'ai';
-import { openai } from '@ai-sdk/openai';
-import { PineconeRecord } from "@pinecone-database/pinecone";
-import { Metadata, getContext } from '../../services/context';
-import { importArticleMetadata } from '@/lib/articles';
-import path from 'path';
-import { ArticleWithSlug } from '@/lib/shared-types';
-
-export const maxDuration = 300;
+// src/app/api/chat/route.ts
+import { streamText } from 'ai'
+import { openai } from '@ai-sdk/openai'
+import { PineconeRecord } from "@pinecone-database/pinecone"
+import { Metadata, getContext } from '../../services/context'
+import { importArticleMetadata } from '@/lib/articles'
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
-  const lastMessage = messages[messages.length - 1];
+  const { messages } = await req.json()
+  const lastMessage = messages[messages.length - 1]
   
-  // Get context from Pinecone
-  const context = await getContext(lastMessage.content, '', 3000, 0.8, false);
+  // Find relevant context
+  const context = await getContext(lastMessage.content)
   
-  // Process matches and build response
-  let blogUrls = new Set<string>();
-  let docs: string[] = [];
+  // Track sources and accumulate relevant text
+  let blogUrls = new Set<string>()
+  let docs: string[] = []
   
-  (context as PineconeRecord[]).forEach(match => {
-    const source = (match.metadata as Metadata).source;
-    if (!source.includes('src/app/blog')) return;
-    blogUrls.add((match.metadata as Metadata).source);
-    docs.push((match.metadata as Metadata).text);
-  });
+  context.forEach(match => {
+    const metadata = match.metadata as Metadata
+    if (metadata.source.includes('src/app/blog')) {
+      blogUrls.add(metadata.source)
+      docs.push(metadata.text)
+    }
+  })
 
-  // Build related posts list
-  let relatedBlogPosts: ArticleWithSlug[] = [];
-  for (const blogUrl of blogUrls) {
-    const blogPath = path.basename(blogUrl.replace('page.mdx', ''));
-    const localBlogPath = `${blogPath}/page.mdx`;
-    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
-    relatedBlogPosts.push({ slug, ...metadata });
-  }
-
-  // Create context for LLM
-  const contextText = docs.join("\n").substring(0, 3000);
+  // Construct a prompt that guides the LLM
+  const contextText = docs.join("\n").substring(0, 3000)
   const prompt = `
     START CONTEXT BLOCK
     ${contextText}
@@ -501,179 +430,110 @@ export async function POST(req: Request) {
     You are a helpful AI assistant. Use the context provided between the START CONTEXT BLOCK and END OF CONTEXT BLOCK tags to answer the user's question.
     If the context doesn't contain the answer, say "I don't have enough information to answer that question."
     Always cite your sources when possible.
-  `;
+  `
 
-  // Generate streaming response
+  // Stream the response while preparing metadata
   const result = streamText({
-    model: openai.chat('gpt-4o'),
+    model: openai.chat('gpt-4'),
     system: prompt,
     prompt: lastMessage.content,
-  });
+  })
 
-  // Include related posts in response
-  const serializedArticles = Buffer.from(
-    JSON.stringify(relatedBlogPosts)
-  ).toString('base64');
+  // Gather metadata about the sources used
+  const relatedPosts = await Promise.all(
+    Array.from(blogUrls).map(async url => {
+      const blogPath = path.basename(url.replace('page.mdx', ''))
+      return importArticleMetadata(`${blogPath}/page.mdx`)
+    })
+  )
+
+  // Include source metadata in response headers
+  const serializedPosts = Buffer.from(
+    JSON.stringify(relatedPosts)
+  ).toString('base64')
 
   return result.toDataStreamResponse({
     headers: {
-      'x-sources': serializedArticles
+      'x-sources': serializedPosts
     }
-  });
-}
-```
-
-### Step 5: Testing the Backend
-
-Before moving on to the frontend, let's verify that our backend is working correctly:
-
-1. Start your development server if it's not already running:
-```bash
-npm run dev
-```
-
-2. Test the chat endpoint with curl:
-```bash
-curl -X POST http://localhost:3000/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "messages": [
-      {"role": "user", "content": "What is RAG?"}
-    ]
-  }'
-```
-
-You should see a streaming response that includes:
-- A relevant answer about RAG based on your content
-- Base64-encoded related articles in the `x-sources` header
-- Citations from your content
-
-If you don't get a proper response, check:
-- Your environment variables are set correctly
-- The Pinecone index exists and contains your content
-- The OpenAI API key has sufficient credits
-
-### Step 6: Frontend Components
-
-Now that we've verified our backend is working, let's create the frontend components:
-
-1. Create `src/components/BlogPostCard.tsx`:
-```typescript
-import Link from 'next/link'
-import { ArticleWithSlug } from '@/lib/shared-types'
-
-export function BlogPostCard({ article }: { article: ArticleWithSlug }) {
-  const { slug, title, description, date } = article
-  
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
   })
-
-  return (
-    <article className="rounded-lg shadow-lg bg-white dark:bg-zinc-800 p-6">
-      <Link href={`/blog/${slug}`}>
-        <div className="flex flex-col">
-          <time className="text-sm text-gray-500 dark:text-gray-400">
-            {formattedDate}
-          </time>
-          <h3 className="mt-2 text-xl font-semibold text-zinc-800 dark:text-zinc-100">
-            {title}
-          </h3>
-          <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-            {description}
-          </p>
-        </div>
-      </Link>
-    </article>
-  )
 }
 ```
 
-2. Create `src/app/blog/page.tsx`:
+In an e-commerce application, this endpoint might be used to answer questions about products, or to provide recommendations based on a user's purchase history. 
+
+In the case of this tutorial, the context service will return blog posts from [the companion example site](https://github.com/zackproser/rag-pipeline-tutorial). 
+
+The endpoint then constructs a prompt that guides the LLM to use the context to answer the user's question. 
+
+The prompt includes a `START CONTEXT BLOCK` and `END OF CONTEXT BLOCK` tag. The related content returned by the context service is injected between these tags, and the 
+entire prompt is passed to the LLM. 
+
+**This is the essence of RAG**: the LLM is given a prompt that includes the context it needs to answer the user's question.
+
+In this way, the LLM's response is informed by the context, reducing the likelihood of hallucinations and providing more accurate answers based on your proprietary content.
+
+The endpoint then streams the response back to the user, along with metadata about the sources used to answer the question. 
+
+The `x-sources` header contains a base64 encoded JSON array of the related content. The frontend will use this metadata to display related content and citations.
+
+This is a handy trick for passing arbitrary metadata to the client in the response headers while handling a streaming response.
+
+### Step 3. Create the user interface
+
+The frontend brings this all together in a responsive interface:
+
 ```typescript
+// src/app/chat/page.tsx
+'use client'
+
+import { useChat } from 'ai/react'
+import { useState } from 'react'
 import { ArticleWithSlug } from '@/lib/shared-types'
-import { BlogPostCard } from '@/components/BlogPostCard'
-
-// This is a simplified version - you'll want to implement your own 
-// data fetching logic based on your content structure
-async function getAllArticles(): Promise<ArticleWithSlug[]> {
-  // Example implementation - replace with your actual data fetching
-  return [
-    {
-      slug: 'example-post',
-      title: 'Example Post',
-      description: 'This is an example post',
-      author: 'Your Name',
-      date: '2024-01-01'
-    }
-  ]
-}
-
-export default async function BlogPage() {
-  const articles = await getAllArticles()
-
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-8">Blog Posts</h1>
-      <div className="grid gap-6 md:grid-cols-2">
-        {articles.map(article => (
-          <BlogPostCard key={article.slug} article={article} />
-        ))}
-      </div>
-    </div>
-  )
-}
-```
-
-3. Create `src/app/chat/page.tsx`:
-```typescript
-'use client';
-
-import { useChat } from 'ai/react';
-import { useState } from 'react';
-import { ArticleWithSlug } from '@/lib/shared-types';
 
 export default function ChatPage() {
-  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+  const [articles, setArticles] = useState<ArticleWithSlug[]>([])
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
-      const parsedArticles = sourcesHeader
-        ? JSON.parse(atob(sourcesHeader)) as ArticleWithSlug[]
-        : [];
-      setArticles(parsedArticles);
+      // Extract and decode source metadata
+      const sourcesHeader = response.headers.get('x-sources')
+      if (sourcesHeader) {
+        const parsedArticles = JSON.parse(atob(sourcesHeader))
+        setArticles(parsedArticles)
+      }
     }
-  });
+  })
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <div className="flex flex-col space-y-4">
+      {/* Message history */}
+      <div className="space-y-4 mb-4">
         {messages.map(m => (
           <div key={m.id} className={m.role === 'user' ? 'text-blue-600' : 'text-green-600'}>
             <strong>{m.role === 'user' ? 'You:' : 'AI:'}</strong> {m.content}
           </div>
         ))}
-        
-        {articles.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold">Related Articles:</h3>
-            <ul className="list-disc pl-5">
-              {articles.map(article => (
-                <li key={article.slug}>
-                  <a href={`/blog/${article.slug}`} className="text-blue-500 hover:underline">
-                    {article.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-4">
+      {/* Related content */}
+      {articles.length > 0 && (
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold">Related Articles:</h3>
+          <ul className="list-disc pl-5">
+            {articles.map(article => (
+              <li key={article.slug}>
+                <a href={`/blog/${article.slug}`} className="text-blue-500 hover:underline">
+                  {article.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Input form */}
+      <form onSubmit={handleSubmit}>
         <input
           value={input}
           onChange={handleInputChange}
@@ -682,32 +542,22 @@ export default function ChatPage() {
         />
       </form>
     </div>
-  );
+  )
 }
 ```
 
-### Step 7: Deployment
+The UI leverages the Vercel AI SDK's `useChat` hook to manage the chat state and streaming updates. As responses arrive, it simultaneously updates the chat history and the related articles list, providing users with both direct answers and paths to deeper exploration.
 
-1. Create a new Vercel project:
-```bash
-vercel
-```
+In an e-commerce application, this UI might be used to answer questions about products, or to provide recommendations based on a user's purchase history, or the context in their queries.
 
-2. Configure environment variables in Vercel:
-- `OPENAI_API_KEY`
-- `PINECONE_API_KEY`
-- `PINECONE_INDEX`
+## Phase 3: Deployment 
 
-3. Deploy:
-```bash
-vercel deploy --prod
-```
+Coming soon! This section is still under construction. Check back shortly.
 
-### Next Steps
+## Additional Resources
 
-- Add authentication to protect your API routes
-- Implement caching for frequently asked questions
-- Add error boundaries and loading states
-- Monitor and optimize your API usage
+- [Complete example code on GitHub](https://github.com/zackproser/rag-pipeline-tutorial)
+- [Live demo](https://rag-pipeline-tutorial.vercel.app)
+- [Issues and feature requests](https://github.com/zackproser/rag-pipeline-tutorial/issues)
 
-That's it! You now have a production-ready RAG pipeline. For support or questions, feel free to reach out in the comments below. 
+That's it! You now have a production-ready RAG pipeline. For support or questions, feel free to reach out in the comments below or [open an issue](https://github.com/zackproser/rag-pipeline-tutorial/issues) in the companion repository. 
