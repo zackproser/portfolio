@@ -41,11 +41,14 @@ function CheckoutResultPage() {
           setStatus('success');
           setContent(data.content);
           
-          // Track the purchase conversion
-          trackPurchase({
-            transactionId: sessionId,
-            value: data.session.amount_total / 100, // Convert cents to dollars
-            itemName: data.content.title
+          // Track the purchase event
+          gtag("event", "conversion", {
+            'send_to': 'AW-1009082087',
+            'transaction_id': sessionId,
+            'value': data.session.amount_total / 100,
+            'currency': 'USD',
+            'product_slug': data.content.slug,
+            'product_type': data.content.type
           });
         } else {
           throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
