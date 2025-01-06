@@ -7,6 +7,7 @@ import { Providers } from '@/app/providers'
 import { SimpleNav } from '@/components/SimpleNav'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
+import Script from 'next/script'
 
 // Initialize the Noto Sans font
 const notoSans = Noto_Sans({
@@ -33,6 +34,15 @@ export default function RootLayout({
           type="application/feed+json"
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
+        <GoogleAnalytics gaId="G-DFX9S1FRMB" />
+        <Script id="google-ads" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-1009082087');
+          `}
+        </Script>
       </head>
       <body className="flex h-full bg-gray-100 dark:bg-black font-sans">
         <SessionProvider>
@@ -45,7 +55,6 @@ export default function RootLayout({
             </div>
           </Providers>
         </SessionProvider>
-        <GoogleAnalytics gaId="G-DFX9S1FRMB" />
       </body>
     </html>
   )
