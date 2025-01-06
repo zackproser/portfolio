@@ -6,6 +6,7 @@ import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { Article } from '@/lib/shared-types';
+import { trackPurchase } from '@/lib/analytics';
 
 interface PurchasedContent {
   title: string;
@@ -39,6 +40,13 @@ function CheckoutResultPage() {
         if (data.payment_status === 'paid') {
           setStatus('success');
           setContent(data.content);
+          
+          // Track the purchase conversion
+          trackPurchase({
+            transactionId: sessionId,
+            value: data.session.amount_total / 100, // Convert cents to dollars
+            itemName: data.content.title
+          });
         } else {
           throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
         }
