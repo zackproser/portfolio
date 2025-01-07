@@ -6,7 +6,7 @@ import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { Article } from '@/lib/shared-types';
-import { trackPurchase } from '@/lib/analytics';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 interface PurchasedContent {
   title: string;
@@ -41,14 +41,15 @@ function CheckoutResultPage() {
           setStatus('success');
           setContent(data.content);
           
-          // Track the purchase event
-          gtag("event", "conversion", {
-            'send_to': 'AW-1009082087/lDmiCNPQ8ZYZEOe9leED',
-            'transaction_id': sessionId,
-            'value': data.session.amount_total / 100,
-            'currency': 'USD',
-            'product_slug': data.content.slug,
-            'product_type': data.content.type
+          // Track the purchase event using GTM
+          sendGTMEvent({
+            event: 'conversion',
+            send_to: 'AW-1009082087/lDmiCNPQ8ZYZEOe9leED',
+            transaction_id: sessionId,
+            value: data.session.amount_total / 100,
+            currency: 'USD',
+            product_slug: data.content.slug,
+            product_type: data.content.type
           });
         } else {
           throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
