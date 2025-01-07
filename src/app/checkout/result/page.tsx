@@ -43,7 +43,7 @@ function CheckoutResultPage() {
           
           // Track the purchase event
           gtag("event", "conversion", {
-            'send_to': 'AW-1009082087/-vW_CKeMl4EaEOe9leED',
+            'send_to': 'AW-1009082087/lDmiCNPQ8ZYZEOe9leED',
             'transaction_id': sessionId,
             'value': data.session.amount_total / 100,
             'currency': 'USD',
