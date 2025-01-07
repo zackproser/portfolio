@@ -43,13 +43,19 @@ function CheckoutResultPage() {
           
           // Track the purchase event using GTM
           sendGTMEvent({
-            event: 'conversion',
-            send_to: 'AW-1009082087/lDmiCNPQ8ZYZEOe9leED',
-            transaction_id: sessionId,
-            value: data.session.amount_total / 100,
-            currency: 'USD',
-            product_slug: data.content.slug,
-            product_type: data.content.type
+            event: 'purchase',
+            ecommerce: {
+              transaction_id: sessionId,
+              value: data.session.amount_total / 100,
+              currency: 'USD',
+              items: [{
+                item_name: data.content.title,
+                item_id: data.content.slug,
+                item_category: data.content.type,
+                price: data.session.amount_total / 100,
+                quantity: 1
+              }]
+            }
           });
         } else {
           throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
