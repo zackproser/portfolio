@@ -2,21 +2,49 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Brain, Menu, X } from 'lucide-react'
+import { Brain, Menu, X, ChevronDown } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
 import { AuthStatus } from './AuthStatus'
 
-const navItems = [
+const mainNavItems = [
   { label: 'Research', href: '/blog' },
+  { label: 'Tutorials', href: '/tutorials' },
   { label: 'Projects', href: '/projects' },
   { label: 'Publications', href: '/publications' },
-  { label: 'Devtools', href: '/devtools' },
-  { label: 'Vector databases', href: '/vectordatabases' },
-  { label: 'Demos', href: '/demos' },
   { label: 'Videos', href: '/videos' },
   { label: 'About', href: '/about' },
 ]
+
+const interactiveItems = [
+  { label: 'Devtools', href: '/devtools' },
+  { label: 'Vector Databases', href: '/vectordatabases' },
+  { label: 'Demos', href: '/demos' },
+]
+
+function DropdownMenu({ label, items }) {
+  return (
+    <div className="relative group">
+      <button className="flex items-center gap-1 text-sm font-medium text-white group-hover:text-yellow-300 transition-colors">
+        {label}
+        <ChevronDown className="h-4 w-4" />
+      </button>
+      <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
+        <div className="py-1" role="menu" aria-orientation="vertical">
+          {items.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="block px-4 py-2 text-sm text-white hover:bg-blue-700 hover:text-yellow-300 transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function SimpleNav() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -43,7 +71,7 @@ export function SimpleNav() {
           </button>
         </div>
         <nav className={`absolute top-14 left-0 w-full bg-blue-900 lg:static lg:w-auto lg:bg-transparent flex-col lg:flex-row lg:flex gap-4 sm:gap-6 items-center ${menuOpen ? 'flex' : 'hidden'} lg:flex`}>
-          {navItems.map((item) => (
+          {mainNavItems.map((item) => (
             <Link
               key={item.label}
               className="text-sm font-medium text-white hover:text-yellow-300 transition-colors"
@@ -52,6 +80,7 @@ export function SimpleNav() {
               {item.label}
             </Link>
           ))}
+          <DropdownMenu label="Interactive" items={interactiveItems} />
           <div className="flex items-center gap-4">
             <ThemeToggleWrapper />
             <AuthStatus />
