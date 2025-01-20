@@ -5,7 +5,7 @@ import { promises as fs } from 'fs'
 
 export async function importCourse(
   articleFilename: string,
-): Promise<ArticleWithSlug> {
+): Promise<Course> {
   let { metadata, status } = (await import(`@/app/learn/courses/${articleFilename}`)) as {
     default: React.ComponentType
     metadata: {
@@ -20,25 +20,39 @@ export async function importCourse(
     status?: string
   }
 
-  const normalizedMetadata: PaidArticle = {
+  return {
+    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
     ...metadata,
-    type: 'course',
+    type: 'course' as const,
     status: status || 'published',
     isPaid: true, // Courses are always paid content
   }
-
-  return {
-    slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...normalizedMetadata,
-  }
 }
 
-export async function getAllCourses() {
+export type Course = {
+  slug: string
+  title: string
+  description: string
+  date: string
+  image?: any
+  author?: string
+  type: 'course'
+  status?: string
+  isPaid?: boolean
+  price?: number
+}
+
+export async function getAllCourses(matchingSlugs?: string[]): Promise<Course[]> {
   let courseFilenames = await glob('*/page.mdx', {
     cwd: path.join(process.cwd(), 'src', 'app', 'learn/courses'),
   })
 
   let courses = await Promise.all(courseFilenames.map(importCourse))
+
+  // If we have specific slugs to match, filter by them
+  if (matchingSlugs && matchingSlugs.length > 0) {
+    courses = courses.filter(course => matchingSlugs.includes(course.slug))
+  }
 
   return courses.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
@@ -60,13 +74,11 @@ type GroupedSegments = {
 
 export async function getCourseSegments(course: string): Promise<GroupedSegments> {
   const coursesDir = path.join(process.cwd(), 'src', 'app', 'learn', 'courses')
-  // Use fs.readdir only for getting the list of directories
   const segmentDirs = await fs.readdir(path.join(coursesDir, course))
   const filteredSegmentDirs = segmentDirs.filter((dir: string) => dir.match(/^\d+$/))
 
   const segments = await Promise.all(filteredSegmentDirs.map(async (dir: string) => {
     try {
-      // Use consistent @/ import pattern
       const { meta } = await import(`@/app/learn/courses/${course}/${dir}/page.mdx`) as {
         meta: ArticleWithHeader | undefined
       }
