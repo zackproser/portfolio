@@ -5,6 +5,7 @@ import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
 import ArticleContent from './ArticleContent'
+import { StaticImageData } from 'next/image'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -21,6 +22,8 @@ interface ArticleLayoutProps {
     paywallHeader?: string
     paywallBody?: string
     buttonText?: string
+    paywallImage?: string | StaticImageData
+    paywallImageAlt?: string
   }
 }
 
@@ -57,6 +60,8 @@ export function ArticleLayout({
                   paywallHeader={metadata.paywallHeader}
                   paywallBody={metadata.paywallBody}
                   buttonText={metadata.buttonText}
+                  paywallImage={metadata.paywallImage}
+                  paywallImageAlt={metadata.paywallImageAlt}
                 >
                   {children}
                 </ArticleContent>
