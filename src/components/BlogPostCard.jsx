@@ -33,6 +33,20 @@ const StatusBadge = ({ status }) => {
   )
 }
 
+const PriceBadge = ({ price }) => {
+  if (!price) return null;
+  
+  return (
+    <span className={cn(
+      "absolute top-4 right-4 inline-flex items-center gap-x-2 rounded-full px-3 py-1 text-sm font-semibold",
+      "bg-green-600 text-white shadow-lg transition duration-300 ease-in-out hover:bg-green-700",
+      "ring-2 ring-green-500 ring-offset-2 ring-offset-gray-800"
+    )}>
+      ${(price / 100).toFixed(2)}
+    </span>
+  )
+}
+
 const rootPaths = {
   collection: '/collections/',
   video: '/videos/',
@@ -49,7 +63,7 @@ export function BlogPostCard({ article }) {
     return null;
   }
 
-  const { slug = '', title = 'Untitled', date = '', description = '', image = wakka, type = 'default', status } = article;
+  const { slug = '', title = 'Untitled', date = '', description = '', image = wakka, type = 'default', status, price } = article;
   
   const isExternalLink = slug.startsWith('http://') || slug.startsWith('https://');
   const href = isExternalLink ? slug : `${rootPaths[type] || rootPaths.default}${slug}`;
@@ -65,7 +79,7 @@ export function BlogPostCard({ article }) {
   }) : '';
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800">
+    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800 relative">
       <LinkComponent {...linkProps} className="group">
         <div className="relative w-full">
           <Image
@@ -76,6 +90,7 @@ export function BlogPostCard({ article }) {
             height={281}
           />
           <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
+          {price && <PriceBadge price={price} />}
         </div>
         <div className="flex-1 p-6 flex flex-col justify-between">
           <div className="flex-1">
