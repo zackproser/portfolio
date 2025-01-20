@@ -5,6 +5,7 @@ import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
 import ArticleContent from './ArticleContent'
+import MiniPaywall from './MiniPaywall'
 import { StaticImageData } from 'next/image'
 
 interface ArticleLayoutProps {
@@ -24,6 +25,9 @@ interface ArticleLayoutProps {
     buttonText?: string
     paywallImage?: string | StaticImageData
     paywallImageAlt?: string
+    hideMiniPaywall?: boolean
+    miniPaywallTitle?: string | null
+    miniPaywallDescription?: string | null
   }
 }
 
@@ -49,6 +53,19 @@ export function ArticleLayout({
                   <span className="ml-3">{metadata.date}</span>
                 </time>
               </header>
+              
+              {metadata.isPaid && !metadata.hideMiniPaywall && (
+                <MiniPaywall
+                  price={metadata.price!}
+                  slug={metadata.slug!}
+                  title={metadata.title}
+                  image={metadata.paywallImage}
+                  imageAlt={metadata.paywallImageAlt}
+                  miniTitle={metadata.miniPaywallTitle ?? metadata.paywallHeader ?? null}
+                  miniDescription={metadata.miniPaywallDescription ?? null}
+                />
+              )}
+
               <Prose className="mt-8">
                 <ArticleContent
                   isPaid={metadata.isPaid}
