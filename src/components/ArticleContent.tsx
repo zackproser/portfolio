@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Paywall from './Paywall'
 import React from 'react'
+import { StaticImageData } from 'next/image'
 
 interface ArticleContentProps {
   children: React.ReactNode
@@ -16,6 +17,8 @@ interface ArticleContentProps {
   paywallHeader?: string
   paywallBody?: string
   buttonText?: string
+  paywallImage?: string | StaticImageData
+  paywallImageAlt?: string
 }
 
 export default function ArticleContent({ 
@@ -28,7 +31,9 @@ export default function ArticleContent({
   previewElements = 3,
   paywallHeader,
   paywallBody,
-  buttonText
+  buttonText,
+  paywallImage,
+  paywallImageAlt
 }: ArticleContentProps) {
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(false)
@@ -91,6 +96,8 @@ export default function ArticleContent({
         paywallHeader={paywallHeader}
         paywallBody={paywallBody}
         buttonText={buttonText}
+        image={paywallImage}
+        imageAlt={paywallImageAlt}
       />
     </>
   )

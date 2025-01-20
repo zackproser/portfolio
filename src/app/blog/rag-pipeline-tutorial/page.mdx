@@ -9,6 +9,7 @@ import cloneExampleSite from '@/images/rag-pipeline-tutorial-clone-example-site.
 import docsSanity from '@/images/rag-pipeline-tutorial-docs-sanity.webp';
 import queryIndex from '@/images/rag-pipeline-tutorial-query-index.webp';
 import chunking from '@/images/chunking.webp';
+import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
 import { ArticleLayout } from '@/components/ArticleLayout';
@@ -24,9 +25,11 @@ export const articleMetadata = {
     price: 2000,
     previewLength: 450,
     previewElements: 52,
-    paywallHeader: "Building RAG Pipelines: The Most In-Demand Gen AI Skill",
-    paywallBody: "Every company wants developers who can build RAG applications. Get a complete, production-ready tutorial that teaches you exactly how to build a RAG pipeline with the latest tech stack: Vercel AI SDK, OpenAI embeddings, and Pinecone vector search.",
-    buttonText: "Unlock the full tutorial ($20)"
+    paywallHeader: "Master RAG Development: The Complete Package",
+    paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
+    buttonText: "Get the complete package ($20)",
+    paywallImage: ragPipelineElements,
+    paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site"
 };
 
 export const metadata = createMetadata(articleMetadata);
