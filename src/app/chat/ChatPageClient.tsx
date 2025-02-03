@@ -12,6 +12,13 @@ import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { BlogPostCard } from '@/components/BlogPostCard';
 import { ArticleWithSlug } from '@/lib/shared-types';
 
+// Add gtag type definition
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 const prepopulatedQuestions = [
   "What is the programming bug?",
   "Why do you love Next.js so much?",
@@ -37,10 +44,13 @@ export default function ChatPageClient() {
     },
     headers: {},
     onFinish() {
-      gtag("event", "chat_question", {
-        event_category: "chat",
-        event_label: input,
-      });
+      // Make gtag calls safe
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag("event", "chat_question", {
+          event_category: "chat",
+          event_label: input,
+        });
+      }
       track("chat", { question: input });
     },
     onError() {
@@ -51,10 +61,13 @@ export default function ChatPageClient() {
   const handleSearch = async (query: string) => {
     setInput(query);
 
-    gtag("event", "chat_use_precanned_question", {
-      event_category: "chat",
-      event_label: query,
-    });
+    // Make gtag calls safe
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag("event", "chat_use_precanned_question", {
+        event_category: "chat",
+        event_label: query,
+      });
+    }
 
     track("chat-precanned", { question: query });
 
