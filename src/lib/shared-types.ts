@@ -1,57 +1,119 @@
 import { StaticImageData } from 'next/image'
 
-export interface Article {
-  title: string
-  description: string
-  author: string
-  date: string
-  type?: string
-  image?: string
-  status?: string
-}
-
-export interface PaidArticle extends Article {
-  isPaid: boolean
-  price?: number
-  previewLength?: number
-  paywallHeader?: string
-  paywallBody?: string
-  buttonText?: string
-}
-
-// Base article with slug, without paid properties
-export interface BaseArticleWithSlug {
+// Base content type for anything on the site
+export interface Content {
   slug: string
   title: string
   description: string
   author: string
   date: string
   image?: string | StaticImageData
-  type?: string
+  status?: 'draft' | 'published' | 'archived'
+  type: 'blog' | 'tutorial' | 'course' | 'demo'
 }
 
-// For blog posts that can be paid
-export interface ArticleWithSlug extends PaidArticle {
-  slug: string
+// For blog posts, tutorials, and courses
+export interface Article extends Content {
+  type: 'blog' | 'tutorial' | 'course'
+  // If the content is paid, these fields will be present
+  commerce?: {
+    isPaid: true
+    price: number
+    stripe_price_id?: string
+    previewLength?: number
+    // Paywall customization
+    paywallHeader?: string
+    paywallBody?: string
+    buttonText?: string
+  }
+  // Optional landing page customization
+  landing?: {
+    subtitle?: string
+    features?: Array<{
+      title: string
+      description: string
+      icon?: string
+    }>
+    chapters?: Array<{
+      title: string
+      items: Array<{
+        title: string
+        description: string
+      }>
+    }>
+    testimonials?: Array<{
+      content: string
+      author: {
+        name: string
+        role?: string
+        avatar?: string
+      }
+    }>
+    faqs?: Array<{
+      question: string
+      answer: string
+    }>
+  }
 }
 
-// For demos, which don't need paid properties
-export interface DemoArticle extends BaseArticleWithSlug {
+// For demos and other non-purchasable content
+export interface Demo extends Content {
   type: 'demo'
+  techStack?: string[]
+  liveUrl?: string
+  sourceUrl?: string
 }
 
-// For courses, which use Stripe Price IDs
-export interface CourseContent {
-  title: string
-  description: string
-  slug: string
-  type: 'course'
-  price_id: string
+// Helper type for purchasable items
+export type Purchasable = Article & {
+  commerce: NonNullable<Article['commerce']>
 }
 
-// Union type for purchasable content
-export type Content = ArticleWithSlug | CourseContent;
+// Type guard to check if content is purchasable
+export function isPurchasable(content: Content): content is Purchasable {
+  return content.type !== 'demo' && 'commerce' in content && (content as Article).commerce?.isPaid === true;
+}
 
+// Helper to generate default landing page content
+export function getDefaultLanding(article: Article): NonNullable<Article['landing']> {
+  const defaults = {
+    subtitle: article.description,
+    features: article.type === 'course' ? [
+      {
+        title: 'Complete Course Access',
+        description: 'Get full access to all course materials and video content'
+      },
+      {
+        title: 'Hands-on Projects',
+        description: 'Learn through practical, real-world examples'
+      },
+      {
+        title: 'Lifetime Access',
+        description: 'Access all content and future updates forever'
+      }
+    ] : [
+      {
+        title: 'Complete Access',
+        description: 'Get full access to this in-depth content with all code examples'
+      },
+      {
+        title: 'Source Code Included',
+        description: 'Access all accompanying source code and examples'
+      },
+      {
+        title: 'Future Updates',
+        description: 'Receive all future updates and improvements'
+      }
+    ]
+  };
+
+  return {
+    ...defaults,
+    ...article.landing // Override defaults with any custom landing content
+  };
+}
+
+// Database types (unchanged)
 export interface Database {
   name: string;
   business_info: {
@@ -63,3 +125,5 @@ export interface Database {
   };
   [category: string]: { [feature: string]: any } | any;
 }
+
+export type ArticleWithSlug = Article & { slug: string };
