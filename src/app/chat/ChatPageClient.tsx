@@ -28,7 +28,11 @@ const prepopulatedQuestions = [
   "How can I use AI to complete side projects more quickly?"
 ];
 
-export default function ChatPageClient() {
+interface ChatPageClientProps {
+  initialArticles: ArticleWithSlug[];
+}
+
+export default function ChatPageClient({ initialArticles }: ChatPageClientProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
 
@@ -43,6 +47,9 @@ export default function ChatPageClient() {
       setIsLoading(false);
     },
     headers: {},
+    body: {
+      articles: initialArticles,
+    },
     onFinish() {
       // Make gtag calls safe
       if (typeof window !== 'undefined' && window.gtag) {
