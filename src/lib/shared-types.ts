@@ -10,6 +10,8 @@ export interface Content {
   image?: string | StaticImageData
   status?: 'draft' | 'published' | 'archived'
   type: 'blog' | 'tutorial' | 'course' | 'demo'
+  price_id?: string
+  tags?: string[]
 }
 
 // For blog posts, tutorials, and courses
@@ -127,3 +129,15 @@ export interface Database {
 }
 
 export type ArticleWithSlug = Article & { slug: string };
+
+export interface CourseContent extends Content {
+  type: 'course';
+  price_id: string;
+  chapters?: Array<{
+    title: string;
+    items: Array<{
+      title: string;
+      description: string;
+    }>;
+  }>;
+}

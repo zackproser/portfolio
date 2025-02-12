@@ -13,7 +13,7 @@ type StripeMetadata = {
 } & {
 	userId: string;
 	slug: string;
-	type: 'article' | 'course';
+	type: 'blog' | 'article' | 'course';
 }
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 		}
 
 		const body = await req.json()
-		const { slug, type } = body as { slug: string; type: 'article' | 'course' }
+		const { slug, type } = body as { slug: string; type: 'blog' | 'article' | 'course' }
 
 		if (!slug || !type) {
 			return NextResponse.json(
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 		let content: Content;
 		let price: number;
 
-		if (type === 'article') {
+		if (type === 'blog' || type === 'article') {
 			console.log('Fetching article content')
 			const articleSlug = slug.replace('blog-', '')
 			const articleContent = await importArticleMetadata(`${articleSlug}/page.mdx`)
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 			if (!articleContent.commerce?.isPaid || !articleContent.commerce?.price) {
 				throw new Error(`Article ${articleSlug} is not available for purchase`)
 			}
-			content = { ...articleContent, slug: articleSlug }
+			content = { ...articleContent, slug: articleSlug, type: 'blog' }
 			price = articleContent.commerce.price // Price is already in cents
 		} else if (type === 'course') {
 			const courseResult = await sql`
@@ -82,8 +82,10 @@ export async function POST(req: NextRequest) {
 				description: courseData.description,
 				slug: courseData.slug,
 				price_id: courseData.price_id,
-				type: 'course'
-			}
+				type: 'course',
+				author: 'Zachary Proser',
+				date: new Date().toISOString().split('T')[0]
+			} as CourseContent
 			price = 0 // This will be handled by the price_id
 		} else {
 			throw new Error(`Invalid content type: ${type}`)
@@ -92,7 +94,7 @@ export async function POST(req: NextRequest) {
 		const metadata: StripeMetadata = {
 			userId: String(session.user.id),
 			slug: content.slug,
-			type
+			type: type === 'article' ? 'blog' : type // Normalize article type to blog in metadata
 		}
 
 		const params: Stripe.Checkout.SessionCreateParams = {
@@ -100,7 +102,7 @@ export async function POST(req: NextRequest) {
 			ui_mode: 'embedded',
 			line_items: [
 				{
-					...(type === 'article' ? {
+					...(type === 'blog' ? {
 						price_data: {
 							currency: 'usd',
 							product_data: {
@@ -178,13 +180,13 @@ export async function GET(req: Request) {
 		console.log('Attempting to get content details:', { type, slug })
 		let content: ArticleWithSlug | CourseContent;
 
-		if (type === 'article') {
+		if (type === 'blog' || type === 'article') {
 			console.log('Fetching article content')
 			const articleContent = await importArticleMetadata(`${slug}/page.mdx`)
 			if (!articleContent) {
 				throw new Error(`No article found with slug ${slug}`)
 			}
-			content = { ...articleContent, slug, type: 'article' }
+			content = { ...articleContent, slug, type: 'blog' }
 		} else if (type === 'course') {
 			const courseResult = await sql`
 				SELECT title, description, slug, price_id FROM courses WHERE slug = ${slug}
@@ -201,8 +203,10 @@ export async function GET(req: Request) {
 				description: courseData.description,
 				slug: courseData.slug,
 				price_id: courseData.price_id,
-				type: 'course'
-			}
+				type: 'course',
+				author: 'Zachary Proser',
+				date: new Date().toISOString().split('T')[0]
+			} as CourseContent
 		} else {
 			throw new Error(`Invalid content type: ${type}`)
 		}

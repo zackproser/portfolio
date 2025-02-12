@@ -62,12 +62,10 @@ export default async function Page() {
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
     const aiDev = allArticles.filter(article => aiDevSlugs.includes(article.slug))
     const refArchitectures = allArticles.filter(article => 
-      refArchitectureSlugs.includes(article.slug) || 
-      article.type === 'demo' || 
-      article.type === 'architecture'
+      refArchitectureSlugs.includes(article.slug)
     )
     const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
-    const videos = allVideos.filter(video => videoSlugs.includes(video.slug))
+    const videos = allVideos.filter((video: { slug: string }) => videoSlugs.includes(video.slug))
 
     // Server-side mobile detection
     const headersList = await headers()
