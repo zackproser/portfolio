@@ -27,12 +27,12 @@ export async function getPurchasableItem(slug: string): Promise<Purchasable | nu
 
     // If not found in content, try custom product definitions
     const customProductPaths = await glob('*.json', {
-      cwd: path.join(process.cwd(), 'src', 'products')
+      cwd: path.join(process.cwd(), 'src', 'data', 'products')
     });
 
     for (const productPath of customProductPaths) {
       if (productPath.replace('.json', '') === slug) {
-        const { default: content } = await import(`@/products/${productPath}`);
+        const { default: content } = await import(`@/data/products/${productPath}`);
         if (isPurchasable(content)) {
           return content;
         }
@@ -63,13 +63,13 @@ export async function getAllPurchasableItems(): Promise<Purchasable[]> {
 
     // Get any custom product definitions
     const customProductPaths = await glob('*.json', {
-      cwd: path.join(process.cwd(), 'src', 'products')
+      cwd: path.join(process.cwd(), 'src', 'data', 'products')
     });
 
     const customProducts = await Promise.all(
       customProductPaths.map(async productPath => {
         try {
-          const { default: content } = await import(`@/products/${productPath}`);
+          const { default: content } = await import(`@/data/products/${productPath}`);
           return isPurchasable(content) ? content : null;
         } catch (error) {
           console.error(`Error loading custom product ${productPath}:`, error);

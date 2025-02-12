@@ -1,11 +1,11 @@
-import { BaseArticleWithSlug } from './shared-types'
+import { ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
 import { StaticImageData } from 'next/image'
 
 export async function importVideo(
   articleFilename: string,
-): Promise<BaseArticleWithSlug> {
+): Promise<ArticleWithSlug> {
   let { metadata } = (await import(`@/app/videos/${articleFilename}`)) as {
     default: React.ComponentType
     metadata: {
@@ -14,7 +14,7 @@ export async function importVideo(
       author: string
       date: string
       image?: string | { src: string } | StaticImageData
-      status?: string
+      status?: 'draft' | 'published' | 'archived'
     }
   }
 
@@ -42,11 +42,12 @@ export async function importVideo(
     author: metadata.author || 'Zachary Proser',
     date: metadata.date,
     image: imageUrl,
-    type: 'video',
+    type: 'blog' as const,
+    status: metadata.status || 'published'
   }
 }
 
-export async function getAllVideos() {
+export async function getAllVideos(): Promise<ArticleWithSlug[]> {
   let videoFilenames = await glob('*/page.mdx', {
     cwd: path.join(process.cwd(), 'src', 'app', 'videos'),
   })

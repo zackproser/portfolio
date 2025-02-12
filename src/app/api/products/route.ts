@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({
 				title: article.title,
 				status: 'available',
-				price_id: article.price?.toString(),
+				price_id: article.commerce?.stripe_price_id,
 				course_id: null,
 				type: 'article'
 			})
