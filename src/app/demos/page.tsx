@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { DemoArticle, BaseArticleWithSlug } from '@/lib/shared-types'
+import { Demo, Content } from '@/lib/shared-types'
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = createMetadata({
 });
 
 // Hardcoded demo data since these are React components, not MDX files
-const demos: BaseArticleWithSlug[] = [
+const demos: Content[] = [
   {
     slug: 'embeddings',
     title: 'Embeddings Demo',

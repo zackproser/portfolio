@@ -1,6 +1,6 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
-import { getProductContent } from '@/lib/products';
+import { getProductContent } from '@/lib/commerce';
 
 interface Props {
   params: {
