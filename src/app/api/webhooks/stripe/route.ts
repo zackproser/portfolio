@@ -99,7 +99,7 @@ export async function POST(req: Request) {
       console.log('🎯 Fetching content details for slug:', slug)
       try {
         let content;
-        if (type === 'article') {
+        if (type === 'article' || type === 'blog') {
           content = await importArticleMetadata(`${slug}/page.mdx`)
         } else if (type === 'course') {
           const courseResult = await sql`

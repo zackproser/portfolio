@@ -56,15 +56,20 @@ export async function POST(req: NextRequest) {
 
 		if (type === 'blog' || type === 'article') {
 			console.log('Fetching article content')
-			const articleSlug = slug.replace('blog-', '')
-			const articleContent = await importArticleMetadata(`${articleSlug}/page.mdx`)
+			const articleContent = await importArticleMetadata(`${slug}/page.mdx`, 'blog')
+			console.log('Article content retrieved:', articleContent)
 			if (!articleContent) {
-				throw new Error(`No article found with slug ${articleSlug}`)
+				throw new Error(`No article found with slug ${slug}`)
 			}
 			if (!articleContent.commerce?.isPaid || !articleContent.commerce?.price) {
-				throw new Error(`Article ${articleSlug} is not available for purchase`)
+				throw new Error(`Article ${slug} is not available for purchase`)
 			}
-			content = { ...articleContent, slug: articleSlug, type: 'blog' }
+			content = {
+				...articleContent,
+				slug,
+				type: 'blog'
+			} as ArticleWithSlug
+			console.log('Final content object:', content)
 			price = articleContent.commerce.price // Price is already in cents
 		} else if (type === 'course') {
 			const courseResult = await sql`
@@ -102,7 +107,7 @@ export async function POST(req: NextRequest) {
 			ui_mode: 'embedded',
 			line_items: [
 				{
-					...(type === 'blog' ? {
+					...(type === 'blog' || type === 'article' ? {
 						price_data: {
 							currency: 'usd',
 							product_data: {
@@ -182,11 +187,16 @@ export async function GET(req: Request) {
 
 		if (type === 'blog' || type === 'article') {
 			console.log('Fetching article content')
-			const articleContent = await importArticleMetadata(`${slug}/page.mdx`)
+			const articleContent = await importArticleMetadata(`${slug}/page.mdx`, 'blog')
+			console.log('Article content retrieved:', articleContent)
 			if (!articleContent) {
 				throw new Error(`No article found with slug ${slug}`)
 			}
-			content = { ...articleContent, slug, type: 'blog' }
+			content = {
+				...articleContent,
+				slug,
+				type: 'blog'
+			} as ArticleWithSlug
 		} else if (type === 'course') {
 			const courseResult = await sql`
 				SELECT title, description, slug, price_id FROM courses WHERE slug = ${slug}
