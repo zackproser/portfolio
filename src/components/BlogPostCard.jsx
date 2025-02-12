@@ -63,7 +63,8 @@ export function BlogPostCard({ article }) {
     return null;
   }
 
-  const { slug = '', title = 'Untitled', date = '', description = '', image = wakka, type = 'default', status, price } = article;
+  const { slug = '', title = 'Untitled', date = '', description = '', image = wakka, type = 'default', status, commerce } = article;
+  const price = commerce?.price;
   
   const isExternalLink = slug.startsWith('http://') || slug.startsWith('https://');
   const href = isExternalLink ? slug : `${rootPaths[type] || rootPaths.default}${slug}`;

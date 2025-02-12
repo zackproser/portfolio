@@ -1,92 +1,100 @@
-import { ArticleWithSlug, PaidArticle } from './shared-types'
-import glob from 'fast-glob'
+import { Article } from './shared-types'
 import path from 'path'
-import { Metadata } from 'next'
-import { StaticImageData } from 'next/image'
+import glob from 'fast-glob'
 
+// Import an article from an MDX file
 export async function importArticle(
   articleFilename: string,
   rootPath: string = 'blog'
-): Promise<ArticleWithSlug> {
+): Promise<Article> {
   const importedData = await import(`@/app/${rootPath}/${articleFilename}`) as {
-    metadata: Metadata & { 
-      isPaid?: boolean; 
-      price?: number; 
-      previewLength?: number;
-      date?: string;
-      image?: string | { src: string } | StaticImageData;
-      author?: string;
-    }
-  }
-
-  const { metadata } = importedData;
-
-  // Handle webpack-imported images
-  let imageUrl: string | undefined;
-  if (metadata.image) {
-    if (typeof metadata.image === 'object' && 'src' in metadata.image) {
-      imageUrl = metadata.image.src;
-    } else if (typeof metadata.image === 'object' && 'default' in metadata.image) {
-      imageUrl = (metadata.image as unknown as { default: { src: string } }).default.src;
-    } else if (typeof metadata.image === 'string') {
-      imageUrl = metadata.image.startsWith('/') ? metadata.image : `/images/${metadata.image}`;
-    } else {
-      imageUrl = (metadata.image as unknown as { src: string }).src;
+    metadata: {
+      title: string
+      description: string
+      author: string
+      date: string
+      image?: string
+      status?: 'draft' | 'published' | 'archived'
+      isPaid?: boolean
+      price?: number
+      stripe_price_id?: string
+      previewLength?: number
+      paywallHeader?: string
+      paywallBody?: string
+      buttonText?: string
+      landing?: Article['landing']
     }
   }
 
   // Convert Next.js metadata to our Article type
-  const normalizedMetadata: PaidArticle = {
-    title: typeof metadata.title === 'string' ? metadata.title : 'Untitled',
-    description: typeof metadata.description === 'string' ? metadata.description : '',
-    author: metadata.author || 'Zachary Proser',
-    date: metadata.date || new Date().toISOString().split('T')[0],
-    image: imageUrl,
-    // Commerce fields with defaults
-    isPaid: metadata.isPaid || false,
-    price: metadata.price,
-    previewLength: metadata.previewLength
-  };
-
-  return {
+  const normalizedMetadata: Article = {
     slug: articleFilename.replace(/(\/page)?\.mdx$/, ''),
-    ...normalizedMetadata,
+    title: importedData.metadata.title,
+    description: importedData.metadata.description,
+    author: importedData.metadata.author,
+    date: importedData.metadata.date,
+    image: importedData.metadata.image,
+    status: importedData.metadata.status || 'published',
+    type: rootPath === 'blog' ? 'blog' : 
+          rootPath === 'tutorials' ? 'tutorial' : 'course',
+    // Add commerce fields if this is a paid article
+    ...(importedData.metadata.isPaid && {
+      commerce: {
+        isPaid: true,
+        price: importedData.metadata.price || 0,
+        stripe_price_id: importedData.metadata.stripe_price_id,
+        previewLength: importedData.metadata.previewLength,
+        paywallHeader: importedData.metadata.paywallHeader,
+        paywallBody: importedData.metadata.paywallBody,
+        buttonText: importedData.metadata.buttonText
+      }
+    }),
+    // Add landing page fields if present
+    ...(importedData.metadata.landing && {
+      landing: importedData.metadata.landing
+    })
   }
+
+  return normalizedMetadata
 }
 
+// Import just the metadata from an article
 export async function importArticleMetadata(
   articleFilename: string,
-): Promise<ArticleWithSlug> {
-  return importArticle(articleFilename);
+  rootPath: string = 'blog'
+): Promise<Article> {
+  return importArticle(articleFilename, rootPath)
 }
 
-export async function getAllArticles(matchingSlugs?: string[]) {
+// Get all articles, optionally filtered by slug
+export async function getAllArticles(matchingSlugs?: string[]): Promise<Article[]> {
   // Get blog articles
   let blogFilenames = await glob('*/page.mdx', {
-    cwd: path.join(process.cwd(), 'src', 'app', 'blog'),
-  });
+    cwd: path.join(process.cwd(), 'src', 'app', 'blog')
+  })
 
-  // Get demo articles
-  let demoFilenames = await glob('*/page.mdx', {
-    cwd: path.join(process.cwd(), 'src', 'app', 'demos'),
-  });
+  // Get tutorial articles
+  let tutorialFilenames = await glob('*/page.mdx', {
+    cwd: path.join(process.cwd(), 'src', 'app', 'tutorials')
+  })
 
   // Map blog articles
-  let blogArticles = await Promise.all(blogFilenames.map(filename => 
+  let blogArticles = await Promise.all(blogFilenames.map(filename =>
     importArticle(filename, 'blog')
-  ));
+  ))
 
-  // Map demo articles
-  let demoArticles = await Promise.all(demoFilenames.map(filename => 
-    importArticle(filename, 'demos')
-  ));
+  // Map tutorial articles
+  let tutorialArticles = await Promise.all(tutorialFilenames.map(filename =>
+    importArticle(filename, 'tutorials')
+  ))
 
-  let articles = [...blogArticles, ...demoArticles];
+  let articles = [...blogArticles, ...tutorialArticles]
 
-  // If we have specific slugs to match, filter by them
-  if (matchingSlugs && matchingSlugs.length > 0) {
-    articles = articles.filter(article => matchingSlugs.includes(article.slug));
+  // Filter by slug if provided
+  if (matchingSlugs) {
+    articles = articles.filter(article => matchingSlugs.includes(article.slug))
   }
 
-  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
+  // Sort by date descending
+  return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
