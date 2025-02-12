@@ -61,11 +61,11 @@ export async function POST(req: NextRequest) {
 			if (!articleContent) {
 				throw new Error(`No article found with slug ${articleSlug}`)
 			}
-			if (!articleContent.isPaid || !articleContent.price) {
+			if (!articleContent.commerce?.isPaid || !articleContent.commerce?.price) {
 				throw new Error(`Article ${articleSlug} is not available for purchase`)
 			}
 			content = { ...articleContent, slug: articleSlug }
-			price = articleContent.price // Price is already in cents
+			price = articleContent.commerce.price // Price is already in cents
 		} else if (type === 'course') {
 			const courseResult = await sql`
 				SELECT title, description, slug, price_id FROM courses WHERE slug = ${slug}
