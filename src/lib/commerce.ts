@@ -1,10 +1,10 @@
-import { Article, isPurchasable, Purchasable, ArticleWithSlug } from './shared-types';
+import { Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types';
 import { getContentByType } from './content';
 import path from 'path';
 import glob from 'fast-glob';
 import { ProductContent } from './types/product';
 import { promises as fs } from 'fs';
-import { getAllArticles } from './articles';
+import { getAllArticles, getArticleBySlug } from './articles';
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator';
 
 // Get a purchasable item by its slug
@@ -118,11 +118,10 @@ async function getStaticProductContent(slug: string): Promise<ProductContent | n
 // Get a product from an article or course
 async function getDynamicProductContent(slug: string): Promise<ProductContent | null> {
   // First check if it's a blog post
-  const articles = await getAllArticles([slug]);
-  if (articles.length > 0) {
-    const article = articles[0] as ArticleWithSlug;
+  const article = await getArticleBySlug(slug);
+  if (article) {
     if (article.commerce?.isPaid) {
-      return generateProductFromArticle(article);
+      return generateProductFromArticle(article as BlogWithSlug);
     }
   }
 
@@ -130,7 +129,7 @@ async function getDynamicProductContent(slug: string): Promise<ProductContent | 
   const courses = await getContentByType('course');
   const course = courses.find(c => c.slug === slug);
   if (course && isPurchasable(course)) {
-    return generateProductFromArticle(course as Article);
+    return generateProductFromArticle(course as Blog);
   }
 
   return null;
@@ -164,7 +163,7 @@ export async function getAllProducts(): Promise<ProductContent[]> {
     const articles = await getAllArticles();
     const articleProducts = articles
       .filter(article => article.commerce?.isPaid)
-      .map(article => generateProductFromArticle(article as ArticleWithSlug));
+      .map(article => generateProductFromArticle(article as BlogWithSlug));
 
     // TODO: Add course products when implemented
     // const courses = await getAllCourses();
@@ -185,7 +184,7 @@ export async function getAllProducts(): Promise<ProductContent[]> {
 }
 
 // Get all purchasable content
-export async function getAllPurchasableContent(): Promise<Article[]> {
+export async function getAllPurchasableContent(): Promise<Blog[]> {
   const allContent = await Promise.all([
     getContentByType('blog'),
     getContentByType('course'),
@@ -193,7 +192,25 @@ export async function getAllPurchasableContent(): Promise<Article[]> {
   ]).then(results => results.flat());
   
   return allContent
-    .filter((content): content is Article => 
+    .filter((content): content is Blog => 
       content.type !== 'demo' && isPurchasable(content)
     );
+}
+
+// Get a product by its slug
+export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
+  // First check articles
+  const article = await getArticleBySlug(slug);
+  if (article && isPurchasable(article)) {
+    return article;
+  }
+
+  // Check if it's a course
+  const courses = await getContentByType('course');
+  const course = courses.find(c => c.slug === slug);
+  if (course && isPurchasable(course)) {
+    return course;
+  }
+
+  return null;
 } 

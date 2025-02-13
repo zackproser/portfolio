@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductDetails, ProductDetails } from "@/utils/productUtils";
 import { sql } from '@vercel/postgres'
-import { getAllArticles } from '@/lib/articles'
+import { getArticleBySlug } from '@/lib/articles'
 
 export async function GET(req: NextRequest) {
 	console.log("GET /products");
@@ -22,20 +22,13 @@ export async function GET(req: NextRequest) {
 		if (productSlug.startsWith('blog-')) {
 			// Remove 'blog-' prefix to get the actual article slug
 			const articleSlug = productSlug.replace('blog-', '')
-			const articles = await getAllArticles([articleSlug])
+			const article = await getArticleBySlug(articleSlug)
 			
-			if (articles.length === 0) {
+			if (!article) {
 				return NextResponse.json({ error: 'Article not found' }, { status: 404 })
 			}
 
-			const article = articles[0]
-			return NextResponse.json({
-				title: article.title,
-				status: 'available',
-				price_id: article.commerce?.stripe_price_id,
-				course_id: null,
-				type: 'article'
-			})
+			return NextResponse.json(article)
 		}
 
 		// Existing product lookup logic
