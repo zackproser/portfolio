@@ -11,7 +11,17 @@ export const NeuralNetworkPulse = () => {
   const phrases = useMemo(() => [
     "VSCode", "IntelliSense", "Git", "Terminal", "Debugger",
     "Copilot", "Autocomplete", "Refactor", "Linter", "Snippets",
-    "<div>", "function()", "import React", "useState", "async/await"
+    "<div>", "function()", "import React", "useState", "async/await",
+    "model", "dataset", "prompt", "LLM", "embedding",
+    "transformer", "attention", "sequence", "token", "language",
+    "neural network", "deep learning", "machine learning", "AI",
+    "data science", "computer vision", "natural language processing",
+    "speech recognition", "text generation", "image generation",
+    "audio processing", "video processing", "generative AI",
+    "neural network", "deep learning", "machine learning", "AI",
+    "data science", "computer vision", "natural language processing",
+    "speech recognition", "text generation", "image generation",
+    "audio processing", "video processing", "generative AI",
   ], []);
 
   useEffect(() => {

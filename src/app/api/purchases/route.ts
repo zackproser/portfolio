@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
-
+import { Content } from "@/lib/shared-types";
 import { ProductDetails } from "@/utils/productUtils";
 import { sendReceiptEmail, SendReceiptEmailInput } from "@/lib/postmark";
 
 export async function POST(req: NextRequest) {
 	console.log("[POST] /api/purchases");
 
-	const { sessionId, customerEmail, productSlug } = await req.json();
+	const { sessionId, customerEmail, productSlug, type } = await req.json();
 
 	// Look up the supplied product via its slug
 	try {
 		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 		const response = await fetch(
-			`${baseUrl}/api/products?product=${productSlug}`,
+			`${baseUrl}/api/products?product=${productSlug}&type=${type}`,
 		);
 		console.dir(response);
 		console.log(`response.ok: ${response.ok}`);
@@ -40,10 +40,9 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		// Look up the purchasing student's ID
-		const studentRes = await sql`SELECT id, name FROM        
-  users WHERE email = ${customerEmail} `;
-		if (studentRes.rowCount === 0) {
+		// Look up the purchasing user's ID
+		const userRes = await sql`SELECT id, name FROM users WHERE email = ${customerEmail}`;
+		if (userRes.rowCount === 0) {
 			return NextResponse.json(
 				{ error: "User not found" },
 				{
@@ -52,35 +51,67 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		const { id, name } = studentRes.rows[0];
+		const { id: userId, name } = userRes.rows[0];
+		const amount = productDetails.commerce?.price || 0;
 
-		console.log(`Retrieved user id: ${id} and name:
-			${name} for email: ${customerEmail} `);
+		console.log(`Recording purchase for user ${userId} (${name}) - ${type} ${productSlug}`);
 
-		// Look up the course ID
-		const courseRes = await sql`SELECT course_id FROM courses WHERE slug =
-			${productSlug} `;
-		if (courseRes.rowCount === 0) {
-			return NextResponse.json(
-				{ error: "Course not found" },
-				{
-					status: 404,
-				},
-			);
-		}
-
-		const { course_id: courseId } = courseRes.rows[0];
-
-		await sql`                                                            
-          INSERT INTO StripePayments(user_id, stripe_payment_id, amount,
-				payment_status)
-		VALUES(${id}, ${sessionId}, 0, 'paid')
+		// Record the purchase in the appropriate table
+		if (type === 'blog') {
+			await sql`
+				INSERT INTO articlepurchases (
+					user_id, 
+					article_slug, 
+					stripe_payment_id, 
+					amount
+				) VALUES (
+					${userId}, 
+					${productSlug}, 
+					${sessionId}, 
+					${amount}
+				)
+			`;
+		} else if (type === 'course') {
+			// Record in coursepurchases
+			await sql`
+				INSERT INTO coursepurchases (
+					user_id, 
+					course_slug, 
+					stripe_payment_id, 
+					amount
+				) VALUES (
+					${userId}, 
+					${productSlug}, 
+					${sessionId}, 
+					${amount}
+				)
 			`;
 
-		await sql`                                                            
-          INSERT INTO CourseEnrollments(user_id, course_id)
-		VALUES(${id}, ${courseId})                                  
-        `;
+			// Also record in courseenrollments if the course exists
+			const courseRes = await sql`SELECT course_id FROM courses WHERE slug = ${productSlug}`;
+			if (courseRes.rowCount > 0) {
+				const { course_id: courseId } = courseRes.rows[0];
+				await sql`
+					INSERT INTO courseenrollments (user_id, course_id)
+					VALUES (${userId}, ${courseId})
+				`;
+			}
+		}
+
+		// Record in stripepayments for historical data
+		await sql`
+			INSERT INTO stripepayments (
+				user_id, 
+				stripe_payment_id, 
+				amount, 
+				payment_status
+			) VALUES (
+				${userId}, 
+				${sessionId}, 
+				${amount}, 
+				'paid'
+			)
+		`;
 
 		const sendReceiptEmailInput: SendReceiptEmailInput = {
 			From: "orders@zackproser.com",
@@ -88,28 +119,25 @@ export async function POST(req: NextRequest) {
 			TemplateAlias: "receipt",
 			TemplateModel: {
 				CustomerName: name,
-				ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL} /courses/${productSlug} `,
-				ProductName: productDetails.title ?? "Online Learning Platform",
+				ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'course' ? 'courses' : 'blog'}/${productSlug}`,
+				ProductName: productDetails.title ?? "Premium Content",
 				Date: new Date().toLocaleDateString("en-US"),
 				ReceiptDetails: {
 					Description: productDetails.description,
-					Amount: "150",
-					SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL} /support`,
+					Amount: (amount / 100).toString(),
+					SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
 				},
-				Total: "150",
+				Total: (amount / 100).toString(),
 				SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-				ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/learn/${productSlug}/0`,
+				ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'course' ? 'learn' : 'blog'}/${productSlug}`,
 				CompanyName: "Zachary Proser's School for Hackers",
 				CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
 			},
 		};
 
 		try {
-			const messageSendingResponse = await sendReceiptEmail(
-				sendReceiptEmailInput,
-			);
-			console.log(`Successfully sent receipt email to ${customerEmail}    
-  with MessageID: ${messageSendingResponse.MessageID}`);
+			const messageSendingResponse = await sendReceiptEmail(sendReceiptEmailInput);
+			console.log(`Successfully sent receipt email to ${customerEmail} with MessageID: ${messageSendingResponse.MessageID}`);
 		} catch (error) {
 			console.error(`Failed to send receipt email: ${error}`);
 		}
@@ -121,7 +149,7 @@ export async function POST(req: NextRequest) {
 			{ status: 200 },
 		);
 	} catch (error) {
-		console.error(`An error occurred: ${error}`);
+		console.error(`An error occurred:`, error);
 		return NextResponse.json(
 			{ error: "An unknown error occurred" },
 			{
