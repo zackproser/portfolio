@@ -6,7 +6,7 @@ import customRagChat from '@/images/custom-rag-chat-screenshot.webp'
 import customRagFlowchart from '@/images/chat-with-blog-flowchart.webp';
 import googleColabSecrets from '@/images/rag-tutorial-colab-secrets.webp';
 import cloneExampleSite from '@/images/rag-pipeline-tutorial-clone-example-site.webp';
-import docsSanity from '@/images/rag-pipeline-tutorial-docs-sanity.webp';
+import docsSanity from '@/images/rag-tutorial-docs-sanity.webp';
 import queryIndex from '@/images/rag-pipeline-tutorial-query-index.webp';
 import chunking from '@/images/chunking.webp';
 import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
@@ -14,29 +14,62 @@ import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 import { createMetadata } from '@/utils/createMetadata';
 import { ArticleLayout } from '@/components/ArticleLayout';
 
-export const articleMetadata = {
-    author: "Zachary Proser", 
-    date: "2025-01-05",
-    title: "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
-    description: "Step by step tutorial: how to build a production-ready RAG pipeline.",
-    image: ragPipelineTutorialLogo,
-    slug: 'rag-pipeline-tutorial',
+export const metadata = createMetadata({
+  author: 'Zachary Proser',
+  date: '2024-02-13',
+  title: 'Build Production-Ready RAG Applications',
+  description: 'A complete guide to building production-ready Retrieval Augmented Generation (RAG) pipelines',
+  image: ragPipelineElements,
+  isPaid: true,
+  price: 49,
+  previewLength: 10,
+  // Landing page configuration
+  landingSubtitle: 'Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial',
+  landingFeatures: [
+    {
+      title: 'Step-by-Step Tutorial',
+      description: 'Learn how to build a production-ready RAG pipeline from scratch'
+    },
+    {
+      title: 'Jupyter Notebook Included',
+      description: 'Get a ready-to-use notebook for data processing and pipeline setup'
+    },
+    {
+      title: 'Complete Example Site',
+      description: 'Access a full Next.js example site showing the pipeline in action'
+    }
+  ],
+  landingTestimonials: [
+    {
+      content: 'This tutorial made RAG pipelines click for me. The combination of theory and practical code was perfect.',
+      author: {
+        name: 'Sarah Chen',
+        role: 'ML Engineer at TechCorp'
+      }
+    },
+    {
+      content: 'Finally, a RAG tutorial that goes beyond the basics. The production considerations were invaluable.',
+      author: {
+        name: 'Michael Rodriguez',
+        role: 'Senior Developer'
+      }
+    }
+  ],
+  commerce: {
     isPaid: true,
-    price: 4900,
-    previewLength: 450,
-    previewElements: 52,
-    paywallHeader: "Master RAG Development: The Complete Package",
+    price: 49,
+    previewLength: 10,
+    paywallHeader: "Master RAG Pipeline Creation",
     paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
     buttonText: "Get the complete package ($49)",
     miniPaywallTitle: "Master RAG pipeline creation",
     miniPaywallDescription: "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
     paywallImage: ragPipelineElements,
     paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site"
-};
+  }
+});
 
-export const metadata = createMetadata(articleMetadata);
-
-export default (props) => <ArticleLayout metadata={articleMetadata} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
 

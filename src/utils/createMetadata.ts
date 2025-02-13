@@ -15,6 +15,25 @@ interface ExtendedMetadata extends Metadata {
     price: number
     previewLength?: number
   }
+  // Landing page specific fields
+  landingPage?: {
+    headline?: string
+    subheadline?: string
+    features?: Array<{
+      title: string
+      description: string
+      icon?: string
+    }>
+    testimonials?: Array<{
+      quote: string
+      author: string
+      role?: string
+    }>
+    callToAction?: {
+      text: string
+      buttonText: string
+    }
+  }
 }
 
 interface MetadataParams {
@@ -27,6 +46,21 @@ interface MetadataParams {
   isPaid?: boolean
   price?: number
   previewLength?: number
+  // Landing page params
+  landingSubtitle?: string
+  landingFeatures?: Array<{
+    title: string
+    description: string
+    icon?: string
+  }>
+  landingTestimonials?: Array<{
+    content: string
+    author: {
+      name: string
+      role?: string
+      avatar?: string
+    }
+  }>
 }
 
 // Update default metadata
@@ -52,7 +86,10 @@ export function createMetadata({
   image,
   isPaid = false,
   price,
-  previewLength
+  previewLength,
+  landingSubtitle,
+  landingFeatures,
+  landingTestimonials
 }: MetadataParams): ExtendedMetadata {
   // Handle webpack-imported images
   const imageUrl = typeof image === 'string' ? image : image?.src;
@@ -92,7 +129,15 @@ export function createMetadata({
         price: price || 0,
         previewLength
       }
-    })
+    }),
+    // Add landing page configuration if any landing fields are provided
+    ...(landingSubtitle || landingFeatures || landingTestimonials) && {
+      landing: {
+        subtitle: landingSubtitle || description,
+        ...(landingFeatures && { features: landingFeatures }),
+        ...(landingTestimonials && { testimonials: landingTestimonials })
+      }
+    }
   };
 
   return metadata;
