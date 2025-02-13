@@ -20,52 +20,62 @@ export const metadata = createMetadata({
   title: 'Build Production-Ready RAG Applications',
   description: 'A complete guide to building production-ready Retrieval Augmented Generation (RAG) pipelines',
   image: ragPipelineElements,
-  isPaid: true,
-  price: 49,
-  previewLength: 10,
-  // Landing page configuration
-  landingSubtitle: 'Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial',
-  landingFeatures: [
-    {
-      title: 'Step-by-Step Tutorial',
-      description: 'Learn how to build a production-ready RAG pipeline from scratch'
-    },
-    {
-      title: 'Jupyter Notebook Included',
-      description: 'Get a ready-to-use notebook for data processing and pipeline setup'
-    },
-    {
-      title: 'Complete Example Site',
-      description: 'Access a full Next.js example site showing the pipeline in action'
-    }
-  ],
-  landingTestimonials: [
-    {
-      content: 'This tutorial made RAG pipelines click for me. The combination of theory and practical code was perfect.',
-      author: {
-        name: 'Sarah Chen',
-        role: 'ML Engineer at TechCorp'
+  type: 'course',
+  landing: {
+    subtitle: 'Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial. Learn to build AI-powered chat interfaces that provide accurate answers with citations.',
+    features: [
+      {
+        title: 'Complete RAG Pipeline',
+        description: 'Learn to build a production-ready RAG system from the ground up'
+      },
+      {
+        title: 'Vector Search Mastery',
+        description: 'Master embeddings, vector databases, and semantic search'
+      },
+      {
+        title: 'Streaming Chat Interface',
+        description: 'Build real-time chat UIs with citations and context'
+      },
+      {
+        title: 'Production Best Practices',
+        description: 'Learn deployment, scaling, and maintenance best practices'
       }
-    },
-    {
-      content: 'Finally, a RAG tutorial that goes beyond the basics. The production considerations were invaluable.',
-      author: {
-        name: 'Michael Rodriguez',
-        role: 'Senior Developer'
+    ],
+    testimonials: [
+      {
+        content: 'This tutorial made RAG pipelines click for me. The combination of theory and practical code was perfect.',
+        author: {
+          name: 'Sarah Chen',
+          role: 'ML Engineer at TechCorp'
+        }
+      },
+      {
+        content: 'Finally, a RAG tutorial that goes beyond the basics. The production considerations were invaluable.',
+        author: {
+          name: 'Michael Rodriguez',
+          role: 'Senior Developer'
+        }
+      },
+      {
+        content: 'The complete package is worth it. The example code and deployment guides saved me weeks of work.',
+        author: {
+          name: 'Regina Wisoky',
+          role: 'AI Engineer'
+        }
       }
-    }
-  ],
+    ]
+  },
   commerce: {
     isPaid: true,
     price: 49,
     previewLength: 10,
     paywallHeader: "Master RAG Pipeline Creation",
-    paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
+    paywallBody: "Get everything you need to build production-ready RAG applications: step-by-step tutorials, ready-to-use notebooks, and a complete example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
     buttonText: "Get the complete package ($49)",
     miniPaywallTitle: "Master RAG pipeline creation",
-    miniPaywallDescription: "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
+    miniPaywallDescription: "Includes tutorials, notebooks, and a complete example site.",
     paywallImage: ragPipelineElements,
-    paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site"
+    paywallImageAlt: "The complete RAG development package: Tutorials, Notebooks, and Example Site"
   }
 });
 
