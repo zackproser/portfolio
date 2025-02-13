@@ -8,20 +8,19 @@ export interface Content {
   author: string
   date: string
   image?: string | StaticImageData
-  status?: 'draft' | 'published' | 'archived'
-  type: 'blog' | 'tutorial' | 'course' | 'demo'
+  type: 'blog' | 'course' | 'video' | 'demo'
   price_id?: string
   tags?: string[]
 }
 
-// For blog posts, tutorials, and courses
+// For blog posts, courses, and videos
 export interface Article extends Content {
-  type: 'blog' | 'tutorial' | 'course'
+  type: 'blog' | 'course' | 'video'
   // If the content is paid, these fields will be present
   commerce?: {
     isPaid: true
-    price: number
-    stripe_price_id?: string
+    price: number  // Required - used for both pre-defined and runtime pricing
+    stripe_price_id?: string  // Optional - only used for pre-defined products
     previewLength?: number
     // Paywall customization
     paywallHeader?: string
