@@ -55,6 +55,26 @@ export interface Blog extends Content {
       answer: string
     }>
   }
+  metadata: {
+    landingPage?: {
+      headline?: string
+      subheadline?: string
+      features?: Array<{
+        title: string
+        description: string
+        icon?: string
+      }>
+      testimonials?: Array<{
+        quote: string
+        author: string
+        role?: string
+      }>
+      callToAction?: {
+        text: string
+        buttonText: string
+      }
+    }
+  }
 }
 
 // For demos and other non-purchasable content
