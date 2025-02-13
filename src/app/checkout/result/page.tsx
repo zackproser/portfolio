@@ -5,123 +5,119 @@ import { useSearchParams } from 'next/navigation';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { BlogPostCard } from '@/components/BlogPostCard';
-import { Article } from '@/lib/shared-types';
+import { Blog } from '@/lib/shared-types';
 import { sendGTMEvent } from '@next/third-parties/google';
 
 interface PurchasedContent {
-  title: string;
-  description: string;
-  slug: string;
-  type: 'article' | 'course';
+  content: Blog;
+  user: {
+    email: string;
+    name?: string | null;
+  };
+  session: any;
+  payment_status: string;
 }
 
-function CheckoutResultPage() {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [error, setError] = useState('');
+function CheckoutResultContent() {
   const [content, setContent] = useState<PurchasedContent | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
     if (!sessionId) {
-      setStatus('error');
       setError('No session ID provided');
       return;
     }
 
-    // Verify payment status
-    fetch(`/api/checkout-sessions?session_id=${sessionId}`)
-      .then((res) => res.json())
-      .then(async (data) => {
-        console.log('Checkout session data:', data);
-        if (data.error) {
-          throw new Error(data.error);
+    const fetchCheckoutSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout-sessions?session_id=${sessionId}`,
+          {
+            method: 'GET',
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Could not retrieve checkout session details');
         }
-        if (data.payment_status === 'paid') {
-          setStatus('success');
-          setContent(data.content);
-          
-          // Track the purchase event using GTM
-          sendGTMEvent({
-            event: 'purchase',
-            ecommerce: {
-              transaction_id: sessionId,
-              value: data.session.amount_total / 100,
-              currency: 'USD',
-              items: [{
-                item_name: data.content.title,
-                item_id: data.content.slug,
-                item_category: data.content.type,
-                price: data.session.amount_total / 100,
-                quantity: 1
-              }]
-            }
-          });
-        } else {
-          throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
+
+        const data: PurchasedContent = await response.json();
+
+        if (data.payment_status !== 'paid') {
+          throw new Error('Payment not completed');
         }
-      })
-      .catch((err) => {
-        console.error('Error verifying payment:', err);
-        setStatus('error');
-        setError(err.message || 'Failed to verify payment');
-      });
+
+        setContent(data);
+
+        // Send GTM event for successful purchase
+        sendGTMEvent({
+          event: 'purchase',
+          value: data.content.commerce?.price,
+          items: [
+            {
+              item_name: data.content.title,
+              price: data.content.commerce?.price,
+            },
+          ],
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      }
+    };
+
+    fetchCheckoutSession();
   }, [sessionId]);
 
-  if (status === 'loading') {
+  if (error) {
     return (
-      <Container className="mt-16 sm:mt-32">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-          <span className="ml-3 text-zinc-700 dark:text-zinc-300">Verifying payment...</span>
+      <Container>
+        <div className="py-16">
+          <h1 className="text-2xl font-bold mb-4">Error</h1>
+          <p>{error}</p>
         </div>
       </Container>
     );
   }
 
-  if (status === 'error') {
+  if (!content) {
     return (
-      <Container className="mt-16 sm:mt-32">
-        <div className="rounded-xl bg-red-50 dark:bg-red-900/10 p-6 shadow-lg border border-red-200 dark:border-red-800">
-          <h3 className="text-lg font-medium text-red-800 dark:text-red-200">
-            Payment verification failed
-          </h3>
-          <p className="mt-2 text-sm text-red-700 dark:text-red-300">
-            {error}
-          </p>
+      <Container>
+        <div className="py-16 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-3">Verifying payment...</span>
         </div>
       </Container>
     );
   }
 
   return (
-    <Container className="mt-16 sm:mt-32">
-      <div className="rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-8 shadow-xl border border-green-200 dark:border-green-800">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">
-            🎉 Payment Successful!
-          </h3>
-          <p className="text-lg text-green-700 dark:text-green-300 mb-6">
-            Thank you for your purchase. Your {content?.type} is now available.
-          </p>
-        </div>
+    <Container>
+      <div className="py-16">
+        <h1 className="text-2xl font-bold mb-4">Thank you for your purchase!</h1>
+        <p className="mb-8">
+          A receipt has been sent to {content.user.email}.
+        </p>
 
-        {content && content.type === 'article' && (
+        {content.content.type === 'blog' && (
           <div className="mb-8">
-            <BlogPostCard article={content as Article & { slug: string }} />
+            <BlogPostCard article={content.content} />
           </div>
         )}
 
-        {content && (
-          <div className="text-center">
-            <Link
-              href={content.type === 'article' 
-                ? `/blog/${content.slug}` 
-                : `/learn/courses/${content.slug}/0`}
-              className="inline-flex items-center px-6 py-3 text-lg font-medium rounded-lg shadow-lg text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
-            >
-              {content.type === 'article' ? 'Read Your Article' : 'Start Learning'} →
-            </Link>
+        {content.content.type === 'course' && (
+          <div className="mb-8">
+            <p>
+              Your course is now available. Start learning{' '}
+              <Link
+                href={`/learn/courses/${content.content.slug}`}
+                className="text-blue-500 hover:text-blue-600"
+              >
+                here
+              </Link>
+              .
+            </p>
           </div>
         )}
       </div>
@@ -129,10 +125,17 @@ function CheckoutResultPage() {
   );
 }
 
-export default function CheckoutResultPageWrapper() {
+export default function CheckoutResult() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CheckoutResultPage />
+    <Suspense fallback={
+      <Container>
+        <div className="py-16 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-3">Loading checkout result...</span>
+        </div>
+      </Container>
+    }>
+      <CheckoutResultContent />
     </Suspense>
   );
 } 

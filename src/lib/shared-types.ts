@@ -13,8 +13,8 @@ export interface Content {
   tags?: string[]
 }
 
-// For blog posts, courses, and videos
-export interface Article extends Content {
+// For blog posts and courses
+export interface Blog extends Content {
   type: 'blog' | 'course' | 'video'
   // If the content is paid, these fields will be present
   commerce?: {
@@ -66,20 +66,20 @@ export interface Demo extends Content {
 }
 
 // Helper type for purchasable items
-export type Purchasable = Article & {
-  commerce: NonNullable<Article['commerce']>
+export type Purchasable = Blog & {
+  commerce: NonNullable<Blog['commerce']>
 }
 
 // Type guard to check if content is purchasable
 export function isPurchasable(content: Content): content is Purchasable {
-  return content.type !== 'demo' && 'commerce' in content && (content as Article).commerce?.isPaid === true;
+  return content.type !== 'demo' && 'commerce' in content && (content as Blog).commerce?.isPaid === true;
 }
 
 // Helper to generate default landing page content
-export function getDefaultLanding(article: Article): NonNullable<Article['landing']> {
+export function getDefaultLanding(blog: Blog): NonNullable<Blog['landing']> {
   const defaults = {
-    subtitle: article.description,
-    features: article.type === 'course' ? [
+    subtitle: blog.description,
+    features: blog.type === 'course' ? [
       {
         title: 'Complete Course Access',
         description: 'Get full access to all course materials and video content'
@@ -110,7 +110,7 @@ export function getDefaultLanding(article: Article): NonNullable<Article['landin
 
   return {
     ...defaults,
-    ...article.landing // Override defaults with any custom landing content
+    ...blog.landing // Override defaults with any custom landing content
   };
 }
 
@@ -127,7 +127,9 @@ export interface Database {
   [category: string]: { [feature: string]: any } | any;
 }
 
-export type ArticleWithSlug = Article & { slug: string };
+// Export both BlogWithSlug and ArticleWithSlug (for backward compatibility)
+export type BlogWithSlug = Blog & { slug: string };
+export type ArticleWithSlug = BlogWithSlug; // Alias for backward compatibility
 
 export interface CourseContent extends Content {
   type: 'course';

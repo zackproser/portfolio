@@ -1,4 +1,4 @@
-import { Article, ArticleWithSlug } from './shared-types'
+import { Blog, BlogWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
 import { promises as fs } from 'fs'
@@ -62,7 +62,7 @@ export async function getSegmentContent(course: string, segment: string) {
   return content
 }
 
-export interface ArticleWithHeader extends Article {
+export interface ArticleWithHeader extends Blog {
   header?: string;
   dir?: string;
   status?: 'draft' | 'published' | 'archived';

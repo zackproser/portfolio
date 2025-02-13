@@ -1,4 +1,4 @@
-import { Content, Article, Demo, isPurchasable, getDefaultLanding } from './shared-types';
+import { Content, Blog, Demo, isPurchasable, getDefaultLanding } from './shared-types';
 import path from 'path';
 import glob from 'fast-glob';
 
@@ -42,7 +42,7 @@ export async function loadMdxContent(contentPath: string): Promise<Content> {
     ...(metadata.landing && {
       landing: metadata.landing
     })
-  } as Article | Demo;
+  } as Blog | Demo;
 
   return content;
 }
@@ -80,7 +80,7 @@ export async function getContentByType(type: Content['type']): Promise<Content[]
 }
 
 // Get all purchasable content
-export async function getAllPurchasableContent(): Promise<Article[]> {
+export async function getAllPurchasableContent(): Promise<Blog[]> {
   const allContent = await Promise.all([
     getContentByType('blog'),
     getContentByType('course'),
@@ -89,13 +89,13 @@ export async function getAllPurchasableContent(): Promise<Article[]> {
   ]).then(results => results.flat());
   
   return allContent
-    .filter((content): content is Article => 
+    .filter((content): content is Blog => 
       content.type !== 'demo' && isPurchasable(content)
     );
 }
 
 // Get landing page content for a purchasable item
-export function getLandingContent(article: Article) {
+export function getLandingContent(article: Blog) {
   if (!isPurchasable(article)) {
     throw new Error('Cannot get landing page for non-purchasable content');
   }

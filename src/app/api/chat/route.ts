@@ -4,7 +4,7 @@ import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
 import { importArticleMetadata } from '@/lib/articles'
 import path from 'path';
-import { ArticleWithSlug } from '@/lib/shared-types';
+import { BlogWithSlug } from '@/lib/shared-types';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     docs.push((match.metadata as Metadata).text);
   });
 
-  let relatedBlogPosts: ArticleWithSlug[] = []
+  let relatedBlogPosts: BlogWithSlug[] = []
 
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 `;
 
   const result = streamText({
-    model: openai.chat('gpt-4'),
+    model: openai.chat('gpt-4o'),
     system: prompt,
     prompt: lastMessage.content,
   });
