@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 							name: content.title,
 							description: content.description || 'Premium Content Access',
 						},
-						unit_amount: content.commerce.price,
+						unit_amount: content.commerce.price * 100,
 					},
 					quantity: 1,
 				},
