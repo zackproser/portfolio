@@ -50,7 +50,9 @@ const CheckoutPage = () => {
 	useEffect(() => {
 		if (!productSlug) return;
 
-		fetch(`/api/products?product=${productSlug}`, {
+		const type = searchParams.get('type') || 'blog';
+		
+		fetch(`/api/products?product=${productSlug}&type=${type}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -63,7 +65,7 @@ const CheckoutPage = () => {
 				setProductTitle(title);
 				setProductStatus(status);
 			});
-	}, [productSlug]);
+	}, [productSlug, searchParams]);
 
 	// If user is not signed in, redirect them to sign in page
 	useEffect(() => {
@@ -89,10 +91,10 @@ const CheckoutPage = () => {
 		setLoading(true);
 		setError("");
 
-		const isArticle = productSlug.startsWith('blog-');
+		const type = searchParams.get('type') || 'blog';
 		const payload = {
-			slug: isArticle ? productSlug.replace('blog-', '') : productSlug,
-			type: isArticle ? 'article' : 'course'
+			slug: productSlug,
+			type
 		};
 
 		fetch("/api/checkout-sessions", {
@@ -119,7 +121,7 @@ const CheckoutPage = () => {
 				setError(err.message || "Failed to initialize checkout");
 				setLoading(false);
 			});
-	}, [productSlug, session]);
+	}, [productSlug, session, searchParams]);
 
 	if (error) {
 		return (

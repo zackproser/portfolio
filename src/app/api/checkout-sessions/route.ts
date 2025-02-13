@@ -34,7 +34,10 @@ export async function POST(req: NextRequest) {
 			)
 		}
 
-		const content = await importArticleMetadata(`${slug}/page.mdx`, type === 'course' ? 'learn/courses' : 'blog')
+		const content = await importArticleMetadata(
+			`${slug}/page.mdx`, 
+			type === 'course' ? 'learn/courses' : 'blog'
+		)
 		
 		if (!content.commerce?.isPaid) {
 			return NextResponse.json(
@@ -61,7 +64,7 @@ export async function POST(req: NextRequest) {
 			],
 			metadata: {
 				userId: String(session.user.id),
-				slug: content.slug,
+				slug,
 				type: content.type
 			},
 			return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
@@ -108,7 +111,10 @@ export async function GET(req: Request) {
 		}
 		const user = userResult.rows[0]
 
-		const content = await importArticleMetadata(`${slug}/page.mdx`, type === 'course' ? 'learn/courses' : 'blog')
+		const content = await importArticleMetadata(
+			`${slug}/page.mdx`, 
+			type === 'course' ? 'learn/courses' : 'blog'
+		)
 
 		return NextResponse.json({
 			content,
