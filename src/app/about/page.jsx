@@ -48,7 +48,7 @@ export default function About() {
 				<title>About - Zachary Proser</title>
 				<meta
 					name="description"
-					content="I'm Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
+					content="I&apos;m Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
 				/>
 			</Head>
 			<Container className="mt-16 sm:mt-32">
@@ -66,7 +66,7 @@ export default function About() {
 						</h1>
 						<div className="mt-6 space-y-7 text-base text-black dark:text-zinc-400">
 							<p>
-								I'm a full-stack open source hacker with{" "}
+								I&apos;m a full-stack open source hacker with{" "}
 								<span className="text-green-500 font-bold">
 									{RenderNumYearsExperience()} years
 								</span>{" "}

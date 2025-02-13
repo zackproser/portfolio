@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       // 1. Record the purchase in the appropriate table
       console.log('🎯 Recording purchase')
       try {
-        if (type === 'article') {
+        if (type === 'article' || type === 'blog') {
           await sql`
             INSERT INTO articlepurchases (
               user_id, 
