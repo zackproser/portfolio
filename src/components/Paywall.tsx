@@ -39,7 +39,7 @@ export default function Paywall({
 
     setLoading(true)
     try {
-      router.push(`/checkout?product=blog-${slug}`)
+      router.push(`/checkout?product=${slug}&type=blog`)
     } catch (error) {
       console.error('Error:', error)
       alert('Failed to initiate checkout. Please try again.')

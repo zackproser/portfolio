@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import ArticleContent from './ArticleContent'
 import MiniPaywall from './MiniPaywall'
 import { StaticImageData } from 'next/image'
+import { Content } from '@/lib/shared-types'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -18,6 +19,7 @@ interface ArticleLayoutProps {
     isPaid?: boolean
     price?: number
     slug?: string
+    type?: Content['type']
     previewLength?: number
     previewElements?: number
     paywallHeader?: string
@@ -59,6 +61,7 @@ export function ArticleLayout({
                   price={metadata.price!}
                   slug={metadata.slug!}
                   title={metadata.title}
+                  type={metadata.type || 'blog'}
                   image={metadata.paywallImage}
                   imageAlt={metadata.paywallImageAlt}
                   miniTitle={metadata.miniPaywallTitle ?? metadata.paywallHeader ?? null}

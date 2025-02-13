@@ -49,7 +49,7 @@ export function generateProductFromArticle(article: ArticleWithSlug): ProductCon
     },
     callToAction: {
       text: 'Get Full Access',
-      href: `/checkout?product=blog-${article.slug}`
+      href: `/checkout?product=${article.slug}&type=blog`
     }
   };
 }
