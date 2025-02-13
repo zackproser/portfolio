@@ -14,7 +14,6 @@ export async function importArticle(
       author: string
       date: string
       image?: string
-      status?: 'draft' | 'published' | 'archived'
       isPaid?: boolean
       price?: number
       stripe_price_id?: string
@@ -34,9 +33,7 @@ export async function importArticle(
     author: importedData.metadata.author,
     date: importedData.metadata.date,
     image: importedData.metadata.image,
-    status: importedData.metadata.status || 'published',
-    type: rootPath === 'blog' ? 'blog' : 
-          rootPath === 'tutorials' ? 'tutorial' : 'course',
+    type: rootPath === 'blog' ? 'blog' : 'course',
     // Add commerce fields if this is a paid article
     ...(importedData.metadata.isPaid && {
       commerce: {
@@ -73,9 +70,9 @@ export async function getAllArticles(matchingSlugs?: string[]): Promise<Article[
     cwd: path.join(process.cwd(), 'src', 'app', 'blog')
   })
 
-  // Get tutorial articles
-  let tutorialFilenames = await glob('*/page.mdx', {
-    cwd: path.join(process.cwd(), 'src', 'app', 'tutorials')
+  // Get course articles
+  let courseFilenames = await glob('*/page.mdx', {
+    cwd: path.join(process.cwd(), 'src', 'app', 'learn/courses')
   })
 
   // Map blog articles
@@ -83,12 +80,12 @@ export async function getAllArticles(matchingSlugs?: string[]): Promise<Article[
     importArticle(filename, 'blog')
   ))
 
-  // Map tutorial articles
-  let tutorialArticles = await Promise.all(tutorialFilenames.map(filename =>
-    importArticle(filename, 'tutorials')
+  // Map course articles
+  let courseArticles = await Promise.all(courseFilenames.map(filename =>
+    importArticle(filename, 'learn/courses')
   ))
 
-  let articles = [...blogArticles, ...tutorialArticles]
+  let articles = [...blogArticles, ...courseArticles]
 
   // Filter by slug if provided
   if (matchingSlugs) {

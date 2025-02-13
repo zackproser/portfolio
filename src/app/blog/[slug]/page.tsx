@@ -5,15 +5,17 @@ import { Metadata } from 'next'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
 
-interface Props {
-  params: {
+type Props = {
+  params: Promise<{
     slug: string
-  }
+  }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const article = await Article.fromSlug(params.slug)
+    const resolvedParams = await params
+    const article = await Article.fromSlug(resolvedParams.slug)
     return createMetadata({
       title: article.title,
       description: article.description,
@@ -36,8 +38,9 @@ function ArticleContent({ article, Content }: { article: Article, Content: React
 
 export default async function BlogPost({ params }: Props) {
   try {
-    const article = await Article.fromSlug(params.slug)
-    const { default: Content } = await import(`@/app/blog/${params.slug}/page.mdx`)
+    const resolvedParams = await params
+    const article = await Article.fromSlug(resolvedParams.slug)
+    const { default: Content } = await import(`@/app/blog/${resolvedParams.slug}/page.mdx`)
 
     return (
       <Suspense fallback={<div>Loading article...</div>}>
