@@ -1,7 +1,21 @@
 import { generateOgUrl } from '@/utils/ogUrl'
 import { Metadata } from 'next'
 import { StaticImageData } from 'next/image'
-import { Article } from '@/lib/shared-types'
+
+// Extend Next.js Metadata type with our blog fields
+interface ExtendedMetadata extends Metadata {
+  // Blog specific fields
+  author?: string
+  date?: string
+  description?: string
+  image?: string | StaticImageData
+  type?: 'blog' | 'course' | 'video'
+  commerce?: {
+    isPaid: boolean
+    price: number
+    previewLength?: number
+  }
+}
 
 interface MetadataParams {
   author?: string
@@ -39,12 +53,13 @@ export function createMetadata({
   isPaid = false,
   price,
   previewLength
-}: MetadataParams): Metadata & { isPaid: boolean; price?: number; previewLength?: number } {
+}: MetadataParams): ExtendedMetadata {
   // Handle webpack-imported images
   const imageUrl = typeof image === 'string' ? image : image?.src;
 
-  const seoMetadata: Metadata = {
+  const metadata: ExtendedMetadata = {
     ...defaultMetadata,
+    // Next.js metadata fields
     ...(title && { title }),
     ...(description && { description }),
     ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
@@ -65,13 +80,20 @@ export function createMetadata({
       ...(description && { description }),
       images: [generateOgUrl({ title, description, image: imageUrl })],
     },
+    // Our blog-specific fields
+    author: author || 'Unknown',
+    date: date || new Date().toISOString(),
+    description: description || '',
+    image: image,
+    type: 'blog',
+    ...(isPaid && {
+      commerce: {
+        isPaid,
+        price: price || 0,
+        previewLength
+      }
+    })
   };
 
-  // Add commerce fields
-  return {
-    ...seoMetadata,
-    isPaid,
-    ...(price && { price }),
-    ...(previewLength && { previewLength }),
-  };
+  return metadata;
 }

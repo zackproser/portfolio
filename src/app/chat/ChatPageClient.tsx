@@ -10,7 +10,7 @@ import RandomPortrait from '@/components/RandomPortrait';
 import SearchForm from '@/components/SearchForm';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { BlogPostCard } from '@/components/BlogPostCard';
-import { ArticleWithSlug } from '@/lib/shared-types';
+import { BlogWithSlug } from '@/lib/shared-types';
 
 // Add gtag type definition
 declare global {
@@ -28,28 +28,21 @@ const prepopulatedQuestions = [
   "How can I use AI to complete side projects more quickly?"
 ];
 
-interface ChatPageClientProps {
-  initialArticles: ArticleWithSlug[];
-}
-
-export default function ChatPageClient({ initialArticles }: ChatPageClientProps) {
+export default function ChatPageClient() {
   const [isLoading, setIsLoading] = useState(false);
-  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
+  const [articles, setArticles] = useState<BlogWithSlug[]>([]);
 
   const { messages, input, setInput, handleSubmit } = useChat({
     onResponse(response) {
       const sourcesHeader = response.headers.get('x-sources');
-      const parsedArticles: ArticleWithSlug[] = sourcesHeader
-        ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
+      const parsedArticles: BlogWithSlug[] = sourcesHeader
+        ? (JSON.parse(atob(sourcesHeader as string)) as BlogWithSlug[])
         : [];
       console.log(`parsedArticle %o`, parsedArticles);
       setArticles(parsedArticles);
       setIsLoading(false);
     },
     headers: {},
-    body: {
-      articles: initialArticles,
-    },
     onFinish() {
       // Make gtag calls safe
       if (typeof window !== 'undefined' && window.gtag) {
@@ -145,7 +138,7 @@ export default function ChatPageClient({ initialArticles }: ChatPageClientProps)
               <div className="">
                 <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
                 <div className="space-y-4">
-                  {(articles as ArticleWithSlug[]).map((article) => (
+                  {(articles as BlogWithSlug[]).map((article) => (
                     <BlogPostCard key={article.slug} article={article} />
                   ))}
                 </div>
