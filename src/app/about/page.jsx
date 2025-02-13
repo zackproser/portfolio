@@ -66,25 +66,23 @@ export default function About() {
 						</h1>
 						<div className="mt-6 space-y-7 text-base text-black dark:text-zinc-400">
 							<p>
-								I&apos;m a staff developer advocate at{" "}
-								<Link
-									className="font-bold text-green-500"
-									href="https://pinecone.io"
-								>
-									Pinecone
-								</Link>
-								, where we build the best-in-class cloud-native vector database
-								at the heart of the Generative AI boom.
-							</p>
-							<Newsletter />
-							<p>
-								I have been a full-stack software engineer, technical writer and
-								open-source contributor for{" "}
+								I'm a full-stack open source hacker with{" "}
 								<span className="text-green-500 font-bold">
 									{RenderNumYearsExperience()} years
-								</span>
-								.
+								</span>{" "}
+								of software development experience at top startups and established enterprise companies.
 							</p>
+							<p>
+								I work in Developer Education at{" "}
+								<Link
+									className="font-bold text-green-500"
+									href="https://workos.com"
+								>
+									WorkOS
+								</Link>
+								, where we help companies add enterprise features to their apps in minutes, not months.
+							</p>
+							<Newsletter />
 							<p>Read what it&apos;s like to work with me <Link className="text-green-500 font-bold" href="/testimonials">here</Link>.</p>
 							<div className="mt-8">
 								<CV />

@@ -7,10 +7,11 @@ export async function GET(req: NextRequest) {
 	console.log("GET /products");
 
 	const productSlug = req.nextUrl.searchParams.get("product");
+	const type = req.nextUrl.searchParams.get("type") as 'blog' | 'course' | 'video';
 
-	if (!productSlug) {
+	if (!productSlug || !type) {
 		return new NextResponse(
-			JSON.stringify({ error: "Must supply valid product slug" }),
+			JSON.stringify({ error: "Must supply valid product slug and type" }),
 			{
 				status: 400,
 			},
@@ -18,11 +19,8 @@ export async function GET(req: NextRequest) {
 	}
 
 	try {
-		// Check if this is an article slug
-		if (productSlug.startsWith('blog-')) {
-			// Remove 'blog-' prefix to get the actual article slug
-			const articleSlug = productSlug.replace('blog-', '')
-			const article = await getArticleBySlug(articleSlug)
+		if (type === 'blog') {
+			const article = await getArticleBySlug(productSlug)
 			
 			if (!article) {
 				return NextResponse.json({ error: 'Article not found' }, { status: 404 })

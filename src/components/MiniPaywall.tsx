@@ -5,11 +5,13 @@ import { useState } from 'react'
 import { Button } from './Button'
 import { useRouter } from 'next/navigation'
 import Image, { StaticImageData } from 'next/image'
+import { Content } from '@/lib/shared-types'
 
 interface MiniPaywallProps {
   price: number
   slug: string
   title: string
+  type: Content['type']
   image?: StaticImageData | string
   imageAlt?: string
   miniTitle: string | null | undefined
@@ -20,6 +22,7 @@ export default function MiniPaywall({
   price, 
   slug, 
   title,
+  type,
   image,
   imageAlt = "Article preview image",
   miniTitle,
@@ -37,7 +40,7 @@ export default function MiniPaywall({
 
     setLoading(true)
     try {
-      router.push(`/checkout?product=blog-${slug}`)
+      router.push(`/checkout?product=${slug}&type=${type}`)
     } catch (error) {
       console.error('Error:', error)
       alert('Failed to initiate checkout. Please try again.')

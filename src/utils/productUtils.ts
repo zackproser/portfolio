@@ -9,10 +9,15 @@ enum CourseStatus {
 interface ProductDetails {
 	title: string;
 	description: string;
-	price_id: string;
-	course_id: string;
-	status: CourseStatus;
-	url: string;
+	price_id?: string;
+	course_id?: string;
+	status?: CourseStatus;
+	url?: string;
+	commerce?: {
+		isPaid: boolean;
+		price: number;
+		previewLength?: number;
+	};
 }
 
 async function getProductDetails(slug: string): Promise<ProductDetails | null> {
