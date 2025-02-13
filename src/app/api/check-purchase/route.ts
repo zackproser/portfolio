@@ -15,18 +15,28 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url)
     const slug = searchParams.get('slug')
+    const type = searchParams.get('type') || 'blog'  // Default to blog if not specified
 
     if (!slug) {
       return NextResponse.json({ error: 'Missing slug parameter' }, { status: 400 })
     }
 
-    console.log('Checking purchase for:', { email: session.user.email, slug })
+    console.log('Checking purchase for:', { email: session.user.email, slug, type })
 
-    const result = await sql`
-      SELECT * FROM articlepurchases 
-      WHERE user_id = ${session.user.id}::int 
-      AND article_slug = ${slug}
-    `
+    let result = { rows: [] };
+    if (type === 'article' || type === 'blog') {
+      result = await sql`
+        SELECT * FROM articlepurchases 
+        WHERE user_id = ${session.user.id}::int 
+        AND article_slug = ${slug}
+      `
+    } else if (type === 'course') {
+      result = await sql`
+        SELECT * FROM coursepurchases 
+        WHERE user_id = ${session.user.id}::int 
+        AND course_slug = ${slug}
+      `
+    }
 
     console.log('Purchase check result:', result)
 
