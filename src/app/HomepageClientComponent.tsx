@@ -189,7 +189,7 @@ export default function HomepageClientComponent({
                     Read Tutorial
                   </Link>
                   <Link 
-                    href="/checkout?product=blog-rag-pipeline-tutorial"
+                    href="/checkout?product=rag-pipeline-tutorial&type=blog"
                     className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-emerald-800 hover:bg-emerald-900 md:py-4 md:text-lg md:px-8 transition-colors"
                     onClick={() => {
                       track("featured_product_click", {
