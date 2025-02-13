@@ -1,52 +1,77 @@
 import Link from 'next/link'
 
-import { ContainerInner, ContainerOuter } from '@/components/Container'
+import { Container } from '@/components/Container'
 
-function NavLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <Link
-      href={href}
-      className="transition hover:text-teal-500 dark:hover:text-teal-400"
-    >
-      {children}
-    </Link>
-  )
-}
+const navigation = [
+  {
+    title: 'Getting started',
+    links: [
+      { title: 'Introduction', href: '/#introduction' },
+      { title: 'Installation', href: '/#installation' },
+      { title: 'Core concepts', href: '/#core-concepts' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { title: 'Documentation', href: '/docs' },
+      { title: 'API Reference', href: '/api' },
+      { title: 'Support', href: '/support' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { title: 'Privacy', href: '/privacy' },
+      { title: 'Terms', href: '/terms' },
+      { title: 'License', href: '/license' },
+    ],
+  },
+  {
+    title: 'Social',
+    links: [
+      { title: 'Twitter', href: 'https://twitter.com/zacharyproser' },
+      { title: 'GitHub', href: 'https://github.com/zacharyproser' },
+      { title: 'LinkedIn', href: 'https://linkedin.com/in/zacharyproser' },
+    ],
+  },
+]
 
 export function Footer() {
   return (
-    <footer className="mt-32 flex-none">
-      <ContainerOuter>
-        <div className="border-t border-zinc-100 pb-16 pt-10 dark:border-zinc-700/40">
-          <ContainerInner>
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              <div className="flex flex-col sm:flex-row gap-6 text-xl font-medium text-zinc-800 dark:text-zinc-200">
-                <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-                  <NavLink href="/blog">Blog</NavLink>
-                  <NavLink href="/chat">Chat</NavLink>
-                  <NavLink href="/videos">Videos</NavLink>
-                </div>
-                <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-                  <NavLink href="/projects">Projects</NavLink>
-                  <NavLink href="/newsletter">Newsletter</NavLink>
-                  <NavLink href="/contact">Contact</NavLink>
-                  <NavLink href="https://changelog.zackproser.com">Changelog</NavLink>
-                </div>
-              </div>
-              <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                &copy; {new Date().getFullYear()} Zachary Proser. All rights
-                reserved.
+    <footer className="border-t border-slate-200 bg-slate-50">
+      <Container>
+        <div className="grid grid-cols-1 gap-x-8 gap-y-16 pt-16 pb-8 lg:grid-cols-2">
+          <div className="flex flex-col items-start justify-between gap-12 lg:flex-row lg:items-center">
+            <div className="flex items-center gap-4">
+              <p className="text-base text-slate-500">
+                &copy; {new Date().getFullYear()} Zachary Proser. All rights reserved.
               </p>
             </div>
-          </ContainerInner>
+          </div>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
+            {navigation.map((section) => (
+              <div key={section.title} className="flex flex-col gap-6">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  {section.title}
+                </h3>
+                <ul role="list" className="flex flex-col gap-4">
+                  {section.links.map((link) => (
+                    <li key={link.title}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-slate-600 hover:text-slate-900"
+                      >
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-      </ContainerOuter >
-    </footer >
+      </Container>
+    </footer>
   )
 }
