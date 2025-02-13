@@ -8,8 +8,7 @@ export interface ContentMetadata {
   author: string;
   date: string;
   image?: string | StaticImageData;
-  status?: 'draft' | 'published' | 'archived';
-  type: 'blog' | 'tutorial' | 'course' | 'demo';
+  type: 'blog' | 'course' | 'video' | 'demo';
   tags?: string[];
 }
 
@@ -20,8 +19,7 @@ export abstract class Content {
   author: string;
   date: string;
   image?: string | StaticImageData;
-  status: 'draft' | 'published' | 'archived';
-  type: 'blog' | 'tutorial' | 'course' | 'demo';
+  type: 'blog' | 'course' | 'video' | 'demo';
   tags: string[];
 
   constructor(metadata: ContentMetadata) {
@@ -31,7 +29,6 @@ export abstract class Content {
     this.author = metadata.author;
     this.date = metadata.date;
     this.image = metadata.image;
-    this.status = metadata.status || 'published';
     this.type = metadata.type;
     this.tags = metadata.tags || [];
   }
