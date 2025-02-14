@@ -2,7 +2,10 @@ import { Button } from '@/components/Button'
 import { GridPattern } from '@/components/GridPattern'
 import { StarRating } from '@/components/StarRating'
 
-function Testimonial() {
+function Testimonial({ author, content }: { 
+  author: { name: string; role: string };
+  content: string;
+}) {
   return (
     <figure className="relative mx-auto max-w-md text-center lg:mx-0 lg:text-left">
       <div className="flex justify-center text-blue-600 lg:justify-start">
@@ -11,22 +14,22 @@ function Testimonial() {
       </div>
       <blockquote className="mt-2">
         <p className="font-display text-xl font-medium text-slate-900">
-          &ldquo;Thanks for publishing the tutorial, very helpful.&rdquo;
+          &ldquo;{content}&rdquo;
         </p>
       </blockquote>
       <figcaption className="mt-2 text-sm text-slate-500">
         <strong className="font-semibold text-blue-600 before:content-['—_']">
-          Scott McCallum
+          {author.name}
         </strong>
         <span className="block text-sm text-slate-500">
-          FULLSTACK Developer at Intermine Pty Ltd
+          {author.role}
         </span>
       </figcaption>
     </figure>
   )
 }
 
-function BookCover() {
+function BookCover({ title, description }: { title: string; description: string }) {
   return (
     <div className="relative aspect-[3/4] w-full max-w-[500px] rounded-2xl bg-[#1e2943] p-8 shadow-2xl border-t-8 border-blue-500/20">
       {/* Book spine effect */}
@@ -35,10 +38,10 @@ function BookCover() {
       {/* Book title and subtitle */}
       <div className="mt-6">
         <h2 className="font-display text-3xl font-semibold text-white leading-tight">
-          Build Production-Ready RAG Applications
+          {title}
         </h2>
         <p className="mt-6 text-lg text-slate-300 leading-relaxed">
-          A complete guide to building production-ready Retrieval Augmented Generation (RAG) pipelines
+          {description}
         </p>
       </div>
 
@@ -64,7 +67,19 @@ function BookCover() {
   )
 }
 
-export function Hero() {
+interface HeroProps {
+  title: string;
+  description: string;
+  testimonial?: {
+    content: string;
+    author: {
+      name: string;
+      role: string;
+    };
+  };
+}
+
+export function Hero({ title, description, testimonial }: HeroProps) {
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5">
       <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
@@ -77,20 +92,22 @@ export function Hero() {
             />
           </div>
           <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
-            <BookCover />
+            <BookCover title={title} description={description} />
           </div>
         </div>
         <div className="relative px-4 sm:px-6 lg:col-span-7 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
           <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100" />
-          <Testimonial />
+          {testimonial && (
+            <Testimonial author={testimonial.author} content={testimonial.content} />
+          )}
         </div>
         <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20">
           <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
             <h1 className="font-display text-5xl font-extrabold text-slate-900 sm:text-6xl">
-              Build Production-Ready RAG Applications
+              {title}
             </h1>
             <p className="mt-4 text-xl text-slate-600">
-              A complete guide to building production-ready Retrieval Augmented Generation (RAG) pipelines
+              {description}
             </p>
             <div className="mt-8 flex gap-4">
               <Button href="#free-chapters" color="blue">

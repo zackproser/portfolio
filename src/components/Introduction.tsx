@@ -3,7 +3,16 @@ import Link from 'next/link'
 import { CheckIcon } from '@/components/CheckIcon'
 import { Container } from '@/components/Container'
 
-export function Introduction() {
+interface IntroductionProps {
+  title: string;
+  description: string;
+  features?: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+
+export function Introduction({ title, description, features = [] }: IntroductionProps) {
   return (
     <section
       id="introduction"
@@ -12,31 +21,22 @@ export function Introduction() {
     >
       <Container className="text-lg tracking-tight text-slate-700">
         <p className="font-display text-4xl font-bold tracking-tight text-slate-900">
-          &ldquo;Build Production-Ready RAG Applications&rdquo; is a comprehensive guide that teaches you how to build robust and scalable RAG systems from the ground up.
+          {title}
         </p>
         <p className="mt-4">
-          Whether you&apos;re building a question-answering system, a chatbot, or a document search engine,
-          this guide will teach you everything you need to know about implementing RAG pipelines in production.
+          {description}
         </p>
         <ul role="list" className="mt-8 space-y-3">
-          {[
-            'Master the fundamentals of Retrieval Augmented Generation',
-            'Learn vector database integration and optimization',
-            'Implement efficient chunking and embedding strategies',
-            'Build reranking and post-processing pipelines',
-            'Deploy and scale RAG systems in production',
-            'Handle edge cases and improve response quality',
-          ].map((feature) => (
-            <li key={feature} className="flex">
+          {features.map((feature) => (
+            <li key={feature.title} className="flex">
               <CheckIcon className="h-8 w-8 flex-none fill-blue-500" />
-              <span className="ml-4">{feature}</span>
+              <div className="ml-4">
+                <p className="font-medium text-slate-900">{feature.title}</p>
+                <p className="mt-1 text-slate-600">{feature.description}</p>
+              </div>
             </li>
           ))}
         </ul>
-        <p className="mt-8">
-          This guide is designed for developers and engineers who want to build production-grade
-          RAG applications, covering both fundamental concepts and advanced implementation details.
-        </p>
         <p className="mt-10">
           <Link
             href="#free-chapters"

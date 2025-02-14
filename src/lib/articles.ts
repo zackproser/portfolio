@@ -32,7 +32,8 @@ export async function importArticle(
     image: metadata.image,
     type: metadata.type || 'blog',
     slug,
-    ...(metadata.commerce && { commerce: metadata.commerce })
+    ...(metadata.commerce && { commerce: metadata.commerce }),
+    ...(metadata.landing && { landing: metadata.landing })
   }
 }
 
@@ -63,7 +64,8 @@ export async function getArticleBySlug(slug: string): Promise<Blog | null> {
       image: metadata.image,
       type: metadata.type || 'blog',
       slug,
-      ...(metadata.commerce && { commerce: metadata.commerce })
+      ...(metadata.commerce && { commerce: metadata.commerce }),
+      ...(metadata.landing && { landing: metadata.landing })
     }
   } catch (error) {
     console.error(`Error importing article ${slug}:`, error)
