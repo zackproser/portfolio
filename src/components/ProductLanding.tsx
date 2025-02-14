@@ -24,34 +24,8 @@ export function ProductLanding({ content }: Props) {
       <Introduction />
       <NavBar />
       <TableOfContents />
-      <Testimonial
-        id="testimonial-from-tommy-stroman"
-        author={{
-          name: 'Tommy Stroman',
-          role: 'Front-end developer',
-        }}
-      >
-        <p>
-          &ldquo;I didn&apos;t know a thing about icon design until I read this book. Now I
-          can create any icon I need in no time. Great resource!&rdquo;
-        </p>
-      </Testimonial>
-      <Testimonial
-        id="testimonial-from-gerardo-stark"
-        author={{
-          name: 'Gerardo Stark',
-          role: 'Creator of Pandemicons',
-        }}
-      >
-        <p>
-          &ldquo;I&apos;ve tried to create my own icons in the past but quickly got
-          frustrated and gave up. Now I sell my own custom icon sets online.&rdquo;
-        </p>
-      </Testimonial>
-      <Resources />
       <FreeChapters />
       <Pricing />
-      <Testimonials />
       <Author />
       <Footer />
     </>

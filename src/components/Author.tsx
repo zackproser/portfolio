@@ -11,7 +11,10 @@ export function Author() {
       className="relative scroll-mt-14 pb-3 pt-8 sm:scroll-mt-32 sm:pb-16 sm:pt-10 lg:pt-16"
     >
       <div className="absolute inset-0 -z-10 bg-slate-50">
-        <GridPattern x="50%" />
+        <GridPattern
+          x="50%"
+          className="fill-transparent stroke-slate-200/10"
+        />
       </div>
       <Container className="relative">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-3xl">
