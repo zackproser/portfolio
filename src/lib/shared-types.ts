@@ -75,6 +75,28 @@ export interface Blog extends Content {
       }
     }
   }
+  title: string;
+  date: string;
+  author: {
+    name: string;
+    role: string;
+    bio: string;
+  };
+  price: number;
+  tableOfContents: {
+    [section: string]: {
+      [title: string]: number;
+    };
+  };
+  testimonials: Array<{
+    content: string;
+    author: {
+      name: string;
+      role: string;
+    };
+  }>;
+  features: string[];
+  benefits: string[];
 }
 
 // For demos and other non-purchasable content

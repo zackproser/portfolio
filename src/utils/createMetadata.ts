@@ -14,25 +14,28 @@ interface ExtendedMetadata extends Metadata {
     isPaid: boolean
     price: number
     previewLength?: number
+    paywallHeader?: string
+    paywallBody?: string
+    buttonText?: string
+    paywallImage?: string | StaticImageData
+    paywallImageAlt?: string
+    miniPaywallTitle?: string
+    miniPaywallDescription?: string
   }
-  // Landing page specific fields
-  landingPage?: {
-    headline?: string
-    subheadline?: string
+  landing?: {
+    subtitle?: string
     features?: Array<{
       title: string
       description: string
       icon?: string
     }>
     testimonials?: Array<{
-      quote: string
-      author: string
-      role?: string
+      content: string
+      author: {
+        name: string
+        role?: string
+      }
     }>
-    callToAction?: {
-      text: string
-      buttonText: string
-    }
   }
 }
 
@@ -42,25 +45,34 @@ interface MetadataParams {
   title?: string
   description?: string
   image?: string | StaticImageData
-  // Commerce params
-  isPaid?: boolean
-  price?: number
-  previewLength?: number
-  // Landing page params
-  landingSubtitle?: string
-  landingFeatures?: Array<{
-    title: string
-    description: string
-    icon?: string
-  }>
-  landingTestimonials?: Array<{
-    content: string
-    author: {
-      name: string
-      role?: string
-      avatar?: string
-    }
-  }>
+  type?: 'blog' | 'course' | 'video'
+  commerce?: {
+    isPaid: boolean
+    price: number
+    previewLength?: number
+    paywallHeader?: string
+    paywallBody?: string
+    buttonText?: string
+    paywallImage?: string | StaticImageData
+    paywallImageAlt?: string
+    miniPaywallTitle?: string
+    miniPaywallDescription?: string
+  }
+  landing?: {
+    subtitle?: string
+    features?: Array<{
+      title: string
+      description: string
+      icon?: string
+    }>
+    testimonials?: Array<{
+      content: string
+      author: {
+        name: string
+        role?: string
+      }
+    }>
+  }
 }
 
 // Update default metadata
@@ -84,12 +96,9 @@ export function createMetadata({
   title, 
   description, 
   image,
-  isPaid = false,
-  price,
-  previewLength,
-  landingSubtitle,
-  landingFeatures,
-  landingTestimonials
+  type = 'blog',
+  commerce,
+  landing,
 }: MetadataParams): ExtendedMetadata {
   // Handle webpack-imported images
   const imageUrl = typeof image === 'string' ? image : image?.src;
@@ -122,22 +131,9 @@ export function createMetadata({
     date: date || new Date().toISOString(),
     description: description || '',
     image: image,
-    type: 'blog',
-    ...(isPaid && {
-      commerce: {
-        isPaid,
-        price: price || 0,
-        previewLength
-      }
-    }),
-    // Add landing page configuration if any landing fields are provided
-    ...(landingSubtitle || landingFeatures || landingTestimonials) && {
-      landing: {
-        subtitle: landingSubtitle || description,
-        ...(landingFeatures && { features: landingFeatures }),
-        ...(landingTestimonials && { testimonials: landingTestimonials })
-      }
-    }
+    type,
+    ...(commerce && { commerce }),
+    ...(landing && { landing })
   };
 
   return metadata;
