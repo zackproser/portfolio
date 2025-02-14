@@ -193,7 +193,8 @@ export default async function LearnPage() {
           </div>
           <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center mt-10">
             <Button
-              variant="green"
+              variant="solid"
+              color="green"
               href="/waitinglist"
             >
               Join the waiting list

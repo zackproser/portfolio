@@ -4,18 +4,18 @@ import { GridPattern } from '@/components/GridPattern'
 import { SectionHeading } from '@/components/SectionHeading'
 import RandomPortrait from '@/components/RandomPortrait'
 
-export function Author() {
+interface AuthorProps {
+  name: string
+}
+
+export function Author({ name }: AuthorProps) {
   return (
     <section
       id="author"
       aria-labelledby="author-title"
       className="relative scroll-mt-14 pb-3 pt-8 sm:scroll-mt-32 sm:pb-16 sm:pt-10 lg:pt-16"
     >
-      <div className="absolute inset-0 -z-10 bg-slate-50">
-        <GridPattern
-          x="50%"
-          className="fill-transparent stroke-slate-200/10"
-        />
+      <div className="absolute inset-0 -z-10 bg-slate-50/50">
       </div>
       <Container className="relative">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-6xl">
@@ -26,10 +26,10 @@ export function Author() {
             <div className="lg:order-2">
               <RandomPortrait width={400} height={400} />
             </div>
-            <div className="lg:order-1">
-              <p className="font-display text-4xl font-bold tracking-tight text-slate-900">
-                Hi, I&apos;m Zachary Proser
-              </p>
+            <div className="relative z-10 lg:order-1">
+              <h2 className="font-display text-4xl font-bold tracking-tight text-slate-900">
+                Hi, I&apos;m {name}
+              </h2>
               <div className="mt-6 space-y-6 text-base text-slate-700">
                 <p>
                   I&apos;m a software engineer and AI researcher with over a decade of experience
