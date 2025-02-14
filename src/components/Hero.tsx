@@ -28,18 +28,12 @@ function Testimonial() {
 
 function BookCover() {
   return (
-    <div className="relative aspect-[3/4] w-[500px] rounded-2xl bg-[#1a2234] p-8 shadow-2xl border-t-8 border-blue-500/20">
+    <div className="relative aspect-[3/4] w-full max-w-[500px] rounded-2xl bg-[#1e2943] p-8 shadow-2xl border-t-8 border-blue-500/20">
       {/* Book spine effect */}
-      <div className="absolute inset-y-0 left-0 w-8 bg-blue-600/10 transform -translate-x-4 skew-y-12" />
-      
-      {/* Icons at the top */}
-      <div className="flex gap-3">
-        <div className="h-8 w-8 rounded bg-slate-300" />
-        <div className="h-8 w-8 rounded-full bg-slate-300" />
-      </div>
+      <div className="absolute inset-y-0 left-0 w-8 bg-blue-600/10 transform -translate-x-4 skew-y-12 hidden lg:block" />
       
       {/* Book title and subtitle */}
-      <div className="mt-12">
+      <div className="mt-6">
         <h2 className="font-display text-3xl font-semibold text-white leading-tight">
           Build Production-Ready RAG Applications
         </h2>
@@ -49,8 +43,14 @@ function BookCover() {
       </div>
 
       {/* Author signature */}
-      <div className="absolute bottom-20 left-8">
+      <div className="absolute bottom-20 left-8 hidden lg:block">
         <p className="font-['Pacifico'] text-3xl text-slate-300 opacity-90">
+          Zachary Proser
+        </p>
+      </div>
+      {/* Mobile signature */}
+      <div className="mt-8 block lg:hidden">
+        <p className="font-['Pacifico'] text-2xl text-slate-300 opacity-90 text-center">
           Zachary Proser
         </p>
       </div>

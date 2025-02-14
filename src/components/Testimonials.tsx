@@ -100,8 +100,11 @@ export function Testimonials() {
       aria-labelledby="testimonials-title"
       className="relative py-20 sm:py-32"
     >
-      <div className="absolute inset-0 -z-10 bg-slate-50">
-        <GridPattern x="50%" />
+      <div className="absolute inset-0 -z-10 bg-slate-50/80">
+        <GridPattern
+          x="50%"
+          className="fill-slate-100 stroke-slate-200/60"
+        />
       </div>
       <Container>
         <div className="mx-auto max-w-2xl md:text-center">
