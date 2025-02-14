@@ -118,55 +118,61 @@ export function Pricing() {
             id="pricing-title"
             className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl"
           >
-            Invest in your RAG development skills
+            Start Building Better RAG Applications Today
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-600">
-            Whether you&apos;re just getting started or looking to master advanced
-            techniques, we have a plan that&apos;s right for you.
+            Get instant access to the complete guide and start building production-ready RAG applications.
           </p>
         </div>
-        <div className="-mx-4 mt-16 grid max-w-2xl grid-cols-1 gap-y-10 sm:mx-auto lg:-mx-8 lg:max-w-none lg:grid-cols-3 xl:mx-0 xl:gap-x-8">
-          <Plan
-            name="Essential"
-            description="The perfect starting point for learning RAG development."
-            price="39"
-            href="#"
-            features={[
-              'Complete book in PDF format',
-              'Code examples and starter templates',
-              'Basic chunking strategies guide',
-              'Community forum access',
-            ]}
-          />
-          <Plan
-            featured
-            name="Complete"
-            description="Everything you need to master RAG development."
-            price="99"
-            href="#"
-            features={[
-              'Everything in Essential, plus:',
-              'Video tutorials and walkthroughs',
-              'Advanced chunking strategies',
-              'Production deployment guides',
-              'Performance optimization tips',
-              'Priority support access',
-            ]}
-          />
-          <Plan
-            name="Enterprise"
-            description="Custom solutions for teams and organizations."
-            price="299"
-            href="#"
-            features={[
-              'Everything in Complete, plus:',
-              'Team license (up to 10 developers)',
-              'Private consulting sessions',
-              'Custom deployment strategies',
-              'Architecture review',
-              'Enterprise support SLA',
-            ]}
-          />
+        <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-slate-200 lg:mx-0 lg:flex lg:max-w-none">
+          <div className="p-8 sm:p-10 lg:flex-auto">
+            <h3 className="font-display text-2xl tracking-tight text-slate-900">
+              Complete Guide
+            </h3>
+            <p className="mt-6 text-base leading-7 text-slate-600">
+              Everything you need to build production-ready RAG applications, including:
+            </p>
+            <div className="mt-8">
+              <ul role="list" className="grid grid-cols-1 gap-4 text-sm leading-6 text-slate-600 sm:grid-cols-2 sm:gap-6">
+                {[
+                  'Complete book in PDF format',
+                  'Code examples and starter templates',
+                  'Production deployment guides',
+                  'Performance optimization tips',
+                  'Advanced chunking strategies',
+                  'Cost optimization techniques',
+                ].map((feature) => (
+                  <li key={feature} className="flex gap-x-3">
+                    <svg className="h-6 w-5 flex-none text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M11.83 15.795a1 1 0 0 0-1.66 1.114l1.66-1.114Zm9.861-4.072a1 1 0 1 0-1.382-1.446l1.382 1.446ZM14.115 21l-.83.557a1 1 0 0 0 1.784-.258L14.115 21Zm.954.3c1.29-4.11 3.539-6.63 6.622-9.577l-1.382-1.446c-3.152 3.013-5.704 5.82-7.148 10.424l1.908.598Zm-4.9-4.391 3.115 4.648 1.661-1.114-3.114-4.648-1.662 1.114Z" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+            <div className="rounded-2xl bg-slate-50 py-10 text-center ring-1 ring-inset ring-slate-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
+              <div className="mx-auto max-w-xs px-8">
+                <p className="text-base font-semibold text-slate-600">One-time purchase</p>
+                <p className="mt-6 flex items-baseline justify-center gap-x-2">
+                  <span className="text-5xl font-bold tracking-tight text-slate-900">$49</span>
+                  <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600">USD</span>
+                </p>
+                <Button
+                  href="#"
+                  color="blue"
+                  className="mt-10 block w-full"
+                >
+                  Get instant access
+                </Button>
+                <p className="mt-6 text-xs leading-5 text-slate-600">
+                  Secure payment processing with Stripe. Instant delivery via email.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </section>
