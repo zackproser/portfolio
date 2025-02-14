@@ -16,10 +16,11 @@ interface ArticleLayoutProps {
     description: string
     author: string
     date: string
+    image?: string | StaticImageData
+    type?: 'blog' | 'course' | 'video' | 'demo'
+    slug?: string
     isPaid?: boolean
     price?: number
-    slug?: string
-    type?: Content['type']
     previewLength?: number
     previewElements?: number
     paywallHeader?: string

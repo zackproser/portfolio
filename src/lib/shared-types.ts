@@ -46,7 +46,7 @@ export interface Blog extends Content {
       content: string
       author: {
         name: string
-        role?: string
+        role: string
         avatar?: string
       }
     }>
@@ -77,11 +77,7 @@ export interface Blog extends Content {
   }
   title: string;
   date: string;
-  author: {
-    name: string;
-    role: string;
-    bio: string;
-  };
+  author: string;
   price: number;
   tableOfContents: {
     [section: string]: {
@@ -89,11 +85,11 @@ export interface Blog extends Content {
     };
   };
   testimonials: Array<{
-    content: string;
+    content: string
     author: {
-      name: string;
-      role: string;
-    };
+      name: string
+      role: string
+    }
   }>;
   features: string[];
   benefits: string[];

@@ -105,7 +105,17 @@ function Plan({
   )
 }
 
-export function Pricing() {
+interface PricingProps {
+  price: number
+  title: string
+  description?: string
+}
+
+export function Pricing({ 
+  price, 
+  title, 
+  description = "Get instant access to the complete guide and start building today."
+}: PricingProps) {
   return (
     <section
       id="pricing"
@@ -118,10 +128,10 @@ export function Pricing() {
             id="pricing-title"
             className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl"
           >
-            Start Building Better RAG Applications Today
+            {title}
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-600">
-            Get instant access to the complete guide and start building production-ready RAG applications.
+            {description}
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-slate-200 lg:mx-0 lg:flex lg:max-w-none">
@@ -157,7 +167,7 @@ export function Pricing() {
               <div className="mx-auto max-w-xs px-8">
                 <p className="text-base font-semibold text-slate-600">One-time purchase</p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
-                  <span className="text-5xl font-bold tracking-tight text-slate-900">$49</span>
+                  <span className="text-5xl font-bold tracking-tight text-slate-900">${price}</span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600">USD</span>
                 </p>
                 <Button

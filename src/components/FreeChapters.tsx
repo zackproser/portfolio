@@ -1,8 +1,12 @@
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
-import { Pattern } from '@/components/Pattern'
+import { Pattern } from './Pattern'
 
-export function FreeChapters() {
+interface FreeChaptersProps {
+  title: string
+}
+
+export function FreeChapters({ title }: FreeChaptersProps) {
   return (
     <section
       id="free-chapters"
@@ -17,11 +21,11 @@ export function FreeChapters() {
           <Pattern className="absolute -top-32 left-0 w-full sm:left-3/4 sm:top-0 sm:ml-8 sm:w-auto md:left-2/3 lg:left-auto lg:right-2 lg:ml-0 xl:right-auto xl:left-2/3" />
           <div>
             <h2 className="font-display text-5xl font-extrabold tracking-tight text-white sm:w-3/4 sm:text-6xl md:w-2/3 lg:w-auto">
-              Get two free chapters straight to your inbox
+              Get two free chapters of {title} straight to your inbox
             </h2>
             <p className="mt-4 text-lg tracking-tight text-blue-200">
               Enter your email below and we&apos;ll send you the first two chapters
-              of the book, showing you how to set up your development environment
+              of {title}, showing you how to set up your development environment
               and build your first RAG pipeline.
             </p>
           </div>
