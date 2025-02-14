@@ -3,12 +3,68 @@ import { Container } from '@/components/Container'
 import { GridPattern } from '@/components/GridPattern'
 import { SectionHeading } from '@/components/SectionHeading'
 import RandomPortrait from '@/components/RandomPortrait'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
+
+import logoWorkOS from '@/images/logos/workos.svg'
+import logoPinecone from '@/images/logos/pinecone-logo.png'
+import logoGrunty from '@/images/logos/grunty.png'
+import logoCloudflare from '@/images/logos/cloudflare.svg'
+import logoCloudmark from '@/images/logos/cloudmark.png'
+import logoBrightcontext from '@/images/logos/brightcontext.png'
 
 interface AuthorProps {
   name: string
+  bio?: string
 }
 
-export function Author({ name }: AuthorProps) {
+export function Author({ name, bio }: AuthorProps) {
+  const defaultBio = `I'm a software engineer with over ${RenderNumYearsExperience()} years of experience building production systems.`
+
+  const experience = [
+    {
+      company: 'WorkOS',
+      title: 'Developer Education',
+      logo: logoWorkOS,
+      start: '2024',
+      end: 'Present'
+    },
+    {
+      company: 'Pinecone.io',
+      title: 'Staff Developer Advocate',
+      logo: logoPinecone,
+      start: '2023',
+      end: '2024'
+    },
+    {
+      company: 'Gruntwork.io',
+      title: 'Tech Lead',
+      logo: logoGrunty,
+      start: '2020',
+      end: '2023'
+    },
+    {
+      company: 'Cloudflare',
+      title: 'Senior Software Engineer',
+      logo: logoCloudflare,
+      start: '2017',
+      end: '2020'
+    },
+    {
+      company: 'Cloudmark',
+      title: 'Software Engineer',
+      logo: logoCloudmark,
+      start: '2015',
+      end: '2017'
+    },
+    {
+      company: 'BrightContext',
+      title: 'Software Engineer',
+      logo: logoBrightcontext,
+      start: '2012',
+      end: '2014'
+    }
+  ]
+
   return (
     <section
       id="author"
@@ -31,23 +87,29 @@ export function Author({ name }: AuthorProps) {
                 Hi, I&apos;m {name}
               </h2>
               <div className="mt-6 space-y-6 text-base text-slate-700">
-                <p>
-                  I&apos;m a software engineer and AI researcher with over a decade of experience
-                  building production systems. I&apos;ve worked extensively with large language
-                  models and RAG applications, helping companies implement efficient and
-                  scalable solutions.
-                </p>
-                <p>
-                  Through my work, I&apos;ve identified common patterns and best practices
-                  that make RAG systems more reliable and cost-effective. This book
-                  distills these insights into practical, actionable guidance for
-                  developers.
-                </p>
-                <p>
-                  When I&apos;m not coding or writing, I enjoy contributing to open-source
-                  projects and sharing knowledge with the developer community through
-                  blog posts and conference talks.
-                </p>
+                <p>{bio || defaultBio}</p>
+                <div className="mt-8 flex flex-col space-y-5">
+                  {experience.map((role, roleIndex) => (
+                    <div key={roleIndex} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative flex h-9 w-9 flex-none items-center justify-center rounded-full shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
+                          <Image src={role.logo} alt="" className="h-6 w-6" unoptimized />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                            {role.company}
+                          </span>
+                          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                            {role.title}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-xs text-zinc-500 dark:text-zinc-400 min-w-[5rem] text-right">
+                        {role.start} — {role.end}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
