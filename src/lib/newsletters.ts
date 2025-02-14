@@ -2,6 +2,16 @@ import { ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
 
+export interface Newsletter {
+  title: string
+  description: string
+  author: string
+  date: string
+  slug: string
+  type: 'newsletter'
+  content: string
+}
+
 export async function importNewsletter(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
@@ -20,7 +30,18 @@ export async function importNewsletter(
   return {
     ...metadata,
     type: 'blog',
-    slug: path.basename(articleFilename, '.mdx')
+    slug: path.basename(articleFilename, '.mdx'),
+    metadata: {
+      landingPage: {
+        headline: metadata.title,
+        subheadline: metadata.description
+      }
+    },
+    price: 0,
+    tableOfContents: {},
+    testimonials: [],
+    features: [],
+    benefits: []
   }
 }
 
