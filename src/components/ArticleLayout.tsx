@@ -19,15 +19,17 @@ interface ArticleLayoutProps {
     image?: string | StaticImageData
     type?: 'blog' | 'course' | 'video' | 'demo'
     slug?: string
-    isPaid?: boolean
-    price?: number
-    previewLength?: number
-    previewElements?: number
-    paywallHeader?: string
-    paywallBody?: string
-    buttonText?: string
-    paywallImage?: string | StaticImageData
-    paywallImageAlt?: string
+    commerce?: {
+      isPaid?: boolean
+      price?: number
+      previewLength?: number
+      previewElements?: number
+      paywallHeader?: string
+      paywallBody?: string
+      buttonText?: string
+      paywallImage?: string | StaticImageData
+      paywallImageAlt?: string
+    }
     hideMiniPaywall?: boolean
     miniPaywallTitle?: string | null
     miniPaywallDescription?: string | null
@@ -57,32 +59,32 @@ export function ArticleLayout({
                 </time>
               </header>
               
-              {metadata.isPaid && !metadata.hideMiniPaywall && (
+              {metadata.commerce?.isPaid && !metadata.hideMiniPaywall && (
                 <MiniPaywall
-                  price={metadata.price!}
+                  price={metadata.commerce.price!}
                   slug={metadata.slug!}
                   title={metadata.title}
                   type={metadata.type || 'blog'}
-                  image={metadata.paywallImage}
-                  imageAlt={metadata.paywallImageAlt}
-                  miniTitle={metadata.miniPaywallTitle ?? metadata.paywallHeader ?? null}
+                  image={metadata.commerce.paywallImage}
+                  imageAlt={metadata.commerce.paywallImageAlt}
+                  miniTitle={metadata.miniPaywallTitle ?? metadata.commerce?.paywallHeader ?? null}
                   miniDescription={metadata.miniPaywallDescription ?? null}
                 />
               )}
 
               <Prose className="mt-8">
                 <ArticleContent
-                  isPaid={metadata.isPaid}
-                  price={metadata.price}
+                  isPaid={metadata.commerce?.isPaid}
+                  price={metadata.commerce?.price}
                   slug={metadata.slug}
                   title={metadata.title}
-                  previewLength={metadata.previewLength}
-                  previewElements={metadata.previewElements}
-                  paywallHeader={metadata.paywallHeader}
-                  paywallBody={metadata.paywallBody}
-                  buttonText={metadata.buttonText}
-                  paywallImage={metadata.paywallImage}
-                  paywallImageAlt={metadata.paywallImageAlt}
+                  previewLength={metadata.commerce?.previewLength}
+                  previewElements={metadata.commerce?.previewElements}
+                  paywallHeader={metadata.commerce?.paywallHeader}
+                  paywallBody={metadata.commerce?.paywallBody}
+                  buttonText={metadata.commerce?.buttonText}
+                  paywallImage={metadata.commerce?.paywallImage}
+                  paywallImageAlt={metadata.commerce?.paywallImageAlt}
                 >
                   {children}
                 </ArticleContent>

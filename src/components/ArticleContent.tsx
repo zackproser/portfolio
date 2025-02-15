@@ -60,7 +60,10 @@ export default function ArticleContent({
     }
   }, [session, slug, isPaid, checkPurchaseStatus])
 
-  if (!isPaid || hasPurchased) {
+  // Show full content if:
+  // 1. Content is not paid OR
+  // 2. User is logged in AND has purchased
+  if (!isPaid || (session?.user?.email && hasPurchased)) {
     return <>{children}</>
   }
 
