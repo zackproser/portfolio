@@ -83,7 +83,7 @@ export default function MiniPaywall({
           disabled={loading}
           className="shrink-0 px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
         >
-          {loading ? 'Processing...' : `Get full access ($${(price / 100).toFixed(2)})`}
+          {loading ? 'Processing...' : `Get full access ($${price})`}
         </Button>
       </div>
     </div>

@@ -1,46 +1,34 @@
 import { StaticImageData } from 'next/image'
+import { Metadata } from 'next'
 
-// Base content type for anything on the site
-export interface Content {
-  slug: string
-  title: string
-  description: string
+// Base metadata interface that extends Next.js Metadata
+export interface ExtendedMetadata extends Metadata {
   author: string
   date: string
-  image?: string | StaticImageData
+  description: string
+  image?: string | StaticImageData | { src: string }
   type: 'blog' | 'course' | 'video' | 'demo'
-  price_id?: string
-  tags?: string[]
-}
-
-// For blog posts and courses
-export interface Blog extends Content {
-  type: 'blog' | 'course' | 'video'
-  // If the content is paid, these fields will be present
+  slug: string
   commerce?: {
-    isPaid: true
-    price: number  // Required - used for both pre-defined and runtime pricing
-    stripe_price_id?: string  // Optional - only used for pre-defined products
+    isPaid: boolean
+    price: number
+    stripe_price_id?: string
     previewLength?: number
-    // Paywall customization
+    previewElements?: number
     paywallHeader?: string
     paywallBody?: string
     buttonText?: string
+    miniPaywallTitle?: string
+    miniPaywallDescription?: string
+    paywallImage?: string | StaticImageData
+    paywallImageAlt?: string
   }
-  // Optional landing page customization
   landing?: {
     subtitle?: string
     features?: Array<{
       title: string
       description: string
       icon?: string
-    }>
-    chapters?: Array<{
-      title: string
-      items: Array<{
-        title: string
-        description: string
-      }>
     }>
     testimonials?: Array<{
       content: string
@@ -55,44 +43,16 @@ export interface Blog extends Content {
       answer: string
     }>
   }
-  metadata: {
-    landingPage?: {
-      headline?: string
-      subheadline?: string
-      features?: Array<{
-        title: string
-        description: string
-        icon?: string
-      }>
-      testimonials?: Array<{
-        quote: string
-        author: string
-        role?: string
-      }>
-      callToAction?: {
-        text: string
-        buttonText: string
-      }
-    }
-  }
-  title: string;
-  date: string;
-  author: string;
-  price: number;
-  tableOfContents: {
-    [section: string]: {
-      [title: string]: number;
-    };
-  };
-  testimonials: Array<{
-    content: string
-    author: {
-      name: string
-      role: string
-    }
-  }>;
-  features: string[];
-  benefits: string[];
+}
+
+// Base content type for anything on the site
+export interface Content extends ExtendedMetadata {
+  tags?: string[]
+}
+
+// For blog posts and courses
+export interface Blog extends Content {
+  type: 'blog' | 'course' | 'video'
 }
 
 // For demos and other non-purchasable content
@@ -105,7 +65,7 @@ export interface Demo extends Content {
 
 // Helper type for purchasable items
 export type Purchasable = Blog & {
-  commerce: NonNullable<Blog['commerce']>
+  commerce: NonNullable<Blog['commerce']> & { isPaid: true }
 }
 
 // Type guard to check if content is purchasable
@@ -148,25 +108,12 @@ export function getDefaultLanding(blog: Blog): NonNullable<Blog['landing']> {
 
   return {
     ...defaults,
-    ...blog.landing // Override defaults with any custom landing content
+    ...blog.landing
   };
-}
-
-// Database types (unchanged)
-export interface Database {
-  name: string;
-  business_info: {
-    funding_rounds: Array<{ date: string; amount: string; series: string }>;
-    latest_valuation: string;
-    employee_count: string;
-    key_people: Array<{ name: string; position: string }>;
-    [key: string]: any;
-  };
-  [category: string]: { [feature: string]: any } | any;
 }
 
 // Export both BlogWithSlug and ArticleWithSlug (for backward compatibility)
-export type BlogWithSlug = Blog & { slug: string };
+export type BlogWithSlug = Blog;
 export type ArticleWithSlug = BlogWithSlug; // Alias for backward compatibility
 
 export interface CourseContent extends Content {

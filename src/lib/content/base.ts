@@ -7,7 +7,7 @@ export interface ContentMetadata {
   description: string;
   author: string;
   date: string;
-  image?: string | StaticImageData;
+  image?: string | StaticImageData | { src: string };
   type: 'blog' | 'course' | 'video' | 'demo';
   tags?: string[];
 }
@@ -18,7 +18,7 @@ export abstract class Content {
   description: string;
   author: string;
   date: string;
-  image?: string | StaticImageData;
+  image?: string | StaticImageData | { src: string };
   type: 'blog' | 'course' | 'video' | 'demo';
   tags: string[];
 

@@ -6,30 +6,11 @@ import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
 import ArticleContent from './ArticleContent'
 import MiniPaywall from './MiniPaywall'
-import { StaticImageData } from 'next/image'
-import { Content } from '@/lib/shared-types'
+import { ExtendedMetadata } from '@/lib/shared-types'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
-  metadata: {
-    title: string
-    description: string
-    author: string
-    date: string
-    image?: string | StaticImageData
-    type?: 'blog' | 'course' | 'video' | 'demo'
-    slug?: string
-    commerce?: {
-      isPaid?: boolean
-      price?: number
-      previewLength?: number
-      previewElements?: number
-      paywallHeader?: string
-      paywallBody?: string
-      buttonText?: string
-      paywallImage?: string | StaticImageData
-      paywallImageAlt?: string
-    }
+  metadata: ExtendedMetadata & {
     hideMiniPaywall?: boolean
     miniPaywallTitle?: string | null
     miniPaywallDescription?: string | null
@@ -40,6 +21,13 @@ export function ArticleLayout({
   children,
   metadata,
 }: ArticleLayoutProps) {
+  console.log('WIKKITY BLASBLOW %', metadata)
+
+  if (!metadata.slug) {
+    console.error('ArticleLayout: metadata.slug is required but not provided')
+   // return null
+  }
+
   return (
     <>
       <Container className="mt-16 lg:mt-32">
@@ -48,7 +36,7 @@ export function ArticleLayout({
             <article>
               <header className="flex flex-col">
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                  {metadata.title}
+                  {metadata.title as string}
                 </h1>
                 <time
                   dateTime={metadata.date}
@@ -61,10 +49,10 @@ export function ArticleLayout({
               
               {metadata.commerce?.isPaid && !metadata.hideMiniPaywall && (
                 <MiniPaywall
-                  price={metadata.commerce.price!}
-                  slug={metadata.slug!}
+                  price={metadata.commerce.price}
+                  slug={metadata.slug}
                   title={metadata.title}
-                  type={metadata.type || 'blog'}
+                  type={metadata.type}
                   image={metadata.commerce.paywallImage}
                   imageAlt={metadata.commerce.paywallImageAlt}
                   miniTitle={metadata.miniPaywallTitle ?? metadata.commerce?.paywallHeader ?? null}
