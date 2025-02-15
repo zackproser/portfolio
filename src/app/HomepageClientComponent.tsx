@@ -144,41 +144,83 @@ export default function HomepageClientComponent({
         </section>
 
         {/* Featured Product Section */}
-        <section className="bg-gradient-to-r from-emerald-500 to-emerald-700 py-16 mb-12">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex-1 space-y-4">
-                <span className="inline-block px-3 py-1 text-sm font-semibold bg-white text-emerald-600 rounded-full">
-                  Featured Tutorial
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold text-white">
-                  Build Your Own RAG Pipeline
-                </h2>
-                <p className="text-lg text-emerald-50">
-                  Learn how to build production-ready RAG applications with this comprehensive guide. 
-                  Master vector databases, embeddings, and advanced prompt engineering techniques.
-                </p>
-                <div className="mt-4 space-y-2">
-                  <p className="text-white font-semibold">What you get:</p>
-                  <ul className="list-none space-y-2 text-emerald-50">
-                    <li className="flex items-center">
-                      <span className="mr-2">•</span>
-                      Data processing Jupyter Notebook
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-2">•</span>
-                      Complete Next.js example site using latest Vercel AI SDK and OpenAI
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-2">•</span>
-                      Step by step tutorial explaining how everything fits together
-                    </li>
-                  </ul>
+        <section className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
+            <div className="relative flex items-end lg:col-span-5 lg:row-span-2">
+              <div className="absolute -top-20 -bottom-12 left-0 right-1/2 z-10 rounded-br-6xl bg-emerald-600 text-white/10 md:bottom-8 lg:-inset-y-32 lg:left-[-100vw] lg:right-full lg:-mr-40">
+                <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.1))]" />
+              </div>
+              <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
+                <div className="relative aspect-[4/3] w-full max-w-[600px] rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-8 shadow-2xl border-t-8 border-emerald-500/20">
+                  {/* Featured Tutorial Badge */}
+                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-medium">
+                    Featured Tutorial
+                  </div>
+                  
+                  {/* Title and subtitle */}
+                  <div className="mt-6">
+                    <h2 className="font-display text-4xl font-bold text-white leading-tight">
+                      Build Your Own RAG Pipeline
+                    </h2>
+                    <p className="mt-6 text-lg text-slate-200 leading-relaxed">
+                      Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial.
+                    </p>
+                  </div>
+
+                  {/* Feature list */}
+                  <div className="mt-8 grid grid-cols-1 gap-4">
+                    {['Data Processing Notebook', 'Complete Next.js Site', 'Step-by-Step Guide'].map((feature) => (
+                      <div key={feature} className="flex items-center space-x-2">
+                        <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-slate-200">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Price tag */}
+                  <div className="absolute top-8 right-8">
+                    <div className="px-4 py-2 bg-emerald-500/20 rounded-full">
+                      <span className="text-2xl font-bold text-white">$49</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </div>
+            <div className="relative px-4 sm:px-6 lg:col-span-7 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
+              <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100" />
+              <div className="relative">
+                <div className="flex justify-start">
+                  <div className="flex items-center text-emerald-600">
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span className="ml-2 text-sm text-slate-600">5.0 rating</span>
+                  </div>
+                </div>
+                <blockquote className="mt-8">
+                  <p className="font-display text-xl font-medium text-slate-900">
+                    &ldquo;Thanks for publishing the tutorial, very helpful.&rdquo;
+                  </p>
+                </blockquote>
+                <p className="mt-4 text-base text-slate-600">
+                  <strong className="font-semibold text-emerald-600">Scott McCallum</strong> • Full Stack Developer at Intermine
+                </p>
+              </div>
+            </div>
+            <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20">
+              <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/blog/rag-pipeline-tutorial"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-emerald-700 bg-white hover:bg-emerald-50 md:py-4 md:text-lg md:px-8 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                     onClick={() => {
                       track("featured_product_click", {
                         location: "hero_section",
@@ -190,7 +232,7 @@ export default function HomepageClientComponent({
                   </Link>
                   <Link 
                     href="/checkout?product=rag-pipeline-tutorial&type=blog"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-emerald-800 hover:bg-emerald-900 md:py-4 md:text-lg md:px-8 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors"
                     onClick={() => {
                       track("featured_product_click", {
                         location: "hero_section",
@@ -202,15 +244,6 @@ export default function HomepageClientComponent({
                     Get Full Access $49
                   </Link>
                 </div>
-              </div>
-              <div className="flex-1 relative">
-                <Image
-                  src={ragPipelineElements}
-                  alt="RAG Pipeline Tutorial Elements"
-                  width={800}
-                  height={600}
-                  className="rounded-lg shadow-xl"
-                />
               </div>
             </div>
           </div>

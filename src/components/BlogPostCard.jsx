@@ -42,7 +42,7 @@ const PriceBadge = ({ price }) => {
       "bg-green-600 text-white shadow-lg transition duration-300 ease-in-out hover:bg-green-700",
       "ring-2 ring-green-500 ring-offset-2 ring-offset-gray-800"
     )}>
-      ${(price / 100).toFixed(2)}
+      ${price}
     </span>
   )
 }
