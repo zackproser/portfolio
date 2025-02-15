@@ -70,9 +70,10 @@ const CheckoutPage = () => {
 	// If user is not signed in, redirect them to sign in page
 	useEffect(() => {
 		if (status === "unauthenticated" || session === null) {
-			signIn('', { callbackUrl: `/learn/${productSlug}/0` })
+			const type = searchParams.get('type') || 'blog';
+			signIn('', { callbackUrl: `/checkout?product=${productSlug}&type=${type}` })
 		}
-	}, [productSlug, status, session]);
+	}, [productSlug, status, session, searchParams]);
 
 	// If the product is not ready yet, redirect them to the waitinglist page
 	if (

@@ -44,7 +44,19 @@ export class Article extends Content {
   };
 
   constructor(metadata: ArticleMetadata) {
-    super(metadata);
+    // Ensure all required fields are present before passing to super
+    const processedMetadata = {
+      slug: metadata.slug,
+      title: metadata.title || 'Untitled',
+      description: metadata.description || '',
+      author: metadata.author || 'Unknown',
+      date: metadata.date || new Date().toISOString(),
+      image: typeof metadata.image === 'string' ? { src: metadata.image } : metadata.image,
+      type: metadata.type || 'blog',
+      tags: metadata.tags || []
+    };
+
+    super(processedMetadata);
     this.commerce = metadata.commerce;
     this.landing = metadata.landing;
   }
@@ -120,11 +132,22 @@ export class Article extends Content {
     }
 
     const { metadata } = await import(`@/app/${baseDir}/${slug}/page.mdx`);
-    return new Article({
+    
+    // Process the metadata to ensure all required fields
+    const processedMetadata = {
       ...metadata,
-      slug,
-      type
-    });
+      // Ensure we use the provided slug without leading slash
+      slug: metadata.slug || slug,
+      type,
+      title: metadata.title || 'Untitled',
+      description: metadata.description || '',
+      author: metadata.author || 'Unknown',
+      date: metadata.date || new Date().toISOString(),
+      image: typeof metadata.image === 'string' ? { src: metadata.image } : metadata.image,
+      tags: metadata.tags || []
+    };
+
+    return new Article(processedMetadata);
   }
 
   static async getAllArticles(type: 'blog' | 'course' | 'video' = 'blog'): Promise<Article[]> {

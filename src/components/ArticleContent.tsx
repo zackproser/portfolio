@@ -10,7 +10,7 @@ interface ArticleContentProps {
   children: React.ReactNode
   isPaid?: boolean
   price?: number
-  slug?: string
+  slug: string
   title?: string
   previewLength?: number
   previewElements?: number
@@ -25,7 +25,7 @@ export default function ArticleContent({
   children, 
   isPaid, 
   price, 
-  slug, 
+  slug,
   title,
   previewLength = 150,
   previewElements = 3,
@@ -59,6 +59,11 @@ export default function ArticleContent({
       checkPurchaseStatus()
     }
   }, [session, slug, isPaid, checkPurchaseStatus])
+
+  if (!slug) {
+    console.error('ArticleContent: slug is required but not provided')
+    return <>{children}</>
+  }
 
   // Show full content if:
   // 1. Content is not paid OR

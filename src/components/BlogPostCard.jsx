@@ -79,12 +79,15 @@ export function BlogPostCard({ article }) {
     day: 'numeric'
   }) : '';
 
+  // Handle image object or string
+  const imageSource = typeof image === 'string' ? image : image?.src || wakka;
+
   return (
     <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800 relative">
-      <LinkComponent {...linkProps} className="group">
+      <LinkComponent {...linkProps}>
         <div className="relative w-full">
           <Image
-            src={image}
+            src={imageSource}
             alt={title}
             className="aspect-[16/9] w-full rounded-t-lg object-cover"
             width={500}
