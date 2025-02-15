@@ -1,107 +1,32 @@
+import { ExtendedMetadata } from '@/lib/shared-types'
 import { generateOgUrl } from '@/utils/ogUrl'
-import { Metadata } from 'next'
-import { StaticImageData } from 'next/image'
 
-// Extend Next.js Metadata type with our blog fields
-interface ExtendedMetadata extends Metadata {
-  // Blog specific fields
-  author?: string
-  date?: string
-  description?: string
-  image?: string | StaticImageData
-  type?: 'blog' | 'course' | 'video'
-  commerce?: {
-    isPaid: boolean
-    price: number
-    previewLength?: number
-    paywallHeader?: string
-    paywallBody?: string
-    buttonText?: string
-    paywallImage?: string | StaticImageData
-    paywallImageAlt?: string
-    miniPaywallTitle?: string
-    miniPaywallDescription?: string
-  }
-  landing?: {
-    subtitle?: string
-    features?: Array<{
-      title: string
-      description: string
-      icon?: string
-    }>
-    testimonials?: Array<{
-      content: string
-      author: {
-        name: string
-        role?: string
-      }
-    }>
-  }
-}
+type MetadataParams = Partial<ExtendedMetadata>
 
-interface MetadataParams {
-  author?: string
-  date?: string
-  title?: string
-  description?: string
-  image?: string | StaticImageData
-  type?: 'blog' | 'course' | 'video'
-  commerce?: {
-    isPaid: boolean
-    price: number
-    previewLength?: number
-    paywallHeader?: string
-    paywallBody?: string
-    buttonText?: string
-    paywallImage?: string | StaticImageData
-    paywallImageAlt?: string
-    miniPaywallTitle?: string
-    miniPaywallDescription?: string
-  }
-  landing?: {
-    subtitle?: string
-    features?: Array<{
-      title: string
-      description: string
-      icon?: string
-    }>
-    testimonials?: Array<{
-      content: string
-      author: {
-        name: string
-        role?: string
-      }
-    }>
-  }
-}
-
-// Update default metadata
-const defaultMetadata: Metadata = {
-  title: {
-    template: '%s - Modern Coding',
-    default: 'Modern Coding'
-  },
-  description: 'Empowering developers with machine learning insights and tools',
+const defaultMetadata: Partial<ExtendedMetadata> = {
   openGraph: {
-    title: 'Modern Coding',
-    description: 'Empowering developers with machine learning insights and tools',
-    url: 'https://zackproser.com',
-    siteName: 'Modern Coding',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
   },
 }
 
-export function createMetadata({ 
-  author, 
-  date, 
-  title, 
-  description, 
-  image,
-  type = 'blog',
-  commerce,
-  landing,
-}: MetadataParams): ExtendedMetadata {
-  // Handle webpack-imported images
-  const imageUrl = typeof image === 'string' ? image : image?.src;
+export function createMetadata(params: MetadataParams = {}): ExtendedMetadata {
+  const { 
+    author, 
+    date, 
+    title, 
+    description, 
+    image,
+    type = 'blog',
+    commerce,
+    landing,
+    slug,
+  } = params;
+
+  // Handle webpack-imported images and ensure we preserve the object structure
+  const processedImage = typeof image === 'string' ? { src: image } : image;
 
   const metadata: ExtendedMetadata = {
     ...defaultMetadata,
@@ -110,31 +35,40 @@ export function createMetadata({
     ...(description && { description }),
     ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
     ...(date && { date: String(date) }),
-    ...(imageUrl && { image: imageUrl }),
+    ...(processedImage && { image: processedImage }),
     openGraph: {
       ...defaultMetadata.openGraph,
       ...(title && { title }),
       ...(description && { description }),
       images: [
         {
-          url: generateOgUrl({ title, description, image: imageUrl }),
+          url: generateOgUrl({ 
+            title: title ? String(title) : undefined, 
+            description: description ? String(description) : undefined, 
+            image: processedImage?.src ? String(processedImage.src) : undefined 
+          }),
         },
       ],
     },
     twitter: {
       ...(title && { title }),
       ...(description && { description }),
-      images: [generateOgUrl({ title, description, image: imageUrl })],
+      images: [generateOgUrl({ 
+        title: title ? String(title) : undefined, 
+        description: description ? String(description) : undefined, 
+        image: processedImage?.src ? String(processedImage.src) : undefined 
+      })],
     },
     // Our blog-specific fields
     author: author || 'Unknown',
-    date: date || new Date().toISOString(),
+    date: date ? String(date) : new Date().toISOString(),
     description: description || '',
-    image: image,
+    image: processedImage,
     type,
+    slug: slug || '',
     ...(commerce && { commerce }),
     ...(landing && { landing })
-  };
+  } as ExtendedMetadata;
 
   return metadata;
 }

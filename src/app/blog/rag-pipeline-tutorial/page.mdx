@@ -21,6 +21,7 @@ export const metadata = createMetadata({
   description: 'A complete guide to building production-ready Retrieval Augmented Generation (RAG) pipelines',
   image: ragPipelineElements,
   type: 'blog',
+  slug: 'rag-pipeline-tutorial',
   landing: {
     subtitle: 'Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial. Learn to build AI-powered chat interfaces that provide accurate answers with citations.',
     features: [
@@ -80,7 +81,9 @@ export const metadata = createMetadata({
   }
 });
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export default function Page(props) {
+  return <ArticleLayout metadata={metadata} {...props} />;
+}
 
 This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
 
