@@ -109,59 +109,35 @@ interface PricingProps {
   price: number
   title: string
   description?: string
+  checkoutUrl: string
 }
 
 export function Pricing({ 
   price, 
   title, 
-  description = "Get instant access to the complete guide and start building today."
+  description = "Get instant access to the complete guide and start building today.",
+  checkoutUrl
 }: PricingProps) {
   return (
     <section
       id="pricing"
       aria-labelledby="pricing-title"
-      className="scroll-mt-14 pt-16 pb-8 sm:scroll-mt-32 sm:pt-20 sm:pb-10 lg:pt-32 lg:pb-16"
+      className="border-t border-slate-200 bg-slate-100 py-20 sm:py-32"
     >
       <Container>
-        <div className="md:text-center">
+        <div className="mx-auto max-w-2xl text-center">
           <h2
             id="pricing-title"
-            className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl"
+            className="text-3xl font-medium tracking-tight text-slate-900"
           >
             {title}
           </h2>
-          <p className="mt-4 text-lg tracking-tight text-slate-600">
+          <p className="mt-2 text-lg text-slate-600">
             {description}
           </p>
         </div>
-        <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-slate-200 lg:mx-0 lg:flex lg:max-w-none">
-          <div className="p-8 sm:p-10 lg:flex-auto">
-            <h3 className="font-display text-2xl tracking-tight text-slate-900">
-              Complete Guide
-            </h3>
-            <p className="mt-6 text-base leading-7 text-slate-600">
-              Everything you need to build production-ready RAG applications, including:
-            </p>
-            <div className="mt-8">
-              <ul role="list" className="grid grid-cols-1 gap-4 text-sm leading-6 text-slate-600 sm:grid-cols-2 sm:gap-6">
-                {[
-                  'Complete book in PDF format',
-                  'Code examples and starter templates',
-                  'Production deployment guides',
-                  'Performance optimization tips',
-                  'Advanced chunking strategies',
-                  'Cost optimization techniques',
-                ].map((feature) => (
-                  <li key={feature} className="flex gap-x-3">
-                    <svg className="h-6 w-5 flex-none text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M11.83 15.795a1 1 0 0 0-1.66 1.114l1.66-1.114Zm9.861-4.072a1 1 0 1 0-1.382-1.446l1.382 1.446ZM14.115 21l-.83.557a1 1 0 0 0 1.784-.258L14.115 21Zm.954.3c1.29-4.11 3.539-6.63 6.622-9.577l-1.382-1.446c-3.152 3.013-5.704 5.82-7.148 10.424l1.908.598Zm-4.9-4.391 3.115 4.648 1.661-1.114-3.114-4.648-1.662 1.114Z" />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+
+        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 items-start gap-x-8 gap-y-10 sm:mt-20 lg:grid-cols-2">
           <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
             <div className="rounded-2xl bg-slate-50 py-10 text-center ring-1 ring-inset ring-slate-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
@@ -171,7 +147,7 @@ export function Pricing({
                   <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600">USD</span>
                 </p>
                 <Button
-                  href="#"
+                  href={checkoutUrl}
                   color="blue"
                   className="mt-10 block w-full"
                 >
