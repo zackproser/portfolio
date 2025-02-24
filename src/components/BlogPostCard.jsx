@@ -58,16 +58,21 @@ const rootPaths = {
   default: '/blog/'
 }
 
+function getDefaultUrl(article) {
+  const path = rootPaths[article.type] || rootPaths.default;
+  return `${path}${article.slug}`;
+}
+
 export function BlogPostCard({ article }) {
   if (!article) {
     return null;
   }
 
-  const { slug = '', title = 'Untitled', date = '', description = '', image = wakka, type = 'default', status, commerce } = article;
+  const { title = 'Untitled', date = '', description = '', image = wakka, status, commerce, url } = article;
   const price = commerce?.price;
   
-  const isExternalLink = slug.startsWith('http://') || slug.startsWith('https://');
-  const href = isExternalLink ? slug : `${rootPaths[type] || rootPaths.default}${slug}`;
+  const isExternalLink = article.slug?.startsWith('http://') || article.slug?.startsWith('https://');
+  const href = isExternalLink ? article.slug : (url || getDefaultUrl(article));
 
   const LinkComponent = isExternalLink ? 'a' : Link;
   const linkProps = isExternalLink ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
@@ -108,7 +113,7 @@ export function BlogPostCard({ article }) {
               {description}
             </p>
           </div>
-          {type === 'course' && <StatusBadge status={status} />}
+          {article.type === 'course' && <StatusBadge status={status} />}
         </div>
       </LinkComponent>
     </article>
