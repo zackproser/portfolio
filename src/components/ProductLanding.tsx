@@ -19,7 +19,6 @@ export const generateMetadata = ({ content }: Props) => {
   if (!content) return null;
   
   return createMetadata({
-    title: content.title,
     description: content.description,
     author: content.author,
     type: 'course',
@@ -30,7 +29,6 @@ export const generateMetadata = ({ content }: Props) => {
 };
 
 export function ProductLanding({ content }: Props) {
-  console.log('ProductLanding received content:', content);
   
   if (!content) {
     console.log('Content is null or undefined');
@@ -38,15 +36,12 @@ export function ProductLanding({ content }: Props) {
   }
 
   const {
-    title = '',
     description = '',
     commerce,
     landing,
     slug = '',
     type = 'course'
   } = content;
-
-  console.log('Destructured values:', { title, description, commerce, landing, slug, type });
 
   // If there's no commerce or landing data, don't render the product landing
   if (!commerce?.isPaid || !landing) {
@@ -60,9 +55,8 @@ export function ProductLanding({ content }: Props) {
   const checkoutUrl = `/checkout?product=${slug}&type=${type}`;
 
   // Ensure all string values have defaults
-  const safeTitle = String(title || '');
   const safeDescription = String(description || '');
-  const safeSubtitle = String(landing.subtitle || title || '');
+  const safeSubtitle = String(landing.subtitle || description || '');
   const safePaywallBody = String(commerce.paywallBody || '');
 
   return (
@@ -76,7 +70,7 @@ export function ProductLanding({ content }: Props) {
           />
         </div>
         <Hero 
-          title={safeTitle}
+          title={safeDescription}
           description={safeDescription}
           testimonial={landing.testimonials?.[0]}
         />
@@ -88,11 +82,11 @@ export function ProductLanding({ content }: Props) {
         <NavBar />
         <TableOfContents />
         <FreeChapters 
-          title={safeTitle}
+          title={safeDescription}
         />
         <Pricing 
           price={commerce.price}
-          title={safeTitle}
+          title={safeDescription}
           description={safePaywallBody}
           checkoutUrl={checkoutUrl}
         />
