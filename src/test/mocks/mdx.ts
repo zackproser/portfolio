@@ -1,93 +1,89 @@
-import { Content } from '@/lib/content/base';
+import { ExtendedMetadata } from '@/lib/shared-types';
+import { createTestMetadata } from '@/utils/createMetadata';
 
-interface MDXContent {
-  metadata: Record<string, any>;
+interface ContentEntry {
+  metadata: ExtendedMetadata;
   content: string;
 }
 
-const mdxStore = new Map<string, MDXContent>();
-let currentMDXPath: string | null = null;
+const contentRegistry = new Map<string, ContentEntry>();
 
-export function registerMockMdx(path: string, metadata: Record<string, any>, content: string = '') {
+export function registerMockMdx(path: string, metadata: ExtendedMetadata, content: string = '') {
   console.log('registerMockMdx input:', { path, metadata });
   
-  // Process metadata
-  const processedMetadata = {
-    ...metadata,
-    // Ensure required fields have defaults
-    title: metadata.title || 'Untitled',
-    description: metadata.description || '',
-    author: metadata.author || 'Unknown',
-    date: metadata.date || new Date().toISOString(),
-    tags: metadata.tags || [],
-    commerce: metadata.commerce,
-    landing: metadata.landing
-  };
-
-  console.log('registerMockMdx processed metadata:', processedMetadata);
-
-  // Normalize the path
-  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-
-  mdxStore.set(normalizedPath, {
-    metadata: processedMetadata,
+  // Store the metadata exactly as provided
+  contentRegistry.set(path, {
+    metadata,
     content
   });
+  
+  console.log('registerMockMdx processed metadata:', metadata);
 }
 
 export function clearMockMdx() {
-  mdxStore.clear();
-  currentMDXPath = null;
+  contentRegistry.clear();
 }
 
-// Mock dynamic import for MDX files
-export async function mockDynamicImport(path: string) {
-  // Normalize the path to match the registered paths
-  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  console.log('mockDynamicImport called with path:', normalizedPath);
-  
-  const content = mdxStore.get(normalizedPath);
-  if (!content) {
-    throw new Error(`No content registered for path: ${path}`);
-  }
-
-  console.log('mockDynamicImport returning metadata:', content.metadata);
-
-  // Return the metadata in the correct format that Next.js MDX loader would use
-  return {
-    metadata: content.metadata,
-    default: () => null,
-    __esModule: true
-  };
+// Helper to check if content exists
+export function hasRegisteredContent(path: string): boolean {
+  return contentRegistry.has(path);
 }
 
 // Get metadata for a specific path
-export function getMetadataForPath(path: string) {
-  const content = mdxStore.get(path);
-  return content?.metadata || {};
+export function getMetadataForPath(path: string): ExtendedMetadata | null {
+  console.log('getMetadataForPath called with path:', path);
+  const content = contentRegistry.get(path);
+  console.log('getMetadataForPath found content:', content);
+  return content?.metadata || null;
 }
 
-// Helper to get current MDX path
-export function getCurrentMDXPath() {
-  return currentMDXPath;
-}
+// Get mock implementation for a path
+export function getMockImplementation(path: string) {
+  console.log('getMockImplementation called with path:', path);
+  const content = contentRegistry.get(path);
+  console.log('getMockImplementation found content:', content);
+  
+  if (!content) {
+    // Return default test metadata if no specific mock is registered
+    const defaultMetadata = createTestMetadata({
+      type: 'blog',
+      slug: 'test-blog',
+      description: 'Test Blog',
+      author: 'Test Author',
+      date: '2024-01-01',
+      title: 'Test Blog',
+      commerce: {
+        isPaid: true,
+        price: 29.99,
+        stripe_price_id: 'price_123',
+        previewLength: 3,
+        paywallHeader: 'Buy Now',
+        paywallBody: 'Get access to full content',
+        buttonText: 'Purchase'
+      },
+      landing: {
+        subtitle: 'Test Subtitle',
+        features: [{ title: 'Feature 1', description: 'Description 1' }],
+        testimonials: [{ name: 'Person 1', text: 'Great product!' }]
+      },
+      tags: ['test']
+    });
 
-// Create a proxy to always return fresh metadata
-export const metadata = new Proxy({}, {
-  get: (target, prop: string) => {
-    const path = getCurrentMDXPath();
-    if (path) {
-      const metadata = getMetadataForPath(path);
-      return metadata[prop];
-    }
-    return undefined;
+    return {
+      metadata: defaultMetadata,
+      content: ''
+    };
   }
-});
-
-// Export a function to check if a path has registered content
-export function hasRegisteredContent(path: string): boolean {
-  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  return mdxStore.has(normalizedPath);
+  
+  // Return the exact metadata without modification
+  return content;
 }
 
-export default () => null; 
+// Return metadata from the registry when the module is imported
+export default function mockMdxModule() {
+  console.log('mockMdxModule called');
+  return {
+    metadata: null,
+    default: () => null
+  };
+} 

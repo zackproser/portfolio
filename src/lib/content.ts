@@ -71,7 +71,9 @@ export async function loadMdxContent(contentPath: string): Promise<Article> {
       throw new Error(`No content registered for path: ${contentPath}`);
     }
 
-    const mdxModule = await import(contentPath);
+    // In test environment, prepend @/app to the path
+    const importPath = process.env.NODE_ENV === 'test' ? `@/app/${contentPath}` : contentPath;
+    const mdxModule = await import(importPath);
     console.log('loadMdxContent imported module:', mdxModule);
 
     // Handle both direct metadata and metadata property
