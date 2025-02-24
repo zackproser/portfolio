@@ -57,12 +57,6 @@ function BookCover({ title, description }: { title: string; description: string 
           Zachary Proser
         </p>
       </div>
-
-      {/* Additional decorative elements */}
-      <div className="absolute bottom-8 right-8 flex gap-4">
-        <div className="h-12 w-12 rounded-full bg-blue-500/20" />
-        <div className="h-12 w-24 rounded-lg bg-blue-500/10" />
-      </div>
     </div>
   )
 }
@@ -109,11 +103,11 @@ export function Hero({ title, description, testimonial }: HeroProps) {
             <p className="mt-4 text-xl text-slate-600">
               {description}
             </p>
-            <div className="mt-8 flex gap-4">
-              <Button href="#free-chapters" color="blue">
+            <div className="mt-8 flex gap-6">
+              <Button href="#free-chapters" color="blue" className="text-lg py-4 px-8 font-bold">
                 Get sample chapter
               </Button>
-              <Button href="#pricing" variant="solid" color="slate">
+              <Button href="#pricing" variant="solid" color="slate" className="text-lg py-4 px-8 font-bold">
                 Buy now
               </Button>
             </div>
