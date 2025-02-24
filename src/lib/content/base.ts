@@ -1,9 +1,8 @@
 import { StaticImageData } from 'next/image';
-import path from 'path';
 
 export interface ContentMetadata {
-  slug: string;
   title: string;
+  slug: string;
   description: string;
   author: string;
   date: string;
@@ -12,9 +11,18 @@ export interface ContentMetadata {
   tags?: string[];
 }
 
-export abstract class Content {
-  slug: string;
+// Define the interface for the abstract class methods
+export interface ContentMethods {
+  getUrl(): string;
+  getSourcePath(): string;
+}
+
+// Combine the metadata and methods interfaces
+export interface Content extends ContentMetadata, ContentMethods {}
+
+export abstract class Content implements ContentMetadata {
   title: string;
+  slug: string;
   description: string;
   author: string;
   date: string;
@@ -23,8 +31,8 @@ export abstract class Content {
   tags: string[];
 
   constructor(metadata: ContentMetadata) {
-    this.slug = metadata.slug;
     this.title = metadata.title;
+    this.slug = metadata.slug;
     this.description = metadata.description;
     this.author = metadata.author;
     this.date = metadata.date;
@@ -39,7 +47,7 @@ export abstract class Content {
   static async load(type: string, slug: string): Promise<Content> {
     // Factory method to load the right type of content
     const { default: ContentType } = await import(`./types/${type}`);
-    return ContentType.fromSlug(slug);
+    return ContentType.fromSlug(slug, type as 'blog' | 'course' | 'video');
   }
 
   protected static getWorkspacePath(): string {

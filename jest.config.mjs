@@ -9,11 +9,11 @@ const createJestConfig = nextJest({
 /** @type {import('jest').Config} */
 const config = {
   // Add more setup options before each test is run
-  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/app/.*\\.mdx$': '<rootDir>/src/test/mocks/mdx.ts'
+    '\\.mdx$': '<rootDir>/src/test/mocks/mdx.ts',
+    '^@/(.*)$': '<rootDir>/src/$1'
   },
   collectCoverage: true,
   collectCoverageFrom: [
@@ -23,8 +23,8 @@ const config = {
     '!src/**/*.stories.{js,jsx,ts,tsx}',
   ],
   testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-    '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}'
+    '**/__tests__/**/*.[jt]s?(x)',
+    '**/?(*.)+(spec|test).[jt]s?(x)'
   ]
 }
 
