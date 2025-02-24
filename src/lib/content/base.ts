@@ -1,4 +1,55 @@
 import { StaticImageData } from 'next/image';
+import { ExtendedMetadata } from '@/lib/shared-types';
+
+interface ContentEntry {
+  metadata: ExtendedMetadata;
+  content: string;
+}
+
+class ContentRegistry {
+  private static instance: ContentRegistry;
+  private contentMap: Map<string, ContentEntry> = new Map();
+
+  private constructor() {}
+
+  static getInstance(): ContentRegistry {
+    if (!ContentRegistry.instance) {
+      ContentRegistry.instance = new ContentRegistry();
+    }
+    return ContentRegistry.instance;
+  }
+
+  register(path: string, metadata: ExtendedMetadata, content: string = '') {
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    this.contentMap.set(normalizedPath, { metadata, content });
+  }
+
+  get(path: string): ContentEntry | undefined {
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    return this.contentMap.get(normalizedPath);
+  }
+
+  has(path: string): boolean {
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    return this.contentMap.has(normalizedPath);
+  }
+
+  clear() {
+    this.contentMap.clear();
+  }
+
+  getAllPaths(): string[] {
+    return Array.from(this.contentMap.keys());
+  }
+
+  getByType(type: string): ContentEntry[] {
+    return Array.from(this.contentMap.entries())
+      .filter(([_, entry]) => entry.metadata.type === type)
+      .map(([_, entry]) => entry);
+  }
+}
+
+export const contentRegistry = ContentRegistry.getInstance();
 
 export interface ContentMetadata {
   title: string;
@@ -50,7 +101,11 @@ export abstract class Content implements ContentMetadata {
     return ContentType.fromSlug(slug, type as 'blog' | 'course' | 'video');
   }
 
-  protected static getWorkspacePath(): string {
-    return process.cwd();
+  static getWorkspacePath(): string {
+    if (process.env.NODE_ENV === 'test') {
+      return '/mock/workspace';
+    }
+    // In development or production, use the actual workspace path
+    return process.env.WORKSPACE_PATH || process.cwd();
   }
 } 
