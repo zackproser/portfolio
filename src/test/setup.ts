@@ -3,8 +3,9 @@ import '@testing-library/jest-dom'
 // Extend expect
 import { expect } from '@jest/globals'
 import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers'
-import { mockDynamicImport } from './mocks/mdx'
 import { jest } from '@jest/globals'
+import { contentRegistry } from '@/lib/content/base'
+import mockMdxModule, { getMockImplementation } from './mocks/mdx'
 
 declare global {
   namespace jest {
@@ -14,17 +15,21 @@ declare global {
 
 // Polyfill setImmediate
 if (!global.setImmediate) {
-  const setImmediate = (callback: Function, ...args: any[]) => {
+  const customSetImmediate = (callback: Function, ...args: any[]) => {
     return setTimeout(() => callback(...args), 0);
   };
   
-  setImmediate.__promisify__ = function<T>(): Promise<T> {
-    return new Promise((resolve) => {
-      setImmediate(() => resolve());
-    });
-  };
+  // Add promisify without type issues
+  Object.defineProperty(customSetImmediate, '__promisify__', {
+    value: function<T = void>(): Promise<T> {
+      return new Promise<T>((resolve) => {
+        customSetImmediate(() => resolve({} as T));
+      });
+    }
+  });
   
-  global.setImmediate = setImmediate as typeof global.setImmediate;
+  // Cast to unknown first to avoid type issues
+  global.setImmediate = customSetImmediate as unknown as typeof global.setImmediate;
 }
 
 // Mock path.join to return predictable strings
@@ -33,27 +38,45 @@ jest.mock('path', () => ({
   __esModule: true,
 }));
 
-// Mock dynamic imports for MDX files
-jest.mock('@/app/**/*.mdx', () => ({
-  __esModule: true,
-  metadata: null,
-  default: async (path: string) => {
-    const content = await mockDynamicImport(path);
-    return {
-      ...content,
-      metadata: content.metadata,
-      default: () => null
-    };
-  }
-}), { virtual: true });
+// Mock glob to return paths we control
+export const mockGlobImpl = jest.fn();
+jest.mock('glob', () => ({
+  glob: mockGlobImpl,
+}));
 
-// Mock fast-glob
-export const mockGlobImpl = jest.fn()
-jest.mock('fast-glob', () => ({
-  __esModule: true,
-  default: (...args: any[]) => mockGlobImpl(...args),
-  sync: (...args: any[]) => mockGlobImpl(...args),
-}))
+// Mock MDX imports
+jest.mock('@/content/**/*.mdx', () => {
+  const mockCache = new Map<string, any>();
+  let mockImpl: any = null;
+
+  return new Proxy({}, {
+    get: (target, prop) => {
+      if (typeof prop !== 'string') return undefined;
+      
+      // Handle special properties
+      if (prop === '__esModule') return true;
+      if (prop === 'then') return undefined;
+      
+      if (mockCache.has(prop)) {
+        return mockCache.get(prop);
+      }
+
+      if (!mockImpl) {
+        mockImpl = require('./mocks/mdx').getMockImplementation;
+      }
+      
+      const result = mockImpl(prop);
+      // Create a new object with just the necessary properties to prevent circular references
+      const safeResult = {
+        metadata: result.metadata ? { ...result.metadata } : null,
+        content: result.content || '',
+        default: () => null
+      };
+      mockCache.set(prop, safeResult);
+      return safeResult;
+    }
+  });
+}, { virtual: true });
 
 // Mock process.cwd()
 jest.spyOn(process, 'cwd').mockReturnValue('/mock/workspace')
