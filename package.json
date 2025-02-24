@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
-    "build": "npm run prebuild && next build",
+    "build": "npm run test && npm run prebuild && next build",
     "build-only": "next build",
     "start": "next start",
     "lint": "next lint",

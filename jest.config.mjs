@@ -13,6 +13,7 @@ const config = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/app/.*\\.mdx$': '<rootDir>/src/test/mocks/mdx.ts'
   },
   collectCoverage: true,
   collectCoverageFrom: [
