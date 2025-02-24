@@ -46,8 +46,8 @@ export class Article extends Content {
   constructor(metadata: ArticleMetadata) {
     // Ensure all required fields are present before passing to super
     const processedMetadata = {
+      title: metadata.title || metadata.description || 'Untitled',
       slug: metadata.slug,
-      title: metadata.title || 'Untitled',
       description: metadata.description || '',
       author: metadata.author || 'Unknown',
       date: metadata.date || new Date().toISOString(),
@@ -136,10 +136,10 @@ export class Article extends Content {
     // Process the metadata to ensure all required fields
     const processedMetadata = {
       ...metadata,
+      title: metadata.title || metadata.description || 'Untitled',
       // Ensure we use the provided slug without leading slash
       slug: metadata.slug || slug,
       type,
-      title: metadata.title || 'Untitled',
       description: metadata.description || '',
       author: metadata.author || 'Unknown',
       date: metadata.date || new Date().toISOString(),
@@ -173,5 +173,22 @@ export class Article extends Content {
     );
 
     return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
+  }
+
+  // Convert Article instance to a plain object with computed URL
+  toJSON() {
+    return {
+      title: this.title,
+      slug: this.slug,
+      description: this.description,
+      author: this.author,
+      date: this.date,
+      image: this.image,
+      type: this.type,
+      tags: this.tags,
+      commerce: this.commerce,
+      landing: this.landing,
+      url: this.getUrl()
+    };
   }
 } 

@@ -12,7 +12,12 @@ const defaultMetadata: Partial<ExtendedMetadata> = {
   },
 }
 
-export function createMetadata(params: MetadataParams = {}): ExtendedMetadata {
+/**
+ * Creates a fully typed ExtendedMetadata object with all required fields
+ * @param params Partial metadata parameters
+ * @returns Complete ExtendedMetadata object
+ */
+export function createMetadata(params: MetadataParams): ExtendedMetadata {
   const { 
     author, 
     date, 
@@ -28,7 +33,8 @@ export function createMetadata(params: MetadataParams = {}): ExtendedMetadata {
   // Handle webpack-imported images and ensure we preserve the object structure
   const processedImage = typeof image === 'string' ? { src: image } : image;
 
-  const metadata: ExtendedMetadata = {
+  // Add type assertion to ensure we're returning a complete ExtendedMetadata
+  const metadata = {
     ...defaultMetadata,
     // Next.js metadata fields
     ...(title && { title }),
@@ -64,11 +70,11 @@ export function createMetadata(params: MetadataParams = {}): ExtendedMetadata {
     date: date ? String(date) : new Date().toISOString(),
     description: description || '',
     image: processedImage,
-    type,
+    type: type || 'blog',
     slug: slug || '',
     ...(commerce && { commerce }),
     ...(landing && { landing })
-  } as ExtendedMetadata;
+  } satisfies ExtendedMetadata;
 
   return metadata;
 }
