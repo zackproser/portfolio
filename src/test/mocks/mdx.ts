@@ -1,5 +1,6 @@
 import { ExtendedMetadata } from '@/lib/shared-types';
 import { createTestMetadata } from '@/utils/createMetadata';
+import { createMockMdx } from '@/test/mdxMockFactory';
 
 interface ContentEntry {
   metadata: ExtendedMetadata;
@@ -44,8 +45,8 @@ export function getMockImplementation(path: string) {
   console.log('getMockImplementation found content:', content);
   
   if (!content) {
-    // Return default test metadata if no specific mock is registered
-    const defaultMetadata = createTestMetadata({
+    // Return default test metadata using our mock factory
+    const mockComponent = createMockMdx({
       type: 'blog',
       slug: 'test-blog',
       description: 'Test Blog',
@@ -60,23 +61,13 @@ export function getMockImplementation(path: string) {
         paywallHeader: 'Buy Now',
         paywallBody: 'Get access to full content',
         buttonText: 'Purchase'
-      },
-      landing: {
-        subtitle: 'Test Subtitle',
-        features: [{ title: 'Feature 1', description: 'Description 1' }],
-        testimonials: [{ name: 'Person 1', text: 'Great product!' }]
-      },
-      tags: ['test']
+      }
     });
-
-    return {
-      metadata: defaultMetadata,
-      content: ''
-    };
+    
+    return mockComponent.metadata;
   }
   
-  // Return the exact metadata without modification
-  return content;
+  return content.metadata;
 }
 
 // Return metadata from the registry when the module is imported

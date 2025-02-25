@@ -12,7 +12,8 @@ const config = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
-    '\\.mdx$': '<rootDir>/src/test/mocks/mdx.ts',
+    // Use the advanced MDX transformer for MDX files
+    '\\.mdx$': '<rootDir>/src/test/advancedMdxTransformer.js',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   collectCoverage: true,
