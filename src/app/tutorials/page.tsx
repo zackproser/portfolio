@@ -1,6 +1,5 @@
 import React from 'react'
-import { getAllArticles } from "@/lib/articles"
-import { getAllCourses } from "@/lib/courses"
+import { getAllContentMetadata } from "@/lib/getAllContentMetadata"
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
@@ -21,8 +20,9 @@ export default async function TutorialsPage() {
   ]
 
   try {
-    const allArticles = await getAllArticles()
-    const allCourses = await getAllCourses()
+    // Use our new content system to get all content types
+    const allArticles = await getAllContentMetadata('blog')
+    const allCourses = await getAllContentMetadata('learn/courses')
 
     const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug))
     const courses = allCourses.filter(course => courseSlugs.includes(course.slug))
@@ -45,9 +45,12 @@ export default async function TutorialsPage() {
                   Featured Tutorials
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                  {tutorials.map((article) => (
-                    <BlogPostCard key={article.slug} article={article} />
-                  ))}
+                  {tutorials.map((article, index) => {
+                    const uniqueKey = article._id || (article.slug ? `${article.slug}-${index}` : `tutorial-${index}`);
+                    return (
+                      <BlogPostCard key={uniqueKey} article={article} />
+                    );
+                  })}
                 </div>
               </section>
             </div>
@@ -60,9 +63,12 @@ export default async function TutorialsPage() {
                   Featured Courses
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                  {courses.map((course) => (
-                    <BlogPostCard key={course.slug} article={course} />
-                  ))}
+                  {courses.map((course, index) => {
+                    const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
+                    return (
+                      <BlogPostCard key={uniqueKey} article={course} />
+                    );
+                  })}
                 </div>
               </section>
             </div>

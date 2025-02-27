@@ -1,14 +1,18 @@
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllCourses, type Course } from '@/lib/courses'
+import { getAllContentMetadata } from '@/lib/getAllContentMetadata'
+import { ExtendedMetadata } from '@/lib/shared-types'
 
 export default async function CourseIndex() {
-  const courses = await getAllCourses();
+  const courses = await getAllContentMetadata('learn/courses');
 
   return (
     <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-      {courses.map((course: Course) => (
-        <BlogPostCard key={course.slug} article={course} />
-      ))}
+      {courses.map((course: ExtendedMetadata, index: number) => {
+        const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
+        return (
+          <BlogPostCard key={uniqueKey} article={course} />
+        );
+      })}
     </div>
   );
 }

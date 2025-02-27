@@ -26,7 +26,7 @@ import collectionImage from "@/images/${collection.image}"
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles'
+import { getAllArticles } from '@/lib/articles-compat'
 
 export const metadata = {
   title: "${title.toUpperCase()}",

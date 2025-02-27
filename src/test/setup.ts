@@ -4,7 +4,6 @@ import '@testing-library/jest-dom'
 import { expect } from '@jest/globals'
 import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers'
 import { jest } from '@jest/globals'
-import { contentRegistry } from '@/lib/content/base'
 import mockMdxModule, { getMockImplementation } from './mocks/mdx'
 
 declare global {
