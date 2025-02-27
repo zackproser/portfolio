@@ -5,8 +5,8 @@ import glob from 'fast-glob';
 interface ArticleMetadata extends ContentMetadata {
   commerce?: {
     isPaid: true;
-    price: number;  // Required - used for both pre-defined and runtime pricing
-    stripe_price_id?: string;  // Optional - only used for pre-defined products
+    price: number;
+    stripe_price_id?: string;
     previewLength?: number;
     paywallHeader?: string;
     paywallBody?: string;
@@ -62,120 +62,13 @@ export class Article extends Content {
   }
 
   getUrl(): string {
-    const baseDir = {
-      blog: 'blog',
-      course: 'learn/courses',
-      video: 'videos'
-    }[this.type as 'blog' | 'course' | 'video'];
-
-    if (!baseDir) {
-      throw new Error(`Invalid content type: ${this.type}`);
-    }
-
-    return `/${baseDir}/${this.slug}`;
+    return Content.getUrlForContent(this.type, this.slug);
   }
 
   getSourcePath(): string {
-    const baseDir = {
-      blog: 'blog',
-      course: 'learn/courses',
-      video: 'videos'
-    }[this.type as 'blog' | 'course' | 'video'];
-    
-    if (!baseDir) {
-      throw new Error(`Invalid content type: ${this.type}`);
-    }
-
-    return path.join(Content.getWorkspacePath(), 'src/app', baseDir, this.slug, 'page.mdx');
+    return Content.getSourcePathForContent(this.type, this.slug);
   }
 
-  // Commerce-specific methods
-  async createCheckoutSession(userId: string): Promise<string> {
-    if (!this.commerce?.isPaid) {
-      throw new Error('Content is not purchasable');
-    }
-    
-    // Handle both pre-defined and runtime pricing
-    const priceData = this.commerce.stripe_price_id 
-      ? { price: this.commerce.stripe_price_id }  // Use pre-defined price
-      : {  // Create price at runtime
-          unit_amount: this.commerce.price * 100, // Convert to cents
-          currency: 'usd',
-          product_data: {
-            name: this.title,
-            description: this.description
-          }
-        };
-    
-    // TODO: Implement actual Stripe checkout session creation
-    // This will be implemented in the next phase
-    throw new Error('Not implemented');
-  }
-
-  async verifyPurchase(userId: string): Promise<boolean> {
-    if (!this.commerce?.isPaid) return true; // Free content is always accessible
-    
-    // TODO: Implement purchase verification
-    // This will be implemented in the next phase
-    throw new Error('Not implemented');
-  }
-
-  static async fromSlug(slug: string, type: 'blog' | 'course' | 'video' = 'blog'): Promise<Article> {
-    const baseDir = {
-      blog: 'blog',
-      course: 'learn/courses',
-      video: 'videos'
-    }[type];
-
-    if (!baseDir) {
-      throw new Error(`Invalid content type: ${type}`);
-    }
-
-    const { metadata } = await import(`@/app/${baseDir}/${slug}/page.mdx`);
-    
-    // Process the metadata to ensure all required fields
-    const processedMetadata = {
-      ...metadata,
-      title: metadata.title || metadata.description || 'Untitled',
-      // Ensure we use the provided slug without leading slash
-      slug: metadata.slug || slug,
-      type,
-      description: metadata.description || '',
-      author: metadata.author || 'Unknown',
-      date: metadata.date || new Date().toISOString(),
-      image: typeof metadata.image === 'string' ? { src: metadata.image } : metadata.image,
-      tags: metadata.tags || []
-    };
-
-    return new Article(processedMetadata);
-  }
-
-  static async getAllArticles(type: 'blog' | 'course' | 'video' = 'blog'): Promise<Article[]> {
-    const baseDir = {
-      blog: 'blog',
-      course: 'learn/courses',
-      video: 'videos'
-    }[type];
-
-    if (!baseDir) {
-      throw new Error(`Invalid content type: ${type}`);
-    }
-
-    const files = await glob('*/page.mdx', {
-      cwd: path.join(Content.getWorkspacePath(), 'src/app', baseDir)
-    });
-
-    const articles = await Promise.all(
-      files.map(async (file) => {
-        const slug = path.dirname(file);
-        return Article.fromSlug(slug, type);
-      })
-    );
-
-    return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
-  }
-
-  // Convert Article instance to a plain object with computed URL
   toJSON() {
     return {
       title: this.title,
@@ -190,5 +83,92 @@ export class Article extends Content {
       landing: this.landing,
       url: this.getUrl()
     };
+  }
+
+  // Commerce-specific methods
+  async createCheckoutSession(userId: string): Promise<string> {
+    if (!this.commerce?.isPaid) {
+      throw new Error('Content is not purchasable');
+    }
+    
+    // Handle both pre-defined and runtime pricing
+    const priceData = this.commerce.stripe_price_id 
+      ? { price: this.commerce.stripe_price_id }
+      : {
+          unit_amount: this.commerce.price * 100,
+          currency: 'usd',
+          product_data: {
+            name: this.title,
+            description: this.description
+          }
+        };
+    
+    // TODO: Implement actual Stripe checkout session creation
+    throw new Error('Not implemented');
+  }
+
+  async verifyPurchase(userId: string): Promise<boolean> {
+    if (!this.commerce?.isPaid) return true;
+    
+    // TODO: Implement purchase verification
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Load an article from a slug
+   * Uses Next.js dynamic import to get the metadata directly from the MDX file
+   */
+  static async fromSlug(slug: string, type: 'blog' | 'course' | 'video' = 'blog'): Promise<Article | null> {
+    try {
+      const normalizedSlug = slug.replace(/^\/+|\/+$/g, '');
+      const basePath = Content.getBasePathForType(type);
+      
+      // Use dynamic import to directly access the exported metadata
+      const mdxModule = await import(`@/app/${basePath}/${normalizedSlug}/page.mdx`);
+      
+      if (!mdxModule.metadata) {
+        console.error(`No metadata found in MDX for ${slug}`);
+        return null;
+      }
+      
+      // Create article from the exported metadata
+      return new Article({
+        ...mdxModule.metadata,
+        slug: normalizedSlug,
+        type
+      });
+    } catch (error) {
+      console.error(`Error loading article ${slug}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get all articles of a specific type
+   * Uses glob to find MDX files and loads each one using fromSlug
+   */
+  static async getAllArticles(type: 'blog' | 'course' | 'video' = 'blog'): Promise<Article[]> {
+    try {
+      const basePath = Content.getBasePathForType(type);
+      const contentDir = path.join(process.cwd(), 'src/app', basePath);
+      
+      // Find all MDX files
+      const files = await glob('*/page.mdx', { cwd: contentDir });
+      
+      // Load each article
+      const articles = await Promise.all(
+        files.map(async (file) => {
+          const slug = path.dirname(file);
+          return await Article.fromSlug(slug, type);
+        })
+      );
+      
+      // Filter out nulls and sort by date
+      const validArticles = articles.filter((article): article is Article => article !== null);
+      return validArticles.sort((a, z) => +new Date(z.date) - +new Date(a.date));
+    } catch (error) {
+      console.error(`Error getting all articles for ${type}:`, error);
+      return [];
+    }
   }
 } 
