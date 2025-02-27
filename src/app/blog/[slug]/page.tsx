@@ -6,8 +6,10 @@ import {
   generateContentMetadata, 
   hasUserPurchased,
   loadContent,
-  getDefaultPaywallText
+  getDefaultPaywallText,
+  contentExists
 } from '@/lib/content-handlers'
+import { notFound } from 'next/navigation'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -31,14 +33,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogSlugPage({ params }: PageProps) {
+  console.log('BlogSlugPage', params)
   const resolvedParams = await params;
   const { slug } = resolvedParams;
+  
+  // Check if the content exists first
+  if (!contentExists(CONTENT_TYPE, slug)) {
+    console.error(`Blog post not found: ${slug}`)
+    return notFound()
+  }
   
   // Load the content
   const result = await loadContent(CONTENT_TYPE, slug)
   
   // Handle notFound case
-  if (!result) return null
+  if (!result) {
+    console.error(`Failed to load blog post: ${slug}`)
+    return notFound()
+  }
   
   const { MdxContent, metadata } = result
   

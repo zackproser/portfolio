@@ -49,6 +49,7 @@ const PriceBadge = ({ price }) => {
 
 export function BlogPostCard({ article }) {
   if (!article) {
+    console.warn('BlogPostCard received null or undefined article')
     return null;
   }
 
@@ -61,8 +62,21 @@ export function BlogPostCard({ article }) {
     status, 
     commerce, 
     url, 
-    slug 
+    slug,
+    type
   } = article;
+  
+  // Log the full article object for debugging
+  console.log(`BlogPostCard: Article data for "${title}":`, {
+    slug,
+    type,
+    url
+  });
+  
+  // Log warning if slug is missing
+  if (!slug) {
+    console.warn(`BlogPostCard: Missing slug for article "${title}"`)
+  }
   
   const price = commerce?.price;
   
@@ -78,8 +92,7 @@ export function BlogPostCard({ article }) {
     href = url;
   } else if (slug) {
     // Use the correct URL format based on content type
-    // Fix: Use absolute paths to prevent path concatenation issues
-    let typePath = article.type || 'blog';
+    let typePath = type || 'blog';
     
     // Handle plural forms for routes
     if (typePath === 'video') {
@@ -88,16 +101,29 @@ export function BlogPostCard({ article }) {
       typePath = 'comparisons';
     }
     
-    // Fix: Ensure we're using absolute paths by always starting with /
-    // This prevents the /blog/blog/slug issue
-    href = `/${typePath}/${slug.replace(/^\/+/, '')}`;
+    // Normalize the slug to prevent duplicate path segments
+    let normalizedSlug = slug;
     
-    // Fix: If the slug already contains the type path, don't duplicate it
-    if (slug.startsWith(`${typePath}/`)) {
-      href = `/${slug.replace(/^\/+/, '')}`;
-    } else if (slug.startsWith(`/${typePath}/`)) {
-      href = slug;
+    // Remove any leading slashes
+    normalizedSlug = normalizedSlug.replace(/^\/+/, '');
+    
+    // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
+    const typePathPattern = new RegExp(`^${typePath}/`);
+    if (typePathPattern.test(normalizedSlug)) {
+      normalizedSlug = normalizedSlug.replace(typePathPattern, '');
     }
+    
+    // Check if the slug already contains a path structure
+    if (normalizedSlug.includes('/')) {
+      // If slug contains slashes, add a leading slash
+      href = `/${normalizedSlug}`;
+    } else {
+      // Simple slug with no path structure - construct the path
+      href = `/${typePath}/${normalizedSlug}`;
+    }
+    
+    // Debug log the final href
+    console.log(`BlogPostCard: Generated href for "${title}": ${href} (from slug: ${slug}, type: ${typePath}, normalized: ${normalizedSlug})`);
   } else {
     // If no slug is available, log a warning but provide a fallback
     console.warn(`BlogPostCard: No slug available for article "${title}"`);
