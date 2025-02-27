@@ -1,20 +1,96 @@
 import CourseBrowser from '@/components/CourseBrowser'
 import { Container } from '@/components/Container'
-import { getCourseSegments, getSegmentContent } from '@/lib/courses'
-
 import { redirect } from 'next/navigation'
-
 import { auth } from '../../../../../auth'
-
-import { getProductDetails, ProductDetails } from '@/utils/productUtils';
-
+import { getProductDetails, ProductDetails } from '@/utils/productUtils'
 import { userPurchasedCourse } from '@/lib/queries'
+import fs from 'fs'
+import path from 'path'
 
 interface PageProps {
   params: Promise<{
     course: string;
     segment: string;
   }>;
+}
+
+/**
+ * Get all segments for a course
+ * @param course The course slug
+ * @returns Grouped segments
+ */
+async function getCourseSegments(course: string) {
+  const coursesDir = path.join(process.cwd(), 'src', 'app', 'learn', 'courses', course)
+  
+  // Check if the directory exists
+  if (!fs.existsSync(coursesDir)) {
+    return {}
+  }
+  
+  // Get all directories in the course folder
+  const segmentDirs = fs.readdirSync(coursesDir)
+    .filter(dir => {
+      // Only include numeric directories (segments)
+      return dir.match(/^\d+$/) && fs.statSync(path.join(coursesDir, dir)).isDirectory()
+    })
+  
+  // Load metadata from each segment
+  const segments = await Promise.all(segmentDirs.map(async (dir) => {
+    try {
+      // Check if the directory contains a page.mdx file
+      const mdxPath = path.join(coursesDir, dir, 'page.mdx')
+      if (!fs.existsSync(mdxPath)) {
+        return null
+      }
+      
+      // Dynamic import of the MDX file to get its metadata
+      const mdxModule = await import(`@/app/learn/courses/${course}/${dir}/page.mdx`)
+      
+      if (!mdxModule.meta) {
+        console.warn(`No meta found for segment: ${dir}`)
+        return null
+      }
+      
+      return {
+        dir,
+        meta: mdxModule.meta
+      }
+    } catch (error) {
+      console.error(`Error loading segment: ${dir}`, error)
+      return null
+    }
+  }))
+  
+  // Filter out null values
+  const validSegments = segments.filter(segment => segment !== null)
+  
+  // Group segments by header
+  const groupedSegments = validSegments.reduce((acc, { dir, meta }) => {
+    const header = meta.header ?? 'Other'
+    if (!acc[header]) {
+      acc[header] = []
+    }
+    acc[header].push({ ...meta, dir })
+    return acc
+  }, {})
+  
+  return groupedSegments
+}
+
+/**
+ * Get content for a specific segment
+ * @param course The course slug
+ * @param segment The segment number
+ * @returns The segment content component
+ */
+async function getSegmentContent(course: string, segment: string) {
+  try {
+    const { default: content } = await import(`@/app/learn/courses/${course}/${segment}/page.mdx`)
+    return content
+  } catch (error) {
+    console.error(`Error loading segment content: ${segment}`, error)
+    return () => <div>Content not found</div>
+  }
 }
 
 export default async function Page(props: PageProps) {

@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { headers } from 'next/headers'
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 import { Content } from '@/lib/shared-types'
 
 if (!process.env.STRIPE_SECRET_KEY) {

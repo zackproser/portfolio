@@ -13,6 +13,7 @@ import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
 import { ArticleLayout } from '@/components/ArticleLayout';
+import { importArticleMetadata } from '@/lib/articles-compat'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
@@ -452,7 +453,7 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 
 export async function POST(req: Request) {
   const { messages } = await req.json()

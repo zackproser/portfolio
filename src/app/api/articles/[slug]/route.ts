@@ -1,4 +1,4 @@
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request, props: { params: Promise<{ slug: string }> }) {

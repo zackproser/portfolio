@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
 // Mock the importArticleMetadata function
-jest.mock('@/lib/articles', () => ({
+jest.mock('@/lib/articles-compat', () => ({
   importArticleMetadata: jest.fn()
 }));
 
 // Import the mocked function
-import { importArticleMetadata } from '@/lib/articles';
+import { importArticleMetadata } from '@/lib/articles-compat';
 
 // Mock the route handlers directly
 const mockGET = jest.fn();
