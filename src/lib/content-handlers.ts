@@ -2,28 +2,29 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
-import { auth } from '../../auth'
-import { sql } from '@vercel/postgres'
 import { Session } from 'next-auth'
 import glob from 'fast-glob'
-import { Blog, ArticleWithSlug, ExtendedMetadata, Content } from './shared-types'
+import { ExtendedMetadata, Content } from './shared-types'
+import Paywall from '@/components/Paywall'
+import React from 'react'
+import { sql } from '@vercel/postgres'
+
+// Directory where content is stored
+const contentDirectory = path.join(process.cwd(), 'src/app')
 
 /**
- * Generate static params for content of a specific type
- * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
- * @returns Array of slug params for static generation
+ * Get all slugs for a content type
+ * @param contentType The content type directory (e.g., 'blog', 'videos')
+ * @returns Array of slugs
  */
-export async function generateContentStaticParams(contentType: string) {
-  const contentDir = path.join(process.cwd(), 'src/app', contentType)
+export function getContentSlugs(contentType: string) {
+  const contentDir = path.join(contentDirectory, contentType)
   
-  // Check if the directory exists
   if (!fs.existsSync(contentDir)) {
-    console.warn(`Content directory not found: ${contentDir}`)
     return []
   }
   
-  // Get all directories in the content folder (excluding [slug] and page.tsx)
-  const slugs = fs.readdirSync(contentDir)
+  return fs.readdirSync(contentDir)
     .filter(item => {
       const itemPath = path.join(contentDir, item)
       return fs.statSync(itemPath).isDirectory() && item !== '[slug]'
@@ -33,107 +34,76 @@ export async function generateContentStaticParams(contentType: string) {
       const mdxPath = path.join(contentDir, slug, 'page.mdx')
       return fs.existsSync(mdxPath)
     })
-  
-  return slugs.map(slug => ({ slug }))
 }
 
 /**
- * Import content from an MDX file
- * @param slug The content slug
- * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
- * @returns Content object with metadata
- */
-export async function importContent(
-  slug: string,
-  contentType: string = 'blog'
-): Promise<Content> {
-  try {
-    const imported = await import(
-      `../app/${contentType}/${slug}/page.mdx`
-    )
-    
-    // Get metadata from the MDX file
-    const metadata = imported.metadata
-  
-    if (!metadata) {
-      throw new Error(`No metadata found for ${contentType}/${slug}`)
-    }
-  
-    // Ensure the slug is correctly formatted
-    let formattedSlug = slug
-    
-    // Convert the metadata to Content type
-    return {
-      author: metadata.author || 'Unknown',
-      date: metadata.date || new Date().toISOString(),
-      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
-      description: metadata.description || '',
-      image: metadata.image,
-      type: metadata.type || (
-        contentType === 'blog' ? 'blog' : 
-        contentType === 'videos' ? 'video' : 
-        contentType === 'learn/courses' ? 'course' : 'blog'
-      ),
-      slug: formattedSlug,
-      ...(metadata.commerce && { commerce: metadata.commerce }),
-      ...(metadata.landing && { landing: metadata.landing }),
-      ...(metadata.tags && { tags: metadata.tags })
-    }
-  } catch (error) {
-    console.error(`Error importing content ${contentType}/${slug}:`, error)
-    throw error
-  }
-}
-
-/**
- * Import just the metadata from content
- * @param slug The content slug
+ * Check if content exists
  * @param contentType The content type directory
- * @returns Content object with metadata
+ * @param slug The content slug
+ * @returns Whether the content exists
  */
-export async function importContentMetadata(
-  slug: string,
-  contentType: string = 'blog'
-): Promise<Content> {
-  return importContent(slug, contentType)
+export function contentExists(contentType: string, slug: string): boolean {
+  const mdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
+  return fs.existsSync(mdxPath)
 }
 
 /**
- * Get a single content item by slug - direct import for performance
- * @param slug The content slug
+ * Load content by slug
  * @param contentType The content type directory
- * @returns Content object with slug
+ * @param slug The content slug
+ * @returns The content component and metadata
  */
-export async function getContentBySlug(
-  slug: string, 
-  contentType: string = 'blog'
-): Promise<Content | null> {
+export async function loadContent(contentType: string, slug: string) {
   try {
-    return await importContent(slug, contentType)
+    // Check if the MDX file exists
+    if (!contentExists(contentType, slug)) {
+      return null
+    }
+    
+    // Dynamically import the MDX content
+    const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+    const MdxContent = mdxModule.default
+    const metadata = mdxModule.metadata
+
+    if (!MdxContent) {
+      return null
+    }
+    
+    return { MdxContent, metadata }
   } catch (error) {
-    console.error(`Error importing content ${contentType}/${slug}:`, error)
     return null
   }
 }
 
 /**
- * Get all content items of a specific type
+ * Get all content of a specific type
  * @param contentType The content type directory
  * @returns Array of content items
  */
 export async function getAllContent(contentType: string = 'blog'): Promise<Content[]> {
   try {
-    const files = await glob(['**/page.mdx'], {
-      cwd: path.join(process.cwd(), `src/app/${contentType}`),
-    })
+    const slugs = getContentSlugs(contentType)
     
     const contentItems = await Promise.all(
-      files.map(async (filename) => {
+      slugs.map(async (slug) => {
         try {
-          const slug = path.dirname(filename)
-          return await getContentBySlug(slug, contentType)
+          const result = await loadContent(contentType, slug)
+          if (!result) return null
+          
+          const { metadata } = result
+          return {
+            author: metadata.author || 'Unknown',
+            date: metadata.date || new Date().toISOString(),
+            title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
+            description: metadata.description || '',
+            image: metadata.image,
+            type: metadata.type || contentType,
+            slug,
+            ...(metadata.commerce && { commerce: metadata.commerce }),
+            ...(metadata.landing && { landing: metadata.landing }),
+            ...(metadata.tags && { tags: metadata.tags })
+          }
         } catch (error) {
-          console.error(`Error importing content ${filename}:`, error)
           return null
         }
       })
@@ -145,42 +115,33 @@ export async function getAllContent(contentType: string = 'blog'): Promise<Conte
     
     return validItems
   } catch (error) {
-    console.error(`Error in getAllContent for ${contentType}:`, error)
     return []
   }
 }
 
 /**
+ * Generate static params for content of a specific type
+ * @param contentType The content type directory
+ * @returns Array of slug params for static generation
+ */
+export async function generateContentStaticParams(contentType: string) {
+  const slugs = getContentSlugs(contentType)
+  return slugs.map(slug => ({ slug }))
+}
+
+/**
  * Generate metadata for a content item
- * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
+ * @param contentType The content type directory
  * @param slug The content slug
  * @returns Metadata for the content
  */
 export async function generateContentMetadata(contentType: string, slug: string): Promise<Metadata> {
   try {
-    // Import the MDX file to get its metadata
-    const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+    const result = await loadContent(contentType, slug)
+    if (!result) return {}
     
-    // Make a copy of the metadata to avoid modifying the original
-    const metadata = mdxModule.metadata ? { ...mdxModule.metadata } : {}
-    
-    // Ensure the slug is correctly formatted (without content type prefix)
-    if (metadata.slug) {
-      // Remove any leading slashes
-      let formattedSlug = metadata.slug.replace(/^\/+/, '')
-      
-      // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
-      if (formattedSlug.startsWith(`${contentType}/`)) {
-        formattedSlug = formattedSlug.substring(contentType.length + 1)
-      }
-      
-      // Update the slug in the metadata
-      metadata.slug = formattedSlug
-    }
-    
-    return metadata
+    return result.metadata
   } catch (error) {
-    console.error(`Error loading metadata for ${contentType}/${slug}:`, error)
     return {}
   }
 }
@@ -195,20 +156,18 @@ export async function hasUserPurchased(userId: string | null | undefined, slug: 
   if (!userId) return false
   
   try {
-    // Check if the user has purchased this content
     const { rows } = await sql`
       SELECT * FROM purchases 
       WHERE user_id = ${userId} AND content_slug = ${slug}
     `
     return rows.length > 0
   } catch (error) {
-    console.error('Error checking purchase status:', error)
     return false
   }
 }
 
 /**
- * Get the default paywall text for a content type
+ * Get default paywall text for a content type
  * @param contentType The content type
  * @returns Default paywall text
  */
@@ -240,56 +199,40 @@ export function getDefaultPaywallText(contentType: string): {
 }
 
 /**
- * Check if the MDX file exists for a content item
- * @param contentType The content type directory
- * @param slug The content slug
- * @returns Whether the MDX file exists
+ * Render content with appropriate paywall handling
+ * @param MdxContent The MDX content component
+ * @param metadata The content metadata
+ * @param session The user session (if available)
+ * @param hasPurchased Whether the user has purchased the content
+ * @returns The rendered content with appropriate paywall if needed
  */
-export function contentExists(contentType: string, slug: string): boolean {
-  const mdxPath = path.join(process.cwd(), 'src/app', contentType, slug, 'page.mdx')
-  return fs.existsSync(mdxPath)
-}
-
-/**
- * Load content and handle authentication and paywall
- * @param contentType The content type directory
- * @param slug The content slug
- * @returns The content component with appropriate paywall if needed
- */
-export async function loadContent(contentType: string, slug: string) {
-  try {
-    // Check if the MDX file exists
-    if (!contentExists(contentType, slug)) {
-      console.error(`Content does not exist: ${contentType}/${slug}`)
-      return notFound()
-    }
-    
-    // Dynamically import the MDX content
-    console.log(`Attempting to import: @/app/${contentType}/${slug}/page.mdx`)
-    
-    try {
-      const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
-      const MdxContent = mdxModule.default
-      const metadata = mdxModule.metadata
-
-      if (!MdxContent) {
-        console.error(`No default export found in ${contentType}/${slug}/page.mdx`)
-        return null
-      }
-
-      if (!metadata) {
-        console.error(`No metadata export found in ${contentType}/${slug}/page.mdx`)
-      }
-      
-      console.log(`Successfully loaded content ${contentType}/${slug}`)
-      return { MdxContent, metadata }
-    } catch (importError) {
-      console.error(`Import error for ${contentType}/${slug}:`, importError)
-      // Instead of calling notFound() immediately, return null and let the caller decide
-      return null
-    }
-  } catch (error) {
-    console.error(`Error loading content ${contentType}/${slug}:`, error)
-    return null
+export function renderContent(
+  MdxContent: React.ComponentType,
+  metadata: ExtendedMetadata,
+  session: Session | null,
+  hasPurchased: boolean
+) {
+  // If content is not paid or user has purchased, render full content
+  if (!metadata.commerce?.isPaid || hasPurchased) {
+    return React.createElement(MdxContent);
   }
+
+  // For paid content that user hasn't purchased, show preview with paywall
+  const defaultText = getDefaultPaywallText(metadata.type || 'blog');
+  
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(MdxContent),
+    React.createElement(Paywall, {
+      price: metadata.commerce.price,
+      slug: metadata.slug || '',
+      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
+      paywallHeader: metadata.commerce.paywallHeader || defaultText.header,
+      paywallBody: metadata.commerce.paywallBody || defaultText.body,
+      buttonText: metadata.commerce.buttonText || defaultText.buttonText,
+      image: metadata.commerce.paywallImage,
+      imageAlt: metadata.commerce.paywallImageAlt
+    })
+  );
 } 
