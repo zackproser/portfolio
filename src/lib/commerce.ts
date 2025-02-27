@@ -56,7 +56,7 @@ export async function getAllPurchasableItems(): Promise<Purchasable[]> {
     ]);
 
     const allContent = [...blogContent, ...courseContent, ...videoContent];
-    const purchasableContent = allContent.filter((content): content is Purchasable => 
+    const purchasableContent = allContent.filter((content) => 
       isPurchasable(content)
     );
 
@@ -79,7 +79,7 @@ export async function getAllPurchasableItems(): Promise<Purchasable[]> {
 
     return [
       ...purchasableContent,
-      ...customProducts.filter((p): p is Purchasable => p !== null && isPurchasable(p))
+      ...customProducts.filter((p) => p !== null && isPurchasable(p))
     ];
   } catch (error) {
     console.error('Error loading purchasable items:', error);
@@ -192,7 +192,7 @@ export async function getAllPurchasableContent(): Promise<Blog[]> {
   ]).then(results => results.flat());
   
   return allContent
-    .filter((content): content is Blog => 
+    .filter((content) => 
       content.type !== 'demo' && isPurchasable(content)
     );
 }

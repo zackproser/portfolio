@@ -31,11 +31,9 @@ export async function importNewsletter(
     ...metadata,
     type: 'blog',
     slug: path.basename(articleFilename, '.mdx'),
-    metadata: {
-      landingPage: {
-        headline: metadata.title,
-        subheadline: metadata.description
-      }
+    landing: {
+      subtitle: metadata.description,
+      features: []
     },
     price: 0,
     tableOfContents: {},

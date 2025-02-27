@@ -8,7 +8,7 @@ export default function ComparisonSearch({ comparisons }: { comparisons: Article
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredComparisons = comparisons.filter(comparison =>
-    comparison.title.toLowerCase().includes(searchTerm.toLowerCase())
+    comparison.title ? String(comparison.title).toLowerCase().includes(searchTerm.toLowerCase()) : false
   )
 
   return (
