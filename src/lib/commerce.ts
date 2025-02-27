@@ -1,10 +1,10 @@
 import { Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types';
-import { getContentByType } from './content';
+import { getAllContentMetadata } from './getAllContentMetadata';
 import path from 'path';
 import glob from 'fast-glob';
 import { ProductContent } from './types/product';
 import { promises as fs } from 'fs';
-import { getAllArticles, getArticleBySlug } from './articles';
+import { getAllArticles, getArticleBySlug } from './articles-compat';
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator';
 
 // Get a purchasable item by its slug
@@ -12,9 +12,9 @@ export async function getPurchasableItem(slug: string): Promise<Purchasable | nu
   try {
     // First try to find it in the content
     const [blogContent, courseContent, videoContent] = await Promise.all([
-      getContentByType('blog'),
-      getContentByType('course'),
-      getContentByType('video')
+      getAllContentMetadata('blog'),
+      getAllContentMetadata('learn/courses'),
+      getAllContentMetadata('videos')
     ]);
 
     const allContent = [...blogContent, ...courseContent, ...videoContent];
@@ -50,9 +50,9 @@ export async function getAllPurchasableItems(): Promise<Purchasable[]> {
   try {
     // Get all content
     const [blogContent, courseContent, videoContent] = await Promise.all([
-      getContentByType('blog'),
-      getContentByType('course'),
-      getContentByType('video')
+      getAllContentMetadata('blog'),
+      getAllContentMetadata('learn/courses'),
+      getAllContentMetadata('videos')
     ]);
 
     const allContent = [...blogContent, ...courseContent, ...videoContent];
@@ -126,7 +126,7 @@ async function getDynamicProductContent(slug: string): Promise<ProductContent | 
   }
 
   // Check if it's a course
-  const courses = await getContentByType('course');
+  const courses = await getAllContentMetadata('learn/courses');
   const course = courses.find(c => c.slug === slug);
   if (course && isPurchasable(course)) {
     return generateProductFromArticle(course as Blog);
@@ -148,6 +148,13 @@ export async function getProductContent(slug: string): Promise<ProductContent | 
 
 export async function getAllProducts(): Promise<ProductContent[]> {
   try {
+    // Get all content
+    const [blogContent, courseContent, videoContent] = await Promise.all([
+      getAllContentMetadata('blog'),
+      getAllContentMetadata('learn/courses'),
+      getAllContentMetadata('videos')
+    ]);
+
     // Get static product pages
     const files = await fs.readdir(PRODUCTS_DIRECTORY);
     const staticProducts = await Promise.all(
@@ -186,9 +193,9 @@ export async function getAllProducts(): Promise<ProductContent[]> {
 // Get all purchasable content
 export async function getAllPurchasableContent(): Promise<Blog[]> {
   const allContent = await Promise.all([
-    getContentByType('blog'),
-    getContentByType('course'),
-    getContentByType('video')
+    getAllContentMetadata('blog'),
+    getAllContentMetadata('learn/courses'),
+    getAllContentMetadata('videos')
   ]).then(results => results.flat());
   
   return allContent
@@ -206,7 +213,7 @@ export async function getProductBySlug(slug: string): Promise<Purchasable | null
   }
 
   // Check if it's a course
-  const courses = await getContentByType('course');
+  const courses = await getAllContentMetadata('learn/courses');
   const course = courses.find(c => c.slug === slug);
   if (course && isPurchasable(course)) {
     return course;

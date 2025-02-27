@@ -1,5 +1,5 @@
 import { ExtendedMetadata } from '@/lib/shared-types';
-import { createTestMetadata } from '@/utils/createMetadata';
+import { createMetadata } from '@/utils/createMetadata';
 import { createMockMdx } from '@/test/mdxMockFactory';
 
 interface ContentEntry {
@@ -64,7 +64,8 @@ export function getMockImplementation(path: string) {
       }
     });
     
-    return mockComponent.metadata;
+    // Access the metadata property using type assertion
+    return (mockComponent as any).metadata;
   }
   
   return content.metadata;

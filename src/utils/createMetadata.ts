@@ -103,7 +103,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   // 1. Explicitly provided slug
   // 2. Generated from file path
   const pathBasedSlug = filePath ? getSlugFromPath(filePath) : '';
-  const finalSlug = slug || pathBasedSlug || '';
+  const finalSlug = slug || pathBasedSlug || 'untitled';
 
   // Determine content type from file path if not explicitly provided
   const contentType = type || (filePath ? getTypeFromPath(filePath) : 'blog');
@@ -115,18 +115,27 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
-  const metadata = {
+  const metadata: ExtendedMetadata = {
     ...defaultMetadata,
-    // Next.js metadata fields
-    ...(title && { title }),
-    ...(description && { description }),
-    ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
-    ...(date && { date: String(date) }),
+    // Required fields with default values
+    title: title || 'Untitled',
+    description: description || '',
+    author: author || 'Unknown',
+    date: date ? String(date) : new Date().toISOString(),
+    type: contentType,
+    slug: finalSlug,
+    
+    // Optional fields
     ...(processedImage && { image: processedImage }),
+    ...(contentUrl && { url: contentUrl }),
+    
+    // Next.js metadata fields
+    ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
+    
     openGraph: {
       ...defaultMetadata.openGraph,
-      ...(title && { title }),
-      ...(description && { description }),
+      title: title || 'Untitled',
+      description: description || '',
       images: [
         {
           url: generateOgUrl({ 
@@ -138,26 +147,20 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       ],
     },
     twitter: {
-      ...(title && { title }),
-      ...(description && { description }),
+      ...(defaultMetadata.twitter || {}),
+      title: title || 'Untitled',
+      description: description || '',
       images: [generateOgUrl({ 
         title: title ? String(title) : undefined, 
         description: description ? String(description) : undefined, 
         image: processedImage?.src ? String(processedImage.src) : undefined 
       })],
     },
-    // Our blog-specific fields
-    author: author || 'Unknown',
-    date: date ? String(date) : new Date().toISOString(),
-    description: description || '',
-    image: processedImage,
-    type: contentType,
-    slug: finalSlug,
-    // Add the URL field
-    url: contentUrl,
+    
+    // Additional optional fields
     ...(commerce && { commerce }),
     ...(landing && { landing })
-  } satisfies ExtendedMetadata;
+  };
 
   return metadata;
 }

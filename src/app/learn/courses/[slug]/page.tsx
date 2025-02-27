@@ -17,13 +17,22 @@ export async function generateStaticParams() {
   return generateContentStaticParams(CONTENT_TYPE)
 }
 
-// Generate metadata for the page
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  return generateContentMetadata(CONTENT_TYPE, params.slug)
+// Define the PageProps interface to match the expected type
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
 }
 
-export default async function CourseSlugPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+// Generate metadata for the page
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  return generateContentMetadata(CONTENT_TYPE, resolvedParams.slug)
+}
+
+export default async function CourseSlugPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   
   // Load the content
   const result = await loadContent(CONTENT_TYPE, slug)

@@ -29,7 +29,7 @@ export const createApiRequest = (options: {
   });
   
   // Create request init
-  const requestInit: RequestInit = {
+  const requestInit: { method: string; headers: Headers; body?: string } = {
     method,
     headers: new Headers(headers)
   };

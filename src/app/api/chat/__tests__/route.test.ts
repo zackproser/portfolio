@@ -24,7 +24,7 @@ jest.mock('../../../services/context', () => ({
 }));
 
 // Mock the Article import
-jest.mock('@/lib/articles', () => ({
+jest.mock('@/lib/articles-compat', () => ({
   importArticleMetadata: jest.fn().mockResolvedValue({
     slug: 'test-article',
     title: 'Test Article',
