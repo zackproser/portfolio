@@ -2,7 +2,7 @@ import { ArticleWithSlug, CourseContent } from './shared-types';
 import { ProductContent } from './types/product';
 import { StaticImageData } from 'next/image';
 
-function getImageUrl(image: string | StaticImageData | undefined): string | undefined {
+function getImageUrl(image: string | StaticImageData | { src: string } | undefined): string | undefined {
   if (!image) return undefined;
   if (typeof image === 'string') return image;
   return image.src;

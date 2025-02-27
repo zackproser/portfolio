@@ -65,7 +65,7 @@ async function getCourseSegments(course: string) {
   const validSegments = segments.filter(segment => segment !== null)
   
   // Group segments by header
-  const groupedSegments = validSegments.reduce((acc, { dir, meta }) => {
+  const groupedSegments = validSegments.reduce<Record<string, Array<{ dir: string; meta: any }>>>((acc, { dir, meta }) => {
     const header = meta.header ?? 'Other'
     if (!acc[header]) {
       acc[header] = []
@@ -89,7 +89,9 @@ async function getSegmentContent(course: string, segment: string) {
     return content
   } catch (error) {
     console.error(`Error loading segment content: ${segment}`, error)
-    return () => <div>Content not found</div>
+    const NotFoundComponent = () => <div>Content not found</div>
+    NotFoundComponent.displayName = 'NotFoundComponent'
+    return NotFoundComponent
   }
 }
 
@@ -141,3 +143,5 @@ export default async function Page(props: PageProps) {
     </Container>
   )
 }
+
+Page.displayName = 'CourseSegmentPage';

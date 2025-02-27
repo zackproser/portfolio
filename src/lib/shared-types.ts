@@ -73,6 +73,7 @@ export interface Database {
 
 // Base metadata interface that extends Next.js Metadata
 export interface ExtendedMetadata extends Metadata {
+  title: string
   author: string
   date: string
   description: string

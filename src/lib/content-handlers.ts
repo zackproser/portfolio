@@ -134,6 +134,10 @@ export async function loadContent(contentType: string, slug: string) {
     const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
     const MdxContent = mdxModule.default
     const metadata = mdxModule.metadata
+
+    console.log(`Loading content ${contentType}/${slug}`)
+    console.log(metadata)
+    console.log(MdxContent)
     
     return { MdxContent, metadata }
   } catch (error) {

@@ -6,7 +6,7 @@ import collectionImage from "@/images/ggshield-preventing-a-secret-from-escaping
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles'
+import { getAllArticles } from '@/lib/articles-compat'
 
 export const metadata = {
   title: "SECURITY",
