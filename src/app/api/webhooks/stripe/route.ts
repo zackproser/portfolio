@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
       try {
         let content;
         if (type === 'article' || type === 'blog') {
-          content = await importArticleMetadata(`${slug}/page.mdx`)
+          content = await importContentMetadata(slug, 'blog')
         } else if (type === 'course') {
           const courseResult = await sql`
             SELECT title, description, slug FROM courses WHERE slug = ${slug}

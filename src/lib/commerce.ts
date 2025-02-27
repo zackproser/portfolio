@@ -4,7 +4,7 @@ import path from 'path';
 import glob from 'fast-glob';
 import { ProductContent } from './types/product';
 import { promises as fs } from 'fs';
-import { getAllArticles, getArticleBySlug } from './articles-compat';
+import { getAllContent, getContentBySlug } from './content-handlers';
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator';
 
 // Get a purchasable item by its slug
@@ -118,7 +118,7 @@ async function getStaticProductContent(slug: string): Promise<ProductContent | n
 // Get a product from an article or course
 async function getDynamicProductContent(slug: string): Promise<ProductContent | null> {
   // First check if it's a blog post
-  const article = await getArticleBySlug(slug);
+  const article = await getContentBySlug(slug);
   if (article) {
     if (article.commerce?.isPaid) {
       return generateProductFromArticle(article as BlogWithSlug);
@@ -167,7 +167,7 @@ export async function getAllProducts(): Promise<ProductContent[]> {
     );
 
     // Get paid articles
-    const articles = await getAllArticles();
+    const articles = await getAllContent('blog');
     const articleProducts = articles
       .filter(article => article.commerce?.isPaid)
       .map(article => generateProductFromArticle(article as BlogWithSlug));
@@ -207,7 +207,7 @@ export async function getAllPurchasableContent(): Promise<Blog[]> {
 // Get a product by its slug
 export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
   // First check articles
-  const article = await getArticleBySlug(slug);
+  const article = await getContentBySlug(slug);
   if (article && isPurchasable(article)) {
     return article;
   }

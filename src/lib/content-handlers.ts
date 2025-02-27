@@ -292,10 +292,4 @@ export async function loadContent(contentType: string, slug: string) {
     console.error(`Error loading content ${contentType}/${slug}:`, error)
     return null
   }
-}
-
-// For backward compatibility with articles-compat.ts
-export const importArticle = importContent;
-export const importArticleMetadata = importContentMetadata;
-export const getArticleBySlug = getContentBySlug;
-export const getAllArticles = () => getAllContent('blog'); 
+} 

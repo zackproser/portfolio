@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { headers } from 'next/headers'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 import { Content } from '@/lib/shared-types'
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
 			)
 		}
 
-		const content = await importArticleMetadata(
-			`${slug}/page.mdx`, 
+		const content = await importContentMetadata(
+			slug, 
 			type === 'course' ? 'learn/courses' : 'blog'
 		)
 		
@@ -111,8 +111,8 @@ export async function GET(req: Request) {
 		}
 		const user = userResult.rows[0]
 
-		const content = await importArticleMetadata(
-			`${slug}/page.mdx`, 
+		const content = await importContentMetadata(
+			slug, 
 			type === 'course' ? 'learn/courses' : 'blog'
 		)
 
