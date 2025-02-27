@@ -1,111 +1,48 @@
-import { Blog, ArticleWithSlug, ExtendedMetadata } from './shared-types'
-import path from 'path'
-import glob from 'fast-glob'
+// This file is maintained for backward compatibility
+// All functionality has been moved to content-handlers.ts
 
-// Import an article from an MDX file
-export async function importArticle(
-  filename: string,
-  baseDir: string = 'blog'
-): Promise<Blog> {
-  // Remove the page.mdx from the filename to get the directory name
-  const dirName = filename.replace('/page.mdx', '')
-  // Get the slug from the directory name
-  const slug = dirName
-  
-  try {
-    const imported = await import(
-      `../app/${baseDir}/${dirName}/page.mdx`
-    )
-    
-    // Get metadata from the MDX file
-    const metadata = imported.metadata
-  
-    if (!metadata) {
-      throw new Error(`No metadata found in ${filename}`)
-    }
-  
-    // Convert the extended metadata to Blog type
-    return {
-      author: metadata.author || 'Unknown',
-      date: metadata.date || new Date().toISOString(),
-      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
-      description: metadata.description || '',
-      image: metadata.image,
-      type: metadata.type || 'blog',
-      slug,
-      ...(metadata.commerce && { commerce: metadata.commerce }),
-      ...(metadata.landing && { landing: metadata.landing })
-    }
-  } catch (error) {
-    console.error(`Error importing article ${filename}:`, error)
-    throw error
-  }
+import { 
+  importContent, 
+  importContentMetadata, 
+  getContentBySlug, 
+  getAllContent 
+} from './content-handlers';
+
+// Re-export with the old names for backward compatibility but maintain the original parameter signatures
+
+/**
+ * Import an article from an MDX file (compatibility function)
+ * @param filename The filename including page.mdx
+ * @param baseDir The base directory (default: 'blog')
+ * @returns Blog object
+ */
+export async function importArticle(filename: string, baseDir: string = 'blog') {
+  // Extract the slug from the filename (remove /page.mdx)
+  const slug = filename.replace('/page.mdx', '');
+  return importContent(slug, baseDir);
 }
 
-// Import just the metadata from an article
-export async function importArticleMetadata(
-  filename: string,
-  baseDir: string = 'blog'
-): Promise<Blog> {
-  return importArticle(filename, baseDir)
+/**
+ * Import just the metadata from an article (compatibility function)
+ * @param filename The filename including page.mdx
+ * @param baseDir The base directory (default: 'blog')
+ * @returns Blog object
+ */
+export async function importArticleMetadata(filename: string, baseDir: string = 'blog') {
+  // Extract the slug from the filename (remove /page.mdx)
+  const slug = filename.replace('/page.mdx', '');
+  return importContentMetadata(slug, baseDir);
 }
 
-// Get a single article by slug - direct import for performance
-export async function getArticleBySlug(slug: string): Promise<ArticleWithSlug | null> {
-  try {
-    const imported = await import(`../app/blog/${slug}/page.mdx`)
-    const metadata = imported.metadata
-    
-    if (!metadata) {
-      throw new Error(`No metadata found for slug ${slug}`)
-    }
-    
-    // Create an ArticleWithSlug object directly without using the Article class
-    const article: ArticleWithSlug = {
-      author: metadata.author || 'Unknown',
-      date: metadata.date || new Date().toISOString(),
-      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
-      description: metadata.description || '',
-      image: metadata.image,
-      type: metadata.type || 'blog',
-      slug,
-      ...(metadata.commerce && { commerce: metadata.commerce }),
-      ...(metadata.landing && { landing: metadata.landing })
-    }
-    
-    return article
-  } catch (error) {
-    console.error(`Error importing article ${slug}:`, error)
-    return null
-  }
-}
+/**
+ * Get a single article by slug (compatibility function)
+ * @param slug The article slug
+ * @returns ArticleWithSlug object or null
+ */
+export const getArticleBySlug = getContentBySlug;
 
-// Get all articles
-export async function getAllArticles(): Promise<ArticleWithSlug[]> {
-  try {
-    const files = await glob(['**/page.mdx'], {
-      cwd: path.join(process.cwd(), 'src/app/blog'),
-    })
-    
-    const articles = await Promise.all(
-      files.map(async (filename) => {
-        try {
-          const slug = path.dirname(filename)
-          return await getArticleBySlug(slug)
-        } catch (error) {
-          console.error(`Error importing article ${filename}:`, error)
-          return null
-        }
-      })
-    )
-    
-    // Filter out any null articles and sort by date
-    const validArticles = articles.filter((article): article is ArticleWithSlug => article !== null)
-    validArticles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    
-    return validArticles
-  } catch (error) {
-    console.error('Error in getAllArticles:', error)
-    return []
-  }
-} 
+/**
+ * Get all articles (compatibility function)
+ * @returns Array of ArticleWithSlug objects
+ */
+export const getAllArticles = () => getAllContent('blog'); 
