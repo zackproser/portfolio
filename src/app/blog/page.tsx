@@ -1,28 +1,54 @@
 import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { Article } from '@/lib/content/types/blog'
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
+import { getAllContentMetadata } from '@/lib/getAllContentMetadata'
+import { ExtendedMetadata } from '@/lib/shared-types'
 
 export const metadata: Metadata = createMetadata({
   title: 'Articles',
   description: 'All of my long-form thoughts on programming, leadership, product design, and more, collected in chronological order.',
 })
 
-function ArticleGrid({ articles }: { articles: Article[] }) {
+function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
+  // Add debugging to check for duplicate slugs
+  const slugCounts: Record<string, number> = {};
+  articles.forEach(article => {
+    const key = article.slug || 'unknown';
+    slugCounts[key] = (slugCounts[key] || 0) + 1;
+  });
+  
+  // Log any duplicate slugs
+  Object.entries(slugCounts)
+    .filter(([_, count]) => count > 1)
+    .forEach(([slug, count]) => {
+      console.warn(`Duplicate slug found: "${slug}" appears ${count} times`);
+    });
+  
   return (
     <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
-      {articles.map((article) => (
-        <BlogPostCard key={article.slug} article={article} />
-      ))}
+      {articles.map((article, index) => {
+        // Use _id if available, otherwise create a unique key
+        const uniqueKey = article._id || (article.slug ? `${article.slug}-${index}` : `article-${index}`);
+        return (
+          <BlogPostCard 
+            key={uniqueKey} 
+            article={article} 
+          />
+        );
+      })}
     </div>
   )
 }
 
 export default async function ArticlesIndex() {
-  const articles = await Article.getAllArticles()
-
+  // Use our helper function to get all blog post metadata
+  const articles = await getAllContentMetadata('blog');
+  
+  // Add debugging to log the articles being loaded
+  console.log(`Loaded ${articles.length} blog articles`);
+  
   return (
     <SimpleLayout
       title="I write to learn, and publish to share"

@@ -81,6 +81,7 @@ export interface ExtendedMetadata extends Metadata {
   slug: string
   url?: string  // Optional URL field for convenience
   tags?: string[]
+  _id?: string  // Internal unique identifier to prevent duplicate key issues
   commerce?: {
     isPaid: boolean
     price: number
