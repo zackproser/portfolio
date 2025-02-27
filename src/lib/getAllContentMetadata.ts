@@ -45,25 +45,57 @@ export async function getAllContentMetadata(contentType: string): Promise<Extend
     try {
       console.log(`Loading metadata for ${contentType}/${slug}`)
       // Dynamic import of the MDX file to get its metadata
-      const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+      const mdxPath = path.join(contentDir, slug, 'page.mdx')
       
-      if (!mdxModule.metadata) {
-        console.warn(`No metadata found for content: ${contentType}/${slug}`)
+      // Check file size to avoid issues with large files
+      const stats = fs.statSync(mdxPath)
+      if (stats.size > 1024 * 1024) { // 1MB limit
+        console.warn(`Skipping large file (${Math.round(stats.size/1024)}KB): ${contentType}/${slug}`)
         return null
       }
       
-      // Ensure the metadata has a slug (use the directory name if not provided)
-      const metadata = mdxModule.metadata as ExtendedMetadata
-      if (!metadata.slug) {
-        console.log(`No slug in metadata for ${slug}, using directory name`)
-        metadata.slug = slug
+      try {
+        const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+        
+        if (!mdxModule.metadata) {
+          console.warn(`No metadata found for content: ${contentType}/${slug}`)
+          return null
+        }
+        
+        // Ensure the metadata has a slug (use the directory name if not provided)
+        const metadata = mdxModule.metadata as ExtendedMetadata
+        if (!metadata.slug) {
+          console.log(`No slug in metadata for ${slug}, using directory name`)
+          metadata.slug = slug
+        } else {
+          // Normalize the slug to prevent path issues
+          // Remove any leading slashes
+          let formattedSlug = metadata.slug.replace(/^\/+/, '')
+          
+          // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
+          if (formattedSlug.startsWith(`${contentType}/`)) {
+            formattedSlug = formattedSlug.substring(contentType.length + 1)
+          }
+          
+          // Update the slug in the metadata
+          metadata.slug = formattedSlug
+          console.log(`Normalized slug for ${contentType}/${slug}: ${metadata.slug}`)
+        }
+        
+        // Add a unique ID to prevent duplicate key issues
+        metadata._id = `${contentType}-${slug}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+        
+        // Ensure the type is set correctly
+        metadata.type = metadata.type || (contentType === 'blog' ? 'blog' : 
+                                         contentType === 'videos' ? 'video' : 
+                                         contentType === 'learn/courses' ? 'course' : 'blog')
+        
+        console.log(`Successfully loaded metadata for ${contentType}/${slug}`)
+        return metadata
+      } catch (importError) {
+        console.error(`Import error for ${contentType}/${slug}:`, importError)
+        return null
       }
-      
-      // Add a unique ID to prevent duplicate key issues
-      metadata._id = `${contentType}-${slug}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-      
-      console.log(`Successfully loaded metadata for ${contentType}/${slug}`)
-      return metadata
     } catch (error) {
       console.error(`Error loading metadata for ${contentType}/${slug}:`, error)
       return null

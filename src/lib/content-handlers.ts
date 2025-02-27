@@ -5,6 +5,8 @@ import path from 'path'
 import { auth } from '../../auth'
 import { sql } from '@vercel/postgres'
 import { Session } from 'next-auth'
+import glob from 'fast-glob'
+import { Blog, ArticleWithSlug, ExtendedMetadata, Content } from './shared-types'
 
 /**
  * Generate static params for content of a specific type
@@ -36,6 +38,119 @@ export async function generateContentStaticParams(contentType: string) {
 }
 
 /**
+ * Import content from an MDX file
+ * @param slug The content slug
+ * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
+ * @returns Content object with metadata
+ */
+export async function importContent(
+  slug: string,
+  contentType: string = 'blog'
+): Promise<Content> {
+  try {
+    const imported = await import(
+      `../app/${contentType}/${slug}/page.mdx`
+    )
+    
+    // Get metadata from the MDX file
+    const metadata = imported.metadata
+  
+    if (!metadata) {
+      throw new Error(`No metadata found for ${contentType}/${slug}`)
+    }
+  
+    // Ensure the slug is correctly formatted
+    let formattedSlug = slug
+    
+    // Convert the metadata to Content type
+    return {
+      author: metadata.author || 'Unknown',
+      date: metadata.date || new Date().toISOString(),
+      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
+      description: metadata.description || '',
+      image: metadata.image,
+      type: metadata.type || (
+        contentType === 'blog' ? 'blog' : 
+        contentType === 'videos' ? 'video' : 
+        contentType === 'learn/courses' ? 'course' : 'blog'
+      ),
+      slug: formattedSlug,
+      ...(metadata.commerce && { commerce: metadata.commerce }),
+      ...(metadata.landing && { landing: metadata.landing }),
+      ...(metadata.tags && { tags: metadata.tags })
+    }
+  } catch (error) {
+    console.error(`Error importing content ${contentType}/${slug}:`, error)
+    throw error
+  }
+}
+
+/**
+ * Import just the metadata from content
+ * @param slug The content slug
+ * @param contentType The content type directory
+ * @returns Content object with metadata
+ */
+export async function importContentMetadata(
+  slug: string,
+  contentType: string = 'blog'
+): Promise<Content> {
+  return importContent(slug, contentType)
+}
+
+/**
+ * Get a single content item by slug - direct import for performance
+ * @param slug The content slug
+ * @param contentType The content type directory
+ * @returns Content object with slug
+ */
+export async function getContentBySlug(
+  slug: string, 
+  contentType: string = 'blog'
+): Promise<Content | null> {
+  try {
+    return await importContent(slug, contentType)
+  } catch (error) {
+    console.error(`Error importing content ${contentType}/${slug}:`, error)
+    return null
+  }
+}
+
+/**
+ * Get all content items of a specific type
+ * @param contentType The content type directory
+ * @returns Array of content items
+ */
+export async function getAllContent(contentType: string = 'blog'): Promise<Content[]> {
+  try {
+    const files = await glob(['**/page.mdx'], {
+      cwd: path.join(process.cwd(), `src/app/${contentType}`),
+    })
+    
+    const contentItems = await Promise.all(
+      files.map(async (filename) => {
+        try {
+          const slug = path.dirname(filename)
+          return await getContentBySlug(slug, contentType)
+        } catch (error) {
+          console.error(`Error importing content ${filename}:`, error)
+          return null
+        }
+      })
+    )
+    
+    // Filter out any null items and sort by date
+    const validItems = contentItems.filter((item): item is Content => item !== null)
+    validItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    
+    return validItems
+  } catch (error) {
+    console.error(`Error in getAllContent for ${contentType}:`, error)
+    return []
+  }
+}
+
+/**
  * Generate metadata for a content item
  * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
  * @param slug The content slug
@@ -45,7 +160,25 @@ export async function generateContentMetadata(contentType: string, slug: string)
   try {
     // Import the MDX file to get its metadata
     const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
-    return mdxModule.metadata || {}
+    
+    // Make a copy of the metadata to avoid modifying the original
+    const metadata = mdxModule.metadata ? { ...mdxModule.metadata } : {}
+    
+    // Ensure the slug is correctly formatted (without content type prefix)
+    if (metadata.slug) {
+      // Remove any leading slashes
+      let formattedSlug = metadata.slug.replace(/^\/+/, '')
+      
+      // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
+      if (formattedSlug.startsWith(`${contentType}/`)) {
+        formattedSlug = formattedSlug.substring(contentType.length + 1)
+      }
+      
+      // Update the slug in the metadata
+      metadata.slug = formattedSlug
+    }
+    
+    return metadata
   } catch (error) {
     console.error(`Error loading metadata for ${contentType}/${slug}:`, error)
     return {}
@@ -127,21 +260,42 @@ export async function loadContent(contentType: string, slug: string) {
   try {
     // Check if the MDX file exists
     if (!contentExists(contentType, slug)) {
+      console.error(`Content does not exist: ${contentType}/${slug}`)
       return notFound()
     }
     
     // Dynamically import the MDX content
-    const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
-    const MdxContent = mdxModule.default
-    const metadata = mdxModule.metadata
-
-    console.log(`Loading content ${contentType}/${slug}`)
-    console.log(metadata)
-    console.log(MdxContent)
+    console.log(`Attempting to import: @/app/${contentType}/${slug}/page.mdx`)
     
-    return { MdxContent, metadata }
+    try {
+      const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+      const MdxContent = mdxModule.default
+      const metadata = mdxModule.metadata
+
+      if (!MdxContent) {
+        console.error(`No default export found in ${contentType}/${slug}/page.mdx`)
+        return null
+      }
+
+      if (!metadata) {
+        console.error(`No metadata export found in ${contentType}/${slug}/page.mdx`)
+      }
+      
+      console.log(`Successfully loaded content ${contentType}/${slug}`)
+      return { MdxContent, metadata }
+    } catch (importError) {
+      console.error(`Import error for ${contentType}/${slug}:`, importError)
+      // Instead of calling notFound() immediately, return null and let the caller decide
+      return null
+    }
   } catch (error) {
     console.error(`Error loading content ${contentType}/${slug}:`, error)
-    return notFound()
+    return null
   }
-} 
+}
+
+// For backward compatibility with articles-compat.ts
+export const importArticle = importContent;
+export const importArticleMetadata = importContentMetadata;
+export const getArticleBySlug = getContentBySlug;
+export const getAllArticles = () => getAllContent('blog'); 

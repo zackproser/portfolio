@@ -12,10 +12,15 @@ export const metadata: Metadata = createMetadata({
 })
 
 function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
+  // Normalize slugs to prevent duplicate detection due to format differences
+  const normalizeSlug = (slug: string) => {
+    return slug?.replace(/^\/+/, '').replace(/^blog\//, '') || 'unknown';
+  };
+  
   // Add debugging to check for duplicate slugs
   const slugCounts: Record<string, number> = {};
   articles.forEach(article => {
-    const key = article.slug || 'unknown';
+    const key = normalizeSlug(article.slug);
     slugCounts[key] = (slugCounts[key] || 0) + 1;
   });
   
@@ -26,9 +31,26 @@ function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
       console.warn(`Duplicate slug found: "${slug}" appears ${count} times`);
     });
   
+  // Process articles to ensure consistent slug format
+  const processedArticles = articles.map(article => {
+    if (article.slug) {
+      // Create a copy to avoid modifying the original
+      const processed = { ...article };
+      
+      // Normalize the slug
+      let normalizedSlug = normalizeSlug(article.slug);
+      
+      // Update the slug in the processed article
+      processed.slug = normalizedSlug;
+      
+      return processed;
+    }
+    return article;
+  });
+  
   return (
     <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
-      {articles.map((article, index) => {
+      {processedArticles.map((article, index) => {
         // Use _id if available, otherwise create a unique key
         const uniqueKey = article._id || (article.slug ? `${article.slug}-${index}` : `article-${index}`);
         return (
@@ -48,6 +70,15 @@ export default async function ArticlesIndex() {
   
   // Add debugging to log the articles being loaded
   console.log(`Loaded ${articles.length} blog articles`);
+  
+  // Log the first few articles for debugging
+  articles.slice(0, 3).forEach((article, index) => {
+    console.log(`Article ${index + 1}:`, {
+      title: article.title,
+      slug: article.slug,
+      type: article.type
+    });
+  });
   
   return (
     <SimpleLayout
