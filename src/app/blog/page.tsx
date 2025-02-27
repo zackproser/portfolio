@@ -12,7 +12,7 @@ export const metadata: Metadata = createMetadata({
 
 function ArticleGrid({ articles }: { articles: Article[] }) {
   return (
-    <div className="mx-auto mt-16 grid max-w-7xl grid-cols-1 gap-x-12 gap-y-20 lg:grid-cols-3">
+    <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
       {articles.map((article) => (
         <BlogPostCard key={article.slug} article={article} />
       ))}

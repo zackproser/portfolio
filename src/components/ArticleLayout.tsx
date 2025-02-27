@@ -21,12 +21,20 @@ export function ArticleLayout({
   children,
   metadata,
 }: ArticleLayoutProps) {
-  console.log('WIKKITY BLASBLOW %', metadata)
-
-  if (!metadata.slug) {
-    console.error('ArticleLayout: metadata.slug is required but not provided')
-   // return null
+  // Add a debug log to help identify which articles are missing slugs
+  if (!metadata.slug || metadata.slug === '') {
+    // Instead of just logging an error, log more details to help debug
+    console.warn('ArticleLayout: metadata missing slug', { 
+      title: metadata.title, 
+      type: metadata.type,
+      date: metadata.date
+    });
   }
+
+  // Ensure we have string values for required fields
+  const safeSlug = metadata.slug || '';
+  const safeTitle = metadata.title as string || 'Untitled';
+  const safeType = metadata.type || 'blog';
 
   return (
     <>
@@ -36,7 +44,7 @@ export function ArticleLayout({
             <article>
               <header className="flex flex-col">
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                  {metadata.title as string}
+                  {safeTitle}
                 </h1>
                 <time
                   dateTime={metadata.date}
@@ -50,9 +58,9 @@ export function ArticleLayout({
               {metadata.commerce?.isPaid && !metadata.hideMiniPaywall && (
                 <MiniPaywall
                   price={metadata.commerce.price}
-                  slug={metadata.slug}
-                  title={metadata.title}
-                  type={metadata.type}
+                  slug={safeSlug}
+                  title={safeTitle}
+                  type={safeType}
                   image={metadata.commerce.paywallImage}
                   imageAlt={metadata.commerce.paywallImageAlt}
                   miniTitle={metadata.miniPaywallTitle ?? metadata.commerce?.paywallHeader ?? null}
@@ -64,8 +72,8 @@ export function ArticleLayout({
                 <ArticleContent
                   isPaid={metadata.commerce?.isPaid}
                   price={metadata.commerce?.price}
-                  slug={metadata.slug}
-                  title={metadata.title}
+                  slug={safeSlug}
+                  title={safeTitle}
                   previewLength={metadata.commerce?.previewLength}
                   previewElements={metadata.commerce?.previewElements}
                   paywallHeader={metadata.commerce?.paywallHeader}

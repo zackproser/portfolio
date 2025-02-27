@@ -39,6 +39,8 @@ export default function ArticleContent({
   const [hasPurchased, setHasPurchased] = useState(false)
 
   const checkPurchaseStatus = useCallback(async () => {
+    if (!slug) return; // Skip API call if slug is missing
+    
     try {
       const response = await fetch(`/api/check-purchase?slug=${slug}`)
       
@@ -55,13 +57,13 @@ export default function ArticleContent({
   }, [slug])
 
   useEffect(() => {
-    if (session?.user?.email && isPaid) {
+    if (session?.user?.email && isPaid && slug) {
       checkPurchaseStatus()
     }
   }, [session, slug, isPaid, checkPurchaseStatus])
 
   if (!slug) {
-    console.error('ArticleContent: slug is required but not provided')
+    console.warn('ArticleContent: slug is missing, rendering full content')
     return <>{children}</>
   }
 
