@@ -6,8 +6,8 @@ import { NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
 // Mock the getArticleBySlug function
-jest.mock('@/lib/articles-compat', () => ({
-  getArticleBySlug: jest.fn()
+jest.mock('@/lib/content-handlers', () => ({
+  getContentBySlug: jest.fn()
 }));
 
 // Mock the Vercel Postgres module

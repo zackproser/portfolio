@@ -2,7 +2,7 @@ import { ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
 
-import { getAllArticles } from './articles-compat'
+import { getAllContent } from './content-handlers'
 
 export interface Collection {
   title: string
@@ -12,7 +12,7 @@ export interface Collection {
 }
 
 export async function getAllCollections(): Promise<Collection[]> {
-  let articles = await getAllArticles()
+  let articles = await getAllContent('blog')
 
   let collections = [
     {

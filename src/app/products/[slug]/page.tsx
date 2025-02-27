@@ -1,6 +1,6 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug } from '@/lib/articles-compat';
+import { getContentBySlug } from '@/lib/content-handlers';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -12,7 +12,7 @@ export default async function ProductPage({
   searchParams 
 }: Props) {
   const resolvedParams = await params;
-  const content = await getArticleBySlug(resolvedParams.slug);
+  const content = await getContentBySlug(resolvedParams.slug, 'blog');
 
   if (!content) {
     notFound();

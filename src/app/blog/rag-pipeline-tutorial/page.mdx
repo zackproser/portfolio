@@ -13,7 +13,7 @@ import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
 import { ArticleLayout } from '@/components/ArticleLayout';
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
@@ -453,7 +453,7 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
@@ -497,7 +497,7 @@ export async function POST(req: Request) {
   const relatedPosts = await Promise.all(
     Array.from(blogUrls).map(async url => {
       const blogPath = path.basename(url.replace('page.mdx', ''))
-      return importArticleMetadata(`${blogPath}/page.mdx`)
+      return importContentMetadata(blogPath, 'blog')
     })
   )
 

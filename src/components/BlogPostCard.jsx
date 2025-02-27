@@ -91,39 +91,14 @@ export function BlogPostCard({ article }) {
     // Use the URL directly if provided
     href = url;
   } else if (slug) {
-    // Use the correct URL format based on content type
-    let typePath = type || 'blog';
+    // Simple content type based routing
+    const typePath = type === 'video' ? 'videos' : 
+                    type === 'comparison' ? 'comparisons' : 
+                    type === 'course' ? 'learn/courses' : 
+                    type || 'blog';
     
-    // Handle plural forms for routes
-    if (typePath === 'video') {
-      typePath = 'videos';
-    } else if (typePath === 'comparison') {
-      typePath = 'comparisons';
-    }
-    
-    // Normalize the slug to prevent duplicate path segments
-    let normalizedSlug = slug;
-    
-    // Remove any leading slashes
-    normalizedSlug = normalizedSlug.replace(/^\/+/, '');
-    
-    // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
-    const typePathPattern = new RegExp(`^${typePath}/`);
-    if (typePathPattern.test(normalizedSlug)) {
-      normalizedSlug = normalizedSlug.replace(typePathPattern, '');
-    }
-    
-    // Check if the slug already contains a path structure
-    if (normalizedSlug.includes('/')) {
-      // If slug contains slashes, add a leading slash
-      href = `/${normalizedSlug}`;
-    } else {
-      // Simple slug with no path structure - construct the path
-      href = `/${typePath}/${normalizedSlug}`;
-    }
-    
-    // Debug log the final href
-    console.log(`BlogPostCard: Generated href for "${title}": ${href} (from slug: ${slug}, type: ${typePath}, normalized: ${normalizedSlug})`);
+    href = `/${typePath}/${slug}`;
+    console.log(`BlogPostCard: Generated href for "${title}": ${href}`);
   } else {
     // If no slug is available, log a warning but provide a fallback
     console.warn(`BlogPostCard: No slug available for article "${title}"`);

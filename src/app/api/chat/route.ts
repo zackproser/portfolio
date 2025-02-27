@@ -2,7 +2,7 @@ import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 import path from 'path';
 import { BlogWithSlug } from '@/lib/shared-types';
 
@@ -38,8 +38,7 @@ export async function POST(req: Request) {
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const localBlogPath = `${blogPath}/page.mdx`
-    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
     relatedBlogPosts.push({ slug, ...metadata });
   }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
