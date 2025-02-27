@@ -127,7 +127,6 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     
     // Optional fields
     ...(processedImage && { image: processedImage }),
-    ...(contentUrl && { url: contentUrl }),
     
     // Next.js metadata fields
     ...(author && { authors: [{ name: author }], creator: author, publisher: author }),

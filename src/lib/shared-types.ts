@@ -80,7 +80,6 @@ export interface ExtendedMetadata extends Metadata {
   image?: string | StaticImageData | { src: string }
   type: 'blog' | 'course' | 'video' | 'demo'
   slug: string
-  url?: string  // Optional URL field for convenience
   tags?: string[]
   _id?: string  // Internal unique identifier to prevent duplicate key issues
   commerce?: {
