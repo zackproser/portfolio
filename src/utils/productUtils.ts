@@ -12,7 +12,6 @@ interface ProductDetails {
 	price_id?: string;
 	course_id?: string;
 	status?: CourseStatus;
-	url?: string;
 	commerce?: {
 		isPaid: boolean;
 		price: number;
