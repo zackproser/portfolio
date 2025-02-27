@@ -12,79 +12,26 @@ import chunking from '@/images/chunking.webp';
 import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
-import { ArticleLayout } from '@/components/ArticleLayout';
-import { importContentMetadata } from '@/lib/content-handlers'
 
 export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2024-02-13',
-  title: 'Build Production-Ready RAG Applications',
-  description: 'Step by step tutorial on building production-ready Retrieval Augmented Generation (RAG) pipelines',
-  image: ragPipelineElements,
-  type: 'blog',
-  slug: 'rag-pipeline-tutorial',
-  landing: {
-    subtitle: 'Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial.',
-    features: [
-      {
-        title: 'Modern RAG Pipeline using the latest tools',
-        description: 'Learn to build a production-ready RAG pipeline using the Vercel AI SDK'
-      },
-      {
-        title: 'Vector Search Mastery',
-        description: 'Master embeddings, vector databases, and semantic search'
-      },
-      {
-        title: 'Streaming Chat Interface',
-        description: 'Build real-time chat UIs with citations and context'
-      },
-      {
-        title: 'Production Best Practices',
-        description: 'Learn deployment, scaling, and maintenance best practices'
-      }
-    ],
-    testimonials: [
-      {
-        content: 'Thanks for publishing the tutorial, very helpful.',
-        author: {
-          name: 'Scott McCallum',
-          role: 'ML Engineer at TechCorp'
-        }
-      },
-      {
-        content: 'Finally, a RAG tutorial that goes beyond the basics. The production considerations were invaluable.',
-        author: {
-          name: 'Michael Rodriguez',
-          role: 'Senior Developer'
-        }
-      },
-      {
-        content: 'The complete package is worth it. The example code and deployment guides saved me weeks of work.',
-        author: {
-          name: 'Regina Wisoky',
-          role: 'AI Engineer'
-        }
-      }
-    ]
-  },
-  commerce: {
+    author: "Zachary Proser", 
+    date: "2025-01-05",
+    title: "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
+    description: "Step by step tutorial: how to build a production-ready RAG pipeline.",
+    image: ragPipelineTutorialLogo,
+    slug: 'rag-pipeline-tutorial',
     isPaid: true,
-    price: 49,
-    previewLength: 150,
-    previewElements: 49,
-    paywallHeader: "Master RAG Pipeline Creation",
-    paywallBody: "Get everything you need to build production-ready RAG applications: step-by-step tutorials, ready-to-use notebooks, and a complete example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
+    price: 4900,
+    previewLength: 450,
+    previewElements: 52,
+    paywallHeader: "Master RAG Development: The Complete Package",
+    paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
     buttonText: "Get the complete package ($49)",
     miniPaywallTitle: "Master RAG pipeline creation",
-    miniPaywallDescription: "Includes tutorials, notebooks, and a complete example site.",
+    miniPaywallDescription: "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
     paywallImage: ragPipelineElements,
-    paywallImageAlt: "The complete RAG development package: Tutorials, Notebooks, and Example Site"
-  }
+    paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site"
 });
-
-export default function Page(props) {
-  return <ArticleLayout metadata={metadata} {...props} />;
-}
 
 This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
 
@@ -453,7 +400,7 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importContentMetadata } from '@/lib/content-handlers'
+import { importArticleMetadata } from '@/lib/articles'
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
@@ -497,7 +444,7 @@ export async function POST(req: Request) {
   const relatedPosts = await Promise.all(
     Array.from(blogUrls).map(async url => {
       const blogPath = path.basename(url.replace('page.mdx', ''))
-      return importContentMetadata(blogPath, 'blog')
+      return importArticleMetadata(`${blogPath}/page.mdx`)
     })
   )
 

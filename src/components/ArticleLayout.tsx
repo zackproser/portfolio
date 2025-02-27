@@ -4,8 +4,6 @@ import GiscusWrapper from '@/components/GiscusWrapper'
 import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
-import ArticleContent from './ArticleContent'
-import MiniPaywall from './MiniPaywall'
 import { ExtendedMetadata } from '@/lib/shared-types'
 
 interface ArticleLayoutProps {
@@ -55,35 +53,8 @@ export function ArticleLayout({
                 </time>
               </header>
               
-              {metadata.commerce?.isPaid && !metadata.hideMiniPaywall && (
-                <MiniPaywall
-                  price={metadata.commerce.price}
-                  slug={safeSlug}
-                  title={safeTitle}
-                  type={safeType}
-                  image={metadata.commerce.paywallImage}
-                  imageAlt={metadata.commerce.paywallImageAlt}
-                  miniTitle={metadata.miniPaywallTitle ?? metadata.commerce?.paywallHeader ?? null}
-                  miniDescription={metadata.miniPaywallDescription ?? null}
-                />
-              )}
-
               <Prose className="mt-8">
-                <ArticleContent
-                  isPaid={metadata.commerce?.isPaid}
-                  price={metadata.commerce?.price}
-                  slug={safeSlug}
-                  title={safeTitle}
-                  previewLength={metadata.commerce?.previewLength}
-                  previewElements={metadata.commerce?.previewElements}
-                  paywallHeader={metadata.commerce?.paywallHeader}
-                  paywallBody={metadata.commerce?.paywallBody}
-                  buttonText={metadata.commerce?.buttonText}
-                  paywallImage={metadata.commerce?.paywallImage}
-                  paywallImageAlt={metadata.commerce?.paywallImageAlt}
-                >
-                  {children}
-                </ArticleContent>
+                {children}
               </Prose>
             </article>
             <NewsletterWrapper 
