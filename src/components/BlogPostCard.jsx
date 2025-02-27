@@ -61,7 +61,6 @@ export function BlogPostCard({ article }) {
     image = wakka, 
     status, 
     commerce, 
-    url, 
     slug,
     type
   } = article;
@@ -69,8 +68,7 @@ export function BlogPostCard({ article }) {
   // Log the full article object for debugging
   console.log(`BlogPostCard: Article data for "${title}":`, {
     slug,
-    type,
-    url
+    type
   });
   
   // Log warning if slug is missing
@@ -83,13 +81,10 @@ export function BlogPostCard({ article }) {
   // Check if the article has an external URL (starts with http)
   const isExternalLink = slug?.startsWith('http://') || slug?.startsWith('https://');
   
-  // Determine the href - prioritize url, then slug, and handle external links
+  // Determine the href - prioritize slug and handle external links
   let href;
   if (isExternalLink) {
     href = slug;
-  } else if (url) {
-    // Use the URL directly if provided
-    href = url;
   } else if (slug) {
     // Simple content type based routing
     const typePath = type === 'video' ? 'videos' : 
