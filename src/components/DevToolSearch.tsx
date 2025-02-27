@@ -20,7 +20,8 @@ export function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredTools = tools.filter((tool) => {
-    const searchContent = tool.title.toLowerCase()
+    if (!tool.title) return false
+    const searchContent = String(tool.title).toLowerCase()
     return searchContent.includes(searchQuery.toLowerCase())
   })
 

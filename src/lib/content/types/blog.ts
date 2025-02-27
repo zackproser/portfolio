@@ -3,6 +3,12 @@ import path from 'path';
 import glob from 'fast-glob';
 
 interface ArticleMetadata extends ContentMetadata {
+  author?: string;
+  date?: string;
+  title?: string;
+  description?: string;
+  image?: any;
+  slug?: string;
   commerce?: {
     isPaid: true;
     price: number;
@@ -47,7 +53,7 @@ export class Article extends Content {
     // Ensure all required fields are present before passing to super
     const processedMetadata = {
       title: metadata.title || metadata.description || 'Untitled',
-      slug: metadata.slug,
+      slug: metadata.slug || 'untitled-article',
       description: metadata.description || '',
       author: metadata.author || 'Unknown',
       date: metadata.date || new Date().toISOString(),

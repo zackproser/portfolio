@@ -23,8 +23,9 @@ export default function ArticleSearch({ articles }: { articles: ArticleWithSlug[
   }
 
   const filteredArticles = articles.filter((article: ArticleWithSlug) => {
-    return article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const titleMatch = article.title ? String(article.title).toLowerCase().includes(searchQuery.toLowerCase()) : false;
+    const descriptionMatch = article.description ? String(article.description).toLowerCase().includes(searchQuery.toLowerCase()) : false;
+    return titleMatch || descriptionMatch;
   })
 
   return (

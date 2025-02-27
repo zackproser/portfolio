@@ -2,16 +2,22 @@ import { StaticImageData } from 'next/image';
 import { ExtendedMetadata } from '@/lib/shared-types';
 import path from 'path';
 
+// Define ContentMetadata interface as a partial version of ExtendedMetadata
+export interface ContentMetadata extends Partial<ExtendedMetadata> {
+  // All fields are optional in ContentMetadata to allow for flexibility in construction
+  type?: 'blog' | 'course' | 'video' | 'demo';
+}
+
 // Content class directly implements ExtendedMetadata and adds methods
 export abstract class Content implements ExtendedMetadata {
   // ExtendedMetadata fields
-  title: string;
-  slug: string;
-  description: string;
-  author: string;
-  date: string;
+  title!: string;
+  slug!: string;
+  description!: string;
+  author!: string;
+  date!: string;
   image?: string | StaticImageData | { src: string };
-  type: 'blog' | 'course' | 'video' | 'demo';
+  type!: 'blog' | 'course' | 'video' | 'demo';
   tags: string[] = [];
   url?: string;
   commerce?: ExtendedMetadata['commerce'];

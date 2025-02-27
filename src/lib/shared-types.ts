@@ -1,6 +1,76 @@
 import { StaticImageData } from 'next/image'
 import { Metadata } from 'next'
 
+// Database interface for vector database comparisons
+export interface Database {
+  name: string;
+  logoId: string;
+  description: string;
+  deployment?: {
+    local?: boolean;
+    cloud?: boolean;
+    on_premises?: boolean;
+  };
+  scalability?: {
+    horizontal?: boolean;
+    vertical?: boolean;
+    distributed?: boolean;
+  };
+  data_management?: {
+    import?: boolean;
+    update_deletion?: boolean;
+    backup_restore?: boolean;
+  };
+  vector_similarity_search?: {
+    distance_metrics?: string[];
+    ann_algorithms?: string[];
+    filtering?: boolean;
+    post_processing?: boolean;
+  };
+  integration_api?: {
+    sdks?: string[];
+    rest_api?: boolean;
+    graphql_api?: boolean;
+    grpc_api?: boolean;
+  };
+  security?: {
+    authentication?: boolean;
+    encryption?: boolean;
+    access_control?: boolean;
+  };
+  community_ecosystem?: {
+    open_source?: boolean;
+    community_support?: boolean;
+    integration_frameworks?: string[];
+  };
+  pricing?: {
+    free_tier?: boolean;
+    pay_as_you_go?: boolean;
+    enterprise_plans?: boolean;
+  };
+  additional_features?: {
+    metadata_support?: boolean;
+    batch_processing?: boolean;
+    monitoring_logging?: boolean;
+  };
+  specific_details?: {
+    unique_feature?: string;
+    performance_metric?: string;
+  };
+  business_info: {
+    company_name?: string;
+    founded?: number;
+    headquarters?: string;
+    total_funding?: string;
+    latest_valuation: string;
+    funding_rounds: Array<{ date: string; amount: string; series: string }>;
+    key_people: Array<{ name: string; position: string }>;
+    employee_count: string;
+    [key: string]: any;
+  };
+  [category: string]: { [feature: string]: any } | any;
+}
+
 // Base metadata interface that extends Next.js Metadata
 export interface ExtendedMetadata extends Metadata {
   author: string
@@ -54,7 +124,7 @@ export interface Content extends ExtendedMetadata {
 
 // For blog posts and courses
 export interface Blog extends Content {
-  type: 'blog' | 'course' | 'video'
+  type: 'blog' | 'course' | 'video' | 'demo'
 }
 
 // For demos and other non-purchasable content
@@ -66,13 +136,13 @@ export interface Demo extends Content {
 }
 
 // Helper type for purchasable items
-export type Purchasable = Blog & {
+export type Purchasable = Content & {
   commerce: NonNullable<Blog['commerce']> & { isPaid: true }
 }
 
 // Type guard to check if content is purchasable
 export function isPurchasable(content: Content): content is Purchasable {
-  return content.type !== 'demo' && 'commerce' in content && (content as Blog).commerce?.isPaid === true;
+  return content.type !== 'demo' && 'commerce' in content && (content as any).commerce?.isPaid === true;
 }
 
 // Helper to generate default landing page content

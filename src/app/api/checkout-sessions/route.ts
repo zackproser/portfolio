@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
 					price_data: {
 						currency: 'usd',
 						product_data: {
-							name: content.title,
-							description: content.description || 'Premium Content Access',
+							name: content.title ? String(content.title) : 'Premium Content',
+							description: content.description ? String(content.description) : 'Premium Content Access',
 						},
 						unit_amount: content.commerce.price * 100,
 					},
