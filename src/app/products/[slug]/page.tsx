@@ -1,6 +1,6 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
-import { getArticleBySlug } from '@/lib/articles';
+import { getArticleBySlug } from '@/lib/articles-compat';
 
 interface Props {
   params: Promise<{ slug: string }>;

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',

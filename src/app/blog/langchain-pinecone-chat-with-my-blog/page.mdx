@@ -11,6 +11,7 @@ import pineconeConsole from '@/images/pinecone-console-rag-pipeline.webp'
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 import { createMetadata } from '@/utils/createMetadata'
+import { importArticleMetadata } from '@/lib/articles-compat'
 
 export const articleMetadata = {
     author: "Zachary Proser", 
@@ -676,7 +677,7 @@ import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 import path from 'path';
 import { ArticleWithSlug } from '@/lib/shared-types';
 

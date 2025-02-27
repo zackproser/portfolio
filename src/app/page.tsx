@@ -1,13 +1,10 @@
-import { getAllArticles } from "@/lib/articles"
-import { getAllVideos } from "@/lib/videos"
+import { getAllContentMetadata } from "@/lib/getAllContentMetadata"
 import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
 import { createMetadata } from '@/utils/createMetadata'
 import { auth } from '../../auth'
 import { sql } from '@vercel/postgres'
-import { importArticleMetadata } from '@/lib/articles'
-import { importCourse } from '@/lib/courses'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,9 +51,9 @@ export default async function Page() {
   ]
 
   try {
-    // Fetch all articles and videos
-    const allArticles = await getAllArticles()
-    const allVideos = await getAllVideos()
+    // Fetch all articles and videos using our new content system
+    const allArticles = await getAllContentMetadata('blog')
+    const allVideos = await getAllContentMetadata('videos')
 
     const deepMLTutorials = allArticles.filter(article => deepMLTutorialSlugs.includes(article.slug))
     const mlProjects = allArticles.filter(article => mlProjectSlugs.includes(article.slug))
@@ -65,7 +62,7 @@ export default async function Page() {
       refArchitectureSlugs.includes(article.slug)
     )
     const careerAdvice = allArticles.filter(article => careerAdviceSlugs.includes(article.slug))
-    const videos = allVideos.filter((video: { slug: string }) => videoSlugs.includes(video.slug))
+    const videos = allVideos.filter((video) => videoSlugs.includes(video.slug))
 
     // Server-side mobile detection
     const headersList = await headers()

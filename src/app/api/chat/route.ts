@@ -2,7 +2,7 @@ import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles'
+import { importArticleMetadata } from '@/lib/articles-compat'
 import path from 'path';
 import { BlogWithSlug } from '@/lib/shared-types';
 

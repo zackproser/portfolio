@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductDetails, ProductDetails } from "@/utils/productUtils";
 import { sql } from '@vercel/postgres'
-import { getArticleBySlug } from '@/lib/articles'
+import { getArticleBySlug } from '@/lib/articles-compat'
 
 export async function GET(req: NextRequest) {
 	console.log("GET /products");
