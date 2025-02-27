@@ -155,8 +155,18 @@ export abstract class Content implements ExtendedMetadata {
     return pathToType[typeSegment] || 'blog';
   }
 
-  // Standard method to load any content
+  /**
+   * Load content by type and slug
+   * @param type Content type
+   * @param slug Content slug
+   * @returns Content instance
+   */
   static async load(type: string, slug: string): Promise<Content> {
+    // Validate content type first
+    if (!Object.keys(Content.TYPE_PATHS).includes(type)) {
+      throw new Error(`Invalid content type: ${type}`);
+    }
+    
     try {
       const basePath = Content.getBasePathForType(type);
       
