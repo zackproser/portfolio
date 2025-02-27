@@ -47,35 +47,61 @@ const PriceBadge = ({ price }) => {
   )
 }
 
-const rootPaths = {
-  collection: '/collections/',
-  video: '/videos/',
-  course: '/learn/courses/',
-  newsletter: '/newsletter/',
-  demo: '/demos/',
-  comparison: '/comparisons/',
-  tool: '/tools/',
-  default: '/blog/'
-}
-
-function getDefaultUrl(article) {
-  const path = rootPaths[article.type] || rootPaths.default;
-  return `${path}${article.slug}`;
-}
-
 export function BlogPostCard({ article }) {
   if (!article) {
     return null;
   }
 
-  const { title = 'Untitled', date = '', description = '', image = wakka, status, commerce, url } = article;
+  // Ensure we extract and handle the slug properly
+  const { 
+    title = 'Untitled', 
+    date = '', 
+    description = '', 
+    image = wakka, 
+    status, 
+    commerce, 
+    url, 
+    slug 
+  } = article;
+  
   const price = commerce?.price;
   
-  const isExternalLink = article.slug?.startsWith('http://') || article.slug?.startsWith('https://');
-  const href = isExternalLink ? article.slug : (url || getDefaultUrl(article));
+  // Check if the article has an external URL (starts with http)
+  const isExternalLink = slug?.startsWith('http://') || slug?.startsWith('https://');
+  
+  // Determine the href - prioritize url, then slug, and handle external links
+  let href;
+  if (isExternalLink) {
+    href = slug;
+  } else if (url) {
+    href = url;
+  } else if (slug) {
+    // Map article types to correct URL paths
+    let typePath = article.type || 'blog';
+    // Handle plural forms for routes
+    if (typePath === 'video') {
+      typePath = 'videos';
+    }
+    href = `/${typePath}/${slug}`;
+  } else {
+    // If no slug is available, we should NOT generate one and try to link to it
+    // as that would cause 404 errors or import errors
+    console.warn(`BlogPostCard: No slug available for article "${title}"`);
+    
+    // Instead, use a disabled link or no link at all
+    href = "#";
+    
+    // We don't modify the article object anymore to avoid side effects
+  }
 
-  const LinkComponent = isExternalLink ? 'a' : Link;
-  const linkProps = isExternalLink ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
+  // Use a different approach for articles without proper links
+  const hasValidLink = href !== "#";
+  
+  // Only use Link for valid internal links
+  const LinkComponent = isExternalLink || !hasValidLink ? 'a' : Link;
+  const linkProps = isExternalLink ? 
+    { href, target: "_blank", rel: "noopener noreferrer" } : 
+    (!hasValidLink ? { href: "#", className: "cursor-default" } : { href });
 
   // Format the date
   const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
@@ -88,8 +114,8 @@ export function BlogPostCard({ article }) {
   const imageSource = typeof image === 'string' ? image : image?.src || wakka;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800 relative">
-      <LinkComponent {...linkProps}>
+    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800 relative w-full">
+      <LinkComponent {...linkProps} className="group w-full">
         <div className="relative w-full">
           <Image
             src={imageSource}
