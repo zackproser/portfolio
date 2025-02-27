@@ -1,6 +1,6 @@
 import { ExtendedMetadata } from '@/lib/shared-types'
 import { generateOgUrl } from '@/utils/ogUrl'
-import { Content } from '@/lib/content/base'
+import path from 'path'
 
 type MetadataParams = Partial<ExtendedMetadata> & {
   /**
@@ -17,6 +17,67 @@ const defaultMetadata: Partial<ExtendedMetadata> = {
   twitter: {
     card: 'summary_large_image',
   },
+}
+
+// Type mapping for consistent path/URL generation
+const TYPE_PATHS: Record<string, string> = {
+  'blog': 'blog',
+  'course': 'learn/courses',
+  'video': 'videos',
+  'demo': 'demos',
+  'newsletter': 'newsletter',
+  'comparison': 'comparisons',
+  'tool': 'tools'
+};
+
+/**
+ * Get the slug from a file path
+ * @param filePath The file path
+ * @returns The slug extracted from the path
+ */
+function getSlugFromPath(filePath: string): string {
+  // Get the directory name containing the MDX file
+  const dirname = path.dirname(filePath);
+  // Get the last part of the path (the directory name)
+  const parts = dirname.split(path.sep);
+  return parts[parts.length - 1];
+}
+
+/**
+ * Get the content type from a file path
+ * @param filePath The file path
+ * @returns The content type extracted from the path
+ */
+function getTypeFromPath(filePath: string): 'blog' | 'course' | 'video' | 'demo' {
+  const parts = filePath.split(path.sep);
+  
+  // Look for known content type directories in the path
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (part === 'blog') return 'blog';
+    if (part === 'videos') return 'video';
+    if (part === 'demos') return 'demo';
+    if (part === 'courses' || part === 'learn') return 'course';
+  }
+  
+  // Default to blog if no match
+  return 'blog';
+}
+
+/**
+ * Generate a URL for any content type and slug
+ * @param type Content type
+ * @param slug Content slug
+ * @returns Full URL path
+ */
+function getUrlForContent(type: string, slug: string): string {
+  const baseDir = TYPE_PATHS[type];
+
+  if (!baseDir) {
+    return `/${type}/${slug}`;
+  }
+  
+  return `/${baseDir}/${slug}`;
 }
 
 /**
@@ -40,18 +101,18 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
 
   // Generate a slug based on priority:
   // 1. Explicitly provided slug
-  // 2. Generated from file path using Content.getSlugFromPath
-  const pathBasedSlug = filePath ? Content.getSlugFromPath(filePath) : '';
+  // 2. Generated from file path
+  const pathBasedSlug = filePath ? getSlugFromPath(filePath) : '';
   const finalSlug = slug || pathBasedSlug || '';
 
   // Determine content type from file path if not explicitly provided
-  const contentType = type || (filePath ? Content.getTypeFromPath(filePath) : 'blog');
+  const contentType = type || (filePath ? getTypeFromPath(filePath) : 'blog');
 
   // Handle webpack-imported images and ensure we preserve the object structure
   const processedImage = typeof image === 'string' ? { src: image } : image;
 
-  // Generate URL using Content.getUrlForContent
-  const contentUrl = finalSlug ? Content.getUrlForContent(contentType, finalSlug) : undefined;
+  // Generate URL using the type and slug
+  const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
   const metadata = {
@@ -92,7 +153,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     image: processedImage,
     type: contentType,
     slug: finalSlug,
-    // Add the URL field using Content.getUrlForContent
+    // Add the URL field
     url: contentUrl,
     ...(commerce && { commerce }),
     ...(landing && { landing })

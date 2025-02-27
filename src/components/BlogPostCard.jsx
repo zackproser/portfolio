@@ -74,24 +74,34 @@ export function BlogPostCard({ article }) {
   if (isExternalLink) {
     href = slug;
   } else if (url) {
+    // Use the URL directly if provided
     href = url;
   } else if (slug) {
-    // Map article types to correct URL paths
+    // Use the correct URL format based on content type
+    // Fix: Use absolute paths to prevent path concatenation issues
     let typePath = article.type || 'blog';
+    
     // Handle plural forms for routes
     if (typePath === 'video') {
       typePath = 'videos';
+    } else if (typePath === 'comparison') {
+      typePath = 'comparisons';
     }
-    href = `/${typePath}/${slug}`;
+    
+    // Fix: Ensure we're using absolute paths by always starting with /
+    // This prevents the /blog/blog/slug issue
+    href = `/${typePath}/${slug.replace(/^\/+/, '')}`;
+    
+    // Fix: If the slug already contains the type path, don't duplicate it
+    if (slug.startsWith(`${typePath}/`)) {
+      href = `/${slug.replace(/^\/+/, '')}`;
+    } else if (slug.startsWith(`/${typePath}/`)) {
+      href = slug;
+    }
   } else {
-    // If no slug is available, we should NOT generate one and try to link to it
-    // as that would cause 404 errors or import errors
+    // If no slug is available, log a warning but provide a fallback
     console.warn(`BlogPostCard: No slug available for article "${title}"`);
-    
-    // Instead, use a disabled link or no link at all
     href = "#";
-    
-    // We don't modify the article object anymore to avoid side effects
   }
 
   // Use a different approach for articles without proper links
@@ -99,9 +109,14 @@ export function BlogPostCard({ article }) {
   
   // Only use Link for valid internal links
   const LinkComponent = isExternalLink || !hasValidLink ? 'a' : Link;
+  
+  // For Link components, ensure we're using the correct href format
   const linkProps = isExternalLink ? 
     { href, target: "_blank", rel: "noopener noreferrer" } : 
-    (!hasValidLink ? { href: "#", className: "cursor-default" } : { href });
+    (!hasValidLink ? 
+      { href: "#", className: "cursor-default" } : 
+      { href }
+    );
 
   // Format the date
   const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
