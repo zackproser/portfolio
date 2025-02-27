@@ -2,70 +2,9 @@ import { StaticImageData } from 'next/image';
 import { ExtendedMetadata } from '@/lib/shared-types';
 import path from 'path';
 
-interface ContentEntry {
-  metadata: ExtendedMetadata;
-  content: string;
-}
-
-class ContentRegistry {
-  private static instance: ContentRegistry;
-  private contentMap: Map<string, ContentEntry> = new Map();
-
-  private constructor() {}
-
-  static getInstance(): ContentRegistry {
-    if (!ContentRegistry.instance) {
-      ContentRegistry.instance = new ContentRegistry();
-    }
-    return ContentRegistry.instance;
-  }
-
-  register(path: string, metadata: ExtendedMetadata, content: string = '') {
-    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-    this.contentMap.set(normalizedPath, { metadata, content });
-  }
-
-  get(path: string): ContentEntry | undefined {
-    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-    return this.contentMap.get(normalizedPath);
-  }
-
-  has(path: string): boolean {
-    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-    return this.contentMap.has(normalizedPath);
-  }
-
-  clear() {
-    this.contentMap.clear();
-  }
-
-  getAllPaths(): string[] {
-    return Array.from(this.contentMap.keys());
-  }
-
-  getByType(type: string): ContentEntry[] {
-    return Array.from(this.contentMap.entries())
-      .filter(([_, entry]) => entry.metadata.type === type)
-      .map(([_, entry]) => entry);
-  }
-}
-
-export const contentRegistry = ContentRegistry.getInstance();
-
-// Use ExtendedMetadata directly instead of redefining ContentMetadata
-export type ContentMetadata = ExtendedMetadata;
-
-// Define the interface for the abstract class methods
-export interface ContentMethods {
-  getUrl(): string;
-  getSourcePath(): string;
-}
-
-// Combine the metadata and methods interfaces
-export interface Content extends ContentMetadata, ContentMethods {}
-
-export abstract class Content implements ContentMetadata {
-  // Include all ExtendedMetadata fields
+// Content class directly implements ExtendedMetadata and adds methods
+export abstract class Content implements ExtendedMetadata {
+  // ExtendedMetadata fields
   title: string;
   slug: string;
   description: string;
@@ -73,15 +12,14 @@ export abstract class Content implements ContentMetadata {
   date: string;
   image?: string | StaticImageData | { src: string };
   type: 'blog' | 'course' | 'video' | 'demo';
-  tags: string[];
+  tags: string[] = [];
   url?: string;
   commerce?: ExtendedMetadata['commerce'];
   landing?: ExtendedMetadata['landing'];
-  // Next.js metadata fields are optional in the class
   openGraph?: ExtendedMetadata['openGraph'];
   twitter?: ExtendedMetadata['twitter'];
 
-  // Shared type mapping for consistent path/URL generation across all methods
+  // Shared type mapping for consistent path/URL generation
   static readonly TYPE_PATHS: Record<string, string> = {
     'blog': 'blog',
     'course': 'learn/courses',
@@ -92,24 +30,20 @@ export abstract class Content implements ContentMetadata {
     'tool': 'tools'
   };
 
-  constructor(metadata: ContentMetadata) {
-    this.title = metadata.title;
-    this.slug = metadata.slug;
-    this.description = metadata.description;
-    this.author = metadata.author;
-    this.date = metadata.date;
-    this.image = metadata.image;
-    this.type = metadata.type;
+  constructor(metadata: ExtendedMetadata) {
+    // Copy all metadata fields to this instance
+    Object.assign(this, metadata);
     this.tags = metadata.tags || [];
-    this.url = metadata.url;
-    this.commerce = metadata.commerce;
-    this.landing = metadata.landing;
-    this.openGraph = metadata.openGraph;
-    this.twitter = metadata.twitter;
   }
 
-  abstract getUrl(): string;
-  abstract getSourcePath(): string;
+  // Content methods
+  getUrl(): string {
+    return Content.getUrlForContent(this.type, this.slug);
+  }
+
+  getSourcePath(): string {
+    return Content.getSourcePathForContent(this.type, this.slug);
+  }
 
   /**
    * Get the base path for a content type
@@ -221,10 +155,7 @@ export abstract class Content implements ContentMetadata {
     return pathToType[typeSegment] || 'blog';
   }
 
-  /**
-   * Standard method to load any content type from a slug
-   * This ensures consistent behavior across all content types
-   */
+  // Standard method to load any content
   static async load(type: string, slug: string): Promise<Content> {
     try {
       const basePath = Content.getBasePathForType(type);
@@ -237,11 +168,8 @@ export abstract class Content implements ContentMetadata {
         throw new Error(`No metadata found for ${slug}`);
       }
       
-      // Factory method to load the right type of content
-      const { default: ContentType } = await import(`./types/${type}`);
-      
-      // Create content from the exported metadata
-      return new ContentType({
+      // Create a ContentItem with the metadata
+      return new ContentItem({
         ...mdxModule.metadata,
         slug,
         type
@@ -258,5 +186,30 @@ export abstract class Content implements ContentMetadata {
     }
     // In development or production, use the actual workspace path
     return process.env.WORKSPACE_PATH || process.cwd();
+  }
+}
+
+// A concrete implementation of Content for all content types
+export class ContentItem extends Content {
+  constructor(metadata: ExtendedMetadata) {
+    super(metadata);
+  }
+
+  // Add any specialized methods here
+  // For example, commerce-related methods
+  async createCheckoutSession(userId: string): Promise<string> {
+    if (!this.commerce?.isPaid) {
+      throw new Error('Content is not purchasable');
+    }
+    
+    // Implementation...
+    throw new Error('Not implemented');
+  }
+
+  async verifyPurchase(userId: string): Promise<boolean> {
+    if (!this.commerce?.isPaid) return true;
+    
+    // Implementation...
+    throw new Error('Not implemented');
   }
 } 
