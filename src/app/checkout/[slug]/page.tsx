@@ -4,11 +4,20 @@ import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
 import Image from 'next/image'
-import { auth } from '@/auth'
+import { auth } from '../../../../auth'
+
+// Define the PageProps interface to match the expected type
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { slug } = params
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   
   try {
     // Try to find the content in different content types
@@ -41,8 +50,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function CheckoutPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export default async function CheckoutPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   
   // Check if user is logged in
   const session = await auth()

@@ -2,7 +2,7 @@ import { ArticleWithSlug } from './shared-types'
 import glob from 'fast-glob'
 import path from 'path'
 
-import { getAllArticles } from './articles'
+import { getAllArticles } from './articles-compat'
 
 export interface Collection {
   title: string

@@ -12,18 +12,27 @@ import {
 // Content type for this handler
 const CONTENT_TYPE = 'videos'
 
+// Define the PageProps interface to match the expected type
+interface PageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
 // Generate static params for all video posts
 export async function generateStaticParams() {
   return generateContentStaticParams(CONTENT_TYPE)
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  return generateContentMetadata(CONTENT_TYPE, params.slug)
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  return generateContentMetadata(CONTENT_TYPE, resolvedParams.slug)
 }
 
-export default async function VideoSlugPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
+export default async function VideoSlugPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   
   // Load the content
   const result = await loadContent(CONTENT_TYPE, slug)

@@ -33,13 +33,13 @@ export async function importNewsletter(
     slug: path.basename(articleFilename, '.mdx'),
     landing: {
       subtitle: metadata.description,
-      features: []
+      features: [],
+      testimonials: []
     },
-    price: 0,
-    tableOfContents: {},
-    testimonials: [],
-    features: [],
-    benefits: []
+    commerce: {
+      isPaid: false,
+      price: 0
+    }
   }
 }
 

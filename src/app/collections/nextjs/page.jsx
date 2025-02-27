@@ -6,7 +6,7 @@ import collectionImage from "@/images/nextjs-data-driven-website.webp"
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles'
+import { getAllArticles } from '@/lib/articles-compat'
 
 export const metadata = {
   title: "NEXTJS AND VERCEL",

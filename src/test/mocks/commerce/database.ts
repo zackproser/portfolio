@@ -32,7 +32,7 @@ export const mockDatabase = (customResults = {}) => {
   // Mock the SQL function to return different results based on the query
   const mockSql = jest.fn().mockImplementation((query, ...params) => {
     // Simple query matching based on string content
-    const queryStr = query.toString();
+    const queryStr = typeof query === 'string' ? query : String(query);
     
     if (queryStr.includes('FROM users')) {
       return { rows: results.users };
