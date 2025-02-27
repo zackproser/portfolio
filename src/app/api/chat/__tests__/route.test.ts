@@ -24,11 +24,14 @@ jest.mock('../../../services/context', () => ({
 }));
 
 // Mock the Article import
-jest.mock('@/lib/articles-compat', () => ({
-  importArticleMetadata: jest.fn().mockResolvedValue({
+jest.mock('@/lib/content-handlers', () => ({
+  importContentMetadata: jest.fn().mockResolvedValue({
     slug: 'test-article',
     title: 'Test Article',
-    description: 'Test description'
+    description: 'Test Description',
+    date: '2023-01-01',
+    author: 'Test Author',
+    tags: ['test']
   })
 }));
 

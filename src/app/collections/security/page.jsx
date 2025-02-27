@@ -6,7 +6,7 @@ import collectionImage from "@/images/ggshield-preventing-a-secret-from-escaping
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles-compat'
+import { getAllContent } from '@/lib/content-handlers'
 
 export const metadata = {
   title: "SECURITY",
@@ -15,7 +15,7 @@ export const metadata = {
 }
 
 export default async function CollectionPage() {
-  let articles = await getAllArticles(["ggshield-can-save-you-from-yourself","yubikey-sudo-git-signing","aws-vault-open-source-tool"])
+  let articles = await getAllContent('blog', ["ggshield-can-save-you-from-yourself","yubikey-sudo-git-signing","aws-vault-open-source-tool"])
 
   return (
     <SimpleLayout title="Security collection">

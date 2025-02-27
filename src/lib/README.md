@@ -7,7 +7,6 @@ This document describes the standardized content system for handling MDX-based c
 ## Key Files
 
 - `content-handlers.ts`: The main file containing all content-related functionality
-- `articles-compat.ts`: Backward compatibility layer (uses content-handlers.ts internally)
 - `getAllBlogMetadata.ts`: Simplified wrapper around content-handlers.ts for blog content
 - `getAllContentMetadata.ts`: Generic metadata retrieval for any content type
 
@@ -84,22 +83,22 @@ export async function generateMetadata({ params }) {
 }
 ```
 
-## Migrating from Old Code
+## Migration Complete
 
-If you're using the old `articles-compat.ts` functions, consider migrating to the new standardized functions in `content-handlers.ts`:
+The migration from the old article-specific functions to the new standardized content system is now complete. All code now uses the following functions from `content-handlers.ts`:
 
-| Old Function | New Function |
+| Function | Purpose |
 |--------------|--------------|
-| `importArticle` | `importContent` |
-| `importArticleMetadata` | `importContentMetadata` |
-| `getArticleBySlug` | `getContentBySlug` |
-| `getAllArticles` | `getAllContent('blog')` |
+| `importContent` | Import content and metadata from MDX files |
+| `importContentMetadata` | Import only metadata from MDX files |
+| `getContentBySlug` | Get content by slug with error handling |
+| `getAllContent` | Get all content of a specific type |
 
 The new functions are more flexible and support all content types, not just blog articles.
 
 ## Best Practices
 
-1. Always use `content-handlers.ts` functions for new code
+1. Always use `content-handlers.ts` functions for content management
 2. Use the appropriate content type parameter instead of hardcoding 'blog'
 3. Handle errors appropriately when loading content
 4. Use the `loadContent` function when you need both the MDX component and metadata 

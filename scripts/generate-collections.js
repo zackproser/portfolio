@@ -26,7 +26,7 @@ import collectionImage from "@/images/${collection.image}"
 
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles-compat'
+import { getAllContent } from '@/lib/content-handlers'
 
 export const metadata = {
   title: "${title.toUpperCase()}",
@@ -35,7 +35,7 @@ export const metadata = {
 }
 
 export default async function CollectionPage() {
-  let articles = await getAllArticles(${JSON.stringify(collection.slugs)})
+  let articles = await getAllContent('blog', ${JSON.stringify(collection.slugs)})
 
   return (
     <SimpleLayout title="${title.charAt(0).toUpperCase() + title.slice(1)} collection">

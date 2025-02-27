@@ -11,7 +11,7 @@ import pineconeConsole from '@/images/pinecone-console-rag-pipeline.webp'
 import ConsultingCTA from '@/components/ConsultingCTA'
 
 import { createMetadata } from '@/utils/createMetadata'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 
 export const articleMetadata = {
     author: "Zachary Proser", 
@@ -320,8 +320,7 @@ let relatedBlogPosts: ArticleWithSlug[] = []
 // Loop through all the blog urls and get the metadata for each
 for (const blogUrl of blogUrls) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const localBlogPath = `${blogPath}/page.mdx`
-    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
     relatedBlogPosts.push({ slug, ...metadata });
 }
 ```
@@ -677,7 +676,7 @@ import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles-compat'
+import { importContentMetadata } from '@/lib/content-handlers'
 import path from 'path';
 import { ArticleWithSlug } from '@/lib/shared-types';
 
@@ -711,8 +710,7 @@ export async function POST(req: Request) {
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const localBlogPath = `${blogPath}/page.mdx`
-    const { slug, ...metadata } = await importArticleMetadata(localBlogPath);
+    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
     relatedBlogPosts.push({ slug, ...metadata });
   }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
