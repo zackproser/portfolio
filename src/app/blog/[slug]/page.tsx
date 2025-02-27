@@ -1,15 +1,15 @@
 import { Metadata } from 'next'
 import { auth } from '../../../../auth'
-import Paywall from '@/components/Paywall'
 import { 
   generateContentStaticParams, 
   generateContentMetadata, 
   hasUserPurchased,
   loadContent,
-  getDefaultPaywallText,
-  contentExists
+  contentExists,
+  renderContent
 } from '@/lib/content-handlers'
 import { notFound } from 'next/navigation'
+import { ArticleLayout } from '@/components/ArticleLayout'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -32,55 +32,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return generateContentMetadata(CONTENT_TYPE, resolvedParams.slug)
 }
 
-export default async function BlogSlugPage({ params }: PageProps) {
-  console.log('BlogSlugPage', params)
+export default async function Page({ params }: PageProps) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
-  
-  // Check if the content exists first
-  if (!contentExists(CONTENT_TYPE, slug)) {
-    console.error(`Blog post not found: ${slug}`)
-    return notFound()
-  }
   
   // Load the content
   const result = await loadContent(CONTENT_TYPE, slug)
   
-  // Handle notFound case
   if (!result) {
-    console.error(`Failed to load blog post: ${slug}`)
     return notFound()
   }
   
   const { MdxContent, metadata } = result
   
-  // Check if content is paid and handle paywall logic
-  if (metadata?.commerce?.isPaid) {
-    // Get the user session using the auth() function
-    const session = await auth()
-    
-    // If no user is logged in or hasn't purchased, show a preview with paywall
-    if (!session?.user || !(await hasUserPurchased(session.user.id, slug))) {
-      const defaultText = getDefaultPaywallText(CONTENT_TYPE)
-      
-      // Show a limited preview with a paywall
-      return (
-        <>
-          <MdxContent />
-          <Paywall 
-            price={metadata.commerce.price} 
-            slug={slug} 
-            title={metadata.title}
-            paywallHeader={metadata.commerce.paywallHeader || defaultText.header}
-            paywallBody={metadata.commerce.paywallBody || defaultText.body}
-            buttonText={metadata.commerce.buttonText || defaultText.buttonText}
-            image={metadata.image}
-          />
-        </>
-      )
-    }
-  }
+  // Get the user session
+  const session = await auth()
   
-  // For free content or if the user has purchased, render the full content
-  return <MdxContent />
+  // Check if user has purchased the content (if it's paid)
+  const hasPurchased = metadata?.commerce?.isPaid 
+    ? await hasUserPurchased(session?.user?.id, slug)
+    : false
+  
+  // For MDX files that don't use ArticleLayout directly
+  return (
+    <ArticleLayout metadata={metadata}>
+      {renderContent(MdxContent, metadata, session, hasPurchased)}
+    </ArticleLayout>
+  )
 } 
