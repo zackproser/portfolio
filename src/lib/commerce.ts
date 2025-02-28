@@ -1,4 +1,4 @@
-import { Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types';
+import { Blog, isPurchasable, Purchasable, BlogWithSlug, Content } from './shared-types';
 import path from 'path';
 import glob from 'fast-glob';
 import { ProductContent } from './types/product';
@@ -101,50 +101,7 @@ export async function hasUserPurchased(userId: string, slug: string): Promise<bo
   }
 }
 
-const PRODUCTS_DIRECTORY = path.join(process.cwd(), 'src/data/products');
-
-// Get a product from static JSON files (for custom landing pages)
-async function getStaticProductContent(slug: string): Promise<ProductContent | null> {
-  try {
-    const fullPath = path.join(PRODUCTS_DIRECTORY, `${slug}.json`);
-    const fileContents = await fs.readFile(fullPath, 'utf8');
-    return JSON.parse(fileContents) as ProductContent;
-  } catch (error) {
-    return null;
-  }
-}
-
-// Get a product from an article or course
-async function getDynamicProductContent(slug: string): Promise<ProductContent | null> {
-  // First check if it's a blog post
-  const article = await getContentBySlug(slug);
-  if (article) {
-    if (article.metadata?.commerce?.isPaid) {
-      return generateProductFromArticle(article.metadata as BlogWithSlug);
-    }
-  }
-
-  // Check if it's a course
-  const courses = await getAllContent('learn/courses');
-  const course = courses.find(c => c.slug === slug);
-  if (course && isPurchasable(course)) {
-    return generateProductFromArticle(course as Blog);
-  }
-
-  return null;
-}
-
-export async function getProductContent(slug: string): Promise<ProductContent | null> {
-  // First try to get a static product page
-  const staticProduct = await getStaticProductContent(slug);
-  if (staticProduct) {
-    return staticProduct;
-  }
-
-  // If no static page exists, try to generate one from an article or course
-  return getDynamicProductContent(slug);
-}
-
+// Get all products (any content with isPaid=true)
 export async function getAllProducts(): Promise<ProductContent[]> {
   try {
     // Get all content
@@ -154,35 +111,16 @@ export async function getAllProducts(): Promise<ProductContent[]> {
       getAllContent('videos')
     ]);
 
-    // Get static product pages
-    const files = await fs.readdir(PRODUCTS_DIRECTORY);
-    const staticProducts = await Promise.all(
-      files
-        .filter(file => file.endsWith('.json'))
-        .map(async file => {
-          const content = await getStaticProductContent(file.replace(/\.json$/, ''));
-          return content;
-        })
-    );
-
-    // Get paid articles
-    const articles = await getAllContent('blog');
-    const articleProducts = articles
-      .filter(article => article.commerce?.isPaid)
-      .map(article => generateProductFromArticle(article as BlogWithSlug));
-
-    // TODO: Add course products when implemented
-    // const courses = await getAllCourses();
-    // const courseProducts = courses.map(course => generateProductFromCourse(course));
-
-    // Combine all products
-    const allProducts = [
-      ...staticProducts,
-      ...articleProducts,
-      // ...courseProducts
-    ].filter((p): p is ProductContent => p !== null);
-
-    return allProducts;
+    // Combine all content
+    const allContent = [...blogContent, ...courseContent, ...videoContent];
+    
+    // Filter to only paid content
+    const paidContent = allContent.filter(content => content.commerce?.isPaid);
+    
+    // Transform to product content
+    const productContent = paidContent.map(content => generateProductFromArticle(content as BlogWithSlug));
+    
+    return productContent.filter((p): p is ProductContent => p !== null);
   } catch (error) {
     console.error('Error loading products:', error);
     return [];
@@ -203,28 +141,22 @@ export async function getAllPurchasableContent(): Promise<Blog[]> {
     );
 }
 
-// Get a product by its slug
+// Get a product by its slug - simplified to use getContentBySlug
 export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
-  // First check articles
-  const article = await getContentBySlug(slug);
-  
-  // Check if article exists and has commerce metadata
-  if (article && article.metadata && article.metadata.commerce?.isPaid) {
-    // Transform to match the expected Purchasable structure
-    const transformedContent = {
-      ...article.metadata,
-      MdxContent: article.MdxContent,
-      type: article.metadata.type || 'blog'
-    } as unknown as Purchasable;
+  // Try to find the content in any content type
+  for (const contentType of ['blog', 'learn/courses', 'videos']) {
+    const content = await getContentBySlug(slug, contentType);
     
-    return transformedContent;
-  }
-
-  // Check if it's a course
-  const courses = await getAllContent('learn/courses');
-  const course = courses.find(c => c.slug === slug);
-  if (course && isPurchasable(course)) {
-    return course;
+    if (content && content.metadata && content.metadata.commerce?.isPaid) {
+      // Transform to match the expected Purchasable structure
+      const transformedContent = {
+        ...content.metadata,
+        MdxContent: content.MdxContent,
+        type: content.metadata.type || contentType
+      } as unknown as Purchasable;
+      
+      return transformedContent;
+    }
   }
 
   return null;
