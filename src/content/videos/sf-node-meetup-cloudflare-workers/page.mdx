@@ -1,0 +1,28 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import workersTalk from '@/images/cloudflare-workers-talk.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2018-06-01",
+  title: "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
+  description: "How we dogfooded Cloudflare workers on the API team",
+  image: workersTalk
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/SC6MHeetjks" 
+  title="Dogfooding Cloudflare Workers on api.cloudflare.com and www.cloudflare.com" 
+  frameborder="0" 
+  allow="fullscreen;">
+ </iframe>
+
+On the Cloudflare API team, we were responsible for api.cloudflare.com as well as www.cloudflare.com. Here's how we wrote the first Cloudflare Workers to gracefully deprecate TLS 1.0 and set them in front of 
+both properties, without any downtime.
+
+And no, if you're paying attention, my name is not Zack Prosner, it's Zack Proser :) 
