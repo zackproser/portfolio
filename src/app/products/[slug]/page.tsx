@@ -1,6 +1,6 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
-import { getContentBySlug } from '@/lib/content-handlers';
+import { getProductBySlug } from '@/lib/commerce';
 import { Content } from '@/lib/shared-types';
 
 interface Props {
@@ -13,17 +13,12 @@ export default async function ProductPage({
   searchParams 
 }: Props) {
   const resolvedParams = await params;
-  const content = await getContentBySlug(resolvedParams.slug, 'blog');
+  const product = await getProductBySlug(resolvedParams.slug);
 
-  if (!content) {
+  if (!product) {
     notFound();
   }
 
-  // Transform the content structure to match what ProductLanding expects
-  const transformedContent: Content = {
-    ...content.metadata,
-    MdxContent: content.MdxContent
-  };
-
-  return <ProductLanding content={transformedContent} />;
+  // The product is already in the format expected by ProductLanding
+  return <ProductLanding content={product as Content} />;
 } 
