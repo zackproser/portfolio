@@ -7,7 +7,7 @@ import NewsletterWrapper from '@/components/NewsletterWrapper'
 
 import multipleGitProfiles from '@/images/multiple-git-profiles.webp'
 
-export const articleMetadata = {
+export const metadata = createMetadata({
   author: "Zachary Proser",
   date: "2024-12-10",
   title: "How to automatically switch git profiles based on the current directory",
@@ -74,11 +74,9 @@ export const articleMetadata = {
       href: `/checkout?product=multiple-git-profiles-automated&type=blog`
     }
   }
-};
+});
 
-export const metadata = createMetadata(articleMetadata);
-
-export default (props) => <ArticleLayout metadata={articleMetadata} {...props} />
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
