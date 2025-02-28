@@ -19,7 +19,8 @@ function VideoGrid({ videos }: { videos: ExtendedMetadata[] }) {
         return (
           <BlogPostCard 
             key={uniqueKey} 
-            article={video} 
+            article={video}
+            contentType="video" 
           />
         );
       })}
