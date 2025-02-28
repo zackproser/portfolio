@@ -40,14 +40,38 @@ export function ProductLanding({ content }: Props) {
     commerce,
     landing,
     slug = '',
-    type = 'course'
+    type = 'course',
+    title = ''
   } = content;
 
-  // If there's no commerce or landing data, don't render the product landing
-  if (!commerce?.isPaid || !landing) {
-    console.log('Missing required data:', { commerce, landing });
+  // If there's no commerce data or isPaid is false, don't render the product landing
+  if (!commerce?.isPaid) {
+    console.log('Missing required commerce data or isPaid is false');
     return null;
   }
+
+  // Generate default landing data if not provided
+  const defaultLanding = {
+    subtitle: description || '',
+    features: [
+      {
+        title: 'Complete Tutorial',
+        description: 'Step-by-step instructions to build a production-ready solution'
+      },
+      {
+        title: 'Source Code',
+        description: 'Full access to all source code and examples'
+      },
+      {
+        title: 'Lifetime Access',
+        description: 'One-time purchase with unlimited future access'
+      }
+    ],
+    testimonials: []
+  };
+
+  // Use provided landing data or fallback to default
+  const landingData = landing || defaultLanding;
 
   const bio = `I'm a software engineer with over ${RenderNumYearsExperience()} years of experience building production systems.`
 
@@ -56,8 +80,8 @@ export function ProductLanding({ content }: Props) {
 
   // Ensure all string values have defaults
   const safeDescription = String(description || '');
-  const safeSubtitle = String(landing.subtitle || description || '');
-  const safePaywallBody = String(commerce.paywallBody || '');
+  const safeSubtitle = String(landingData.subtitle || description || '');
+  const safePaywallBody = String(commerce.paywallBody || description || '');
 
   return (
     <>
@@ -70,14 +94,14 @@ export function ProductLanding({ content }: Props) {
           />
         </div>
         <Hero 
-          title={safeDescription}
+          title={title || safeDescription}
           description={safeDescription}
-          testimonial={landing.testimonials?.[0]}
+          testimonial={landingData.testimonials?.[0]}
         />
         <Introduction 
           title={safeSubtitle}
           description={safeDescription}
-          features={landing.features}
+          features={landingData.features}
         />
         <NavBar />
         <TableOfContents />
@@ -86,7 +110,7 @@ export function ProductLanding({ content }: Props) {
         />
         <Pricing 
           price={commerce.price}
-          title={safeDescription}
+          title={title || safeDescription}
           description={safePaywallBody}
           checkoutUrl={checkoutUrl}
         />

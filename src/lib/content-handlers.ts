@@ -2,10 +2,12 @@ import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
 import { Session } from 'next-auth'
-import { ExtendedMetadata, Content } from './shared-types'
+import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types'
 import Paywall from '@/components/Paywall'
 import React from 'react'
 import { sql } from '@vercel/postgres'
+import { ProductContent } from './types/product'
+import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
 
 // Directories where content is stored
 const appContentDirectory = path.join(process.cwd(), 'src/app')
@@ -456,4 +458,76 @@ export async function importContentMetadata(slug: string, contentType: string = 
     console.error(`Error importing metadata for ${contentType}/${slug}:`, error)
     return null
   }
+}
+
+/**
+ * Get all products (any content with isPaid=true)
+ * @returns Array of product content items
+ */
+export async function getAllProducts(): Promise<ProductContent[]> {
+  try {
+    // Get all content from all content types at once
+    const allContent = await Promise.all([
+      getAllContent('blog'),
+      getAllContent('learn/courses'),
+      getAllContent('videos')
+    ]).then(results => results.flat());
+    
+    // Filter to only paid content
+    const paidContent = allContent.filter(content => content.commerce?.isPaid);
+    
+    // Transform to product content
+    const productContent = paidContent.map(content => {
+      if (content.type === 'course') {
+        return generateProductFromCourse(content as any);
+      }
+      return generateProductFromArticle(content as BlogWithSlug);
+    });
+    
+    return productContent.filter((p): p is ProductContent => p !== null);
+  } catch (error) {
+    console.error('Error loading products:', error);
+    return [];
+  }
+}
+
+/**
+ * Get all purchasable content
+ * @returns Array of purchasable content items
+ */
+export async function getAllPurchasableContent(): Promise<Blog[]> {
+  const allContent = await Promise.all([
+    getAllContent('blog'),
+    getAllContent('learn/courses'),
+    getAllContent('videos')
+  ]).then(results => results.flat());
+  
+  return allContent.filter((content) => 
+    content.type !== 'demo' && isPurchasable(content)
+  );
+}
+
+/**
+ * Get a product by its slug
+ * @param slug The product slug
+ * @returns The product content or null if not found
+ */
+export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
+  // Try to find the content in any content type
+  for (const contentType of ['blog', 'learn/courses', 'videos']) {
+    const content = await getContentBySlug(slug, contentType);
+    
+    if (content && content.metadata && content.metadata.commerce?.isPaid) {
+      // Transform to match the expected Purchasable structure
+      const transformedContent = {
+        ...content.metadata,
+        MdxContent: content.MdxContent,
+        type: content.metadata.type || contentType
+      } as unknown as Purchasable;
+      
+      return transformedContent;
+    }
+  }
+
+  return null;
 } 
