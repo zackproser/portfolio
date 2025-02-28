@@ -26,7 +26,11 @@ const config = {
   testMatch: [
     '**/__tests__/**/*.[jt]s?(x)',
     '**/?(*.)+(spec|test).[jt]s?(x)'
-  ]
+  ],
+  // Set NODE_ENV to development for tests
+  testEnvironmentOptions: {
+    NODE_ENV: 'development'
+  }
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
