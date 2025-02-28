@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
 
@@ -16,11 +15,7 @@ export const metadata = createMetadata({
     title: "Vector Databases in Production for Busy Engineers: RAG Evaluation",
     description: "I wrote the RAG evaluation chapter for Pinecone's latest book",
     image: vectorDbsInProd,
-    filePath: __filename
-    // The slug will be automatically generated from the file path
 });
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 --- 
 
