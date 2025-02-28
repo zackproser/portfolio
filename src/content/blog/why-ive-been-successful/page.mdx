@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import gruntworkPromotions from '@/images/gruntwork-promotions.webp'
 import layeredLearningPhases from '@/images/successful/layered-learning-phases.webp'
@@ -11,10 +10,7 @@ export const metadata = createMetadata({
   title: "Why I've been successful lately, and what I'm planning to do about it", 
   description: "In the past 3 years, I've been promoted 3 times. I reflect on the habits and activities that helped me improve the most. ",
   image: gruntworkPromotions,
-  slug: '/blog/why-ive-been-successful',
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 For the past 3 years, I've been working at [Gruntwork](https://gruntwork.io), a DevOps startup that accelerates  your launch into AWS by giving you best-practice architectures defined in Terraform, and standing them up in your accounts in about a day.
 

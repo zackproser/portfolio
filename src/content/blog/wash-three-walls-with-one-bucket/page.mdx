@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import  Image  from 'next/image'
 
 import washThreeWallsWithOneBucket from '@/images/wash-three-walls-with-one-bucket.webp'
@@ -19,10 +18,7 @@ export const metadata = createMetadata({
   title: 'Wash three walls with one bucket', 
   description: 'Design your side projects, blog posts and even your fun experiments to triangulate multiple learning paths simultaneously. Then, use them to build out your portfolio.',
   image: washThreeWallsWithOneBucket,
-  slug: '/blog/wash-three-walls-with-one-bucket',
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props}></ArticleLayout>
 
 <Image src={washThreeWallsWithOneBucket} alt="If you're going to work on side projects, maximize the return on your investment" />
 <figcaption>Without much more work, you can ensure your side projects are not only expanding your knowledge, but also expanding your portfolio of hire-able skills.</figcaption>

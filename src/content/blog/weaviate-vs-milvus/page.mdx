@@ -1,7 +1,3 @@
-
-
-import { ArticleLayout } from '@/components/ArticleLayout'
-
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -16,8 +12,6 @@ export const metadata = createMetadata({
   description: "A detailed comparison of the Weaviate and Milvus vector databases",
   image: vectorDatabasesCompared
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
 <Image src={vectorDatabasesCompared} alt="vector databases compared" />
 

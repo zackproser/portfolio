@@ -61,20 +61,34 @@ export function BlogPostCard({ article }) {
     image = wakka, 
     status, 
     commerce, 
-    slug,
+    slug: rawSlug,
+    _id,
     type
   } = article;
   
+  // Ensure we have a valid slug - if rawSlug is undefined or "untitled", 
+  // try to extract it from _id or use a fallback
+  let slug = rawSlug;
+  
+  if (!slug || slug === 'untitled') {
+    // If we have an _id in format "contentType-slug", extract the slug part
+    if (_id && _id.includes('-')) {
+      slug = _id.split('-').slice(1).join('-');
+      console.log(`BlogPostCard: Extracted slug "${slug}" from _id "${_id}" for article "${title}"`);
+    } else {
+      // Create a slug from the title as a last resort
+      slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      console.log(`BlogPostCard: Generated slug "${slug}" from title for article "${title}"`);
+    }
+  }
+  
   // Log the full article object for debugging
   console.log(`BlogPostCard: Article data for "${title}":`, {
-    slug,
-    type
+    originalSlug: rawSlug,
+    finalSlug: slug,
+    type,
+    _id
   });
-  
-  // Log warning if slug is missing
-  if (!slug) {
-    console.warn(`BlogPostCard: Missing slug for article "${title}"`)
-  }
   
   const price = commerce?.price;
   
@@ -90,7 +104,7 @@ export function BlogPostCard({ article }) {
     const typePath = type === 'video' ? 'videos' : 
                     type === 'comparison' ? 'comparisons' : 
                     type === 'course' ? 'learn/courses' : 
-                    type || 'blog';
+                    'blog';
     
     href = `/${typePath}/${slug}`;
     console.log(`BlogPostCard: Generated href for "${title}": ${href}`);

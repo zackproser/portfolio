@@ -113,8 +113,8 @@ export async function getAllContent(contentType: string = 'blog'): Promise<Conte
         let processedMetadata = { ...metadata } as ExtendedMetadata
         
         // Ensure the metadata has a slug (use the directory name if not provided)
-        if (!processedMetadata.slug) {
-          console.log(`No slug in metadata for ${slug}, using directory name`)
+        if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
+          console.log(`No valid slug in metadata for ${slug}, using directory name`)
           processedMetadata.slug = slug
         } else {
           // Normalize the slug to prevent path issues
@@ -327,11 +327,14 @@ export async function getContentBySlug(slug: string, contentType: string = 'blog
     
     const { MdxContent, metadata } = result
     
+    // Ensure we have a valid slug
+    const validSlug = slug && slug !== 'untitled' ? slug : metadata.slug || slug
+    
     return {
       MdxContent,
       metadata: {
         ...metadata,
-        slug,
+        slug: validSlug,
         type: metadata.type || (
           contentType === 'blog' ? 'blog' : 
           contentType === 'videos' ? 'video' : 
@@ -374,8 +377,8 @@ export async function importContentMetadata(slug: string, contentType: string = 
     let processedMetadata = { ...metadata } as ExtendedMetadata
     
     // Ensure the metadata has a slug (use the directory name if not provided)
-    if (!processedMetadata.slug) {
-      console.log(`No slug in metadata for ${slug}, using directory name`)
+    if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
+      console.log(`No valid slug in metadata for ${slug}, using directory name`)
       processedMetadata.slug = slug
     } else {
       // Normalize the slug to prevent path issues

@@ -2,7 +2,6 @@ import warpChat from '/src/images/warp-chat.webp'
 import warpTesting from '/src/images/warp-testing.webp'
 import warpCoreExperience from '/src/images/warp-core-experience.webp'
 
-import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
 
 import Image from 'next/image'
@@ -17,8 +16,6 @@ export const metadata = createMetadata({
  description: "The Warp terminal is a serious boon for anyone looking for help on the command line, but it's not yet perfect",
  image: warpChat,
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
 <Image src={metadata.image} alt="Warp brings AI assistance into your terminal" />
 <figcaption>Warp brings AI assistance into your terminal to make you more efficient</figcaption>
