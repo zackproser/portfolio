@@ -184,14 +184,24 @@ describe('ProductLanding', () => {
   })
 
   describe('Error Handling', () => {
-    it('should handle missing landing data gracefully', () => {
+    it('should handle missing landing data by using default landing data', () => {
       const contentWithoutLanding: Blog = {
         ...mockPaidContent,
         landing: undefined
       }
       
-      const { container } = render(<ProductLanding content={contentWithoutLanding} />)
-      expect(container.firstChild).toBeNull()
+      render(<ProductLanding content={contentWithoutLanding} />)
+      
+      // Check that all components are rendered even without landing data
+      expect(screen.getByTestId('mock-canvas')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-hero')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-introduction')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-navbar')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-toc')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-free-chapters')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-pricing')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-author')).toBeInTheDocument()
+      expect(screen.getByTestId('mock-footer')).toBeInTheDocument()
     })
 
     it('should handle missing commerce data gracefully', () => {

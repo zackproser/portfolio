@@ -1,6 +1,6 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
-import { getProductBySlug } from '@/lib/commerce';
+import { getProductBySlug } from '@/lib/content-handlers';
 import { Content } from '@/lib/shared-types';
 
 interface Props {
