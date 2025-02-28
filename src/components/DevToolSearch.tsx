@@ -37,8 +37,8 @@ export function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
         />
       </div>
       <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-        {filteredTools.map((tool) => (
-          <BlogPostCard key={tool.slug} article={tool} />
+        {filteredTools.map((tool, index) => (
+          <BlogPostCard key={index} article={tool} />
         ))}
       </div>
     </div>

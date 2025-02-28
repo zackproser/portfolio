@@ -253,8 +253,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Deep and Machine Learning Tutorials</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {deepMLTutorials.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {deepMLTutorials.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`ml-tutorial-${index}`} article={article} />
               ))}
             </div>
           </div>
@@ -264,8 +264,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Open-source AI / ML / Pipelines Projects</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mlProjects.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {mlProjects.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`ml-project-${index}`} article={article} />
               ))}
             </div>
           </div>
@@ -275,8 +275,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">AI-assisted Development</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {aiDev.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {aiDev.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`ai-dev-${index}`} article={article} />
               ))}
             </div>
           </div>
@@ -286,8 +286,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Career Advice</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {careerAdvice.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {careerAdvice.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`career-${index}`} article={article} />
               ))}
             </div>
           </div>
@@ -297,8 +297,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Videos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {videos.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`video-${index}`} article={article} />
               ))}
             </div>
           </div>
@@ -308,8 +308,8 @@ export default function HomepageClientComponent({
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Reference Architectures and Demos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {refArchitectures.slice(0, 3).map((article) => (
-                <BlogPostCard key={article.slug} article={article} />
+              {refArchitectures.slice(0, 3).map((article, index) => (
+                <BlogPostCard key={`ref-arch-${index}`} article={article} />
               ))}
             </div>
           </div>

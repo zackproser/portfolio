@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 
@@ -22,10 +21,7 @@ export const metadata = createMetadata({
     title: "The Rich Don't Fine-tune Like You and Me: Intro to LoRA and QLoRA",
     description: "LoRA and QLoRA are two important innovations related to fine-tuning large language models like Llama and GPT.",
     image: richFineTuning,
-    slug: '/blog/what-is-lora-and-qlora'
 });
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={richFineTuning} alt="Rich people fine-tuning models" />
 <figcaption>People with Hundreds of Millions of Dollars in Cloud Computing Credits to Burn</figcaption>

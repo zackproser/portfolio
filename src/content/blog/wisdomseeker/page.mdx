@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 import wisdomseekerHome from '@/images/wisdomseeker-screens/wisdomseeker-home.webp'
 import wisdomseekerSuccess from '@/images/wisdomseeker-screens/wisdomseeker-success.webp'
@@ -12,11 +11,7 @@ export const metadata = createMetadata({
   title: 'Wisdomseeker',
   description: 'A wikipedia crawling application', 
   image: wisdomseekerHome,
-  slug: '/blog/wisdomseeker'
 })
-
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={wisdomseekerHome} />
 

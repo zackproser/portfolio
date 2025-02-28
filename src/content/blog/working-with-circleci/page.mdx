@@ -1,16 +1,14 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
 import { createMetadata } from '@/utils/createMetadata'
+
+import wakka from '@/images/wakka.webp'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'How to work with CircleCI more effectively',
   description: 'Pro tips for working with CircleCI configurations',
-  slug: '/blog/working-with-circleci',
+  image: wakka
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Overview
 At [Gruntwork](https://gruntwork.io), we use CircleCI as the continuous integration tool for the vast majority of our repositories. This article shares a couple of tips and tricks I've figured out along the way for more easily working with CircleCI locally, since the test cycles in the cloud can be pretty long, depending on what you're using CircleCI for.
