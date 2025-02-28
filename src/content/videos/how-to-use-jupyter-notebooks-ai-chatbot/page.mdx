@@ -1,0 +1,41 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import Link from 'next/link'
+
+import aiChatbot from '@/images/ai-chatbot-jupyter-notebooks.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-07-03",
+  title: "How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic",
+  description: "How you can shorten your iteration cycles with Jupyter notebooks when building data-rich apps",
+  image: aiChatbot
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/IAAIRg3gS1I" 
+  title="How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+In this video, I do a deep dive on the two Jupyter notebooks which I built as part of my office oracle project. 
+
+Both notebooks are now open source: 
+
+* <Link href={"https://github.com/zackproser/office-oracle-db-test-notebook"}>Open-sourced Office Oracle Test Notebook</Link>
+* <Link href={"https://github.com/zackproser/office-oracle-data-bench"}>Open-sourced Office Oracle Data Bench</Link>
+
+I talk through what I learned, why Jupyter notebooks were such a handy tool for getting my data quality to where I needed it to be, before worrying about application logic. 
+
+I also demonstrate langchain DocumentLoaders, how to store secrets in Jupyter notebooks when open sourcing them, and much more.
+
+What's involved in building an AI chatbot that is trained on a custom corpus of knowledge? In this video I breakdown the data preparation, training and app development components and explain why Jupyter notebooks were such a handy tool while creating this app and tweaking my model.
+
+App is open source at https://github.com/zackproser/office-... and a demo is currently available at https://office-oracle.vercel.app.
+
