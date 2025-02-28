@@ -39,6 +39,13 @@ export async function POST(req: NextRequest) {
 			type === 'course' ? 'learn/courses' : 'blog'
 		)
 		
+		if (!content) {
+			return NextResponse.json(
+				{ error: 'Content not found' },
+				{ status: 404 }
+			)
+		}
+		
 		if (!content.commerce?.isPaid) {
 			return NextResponse.json(
 				{ error: 'Content is not available for purchase' },

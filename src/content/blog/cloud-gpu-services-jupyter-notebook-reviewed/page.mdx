@@ -1,0 +1,156 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+import cloudGPUServices from '@/images/cloud-gpu-services-reviewed.webp'
+import cloudGPUSuccess from '@/images/cloud-gpu-services-success.webp'
+import lightningAIStudio from '@/images/lightning-ai-successful-run.webp'
+import googleColabHighRam from '@/images/google-colab-job-high-ram.webp'
+import paperspaceGradient from '@/images/paperspace.webp'
+import cloudGPUServicesFailure from '@/images/cloud-gpu-services-failure.webp'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-09-22",
+    title: "Cloud GPU Services for Deep Learning and fine-tuning with Jupyter Notebooks Reviewed: Colab, Paperspace Gradient, Lightning.ai, and more",
+    description: "I tried a handful of services when I last needed to fine-tune an LLM, and I was mostly disappointed...",
+    image: cloudGPUServices,
+});
+
+--- 
+
+## Cloud GPU Services for Jupyter Notebooks and Deep Learning: A Review
+
+<Image src={cloudGPUServices} alt="Cloud GPU Services" />
+<figcaption>Me, paying for yet another set of compute credits on Google Colab Pro :(</figcaption>
+
+## Table of contents
+
+## I burned through a lot of cash so you don't have to 
+I'm an application and infrastructure developer by background, but lately I've been [getting my hands dirty](/blog/mnist-pytorch-hand-drawn-digit-recognizer) with deep learning and neural networks. 
+
+I slogged through trying out a bunch of cloud GPU services. I was mostly disappointed. 
+
+Generally speaking, the workflow I'm trying to achieve is: 
+
+- Bring my own Jupyter Notebook that I already have
+- Iterate on it with CPU
+- Move to a GPU instance when I need to fine-tune my model
+- Save the model and use it in a separate project
+
+If you want to skip to the punchline, I had the best experience and most success with [Lightning.AI Studio](https://lightning.ai).
+
+## Cloud GPU Services Reviewed
+
+### Google Colab (Free)
+
+The fastest way to get started for simple Notebooks. This is still my go-to for quick experiments and smaller projects, and for my day job when 
+I'm creating or maintaining demo Jupyter Notebooks.
+
+**Pros**:
+
+- Free tier available
+- Easy integration with Google Drive for saving Notebooks
+- File system and secrets management are more robust than most competitors (similar to Kaggle, which also has great support for secrets and file system access)
+
+**Cons**:
+
+- Limited GPU usage time on free tier
+- Inconsistent GPU availability
+- Notebook environments terminate after a period of inactivity, forcing you to re-build your state: file uploads, package installations, etc.
+
+### Google Colab (Pro)
+
+<Image src={googleColabHighRam} alt="Google Colab High Ram" />
+<figcaption>Even with Google Colab Pro, I needed to purchase additional credits to fine-tune my model, and was constantly encountering OOM errors</figcaption>
+
+An upgraded version of Google Colab with premium features for more demanding users.
+
+**Pros**:
+
+- Access to beefier GPUs and even high-ram environments 
+- It's easy to switch between runtimes 
+- Same overall simple UX for file system access and secrets management as the free tier
+ 
+**Cons**:
+
+- Even with the Pro subscription, I needed to purchase several additional packs of credits when experimenting with fine-tuning LLMs like Llama 3.1.
+- Aside from the core UX, not much in terms of advanced features such as persistent home drives, ability to easily share with team mates or publish Notebooks, etc 
+
+### Paperspace Gradient
+
+<Image src={paperspaceGradient} alt="Paperspace Gradient" />
+<figcaption>Paperspace Gradient is Digital Ocean's quite sloppy attempt to slap a serviceable Jupyter Notebook IDE/interface on top of their powerful GPU-backed compute infrastructure.</figcaption>
+
+Paperspace Gradient is Digital Ocean's quite sloppy attempt to slap a serviceable Jupyter Notebook IDE/interface on top of their powerful GPU-backed compute infrastructure.
+
+Attempting to use it, even for a couple of hours on and off on a relatively simple Notebook that works flawlessly on other platforms, made me want to swim into a boat motor.
+
+It doesn't seem like this product is ready for production use, and it doesn't appear that anyone who actually works with Jupyter Notebooks has ever tried dogfooding it.
+
+**Pros**:
+
+- ? 
+
+**Cons**:
+
+- Doesn't work 
+- Strange choices around things like Python path management make it nearly impossible to just !pip intall and start working
+- Incredibly poor UX makes it nearly impossible to find additional machine types, start and stop new notebooks / machines easily or generally get anything productive done.  
+- Expensive 
+- Very poor UX for starting and stopping new machines
+
+### Lightning.ai (Use this one!)
+
+<Image src={lightningAIStudio} alt="Lightning.ai Studio" />
+<figcaption>Successfully fine-tuning an LLM on Lightning.ai - after 3 weeks of banging my heads against OOM errors and configuration problems with other platforms</figcaption>
+
+Lightning.ai offers a premium platform designed for scalable AI research and development. 
+
+Unlike Gradient Paperspace, it was very clearly built - either in consultation with, or by - people who actually use Jupyter Notebooks to get deep and machine learning work done.
+
+<Image src={cloudGPUSuccess} alt="Cloud GPU Services Success" />
+<figcaption>Successfully fine-tuning an LLM on Lightning.ai</figcaption>
+
+**Pros**:
+
+- Delightful UX: Jupyter Notebooks just work. Iterate against CPU, then quickly move to any GPU machine you like for fine-tuning and training.  
+- Advanced and thoughtful features like persistant home drives, team collaboration features, and easy integration with Hugging Face and other machine learning frameworks. 
+- Provides high-quality templates and examples 
+- Was the first platform I was able to successfully run my Llama 3.1 Quantized LoRA fine-tuning job on
+
+**Cons**:
+
+- UX is so good that I fear how easy it will be to spend money on this platform 
+- After sign-up, you need to wait for your account to be approved by a human. You can tweet at or email the team, but in my case this took about 24 hours. Still, it's a bummer when you have a spare afternoon and want to get started quickly.
+
+
+### Google Vertex AI / AI Notebook Studio 
+
+<Image src={cloudGPUServicesFailure} alt="Cloud GPU Services Failure" />
+<figcaption>Google Vertex AI and AI Notebook Studio are unusable</figcaption>
+
+Most of Google's product UX is unusable shame-tier dogshit, in my humble opinion, and Google Vertex AI and Notebooks Studio are no exception. Having done years of backend, infrastructure and cloud development, I winced gravely while having to enable 
+Google Cloud APIs just to be able to evaluate their "AI Notebooks" product. 
+
+Those redirects that you've implemented based on whether or not the user has enabled ALL THREE SEPARATE GOOGLE CLOUD APIS that are required for this product to function? Those are what tell me 
+that you're not serious people and that you're product is not ready for production use.
+
+That "Google Colab Enterprise" product that's kind of a Google Colab but inside of the Google Cloud console? But it's not clear if *that* is what you mean by AI Notebooks? Shame tier.
+
+Pros:
+
+- ? 
+
+Cons:
+
+- Doesn't work 
+- Infuriating to even enable and try out 
+- Product UX is a self-parody 
+
+## TLDR
+
+Use Google Colab for free and small projects, and when creating and iterating on simple Jupyter Notebooks. Use Lightning.ai Studio for anything more complicated, and any serious projects that you actually need to run to completion. 

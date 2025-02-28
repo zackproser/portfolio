@@ -38,8 +38,11 @@ export async function POST(req: Request) {
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
-    relatedBlogPosts.push({ slug, ...metadata });
+    const metadata = await importContentMetadata(blogPath, 'blog');
+    
+    if (metadata) {
+      relatedBlogPosts.push({ ...metadata });
+    }
   }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
   const contextText = docs.join("\n").substring(0, 3000)

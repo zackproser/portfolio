@@ -1,0 +1,188 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+import gabbeeHero from '@/images/gabbee-hero.webp'
+import gabbeeInstructions from '@/images/gabbee-instructions.webp'
+import gabbeeCall from '@/images/gabbee-call.webp'
+import gabbeeScheduled from '@/images/gabbee-scheduled.webp'
+import gabbeeTranscripts from '@/images/gabbee-transcripts.webp'
+import blandHero from '@/images/bland-hero.webp'
+
+import { createMetadata } from '@/utils/createMetadata';
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2025-01-27",
+    title: "Introducing Gabbee.io: Your AI Phone Call Assistant [TEST EDIT]",
+    description: "Meet Gabbee.io, an AI phone call app that acts as your digital secretary. Built with Next.js, Tailwind, and Bland AI's API, it handles your calls while providing transcripts and summaries.",
+    image: gabbeeHero,
+});
+
+I'm excited to share one of my latest projects: [Gabbee.io, an AI phone call app](https://gabbee.io) that functions like a digital secretary. Gabbee can make single calls, scheduled calls, or even recurring calls, all based on your instructions. Afterward, it provides a transcript and a quick summary, so you always know exactly what happened on the phone.
+
+<Image src={gabbeeHero} alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
+
+The idea behind Gabbee is straightforward: there are plenty of scenarios where you need someone (or something) to make a call for you—like reminding a friend you're running late, disputing a charge, confirming an appointment, or just checking in on someone regularly. 
+
+<Image src={gabbeeInstructions} alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
+
+Instead of trying to wedge that task into your already-packed day, you can queue it up in Gabbee, and the AI will handle it.
+
+I built this in about 1.5 days (admittedly spread out) using my knowledge of Next.js and a code editor called Cursor. The design is powered by Tailwind CSS for quick, streamlined styling, while the voice-synthesis and call logic rely on Bland AI's API. Over time, I hope Gabbee will grow into the perfect sidekick for automating common phone tasks.
+
+## Core Features
+
+### One-off Phone Calls 
+Give Gabbee a phone number and instructions, and it places the call on your behalf.
+
+<Image src={gabbeeCall} alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
+
+### Scheduled Calls
+
+<Image src={gabbeeScheduled} alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
+
+Plan one-off calls in advance—maybe you need to confirm a reservation at 10 a.m. tomorrow or set yourself a wake-up call at 7 a.m.
+
+### Recurring calls
+
+If you have a weekly or monthly check-in to make, set it once, and let the AI do the rest. You can remind your tenants to pay rent, or your employees to check in. You could call your Grandma 
+once every Friday morning to ask if she remembered to take her medication. 
+
+### Transcripts and summaries
+
+<Image src={gabbeeTranscripts} alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
+
+After each call, Gabbee logs everything that happened and distills it into a quick summary, so you don't have to listen to or read the entire transcript unless you want to.
+
+- Multiple AI Voices: You can choose different AI voices, each with its own style and tone.
+
+## Quick Background
+
+I built this to serve my own needs. I work remotely as a developer and writer. Focus time is my primary money maker. But on any given day, I might have 2-4 errand phone calls to make, which I usually end up putting off. My personal annoyance has always been having to call a customer service line to dispute something—nobody looks forward to that. Gabbee's entire purpose is to take over those tasks.
+
+When I say I built Gabbee in 1.5 days, that's not hyperbole. It was a weekend project where I figured out the main structure in Next.js, set up the data models for tasks, integrated Bland AI's API for the phone/voice features, and styled it with Tailwind. Because Next.js is so efficient for building full-stack apps, and Tailwind lets me handle layout quickly, I got the MVP up and running in record time.
+
+## How It Works in Practice
+
+Let's say you need to call a friend or coworker—let's call him Steve—to tell him you're running late to a meeting. You log in to Gabbee, input Steve's phone number, write instructions like: "Tell Steve I'm running 10 minutes late. Apologize for the delay, and confirm if we can push the start time back." You can either have the call go out immediately or schedule it, then wait for Gabbee's system to connect.
+
+Once the call is complete, Gabbee puts together a detailed transcript, so you can see how the conversation went:
+
+```
+Gabbee: Hi, Steve. This is Gabbee calling on behalf of [Your Name]. They're running about 10 minutes late...
+Steve: Oh, thanks for letting me know. That's fine...
+```
+
+At the end, you get a short summary of the key takeaways: "Steve acknowledged the delay and is fine with moving the start time by 10 minutes." That's it. No need for you to pick up the phone, no small talk you didn't have time for.
+
+This might not seem like a big deal for a one-off personal call, but if you run a small business, or you're juggling a bunch of tasks each day, this can be a huge time-saver.
+
+## Building It with Next.js, Tailwind, and Bland AI's API
+
+### Next.js
+
+I chose Next.js because it's become a go-to framework for modern web development. Server-side rendering is built in, so the website is fast and SEO-friendly by default. It also integrates nicely with APIs and has a solid routing system, which meant I could spin up routes for user dashboards, admin settings, etc., in no time.
+
+### Tailwind CSS
+
+Tailwind gives me a robust library of utility classes that keeps my styles consistent without forcing me to write a ton of custom CSS. I can quickly adapt button styles, layout spacing, and colors. That's particularly helpful when you're aiming to finish an MVP in a short window.
+
+### Bland AI's API
+
+The phone-call logic and voice synthesis are powered by Bland AI's API, which I've been wanting to play with for a while.
+
+<Image src={blandHero} alt="Bland AI" width={800} height={600} className="rounded-lg shadow-xl" />
+
+When Gabbee initiates a call, it uses Bland AI to generate a natural-sounding voice and to handle the actual telephony portion. This includes bridging the call, transcribing the audio, and providing real-time or near-real-time conversation data. Bland AI also offers different voice profiles (male, female, different accents, etc.), so I can give users the choice. If the situation calls for a formal tone, maybe you pick a more authoritative voice. If it's a friendly call, you might go with a more casual one.
+
+## Why an AI Secretary?
+
+You might be wondering, "Why do I need an AI secretary?" For some people, phone anxiety alone is a big enough reason. Others just don't have the time (or patience) to sit on hold, chase down an answer, or recite the same explanation to multiple customer service reps.
+
+- Speed: If you queue multiple calls, Gabbee handles them in the background. You can tackle more pressing work while it does the phone chores.
+- Consistency: The script never deviates unless you want it to. If you need to make the same call multiple times (like for multiple leads), you can adapt the text slightly for each call.
+- Documentation: You always have a transcript to reference. In business scenarios, that alone is gold—no "he said, she said."
+
+## Simple, No-Fuss Sign-Up with Google
+
+A major focus in launching Gabbee has been smoothing out the user onboarding. As soon as you land on Gabbee.io, you can sign up using your Google account—no separate password or extra steps. I'm using WorkOS's AuthKit and Google IDP for that.
+
+Why limit it to Google accounts? It helps reduce fraud. People tend to have fewer throwaway or spam Google accounts, so that allows me to confidently offer 50 free credits to every new user without requiring a credit card. It's a simple approach that doesn't saddle new users with financial commitments. They can test out calls, see how the AI handles different scenarios, and decide if they want more.
+
+From a conversion standpoint, removing friction is everything. It's also a trust signal for people who are considering using this for business.
+
+## Frequent Use Cases for an AI Phone Call App
+
+1. Routine Personal Calls: Need to check on a family member daily or weekly? Automate it. Gabbee can place a quick call, say, "Hi Grandma, just checking in," and let you review the transcript later.
+2. Appointment Confirmations: Whether you're a freelancer confirming times with clients or a busy parent scheduling medical visits, letting Gabbee handle these can save you a ton of time.
+3. Bill Disputes or Customer Service: Let's be honest: the worst calls in the world are the ones where you're on hold, then have to argue or explain the same issue multiple times. Gabbee uses your script, keeps a record, and gets straight to the point.
+4. Lead Outreach: If you do any sort of cold-calling for sales or lead gen, you can give Gabbee a list of numbers and a script. It'll call them all. Then you can see who showed interest, who hung up, etc.
+5. Check-Ins and Reminders: If you manage a remote team or you have a set of daily reminders for employees or contractors, Gabbee can be that voice that calls and says, "Heads up, we've got a meeting in 30 minutes."
+
+## Conversion Optimization and Finding the Right Users
+
+Early on, I expected my biggest challenges to be things like voice quality or unexpected conversation branches. But so far, the biggest thing I've wrestled with is conversion optimization—figuring out how to convey Gabbee's value quickly and get people to the point of actually making a call.
+
+### Making the Landing Page Clear
+
+The landing page has a simple hero section that states, "Your AI Secretary That Makes Phone Calls For You," followed by examples and short use-case blurbs. But a pretty page isn't enough. I iterated on a few headlines and bullet points to drive home how Gabbee actually helps you. For example:
+
+- "Never make another awkward phone call."
+- "Automate calls to your cable company, dentist, or prospects."
+- "Get transcripts instantly."
+
+### Targeting the Right Audience
+
+It's not just about random traffic or racking up site hits. It's about reaching people who have real phone communication pains. That includes small business owners, freelancers, agencies that do lead-gen calls, or even people who hate phone calls in general.
+
+I've been experimenting with social media posts, direct outreach to potential partners, and word-of-mouth. Naturally, I'm also trying to show up for key search terms like AI phone call app or AI secretary, so that if someone searches for a tool like this, they can find Gabbee. But until the domain matures, I'm focusing on personal referrals and pointing folks directly to the site.
+
+### Polishing the Sign-Up Flow
+
+Once someone clicks "Sign Up," I want the next steps to be dead simple:
+1. Sign In with Google.
+2. Grant permission (so Gabbee can authenticate you).
+3. Receive 50 free credits immediately.
+4. Create a call task and watch the magic happen.
+
+Stripping it down to the bare minimum helps people get to that aha moment faster. If they can place a real call in under a minute, they're more likely to see why Gabbee matters and consider sticking around.
+
+### Dealing with Fraud and Abusive Use
+
+One reason for requiring Google sign-in is to reduce fraud or abuse, which can happen in any service that sends out calls or messages. If someone tried to exploit free credits to spam random phone numbers, we'd have a problem. A real Google account is a stronger barrier than a random email, so it's helped keep sign-ups more genuine.
+
+If a user does attempt something malicious, I can trace it back to a verified account and shut it down quickly. It's not bulletproof, but it's a decent balance between convenience and security—something that's critical for any "AI phone call app" that wants to survive long-term.
+
+## Roadmap and Future Plans
+
+I'm not stopping with basic calls and transcripts. I want Gabbee to evolve into a more robust digital assistant that can handle tasks beyond just phone calls:
+
+1. Web Searches and Web Scraping: Before calling, Gabbee could gather preliminary data. For example, if you're calling hotels about availability, it could scrape their public listings first, then confirm by phone.
+2. Prospecting Tools and Lead Capture: Give Gabbee a list of potential leads and a script. It'll call them all, gather responses, and let you know who's interested. I'd also like to integrate this with CRMs so it can track the entire funnel.
+3. Embedding Gabbee: Eventually, I want to offer a widget or API so other developers can place an "AI phone call" button in their own apps or websites. Imagine a scenario where your clients can just click "Call me with more info," and an AI secretary handles that entire flow.
+4. Advanced Language Support: For now, Gabbee's primarily English-based, but I'd love to expand to other languages. That means ensuring the voice models and telephony coverage are robust enough to handle global calls.
+5. Context-Driven Conversations: Right now, you provide Gabbee with instructions, and it does exactly what you say. In the future, maybe it can adapt mid-call if the person on the other end says something unexpected. Some of that is possible with the underlying AI, but it requires more rigorous conversation flow design to avoid messing up the dialogue.
+
+## Why It Matters
+
+In the grand scheme of productivity tools, an AI secretary that makes phone calls sits at an interesting intersection. Plenty of people rely on email automation or chatbots for text-based tasks. But for phone-based tasks, the options are more limited. Gabbee aims to fill that gap by handling everyday phone calls in a direct, no-hassle way.
+
+- Time-Saving: Outsourcing manual calls means you can focus on more pressing tasks.
+- Stress Reduction: Not everyone loves picking up the phone. This is especially useful if you hate talking to certain customer service lines or you're just not great at "pitching" on a phone call.
+- Documentation: Having a transcript is invaluable for clarity and record-keeping.
+
+## What's Next
+
+As I continue to refine Gabbee, I'm paying attention to feedback from early users. Are they comfortable with the AI's voice? Is the sign-up flow as simple as it can be? Are they actually letting Gabbee handle day-to-day phone tasks, or are they only using it sporadically? I want to identify the real-life friction points so I can address them.
+
+## Closing Thoughts
+
+In under two days, I put together Gabbee.io as a functional AI phone call app that can serve as a personal or business AI secretary. By leveraging Next.js for rapid development, Tailwind for styling, and Bland AI's robust call/voice API, I got a minimal product up and running almost overnight. The domain might take time to rank for relevant terms, but the core functionality is there, and I'm already seeing people use it to automate calls they'd rather not make themselves.
+
+If you think an automated phone-calling tool could lighten your workload or help you skip some awkward calls, head over to [Gabbee.io](https://gabbee.io) and give it a spin. You'll get 50 free credits just for signing in with Google, and you can experience how it handles your first call.
+
+If you have suggestions or want to collaborate—maybe you see a cool integration angle—feel free to reach out. I'm eager to make Gabbee better through real user feedback, and I have a long list of feature ideas that could expand its capabilities even further.
+
+Thanks for reading, and let me know if Gabbee helps you skip any annoying phone calls this week. It's designed to be the digital assistant you never knew you needed, but can't live without once you try it out. If you have a specific feature request (like advanced web scraping or an embedded widget for your site), head over to [the feature request page](https://gabbee.io/feature-requests). I'd love to hear from you.
+
+Until then, happy calling—without actually calling. 

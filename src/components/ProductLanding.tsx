@@ -7,12 +7,12 @@ import { NavBar } from '@/components/NavBar'
 import { Pricing } from '@/components/Pricing'
 import { TableOfContents } from '@/components/TableOfContents'
 import { CanvasPattern } from '@/components/CanvasPattern'
-import { Blog } from '@/lib/shared-types'
+import { Content } from '@/lib/shared-types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { createMetadata } from '@/utils/createMetadata'
 
 interface Props {
-  content: Blog;
+  content: Content;
 }
 
 export const generateMetadata = ({ content }: Props) => {

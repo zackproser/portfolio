@@ -139,39 +139,86 @@ export async function loadContent(contentType: string, slug: string) {
  */
 export async function getAllContent(contentType: string = 'blog'): Promise<Content[]> {
   try {
+    console.log(`Getting all content for type: ${contentType}`)
     const slugs = getContentSlugs(contentType)
     
-    const contentItems = await Promise.all(
-      slugs.map(async (slug) => {
-        try {
-          const result = await loadContent(contentType, slug)
-          if (!result) return null
+    const contentItemsPromises = slugs.map(async (slug) => {
+      try {
+        const result = await loadContent(contentType, slug)
+        if (!result) return null
+        
+        const { metadata } = result
+        
+        // Process metadata to ensure consistent slug and ID generation
+        let processedMetadata = { ...metadata } as ExtendedMetadata
+        
+        // Ensure the metadata has a slug (use the directory name if not provided)
+        if (!processedMetadata.slug) {
+          console.log(`No slug in metadata for ${slug}, using directory name`)
+          processedMetadata.slug = slug
+        } else {
+          // Normalize the slug to prevent path issues
+          // Remove any leading slashes
+          let formattedSlug = processedMetadata.slug.replace(/^\/+/, '')
           
-          const { metadata } = result
-          return {
-            author: metadata.author || 'Unknown',
-            date: metadata.date || new Date().toISOString(),
-            title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
-            description: metadata.description || '',
-            image: metadata.image,
-            type: metadata.type || contentType,
-            slug,
-            ...(metadata.commerce && { commerce: metadata.commerce }),
-            ...(metadata.landing && { landing: metadata.landing }),
-            ...(metadata.tags && { tags: metadata.tags })
+          // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
+          if (formattedSlug.startsWith(`${contentType}/`)) {
+            formattedSlug = formattedSlug.substring(contentType.length + 1)
           }
-        } catch (error) {
-          return null
+          
+          // Update the slug in the metadata
+          processedMetadata.slug = formattedSlug
         }
-      })
-    )
+        
+        // Add a unique ID that's deterministic based on content type and slug
+        processedMetadata._id = `${contentType}-${processedMetadata.slug}`
+        
+        // Ensure the type is set correctly
+        processedMetadata.type = processedMetadata.type || (
+          contentType === 'blog' ? 'blog' : 
+          contentType === 'videos' ? 'video' : 
+          contentType === 'learn/courses' ? 'course' : 'blog'
+        )
+        
+        return {
+          author: processedMetadata.author || 'Unknown',
+          date: processedMetadata.date || new Date().toISOString(),
+          title: typeof processedMetadata.title === 'string' ? processedMetadata.title : (processedMetadata.title as any)?.default || 'Untitled',
+          description: processedMetadata.description || '',
+          image: processedMetadata.image || '',  // Ensure image is always a string, even if empty
+          type: processedMetadata.type,
+          slug: processedMetadata.slug,
+          _id: processedMetadata._id,
+          ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
+          ...(processedMetadata.landing && { landing: processedMetadata.landing }),
+          ...(processedMetadata.tags && { tags: processedMetadata.tags })
+        } as Content  // Explicitly cast to Content type
+      } catch (error) {
+        console.error(`Error processing content for ${contentType}/${slug}:`, error)
+        return null
+      }
+    })
+    
+    // Wait for all promises to resolve
+    const contentItems = await Promise.all(contentItemsPromises)
     
     // Filter out any null items and sort by date
-    const validItems = contentItems.filter((item): item is Content => item !== null)
-    validItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    // Use a more explicit type guard to satisfy TypeScript
+    const validItems = contentItems.filter((item): item is Content => 
+      item !== null && typeof item === 'object'
+    )
     
+    // Sort by date, with proper null checks
+    validItems.sort((a, b) => {
+      const dateA = a?.date ? new Date(a.date).getTime() : 0
+      const dateB = b?.date ? new Date(b.date).getTime() : 0
+      return dateB - dateA
+    })
+    
+    console.log(`Returning ${validItems.length} valid content items for ${contentType}`)
     return validItems
   } catch (error) {
+    console.error(`Error getting all content for ${contentType}:`, error)
     return []
   }
 }
@@ -220,12 +267,13 @@ export async function hasUserPurchased(userId: string | null | undefined, slug: 
   
   try {
     const { rows } = await sql`
-      SELECT * FROM purchases 
-      WHERE user_id = ${userId} AND content_slug = ${slug}
+      SELECT * FROM articlepurchases 
+      WHERE user_id = ${userId} AND article_slug = ${slug}
     `
     console.log(`[hasUserPurchased] Query result: ${JSON.stringify(rows)}`)
     return rows.length > 0
   } catch (error) {
+    console.error(`[hasUserPurchased] Error checking purchase status: ${error}`)
     return false
   }
 }
@@ -291,7 +339,9 @@ export function renderContent(
     React.createElement(Paywall, {
       price: metadata.commerce.price,
       slug: metadata.slug || '',
-      title: typeof metadata.title === 'string' ? metadata.title : metadata.title?.default || 'Untitled',
+      title: typeof metadata.title === 'string' 
+        ? metadata.title 
+        : (metadata.title as any)?.default || 'Untitled',
       paywallHeader: metadata.commerce.paywallHeader || defaultText.header,
       paywallBody: metadata.commerce.paywallBody || defaultText.body,
       buttonText: metadata.commerce.buttonText || defaultText.buttonText,
@@ -299,4 +349,111 @@ export function renderContent(
       imageAlt: metadata.commerce.paywallImageAlt
     })
   );
+}
+
+/**
+ * Get content by slug with error handling
+ * @param slug The content slug
+ * @param contentType The content type directory (defaults to 'blog')
+ * @returns The content or null if not found
+ */
+export async function getContentBySlug(slug: string, contentType: string = 'blog') {
+  try {
+    // Just directly try to load the content - the loadContent function already handles
+    // checking if the file exists and returns null if it doesn't
+    const result = await loadContent(contentType, slug)
+    if (!result) {
+      console.log(`Content not found or failed to load: ${contentType}/${slug}`)
+      return null
+    }
+    
+    const { MdxContent, metadata } = result
+    
+    return {
+      MdxContent,
+      metadata: {
+        ...metadata,
+        slug,
+        type: metadata.type || (
+          contentType === 'blog' ? 'blog' : 
+          contentType === 'videos' ? 'video' : 
+          contentType === 'learn/courses' ? 'course' : 'blog'
+        )
+      }
+    }
+  } catch (error) {
+    console.error(`Error getting content by slug ${contentType}/${slug}:`, error)
+    return null
+  }
+}
+
+/**
+ * Import only metadata from MDX files
+ * @param slug The content slug
+ * @param contentType The content type directory
+ * @returns The metadata from the MDX file
+ */
+export async function importContentMetadata(slug: string, contentType: string = 'blog') {
+  try {
+    // Check if the MDX file exists in app directory
+    const appMdxPath = path.join(appContentDirectory, contentType, slug, 'page.mdx')
+    const existsInApp = fs.existsSync(appMdxPath)
+    
+    // Check if the MDX file exists in content directory
+    const contentMdxPath = path.join(newContentDirectory, contentType, slug, 'page.mdx')
+    const existsInContent = fs.existsSync(contentMdxPath)
+    
+    if (!existsInApp && !existsInContent) {
+      console.log(`Content not found in either directory: ${contentType}/${slug}`)
+      return null
+    }
+    
+    let metadata;
+    
+    if (existsInApp) {
+      console.log(`Loading metadata from app directory: ${contentType}/${slug}`)
+      // Dynamically import the MDX content from app directory
+      const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+      metadata = mdxModule.metadata
+    } else {
+      console.log(`Loading metadata from content directory: ${contentType}/${slug}`)
+      // Dynamically import the MDX content from content directory
+      const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
+      metadata = mdxModule.metadata
+    }
+
+    if (!metadata) {
+      console.log(`No metadata found for: ${contentType}/${slug}`)
+      return null
+    }
+    
+    // Process metadata to ensure consistent slug and ID generation
+    let processedMetadata = { ...metadata } as ExtendedMetadata
+    
+    // Ensure the metadata has a slug (use the directory name if not provided)
+    if (!processedMetadata.slug) {
+      console.log(`No slug in metadata for ${slug}, using directory name`)
+      processedMetadata.slug = slug
+    } else {
+      // Normalize the slug to prevent path issues
+      // Remove any leading slashes
+      let formattedSlug = processedMetadata.slug.replace(/^\/+/, '')
+      
+      // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
+      if (formattedSlug.startsWith(`${contentType}/`)) {
+        formattedSlug = formattedSlug.substring(contentType.length + 1)
+      }
+      
+      // Update the slug in the metadata
+      processedMetadata.slug = formattedSlug
+    }
+    
+    // Add a unique ID that's deterministic based on content type and slug
+    processedMetadata._id = `${contentType}-${processedMetadata.slug}`
+    
+    return processedMetadata
+  } catch (error) {
+    console.error(`Error importing metadata for ${contentType}/${slug}:`, error)
+    return null
+  }
 } 

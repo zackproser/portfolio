@@ -1,5 +1,5 @@
 import React from 'react'
-import { getAllContentMetadata } from "@/lib/getAllContentMetadata"
+import { getAllContent } from "@/lib/content-handlers"
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
@@ -21,8 +21,8 @@ export default async function TutorialsPage() {
 
   try {
     // Use our new content system to get all content types
-    const allArticles = await getAllContentMetadata('blog')
-    const allCourses = await getAllContentMetadata('learn/courses')
+    const allArticles = await getAllContent('blog')
+    const allCourses = await getAllContent('learn/courses')
 
     const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug))
     const courses = allCourses.filter(course => courseSlugs.includes(course.slug))
