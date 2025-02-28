@@ -16,10 +16,10 @@ function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
   return (
     <div className="mx-auto mt-16 grid max-w-none grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
       {articles.map((article, index) => {
-        // Use _id if available, otherwise create a unique key
+        // Simply use the index as the key
         return (
           <BlogPostCard 
-            key={article.slug} 
+            key={index} 
             article={article} 
           />
         );

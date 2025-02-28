@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import Newsletter from '@/components/Newsletter'
 
 import Image from 'next/image'
@@ -19,10 +18,7 @@ export const metadata = createMetadata({
   title: "Passwordless sudo and verified GitHub commit signing with Yubikey - a pair-coder's dream",
   description: "If you're like me, you can't type your complex password correctly when your entire team is staring at you on a pair call. And now, you no longer have to.",
   image: stressedTyping,
-  slug: '/blog/yubikey-sudo-git-signing',
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 If you're like me - you can't type your complex password correctly when your entire team is staring at you on a pair coding call.
 
