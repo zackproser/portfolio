@@ -1,0 +1,25 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconeRefArchJumphost from '@/images/pinecone-ref-arch-jumphost.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-11-27",
+  title: "Deploying a jump host for the Pinecone AWS Reference Architecture",
+  description: "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
+  image: pineconeRefArchJumphost
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/gIO76I0JTnY"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I demonstrate how to configure, deploy and connect through a jump host so that you can interact with RDS Postgres
+and other resources running in the VPC's private subnets.
