@@ -13,8 +13,6 @@ export const metadata = createMetadata({
     image: dataDrivenPages,
 });
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 <Image src={dataDrivenPages} alt="Building data-driven pages with Next.js" />
 
 I've begun experimenting with building some of my blog posts - especially those that are heavy on data, tables, comparisons and multi-dimensional considerations - using scripts, JSON and home-brewed schemas. 
@@ -224,7 +222,7 @@ In the package.json file for our Next.js project, we can define a "prebuild" scr
 ```json
 {
   "scripts": {
-    "prebuild": "node scripts/generate-ai-assisted-dev-tools-page.js",
+    "prebuild": "node scripts/create-ai-assisted-dev-tools-comparison-post.js",
     "build": "next build",
     ...
   }
@@ -241,7 +239,7 @@ If you decline setting this option, but still need your prebuild step to work ac
 ```json
 {
   "scripts": {
-    "prebuild": "node scripts/generate-ai-assisted-dev-tools-page.js",
+    "prebuild": "node scripts/create-ai-assisted-dev-tools-comparison-post.js",
     "build": "npm run prebuild && next build",
     ...
   }

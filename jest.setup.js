@@ -1,3 +1,6 @@
+// Ensure we're in development mode for testing
+process.env.NODE_ENV = 'development';
+
 import '@testing-library/jest-dom'
 
 // Mock next/navigation
