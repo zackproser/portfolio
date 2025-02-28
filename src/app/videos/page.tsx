@@ -3,7 +3,7 @@ import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
-import { getAllContentMetadata } from '@/lib/getAllContentMetadata'
+import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/lib/shared-types'
 
 export const metadata: Metadata = createMetadata({
@@ -29,7 +29,7 @@ function VideoGrid({ videos }: { videos: ExtendedMetadata[] }) {
 
 export default async function VideosIndex() {
   // Use our helper function to get all video metadata
-  const videos = await getAllContentMetadata('videos')
+  const videos = await getAllContent('videos')
 
   return (
     <SimpleLayout

@@ -1,6 +1,7 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
 import { getContentBySlug } from '@/lib/content-handlers';
+import { Content } from '@/lib/shared-types';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -18,5 +19,11 @@ export default async function ProductPage({
     notFound();
   }
 
-  return <ProductLanding content={content} />;
+  // Transform the content structure to match what ProductLanding expects
+  const transformedContent: Content = {
+    ...content.metadata,
+    MdxContent: content.MdxContent
+  };
+
+  return <ProductLanding content={transformedContent} />;
 } 

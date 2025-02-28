@@ -1,8 +1,8 @@
-import { getAllContentMetadata } from "@/lib/getAllContentMetadata"
-import HomepageClientComponent from './HomepageClientComponent'
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
 import { createMetadata } from '@/utils/createMetadata'
+import { getAllContent } from '@/lib/content-handlers'
+import HomepageClientComponent from './HomepageClientComponent'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,9 +49,9 @@ export default async function Page() {
   ]
 
   try {
-    // Fetch all articles and videos using our new content system
-    const allArticles = await getAllContentMetadata('blog')
-    const allVideos = await getAllContentMetadata('videos')
+    // Get all articles and videos
+    const allArticles = await getAllContent('blog')
+    const allVideos = await getAllContent('videos')
 
     console.log(`Homepage: Loaded ${allArticles.length} blog articles and ${allVideos.length} videos`)
     

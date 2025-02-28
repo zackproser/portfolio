@@ -1,0 +1,129 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import NewsletterWrapper from '@/components/NewsletterWrapper'
+
+import thirtyFiveThousandReaders from '@/images/thirty-five-thousand-readers.webp'
+import googleClicks from '@/images/google-clicks.webp'
+import pagespeed from '@/images/pagespeed.webp'
+import markdown from '@/images/markdown.webp'
+import gitActivity from '@/images/2023-git-activity.webp'
+import typefully from '@/images/typefully.webp'
+import devtoolsComparison from '@/images/devtools-comparison.webp'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-11-26",
+    title: "How I grew my tech blog to 35,000 readers in a year",
+    description: "Learn how I grew my tech blog to 35,000 readers in one year through site optimization, UX improvements, consistent publishing, and building useful tools.",
+    image: thirtyFiveThousandReaders,
+    slug: '/blog/35-thousand-readers-update'
+});
+
+<Image src={thirtyFiveThousandReaders} alt="35,000 readers" />
+
+One year ago, I published [Run your own tech blog](/blog/run-your-own-tech-blog). 
+
+Since then:
+ * ~35,000 people have read my work or used my tools
+ * 132% growth in traffic
+ * My writing directly influenced my career, helping me land roles at Pinecone and WorkOS
+
+Here's how I got there—and how you can, too. 👇
+
+## 1. I prioritized site speed and health
+
+Slow pages = lower search rankings.
+
+<Image src={pagespeed} alt="Pagespeed" />
+
+Using Vercel, I kept my site fast, hitting a perfect PageSpeed score (screenshot below). 🚦
+
+Don't settle for "good enough." Regularly monitor your metrics and optimize load times—they can change how well your pages rank. 
+
+I spent time understanding Next.js and optimizing all of my content to be static whenever possible, even when it meant rewriting much of my application. 
+
+I optimize images for delivery using the cwebp utility to convert them into the efficient WebP format. For example, I converted `~/Downloads/2023-git-activity.jpg` to `src/images/2023-git-activity.webp` using:
+
+```bash
+cwebp -q 80 ~/Downloads/2023-git-activity.jpg -o src/images/2023-git-activity.webp
+```
+
+The output reduced the file size to 28 kilobytes while maintaining excellent quality. This ensures fast loading times without noticeable loss in image quality.
+
+Tech stack:
+ * Nextjs & Tailwind 
+ * Vercel
+ * MDX
+
+ MDX was a critical choice. It allows me to write rapidly in a format I'm familiar with, while also composing custom React components, such as Newsletter captures: 
+
+ <NewsletterWrapper />
+
+ into my blog posts 😀. 
+
+ This is what it looks like when I'm writing a post: 
+
+ <Image src={markdown} alt="Markdown" />
+
+## 2. I iterated relentlessly on user experience 
+
+<Image src={gitActivity} alt="Git activity" />
+
+Engagement doesn't just come from good writing—it comes from readable writing. Cleaner layouts, better typography, and simplified navigation made my content easier to consume and share.
+
+Improving UX isn't a one-and-done task; it's an ongoing process. Over the past year, I experimented with:
+* Typography tweaks to improve readability
+* Streamlined layouts that focused on clarity over complexity
+* Simplified navigation, ensuring readers could quickly find the content they needed
+
+View your blog from your readers' perspective. Always consider if your content is easy to read, if users can find what they're looking for, and whether your design serves the content rather than distracting from it.
+
+## 3. I consistently published and shared
+
+Consistency is the lifeblood of blogging. I wrote whenever inspiration struck, capturing ideas in notes and fleshing them out over time.
+
+* Some posts took days to craft
+* Others—like "Run Your Own Tech Blog"—took just 23 minutes because I'd been mulling over the topic for a year
+
+Publishing was only half the battle. Sharing was just as important. I shared my posts on LinkedIn, Twitter, and Reddit—even when the feedback wasn't always kind (hello, trolls 👋).
+
+I found success using Typefully, a tool that allows you to schedule tweets, threads, Bluesky, Twitter, Mastodon, and LinkedIn posts simultaneously.
+
+<Image src={typefully} alt="Typefully" />
+
+The key is to write regularly. Make it a habit, even if you're not publishing everything you write.
+
+## 4. I built tools, not just blog posts
+
+<Image src={devtoolsComparison} alt="Devtools comparison" />
+
+Some of my most popular pages weren't articles—they were tools I built to solve real problems. Tools are a unique way to provide immediate value and drive sustained traffic.
+
+If you have the skills to build, do it. It's one of the best ways to stand out.
+
+If you have technical skills, consider what common challenges your audience faces. Building tools, calculators, or resources to solve these problems can be more valuable than traditional blog posts.
+
+## 5. I let analytics guide me 
+
+<Image src={googleClicks} alt="Google clicks" />
+
+Google Search Console became my feedback loop. By analyzing search performance, I identified:
+* **What resonated:** Doubling down on topics that performed well
+* **What flopped:** Learning from content that didn't land
+
+This iterative approach kept my blog relevant and valuable to my readers.
+
+Make data-driven decisions by using tools like Google Analytics and Search Console to refine your strategy. Pay close attention to search queries, click-through rates, and audience behavior to understand what works and what doesn't.
+
+## Finding success blogging 
+
+There's no magic formula to growing a successful blog. It's about iteration, experimentation, and—above all—consistency.
+* Write
+* Build
+* Share
+* Learn
+
+Start today. 

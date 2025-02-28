@@ -1,0 +1,213 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import shipLikeCrazy from '@/images/ship-like-crazy.webp'
+import a16z2 from '@/images/a16z-2.webp'
+import a16z11 from '@/images/a16z-11.webp'
+import emailOctopusStats from '@/images/email-octopus-stats.webp'
+import youtubeStats from '@/images/youtube-stats.webp'
+import aboutPageRefresh from '@/images/about-page-refresh.webp'
+import bloggingPeacefully from '@/images/blogging-peacefully.webp'
+import linkedinStats from '@/images/linkedin-stats.webp'
+import redditPosts from '@/images/reddit-posts.webp'
+import vercelStats from '@/images/vercel-stats.webp'
+import commitsOnPortfolio from '@/images/commits-on-portfolio.webp'
+import initToWinIt from '@/images/init-to-win-it.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2024-01-08",
+    title: "Keep Calm and Ship Like Crazy: My 2023 Wins and Lessons",
+    description: "I had a lot of growth and success to celebrate professionally in 2023",
+    image: shipLikeCrazy,
+    filePath: __filename
+});
+
+## Catching a breath
+
+<Image src={shipLikeCrazy} alt="I'm pausing to reflect" />
+
+I want to reflect on what I accomplished last year and what I consider my biggest wins: 
+
+* I netted hundreds of new email newsletter subscribers, LinkedIn followers, and Youtube subscribers. 
+
+* I open-sourced several projects, many articles and YouTube demos and tutorials that I'm proud of. 
+
+* I landed a Staff Developer Advocate role at Pinecone.io, where I shipped a separate set of articles on Generative AI and machine learning, plus webinars, open-source improvements to our clients and applications, and Pinecone's first AWS Reference Architecture in Pulumi.
+
+## The beginning of my "Year in AI"
+
+In January 2023, I continued doing two things I had been doing for years, namely: open-sourcing side projects and tools and writing or making videos about them. 
+
+However, for some reason I felt a surge of enthusiasm around sharing my projects, perhaps because I was beginning to experiment with LLMs and realizing the productivity and support gains they could unlock.
+
+So, I put a little extra polish into [the blog posts](/blog/) and [YouTube videos](/videos/) that shared my latest experiments with ChatGPT. Early in the year, I wrote [Can ChatGPT4 and GitHub Copilot help me produce a more complete side project more quickly?](/blog/chatgpt-4-experiment-ai-development).
+
+As I wrote in [maintaining this site no longer fucking sucks](/blog/maintaining-this-site-no-longer-fucking-sucks), I also re-did this site for the Nth time, this time using the latest Next.js, Tailwind and a Tailwind UI template, that I promptly hacked up to my own needs, and deployed my new site to Vercel.
+
+Here's my commit graph for the year on [my portfolio project](https://github.com/zackproser/portfolio):
+
+<Image src={commitsOnPortfolio} alt="I'm committing to this site" />
+
+Which makes it less hard to believe that it was only 9 months ago I started building this version of the site in this incredibly hard to read screenshot of my first commit on the project:
+
+<Image src={initToWinIt} alt="I'm init to win it" />
+
+## My blogging finally got me somewhere
+
+Writing about what I learn and ship in tech has been an important tool for expanding my understanding and skill set for my entire career, but this was perhaps the year it most noticeably impacted my life. 
+
+<Image src={bloggingPeacefully} alt="I'm blogging happily" />
+
+In the beginning of the year I was working at Gruntwork.io, doing large scale AWS deployments for customers using Terraform, but as I wrote in [You get to keep the neural connections](you-get-to-keep-the-neural-connections), it came time for the next adventure. 
+
+And as I wrote about in [Run your own tech blog](run-your-own-tech-blog), one of the key benefits of doing a lot of writing about your open-source projects and learnings is that you have high quality work samples ever at the ready.
+
+This year, in the middle of working an intense job as a tech lead, I managed to do some self-directed job hunting in a down market, start with 5 promising opportunities and ultimately winnow the companies I wanted to work 
+for down to two. 
+
+I received two excellent offers in hand at the same time and was able to take my pick: [I chose to start at Pinecone as a Staff Developer Advocate](https://www.zackproser.com/blog/i-am-joining-pinecone-io). 
+
+In the break between Gruntwork.io and Pinecone.io, I took one week to experiment with Retrieval Augmented Generation and built a Michael Scott from the office chatbot. 
+
+I open-sourced the [data prep](https://github.com/zackproser/office-oracle-data-bench) and [quality testing](https://github.com/zackproser/office-oracle-db-test-notebook) Jupyter Notebooks I built for this project 
+plus the [chatbot Next.js application](https://github.com/zackproser/office-oracle) itself, as I wrote about in my [Office Oracle](/blog/office-oracle-overview) post.
+
+## I shipped like crazy at Pinecone
+
+### Articles
+
+Once I started at Pinecone, I shipped a bunch of articles on Generative AI, machine learning and thought pieces on the future of AI and development: 
+
+* [Retrieval Augmented Generation](https://www.pinecone.io/learn/retrieval-augmented-generation/)
+* [AI Powered and built with...JavaScript?](https://www.pinecone.io/learn/javascript-ai)
+* [How to use Jupyter Notebooks to do Machine Learning and AI tasks](https://www.pinecone.io/learn/jupyter-notebooks)
+* [The Pain and Poetry of Python](https://www.pinecone.io/blog/pain-poetry-python/)
+* [Making it easier to maintain open-source projects with CodiumAI and Pinecone](https://www.pinecone.io/learn/codiumai-pinecone-similar-issues/)
+
+### Videos 
+
+* [Semantic Search with TypeScript and Pinecone](https://www.youtube.com/watch?v=4Tt4LhJ6tD8)
+* [Live code review: Pinecone Vercel starter template and RAG - Part 1](https://www.youtube.com/watch?v=pPbTzgUV-UA)
+* [Live code review: Pinecone Vercel starter template and RAG - Part 2](https://www.youtube.com/watch?v=FrlG83du31Q)
+* [What is a Vector Database?](https://www.youtube.com/watch?v=wc3Lh-eiNBM)
+* [Deploying the Pinecone AWS Reference Architecture - Part 1](https://www.youtube.com/watch?v=ySznARngHts)
+* [Deploying the Pinecone AWS Reference Architecture - Part 2](https://www.youtube.com/watch?v=X17MJe9OU7k)
+* [Deploying the Pinecone AWS Reference Architecture - Part 3](https://www.youtube.com/watch?v=ArH4H1cGfzk)
+* [How to destroy the Pinecone AWS Reference Architecture](https://www.youtube.com/watch?v=bxWWxKUIa3s)
+* [How to deploy a Jump host into the Pinecone AWS Reference Architecture](https://www.youtube.com/watch?v=gIO76I0JTnY)
+
+### Projects
+
+* [Introducing Pinecone's AWS Reference Architecture with Pulumi](https://www.pinecone.io/blog/aws-reference-architecture/)
+* [Exploring Pinecone's AWS Reference Architecture](https://www.pinecone.io/learn/aws-reference-architecture/)
+* [GitHub: Pinecone AWS Reference Architecture with Pulumi](https://github.com/pinecone-io/aws-reference-architecture-pulumi)
+
+## My personal writing was picked up, more than once 
+
+This was equally unexpected, thrilling and wonderful. I did not know these people or outlets, but they found something of value in what I had to say. Each of these surprised netted me a group of new newsletter and YouTube subscribers. 
+
+* Daniel Messier included my rant [Maintaining this site fucking sucks](/blog/maintaining-this-site-fucking-sucks) in his Unsupervised Learning newsletter
+* The Changelog picked up my [Run your own tech blog post](/blog/run-your-own-tech-blog)
+* Habr picked up and translated my [First see if you've got the programming bug](first-see-if-youve-got-the-bug) post into Russian. This resulted in about 65 new YouTube subscribers and new readers from Russian-speaking countries.
+
+In addition, my [programming mentor, John Arundel](https://bitfieldconsulting.com) graciously linked to my blog when he published the blog post series I lightly collaborated on with him (He did the lion's share of the work). 
+
+You can [read his excellent series, My horrible career, here](https://bitfieldconsulting.com/golang/my-horrible-career).
+
+## The new subscribers and followers kept coming
+
+### My site traffic saw healthy regular growth and some spikes...
+
+As I hoped, regularly publishing a stream of new content to my site and selectively sharing some of them on social media led to more and more organic traffic and a higher 
+count of indexed pages in top search engines. 
+
+By continuously building and sharing valuable content, tools and posts, I intend to continuously build organic traffic to my site, while eventually adding offerings like courses, training, books and more. 
+
+<Image src={vercelStats} alt="My site traffic growth" />
+
+### EmailOctopus Newsletter cleared 200...
+
+When I rebuilt the latest version of my portfolio site, I wired up a custom integration with EmailOctopus so that I could have total control over how my Newsletter experience looks and behaves within my site. 
+
+<Image src={emailOctopusStats} alt="My EmailOctopus newsletter growth" />
+
+In a way, this is the channel I'm most excited about because it's the channel I have the most control over. These folks signed up directly to hear from me, so growing this audience is critcal for reaching my goals.
+
+### YouTube went from 0 to over 150...
+
+<Image src={youtubeStats} alt="My YouTube channel subscriber growth" />
+
+I tend to do demos and technical walkthroughs on [my YouTube channel](https://youtube.com/@zackproser). The various unexpected re-shares of my content to other networks led to a spike in YouTube subscribers. 
+
+I went from effectively no YouTube subscribers at the beginning of the year to 156 at the end of 2023.
+
+I got a surprise hit on my video about performing GitHub pull request reviews entirely in your terminal. More evidence that you should constantly publish what you find interesting, because you never know which topic or 
+video is going to be a hit. 
+
+### LinkedIn
+
+LinkedIn remained the most valuable channel for sharing technical and thought leadership content with my audience. 
+
+<Image src={linkedinStats} alt="My LinkedIn channel subscriber growth" />
+
+I saw the highest engagement on this platform, consistently since the beginning of the year. 
+
+I made the subtle but important tweak of linking directly to my newsletter subscription page that appeared to immediately make an impact  in terms of signup velocity.
+
+### Reddit 
+
+<Image src={redditPosts} alt="My Reddit account's growth" />
+
+Reddit was a close second to LinkedIn, or perhaps slightly ahead of it, judging solely from referral traffic. 
+
+I found that: 
+* longform technical tutorials tended to perform best on Reddit
+* the community is suspicious even when you're just giving away a tutorial or sharing something open-source 
+* Reddit posts that do well tend to deliver steady trickles of traffic over time 
+
+## Consulting wins 
+
+I started being tapped for my insight into Generative AI, developer tooling and vector databases. 
+
+Initially, this came in the form of various think tanks and research firms asking me to join calls as an expert, and 
+to give my opinions and share my experiences as an experienced software developer experimenting with the first raft of AI-assisted developer tooling.
+
+<Image src={aboutPageRefresh} alt="My about page refresh" />
+
+Realizing the opportunity at hand, I quickly gave [my about page](/about) a face lift, making it more clear that I do limited engagements for my key areas of interest. 
+
+By the end of the year, I had successfully completed several such engagements, but was also beginning to see an uptick in direct outreach, not mediated by any third party.
+
+## Personal wins
+
+There were many reasons I wanted to work at Pinecone as a developer advocate. One of those many reasons was that the role involved some flying and some public speaking, both of which I have some phobia around. 
+
+<Image src={a16z2} alt="Zachary Proser giving a talk" />
+
+I intentionally wanted to go to the places that scare me, and I am pleased to report that even after just a couple of sessions of exposure therapy this last year, I'm already feeling better about both.
+
+<Image src={a16z11} alt="Zachary Proser giving a speech" />
+
+I did some talks, webinars and conferences this year in Atlanta, San Francisco, New York and they all went really well, resulting in new contacts, Pinecone customers, followers and follow-up content. 
+
+## Takeaways and learnings 
+
+Publish. Publish. Publish. You cannot know in advance what will be successful and what will fall flat. Which articles will take off and which will get a few silent readers. 
+
+I am regularly surprised by how well certain posts, videos and projects do, and which aspects of them folks find interesting, and how poorly certain projects do, despite a great deal of preparation. 
+
+### Build self-sustaining loops 
+
+I use what I learn at work to write content and build side projects that people will find interesting. 
+
+I use what I learn in my side project development at work - constantly. Side projects have been an invaluable constant laboratory in which to expand my skill set and experience. 
+
+I use my skill sets and experience to help other people, including clients and those looking for assistance in development, understanding industry trends, and building better software.
+
+Rinse and repeat constantly for many years, with minimal breaks in between. 

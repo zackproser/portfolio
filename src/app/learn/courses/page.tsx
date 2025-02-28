@@ -1,9 +1,12 @@
-import { type Metadata } from 'next'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { BlogPostCard } from '@/components/BlogPostCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
-import { getAllContentMetadata } from '@/lib/getAllContentMetadata'
+import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/lib/shared-types'
 
 export const metadata: Metadata = createMetadata({
@@ -30,7 +33,7 @@ function CourseGrid({ courses }: { courses: ExtendedMetadata[] }) {
 
 export default async function CoursesIndex() {
   // Use our helper function to get all course metadata
-  const courses = await getAllContentMetadata('learn/courses')
+  const courses = await getAllContent('learn/courses')
 
   return (
     <SimpleLayout

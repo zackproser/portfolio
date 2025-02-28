@@ -1,5 +1,4 @@
 import { Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types';
-import { getAllContentMetadata } from './getAllContentMetadata';
 import path from 'path';
 import glob from 'fast-glob';
 import { ProductContent } from './types/product';
@@ -12,9 +11,9 @@ export async function getPurchasableItem(slug: string): Promise<Purchasable | nu
   try {
     // First try to find it in the content
     const [blogContent, courseContent, videoContent] = await Promise.all([
-      getAllContentMetadata('blog'),
-      getAllContentMetadata('learn/courses'),
-      getAllContentMetadata('videos')
+      getAllContent('blog'),
+      getAllContent('learn/courses'),
+      getAllContent('videos')
     ]);
 
     const allContent = [...blogContent, ...courseContent, ...videoContent];
@@ -50,9 +49,9 @@ export async function getAllPurchasableItems(): Promise<Purchasable[]> {
   try {
     // Get all content
     const [blogContent, courseContent, videoContent] = await Promise.all([
-      getAllContentMetadata('blog'),
-      getAllContentMetadata('learn/courses'),
-      getAllContentMetadata('videos')
+      getAllContent('blog'),
+      getAllContent('learn/courses'),
+      getAllContent('videos')
     ]);
 
     const allContent = [...blogContent, ...courseContent, ...videoContent];
@@ -120,13 +119,13 @@ async function getDynamicProductContent(slug: string): Promise<ProductContent | 
   // First check if it's a blog post
   const article = await getContentBySlug(slug);
   if (article) {
-    if (article.commerce?.isPaid) {
-      return generateProductFromArticle(article as BlogWithSlug);
+    if (article.metadata?.commerce?.isPaid) {
+      return generateProductFromArticle(article.metadata as BlogWithSlug);
     }
   }
 
   // Check if it's a course
-  const courses = await getAllContentMetadata('learn/courses');
+  const courses = await getAllContent('learn/courses');
   const course = courses.find(c => c.slug === slug);
   if (course && isPurchasable(course)) {
     return generateProductFromArticle(course as Blog);
@@ -150,9 +149,9 @@ export async function getAllProducts(): Promise<ProductContent[]> {
   try {
     // Get all content
     const [blogContent, courseContent, videoContent] = await Promise.all([
-      getAllContentMetadata('blog'),
-      getAllContentMetadata('learn/courses'),
-      getAllContentMetadata('videos')
+      getAllContent('blog'),
+      getAllContent('learn/courses'),
+      getAllContent('videos')
     ]);
 
     // Get static product pages
@@ -193,9 +192,9 @@ export async function getAllProducts(): Promise<ProductContent[]> {
 // Get all purchasable content
 export async function getAllPurchasableContent(): Promise<Blog[]> {
   const allContent = await Promise.all([
-    getAllContentMetadata('blog'),
-    getAllContentMetadata('learn/courses'),
-    getAllContentMetadata('videos')
+    getAllContent('blog'),
+    getAllContent('learn/courses'),
+    getAllContent('videos')
   ]).then(results => results.flat());
   
   return allContent
@@ -208,12 +207,21 @@ export async function getAllPurchasableContent(): Promise<Blog[]> {
 export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
   // First check articles
   const article = await getContentBySlug(slug);
-  if (article && isPurchasable(article)) {
-    return article;
+  
+  // Check if article exists and has commerce metadata
+  if (article && article.metadata && article.metadata.commerce?.isPaid) {
+    // Transform to match the expected Purchasable structure
+    const transformedContent = {
+      ...article.metadata,
+      MdxContent: article.MdxContent,
+      type: article.metadata.type || 'blog'
+    } as unknown as Purchasable;
+    
+    return transformedContent;
   }
 
   // Check if it's a course
-  const courses = await getAllContentMetadata('learn/courses');
+  const courses = await getAllContent('learn/courses');
   const course = courses.find(c => c.slug === slug);
   if (course && isPurchasable(course)) {
     return course;
