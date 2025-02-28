@@ -1,16 +1,15 @@
-import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
 import { Session } from 'next-auth'
-import glob from 'fast-glob'
 import { ExtendedMetadata, Content } from './shared-types'
 import Paywall from '@/components/Paywall'
 import React from 'react'
 import { sql } from '@vercel/postgres'
 
-// Directory where content is stored
-const contentDirectory = path.join(process.cwd(), 'src/app')
+// Directories where content is stored
+const appContentDirectory = path.join(process.cwd(), 'src/app')
+const newContentDirectory = path.join(process.cwd(), 'src/content')
 
 /**
  * Get all slugs for a content type
@@ -18,22 +17,41 @@ const contentDirectory = path.join(process.cwd(), 'src/app')
  * @returns Array of slugs
  */
 export function getContentSlugs(contentType: string) {
-  const contentDir = path.join(contentDirectory, contentType)
+  // Check in app directory first
+  const appDir = path.join(appContentDirectory, contentType)
+  const appSlugs = fs.existsSync(appDir) 
+    ? fs.readdirSync(appDir)
+        .filter(item => {
+          const itemPath = path.join(appDir, item)
+          return fs.statSync(itemPath).isDirectory() && item !== '[slug]'
+        })
+        .filter(slug => {
+          // Only include directories that have a page.mdx file
+          const mdxPath = path.join(appDir, slug, 'page.mdx')
+          return fs.existsSync(mdxPath)
+        })
+    : [];
   
-  if (!fs.existsSync(contentDir)) {
-    return []
-  }
+  // Check in new content directory
+  const contentDir = path.join(newContentDirectory, contentType)
+  const contentSlugs = fs.existsSync(contentDir)
+    ? fs.readdirSync(contentDir)
+        .filter(item => {
+          const itemPath = path.join(contentDir, item)
+          return fs.statSync(itemPath).isDirectory()
+        })
+        .filter(slug => {
+          // Only include directories that have a page.mdx file
+          const mdxPath = path.join(contentDir, slug, 'page.mdx')
+          return fs.existsSync(mdxPath)
+        })
+    : [];
   
-  return fs.readdirSync(contentDir)
-    .filter(item => {
-      const itemPath = path.join(contentDir, item)
-      return fs.statSync(itemPath).isDirectory() && item !== '[slug]'
-    })
-    .filter(slug => {
-      // Only include directories that have a page.mdx file
-      const mdxPath = path.join(contentDir, slug, 'page.mdx')
-      return fs.existsSync(mdxPath)
-    })
+  // Combine and deduplicate slugs
+  const allSlugs = [...new Set([...appSlugs, ...contentSlugs])];
+  console.log(`Found ${allSlugs.length} total slugs for ${contentType} (${appSlugs.length} in app dir, ${contentSlugs.length} in content dir)`);
+  
+  return allSlugs;
 }
 
 /**
@@ -43,8 +61,26 @@ export function getContentSlugs(contentType: string) {
  * @returns Whether the content exists
  */
 export function contentExists(contentType: string, slug: string): boolean {
-  const mdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
-  return fs.existsSync(mdxPath)
+  // Check in app directory first
+  const appMdxPath = path.join(appContentDirectory, contentType, slug, 'page.mdx')
+  const existsInApp = fs.existsSync(appMdxPath)
+  
+  // If not in app directory, check in content directory
+  if (!existsInApp) {
+    const contentMdxPath = path.join(newContentDirectory, contentType, slug, 'page.mdx')
+    const existsInContent = fs.existsSync(contentMdxPath)
+    
+    if (existsInContent) {
+      console.log(`Content found in new content directory: ${contentType}/${slug}`)
+      return true
+    }
+    
+    console.log(`Content not found in either directory: ${contentType}/${slug}`)
+    return false
+  }
+  
+  console.log(`Content found in app directory: ${contentType}/${slug}`)
+  return true
 }
 
 /**
@@ -55,22 +91,43 @@ export function contentExists(contentType: string, slug: string): boolean {
  */
 export async function loadContent(contentType: string, slug: string) {
   try {
-    // Check if the MDX file exists
-    if (!contentExists(contentType, slug)) {
+    // Check if the MDX file exists in app directory
+    const appMdxPath = path.join(appContentDirectory, contentType, slug, 'page.mdx')
+    const existsInApp = fs.existsSync(appMdxPath)
+    
+    // Check if the MDX file exists in content directory
+    const contentMdxPath = path.join(newContentDirectory, contentType, slug, 'page.mdx')
+    const existsInContent = fs.existsSync(contentMdxPath)
+    
+    if (!existsInApp && !existsInContent) {
+      console.log(`Content not found in either directory: ${contentType}/${slug}`)
       return null
     }
     
-    // Dynamically import the MDX content
-    const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
-    const MdxContent = mdxModule.default
-    const metadata = mdxModule.metadata
+    let MdxContent, metadata;
+    
+    if (existsInApp) {
+      console.log(`Loading content from app directory: ${contentType}/${slug}`)
+      // Dynamically import the MDX content from app directory
+      const mdxModule = await import(`@/app/${contentType}/${slug}/page.mdx`)
+      MdxContent = mdxModule.default
+      metadata = mdxModule.metadata
+    } else {
+      console.log(`Loading content from content directory: ${contentType}/${slug}`)
+      // Dynamically import the MDX content from content directory
+      const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
+      MdxContent = mdxModule.default
+      metadata = mdxModule.metadata
+    }
 
     if (!MdxContent) {
+      console.log(`No MDX content found for: ${contentType}/${slug}`)
       return null
     }
     
     return { MdxContent, metadata }
   } catch (error) {
+    console.error(`Error loading content for ${contentType}/${slug}:`, error)
     return null
   }
 }
@@ -153,13 +210,20 @@ export async function generateContentMetadata(contentType: string, slug: string)
  * @returns Whether the user has purchased the content
  */
 export async function hasUserPurchased(userId: string | null | undefined, slug: string): Promise<boolean> {
-  if (!userId) return false
+  console.log(`[hasUserPurchased] userId: ${userId}, slug: ${slug}`)
+
+  if (!userId) {
+    console.log(`[hasUserPurchased] No userId provided, returning false`)
+    return false
+  }
+  console.log(`[hasUserPurchased] Checking purchase status for userId: ${userId}, slug: ${slug}`)
   
   try {
     const { rows } = await sql`
       SELECT * FROM purchases 
       WHERE user_id = ${userId} AND content_slug = ${slug}
     `
+    console.log(`[hasUserPurchased] Query result: ${JSON.stringify(rows)}`)
     return rows.length > 0
   } catch (error) {
     return false
