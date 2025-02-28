@@ -1,0 +1,43 @@
+
+import writeSoFast from '/src/images/write-so-fast.webp' 
+
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+ title: "How do you write so fast?",
+ author: "Zachary Proser",
+ date: "2024-4-17",
+ description: "Sometimes someone will ask me how I am able to write new content so quickly. This is my answer. ",
+ image: writeSoFast,
+});
+
+<Image src={metadata.image} alt="How do you write so fast?" />
+
+## How do I write so fast?
+
+Occasionally someone will ask me how I am able to write new content so quickly. This is my answer.
+
+There are two reasons I'm able to write quickly:
+
+## 1. I write in my head 
+
+I mostly write new articles in my head while I'm walking around doing other things. This means that by the time I am back at a computer, I usually just need to type in what I've already hashed out.
+
+## 2. I automate and improve my process constantly
+
+The fact that I'm constantly writing in my own head means that my real job is rapid, frictionless capture. 
+
+When I have an idea that I want to develop into a full post, I will capture it in one of two ways: 
+
+1. I'll use Obsidian, my second brain, and add a new note to my `Writing > In progress` folder 
+
+1. I'll use my own tool, Panthalia, ([intro](https://zackproser.com/videos/panthalia-intro) and [update](https://zackproser.com/videos/panthalia-speech-to-text)), which allows me to go from idea fragment to open pull request in seconds
+
+I've found there's a significant motivational benefit to ***only needing to finish an open pull request*** versus writing an entire article from scratch. 
+
+Going from post fragment (or, the kernel of the idea) to open pull request reduces the perceived lift of the task.

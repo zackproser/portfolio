@@ -154,13 +154,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
     },
     async session({ session, user, token }) {
-      console.log(`session method callback: %o, %o, %o`, session, user, token);
-
-      console.log(`session.user.email: ${session!.user!.email}`);
-
       const userId = await getUserIdFromEmail(session!.user!.email!);
-
-      console.log(`userId: ${userId}`);
 
       // Get the full user record from the database
       const { rows } = await sql`
@@ -168,14 +162,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       `;
       const dbUser = rows[0];
 
-      // Add purchased courses to the session object
-      session!.user!.purchased_courses = await getPurchasedCourses(Number(userId));
-      
       // Add provider and image from the database user
       session!.user!.provider = dbUser.github_username ? 'GitHub' : 'Email';
       session!.user!.image = dbUser.image;
-
-      console.log(`session before return: %o`, session);
 
       return {
         ...session,
