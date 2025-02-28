@@ -47,7 +47,7 @@ const PriceBadge = ({ price }) => {
   )
 }
 
-export function BlogPostCard({ article }) {
+export function BlogPostCard({ article, contentType }) {
   if (!article) {
     console.warn('BlogPostCard received null or undefined article')
     return null;
@@ -87,6 +87,7 @@ export function BlogPostCard({ article }) {
     originalSlug: rawSlug,
     finalSlug: slug,
     type,
+    contentType,
     _id
   });
   
@@ -100,14 +101,17 @@ export function BlogPostCard({ article }) {
   if (isExternalLink) {
     href = slug;
   } else if (slug) {
+    // Use the explicitly passed contentType if available, otherwise fall back to the type property
+    const effectiveType = contentType || type;
+    
     // Simple content type based routing
-    const typePath = type === 'video' ? 'videos' : 
-                    type === 'comparison' ? 'comparisons' : 
-                    type === 'course' ? 'learn/courses' : 
+    const typePath = effectiveType === 'video' ? 'videos' : 
+                    effectiveType === 'comparison' ? 'comparisons' : 
+                    effectiveType === 'course' ? 'learn/courses' : 
                     'blog';
     
     href = `/${typePath}/${slug}`;
-    console.log(`BlogPostCard: Generated href for "${title}": ${href}`);
+    console.log(`BlogPostCard: Generated href for "${title}": ${href} (using contentType: ${contentType || 'not provided'}, type: ${type})`);
   } else {
     // If no slug is available, log a warning but provide a fallback
     console.warn(`BlogPostCard: No slug available for article "${title}"`);
