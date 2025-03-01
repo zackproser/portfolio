@@ -1,6 +1,6 @@
 import React from 'react'
 import { getAllContent } from "@/lib/content-handlers"
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -48,7 +48,7 @@ export default async function TutorialsPage() {
                   {tutorials.map((article, index) => {
                     const uniqueKey = article._id || (article.slug ? `${article.slug}-${index}` : `tutorial-${index}`);
                     return (
-                      <BlogPostCard key={uniqueKey} article={article} />
+                      <ContentCard key={uniqueKey} article={article} />
                     );
                   })}
                 </div>
@@ -66,7 +66,7 @@ export default async function TutorialsPage() {
                   {courses.map((course, index) => {
                     const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
                     return (
-                      <BlogPostCard key={uniqueKey} article={course} />
+                      <ContentCard key={uniqueKey} article={course} />
                     );
                   })}
                 </div>

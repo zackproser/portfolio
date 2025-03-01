@@ -9,7 +9,7 @@ import { clsx } from 'clsx';
 import RandomPortrait from '@/components/RandomPortrait';
 import SearchForm from '@/components/SearchForm';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
-import { BlogPostCard } from '@/components/BlogPostCard';
+import { ContentCard } from '@/components/ContentCard';
 import { BlogWithSlug } from '@/lib/shared-types';
 
 // Add gtag type definition
@@ -139,7 +139,7 @@ export default function ChatPageClient() {
                 <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
                 <div className="space-y-4">
                   {(articles as BlogWithSlug[]).map((article) => (
-                    <BlogPostCard key={article.slug} article={article} />
+                    <ContentCard key={article.slug} article={article} />
                   ))}
                 </div>
               </div>

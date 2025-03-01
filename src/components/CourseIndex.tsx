@@ -1,4 +1,4 @@
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/lib/shared-types'
 
@@ -10,7 +10,7 @@ export default async function CourseIndex() {
       {courses.map((course: ExtendedMetadata, index: number) => {
         const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
         return (
-          <BlogPostCard key={uniqueKey} article={course} />
+          <ContentCard key={uniqueKey} article={course} />
         );
       })}
     </div>

@@ -140,6 +140,14 @@ export async function getAllContent(contentType: string = 'blog'): Promise<Conte
           contentType === 'learn/courses' ? 'course' : 'blog'
         )
         
+        // Create the full path for the content
+        const typePath = 
+          contentType === 'videos' ? 'videos' : 
+          contentType === 'blog' ? 'blog' : 
+          contentType === 'learn/courses' ? 'learn/courses' : 
+          contentType === 'comparisons' ? 'comparisons' : 
+          contentType;
+        
         return {
           author: processedMetadata.author || 'Unknown',
           date: processedMetadata.date || new Date().toISOString(),
@@ -147,7 +155,7 @@ export async function getAllContent(contentType: string = 'blog'): Promise<Conte
           description: processedMetadata.description || '',
           image: processedMetadata.image || '',  // Ensure image is always a string, even if empty
           type: processedMetadata.type,
-          slug: processedMetadata.slug,
+          slug: `/${typePath}/${processedMetadata.slug}`,  // Include the full path in the slug
           _id: processedMetadata._id,
           ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
           ...(processedMetadata.landing && { landing: processedMetadata.landing }),

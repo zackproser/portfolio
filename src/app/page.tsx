@@ -67,8 +67,8 @@ export default async function Page() {
 
     // Helper function to normalize slugs for comparison
     const normalizeSlug = (slug: string) => {
-      // Remove any leading slashes and 'blog/' prefix
-      return slug.replace(/^\/+/, '').replace(/^blog\//, '')
+      // Remove any leading slashes and 'blog/' or 'videos/' prefix
+      return slug.replace(/^\/+/, '').replace(/^(blog|videos)\//, '')
     }
 
     // Filter articles using normalized slugs for comparison
