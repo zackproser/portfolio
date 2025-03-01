@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
 import { getAllContent } from '@/lib/content-handlers'
@@ -21,7 +21,7 @@ function CourseGrid({ courses }: { courses: ExtendedMetadata[] }) {
       {courses.map((course, index) => {
         const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
         return (
-          <BlogPostCard 
+          <ContentCard 
             key={uniqueKey} 
             article={course} 
           />

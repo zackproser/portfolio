@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
 import { getAllContent } from '@/lib/content-handlers'
@@ -18,7 +18,7 @@ function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
       {articles.map((article, index) => {
         // Simply use the index as the key
         return (
-          <BlogPostCard 
+          <ContentCard 
             key={index} 
             article={article} 
           />

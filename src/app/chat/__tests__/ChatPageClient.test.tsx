@@ -33,7 +33,11 @@ jest.mock('@/components/RandomPortrait', () => ({
 // Mock the SearchForm component
 jest.mock('@/components/SearchForm', () => ({
   __esModule: true,
-  default: ({ onSearch, setIsLoading, suggestedSearches }) => (
+  default: ({ onSearch, setIsLoading, suggestedSearches }: { 
+    onSearch: (query: string) => void, 
+    setIsLoading: (isLoading: boolean) => void, 
+    suggestedSearches: string[] 
+  }) => (
     <div data-testid="search-form">
       <input 
         data-testid="search-input" 
@@ -52,7 +56,7 @@ jest.mock('@/components/SearchForm', () => ({
         Search
       </button>
       <div data-testid="suggested-searches">
-        {suggestedSearches.map((question, index) => (
+        {suggestedSearches.map((question: string, index: number) => (
           <button key={index} onClick={() => onSearch(question)}>
             {question}
           </button>
@@ -62,11 +66,11 @@ jest.mock('@/components/SearchForm', () => ({
   )
 }));
 
-// Mock the BlogPostCard component
-jest.mock('@/components/BlogPostCard', () => ({
+// Mock the ContentCard component
+jest.mock('@/components/ContentCard', () => ({
   __esModule: true,
-  BlogPostCard: ({ article }) => (
-    <div data-testid={`blog-post-${article.slug}`}>
+  ContentCard: ({ article }: { article: any }) => (
+    <div data-testid={`content-card-${article.slug}`}>
       <h3>{article.title}</h3>
       <p>{article.description}</p>
     </div>
@@ -82,13 +86,17 @@ jest.mock('@/components/LoadingAnimation', () => ({
 // Mock the Container component
 jest.mock('@/components/Container', () => ({
   __esModule: true,
-  Container: ({ children }) => <div data-testid="container">{children}</div>
+  Container: ({ children }: { children: React.ReactNode }) => <div data-testid="container">{children}</div>
 }));
 
 // Mock the Link component
 jest.mock('next/link', () => ({
   __esModule: true,
-  default: ({ href, children, className }) => (
+  default: ({ href, children, className }: { 
+    href: string, 
+    children: React.ReactNode, 
+    className?: string 
+  }) => (
     <a href={href} className={className}>
       {children}
     </a>

@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
 import { getAllContent } from '@/lib/content-handlers'
@@ -17,10 +17,9 @@ function VideoGrid({ videos }: { videos: ExtendedMetadata[] }) {
       {videos.map((video, index) => {
         const uniqueKey = video._id || (video.slug ? `${video.slug}-${index}` : `video-${index}`);
         return (
-          <BlogPostCard 
+          <ContentCard 
             key={uniqueKey} 
             article={video}
-            contentType="video" 
           />
         );
       })}

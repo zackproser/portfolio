@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
-import { BlogPostCard } from '@/components/BlogPostCard';
+import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/lib/shared-types';
 import { sendGTMEvent } from '@next/third-parties/google';
 
@@ -102,7 +102,7 @@ function CheckoutResultContent() {
 
         {content.content.type === 'blog' && (
           <div className="mb-8">
-            <BlogPostCard article={content.content} />
+            <ContentCard article={content.content} />
           </div>
         )}
 
