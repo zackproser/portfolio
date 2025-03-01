@@ -2,11 +2,10 @@ import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
 import { Session } from 'next-auth'
-import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug } from './shared-types'
+import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent } from '@/types'
 import Paywall from '@/components/Paywall'
 import React from 'react'
 import { sql } from '@vercel/postgres'
-import { ProductContent } from './types/product'
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
 
 // Directory where content is stored

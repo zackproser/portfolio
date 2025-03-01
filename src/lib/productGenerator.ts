@@ -1,5 +1,5 @@
-import { ArticleWithSlug, CourseContent } from './shared-types';
-import { ProductContent } from './types/product';
+import { ArticleWithSlug } from '@/types/content';
+import { CourseContent, ProductContent } from '@/types';
 import { StaticImageData } from 'next/image';
 
 function getImageUrl(image: string | StaticImageData | { src: string } | undefined): string | undefined {

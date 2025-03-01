@@ -1,4 +1,4 @@
-import { ExtendedMetadata } from '@/lib/shared-types';
+import { ExtendedMetadata } from '@/types';
 import { createMetadata } from '@/utils/createMetadata';
 import { createMockMdx } from '@/test/mdxMockFactory';
 

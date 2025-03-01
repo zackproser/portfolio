@@ -3,7 +3,7 @@ import { getAllContent } from "@/lib/content-handlers"
 import { ContentCard } from '@/components/ContentCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
-import { Content } from '@/lib/shared-types'
+import { Content } from '@/types'
 
 export const metadata = createMetadata({
   title: 'Hands-On Project-Based Learning',

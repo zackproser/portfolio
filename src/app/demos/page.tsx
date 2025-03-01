@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { Demo, Content } from '@/lib/shared-types'
+import { Demo, Content } from '@/types'
 import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 

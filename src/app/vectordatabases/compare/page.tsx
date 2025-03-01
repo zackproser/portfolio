@@ -1,6 +1,7 @@
+import { Metadata } from 'next'
+import { Database } from '@/types';
 import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import ComparePageClient from './ComparePageClient';
-import { Database } from '@/lib/shared-types';
 
 export default async function ComparePage(props: { searchParams: Promise<{ dbs?: string }> }) {
   const searchParams = await props.searchParams;

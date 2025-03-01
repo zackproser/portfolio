@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Button } from './Button'
 import { useRouter } from 'next/navigation'
 import Image, { StaticImageData } from 'next/image'
-import { Content } from '@/lib/shared-types'
+import { Content } from '@/types'
 
 interface MiniPaywallProps {
   price: number
