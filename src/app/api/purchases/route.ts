@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@vercel/postgres";
-import { Content } from "@/lib/shared-types";
+import { Content } from "@/types/content";
 import { ProductDetails } from "@/utils/productUtils";
 import { sendReceiptEmail, SendReceiptEmailInput } from "@/lib/postmark";
 

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import debounce from 'lodash.debounce'
 import { ContentCard } from './ContentCard'
-import { type ArticleWithSlug } from '@/lib/shared-types'
+import { type ArticleWithSlug } from '@/types'
 import { track } from '@vercel/analytics'
 
 export default function ArticleSearch({ articles }: { articles: ArticleWithSlug[] }) {

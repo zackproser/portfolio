@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ArticleWithSlug } from '@/lib/shared-types'
+import { ArticleWithSlug } from '@/types'
 import { ContentCard } from './ContentCard'
 
 interface Tool {

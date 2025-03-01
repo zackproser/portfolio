@@ -1,7 +1,7 @@
 import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
 import { getProductBySlug } from '@/lib/content-handlers';
-import { Content } from '@/lib/shared-types';
+import { Content } from '@/types';
 
 interface Props {
   params: Promise<{ slug: string }>;

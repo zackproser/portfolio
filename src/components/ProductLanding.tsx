@@ -7,7 +7,7 @@ import { NavBar } from '@/components/NavBar'
 import { Pricing } from '@/components/Pricing'
 import { TableOfContents } from '@/components/TableOfContents'
 import { CanvasPattern } from '@/components/CanvasPattern'
-import { Content } from '@/lib/shared-types'
+import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { createMetadata } from '@/utils/createMetadata'
 
