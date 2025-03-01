@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { ArticleWithSlug } from '@/lib/shared-types'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from './ContentCard'
 
 export default function ComparisonSearch({ comparisons }: { comparisons: ArticleWithSlug[] }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -22,7 +22,7 @@ export default function ComparisonSearch({ comparisons }: { comparisons: Article
       />
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
         {filteredComparisons.map((comparison, index) => (
-          <BlogPostCard key={index} article={{...comparison, type: 'comparison'}} />
+          <ContentCard key={index} article={{...comparison, type: 'comparison'}} />
         ))}
       </div>
     </div>

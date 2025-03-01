@@ -4,7 +4,7 @@ import { Container } from '@/components/Container'
 import SubscribeWidget from '@/components/SubscribeWidget'
 import { type BlogWithSlug } from '@/lib/shared-types'
 import { getAllNewsletters } from '@/lib/newsletters'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -26,7 +26,7 @@ export default async function ArticlesIndex() {
         <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
           <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {articles.map((article: BlogWithSlug) => (
-              <BlogPostCard key={article.slug} article={article} />
+              <ContentCard key={article.slug} article={article} />
             ))}
           </div>
         </div>

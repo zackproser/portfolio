@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ArticleWithSlug } from '@/lib/shared-types'
-import { BlogPostCard } from './BlogPostCard'
+import { ContentCard } from './ContentCard'
 
 interface Tool {
   title: string
@@ -38,7 +38,7 @@ export function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
       </div>
       <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
         {filteredTools.map((tool, index) => (
-          <BlogPostCard key={index} article={tool} />
+          <ContentCard key={index} article={tool} />
         ))}
       </div>
     </div>

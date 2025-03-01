@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 
 import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
@@ -53,7 +53,7 @@ This article details the steps I took and the many issues I encountered along th
 I open source most of my work, and this project is no exception:
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-  <BlogPostCard
+  <ContentCard
     article={{
       type: 'default',
       slug: 'https://github.com/zackproser/pytorch-mnist',
@@ -63,7 +63,7 @@ I open source most of my work, and this project is no exception:
       date: '2024-07-28'
     }}
   />
-  <BlogPostCard
+  <ContentCard
     article={{
       type: 'default',
       slug: 'https://github.com/zackproser/mnist-mind-mapper',
