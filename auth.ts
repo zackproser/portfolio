@@ -1,11 +1,10 @@
-import { sql } from "@vercel/postgres";
-import { getUserIdFromEmail, getPurchasedCourses } from "@/lib/queries";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
+import { associatePurchasesToUser } from "@/lib/purchases";
 import NextAuth, { NextAuthConfig } from 'next-auth'
 import GitHub from 'next-auth/providers/github'
 import type { Provider } from 'next-auth/providers'
 import EmailProvider from 'next-auth/providers/email'
-import PostgresAdapter from "@auth/pg-adapter"
-import { createPool } from '@vercel/postgres';
 
 declare module "next-auth" {
   interface Profile {
@@ -25,12 +24,9 @@ declare module "next-auth" {
       name?: string | null;
       image?: string | null;
       provider?: string;
-      purchased_courses?: number[];
     }
   }
 }
-
-const pool = createPool();
 
 const providers: Provider[] = [
   GitHub({
@@ -60,7 +56,7 @@ export const providerMap = providers.map((provider) => {
 })
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  adapter: PostgresAdapter(pool),
+  adapter: PrismaAdapter(prisma),
   pages: {
     signIn: '/login'
   },
@@ -70,105 +66,60 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (account) {
         console.log(`signIn callback: %o, %o, %o, %o, %o`, user, account, profile, email, credentials);
 
-        let githubUsername, userFullName, userEmailAddress, avatarUrl;
-
         if (account.provider === 'github') {
           // Extract GitHub profile info
-          githubUsername = profile!.login!;
-          userFullName = profile!.name!;
-          avatarUrl = profile!.avatar_url;
+          const githubUsername = profile!.login!;
+          const userFullName = profile!.name!;
+          const avatarUrl = profile!.avatar_url;
           
           // Update the user object with GitHub info
           try {
-            await sql`
-              UPDATE users 
-              SET 
-                name = ${userFullName},
-                image = ${avatarUrl},
-                github_username = ${githubUsername}
-              WHERE email = ${user.email}
-            `;
+            await prisma.user.update({
+              where: { email: user.email! },
+              data: {
+                name: userFullName,
+                image: avatarUrl,
+                githubUsername: githubUsername
+              }
+            });
           } catch (error) {
             console.error('Error updating user with GitHub info:', error);
           }
-        } else if (account.provider === 'email') {
-          // Get email profile info
-          userEmailAddress = user!.email!;
         }
 
-        console.log(`signIn callback githubUsername: ${githubUsername}, userFullName: ${userFullName}, userEmailAddress: ${userEmailAddress}`);
-
-        try {
-          console.log('Checking if user already exists in database...')
-          // Check if student record already exists
-          let existingStudent;
-          if (githubUsername) {
-            existingStudent = await sql`
-            SELECT * 
-            FROM users 
-            WHERE github_username = ${githubUsername}
-          `;
-          } else if (userEmailAddress) {
-            existingStudent = await sql`
-            SELECT *
-            FROM users
-            WHERE email = ${userEmailAddress}
-          `;
-          }
-
-          console.log(`existingStudent: %o`, existingStudent);
-          let userId;
-
-          if (existingStudent && existingStudent.rowCount > 0) {
-            // Student found, use id
-            userId = existingStudent.rows[0].id;
-            console.log(`Found existing student with id: ${userId}`);
-          } else {
-            // Create new student
-            let createValues;
-            if (githubUsername) {
-              createValues = {
-                github_username: githubUsername,
-                name: userFullName,
-                image: avatarUrl
-              };
-            } else if (userEmailAddress) {
-              createValues = {
-                email: userEmailAddress
-              };
+        // If the user has an email, associate any purchases made with this email
+        if (user.email && user.id) {
+          try {
+            const count = await associatePurchasesToUser(user.email, user.id);
+            if (count > 0) {
+              console.log(`Associated ${count} purchases to user ${user.id}`);
             }
-
-            console.log(`Creating new user with values: %o`, createValues);
-
-            const createRes = await sql`
-              INSERT INTO users (github_username, name, email, image)
-              VALUES (${githubUsername}, ${userFullName}, ${userEmailAddress}, ${avatarUrl})
-              RETURNING id
-          `;
-            userId = createRes.rows[0].id;
+          } catch (error) {
+            console.error('Error associating purchases:', error);
           }
-        } catch (error) {
-          console.error(error);
         }
+
         return true;
       }
+      return true;
     },
     async session({ session, user, token }) {
-      const userId = await getUserIdFromEmail(session!.user!.email!);
-
-      // Get the full user record from the database
-      const { rows } = await sql`
-        SELECT * FROM users WHERE id = ${userId}
-      `;
-      const dbUser = rows[0];
-
-      // Add provider and image from the database user
-      session!.user!.provider = dbUser.github_username ? 'GitHub' : 'Email';
-      session!.user!.image = dbUser.image;
-
-      return {
-        ...session,
-      };
+      if (session.user && user) {
+        session.user.id = user.id;
+        
+        // Add provider info
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          include: { accounts: true }
+        });
+        
+        if (dbUser) {
+          session.user.provider = dbUser.githubUsername ? 'GitHub' : 'Email';
+          session.user.image = dbUser.image;
+        }
+      }
+      
+      return session;
     }
   }
 } as NextAuthConfig)

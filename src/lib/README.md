@@ -7,7 +7,6 @@ This document describes the standardized content system for handling MDX-based c
 ## Key Files
 
 - `content-handlers.ts`: The main file containing all content-related functionality
-- `getAllBlogMetadata.ts`: Simplified wrapper around content-handlers.ts for blog content
 - `getAllContentMetadata.ts`: Generic metadata retrieval for any content type
 
 ## Standard Content Structure
