@@ -12,6 +12,7 @@ import chunking from '@/images/chunking.webp';
 import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
 
 import { createMetadata } from '@/utils/createMetadata';
+import { importContentMetadata } from '@/lib/content-handlers'
 
 export const metadata = createMetadata({
     author: "Zachary Proser", 
@@ -23,7 +24,7 @@ export const metadata = createMetadata({
         isPaid: true,
         price: 49,
         previewLength: 450,
-        previewElements: 52,
+        previewElements: 32,
         paywallHeader: "Master RAG Development: The Complete Package",
         paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
         buttonText: "Get the complete package ($49)",
@@ -401,7 +402,7 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importArticleMetadata } from '@/lib/articles'
+import { importContentMetadata } from '@/lib/content-handlers'
 
 export async function POST(req: Request) {
   const { messages } = await req.json()
@@ -445,7 +446,7 @@ export async function POST(req: Request) {
   const relatedPosts = await Promise.all(
     Array.from(blogUrls).map(async url => {
       const blogPath = path.basename(url.replace('page.mdx', ''))
-      return importArticleMetadata(`${blogPath}/page.mdx`)
+      return importContentMetadata(`${blogPath}/page.mdx`, 'blog')
     })
   )
 
