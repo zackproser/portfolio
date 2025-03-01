@@ -306,7 +306,6 @@ export function renderContent(
   return React.createElement(
     ArticleContent,
     {
-      children: React.createElement(MdxContent),
       isPaid: true,
       price: metadata.commerce.price,
       slug: metadata.slug || '',
@@ -318,9 +317,8 @@ export function renderContent(
       paywallHeader: metadata.commerce.paywallHeader || defaultText.header,
       paywallBody: metadata.commerce.paywallBody || defaultText.body,
       buttonText: metadata.commerce.buttonText || defaultText.buttonText,
-      paywallImage: metadata.commerce.paywallImage,
-      paywallImageAlt: metadata.commerce.paywallImageAlt
-    }
+    },
+    React.createElement(MdxContent)
   );
 }
 
