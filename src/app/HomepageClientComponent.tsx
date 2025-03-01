@@ -219,7 +219,7 @@ export default function HomepageClientComponent({
               <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/blog/rag-pipeline-tutorial"
+                    href="/products/rag-pipeline-tutorial"
                     className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                     onClick={() => {
                       track("featured_product_click", {
@@ -228,7 +228,7 @@ export default function HomepageClientComponent({
                       })
                     }}
                   >
-                    Read Tutorial
+                    Learn More
                   </Link>
                   <Link 
                     href="/checkout?product=rag-pipeline-tutorial&type=blog"
