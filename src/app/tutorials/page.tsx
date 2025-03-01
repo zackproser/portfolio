@@ -3,6 +3,7 @@ import { getAllContent } from "@/lib/content-handlers"
 import { ContentCard } from '@/components/ContentCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
+import { Content } from '@/lib/shared-types'
 
 export const metadata = createMetadata({
   title: 'Hands-On Project-Based Learning',
@@ -22,10 +23,19 @@ export default async function TutorialsPage() {
   try {
     // Use our new content system to get all content types
     const allArticles = await getAllContent('blog')
-    const allCourses = await getAllContent('learn/courses')
-
-    const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug))
-    const courses = allCourses.filter(course => courseSlugs.includes(course.slug))
+    
+    // Filter tutorials from blog posts
+    const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug.split('/').pop() || ''))
+    
+    // Try to get courses, but handle the case where they don't exist yet
+    let courses: Content[] = []
+    try {
+      const allCourses = await getAllContent('learn/courses')
+      courses = allCourses.filter(course => courseSlugs.includes(course.slug.split('/').pop() || ''))
+    } catch (courseError) {
+      console.warn('Could not load courses:', courseError)
+      // Continue without courses
+    }
 
     return (
       <Container className="mt-16 sm:mt-32">
