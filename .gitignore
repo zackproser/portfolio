@@ -58,3 +58,6 @@ prisma/.env
 
 # GitGuardian cache
 .cache_ggshield
+
+# Cursor rules
+.cursor/
