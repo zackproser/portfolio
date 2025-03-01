@@ -1,4 +1,4 @@
-import { ExtendedMetadata } from '@/lib/shared-types'
+import { ExtendedMetadata } from '@/types'
 import { generateOgUrl } from '@/utils/ogUrl'
 import path from 'path'
 

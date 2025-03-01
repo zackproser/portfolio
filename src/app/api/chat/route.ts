@@ -4,7 +4,7 @@ import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
 import { importContentMetadata } from '@/lib/content-handlers'
 import path from 'path';
-import { BlogWithSlug } from '@/lib/shared-types';
+import { BlogWithSlug } from '@/types';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;

@@ -1,6 +1,6 @@
 import { ContentCard } from '@/components/ContentCard'
 import { getAllContent } from '@/lib/content-handlers'
-import { ExtendedMetadata } from '@/lib/shared-types'
+import { ExtendedMetadata } from '@/types'
 
 export default async function CourseIndex() {
   const courses = await getAllContent('learn/courses');

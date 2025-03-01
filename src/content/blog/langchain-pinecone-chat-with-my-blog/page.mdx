@@ -13,7 +13,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import { importContentMetadata } from '@/lib/content-handlers'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { ContentCard } from '@/components/ContentCard'
-import { ArticleWithSlug } from '@/lib/shared-types'
+import { ArticleWithSlug } from '@/types'
 import { LoadingAnimation } from '@/components/LoadingAnimation'
 import { clsx } from 'clsx'
 
@@ -429,7 +429,7 @@ import { useState } from 'react';
 import { clsx } from 'clsx';
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { ContentCard } from '@/components/ContentCard';
-import { ArticleWithSlug } from '@/lib/shared-types';
+import { ArticleWithSlug } from '@/types';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
 
 export default function Chat() {
@@ -608,7 +608,7 @@ import { useState } from 'react';
 import { clsx } from 'clsx';
 import { SimpleLayout } from '@/components/SimpleLayout';
 import { ContentCard } from '@/components/ContentCard';
-import { ArticleWithSlug } from '@/lib/shared-types';
+import { ArticleWithSlug } from '@/types';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
 
 const prepopulatedQuestions = [
@@ -746,7 +746,7 @@ import { streamText } from 'ai';
 import { Metadata, getContext } from '../../services/context'
 import { importContentMetadata } from '@/lib/content-handlers'
 import path from 'path';
-import { ArticleWithSlug } from '@/lib/shared-types';
+import { ArticleWithSlug } from '@/types';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;

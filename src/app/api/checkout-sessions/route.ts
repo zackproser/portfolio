@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { headers } from 'next/headers'
 import { importContentMetadata } from '@/lib/content-handlers'
-import { Content } from '@/lib/shared-types'
+import { Content } from '@/types'
 
 if (!process.env.STRIPE_SECRET_KEY) {
 	throw new Error('Missing STRIPE_SECRET_KEY')

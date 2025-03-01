@@ -1,4 +1,4 @@
-import { ArticleWithSlug } from './shared-types'
+import { ArticleWithSlug } from '@/types/content'
 import glob from 'fast-glob'
 import path from 'path'
 

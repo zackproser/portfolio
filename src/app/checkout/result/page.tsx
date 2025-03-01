@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { ContentCard } from '@/components/ContentCard';
-import { Blog } from '@/lib/shared-types';
+import { Blog } from '@/types';
 import { sendGTMEvent } from '@next/third-parties/google';
 
 interface PurchasedContent {

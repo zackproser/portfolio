@@ -4,7 +4,7 @@ import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 import { Suspense } from 'react'
 import { getAllContent } from '@/lib/content-handlers'
-import { ExtendedMetadata } from '@/lib/shared-types'
+import { ExtendedMetadata } from '@/types'
 import ArticleSearch from '@/components/ArticleSearch'
 
 export const metadata: Metadata = createMetadata({

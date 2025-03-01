@@ -10,7 +10,7 @@ import RandomPortrait from '@/components/RandomPortrait';
 import SearchForm from '@/components/SearchForm';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { ContentCard } from '@/components/ContentCard';
-import { BlogWithSlug } from '@/lib/shared-types';
+import { BlogWithSlug } from '@/types';
 
 // Add gtag type definition
 declare global {

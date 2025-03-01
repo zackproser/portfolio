@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { ProductLanding } from '../ProductLanding'
-import { Blog } from '@/lib/shared-types'
+import { Blog } from '@/types'
 
 // Create mock functions for child components
 const mockHero = jest.fn()

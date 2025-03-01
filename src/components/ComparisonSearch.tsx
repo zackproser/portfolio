@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArticleWithSlug } from '@/lib/shared-types'
+import { ArticleWithSlug } from '@/types'
 import { ContentCard } from './ContentCard'
 
 export default function ComparisonSearch({ comparisons }: { comparisons: ArticleWithSlug[] }) {

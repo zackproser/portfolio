@@ -1,4 +1,4 @@
-import { ArticleWithSlug } from '@/lib/shared-types'
+import { ArticleWithSlug } from '@/types'
 
 interface DevToolCardProps {
   tool: ArticleWithSlug;

@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { Container } from '@/components/Container'
 import SubscribeWidget from '@/components/SubscribeWidget'
-import { type BlogWithSlug } from '@/lib/shared-types'
+import { type BlogWithSlug } from '@/types'
 import { getAllNewsletters } from '@/lib/newsletters'
 import { ContentCard } from '@/components/ContentCard'
 
