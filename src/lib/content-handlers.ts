@@ -300,22 +300,27 @@ export function renderContent(
   // For paid content that user hasn't purchased, show preview with paywall
   const defaultText = getDefaultPaywallText(metadata.type || 'blog');
   
+  // Import ArticleContent dynamically to avoid circular dependencies
+  const ArticleContent = require('@/components/ArticleContent').default;
+  
   return React.createElement(
-    React.Fragment,
-    null,
-    React.createElement(MdxContent),
-    React.createElement(Paywall, {
+    ArticleContent,
+    {
+      children: React.createElement(MdxContent),
+      isPaid: true,
       price: metadata.commerce.price,
       slug: metadata.slug || '',
       title: typeof metadata.title === 'string' 
         ? metadata.title 
         : (metadata.title as any)?.default || 'Untitled',
+      previewLength: metadata.commerce.previewLength,
+      previewElements: metadata.commerce.previewElements,
       paywallHeader: metadata.commerce.paywallHeader || defaultText.header,
       paywallBody: metadata.commerce.paywallBody || defaultText.body,
       buttonText: metadata.commerce.buttonText || defaultText.buttonText,
-      image: metadata.commerce.paywallImage,
-      imageAlt: metadata.commerce.paywallImageAlt
-    })
+      paywallImage: metadata.commerce.paywallImage,
+      paywallImageAlt: metadata.commerce.paywallImageAlt
+    }
   );
 }
 
