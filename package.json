@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
-    "build": "npm run prebuild && prisma generate && next build",
-    "build-with-tests": "npm run test && npm run prebuild && prisma generate && next build",
+    "build": "npm run prebuild && prisma generate && prisma migrate deploy && next build",
+    "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && next build",
     "build-only": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
