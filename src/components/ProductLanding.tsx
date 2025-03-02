@@ -10,8 +10,6 @@ import { CanvasPattern } from '@/components/CanvasPattern'
 import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { createMetadata } from '@/utils/createMetadata'
-import { track } from '@vercel/analytics'
-import { useEffect } from 'react'
 
 interface Props {
   content: Content;
@@ -45,16 +43,6 @@ export function ProductLanding({ content }: Props) {
     type = 'course',
     title = ''
   } = content;
-
-  // Track product page view on component mount
-  useEffect(() => {
-    track('product_page_view', {
-      product_slug: slug,
-      product_title: title,
-      product_type: type,
-      product_price: commerce?.price || 0
-    });
-  }, [slug, title, type, commerce?.price]);
 
   // If there's no commerce data or isPaid is false, don't render the product landing
   if (!commerce?.isPaid) {
