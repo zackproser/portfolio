@@ -1,35 +1,10 @@
 import { Button } from "@/components/Button"
-import { track } from "@vercel/analytics"
-import { useEffect } from "react"
 
 export default function PurchaseSuccess({
   productName,
   customerEmail,
   courseUrl
 }) {
-  // Track purchase success page view
-  useEffect(() => {
-    track("purchase_success_view", {
-      product_name: productName,
-      location: typeof window !== 'undefined' ? window.location.pathname : ''
-    })
-  }, [productName])
-
-  const handleStartCourseClick = () => {
-    track("start_course_click", {
-      product_name: productName,
-      course_url: courseUrl,
-      location: typeof window !== 'undefined' ? window.location.pathname : ''
-    })
-  }
-
-  const handleReturnToCoursesClick = () => {
-    track("return_to_courses_click", {
-      product_name: productName,
-      location: typeof window !== 'undefined' ? window.location.pathname : ''
-    })
-  }
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <header className="mb-10">
@@ -55,14 +30,12 @@ export default function PurchaseSuccess({
           variant="solid" 
           color="green" 
           href={courseUrl}
-          onClick={handleStartCourseClick}
         >
           Start your course
         </Button>
         <Button 
           variant="secondary" 
           href={"/learn"}
-          onClick={handleReturnToCoursesClick}
         >
           Return to all courses
         </Button>
