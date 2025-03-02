@@ -3,7 +3,6 @@ import clsx from 'clsx'
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { GridPattern } from '@/components/GridPattern'
-import { track } from '@vercel/analytics'
 
 function Plan({
   name,
@@ -124,16 +123,6 @@ export function Pricing({
   productType = ''
 }: PricingProps) {
   
-  const handleCheckoutClick = () => {
-    track('checkout_button_click', {
-      product_slug: productSlug,
-      product_type: productType,
-      product_title: title,
-      product_price: price,
-      location: typeof window !== 'undefined' ? window.location.pathname : ''
-    });
-  };
-  
   return (
     <section
       id="pricing"
@@ -166,7 +155,6 @@ export function Pricing({
                   href={checkoutUrl}
                   color="blue"
                   className="mt-10 block w-full"
-                  onClick={handleCheckoutClick}
                 >
                   Get instant access
                 </Button>
