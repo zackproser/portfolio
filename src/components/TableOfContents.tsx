@@ -38,16 +38,16 @@ export function TableOfContents() {
     <section
       id="table-of-contents"
       aria-labelledby="table-of-contents-title"
-      className="scroll-mt-14 py-16 sm:scroll-mt-32 sm:py-20 lg:py-32"
+      className="scroll-mt-14 py-16 sm:scroll-mt-32 sm:py-20 lg:py-32 dark:bg-slate-900"
     >
       <Container>
         <SectionHeading number="1" id="table-of-contents-title">
           Table of contents
         </SectionHeading>
-        <p className="mt-8 font-display text-4xl font-bold tracking-tight text-slate-900">
+        <p className="mt-8 font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
           Get a complete overview of everything you&apos;ll learn in the book.
         </p>
-        <p className="mt-4 text-lg tracking-tight text-slate-700">
+        <p className="mt-4 text-lg tracking-tight text-slate-700 dark:text-slate-300">
           &ldquo;Build Production-Ready RAG Applications&rdquo; is a comprehensive guide
           with over 300 pages of practical insights and hands-on examples for building
           robust RAG systems.
@@ -57,12 +57,12 @@ export function TableOfContents() {
             <ExpandableItems>
               {Object.entries(tableOfContents).map(([title, pages]) => (
                 <li key={title}>
-                  <h3 className="font-display text-3xl font-bold tracking-tight text-slate-900">
+                  <h3 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                     {title}
                   </h3>
                   <ol
                     role="list"
-                    className="mt-8 divide-y divide-slate-300/30 rounded-2xl bg-slate-50 px-6 py-3 text-base tracking-tight sm:px-8 sm:py-7"
+                    className="mt-8 divide-y divide-slate-300/30 rounded-2xl bg-slate-50 px-6 py-3 text-base tracking-tight sm:px-8 sm:py-7 dark:bg-slate-800 dark:divide-slate-700/30"
                   >
                     {Object.entries(pages).map(([title, pageNumber]) => (
                       <li
@@ -71,13 +71,13 @@ export function TableOfContents() {
                         aria-label={`${title} on page ${pageNumber}`}
                       >
                         <span
-                          className="font-medium text-slate-900"
+                          className="font-medium text-slate-900 dark:text-white"
                           aria-hidden="true"
                         >
                           {title}
                         </span>
                         <span
-                          className="font-mono text-slate-400"
+                          className="font-mono text-slate-400 dark:text-slate-500"
                           aria-hidden="true"
                         >
                           {pageNumber}

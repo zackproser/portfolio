@@ -15,12 +15,12 @@ const navigation = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50">
+    <footer className="border-t border-slate-200 bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
       <Container>
           <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
             {navigation.map((section) => (
               <div key={section.title} className="flex flex-col gap-6">
-                <h3 className="text-sm font-semibold text-slate-900">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   {section.title}
                 </h3>
                 <ul role="list" className="flex flex-col gap-4">
@@ -28,7 +28,7 @@ export function Footer() {
                     <li key={link.title}>
                       <Link
                         href={link.href}
-                        className="text-sm text-slate-600 hover:text-slate-900"
+                        className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       >
                         {link.title}
                       </Link>
