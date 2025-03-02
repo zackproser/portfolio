@@ -5,6 +5,9 @@ import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
 import { importContentMetadata } from '@/lib/content-handlers'
 import { COURSES_DISABLED } from '@/types'
 
+// Remove the import from content-handlers
+// import { getContentUrl } from '@/lib/content-handlers'
+
 // Initialize Stripe and Prisma
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -13,6 +16,15 @@ const prisma = new PrismaClient()
 
 // This is your Stripe webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
+
+// Function to get the content URL based on content type
+const getContentUrl = (type: string, slug: string) => {
+  // Remove any leading slashes from the slug
+  const cleanSlug = slug.replace(/^\/+/, '');
+  
+  // For all content types, use the /blog/ path since we're only selling blog content
+  return `/blog/${cleanSlug}`;
+};
 
 export async function POST(req: Request) {
   console.log('🎯 Webhook received - START')
@@ -197,7 +209,7 @@ export async function POST(req: Request) {
           TemplateAlias: "receipt",
           TemplateModel: {
             CustomerName: user?.name || 'Valued Customer',
-            ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
+            ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrl(type, slug)}`,
             ProductName: content?.title || `${type === 'article' ? 'Article' : 'Course'}: ${slug}`,
             Date: new Date().toLocaleDateString('en-US'),
             ReceiptDetails: {
@@ -207,7 +219,7 @@ export async function POST(req: Request) {
             },
             Total: `$${session.amount_total! / 100}`,
             SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-            ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
+            ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrl(type, slug)}`,
             CompanyName: "Modern Coding",
             CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
           },

@@ -9,9 +9,6 @@ import { Blog } from '@/types';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useSession, signIn } from 'next-auth/react';
 
-// Import the utility function for generating content URLs
-import { createMetadata } from '@/utils/createMetadata';
-
 interface PurchasedContent {
   content: Blog;
   user: {
@@ -31,36 +28,6 @@ function CheckoutResultContent() {
   const router = useRouter();
   const sessionId = searchParams.get('session_id');
   const { data: authSession, status: authStatus } = useSession();
-
-  // Function to get the content URL based on content type
-  const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
-    // Remove any leading slashes and content type prefixes from the slug
-    const cleanSlug = content.slug.replace(/^\/+/, '').replace(/^(blog|learn\/courses)\//, '');
-    
-    // Generate the URL path based on content type
-    let url = '';
-    
-    switch (content.type) {
-      case 'blog':
-        url = `/blog/${cleanSlug}`;
-        break;
-      case 'course':
-        url = `/learn/courses/${cleanSlug}/0`; // Append /0 for courses
-        break;
-      case 'video':
-        url = `/videos/${cleanSlug}`;
-        break;
-      case 'demo':
-        url = `/demos/${cleanSlug}`;
-        break;
-      default:
-        // Fallback to the content slug directly
-        url = `/${content.type}/${cleanSlug}`;
-    }
-    
-    // Remove leading slash for Next.js Link component if needed
-    return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
-  };
 
   useEffect(() => {
     if (!sessionId) {
@@ -107,7 +74,7 @@ function CheckoutResultContent() {
           // Add a small delay to ensure the GTM event is sent
           setTimeout(() => {
             router.push(contentUrl);
-          }, 500);
+          }, 1000);
         }
         // Otherwise, we'll show them a button to sign in
       } catch (err) {
@@ -154,6 +121,18 @@ function CheckoutResultContent() {
       setIsLoggingIn(false);
       setError('Failed to send verification email. Please try again.');
     }
+  };
+
+  // Function to get the content URL based on content type
+  const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
+    // Remove any leading slashes from the slug
+    const cleanSlug = content.slug.replace(/^\/+/, '');
+    
+    // For blog content, always use the /blog/ path
+    const url = `/blog/${cleanSlug}`;
+    
+    // Remove leading slash for Next.js Link component if needed
+    return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
   };
 
   if (error) {
@@ -217,7 +196,7 @@ function CheckoutResultContent() {
     );
   }
 
-  const contentUrl = getContentUrl(content.content);
+  const contentUrl = getContentUrl(content.content, true);
 
   return (
     <Container>
