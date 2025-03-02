@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { useSession } from 'next-auth/react'
-import Paywall from './Paywall'
 import React from 'react'
+import Paywall from './Paywall'
 import { StaticImageData } from 'next/image'
 
 interface ArticleContentProps {
   children: React.ReactNode
-  isPaid?: boolean
+  showFullContent: boolean
   price?: number
   slug: string
   title?: string
@@ -23,7 +21,7 @@ interface ArticleContentProps {
 
 export default function ArticleContent({ 
   children, 
-  isPaid, 
+  showFullContent,
   price, 
   slug,
   title,
@@ -35,42 +33,14 @@ export default function ArticleContent({
   paywallImage,
   paywallImageAlt
 }: ArticleContentProps) {
-  const { data: session } = useSession()
-  const [hasPurchased, setHasPurchased] = useState(false)
-
-  const checkPurchaseStatus = useCallback(async () => {
-    if (!slug) return; // Skip API call if slug is missing
-    
-    try {
-      const response = await fetch(`/api/check-purchase?slug=${slug}`)
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      
-      const data = await response.json()
-      setHasPurchased(data.purchased)
-    } catch (error) {
-      console.error('Error checking purchase status:', error)
-      setHasPurchased(false)
-    }
-  }, [slug])
-
-  useEffect(() => {
-    if (session?.user?.email && isPaid && slug) {
-      checkPurchaseStatus()
-    }
-  }, [session, slug, isPaid, checkPurchaseStatus])
-
+  // If slug is missing, log a warning and show full content
   if (!slug) {
     console.warn('ArticleContent: slug is missing, rendering full content')
     return <>{children}</>
   }
 
-  // Show full content if:
-  // 1. Content is not paid OR
-  // 2. User is logged in AND has purchased
-  if (!isPaid || (session?.user?.email && hasPurchased)) {
+  // Show full content if showFullContent is true
+  if (showFullContent) {
     return <>{children}</>
   }
 

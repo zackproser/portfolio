@@ -5,7 +5,7 @@ import {
   generateContentMetadata, 
   hasUserPurchased,
   loadContent,
-  renderContent
+  renderPaywalledContent
 } from '@/lib/content-handlers'
 import { notFound } from 'next/navigation'
 import { ArticleLayout } from '@/components/ArticleLayout'
@@ -79,7 +79,7 @@ export default async function Page({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderContent(MdxContent, metadata, session, hasPurchased)
+        renderPaywalledContent(MdxContent, metadata, hasPurchased)
       )}
     </ArticleLayout>
     </>
