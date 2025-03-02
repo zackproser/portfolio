@@ -111,7 +111,7 @@ function CheckoutResultContent() {
           <div className="bg-amber-50 border border-amber-200 rounded-md p-6 mb-6">
             <h2 className="text-lg font-semibold text-amber-800 mb-2">Your purchase was successful</h2>
             <p className="text-gray-700 mb-4">
-              We've received your payment and a receipt has been sent to your email. 
+              We&apos;ve received your payment and a receipt has been sent to your email. 
               {error.includes("being processed") ? (
                 <span className="block mt-2">
                   {error}
@@ -123,7 +123,7 @@ function CheckoutResultContent() {
               )}
             </p>
             <p className="text-gray-700 mb-4">
-              Don't worry! You can still access your content by logging in manually with the email you used for purchase.
+              Don&apos;t worry! You can still access your content by logging in manually with the email you used for purchase.
             </p>
             <div className="mt-4 flex space-x-4">
               <button
@@ -173,7 +173,7 @@ function CheckoutResultContent() {
         <p className="mb-8">
           A receipt has been sent to {content.user.email}.
           {authStatus === 'authenticated' && (
-            <span className="ml-2 text-green-600">You're now logged in and can access your content immediately.</span>
+            <span className="ml-2 text-green-600">You&apos;re now logged in and can access your content immediately.</span>
           )}
           {authStatus === 'unauthenticated' && (
             <span className="ml-2">
@@ -208,7 +208,7 @@ function CheckoutResultContent() {
               )}
               {authStatus === 'unauthenticated' && (
                 <p className="mt-2 text-sm text-gray-600">
-                  You'll need to verify your email before accessing the full content.
+                  You&apos;ll need to verify your email before accessing the full content.
                 </p>
               )}
             </div>
@@ -237,7 +237,7 @@ function CheckoutResultContent() {
             )}
             {authStatus === 'unauthenticated' && (
               <p className="mt-2 text-sm text-gray-600">
-                You'll need to verify your email before accessing the full course.
+                You&apos;ll need to verify your email before accessing the full course.
               </p>
             )}
           </div>

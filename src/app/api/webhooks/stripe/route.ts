@@ -187,10 +187,10 @@ export async function POST(req: Request) {
           TemplateModel: {
             CustomerName: user?.name || 'Valued Customer',
             ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}/${type === 'article' ? 'blog' : 'learn/courses'}/${slug}${type === 'course' ? '/0' : ''}`,
-            ProductName: content.title,
+            ProductName: content?.title || `${type === 'article' ? 'Article' : 'Course'}: ${slug}`,
             Date: new Date().toLocaleDateString('en-US'),
             ReceiptDetails: {
-              Description: content.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
+              Description: content?.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
               Amount: `$${session.amount_total! / 100}`,
               SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
             },
@@ -204,7 +204,7 @@ export async function POST(req: Request) {
 
         console.log('🎯 Sending email with input:', JSON.stringify(emailInput, null, 2))
         console.log('🎯 User email:', email)
-        console.log('🎯 Content title:', content.title)
+        console.log('🎯 Content title:', content?.title || 'No title available')
         console.log('🎯 NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL)
         
         try {

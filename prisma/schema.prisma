@@ -21,6 +21,7 @@ model User {
   freeChapterRequests FreeChapterRequest[]
   purchases           Purchase[]
   sessions            Session[]
+  enrollments         CourseEnrollment[]
 
   @@map("users")
 }
@@ -108,4 +109,28 @@ model FreeChapterRequest {
   @@index([email])
   @@index([productSlug])
   @@map("free_chapter_requests")
+}
+
+model Course {
+  id          Int                @id @default(autoincrement()) @map("course_id")
+  title       String?
+  description String?
+  slug        String             @unique
+  status      String?
+  priceId     String?            @map("price_id")
+  enrollments CourseEnrollment[]
+
+  @@map("courses")
+}
+
+model CourseEnrollment {
+  id             Int      @id @default(autoincrement()) @map("enrollment_id")
+  userId         String   @map("user_id")
+  courseId       Int      @map("course_id")
+  enrollmentDate DateTime @default(now()) @map("enrollment_date")
+  user           User     @relation(fields: [userId], references: [id])
+  course         Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("courseenrollments")
 }
