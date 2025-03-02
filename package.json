@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
-    "build": "npm run prebuild && next build",
-    "build-with-tests": "npm run test && npm run prebuild && next build",
-    "build-only": "next build",
+    "build": "npm run prebuild && prisma generate && next build",
+    "build-with-tests": "npm run test && npm run prebuild && prisma generate && next build",
+    "build-only": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
@@ -17,7 +17,8 @@
     "test": "NODE_ENV=development jest",
     "test:watch": "NODE_ENV=development jest --watch",
     "test:coverage": "NODE_ENV=development jest --coverage",
-    "ci": "NODE_ENV=development jest && npm run lint"
+    "ci": "NODE_ENV=development jest && npm run lint",
+    "postinstall": "prisma generate"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
