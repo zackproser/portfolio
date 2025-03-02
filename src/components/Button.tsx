@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import clsx from 'clsx'
+import { track } from '@vercel/analytics'
 
 const baseStyles = {
   solid:
@@ -56,10 +57,28 @@ export function Button({ className, ...props }: ButtonProps) {
     className,
   )
 
+  const handleClick = (e: React.MouseEvent) => {
+    // Track the button click with analytics
+    track('button_click', {
+      href: props.href ? String(props.href) : '',
+      text: typeof props.children === 'string' ? props.children : 'Button',
+      variant: props.variant ? String(props.variant) : 'solid',
+      color: props.color ? String(props.color) : 'slate',
+      location: typeof window !== 'undefined' ? window.location.pathname : '',
+      'aria-label': props['aria-label'] ? String(props['aria-label']) : '',
+    })
+
+    // Call the original onClick handler if it exists
+    if (props.onClick) {
+      // Use type assertion to handle the event type mismatch
+      props.onClick(e as any)
+    }
+  }
+
   return typeof props.href === 'undefined' ? (
-    <button className={className} {...props} />
+    <button className={className} {...props} onClick={handleClick} />
   ) : (
-    <Link className={className} {...props} />
+    <Link className={className} {...props} onClick={handleClick} />
   )
 }
 
