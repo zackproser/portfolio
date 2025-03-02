@@ -1,7 +1,16 @@
-import { ServerClient } from "postmark";
-import { type MessageSendingResponse } from "postmark/dist/client/models";
+import { ServerClient } from 'postmark'
 import { renderPaywalledContent, loadContent } from "./content-handlers";
-import { ExtendedMetadata } from '@/types' 
+import { ExtendedMetadata } from '@/types'
+
+// Define the MessageSendingResponse interface based on Postmark API response
+interface MessageSendingResponse {
+	To?: string;
+	SubmittedAt?: string;
+	MessageID?: string;
+	ErrorCode?: number;
+	Message?: string;
+	MessageStream?: string;
+}
 
 // Remove the ReactDOMServer import as we won't use it for client components
 // const ReactDOMServer = (await import('react-dom/server')).default
@@ -12,9 +21,8 @@ interface PreviewContentResult {
 	metadata: ExtendedMetadata;
 }
 
-const client = new ServerClient(
-	process.env.POSTMARK_API_KEY as unknown as string,
-);
+// Initialize Postmark client
+const client = new ServerClient(process.env.POSTMARK_API_KEY || '')
 
 interface SendReceiptEmailInput {
 	From: string;
@@ -93,6 +101,15 @@ interface SendFreeChaptersEmailInput {
 	}[];
 }
 
+// Function to get the content URL based on content type
+const getContentUrl = (type: string, slug: string) => {
+	// Remove any leading slashes from the slug
+	const cleanSlug = slug.replace(/^\/+/, '');
+	
+	// For all content types, use the /blog/ path since we're only selling blog content
+	return `/blog/${cleanSlug}`;
+};
+
 /**
  * Extract preview content from a product's MDX content using server-side approach
  * @param productSlug The slug of the product
@@ -124,7 +141,7 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 	try {
 		// Get the base URL
 		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-		const productUrl = `${baseUrl}/${contentType}/${normalizedSlug}`;
+		const productUrl = `${baseUrl}${getContentUrl(contentType, normalizedSlug)}`;
 		
 		// Create a simple HTML preview with the description and a link
 		const title = typeof metadata.title === 'string' 
@@ -183,7 +200,7 @@ const sendFreeChaptersEmail = async (
 	
 	// Normalize the slug and construct the product URL
 	const normalizedSlug = input.ProductSlug.replace(/^\/+/, '');
-	const productUrl = `${baseUrl}/blog/${normalizedSlug}`;
+	const productUrl = `${baseUrl}${getContentUrl('article', normalizedSlug)}`;
 	console.log(`📧 [CONFIG] Product URL: ${productUrl}`);
 	
 	// Extract preview content from the actual product
