@@ -122,29 +122,29 @@ export function Pricing({
     <section
       id="pricing"
       aria-labelledby="pricing-title"
-      className="border-t border-slate-200 bg-slate-100 py-20 sm:py-32"
+      className="border-t border-slate-200 bg-slate-100 py-20 sm:py-32 dark:bg-slate-900 dark:border-slate-800"
     >
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <h2
             id="pricing-title"
-            className="text-3xl font-medium tracking-tight text-slate-900"
+            className="text-3xl font-medium tracking-tight text-slate-900 dark:text-white"
           >
             {title}
           </h2>
-          <p className="mt-2 text-lg text-slate-600">
+          <p className="mt-2 text-lg text-slate-600 dark:text-slate-300">
             {description}
           </p>
         </div>
 
         <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 items-start gap-x-8 gap-y-10 sm:mt-20 lg:grid-cols-2">
-          <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-            <div className="rounded-2xl bg-slate-50 py-10 text-center ring-1 ring-inset ring-slate-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
+          <div className="mx-auto -mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+            <div className="rounded-2xl bg-white py-10 text-center ring-1 ring-inset ring-slate-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16 dark:bg-white">
               <div className="mx-auto max-w-xs px-8">
-                <p className="text-base font-semibold text-slate-600">One-time purchase</p>
+                <p className="text-base font-semibold text-slate-600 dark:text-slate-600">One-time purchase</p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
-                  <span className="text-5xl font-bold tracking-tight text-slate-900">${price}</span>
-                  <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600">USD</span>
+                  <span className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-900">${price}</span>
+                  <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600 dark:text-slate-600">USD</span>
                 </p>
                 <Button
                   href={checkoutUrl}
@@ -153,7 +153,7 @@ export function Pricing({
                 >
                   Get instant access
                 </Button>
-                <p className="mt-6 text-xs leading-5 text-slate-600">
+                <p className="mt-6 text-xs leading-5 text-slate-600 dark:text-slate-600">
                   Secure payment processing with Stripe. Instant delivery via email.
                 </p>
               </div>
