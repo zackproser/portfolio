@@ -95,6 +95,7 @@ export function ProductLanding({ content }: Props) {
         </div>
         <Hero 
           title={title || safeDescription}
+          heroTitle={landing?.heroTitle}
           description={safeDescription}
           testimonial={landingData.testimonials?.[0]}
         />
@@ -104,7 +105,7 @@ export function ProductLanding({ content }: Props) {
           features={landingData.features}
         />
         <NavBar />
-        <TableOfContents />
+        <TableOfContents content={content} />
         <FreeChapters 
           title={safeDescription}
           productSlug={slug}
