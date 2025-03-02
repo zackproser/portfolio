@@ -2,7 +2,7 @@
 -- This migration assumes that users have already been migrated with their IDs preserved
 
 -- Article purchases
-INSERT INTO "purchases" ("id", "userId", "contentType", "contentSlug", "purchaseDate", "stripePaymentId", "amount", "email")
+INSERT INTO "purchases" ("id", "user_id", "content_type", "content_slug", "purchase_date", "stripe_payment_id", "amount", "email")
 VALUES
   ('ap_24', '44', 'article', 'rag-pipeline-tutorial', '2025-01-05 22:37:52.697325', 'pi_3Qe2S9EDHFkvZ1e919kovYeJ', 20.00, 'sm@intermine.com'),
   ('ap_25', '46', 'article', 'multiple-git-profiles-automated', '2025-01-06 16:48:46.237759', 'pi_3QeJTrEDHFkvZ1e91FkOTL4x', 5.00, 'zack@workos.com'),
