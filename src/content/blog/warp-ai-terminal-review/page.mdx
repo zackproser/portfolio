@@ -1,0 +1,91 @@
+import warpChat from '/src/images/warp-chat.webp'
+import warpTesting from '/src/images/warp-testing.webp'
+import warpCoreExperience from '/src/images/warp-core-experience.webp'
+
+import { Newsletter } from '@/components/Newsletter'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+ title: "Warp AI terminal review",
+ author: "Zachary Proser",
+ date: "2024-4-13",
+ description: "The Warp terminal is a serious boon for anyone looking for help on the command line, but it's not yet perfect",
+ image: warpChat,
+})
+
+<Image src={metadata.image} alt="Warp brings AI assistance into your terminal" />
+<figcaption>Warp brings AI assistance into your terminal to make you more efficient</figcaption>
+
+## Table of contents 
+
+Warp is an AI-assisted terminal that speeds you up and helps you get unblocked with LLM-suggested command completion, 
+custom workflows and rich theme support. 
+
+Unlike command line tools like [Mods](https://github.com/charmbracelet/mods) which can be mixed and matched in most environments, 
+Warp is a full on replacement for your current terminal emulator.
+
+## The good 
+
+### It works
+
+The core experience works out of the box as advertised: it's pretty intuitive to get help with complex commmands, ask about errors and get 
+back useful responses that help you to move forward more quickly. 
+
+<Image src={warpCoreExperience} alt="Warp's core value props work as advertised" />
+
+### It's pretty
+
+It's also great to see first-class theming support and I will say that warp looks great out of the box - even using the default theme.
+
+## The painful 
+
+### No tmux compatibility currently
+
+I'm an avowed tmux user. I love being able to quickly section off a new piece of screen real estate and have it be a full fledged terminal 
+in which I can interact with Docker images or SSH to a remote server or read a man page or write a script. 
+
+I like the way tmux allows me to flow my workspace to the size of my current task - when I'm focused on writing code or text I can zoom in 
+and allow that task to take up my whole screen. 
+
+When I need to do side by side comparisons or plumb data between files and projects, I can open up as many panes as I need to get the job done. 
+
+Unfortunately, at the time of writing, [Warp does not support Tmux](https://github.com/warpdotdev/Warp/discussions/501) and it's not clear how far away 
+that support will be.
+
+### Sort of awkward to run on Linux
+
+I have another quibble about the default experience of running warp on Linux currently: 
+
+<Image src={warpTesting} alt="It's currently a bit awkward to run warp on linux" />
+
+It's currently a bit awkward, because I launch the `warp-terminal` binary from my current terminal emulator, meaning that I get a somewhat janky experience and an extra floating window to manage. 
+
+Sure, I could work around this - but the tmux issue prevents me from making the jump to warp as my daily driver.
+
+### You need to log in to your terminal
+
+I know this will bother a lot of other folks even more than it bugs me, but one of the things I love about my current workflow is that hitting my control+enter hotkey gives me a fresh 
+terminal in under a second - I can hit that key and just start typing. 
+
+Warp's onboarding worked fine - there were no major issues or dark patterns - but it does give me pause to need to log into my terminal and it makes me wonder how gracefully warp degrades 
+when it cannot phone home. 
+
+Getting locked out of your terminal due to a remote issue would be a bridge too far for many developers.
+
+## Looking forward 
+
+I'm impressed by warp's core UX and definitely see the value. 
+
+While I do pride myself on constantly learning more about the command line, 
+terminal emulators and how to best leverage them for productivity, it's sort of a no-brainer to marry 
+the current wave of LLMs and fine-tuned models with a common developer pain point: not knowing how to fix something in their terminal.
+
+Not every developer wants to be a terminal nerd - but they do want to get stuff done more efficiently and with less suffering than before.
+
+I can see warp being a great tool to helping folks accomplish that.
+
+Check out my [detailed comparison of the top AI-assisted developer tools](/blog/ai-assisted-dev-tools-compared).

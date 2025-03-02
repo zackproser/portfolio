@@ -1,50 +1,44 @@
 'use client'
 
 import { useState } from 'react'
-import { BaseArticleWithSlug } from '@/lib/shared-types'
-import { BlogPostCard } from './BlogPostCard'
+import { ArticleWithSlug } from '@/types'
+import { ContentCard } from './ContentCard'
 
 interface Tool {
-  name: string
+  title: string
   description: string
-  slug?: string
-  author?: string
-  date?: string
+  slug: string
+  date: string
+  author: {
+    name: string
+    role: string
+  }
+  type: string
 }
 
-export default function DevToolSearch({ tools }: { tools: Tool[] }) {
-  const [searchTerm, setSearchTerm] = useState('')
+export function DevToolSearch({ tools }: { tools: ArticleWithSlug[] }) {
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // Cast tools to BaseArticleWithSlug
-  const castedTools: BaseArticleWithSlug[] = tools.map(tool => ({
-    slug: tool.slug || tool.name.toLowerCase().replace(/\s+/g, '-'),
-    title: tool.name,
-    description: tool.description,
-    author: tool.author || 'Zachary Proser',
-    date: tool.date || new Date().toISOString().split('T')[0],
-    type: 'tool'
-  }))
-
-  const filteredTools = castedTools.filter(tool =>
-    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredTools = tools.filter((tool) => {
+    if (!tool.title) return false
+    const searchContent = String(tool.title).toLowerCase()
+    return searchContent.includes(searchQuery.toLowerCase())
+  })
 
   return (
-    <div>
-      <div className="mb-8">
+    <div className="space-y-4">
+      <div className="relative">
         <input
           type="text"
           placeholder="Search tools..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-lg border border-zinc-900/10 px-3 py-2 placeholder:text-zinc-400 dark:border-white/10 dark:bg-white/5"
         />
       </div>
-
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {filteredTools.map((tool) => (
-          <BlogPostCard key={tool.slug} article={tool} />
+      <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        {filteredTools.map((tool, index) => (
+          <ContentCard key={index} article={tool} />
         ))}
       </div>
     </div>

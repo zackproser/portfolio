@@ -2,14 +2,16 @@
 
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import { Button } from './Button'
+import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import Image, { StaticImageData } from 'next/image'
+import { Content } from '@/types'
 
 interface MiniPaywallProps {
   price: number
   slug: string
   title: string
+  type: Content['type']
   image?: StaticImageData | string
   imageAlt?: string
   miniTitle: string | null | undefined
@@ -20,6 +22,7 @@ export default function MiniPaywall({
   price, 
   slug, 
   title,
+  type,
   image,
   imageAlt = "Article preview image",
   miniTitle,
@@ -30,14 +33,10 @@ export default function MiniPaywall({
   const [loading, setLoading] = useState(false)
 
   const handlePurchase = async () => {
-    if (!session) {
-      router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`)
-      return
-    }
-
     setLoading(true)
     try {
-      router.push(`/checkout?product=blog-${slug}`)
+      // Redirect directly to checkout page - no sign-in required
+      router.push(`/checkout?product=${slug}&type=${type}`)
     } catch (error) {
       console.error('Error:', error)
       alert('Failed to initiate checkout. Please try again.')
@@ -80,7 +79,7 @@ export default function MiniPaywall({
           disabled={loading}
           className="shrink-0 px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
         >
-          {loading ? 'Processing...' : `Get full access ($${(price / 100).toFixed(2)})`}
+          {loading ? 'Processing...' : `Get full access ($${price})`}
         </Button>
       </div>
     </div>

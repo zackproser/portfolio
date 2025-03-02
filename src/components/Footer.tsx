@@ -1,52 +1,44 @@
 import Link from 'next/link'
 
-import { ContainerInner, ContainerOuter } from '@/components/Container'
+import { Container } from '@/components/Container'
 
-function NavLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <Link
-      href={href}
-      className="transition hover:text-teal-500 dark:hover:text-teal-400"
-    >
-      {children}
-    </Link>
-  )
-}
+const navigation = [
+  {
+    title: 'Social',
+    links: [
+      { title: 'Twitter', href: 'https://twitter.com/zackproser' },
+      { title: 'GitHub', href: 'https://github.com/zackproser' },
+      { title: 'LinkedIn', href: 'https://linkedin.com/in/zackproser' },
+    ],
+  },
+]
 
 export function Footer() {
   return (
-    <footer className="mt-32 flex-none">
-      <ContainerOuter>
-        <div className="border-t border-zinc-100 pb-16 pt-10 dark:border-zinc-700/40">
-          <ContainerInner>
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              <div className="flex flex-col sm:flex-row gap-6 text-xl font-medium text-zinc-800 dark:text-zinc-200">
-                <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-                  <NavLink href="/blog">Blog</NavLink>
-                  <NavLink href="/chat">Chat</NavLink>
-                  <NavLink href="/videos">Videos</NavLink>
-                </div>
-                <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-                  <NavLink href="/projects">Projects</NavLink>
-                  <NavLink href="/newsletter">Newsletter</NavLink>
-                  <NavLink href="/contact">Contact</NavLink>
-                  <NavLink href="https://changelog.zackproser.com">Changelog</NavLink>
-                </div>
+    <footer className="border-t border-slate-200 bg-slate-50 dark:bg-slate-900 dark:border-slate-800">
+      <Container>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
+            {navigation.map((section) => (
+              <div key={section.title} className="flex flex-col gap-6">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  {section.title}
+                </h3>
+                <ul role="list" className="flex flex-col gap-4">
+                  {section.links.map((link) => (
+                    <li key={link.title}>
+                      <Link
+                        href={link.href}
+                        className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      >
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                &copy; {new Date().getFullYear()} Zachary Proser. All rights
-                reserved.
-              </p>
-            </div>
-          </ContainerInner>
-        </div>
-      </ContainerOuter >
-    </footer >
+            ))}
+          </div>
+      </Container>
+    </footer>
   )
 }

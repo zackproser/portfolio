@@ -1,0 +1,26 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import jupyterNotebooks from '@/images/how-to-use-jupyter-notebooks.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-08-18",
+  title: "How to use Jupyter Notebooks for Machine Learning and AI tasks",
+  description: "In this comprehensive video, I demonstrate how simple it is to get started using Jupyter Notebooks to run arbitrary Python",
+  image: jupyterNotebooks 
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/1Z8T36sZ9WI" 
+  title="" 
+  frameborder="0" 
+  allow="fullscreen;">
+ </iframe>
+
+In this video, I demonstrate how to load Jupyter Notebooks into Google Colab and run them for free. I show how to load Notebooks from GitHub and how to execute individual cells and how to run 
+Notebooks end to end. I also discuss some important security considerations around leaking API keys via Jupyter Notebooks.

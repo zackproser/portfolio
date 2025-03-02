@@ -1,0 +1,137 @@
+import { Newsletter } from '@/components/Newsletter'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
+import typicalWorkday from '@/images/zachary-proser-typical-workday.webp'
+import keepingItTogether from '@/images/keeping-it-together.webp'
+import wakeUp from '@/images/wake-up.webp'
+import hackerInSunlight from '@/images/hacker-in-sunlight.webp'
+import vipassana from '@/images/vipassana-meditation.webp'
+import meditating from '@/images/meditating.webp'
+import morningHacking from '@/images/morning-hacking.webp'
+import morningWorking from '@/images/morning-working.webp'
+import lunch from '@/images/lunch.webp'
+import walkingWithSon from '@/images/walking-with-son-2.webp'
+import iceBath from '@/images/ice-bath.webp'
+import familyWalk from '@/images/family-walk.webp'
+import sleepingHacker from '@/images/sleeping-hacker.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-09-30",
+  title: "How I keep my shit together",
+  description: "Practices and protocols that keep me humming along, healthy and productive on a given day",
+  image: keepingItTogether,
+})
+
+<Image src={keepingItTogether} alt="Keeping it together" />
+
+I've been working in intense tech startups for the past {RenderNumYearsExperience()} years. This is what keeps me healthy and somewhat sane.
+
+The timeline below describes an ideal workday. Notice there's a good split between the needs of my body and mind and the needs of my employer. After 5 or 6PM, it's family time. 
+
+Beneath the timeline, I explain each phase and why works for me. 
+
+<Image src={typicalWorkday} alt="Zachary Proser's typical workday" />
+
+## Wake up early  
+
+<Image src={wakeUp} alt="Wake up" />
+
+I tend to be an early riser, but with age and additional responsibilities it's no longer a given that I'll spring out of bed at 5AM. I set a smart wake alarm on my fitbit which attempts to rouse me when I'm 
+already in light sleep as close to my target alarm time as possible. 
+
+The more time I give myself in the morning for what is important to me, the less resentful I end up becoming even if the workday is intense and stressful. 
+
+For the past two jobs now I've used this time to read, sit in the sun, meditate, drink my coffee, and hack on stuff that I care about like my [many side projects](https://github.com/zackproser).
+
+## Get sunlight 
+
+<Image src={hackerInSunlight} alt="Hacker in sunlight" />
+
+This helps me feel alert and gets my circadian cycle on track. 
+
+## Vipassana meditation
+
+<Image src={vipassana} alt="Vipassana meditation" />
+
+I sit with my eyes closed, noticing and labeling gently: inhaling, exhaling, thinking, hearing, feeling, hunger, pain, fear, thinking, etc.
+
+## Metta meditation
+
+<Image src={meditating} alt="Meditating" />
+
+I generate feelings of loving kindness for myself, visualizing myself feeling safe, healthy, happy and living with ease. This one I may do alongside a YouTube video. [Manoj Dias of Open has a great one](https://www.youtube.com/watch?v=vj0JDwQLof4).
+
+## Coffee and fun 
+
+<Image src={morningHacking} alt="Morning hacking" />
+
+Some days, I'll ship a personal blog post, finish adding a feature to one of my side projects, read a book, or work on something that is otherwise important to me creatively. 
+
+## First block of work and meetings 
+
+<Image src={morningWorking} alt="Morning working" />
+
+Depending on the day, I'll have more or less focus time or meetings. Sometimes I block out my focus time on my work calendar to help others be aware of what I'm up to and to keep myself focused. 
+
+I'll do open-source work, write blog posts, create videos, attend meetings, or even do performance analysis on systems and configure a bunch of alerting services to serve as an SRE in a pinch, in my current role as a staff developer advocate at [Pinecone.io](https://www.pinecone.io).
+
+I work until noon or 1pm before stopping to break my fast. 
+
+## Break my fast 
+
+<Image src={lunch} alt="Lunch" />
+
+I eat between the hours of noon and 8pm. This is the form of intermittent fasting that best works for me. 
+
+A few years ago, a blood panel showed some numbers indicating I was heading toward a metabolic syndrome I had no interest in acquiring, so I follow this protocol and eat mostly vegan but sometimes vegetarian (meaning I'll have cheese in very sparing amounts occasionally). 
+
+Sometimes I'll eat fish and sometimes I'll even eat chicken, but for the most part I eat vegan. In about 3 months of doing this, an updated blood panel showed I had completely reversed my metabolic issues. In general, I try to follow Michael Pollen's succinct advice: "Eat food. Not too much. Mostly plants". 
+
+## Long walk 
+
+<Image src={walkingWithSon} alt="Walking with son" />
+
+I've reviewed the daily habits of a slew of famous creatives from the past, from sober scientists to famously drug-using artists and every combination in between. One thing that was common amongst most of them is that they took two or more longer walks during the day. 
+
+I try to do the same. I find that walking is especially helpful if I've been stuck on something for a while or if I find myself arm-wrestling some code, repository or technology that won't cooperate the way I initially thought it should. 
+
+It's usually within the first 20 minutes of the walk that I realize what the issue is or at least come up with several fresh avenues of inquiry to attempt when I return, plus I get oxygenated and usually find myself in a better mood when I get back. 
+
+I carry my son in my arms as I walk, talking to him along the way. 
+
+## Ice bath 
+
+<Image src={iceBath} alt="Ice bath" />
+
+This is from Wim Hof, whose [breathing exercises](https://www.youtube.com/watch?v=tybOi4hjZFQ) I also found helpful. I started doing cold showers every morning and tolerated them well and found they gave me a surge in energy and focused attention, so I ended up incrementally stepping it up toward regular ice baths. 
+
+First I bought an inflatable ice bath off Amazon and would occasionally go to the store and pick up 8 bags of ice and dump them into a tub full of hose water. I'd get into the bath for 20 minutes, use the same bluetooth mask I use for sleep and play a 20 minute yoga nidra recording. 
+
+The more I did this, the more I found that ice baths were for me. They not only boosted my energy and focus but also quieted my "monkey mind" as effectively as a deep meditative state that normally takes me more than 20 minutes to reach. 
+
+According to  [Andrew Huberman](https://www.hubermanlab.com/), the Stanford professor of neurology and opthamology who runs his own popular podcast, cold exposure of this kind can increase your available dopamine levels by 2x, which is similar to what cocaine would do, but for 6 continuous hours. 
+
+I've never tried cocaine so I can't confirm this from 
+experience, but I can say that when I get out of a 20 minute ice bath I'm less mentally scattered and I feel like I have plenty of energy to knock out the remainder of my workday. 
+
+Now, I produce my own ice with a small ice machine and silicon molds I fill with hose water and then transfer into a small ice chest. 
+
+## Long walk at end of day and family time 
+
+<Image src={familyWalk} alt="Family walk" />
+
+Usually, working remotely allows me to be present with my family and to end work for the day between 4 and 6pm depending on what's going on. We like to take a long walk together before returning to settle in for the night. 
+
+## Sleep 
+
+<Image src={sleepingHacker} alt="Sleeping hacker" />
+
+I try to get to sleep around 11pm but that tends to be aspirational. I use the manta bluetooth sleep mask because it helps me stay asleep longer in the morning as I've found I'm very sensitive to any light. 
+
+I connect it to Spotify and play a deep sleep playlist without ads that is 16 hours long. I turn on do not disturb on my phone. Sometimes if my mind is still active I'll do breath counting or other breathing exercises to slow down. 

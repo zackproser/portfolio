@@ -1,0 +1,62 @@
+import  Image  from 'next/image'
+
+import hackerEvaluation from '@/images/hacker-evaluation.webp'
+import frustratedDeveloper from '@/images/frustrated-developer.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+export const metadata = createMetadata({
+  author: 'Zachary Proser',
+  date: '2023-10-07',
+  title: 'Why your AI dev tool startup is failing with developers', 
+  description: 'These common mistakes are dooming your AI-assisted developer tooling startup to failure. Don\'t make them',
+  image: hackerEvaluation,
+})
+
+<Image src={frustratedDeveloper} alt="Your crappy tools are frustrating developers because they don't work as advertised" />
+<figcaption>A frustated senior developer trying our your improperly tested dev tool for the first time</figcaption>
+
+When I evaluate a new AI-assisted developer tool, such as [codeium](/blog/codeium-review), GitHub CoPilot or OpenAI's ChatGPT4, this is the thought process I use to determine if it's something I can't live without or if 
+it's not worth paying for.
+
+## Does it do what it says on the tin?
+
+This appears simple and yet it's where most AI-assisted developer tools fall down immediately. Does your product successfully do what it says on the marketing site? 
+
+In the past year I've tried more than a few well-funded, VC-backed, 
+highly-hyped coding tools that claim to be able to generate tests, perform advanced code analysis, or catch security issues that simply do not run successfully when loaded in Neovim or vscode. 
+
+<ConsultingCTA />
+
+## The two cardinal sins most AI dev tool startups are committing right now
+
+1. Product developers working on the tools often test the "happy path" according to initial product requirements 
+1. Development teams and their product managers do not sit with external developers to do user acceptance testing
+
+## Cardinal sin #1 - Testing the "happy path" only 
+
+When building new AI developer tooling, a product engineer might use one or more test repositories or sample codebases to ensure their tool can perform its intended functionality, whether it's generating tests or finding bugs. 
+
+This is fine for getting started, but a critical error I've noticed many companies make is that they never expand this set of test codebases to proactively attempt to flush out their bugs. 
+
+This could also be considered laziness and poor testing practices, as it pushes the onus of verifying your product works onto your busy early adopters, 
+who have their own problems to solve. 
+
+## Cardinal sin #2 - Not sitting "over the shoulder" of their target developer audience
+
+The other cardinal sin I keep seeing dev tool startups making is not doing user acceptance testing with external developers. 
+
+Sitting with an experienced developer who is not on your product team and watching them struggle to use your product successfully is often painful and very 
+eye-opening, but failing to do so means you're pushing your initial bug reports off to chance. 
+
+<ConsultingCTA />
+
+Hoping that the engineers with the requisite skills to try your product are going to have the time and inclination to write you a detailed bug report after your supposed wonder-tool just 
+failed for them on their first try is foolish and wasteful.
+
+Most experienced developers would rather move on and give your competitors a shot, and continue evaluating alternatives until they find a tool that works. 
+
+Trust me - when I was in the market for an AI-assisted video editor, I spent 4 evenings in a row trying everything from incumbents
+like Vimeo to small-time startups before finding and settling on Kapwing AI, because it was the first tool that actually worked and supported my desired workflow. 

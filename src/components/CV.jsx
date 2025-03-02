@@ -5,6 +5,7 @@ import logoCloudmark from '@/images/logos/cloudmark.png'
 import logoGrunty from '@/images/logos/grunty.png'
 import logoPinecone from '@/images/logos/pinecone-logo.png'
 import logoBrightcontext from '@/images/logos/brightcontext.png'
+import logoWorkOS from '@/images/logos/workos.svg'
 
 function BriefcaseIcon(props) {
   return (
@@ -32,14 +33,21 @@ function BriefcaseIcon(props) {
 export default function CV() {
   let resume = [
     {
-      company: 'Pinecone.io',
-      title: 'Staff Developer Advocate',
-      logo: logoPinecone,
+      company: 'WorkOS',
+      title: 'Developer Education',
+      logo: logoWorkOS,
       start: '2023',
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
       },
+    },
+    {
+      company: 'Pinecone.io',
+      title: 'Staff Developer Advocate',
+      logo: logoPinecone,
+      start: '2023',
+      end: '2023',
     },
     {
       company: 'Gruntwork.io',

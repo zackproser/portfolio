@@ -25,8 +25,8 @@ import Image from 'next/image'
 import collectionImage from "@/images/${collection.image}"
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { BlogPostCard } from '@/components/BlogPostCard'
-import { getAllArticles } from '@/lib/articles'
+import { ContentCard } from '@/components/ContentCard'
+import { getAllContent } from '@/lib/content-handlers'
 
 export const metadata = {
   title: "${title.toUpperCase()}",
@@ -35,13 +35,13 @@ export const metadata = {
 }
 
 export default async function CollectionPage() {
-  let articles = await getAllArticles(${JSON.stringify(collection.slugs)})
+  let articles = await getAllContent('blog', ${JSON.stringify(collection.slugs)})
 
   return (
     <SimpleLayout title="${title.charAt(0).toUpperCase() + title.slice(1)} collection">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {articles.map(article => (
-          <BlogPostCard key={article.slug} article={article} />
+          <ContentCard key={article.slug} article={article} />
         ))}
       </div>
     </SimpleLayout>
@@ -66,7 +66,7 @@ function generateCollectionIndexPage() {
 
     const content = `
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { ContentCard } from '@/components/ContentCard'
 import { getAllCollections } from '@/lib/collections'
 
 export default async function CollectionPage() {
@@ -76,7 +76,7 @@ export default async function CollectionPage() {
     <SimpleLayout title="${title}">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {collections.map(collection => (
-          <BlogPostCard key={collection.slug} article={collection} />
+          <ContentCard key={collection.slug} article={collection} />
         ))}
       </div>
     </SimpleLayout>

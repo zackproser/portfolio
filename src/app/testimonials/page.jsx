@@ -46,12 +46,11 @@ export const metadata = {
 
 
 const featuredTestimonial = {
-  body: 'When I ran your software, I felt joy',
+  body: "When I ran your software, I felt joy",
   author: {
-    name: 'Jim Brikman',
-    title: 'Co-founder of Gruntwork, OpenTofu and author of Terraform Up and Running',
+    name: "Jim Brikman",
+    title: "Co-founder of Gruntwork, OpenTofu and author of Terraform Up and Running",
     imageUrl: JimBrikman,
-    logoUrl: '',
   },
 }
 const testimonials = [
@@ -60,26 +59,26 @@ const testimonials = [
   [
     [
       {
-        body: 'Zack is very resourceful, entrepreneurial and scrappy. He’ll figure out a way of getting whatever it is done. As well as technical skills, Zack is rounded. He can write and he has broad interests - such as visual arts. Zack has a lot of initiative and will proactively take action when he sees something that needs to be done. I’d be remiss if I didn’t mention Zack’s work ethic. He never shied away from our demanding hours and would regularly spend the little after-work time he had deepening his technical skills. Lastly, Zack has a great sense of humor and is one of those folks that just makes work more fun. He’s someone you want on your team.',
+        body: "Zack is very resourceful, entrepreneurial and scrappy. He'll figure out a way of getting whatever it is done. As well as technical skills, Zack is rounded. He can write and he has broad interests - such as visual arts. Zack has a lot of initiative and will proactively take action when he sees something that needs to be done. I'd be remiss if I didn't mention Zack's work ethic. He never shied away from our demanding hours and would regularly spend the little after-work time he had deepening his technical skills. Lastly, Zack has a great sense of humor and is one of those folks that just makes work more fun. He's someone you want on your team.",
         author: {
-          name: 'John Funge',
-          title: 'Chief Product Officer at DataTribe',
+          name: "John Funge",
+          title: "Chief Product Officer at DataTribe",
           imageUrl: JohnFunge,
         },
       },
       {
-        body: 'Having a dedicated developer for a Marketing team is hard to come by, especially if they are a good one. Working with Zack at Cloudmark was the best. He always had a collaborative, team player mentality and exceeded expectations on all assigned projects, even those that required a quick turnaround. More importantly, Zack had great communications skills - from proactively providing a project status to any red flags during initial conversations. I would work with Zack again in a heartbeat.',
+        body: "Having a dedicated developer for a Marketing team is hard to come by, especially if they are a good one. Working with Zack at Cloudmark was the best. He always had a collaborative, team player mentality and exceeded expectations on all assigned projects, even those that required a quick turnaround. More importantly, Zack had great communications skills - from proactively providing a project status to any red flags during initial conversations. I would work with Zack again in a heartbeat.",
         author: {
-          name: 'Evelyn Tam',
-          title: 'Senior Communications Manager at MariaDB',
+          name: "Evelyn Tam",
+          title: "Senior Communications Manager at MariaDB",
           imageUrl: EvelynTam,
         },
       },
       {
-        body: 'Take a look at the span of job titles, levels of seniority, and teams reflected in Zack\'s other recommendations. It\'s clear Zack brings the same level of near-crazy passion and dedication from his art to every aspect of his professional work. Whether it was cross-team collaboration, picking up a new technology, or complex problem solving, Zack excelled without skipping a beat. From my view, Zack\'s most impressive, and all-too-rare, trait is deep introspection. Given a problematic shortcoming or knowledge gap, he wields this introspection to quickly diagnose and navigate past situations that would pose as major hurdles to most people. Teapot approved, A+',
+        body: "Take a look at the span of job titles, levels of seniority, and teams reflected in Zack's other recommendations. It's clear Zack brings the same level of near-crazy passion and dedication from his art to every aspect of his professional work. Whether it was cross-team collaboration, picking up a new technology, or complex problem solving, Zack excelled without skipping a beat. From my view, Zack's most impressive, and all-too-rare, trait is deep introspection. Given a problematic shortcoming or knowledge gap, he wields this introspection to quickly diagnose and navigate past situations that would pose as major hurdles to most people. Teapot approved, A+",
         author: {
-          name: 'Tom Landesman',
-          title: 'Staff Data Scientist at Proofpoint',
+          name: "Tom Landesman",
+          title: "Staff Data Scientist at Proofpoint",
           imageUrl: TomLandesman,
         },
       },
@@ -87,26 +86,26 @@ const testimonials = [
     ],
     [
       {
-        body: 'I have worked with Zack on multiple projects. Every one of these encounters with him has not only made me a better engineer, but a better person. He is a brilliant engineer who truly cares about his code and the people who use it. He has the remarkable ability to pick apart hard problems (technical or otherwise) and put together a solution that benefits everyone. He is articulate, thoughtful, kind and exceptionally intelligent. Zack is also one of the only people I have ever met to have a real world implementation of an AI bot. His talents are as rare as they get and I unequivocally recommend him.',
+        body: "I have worked with Zack on multiple projects. Every one of these encounters with him has not only made me a better engineer, but a better person. He is a brilliant engineer who truly cares about his code and the people who use it. He has the remarkable ability to pick apart hard problems (technical or otherwise) and put together a solution that benefits everyone. He is articulate, thoughtful, kind and exceptionally intelligent. Zack is also one of the only people I have ever met to have a real world implementation of an AI bot. His talents are as rare as they get and I unequivocally recommend him.",
         author: {
-          name: 'Sachin Fernandes',
-          title: 'Technical Lead at Cloudflare',
+          name: "Sachin Fernandes",
+          title: "Technical Lead at Cloudflare",
           imageUrl: SachinFernandes,
         },
       },
       {
-        body: 'I had the pleasure to work with Zack on several platform and web-services projects. Zack is extremely self-driven, coachable and always has the intention to move forward seeking to improve. He is very detail oriented and will not stop until he delivered what was asked for. He is very knowledgeable and has the patience to explain technical challenges to non-technical co-workers and stakeholders in such a way that they understand what is going on. Zack moved on to a different team where there is more room for him to grow and I have no doubt that he will succeed there as well. I would definitely recommend Zack to any team or company and if there is an opportunity, I would love to work with him again.',
+        body: "I had the pleasure to work with Zack on several platform and web-services projects. Zack is extremely self-driven, coachable and always has the intention to move forward seeking to improve. He is very detail oriented and will not stop until he delivered what was asked for. He is very knowledgeable and has the patience to explain technical challenges to non-technical co-workers and stakeholders in such a way that they understand what is going on. Zack moved on to a different team where there is more room for him to grow and I have no doubt that he will succeed there as well. I would definitely recommend Zack to any team or company and if there is an opportunity, I would love to work with him again.",
         author: {
-          name: 'Joery van Druten',
-          title: 'Project Manager at Cloudflare',
+          name: "Joery van Druten",
+          title: "Project Manager at Cloudflare",
           imageUrl: JoeryVanDruten,
         },
       },
       {
-        body: 'Zack is exactly the type of engineer you want on your team. He\'s smart, collaborative, and tremendously effective.Zack and I worked together building tools and websites to drive revenue and customer success.When challenging ideas were presented, Zack would jump at the opportunity to learn without any hint of hesitation to take on difficulty.Personally, he\'s kind, willing to help, and keeps a good sense of humor.',
+        body: "Zack is exactly the type of engineer you want on your team. He's smart, collaborative, and tremendously effective. Zack and I worked together building tools and websites to drive revenue and customer success. When challenging ideas were presented, Zack would jump at the opportunity to learn without any hint of hesitation to take on difficulty. Personally, he's kind, willing to help, and keeps a good sense of humor.",
         author: {
-          name: 'Anthony Davanzo',
-          title: 'Technical Product Marketing Manager at HashiCorp',
+          name: "Anthony Davanzo",
+          title: "Technical Product Marketing Manager at HashiCorp",
           imageUrl: AnthonyDavanzo,
         },
       },
@@ -115,60 +114,60 @@ const testimonials = [
   [
     [
       {
-        body: 'In my nearly two years at Cloudflare, I have had the pleasure of working closely with Zack. He is one of the most hardworking and self-motivated individuals I have ever met. He constantly does outstanding work and will go above and beyond on any project that he is part of. He has also always been a kind and patient teacher to me, whenever I had any inquiries about implementation. He is someone I would highly recommend for any future opportunities as he would be a valuable asset to any team he joins.',
+        body: "In my nearly two years at Cloudflare, I have had the pleasure of working closely with Zack. He is one of the most hardworking and self-motivated individuals I have ever met. He constantly does outstanding work and will go above and beyond on any project that he is part of. He has also always been a kind and patient teacher to me, whenever I had any inquiries about implementation. He is someone I would highly recommend for any future opportunities as he would be a valuable asset to any team he joins.",
         author: {
-          name: 'Philina Fan',
-          title: 'Product Designer at Asana',
+          name: "Philina Fan",
+          title: "Product Designer at Asana",
           imageUrl: PhilinaFan,
         },
       },
       {
-        body: 'Zack helped us build web applications for our cancer clinical trial research studies. He was a pleasure to work with, I frequently come back to ask his advice on our other web development projects. If you have an opportunity to work with Zack you should take it.',
+        body: "Zack helped us build web applications for our cancer clinical trial research studies. He was a pleasure to work with, I frequently come back to ask his advice on our other web development projects. If you have an opportunity to work with Zack you should take it.",
         author: {
-          name: 'Tom Luechtefeld',
-          title: 'CEO at Insilica',
+          name: "Tom Luechtefeld",
+          title: "CEO at Insilica",
           imageUrl: TomLuechtefeld,
         },
       },
       {
-        body: 'Zack is a great addition to any development team. He thinks fast, adapts to shifting requirements, and has proven he can quickly ramp up on the latest technologies to put them to good use.',
+        body: "Zack is a great addition to any development team. He thinks fast, adapts to shifting requirements, and has proven he can quickly ramp up on the latest technologies to put them to good use.",
         author: {
-          name: 'Steven Fusco',
-          title: 'Senior Engineering Manager at Kryptowire',
+          name: "Steven Fusco",
+          title: "Senior Engineering Manager at Kryptowire",
           imageUrl: StevenFusco,
         },
       },
       {
-        body: 'I worked closely with Zack at Cloudflare. Zack was clearly the most talented, skilled and hard working developer in his team. I frequently tapped his brain for technical questions and he was always there to help. He is a true pleasure to work with and I can highly recommend him.',
+        body: "I worked closely with Zack at Cloudflare. Zack was clearly the most talented, skilled and hard working developer in his team. I frequently tapped his brain for technical questions and he was always there to help. He is a true pleasure to work with and I can highly recommend him.",
         author: {
-          name: 'Christian Paulus',
-          title: 'VP Product Marketing at Cohesity',
+          name: "Christian Paulus",
+          title: "VP Product Marketing at Cohesity",
           imageUrl: ChristianPaulus,
         },
       },
     ],
     [
       {
-        body: 'Zack is an all-round business athlete. Whether he’s helping to brainstorm viral marketing strategies or working on your development team he’s going to provide a ton of value. He’s a fast learner and a hard worker, and is fun to work with.',
+        body: "Zack is an all-round business athlete. Whether he's helping to brainstorm viral marketing strategies or working on your development team he's going to provide a ton of value. He's a fast learner and a hard worker, and is fun to work with.",
         author: {
-          name: 'Leo Scott',
-          title: 'Chief Innovation Officer at DataTribe',
+          name: "Leo Scott",
+          title: "Chief Innovation Officer at DataTribe",
           imageUrl: LeoScott,
         },
       },
       {
-        body: 'I had the opportunity to work with Zack at Cloudflare. Zack is very hard working and self motivated. Whenever he is given a new task he puts in the effort to learn and successfully complete it. But the most important quality I admire is he makes sure he shares that knowledge with everyone and always willing to help. Zack is amazing to work with and a great asset to the team.',
+        body: "I had the opportunity to work with Zack at Cloudflare. Zack is very hard working and self motivated. Whenever he is given a new task he puts in the effort to learn and successfully complete it. But the most important quality I admire is he makes sure he shares that knowledge with everyone and always willing to help. Zack is amazing to work with and a great asset to the team.",
         author: {
-          name: 'Venkat Viswanathan',
-          title: 'Group Product Manager at Okta',
+          name: "Venkat Viswanathan",
+          title: "Group Product Manager at Okta",
           imageUrl: VenkatViswanathan,
         },
       },
       {
-        body: 'Zack was an amazing contributor on the UX frontend for a new product we were launching. It was both a new market (Enterprise) and and new product (Spear phishing). As a result - it required a fair amount of intuitive design experience and iterative patience. Zack and his colleagues were instrumental in getting early versions of the UX built and adapting it as we developed insights into both how the user might experience things AND how the technology would interpret things. A very strong contributor to a new initiative and a dynamic environment.',
+        body: "Zack was an amazing contributor on the UX frontend for a new product we were launching. It was both a new market (Enterprise) and and new product (Spear phishing). As a result - it required a fair amount of intuitive design experience and iterative patience. Zack and his colleagues were instrumental in getting early versions of the UX built and adapting it as we developed insights into both how the user might experience things AND how the technology would interpret things. A very strong contributor to a new initiative and a dynamic environment.",
         author: {
-          name: 'George Riedel',
-          title: 'CEO at Cloudmark. Professor at Harvard Business School',
+          name: "George Riedel",
+          title: "CEO at Cloudmark. Professor at Harvard Business School",
           imageUrl: George,
         },
       }
@@ -224,11 +223,11 @@ export default function Example() {
             <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
               <figure className="rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
                 <blockquote className="p-6 text-lg font-semibold leading-7 tracking-tight text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
-                  <p>{`“${featuredTestimonial.body}”`}</p>
+                  <p>{`"${featuredTestimonial.body}"`}</p>
                 </blockquote>
                 <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
                   <Image
-                    className="h-10 w-10 flex-none rounded-full bg-gray-50"
+                    className="h-14 w-14 flex-none rounded-full bg-gray-50"
                     src={featuredTestimonial.author.imageUrl}
                     alt=""
                   />
@@ -236,7 +235,6 @@ export default function Example() {
                     <div className="font-semibold">{featuredTestimonial.author.name}</div>
                     <div className="text-gray-600">{`@${featuredTestimonial.author.title}`}</div>
                   </div>
-                  <Image className="h-10 w-auto flex-none" src={featuredTestimonial.author.logoUrl} alt="" />
                 </figcaption>
               </figure>
               {testimonials.map((columnGroup, columnGroupIdx) => (
@@ -258,10 +256,10 @@ export default function Example() {
                           className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5"
                         >
                           <blockquote className="text-gray-900">
-                            <p>{`“${testimonial.body}”`}</p>
+                            <p>{`"${testimonial.body}"`}</p>
                           </blockquote>
                           <figcaption className="flex items-center gap-x-4">
-                            <Image className="h-10 w-10 rounded-full bg-gray-50" src={testimonial.author.imageUrl} alt="" />
+                            <Image className="h-14 w-14 rounded-full bg-gray-50" src={testimonial.author.imageUrl} alt="" />
                             <div>
                               <div className="font-semibold">{testimonial.author.name}</div>
                               <div className="text-gray-600">{`@${testimonial.author.title}`}</div>
