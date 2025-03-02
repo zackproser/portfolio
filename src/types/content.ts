@@ -23,8 +23,15 @@ export type Purchasable = Content & {
   commerce: NonNullable<Blog['commerce']> & { isPaid: true }
 }
 
+// Flag to temporarily disable courses
+export const COURSES_DISABLED = true;
+
 // Type guard to check if content is purchasable
 export function isPurchasable(content: Content): content is Purchasable {
+  // If courses are disabled and the content is a course, return false
+  if (COURSES_DISABLED && content.type === 'course') {
+    return false;
+  }
   return content.type !== 'demo' && 'commerce' in content && (content as any).commerce?.isPaid === true;
 }
 

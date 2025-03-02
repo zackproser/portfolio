@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { PrismaClient } from '@prisma/client'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
 import { importContentMetadata } from '@/lib/content-handlers'
+import { COURSES_DISABLED } from '@/types'
 
 // Initialize Stripe and Prisma
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -99,40 +100,37 @@ export async function POST(req: Request) {
         const contentType = type === 'article' || type === 'blog' ? 'article' : type
         const contentSlug = slug
         
-        // Create the purchase record using Prisma
-        // Always include the email, even if we have a user ID
-        await prisma.purchase.create({
-          data: {
-            user: user ? { connect: { id: user.id } } : undefined,
-            contentType,
+        // Record the purchase in the database
+        await prisma.purchase.upsert({
+          where: {
+            userId_contentType_contentSlug: {
+              userId: user?.id || '',
+              contentType: type,
+              contentSlug
+            }
+          },
+          update: {
+            purchaseDate: new Date(),
+            stripePaymentId: session.id,
+            amount: session.amount_total! / 100,
+            email: email // Always include the email
+          },
+          create: {
+            userId: user?.id || null,
+            contentType: type,
             contentSlug,
-            stripePaymentId: session.payment_intent as string || session.id,
+            purchaseDate: new Date(),
+            stripePaymentId: session.id,
             amount: session.amount_total! / 100,
             email: email // Always include the email
           }
         })
         
+        // Course enrollments are disabled
         // If it's a course and we have a user, also record in courseenrollments
-        if (type === 'course' && user) {
-          const course = await prisma.course.findUnique({
-            where: { slug: contentSlug }
-          })
-          
-          if (course) {
-            await prisma.courseEnrollment.upsert({
-              where: {
-                userId_courseId: {
-                  userId: user.id,
-                  courseId: course.id
-                }
-              },
-              update: {},
-              create: {
-                userId: user.id,
-                courseId: course.id
-              }
-            })
-          }
+        if (type === 'course' && user && !COURSES_DISABLED) {
+          // This code is temporarily disabled as courses are disabled
+          console.log('Course purchases are temporarily disabled');
         }
         
         console.log('✅ Purchase recorded successfully')
@@ -149,10 +147,11 @@ export async function POST(req: Request) {
         if (type === 'article' || type === 'blog') {
           content = await importContentMetadata(slug, 'blog')
         } else if (type === 'course') {
-          content = await prisma.course.findUnique({
-            where: { slug },
-            select: { title: true, description: true, slug: true }
-          })
+          // Courses are disabled, use a fallback
+          content = {
+            title: `Course: ${slug}`,
+            description: 'Premium Course Content'
+          };
         }
         
         console.log('🎯 Found content:', { title: content?.title });

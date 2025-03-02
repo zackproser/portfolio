@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
-import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent } from '@/types'
+import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent, COURSES_DISABLED } from '@/types'
 import React from 'react'
 import { PrismaClient } from '@prisma/client'
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
@@ -18,6 +18,12 @@ const contentDirectory = path.join(process.cwd(), 'src/content')
  * @returns Array of slugs
  */
 export function getContentSlugs(contentType: string) {
+  // If courses are disabled and the content type is courses, return an empty array
+  if (COURSES_DISABLED && contentType === 'learn/courses') {
+    console.log('Courses are temporarily disabled');
+    return [];
+  }
+
   const contentDir = path.join(contentDirectory, contentType)
   
   if (!fs.existsSync(contentDir)) {
@@ -444,7 +450,8 @@ export async function getAllProducts(): Promise<ProductContent[]> {
     // Get all content from all content types at once
     const allContent = await Promise.all([
       getAllContent('blog'),
-      getAllContent('learn/courses'),
+      // Only include courses if they're not disabled
+      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses')]),
       getAllContent('videos')
     ]).then(results => results.flat());
     
@@ -453,7 +460,7 @@ export async function getAllProducts(): Promise<ProductContent[]> {
     
     // Transform to product content
     const productContent = paidContent.map(content => {
-      if (content.type === 'course') {
+      if (content.type === 'course' && !COURSES_DISABLED) {
         return generateProductFromCourse(content as any);
       }
       return generateProductFromArticle(content as BlogWithSlug);
@@ -473,7 +480,8 @@ export async function getAllProducts(): Promise<ProductContent[]> {
 export async function getAllPurchasableContent(): Promise<Blog[]> {
   const allContent = await Promise.all([
     getAllContent('blog'),
-    getAllContent('learn/courses'),
+    // Only include courses if they're not disabled
+    ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses')]),
     getAllContent('videos')
   ]).then(results => results.flat());
   
@@ -489,7 +497,11 @@ export async function getAllPurchasableContent(): Promise<Blog[]> {
  */
 export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
   // Try to find the content in any content type
-  for (const contentType of ['blog', 'learn/courses', 'videos']) {
+  const contentTypes = COURSES_DISABLED 
+    ? ['blog', 'videos'] 
+    : ['blog', 'learn/courses', 'videos'];
+    
+  for (const contentType of contentTypes) {
     const content = await getContentBySlug(slug, contentType);
     
     if (content && content.metadata && content.metadata.commerce?.isPaid) {

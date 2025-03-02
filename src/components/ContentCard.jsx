@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientSideIcon } from './ClientSideIcon'
+import { COURSES_DISABLED } from '@/types'
 
 import wakka from '@/images/wakka.webp'
 
@@ -140,7 +141,7 @@ function CardContent({ imageSource, title, formattedDate, date, description, typ
             {description}
           </p>
         </div>
-        {type === 'course' && <StatusBadge status={status} />}
+        {type === 'course' && !COURSES_DISABLED && <StatusBadge status={status} />}
       </div>
     </>
   )
