@@ -1,7 +1,7 @@
 import { auth } from '../../../../auth'
 import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
-import { sql } from '@vercel/postgres'
+import { PrismaClient } from '@prisma/client'
 import { headers } from 'next/headers'
 import { importContentMetadata } from '@/lib/content-handlers'
 import { Content } from '@/types'
@@ -14,19 +14,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: '2023-10-16'
 })
 
+const prisma = new PrismaClient()
+
 export async function POST(req: NextRequest) {
 	try {
 		const session = await auth()
-		if (!session?.user?.email || !session?.user?.id) {
-			return NextResponse.json(
-				{ error: 'Must be signed in to make purchases' },
-				{ status: 401 }
-			)
+		const body = await req.json()
+		const { slug, type, email } = body as { 
+			slug: string; 
+			type: Content['type']; 
+			email?: string 
 		}
 
-		const body = await req.json()
-		const { slug, type } = body as { slug: string; type: Content['type'] }
-
+		// Get email from session if available, but don't require it
+		const userEmail = session?.user?.email || email
+		
 		if (!slug || !type) {
 			return NextResponse.json(
 				{ error: 'Missing required parameters' },
@@ -56,6 +58,8 @@ export async function POST(req: NextRequest) {
 		const params: Stripe.Checkout.SessionCreateParams = {
 			mode: 'payment',
 			ui_mode: 'embedded',
+			// Only set customer_email if we have it from the session
+			...(userEmail && { customer_email: userEmail }),
 			line_items: [
 				{
 					price_data: {
@@ -70,7 +74,10 @@ export async function POST(req: NextRequest) {
 				},
 			],
 			metadata: {
-				userId: String(session.user.id),
+				// Include userId if available
+				...(session?.user?.id && { userId: String(session.user.id) }),
+				// Include email if available
+				...(userEmail && { email: userEmail }),
 				slug,
 				type: content.type
 			},
@@ -90,10 +97,6 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: Request) {
 	const session = await auth()
-	if (!session?.user?.email) {
-		return NextResponse.json({ error: 'Must be signed in to view purchases' }, { status: 401 })
-	}
-
 	const { searchParams } = new URL(req.url)
 	const sessionId = searchParams.get('session_id')
 
@@ -108,15 +111,38 @@ export async function GET(req: Request) {
 			return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
 		}
 
-		const { userId, slug, type } = stripeSession.metadata as { userId: string; slug: string; type: Content['type'] }
-
-		const userResult = await sql`
-			SELECT id::int as id, email, name FROM users WHERE id = ${userId}::int
-		`
-		if (userResult.rows.length === 0) {
-			throw new Error(`No user found with ID ${userId}`)
+		const { slug, type } = stripeSession.metadata as { slug: string; type: Content['type'] }
+		const userId = stripeSession.metadata?.userId
+		const email = stripeSession.metadata?.email || stripeSession.customer_details?.email
+		
+		if (!email) {
+			return NextResponse.json({ error: 'No email found in session' }, { status: 400 })
 		}
-		const user = userResult.rows[0]
+
+		// Get user info if available
+		let user = null
+		if (userId) {
+			user = await prisma.user.findUnique({
+				where: { id: userId },
+				select: { id: true, email: true, name: true }
+			})
+		}
+		
+		// If no user found by ID but we have an email, try to find by email
+		if (!user && email) {
+			user = await prisma.user.findUnique({
+				where: { email },
+				select: { id: true, email: true, name: true }
+			})
+		}
+		
+		// If still no user, create a minimal user object with just the email
+		if (!user) {
+			user = {
+				email,
+				name: 'Customer'
+			}
+		}
 
 		const content = await importContentMetadata(
 			slug, 
@@ -125,7 +151,7 @@ export async function GET(req: Request) {
 
 		return NextResponse.json({
 			content,
-			user: session.user,
+			user,
 			session: stripeSession,
 			payment_status: stripeSession.payment_status
 		})

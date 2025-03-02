@@ -80,7 +80,8 @@ CREATE TABLE IF NOT EXISTS stripepayments (
     stripe_payment_id VARCHAR(255),
     amount DECIMAL(10, 2),
     payment_status VARCHAR(50),
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    email VARCHAR(255)
 );
 
 -- Create articlepurchases table if it doesn't exist
@@ -91,6 +92,7 @@ CREATE TABLE IF NOT EXISTS articlepurchases (
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     stripe_payment_id VARCHAR(255),
     amount DECIMAL(10, 2),
+    email VARCHAR(255),
     UNIQUE(user_id, article_slug)
 );
 
@@ -102,16 +104,18 @@ CREATE TABLE IF NOT EXISTS coursepurchases (
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     stripe_payment_id VARCHAR(255),
     amount DECIMAL(10, 2),
+    email VARCHAR(255),
     UNIQUE(user_id, course_slug)
 );
 
 -- Create email_notifications table if it doesn't exist
 CREATE TABLE IF NOT EXISTS email_notifications (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id),
+    user_id INTEGER REFERENCES users(id),
     content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('article', 'course')),
     content_slug VARCHAR(255) NOT NULL,
     email_type VARCHAR(50) NOT NULL,
+    email VARCHAR(255),
     sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, content_type, content_slug, email_type)
 );
@@ -122,4 +126,36 @@ CREATE INDEX IF NOT EXISTS idx_course_purchases_user ON coursepurchases(user_id)
 CREATE INDEX IF NOT EXISTS idx_email_notifications_user ON email_notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_email_notifications_content ON email_notifications(content_type, content_slug);
 CREATE INDEX IF NOT EXISTS idx_course_enrollments_user ON courseenrollments(user_id);
-CREATE INDEX IF NOT EXISTS idx_course_enrollments_course ON courseenrollments(course_id); 
+CREATE INDEX IF NOT EXISTS idx_course_enrollments_course ON courseenrollments(course_id);
+
+-- Create indexes for email lookups
+CREATE INDEX IF NOT EXISTS idx_article_purchases_email ON articlepurchases(email);
+CREATE INDEX IF NOT EXISTS idx_course_purchases_email ON coursepurchases(email);
+CREATE INDEX IF NOT EXISTS idx_email_notifications_email ON email_notifications(email);
+
+-- Add unique constraint for email and article_slug
+ALTER TABLE articlepurchases 
+DROP CONSTRAINT IF EXISTS articlepurchases_email_article_slug_key;
+
+ALTER TABLE articlepurchases 
+ADD CONSTRAINT articlepurchases_email_article_slug_key 
+UNIQUE (email, article_slug) 
+WHERE email IS NOT NULL;
+
+-- Add unique constraint for email and course_slug
+ALTER TABLE coursepurchases 
+DROP CONSTRAINT IF EXISTS coursepurchases_email_course_slug_key;
+
+ALTER TABLE coursepurchases 
+ADD CONSTRAINT coursepurchases_email_course_slug_key 
+UNIQUE (email, course_slug) 
+WHERE email IS NOT NULL;
+
+-- Add unique constraint for email, content_type, content_slug, and email_type
+ALTER TABLE email_notifications 
+DROP CONSTRAINT IF EXISTS email_notifications_email_content_type_content_slug_email_type_key;
+
+ALTER TABLE email_notifications 
+ADD CONSTRAINT email_notifications_email_content_type_content_slug_email_type_key 
+UNIQUE (email, content_type, content_slug, email_type) 
+WHERE email IS NOT NULL; 

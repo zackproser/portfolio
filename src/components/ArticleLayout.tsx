@@ -45,20 +45,28 @@ export function ArticleLayout({
   // Check if the user has purchased the content
   useEffect(() => {
     const checkPurchaseStatus = async () => {
-      if (!session?.user?.email || !metadata.commerce?.isPaid || !safeSlug) return;
+      if (!metadata.commerce?.isPaid || !safeSlug) return;
       
       try {
-        const response = await fetch(`/api/check-purchase?slug=${safeSlug}`)
+        // If user is signed in, use their email
+        const email = session?.user?.email;
+        
+        // Always include the email parameter if available
+        const url = email 
+          ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
+          : `/api/check-purchase?slug=${safeSlug}`;
+        
+        const response = await fetch(url);
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json()
-        setHasPurchased(data.purchased)
+        const data = await response.json();
+        setHasPurchased(data.purchased);
       } catch (error) {
-        console.error('Error checking purchase status:', error)
-        setHasPurchased(false)
+        console.error('Error checking purchase status:', error);
+        setHasPurchased(false);
       }
     };
 
