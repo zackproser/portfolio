@@ -1,9 +1,8 @@
+import dynamic from 'next/dynamic'
 import { Metadata } from 'next'
 import fs from 'fs'
 import path from 'path'
-import { Session } from 'next-auth'
 import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent } from '@/types'
-import Paywall from '@/components/Paywall'
 import React from 'react'
 import { sql } from '@vercel/postgres'
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
@@ -73,7 +72,7 @@ export async function loadContent(contentType: string, slug: string) {
       return null
     }
     
-    console.log(`Loading content: ${contentType}/${slug}`)
+    //console.log(`Loading content: ${contentType}/${slug}`)
     // Dynamically import the MDX content
     const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
     const MdxContent = mdxModule.default
@@ -113,7 +112,7 @@ export async function getAllContent(contentType: string = 'blog'): Promise<Conte
         
         // Ensure the metadata has a slug (use the directory name if not provided)
         if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-          console.log(`No valid slug in metadata for ${slug}, using directory name`)
+          //console.log(`No valid slug in metadata for ${slug}, using directory name`)
           processedMetadata.slug = slug
         } else {
           // Normalize the slug to prevent path issues
@@ -297,11 +296,12 @@ export function renderPaywalledContent(
   const defaultText = getDefaultPaywallText(metadata.type || 'blog');
   
   // Import ArticleContent dynamically to avoid circular dependencies
-  const ArticleContent = require('@/components/ArticleContent').default;
+  const ArticleContent = dynamic(() => import("@/components/ArticleContent"));
   
   return React.createElement(
     ArticleContent,
     {
+      children: React.createElement(MdxContent),
       showFullContent,
       price: metadata.commerce?.price || 0,
       slug: metadata.slug || '',
@@ -313,8 +313,7 @@ export function renderPaywalledContent(
       paywallHeader: metadata.commerce?.paywallHeader || defaultText.header,
       paywallBody: metadata.commerce?.paywallBody || defaultText.body,
       buttonText: metadata.commerce?.buttonText || defaultText.buttonText,
-    },
-    React.createElement(MdxContent)
+    }
   );
 }
 
@@ -370,7 +369,7 @@ export async function importContentMetadata(slug: string, contentType: string = 
       return null
     }
     
-    console.log(`Loading metadata: ${contentType}/${slug}`)
+    //console.log(`Loading metadata: ${contentType}/${slug}`)
     // Dynamically import the MDX content
     const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
     const metadata = mdxModule.metadata
@@ -385,7 +384,7 @@ export async function importContentMetadata(slug: string, contentType: string = 
     
     // Ensure the metadata has a slug (use the directory name if not provided)
     if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-      console.log(`No valid slug in metadata for ${slug}, using directory name`)
+      //console.log(`No valid slug in metadata for ${slug}, using directory name`)
       processedMetadata.slug = slug
     } else {
       // Normalize the slug to prevent path issues
