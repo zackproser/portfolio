@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
     
     // Try to read the first few lines to get the title
     const fileContent = fs.readFileSync(contentFile, 'utf8').split('\n').slice(0, 30).join('\n');
-    console.log(`📧 [DEBUG] First 30 lines of content file:`);
-    console.log(fileContent);
+    //console.log(`📧 [DEBUG] First 30 lines of content file:`);
+    //console.log(fileContent);
     
     // Extract title from metadata
     const titleMatch = fileContent.match(/title: ["'](.+?)["']/);

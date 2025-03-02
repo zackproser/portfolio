@@ -3,7 +3,8 @@ import { type MessageSendingResponse } from "postmark/dist/client/models";
 import { renderPaywalledContent, loadContent } from "./content-handlers";
 import { ExtendedMetadata } from '@/types' 
 
-const ReactDOMServer = (await import('react-dom/server')).default
+// Remove the ReactDOMServer import as we won't use it for client components
+// const ReactDOMServer = (await import('react-dom/server')).default
 
 // Define the return type for extractPreviewContent
 interface PreviewContentResult {
@@ -96,6 +97,11 @@ interface SendFreeChaptersEmailInput {
  * Extract preview content from a product's MDX content using server-side approach
  * @param productSlug The slug of the product
  * @returns An object containing preview content and metadata
+ * 
+ * TODO: In the future, we may want to implement a more sophisticated approach
+ * that extracts actual preview content from the MDX files. For now, we're using
+ * a simple approach that just provides a link to the content, which already
+ * shows a preview to users who haven't purchased it.
  */
 async function extractPreviewContent(productSlug: string): Promise<PreviewContentResult | null> {
 	// Remove any leading slashes from the productSlug
@@ -111,34 +117,35 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 		console.log(`📧 [WARN] No content found for slug: ${productSlug}`);
 		return null;
 	}
-	const { MdxContent, metadata } = result;
-	if (!result) {
-		return null;
-	}
+	const { metadata } = result;
 	
-	// Log the metadata we received
-	console.log(`📧 [DEBUG] Metadata received:`, JSON.stringify({
-		title: metadata.title,
-		description: metadata.description ? `${metadata.description.substring(0, 100)}...` : 'No description',
-		commerce: metadata.commerce ? {
-			price: metadata.commerce.price,
-			isPaid: metadata.commerce.isPaid,
-			previewLength: metadata.commerce.previewLength,
-			previewElements: metadata.commerce.previewElements
-		} : 'No commerce data'
-	}, null, 2));
-	
-	// Render the preview content to HTML
-	console.log(`📧 [PROCESS] Rendering preview content to HTML...`);
+	// Create a simple HTML preview with a link to the content
+	console.log(`📧 [PROCESS] Creating preview content...`);
 	try {
-		// Get the React elements from renderPaywalledContent
-		const reactElements = renderPaywalledContent(MdxContent, metadata, false);
-
-		const previewContent = ReactDOMServer.renderToString(reactElements)
-		// Convert React elements to HTML string
+		// Get the base URL
+		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+		const productUrl = `${baseUrl}/${contentType}/${normalizedSlug}`;
 		
-		// Log the full HTML for debugging
-		console.log(`📧 [DEBUG] Full HTML output:`);
+		// Create a simple HTML preview with the description and a link
+		const title = typeof metadata.title === 'string' 
+			? metadata.title 
+			: (metadata.title as any)?.default || 'Untitled';
+		
+		// Simple HTML email with link to the content
+		const previewContent = `
+			<h1 style="color: #333; font-size: 24px; margin-bottom: 16px;">${title}</h1>
+			${metadata.description ? `<p style="font-size: 16px; line-height: 1.5; color: #555; margin-bottom: 20px;">${metadata.description}</p>` : ''}
+			<p style="margin-top: 24px; margin-bottom: 24px;">
+				<a href="${productUrl}" style="display: inline-block; padding: 12px 24px; background-color: #0070f3; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+					Get your free preview
+				</a>
+			</p>
+			<p style="font-size: 14px; color: #666; margin-top: 32px; border-top: 1px solid #e9e9e9; padding-top: 16px;">
+				To view the free preview, simply click the button above or visit <a href="${productUrl}">${productUrl}</a>
+			</p>
+		`;
+		
+		console.log(`📧 [DEBUG] Preview content created`);
 		console.log('----------------------------------------');
 		console.log(previewContent);
 		console.log('----------------------------------------');
@@ -148,7 +155,7 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 			metadata
 		};
 	} catch (error) {
-		console.error(`📧 [ERROR] Failed to render preview content:`, error);
+		console.error(`📧 [ERROR] Failed to create preview content:`, error);
 		// Fallback to description
 		console.log(`📧 [WARN] Using description as fallback for preview content`);
 		return {
@@ -157,7 +164,6 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 		};
 	}
 }
-
 
 /**
  * Send free chapters email to a user who requested them
@@ -172,7 +178,7 @@ const sendFreeChaptersEmail = async (
 	console.log(`📧 [CONFIG] Product slug: ${input.ProductSlug}`);
 	
 	// Get the base URL for links
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 	console.log(`📧 [CONFIG] Base URL: ${baseUrl}`);
 	
 	// Normalize the slug and construct the product URL
@@ -182,87 +188,23 @@ const sendFreeChaptersEmail = async (
 	
 	// Extract preview content from the actual product
 	console.log(`📧 [PROCESS] Starting content extraction...`);
-	const result = await extractPreviewContent(normalizedSlug);
-	
-	// Initialize variables for preview content and metadata
-	let previewContent = '';
-	let metadata = null;
-	
-	if (!result) {
-		console.log(`📧 [WARN] No preview content extracted. Will send email without preview.`);
-	} else {
-		previewContent = result.previewContent;
-		metadata = result.metadata;
-		
-		if (!previewContent) {
-			console.log(`📧 [WARN] No preview content extracted. Will send email without preview.`);
-		} else {
-			console.log(`📧 [SUCCESS] Preview content extracted successfully. Length: ${previewContent.length} characters`);
-			console.log(`📧 [PREVIEW] First 100 characters: ${previewContent.substring(0, 100)}...`);
-		}
-		
-		if (!metadata) {
-			console.log(`📧 [WARN] No metadata found for product.`);
-		} else {
-			console.log(`📧 [INFO] Metadata found:`, JSON.stringify({
-				title: metadata.title,
-				description: metadata.description?.substring(0, 100) + '...',
-				commerce: metadata.commerce ? {
-					price: metadata.commerce.price,
-					hasPaywallBody: !!metadata.commerce.paywallBody,
-					previewLength: metadata.commerce.previewLength
-				} : null
-			}, null, 2));
-		}
-	}
-	
-	// Prepare content for the email
-	console.log(`📧 [PROCESS] Preparing email content...`);
-	let previewHtml = '';
-	let previewText = '';
-	
-	// Get product details for the email - using the same price formatting as Paywall.tsx
-	// Fix: Don't divide the price again, it's already in cents
-	const price = metadata?.commerce?.price || 0;
-	const formattedPrice = price > 0 ? `$${(price / 100).toFixed(2)}` : 'Free';
-	const title = metadata?.title || input.ProductName;
-	
-	// Use the preview content from our extraction function
-	// This is now a string, not a React element
-	const description = previewContent || metadata?.description || 'No preview available.';
-	
-	console.log(`📧 [INFO] Using price: ${formattedPrice}`);
-	console.log(`📧 [INFO] Using title: ${title}`);
-	console.log(`📧 [INFO] Description length: ${description.length} characters`);
-	
-	// Create a cleaner, more professional preview section
-	if (previewContent) {
-		console.log(`📧 [PROCESS] Formatting preview content for HTML and text...`);
-		console.log(`📧 [DEBUG] Raw preview content (first 200 chars): "${previewContent.substring(0, 200)}..."`);
-		
-		// The previewContent is already HTML, so we don't need to escape it
-		// We just need to wrap it in our email-friendly container
-		previewHtml = `
-			<div style="background-color: #f8f9fa; padding: 24px; border-radius: 8px; margin: 24px 0; border: 1px solid #e9ecef;">
-				<div style="color: #212529; line-height: 1.6; margin-bottom: 16px; font-size: 16px;">
-					${previewContent}
-				</div>
-				<p style="font-style: italic; color: #6c757d; margin-bottom: 0;">Continue reading for the full content.</p>
-			</div>
-		`;
-		
-		// For the text version, we need to strip HTML tags
-		const textContent = previewContent.replace(/<[^>]*>?/gm, '');
-		previewText = `
-${textContent}
 
-Continue reading for the full content.
-		`;
-		
-		console.log(`📧 [DEBUG] Generated previewHtml (first 200 chars): "${previewHtml.substring(0, 200)}..."`);
-		console.log(`📧 [DEBUG] Generated previewText (first 200 chars): "${previewText.substring(0, 200)}..."`);
+	const result = await extractPreviewContent(normalizedSlug);
+
+	if (!result) {
+		console.log(`📧 [WARN] No content found for slug: ${input.ProductSlug}`);
+		return null;
 	}
+
+	const { previewContent, metadata } = result;
+
+	console.log(`📧 [DEBUG] Result extracted content length: ${previewContent.length} characters`);
 	
+	// Get the title
+	const title = typeof metadata.title === 'string' 
+		? metadata.title 
+		: (metadata.title as any)?.default || 'Untitled';
+		
 	console.log(`📧 [PROCESS] Building email data...`);
 	const emailData = {
 		From: "newsletter@zackproser.com",
@@ -277,18 +219,7 @@ Continue reading for the full content.
 				<title>Your Preview</title>
 			</head>
 			<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-				<div style="margin-bottom: 24px;">
-					<h1 style="color: #333; margin-bottom: 8px; font-size: 24px;">${title}</h1>
-					${!previewContent && metadata?.description ? `<p style="color: #555; font-size: 16px;">${metadata.description}</p>` : ''}
-				</div>
-				
-				${previewHtml || '<p style="color: #6c757d;">Preview content is not available at this time.</p>'}
-				
-				<div style="margin: 24px 0;">
-					<a href="${productUrl}" style="display: inline-block; background-color: #0d6efd; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 16px;">
-						${price > 0 ? `Read Full Article (${formattedPrice})` : 'Read Full Article'}
-					</a>
-				</div>
+				${previewContent}
 				
 				<div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e9ecef; font-size: 12px; color: #6c757d;">
 					<p>You're receiving this email because you requested a preview from Zachary Proser.</p>
@@ -298,11 +229,8 @@ Continue reading for the full content.
 		`,
 		TextBody: `
 ${title}
-${!previewText && metadata?.description ? `\n${metadata.description}` : ''}
 
-${previewText || 'Preview content is not available at this time.'}
-
-${price > 0 ? `Read Full Article (${formattedPrice}): ${productUrl}` : `Read Full Article: ${productUrl}`}
+To view the free preview, please visit: ${productUrl}
 
 You're receiving this email because you requested a preview from Zachary Proser.
 		`,
@@ -310,16 +238,7 @@ You're receiving this email because you requested a preview from Zachary Proser.
 	};
 	
 	// Log the final HTML content for debugging
-	console.log(`📧 [DEBUG] Final email HTML content:`);
-	console.log('----------------------------------------');
-	console.log(emailData.HtmlBody);
-	console.log('----------------------------------------');
-	
-	// Log the preview HTML section specifically
-	console.log(`📧 [DEBUG] Preview HTML section:`);
-	console.log('----------------------------------------');
-	console.log(previewHtml || '<p style="color: #6c757d;">Preview content is not available at this time.</p>');
-	console.log('----------------------------------------');
+	console.log(`📧 [DEBUG] Final email HTML content length: ${emailData.HtmlBody.length} characters`);
 	
 	try {
 		console.log(`📧 [SEND] Preparing to send email via Postmark:`, JSON.stringify({
@@ -330,13 +249,6 @@ You're receiving this email because you requested a preview from Zachary Proser.
 			TextBodyLength: emailData.TextBody.length,
 			MessageStream: emailData.MessageStream
 		}, null, 2));
-		
-		// Log the complete email data structure (excluding the actual body content for brevity)
-		console.log(`📧 [DEBUG] Complete email data structure:`, {
-			...emailData,
-			HtmlBody: `[${emailData.HtmlBody.length} characters]`,
-			TextBody: `[${emailData.TextBody.length} characters]`
-		});
 		
 		console.log(`📧 [SEND] Calling Postmark client.sendEmail()...`);
 		const response = await client.sendEmail(emailData);
