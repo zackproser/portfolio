@@ -116,10 +116,30 @@ function CheckoutResultContent() {
     try {
       setIsLoggingIn(true);
       
+      // Use environment variable for base URL
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+      
+      // Remove trailing slash from baseUrl if present
+      if (baseUrl.endsWith('/')) {
+        baseUrl = baseUrl.slice(0, -1);
+      }
+      
+      // Ensure the URL is absolute
+      let absoluteUrl;
+      if (contentUrl.startsWith('http')) {
+        absoluteUrl = contentUrl;
+      } else if (baseUrl) {
+        // If we have a base URL from env, use it
+        absoluteUrl = `${baseUrl}${contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`}`;
+      } else {
+        // Fallback to a simple path if no base URL is available
+        absoluteUrl = contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`;
+      }
+      
       // First, trigger the email sign-in process
       await signIn("email", { 
         email, 
-        callbackUrl: contentUrl,
+        callbackUrl: absoluteUrl,
       });
       
     } catch (error) {

@@ -100,12 +100,21 @@ export async function POST(req: Request) {
         const contentType = type === 'article' || type === 'blog' ? 'article' : type
         const contentSlug = slug
         
+        console.log('🎯 PURCHASE DEBUG - Purchase details:', { 
+          userId: user?.id || null,
+          contentType,
+          type,
+          contentSlug,
+          email,
+          sessionId: session.id
+        })
+        
         // Record the purchase in the database
-        await prisma.purchase.upsert({
+        const result = await prisma.purchase.upsert({
           where: {
             userId_contentType_contentSlug: {
               userId: user?.id || '',
-              contentType: type,
+              contentType,
               contentSlug
             }
           },
@@ -117,7 +126,7 @@ export async function POST(req: Request) {
           },
           create: {
             userId: user?.id || null,
-            contentType: type,
+            contentType,
             contentSlug,
             purchaseDate: new Date(),
             stripePaymentId: session.id,
@@ -125,6 +134,8 @@ export async function POST(req: Request) {
             email: email // Always include the email
           }
         })
+        
+        console.log('🎯 PURCHASE DEBUG - Purchase record result:', result)
         
         // Course enrollments are disabled
         // If it's a course and we have a user, also record in courseenrollments
@@ -135,7 +146,8 @@ export async function POST(req: Request) {
         
         console.log('✅ Purchase recorded successfully')
       } catch (dbError) {
-        console.error('🔴 Failed to record purchase:', dbError instanceof Error ? dbError.message : String(dbError));
+        console.error('🔴 PURCHASE DEBUG - Failed to record purchase:', dbError instanceof Error ? dbError.message : String(dbError));
+        console.error('🔴 PURCHASE DEBUG - Error details:', dbError);
         // Don't throw the error, just log it and continue
         // This allows the webhook to complete even if there's an issue with recording the purchase
       }

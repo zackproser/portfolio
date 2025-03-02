@@ -18,10 +18,6 @@ export default function SignInPage(
 
   const finalCallbackUrl = callbackUrl || '/';
 
-  const handleGitHubSignIn = () => {
-    signIn("github", { callbackUrl: finalCallbackUrl });
-  };
-
   const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -37,27 +33,7 @@ export default function SignInPage(
           <p className="text-center text-gray-500 dark:text-gray-400">
             Sign in to your account to purchase or use courses on zackproser.com.
           </p>
-          <p className="text-center text-gray-500 dark:text-gray-400">
-            Already have a GitHub account? Use that - otherwise, you can sign-in using your email.
-          </p>
           <div className="space-y-4">
-            <button
-              onClick={handleGitHubSignIn}
-              className="w-full py-2 px-4 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
-            >
-              <ProviderIcon provider="GitHub" className="mr-2 h-4 w-4" />
-              Sign in with GitHub
-            </button>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                  Or continue with
-                </span>
-              </div>
-            </div>
             <form onSubmit={handleEmailSignIn}>
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
