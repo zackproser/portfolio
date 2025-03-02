@@ -3,7 +3,7 @@ import { Container } from '@/components/Container'
 import { redirect } from 'next/navigation'
 import { auth } from '../../../../../auth'
 import { getProductDetails, ProductDetails } from '@/utils/productUtils'
-import { userPurchasedCourse } from '@/lib/queries'
+import { hasUserPurchased } from '@/lib/purchases'
 import fs from 'fs'
 import path from 'path'
 
@@ -95,7 +95,27 @@ async function getSegmentContent(course: string, segment: string) {
   }
 }
 
+/**
+ * Check if a user has purchased a specific course
+ * @param userEmail The user's email
+ * @param courseId The course ID
+ * @returns Whether the user has purchased the course
+ */
+async function userPurchasedCourse(userEmail: string, courseId: number): Promise<boolean> {
+  try {
+    // Use the hasUserPurchased function to check if the user has purchased the course
+    return await hasUserPurchased('course', courseId.toString(), userEmail);
+  } catch (error) {
+    console.error('Error checking if user purchased course:', error);
+    return false;
+  }
+}
+
 export default async function Page(props: PageProps) {
+  // Courses are disabled, redirect to a message page
+  redirect('/courses-disabled');
+
+  // The code below will not execute due to the redirect above
   const params = await props.params;
   const session = await auth();
 
@@ -106,7 +126,8 @@ export default async function Page(props: PageProps) {
 
   const { course, segment } = params;
 
-  const userEmail = session.user.email as unknown as string
+  // TypeScript knows session is not null here because of the check above
+  const userEmail = session?.user?.email as string;
 
   // Determine if user has bought the course they are trying to access 
   // If they have not, redirect them to to the checkout page for that product
@@ -119,8 +140,11 @@ export default async function Page(props: PageProps) {
     redirect('/not-found')
   }
 
+  // At this point, productDetails is guaranteed to be non-null
+  const productDetailsNonNull = productDetails as ProductDetails;
+
   // If the user is requesting a course they didn't purchase, redirect them to buy it 
-  const userDidPurchase = await userPurchasedCourse(userEmail, Number(productDetails.course_id));
+  const userDidPurchase = await userPurchasedCourse(userEmail, Number(productDetailsNonNull.course_id));
 
   if (!userDidPurchase) {
     redirect(`/checkout?product=${course}`)
