@@ -33,7 +33,7 @@ function CheckoutResultContent() {
   const { data: authSession, status: authStatus } = useSession();
 
   // Function to get the content URL based on content type
-  const getContentUrl = (content: Blog) => {
+  const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
     // Remove any leading slashes and content type prefixes from the slug
     const cleanSlug = content.slug.replace(/^\/+/, '').replace(/^(blog|learn\/courses)\//, '');
     
@@ -58,8 +58,8 @@ function CheckoutResultContent() {
         url = `/${content.type}/${cleanSlug}`;
     }
     
-    // Remove leading slash for Next.js Link component
-    return url.startsWith('/') ? url.substring(1) : url;
+    // Remove leading slash for Next.js Link component if needed
+    return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
   };
 
   useEffect(() => {
@@ -101,8 +101,15 @@ function CheckoutResultContent() {
           ],
         });
 
-        // If user is not authenticated, we'll show them a button to sign in
-        // rather than trying to auto-login
+        // If user is already authenticated, redirect them directly to the content
+        if (authStatus === 'authenticated') {
+          const contentUrl = getContentUrl(data.content, true);
+          // Add a small delay to ensure the GTM event is sent
+          setTimeout(() => {
+            router.push(contentUrl);
+          }, 500);
+        }
+        // Otherwise, we'll show them a button to sign in
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       }
@@ -224,7 +231,7 @@ function CheckoutResultContent() {
           {authStatus === 'unauthenticated' && (
             <span className="ml-2">
               <button
-                onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
+                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
                 className="text-blue-600 underline hover:text-blue-800"
               >
                 Log in to access your content
@@ -239,14 +246,14 @@ function CheckoutResultContent() {
             <div className="mt-4">
               {authStatus === 'authenticated' ? (
                 <Link
-                  href={contentUrl}
+                  href={`/${contentUrl}`}
                   className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   Read Now
                 </Link>
               ) : (
                 <button
-                  onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
+                  onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
                   className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   Sign in to Read
@@ -268,14 +275,14 @@ function CheckoutResultContent() {
             </p>
             {authStatus === 'authenticated' ? (
               <Link
-                href={contentUrl}
+                href={`/${contentUrl}`}
                 className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Start Learning
               </Link>
             ) : (
               <button
-                onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
+                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
                 className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Sign in to Start Learning
