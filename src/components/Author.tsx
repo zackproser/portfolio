@@ -71,7 +71,7 @@ export function Author({ name, bio }: AuthorProps) {
       aria-labelledby="author-title"
       className="relative scroll-mt-14 pb-3 pt-8 sm:scroll-mt-32 sm:pb-16 sm:pt-10 lg:pt-16"
     >
-      <div className="absolute inset-0 -z-10 bg-slate-50/50">
+      <div className="absolute inset-0 -z-10 bg-slate-50/50 dark:bg-slate-900/50">
       </div>
       <Container className="relative">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-6xl">
@@ -83,10 +83,10 @@ export function Author({ name, bio }: AuthorProps) {
               <RandomPortrait width={400} height={400} />
             </div>
             <div className="relative z-10 lg:order-1">
-              <h2 className="font-display text-4xl font-bold tracking-tight text-slate-900">
+              <h2 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Hi, I&apos;m {name}
               </h2>
-              <div className="mt-6 space-y-6 text-base text-slate-700">
+              <div className="mt-6 space-y-6 text-base text-slate-700 dark:text-slate-300">
                 <p>{bio || defaultBio}</p>
                 <div className="mt-8 flex flex-col space-y-5">
                   {experience.map((role, roleIndex) => (
