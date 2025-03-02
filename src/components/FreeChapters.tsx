@@ -121,7 +121,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
     <section
       id="free-chapters"
       aria-label="Free preview"
-      className="scroll-mt-14 bg-blue-600 sm:scroll-mt-32"
+      className="scroll-mt-14 bg-blue-600 sm:scroll-mt-32 dark:bg-blue-800"
     >
       <div className="overflow-hidden lg:relative">
         <Container
@@ -153,7 +153,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="lg:pl-16">
+            <form onSubmit={handleSubmit} className="w-full lg:pl-16">
               <h3 className="text-base font-medium tracking-tight text-white">
                 Get two free chapters straight to your inbox{' '}
                 <span aria-hidden="true">&rarr;</span>
