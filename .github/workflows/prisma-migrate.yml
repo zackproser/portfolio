@@ -1,0 +1,67 @@
+name: Prisma Migrate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prisma/schema.prisma'
+      - 'prisma/migrations/**'
+  workflow_dispatch:
+
+jobs:
+  migrate-database:
+    name: Migrate Database
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+      POSTGRES_PRISMA_URL: ${{ secrets.POSTGRES_PRISMA_URL }}
+      POSTGRES_URL_NON_POOLING: ${{ secrets.POSTGRES_URL_NON_POOLING }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+      DATABASE_URL: ${{ secrets.POSTGRES_URL_NON_POOLING }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Apply database migrations
+        run: |
+          echo "Running database migrations..."
+          npx prisma migrate deploy
+        
+      - name: Verify migrations
+        run: |
+          echo "Verifying database schema..."
+          npx prisma db pull --print
+
+  notify:
+    name: Notify on Migration Status
+    needs: migrate-database
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check migration status
+        if: ${{ needs.migrate-database.result == 'success' }}
+        run: echo "Database migrations completed successfully!"
+
+      - name: Notify on failure
+        if: ${{ needs.migrate-database.result != 'success' }}
+        run: |
+          echo "Database migrations failed!"
+          exit 1 
