@@ -23,6 +23,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# env file
+.env
+
 # local env files
 .env*.local
 
@@ -52,3 +55,12 @@ src/app/devtools/compare/*
 !src/app/devtools/compare/**/page.tsx
 !src/app/devtools/compare/**/page.jsx
 !src/app/devtools/compare/**/page.mdx
+
+# Ignore Prisma environment files
+prisma/.env
+
+# GitGuardian cache
+.cache_ggshield
+
+# Cursor rules
+.cursor/

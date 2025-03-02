@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
     // Redirect to the checkout page
     return NextResponse.json({ 
-      redirectUrl: `/checkout?product=blog-${slug}`
+      redirectUrl: `/checkout?product=${slug}&type=blog`
     })
   } catch (error) {
     console.error('Checkout session creation error:', error)

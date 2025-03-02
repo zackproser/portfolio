@@ -50,7 +50,8 @@ export default async function LearningHome() {
           What is the Zachary Proser School for Hackers?<br />
           <Button
             className="mt-4"
-            variant="green"
+            variant="solid"
+            color="green"
             href={`/learn/about`}
           >
             Learn more

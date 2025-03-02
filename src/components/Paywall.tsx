@@ -1,10 +1,11 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
-import { Button } from './Button'
 import { useRouter } from 'next/navigation'
-import Image, { StaticImageData } from 'next/image'
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import Image from 'next/image'
+import { StaticImageData } from 'next/image'
 
 interface PaywallProps {
   price: number
@@ -13,7 +14,7 @@ interface PaywallProps {
   paywallHeader?: string
   paywallBody?: string
   buttonText?: string
-  image?: StaticImageData | string
+  image?: string | StaticImageData
   imageAlt?: string
 }
 
@@ -32,14 +33,10 @@ export default function Paywall({
   const [loading, setLoading] = useState(false)
 
   const handlePurchase = async () => {
-    if (!session) {
-      router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`)
-      return
-    }
-
     setLoading(true)
     try {
-      router.push(`/checkout?product=blog-${slug}`)
+      // Redirect directly to checkout page - no sign-in required
+      router.push(`/checkout?product=${slug}&type=blog`)
     } catch (error) {
       console.error('Error:', error)
       alert('Failed to initiate checkout. Please try again.')

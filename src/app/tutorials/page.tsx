@@ -1,9 +1,9 @@
 import React from 'react'
-import { getAllArticles } from "@/lib/articles"
-import { getAllCourses } from "@/lib/courses"
-import { BlogPostCard } from '@/components/BlogPostCard'
+import { getAllContent } from "@/lib/content-handlers"
+import { ContentCard } from '@/components/ContentCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
+import { Content } from '@/types'
 
 export const metadata = createMetadata({
   title: 'Hands-On Project-Based Learning',
@@ -21,11 +21,21 @@ export default async function TutorialsPage() {
   ]
 
   try {
-    const allArticles = await getAllArticles()
-    const allCourses = await getAllCourses()
-
-    const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug))
-    const courses = allCourses.filter(course => courseSlugs.includes(course.slug))
+    // Use our new content system to get all content types
+    const allArticles = await getAllContent('blog')
+    
+    // Filter tutorials from blog posts
+    const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug.split('/').pop() || ''))
+    
+    // Try to get courses, but handle the case where they don't exist yet
+    let courses: Content[] = []
+    try {
+      const allCourses = await getAllContent('learn/courses')
+      courses = allCourses.filter(course => courseSlugs.includes(course.slug.split('/').pop() || ''))
+    } catch (courseError) {
+      console.warn('Could not load courses:', courseError)
+      // Continue without courses
+    }
 
     return (
       <Container className="mt-16 sm:mt-32">
@@ -45,9 +55,12 @@ export default async function TutorialsPage() {
                   Featured Tutorials
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                  {tutorials.map((article) => (
-                    <BlogPostCard key={article.slug} article={article} />
-                  ))}
+                  {tutorials.map((article, index) => {
+                    const uniqueKey = article._id || (article.slug ? `${article.slug}-${index}` : `tutorial-${index}`);
+                    return (
+                      <ContentCard key={uniqueKey} article={article} />
+                    );
+                  })}
                 </div>
               </section>
             </div>
@@ -60,9 +73,12 @@ export default async function TutorialsPage() {
                   Featured Courses
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-                  {courses.map((course) => (
-                    <BlogPostCard key={course.slug} article={course} />
-                  ))}
+                  {courses.map((course, index) => {
+                    const uniqueKey = course._id || (course.slug ? `${course.slug}-${index}` : `course-${index}`);
+                    return (
+                      <ContentCard key={uniqueKey} article={course} />
+                    );
+                  })}
                 </div>
               </section>
             </div>

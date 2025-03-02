@@ -1,7 +1,5 @@
 import { Feed } from 'feed'
-import { getAllArticles } from '@/lib/articles'
-import { getAllVideos } from '@/lib/videos'
-import { getAllCourses } from '@/lib/courses'
+import { getAllContent } from '@/lib/content-handlers'
 
 export async function GET() {
   let siteUrl = process.env.NEXT_PUBLIC_SITE_URL
@@ -30,9 +28,10 @@ export async function GET() {
     },
   })
 
-  let articles = await getAllArticles()
-  let videos = await getAllVideos()
-  let courses = await getAllCourses()
+  // Use our new content system to get all content types
+  let articles = await getAllContent('blog')
+  let videos = await getAllContent('videos')
+  let courses = await getAllContent('learn/courses')
 
   for (let article of articles) {
     let publicUrl = `${siteUrl}/blog/${article.slug}`

@@ -1,0 +1,266 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import dataDrivenPages from '@/images/nextjs-data-driven-website.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser", 
+    date: "2024-04-15",
+    title: "Building data-driven pages with Next.js",
+    description: "To effectively maintain richer and more complex web experiences, separate data from presentation.",
+    image: dataDrivenPages,
+});
+
+<Image src={dataDrivenPages} alt="Building data-driven pages with Next.js" />
+
+I've begun experimenting with building some of my blog posts - especially those that are heavy on data, tables, comparisons and multi-dimensional considerations - using scripts, JSON and home-brewed schemas. 
+
+## Table of contents
+
+## What are data-driven pages?
+
+I'm using this phrase to describe pages or experiences served up from your Next.js project that you **compile** rather than edit. 
+
+Whereas you might edit a static blog post to add new information, with a data-driven page you would update the data-source and then run the associated build process, resulting 
+in a web page you serve to your users.
+
+## Why build data driven pages?
+
+In short, data driven pages make it easier to maintain richer and more information-dense experiences on the web. 
+
+Here's a couple of reasons I like this pattern: 
+
+1. There is **more upfront work** to do than just writing a new MDX file for your next post, but once the build script is stable, it's much **quicker to iterate** (Boyd's Law)
+2.  By iterating on the core data model expressed in JSON, you can quickly add rich new features and visualizations to the page such as additional tables and charts
+3. If you have multiple subpages that all follow a similar pattern, such as side by side product review, running a script one time is a lot faster than making updates across multiple files
+4. You can hook your build scripts either into npm's `prebuild` hook, which runs before `npm run build` is executed, or to the `pnpm` build target, so that your data driven pages are freshly rebuilt with no additional effort on your part
+5. This pattern is a much more sane way to handle data that changes frequently or a set of data that has new members frequently. In other words, if you constantly have to add Product or Review X to your site, would you rather manually re-create HTML sections by hand or add a new object to your JSON?
+6. You can drive more than one experience from a single data source: think a landing page backed by several detail pages for products, reviews, job postings, etc.
+
+## How it works 
+
+### The data 
+
+I define my data as JSON and store it in the root of my project in a new folder. 
+
+For example, here's an object that defines GitHub's Copilot AI-assisted developer tool for my [giant AI-assisted dev tool comparison post](/blog/ai-assisted-dev-tools-compared): 
+
+```javascript
+
+"tools": [
+    {
+      "name": "GitHub Copilot",
+      "icon": "@/images/tools/github-copilot.svg",
+      "category": "Code Autocompletion",
+      "description": "GitHub Copilot is an AI-powered code completion tool that helps developers write code faster by providing intelligent suggestions based on the context of their code.",
+      "open_source": {
+        "client": false,
+        "backend": false,
+        "model": false
+      },
+      "ide_support": {
+        "vs_code": true,
+        "jetbrains": true,
+        "neovim": true,
+        "visual_studio": true,
+        "vim": false,
+        "emacs": false,
+        "intellij": true
+      },
+      "pricing": {
+        "model": "subscription",
+        "tiers": [
+          {
+            "name": "Individual",
+            "price": "$10 per month"
+          },
+          {
+            "name": "Team",
+            "price": "$100 per month"
+          }
+        ]
+      },
+      "free_tier": false,
+      "chat_interface": false,
+      "creator": "GitHub",
+      "language_support": {
+        "python": true,
+        "javascript": true,
+        "java": true,
+        "cpp": true
+      },
+      "supports_local_model": false,
+      "supports_offline_use": false,
+      "review_link": "/blog/github-copilot-review",
+      "homepage_link": "https://github.com/features/copilot"
+    },
+ ...
+ ]
+```
+
+As you can see, the JSON defines every property and value I need to render GitHub's Copilot in a comparison table or other visualization.
+
+### The script 
+
+The script's job is to iterate over the JSON data and produce the final post, complete with any visualizations, text, images or other content. 
+
+The full script is relatively long. You can [read the full script in version control](https://github.com/zackproser/portfolio/blob/main/scripts/create-ai-assisted-dev-tools-comparison-post.js), but in the next sections I'll highlight some of the more interesting parts.
+
+### Generating the Post Content
+
+One of the most important parts of the script is the `generatePostContent` function, which takes the categories and tools data and generates the full content of the blog post in markdown format. Here's a simplified version of that function:
+
+```javascript
+const generatePostContent = (categories, tools, existingDate) => {
+  const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
+
+  const toolTable = generateToolTable(tools);
+
+  const categorySections = categories.map((category) => {
+    return generateCategorySection(category);
+  }).join('\n');
+
+  const tableOfContents = categories.map((category) => {
+    // ... generate table of contents ...
+  }).join('\n');
+
+  return `
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import Link from 'next/link'
+import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
+
+export const metadata = createMetadata({
+  title: "The Giant List of AI-Assisted Developer Tools Compared and Reviewed",
+  author: "Zachary Proser",
+  date: "${dateToUse}",
+  description: "A comprehensive comparison and review of AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools.",
+  image: aiAssistedDevTools
+}
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
+
+## Introduction
+
+Here's a comprehensive comparison AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools. Reviews are linked when available.
+
+I recommend using the Table of Contents below to jump to the section you're most interested in. 
+
+At the top level, this page is separated by tool categories.Beneath each category is an aspect I find worthy of consideration for the category that tool is in. 
+
+Each aspect has a table displaying each tool and how it measures up in a direct feature for feature comparison.  
+
+This page will be updated regularly in the future, so please bookmark it, share it with friends and check back frequently for the latest information. 
+
+## Table of Contents
+
+## Tools and reviews
+
+${toolTable}
+
+${categorySections}
+
+## Remember to bookmark and share 
+
+This page will be updated regularly with new information, revisions and enhancements.Be sure to share it and check back frequently.
+`;
+};
+```
+
+This function generates the full markdown content of the blog post, including the metadata, introduction, table of contents, tool table, and category sections. 
+
+By breaking this out into a separate function, we can focus on the high-level structure of the post without getting bogged down in the details of how each section is generated.
+
+### Writing the Generated Page to a File
+
+Another key part of the script is the code that writes the generated page content to a file in the correct location. Here's what that looks like:
+
+```javascript
+
+const dir = path.join(process.env.PWD, `/src/app/blog/ai-assisted-dev-tools-compared`);
+const filename = `${dir}/page.mdx`;
+
+let existingDate = null;
+
+if (fs.existsSync(filename)) {
+  const existingContent = fs.readFileSync(filename, 'utf8');
+  existingDate = extractDateFromContent(existingContent);
+}
+
+const content = generatePostContent(categories, tools, existingDate);
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
+console.log(`Generated content for "The Giant List of AI-Assisted Developer Tools Compared and Reviewed" and wrote to ${filename}`);
+```
+
+This code does a few important things:
+
+1. It determines the correct directory and filename for the generated page based on the project structure.
+1. It checks if the file already exists and, if so, extracts the existing date from the page's metadata. This allows us to preserve the original publication date if we're regenerating the page.
+1. It generates the full page content using the `generatePostContent` function.
+1. It creates the directory if it doesn't already exist.
+1. It writes the generated content to the file.
+
+## Automating the Build Process with npm and pnpm
+
+One of the key benefits of using a script to generate data-driven pages is that we can automate the build process to ensure that the latest content is always available. 
+
+Let's take a closer look at how we can use npm and pnpm to run our script automatically before each build.
+
+### Using npm run prebuild
+
+In the package.json file for our Next.js project, we can define a "prebuild" script that will run automatically before the main "build" script:
+
+```json
+{
+  "scripts": {
+    "prebuild": "node scripts/create-ai-assisted-dev-tools-comparison-post.js",
+    "build": "next build",
+    ...
+  }
+}
+```
+
+With this setup, whenever we run `npm run build` to build our Next.js project, the prebuild script will run first, executing our page generation script and ensuring that the latest content is available.
+Using pnpm build
+
+If you're using pnpm instead of npm, then the concept of a "prebuild" script no longer applies, unless you enable the `enable-pre-post-scripts` option in your `.npmrc` file as [noted here](https://pnpm.io/cli/run#enable-pre-post-scripts).
+
+If you decline setting this option, but still need your prebuild step to work across `npm` and `pnpm`, then you can do something gross like this: 
+
+```json
+{
+  "scripts": {
+    "prebuild": "node scripts/create-ai-assisted-dev-tools-comparison-post.js",
+    "build": "npm run prebuild && next build",
+    ...
+  }
+}
+```
+
+### Why automation matters
+
+By automating the process of generating our data-driven pages as part of the build process, we can ensure that the latest content is always available to our users. This is especially important if our data is changing frequently, or if we're adding new tools or categories on a regular basis.
+
+With this approach, we don't have to remember to run the script manually before each build - it happens automatically as part of the standard build process. This saves time and reduces the risk of forgetting to update the content before deploying a new version of the site.
+
+Additionally, by generating the page content at build time rather than at runtime, we can improve the performance of our site by serving static HTML instead of dynamically generating the page on each request. This can be especially important for larger or more complex sites where performance is a key concern.
+
+## Key Takeaways
+
+While the full script is quite long and complex, breaking it down into logical sections helps us focus on the key takeaways:
+
+1. Generating data-driven pages with Next.js allows us to create rich, informative content that is easy to update and maintain over time.
+1. By separating the data (in this case, the categories and tools) from the presentation logic, we can create a flexible and reusable system for generating pages based on that data.
+1. Using a script to generate the page content allows us to focus on the high-level structure and layout of the page, while still providing the ability to customize and tweak individual sections as needed.
+1. By automating the process of generating and saving the page content, we can save time and reduce the risk of errors or inconsistencies.
+
+While the initial setup and scripting can be complex, the benefits in terms of time savings, consistency, and maintainability are well worth the effort.

@@ -3,6 +3,7 @@ import path from 'path';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const baseDir = 'src/app';
+const contentDir = 'src/content';
 const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons'];
 const excludeDirs = ['api', 'rss'];
 const excludeFiles = ['[name]'];
@@ -13,6 +14,7 @@ const dynamicDetailDirs = [
 
 function getRoutes() {
   const fullPath = path.join(process.cwd(), baseDir);
+  const contentPath = path.join(process.cwd(), contentDir);
   let routes = new Set(); // Use a Set to store unique routes
 
   function addRoutesRecursively(currentPath, relativePath = '') {
@@ -48,6 +50,27 @@ function getRoutes() {
     }
   });
 
+  // Add routes for content in the new content directory structure
+  dynamicDirs.forEach(dir => {
+    const contentTypeDir = path.join(contentPath, dir);
+    
+    // Skip if the directory doesn't exist
+    if (!fs.existsSync(contentTypeDir)) return;
+    
+    // Get all subdirectories (slugs) in the content type directory
+    const slugs = fs.readdirSync(contentTypeDir, { withFileTypes: true })
+      .filter(item => item.isDirectory())
+      .map(item => item.name);
+    
+    // Add a route for each slug
+    slugs.forEach(slug => {
+      // Check if the directory contains a page.mdx file
+      const mdxPath = path.join(contentTypeDir, slug, 'page.mdx');
+      if (fs.existsSync(mdxPath)) {
+        routes.add(`/${dir}/${slug}`);
+      }
+    });
+  });
 
   // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
   dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {

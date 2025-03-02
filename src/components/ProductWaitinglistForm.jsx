@@ -105,7 +105,7 @@ export const ProductWaitinglistForm = ({
 					value={email}
 					onChange={handleEmailChange}
 				/>
-				<Button variant="green" type="submit" className="w-3/12 ml-4 flex-none">
+				<Button variant="solid" color="green" type="submit" className="w-3/12 ml-4 flex-none">
 					Count me in
 				</Button>
 			</div>

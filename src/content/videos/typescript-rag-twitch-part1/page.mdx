@@ -1,0 +1,30 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import ragPart1 from '@/images/typescript-rag-livestream-part1.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-08-10",
+  title: "Live code review: Pinecone Vercel starter template and Retrieval Augmented Generation (RAG) Part #1",
+  description: "Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
+  image: ragPart1
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/pPbTzgUV-UA" 
+  title="YouTube video player" 
+  frameBorder="0" 
+  allow="fullscreen;">
+</iframe>
+
+Join Roie Schwaber-Cohen and me for a deep dive into The Pinecone Vercel starter template that deploys an AI chatbot that is less likely to hallucinate thanks to Retrieval Augmented Generation (RAG). 
+
+This is an excellent video to watch if you are learning about Generative AI, want to build a chatbot, or are having difficulty getting your current AI chatbots to return factual answers about specific topics and your proprietary data. You don't need to already be an AI pro to watch this video, because we start off by explaining what RAG is and why it's such an important technique for building Generative AI applications that are less likely to hallucinate.
+
+The majority of this content was originally captured as a live Twitch.tv stream co-hosted by Roie (rschwabco) and myself (zackproser). Be sure to follow us on Twitch for more Generative AI deep dives, tutorials, live demos, and conversations about the rapidly developing world of Artificial Intelligence.
+

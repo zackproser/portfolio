@@ -11,6 +11,7 @@ import {
 	EmbeddedCheckoutProvider,
 	EmbeddedCheckout
 } from "@stripe/react-stripe-js";
+import { Button } from "@/components/ui/button";
 
 // Initialize Stripe outside component to avoid re-initialization
 const stripePromise = loadStripe(
@@ -29,28 +30,14 @@ const CheckoutPage = () => {
 	const [error, setError] = useState("");
 	const [productTitle, setProductTitle] = useState("");
 	const [productStatus, setProductStatus] = useState("");
-	const [userEmail, setUserEmail] = useState("");
-	const [productId, setProductId] = useState<number | null>(0);
-	const [purchasedCourses, setPurchasedCourses] = useState<number[]>([]);
-
-	useEffect(() => {
-		// If user is signed in, get their email and purchased courses
-		if (session?.user?.email) {
-			setUserEmail(session.user.email);
-			const courses = (session.user as any).purchased_courses;
-			if (Array.isArray(courses) && courses.every((item) => typeof item === "number")) {
-				setPurchasedCourses(courses);
-			} else {
-				console.error("purchased_courses is not an array of numbers");
-			}
-		}
-	}, [session]);
 
 	// Product validity check: ensure product is available for sale
 	useEffect(() => {
 		if (!productSlug) return;
 
-		fetch(`/api/products?product=${productSlug}`, {
+		const type = searchParams.get('type') || 'blog';
+		
+		fetch(`/api/products?product=${productSlug}&type=${type}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -63,14 +50,7 @@ const CheckoutPage = () => {
 				setProductTitle(title);
 				setProductStatus(status);
 			});
-	}, [productSlug]);
-
-	// If user is not signed in, redirect them to sign in page
-	useEffect(() => {
-		if (status === "unauthenticated" || session === null) {
-			signIn('', { callbackUrl: `/learn/${productSlug}/0` })
-		}
-	}, [productSlug, status, session]);
+	}, [productSlug, searchParams]);
 
 	// If the product is not ready yet, redirect them to the waitinglist page
 	if (
@@ -78,21 +58,23 @@ const CheckoutPage = () => {
 		productStatus === CourseStatus.ComingSoon
 	) {
 		redirect(
-			`/waitinglist?product=${productSlug}&productName=${productTitle}&email=${userEmail}`,
+			`/waitinglist?product=${productSlug}&productName=${productTitle}`,
 		);
 	}
 
-	// Fetch client secret if logged in and product specified
+	// Fetch client secret immediately - no email required
 	useEffect(() => {
-		if (!productSlug || !session?.user?.email) return;
+		if (!productSlug) return;
 
 		setLoading(true);
 		setError("");
 
-		const isArticle = productSlug.startsWith('blog-');
+		const type = searchParams.get('type') || 'blog';
 		const payload = {
-			slug: isArticle ? productSlug.replace('blog-', '') : productSlug,
-			type: isArticle ? 'article' : 'course'
+			slug: productSlug,
+			type,
+			// Include email if available from session, but don't require it
+			...(session?.user?.email && { email: session.user.email })
 		};
 
 		fetch("/api/checkout-sessions", {
@@ -119,7 +101,7 @@ const CheckoutPage = () => {
 				setError(err.message || "Failed to initialize checkout");
 				setLoading(false);
 			});
-	}, [productSlug, session]);
+	}, [productSlug, session, searchParams]);
 
 	if (error) {
 		return (
@@ -148,8 +130,8 @@ const CheckoutPage = () => {
 	}
 
 	return (
-		<Container className="mt-16 sm:mt-32">
-			<div id="checkout" className="bg-zinc-50 dark:bg-black min-h-[500px] p-4 rounded-lg">
+		<Container className="mt-16 sm:mt-32" size="lg">
+			<div id="checkout" className="bg-zinc-50 dark:bg-black min-h-[500px] p-4 rounded-lg w-full">
 				{clientSecret ? (
 					<EmbeddedCheckoutProvider
 						stripe={stripePromise}

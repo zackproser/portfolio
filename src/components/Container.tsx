@@ -1,39 +1,16 @@
-import { forwardRef } from 'react'
 import clsx from 'clsx'
 
-export const ContainerOuter = forwardRef<
-  React.ElementRef<'div'>,
-  React.ComponentPropsWithoutRef<'div'>
->(function OuterContainer({ className, children, ...props }, ref) {
-  return (
-    <div ref={ref} className={clsx('sm:px-8', className)} {...props}>
-      <div className="mx-auto w-full max-w-7xl lg:px-8">{children}</div>
-    </div>
-  )
-})
+const styles = {
+  xs: 'mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-2',
+  sm: 'mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:max-w-4xl lg:px-12',
+  md: 'mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:max-w-5xl lg:px-8',
+  lg: 'mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:max-w-7xl lg:px-8',
+}
 
-export const ContainerInner = forwardRef<
-  React.ElementRef<'div'>,
-  React.ComponentPropsWithoutRef<'div'>
->(function InnerContainer({ className, children, ...props }, ref) {
-  return (
-    <div
-      ref={ref}
-      className={clsx('relative px-4 sm:px-8 lg:px-12', className)}
-      {...props}
-    >
-      <div className="mx-auto max-w-6xl">{children}</div>
-    </div>
-  )
-})
-
-export const Container = forwardRef<
-  React.ElementRef<typeof ContainerOuter>,
-  React.ComponentPropsWithoutRef<typeof ContainerOuter>
->(function Container({ children, ...props }, ref) {
-  return (
-    <ContainerOuter ref={ref} {...props}>
-      <ContainerInner>{children}</ContainerInner>
-    </ContainerOuter>
-  )
-})
+export function Container({
+  size = 'sm',
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<'div'> & { size?: keyof typeof styles }) {
+  return <div className={clsx(styles[size], className)} {...props} />
+}

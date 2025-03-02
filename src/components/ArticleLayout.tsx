@@ -1,30 +1,19 @@
+'use client'
+
 import { Container } from '@/components/Container'
 import { Prose } from '@/components/Prose'
 import GiscusWrapper from '@/components/GiscusWrapper'
 import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
-import ArticleContent from './ArticleContent'
+import { ExtendedMetadata } from '@/types'
 import MiniPaywall from './MiniPaywall'
-import { StaticImageData } from 'next/image'
+import { useSession } from 'next-auth/react'
+import { useState, useEffect } from 'react'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
-  metadata: {
-    title: string
-    description: string
-    author: string
-    date: string
-    isPaid?: boolean
-    price?: number
-    slug?: string
-    previewLength?: number
-    previewElements?: number
-    paywallHeader?: string
-    paywallBody?: string
-    buttonText?: string
-    paywallImage?: string | StaticImageData
-    paywallImageAlt?: string
+  metadata: ExtendedMetadata & {
     hideMiniPaywall?: boolean
     miniPaywallTitle?: string | null
     miniPaywallDescription?: string | null
@@ -35,15 +24,83 @@ export function ArticleLayout({
   children,
   metadata,
 }: ArticleLayoutProps) {
+  const { data: session } = useSession()
+  const [hasPurchased, setHasPurchased] = useState(false)
+
+  // Add a debug log to help identify which articles are missing slugs
+  if (!metadata.slug || metadata.slug === '') {
+    // Instead of just logging an error, log more details to help debug
+    console.warn('ArticleLayout: metadata missing slug', { 
+      title: metadata.title, 
+      type: metadata.type,
+      date: metadata.date
+    });
+  }
+
+  // Ensure we have string values for required fields
+  const safeSlug = metadata.slug || '';
+  const safeTitle = metadata.title as string || 'Untitled';
+  const safeType = metadata.type || 'blog';
+
+  // Check if the user has purchased the content
+  useEffect(() => {
+    const checkPurchaseStatus = async () => {
+      if (!metadata.commerce?.isPaid || !safeSlug) return;
+      
+      try {
+        // If user is signed in, use their email
+        const email = session?.user?.email;
+        
+        // Always include the email parameter if available
+        const url = email 
+          ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
+          : `/api/check-purchase?slug=${safeSlug}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setHasPurchased(data.purchased);
+      } catch (error) {
+        console.error('Error checking purchase status:', error);
+        setHasPurchased(false);
+      }
+    };
+
+    checkPurchaseStatus();
+  }, [session, safeSlug, metadata.commerce?.isPaid]);
+
+  // Determine if we should show the mini paywall
+  const shouldShowMiniPaywall = 
+    metadata.commerce?.isPaid && 
+    !metadata.hideMiniPaywall && 
+    !hasPurchased && 
+    (metadata.miniPaywallTitle || metadata.commerce.miniPaywallTitle) &&
+    (metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription);
+
   return (
     <>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-2xl">
+            {shouldShowMiniPaywall && (
+              <MiniPaywall
+                price={metadata.commerce?.price || 0}
+                slug={safeSlug}
+                title={safeTitle}
+                type={safeType}
+                miniTitle={metadata.miniPaywallTitle || metadata.commerce?.miniPaywallTitle || null}
+                miniDescription={metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription || null}
+                image={typeof metadata.image === 'object' && 'src' in metadata.image ? metadata.image.src : metadata.image}
+              />
+            )}
             <article>
               <header className="flex flex-col">
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                  {metadata.title}
+                  {safeTitle}
                 </h1>
                 <time
                   dateTime={metadata.date}
@@ -54,34 +111,8 @@ export function ArticleLayout({
                 </time>
               </header>
               
-              {metadata.isPaid && !metadata.hideMiniPaywall && (
-                <MiniPaywall
-                  price={metadata.price!}
-                  slug={metadata.slug!}
-                  title={metadata.title}
-                  image={metadata.paywallImage}
-                  imageAlt={metadata.paywallImageAlt}
-                  miniTitle={metadata.miniPaywallTitle ?? metadata.paywallHeader ?? null}
-                  miniDescription={metadata.miniPaywallDescription ?? null}
-                />
-              )}
-
               <Prose className="mt-8">
-                <ArticleContent
-                  isPaid={metadata.isPaid}
-                  price={metadata.price}
-                  slug={metadata.slug}
-                  title={metadata.title}
-                  previewLength={metadata.previewLength}
-                  previewElements={metadata.previewElements}
-                  paywallHeader={metadata.paywallHeader}
-                  paywallBody={metadata.paywallBody}
-                  buttonText={metadata.buttonText}
-                  paywallImage={metadata.paywallImage}
-                  paywallImageAlt={metadata.paywallImageAlt}
-                >
-                  {children}
-                </ArticleContent>
+                {children}
               </Prose>
             </article>
             <NewsletterWrapper 

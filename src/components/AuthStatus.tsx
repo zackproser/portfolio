@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { UsersIcon } from './icons'
+import { UsersIcon, MailIcon } from './icons.jsx'
 
 export function AuthStatus() {
   const { data: session, status } = useSession()
@@ -43,7 +43,9 @@ export function AuthStatus() {
               className="rounded-full"
             />
           ) : (
-            <UsersIcon className="h-5 w-5 text-white" />
+            <div className="bg-blue-600 rounded-full p-1">
+              <MailIcon className="h-5 w-5 text-white" />
+            </div>
           )}
         </Button>
       </DropdownMenuTrigger>
@@ -51,11 +53,9 @@ export function AuthStatus() {
         <div className="px-2 py-1.5 text-sm">
           <div className="font-medium text-gray-900 dark:text-white">Signed in as</div>
           <div className="text-gray-500 dark:text-gray-400">{session?.user?.email}</div>
-          {session?.user?.provider && (
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              via {session.user.provider}
-            </div>
-          )}
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            via Email
+          </div>
         </div>
         <DropdownMenuItem asChild>
           <Button 
