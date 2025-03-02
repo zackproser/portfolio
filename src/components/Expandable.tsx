@@ -59,7 +59,7 @@ export function ExpandableButton({ children }: { children: React.ReactNode }) {
       <div className="mt-10 flex justify-center">
         <button
           type="button"
-          className="flex items-center text-base font-medium tracking-tight text-slate-900 hover:text-slate-700"
+          className="flex items-center text-base font-medium tracking-tight text-slate-900 hover:text-slate-700 dark:text-white dark:hover:text-slate-300"
           onClick={expand}
         >
           {children}

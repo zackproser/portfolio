@@ -100,18 +100,18 @@ export function NavBar() {
               className={clsx(
                 'relative flex items-center px-4 py-3',
                 !open &&
-                  'bg-white/95 shadow-sm [@supports(backdrop-filter:blur(0))]:bg-white/80 [@supports(backdrop-filter:blur(0))]:backdrop-blur',
+                  'bg-white/95 shadow-sm [@supports(backdrop-filter:blur(0))]:bg-white/80 [@supports(backdrop-filter:blur(0))]:backdrop-blur dark:bg-slate-900/95 dark:[@supports(backdrop-filter:blur(0))]:bg-slate-900/80',
               )}
             >
               {!open && (
                 <>
                   <span
                     aria-hidden="true"
-                    className="font-mono text-sm text-blue-600"
+                    className="font-mono text-sm text-blue-600 dark:text-blue-400"
                   >
                     {(mobileActiveIndex + 1).toString().padStart(2, '0')}
                   </span>
-                  <span className="ml-4 text-base font-medium text-slate-900">
+                  <span className="ml-4 text-base font-medium text-slate-900 dark:text-white">
                     {sections[mobileActiveIndex].title}
                   </span>
                 </>
@@ -123,10 +123,10 @@ export function NavBar() {
                 )}
                 aria-label="Toggle navigation menu"
               >
-                <MenuIcon open={open} className="h-6 w-6 stroke-slate-700" />
+                <MenuIcon open={open} className="h-6 w-6 stroke-slate-700 dark:stroke-slate-300" />
               </Popover.Button>
             </div>
-            <Popover.Panel className="absolute inset-x-0 top-0 bg-white/95 py-3.5 shadow-sm [@supports(backdrop-filter:blur(0))]:bg-white/80 [@supports(backdrop-filter:blur(0))]:backdrop-blur-sm">
+            <Popover.Panel className="absolute inset-x-0 top-0 bg-white/95 py-3.5 shadow-sm [@supports(backdrop-filter:blur(0))]:bg-white/80 [@supports(backdrop-filter:blur(0))]:backdrop-blur-sm dark:bg-slate-900/95 dark:[@supports(backdrop-filter:blur(0))]:bg-slate-900/80">
               {sections.map((section, sectionIndex) => (
                 <Popover.Button
                   as="a"
@@ -136,34 +136,34 @@ export function NavBar() {
                 >
                   <span
                     aria-hidden="true"
-                    className="font-mono text-sm text-blue-600"
+                    className="font-mono text-sm text-blue-600 dark:text-blue-400"
                   >
                     {(sectionIndex + 1).toString().padStart(2, '0')}
                   </span>
-                  <span className="ml-4 text-base font-medium text-slate-900">
+                  <span className="ml-4 text-base font-medium text-slate-900 dark:text-white">
                     {section.title}
                   </span>
                 </Popover.Button>
               ))}
             </Popover.Panel>
-            <div className="absolute inset-x-0 bottom-full z-10 h-4 bg-white" />
+            <div className="absolute inset-x-0 bottom-full z-10 h-4 bg-white dark:bg-slate-900" />
           </>
         )}
       </Popover>
-      <div className="hidden sm:flex sm:h-32 sm:justify-center sm:border-b sm:border-slate-200 sm:bg-white/95 sm:[@supports(backdrop-filter:blur(0))]:bg-white/80 sm:[@supports(backdrop-filter:blur(0))]:backdrop-blur-sm">
+      <div className="hidden sm:flex sm:h-32 sm:justify-center sm:border-b sm:border-slate-200 sm:bg-white/95 sm:[@supports(backdrop-filter:blur(0))]:bg-white/80 sm:[@supports(backdrop-filter:blur(0))]:backdrop-blur-sm dark:sm:bg-slate-900/95 dark:sm:border-slate-800 dark:sm:[@supports(backdrop-filter:blur(0))]:bg-slate-900/80">
         <ol
           role="list"
-          className="mb-[-2px] grid auto-cols-[minmax(0,15rem)] grid-flow-col text-base font-medium text-slate-900 [counter-reset:section]"
+          className="mb-[-2px] grid auto-cols-[minmax(0,15rem)] grid-flow-col text-base font-medium text-slate-900 dark:text-white [counter-reset:section]"
         >
           {sections.map((section, sectionIndex) => (
             <li key={section.id} className="flex [counter-increment:section]">
               <a
                 href={`#${section.id}`}
                 className={clsx(
-                  'flex w-full flex-col items-center justify-center border-b-2 before:mb-2 before:font-mono before:text-sm before:content-[counter(section,decimal-leading-zero)]',
+                  'flex w-full flex-col items-center justify-center border-b-2 bg-transparent py-5 after:mt-2 after:font-mono after:text-sm after:content-[counter(section,decimal-leading-zero)]',
                   sectionIndex === activeIndex
-                    ? 'border-blue-600 bg-blue-50 text-blue-600 before:text-blue-600'
-                    : 'border-transparent before:text-slate-500 hover:bg-blue-50/40 hover:before:text-slate-900',
+                    ? 'border-blue-600 text-blue-600 after:text-blue-600 dark:border-blue-400 dark:text-blue-400 dark:after:text-blue-400'
+                    : 'border-transparent after:text-slate-500 hover:bg-blue-50/40 hover:after:text-slate-900 dark:after:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:after:text-slate-300'
                 )}
               >
                 {section.title}
