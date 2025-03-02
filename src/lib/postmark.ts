@@ -12,9 +12,6 @@ interface MessageSendingResponse {
 	MessageStream?: string;
 }
 
-// Remove the ReactDOMServer import as we won't use it for client components
-// const ReactDOMServer = (await import('react-dom/server')).default
-
 // Define the return type for extractPreviewContent
 interface PreviewContentResult {
 	previewContent: string;

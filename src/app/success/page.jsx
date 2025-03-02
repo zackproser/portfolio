@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
 import { redirect, useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 
 import { Container } from "@/components/Container";
 import PurchaseSuccess from "@/components/PurchaseSuccess";
@@ -36,6 +37,13 @@ function SuccessPage() {
 
 	useEffect(() => {
 		if (status === "paid" || status === "complete") {
+			// Track the purchase completion
+			track("purchase_completed", {
+				product_slug: productSlug,
+				session_id: sessionId,
+				status: status
+			});
+
 			fetch("/api/purchases", {
 				method: "POST",
 				headers: {
