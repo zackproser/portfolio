@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  url      = env("POSTGRES_URL")
 }
 
 model User {
@@ -20,6 +20,7 @@ model User {
   notifications  EmailNotification[]
   purchases      Purchase[]
   sessions       Session[]
+  freeChapterRequests FreeChapterRequest[]
 
   @@map("users")
 }
@@ -91,4 +92,20 @@ model EmailNotification {
   @@unique([userId, contentType, contentSlug, emailType])
   @@unique([email, contentType, contentSlug, emailType])
   @@map("email_notifications")
+}
+
+model FreeChapterRequest {
+  id            String    @id @default(cuid())
+  userId        String?   @map("user_id")
+  email         String
+  productSlug   String    @map("product_slug")
+  requestDate   DateTime  @default(now()) @map("request_date")
+  fulfilled     Boolean   @default(false)
+  fulfilledDate DateTime? @map("fulfilled_date")
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@unique([email, productSlug])
+  @@index([email])
+  @@index([productSlug])
+  @@map("free_chapter_requests")
 }

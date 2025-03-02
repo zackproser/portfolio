@@ -281,22 +281,19 @@ export function getDefaultPaywallText(contentType: string): {
  * Render content with appropriate paywall handling
  * @param MdxContent The MDX content component
  * @param metadata The content metadata
- * @param session The user session (if available)
  * @param hasPurchased Whether the user has purchased the content
  * @returns The rendered content with appropriate paywall if needed
  */
-export function renderContent(
+export function renderPaywalledContent(
   MdxContent: React.ComponentType,
   metadata: ExtendedMetadata,
-  session: Session | null,
   hasPurchased: boolean
 ) {
-  // If content is not paid or user has purchased, render full content
-  if (!metadata.commerce?.isPaid || hasPurchased) {
-    return React.createElement(MdxContent);
-  }
-
-  // For paid content that user hasn't purchased, show preview with paywall
+  // Determine if we should show the full content
+  const showFullContent = !metadata.commerce?.isPaid || hasPurchased;
+  
+  // If content is not paid or user has purchased, we can still use ArticleContent
+  // but with showFullContent=true to avoid the paywall
   const defaultText = getDefaultPaywallText(metadata.type || 'blog');
   
   // Import ArticleContent dynamically to avoid circular dependencies
@@ -305,17 +302,17 @@ export function renderContent(
   return React.createElement(
     ArticleContent,
     {
-      isPaid: true,
-      price: metadata.commerce.price,
+      showFullContent,
+      price: metadata.commerce?.price || 0,
       slug: metadata.slug || '',
       title: typeof metadata.title === 'string' 
         ? metadata.title 
         : (metadata.title as any)?.default || 'Untitled',
-      previewLength: metadata.commerce.previewLength,
-      previewElements: metadata.commerce.previewElements,
-      paywallHeader: metadata.commerce.paywallHeader || defaultText.header,
-      paywallBody: metadata.commerce.paywallBody || defaultText.body,
-      buttonText: metadata.commerce.buttonText || defaultText.buttonText,
+      previewLength: metadata.commerce?.previewLength,
+      previewElements: metadata.commerce?.previewElements,
+      paywallHeader: metadata.commerce?.paywallHeader || defaultText.header,
+      paywallBody: metadata.commerce?.paywallBody || defaultText.body,
+      buttonText: metadata.commerce?.buttonText || defaultText.buttonText,
     },
     React.createElement(MdxContent)
   );
