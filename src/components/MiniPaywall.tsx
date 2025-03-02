@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import { Button } from './Button'
+import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import Image, { StaticImageData } from 'next/image'
 import { Content } from '@/types'
@@ -33,13 +33,9 @@ export default function MiniPaywall({
   const [loading, setLoading] = useState(false)
 
   const handlePurchase = async () => {
-    if (!session) {
-      router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`)
-      return
-    }
-
     setLoading(true)
     try {
+      // Redirect directly to checkout page - no sign-in required
       router.push(`/checkout?product=${slug}&type=${type}`)
     } catch (error) {
       console.error('Error:', error)

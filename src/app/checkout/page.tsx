@@ -11,6 +11,7 @@ import {
 	EmbeddedCheckoutProvider,
 	EmbeddedCheckout
 } from "@stripe/react-stripe-js";
+import { Button } from "@/components/ui/button";
 
 // Initialize Stripe outside component to avoid re-initialization
 const stripePromise = loadStripe(
@@ -29,15 +30,6 @@ const CheckoutPage = () => {
 	const [error, setError] = useState("");
 	const [productTitle, setProductTitle] = useState("");
 	const [productStatus, setProductStatus] = useState("");
-	const [userEmail, setUserEmail] = useState("");
-	const [productId, setProductId] = useState<number | null>(0);
-
-	useEffect(() => {
-		// If user is signed in, get their email
-		if (session?.user?.email) {
-			setUserEmail(session.user.email);
-		}
-	}, [session]);
 
 	// Product validity check: ensure product is available for sale
 	useEffect(() => {
@@ -60,27 +52,19 @@ const CheckoutPage = () => {
 			});
 	}, [productSlug, searchParams]);
 
-	// If user is not signed in, redirect them to sign in page
-	useEffect(() => {
-		if (status === "unauthenticated" || session === null) {
-			const type = searchParams.get('type') || 'blog';
-			signIn('', { callbackUrl: `/checkout?product=${productSlug}&type=${type}` })
-		}
-	}, [productSlug, status, session, searchParams]);
-
 	// If the product is not ready yet, redirect them to the waitinglist page
 	if (
 		productStatus === CourseStatus.InProgress ||
 		productStatus === CourseStatus.ComingSoon
 	) {
 		redirect(
-			`/waitinglist?product=${productSlug}&productName=${productTitle}&email=${userEmail}`,
+			`/waitinglist?product=${productSlug}&productName=${productTitle}`,
 		);
 	}
 
-	// Fetch client secret if logged in and product specified
+	// Fetch client secret immediately - no email required
 	useEffect(() => {
-		if (!productSlug || !session?.user?.email) return;
+		if (!productSlug) return;
 
 		setLoading(true);
 		setError("");
@@ -88,7 +72,9 @@ const CheckoutPage = () => {
 		const type = searchParams.get('type') || 'blog';
 		const payload = {
 			slug: productSlug,
-			type
+			type,
+			// Include email if available from session, but don't require it
+			...(session?.user?.email && { email: session.user.email })
 		};
 
 		fetch("/api/checkout-sessions", {

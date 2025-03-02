@@ -4,8 +4,10 @@ import fs from 'fs'
 import path from 'path'
 import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent } from '@/types'
 import React from 'react'
-import { sql } from '@vercel/postgres'
+import { PrismaClient } from '@prisma/client'
 import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
+
+const prisma = new PrismaClient()
 
 // Directory where content is stored
 const contentDirectory = path.join(process.cwd(), 'src/content')
@@ -218,26 +220,48 @@ export async function generateContentMetadata(contentType: string, slug: string)
 
 /**
  * Check if a user has purchased a specific content
- * @param userId The user ID
+ * @param userIdOrEmail The user ID or email
  * @param slug The content slug
  * @returns Whether the user has purchased the content
  */
-export async function hasUserPurchased(userId: string | null | undefined, slug: string): Promise<boolean> {
-  console.log(`[hasUserPurchased] userId: ${userId}, slug: ${slug}`)
+export async function hasUserPurchased(userIdOrEmail: string | null | undefined, slug: string): Promise<boolean> {
+  console.log(`[hasUserPurchased] userIdOrEmail: ${userIdOrEmail}, slug: ${slug}`)
 
-  if (!userId) {
-    console.log(`[hasUserPurchased] No userId provided, returning false`)
+  if (!userIdOrEmail) {
+    console.log(`[hasUserPurchased] No userIdOrEmail provided, returning false`)
     return false
   }
-  console.log(`[hasUserPurchased] Checking purchase status for userId: ${userId}, slug: ${slug}`)
+  
+  const isEmail = typeof userIdOrEmail === 'string' && userIdOrEmail.includes('@')
+  console.log(`[hasUserPurchased] Checking purchase status for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, slug: ${slug}`)
   
   try {
-    const { rows } = await sql`
-      SELECT * FROM articlepurchases 
-      WHERE user_id = ${userId} AND article_slug = ${slug}
-    `
-    console.log(`[hasUserPurchased] Query result: ${JSON.stringify(rows)}`)
-    return rows.length > 0
+    // Convert blog/article type to 'article' as used in the database
+    const contentType = 'article' // For articles, we use 'article' in the database
+    
+    if (isEmail) {
+      // Check by email
+      const purchase = await prisma.purchase.findFirst({
+        where: {
+          email: userIdOrEmail,
+          contentType,
+          contentSlug: slug
+        }
+      })
+      console.log(`[hasUserPurchased] Email query result: ${JSON.stringify(purchase)}`)
+      return !!purchase
+    } else {
+      // Check by user ID
+      const purchase = await prisma.purchase.findFirst({
+        where: {
+          userId: userIdOrEmail,
+          contentType,
+          contentSlug: slug
+        }
+      })
+      console.log(`[hasUserPurchased] User ID query result: ${JSON.stringify(purchase)}`)
+      return !!purchase
+    }
   } catch (error) {
     console.error(`[hasUserPurchased] Error checking purchase status: ${error}`)
     return false
