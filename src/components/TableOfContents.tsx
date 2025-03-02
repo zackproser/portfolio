@@ -5,35 +5,24 @@ import {
   ExpandableItems,
 } from '@/components/Expandable'
 import { SectionHeading } from '@/components/SectionHeading'
+import { Content } from '@/types'
 
-const tableOfContents = {
-  'Getting started': {
-    'Introduction to RAG': 1,
-    'Setting up your development environment': 15,
-    'Understanding the RAG pipeline': 20,
-  },
-  'Core Concepts': {
-    'Vector databases and embeddings': 21,
-    'Document chunking strategies': 22,
-    'Retrieval mechanisms': 26,
-    'Prompt engineering for RAG': 31,
-    'Context injection techniques': 45,
-  },
-  'Advanced Topics': {
-    'Reranking and filtering': 50,
-    'Hybrid search approaches': 57,
-    'Metadata enrichment': 66,
-    'Response generation': 78,
-  },
-  'Production Deployment': {
-    'Scaling RAG systems': 82,
-    'Monitoring and evaluation': 88,
-    'Cost optimization': 95,
-    'Error handling and edge cases': 102,
-  },
+interface TableOfContentsProps {
+  content?: Content
 }
 
-export function TableOfContents() {
+export function TableOfContents({ content }: TableOfContentsProps = {}) {
+  // Get the content sections from the content's landing property
+  const contentSections = content?.landing?.contentSections;
+  
+  // Get the title from the content if available
+  const title = content?.title || '';
+
+  // If no content sections are provided, don't render the component
+  if (!contentSections || contentSections.length === 0) {
+    return null;
+  }
+
   return (
     <section
       id="table-of-contents"
@@ -45,46 +34,40 @@ export function TableOfContents() {
           Table of contents
         </SectionHeading>
         <p className="mt-8 font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Get a complete overview of everything you&apos;ll learn in the book.
+          Get a complete overview of everything you&apos;ll learn.
         </p>
         <p className="mt-4 text-lg tracking-tight text-slate-700 dark:text-slate-300">
-          &ldquo;Build Production-Ready RAG Applications&rdquo; is a comprehensive guide
-          with over 300 pages of practical insights and hands-on examples for building
-          robust RAG systems.
+          {title && `"${title}" is a comprehensive guide with practical insights and hands-on examples.`}
         </p>
         <Expandable>
           <ol role="list" className="mt-16 space-y-10 sm:space-y-16">
             <ExpandableItems>
-              {Object.entries(tableOfContents).map(([title, pages]) => (
-                <li key={title}>
+              {contentSections.map((section) => (
+                <li key={section.title}>
                   <h3 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    {title}
+                    {section.title}
                   </h3>
-                  <ol
-                    role="list"
-                    className="mt-8 divide-y divide-slate-300/30 rounded-2xl bg-slate-50 px-6 py-3 text-base tracking-tight sm:px-8 sm:py-7 dark:bg-slate-800 dark:divide-slate-700/30"
-                  >
-                    {Object.entries(pages).map(([title, pageNumber]) => (
-                      <li
-                        key={title}
-                        className="flex justify-between py-3"
-                        aria-label={`${title} on page ${pageNumber}`}
-                      >
-                        <span
-                          className="font-medium text-slate-900 dark:text-white"
-                          aria-hidden="true"
+                  {section.subsections && section.subsections.length > 0 && (
+                    <ol
+                      role="list"
+                      className="mt-8 divide-y divide-slate-300/30 rounded-2xl bg-slate-50 px-6 py-3 text-base tracking-tight sm:px-8 sm:py-7 dark:bg-slate-800 dark:divide-slate-700/30"
+                    >
+                      {section.subsections.map((subsection) => (
+                        <li
+                          key={subsection}
+                          className="py-3"
+                          aria-label={subsection}
                         >
-                          {title}
-                        </span>
-                        <span
-                          className="font-mono text-slate-400 dark:text-slate-500"
-                          aria-hidden="true"
-                        >
-                          {pageNumber}
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
+                          <span
+                            className="font-medium text-slate-900 dark:text-white"
+                            aria-hidden="true"
+                          >
+                            {subsection}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </li>
               ))}
             </ExpandableItems>

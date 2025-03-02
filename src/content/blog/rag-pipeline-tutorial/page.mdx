@@ -32,6 +32,68 @@ export const metadata = createMetadata({
         miniPaywallDescription: "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
         paywallImage: ragPipelineElements,
         paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site"
+    },
+    landing: {
+        heroTitle: "Create AI Chat Experiences with Your Own Data: The Complete RAG Pipeline Guide",
+        subtitle: "Build a production-ready AI solution that answers questions from your own content with accurate citations. Includes a complete Jupyter notebook, Next.js example site, and step-by-step instructions.",
+        features: [
+            {
+                title: "Complete End-to-End Solution",
+                description: "From data processing to deployment, learn every step needed to build a production-ready RAG pipeline"
+            },
+            {
+                title: "Ready-to-Use Jupyter Notebook",
+                description: "Process your own data with our pre-built notebook that handles chunking, embedding, and vector database creation"
+            },
+            {
+                title: "Next.js Example Application",
+                description: "Full source code for a modern web application with streaming responses and citation support"
+            },
+            {
+                title: "No Hallucinations, Real Answers",
+                description: "Learn how to ground AI responses in your actual content for accurate, trustworthy results"
+            }
+        ],
+        contentSections: [
+            {
+                title: "Getting Started",
+                subsections: [
+                    "Complete Example Code",
+                    "Try It Yourself",
+                    "What skills will I learn?",
+                    "System Architecture"
+                ]
+            },
+            {
+                title: "Phase 1: Data Processing",
+                subsections: [
+                    "Load and configure the data processing notebook",
+                    "Clone the data source",
+                    "Install dependencies",
+                    "Loading blog posts into memory",
+                    "Creating a Pinecone index",
+                    "Creating a vectorstore with LangChain",
+                    "Understanding Document Chunking"
+                ]
+            },
+            {
+                title: "Phase 2: Application Development",
+                subsections: [
+                    "Create the supporting services",
+                    "The context service",
+                    "The embeddings service",
+                    "The Pinecone service",
+                    "Create the chat API",
+                    "Create the user interface"
+                ]
+            },
+            {
+                title: "Phase 3: Deployment",
+                subsections: [
+                    "Additional Resources"
+                ]
+            }
+        ]
     }
 });
 

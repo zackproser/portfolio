@@ -63,6 +63,7 @@ function BookCover({ title, description }: { title: string; description: string 
 
 interface HeroProps {
   title: string;
+  heroTitle?: string;
   description: string;
   testimonial?: {
     content: string;
@@ -73,7 +74,7 @@ interface HeroProps {
   };
 }
 
-export function Hero({ title, description, testimonial }: HeroProps) {
+export function Hero({ title, heroTitle, description, testimonial }: HeroProps) {
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5 dark:bg-slate-900 lg:dark:bg-transparent">
       <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
@@ -98,7 +99,7 @@ export function Hero({ title, description, testimonial }: HeroProps) {
         <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20 dark:bg-slate-800 lg:dark:bg-transparent">
           <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
             <h1 className="font-display text-5xl font-extrabold text-slate-900 sm:text-6xl dark:text-white">
-              {title}
+              {heroTitle || title}
             </h1>
             <p className="mt-4 text-xl text-slate-600 dark:text-slate-300">
               {description}

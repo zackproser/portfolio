@@ -131,10 +131,10 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
           <Pattern className="absolute -top-32 left-0 w-full sm:left-3/4 sm:top-0 sm:ml-8 sm:w-auto md:left-2/3 lg:left-auto lg:right-2 lg:ml-0 xl:right-auto xl:left-2/3" />
           <div>
             <h2 className="font-display text-5xl font-extrabold tracking-tight text-white sm:w-3/4 sm:text-6xl md:w-2/3 lg:w-auto">
-              Get two free chapters straight to your inbox
+              Get a free chapter straight to your inbox
             </h2>
             <p className="mt-4 text-lg tracking-tight text-blue-200">
-              Enter your email below and we&apos;ll send you the first two chapters
+              Enter your email below and we&apos;ll send you a free chapter
               of <span className="font-bold text-white">{title}</span>, showing you how to set up your development environment
               and build your first RAG pipeline.
             </p>
@@ -147,15 +147,15 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
                 </h3>
                 <p className="mt-2 text-blue-200">
                   {hasRequested 
-                    ? "We've already sent the free chapters to your inbox. Please check your email (including spam folder)."
-                    : "We've sent the free chapters to your inbox. Check your email and get ready to dive in!"}
+                    ? "We've already sent the free chapter to your inbox. Please check your email (including spam folder)."
+                    : "We've sent the free chapter to your inbox. Check your email and get ready to dive in!"}
                 </p>
               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full lg:pl-16">
               <h3 className="text-base font-medium tracking-tight text-white">
-                Get two free chapters straight to your inbox{' '}
+                Get a free chapter straight to your inbox{' '}
                 <span aria-hidden="true">&rarr;</span>
               </h3>
               <div className="mt-4 sm:relative sm:flex sm:items-center sm:py-0.5 sm:pr-2.5">
