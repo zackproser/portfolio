@@ -107,6 +107,7 @@ export function ProductLanding({ content }: Props) {
         <TableOfContents />
         <FreeChapters 
           title={safeDescription}
+          productSlug={slug}
         />
         <Pricing 
           price={commerce.price}

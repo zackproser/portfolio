@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { sql } from '@vercel/postgres'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
