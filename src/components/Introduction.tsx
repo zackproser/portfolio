@@ -42,7 +42,7 @@ export function Introduction({ title, description, features = [] }: Introduction
             href="#free-chapters"
             className="text-base font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            Get two free chapters straight to your inbox{' '}
+            Get a free chapter straight to your inbox{' '}
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </p>

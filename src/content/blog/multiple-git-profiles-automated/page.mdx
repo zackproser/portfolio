@@ -23,6 +23,7 @@ export const metadata = createMetadata({
     buttonText: "Get the guide ($5)"
   },
   landing: {
+    heroTitle: "Automate Your Git Profile Switching Between Work and Personal Projects",
     subtitle: 'Never commit with the wrong Git profile again. Learn how to automatically switch between work and personal Git profiles based on your project directory.',
     features: [
       {
@@ -40,6 +41,32 @@ export const metadata = createMetadata({
       {
         title: 'Best Practices',
         description: 'Industry-standard approaches to managing multiple Git identities'
+      }
+    ],
+    contentSections: [
+      {
+        title: "Setting Up Your Git Configurations",
+        subsections: [
+          "Creating separate Git configuration files",
+          "Configuring personal profile settings",
+          "Configuring work profile settings"
+        ]
+      },
+      {
+        title: "Directory-Based Profile Switching",
+        subsections: [
+          "Understanding Git's includeIf directive",
+          "Configuring path-specific Git profiles",
+          "Setting up directory patterns for automatic switching"
+        ]
+      },
+      {
+        title: "Testing and Verification",
+        subsections: [
+          "Verifying profile switching works correctly",
+          "Troubleshooting common issues",
+          "Best practices for maintaining multiple profiles"
+        ]
       }
     ],
     testimonials: [

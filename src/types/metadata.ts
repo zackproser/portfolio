@@ -15,11 +15,16 @@ export interface ExtendedMetadata extends Metadata {
   _id?: string  // Internal unique identifier to prevent duplicate key issues
   commerce?: CommerceConfig
   landing?: {
+    heroTitle?: string  // New property for custom hero title
     subtitle?: string
     features?: Array<{
       title: string
       description: string
       icon?: string
+    }>
+    contentSections?: Array<{
+      title: string
+      subsections?: Array<string>
     }>
     testimonials?: Array<{
       content: string
