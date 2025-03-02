@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm run build",
+  "buildCommand": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js && prisma generate && prisma migrate deploy && next build",
   "installCommand": "pnpm install",
   "framework": "nextjs"
 } 
