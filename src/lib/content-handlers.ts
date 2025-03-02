@@ -301,6 +301,7 @@ export function renderPaywalledContent(
   return React.createElement(
     ArticleContent,
     {
+      // eslint-disable-next-line react/no-children-prop
       children: React.createElement(MdxContent),
       showFullContent,
       price: metadata.commerce?.price || 0,
