@@ -1,127 +1,277 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
 import Link from 'next/link';
-import { BlogPostCard } from '@/components/BlogPostCard';
-import { Article } from '@/lib/shared-types';
+import { ContentCard } from '@/components/ContentCard';
+import { Blog } from '@/types';
 import { sendGTMEvent } from '@next/third-parties/google';
+import { useSession, signIn } from 'next-auth/react';
 
 interface PurchasedContent {
-  title: string;
-  description: string;
-  slug: string;
-  type: 'article' | 'course';
+  content: Blog;
+  user: {
+    email: string;
+    name?: string | null;
+  };
+  session: any;
+  payment_status: string;
+  verificationEmailSent: boolean;
 }
 
-function CheckoutResultPage() {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [error, setError] = useState('');
+function CheckoutResultContent() {
   const [content, setContent] = useState<PurchasedContent | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sessionId = searchParams.get('session_id');
+  const { data: authSession, status: authStatus } = useSession();
 
   useEffect(() => {
     if (!sessionId) {
-      setStatus('error');
       setError('No session ID provided');
       return;
     }
 
-    // Verify payment status
-    fetch(`/api/checkout-sessions?session_id=${sessionId}`)
-      .then((res) => res.json())
-      .then(async (data) => {
-        console.log('Checkout session data:', data);
-        if (data.error) {
-          throw new Error(data.error);
+    const fetchCheckoutSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout-sessions?session_id=${sessionId}`,
+          {
+            method: 'GET',
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Could not retrieve checkout session details');
         }
-        if (data.payment_status === 'paid') {
-          setStatus('success');
-          setContent(data.content);
-          
-          // Track the purchase event using GTM
-          sendGTMEvent({
-            event: 'purchase',
-            ecommerce: {
-              transaction_id: sessionId,
-              value: data.session.amount_total / 100,
-              currency: 'USD',
-              items: [{
-                item_name: data.content.title,
-                item_id: data.content.slug,
-                item_category: data.content.type,
-                price: data.session.amount_total / 100,
-                quantity: 1
-              }]
-            }
-          });
-        } else {
-          throw new Error(`Payment verification failed. Status: ${data.payment_status}`);
+
+        const data: PurchasedContent = await response.json();
+
+        if (data.payment_status !== 'paid') {
+          throw new Error('Payment not completed');
         }
-      })
-      .catch((err) => {
-        console.error('Error verifying payment:', err);
-        setStatus('error');
-        setError(err.message || 'Failed to verify payment');
+
+        setContent(data);
+
+        // Send GTM event for successful purchase
+        sendGTMEvent({
+          event: 'purchase',
+          value: data.content.commerce?.price,
+          items: [
+            {
+              item_name: data.content.title,
+              price: data.content.commerce?.price,
+            },
+          ],
+        });
+
+        // If user is already authenticated, redirect them directly to the content
+        if (authStatus === 'authenticated') {
+          const contentUrl = getContentUrl(data.content, true);
+          // Add a small delay to ensure the GTM event is sent
+          setTimeout(() => {
+            router.push(contentUrl);
+          }, 1000);
+        }
+        // Otherwise, we'll show them a button to sign in
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      }
+    };
+
+    fetchCheckoutSession();
+  }, [sessionId, authStatus, router]);
+
+  // Function to handle email sign-in and redirect to verification page
+  const handleEmailSignIn = async (email: string, contentUrl: string) => {
+    try {
+      setIsLoggingIn(true);
+      
+      // Use environment variable for base URL
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+      
+      // Remove trailing slash from baseUrl if present
+      if (baseUrl.endsWith('/')) {
+        baseUrl = baseUrl.slice(0, -1);
+      }
+      
+      // Ensure the URL is absolute
+      let absoluteUrl;
+      if (contentUrl.startsWith('http')) {
+        absoluteUrl = contentUrl;
+      } else if (baseUrl) {
+        // If we have a base URL from env, use it
+        absoluteUrl = `${baseUrl}${contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`}`;
+      } else {
+        // Fallback to a simple path if no base URL is available
+        absoluteUrl = contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`;
+      }
+      
+      // First, trigger the email sign-in process
+      await signIn("email", { 
+        email, 
+        callbackUrl: absoluteUrl,
       });
-  }, [sessionId]);
+      
+    } catch (error) {
+      console.error('Error during sign-in process:', error);
+      setIsLoggingIn(false);
+      setError('Failed to send verification email. Please try again.');
+    }
+  };
 
-  if (status === 'loading') {
+  // Function to get the content URL based on content type
+  const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
+    // Remove any leading slashes from the slug
+    const cleanSlug = content.slug.replace(/^\/+/, '');
+    
+    // For blog content, always use the /blog/ path
+    const url = `/blog/${cleanSlug}`;
+    
+    // Remove leading slash for Next.js Link component if needed
+    return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
+  };
+
+  if (error) {
     return (
-      <Container className="mt-16 sm:mt-32">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-          <span className="ml-3 text-zinc-700 dark:text-zinc-300">Verifying payment...</span>
+      <Container>
+        <div className="py-16">
+          <h1 className="text-2xl font-bold mb-4">Thank you for your purchase!</h1>
+          <div className="bg-amber-50 border border-amber-200 rounded-md p-6 mb-6">
+            <h2 className="text-lg font-semibold text-amber-800 mb-2">Your purchase was successful</h2>
+            <p className="text-gray-700 mb-4">
+              We&apos;ve received your payment and a receipt has been sent to your email. 
+              {error.includes("being processed") ? (
+                <span className="block mt-2">
+                  {error}
+                </span>
+              ) : (
+                <span className="block mt-2">
+                  There was a small issue with the automatic login: <span className="text-amber-700">{error}</span>
+                </span>
+              )}
+            </p>
+            <p className="text-gray-700 mb-4">
+              Don&apos;t worry! You can still access your content by logging in manually with the email you used for purchase.
+            </p>
+            <div className="mt-4 flex space-x-4">
+              <button
+                onClick={() => router.push('/login')}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Log in
+              </button>
+              <Link href="/" className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors">
+                Return to Home
+              </Link>
+            </div>
+          </div>
         </div>
       </Container>
     );
   }
 
-  if (status === 'error') {
+  if (!content) {
     return (
-      <Container className="mt-16 sm:mt-32">
-        <div className="rounded-xl bg-red-50 dark:bg-red-900/10 p-6 shadow-lg border border-red-200 dark:border-red-800">
-          <h3 className="text-lg font-medium text-red-800 dark:text-red-200">
-            Payment verification failed
-          </h3>
-          <p className="mt-2 text-sm text-red-700 dark:text-red-300">
-            {error}
-          </p>
+      <Container>
+        <div className="py-16 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-3">Verifying payment...</span>
         </div>
       </Container>
     );
   }
+
+  if (isLoggingIn) {
+    return (
+      <Container>
+        <div className="py-16 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-3">Sending verification email...</span>
+        </div>
+      </Container>
+    );
+  }
+
+  const contentUrl = getContentUrl(content.content, true);
 
   return (
-    <Container className="mt-16 sm:mt-32">
-      <div className="rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-8 shadow-xl border border-green-200 dark:border-green-800">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-4">
-            🎉 Payment Successful!
-          </h3>
-          <p className="text-lg text-green-700 dark:text-green-300 mb-6">
-            Thank you for your purchase. Your {content?.type} is now available.
-          </p>
-        </div>
+    <Container>
+      <div className="py-16">
+        <h1 className="text-2xl font-bold mb-4">Thank you for your purchase!</h1>
+        <p className="mb-8">
+          A receipt has been sent to {content.user.email}.
+          {authStatus === 'authenticated' && (
+            <span className="ml-2 text-green-600">You&apos;re now logged in and can access your content immediately.</span>
+          )}
+          {authStatus === 'unauthenticated' && (
+            <span className="ml-2">
+              <button
+                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                className="text-blue-600 underline hover:text-blue-800"
+              >
+                Log in to access your content
+              </button>
+            </span>
+          )}
+        </p>
 
-        {content && content.type === 'article' && (
+        {content.content.type === 'blog' && (
           <div className="mb-8">
-            <BlogPostCard article={content as Article & { slug: string }} />
+            <ContentCard article={content.content} />
+            <div className="mt-4">
+              {authStatus === 'authenticated' ? (
+                <Link
+                  href={`/${contentUrl}`}
+                  className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  Read Now
+                </Link>
+              ) : (
+                <button
+                  onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                  className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  Sign in to Read
+                </button>
+              )}
+              {authStatus === 'unauthenticated' && (
+                <p className="mt-2 text-sm text-gray-600">
+                  You&apos;ll need to verify your email before accessing the full content.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
-        {content && (
-          <div className="text-center">
-            <Link
-              href={content.type === 'article' 
-                ? `/blog/${content.slug}` 
-                : `/learn/courses/${content.slug}/0`}
-              className="inline-flex items-center px-6 py-3 text-lg font-medium rounded-lg shadow-lg text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
-            >
-              {content.type === 'article' ? 'Read Your Article' : 'Start Learning'} →
-            </Link>
+        {content.content.type === 'course' && (
+          <div className="mb-8">
+            <p className="mb-4">
+              Your course is now available. You can start learning right away!
+            </p>
+            {authStatus === 'authenticated' ? (
+              <Link
+                href={`/${contentUrl}`}
+                className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Start Learning
+              </Link>
+            ) : (
+              <button
+                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Sign in to Start Learning
+              </button>
+            )}
+            {authStatus === 'unauthenticated' && (
+              <p className="mt-2 text-sm text-gray-600">
+                You&apos;ll need to verify your email before accessing the full course.
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -129,10 +279,17 @@ function CheckoutResultPage() {
   );
 }
 
-export default function CheckoutResultPageWrapper() {
+export default function CheckoutResult() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CheckoutResultPage />
+    <Suspense fallback={
+      <Container>
+        <div className="py-16 flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-3">Loading checkout result...</span>
+        </div>
+      </Container>
+    }>
+      <CheckoutResultContent />
     </Suspense>
   );
 } 

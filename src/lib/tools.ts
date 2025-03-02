@@ -1,26 +1,19 @@
-import { BaseArticleWithSlug } from './shared-types'
+import { ArticleWithSlug } from '@/types/content'
 import glob from 'fast-glob'
 import path from 'path'
 
 export async function importTool(
-  toolFilename: string,
-): Promise<BaseArticleWithSlug> {
-  let { metadata } = (await import(`@/app/tools/${toolFilename}`)) as {
+  toolPath: string
+): Promise<ArticleWithSlug> {
+  let { metadata } = (await import(`@/app/tools/${toolPath}`)) as {
     default: React.ComponentType
-    metadata: {
-      title: string
-      description: string
-      author: string
-      date: string
-      image?: string
-      status?: string
-    }
+    metadata: Omit<ArticleWithSlug, 'type' | 'slug'>
   }
 
   return {
-    slug: toolFilename.replace('/page.mdx', '').toLowerCase().replace(/ /g, '-'),
-    type: 'tool',
     ...metadata,
+    type: 'blog',
+    slug: path.basename(toolPath, '.mdx'),
   }
 }
 

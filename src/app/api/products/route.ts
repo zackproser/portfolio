@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductDetails, ProductDetails } from "@/utils/productUtils";
 import { sql } from '@vercel/postgres'
-import { getAllArticles } from '@/lib/articles'
+import { getContentBySlug } from '@/lib/content-handlers'
 
 export async function GET(req: NextRequest) {
 	console.log("GET /products");
 
 	const productSlug = req.nextUrl.searchParams.get("product");
+	const type = req.nextUrl.searchParams.get("type") as 'blog' | 'course' | 'video';
 
-	if (!productSlug) {
+	if (!productSlug || !type) {
 		return new NextResponse(
-			JSON.stringify({ error: "Must supply valid product slug" }),
+			JSON.stringify({ error: "Must supply valid product slug and type" }),
 			{
 				status: 400,
 			},
@@ -18,24 +19,14 @@ export async function GET(req: NextRequest) {
 	}
 
 	try {
-		// Check if this is an article slug
-		if (productSlug.startsWith('blog-')) {
-			// Remove 'blog-' prefix to get the actual article slug
-			const articleSlug = productSlug.replace('blog-', '')
-			const articles = await getAllArticles([articleSlug])
+		if (type === 'blog') {
+			const article = await getContentBySlug(productSlug, 'blog')
 			
-			if (articles.length === 0) {
+			if (!article) {
 				return NextResponse.json({ error: 'Article not found' }, { status: 404 })
 			}
 
-			const article = articles[0]
-			return NextResponse.json({
-				title: article.title,
-				status: 'available',
-				price_id: article.price?.toString(),
-				course_id: null,
-				type: 'article'
-			})
+			return NextResponse.json(article)
 		}
 
 		// Existing product lookup logic

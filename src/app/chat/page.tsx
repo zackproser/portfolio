@@ -7,6 +7,6 @@ export const metadata: Metadata = createMetadata({
   description: 'Chat with a custom RAG pipeline of my blog content using Pinecone, OpenAI, and LangChain.',
 })
 
-export default function ChatPage() {
+export default async function ChatPage() {
   return <ChatPageClient />
 }

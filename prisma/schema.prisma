@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model User {
+  id                  String               @id @default(cuid())
+  name                String?
+  email               String?              @unique
+  emailVerified       DateTime?
+  image               String?
+  githubUsername      String?              @map("github_username")
+  avatarUrl           String?              @map("avatar_url")
+  followersCount      Int?                 @map("followers_count")
+  accounts            Account[]
+  notifications       EmailNotification[]
+  freeChapterRequests FreeChapterRequest[]
+  purchases           Purchase[]
+  sessions            Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Purchase {
+  id              String   @id @default(cuid())
+  userId          String?  @map("user_id")
+  contentType     String   @map("content_type")
+  contentSlug     String   @map("content_slug")
+  purchaseDate    DateTime @default(now()) @map("purchase_date")
+  stripePaymentId String?  @map("stripe_payment_id")
+  amount          Decimal?
+  email           String?
+  user            User?    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, contentType, contentSlug])
+  @@unique([email, contentType, contentSlug])
+  @@map("purchases")
+}
+
+model EmailNotification {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id")
+  email       String?
+  contentType String   @map("content_type")
+  contentSlug String   @map("content_slug")
+  emailType   String   @map("email_type")
+  sentAt      DateTime @default(now()) @map("sent_at")
+  user        User?    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, contentType, contentSlug, emailType])
+  @@unique([email, contentType, contentSlug, emailType])
+  @@map("email_notifications")
+}
+
+model FreeChapterRequest {
+  id            String    @id @default(cuid())
+  userId        String?   @map("user_id")
+  email         String
+  productSlug   String    @map("product_slug")
+  requestDate   DateTime  @default(now()) @map("request_date")
+  fulfilled     Boolean   @default(false)
+  fulfilledDate DateTime? @map("fulfilled_date")
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@unique([email, productSlug])
+  @@index([email])
+  @@index([productSlug])
+  @@map("free_chapter_requests")
+}

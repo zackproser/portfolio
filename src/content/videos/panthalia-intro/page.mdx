@@ -1,0 +1,46 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import panthaliaVideo from '@/images/panthalia-video.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-08-27",
+  title: "Project Panthalia: AI-assisted mobile blogging platform",
+  description: "Panthalia enables me to author rich-media blog posts on the go - assisted by StableDiffusion XL for image generation",
+  image: panthaliaVideo
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/sz0vehJQ_Jo"
+  title="Panthalia Intro: AI-assisted mobile blogging platform" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+I've been working on this side project for several months now, and it's ready enough to demonstrate. In this video I talk through: 
+* What it is 
+* How it works
+* A complete live demo
+* Using Replicate.com for a REST API interface to StableDiffusion XL for image generation
+
+## Stack 
+* Next.js
+* Vercel 
+* Vercel Postgres
+* Vercel serverless functions
+* Pure JavaScript integration with git and GitHub thanks to [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git)
+
+## Features 
+
+* Secured via GitHub oAuth
+* StableDiffusion XL for image generation
+* Postgres database for posts and images data
+* S3 integration for semi-volatile image storage
+* Start and complete high quality blog posts in MDX one-handed while on the go
+
+Panthalia is open-source and available at [github.com/zackproser/panthalia](https://github.com/zackproser/panthalia)
