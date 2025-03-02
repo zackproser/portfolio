@@ -9,6 +9,9 @@ import { Blog } from '@/types';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useSession, signIn } from 'next-auth/react';
 
+// Import the utility function for generating content URLs
+import { createMetadata } from '@/utils/createMetadata';
+
 interface PurchasedContent {
   content: Blog;
   user: {
@@ -31,9 +34,32 @@ function CheckoutResultContent() {
 
   // Function to get the content URL based on content type
   const getContentUrl = (content: Blog) => {
-    return content.type === 'course' 
-      ? `/learn/courses/${content.slug.replace(/^\/learn\/courses\//, '')}` 
-      : `/blog/${content.slug.replace(/^\/blog\//, '')}`;
+    // Remove any leading slashes and content type prefixes from the slug
+    const cleanSlug = content.slug.replace(/^\/+/, '').replace(/^(blog|learn\/courses)\//, '');
+    
+    // Generate the URL path based on content type
+    let url = '';
+    
+    switch (content.type) {
+      case 'blog':
+        url = `/blog/${cleanSlug}`;
+        break;
+      case 'course':
+        url = `/learn/courses/${cleanSlug}/0`; // Append /0 for courses
+        break;
+      case 'video':
+        url = `/videos/${cleanSlug}`;
+        break;
+      case 'demo':
+        url = `/demos/${cleanSlug}`;
+        break;
+      default:
+        // Fallback to the content slug directly
+        url = `/${content.type}/${cleanSlug}`;
+    }
+    
+    // Remove leading slash for Next.js Link component
+    return url.startsWith('/') ? url.substring(1) : url;
   };
 
   useEffect(() => {
