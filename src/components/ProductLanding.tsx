@@ -10,25 +10,57 @@ import { CanvasPattern } from '@/components/CanvasPattern'
 import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { createMetadata } from '@/utils/createMetadata'
+import { Metadata, ResolvingMetadata } from 'next'
+import { getProductBySlug } from '@/lib/content-handlers'
 
-interface Props {
-  content: Content;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export const generateMetadata = ({ content }: Props) => {
-  if (!content) return null;
+export async function generateMetadata(
+  { params, searchParams }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Fetch the content based on the slug
+  const resolvedParams = await params;
+  const content = await getProductBySlug(resolvedParams.slug);
   
-  return createMetadata({
+  if (!content) {
+    return {
+      title: 'Product Not Found',
+      description: 'The requested product could not be found.'
+    };
+  }
+  
+  // Get parent metadata to potentially extend it
+  const previousImages = (await parent).openGraph?.images || [];
+  
+  // Create the metadata using our utility
+  const metadata = createMetadata({
+    title: content.title,
     description: content.description,
     author: content.author,
-    type: 'course',
+    type: content.type || 'course',
     commerce: content.commerce,
     landing: content.landing,
-    slug: content.slug || '/products'
+    slug: content.slug || resolvedParams.slug || '/products'
   });
-};
+  
+  // Return the metadata in Next.js expected format
+  return {
+    ...metadata,
+    openGraph: {
+      ...metadata.openGraph,
+      images: [
+        ...(Array.isArray(metadata.openGraph?.images) ? metadata.openGraph.images : []),
+        ...previousImages
+      ],
+    }
+  };
+}
 
-export function ProductLanding({ content }: Props) {
+export function ProductLanding({ content }: { content: Content }) {
   
   if (!content) {
     console.log('Content is null or undefined');
