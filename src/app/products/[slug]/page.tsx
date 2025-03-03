@@ -2,11 +2,15 @@ import { ProductLanding } from '@/components/ProductLanding';
 import { notFound } from 'next/navigation';
 import { getProductBySlug } from '@/lib/content-handlers';
 import { Content } from '@/types';
+import { generateMetadata as productMetadata } from '@/components/ProductLanding';
 
 interface Props {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
+
+// Export the generateMetadata function for this page
+export const generateMetadata = productMetadata;
 
 export default async function ProductPage({ 
   params,
