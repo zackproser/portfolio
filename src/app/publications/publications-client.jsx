@@ -81,10 +81,10 @@ export default function PublicationsClient({ publications, categories, years, al
             </div>
 
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="bg-white dark:bg-slate-800">
+              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectItem value="All Categories">All Categories</SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
@@ -95,10 +95,10 @@ export default function PublicationsClient({ publications, categories, years, al
             </Select>
 
             <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="bg-white dark:bg-slate-800">
+              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectItem value="All Years">All Years</SelectItem>
                 {years.map((year) => (
                   <SelectItem key={year} value={year}>
@@ -109,10 +109,10 @@ export default function PublicationsClient({ publications, categories, years, al
             </Select>
 
             <Select value={selectedTag} onValueChange={setSelectedTag}>
-              <SelectTrigger className="bg-white dark:bg-slate-800">
+              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectValue placeholder="Tag" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
                 <SelectItem value="All Tags">All Tags</SelectItem>
                 {allTags.map((tag) => (
                   <SelectItem key={tag} value={tag}>
