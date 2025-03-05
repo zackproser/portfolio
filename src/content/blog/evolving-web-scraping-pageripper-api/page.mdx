@@ -16,8 +16,6 @@ export const metadata = createMetadata({
     image: pageripperBot,
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 --- 
 
 <Image src={pageripperBot} alt="Pageripper API a commercial data-extraction service" />
@@ -90,7 +88,7 @@ That's because the HTML that we're sent is an intentionally minimal shell that i
 
 <Image src={clientSideScraping} alt="Scraping from a Javascript-heavy site is more involved" />
 
-### Pageripper’s Approach
+### Pageripper's Approach
 
 Pageripper handles both the client-side and server-side rendered sites by employing Puppeteer under the hood. Puppeteer is project that simplifies running a headless browser in Node.js. 
 

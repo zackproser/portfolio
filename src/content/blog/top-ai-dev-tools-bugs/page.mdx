@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import  Image  from 'next/image'
 
 import hackerEvaluation from '@/images/hacker-bladerunner-many-terminals.webp'
@@ -6,7 +5,7 @@ import hackerConfused from '@/images/hacker-bladerunner-confused.webp'
 import hackerEnragedAtInlinedCodeResponse from'@/images/hacker-enraged-at-inlined-ai-response.webp'
 import agentForgettingPrompting from '@/images/agent-forgetting-its-prompting.webp'
 import yourAIDevToolSucks from '@/images/your-ai-dev-tool-sucks.webp'
-import hackerQuitingYourCrappyTool from '@/images/hacker-quitting-your-crappy-tool.webp'
+import hackerQuitingYourCrappyTool from '@/images/hacker-quiting-your-crappy-tool.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -20,8 +19,6 @@ export const metadata = createMetadata({
   image: hackerEvaluation,
   slug: '/blog/top-ai-dev-tools-bugs',
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={hackerConfused} alt="A confused developer trying to make sense of Cursor's strange output" />
 <figcaption>A confused hacker trying to figure out why the AI-assisted IDE Cursor just broke his entire file by inlining its generated code in the wrong place</figcaption>
