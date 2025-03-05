@@ -1,6 +1,5 @@
 import traceTheSystem from '/src/images/trace-the-system-in-your-head.webp' 
 
-import { ArticleLayout } from '@/components/ArticleLayout'
 import { Newsletter } from '@/components/Newsletter'
 
 import Image from 'next/image'
@@ -15,8 +14,6 @@ export const metadata = createMetadata({
  description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
  image: traceTheSystem,
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
 
 <Image src={traceTheSystem} alt="Trace the system in your head" height={600} />
 
