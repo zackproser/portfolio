@@ -1,4 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
 
 import opengraphFallbackImg from '@/images/og.webp'
@@ -15,8 +14,6 @@ export const metadata = createMetadata({
     image: opengraphFallbackImg,
     slug: '/blog/opengraph-integration'
 })
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image 
     width={1200}
