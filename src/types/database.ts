@@ -1,5 +1,6 @@
 // Database interface for vector database comparisons
 export interface Database {
+  id: string;
   name: string;
   logoId: string;
   description: string;
@@ -64,6 +65,44 @@ export interface Database {
     key_people: Array<{ name: string; position: string }>;
     employee_count: string;
     [key: string]: any;
+  };
+  company: {
+    name: string;
+    founded: number;
+    funding: string;
+    employees: number;
+  };
+  features: {
+    [key: string]: boolean | string;
+  };
+  performance: {
+    [key: string]: number | string;
+  };
+  security: {
+    [key: string]: boolean | string;
+  };
+  algorithms: {
+    [key: string]: boolean | string;
+  };
+  searchCapabilities: {
+    [key: string]: boolean | string;
+  };
+  aiCapabilities: {
+    features: {
+      [key: string]: boolean | string;
+    };
+    scores: {
+      llmIntegration: number;
+      embeddingGeneration: number;
+      ragSupport: number;
+      fineTuning: number;
+      modelHosting: number;
+    };
+    supportedModels: {
+      [key: string]: boolean | string;
+    };
+    ragFeatures: string[];
+    ragLimitations: string[];
   };
   [category: string]: { [feature: string]: any } | any;
 } 
