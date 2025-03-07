@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, Bot, User } from "lucide-react"
+import { Send, Bot, User, GripVertical } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useChat } from "ai/react"
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
 
 export function ChatInterface() {
   const [open, setOpen] = useState(false)
@@ -44,52 +45,58 @@ export function ChatInterface() {
           <span className="font-medium">Ask me about vector databases</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:w-[400px] sm:max-w-md p-0 flex flex-col h-full">
-        <SheetHeader className="px-4 py-3 border-b">
-          <SheetTitle>Vector Database Assistant</SheetTitle>
-        </SheetHeader>
+      <SheetContent className="p-0">
+        <PanelGroup direction="horizontal">
+          <Panel defaultSize={100} minSize={30}>
+            <div className="flex flex-col h-full bg-white dark:bg-slate-900">
+              <SheetHeader className="px-4 py-3 border-b bg-white dark:bg-slate-900">
+                <SheetTitle className="text-slate-900 dark:text-white">Vector Database Assistant</SheetTitle>
+              </SheetHeader>
 
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4 mb-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn("flex items-start gap-3 text-sm", message.role === "user" ? "flex-row-reverse" : "")}
-              >
-                <div
-                  className={cn(
-                    "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow",
-                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
-                  )}
-                >
-                  {message.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+              <ScrollArea className="flex-1 p-4 bg-white dark:bg-slate-900">
+                <div className="space-y-4 mb-4">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={cn("flex items-start gap-3 text-sm", message.role === "user" ? "flex-row-reverse" : "")}
+                    >
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow",
+                          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
+                        )}
+                      >
+                        {message.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+                      </div>
+                      <div
+                        className={cn(
+                          "rounded-lg px-3 py-2 max-w-[85%]",
+                          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
+                        )}
+                      >
+                        {message.content}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
                 </div>
-                <div
-                  className={cn(
-                    "rounded-lg px-3 py-2 max-w-[85%]",
-                    message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
-                  )}
-                >
-                  {message.content}
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
+              </ScrollArea>
 
-        <form onSubmit={handleSubmit} className="border-t p-4 flex items-center gap-2">
-          <Input
-            placeholder="Ask about vector databases..."
-            value={input}
-            onChange={handleInputChange}
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
+              <form onSubmit={handleSubmit} className="border-t p-4 flex items-center gap-2 bg-white dark:bg-slate-900">
+                <Input
+                  placeholder="Ask about vector databases..."
+                  value={input}
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
+          </Panel>
+        </PanelGroup>
       </SheetContent>
     </Sheet>
   )
