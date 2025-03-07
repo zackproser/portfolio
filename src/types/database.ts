@@ -76,6 +76,14 @@ export interface Database {
     [key: string]: boolean | string;
   };
   performance: {
+    latency: string;
+    throughput: string;
+    scalability: string;
+    queryLatencyMs: number;
+    indexingSpeedVectorsPerSec: number;
+    memoryUsageMb: number;
+    scalabilityScore: number;
+    accuracyScore: number;
     [key: string]: number | string;
   };
   security: {

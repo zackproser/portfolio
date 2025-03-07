@@ -39,12 +39,12 @@ export default function FeatureComparison({ databases }: FeatureComparisonProps)
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow>
+                <tr>
                   <TableHead className="w-[200px]">Feature</TableHead>
                   {databases.map((db) => (
                     <TableHead key={db.id}>{db.name}</TableHead>
                   ))}
-                </TableRow>
+                </tr>
               </TableHeader>
               <TableBody>
                 {category.features.map((feature, index) => (

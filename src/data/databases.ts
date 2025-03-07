@@ -23,6 +23,11 @@ export const databases: Database[] = [
       latency: "10ms",
       throughput: "100k qps",
       scalability: "auto",
+      queryLatencyMs: 10,
+      indexingSpeedVectorsPerSec: 100000,
+      memoryUsageMb: 200,
+      scalabilityScore: 90,
+      accuracyScore: 85
     },
     security: {
       encryption: true,
@@ -102,6 +107,11 @@ export const databases: Database[] = [
       latency: "15ms",
       throughput: "50k qps",
       scalability: "manual",
+      queryLatencyMs: 15,
+      indexingSpeedVectorsPerSec: 50000,
+      memoryUsageMb: 250,
+      scalabilityScore: 75,
+      accuracyScore: 88
     },
     security: {
       encryption: true,
@@ -183,6 +193,11 @@ export const databases: Database[] = [
       latency: "5ms",
       throughput: "200k qps",
       scalability: "manual",
+      queryLatencyMs: 5,
+      indexingSpeedVectorsPerSec: 200000,
+      memoryUsageMb: 300,
+      scalabilityScore: 80,
+      accuracyScore: 90
     },
     security: {
       encryption: true,

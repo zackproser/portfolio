@@ -39,7 +39,7 @@ export function ChatInterface() {
         <Button
           variant="default"
           size="lg"
-          className="fixed bottom-6 right-6 h-auto py-3 px-4 rounded-full shadow-lg z-50 flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 border-none"
+          className="fixed bottom-6 right-6 h-auto py-3 px-4 rounded-full shadow-lg z-50 flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 border-none text-white"
         >
           <span className="text-lg">🤖</span>
           <span className="font-medium">Ask me about vector databases</span>
@@ -63,7 +63,7 @@ export function ChatInterface() {
                       <div
                         className={cn(
                           "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow",
-                          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
+                          message.role === "user" ? "bg-primary text-white" : "bg-muted text-foreground",
                         )}
                       >
                         {message.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
@@ -71,7 +71,9 @@ export function ChatInterface() {
                       <div
                         className={cn(
                           "rounded-lg px-3 py-2 max-w-[85%]",
-                          message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted",
+                          message.role === "user" 
+                            ? "bg-primary text-white dark:text-white" 
+                            : "bg-muted text-foreground dark:text-slate-200"
                         )}
                       >
                         {message.content}
