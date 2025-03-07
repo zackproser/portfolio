@@ -5,4 +5,12 @@ export * from './content';
 export * from './product';
 export * from './metadata';
 export * from './database';
-export * from './commerce'; 
+export * from './commerce';
+
+export interface LeadAnalysis {
+  isPotentialLead: boolean;
+  confidence: number;
+  reasons: string[];
+  topics: string[];
+  nextSteps: string[];
+} 

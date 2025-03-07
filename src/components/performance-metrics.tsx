@@ -22,6 +22,24 @@ interface PerformanceMetricsProps {
 }
 
 export default function PerformanceMetrics({ databases }: PerformanceMetricsProps) {
+  if (!databases?.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>No Data Available</CardTitle>
+          <CardDescription>Please select some databases to compare.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  // Default values for performance metrics
+  const DEFAULT_QUERY_LATENCY = 20;
+  const DEFAULT_INDEXING_SPEED = 50000;
+  const DEFAULT_MEMORY_USAGE = 250;
+  const DEFAULT_SCALABILITY = 70;
+  const DEFAULT_ACCURACY = 85;
+
   // Prepare data for query latency chart
   const queryLatencyData = []
   for (let i = 1; i <= 10; i++) {
@@ -29,7 +47,7 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
     databases.forEach((db) => {
       // Simulate latency data based on vector size
       // In a real app, this would come from actual benchmarks
-      const baseLatency = db.performance.queryLatencyMs
+      const baseLatency = db?.performance?.queryLatencyMs ?? DEFAULT_QUERY_LATENCY;
       const randomFactor = 0.8 + Math.random() * 0.4 // Random factor between 0.8 and 1.2
       dataPoint[db.id] = Math.round(baseLatency * (1 + i * 0.1) * randomFactor)
     })
@@ -38,13 +56,14 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
 
   // Prepare data for radar chart
   const radarData = databases.map((db) => {
+    const perf = db?.performance || {};
     return {
       name: db.name,
-      querySpeed: normalizeValue(db.performance.queryLatencyMs, 50, 1, true),
-      indexingSpeed: normalizeValue(db.performance.indexingSpeedVectorsPerSec, 10000, 100000),
-      memoryEfficiency: normalizeValue(db.performance.memoryUsageMb, 500, 50, true),
-      scalability: db.performance.scalabilityScore,
-      accuracy: db.performance.accuracyScore,
+      querySpeed: normalizeValue(perf.queryLatencyMs ?? DEFAULT_QUERY_LATENCY, 50, 1, true),
+      indexingSpeed: normalizeValue(perf.indexingSpeedVectorsPerSec ?? DEFAULT_INDEXING_SPEED, 10000, 100000),
+      memoryEfficiency: normalizeValue(perf.memoryUsageMb ?? DEFAULT_MEMORY_USAGE, 500, 50, true),
+      scalability: perf.scalabilityScore ?? DEFAULT_SCALABILITY,
+      accuracy: perf.accuracyScore ?? DEFAULT_ACCURACY,
     }
   })
 
@@ -63,18 +82,19 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
         </CardHeader>
         <CardContent className="h-96">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={queryLatencyData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" />
+            <LineChart key="query-latency-chart" data={queryLatencyData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+              <CartesianGrid key="grid" strokeDasharray="3 3" />
               <XAxis
+                key="x-axis"
                 dataKey="vectorSize"
                 label={{ value: "Vector Size", position: "insideBottomRight", offset: -10 }}
               />
-              <YAxis label={{ value: "Latency (ms)", angle: -90, position: "insideLeft" }} />
-              <Tooltip />
-              <Legend />
+              <YAxis key="y-axis" label={{ value: "Latency (ms)", angle: -90, position: "insideLeft" }} />
+              <Tooltip key="tooltip" />
+              <Legend key="legend" />
               {databases.map((db, index) => (
                 <Line
-                  key={db.id}
+                  key={`line-${db.id}`}
                   type="monotone"
                   dataKey={db.id}
                   name={db.name}
@@ -122,18 +142,18 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
             </TabsContent>
 
             <TabsContent value="individual">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div key="individual-charts-grid" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {databases.map((db, index) => (
-                  <div key={db.id} className="border rounded-lg p-4">
+                  <div key={`radar-chart-${db.id}`} className="border rounded-lg p-4">
                     <h3 className="text-lg font-medium mb-2">{db.name}</h3>
                     <ResponsiveContainer width="100%" height={200}>
-                      <RadarChart outerRadius={80} data={[radarData[index]]}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="name" />
-                        <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                      <RadarChart key={`individual-radar-${db.id}`} outerRadius={80} data={[radarData[index]]}>
+                        <PolarGrid key={`grid-${db.id}`} />
+                        <PolarAngleAxis key={`angle-${db.id}`} dataKey="name" />
+                        <PolarRadiusAxis key={`radius-${db.id}`} angle={30} domain={[0, 100]} />
                         {["querySpeed", "indexingSpeed", "memoryEfficiency", "scalability", "accuracy"].map((key) => (
                           <Radar
-                            key={key}
+                            key={`${db.id}-${key}`}
                             name={formatMetricName(key)}
                             dataKey={key}
                             stroke={getColorByIndex(index)}
@@ -141,7 +161,7 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
                             fillOpacity={0.6}
                           />
                         ))}
-                        <Tooltip />
+                        <Tooltip key={`tooltip-${db.id}`} />
                       </RadarChart>
                     </ResponsiveContainer>
                   </div>

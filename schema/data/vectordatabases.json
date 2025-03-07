@@ -1035,5 +1035,438 @@
     ],
     "employee_count": "500-1000"
   }
-}
-    ]}
+},
+    {
+      "name": "LanceDB",
+      "logoId": "lancedb",
+      "description": "LanceDB is an open-source database built for AI applications with vector search capabilities and a focus on simplicity and performance.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
+        "ann_algorithms": ["HNSW"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Python", "Rust"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": false
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": ["LangChain", "LlamaIndex"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": false,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Built on Apache Arrow and the Lance format for high performance and interoperability",
+        "performance_metric": "Optimized for both small and large-scale datasets with efficient memory usage"
+      },
+      "business_info": {
+        "company_name": "LanceDB",
+        "founded": 2023,
+        "headquarters": "San Francisco, CA",
+        "total_funding": "Seed",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [],
+        "key_people": [
+          {
+            "name": "Chetan Khatri",
+            "position": "Co-founder"
+          }
+        ],
+        "employee_count": "1-10"
+      }
+    },
+    {
+      "name": "Marqo",
+      "logoId": "marqo",
+      "description": "Marqo is a tensor search engine that makes it easy to build AI-powered search into applications.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Cosine", "Dot Product"],
+        "ann_algorithms": ["HNSW"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Python", "JavaScript"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": false
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": ["LangChain"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": true,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Built-in support for multi-modal search and native tensor operations",
+        "performance_metric": "Optimized for real-time search and indexing with low latency"
+      },
+      "business_info": {
+        "company_name": "Marqo",
+        "founded": 2022,
+        "headquarters": "Sydney, Australia",
+        "total_funding": "Seed",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [],
+        "key_people": [
+          {
+            "name": "Tom Hamer",
+            "position": "Co-founder & CEO"
+          }
+        ],
+        "employee_count": "11-50"
+      }
+    },
+    {
+      "name": "SingleStoreDB",
+      "logoId": "singlestore",
+      "description": "SingleStoreDB is a distributed SQL database that combines transactional and analytical processing with vector search capabilities.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Cosine", "Euclidean", "Dot Product"],
+        "ann_algorithms": ["IVF"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Python", "Java", "Node.js", "Go"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": true
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": false,
+        "community_support": true,
+        "integration_frameworks": ["LangChain", "DBT"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": true,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Combines SQL and vector search capabilities in a single platform",
+        "performance_metric": "Handles millions of vectors with sub-millisecond query times"
+      },
+      "business_info": {
+        "company_name": "SingleStore",
+        "founded": 2011,
+        "headquarters": "San Francisco, CA",
+        "total_funding": "$318.1M",
+        "latest_valuation": "$940M",
+        "funding_rounds": [
+          {
+            "date": "2021-09-08",
+            "amount": "$80M",
+            "series": "F"
+          }
+        ],
+        "key_people": [
+          {
+            "name": "Raj Verma",
+            "position": "CEO"
+          }
+        ],
+        "employee_count": "251-500"
+      }
+    },
+    {
+      "name": "Vald",
+      "logoId": "vald",
+      "description": "Vald is a highly scalable distributed vector search engine designed for speed and scalability.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Cosine", "Euclidean", "Angular"],
+        "ann_algorithms": ["NGT", "HNSW"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Go", "Python", "Java"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": true
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": []
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": false,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Built with Kubernetes-native architecture for cloud-native deployments",
+        "performance_metric": "Highly scalable with support for billions of vectors"
+      },
+      "business_info": {
+        "company_name": "Yahoo Japan Corporation",
+        "founded": 2019,
+        "headquarters": "Tokyo, Japan",
+        "total_funding": "N/A (Part of Yahoo Japan)",
+        "latest_valuation": "N/A",
+        "funding_rounds": [],
+        "key_people": [],
+        "employee_count": "N/A (Part of Yahoo Japan)"
+      }
+    },
+    {
+      "name": "Vespa",
+      "logoId": "vespa",
+      "description": "Vespa is a versatile search and serving engine that combines vector search with traditional search and ranking capabilities.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Angular", "Euclidean", "Inner Product"],
+        "ann_algorithms": ["HNSW"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Java", "Python", "Go"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": false
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": ["LangChain"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": false,
+        "enterprise_plans": true
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Real-time big data serving with advanced search and ranking capabilities",
+        "performance_metric": "Handles billions of vectors with sub-millisecond latency"
+      },
+      "business_info": {
+        "company_name": "Yahoo",
+        "founded": 2017,
+        "headquarters": "Sunnyvale, CA",
+        "total_funding": "N/A (Part of Yahoo)",
+        "latest_valuation": "N/A",
+        "funding_rounds": [],
+        "key_people": [
+          {
+            "name": "Jon Bratseth",
+            "position": "Distinguished Architect"
+          }
+        ],
+        "employee_count": "N/A (Part of Yahoo)"
+      }
+    },
+    {
+      "name": "DocArray",
+      "logoId": "docarray",
+      "description": "DocArray is a library for nested, unstructured data in transit, including vector data and neural search capabilities.",
+      "deployment": {
+        "cloud": true,
+        "local": true,
+        "on_premises": true
+      },
+      "scalability": {
+        "horizontal": true,
+        "vertical": true,
+        "distributed": true
+      },
+      "data_management": {
+        "import": true,
+        "update_deletion": true,
+        "backup_restore": true
+      },
+      "vector_similarity_search": {
+        "distance_metrics": ["Cosine", "Euclidean", "Minkowski"],
+        "ann_algorithms": ["HNSW", "Annoy"],
+        "filtering": true,
+        "post_processing": true
+      },
+      "integration_api": {
+        "sdks": ["Python"],
+        "rest_api": true,
+        "graphql_api": false,
+        "grpc_api": true
+      },
+      "security": {
+        "authentication": true,
+        "encryption": true,
+        "access_control": true
+      },
+      "community_ecosystem": {
+        "open_source": true,
+        "community_support": true,
+        "integration_frameworks": ["Jina"]
+      },
+      "pricing": {
+        "free_tier": true,
+        "pay_as_you_go": false,
+        "enterprise_plans": false
+      },
+      "additional_features": {
+        "metadata_support": true,
+        "batch_processing": true,
+        "monitoring_logging": true
+      },
+      "specific_details": {
+        "unique_feature": "Seamless integration with deep learning frameworks and support for multimodal data",
+        "performance_metric": "Efficient handling of nested, unstructured data with vector search capabilities"
+      },
+      "business_info": {
+        "company_name": "Jina AI",
+        "founded": 2020,
+        "headquarters": "Berlin, Germany",
+        "total_funding": "$37.5M",
+        "latest_valuation": "Unknown",
+        "funding_rounds": [
+          {
+            "date": "2021-11-24",
+            "amount": "$30M",
+            "series": "A"
+          }
+        ],
+        "key_people": [
+          {
+            "name": "Han Xiao",
+            "position": "Founder & CEO"
+          }
+        ],
+        "employee_count": "51-200"
+      }
+    }
+  ]}
