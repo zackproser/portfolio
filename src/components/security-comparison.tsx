@@ -19,12 +19,12 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <tr>
                 <TableHead className="w-[250px]">Feature</TableHead>
                 {databases.map((db) => (
                   <TableHead key={db.id}>{db.name}</TableHead>
                 ))}
-              </TableRow>
+              </tr>
             </TableHeader>
             <TableBody>
               {[
@@ -67,12 +67,12 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <tr>
                 <TableHead className="w-[250px]">Standard</TableHead>
                 {databases.map((db) => (
                   <TableHead key={db.id}>{db.name}</TableHead>
                 ))}
-              </TableRow>
+              </tr>
             </TableHeader>
             <TableBody>
               {[

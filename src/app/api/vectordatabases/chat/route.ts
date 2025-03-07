@@ -1,18 +1,96 @@
-import { streamText } from 'ai';
+import { streamText, generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
-import { Database } from '@/types/database';
-import { databases } from '@/data/databases';
+import { getDatabases } from '@/lib/getDatabases';
+import { sendFreeChaptersEmail } from '@/lib/postmark';
+import { tool } from 'ai';
+import { z } from 'zod';
+import { LeadAnalysis } from '@/types';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
 
+interface Message {
+  role: string;
+  content: string;
+}
+
+// Define tools for the AI to use
+const tools = {
+  analyzePotentialLead: tool({
+    description: 'Analyze if the conversation indicates a potential lead',
+    parameters: z.object({
+      messages: z.array(z.object({
+        role: z.string(),
+        content: z.string()
+      })).describe('The conversation messages to analyze')
+    }),
+    execute: async ({ messages }) => {
+      // Use generateText for the analysis
+      const { text } = await generateText({
+        model: openai('gpt-4-turbo-preview'),
+        messages: [
+          {
+            role: "system",
+            content: `You are a lead qualification expert. Analyze the conversation to determine if the user shows signs of being a potential client for vector database consulting or implementation services. Consider factors like:
+1. Technical sophistication of their questions
+2. Indication of real project needs
+3. Signs of decision-making authority
+4. Urgency or timeline mentions
+5. Budget discussions or enterprise context
+
+Respond with a JSON object containing:
+{
+  "isPotentialLead": boolean,
+  "confidence": number (0-1),
+  "reasons": string[],
+  "topics": string[],
+  "nextSteps": string[]
+}`
+          },
+          {
+            role: "user",
+            content: messages.map(m => `${m.role}: ${m.content}`).join('\n')
+          }
+        ],
+        temperature: 0,
+        format: 'json'
+      });
+
+      const result = JSON.parse(text) as LeadAnalysis;
+      
+      // If high confidence lead, send notification
+      if (result.isPotentialLead && result.confidence > 0.7) {
+        try {
+          await sendFreeChaptersEmail({
+            To: process.env.NOTIFICATION_EMAIL || '',
+            ProductName: 'Vector Database Consultation',
+            ProductSlug: 'vector-database-consultation',
+            ChapterLinks: result.nextSteps.map(step => ({
+              title: step,
+              url: '#'
+            }))
+          });
+        } catch (error) {
+          console.error('Failed to send lead notification:', error);
+        }
+      }
+
+      return result;
+    }
+  })
+};
+
 export async function POST(req: Request) {
   const { messages } = await req.json();
-
-  // Get the last message
   const lastMessage = messages[messages.length - 1];
 
-  console.log(`lastMessage: %o`, lastMessage);
+  // Get fresh database data
+  const databases = getDatabases();
+
+  // Ensure databases exists and has data
+  if (!databases || !Array.isArray(databases) || databases.length === 0) {
+    return new Response('Database information not available', { status: 500 });
+  }
 
   // Convert databases to a structured format for the LLM
   const databasesContext = databases.map(db => `
@@ -35,38 +113,14 @@ ${Object.entries(db.performance)
   .map(([key, value]) => `- ${key}: ${value}`)
   .join('\n')}
 
-Security Features:
-${Object.entries(db.security)
-  .map(([key, value]) => `- ${key}: ${value}`)
-  .join('\n')}
-
-Supported Algorithms:
-${Object.entries(db.algorithms)
-  .map(([key, value]) => `- ${key}: ${value}`)
-  .join('\n')}
-
-Search Capabilities:
-${Object.entries(db.searchCapabilities)
-  .map(([key, value]) => `- ${key}: ${value}`)
-  .join('\n')}
-
 AI & ML Capabilities:
-- Features:
 ${Object.entries(db.aiCapabilities.features)
-  .map(([key, value]) => `  • ${key}: ${value}`)
+  .map(([key, value]) => `- ${key}: ${value}`)
   .join('\n')}
-- Scores:
-${Object.entries(db.aiCapabilities.scores)
-  .map(([key, value]) => `  • ${key}: ${value}/10`)
-  .join('\n')}
-- RAG Features:
-${db.aiCapabilities.ragFeatures.map(feature => `  • ${feature}`).join('\n')}
-- RAG Limitations:
-${db.aiCapabilities.ragLimitations.map(limitation => `  • ${limitation}`).join('\n')}
-  `).join('\n---\n');
+`).join('\n---\n');
 
   const prompt = `
-You are an expert AI assistant specializing in vector databases. You have detailed knowledge about Pinecone, Weaviate, and Milvus based on the following up-to-date information:
+You are an expert AI assistant specializing in vector databases. You have detailed knowledge about vector databases based on the following up-to-date information:
 
 START CONTEXT BLOCK
 ${databasesContext}
@@ -83,9 +137,11 @@ When answering questions:
 Remember: You're helping users understand and compare vector databases based on real, current data.`;
 
   const result = streamText({
-    model: openai.chat('gpt-4.5-preview'),
+    model: openai('gpt-4-turbo-preview'),
     system: prompt,
     prompt: lastMessage.content,
+    tools,
+    maxSteps: 3,
   });
 
   return result.toDataStreamResponse();
