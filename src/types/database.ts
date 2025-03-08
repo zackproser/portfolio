@@ -1,5 +1,6 @@
 // Database interface for vector database comparisons
 export interface Database {
+  id: string;
   name: string;
   logoId: string;
   description: string;
@@ -30,10 +31,11 @@ export interface Database {
     graphql_api?: boolean;
     grpc_api?: boolean;
   };
-  security?: {
+  security: {
     authentication?: boolean;
     encryption?: boolean;
     access_control?: boolean;
+    [key: string]: boolean | string | undefined;
   };
   community_ecosystem?: {
     open_source?: boolean;
@@ -54,7 +56,7 @@ export interface Database {
     unique_feature?: string;
     performance_metric?: string;
   };
-  business_info: {
+  business_info?: {
     company_name?: string;
     founded?: number;
     headquarters?: string;
@@ -64,6 +66,49 @@ export interface Database {
     key_people: Array<{ name: string; position: string }>;
     employee_count: string;
     [key: string]: any;
+  };
+  company: {
+    name: string;
+    founded: number;
+    funding: string;
+    employees: number;
+  };
+  features: {
+    [key: string]: boolean | string;
+  };
+  performance: {
+    latency: string;
+    throughput: string;
+    scalability: string;
+    queryLatencyMs: number;
+    indexingSpeedVectorsPerSec: number;
+    memoryUsageMb: number;
+    scalabilityScore: number;
+    accuracyScore: number;
+    [key: string]: number | string;
+  };
+  algorithms: {
+    [key: string]: boolean | string;
+  };
+  searchCapabilities: {
+    [key: string]: boolean | string;
+  };
+  aiCapabilities: {
+    features: {
+      [key: string]: boolean | string;
+    };
+    scores: {
+      llmIntegration: number;
+      embeddingGeneration: number;
+      ragSupport: number;
+      fineTuning: number;
+      modelHosting: number;
+    };
+    supportedModels: {
+      [key: string]: boolean | string;
+    };
+    ragFeatures: string[];
+    ragLimitations: string[];
   };
   [category: string]: { [feature: string]: any } | any;
 } 
