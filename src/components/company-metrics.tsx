@@ -71,7 +71,7 @@ export default function CompanyMetrics({ databases }: CompanyMetricsProps) {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow key="company-metrics-header">
                 <TableHead>Database</TableHead>
                 <TableHead>Company</TableHead>
                 <TableHead>Founded</TableHead>
@@ -81,7 +81,7 @@ export default function CompanyMetrics({ databases }: CompanyMetricsProps) {
             </TableHeader>
             <TableBody>
               {databases.map((db, index) => (
-                <TableRow key={`${db.id || db.name}-${index}`}>
+                <TableRow key={`${db.id || `db-${index}`}`}>
                   <TableCell className="font-medium">{db.name}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

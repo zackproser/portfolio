@@ -31,10 +31,11 @@ export interface Database {
     graphql_api?: boolean;
     grpc_api?: boolean;
   };
-  security?: {
+  security: {
     authentication?: boolean;
     encryption?: boolean;
     access_control?: boolean;
+    [key: string]: boolean | string | undefined;
   };
   community_ecosystem?: {
     open_source?: boolean;
@@ -55,7 +56,7 @@ export interface Database {
     unique_feature?: string;
     performance_metric?: string;
   };
-  business_info: {
+  business_info?: {
     company_name?: string;
     founded?: number;
     headquarters?: string;
@@ -85,9 +86,6 @@ export interface Database {
     scalabilityScore: number;
     accuracyScore: number;
     [key: string]: number | string;
-  };
-  security: {
-    [key: string]: boolean | string;
   };
   algorithms: {
     [key: string]: boolean | string;
