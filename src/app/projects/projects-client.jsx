@@ -202,7 +202,7 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                               <ArrowUpRight size={16} className="inline-block opacity-70" />
                             </Link>
                           </CardTitle>
-                          <CardDescription className="text-sm line-clamp-2 mt-1">
+                          <CardDescription className="text-sm mt-2 min-h-[60px]">
                             {project.description}
                           </CardDescription>
                         </CardHeader>
@@ -252,16 +252,13 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                           )}
                         </div>
                         <div className="flex-grow">
-                          <h3 className="text-lg font-semibold mb-1">
-                            <Link
-                              href={project.link}
-                              className="hover:text-primary transition-colors flex items-center gap-1"
-                            >
+                          <Link href={project.link}>
+                            <h3 className="text-lg font-semibold mb-2 hover:text-primary transition-colors flex items-center gap-1">
                               {project.name}
                               <ArrowUpRight size={16} className="inline-block opacity-70" />
-                            </Link>
-                          </h3>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2 line-clamp-2">
+                            </h3>
+                          </Link>
+                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                             {project.description}
                           </p>
                           <div className="flex items-center justify-between">
