@@ -30,10 +30,10 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
               {[
                 { key: "authentication", label: "Authentication" },
                 { key: "encryption", label: "Encryption" },
-                { key: "accessControl", label: "Access Control" },
-                { key: "auditLogging", label: "Audit Logging" },
-                { key: "encryptedAtRest", label: "Encrypted at Rest" },
-                { key: "encryptedInTransit", label: "Encrypted in Transit" },
+                { key: "access_control", label: "Access Control" },
+                { key: "audit_logging", label: "Audit Logging" },
+                { key: "encrypted_at_rest", label: "Encrypted at Rest" },
+                { key: "encrypted_in_transit", label: "Encrypted in Transit" },
                 { key: "multitenancy", label: "Multitenancy" },
               ].map((feature) => (
                 <TableRow key={feature.key}>

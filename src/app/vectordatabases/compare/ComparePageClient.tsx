@@ -145,7 +145,9 @@ export default function ComparePageClient({
   );
 
   const renderBusinessInfoComparison = () => {
-    if (selectedDatabases.length === 0 || !selectedDatabases[0].business_info) {
+    const hasBusinessInfo = selectedDatabases.some(db => db.business_info);
+    
+    if (selectedDatabases.length === 0 || !hasBusinessInfo) {
       return (
         <Card className="mb-4">
           <CardHeader>
@@ -157,6 +159,9 @@ export default function ComparePageClient({
         </Card>
       );
     }
+    
+    const dbWithInfo = selectedDatabases.find(db => db.business_info) || selectedDatabases[0];
+    const businessInfoKeys = dbWithInfo.business_info ? Object.keys(dbWithInfo.business_info) : [];
     
     return (
       <Card className="mb-4">
@@ -174,7 +179,7 @@ export default function ComparePageClient({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Object.keys(selectedDatabases[0].business_info || {}).map(key => (
+              {businessInfoKeys.map(key => (
                 <TableRow key={key}>
                   <TableCell className="font-medium">{formatFieldName(key)}</TableCell>
                   {selectedDatabases.map((db, index) => (
@@ -183,7 +188,7 @@ export default function ComparePageClient({
                         <ul>
                           {db.business_info?.[key]?.map((round, i) => (
                             <li key={i}>{round.date}: {round.amount} (Series {round.series})</li>
-                          ))}
+                          )) || 'No data'}
                         </ul>
                       ) : key === 'key_people' ? (
                         <ul>
@@ -192,7 +197,7 @@ export default function ComparePageClient({
                           ))}
                         </ul>
                       ) : (
-                        db.business_info?.[key]
+                        db.business_info?.[key] || 'N/A'
                       )}
                     </TableCell>
                   ))}
@@ -205,54 +210,79 @@ export default function ComparePageClient({
     );
   };
 
-  const renderComparison = (category: string) => (
-    <AccordionItem value={category} key={category}>
-      <AccordionTrigger className="text-xl">
-        <div className="flex items-center">
-          <span className="text-2xl mr-2">{getEmoji(category)}</span>
-          <span>{formatFieldName(category)}</span>
-        </div>
-        <p className="text-sm text-gray-600 ml-2">{categories[category].description}</p>
-      </AccordionTrigger>
-      <AccordionContent>
-        <p className="text-sm text-gray-600 mb-4">Why it&apos;s important: {categories[category].importance}</p>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Feature</TableHead>
-              {selectedDatabases.map((db, index) => (
-                <TableHead key={db.name} style={{ color: getDbColor(index) }}>{db.name}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Object.entries(selectedDatabases[0][category] as { [feature: string]: any }).map(([feature, _]) => (
-              <TableRow key={feature}>
-                <TableCell className="font-medium">
-                  <span className="text-2xl mr-2">{getEmoji(feature)}</span> {formatFieldName(feature)}
-                  <p className="text-xs text-gray-600">{features[feature]?.description}</p>
-                </TableCell>
-                {selectedDatabases.map((db, index) => {
-                  const value = (db[category] as { [feature: string]: any })[feature];
-                  return (
-                    <TableCell key={db.name}>
-                      {typeof value === 'boolean' ? (
-                        <span className={value ? 'text-green-600' : 'text-red-600'}>
-                          {getEmoji(value.toString())}
-                        </span>
-                      ) : (
-                        value?.toString() ?? ''
-                      )}
-                    </TableCell>
-                  );
-                })}
+  const renderComparison = (category: string) => {
+    const allHaveCategory = selectedDatabases.every(db => db[category]);
+    
+    if (!allHaveCategory || selectedDatabases.length === 0) {
+      return (
+        <AccordionItem value={category} key={category}>
+          <AccordionTrigger className="text-xl">
+            <div className="flex items-center">
+              <span className="text-2xl mr-2">{getEmoji(category)}</span>
+              <span>{formatFieldName(category)}</span>
+            </div>
+            <p className="text-sm text-gray-600 ml-2">{categories[category]?.description || ''}</p>
+          </AccordionTrigger>
+          <AccordionContent>
+            <p>No data available for this category.</p>
+          </AccordionContent>
+        </AccordionItem>
+      );
+    }
+    
+    const dbWithCategory = selectedDatabases.find(db => db[category]) || selectedDatabases[0];
+    const categoryFeatures = dbWithCategory[category] ? Object.keys(dbWithCategory[category] as object) : [];
+    
+    return (
+      <AccordionItem value={category} key={category}>
+        <AccordionTrigger className="text-xl">
+          <div className="flex items-center">
+            <span className="text-2xl mr-2">{getEmoji(category)}</span>
+            <span>{formatFieldName(category)}</span>
+          </div>
+          <p className="text-sm text-gray-600 ml-2">{categories[category]?.description || ''}</p>
+        </AccordionTrigger>
+        <AccordionContent>
+          <p className="text-sm text-gray-600 mb-4">Why it&apos;s important: {categories[category]?.importance || ''}</p>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Feature</TableHead>
+                {selectedDatabases.map((db, index) => (
+                  <TableHead key={db.name} style={{ color: getDbColor(index) }}>{db.name}</TableHead>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </AccordionContent>
-    </AccordionItem>
-  );
+            </TableHeader>
+            <TableBody>
+              {categoryFeatures.map(feature => (
+                <TableRow key={feature}>
+                  <TableCell className="font-medium">
+                    <span className="text-2xl mr-2">{getEmoji(feature)}</span> {formatFieldName(feature)}
+                    <p className="text-xs text-gray-600">{features[feature]?.description || ''}</p>
+                  </TableCell>
+                  {selectedDatabases.map((db, index) => {
+                    const categoryObj = db[category] as { [feature: string]: any } || {};
+                    const value = categoryObj[feature];
+                    return (
+                      <TableCell key={db.name}>
+                        {typeof value === 'boolean' ? (
+                          <span className={value ? 'text-green-600' : 'text-red-600'}>
+                            {getEmoji(value.toString())}
+                          </span>
+                        ) : (
+                          value?.toString() || 'N/A'
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </AccordionContent>
+      </AccordionItem>
+    );
+  };
 
   const toggleAllSections = () => {
     if (openSections.length === Object.keys(categories).length + 1) {
