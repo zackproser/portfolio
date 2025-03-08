@@ -19,29 +19,83 @@ interface AICapabilitiesProps {
 }
 
 export default function AICapabilities({ databases }: AICapabilitiesProps) {
+  // Handle empty databases array
+  if (!databases || databases.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>No Data Available</CardTitle>
+          <CardDescription>Please select some databases to compare.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  // Default scores to use when properties are missing
+  const defaultScores = {
+    llmIntegration: 0,
+    embeddingGeneration: 0,
+    ragSupport: 0,
+    fineTuning: 0,
+    modelHosting: 0
+  };
+
   // Prepare data for radar chart
   const radarData = [
     {
       feature: "LLM Integration",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: db.aiCapabilities.scores.llmIntegration }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.aiCapabilities?.scores?.llmIntegration ?? defaultScores.llmIntegration
+      }), {}),
     },
     {
       feature: "Embedding Generation",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: db.aiCapabilities.scores.embeddingGeneration }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.aiCapabilities?.scores?.embeddingGeneration ?? defaultScores.embeddingGeneration
+      }), {}),
     },
     {
       feature: "RAG Support",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: db.aiCapabilities.scores.ragSupport }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.aiCapabilities?.scores?.ragSupport ?? defaultScores.ragSupport 
+      }), {}),
     },
     {
       feature: "Fine-tuning",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: db.aiCapabilities.scores.fineTuning }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.aiCapabilities?.scores?.fineTuning ?? defaultScores.fineTuning
+      }), {}),
     },
     {
       feature: "Model Hosting",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: db.aiCapabilities.scores.modelHosting }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.aiCapabilities?.scores?.modelHosting ?? defaultScores.modelHosting
+      }), {}),
     },
   ]
+
+  const aiFeatures = [
+    { key: "embeddingGeneration", label: "Built-in Embedding Generation" },
+    { key: "llmIntegration", label: "LLM Integration" },
+    { key: "ragSupport", label: "RAG Support" },
+    { key: "semanticCaching", label: "Semantic Caching" },
+    { key: "modelHosting", label: "Model Hosting" },
+    { key: "fineTuning", label: "Fine-tuning Support" },
+  ];
+
+  const aiModels = [
+    { key: "openai", label: "OpenAI (GPT)" },
+    { key: "huggingface", label: "Hugging Face" },
+    { key: "pytorch", label: "PyTorch" },
+    { key: "tensorflow", label: "TensorFlow" },
+    { key: "langchain", label: "LangChain" },
+    { key: "llamaindex", label: "LlamaIndex" },
+  ];
 
   return (
     <div className="space-y-8">
@@ -61,14 +115,7 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                { key: "embeddingGeneration", label: "Built-in Embedding Generation" },
-                { key: "llmIntegration", label: "LLM Integration" },
-                { key: "ragSupport", label: "RAG Support" },
-                { key: "semanticCaching", label: "Semantic Caching" },
-                { key: "modelHosting", label: "Model Hosting" },
-                { key: "fineTuning", label: "Fine-tuning Support" },
-              ].map((feature) => (
+              {aiFeatures.map((feature) => (
                 <TableRow key={feature.key}>
                   <TableCell className="font-medium">
                     <div>
@@ -85,7 +132,7 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
                   </TableCell>
                   {databases.map((db, index) => (
                     <TableCell key={`${db.id || `db-${index}`}-${feature.key}`}>
-                      {renderFeatureSupport(db.aiCapabilities.features[feature.key])}
+                      {renderFeatureSupport(db.aiCapabilities?.features?.[feature.key])}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -108,7 +155,7 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
               <PolarRadiusAxis angle={30} domain={[0, 10]} />
               {databases.map((db, index) => (
                 <Radar
-                  key={db.id}
+                  key={db.id || index}
                   name={db.name}
                   dataKey={db.name}
                   stroke={getColorByIndex(index)}
@@ -139,19 +186,12 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                { key: "openai", label: "OpenAI (GPT)" },
-                { key: "huggingface", label: "Hugging Face" },
-                { key: "pytorch", label: "PyTorch" },
-                { key: "tensorflow", label: "TensorFlow" },
-                { key: "langchain", label: "LangChain" },
-                { key: "llamaindex", label: "LlamaIndex" },
-              ].map((model) => (
+              {aiModels.map((model) => (
                 <TableRow key={model.key}>
                   <TableCell className="font-medium">{model.label}</TableCell>
                   {databases.map((db, index) => (
                     <TableCell key={`${db.id || `db-${index}`}-${model.key}`}>
-                      {renderFeatureSupport(db.aiCapabilities.supportedModels[model.key])}
+                      {renderFeatureSupport(db.aiCapabilities?.supportedModels?.[model.key])}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -168,22 +208,22 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {databases.map((db) => (
-              <Card key={db.id} className="border-2">
+            {databases.map((db, index) => (
+              <Card key={db.id || index} className="border-2">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">{db.name}</CardTitle>
-                  <CardDescription>RAG Score: {db.aiCapabilities.scores.ragSupport}/10</CardDescription>
+                  <CardDescription>RAG Score: {db.aiCapabilities?.scores?.ragSupport ?? 0}/10</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {db.aiCapabilities.ragFeatures.map((feature, index) => (
-                      <li key={index} className="flex items-start">
+                    {db.aiCapabilities?.ragFeatures?.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
                         <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
                         <span>{feature}</span>
                       </li>
-                    ))}
-                    {db.aiCapabilities.ragLimitations.map((limitation, index) => (
-                      <li key={`limit-${index}`} className="flex items-start text-muted-foreground">
+                    )) || <li>No RAG features data available</li>}
+                    {db.aiCapabilities?.ragLimitations?.map((limitation, idx) => (
+                      <li key={`limit-${idx}`} className="flex items-start text-muted-foreground">
                         <X className="h-5 w-5 text-red-500 mr-2 mt-0.5" />
                         <span>{limitation}</span>
                       </li>
@@ -199,8 +239,10 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
   )
 }
 
-function renderFeatureSupport(support: boolean | string) {
-  if (support === true) {
+function renderFeatureSupport(support: boolean | string | undefined) {
+  if (support === undefined) {
+    return <Badge variant="outline">Unknown</Badge>
+  } else if (support === true) {
     return <Check className="h-5 w-5 text-green-500" />
   } else if (support === false) {
     return <X className="h-5 w-5 text-red-500" />

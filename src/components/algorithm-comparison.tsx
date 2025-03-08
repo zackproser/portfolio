@@ -10,13 +10,34 @@ interface AlgorithmComparisonProps {
 }
 
 export default function AlgorithmComparison({ databases }: AlgorithmComparisonProps) {
+  if (!databases || databases.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>No Data Available</CardTitle>
+          <CardDescription>Please select some databases to compare.</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+  
   // Prepare data for algorithm comparison chart
   const algorithmPerformanceData = [
     {
       name: "Supported Algorithms",
-      ...databases.reduce((acc, db) => ({ ...acc, [db.name]: Object.keys(db.algorithms).length }), {}),
+      ...databases.reduce((acc, db) => ({ 
+        ...acc, 
+        [db.name]: db.algorithms ? Object.keys(db.algorithms).length : 0 
+      }), {}),
     },
   ]
+
+  const algorithmList = [
+    { key: "hnsw", label: "HNSW (Hierarchical Navigable Small World)" },
+    { key: "ivf", label: "IVF (Inverted File Index)" },
+    { key: "lsh", label: "LSH (Locality-Sensitive Hashing)" },
+    { key: "quantization", label: "Quantization" },
+  ];
 
   return (
     <div className="space-y-8">
@@ -36,12 +57,7 @@ export default function AlgorithmComparison({ databases }: AlgorithmComparisonPr
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                { key: "hnsw", label: "HNSW (Hierarchical Navigable Small World)" },
-                { key: "ivf", label: "IVF (Inverted File Index)" },
-                { key: "lsh", label: "LSH (Locality-Sensitive Hashing)" },
-                { key: "quantization", label: "Quantization" },
-              ].map((algo) => (
+              {algorithmList.map((algo) => (
                 <TableRow key={algo.key}>
                   <TableCell className="font-medium">
                     <div>
@@ -70,7 +86,7 @@ export default function AlgorithmComparison({ databases }: AlgorithmComparisonPr
                   </TableCell>
                   {databases.map((db, index) => (
                     <TableCell key={`${db.id || `db-${index}`}-${algo.key}`}>
-                      {db.algorithms[algo.key] ? (
+                      {db.algorithms && db.algorithms[algo.key] ? (
                         <Badge variant="default">Supported</Badge>
                       ) : (
                         <Badge variant="secondary">Not Supported</Badge>
@@ -99,7 +115,7 @@ export default function AlgorithmComparison({ databases }: AlgorithmComparisonPr
                 <Tooltip />
                 <Legend />
                 {databases.map((db, index) => (
-                  <Bar key={db.id} dataKey={db.name} fill={getColorByIndex(index)} />
+                  <Bar key={db.id || index} dataKey={db.name} fill={getColorByIndex(index)} />
                 ))}
               </BarChart>
             </ResponsiveContainer>

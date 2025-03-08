@@ -33,7 +33,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: true,
+      audit_logging: true,
     },
     algorithms: {
       hnsw: true,
@@ -117,7 +117,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: true,
+      audit_logging: true,
     },
     algorithms: {
       hnsw: true,
@@ -203,7 +203,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: true,
+      audit_logging: true,
     },
     algorithms: {
       hnsw: true,
@@ -289,7 +289,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -363,7 +363,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -437,7 +437,7 @@ export const databases: Database[] = [
       encryption: false,
       authentication: false,
       access_control: false,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -511,7 +511,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -585,7 +585,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -659,7 +659,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -708,7 +708,7 @@ export const databases: Database[] = [
     description: "pgvector is an open-source extension for PostgreSQL that adds support for vector similarity search, enabling AI applications and embeddings directly within PostgreSQL.",
     company: {
       name: "PostgreSQL Global Development Group",
-      founded: Unknown,
+      founded: 2021,
       funding: "N/A (Open Source Project)",
       employees: 0,
     },
@@ -733,7 +733,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: false,
@@ -807,7 +807,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -881,7 +881,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -955,7 +955,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -1029,7 +1029,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: false,
@@ -1103,7 +1103,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
@@ -1177,7 +1177,7 @@ export const databases: Database[] = [
       encryption: true,
       authentication: true,
       access_control: true,
-      auditLogging: false,
+      audit_logging: false,
     },
     algorithms: {
       hnsw: true,
