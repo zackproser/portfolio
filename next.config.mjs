@@ -118,6 +118,16 @@ const nextConfig = {
         source: '/blog/vector-databases-compared',
         destination: '/vectordatabases',
         permanent: true
+      },
+      {
+        source: '/comparisons',
+        destination: '/vectordatabases',
+        permanent: true
+      },
+      {
+        source: '/comparisons/:comparison*',
+        destination: '/vectordatabases',
+        permanent: true
       }
     ]
   },
