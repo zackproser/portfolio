@@ -8,9 +8,10 @@ import SecurityComparison from "@/components/security-comparison"
 import AlgorithmComparison from "@/components/algorithm-comparison"
 import SearchCapabilities from "@/components/search-capabilities"
 import AICapabilities from "@/components/ai-capabilities"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { DatabaseFilter } from "@/components/database-filter"
 import type { Database } from "@/types/database"
+import { InfoIcon } from "lucide-react"
 
 interface DatabaseComparisonToolProps {
   databases: Database[]
@@ -35,6 +36,13 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
   // Track selected databases
   const [selectedDatabases, setSelectedDatabases] = useState<string[]>([]);
   
+  // Custom handler for database selection with direct state updates
+  const handleDatabaseSelection = useCallback((ids: string[]) => {
+    console.log('Setting selected databases to:', ids);
+    // Force a new array reference to ensure state updates
+    setSelectedDatabases([...ids]);
+  }, []);
+  
   // Initialize selected databases whenever the databases array changes
   useEffect(() => {
     if (databasesWithValidIds.length > 0 && selectedDatabases.length === 0) {
@@ -42,7 +50,7 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
       
       // Initialize with all database IDs
       const allIds = databasesWithValidIds.map(db => db.id);
-      setSelectedDatabases(allIds);
+      setSelectedDatabases([...allIds]);
       
       console.log(`Selected ${allIds.length} databases for initial state`);
     }
@@ -57,7 +65,9 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
   useEffect(() => {
     console.log(`Total available databases: ${databasesWithValidIds.length}`);
     console.log(`Selected database IDs: ${selectedDatabases.length}`);
+    console.log(`Selected IDs: ${selectedDatabases.join(', ')}`);
     console.log(`Filtered databases: ${filteredDatabases.length}`);
+    console.log(`Filtered names: ${filteredDatabases.map(db => db.name).join(', ')}`);
     
     // Check for duplicates
     const idCounts: Record<string, number> = {};
@@ -70,18 +80,26 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
         console.warn(`Duplicate database ID found: ${id} appears ${count} times`);
       }
     });
-  }, [databasesWithValidIds, selectedDatabases.length, filteredDatabases.length]);
+  }, [databasesWithValidIds, selectedDatabases, filteredDatabases]);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8 border border-slate-200 dark:border-slate-700">
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">Select Databases to Compare</h2>
         {databasesWithValidIds.length > 0 ? (
-          <DatabaseFilter
-            databases={databasesWithValidIds}
-            selectedDatabases={selectedDatabases}
-            setSelectedDatabases={setSelectedDatabases}
-          />
+          <>
+            <div className="mb-4 flex gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800 rounded-md">
+              <InfoIcon className="h-5 w-5 flex-shrink-0" />
+              <p className="text-sm">
+                Click on a database in the dropdown below to select or deselect it. Use &quot;Select All&quot; or &quot;Clear All&quot; to quickly manage your selection.
+              </p>
+            </div>
+            <DatabaseFilter
+              databases={databasesWithValidIds}
+              selectedDatabases={selectedDatabases}
+              setSelectedDatabases={handleDatabaseSelection}
+            />
+          </>
         ) : (
           <div className="text-amber-500 p-4 bg-amber-50 rounded-md">
             Loading databases...
@@ -91,14 +109,14 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
 
       {filteredDatabases.length > 0 ? (
         <Tabs defaultValue="company" className="w-full">
-          <TabsList className="grid grid-cols-7 mb-8">
-            <TabsTrigger value="company" key="company">Company</TabsTrigger>
-            <TabsTrigger value="features" key="features">Features</TabsTrigger>
-            <TabsTrigger value="performance" key="performance">Performance</TabsTrigger>
-            <TabsTrigger value="security" key="security">Security</TabsTrigger>
-            <TabsTrigger value="algorithms" key="algorithms">Algorithms</TabsTrigger>
-            <TabsTrigger value="search" key="search">Search</TabsTrigger>
-            <TabsTrigger value="ai" key="ai">AI Capabilities</TabsTrigger>
+          <TabsList className="grid grid-cols-7 mb-8 bg-slate-100 dark:bg-slate-700">
+            <TabsTrigger value="company" key="company" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Company</TabsTrigger>
+            <TabsTrigger value="features" key="features" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Features</TabsTrigger>
+            <TabsTrigger value="performance" key="performance" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Performance</TabsTrigger>
+            <TabsTrigger value="security" key="security" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Security</TabsTrigger>
+            <TabsTrigger value="algorithms" key="algorithms" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Algorithms</TabsTrigger>
+            <TabsTrigger value="search" key="search" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Search</TabsTrigger>
+            <TabsTrigger value="ai" key="ai" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">AI Capabilities</TabsTrigger>
           </TabsList>
 
           <TabsContent value="company" className="mt-0">

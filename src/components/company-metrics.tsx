@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
-import { Building2, Users, Calendar, DollarSign } from "lucide-react"
+import { Building2, Users, Calendar, DollarSign, CheckCircle } from "lucide-react"
 
 interface CompanyMetricsProps {
   databases: Database[]
@@ -69,20 +69,31 @@ export default function CompanyMetrics({ databases }: CompanyMetricsProps) {
           <CardDescription>Key information about the companies behind these vector databases</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700 text-sm">
+            <p>Currently displaying {databases.length} selected databases. Use the dropdown selector at the top to add or remove databases from the comparison.</p>
+          </div>
           <Table>
             <TableHeader>
-              <TableRow key="company-metrics-header">
-                <TableHead>Database</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Founded</TableHead>
-                <TableHead>Funding</TableHead>
-                <TableHead>Employees</TableHead>
+              <TableRow className="bg-slate-50 dark:bg-slate-800">
+                <TableHead className="font-bold">Database</TableHead>
+                <TableHead className="font-bold">Company</TableHead>
+                <TableHead className="font-bold">Founded</TableHead>
+                <TableHead className="font-bold">Funding</TableHead>
+                <TableHead className="font-bold">Employees</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {databases.map((db, index) => (
-                <TableRow key={`${db.id || `db-${index}`}`}>
-                  <TableCell className="font-medium">{db.name}</TableCell>
+                <TableRow 
+                  key={`${db.id || `db-${index}`}`}
+                  className="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" 
+                >
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      {db.name}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {db.company?.name || db.name}
