@@ -16,6 +16,8 @@ import {
   Radar,
 } from "recharts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { VectorBadge } from "@/components/ui/vector-badge"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface PerformanceMetricsProps {
   databases: Database[]
@@ -111,6 +113,62 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
               ))}
             </LineChart>
           </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-slate-50 dark:bg-slate-800/50">
+          <CardTitle>Performance Features</CardTitle>
+          <CardDescription>Comparing performance features across vector databases</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="relative w-full overflow-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-white dark:bg-slate-900">
+                  <TableHead className="w-[200px]">Feature</TableHead>
+                  {databases.map((db) => (
+                    <TableHead key={`header-${db.id}`}>{db.name}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <TableCell className="font-medium">Scalability</TableCell>
+                  {databases.map((db) => (
+                    <TableCell key={`scalability-${db.id}`} className="text-center">
+                      <VectorBadge 
+                        value={db.performance?.scalability} 
+                        type="scalability" 
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+                <TableRow className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <TableCell className="font-medium">Latency</TableCell>
+                  {databases.map((db) => (
+                    <TableCell key={`latency-${db.id}`} className="text-center">
+                      <VectorBadge 
+                        value={db.performance?.latency} 
+                        type="latency" 
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+                <TableRow className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <TableCell className="font-medium">Throughput</TableCell>
+                  {databases.map((db) => (
+                    <TableCell key={`throughput-${db.id}`} className="text-center">
+                      <VectorBadge 
+                        value={db.performance?.throughput} 
+                        type="throughput" 
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
