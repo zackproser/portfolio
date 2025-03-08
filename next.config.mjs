@@ -113,6 +113,11 @@ const nextConfig = {
         source: '/blog/weaviate-vs-milvus',
         destination: '/comparisons/weaviate-vs-milvus',
         permanent: true
+      },
+      {
+        source: '/blog/vector-databases-compared',
+        destination: '/vectordatabases',
+        permanent: true
       }
     ]
   },
