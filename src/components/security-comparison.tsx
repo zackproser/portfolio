@@ -137,8 +137,10 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
   )
 }
 
-function renderFeatureSupport(support: boolean | string) {
-  if (support === true) {
+function renderFeatureSupport(support: boolean | string | undefined) {
+  if (support === undefined) {
+    return <X className="h-5 w-5 text-gray-300" />
+  } else if (support === true) {
     return <Check className="h-5 w-5 text-green-500" />
   } else if (support === false) {
     return <X className="h-5 w-5 text-red-500" />
@@ -155,8 +157,10 @@ function renderFeatureSupport(support: boolean | string) {
   }
 }
 
-function renderComplianceStatus(status: boolean | string) {
-  if (status === true) {
+function renderComplianceStatus(status: boolean | string | undefined) {
+  if (status === undefined) {
+    return <Badge variant="outline" className="bg-gray-50 text-gray-500 border-gray-200">Not Specified</Badge>
+  } else if (status === true) {
     return <Badge className="bg-green-50 text-green-700 border-green-200">Certified</Badge>
   } else if (status === false) {
     return <Badge variant="destructive">Not Certified</Badge>
@@ -167,11 +171,15 @@ function renderComplianceStatus(status: boolean | string) {
   }
 }
 
-function calculateSecurityScore(security: Record<string, boolean | string>): number {
+function calculateSecurityScore(security: Record<string, boolean | string | undefined>): number {
+  if (!security) return 0;
+  
   const features = Object.entries(security).filter(
     ([key]) => key !== "soc2_compliance" && key !== "gdpr_compliance"
   )
   const totalFeatures = features.length
+  if (totalFeatures === 0) return 0;
+  
   const supportedFeatures = features.filter(([_, value]) => value === true).length
   return Math.round((supportedFeatures / totalFeatures) * 10)
 }

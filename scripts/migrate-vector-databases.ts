@@ -36,7 +36,7 @@ const existingDatabaseIds = databasesTs.match(/id: "([^"]+)"/g)?.map(
 ) || [];
 
 // Process each database from the JSON file
-vectorDatabasesJson.databases.forEach(db => {
+vectorDatabasesJson.databases.forEach((db: any) => {
   // Skip if the database is already in the TypeScript file
   if (existingDatabaseIds.includes(db.name.toLowerCase())) {
     console.log(`Skipping ${db.name} - already exists`);

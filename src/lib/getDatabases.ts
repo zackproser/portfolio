@@ -54,4 +54,59 @@ export const getDatabases = (): Database[] => {
 export const getDatabaseByName = (name: string): Database | undefined => {
   // Use the filtered list to ensure we don't get duplicates
   return getDatabases().find(db => db.name.toLowerCase() === name.toLowerCase());
+};
+
+// Get categories for database comparison
+export const getCategories = () => {
+  return {
+    company: {
+      description: "Company Information",
+      importance: "Provides background on the company behind the database"
+    },
+    features: {
+      description: "Core Features",
+      importance: "Essential functionalities offered by the database"
+    },
+    performance: {
+      description: "Performance Metrics",
+      importance: "How well the database performs under various conditions"
+    },
+    security: {
+      description: "Security Features",
+      importance: "Security measures and capabilities"
+    },
+    algorithms: {
+      description: "Supported Algorithms",
+      importance: "Vector search algorithms implemented"
+    },
+    searchCapabilities: {
+      description: "Search Capabilities",
+      importance: "Types of search operations supported"
+    },
+    aiCapabilities: {
+      description: "AI Features",
+      importance: "AI and machine learning integration capabilities"
+    }
+  };
+};
+
+// Get features for database comparison
+export const getFeatures = () => {
+  return {
+    cloudNative: {
+      description: "Designed to run in cloud environments"
+    },
+    serverless: {
+      description: "Can be deployed without managing servers"
+    },
+    hybridSearch: {
+      description: "Combines vector search with keyword or filter-based search"
+    },
+    metadataFiltering: {
+      description: "Ability to filter search results by metadata"
+    },
+    batchOperations: {
+      description: "Support for processing multiple items in a single operation"
+    }
+  };
 }; 
