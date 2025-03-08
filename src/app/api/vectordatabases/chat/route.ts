@@ -1,10 +1,11 @@
 import { streamText, generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { getDatabases } from '@/lib/getDatabases';
-import { sendFreeChaptersEmail } from '@/lib/postmark';
 import { tool } from 'ai';
 import { z } from 'zod';
 import { LeadAnalysis } from '@/types';
+import { prisma } from '@/lib/prisma';
+import { auth } from '../../../../../auth';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
@@ -31,7 +32,7 @@ const tools = {
         messages: [
           {
             role: "system",
-            content: `You are a lead qualification expert. Analyze the conversation to determine if the user shows signs of being a potential client for vector database consulting or implementation services. Consider factors like:
+            content: `You are a lead qualification expert. Analyze the conversation to determine if the user shows signs of being a potential client for vector database consulting, GenAI or application services, or implementation services. Consider factors like:
 1. Technical sophistication of their questions
 2. Indication of real project needs
 3. Signs of decision-making authority
@@ -57,20 +58,45 @@ Respond with a JSON object containing:
 
       const result = JSON.parse(text) as LeadAnalysis;
       
-      // If high confidence lead, send notification
-      if (result.isPotentialLead && result.confidence > 0.7) {
+      // If potential lead, store in the database
+      if (result.isPotentialLead) {
         try {
-          await sendFreeChaptersEmail({
-            To: process.env.NOTIFICATION_EMAIL || '',
-            ProductName: 'Vector Database Consultation',
-            ProductSlug: 'vector-database-consultation',
-            ChapterLinks: result.nextSteps.map(step => ({
-              title: step,
-              url: '#'
-            }))
+          // Get user session if available
+          const session = await auth();
+          const userId = session?.user?.id;
+          
+          // Try to get email from session
+          let email = session?.user?.email;
+          
+          // Extract any email-like patterns from the conversation if still no email
+          if (!email) {
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            for (const message of messages) {
+              if (message.role === 'user') {
+                const matches = message.content.match(emailRegex);
+                if (matches && matches.length > 0) {
+                  email = matches[0];
+                  break;
+                }
+              }
+            }
+          }
+          
+          // Store lead information in the database
+          await prisma.lead.create({
+            data: {
+              userId: userId || null,
+              email: email || null,
+              conversation: messages,
+              leadScore: result.confidence,
+              isPotentialLead: result.isPotentialLead,
+              reasons: result.reasons,
+              topics: result.topics,
+              nextSteps: result.nextSteps
+            }
           });
         } catch (error) {
-          console.error('Failed to send lead notification:', error);
+          console.error('Failed to process lead:', error);
         }
       }
 
@@ -140,7 +166,7 @@ Remember: You're helping users understand and compare vector databases based on 
     system: prompt,
     prompt: lastMessage.content,
     tools,
-    maxSteps: 3,
+    maxSteps: 3
   });
 
   return result.toDataStreamResponse();
