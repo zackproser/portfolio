@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Database } from "@/types/database"
 import { Badge } from "@/components/ui/badge"
 
@@ -19,127 +19,108 @@ export function DatabaseFilter({ databases, selectedDatabases, setSelectedDataba
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
+  // Debug information
+  useEffect(() => {
+    console.log(`DatabaseFilter received:`, {
+      databasesCount: databases.length,
+      selectedCount: selectedDatabases.length,
+      databaseNames: databases.map(db => db.name),
+      selectedIds: selectedDatabases,
+      databaseIds: databases.map(db => db.id)
+    });
+  }, [databases, selectedDatabases]);
+
+  // Ensure all databases have valid IDs
+  const databasesWithValidIds = databases.map(db => {
+    if (!db.id) {
+      console.warn(`Database ${db.name} has no ID in filter, generating one`);
+      return {
+        ...db,
+        id: db.name.toLowerCase().replace(/\s+/g, '-')
+      };
+    }
+    return db;
+  });
+
   const toggleDatabase = (id: string) => {
     if (selectedDatabases.includes(id)) {
-      setSelectedDatabases(selectedDatabases.filter((dbId) => dbId !== id))
+      setSelectedDatabases(selectedDatabases.filter(dbId => dbId !== id))
     } else {
-      // Prevent adding duplicates
-      if (!selectedDatabases.includes(id)) {
-        setSelectedDatabases([...selectedDatabases, id])
-      }
+      setSelectedDatabases([...selectedDatabases, id])
     }
-    setOpen(false) // Close popover after selection
   }
 
+  const filteredDatabases = databasesWithValidIds.filter(database => {
+    return database.name.toLowerCase().includes(searchTerm.toLowerCase())
+  })
+
   const selectAll = () => {
-    // Get unique database IDs
-    const uniqueIds = Array.from(new Set(databases.map((db) => db.id)))
-    setSelectedDatabases(uniqueIds)
+    setSelectedDatabases(databasesWithValidIds.map(db => db.id))
   }
 
   const clearAll = () => {
     setSelectedDatabases([])
   }
 
-  // Filter out databases that are already selected from the dropdown
-  const availableDatabases = databases.filter(
-    (db) => !selectedDatabases.includes(db.id)
-  )
-
-  // Get unique selected databases
-  const uniqueSelectedDatabases = Array.from(new Set(selectedDatabases))
-
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 mb-2 min-h-[40px] p-2 border rounded-md">
-        {uniqueSelectedDatabases.map((id) => {
-          const db = databases.find((db) => db.id === id)
-          if (!db) return null // Skip if database not found
-          return (
-            <div key={`selected-${db.id}`} className="flex items-center">
-              <Badge 
-                variant="secondary" 
-                className="flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900"
-              >
-                {db.name}
-                <button
-                  onClick={() => toggleDatabase(id)}
-                  className="ml-2 hover:text-destructive focus:outline-none"
-                  aria-label={`Remove ${db.name}`}
-                >
-                  ×
-                </button>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="min-w-[300px] justify-between"
+          >
+            <span className="flex items-center gap-2">
+              <span>Databases</span>
+              <Badge className="ml-2" variant="secondary">
+                {selectedDatabases.length}
               </Badge>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="flex gap-4 flex-wrap">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button 
-              variant="outline" 
-              role="combobox" 
-              aria-expanded={open} 
-              className="justify-between min-w-[200px]"
-              disabled={availableDatabases.length === 0}
-            >
-              {availableDatabases.length > 0 ? "Select databases" : "All databases selected"}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[300px] p-0">
-            <Command>
-              <CommandInput 
-                placeholder="Search database..." 
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandList>
-                <CommandEmpty>No database found.</CommandEmpty>
-                <CommandGroup>
-                  {availableDatabases
-                    .filter(db => 
-                      db.name.toLowerCase().includes(searchTerm.toLowerCase())
-                    )
-                    .map((db) => (
-                      <CommandItem
-                        key={db.id}
-                        value={db.id}
-                        onSelect={() => toggleDatabase(db.id)}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            selectedDatabases.includes(db.id) ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {db.name}
-                      </CommandItem>
-                    ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        <Button 
-          variant="outline" 
-          onClick={selectAll}
-          disabled={selectedDatabases.length === databases.length}
-        >
-          Select All
-        </Button>
-
-        <Button 
-          variant="outline" 
-          onClick={clearAll}
-          disabled={selectedDatabases.length === 0}
-        >
-          Clear All
-        </Button>
-      </div>
+            </span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[300px] p-0">
+          <Command>
+            <CommandInput
+              placeholder="Search databases..."
+              value={searchTerm}
+              onValueChange={setSearchTerm}
+            />
+            <CommandList>
+              <CommandEmpty>No database found.</CommandEmpty>
+              <CommandGroup>
+                <div className="flex justify-between p-2 border-b">
+                  <Button variant="ghost" size="sm" onClick={selectAll}>
+                    Select All
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={clearAll}>
+                    Clear All
+                  </Button>
+                </div>
+                {filteredDatabases.map((database) => (
+                  <CommandItem
+                    key={database.id}
+                    onSelect={() => toggleDatabase(database.id)}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedDatabases.includes(database.id) ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <div className="flex items-center">
+                      <span>{database.name}</span>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 } 

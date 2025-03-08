@@ -33,8 +33,6 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
                 { key: "hybridSearch", label: "Hybrid Search" },
                 { key: "filtering", label: "Metadata Filtering" },
                 { key: "pagination", label: "Pagination" },
-                { key: "batchOperations", label: "Batch Operations" },
-                { key: "realTimeUpdates", label: "Real-time Updates" },
               ].map((feature) => (
                 <TableRow key={feature.key}>
                   <TableCell className="font-medium">
@@ -43,11 +41,6 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
                       {feature.key === "hybridSearch" && (
                         <p className="text-xs text-muted-foreground mt-1">
                           Combining vector and keyword search
-                        </p>
-                      )}
-                      {feature.key === "realTimeUpdates" && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Immediate index updates
                         </p>
                       )}
                     </div>
@@ -88,32 +81,28 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
                 </TableHeader>
                 <TableBody>
                   {[
-                    { key: "rangeSearch", label: "Range Search" },
-                    { key: "multiVectorSearch", label: "Multi-vector Search" },
-                    { key: "facetedSearch", label: "Faceted Search" },
-                    { key: "aggregations", label: "Aggregations" },
-                    { key: "joins", label: "Joins" },
-                    { key: "geospatialSearch", label: "Geospatial Search" },
+                    { key: "performance", label: "Performance Optimization" },
+                    { key: "approximateSearch", label: "Approximate Search" },
                   ].map((feature) => (
                     <TableRow key={feature.key}>
                       <TableCell className="font-medium">
                         <div>
                           <span>{feature.label}</span>
-                          {feature.key === "multiVectorSearch" && (
+                          {feature.key === "performance" && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              Searching with multiple vectors simultaneously
+                              Optimizations for performance
                             </p>
                           )}
-                          {feature.key === "facetedSearch" && (
+                          {feature.key === "approximateSearch" && (
                             <p className="text-xs text-muted-foreground mt-1">
-                              Filtering and grouping by multiple attributes
+                              Approximate nearest neighbor search
                             </p>
                           )}
                         </div>
                       </TableCell>
                       {databases.map((db) => (
                         <TableCell key={`${db.id}-${feature.key}`}>
-                          {renderFeatureSupport(db.searchCapabilities[feature.key])}
+                          {renderFeatureSupport(db.searchCapabilities[feature.key] || false)}
                         </TableCell>
                       ))}
                     </TableRow>
@@ -134,16 +123,14 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
                 </TableHeader>
                 <TableBody>
                   {[
-                    { key: "maxVectors", label: "Max Vectors" },
-                    { key: "querySpeed", label: "Query Speed" },
-                    { key: "scalability", label: "Scalability" },
-                    { key: "accuracy", label: "Accuracy" },
+                    { key: "latency", label: "Query Latency" },
+                    { key: "throughput", label: "Query Throughput" },
                   ].map((metric) => (
                     <TableRow key={metric.key}>
                       <TableCell className="font-medium">{metric.label}</TableCell>
                       {databases.map((db) => (
                         <TableCell key={`${db.id}-${metric.key}`}>
-                          {db.searchCapabilities[metric.key]}
+                          {db.performance?.[metric.key] || "Not specified"}
                         </TableCell>
                       ))}
                     </TableRow>

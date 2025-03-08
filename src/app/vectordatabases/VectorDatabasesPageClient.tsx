@@ -10,7 +10,7 @@ import { getLogoById } from '@/lib/logoImports';
 import SearchFilter from '@/components/SearchFilter';
 import { Button } from "@/components/ui/button";
 import { DiffIcon, SearchIcon } from "lucide-react";
-import { Database } from '@/types';
+import { Database } from '@/types/database';
 
 interface VectorDatabasesPageClientProps {
   initialDatabases: Database[];

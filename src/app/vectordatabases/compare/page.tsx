@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Database } from '@/types';
+import { Database } from '@/types/database';
 import { getDatabases, getCategories, getFeatures } from '@/lib/getDatabases';
 import ComparePageClient from './ComparePageClient';
 

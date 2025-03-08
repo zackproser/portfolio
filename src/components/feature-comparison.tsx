@@ -14,18 +14,18 @@ export default function FeatureComparison({ databases }: FeatureComparisonProps)
   const featureCategories = [
     {
       name: "Deployment Options",
-      features: ["cloud", "selfHosted", "hybrid", "kubernetes", "docker"],
-      labels: ["Cloud", "Self-Hosted", "Hybrid", "Kubernetes", "Docker"],
+      features: ["cloudNative", "serverless", "hybridSearch"],
+      labels: ["Cloud Native", "Serverless", "Hybrid Search"],
     },
     {
       name: "Data Management",
-      features: ["schemaSupport", "jsonSupport", "binaryVectors", "multiTenancy", "versioning"],
-      labels: ["Schema Support", "JSON Support", "Binary Vectors", "Multi-Tenancy", "Versioning"],
+      features: ["metadataFiltering", "batchOperations"],
+      labels: ["Metadata Filtering", "Batch Operations"],
     },
     {
-      name: "Scaling & Performance",
-      features: ["horizontalScaling", "verticalScaling", "sharding", "replication", "caching"],
-      labels: ["Horizontal Scaling", "Vertical Scaling", "Sharding", "Replication", "Caching"],
+      name: "Performance Features",
+      features: ["scalability", "latency", "throughput"],
+      labels: ["Scalability", "Latency", "Throughput"],
     },
   ]
 
@@ -54,7 +54,13 @@ export default function FeatureComparison({ databases }: FeatureComparisonProps)
                       <TableCell className="font-medium">{category.labels[index]}</TableCell>
                       {databases.map((db, index) => (
                         <TableCell key={`db-${index}-${feature}`}>
-                          {db.features && feature in db.features ? (
+                          {category.name === "Performance Features" ? (
+                            db.performance && feature in db.performance ? (
+                              <Badge variant="outline">{db.performance[feature]}</Badge>
+                            ) : (
+                              <Badge variant="secondary">N/A</Badge>
+                            )
+                          ) : db.features && feature in db.features ? (
                             db.features[feature] === true ? (
                               <Check className="h-5 w-5 text-green-500" />
                             ) : db.features[feature] === false ? (
