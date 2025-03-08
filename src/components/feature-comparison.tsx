@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Check, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import React from "react"
 
 interface FeatureComparisonProps {
   databases: Database[]
@@ -37,34 +38,40 @@ export default function FeatureComparison({ databases }: FeatureComparisonProps)
             <CardDescription>Comparing {category.name.toLowerCase()} across vector databases</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <tr>
-                  <TableHead className="w-[200px]">Feature</TableHead>
-                  {databases.map((db) => (
-                    <TableHead key={db.id}>{db.name}</TableHead>
-                  ))}
-                </tr>
-              </TableHeader>
-              <TableBody>
-                {category.features.map((feature, index) => (
-                  <TableRow key={feature}>
-                    <TableCell className="font-medium">{category.labels[index]}</TableCell>
-                    {databases.map((db) => (
-                      <TableCell key={`${db.id}-${feature}`}>
-                        {db.features[feature] === true ? (
-                          <Check className="h-5 w-5 text-green-500" />
-                        ) : db.features[feature] === false ? (
-                          <X className="h-5 w-5 text-red-500" />
-                        ) : (
-                          <Badge variant="outline">{db.features[feature]}</Badge>
-                        )}
-                      </TableCell>
+            <div className="relative w-full overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow key={`${category.name}-header-row`}>
+                    <TableHead className="w-[200px]">Feature</TableHead>
+                    {databases.map((db, index) => (
+                      <TableHead key={`db-${index}-${db.name}`}>{db.name}</TableHead>
                     ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {category.features.map((feature, index) => (
+                    <TableRow key={`${category.name}-${feature}-row`}>
+                      <TableCell className="font-medium">{category.labels[index]}</TableCell>
+                      {databases.map((db, index) => (
+                        <TableCell key={`db-${index}-${feature}`}>
+                          {db.features && feature in db.features ? (
+                            db.features[feature] === true ? (
+                              <Check className="h-5 w-5 text-green-500" />
+                            ) : db.features[feature] === false ? (
+                              <X className="h-5 w-5 text-red-500" />
+                            ) : (
+                              <Badge variant="outline">{db.features[feature]}</Badge>
+                            )
+                          ) : (
+                            <Badge variant="secondary">N/A</Badge>
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       ))}

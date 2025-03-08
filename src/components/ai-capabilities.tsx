@@ -53,10 +53,10 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow key="ai-integration-header">
                 <TableHead className="w-[250px]">Feature</TableHead>
-                {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+                {databases.map((db, index) => (
+                  <TableHead key={db.id || `db-${index}`}>{db.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -83,8 +83,8 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
                       )}
                     </div>
                   </TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${feature.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${feature.key}`}>
                       {renderFeatureSupport(db.aiCapabilities.features[feature.key])}
                     </TableCell>
                   ))}
@@ -131,10 +131,10 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-[250px]">Model/Framework</TableHead>
-                {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+              <TableRow key="llm-integration-header">
+                <TableHead className="w-[250px]">Feature</TableHead>
+                {databases.map((db, index) => (
+                  <TableHead key={db.id || `db-${index}`}>{db.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -149,8 +149,8 @@ export default function AICapabilities({ databases }: AICapabilitiesProps) {
               ].map((model) => (
                 <TableRow key={model.key}>
                   <TableCell className="font-medium">{model.label}</TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${model.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${model.key}`}>
                       {renderFeatureSupport(db.aiCapabilities.supportedModels[model.key])}
                     </TableCell>
                   ))}
