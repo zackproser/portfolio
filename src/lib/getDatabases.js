@@ -1,21 +1,48 @@
-const data = require('../../schema/data/vectordatabases.json');
+// Import databases from TypeScript file
+import { databases } from '../data/databases';
 
 export function getDatabases() {
-  return data.databases;
+  return databases;
 }
 
 export function getCategories() {
-  return data.categories;
+  // Since we no longer have the categories from JSON, 
+  // we'll need to derive them from the database structure
+  // or provide a static definition
+  return {
+    deployment: {
+      description: "Describes how the database can be deployed and managed.",
+      importance: "The deployment options affect scalability, maintenance, and cost of running the database."
+    },
+    scalability: {
+      description: "Indicates how well the database can handle increasing amounts of data and traffic.",
+      importance: "Scalability is crucial for growing applications and large-scale data processing."
+    },
+    // Add other categories as needed
+  };
 }
 
 export function getFeatures() {
-  return data.features;
+  // Since we no longer have the features from JSON,
+  // we'll need to derive them from the database structure
+  // or provide a static definition
+  return {
+    local: {
+      description: "Ability to run the database on local infrastructure.",
+      importance: "Local deployment can be crucial for data privacy and reducing latency."
+    },
+    cloud: {
+      description: "Availability of the database as a managed cloud service.",
+      importance: "Cloud deployment often offers easier scaling and maintenance."
+    },
+    // Add other features as needed
+  };
 }
 
 export function getDatabaseByName(name) {
-  return data.databases.find(db => db.name.toLowerCase() === name.toLowerCase());
+  return databases.find(db => db.name.toLowerCase() === name.toLowerCase());
 }
 
 export function getDatabase(name) {
-  return data.databases.find(db => db.name.toLowerCase() === name.toLowerCase());
+  return databases.find(db => db.name.toLowerCase() === name.toLowerCase());
 }

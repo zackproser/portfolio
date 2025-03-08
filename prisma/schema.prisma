@@ -19,6 +19,7 @@ model User {
   accounts            Account[]
   notifications       EmailNotification[]
   freeChapterRequests FreeChapterRequest[]
+  leads               Lead[]
   purchases           Purchase[]
   sessions            Session[]
 
@@ -108,4 +109,60 @@ model FreeChapterRequest {
   @@index([email])
   @@index([productSlug])
   @@map("free_chapter_requests")
+}
+
+model VectorDatabase {
+  id                     String   @id @default(cuid())
+  name                   String   @unique
+  logoId                 String
+  description            String
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+  companyName            String   @map("company_name")
+  companyFounded         Int      @map("company_founded")
+  companyFunding         String   @map("company_funding")
+  companyEmployees       Int      @map("company_employees")
+  businessInfo           Json?    @map("business_info")
+  performanceLatency     String   @map("performance_latency")
+  performanceThroughput  String   @map("performance_throughput")
+  performanceScalability String   @map("performance_scalability")
+  queryLatencyMs         Int      @map("query_latency_ms")
+  indexingSpeed          Int      @map("indexing_speed_vectors_per_sec")
+  memoryUsageMb          Int      @map("memory_usage_mb")
+  scalabilityScore       Int      @map("scalability_score")
+  accuracyScore          Int      @map("accuracy_score")
+  features               Json     @map("features")
+  security               Json     @map("security")
+  algorithms             Json     @map("algorithms")
+  searchCapabilities     Json     @map("search_capabilities")
+  aiCapabilities         Json     @map("ai_capabilities")
+  deployment             Json?    @map("deployment")
+  scalabilityInfo        Json?    @map("scalability_info")
+  dataManagement         Json?    @map("data_management")
+  vectorSimilaritySearch Json?    @map("vector_similarity_search")
+  integrationApi         Json?    @map("integration_api")
+  communityEcosystem     Json?    @map("community_ecosystem")
+  pricing                Json?    @map("pricing")
+  additionalFeatures     Json?    @map("additional_features")
+  specificDetails        Json?    @map("specific_details")
+
+  @@map("vector_databases")
+}
+
+model Lead {
+  id              String    @id @default(cuid())
+  userId          String?   @map("user_id")
+  email           String?
+  conversation    Json      @map("conversation")
+  leadScore       Float     @map("lead_score")
+  isPotentialLead Boolean   @default(true) @map("is_potential_lead")
+  reasons         String[]  @map("reasons")
+  topics          String[]  @map("topics")
+  nextSteps       String[]  @map("next_steps")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  contactedAt     DateTime? @map("contacted_at")
+  user            User?     @relation(fields: [userId], references: [id])
+
+  @@map("leads")
 }

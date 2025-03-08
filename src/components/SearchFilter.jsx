@@ -39,11 +39,11 @@ export default function SearchFilter({ databases, onFilter, onReset, searchTerm:
           case 'cloud':
           case 'local':
           case 'on_premises':
-            return db.deployment[key];
+            return db.deployment?.[key] || false;
           case 'free_tier':
-            return db.pricing.free_tier;
+            return db.pricing?.free_tier || false;
           case 'open_source':
-            return db.community_ecosystem.open_source;
+            return db.community_ecosystem?.open_source || false;
           default:
             return true;
         }
