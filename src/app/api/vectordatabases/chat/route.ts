@@ -52,8 +52,7 @@ Respond with a JSON object containing:
             content: messages.map(m => `${m.role}: ${m.content}`).join('\n')
           }
         ],
-        temperature: 0,
-        format: 'json'
+        temperature: 0
       });
 
       const result = JSON.parse(text) as LeadAnalysis;

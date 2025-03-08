@@ -21,6 +21,12 @@ interface PerformanceMetricsProps {
   databases: Database[]
 }
 
+// Define a type for data points with dynamic string keys
+interface DataPoint {
+  vectorSize: number;
+  [key: string]: number;
+}
+
 export default function PerformanceMetrics({ databases }: PerformanceMetricsProps) {
   if (!databases?.length) {
     return (
@@ -34,16 +40,17 @@ export default function PerformanceMetrics({ databases }: PerformanceMetricsProp
   }
 
   // Default values for performance metrics
-  const DEFAULT_QUERY_LATENCY = 20;
+  const DEFAULT_QUERY_LATENCY = 25;
   const DEFAULT_INDEXING_SPEED = 50000;
   const DEFAULT_MEMORY_USAGE = 250;
   const DEFAULT_SCALABILITY = 70;
   const DEFAULT_ACCURACY = 85;
 
-  // Prepare data for query latency chart
-  const queryLatencyData = []
+  // Simulate query latency data
+  const queryLatencyData: DataPoint[] = [];
+
   for (let i = 1; i <= 10; i++) {
-    const dataPoint = { vectorSize: i * 100 }
+    const dataPoint: DataPoint = { vectorSize: i * 100 }
     databases.forEach((db) => {
       // Simulate latency data based on vector size
       // In a real app, this would come from actual benchmarks
