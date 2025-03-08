@@ -6,7 +6,8 @@ import { StatusIcon } from "@/components/ui/status-icon";
 
 type ValueType = boolean | string | number | null | undefined;
 
-interface VectorBadgeProps extends Omit<BadgeProps, 'children'> {
+// Create a separate interface that doesn't extend BadgeProps to avoid type conflicts
+interface VectorBadgeProps extends Omit<BadgeProps, 'children' | 'value'> {
   value: ValueType;
   type?: 'boolean' | 'latency' | 'throughput' | 'scalability' | 'text';
   showNA?: boolean;
