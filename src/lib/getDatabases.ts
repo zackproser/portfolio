@@ -85,7 +85,7 @@ function transformToDatabase(db: RawDatabase): Database {
   // Ensure we have a valid ID
   const id = db.logoId || db.name.toLowerCase().replace(/\s+/g, '-');
   
-  return {
+  const transformedDb: Database = {
     id,
     name: db.name,
     logoId: db.logoId || id,
@@ -95,16 +95,6 @@ function transformToDatabase(db: RawDatabase): Database {
       founded: businessInfo.founded || 0,
       funding,
       employees: numericEmployeeCount,
-    },
-    business_info: {
-      company_name: companyName,
-      founded: businessInfo.founded || 0,
-      headquarters,
-      total_funding: funding,
-      latest_valuation: businessInfo.latest_valuation || "Not disclosed",
-      funding_rounds: businessInfo.funding_rounds || [],
-      key_people: businessInfo.key_people || [],
-      employee_count: employeeCount,
     },
     features: {
       cloudNative: db.deployment?.cloud ?? false,
@@ -181,6 +171,22 @@ function transformToDatabase(db: RawDatabase): Database {
       ],
     },
   };
+  
+  // Only add business_info if we have any meaningful data
+  if (Object.keys(businessInfo).length > 0) {
+    transformedDb.business_info = {
+      company_name: companyName,
+      founded: businessInfo.founded || 0,
+      headquarters,
+      total_funding: funding,
+      latest_valuation: businessInfo.latest_valuation || "Not disclosed",
+      funding_rounds: businessInfo.funding_rounds || [],
+      key_people: businessInfo.key_people || [],
+      employee_count: employeeCount,
+    };
+  }
+  
+  return transformedDb;
 }
 
 // Public exports

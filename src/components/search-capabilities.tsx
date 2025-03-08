@@ -20,10 +20,10 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow key="search-features-header">
                 <TableHead className="w-[250px]">Feature</TableHead>
-                {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+                {databases.map((db, index) => (
+                  <TableHead key={db.id || `db-${index}`}>{db.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -52,8 +52,8 @@ export default function SearchCapabilities({ databases }: SearchCapabilitiesProp
                       )}
                     </div>
                   </TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${feature.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${feature.key}`}>
                       {renderFeatureSupport(db.searchCapabilities[feature.key])}
                     </TableCell>
                   ))}

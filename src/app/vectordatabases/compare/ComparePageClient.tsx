@@ -14,20 +14,9 @@ import { getEmoji } from '@/lib/emojiMapping';
 import { track } from '@vercel/analytics';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+import { Database } from '@/types/database';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
-
-interface Database {
-  name: string;
-  business_info: {
-    funding_rounds: Array<{ date: string; amount: string; series: string }>;
-    latest_valuation: string;
-    employee_count: string;
-    key_people: Array<{ name: string; position: string }>;
-    [key: string]: any;
-  };
-  [category: string]: { [feature: string]: any } | any;
-}
 
 interface Category {
   description: string;
@@ -91,49 +80,55 @@ export default function ComparePageClient({
   const getDbColor = (index: number): string => `hsla(${index * 360 / selectedDatabases.length}, 80%, 40%, 0.9)`;
 
   const getFundingData = () => {
-    const labels: string[] = [];
-    const datasets = selectedDatabases.map((db, index) => {
+    const datasets = selectedDatabases.map((db, i) => {
       const data: number[] = [];
       let cumulativeAmount = 0;
-      db.business_info.funding_rounds.forEach(round => {
+      db.business_info?.funding_rounds?.forEach(round => {
         const date = new Date(round.date);
         const amount = parseFloat(round.amount.replace(/[^0-9.-]+/g, ""));
         cumulativeAmount += amount;
-        labels.push(date.toISOString().split('T')[0]);
         data.push(cumulativeAmount);
       });
       return {
         label: db.name,
-        data: data,
-        borderColor: getDbColor(index),
-        backgroundColor: `${getDbColor(index)}80`,
+        data,
+        backgroundColor: getDbColor(i),
+        borderColor: getDbColor(i),
       };
     });
+
+    const labels = ["Seed", "Series A", "Series B", "Series C", "Series D+"];
     return { labels, datasets };
   };
 
   const getValuationData = () => {
     const labels = selectedDatabases.map(db => db.name);
-    const data = selectedDatabases.map(db => parseFloat(db.business_info.latest_valuation.replace(/[^0-9.-]+/g, "")));
+    const data = selectedDatabases.map(db => {
+      const valuation = db.business_info?.latest_valuation || "$0";
+      return parseFloat(valuation.replace(/[^0-9.-]+/g, "")) || 0;
+    });
     return {
       labels,
       datasets: [{
-        label: 'Valuation',
-        data: data,
-        backgroundColor: selectedDatabases.map((_, index) => getDbColor(index)),
+        label: 'Latest Valuation ($ Million)',
+        data,
+        backgroundColor: labels.map((_, i) => getDbColor(i)),
       }]
     };
   };
 
   const getEmployeeCountData = () => {
     const labels = selectedDatabases.map(db => db.name);
-    const data = selectedDatabases.map(db => parseInt(db.business_info.employee_count.split('-')[1] || db.business_info.employee_count));
+    const data = selectedDatabases.map(db => {
+      const employeeCount = db.business_info?.employee_count || "0";
+      return parseInt(employeeCount.split('-')[1] || employeeCount) || 0;
+    });
     return {
       labels,
       datasets: [{
         label: 'Employee Count',
-        data: data,
-        backgroundColor: selectedDatabases.map((_, index) => getDbColor(index)),
+        data,
+        backgroundColor: labels.map((_, i) => getDbColor(i)),
       }]
     };
   };
@@ -149,55 +144,66 @@ export default function ComparePageClient({
     </Card>
   );
 
-  const renderBusinessInfoComparison = () => (
-    <AccordionItem value="business_info">
-      <AccordionTrigger className="text-xl">
-        <div className="flex items-center">
-          <span className="text-2xl mr-2">{getEmoji('business_information')}</span>
-          <span>Business Information</span>
-        </div>
-        <p className="text-sm text-gray-600 ml-2">Compare key business metrics and funding details</p>
-      </AccordionTrigger>
-      <AccordionContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Metric</TableHead>
-              {selectedDatabases.map((db, index) => (
-                <TableHead key={db.name} style={{ color: getDbColor(index) }}>{db.name}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Object.keys(selectedDatabases[0].business_info).map(key => (
-              <TableRow key={key}>
-                <TableCell className="font-medium">{formatFieldName(key)}</TableCell>
-                {selectedDatabases.map((db, index) => (
-                  <TableCell key={db.name}>
-                    {key === 'funding_rounds' ? (
-                      <ul>
-                        {db.business_info[key].map((round, i) => (
-                          <li key={i}>{round.date}: {round.amount} (Series {round.series})</li>
-                        ))}
-                      </ul>
-                    ) : key === 'key_people' ? (
-                      <ul>
-                        {(db.business_info[key] as Array<{ name: string; position: string }>).map((person, i) => (
-                          <li key={i}>{person.name}: {person.position}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      db.business_info[key]
-                    )}
-                  </TableCell>
+  const renderBusinessInfoComparison = () => {
+    if (selectedDatabases.length === 0 || !selectedDatabases[0].business_info) {
+      return (
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>Business Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>No business information available for the selected databases.</p>
+          </CardContent>
+        </Card>
+      );
+    }
+    
+    return (
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle>Business Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Field</TableHead>
+                {selectedDatabases.map(db => (
+                  <TableHead key={db.name}>{db.name}</TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </AccordionContent>
-    </AccordionItem>
-  );
+            </TableHeader>
+            <TableBody>
+              {Object.keys(selectedDatabases[0].business_info || {}).map(key => (
+                <TableRow key={key}>
+                  <TableCell className="font-medium">{formatFieldName(key)}</TableCell>
+                  {selectedDatabases.map((db, index) => (
+                    <TableCell key={index}>
+                      {key === 'funding_rounds' ? (
+                        <ul>
+                          {db.business_info?.[key]?.map((round, i) => (
+                            <li key={i}>{round.date}: {round.amount} (Series {round.series})</li>
+                          ))}
+                        </ul>
+                      ) : key === 'key_people' ? (
+                        <ul>
+                          {(db.business_info?.[key] as Array<{ name: string; position: string }> || []).map((person, i) => (
+                            <li key={i}>{person.name}: {person.position}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        db.business_info?.[key]
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderComparison = (category: string) => (
     <AccordionItem value={category} key={category}>

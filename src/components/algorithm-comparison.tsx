@@ -28,10 +28,10 @@ export default function AlgorithmComparison({ databases }: AlgorithmComparisonPr
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow key="algorithm-comparison-header">
                 <TableHead className="w-[250px]">Algorithm</TableHead>
-                {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+                {databases.map((db, index) => (
+                  <TableHead key={db.id || `db-${index}`}>{db.name}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -68,8 +68,8 @@ export default function AlgorithmComparison({ databases }: AlgorithmComparisonPr
                       )}
                     </div>
                   </TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${algo.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${algo.key}`}>
                       {db.algorithms[algo.key] ? (
                         <Badge variant="default">Supported</Badge>
                       ) : (

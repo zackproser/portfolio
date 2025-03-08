@@ -19,12 +19,12 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
         <CardContent>
           <Table>
             <TableHeader>
-              <tr>
+              <TableRow key="security-features-header">
                 <TableHead className="w-[250px]">Feature</TableHead>
                 {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+                  <TableHead key={db.id || `db-${db.name}`}>{db.name}</TableHead>
                 ))}
-              </tr>
+              </TableRow>
             </TableHeader>
             <TableBody>
               {[
@@ -47,8 +47,8 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
                       )}
                     </div>
                   </TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${feature.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${feature.key}`}>
                       {renderFeatureSupport(db.security[feature.key])}
                     </TableCell>
                   ))}
@@ -67,12 +67,12 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
         <CardContent>
           <Table>
             <TableHeader>
-              <tr>
+              <TableRow key="compliance-header">
                 <TableHead className="w-[250px]">Standard</TableHead>
                 {databases.map((db) => (
-                  <TableHead key={db.id}>{db.name}</TableHead>
+                  <TableHead key={db.id || `db-${db.name}`}>{db.name}</TableHead>
                 ))}
-              </tr>
+              </TableRow>
             </TableHeader>
             <TableBody>
               {[
@@ -90,8 +90,8 @@ export default function SecurityComparison({ databases }: SecurityComparisonProp
                       )}
                     </div>
                   </TableCell>
-                  {databases.map((db) => (
-                    <TableCell key={`${db.id}-${cert.key}`}>
+                  {databases.map((db, index) => (
+                    <TableCell key={`${db.id || `db-${index}`}-${cert.key}`}>
                       {renderComplianceStatus(db.security[cert.key])}
                     </TableCell>
                   ))}
