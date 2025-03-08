@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, Bot, User, GripVertical } from "lucide-react"
+import { Send, Bot, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useChat } from "ai/react"
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
+import { Panel, PanelGroup } from "react-resizable-panels"
 
 export function ChatInterface() {
   const [open, setOpen] = useState(false)
@@ -63,17 +63,19 @@ export function ChatInterface() {
                       <div
                         className={cn(
                           "flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow",
-                          message.role === "user" ? "bg-primary text-white" : "bg-muted text-foreground",
+                          message.role === "user" 
+                            ? "bg-zinc-700 text-zinc-50" 
+                            : "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white",
                         )}
                       >
                         {message.role === "user" ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
                       </div>
                       <div
                         className={cn(
-                          "rounded-lg px-3 py-2 max-w-[85%]",
+                          "rounded-lg px-3 py-2 max-w-[85%] whitespace-pre-wrap",
                           message.role === "user" 
-                            ? "bg-primary text-white dark:text-white" 
-                            : "bg-muted text-foreground dark:text-slate-200"
+                            ? "bg-zinc-700 text-zinc-50" 
+                            : "bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-white"
                         )}
                       >
                         {message.content}
@@ -90,7 +92,7 @@ export function ChatInterface() {
                   value={input}
                   onChange={handleInputChange}
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex-1 border-slate-300 dark:border-slate-700"
                 />
                 <Button type="submit" size="icon" disabled={isLoading || !input.trim()}>
                   <Send className="h-4 w-4" />

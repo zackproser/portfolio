@@ -70,7 +70,7 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
         console.warn(`Duplicate database ID found: ${id} appears ${count} times`);
       }
     });
-  }, [databasesWithValidIds.length, selectedDatabases.length, filteredDatabases.length]);
+  }, [databasesWithValidIds, selectedDatabases.length, filteredDatabases.length]);
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8">
