@@ -10,7 +10,7 @@ export const databases: Database[] = [
       name: "Pinecone Systems",
       founded: 2019,
       funding: "$138M",
-      employees: 100,
+      employees: 177,
     },
     features: {
       cloudNative: true,
@@ -91,10 +91,10 @@ export const databases: Database[] = [
     logoId: "weaviate",
     description: "An open-source vector database that allows you to store data objects and vector embeddings",
     company: {
-      name: "SeMI Technologies",
+      name: "Weaviate B.V.",
       founded: 2019,
-      funding: "$50M",
-      employees: 50,
+      funding: "$50M Series B",
+      employees: 30,
     },
     features: {
       cloudNative: true,
@@ -179,7 +179,7 @@ export const databases: Database[] = [
     company: {
       name: "Zilliz",
       founded: 2019,
-      funding: "$43M",
+      funding: "$113M",
       employees: 100,
     },
     features: {
@@ -264,9 +264,9 @@ export const databases: Database[] = [
     description: "Deep Lake is an AI database that provides storage, querying, and vector search capabilities for deep-learning and LLM-based applications.",
     company: {
       name: "Activeloop Inc.",
-      founded: 2019,
-      funding: "$8.8M",
-      employees: 11,
+      founded: 2018,
+      funding: "$20M",
+      employees: 31,
     },
     features: {
       cloudNative: true,
@@ -337,10 +337,10 @@ export const databases: Database[] = [
     logoId: "vespa",
     description: "Vespa is a versatile search and serving engine that combines vector search with traditional search and ranking capabilities.",
     company: {
-      name: "Yahoo",
-      founded: 2017,
-      funding: "N/A (Part of Yahoo)",
-      employees: 100,
+      name: "Vespa.ai",
+      founded: 2023,
+      funding: "$31M Series A",
+      employees: 52,
     },
     features: {
       cloudNative: true,
@@ -412,9 +412,9 @@ export const databases: Database[] = [
     description: "FAISS (Facebook AI Similarity Search) is a library for efficient similarity search and clustering of dense vectors.",
     company: {
       name: "Meta (Facebook) AI Research",
-      founded: 2017,
+      founded: 2015,
       funding: "N/A (Part of Meta)",
-      employees: 0,
+      employees: 8,
     },
     features: {
       cloudNative: false,
@@ -487,8 +487,8 @@ export const databases: Database[] = [
     company: {
       name: "Qdrant",
       founded: 2021,
-      funding: "$2M",
-      employees: 11,
+      funding: "$35.5M",
+      employees: 88,
     },
     features: {
       cloudNative: true,
@@ -559,10 +559,10 @@ export const databases: Database[] = [
     logoId: "chroma",
     description: "Chroma is an open-source embedding database for building AI applications with language models and embeddings.",
     company: {
-      name: "Chroma",
+      name: "Chromatic Enterprises Inc.",
       founded: 2022,
-      funding: "$18M",
-      employees: 11,
+      funding: "$18M Seed",
+      employees: 10,
     },
     features: {
       cloudNative: true,
@@ -601,30 +601,41 @@ export const databases: Database[] = [
     },
     aiCapabilities: {
       features: {
-        embeddingGeneration: false,
+        embeddingGeneration: true,
         llmIntegration: true,
         ragSupport: true,
-        semanticCaching: false,
+        semanticCaching: true,
         modelHosting: false,
         fineTuning: false,
       },
       scores: {
-        llmIntegration: 7,
-        embeddingGeneration: 5,
-        ragSupport: 7,
+        llmIntegration: 8,
+        embeddingGeneration: 8,
+        ragSupport: 9,
         fineTuning: 3,
         modelHosting: 3,
       },
       supportedModels: {
         openai: true,
         huggingface: true,
-        pytorch: false,
-        tensorflow: false,
+        pytorch: true,
+        tensorflow: true,
         langchain: true,
         llamaindex: true,
       },
-      ragFeatures: ["Semantic search","Metadata filtering","Hybrid search","Real-time updates","Batch operations"],
-      ragLimitations: ["No built-in fine-tuning","Limited model hosting","No built-in caching"],
+      ragFeatures: [
+        "Semantic search",
+        "Metadata filtering",
+        "Hybrid search",
+        "Real-time updates",
+        "Batch operations",
+        "Easy-to-use API"
+      ],
+      ragLimitations: [
+        "No built-in fine-tuning",
+        "Limited model hosting",
+        "Early stage compared to some competitors"
+      ],
     },
   },
   {
