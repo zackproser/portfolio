@@ -29,6 +29,7 @@ import CLIProject from '@/images/open-source-cli-project.webp'
 import GolangProject from '@/images/open-source-golang-project.webp'
 import ToxIndexChat from '@/images/tox-index-chat.webp'
 import logoWorkOS from '@/images/logos/workos.svg'
+import DigitalDetective from '@/images/digital-detective.webp'
 
 // Define project categories
 const categories = [
@@ -88,6 +89,15 @@ const allTags = [
 ]
 
 const projects = [
+  {
+    name: 'Digital Detective Browser Fingerprinting Demo',
+    description: 'A multiplayer demonstration of browser fingerprinting for use in webinars, and for folks trying to learn about fingerprinting techniques and protections.',
+    link: 'https://v0-web-fingerprinting-demo.vercel.app/',
+    logo: DigitalDetective,
+    stacks: ['Next.js', 'Vercel', 'Security', 'Web Development'],
+    category: "Security",
+    company: "Personal"
+  },
   {
     name: 'WorkOS CLI OAuth Authentication',
     description: 'A tutorial and example repository demonstrating how to build browser-based OAuth into CLI tools using WorkOS AuthKit, including secure token storage and retrieval.',
