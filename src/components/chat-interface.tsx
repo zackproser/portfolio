@@ -21,7 +21,7 @@ export function ChatInterface() {
         id: "welcome",
         role: "assistant",
         content:
-          "Hello! I'm your vector database assistant. Ask me anything about the vector databases in this comparison tool, and I'll help you find the information you need.",
+          "Hi, I'm an expert in vector databases, GenAI, AI applications, and more. What would you like to know?",
       },
     ],
   })
