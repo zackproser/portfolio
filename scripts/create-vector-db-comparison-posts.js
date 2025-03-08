@@ -1,12 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const vectorDatabasesData = require('../schema/data/vectordatabases.json');
-const databases = vectorDatabasesData.databases;
+// Import the databases from the compiled JavaScript file
+const { databases } = require('../dist/data/databases');
 
 // Add debugging to check the databases array
 console.log('Number of databases:', databases.length);
-console.log('First database:', JSON.stringify(databases[0], null, 2));
+if (databases.length > 0) {
+  console.log('First database name:', databases[0].name);
+}
 
 const checkMark = '✅';
 const crossMark = '❌';
@@ -24,6 +26,13 @@ const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+
 const generatePostContent = (db1, db2, existingDate) => {
   const dateToUse = existingDate || `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
   const slug = `${slugify(db1.name)}-vs-${slugify(db2.name)}`;
+
+  // This is where we need to check for the homepage_link and documentation_link properties
+  // If they don't exist, use placeholder values
+  const db1HomepageLink = db1.homepage_link || '#';
+  const db1DocLink = db1.documentation_link || '#';
+  const db2HomepageLink = db2.homepage_link || '#';
+  const db2DocLink = db2.documentation_link || '#';
 
   return `
 import { ArticleLayout } from '@/components/ArticleLayout'
@@ -69,12 +78,12 @@ This page contains a detailed comparison of the ${db1.name} and ${db2.name} vect
 ## Links
 
 ### ${db1.name}
-- [Homepage](${db1.homepage_link})
-- [Documentation](${db1.documentation_link})
+- [Homepage](${db1HomepageLink})
+- [Documentation](${db1DocLink})
 
 ### ${db2.name}
-- [Homepage](${db2.homepage_link})
-- [Documentation](${db2.documentation_link})
+- [Homepage](${db2HomepageLink})
+- [Documentation](${db2DocLink})
 `;
 };
 
@@ -93,7 +102,7 @@ const combinations = generateCombinations(databases);
 // Add debugging to check the generated combinations
 console.log('Number of combinations:', combinations.length);
 if (combinations.length > 0) {
-  console.log('First combination:', JSON.stringify(combinations[0], null, 2));
+  console.log('First combination:', combinations[0][0].name, 'vs', combinations[0][1].name);
 }
 
 combinations.forEach(([db1, db2], _index) => {
