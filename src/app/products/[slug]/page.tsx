@@ -1,4 +1,5 @@
 import { ProductLanding } from '@/components/ProductLanding';
+import path from 'path';
 import { notFound } from 'next/navigation';
 import { getProductBySlug } from '@/lib/content-handlers';
 import { Content } from '@/types';
