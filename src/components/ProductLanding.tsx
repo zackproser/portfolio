@@ -7,11 +7,13 @@ import { NavBar } from '@/components/NavBar'
 import { Pricing } from '@/components/Pricing'
 import { TableOfContents } from '@/components/TableOfContents'
 import { CanvasPattern } from '@/components/CanvasPattern'
+import { RealTestimonials } from '@/components/RealTestimonials'
 import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { createMetadata } from '@/utils/createMetadata'
 import { Metadata, ResolvingMetadata } from 'next'
 import { getProductBySlug } from '@/lib/content-handlers'
+import { getConversionTestimonials } from '@/data/testimonials'
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -142,6 +144,14 @@ export function ProductLanding({ content }: { content: Content }) {
           title={safeDescription}
           productSlug={slug}
         />
+        
+        {/* Add real testimonials section before pricing to enhance conversions */}
+        <RealTestimonials 
+          testimonials={getConversionTestimonials(6)}
+          title="What developers say about my work"
+          subtitle={`Learn from someone with ${RenderNumYearsExperience()} years of real-world experience building professional software`}
+        />
+        
         <Pricing 
           price={commerce.price}
           title={title || safeDescription}

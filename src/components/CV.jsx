@@ -36,7 +36,7 @@ export default function CV() {
       company: 'WorkOS',
       title: 'Developer Education',
       logo: logoWorkOS,
-      start: '2023',
+      start: '2024',
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
@@ -47,7 +47,7 @@ export default function CV() {
       title: 'Staff Developer Advocate',
       logo: logoPinecone,
       start: '2023',
-      end: '2023',
+      end: '2024',
     },
     {
       company: 'Gruntwork.io',
