@@ -87,6 +87,9 @@ export function ProductLanding({ content }: { content: Content }) {
   // Generate default landing data if not provided
   const defaultLanding = {
     subtitle: description || '',
+    // Default problem statement and benefit
+    problemSolved: 'Need a chatbot that understands your business data?',
+    benefitStatement: 'Create a custom AI assistant that knows your business inside and out',
     features: [
       {
         title: 'Complete Tutorial',
@@ -131,6 +134,8 @@ export function ProductLanding({ content }: { content: Content }) {
           title={title || safeDescription}
           heroTitle={landing?.heroTitle}
           description={safeDescription}
+          problemSolved={landingData.problemSolved}
+          benefitStatement={landingData.benefitStatement}
           testimonial={landingData.testimonials?.[0]}
         />
         <Introduction 
