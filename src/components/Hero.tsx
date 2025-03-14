@@ -74,16 +74,26 @@ interface HeroProps {
   title: string;
   heroTitle?: string;
   description: string;
+  benefitStatement?: string; // Clear statement of user benefit
+  problemSolved?: string; // What problem this solves
   testimonial?: {
     content: string;
     author: {
       name: string;
       role: string;
+      imageUrl?: any;
     };
   };
 }
 
-export function Hero({ title, heroTitle, description, testimonial }: HeroProps) {
+export function Hero({ 
+  title, 
+  heroTitle, 
+  description, 
+  benefitStatement,
+  problemSolved,
+  testimonial 
+}: HeroProps) {
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5 dark:bg-slate-900 lg:dark:bg-transparent">
       <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
@@ -107,12 +117,33 @@ export function Hero({ title, heroTitle, description, testimonial }: HeroProps) 
         </div>
         <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20 dark:bg-slate-800 lg:dark:bg-transparent">
           <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
+            {/* Problem statement - what problem this solves */}
+            {problemSolved && (
+              <div className="mb-4">
+                <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-200 dark:ring-blue-500/40">
+                  Problem solved
+                </span>
+                <h2 className="mt-2 text-2xl font-bold text-slate-800 dark:text-slate-200">
+                  {problemSolved}
+                </h2>
+              </div>
+            )}
+            
             <h1 className="font-display text-5xl font-extrabold text-slate-900 sm:text-6xl dark:text-white">
               {heroTitle || title}
             </h1>
+            
+            {/* Clear benefit statement */}
+            {benefitStatement && (
+              <p className="mt-6 text-xl font-semibold text-blue-600 dark:text-blue-400">
+                {benefitStatement}
+              </p>
+            )}
+            
             <p className="mt-4 text-xl text-slate-600 dark:text-slate-300">
               {description}
             </p>
+            
             <div className="mt-8 flex flex-col sm:flex-row gap-6">
               <Button href="#free-chapters" color="blue" className="text-lg py-4 px-8 font-bold">
                 Get sample chapter
