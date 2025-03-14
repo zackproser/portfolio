@@ -1,62 +1,8 @@
 import { Container } from '@/components/Container'
 import { GridPattern } from '@/components/GridPattern'
+import { sampleProductTestimonials } from '@/data/testimonials'
 
-const testimonials = [
-  [
-    {
-      content:
-        'The RAG pipeline examples in this book helped us reduce our API costs by 40%. A must-read for anyone building production LLM applications.',
-      author: {
-        name: 'Sarah Chen',
-        role: 'ML Engineer at TechCorp',
-      },
-    },
-    {
-      content:
-        'Finally, a practical guide that goes beyond theory. The chunking strategies section alone was worth the price of the book.',
-      author: {
-        name: 'Michael Rodriguez',
-        role: 'Senior Developer at DataAI',
-      },
-    },
-  ],
-  [
-    {
-      content:
-        'This book helped our team standardize our RAG implementation across multiple projects. The production deployment chapter is excellent.',
-      author: {
-        name: 'Emily Thompson',
-        role: 'Tech Lead at AIScale',
-      },
-    },
-    {
-      content:
-        'Clear explanations of complex concepts. The cost optimization strategies have already saved us thousands in API costs.',
-      author: {
-        name: 'David Kim',
-        role: 'CTO at SearchAI',
-      },
-    },
-  ],
-  [
-    {
-      content:
-        'The best resource I&apos;ve found on building production-ready RAG systems. The error handling section is particularly valuable.',
-      author: {
-        name: 'Lisa Patel',
-        role: 'AI Engineer at SearchTech',
-      },
-    },
-    {
-      content:
-        'Comprehensive and practical. The monitoring and evaluation chapter helped us improve our RAG pipeline&apos;s accuracy significantly.',
-      author: {
-        name: 'James Wilson',
-        role: 'Lead Developer at AIHub',
-      },
-    },
-  ],
-]
+const testimonials = sampleProductTestimonials
 
 function QuoteIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
