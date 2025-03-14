@@ -1,29 +1,38 @@
 import { Button } from '@/components/Button'
 import { GridPattern } from '@/components/GridPattern'
 import { StarRating } from '@/components/StarRating'
+import { Testimonial as TestimonialType } from '@/data/testimonials'
+import Image from 'next/image'
 
 function Testimonial({ author, content }: { 
-  author: { name: string; role: string };
+  author: { name: string; role: string; imageUrl?: any };
   content: string;
 }) {
   return (
     <figure className="relative mx-auto max-w-md text-center lg:mx-0 lg:text-left">
-      <div className="flex justify-center text-blue-600 lg:justify-start">
-        <StarRating />
-        <span className="ml-2 text-sm text-slate-500 dark:text-slate-400">5.0 rating</span>
-      </div>
-      <blockquote className="mt-2">
+      <blockquote>
         <p className="font-display text-xl font-medium text-slate-900 dark:text-white">
           &ldquo;{content}&rdquo;
         </p>
       </blockquote>
-      <figcaption className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-        <strong className="font-semibold text-blue-600 before:content-['—_']">
-          {author.name}
-        </strong>
-        <span className="block text-sm text-slate-500 dark:text-slate-400">
-          {author.role}
-        </span>
+      <figcaption className="mt-2 flex items-center justify-center lg:justify-start">
+        {author.imageUrl && (
+          <Image 
+            className="h-10 w-10 rounded-full mr-3 object-cover"
+            src={author.imageUrl}
+            alt={author.name}
+            width={40}
+            height={40}
+          />
+        )}
+        <div>
+          <strong className="font-semibold text-blue-600 block">
+            {author.name}
+          </strong>
+          <span className="block text-sm text-slate-500 dark:text-slate-400">
+            {author.role}
+          </span>
+        </div>
       </figcaption>
     </figure>
   )
