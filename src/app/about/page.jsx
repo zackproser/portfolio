@@ -73,6 +73,9 @@ export default function About() {
 								of software development experience at top startups and established enterprise companies.
 							</p>
 							<p>
+								<Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
+							</p>
+							<p>
 								I work in Developer Education at{" "}
 								<Link
 									className="font-bold text-green-500"
@@ -83,7 +86,7 @@ export default function About() {
 								, where we help companies add enterprise features to their apps in minutes, not months.
 							</p>
 							<Newsletter />
-							<p>Read what it&apos;s like to work with me <Link className="text-green-500 font-bold" href="/testimonials">here</Link>.</p>
+							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-green-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
 								<CV />
 							</div>
