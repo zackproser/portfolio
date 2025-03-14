@@ -70,7 +70,10 @@ export default function About() {
 								<span className="text-green-500 font-bold">
 									{RenderNumYearsExperience()} years
 								</span>{" "}
-								of software development experience at top startups and established enterprise companies. <Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
+								of software development experience at top startups and established enterprise companies.
+							</p>
+							<p>
+								<Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
 							</p>
 							<p>
 								I work in Developer Education at{" "}
@@ -90,14 +93,6 @@ export default function About() {
 						</div>
 					</div>
 					<div className="lg:pl-20">
-						<div className="mb-6">
-							<h2 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-								Professional References
-							</h2>
-							<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-								Check out <Link className="text-green-500 font-bold" href="/testimonials">testimonials</Link> from people I&apos;ve worked with.
-							</p>
-						</div>
 						<ul role="list" className="space-y-4">
 							<SocialLink href="https://twitter.com/zackproser" icon={TwitterIcon}>
 								Follow on Twitter
