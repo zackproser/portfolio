@@ -72,9 +72,7 @@ export default function About() {
 								</span>{" "}
 								of software development experience at top startups and established enterprise companies.
 							</p>
-							<p>
-								<Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
-							</p>
+							
 							<p>
 								I work in Developer Education at{" "}
 								<Link
@@ -85,8 +83,47 @@ export default function About() {
 								</Link>
 								, where we help companies add enterprise features to their apps in minutes, not months.
 							</p>
+							
+							<h2 className="text-2xl font-bold text-black dark:text-zinc-100 mt-8">Content Creator</h2>
+							<p>
+								I create educational content across multiple platforms:
+							</p>
+							<ul className="list-disc pl-5 space-y-2">
+								<li>
+									<Link className="text-green-500 hover:text-green-700" href="/videos">
+										Video tutorials
+									</Link> on complex technical subjects, published on my{" "}
+									<Link className="text-green-500 hover:text-green-700" href="https://youtube.com/@zackproser">
+										YouTube channel
+									</Link>
+								</li>
+								<li>
+									<Link className="text-green-500 hover:text-green-700" href="/publications">
+										Technical articles
+									</Link> published in major tech publications like freeCodeCamp, Techatty, and others
+								</li>
+								<li>
+									<Link className="text-green-500 hover:text-green-700" href="/products">
+										Premium educational products
+									</Link> for developers looking to level up their skills
+								</li>
+							</ul>
+							
+							<h2 className="text-2xl font-bold text-black dark:text-zinc-100 mt-8">Business</h2>
+							<p>
+								I run <a href="https://mindonfire.net" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-700 font-bold">MIND ON FIRE LLC</a>, a consulting company that helps businesses with technical content, software development, and developer advocacy.
+							</p>
+							
+							<p>
+								If you find my work valuable, you can <a href="https://sponsor.zackproser.com" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-700">sponsor my open source projects</a> to help me continue creating quality content.
+							</p>
+							
 							<Newsletter />
-							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-green-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
+							
+							<p>
+								<Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
+							</p>
+							
 							<div className="mt-8">
 								<CV />
 							</div>

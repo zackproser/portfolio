@@ -15,16 +15,17 @@ const navigation = [
     title: 'Content',
     links: [
       { title: 'Research', href: '/blog' },
-      { title: 'Tutorials', href: '/tutorials' },
       { title: 'Products', href: '/products' },
       { title: 'Projects', href: '/projects' },
+      { title: 'Publications', href: '/publications' },
+      { title: 'Videos', href: '/videos' },
     ],
   },
   {
     title: 'Resources',
     links: [
-      { title: 'Publications', href: '/publications' },
-      { title: 'Videos', href: '/videos' },
+      { title: 'Sponsor Me', href: 'https://sponsor.zackproser.com' },
+      { title: 'MIND ON FIRE LLC', href: 'https://mindonfire.net' },
       { title: 'Devtools', href: '/devtools' },
       { title: 'Vector DBs', href: '/vectordatabases' },
     ],

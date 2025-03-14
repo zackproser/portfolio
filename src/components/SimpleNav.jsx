@@ -9,15 +9,11 @@ import { AuthStatus } from './AuthStatus'
 
 const mainNavItems = [
   { label: 'Research', href: '/blog' },
-  { label: 'Tutorials', href: '/tutorials' },
   { label: 'Products', href: '/products' },
   { label: 'Projects', href: '/projects' },
-  { label: 'About', href: '/about' },
-]
-
-const resourceItems = [
-  { label: 'Publications', href: '/publications' },
   { label: 'Videos', href: '/videos' },
+  { label: 'Publications', href: '/publications' },
+  { label: 'About', href: '/about' },
 ]
 
 const interactiveItems = [
@@ -123,7 +119,6 @@ export function SimpleNav() {
               {item.label}
             </Link>
           ))}
-          <DropdownMenu label="Resources" items={resourceItems} />
           <DropdownMenu label="Interactive" items={interactiveItems} />
           <div className="flex items-center gap-4">
             <ThemeToggleWrapper />
