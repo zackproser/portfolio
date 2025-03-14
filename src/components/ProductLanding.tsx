@@ -7,11 +7,14 @@ import { NavBar } from '@/components/NavBar'
 import { Pricing } from '@/components/Pricing'
 import { TableOfContents } from '@/components/TableOfContents'
 import { CanvasPattern } from '@/components/CanvasPattern'
+import { RealTestimonials } from '@/components/RealTestimonials'
 import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
 import { Metadata, ResolvingMetadata } from 'next'
 import { getProductBySlug } from '@/lib/content-handlers'
+import { getConversionTestimonials } from '@/data/testimonials'
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -85,6 +88,9 @@ export function ProductLanding({ content }: { content: Content }) {
   // Generate default landing data if not provided
   const defaultLanding = {
     subtitle: description || '',
+    // Default problem statement and benefit
+    problemSolved: 'Need a chatbot that understands your business data?',
+    benefitStatement: 'Create a custom AI assistant that knows your business inside and out',
     features: [
       {
         title: 'Complete Tutorial',
@@ -129,7 +135,10 @@ export function ProductLanding({ content }: { content: Content }) {
           title={title || safeDescription}
           heroTitle={landing?.heroTitle}
           description={safeDescription}
+          problemSolved={landingData.problemSolved}
+          benefitStatement={landingData.benefitStatement}
           testimonial={landingData.testimonials?.[0]}
+          image={content.image}
         />
         <Introduction 
           title={safeSubtitle}
@@ -142,6 +151,47 @@ export function ProductLanding({ content }: { content: Content }) {
           title={safeDescription}
           productSlug={slug}
         />
+        
+        {/* Add real testimonials section before pricing to enhance conversions */}
+        {/* Profile Image Section (if available) */}
+        {commerce.profileImage && (
+          <div className="py-16 mx-auto text-center max-w-7xl">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 px-6 md:px-10 bg-slate-50 dark:bg-slate-800/60 rounded-2xl overflow-hidden">
+              <div className="max-w-2xl text-left py-8">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                  Expert-crafted solution for real-world applications
+                </h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
+                  This comprehensive package provides everything you need to build production-ready AI systems that understand and answer questions based on your proprietary data.
+                </p>
+                <div className="mt-8">
+                  <a
+                    href={`/checkout?product=${slug}&type=${type}`}
+                    className="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                  >
+                    Get instant access
+                  </a>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 aspect-square md:aspect-auto relative overflow-hidden rounded-xl">
+                <Image
+                  src={commerce.profileImage}
+                  alt={`${title} visualization`}
+                  className="h-auto w-full object-cover"
+                  width={600}
+                  height={600}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <RealTestimonials 
+          testimonials={getConversionTestimonials(6)}
+          title="What developers say about my work"
+          subtitle={`Learn from someone with ${RenderNumYearsExperience()} years of real-world experience building professional software`}
+        />
+        
         <Pricing 
           price={commerce.price}
           title={title || safeDescription}

@@ -14,6 +14,7 @@ export interface CommerceConfig {
   miniPaywallDescription?: string
   paywallImage?: string | StaticImageData
   paywallImageAlt?: string
+  profileImage?: string | StaticImageData
 }
 
 // Pricing-related types

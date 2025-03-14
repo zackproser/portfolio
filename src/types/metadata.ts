@@ -15,8 +15,10 @@ export interface ExtendedMetadata extends Metadata {
   _id?: string  // Internal unique identifier to prevent duplicate key issues
   commerce?: CommerceConfig
   landing?: {
-    heroTitle?: string  // New property for custom hero title
+    heroTitle?: string  // Custom hero title
     subtitle?: string
+    problemSolved?: string  // Clear statement of what problem this product solves
+    benefitStatement?: string  // Clear statement of user benefit
     features?: Array<{
       title: string
       description: string
@@ -32,6 +34,7 @@ export interface ExtendedMetadata extends Metadata {
         name: string
         role: string
         avatar?: string
+        imageUrl?: any
       }
     }>
     faqs?: Array<{
