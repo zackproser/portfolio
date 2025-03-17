@@ -28,17 +28,14 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body }) {
+export default function Newsletter({ title, body, successMessage }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
 
 	const sendFormSubmissionEvent = () => {
-		gtag("event", "sign_up", {
-			method: "newsletter",
-		});
-
 		track("newsletter-signup", {
 			method: "newsletter",
+			source: referrer
 		})
 	};
 
@@ -82,7 +79,7 @@ export default function Newsletter({ title, body }) {
 		<h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
 			<span className="ml-3">
 				{" "}
-				🔥 You are awesome! 🔥 Thank you for subscribing 🥳{" "}
+				{successMessage || "🔥 You are awesome! 🔥 Thank you for subscribing 🥳"}{" "}
 			</span>
 		</h2>
 	) : (
