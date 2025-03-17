@@ -12,6 +12,8 @@ import { useState, useEffect, useCallback } from "react"
 import { DatabaseFilter } from "@/components/database-filter"
 import type { Database } from "@/types/database"
 import { InfoIcon } from "lucide-react"
+import NewsletterWrapper from "@/components/NewsletterWrapper"
+import { track } from "@vercel/analytics"
 
 interface DatabaseComparisonToolProps {
   databases: Database[]
@@ -35,13 +37,66 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
   
   // Track selected databases
   const [selectedDatabases, setSelectedDatabases] = useState<string[]>([]);
+  // Track user engagement with the tool
+  const [hasEngaged, setHasEngaged] = useState<boolean>(false);
+  // Track active tab to determine engagement level
+  const [activeTab, setActiveTab] = useState<string>("company");
+  // Track whether to show the prominent newsletter
+  const [showProminentNewsletter, setShowProminentNewsletter] = useState<boolean>(false);
   
   // Custom handler for database selection with direct state updates
   const handleDatabaseSelection = useCallback((ids: string[]) => {
     console.log('Setting selected databases to:', ids);
     // Force a new array reference to ensure state updates
     setSelectedDatabases([...ids]);
-  }, []);
+    
+    // Mark that the user has engaged with the tool
+    if (!hasEngaged && ids.length > 0) {
+      setHasEngaged(true);
+      track('vector_db_tool_engagement', { action: 'database_selection' });
+    }
+  }, [hasEngaged]);
+  
+  // Handle tab changes to track deeper engagement
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    
+    // Track when user explores beyond the first tab
+    if (value !== "company" && !hasEngaged) {
+      setHasEngaged(true);
+      track('vector_db_tool_engagement', { action: 'tab_exploration', tab: value });
+    }
+    
+    // Show the prominent newsletter after user has explored tabs
+    // Use a different trigger than just checking the tab value
+    if (!showProminentNewsletter && 
+        ((value === "performance" || value === "algorithms" || value === "ai") || 
+        (hasEngaged && ['features', 'security', 'search'].includes(value)))) {
+      // Delay showing the newsletter slightly to let the user see the tab content first
+      setTimeout(() => {
+        setShowProminentNewsletter(true);
+        track('vector_db_tool_newsletter', { action: 'newsletter_shown', tab: value });
+      }, 3000);
+    }
+  };
+  
+  // Add a scroll tracking effect to show the newsletter after scrolling
+  useEffect(() => {
+    if (hasEngaged && !showProminentNewsletter) {
+      const handleScroll = () => {
+        const scrollPosition = window.scrollY;
+        // Show newsletter after scrolling down the page
+        if (scrollPosition > 300) {
+          setShowProminentNewsletter(true);
+          track('vector_db_tool_newsletter', { action: 'newsletter_shown', trigger: 'scroll' });
+          window.removeEventListener('scroll', handleScroll);
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+  }, [hasEngaged, showProminentNewsletter]);
   
   // Initialize selected databases whenever the databases array changes
   useEffect(() => {
@@ -107,8 +162,26 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
         )}
       </div>
 
+      {/* Prominent newsletter that appears after engagement - simplified to just use the component directly */}
+      {showProminentNewsletter && (
+        <div className="mb-6 relative">
+          <button 
+            className="absolute top-2 right-2 z-10 text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
+            onClick={() => setShowProminentNewsletter(false)}
+            aria-label="Close newsletter signup"
+          >
+            ✕
+          </button>
+          <NewsletterWrapper 
+            title="Join our Vector Database Community" 
+            body="Be the first to know about new comparisons, benchmarks, and expert insights on vector databases."
+            successMessage="🚀 Welcome to the community! You&apos;ll receive our next vector database insights directly to your inbox."
+          />
+        </div>
+      )}
+
       {filteredDatabases.length > 0 ? (
-        <Tabs defaultValue="company" className="w-full">
+        <Tabs defaultValue="company" className="w-full" onValueChange={handleTabChange}>
           <TabsList className="grid grid-cols-7 mb-8 bg-slate-100 dark:bg-slate-700">
             <TabsTrigger value="company" key="company" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Company</TabsTrigger>
             <TabsTrigger value="features" key="features" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800">Features</TabsTrigger>
@@ -154,6 +227,15 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
           </p>
         </div>
       )}
+      
+      {/* Bottom newsletter - always visible */}
+      <div className="mt-8">
+        <NewsletterWrapper 
+          title="Stay updated on Vector Database innovations" 
+          body="Subscribe to receive comparisons, benchmarks, and expert insights on vector databases directly to your inbox."
+          successMessage="🎉 Thank you for subscribing! You'll receive exclusive vector database insights, benchmarks, and early access to new comparison features."
+        />
+      </div>
     </div>
   )
 } 
