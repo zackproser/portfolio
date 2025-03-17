@@ -60,7 +60,11 @@ export function CourseLayout({
               </header>
               <Prose className="mt-8">{children}</Prose>
             </article>
-            <Newsletter title={'Be notified when the next course drops!'} body={'I build project-based learning courses for developers who want to level up'} />
+            <Newsletter 
+              title={'Be notified when the next course drops!'} 
+              body={'I build project-based learning courses for developers who want to level up'} 
+              successMessage={'🎓 Thank you for subscribing! You&apos;ll be the first to know when new courses are released.'}
+            />
             <FollowButtons />
           </div>
         </div>
