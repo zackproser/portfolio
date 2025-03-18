@@ -105,12 +105,66 @@ export async function GET(req: Request) {
 	}
 
 	try {
-		const stripeSession = await stripe.checkout.sessions.retrieve(sessionId)
-
-		if (stripeSession.payment_status !== 'paid') {
-			return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
+		// Try to retrieve the Stripe checkout session
+		let stripeSession;
+		try {
+			stripeSession = await stripe.checkout.sessions.retrieve(sessionId)
+			
+			if (stripeSession.payment_status !== 'paid') {
+				return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
+			}
+		} catch (stripeError) {
+			// If Stripe checkout retrieval fails, check if this is a manually provisioned purchase
+			console.log('Could not retrieve Stripe session, checking for manual provision:', sessionId);
+			
+			// Look for a purchase record with this session ID as stripePaymentId
+			const purchase = await prisma.purchase.findFirst({
+				where: { stripePaymentId: sessionId }
+			});
+			
+			if (!purchase) {
+				console.error('No purchase found for session ID:', sessionId);
+				throw stripeError; // Re-throw if no purchase found
+			}
+			
+			console.log('Found manually provisioned purchase:', purchase);
+			
+			// Determine the content type directory
+			let contentDir = purchase.contentType === 'course' ? 'learn/courses' : 'blog';
+			
+			// Load the content metadata
+			const content = await importContentMetadata(purchase.contentSlug, contentDir);
+			if (!content) {
+				return NextResponse.json({ error: 'Content not found' }, { status: 404 });
+			}
+			
+			// Get user info if available
+			let user = null;
+			if (purchase.userId) {
+				user = await prisma.user.findUnique({
+					where: { id: purchase.userId },
+					select: { id: true, email: true, name: true }
+				});
+			}
+			
+			// If no user but we have an email, create a minimal user object
+			if (!user && purchase.email) {
+				user = {
+					email: purchase.email,
+					name: 'Customer'
+				};
+			}
+			
+			// Return a response that mimics the Stripe session response
+			return NextResponse.json({
+				content,
+				user,
+				session: { id: sessionId },
+				payment_status: 'paid'
+			});
 		}
 
+		// If we get here, we have a valid Stripe session
 		const { slug, type } = stripeSession.metadata as { slug: string; type: Content['type'] }
 		const userId = stripeSession.metadata?.userId
 		const email = stripeSession.metadata?.email || stripeSession.customer_details?.email
