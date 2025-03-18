@@ -59,17 +59,25 @@ export default async function Page({ params }: PageProps) {
   const session = await auth();
   console.log(`[blog/[slug]/page.tsx] User session:`, session ? 'Authenticated' : 'Not authenticated');
   
-  // Check if user has purchased the content (if it's paid)
-  const hasPurchased = metadata?.commerce?.isPaid 
-    ? await hasUserPurchased(session?.user?.id, slug)
-    : false;
+  // First check if user has purchased the content by user ID
+  let hasPurchased = false;
+  if (metadata?.commerce?.isPaid) {
+    // First try with user ID
+    hasPurchased = await hasUserPurchased(session?.user?.id, slug);
+    
+    // If not found by user ID, try with email as a fallback
+    if (!hasPurchased && session?.user?.email) {
+      console.log(`[blog/[slug]/page.tsx] Not found by user ID, trying email: ${session.user.email}`);
+      hasPurchased = await hasUserPurchased(session.user.email, slug);
+    }
+  }
   
   console.log(`[blog/[slug]/page.tsx] Is paid content: ${metadata?.commerce?.isPaid}, Has purchased: ${hasPurchased}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
   return (
     <>
-    <ArticleLayout metadata={metadata}>
+    <ArticleLayout metadata={metadata} serverHasPurchased={hasPurchased}>
       {hasPurchased ? (
         <div className="purchased-content">
           <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 mb-6">
