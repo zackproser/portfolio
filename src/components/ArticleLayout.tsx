@@ -18,14 +18,16 @@ interface ArticleLayoutProps {
     miniPaywallTitle?: string | null
     miniPaywallDescription?: string | null
   }
+  serverHasPurchased?: boolean
 }
 
 export function ArticleLayout({
   children,
   metadata,
+  serverHasPurchased = false,
 }: ArticleLayoutProps) {
   const { data: session } = useSession()
-  const [hasPurchased, setHasPurchased] = useState(false)
+  const [hasPurchased, setHasPurchased] = useState(serverHasPurchased)
 
   // Add a debug log to help identify which articles are missing slugs
   if (!metadata.slug || metadata.slug === '') {
@@ -41,9 +43,21 @@ export function ArticleLayout({
   const safeSlug = metadata.slug || '';
   const safeTitle = metadata.title as string || 'Untitled';
   const safeType = metadata.type || 'blog';
+  
+  // Extract the base slug to help with matching
+  const baseSlug = safeSlug.split('/').pop() || safeSlug;
+  console.log(`[ArticleLayout] Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
 
-  // Check if the user has purchased the content
+  // Use the server purchase status instead of making a redundant API call
+  // Only keep this useEffect for SSG pages or situations where serverHasPurchased might not be available
   useEffect(() => {
+    // If we have received a definitive answer from the server (either true or false),
+    // there's no need to check again - we trust the server's response
+    if (serverHasPurchased !== undefined) {
+      console.log(`Using server-provided purchase status: ${serverHasPurchased}`);
+      return;
+    }
+
     const checkPurchaseStatus = async () => {
       if (!metadata.commerce?.isPaid || !safeSlug) return;
       
@@ -56,6 +70,7 @@ export function ArticleLayout({
           ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
           : `/api/check-purchase?slug=${safeSlug}`;
         
+        console.log('No server purchase status available, performing client-side check');
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -71,7 +86,7 @@ export function ArticleLayout({
     };
 
     checkPurchaseStatus();
-  }, [session, safeSlug, metadata.commerce?.isPaid]);
+  }, [session, safeSlug, metadata.commerce?.isPaid, serverHasPurchased]);
 
   // Determine if we should show the mini paywall
   const shouldShowMiniPaywall = 
