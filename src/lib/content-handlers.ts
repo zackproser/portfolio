@@ -272,13 +272,28 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
     // Convert blog/article type to 'article' as used in the database
     const contentType = 'article' // For articles, we use 'article' in the database
     
+    // Extract the base slug without path components
+    // This allows products like 'rag-pipeline-tutorial' to be found regardless of path
+    const baseSlug = slug.split('/').pop() || slug
+    
+    // Create a more flexible search condition for contentSlug
+    // Will match 'rag-pipeline-tutorial', 'blog/rag-pipeline-tutorial', etc.
+    const slugCondition = {
+      OR: [
+        { contentSlug: slug },
+        { contentSlug: baseSlug },
+        { contentSlug: { contains: `/${baseSlug}` } },
+        { contentSlug: { endsWith: `/${baseSlug}` } }
+      ]
+    }
+    
     if (isEmail) {
       // Check by email
       const purchase = await prisma.purchase.findFirst({
         where: {
           email: userIdOrEmail,
           contentType,
-          contentSlug: slug
+          ...slugCondition
         }
       })
       console.log(`[hasUserPurchased] Email query result: ${JSON.stringify(purchase)}`)
@@ -289,7 +304,7 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
         where: {
           userId: userIdOrEmail,
           contentType,
-          contentSlug: slug
+          ...slugCondition
         }
       })
       console.log(`[hasUserPurchased] User ID query result: ${JSON.stringify(purchase)}`)
