@@ -38,12 +38,29 @@ export async function GET(req: Request) {
     const contentType = type === 'blog' ? 'article' : type
     console.log('CHECK-PURCHASE DEBUG - Converted content type:', { originalType: type, convertedType: contentType })
 
+    // Extract the base slug without path components
+    // This allows products like 'rag-pipeline-tutorial' to be found regardless of path
+    const baseSlug = slug.split('/').pop() || slug
+    console.log('CHECK-PURCHASE DEBUG - Base slug:', { originalSlug: slug, baseSlug })
+    
+    // Create a more flexible search condition for contentSlug
+    // Will match 'rag-pipeline-tutorial', 'blog/rag-pipeline-tutorial', etc.
+    const slugCondition = {
+      OR: [
+        { contentSlug: slug },
+        { contentSlug: baseSlug },
+        { contentSlug: { contains: `/${baseSlug}` } },
+        { contentSlug: { endsWith: `/${baseSlug}` } }
+      ]
+    }
+
     // If we have a session, use the user ID
     if (session?.user?.id) {
       console.log('CHECK-PURCHASE DEBUG - Checking purchase for user:', { 
         id: session.user.id, 
         email: session.user.email, 
         slug, 
+        baseSlug,
         type,
         contentType 
       })
@@ -56,7 +73,7 @@ export async function GET(req: Request) {
           where: {
             userId: session.user.id,
             contentType,
-            contentSlug: slug
+            ...slugCondition
           }
         })
 
@@ -74,7 +91,8 @@ export async function GET(req: Request) {
     if (userEmail) {
       console.log('CHECK-PURCHASE DEBUG - Checking purchase for email:', { 
         email: userEmail, 
-        slug, 
+        slug,
+        baseSlug,
         type,
         contentType 
       })
@@ -84,7 +102,7 @@ export async function GET(req: Request) {
         where: {
           email: userEmail,
           contentType,
-          contentSlug: slug
+          ...slugCondition
         }
       })
       
@@ -99,7 +117,7 @@ export async function GET(req: Request) {
         where: {
           email: { equals: userEmail, mode: 'insensitive' },
           contentType,
-          contentSlug: slug
+          ...slugCondition
         }
       })
       
@@ -114,7 +132,10 @@ export async function GET(req: Request) {
         where: {
           OR: [
             { email: { contains: userEmail.split('@')[0], mode: 'insensitive' } },
-            { contentSlug: slug }
+            { contentSlug: slug },
+            { contentSlug: baseSlug },
+            { contentSlug: { contains: `/${baseSlug}` } },
+            { contentSlug: { endsWith: `/${baseSlug}` } }
           ]
         },
         take: 5
