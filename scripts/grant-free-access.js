@@ -27,9 +27,10 @@ const prompt = (question) => {
 
 // Generate a fake Stripe payment ID that looks realistic
 const generateFakeStripeId = () => {
-  // Format: pi_1K2OFxEDHFkvZ1e91mUGDFxA (random string with pi_ prefix)
+  // Format: free_access_xxxxxx (random string with free_access_ prefix)
+  // This makes it clear this is a manually provisioned free access
   const randomString = crypto.randomBytes(14).toString('hex');
-  return `pi_${randomString}`;
+  return `free_access_${randomString}`;
 };
 
 // Validate a product slug using a reliable approach
