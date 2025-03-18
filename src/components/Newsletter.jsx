@@ -28,7 +28,7 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body, successMessage }) {
+export default function Newsletter({ title, body, successMessage, onSubscribe = () => {} }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
 
@@ -67,6 +67,12 @@ export default function Newsletter({ title, body, successMessage }) {
 			.then(() => {
 				// Send the GA4 event for newsletter subscription
 				sendFormSubmissionEvent();
+				
+				// Call the onSubscribe callback if provided
+				if (typeof onSubscribe === 'function') {
+					onSubscribe();
+				}
+				
 				// Update the form UI to show the user their subscription was successful
 				setSuccess(true);
 			})
