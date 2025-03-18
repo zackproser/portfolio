@@ -273,11 +273,12 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
     const contentType = 'article' // For articles, we use 'article' in the database
     
     // Extract the base slug without path components
-    // This allows products like 'rag-pipeline-tutorial' to be found regardless of path
+    // This normalization ensures consistent slug handling across the application
     const baseSlug = slug.split('/').pop() || slug
+    console.log(`[hasUserPurchased] Using baseSlug: ${baseSlug} from original slug: ${slug}`)
     
     // Create a more flexible search condition for contentSlug
-    // Will match 'rag-pipeline-tutorial', 'blog/rag-pipeline-tutorial', etc.
+    // Will match any path variation of the same content
     const slugCondition = {
       OR: [
         { contentSlug: slug },
@@ -287,9 +288,11 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
       ]
     }
     
+    let purchase = null
+    
     if (isEmail) {
       // Check by email
-      const purchase = await prisma.purchase.findFirst({
+      purchase = await prisma.purchase.findFirst({
         where: {
           email: userIdOrEmail,
           contentType,
@@ -297,10 +300,9 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
         }
       })
       console.log(`[hasUserPurchased] Email query result: ${JSON.stringify(purchase)}`)
-      return !!purchase
     } else {
       // Check by user ID
-      const purchase = await prisma.purchase.findFirst({
+      purchase = await prisma.purchase.findFirst({
         where: {
           userId: userIdOrEmail,
           contentType,
@@ -308,8 +310,14 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
         }
       })
       console.log(`[hasUserPurchased] User ID query result: ${JSON.stringify(purchase)}`)
-      return !!purchase
     }
+    
+    // If purchase found, log details
+    if (purchase) {
+      console.log(`[hasUserPurchased] Purchase found: ${purchase.id}, contentSlug: ${purchase.contentSlug}, userEmail: ${purchase.email}`)
+    }
+    
+    return !!purchase
   } catch (error) {
     console.error(`[hasUserPurchased] Error checking purchase status: ${error}`)
     return false
