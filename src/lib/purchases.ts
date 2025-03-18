@@ -11,34 +11,58 @@ export async function hasUserPurchased(
   // First determine if the input is an email or userId
   const isEmail = userIdOrEmail.includes('@');
   
+  console.log(`[hasUserPurchased] Checking purchase for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, contentType: ${contentType}, contentSlug: ${contentSlug}`);
+  
   try {
+    let purchase = null;
+    
     if (isEmail) {
-      // Check by email
-      const purchase = await prisma.purchase.findUnique({
+      // Check by email (using findFirst instead of findUnique for more flexibility)
+      purchase = await prisma.purchase.findFirst({
         where: {
-          email_contentType_contentSlug: {
-            email: userIdOrEmail,
+          email: userIdOrEmail,
+          contentType,
+          contentSlug,
+        },
+      });
+      
+      console.log(`[hasUserPurchased] Email query result: ${purchase ? 'Found' : 'Not found'}`);
+      
+      // If not found with exact match, try case-insensitive match
+      if (!purchase) {
+        purchase = await prisma.purchase.findFirst({
+          where: {
+            email: { equals: userIdOrEmail, mode: 'insensitive' },
             contentType,
             contentSlug,
           },
-        },
-      });
-      return !!purchase;
+        });
+        console.log(`[hasUserPurchased] Case-insensitive email query result: ${purchase ? 'Found' : 'Not found'}`);
+      }
     } else {
-      // Check by userId
-      const purchase = await prisma.purchase.findUnique({
+      // Check by userId (using findFirst instead of findUnique for more flexibility)
+      purchase = await prisma.purchase.findFirst({
         where: {
-          userId_contentType_contentSlug: {
-            userId: userIdOrEmail,
-            contentType,
-            contentSlug,
-          },
+          userId: userIdOrEmail,
+          contentType,
+          contentSlug,
         },
       });
-      return !!purchase;
+      console.log(`[hasUserPurchased] User ID query result: ${purchase ? 'Found' : 'Not found'}`);
     }
+    
+    if (purchase) {
+      console.log(`[hasUserPurchased] Purchase found: ${JSON.stringify({
+        id: purchase.id,
+        contentType: purchase.contentType,
+        contentSlug: purchase.contentSlug,
+        hasStripeId: !!purchase.stripePaymentId,
+      })}`);
+    }
+    
+    return !!purchase;
   } catch (error) {
-    console.error('Error checking purchase status:', error);
+    console.error(`[hasUserPurchased] Error checking purchase status: ${error}`);
     return false;
   }
 }
