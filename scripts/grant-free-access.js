@@ -137,17 +137,33 @@ const grantAccess = async (email, productSlug) => {
       console.log(`Access to ${productSlug} already granted for ${email}`);
       return false;
     }
-
+    
+    // Check if there's a user account with this email
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+    
+    // Generate unique Stripe-like ID for free access
+    const stripePaymentId = generateFakeStripeId();
+    
     // Create a new purchase record
+    const purchaseData = {
+      email,
+      contentType: 'article', // Assuming all products are articles for now
+      contentSlug: productSlug,
+      stripePaymentId,
+      amount: 0, // Free access
+      purchaseDate: new Date()
+    };
+    
+    // If user exists, associate the purchase with their account
+    if (user) {
+      console.log(`Found user account for ${email}, associating purchase with user ID: ${user.id}`);
+      purchaseData.userId = user.id;
+    }
+
     const purchase = await prisma.purchase.create({
-      data: {
-        email,
-        contentType: 'article', // Assuming all products are articles for now
-        contentSlug: productSlug,
-        stripePaymentId: generateFakeStripeId(),
-        amount: 0, // Free access
-        purchaseDate: new Date()
-      }
+      data: purchaseData
     });
 
     console.log(`✅ Successfully granted access to ${productSlug} for ${email}`);
