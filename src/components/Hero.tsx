@@ -127,7 +127,7 @@ export function Hero({
               patternTransform="translate(112 64)"
             />
           </div>
-          <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
+          <div className="relative z-10 mx-auto flex w-full max-w-xs rounded-xl shadow-xl md:max-w-sm lg:w-auto">
             <BookCover title={title} description={description} coverImage={image} />
           </div>
         </div>
