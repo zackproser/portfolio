@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
-import { motion } from "framer-motion"
 
 interface Technology {
   name: string
@@ -17,7 +16,6 @@ const technologies = [
   { name: "TypeScript", category: "frontend", icon: "𝓣" },
   { name: "Tailwind CSS", category: "frontend", icon: "🌊" },
   { name: "Shadcn UI", category: "frontend", icon: "⬛" },
-  { name: "Framer Motion", category: "frontend", icon: "🎞️" },
   
   // AI & ML
   { name: "OpenAI API", category: "ai", icon: "🧠" },
@@ -80,12 +78,9 @@ export default function TechStack() {
         ))}
       </div>
       
-      <motion.div
+      <div
         key={selectedCategory}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="space-y-8"
+        className="space-y-8 transition-all duration-300"
       >
         <div>
           <h3 className="text-2xl font-semibold mb-4 text-foreground">
@@ -106,7 +101,7 @@ export default function TechStack() {
             Working extensively with these technologies, I develop production-grade applications with full expertise across the entire stack.
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 } 

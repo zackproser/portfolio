@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
 
 interface Step {
   id: number
@@ -18,27 +17,33 @@ const steps: Step[] = [
   },
   {
     id: 2,
-    title: "Project Scoping Document",
+    title: "Project Details & Scoping",
     description:
-      "I'll create a detailed project plan with timelines, deliverables, and cost estimates. You'll know exactly what to expect before any commitment.",
+      "We solidify the project details over email, finalizing requirements, timelines, and specifications to ensure alignment on project goals and deliverables.",
   },
   {
     id: 3,
-    title: "Development & Implementation",
+    title: "Initial 50% Payment",
     description:
-      "Using a phased approach, I'll build your solution with regular updates and check-ins. You'll have full visibility into progress and technical decisions.",
+      "You pay half of the project cost upfront to secure your spot in my schedule and initiate the development process.",
   },
   {
     id: 4,
-    title: "Testing & Quality Assurance",
+    title: "Development & Updates",
     description:
-      "Rigorous testing ensures your solution works reliably at scale. I implement comprehensive test suites and performance validation.",
+      "I start working on your project with regular updates to keep you informed of progress and any technical decisions that need your input.",
   },
   {
     id: 5,
-    title: "Deployment & Knowledge Transfer",
+    title: "Project Delivery",
     description:
-      "Your solution goes live with documentation, training, and ongoing support options to ensure your team can maintain and extend the system.",
+      "Your solution is delivered with comprehensive documentation and knowledge transfer to ensure your team can maintain and extend the system.",
+  },
+  {
+    id: 6,
+    title: "Final 50% Payment",
+    description:
+      "Upon successful delivery and your satisfaction with the project, the remaining 50% of the payment is due.",
   },
 ]
 
@@ -70,25 +75,19 @@ export default function ProcessTimeline() {
 
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-1 bg-secondary">
-          <motion.div
-            className="absolute top-0 left-0 h-full bg-primary"
-            initial={{ width: `${((activeStep - 1) / (steps.length - 1)) * 100}%` }}
-            animate={{ width: `${((activeStep - 1) / (steps.length - 1)) * 100}%` }}
-            transition={{ duration: 0.3 }}
+          <div
+            className="absolute top-0 left-0 h-full bg-primary transition-all duration-300"
+            style={{ width: `${((activeStep - 1) / (steps.length - 1)) * 100}%` }}
           />
         </div>
       </div>
 
-      <motion.div
-        key={activeStep}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-secondary/50 backdrop-blur-sm p-6 rounded-lg border border-primary/20"
+      <div
+        className="bg-secondary/50 backdrop-blur-sm p-6 rounded-lg border border-primary/20 transition-all duration-300"
       >
         <h4 className="text-lg font-semibold text-primary mb-2">{steps[activeStep - 1].title}</h4>
         <p className="text-muted-foreground">{steps[activeStep - 1].description}</p>
-      </motion.div>
+      </div>
     </div>
   )
 } 
