@@ -96,15 +96,60 @@ export function Calculator() {
     return total
   }
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       setEmailError(true)
       return
     }
 
     setEmailError(false)
-    // In a real application, this would redirect to Stripe checkout
-    alert(`Redirecting to Stripe checkout for $${calculateTotal().toLocaleString()}`)
+    
+    // Calculate the deposit amount (50% of total)
+    const checkoutAmount = calculateTotal() / 2;
+    
+    // For development environments without Stripe setup
+    if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+      // Simulate a successful payment in development without a Stripe key
+      if (confirm(`DEV MODE: Would process payment for $${checkoutAmount.toLocaleString()} (50% deposit). Continue to success page?`)) {
+        const simulatedSessionId = `sim_${Math.random().toString(36).substring(2, 15)}`;
+        window.location.href = `/success/project?session_id=${simulatedSessionId}`;
+        return;
+      }
+      return;
+    }
+    
+    try {
+      // Call the project checkout API to create a Stripe checkout session
+      const response = await fetch('/api/project-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: checkoutAmount,
+          total: calculateTotal(),
+          email: email,
+          description: "Next.js AI Development Project (50% Deposit)"
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        alert(`Error: ${data.error || 'Failed to create checkout session'}`);
+        return;
+      }
+      
+      // Redirect to Stripe checkout
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        alert('Error: No redirect URL returned from the server');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      alert('Error processing checkout. Please try again.');
+    }
   }
 
   const total = calculateTotal()
