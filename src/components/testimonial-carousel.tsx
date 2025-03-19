@@ -4,54 +4,28 @@ import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { allTestimonials } from "@/data/testimonials"
+import Image from "next/image"
 
 interface Testimonial {
-  id: number
-  name: string
-  role: string
-  company: string
-  content: string
-  image: string
+  content: string;
+  author: {
+    name: string;
+    role: string;
+    imageUrl?: any;
+  };
+  category?: string[];
 }
 
-const testimonials: Testimonial[] = [
-  {
-    id: 1,
-    name: "David Chen",
-    role: "CTO",
-    company: "LegalTech Inc",
-    content:
-      "Working with Zachary transformed our legal document search system. His expertise in AI and vector databases helped us create a solution that reduced our team's research time by 70%. The system is fast, accurate, and has become essential to our operations.",
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: 2,
-    name: "Sarah Miller",
-    role: "VP of Engineering",
-    company: "AI Solutions",
-    content:
-      "Zachary brought rare expertise to our project. His deep knowledge of Next.js, Vercel, and AI integration was exactly what we needed. He delivered a production-ready solution on time and exceeded our expectations. I would not hesitate to work with him again.",
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: 3,
-    name: "Michael Johnson",
-    role: "Director of Innovation",
-    company: "TechGlobal",
-    content:
-      "His end-to-end knowledge of both AI models and infrastructure as code is uncommon and incredibly valuable. Zachary helped us build a complex AI-powered content moderation system that handles millions of requests daily without breaking a sweat.",
-    image: "/placeholder.svg?height=100&width=100",
-  },
-  {
-    id: 4,
-    name: "Jennifer Park",
-    role: "Lead Developer",
-    company: "Vector Search Labs",
-    content:
-      "I've worked with many consultants, but Zachary stands out. His approach to vector database implementation was methodical and production-focused. He doesn't just make things work; he makes them work at scale with enterprise reliability.",
-    image: "/placeholder.svg?height=100&width=100",
-  },
-]
+// Get the first 4 testimonials with technical expertise
+const testimonials = allTestimonials
+  .filter(testimonial => 
+    testimonial.category && 
+    testimonial.category.some(category => 
+      ['technical', 'engineering', 'expertise'].includes(category)
+    )
+  )
+  .slice(0, 4);
 
 export default function TestimonialCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -84,26 +58,34 @@ export default function TestimonialCarousel() {
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-              <Card className="bg-secondary backdrop-blur-sm border-primary/20 h-full">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="w-full flex-shrink-0 px-4">
+              <Card className="bg-orange-950/30 backdrop-blur-sm border-orange-600/20 h-full">
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     <div className="flex-shrink-0">
                       <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10">
-                        <img
-                          src={testimonial.image}
-                          alt={testimonial.name}
-                          className="w-full h-full object-cover"
-                        />
+                        {testimonial.author.imageUrl ? (
+                          <Image
+                            src={testimonial.author.imageUrl}
+                            alt={testimonial.author.name}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                            {testimonial.author.name.charAt(0)}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex-grow">
-                      <p className="text-lg md:text-xl italic text-foreground mb-4">"{testimonial.content}"</p>
+                      <p className="text-lg md:text-xl italic text-foreground mb-4">&ldquo;{testimonial.content}&rdquo;</p>
                       <div className="mt-4">
-                        <p className="font-semibold text-foreground">{testimonial.name}</p>
+                        <p className="font-semibold text-foreground">{testimonial.author.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {testimonial.role}, {testimonial.company}
+                          {testimonial.author.role}
                         </p>
                       </div>
                     </div>
