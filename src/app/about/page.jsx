@@ -85,6 +85,9 @@ export default function About() {
 								</Link>
 								, where we help companies add enterprise features to their apps in minutes, not months.
 							</p>
+							<p>
+								I offer <Link className="font-bold text-green-500" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-green-500" href="/services">services page</Link> to learn how I can help bring your AI project to life.
+							</p>
 							<Newsletter />
 							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-green-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
@@ -116,6 +119,17 @@ export default function About() {
 								zackproser@gmail.com
 							</SocialLink>
 						</ul>
+						<div className="mt-8">
+							<Link
+								href="/services"
+								className="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition-colors"
+							>
+								View My Services
+								<svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+								</svg>
+							</Link>
+						</div>
 					</div>
 				</div>
 			</Container>
