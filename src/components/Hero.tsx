@@ -67,7 +67,7 @@ export function Hero({
 }: HeroProps) {
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5 dark:bg-slate-900 lg:dark:bg-transparent">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-10 pt-10 md:pt-12 lg:grid-cols-12 lg:gap-y-12 lg:px-3 lg:pt-16 lg:pb-28 xl:py-24">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-10 pt-10 md:pt-12 lg:grid-cols-12 lg:gap-y-12 lg:px-3 lg:pt-8 lg:pb-20 xl:py-16">
         <div className="relative flex items-end lg:col-span-5 lg:row-span-2">
           <div className="absolute -top-20 -bottom-12 left-0 right-1/2 z-10 rounded-br-6xl bg-blue-600 text-white/10 md:bottom-8 lg:-inset-y-32 lg:left-[-100vw] lg:right-full lg:-mr-40">
             <GridPattern
@@ -113,7 +113,7 @@ export function Hero({
               {description}
             </p>
             
-            <div className="mt-8 flex flex-col sm:flex-row gap-6">
+            <div className="mt-8 flex flex-col sm:flex-row gap-6 mb-16">
               <Button href="#free-chapters" color="blue" className="text-lg py-4 px-8 font-bold">
                 Get sample chapter
               </Button>
