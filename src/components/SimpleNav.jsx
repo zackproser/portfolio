@@ -9,7 +9,7 @@ import { AuthStatus } from './AuthStatus'
 
 const mainNavItems = [
   { label: 'Research', href: '/blog' },
-  { label: 'Tutorials', href: '/tutorials' },
+  { label: 'Services', href: '/services' },
   { label: 'Products', href: '/products' },
   { label: 'Projects', href: '/projects' },
   { label: 'About', href: '/about' },
