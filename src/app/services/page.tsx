@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowRight, Code, Database, Server, Zap } from "lucide-react"
 import TestimonialCarousel from "@/components/testimonial-carousel"
@@ -17,7 +16,7 @@ import Link from "next/link"
 
 // Import logos
 import logoCloudflare from '@/images/logos/cloudflare.svg'
-import logoGrunty from '@/images/logos/grunty.webp'
+// import logoGrunty from '@/images/logos/grunty.webp'
 import logoPinecone from '@/images/logos/pinecone-logo.webp'
 import logoWorkOS from '@/images/logos/workos.svg'
 
@@ -39,27 +38,27 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <main className="flex min-h-screen flex-col bg-black">
+    <main className="flex min-h-screen flex-col bg-blue-600 dark:bg-zinc-950">
       {/* Hero Section */}
-      <section className="relative w-full bg-black py-16 px-4 md:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:60px_60px]" />
+      <section className="relative w-full bg-blue-700 dark:bg-zinc-950 py-16 px-4 md:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-grid-white/[0.1] dark:bg-grid-white/[0.05] bg-[size:60px_60px]" />
 
         <div className="container mx-auto relative z-10">
           <div className="text-center space-y-6 max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              I build <span className="text-[#7cc2ff] font-extrabold relative">production-ready<span className="absolute -bottom-2 left-0 w-full h-1 bg-[#7cc2ff]/50 rounded-full"></span></span> AI apps with Next.js. You launch faster.
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white dark:text-zinc-50 leading-tight">
+              I build <span className="text-[#7cc2ff] font-extrabold relative">production-ready<span className="absolute -bottom-2 left-0 w-full h-1 bg-[#7cc2ff]/50 rounded-full"></span></span> AI apps. You launch faster.
             </h1>
 
             {/* Animation directly under the header */}
             <div className="py-8">
               <div className="mx-auto w-64 h-64 md:w-80 md:h-80 relative">
-                <div className="w-full h-full overflow-hidden rounded-full">
+                <div className="w-full h-full overflow-hidden rounded-full bg-white dark:bg-transparent shadow-xl">
                   <EngineeringAnimation />
                 </div>
               </div>
             </div>
 
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-white dark:text-zinc-300 max-w-2xl mx-auto">
               <span className="inline-flex items-center">
                 <span className="text-[#7cc2ff] font-bold text-3xl mr-1">3+</span> 
                 years building production AI solutions and vector database integrations.
@@ -70,27 +69,27 @@ export default function ServicesPage() {
               </span>
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button asChild size="lg" className="bg-[#7cc2ff] hover:bg-[#7cc2ff]/90 text-white">
+              <Button asChild size="lg" className="bg-white hover:bg-white/90 text-blue-700">
                 <Link href="/calculator">
                   Calculate Your Project Cost
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-[#7cc2ff]/70 text-[#7cc2ff] hover:bg-[#7cc2ff]/10">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 Schedule a Strategy Call
               </Button>
             </div>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto mt-4">
-              Ready to elevate your product with AI? Let&apos;s build your Next.js solution together.
+            <p className="text-xl text-white dark:text-zinc-300 max-w-2xl mx-auto mt-4">
+              Ready to elevate your product with AI? Let&apos;s chat.
             </p>
           </div>
         </div>
       </section>
 
       {/* Company Logos */}
-      <section className="py-10 px-4 md:px-6 lg:px-8 bg-black border-t border-b border-white/10">
+      <section className="py-10 px-4 md:px-6 lg:px-8 bg-blue-800 dark:bg-zinc-950 border-t border-b border-blue-700 dark:border-zinc-800">
         <div className="container mx-auto">
-          <p className="text-center text-sm text-gray-400 mb-8">TRUSTED BY INDUSTRY LEADERS</p>
+          <p className="text-center text-sm text-white font-medium dark:text-zinc-400 mb-8">TRUSTED BY INDUSTRY LEADERS</p>
           <div className="flex flex-wrap justify-center items-center gap-16 md:gap-32">
             <div className="flex flex-col items-center">
               <div className="w-12 h-6 relative flex items-center justify-center">
@@ -99,22 +98,22 @@ export default function ServicesPage() {
                   alt="Cloudflare"
                   width={40}
                   height={15}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
+                  className="opacity-90 hover:opacity-100 transition-opacity brightness-0 invert"
                 />
               </div>
-              <span className="text-base font-medium text-white mt-2">Cloudflare</span>
+              <span className="text-base font-medium text-white dark:text-zinc-100 mt-2">Cloudflare</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-6 relative flex items-center justify-center">
                 <Image
-                  src={logoGrunty}
+                  src="/images/logos/terragrunt.svg"
                   alt="Gruntwork"
                   width={40}
                   height={15}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
+                  className="opacity-90 hover:opacity-100 transition-opacity brightness-0 invert"
                 />
               </div>
-              <span className="text-base font-medium text-white mt-2">Gruntwork</span>
+              <span className="text-base font-medium text-white dark:text-zinc-100 mt-2">Gruntwork</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-6 relative flex items-center justify-center">
@@ -123,10 +122,10 @@ export default function ServicesPage() {
                   alt="WorkOS"
                   width={40}
                   height={15}
-                  className="opacity-70 hover:opacity-100 transition-opacity"
+                  className="opacity-90 hover:opacity-100 transition-opacity brightness-0 invert"
                 />
               </div>
-              <span className="text-base font-medium text-white mt-2">WorkOS</span>
+              <span className="text-base font-medium text-white dark:text-zinc-100 mt-2">WorkOS</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-6 relative flex items-center justify-center">
@@ -135,21 +134,21 @@ export default function ServicesPage() {
                   alt="Pinecone"
                   width={40}
                   height={15}
-                  className="opacity-90 hover:opacity-100 transition-opacity filter brightness-200 contrast-125"
+                  className="opacity-90 hover:opacity-100 transition-opacity brightness-0 invert dark:brightness-200 dark:contrast-125"
                 />
               </div>
-              <span className="text-base font-medium text-white mt-2">Pinecone</span>
+              <span className="text-base font-medium text-white dark:text-zinc-100 mt-2">Pinecone</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services Overview */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Specialized AI Engineering Services</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Specialized AI Engineering Services</h2>
+            <p className="text-lg text-white dark:text-zinc-400 max-w-2xl mx-auto">
               Now exclusively offering high-impact, project-based engagements — no hourly development work.
             </p>
           </div>
@@ -177,9 +176,9 @@ export default function ServicesPage() {
             />
           </div>
 
-          <div className="mt-16 p-6 bg-orange-950/40 rounded-lg backdrop-blur-sm border border-orange-600/20">
-            <h3 className="text-xl font-semibold mb-3">Trust & Experience</h3>
-            <p className="text-muted-foreground">
+          <div className="mt-16 p-6 bg-blue-700 dark:bg-blue-800 rounded-lg backdrop-blur-sm border border-blue-500 dark:border-blue-700">
+            <h3 className="text-xl font-semibold mb-3 text-white dark:text-white">Trust & Experience</h3>
+            <p className="text-white dark:text-white/80">
               As a former staff-level developer advocate at Pinecone, I built their first AWS-based production example
               that&apos;s now used as a reference architecture. With years of end-to-end experience in AI model integration,
               vector database hosting, and infrastructure as code, I bring rare expertise to your project.
@@ -189,24 +188,28 @@ export default function ServicesPage() {
       </section>
 
       {/* Portfolio/Experience Section */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-900">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Portfolio Highlights</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Portfolio Highlights</h2>
+          <p className="text-lg text-white dark:text-zinc-400 max-w-3xl mb-12">
             Selected projects showcasing my expertise in AI engineering and vector database integration.
           </p>
 
           <Tabs defaultValue="case-studies" className="w-full">
-            <TabsList className="mb-8">
-              <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-              <TabsTrigger value="tech-stack">Technology Stack</TabsTrigger>
+            <TabsList className="mb-8 bg-blue-800/50 dark:bg-zinc-800">
+              <TabsTrigger value="case-studies" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
+                Case Studies
+              </TabsTrigger>
+              <TabsTrigger value="tech-stack" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
+                Technology Stack
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="case-studies">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="bg-orange-950/30 border-orange-600/20">
+                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
                   <CardHeader>
-                    <CardTitle>Legal Semantic Search Application</CardTitle>
-                    <CardDescription>Fortune 500 Client (NDA)</CardDescription>
+                    <CardTitle className="text-zinc-900 dark:text-zinc-50">Legal Semantic Search Application</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Fortune 500 Client (NDA)</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
@@ -218,7 +221,7 @@ export default function ServicesPage() {
                         className="rounded-md"
                       />
                     </div>
-                    <ul className="space-y-2 list-disc pl-5">
+                    <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
                       <li>Built an AI-powered legal document search system</li>
                       <li>Reduced research time by 70% for legal team</li>
                       <li>Implemented RAG with custom vector embeddings</li>
@@ -227,10 +230,10 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-orange-950/30 border-orange-600/20">
+                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
                   <CardHeader>
-                    <CardTitle>Pinecone AWS Reference Architecture</CardTitle>
-                    <CardDescription>Official Reference Architecture</CardDescription>
+                    <CardTitle className="text-zinc-900 dark:text-zinc-50">Pinecone AWS Reference Architecture</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Official Reference Architecture</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
@@ -242,7 +245,7 @@ export default function ServicesPage() {
                         className="rounded-md"
                       />
                     </div>
-                    <ul className="space-y-2 list-disc pl-5">
+                    <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
                       <li>Developed production-ready integration between AWS and Pinecone</li>
                       <li>Now used as official reference architecture</li>
                       <li>Implemented IaC with Terraform for reproducibility</li>
@@ -251,10 +254,10 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-orange-950/30 border-orange-600/20">
+                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
                   <CardHeader>
-                    <CardTitle>Pinecone Assistant Sample App</CardTitle>
-                    <CardDescription>Technical Publication</CardDescription>
+                    <CardTitle className="text-zinc-900 dark:text-zinc-50">Pinecone Assistant Sample App</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Technical Publication</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
@@ -266,7 +269,7 @@ export default function ServicesPage() {
                         className="rounded-md"
                       />
                     </div>
-                    <ul className="space-y-2 list-disc pl-5">
+                    <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
                       <li>Developed official sample application for RAG chatbot</li>
                       <li>Implemented vector search with Pinecone</li>
                       <li>Built with Next.js and React</li>
@@ -275,10 +278,10 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-orange-950/30 border-orange-600/20">
+                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
                   <CardHeader>
-                    <CardTitle>Office Oracle - RAG Chatbot</CardTitle>
-                    <CardDescription>Personal Project</CardDescription>
+                    <CardTitle className="text-zinc-900 dark:text-zinc-50">Office Oracle - RAG Chatbot</CardTitle>
+                    <CardDescription className="text-zinc-500 dark:text-zinc-400">Personal Project</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
@@ -290,7 +293,7 @@ export default function ServicesPage() {
                         className="rounded-md"
                       />
                     </div>
-                    <ul className="space-y-2 list-disc pl-5">
+                    <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
                       <li>Built a RAG chatbot trained on The Office TV series</li>
                       <li>Implemented vector search database</li>
                       <li>Created with Next.js and OpenAI</li>
@@ -300,7 +303,7 @@ export default function ServicesPage() {
                 </Card>
               </div>
               <div className="flex justify-center mt-8 gap-4">
-                <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
                   <Link href="/projects">
                     See more of my projects
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -316,20 +319,20 @@ export default function ServicesPage() {
       </section>
 
       {/* Work History and Profile */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
         <div className="container mx-auto">
           {/* About Me Section - Now First */}
           <div className="mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">About Me</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white dark:text-zinc-50">About Me</h2>
             <div className="flex flex-col items-center max-w-4xl mx-auto">
               <div className="w-48 h-48 mb-8">
                 <RandomPortrait width={192} height={192} />
               </div>
-              <p className="text-lg text-muted-foreground text-center max-w-2xl">
+              <p className="text-lg text-white dark:text-zinc-300 text-center max-w-2xl">
                 I combine deep technical knowledge with practical experience to deliver 
                 solutions that are both innovative and production-ready.
               </p>
-              <p className="text-lg text-muted-foreground text-center max-w-2xl mt-4">
+              <p className="text-lg text-white dark:text-zinc-300 text-center max-w-2xl mt-4">
                 My background spans from large enterprise systems to startup environments, giving me
                 a unique perspective on what works at different scales. 
                 <br /><br />
@@ -338,7 +341,7 @@ export default function ServicesPage() {
                 various projects that improve developer workflows and system architectures.
               </p>
               <div className="mt-6">
-                <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
                   <Link href="https://github.com/zackproser" target="_blank" rel="noopener noreferrer">
                     Check out my GitHub
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -350,17 +353,17 @@ export default function ServicesPage() {
 
           {/* Professional Experience Section - Now Second */}
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Professional Experience</h2>
-            <div className="max-w-3xl mx-auto bg-gray-800/50 rounded-xl p-6 md:p-8 shadow-lg">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white dark:text-zinc-50">Professional Experience</h2>
+            <div className="max-w-3xl mx-auto bg-zinc-100 dark:bg-blue-800 rounded-xl p-6 md:p-8 shadow-lg">
               <CV />
               <div className="flex flex-wrap justify-center mt-8 gap-4">
-                <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
                   <Link href="/publications">
                     Read my publications
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
                   <Link href="/blog">
                     Read my research
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -373,56 +376,56 @@ export default function ServicesPage() {
       </section>
 
       {/* Why Work With Me */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Work With Me</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Why Work With Me</h2>
+            <p className="text-lg text-white dark:text-zinc-400 max-w-2xl mx-auto">
               Specialized expertise in a rapidly evolving field where experience matters.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-2xl font-semibold mb-6">Expertise & Specialization</h3>
+              <h3 className="text-2xl font-semibold mb-6 text-white dark:text-zinc-50">Expertise & Specialization</h3>
               <ul className="space-y-4">
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-primary/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="mt-1 bg-white/20 p-1 rounded-full">
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <strong className="text-foreground">Laser-Focused Expertise:</strong>
-                    <p className="text-muted-foreground">
+                    <strong className="text-white dark:text-zinc-50">Laser-Focused Expertise:</strong>
+                    <p className="text-white dark:text-zinc-300">
                       Specialized in Next.js + Vercel + AI with a multi-year track record in a space where many are just
                       getting started.
                     </p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-primary/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="mt-1 bg-white/20 p-1 rounded-full">
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <strong className="text-foreground">Production-Scale Experience:</strong>
-                    <p className="text-muted-foreground">
+                    <strong className="text-white dark:text-zinc-50">Production-Scale Experience:</strong>
+                    <p className="text-white dark:text-zinc-300">
                       Background in building systems that handle real-world scale, reliability, and performance
                       requirements.
                     </p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-primary/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="mt-1 bg-white/20 p-1 rounded-full">
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div>
-                    <strong className="text-foreground">End-to-End Knowledge:</strong>
-                    <p className="text-muted-foreground">
+                    <strong className="text-white dark:text-zinc-50">End-to-End Knowledge:</strong>
+                    <p className="text-white dark:text-zinc-300">
                       Rare combination of AI model expertise, vector database implementation, and infrastructure as code
                       skills.
                     </p>
@@ -432,24 +435,26 @@ export default function ServicesPage() {
             </div>
 
             <div>
-              <h3 className="text-2xl font-semibold mb-6">My Process</h3>
-              <ProcessTimeline />
+              <h3 className="text-2xl font-semibold mb-6 text-white dark:text-zinc-50">My Process</h3>
+              <div className="bg-zinc-100 dark:bg-blue-800 p-6 rounded-xl">
+                <ProcessTimeline />
+              </div>
             </div>
           </div>
 
-          <div className="mt-16 p-8 bg-orange-950/30 rounded-lg backdrop-blur-sm border border-orange-600/20">
-            <h3 className="text-xl font-semibold mb-4">Project Minimums & Rates</h3>
-            <p className="text-muted-foreground mb-4">
+          <div className="mt-16 p-8 bg-zinc-100 dark:bg-blue-800 rounded-lg backdrop-blur-sm border border-zinc-200 dark:border-blue-700">
+            <h3 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Project Minimums & Rates</h3>
+            <p className="text-zinc-700 dark:text-white/80 mb-4">
               I exclusively take on high-impact projects with a minimum engagement of $20,000. I require 50% payment up front 
               to begin work, with the remaining 50% due upon delivery. This ensures I can deliver the quality and attention 
               your project deserves.
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-zinc-700 dark:text-white/80">
               For detailed pricing based on your specific requirements, use the Project Calculator or schedule a
               strategy call.
             </p>
             <div className="mt-6">
-              <Button asChild size="lg" className="bg-[#7cc2ff] hover:bg-[#7cc2ff]/90 text-white">
+              <Button asChild size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
                 <Link href="/calculator">
                   Calculate Your Project Cost
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -461,39 +466,41 @@ export default function ServicesPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gray-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Others Say</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">What Others Say</h2>
+            <p className="text-lg text-white dark:text-zinc-400 max-w-2xl mx-auto">
               Feedback from clients and colleagues on my work and expertise.
-              <Link href="/testimonials" className="text-primary hover:underline ml-2">
+              <Link href="/testimonials" className="text-[#7cc2ff] underline hover:opacity-90 ml-2">
                 View all testimonials →
               </Link>
             </p>
           </div>
 
-          <TestimonialCarousel />
+          <div className="bg-zinc-100 dark:bg-blue-800 p-8 rounded-xl shadow-lg">
+            <TestimonialCarousel />
+          </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-4 md:px-6 lg:px-8 bg-black relative">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:60px_60px]" />
+      <section className="py-24 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-950 relative">
+        <div className="absolute inset-0 bg-grid-white/[0.1] dark:bg-grid-white/[0.05] bg-[size:60px_60px]" />
 
         <div className="container mx-auto relative z-10 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Build Your AI-Powered Solution?</h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-white dark:text-zinc-50 mb-6">Ready to Build Your AI-Powered Solution?</h2>
+          <p className="text-xl text-white dark:text-zinc-300 max-w-2xl mx-auto mb-10">
             Let&apos;s discuss how my specialized expertise can help bring your vision to life.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="bg-[#7cc2ff] text-white hover:bg-[#7cc2ff]/90">
+            <Button asChild size="lg" className="bg-white hover:bg-white/90 text-blue-700">
               <Link href="/calculator">
                 Start Your Project
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-[#7cc2ff] text-[#7cc2ff] hover:bg-[#7cc2ff]/10">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
               Schedule a Strategy Call
             </Button>
           </div>

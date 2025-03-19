@@ -57,16 +57,25 @@ export default function ProcessTimeline() {
           <button
             key={step.id}
             className={`relative flex flex-col items-center text-sm font-medium transition-colors ${
-              step.id <= activeStep ? "text-primary" : "text-muted-foreground"
+              step.id <= activeStep ? "text-blue-700 dark:text-primary" : "text-muted-foreground"
             }`}
             onClick={() => setActiveStep(step.id)}
           >
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 transition-colors ${
-                step.id <= activeStep ? "bg-primary text-white" : "bg-secondary border border-primary/20"
-              }`}
-            >
-              {step.id}
+            <div className="relative">
+              {step.id === activeStep && (
+                <div className="absolute -inset-1 rounded-full bg-blue-600/60 dark:bg-[#7cc2ff]/40 animate-pulse" />
+              )}
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 transition-colors relative z-10 ${
+                  step.id === activeStep 
+                    ? "bg-blue-600 text-white dark:bg-primary dark:text-white" 
+                    : step.id < activeStep 
+                      ? "bg-blue-200 text-blue-800 dark:bg-primary/70 dark:text-white" 
+                      : "bg-secondary border border-primary/20 text-gray-500"
+                }`}
+              >
+                {step.id}
+              </div>
             </div>
             <span className="hidden md:inline-block">{step.title.split(" ")[0]}</span>
           </button>
@@ -76,7 +85,7 @@ export default function ProcessTimeline() {
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-1 bg-secondary">
           <div
-            className="absolute top-0 left-0 h-full bg-primary transition-all duration-300"
+            className="absolute top-0 left-0 h-full bg-blue-600 dark:bg-primary transition-all duration-300"
             style={{ width: `${((activeStep - 1) / (steps.length - 1)) * 100}%` }}
           />
         </div>
@@ -85,8 +94,8 @@ export default function ProcessTimeline() {
       <div
         className="bg-secondary/50 backdrop-blur-sm p-6 rounded-lg border border-primary/20 transition-all duration-300"
       >
-        <h4 className="text-lg font-semibold text-primary mb-2">{steps[activeStep - 1].title}</h4>
-        <p className="text-muted-foreground">{steps[activeStep - 1].description}</p>
+        <h4 className="text-lg font-semibold text-blue-700 dark:text-white mb-2">{steps[activeStep - 1].title}</h4>
+        <p className="text-zinc-700 dark:text-white">{steps[activeStep - 1].description}</p>
       </div>
     </div>
   )

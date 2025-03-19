@@ -60,7 +60,7 @@ export default function TestimonialCarousel() {
         >
           {testimonials.map((testimonial, index) => (
             <div key={index} className="w-full flex-shrink-0 px-4">
-              <Card className="bg-orange-950/30 backdrop-blur-sm border-orange-600/20 h-full">
+              <Card className="backdrop-blur-sm h-full">
                 <CardContent className="pt-6">
                   <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
                     <div className="flex-shrink-0">
