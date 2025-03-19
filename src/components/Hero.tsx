@@ -67,32 +67,20 @@ export function Hero({
 }: HeroProps) {
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5 dark:bg-slate-900 lg:dark:bg-transparent">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-10 pt-10 md:pt-12 lg:grid-cols-12 lg:gap-y-12 lg:px-3 lg:pt-16 lg:pb-28 xl:py-24">
-        <div className="relative flex items-end lg:col-span-5 lg:row-span-2">
-          <div className="absolute -top-20 -bottom-12 left-0 right-1/2 z-10 rounded-br-6xl bg-blue-600 text-white/10 md:bottom-8 lg:-inset-y-32 lg:left-[-100vw] lg:right-full lg:-mr-40">
-            <GridPattern
-              x="100%"
-              y="100%"
-              patternTransform="translate(112 64)"
-            />
-          </div>
-          <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
-            <BookCover title={title} description={description} coverImage={image} />
-          </div>
-        </div>
-        <div className="relative px-4 sm:px-6 lg:col-span-7 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
-          <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100 lg:dark:bg-slate-900" />
-          {/* Testimonial removed to keep CTA buttons above the fold */}
-        </div>
-        <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20 dark:bg-slate-800 lg:dark:bg-transparent">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-10 pt-6 md:pt-8 lg:grid-cols-12 lg:gap-y-6 lg:px-3 lg:pt-3 lg:pb-12 xl:py-8">
+        {/* Mobile/tablet: Text content first, ebook cover second (order matters in grid layout) */}
+        {/* Desktop: Side by side with grid-cols-12 */}
+        
+        {/* Text content - appears first on mobile/tablet, second (right side) on desktop */}
+        <div className="order-1 lg:order-2 bg-white pt-8 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20 dark:bg-slate-800 lg:dark:bg-transparent">
           <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
             {/* Problem statement - what problem this solves */}
             {problemSolved && (
-              <div className="mb-4">
+              <div className="mb-3">
                 <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20 dark:bg-blue-900/30 dark:text-blue-200 dark:ring-blue-500/40">
                   Problem solved
                 </span>
-                <h2 className="mt-2 text-2xl font-bold text-slate-800 dark:text-slate-200">
+                <h2 className="mt-1 text-2xl font-bold text-slate-800 dark:text-slate-200">
                   {problemSolved}
                 </h2>
               </div>
@@ -104,16 +92,16 @@ export function Hero({
             
             {/* Clear benefit statement */}
             {benefitStatement && (
-              <p className="mt-6 text-xl font-semibold text-blue-600 dark:text-blue-400">
+              <p className="mt-4 text-xl font-semibold text-blue-600 dark:text-blue-400">
                 {benefitStatement}
               </p>
             )}
             
-            <p className="mt-4 text-xl text-slate-600 dark:text-slate-300">
+            <p className="mt-3 text-xl text-slate-600 dark:text-slate-300">
               {description}
             </p>
             
-            <div className="mt-8 flex flex-col sm:flex-row gap-6">
+            <div className="mt-6 flex flex-col sm:flex-row gap-6 mb-16">
               <Button href="#free-chapters" color="blue" className="text-lg py-4 px-8 font-bold">
                 Get sample chapter
               </Button>
@@ -121,6 +109,26 @@ export function Hero({
                 Buy now
               </Button>
             </div>
+          </div>
+        </div>
+        
+        {/* Background styling for desktop only */}
+        <div className="relative px-4 sm:px-6 lg:col-span-7 lg:pr-0 lg:pb-6 lg:pl-16 xl:pl-20 order-3 lg:order-3">
+          <div className="hidden lg:absolute lg:-top-20 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100 lg:dark:bg-slate-900" />
+          {/* Testimonial removed to keep CTA buttons above the fold */}
+        </div>
+        
+        {/* Ebook cover - appears second on mobile/tablet, first (left side) on desktop */}
+        <div className="relative flex items-center justify-center mt-6 mb-8 order-2 lg:order-1 lg:col-span-5 lg:row-span-2 lg:mb-0 lg:items-start lg:pt-14">
+          <div className="absolute -top-20 -bottom-12 left-0 right-1/2 z-10 rounded-br-6xl bg-blue-600 text-white/10 md:bottom-8 lg:-inset-y-32 lg:left-[-100vw] lg:right-full lg:-mr-40">
+            <GridPattern
+              x="100%"
+              y="100%"
+              patternTransform="translate(112 64)"
+            />
+          </div>
+          <div className="relative z-10 mx-auto flex w-full max-w-xs rounded-xl shadow-xl md:max-w-sm lg:w-auto">
+            <BookCover title={title} description={description} coverImage={image} />
           </div>
         </div>
       </div>
