@@ -15,7 +15,7 @@ const navigation = [
     title: 'Content',
     links: [
       { title: 'Research', href: '/blog' },
-      { title: 'Tutorials', href: '/tutorials' },
+      { title: 'Services', href: '/services' },
       { title: 'Products', href: '/products' },
       { title: 'Projects', href: '/projects' },
     ],
