@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, Code, Database, Server, Zap } from "lucide-react"
+import { ArrowRight, Code, Database, Server, Zap, CheckCircle2, Github } from "lucide-react"
 import TestimonialCarousel from "@/components/testimonial-carousel"
 import ProcessTimeline from "@/components/process-timeline"
 import TechStack from "@/components/tech-stack"
@@ -224,9 +224,17 @@ export default function ServicesPage() {
                     <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
                       <li>Built an AI-powered legal document search system</li>
                       <li>Reduced research time by 70% for legal team</li>
-                      <li>Implemented RAG with custom vector embeddings</li>
+                      <li>Leverages semantic search across case files</li>
                       <li>Deployed on Vercel with Next.js and Pinecone</li>
                     </ul>
+                    <div className="mt-4">
+                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                        <Link href="https://docs.pinecone.io/examples/sample-apps/legal-semantic-search" target="_blank" rel="noopener noreferrer">
+                          View Sample App
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -251,6 +259,14 @@ export default function ServicesPage() {
                       <li>Implemented IaC with Terraform for reproducibility</li>
                       <li>Created comprehensive documentation and tutorials</li>
                     </ul>
+                    <div className="mt-4">
+                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                        <Link href="https://github.com/pinecone-io/aws-reference-architecture-pulumi" target="_blank" rel="noopener noreferrer">
+                          <Github className="mr-2 h-4 w-4" />
+                          View on GitHub
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -270,11 +286,19 @@ export default function ServicesPage() {
                       />
                     </div>
                     <ul className="space-y-2 list-disc pl-5 text-zinc-700 dark:text-zinc-300">
-                      <li>Developed official sample application for RAG chatbot</li>
+                      <li>The official Pinecone Assistant frontend client and Next.js template</li>
                       <li>Implemented vector search with Pinecone</li>
                       <li>Built with Next.js and React</li>
                       <li>Used by thousands of developers worldwide</li>
                     </ul>
+                    <div className="mt-4">
+                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                        <Link href="https://docs.pinecone.io/examples/sample-apps/pinecone-assistant" target="_blank" rel="noopener noreferrer">
+                          View Sample App
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -390,10 +414,8 @@ export default function ServicesPage() {
               <h3 className="text-2xl font-semibold mb-6 text-white dark:text-zinc-50">Expertise & Specialization</h3>
               <ul className="space-y-4">
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-white/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                  <div className="mt-1">
+                    <CheckCircle2 className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <strong className="text-white dark:text-zinc-50">Laser-Focused Expertise:</strong>
@@ -404,10 +426,8 @@ export default function ServicesPage() {
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-white/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                  <div className="mt-1">
+                    <CheckCircle2 className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <strong className="text-white dark:text-zinc-50">Production-Scale Experience:</strong>
@@ -418,10 +438,8 @@ export default function ServicesPage() {
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="mt-1 bg-white/20 p-1 rounded-full">
-                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                  <div className="mt-1">
+                    <CheckCircle2 className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <strong className="text-white dark:text-zinc-50">End-to-End Knowledge:</strong>

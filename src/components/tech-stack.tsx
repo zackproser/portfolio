@@ -68,8 +68,8 @@ export default function TechStack() {
             variant={selectedCategory === category.id ? "default" : "outline"}
             className={`px-3 py-1 cursor-pointer text-sm ${
               selectedCategory === category.id
-                ? "bg-primary hover:bg-primary/90"
-                : "hover:bg-primary/10 border-primary/30"
+                ? "bg-primary hover:bg-primary/90 text-white"
+                : "hover:bg-primary/10 border-primary/30 text-white"
             }`}
             onClick={() => setSelectedCategory(category.id as Category)}
           >
@@ -83,21 +83,21 @@ export default function TechStack() {
         className="space-y-8 transition-all duration-300"
       >
         <div>
-          <h3 className="text-2xl font-semibold mb-4 text-foreground">
+          <h3 className="text-2xl font-semibold mb-4 text-white">
             Expert Technologies & Skills
           </h3>
           <div className="flex flex-wrap gap-3">
             {filteredTechnologies.map((tech) => (
               <Badge
                 key={tech.name}
-                className="px-3 py-2 text-base bg-background border border-primary/30 hover:bg-primary/5"
+                className="px-3 py-2 text-base bg-blue-700/20 border border-primary/30 hover:bg-primary/20 text-white"
               >
                 <span className="mr-2">{tech.icon}</span>
                 {tech.name}
               </Badge>
             ))}
           </div>
-          <p className="text-muted-foreground mt-4">
+          <p className="text-white mt-4">
             Working extensively with these technologies, I develop production-grade applications with full expertise across the entire stack.
           </p>
         </div>
