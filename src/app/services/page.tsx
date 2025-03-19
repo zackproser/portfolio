@@ -69,18 +69,20 @@ export default function ServicesPage() {
                 years of professional engineering experience.
               </span>
             </p>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto mt-4">
-              Ready to elevate your product with AI? Let&apos;s build your Next.js solution together.
-            </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                Calculate Your Project Cost
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button asChild size="lg" className="bg-[#7cc2ff] hover:bg-[#7cc2ff]/90 text-white">
+                <Link href="/calculator">
+                  Calculate Your Project Cost
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-primary/70 text-primary hover:bg-primary/10">
+              <Button size="lg" variant="outline" className="border-[#7cc2ff]/70 text-[#7cc2ff] hover:bg-[#7cc2ff]/10">
                 Schedule a Strategy Call
               </Button>
             </div>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto mt-4">
+              Ready to elevate your product with AI? Let&apos;s build your Next.js solution together.
+            </p>
           </div>
         </div>
       </section>
@@ -447,9 +449,11 @@ export default function ServicesPage() {
               strategy call.
             </p>
             <div className="mt-6">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                Calculate Your Project Cost
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button asChild size="lg" className="bg-[#7cc2ff] hover:bg-[#7cc2ff]/90 text-white">
+                <Link href="/calculator">
+                  Calculate Your Project Cost
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -483,11 +487,13 @@ export default function ServicesPage() {
             Let&apos;s discuss how my specialized expertise can help bring your vision to life.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" className="bg-primary text-white hover:bg-primary/90">
-              Start Your Project
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button asChild size="lg" className="bg-[#7cc2ff] text-white hover:bg-[#7cc2ff]/90">
+              <Link href="/calculator">
+                Start Your Project
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+            <Button size="lg" variant="outline" className="border-[#7cc2ff] text-[#7cc2ff] hover:bg-[#7cc2ff]/10">
               Schedule a Strategy Call
             </Button>
           </div>
