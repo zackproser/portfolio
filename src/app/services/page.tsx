@@ -13,6 +13,7 @@ import RandomPortrait from "@/components/RandomPortrait"
 import NumYearsExperience from "@/components/NumYearsExperience"
 import Image from "next/image"
 import Link from "next/link"
+import { createMetadata } from "@/utils/createMetadata"
 
 // Import logos
 import logoCloudflare from '@/images/logos/cloudflare.svg'
@@ -26,15 +27,10 @@ import pineconeRefArchImg from '@/images/pinecone-refarch-logo.webp'
 import pineconeAssistantImg from '@/images/pinecone-assistant.webp'
 import officeOracleImg from '@/images/office-oracle-screenshot.webp'
 
-export const metadata: Metadata = {
-  title: "AI Engineering Services | Next.js & Vector Database Expert",
-  description: "Specialized AI engineering services for Next.js applications with vector database integration and production infrastructure as code.",
-  openGraph: {
-    title: "AI Engineering Services | Next.js & Vector Database Expert",
-    description: "Specialized AI engineering services for Next.js applications with vector database integration and production infrastructure as code.",
-    images: [{ url: "/og-services.png" }],
-  },
-}
+export const metadata = createMetadata({
+  title: "I build production-ready AI apps. You launch faster.",
+  description: "Specialized, expert AI engineering services for Next.js applications with vector database integration and production infrastructure as code.",
+})
 
 export default function ServicesPage() {
   return (
