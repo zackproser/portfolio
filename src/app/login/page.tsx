@@ -1,64 +1,17 @@
-'use client';;
-import { use } from "react";
-
-import { redirect } from "next/navigation";
+'use client';
+import { use, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
+import { MailOpen } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { redirect } from 'next/navigation';
 
-export default function SignInPage(
-  props: {
-    searchParams: Promise<{ callbackUrl?: string }>
-  }
-) {
-  const searchParams = use(props.searchParams);
-
-  const {
-    callbackUrl
-  } = searchParams;
-
-  const finalCallbackUrl = callbackUrl || '/';
-
-  const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    signIn("email", { email, callbackUrl: finalCallbackUrl });
-  };
-
-  return (
-    <div className="flex h-screen items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <div className="p-6 space-y-4">
-          <h1 className="text-2xl font-bold text-center">Almost there!</h1>
-          <p className="text-center text-gray-500 dark:text-gray-400">
-            Sign in to your account to purchase or use courses on zackproser.com.
-          </p>
-          <div className="space-y-4">
-            <form onSubmit={handleEmailSignIn}>
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-300"
-                />
-              </div>
-              <button 
-                type="submit"
-                className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-              >
-                Sign in with Email
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+export default function LoginRedirect() {
+  useEffect(() => {
+    redirect('/auth/login');
+  }, []);
+  
+  return null;
 }
 
 function ProviderIcon({ provider, ...props }: { provider: string; className?: string }) {
