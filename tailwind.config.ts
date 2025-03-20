@@ -24,5 +24,16 @@ export default {
       '9xl': ['8rem', { lineHeight: '1' }],
     },
     typography: typographyStyles,
+    extend: {
+      animation: {
+        'float': 'float 3s ease-in-out infinite',
+      },
+      textShadow: {
+        DEFAULT: '2px 2px 0 rgba(0, 0, 0, 0.5)',
+      },
+      clipPath: {
+        'polygon': 'polygon(0 0, 50% 40%, 100% 0, 100% 40%, 50% 80%, 0 40%)',
+      }
+    }
   },
 } satisfies Config
