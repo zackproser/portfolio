@@ -689,9 +689,9 @@ export default function NewsletterBuilder() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="space-y-8">
+      <div className="space-y-4 px-0">
         {isOffline && (
-          <div className="bg-yellow-600/20 border border-yellow-600/50 text-yellow-200 px-4 py-3 rounded-md flex items-center justify-between">
+          <div className="bg-yellow-600/20 border border-yellow-600/50 text-yellow-200 px-4 py-3 rounded-md flex items-center justify-between mx-1">
             <div className="flex items-center">
               <Zap className="h-5 w-5 mr-2" />
               <span>You're currently offline. Changes will be saved locally and synced when you're back online.</span>
@@ -702,9 +702,9 @@ export default function NewsletterBuilder() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
           {/* Left Sidebar - Newsletter List */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-1">
             <NewsletterSidebar
               currentId={editId || undefined}
               onSelectNewsletter={handleSelectNewsletter}
@@ -714,10 +714,10 @@ export default function NewsletterBuilder() {
           </div>
 
           {/* Main Content Area */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="flex flex-col space-y-4">
-                <div className="flex items-center space-x-4">
+          <div className="lg:col-span-1 space-y-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center space-x-2">
                   <Input
                     placeholder="Newsletter Subject"
                     value={subject}
@@ -735,7 +735,7 @@ export default function NewsletterBuilder() {
                   </Button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <LinkDropZone onLinkAdd={handleLinkAdd} isLoading={isLoading} />
                 </div>
 
@@ -773,16 +773,16 @@ export default function NewsletterBuilder() {
             </div>
 
             <Tabs defaultValue="edit" className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-              <TabsList className="bg-white/20 m-4">
-                <TabsTrigger value="edit" className="data-[state=active]:bg-blue-600 text-white">
+              <TabsList className="bg-white/20 m-1 p-1">
+                <TabsTrigger value="edit" className="data-[state=active]:bg-blue-600 text-white px-3 py-1 h-7">
                   Edit Content
                 </TabsTrigger>
-                <TabsTrigger value="preview" className="data-[state=active]:bg-blue-600 text-white">
+                <TabsTrigger value="preview" className="data-[state=active]:bg-blue-600 text-white px-3 py-1 h-7">
                   Preview Newsletter
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="edit" className="p-4 space-y-4">
+              <TabsContent value="edit" className="p-2 space-y-2">
                 <LinkList
                   links={links}
                   selectedLinkId={selectedLinkId}
@@ -799,73 +799,64 @@ export default function NewsletterBuilder() {
                 />
               </TabsContent>
 
-              <TabsContent value="preview" className="p-4">
+              <TabsContent value="preview" className="p-2">
                 <NewsletterPreview subject={subject} links={links} html={generateNewsletterHtml()} />
               </TabsContent>
             </Tabs>
-          </div>
-
-          {/* Right Sidebar */}
-          <div className="lg:col-span-3 space-y-6">
-            <QuickNotes onAddToBulletPoints={handleAddToBulletPoints} />
-
-            <ContentLibrarySidebar onContentSelect={handleContentSelect} />
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 space-y-4">
-              <h3 className="text-xl font-bold text-white mb-4">Newsletter Actions</h3>
-
-              <Button
-                onClick={handleCreateCampaign}
-                disabled={isLoading || !subject || links.length === 0}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Create Campaign
-              </Button>
-
-              <Button
-                onClick={() => handleSendCampaign()}
-                disabled={isLoading || !campaignId}
-                variant="default"
-                className="w-full bg-green-600 hover:bg-green-700"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Send Now
-              </Button>
-
-              <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
-                <DialogTrigger asChild>
-                  <Button
-                    disabled={isLoading || !campaignId}
-                    variant="outline"
-                    className="w-full border-white/20 text-white hover:bg-white/20"
-                  >
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Schedule
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-gray-900 text-white border-gray-700">
-                  <DialogHeader>
-                    <DialogTitle>Schedule Newsletter</DialogTitle>
-                    <DialogDescription className="text-gray-400">
-                      Select a date and time to send your newsletter
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="py-4">
-                    <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
-                  </div>
-                  <DialogFooter>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 space-y-2">
+              <h3 className="text-lg font-bold text-white mb-1">Newsletter Actions</h3>
+              <div className="flex space-x-2">
+                <Button
+                  onClick={handleCreateCampaign}
+                  disabled={isLoading || !subject || links.length === 0}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Create
+                </Button>
+                <Button
+                  onClick={() => handleSendCampaign()}
+                  disabled={isLoading || !campaignId}
+                  variant="default"
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Send
+                </Button>
+                <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+                  <DialogTrigger asChild>
                     <Button
-                      onClick={() => handleSendCampaign(scheduleDate)}
-                      disabled={!scheduleDate}
-                      className="bg-blue-600 hover:bg-blue-700"
+                      disabled={isLoading || !campaignId}
+                      variant="outline"
+                      className="flex-1 border-white/20 text-white hover:bg-white/20"
                     >
-                      Schedule Send
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Schedule
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-
+                  </DialogTrigger>
+                  <DialogContent className="bg-gray-900 text-white border-gray-700">
+                    <DialogHeader>
+                      <DialogTitle>Schedule Newsletter</DialogTitle>
+                      <DialogDescription className="text-gray-400">
+                        Select a date and time to send your newsletter
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-2">
+                      <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        onClick={() => handleSendCampaign(scheduleDate)}
+                        disabled={!scheduleDate}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Schedule Send
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
               <Button
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
@@ -874,42 +865,24 @@ export default function NewsletterBuilder() {
                 <Upload className="h-4 w-4 mr-2" />
                 Load Draft
               </Button>
-
-              <div className="pt-4 border-t border-white/10">
-                <h4 className="text-sm font-medium text-blue-200 mb-3">Quick Links</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/20" asChild>
-                    <a href="/admin/newsletter/library">
-                      <Bookmark className="h-4 w-4 mr-2" />
-                      Library
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/20" asChild>
-                    <a href="/admin/newsletter/analytics">
-                      <Tag className="h-4 w-4 mr-2" />
-                      Analytics
-                    </a>
-                  </Button>
-                </div>
-              </div>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <h3 className="text-lg font-bold text-white mb-1 flex items-center">
                 <MessageSquarePlus className="h-5 w-5 mr-2 text-blue-300" />
                 AI Subject Suggestions
               </h3>
-              <div className="space-y-3">
-                <p className="text-sm text-blue-200 mb-4">
+              <div className="space-y-1">
+                <p className="text-sm text-blue-200 mb-1">
                   Based on your content, here are some suggested subject lines:
                 </p>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {links.length > 0 ? (
                     <>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left"
+                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
                         onClick={() => setSubject(`${links.length} Essential Resources for Modern Developers`)}
                       >
                         {links.length} Essential Resources for Modern Developers
@@ -917,7 +890,7 @@ export default function NewsletterBuilder() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left"
+                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
                         onClick={() =>
                           setSubject(`This Week in Tech: ${links[0]?.title?.split(":")[0] || "Latest Updates"}`)
                         }
@@ -927,7 +900,7 @@ export default function NewsletterBuilder() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left"
+                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
                         onClick={() =>
                           setSubject(
                             `Modern Coding Digest - ${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}`,
@@ -945,6 +918,16 @@ export default function NewsletterBuilder() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar - Content Library */}
+          <div className="lg:col-span-1 space-y-3 flex flex-col">
+            <div className="flex-1">
+              <ContentLibrarySidebar onContentSelect={handleContentSelect} />
+            </div>
+            <div className="flex-1 max-h-[45vh] overflow-auto">
+              <QuickNotes onAddToBulletPoints={handleAddToBulletPoints} />
             </div>
           </div>
         </div>

@@ -68,46 +68,46 @@ export default function QuickNotes({ onAddToBulletPoints }: QuickNotesProps) {
   }
 
   return (
-    <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <Sparkles className="h-5 w-5 mr-2 text-yellow-400" />
+    <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white h-full flex flex-col">
+      <CardHeader className="pb-1 pt-2 px-3 flex-shrink-0">
+        <CardTitle className="flex items-center text-base">
+          <Sparkles className="h-4 w-4 mr-1 text-yellow-400" />
           AI Quick Notes
         </CardTitle>
-        <CardDescription className="text-blue-100">
+        <CardDescription className="text-blue-100 text-xs">
           Jot down quick notes and let AI expand them into well-written content
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2 px-3 py-1 flex-grow overflow-auto">
         <div>
           <Textarea
             placeholder="Enter a brief note or bullet point..."
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="min-h-[100px] bg-white/20 border-white/20 placeholder:text-white/50 text-white"
+            className="min-h-[60px] bg-white/20 border-white/20 placeholder:text-white/50 text-white text-sm"
           />
         </div>
         {expandedNote && (
-          <div className="p-4 bg-white/20 rounded-md border border-white/20">
-            <h4 className="text-sm font-medium mb-2 text-blue-100">Expanded Content:</h4>
-            <p className="text-white">{expandedNote}</p>
+          <div className="p-2 bg-white/20 rounded-md border border-white/20 overflow-auto">
+            <h4 className="text-xs font-medium mb-1 text-blue-100">Expanded Content:</h4>
+            <p className="text-white text-sm">{expandedNote}</p>
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between pt-1 pb-2 px-3 flex-shrink-0">
         <Button
           onClick={handleExpandNote}
           disabled={isExpanding || !note.trim()}
-          className="bg-yellow-500 hover:bg-yellow-600 text-black"
+          className="bg-yellow-500 hover:bg-yellow-600 text-black text-xs h-8"
         >
           {isExpanding ? (
             <>
-              <LoadingSpinner size={16} className="mr-2" />
+              <LoadingSpinner size={12} className="mr-1" />
               Expanding...
             </>
           ) : (
             <>
-              <Sparkles className="h-4 w-4 mr-2" />
+              <Sparkles className="h-3 w-3 mr-1" />
               Expand with AI
             </>
           )}
@@ -116,7 +116,7 @@ export default function QuickNotes({ onAddToBulletPoints }: QuickNotesProps) {
           onClick={handleAddToBulletPoints}
           disabled={!expandedNote}
           variant="outline"
-          className="border-white/20 text-white hover:bg-white/20"
+          className="border-white/20 text-white hover:bg-white/20 text-xs h-8"
         >
           Add to Bullet Points
         </Button>

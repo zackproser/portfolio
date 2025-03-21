@@ -23,6 +23,7 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
   const [selectedTypes, setSelectedTypes] = useState<string[]>(["all"])
   const [searchResults, setSearchResults] = useState<Content[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [showAllResults, setShowAllResults] = useState(false)
   const { toast } = useToast()
 
   const handleTypeChange = (type: string) => {
@@ -90,42 +91,42 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
   }, [searchTerm, selectedTypes]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center">
-          <Book className="h-4 w-4 mr-2 text-blue-300" />
+    <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white max-h-[50vh] flex flex-col overflow-hidden">
+      <CardHeader className="pb-1 pt-2 px-3 flex-shrink-0">
+        <CardTitle className="text-base flex items-center">
+          <Book className="h-4 w-4 mr-1 text-blue-300" />
           Content Library
           <Button
             variant="ghost"
             size="sm"
             onClick={handleRefresh}
-            className="ml-auto text-white hover:bg-white/20 h-8 w-8 p-0"
+            className="ml-auto text-white hover:bg-white/20 h-6 w-6 p-0"
             disabled={isLoading}
           >
-            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-3 w-3 ${isLoading ? "animate-spin" : ""}`} />
             <span className="sr-only">Refresh</span>
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-1 px-3 py-1 flex-shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 h-4 w-4" />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white/50 h-3 w-3" />
           <Input
             placeholder="Search content..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white/20 border-white/20 placeholder:text-white/50 text-white"
+            className="pl-7 bg-white/20 border-white/20 placeholder:text-white/50 text-white h-7 text-sm"
           />
         </div>
 
         <Collapsible open={isFilterOpen} onOpenChange={setIsFilterOpen}>
           <CollapsibleTrigger asChild>
-            <Button variant="outline" size="sm" className="w-full border-white/20 text-white hover:bg-white/20">
-              <Filter className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" className="w-full border-white/20 text-white hover:bg-white/20 h-7 text-xs">
+              <Filter className="h-3 w-3 mr-1" />
               Filter by Type
             </Button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-2 space-y-2 p-2 bg-white/5 rounded-md">
+          <CollapsibleContent className="mt-1 space-y-0.5 p-1 bg-white/5 rounded-md">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="sidebar-all"
@@ -194,29 +195,29 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
           </CollapsibleContent>
         </Collapsible>
 
-        <div className="mt-2">
+        <div className="mt-1 overflow-auto flex-grow">
           {isLoading ? (
-            <div className="flex justify-center py-4">
-              <LoadingSpinner size={24} />
+            <div className="flex justify-center py-1">
+              <LoadingSpinner size={16} />
             </div>
           ) : searchResults.length === 0 ? (
-            <div className="text-center py-4 text-white/70 text-sm">
+            <div className="text-center py-1 text-white/70 text-xs">
               {searchTerm ? "No results found" : "Search for content to add to your newsletter"}
             </div>
           ) : (
-            <ScrollArea className="h-[400px]">
-              <div className="space-y-3 pr-3">
-                {searchResults.map((content) => (
+            <ScrollArea className="h-[calc(50vh-120px)] overflow-auto">
+              <div className="space-y-1 pr-1">
+                {(showAllResults ? searchResults : searchResults.slice(0, 5)).map((content) => (
                   <div
                     key={content.id}
-                    className={`p-3 rounded-md hover:bg-white/10 transition-colors border ${
+                    className={`p-1.5 rounded-md hover:bg-white/10 transition-colors border ${
                       content.isSuggested ? "border-yellow-500/30 bg-yellow-500/10" : "border-white/10"
                     } cursor-pointer`}
                     onClick={() => onContentSelect(content)}
                   >
                     <div className="flex justify-between items-start">
-                      <h4 className="font-medium text-white text-sm flex items-center">
-                        {content.isSuggested && <Star className="h-4 w-4 mr-1 text-yellow-500 fill-yellow-500" />}
+                      <h4 className="font-medium text-white text-xs flex items-center">
+                        {content.isSuggested && <Star className="h-3 w-3 mr-0.5 text-yellow-500 fill-yellow-500" />}
                         {content.title}
                       </h4>
                       <Button
@@ -226,29 +227,51 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
                           e.stopPropagation()
                           onContentSelect(content)
                         }}
-                        className="ml-2 text-white hover:bg-blue-700 h-6 w-6 p-0"
+                        className="ml-1 text-white hover:bg-blue-700 h-5 w-5 p-0"
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-2.5 w-2.5" />
                       </Button>
                     </div>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs">
+                    <div className="flex flex-wrap gap-0.5 mt-0.5">
+                      <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                         {content.type}
                       </Badge>
                       {content.tags.slice(0, 1).map((tag) => (
-                        <Badge key={tag} variant="outline" className="border-blue-500 text-blue-300 text-xs">
+                        <Badge key={tag} variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                           {tag}
                         </Badge>
                       ))}
                       {content.tags.length > 1 && (
-                        <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs">
+                        <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                           +{content.tags.length - 1}
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-white/70 mt-1 line-clamp-2">{content.description}</p>
+                    <p className="text-xs text-white/70 mt-0.5 line-clamp-1">{content.description}</p>
                   </div>
                 ))}
+                
+                {searchResults.length > 5 && !showAllResults && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-full text-xs text-blue-300 hover:bg-white/10 mt-1"
+                    onClick={() => setShowAllResults(true)}
+                  >
+                    Show all {searchResults.length} results
+                  </Button>
+                )}
+                
+                {searchResults.length > 5 && showAllResults && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-full text-xs text-blue-300 hover:bg-white/10 mt-1"
+                    onClick={() => setShowAllResults(false)}
+                  >
+                    Show fewer results
+                  </Button>
+                )}
               </div>
             </ScrollArea>
           )}
