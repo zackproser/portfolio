@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import type { LinkItem } from "./newsletter-builder"
 
 import { useState, useCallback } from "react"
 import { NotepadText } from "lucide-react"
@@ -10,18 +11,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 interface LinkDropZoneProps {
-  onLinkAdd: (url: string) => Promise<void>
-  isLoading: boolean
+  onLinkAdd?: (url: string) => Promise<void>;
+  isLoading?: boolean;
+  links?: LinkItem[];
+  onReorder?: (newLinks: LinkItem[]) => void;
+  children?: React.ReactNode;
 }
 
-export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps) {
+export default function LinkDropZone({ onLinkAdd, isLoading = false, links = [], onReorder, children }: LinkDropZoneProps) {
   const [url, setUrl] = useState("")
   const [isDragging, setIsDragging] = useState(false)
   const [isOver, setIsOver] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (url.trim()) {
+    if (url.trim() && onLinkAdd) {
       await onLinkAdd(url)
       setUrl("")
     }
@@ -29,7 +33,7 @@ export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps
 
   const handlePaste = async (e: React.ClipboardEvent) => {
     const pastedText = e.clipboardData.getData("text")
-    if (pastedText.trim() && isValidUrl(pastedText)) {
+    if (pastedText.trim() && isValidUrl(pastedText) && onLinkAdd) {
       e.preventDefault()
       await onLinkAdd(pastedText)
     }
@@ -67,6 +71,9 @@ export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps
       setIsDragging(false)
       setIsOver(false)
 
+      // Only process if we have the onLinkAdd handler
+      if (!onLinkAdd) return;
+
       // Handle dropped text
       const text = e.dataTransfer.getData("text")
       if (text && isValidUrl(text)) {
@@ -85,6 +92,23 @@ export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps
     [onLinkAdd],
   )
 
+  // If we have children (new usage mode), render them inside the drop zone
+  if (children) {
+    return (
+      <div 
+        className={`rounded-md transition-colors ${
+          isOver || isDragging ? "bg-blue-900/30" : ""
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  // Original UI for the direct URL input mode
   return (
     <Card
       className={`border-2 border-dashed transition-colors ${

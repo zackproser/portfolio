@@ -189,6 +189,8 @@ type Draft = {
 
   export async function updateCampaign(campaignId: string, updates: { subject?: string; html?: string }) {
     try {
+      console.log("Updating campaign, ID:", campaignId, "has subject:", !!updates.subject, "has HTML:", !!updates.html);
+      
       const response = await fetch(`/api/email-octopus/update-campaign`, {
         method: "POST",
         headers: {
@@ -200,7 +202,16 @@ type Draft = {
         }),
       });
 
-      const data = await response.json();
+      // First check if the response can be parsed as JSON
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.error("Error parsing response as JSON:", parseError);
+        const textResponse = await response.text();
+        console.error("Response text:", textResponse.substring(0, 200) + "...");
+        throw new Error(`Failed to parse response as JSON: ${parseError.message}`);
+      }
 
       if (!response.ok) {
         console.error("Failed to update campaign:", {

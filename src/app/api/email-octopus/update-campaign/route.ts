@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
     // Build the URL for the v1.6 API
     const apiUrl = `https://emailoctopus.com/api/1.6/campaigns/${campaignId}`
-    console.log("Updating campaign at:", apiUrl.replace(/api_key=([^&]+)/, 'api_key=****'));
+    console.log("Updating campaign at:", apiUrl);
 
     // Prepare the update payload
     const payload: Record<string, any> = {
@@ -53,9 +53,15 @@ export async function POST(request: Request) {
       }
     }
 
+    console.log("Update payload structure:", JSON.stringify({
+      ...payload,
+      api_key: "REDACTED"
+    }));
+
     // Update campaign in Email Octopus using v1.6 API
+    // NOTE: For v1.6 API, we're using POST instead of PUT
     const response = await fetch(apiUrl, {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -65,7 +71,23 @@ export async function POST(request: Request) {
     // Log the HTTP status for debugging
     console.log("EmailOctopus API status:", response.status, response.statusText);
 
-    const data = await response.json()
+    // Check if the response is JSON or HTML (error response)
+    const contentType = response.headers.get('content-type');
+    let data;
+    
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      // Handle HTML error response
+      const textResponse = await response.text();
+      console.error("Received non-JSON response:", textResponse.substring(0, 200) + '...');
+      
+      data = { 
+        error: { 
+          message: `Received non-JSON response with status ${response.status}` 
+        } 
+      };
+    }
 
     if (!response.ok) {
       return NextResponse.json(

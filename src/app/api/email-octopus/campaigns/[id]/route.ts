@@ -55,20 +55,36 @@ export async function GET(
 
     const data = await response.json()
     
-    // Log the campaign data structure
-    console.log("Campaign data structure:", {
-      id: data.id, 
-      subject: data.subject,
-      content: data.content ? 
-        typeof data.content === 'string' ? 
-          'Content is a string' : 
-          Object.keys(data.content).map(key => `${key}: ${typeof data.content[key]}`)
-        : 'No content'
-    });
+    // Add detailed logging for the content field
+    console.log("Campaign response status:", response.status);
     
-    // Log the full content object if it exists
-    if (data.content) {
-      console.log("Full content object:", JSON.stringify(data.content));
+    if (data && data.content) {
+      console.log("Content field type:", typeof data.content);
+      
+      if (typeof data.content === 'object') {
+        console.log("Content object keys:", Object.keys(data.content));
+        
+        // Log specific content fields that might exist
+        if (data.content.html) {
+          console.log("HTML content exists, length:", data.content.html.length);
+          console.log("HTML preview:", data.content.html.substring(0, 100) + "...");
+        }
+        
+        if (data.content.body) {
+          console.log("Body content exists, length:", data.content.body.length);
+          console.log("Body preview:", data.content.body.substring(0, 100) + "...");
+        }
+        
+        if (data.content.text) {
+          console.log("Text content exists, length:", data.content.text.length);
+          console.log("Text preview:", data.content.text.substring(0, 100) + "...");
+        }
+      } else if (typeof data.content === 'string') {
+        console.log("Content is a string, length:", data.content.length);
+        console.log("Content preview:", data.content.substring(0, 100) + "...");
+      }
+    } else {
+      console.log("No content field found in response");
     }
 
     // Transform v1.6 API response format to match our application format

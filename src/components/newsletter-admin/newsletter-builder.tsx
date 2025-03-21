@@ -26,13 +26,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Mail, Calendar, Save, Upload, Sparkles, Tag, Bookmark, MessageSquarePlus, Zap } from "lucide-react"
-// Update the imports to include the new ContentLibrarySidebar component
+import { Mail, Calendar, Save, Upload, Sparkles, Tag, Bookmark, MessageSquarePlus, Zap, Copy, Search, Trash, Send } from "lucide-react"
 import ContentLibrarySidebar from "./content-library-sidebar"
-// Add the import for NewsletterSidebar
 import NewsletterSidebar from "./newsletter-sidebar"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
-// Mock data for demonstration
 const mockEpisodes = [
   {
     id: "1",
@@ -110,6 +110,7 @@ export default function NewsletterBuilder() {
   const [showScheduleDialog, setShowScheduleDialog] = useState(false)
   const [campaignId, setCampaignId] = useState<string | null>(null)
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null)
+  const [rawHtmlContent, setRawHtmlContent] = useState<string | null>(null)
   const [availableTags, setAvailableTags] = useState<string[]>([
     "JavaScript",
     "TypeScript",
@@ -136,12 +137,12 @@ export default function NewsletterBuilder() {
   const [offlineQueue, setOfflineQueue] = useState<{ type: string; data: any }[]>([])
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [urlInput, setUrlInput] = useState("")
 
   const handleLinkAdd = useCallback(async (url: string, addToOfflineQueue = true) => {
     if (isOffline && addToOfflineQueue) {
       setOfflineQueue((prev) => [...prev, { type: "addLink", data: { url } }])
 
-      // Create a placeholder link for offline mode
       const placeholderLink: LinkItem = {
         id: Date.now().toString(),
         url,
@@ -160,7 +161,7 @@ export default function NewsletterBuilder() {
         description: "Link will be processed when you&apos;re back online",
       })
 
-      return
+      return Promise.resolve()
     }
 
     try {
@@ -174,7 +175,7 @@ export default function NewsletterBuilder() {
           variant: "destructive",
         })
         setIsLoading(false)
-        return
+        return Promise.reject(new Error("Failed to fetch metadata"))
       }
 
       const newLink: LinkItem = {
@@ -194,6 +195,8 @@ export default function NewsletterBuilder() {
         title: "Link added",
         description: "Link has been added to your newsletter",
       })
+      
+      return Promise.resolve()
     } catch (error) {
       console.error("Error adding link:", error)
       toast({
@@ -201,12 +204,12 @@ export default function NewsletterBuilder() {
         description: "An error occurred while adding the link",
         variant: "destructive",
       })
+      return Promise.reject(error)
     } finally {
       setIsLoading(false)
     }
-  }, [isOffline, setOfflineQueue, setLinks, setSelectedLinkId, toast]);
+  }, [isOffline, setOfflineQueue, setLinks, setSelectedLinkId, toast])
 
-  // Define processOfflineQueue before it's used
   const processOfflineQueue = useCallback(async () => {
     if (offlineQueue.length === 0) return
 
@@ -217,13 +220,10 @@ export default function NewsletterBuilder() {
 
     for (const item of offlineQueue) {
       if (item.type === "addLink") {
-        // Process the queued link
         await handleLinkAdd(item.data.url, false)
       }
-      // Add other operations as needed
     }
 
-    // Clear the queue after processing
     setOfflineQueue([])
 
     toast({
@@ -232,7 +232,6 @@ export default function NewsletterBuilder() {
     })
   }, [offlineQueue, handleLinkAdd, toast])
 
-  // Check for offline status
   useEffect(() => {
     const handleOnline = () => {
       setIsOffline(false)
@@ -258,7 +257,6 @@ export default function NewsletterBuilder() {
     }
   }, [toast, processOfflineQueue])
 
-  // Load draft if edit ID is provided
   useEffect(() => {
     if (editId) {
       const episode = mockEpisodes.find((ep) => ep.id === editId)
@@ -276,7 +274,6 @@ export default function NewsletterBuilder() {
     }
   }, [editId, toast])
 
-  // Add the handleContentSelect function inside the NewsletterBuilder component, after the other handler functions
   const handleContentSelect = (content: any) => {
     try {
       setIsLoading(true)
@@ -401,17 +398,15 @@ export default function NewsletterBuilder() {
     try {
       setIsLoading(true)
       
-      // Generate the HTML content for the newsletter
-      const html = generateNewsletterHtml()
+      // Use raw HTML if available, otherwise generate from links
+      const html = rawHtmlContent || generateNewsletterHtml()
       
       if (campaignId) {
-        // We have a campaign ID, so we're updating an existing campaign
         toast({
           title: "Updating campaign...",
           description: "Saving changes to existing campaign"
-        });
+        })
         
-        // Update the existing campaign on EmailOctopus
         await updateCampaign(campaignId, {
           subject,
           html
@@ -422,11 +417,10 @@ export default function NewsletterBuilder() {
           description: "Your changes have been saved to the existing campaign",
         })
       } else {
-        // No campaign ID, so save locally
         toast({
           title: "Saving draft...",
           description: "Saving draft locally"
-        });
+        })
         
         await saveDraft({
           subject,
@@ -462,10 +456,10 @@ export default function NewsletterBuilder() {
       return
     }
 
-    if (links.length === 0) {
+    if (links.length === 0 && !rawHtmlContent) {
       toast({
         title: "No content",
-        description: "Please add at least one link to your newsletter",
+        description: "Please add content to your newsletter",
         variant: "destructive",
       })
       return
@@ -477,15 +471,15 @@ export default function NewsletterBuilder() {
       toast({
         title: "Creating campaign...",
         description: "Uploading your newsletter to EmailOctopus"
-      });
+      })
       
-      const html = generateNewsletterHtml()
+      // Use raw HTML if available, otherwise generate from links
+      const html = rawHtmlContent || generateNewsletterHtml()
       const result = await createCampaign({
         subject,
         html,
       })
 
-      // Store the new campaign ID for future reference
       setCampaignId(result.id)
       
       toast({
@@ -540,133 +534,134 @@ export default function NewsletterBuilder() {
     }
   }
 
-  const handleAddToBulletPoints = (expandedNote: string) => {
-    if (selectedLinkId) {
-      handleAddBulletPoint(selectedLinkId, expandedNote)
-    } else if (links.length > 0) {
-      handleAddBulletPoint(links[0].id, expandedNote)
-    } else {
+  const handleAddToBulletPoints = (note: string) => {
+    if (!selectedLinkId) {
       toast({
         title: "No link selected",
-        description: "Please add a link first to add bullet points",
+        description: "Please select a link first to add a bullet point",
         variant: "destructive",
-      })
+      });
+      return;
     }
-  }
+
+    handleAddBulletPoint(selectedLinkId, note);
+    
+    toast({
+      title: "Bullet point added",
+      description: "The note has been added as a bullet point",
+    });
+  };
 
   const handleQuickNoteAdd = (note: string) => {
-    if (selectedLinkId) {
-      handleAddBulletPoint(selectedLinkId, note)
-      toast({
-        title: "Note added",
-        description: "Note has been added to the selected link",
-      })
-    } else if (links.length > 0) {
-      handleAddBulletPoint(links[0].id, note)
-      toast({
-        title: "Note added",
-        description: "Note has been added to the first link",
-      })
-    } else {
-      toast({
-        title: "No link available",
-        description: "Please add a link first to add notes",
-        variant: "destructive",
-      })
-    }
-  }
+    // Store the note for future use
+    const existingNotes = JSON.parse(localStorage.getItem("quick-notes") || "[]");
+    const updatedNotes = [note, ...existingNotes.slice(0, 19)]; // Keep only the 20 most recent notes
+    localStorage.setItem("quick-notes", JSON.stringify(updatedNotes));
+    
+    toast({
+      title: "Note saved",
+      description: "Your note has been saved for future use",
+    });
+  };
 
   const handleSelectNewsletter = async (id: string) => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       
       toast({
         title: "Loading campaign...",
         description: "Getting content for editing"
-      });
+      })
       
-      // Fetch the campaign content
-      const campaignData = await fetchCampaign(id);
+      const campaignData = await fetchCampaign(id)
       
-      console.log("Campaign data for editing:", campaignData);
+      console.log("Campaign data for editing:", campaignData)
       
       if (campaignData) {
-        // Update local state with the campaign content
-        setCampaignId(id); // Keep the original ID for updating later
-        setSubject(campaignData.subject || "");
+        setCampaignId(id)
+        setSubject(campaignData.subject || "")
         
-        // Extract HTML content if available
         if (campaignData.content && typeof campaignData.content === 'object') {
-          console.log("Campaign content structure:", campaignData.content);
+          console.log("Campaign content structure:", campaignData.content)
           
-          // EmailOctopus API returns content in different formats
-          let htmlContent = null;
+          let htmlContent = null
           
-          // Try different known paths to find HTML content
           if (campaignData.content.html) {
-            htmlContent = campaignData.content.html;
+            htmlContent = campaignData.content.html
           } else if (campaignData.content.body) { 
-            htmlContent = campaignData.content.body;
+            htmlContent = campaignData.content.body
           } else if (campaignData.content.text) {
-            htmlContent = campaignData.content.text;
+            htmlContent = campaignData.content.text
           }
           
           if (htmlContent) {
-            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...");
+            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...")
             
-            // Create some sample links based on the content
-            const sampleLink: LinkItem = {
-              id: Date.now().toString(),
-              url: "https://example.com/placeholder",
-              title: "Placeholder Content",
-              description: "This content was imported from an existing campaign.",
-              image: "",
-              bulletPoints: ["Imported from existing campaign"],
-              tags: [],
-            };
+            // Store the raw HTML content for direct editing
+            setRawHtmlContent(htmlContent)
             
-            setLinks([sampleLink]);
+            // Also extract links for the structured editor as a fallback
+            const extractedLinks = extractLinksFromHtml(htmlContent)
             
-            // Now that we've set the links, the preview should update automatically
+            if (extractedLinks.length > 0) {
+              setLinks(extractedLinks)
+              if (extractedLinks[0]) {
+                setSelectedLinkId(extractedLinks[0].id)
+              }
+              console.log(`Extracted ${extractedLinks.length} links from the campaign content`)
+            } else {
+              const placeholderLink: LinkItem = {
+                id: Date.now().toString(),
+                url: "https://example.com/placeholder",
+                title: "Placeholder Content",
+                description: "This content was imported from an existing campaign.",
+                image: "",
+                bulletPoints: ["Imported from existing campaign"],
+                tags: [],
+              }
+              
+              setLinks([placeholderLink])
+              setSelectedLinkId(placeholderLink.id)
+              console.log("No links extracted, using placeholder link")
+            }
           } else {
-            console.log("No HTML content found in campaign data");
-            setLinks([]);
+            console.log("No HTML content found in campaign data")
+            setLinks([])
+            setRawHtmlContent(null)
           }
         } else {
-          console.log("No content field in campaign data");
-          // If no HTML content, just set empty links
-          setLinks([]);
+          console.log("No content field in campaign data")
+          setLinks([])
+          setRawHtmlContent(null)
         }
         
-        // Update the URL to indicate we're editing
-        router.push(`/admin/newsletter?edit=${id}`);
+        router.push(`/admin/newsletter?edit=${id}`)
         
         toast({
           title: "Campaign loaded",
           description: "You can now edit the campaign",
-        });
+        })
       }
     } catch (error) {
-      console.error("Error loading campaign:", error);
+      console.error("Error loading campaign:", error)
       
       toast({
         title: "Error loading campaign",
         description: "An error occurred while loading the campaign content",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCreateNewDraft = () => {
-    // Reset the current state
     setSubject("")
     setLinks([])
     setSelectedLinkId(null)
     setCampaignId(null)
+    setRawHtmlContent(null)
 
-    // Remove the edit parameter from the URL
     router.push("/admin/newsletter")
 
     toast({
@@ -677,91 +672,298 @@ export default function NewsletterBuilder() {
 
   const handleDuplicateNewsletter = async (id: string) => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       
       toast({
         title: "Loading template...",
         description: "Getting content from the selected campaign"
-      });
+      })
       
-      // Fetch the campaign to get its content
-      const campaignData = await fetchCampaign(id);
+      const campaignData = await fetchCampaign(id)
       
-      console.log("Campaign data for duplication:", campaignData);
+      console.log("Campaign data for duplication:", campaignData)
       
       if (campaignData) {
-        // Populate the editor with this campaign's content
-        setSubject(`Copy of: ${campaignData.subject || ''}`);
+        setSubject(`Copy of: ${campaignData.subject || ''}`)
         
-        // Extract HTML content if available
         if (campaignData.content && typeof campaignData.content === 'object') {
-          console.log("Campaign content structure:", campaignData.content);
+          console.log("Campaign content structure:", campaignData.content)
           
-          // EmailOctopus API returns content in different formats
-          let htmlContent = null;
+          let htmlContent = null
           
-          // Try different known paths to find HTML content
           if (campaignData.content.html) {
-            htmlContent = campaignData.content.html;
+            htmlContent = campaignData.content.html
           } else if (campaignData.content.body) { 
-            htmlContent = campaignData.content.body;
+            htmlContent = campaignData.content.body
           } else if (campaignData.content.text) {
-            htmlContent = campaignData.content.text;
+            htmlContent = campaignData.content.text
           }
           
           if (htmlContent) {
-            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...");
+            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...")
             
-            // Use our generateNewsletter function to recreate the HTML
-            const newHtml = generateNewsletterHtml();
+            setRawHtmlContent(htmlContent)
             
-            // Create some sample links based on the content
-            const sampleLink: LinkItem = {
-              id: Date.now().toString(),
-              url: "https://example.com/placeholder",
-              title: "Placeholder Content",
-              description: "This content was imported from an existing campaign.",
-              image: "",
-              bulletPoints: ["Imported from existing campaign"],
-              tags: [],
-            };
+            const extractedLinks = extractLinksFromHtml(htmlContent)
             
-            setLinks([sampleLink]);
-            
-            // Now that we've set the links, the preview should update automatically
+            if (extractedLinks.length > 0) {
+              setLinks(extractedLinks)
+              if (extractedLinks[0]) {
+                setSelectedLinkId(extractedLinks[0].id)
+              }
+              console.log(`Extracted ${extractedLinks.length} links from the campaign content`)
+            } else {
+              const placeholderLink: LinkItem = {
+                id: Date.now().toString(),
+                url: "https://example.com/placeholder",
+                title: "Placeholder Content",
+                description: "This content was imported from an existing campaign.",
+                image: "",
+                bulletPoints: ["Imported from existing campaign"],
+                tags: [],
+              }
+              
+              setLinks([placeholderLink])
+              setSelectedLinkId(placeholderLink.id)
+              console.log("No links extracted, using placeholder link")
+            }
           } else {
-            console.log("No HTML content found in campaign data");
-            setLinks([]);
+            console.log("No HTML content found in campaign data")
+            setLinks([])
+            setRawHtmlContent(null)
           }
         } else {
-          console.log("No content field in campaign data");
-          // If no HTML content, just set empty links
-          setLinks([]);
+          console.log("No content field in campaign data")
+          setLinks([])
+          setRawHtmlContent(null)
         }
         
-        // Important: Clear campaignId so we create a new one on save
-        setCampaignId(null);
+        setCampaignId(null)
         
-        // Remove any edit parameter from URL
-        router.push("/admin/newsletter");
+        router.push("/admin/newsletter")
         
         toast({
           title: "Template loaded",
           description: "Content loaded from the selected campaign",
-        });
+        })
       }
     } catch (error) {
-      console.error("Error loading campaign template:", error);
+      console.error("Error loading campaign template:", error)
       
       toast({
         title: "Error loading template",
         description: "Failed to get content from the selected campaign",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  const extractLinksFromHtml = (html: string): LinkItem[] => {
+    try {
+      console.log("Starting HTML extraction, HTML length:", html.length)
+      console.log("HTML sample:", html.substring(0, 200) + "...")
+      
+      const extractedLinks: LinkItem[] = []
+      
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = html
+      
+      console.log("Temp div created with inner HTML")
+      
+      const standardTemplateItems = tempDiv.querySelectorAll('div[style*="margin-bottom: 40px"]')
+      if (standardTemplateItems.length > 0) {
+        console.log(`Found ${standardTemplateItems.length} items using standard template pattern`)
+        
+        standardTemplateItems.forEach((section, index) => {
+          const linkElement = section.querySelector('h2 a')
+          let url = 'https://example.com'
+          let title = `Item ${index + 1}`
+          
+          if (linkElement) {
+            url = linkElement.getAttribute('href') || url
+            title = linkElement.textContent?.trim() || title
+          }
+          
+          let description = ''
+          const descElement = section.querySelector('p')
+          if (descElement) {
+            description = descElement.textContent?.trim() || ''
+          }
+          
+          let image = ''
+          const imgElement = section.querySelector('img')
+          if (imgElement) {
+            image = imgElement.getAttribute('src') || ''
+          }
+          
+          const bulletPoints: string[] = []
+          const bulletElements = section.querySelectorAll('ul li')
+          
+          if (bulletElements.length > 0) {
+            bulletElements.forEach(bullet => {
+              const text = bullet.textContent?.trim()
+              if (text) bulletPoints.push(text)
+            })
+          } else {
+            bulletPoints.push('')
+          }
+          
+          const linkItem: LinkItem = {
+            id: Date.now().toString() + '-' + index,
+            url,
+            title,
+            description,
+            image,
+            bulletPoints,
+            tags: [],
+          }
+          
+          extractedLinks.push(linkItem)
+        })
+        
+        console.log(`Extracted ${extractedLinks.length} links using standard template pattern`)
+        return extractedLinks
+      }
+      
+      console.log("Standard template pattern not found, trying alternative approaches")
+      
+      const contentBlocks = Array.from(tempDiv.querySelectorAll('div > h2, div > h3, div > p, .content > div'))
+      
+      if (contentBlocks.length > 0) {
+        console.log(`Found ${contentBlocks.length} potential content blocks`)
+        
+        let currentLinkData: {
+          url?: string
+          title?: string
+          description?: string
+          image?: string
+          bulletPoints: string[]
+        } | null = null
+        
+        for (let i = 0; i < contentBlocks.length; i++) {
+          const block = contentBlocks[i]
+          
+          const headerLink = block.tagName?.match(/^H[23]$/i) ? block.querySelector('a') : null
+          
+          if (headerLink) {
+            if (currentLinkData?.url && currentLinkData?.title) {
+              extractedLinks.push({
+                id: Date.now().toString() + '-' + extractedLinks.length,
+                url: currentLinkData.url,
+                title: currentLinkData.title,
+                description: currentLinkData.description || '',
+                image: currentLinkData.image || '',
+                bulletPoints: currentLinkData.bulletPoints.length ? currentLinkData.bulletPoints : [''],
+                tags: [],
+              })
+            }
+            
+            currentLinkData = {
+              url: headerLink.getAttribute('href') || 'https://example.com',
+              title: headerLink.textContent?.trim() || `Link ${extractedLinks.length + 1}`,
+              description: '',
+              image: '',
+              bulletPoints: [],
+            }
+          }
+          else if (currentLinkData) {
+            if (block.tagName === 'P') {
+              currentLinkData.description = block.textContent?.trim() || ''
+            }
+            const img = block.querySelector('img')
+            if (img && !currentLinkData.image) {
+              currentLinkData.image = img.getAttribute('src') || ''
+            }
+            const bullets = block.querySelectorAll('li')
+            if (bullets.length > 0) {
+              bullets.forEach(bullet => {
+                const text = bullet.textContent?.trim()
+                if (text) currentLinkData?.bulletPoints.push(text)
+              })
+            }
+          }
+        }
+        
+        if (currentLinkData?.url && currentLinkData?.title) {
+          extractedLinks.push({
+            id: Date.now().toString() + '-' + extractedLinks.length,
+            url: currentLinkData.url,
+            title: currentLinkData.title,
+            description: currentLinkData.description || '',
+            image: currentLinkData.image || '',
+            bulletPoints: currentLinkData.bulletPoints.length ? currentLinkData.bulletPoints : [''],
+            tags: [],
+          })
+        }
+        
+        if (extractedLinks.length > 0) {
+          console.log(`Extracted ${extractedLinks.length} links using content block approach`)
+          return extractedLinks
+        }
+      }
+      
+      const mainLinks = Array.from(tempDiv.querySelectorAll('a[href]'))
+        .filter(link => {
+          const href = link.getAttribute('href') || ''
+          return !href.includes('unsubscribe') && 
+                 !href.includes('mailto:') && 
+                 !href.includes('twitter.com') &&
+                 !href.includes('facebook.com') &&
+                 !href.includes('instagram.com') &&
+                 !href.includes('linkedin.com') &&
+                 !href.includes('#') &&
+                 link.textContent?.trim().length > 3
+        })
+      
+      if (mainLinks.length > 0) {
+        console.log(`Found ${mainLinks.length} potential main links`)
+        
+        mainLinks.forEach((link, index) => {
+          const url = link.getAttribute('href') || 'https://example.com'
+          const title = link.textContent?.trim() || `Link ${index + 1}`
+          
+          let description = ''
+          let parent = link.parentElement
+          while (parent && !description && parent.tagName !== 'BODY') {
+            const siblingParagraph = Array.from(parent.children)
+              .find(el => el.tagName === 'P' && el !== link && el.textContent?.trim().length > 0)
+            
+            if (siblingParagraph) {
+              description = siblingParagraph.textContent?.trim() || ''
+              break
+            }
+            parent = parent.parentElement
+          }
+          
+          const linkItem: LinkItem = {
+            id: Date.now().toString() + '-' + index,
+            url,
+            title,
+            description,
+            image: '',
+            bulletPoints: [''],
+            tags: [],
+          }
+          
+          extractedLinks.push(linkItem)
+        })
+        
+        console.log(`Extracted ${extractedLinks.length} links using last resort approach`)
+      }
+      
+      const uniqueLinks = extractedLinks.filter((link, index, self) => 
+        index === self.findIndex(l => l.url === link.url)
+      )
+      
+      console.log(`Returning ${uniqueLinks.length} unique links`)
+      return uniqueLinks
+    } catch (error) {
+      console.error("Error extracting links from HTML:", error)
+      return []
+    }
+  }
 
   const generateNewsletterHtml = () => {
     const linksHtml = links
@@ -876,260 +1078,528 @@ export default function NewsletterBuilder() {
     `
   }
 
+  const handleFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target?.result as string)
+          
+          if (data.links) {
+            setLinks(data.links)
+          }
+          
+          if (data.subject) {
+            setSubject(data.subject)
+          }
+          
+          if (data.html) {
+            setRawHtmlContent(data.html)
+          }
+          
+          toast({
+            title: "Draft loaded",
+            description: "Newsletter draft has been loaded successfully",
+          })
+        } catch (error) {
+          toast({
+            title: "Error loading draft",
+            description: "The selected file is not a valid newsletter draft",
+            variant: "destructive",
+          })
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const handleSelectLink = (id: string) => {
+    setSelectedLinkId(id);
+  }
+
+  const handleUpdateLink = (id: string, updates: Partial<LinkItem>) => {
+    setLinks(prev =>
+      prev.map(link => 
+        link.id === id ? { ...link, ...updates } : link
+      )
+    );
+  }
+
+  const handleDeleteLink = (id: string) => {
+    setLinks(prev => prev.filter(link => link.id !== id));
+    if (selectedLinkId === id) {
+      setSelectedLinkId(null);
+    }
+  }
+
+  const handleReorderLinks = (newOrder: LinkItem[]) => {
+    setLinks(newOrder);
+  }
+
+  const sanitizeHtml = (html: string) => {
+    try {
+      // Create a new DOMParser to safely parse the HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Check for parsing errors
+      const errors = doc.getElementsByTagName('parsererror');
+      if (errors.length > 0) {
+        console.warn('HTML parsing errors detected:', errors[0].textContent);
+        // Return a message about the parsing error, wrapped in proper HTML
+        return `<div style="color: red; padding: 20px; background: #ffeeee; border: 1px solid #ffcccc; border-radius: 4px;">
+          <h3>HTML Parsing Error</h3>
+          <p>There was an error parsing the HTML. Please check the HTML editor for issues.</p>
+          <pre style="background: #fff; padding: 10px; overflow: auto;">${
+            errors[0].textContent?.replace(/</g, '&lt;').replace(/>/g, '&gt;') || 'Unknown error'
+          }</pre>
+        </div>`;
+      }
+      
+      // If no errors, return the original HTML
+      return html;
+    } catch (error) {
+      console.error('Error sanitizing HTML:', error);
+      // Return a fallback message if the sanitization process itself fails
+      return `<div style="color: red; padding: 20px; background: #ffeeee; border: 1px solid #ffcccc; border-radius: 4px;">
+        <h3>HTML Processing Error</h3>
+        <p>There was an error processing the HTML content: ${String(error)}</p>
+      </div>`;
+    }
+  }
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="space-y-4 px-0">
-        {isOffline && (
-          <div className="bg-yellow-600/20 border border-yellow-600/50 text-yellow-200 px-4 py-3 rounded-md flex items-center justify-between mx-1">
-            <div className="flex items-center">
-              <Zap className="h-5 w-5 mr-2" />
-              <span>You&apos;re currently offline. Changes will be saved locally and synced when you&apos;re back online.</span>
-            </div>
-            <div className="text-sm">
-              {offlineQueue.length} pending {offlineQueue.length === 1 ? "change" : "changes"}
-            </div>
-          </div>
-        )}
+    <>
+      <div className="grid lg:grid-cols-12 h-full gap-4">
+        <div className="lg:col-span-3 h-full">
+          <NewsletterSidebar
+            currentId={campaignId}
+            onSelectNewsletter={handleSelectNewsletter}
+            onCreateNewDraft={handleCreateNewDraft}
+            onDuplicateNewsletter={handleDuplicateNewsletter}
+          />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-          {/* Left Sidebar - Newsletter List */}
-          <div className="lg:col-span-1">
-            <NewsletterSidebar
-              currentId={editId || undefined}
-              onSelectNewsletter={handleSelectNewsletter}
-              onCreateNewDraft={handleCreateNewDraft}
-              onDuplicateNewsletter={handleDuplicateNewsletter}
-            />
-          </div>
-
-          {/* Main Content Area */}
-          <div className="lg:col-span-1 space-y-2">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <div className="flex flex-col space-y-3">
-                <div className="flex items-center space-x-2">
+        <div className="lg:col-span-6 space-y-4">
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <CardContent className="p-4">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="subject" className="text-white">
+                    Newsletter Subject:
+                  </Label>
                   <Input
-                    placeholder="Newsletter Subject"
+                    id="subject"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="bg-white/20 border-white/20 placeholder:text-white/50 text-white"
+                    placeholder="Enter a subject for your newsletter..."
+                    className="bg-white/20 border-white/20 text-white placeholder:text-white/50"
                   />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <CardContent className="p-4">
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <div className="bg-white/20 flex items-center gap-2 border border-white/20 rounded-l-md p-3 flex-grow">
+                    <Search className="h-4 w-4 text-white/70" />
+                    <Input
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder="Enter a URL to add..."
+                      className="bg-transparent border-0 p-0 text-white placeholder:text-white/50 focus-visible:ring-0 shadow-none"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && urlInput) {
+                          e.preventDefault()
+                          handleLinkAdd(urlInput)
+                          setUrlInput("")
+                        }
+                      }}
+                    />
+                  </div>
                   <Button
-                    onClick={handleSaveDraft}
-                    disabled={isLoading}
-                    variant="outline"
-                    className="border-white/20 text-white hover:bg-white/20"
+                    onClick={() => {
+                      if (urlInput) {
+                        handleLinkAdd(urlInput)
+                        setUrlInput("")
+                      }
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 border border-blue-600 rounded-l-none rounded-r-md"
                   >
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Draft
+                    Add Link
                   </Button>
                 </div>
-
-                {subject.startsWith('Copy of:') && (
-                  <div className="bg-blue-900/60 text-blue-200 p-2 rounded-md text-sm">
-                    You're working with content from an existing campaign. Add your own links and content below.
-                  </div>
-                )}
-
-                <div className="space-y-3">
-                  <LinkDropZone onLinkAdd={handleLinkAdd} isLoading={isLoading} />
-                </div>
-
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  accept=".json"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) {
-                      const reader = new FileReader()
-                      reader.onload = (event) => {
-                        try {
-                          const data = JSON.parse(event.target?.result as string)
-                          setLinks(data.links || [])
-                          setSubject(data.subject || "")
-                          toast({
-                            title: "Draft loaded",
-                            description: "Newsletter draft has been loaded successfully",
-                          })
-                        } catch (error) {
-                          toast({
-                            title: "Error loading draft",
-                            description: "The selected file is not a valid newsletter draft",
-                            variant: "destructive",
-                          })
-                        }
-                      }
-                      reader.readAsText(file)
-                    }
-                  }}
-                />
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            <Tabs defaultValue="edit" className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-              <TabsList className="bg-white/20 m-1 p-1">
-                <TabsTrigger value="edit" className="data-[state=active]:bg-blue-600 text-white px-3 py-1 h-7">
-                  Edit Content
-                </TabsTrigger>
-                <TabsTrigger value="preview" className="data-[state=active]:bg-blue-600 text-white px-3 py-1 h-7">
-                  Preview Newsletter
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="edit" className="p-2 space-y-2">
-                <LinkList
-                  links={links}
-                  selectedLinkId={selectedLinkId}
-                  onSelectLink={setSelectedLinkId}
-                  onBulletPointChange={handleBulletPointChange}
-                  onAddBulletPoint={handleAddBulletPoint}
-                  onRemoveBulletPoint={handleRemoveBulletPoint}
-                  onRemoveLink={handleRemoveLink}
-                  onMoveLink={handleMoveLink}
-                  onAddTag={handleAddTag}
-                  onRemoveTag={handleRemoveTag}
-                  onCreateTag={handleCreateTag}
-                  availableTags={availableTags}
-                />
-              </TabsContent>
-
-              <TabsContent value="preview" className="p-2">
-                <NewsletterPreview subject={subject} links={links} html={generateNewsletterHtml()} />
-              </TabsContent>
-            </Tabs>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 space-y-2">
-              <h3 className="text-lg font-bold text-white mb-1">Newsletter Actions</h3>
-              <div className="flex space-x-2">
-                <Button
-                  onClick={handleCreateCampaign}
-                  disabled={isLoading || !subject || links.length === 0}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Create
-                </Button>
-                <Button
-                  onClick={() => handleSendCampaign()}
-                  disabled={isLoading || !campaignId}
-                  variant="default"
-                  className="flex-1 bg-green-600 hover:bg-green-700"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Send
-                </Button>
-                <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
-                  <DialogTrigger asChild>
-                    <Button
-                      disabled={isLoading || !campaignId}
-                      variant="outline"
-                      className="flex-1 border-white/20 text-white hover:bg-white/20"
-                    >
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Schedule
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="bg-gray-900 text-white border-gray-700">
-                    <DialogHeader>
-                      <DialogTitle>Schedule Newsletter</DialogTitle>
-                      <DialogDescription className="text-gray-400">
-                        Select a date and time to send your newsletter
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-2">
-                      <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">
+                Newsletter Content
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <Tabs defaultValue={rawHtmlContent ? "html" : "edit"} className="bg-blue-900/50 backdrop-blur-sm rounded-lg border border-blue-800/50">
+                <TabsList className="bg-blue-800/50 m-1">
+                  <TabsTrigger value="edit">Edit Content</TabsTrigger>
+                  <TabsTrigger value="html">Edit HTML</TabsTrigger>
+                  <TabsTrigger value="preview">Preview</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="edit" className="p-2 space-y-2">
+                  {links.length === 0 ? (
+                    <div className="bg-blue-950/50 border border-blue-900 p-6 rounded-md text-center space-y-4">
+                      <Mail className="h-12 w-12 mx-auto text-blue-400" />
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-medium text-white">No Content Yet</h3>
+                        <p className="text-blue-200">
+                          Add URLs above or select content from the library to build your newsletter.
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="border-blue-500 text-blue-300 hover:bg-blue-800/50"
+                        onClick={() => {
+                          fileInputRef.current?.click()
+                        }}
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Import from File
+                      </Button>
+                      <input
+                        type="file"
+                        accept=".json"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileImport}
+                      />
                     </div>
-                    <DialogFooter>
-                      <Button
-                        onClick={() => handleSendCampaign(scheduleDate)}
-                        disabled={!scheduleDate}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        Schedule Send
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full border-white/20 text-white hover:bg-white/20"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Load Draft
-              </Button>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-              <h3 className="text-lg font-bold text-white mb-1 flex items-center">
-                <MessageSquarePlus className="h-5 w-5 mr-2 text-blue-300" />
-                AI Subject Suggestions
-              </h3>
-              <div className="space-y-1">
-                <p className="text-sm text-blue-200 mb-1">
-                  Based on your content, here are some suggested subject lines:
-                </p>
-                <div className="space-y-1">
-                  {links.length > 0 ? (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
-                        onClick={() => setSubject(`${links.length} Essential Resources for Modern Developers`)}
-                      >
-                        {links.length} Essential Resources for Modern Developers
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
-                        onClick={() =>
-                          setSubject(`This Week in Tech: ${links[0]?.title?.split(":")[0] || "Latest Updates"}`)
-                        }
-                      >
-                        This Week in Tech: {links[0]?.title?.split(":")[0] || "Latest Updates"}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
-                        onClick={() =>
-                          setSubject(
-                            `Modern Coding Digest - ${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}`,
-                          )
-                        }
-                      >
-                        Modern Coding Digest -{" "}
-                        {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                      </Button>
-                    </>
                   ) : (
-                    <p className="text-sm text-blue-300 italic">
-                      Add some links to get AI-generated subject line suggestions
-                    </p>
+                    <DndProvider backend={HTML5Backend}>
+                      <LinkDropZone links={links} onReorder={handleReorderLinks} onLinkAdd={handleLinkAdd}>
+                        <LinkList
+                          links={links}
+                          selectedId={selectedLinkId}
+                          onSelect={handleSelectLink}
+                          onUpdate={handleUpdateLink}
+                          onDelete={handleDeleteLink}
+                          onTagAdd={handleAddTag}
+                          onBulletPointChange={handleBulletPointChange}
+                          onAddBulletPoint={handleAddBulletPoint}
+                          onRemoveBulletPoint={handleRemoveBulletPoint}
+                          onTagRemove={handleRemoveTag}
+                          availableTags={availableTags}
+                        />
+                      </LinkDropZone>
+                    </DndProvider>
                   )}
+                </TabsContent>
+
+                <TabsContent value="html" className="p-2 space-y-2">
+                  <div className="bg-blue-950/50 border border-blue-900 p-4 rounded-md space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-lg font-medium text-white">HTML Editor</h3>
+                      <div className="space-x-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="border-blue-500 text-blue-300 hover:bg-blue-800/50"
+                          onClick={() => {
+                            if (links.length > 0 && !rawHtmlContent) {
+                              const generatedHtml = generateNewsletterHtml()
+                              setRawHtmlContent(generatedHtml)
+                            }
+                          }}
+                        >
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Generate from Links
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="border-red-500 text-red-300 hover:bg-red-800/50"
+                          onClick={() => {
+                            if (window.confirm("Are you sure you want to clear the HTML content?")) {
+                              setRawHtmlContent(null)
+                            }
+                          }}
+                        >
+                          <Trash className="h-4 w-4 mr-2" />
+                          Clear HTML
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <textarea 
+                      className="w-full h-[500px] bg-blue-950 text-white p-4 font-mono text-sm rounded-md border border-blue-900"
+                      value={rawHtmlContent || generateNewsletterHtml()}
+                      onChange={(e) => setRawHtmlContent(e.target.value)}
+                      spellCheck="false"
+                    />
+                    
+                    <div className="text-sm text-blue-300">
+                      <p>Edit the HTML directly to customize your newsletter. Changes here override the structured editor.</p>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="preview" className="p-2">
+                  <div className="bg-white rounded-md p-4">
+                    {(() => {
+                      try {
+                        // Show loading state if the editor is fetching content
+                        if (isLoading) {
+                          return (
+                            <div className="flex items-center justify-center p-12">
+                              <LoadingSpinner size={32} />
+                              <span className="ml-3 text-gray-500">Loading preview...</span>
+                            </div>
+                          );
+                        }
+
+                        // Generate HTML content from either raw HTML or link structure
+                        const htmlContent = rawHtmlContent || generateNewsletterHtml();
+                        
+                        // Check if content is valid
+                        if (!htmlContent || htmlContent.trim() === '') {
+                          return (
+                            <div className="p-4 bg-blue-50 text-blue-800 rounded-md">
+                              <h3 className="text-lg font-bold mb-2">No Content</h3>
+                              <p>There is no content to preview. Please add links or HTML content.</p>
+                            </div>
+                          );
+                        }
+                        
+                        // Use an iframe for proper isolation of the HTML content
+                        return (
+                          <>
+                            <div className="mb-4 flex justify-between items-center">
+                              <h3 className="text-gray-700 font-medium">Newsletter Preview</h3>
+                              <div className="text-sm text-gray-500">
+                                {subject && <span>Subject: {subject}</span>}
+                              </div>
+                            </div>
+                            <iframe 
+                              srcDoc={sanitizeHtml(htmlContent)}
+                              title="Newsletter Preview"
+                              className="w-full border-0 min-h-[600px]"
+                              sandbox="allow-same-origin"
+                            />
+                          </>
+                        );
+                      } catch (error) {
+                        console.error("Error rendering preview:", error);
+                        return (
+                          <div className="p-4 bg-red-50 text-red-800 rounded-md">
+                            <h3 className="text-lg font-bold mb-2">Error Rendering Preview</h3>
+                            <p>There was an error rendering the HTML preview: {String(error)}</p>
+                            <pre className="mt-2 p-2 bg-red-100 rounded overflow-auto text-sm">
+                              {error instanceof Error ? error.stack : 'Unknown error'}
+                            </pre>
+                            <div className="mt-4">
+                              <h4 className="font-semibold">Debugging Steps:</h4>
+                              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                                <li>Check the HTML editor for invalid HTML markup</li>
+                                <li>Ensure all tags are properly closed</li>
+                                <li>Verify there are no script tags or other restricted content</li>
+                                <li>Try clearing the HTML and regenerating from links</li>
+                              </ol>
+                            </div>
+                          </div>
+                        );
+                      }
+                    })()}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Newsletter Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant="outline" 
+                  className="border-white/20 text-white hover:bg-white/20"
+                  onClick={handleSaveDraft}
+                  disabled={isLoading}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Draft
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  className="border-blue-500 text-blue-300 hover:bg-blue-800/50"
+                  onClick={handleCreateCampaign}
+                  disabled={isLoading || !subject}
+                >
+                  <MessageSquarePlus className="h-4 w-4 mr-2" />
+                  Create Campaign
+                </Button>
+              </div>
+              
+              {campaignId && (
+                <div className="pt-2">
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={() => setShowScheduleDialog(true)}
+                    disabled={isLoading}
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Newsletter
+                  </Button>
                 </div>
+              )}
+              
+              {(subject.startsWith('Copy of:') || subject.includes('Copy of')) && (
+                <div className="bg-blue-900/60 text-blue-200 p-2 rounded-md text-sm mt-2">
+                  <div className="flex items-center">
+                    <Copy className="h-4 w-4 mr-2" />
+                    <span>You're working with duplicated content from an existing campaign.</span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 space-y-2">
+            <h3 className="text-lg font-bold text-white mb-1">Newsletter Actions</h3>
+            <div className="flex space-x-2">
+              <Button
+                onClick={handleCreateCampaign}
+                disabled={isLoading || !subject || links.length === 0}
+                className="flex-1 bg-blue-600 hover:bg-blue-700"
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Create
+              </Button>
+              <Button
+                onClick={() => handleSendCampaign()}
+                disabled={isLoading || !campaignId}
+                variant="default"
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Send
+              </Button>
+              <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+                <DialogTrigger asChild>
+                  <Button
+                    disabled={isLoading || !campaignId}
+                    variant="outline"
+                    className="flex-1 border-white/20 text-white hover:bg-white/20"
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Schedule
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-gray-900 text-white border-gray-700">
+                  <DialogHeader>
+                    <DialogTitle>Schedule Newsletter</DialogTitle>
+                    <DialogDescription className="text-gray-400">
+                      Select a date and time to send your newsletter
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-2">
+                    <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      onClick={() => handleSendCampaign(scheduleDate)}
+                      disabled={!scheduleDate}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      Schedule Send
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full border-white/20 text-white hover:bg-white/20"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Load Draft
+            </Button>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+            <h3 className="text-lg font-bold text-white mb-1 flex items-center">
+              <MessageSquarePlus className="h-5 w-5 mr-2 text-blue-300" />
+              AI Subject Suggestions
+            </h3>
+            <div className="space-y-1">
+              <p className="text-sm text-blue-200 mb-1">
+                Based on your content, here are some suggested subject lines:
+              </p>
+              <div className="space-y-1">
+                {links.length > 0 ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
+                      onClick={() => setSubject(`${links.length} Essential Resources for Modern Developers`)}
+                    >
+                      {links.length} Essential Resources for Modern Developers
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
+                      onClick={() =>
+                        setSubject(`This Week in Tech: ${links[0]?.title?.split(":")[0] || "Latest Updates"}`)
+                      }
+                    >
+                      This Week in Tech: {links[0]?.title?.split(":")[0] || "Latest Updates"}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start border-white/20 text-white hover:bg-white/20 text-left h-auto py-1"
+                      onClick={() =>
+                        setSubject(
+                          `Modern Coding Digest - ${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}`,
+                        )
+                      }
+                    >
+                      Modern Coding Digest -{" "}
+                      {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                    </Button>
+                  </>
+                ) : (
+                  <p className="text-sm text-blue-300 italic">
+                    Add some links to get AI-generated subject line suggestions
+                  </p>
+                )}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Sidebar - Content Library */}
-          <div className="lg:col-span-1 space-y-3 flex flex-col">
-            <div className="flex-1">
-              <ContentLibrarySidebar onContentSelect={handleContentSelect} />
-            </div>
-            <div className="flex-1 max-h-[45vh] overflow-auto">
-              <QuickNotes onAddToBulletPoints={handleAddToBulletPoints} />
-            </div>
+        <div className="lg:col-span-3 space-y-3 flex flex-col">
+          <div className="flex-1">
+            <ContentLibrarySidebar onContentSelect={handleContentSelect} />
+          </div>
+          <div className="flex-1 max-h-[45vh] overflow-auto">
+            <QuickNotes onAddToBulletPoints={handleAddToBulletPoints} />
           </div>
         </div>
       </div>
 
       <QuickCapture onLinkAdd={handleLinkAdd} onNoteAdd={handleQuickNoteAdd} />
-    </DndProvider>
+    </>
   )
 }
 
