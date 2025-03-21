@@ -168,7 +168,7 @@ export default function ContentLibrarySearch({ onSelect }: ContentLibrarySearchP
               ) : (
                 searchResults.map((content) => (
                   <div
-                    key={content.id}
+                    key={content._id}
                     className="cursor-pointer rounded-md border p-4 hover:bg-secondary"
                     onClick={() => {
                       onSelect(content)

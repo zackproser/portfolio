@@ -14,11 +14,11 @@ export async function POST(request: Request) {
     }
 
     // Get request body
-    const { campaignId, sendAt } = await request.json()
+    const { campaignId, subject, html } = await request.json()
 
-    if (!campaignId) {
+    if (!campaignId || (!subject && !html)) {
       return NextResponse.json(
-        { error: 'Missing campaign ID' },
+        { error: 'Missing required fields (campaignId and either subject or html)' },
         { status: 400 }
       )
     }
@@ -33,23 +33,29 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create payload with API key and optional scheduled time
+    // Build the URL for the v1.6 API
+    const apiUrl = `https://emailoctopus.com/api/1.6/campaigns/${campaignId}`
+    console.log("Updating campaign at:", apiUrl.replace(/api_key=([^&]+)/, 'api_key=****'));
+
+    // Prepare the update payload
     const payload: Record<string, any> = {
       api_key: apiKey
     }
 
-    // Add scheduled time if provided
-    if (sendAt) {
-      payload.scheduled_for = sendAt
+    // Add optional fields if provided
+    if (subject) {
+      payload.subject = subject
     }
-    
-    // Build the URL for the v1.6 API
-    const apiUrl = `https://emailoctopus.com/api/1.6/campaigns/${campaignId}/actions/send`
-    console.log("Sending campaign at:", apiUrl.replace(/api_key=([^&]+)/, 'api_key=****'));
 
-    // Send campaign using Email Octopus v1.6 API
+    if (html) {
+      payload.content = {
+        html
+      }
+    }
+
+    // Update campaign in Email Octopus using v1.6 API
     const response = await fetch(apiUrl, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -63,14 +69,14 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.error?.message || data.detail || data.title || 'Failed to send campaign' },
+        { error: data.error?.message || data.detail || data.title || 'Failed to update campaign' },
         { status: response.status }
       )
     }
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('Error sending campaign:', error)
+    console.error('Error updating campaign:', error)
     
     return NextResponse.json(
       { error: 'Internal server error' },

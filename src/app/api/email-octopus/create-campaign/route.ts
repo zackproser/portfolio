@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { auth } from 'auth'
+import { auth } from '../../../../../auth'
 
 export async function POST(request: Request) {
   try {
@@ -34,8 +34,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create campaign in Email Octopus
-    const response = await fetch(`https://emailoctopus.com/api/1.6/campaigns`, {
+    // Build the URL for the v1.6 API
+    const apiUrl = `https://emailoctopus.com/api/1.6/campaigns`
+    console.log("Creating campaign at:", apiUrl.replace(/api_key=([^&]+)/, 'api_key=****'));
+
+    // Create campaign in Email Octopus using v1.6 API
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,11 +58,14 @@ export async function POST(request: Request) {
       }),
     })
 
+    // Log the HTTP status for debugging
+    console.log("EmailOctopus API status:", response.status, response.statusText);
+
     const data = await response.json()
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.error?.message || 'Failed to create campaign' },
+        { error: data.error?.message || data.detail || data.title || 'Failed to create campaign' },
         { status: response.status }
       )
     }

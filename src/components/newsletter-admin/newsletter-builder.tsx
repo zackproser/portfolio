@@ -2,7 +2,7 @@
 
 import { DialogTrigger } from "@/components/ui/dialog"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -14,8 +14,8 @@ import LinkList from "./link-list"
 import NewsletterPreview from "./newsletter-preview"
 import QuickNotes from "./quick-notes"
 import QuickCapture from "./quick-capture"
+import { saveDraft, createCampaign, sendCampaign, fetchCampaign, updateCampaign } from "@/lib/email-octopus"
 import { fetchMetadata } from "@/lib/fetch-metadata"
-import { saveDraft, createCampaign, sendCampaign } from "@/lib/email-octopus"
 import { useToast } from "@/hooks/use-toast"
 import { DatePicker } from "@/components/ui/date-picker"
 import {
@@ -137,6 +137,101 @@ export default function NewsletterBuilder() {
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const handleLinkAdd = useCallback(async (url: string, addToOfflineQueue = true) => {
+    if (isOffline && addToOfflineQueue) {
+      setOfflineQueue((prev) => [...prev, { type: "addLink", data: { url } }])
+
+      // Create a placeholder link for offline mode
+      const placeholderLink: LinkItem = {
+        id: Date.now().toString(),
+        url,
+        title: "Loading... (Offline)",
+        description: "This link will be processed when you are back online",
+        image: "",
+        bulletPoints: [""],
+        tags: ["Offline"],
+      }
+
+      setLinks((prev) => [...prev, placeholderLink])
+      setSelectedLinkId(placeholderLink.id)
+
+      toast({
+        title: "Link queued",
+        description: "Link will be processed when you&apos;re back online",
+      })
+
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const metadata = await fetchMetadata(url)
+
+      if (!metadata) {
+        toast({
+          title: "Error fetching metadata",
+          description: "Could not fetch metadata for the provided URL",
+          variant: "destructive",
+        })
+        setIsLoading(false)
+        return
+      }
+
+      const newLink: LinkItem = {
+        id: Date.now().toString(),
+        url,
+        title: metadata.title || url,
+        description: metadata.description || "",
+        image: metadata.image || "",
+        bulletPoints: [""],
+        tags: [],
+      }
+
+      setLinks((prev) => [...prev, newLink])
+      setSelectedLinkId(newLink.id)
+
+      toast({
+        title: "Link added",
+        description: "Link has been added to your newsletter",
+      })
+    } catch (error) {
+      console.error("Error adding link:", error)
+      toast({
+        title: "Error adding link",
+        description: "An error occurred while adding the link",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }, [isOffline, setOfflineQueue, setLinks, setSelectedLinkId, toast]);
+
+  // Define processOfflineQueue before it's used
+  const processOfflineQueue = useCallback(async () => {
+    if (offlineQueue.length === 0) return
+
+    toast({
+      title: "Processing offline changes",
+      description: `Processing ${offlineQueue.length} pending changes`,
+    })
+
+    for (const item of offlineQueue) {
+      if (item.type === "addLink") {
+        // Process the queued link
+        await handleLinkAdd(item.data.url, false)
+      }
+      // Add other operations as needed
+    }
+
+    // Clear the queue after processing
+    setOfflineQueue([])
+
+    toast({
+      title: "Synchronization complete",
+      description: "All offline changes have been processed",
+    })
+  }, [offlineQueue, handleLinkAdd, toast])
+
   // Check for offline status
   useEffect(() => {
     const handleOnline = () => {
@@ -161,7 +256,7 @@ export default function NewsletterBuilder() {
       window.removeEventListener("online", handleOnline)
       window.removeEventListener("offline", handleOffline)
     }
-  }, [toast])
+  }, [toast, processOfflineQueue])
 
   // Load draft if edit ID is provided
   useEffect(() => {
@@ -180,100 +275,6 @@ export default function NewsletterBuilder() {
       }
     }
   }, [editId, toast])
-
-  const processOfflineQueue = async () => {
-    if (offlineQueue.length === 0) return
-
-    toast({
-      title: "Syncing changes",
-      description: `Processing ${offlineQueue.length} offline changes`,
-    })
-
-    for (const item of offlineQueue) {
-      try {
-        if (item.type === "addLink") {
-          await handleLinkAdd(item.data.url, false)
-        }
-        // Process other offline actions as needed
-      } catch (error) {
-        console.error("Error processing offline queue item:", error)
-      }
-    }
-
-    setOfflineQueue([])
-
-    toast({
-      title: "Sync complete",
-      description: "All offline changes have been processed",
-    })
-  }
-
-  const handleLinkAdd = async (url: string, addToOfflineQueue = true) => {
-    if (isOffline && addToOfflineQueue) {
-      setOfflineQueue((prev) => [...prev, { type: "addLink", data: { url } }])
-
-      // Create a placeholder link for offline mode
-      const placeholderLink: LinkItem = {
-        id: Date.now().toString(),
-        url,
-        title: "Loading... (Offline)",
-        description: "This link will be processed when you are back online",
-        image: "",
-        bulletPoints: [""],
-        tags: ["Offline"],
-      }
-
-      setLinks((prev) => [...prev, placeholderLink])
-      setSelectedLinkId(placeholderLink.id)
-
-      toast({
-        title: "Link queued",
-        description: "Link will be processed when you're back online",
-      })
-
-      return
-    }
-
-    try {
-      setIsLoading(true)
-      const metadata = await fetchMetadata(url)
-
-      if (!metadata) {
-        toast({
-          title: "Error fetching metadata",
-          description: "Could not fetch metadata for the provided URL",
-          variant: "destructive",
-        })
-        setIsLoading(false)
-        return
-      }
-
-      const newLink: LinkItem = {
-        id: Date.now().toString(),
-        url,
-        title: metadata.title || "No title found",
-        description: metadata.description || "No description found",
-        image: metadata.image || "",
-        bulletPoints: [""],
-        tags: [],
-      }
-
-      setLinks((prev) => [...prev, newLink])
-      setSelectedLinkId(newLink.id)
-      toast({
-        title: "Link added",
-        description: "Link has been added to the newsletter",
-      })
-    } catch (error) {
-      toast({
-        title: "Error adding link",
-        description: "An error occurred while adding the link",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   // Add the handleContentSelect function inside the NewsletterBuilder component, after the other handler functions
   const handleContentSelect = (content: any) => {
@@ -399,20 +400,51 @@ export default function NewsletterBuilder() {
   const handleSaveDraft = async () => {
     try {
       setIsLoading(true)
-      await saveDraft({
-        subject,
-        links,
-        html: generateNewsletterHtml(),
-        dateCreated: new Date().toISOString(),
-      })
-      toast({
-        title: "Draft saved",
-        description: "Newsletter draft has been saved successfully",
-      })
+      
+      // Generate the HTML content for the newsletter
+      const html = generateNewsletterHtml()
+      
+      if (campaignId) {
+        // We have a campaign ID, so we're updating an existing campaign
+        toast({
+          title: "Updating campaign...",
+          description: "Saving changes to existing campaign"
+        });
+        
+        // Update the existing campaign on EmailOctopus
+        await updateCampaign(campaignId, {
+          subject,
+          html
+        })
+        
+        toast({
+          title: "Campaign updated",
+          description: "Your changes have been saved to the existing campaign",
+        })
+      } else {
+        // No campaign ID, so save locally
+        toast({
+          title: "Saving draft...",
+          description: "Saving draft locally"
+        });
+        
+        await saveDraft({
+          subject,
+          links,
+          html,
+          dateCreated: new Date().toISOString(),
+        })
+        
+        toast({
+          title: "Draft saved",
+          description: "Your draft has been saved locally. Use 'Create Campaign' when ready to publish.",
+        })
+      }
     } catch (error) {
+      console.error("Error saving draft:", error)
       toast({
         title: "Error saving draft",
-        description: "An error occurred while saving the draft",
+        description: "An error occurred while saving your content",
         variant: "destructive",
       })
     } finally {
@@ -441,21 +473,30 @@ export default function NewsletterBuilder() {
 
     try {
       setIsLoading(true)
+      
+      toast({
+        title: "Creating campaign...",
+        description: "Uploading your newsletter to EmailOctopus"
+      });
+      
       const html = generateNewsletterHtml()
       const result = await createCampaign({
         subject,
         html,
       })
 
+      // Store the new campaign ID for future reference
       setCampaignId(result.id)
+      
       toast({
         title: "Campaign created",
-        description: "Newsletter campaign has been created in EmailOctopus",
+        description: "Your newsletter has been created in EmailOctopus and is ready to send",
       })
     } catch (error) {
+      console.error("Error creating campaign:", error)
       toast({
         title: "Error creating campaign",
-        description: "An error occurred while creating the campaign",
+        description: "An error occurred while creating the campaign in EmailOctopus",
         variant: "destructive",
       })
     } finally {
@@ -535,9 +576,88 @@ export default function NewsletterBuilder() {
     }
   }
 
-  const handleSelectNewsletter = (id: string) => {
-    router.push(`/admin/newsletter?edit=${id}`)
-  }
+  const handleSelectNewsletter = async (id: string) => {
+    try {
+      setIsLoading(true);
+      
+      toast({
+        title: "Loading campaign...",
+        description: "Getting content for editing"
+      });
+      
+      // Fetch the campaign content
+      const campaignData = await fetchCampaign(id);
+      
+      console.log("Campaign data for editing:", campaignData);
+      
+      if (campaignData) {
+        // Update local state with the campaign content
+        setCampaignId(id); // Keep the original ID for updating later
+        setSubject(campaignData.subject || "");
+        
+        // Extract HTML content if available
+        if (campaignData.content && typeof campaignData.content === 'object') {
+          console.log("Campaign content structure:", campaignData.content);
+          
+          // EmailOctopus API returns content in different formats
+          let htmlContent = null;
+          
+          // Try different known paths to find HTML content
+          if (campaignData.content.html) {
+            htmlContent = campaignData.content.html;
+          } else if (campaignData.content.body) { 
+            htmlContent = campaignData.content.body;
+          } else if (campaignData.content.text) {
+            htmlContent = campaignData.content.text;
+          }
+          
+          if (htmlContent) {
+            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...");
+            
+            // Create some sample links based on the content
+            const sampleLink: LinkItem = {
+              id: Date.now().toString(),
+              url: "https://example.com/placeholder",
+              title: "Placeholder Content",
+              description: "This content was imported from an existing campaign.",
+              image: "",
+              bulletPoints: ["Imported from existing campaign"],
+              tags: [],
+            };
+            
+            setLinks([sampleLink]);
+            
+            // Now that we've set the links, the preview should update automatically
+          } else {
+            console.log("No HTML content found in campaign data");
+            setLinks([]);
+          }
+        } else {
+          console.log("No content field in campaign data");
+          // If no HTML content, just set empty links
+          setLinks([]);
+        }
+        
+        // Update the URL to indicate we're editing
+        router.push(`/admin/newsletter?edit=${id}`);
+        
+        toast({
+          title: "Campaign loaded",
+          description: "You can now edit the campaign",
+        });
+      }
+    } catch (error) {
+      console.error("Error loading campaign:", error);
+      
+      toast({
+        title: "Error loading campaign",
+        description: "An error occurred while loading the campaign content",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCreateNewDraft = () => {
     // Reset the current state
@@ -555,24 +675,93 @@ export default function NewsletterBuilder() {
     })
   }
 
-  const handleDuplicateNewsletter = (id: string) => {
-    const newsletter = mockEpisodes.find((ep) => ep.id === id)
-    if (newsletter) {
-      setSubject(`Copy of ${newsletter.subject}`)
-      setLinks([...newsletter.links])
-      if (newsletter.links.length > 0) {
-        setSelectedLinkId(newsletter.links[0].id)
-      }
-
-      // Remove the edit parameter from the URL
-      router.push("/admin/newsletter")
-
+  const handleDuplicateNewsletter = async (id: string) => {
+    try {
+      setIsLoading(true);
+      
       toast({
-        title: "Newsletter duplicated",
-        description: "You can now edit the copy of the newsletter",
-      })
+        title: "Loading template...",
+        description: "Getting content from the selected campaign"
+      });
+      
+      // Fetch the campaign to get its content
+      const campaignData = await fetchCampaign(id);
+      
+      console.log("Campaign data for duplication:", campaignData);
+      
+      if (campaignData) {
+        // Populate the editor with this campaign's content
+        setSubject(`Copy of: ${campaignData.subject || ''}`);
+        
+        // Extract HTML content if available
+        if (campaignData.content && typeof campaignData.content === 'object') {
+          console.log("Campaign content structure:", campaignData.content);
+          
+          // EmailOctopus API returns content in different formats
+          let htmlContent = null;
+          
+          // Try different known paths to find HTML content
+          if (campaignData.content.html) {
+            htmlContent = campaignData.content.html;
+          } else if (campaignData.content.body) { 
+            htmlContent = campaignData.content.body;
+          } else if (campaignData.content.text) {
+            htmlContent = campaignData.content.text;
+          }
+          
+          if (htmlContent) {
+            console.log("Found HTML content:", htmlContent.substring(0, 100) + "...");
+            
+            // Use our generateNewsletter function to recreate the HTML
+            const newHtml = generateNewsletterHtml();
+            
+            // Create some sample links based on the content
+            const sampleLink: LinkItem = {
+              id: Date.now().toString(),
+              url: "https://example.com/placeholder",
+              title: "Placeholder Content",
+              description: "This content was imported from an existing campaign.",
+              image: "",
+              bulletPoints: ["Imported from existing campaign"],
+              tags: [],
+            };
+            
+            setLinks([sampleLink]);
+            
+            // Now that we've set the links, the preview should update automatically
+          } else {
+            console.log("No HTML content found in campaign data");
+            setLinks([]);
+          }
+        } else {
+          console.log("No content field in campaign data");
+          // If no HTML content, just set empty links
+          setLinks([]);
+        }
+        
+        // Important: Clear campaignId so we create a new one on save
+        setCampaignId(null);
+        
+        // Remove any edit parameter from URL
+        router.push("/admin/newsletter");
+        
+        toast({
+          title: "Template loaded",
+          description: "Content loaded from the selected campaign",
+        });
+      }
+    } catch (error) {
+      console.error("Error loading campaign template:", error);
+      
+      toast({
+        title: "Error loading template",
+        description: "Failed to get content from the selected campaign",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   const generateNewsletterHtml = () => {
     const linksHtml = links
@@ -694,7 +883,7 @@ export default function NewsletterBuilder() {
           <div className="bg-yellow-600/20 border border-yellow-600/50 text-yellow-200 px-4 py-3 rounded-md flex items-center justify-between mx-1">
             <div className="flex items-center">
               <Zap className="h-5 w-5 mr-2" />
-              <span>You're currently offline. Changes will be saved locally and synced when you're back online.</span>
+              <span>You&apos;re currently offline. Changes will be saved locally and synced when you&apos;re back online.</span>
             </div>
             <div className="text-sm">
               {offlineQueue.length} pending {offlineQueue.length === 1 ? "change" : "changes"}
@@ -734,6 +923,12 @@ export default function NewsletterBuilder() {
                     Save Draft
                   </Button>
                 </div>
+
+                {subject.startsWith('Copy of:') && (
+                  <div className="bg-blue-900/60 text-blue-200 p-2 rounded-md text-sm">
+                    You're working with content from an existing campaign. Add your own links and content below.
+                  </div>
+                )}
 
                 <div className="space-y-3">
                   <LinkDropZone onLinkAdd={handleLinkAdd} isLoading={isLoading} />

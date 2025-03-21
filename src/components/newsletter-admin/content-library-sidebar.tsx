@@ -13,6 +13,11 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import type { Content } from "@/types"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
+interface ContentSearchResult extends Content {
+  id: string;
+  isSuggested: boolean;
+}
+
 interface ContentLibrarySidebarProps {
   onContentSelect: (content: Content) => void
 }
@@ -21,7 +26,7 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
   const [searchTerm, setSearchTerm] = useState("")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [selectedTypes, setSelectedTypes] = useState<string[]>(["all"])
-  const [searchResults, setSearchResults] = useState<Content[]>([])
+  const [searchResults, setSearchResults] = useState<ContentSearchResult[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showAllResults, setShowAllResults] = useState(false)
   const { toast } = useToast()
@@ -65,7 +70,7 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
       const data = await response.json()
 
       // Mark the first 3 items as suggested
-      const resultsWithSuggested = data.results.map((item: Content, index: number) => ({
+      const resultsWithSuggested = data.results.map((item: any, index: number) => ({
         ...item,
         isSuggested: index < 3,
       }))
@@ -209,7 +214,7 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
               <div className="space-y-1 pr-1">
                 {(showAllResults ? searchResults : searchResults.slice(0, 5)).map((content) => (
                   <div
-                    key={content.id}
+                    key={content._id || content.slug}
                     className={`p-1.5 rounded-md hover:bg-white/10 transition-colors border ${
                       content.isSuggested ? "border-yellow-500/30 bg-yellow-500/10" : "border-white/10"
                     } cursor-pointer`}
@@ -236,12 +241,12 @@ export default function ContentLibrarySidebar({ onContentSelect }: ContentLibrar
                       <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                         {content.type}
                       </Badge>
-                      {content.tags.slice(0, 1).map((tag) => (
+                      {content.tags && content.tags.length > 0 && content.tags.slice(0, 1).map((tag) => (
                         <Badge key={tag} variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                           {tag}
                         </Badge>
                       ))}
-                      {content.tags.length > 1 && (
+                      {content.tags && content.tags.length > 1 && (
                         <Badge variant="outline" className="border-blue-500 text-blue-300 text-xs py-0 px-1 h-4">
                           +{content.tags.length - 1}
                         </Badge>

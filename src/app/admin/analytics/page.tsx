@@ -1,4 +1,4 @@
-import NewsletterAnalytics from "@/components/newsletter-admin/newsletter-analytics"
+import { NewsletterAnalytics } from "@/components/newsletter-admin/newsletter-analytics"
 
 export default function AnalyticsPage() {
   return (

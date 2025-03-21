@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,6 +26,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { fetchCampaigns } from "@/lib/email-octopus"
 
 interface NewsletterItem {
   id: string
@@ -57,57 +58,6 @@ export default function NewsletterSidebar({
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
-  // Mock data for demonstration
-  const mockNewsletters: NewsletterItem[] = [
-    {
-      id: "1",
-      subject: "Latest Web Development Trends - March 2025",
-      dateCreated: "2025-03-15T10:30:00Z",
-      dateSent: "2025-03-16T09:00:00Z",
-      status: "sent",
-      links: [
-        { id: "101", title: "The Future of React in 2025" },
-        { id: "102", title: "CSS Container Queries: A Complete Guide" },
-      ],
-    },
-    {
-      id: "2",
-      subject: "AI Tools for Developers - February 2025",
-      dateCreated: "2025-02-20T14:15:00Z",
-      dateSent: "2025-02-22T09:00:00Z",
-      status: "sent",
-      links: [
-        { id: "201", title: "Top 10 AI Coding Assistants" },
-        { id: "202", title: "How to Use GPT-5 for Code Generation" },
-      ],
-    },
-    {
-      id: "3",
-      subject: "DevOps Best Practices - April 2025",
-      dateCreated: "2025-03-25T11:45:00Z",
-      scheduledDate: "2025-04-01T09:00:00Z",
-      status: "scheduled",
-      links: [
-        { id: "301", title: "Containerization Strategies for 2025" },
-        { id: "302", title: "GitHub Actions vs. Jenkins: A Comparison" },
-      ],
-    },
-    {
-      id: "4",
-      subject: "Frontend Performance Optimization",
-      dateCreated: "2025-03-28T15:20:00Z",
-      status: "draft",
-      links: [{ id: "401", title: "Web Vitals: The Complete Guide" }],
-    },
-    {
-      id: "5",
-      subject: "Mobile Development Trends",
-      dateCreated: "2025-03-29T09:10:00Z",
-      status: "draft",
-      links: [],
-    },
-  ]
-
   const handleStatusChange = (status: string) => {
     setSelectedStatus((prev) => {
       if (prev.includes(status)) {
@@ -122,19 +72,110 @@ export default function NewsletterSidebar({
     })
   }
 
-  const fetchNewsletters = () => {
+  const fetchNewsletters = useCallback(async () => {
     setIsLoading(true)
-
-    // In a real implementation, this would be an API call
-    setTimeout(() => {
-      setNewsletters(mockNewsletters)
-      setIsLoading(false)
-    }, 500)
-  }
+    
+    try {
+      console.log("Fetching campaigns...");
+      
+      // Get campaigns from EmailOctopus API
+      const response = await fetchCampaigns();
+      
+      console.log("Campaigns response:", response);
+      
+      if (response && response.data) {
+        console.log(`Successfully fetched ${response.data.length} campaigns`);
+        
+        // Transform API response to match our NewsletterItem interface
+        const transformedCampaigns = response.data.map((campaign: any) => {
+          // Determine status based on the campaign data
+          let status: "draft" | "scheduled" | "sent" = "draft";
+          
+          if (campaign.status === "SENT") {
+            status = "sent";
+          } else if (campaign.status === "SCHEDULED") {
+            status = "scheduled";
+          }
+          
+          return {
+            id: campaign.id,
+            subject: campaign.subject,
+            dateCreated: campaign.createdAt,
+            dateSent: campaign.sentAt || undefined,
+            scheduledDate: campaign.scheduledFor || undefined,
+            status,
+            links: [] // We don't have links in the API response
+          };
+        });
+        
+        setNewsletters(transformedCampaigns);
+      } else {
+        console.warn("No campaign data found or unexpected response format:", response);
+        toast({
+          title: "Warning",
+          description: "No campaigns found or unexpected data format",
+          variant: "default",
+        });
+        // Fall back to empty array
+        setNewsletters([]);
+      }
+    } catch (error: any) {
+      console.error("Error fetching campaigns:", error);
+      
+      // Include more detailed error message
+      let errorMessage = "Failed to fetch newsletters";
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      
+      // Fallback to mock data if API call fails
+      setNewsletters([
+        {
+          id: "1",
+          subject: "Latest Web Development Trends - March 2025",
+          dateCreated: "2025-03-15T10:30:00Z",
+          dateSent: "2025-03-16T09:00:00Z",
+          status: "sent",
+          links: [],
+        },
+        {
+          id: "2",
+          subject: "AI Tools for Developers - February 2025",
+          dateCreated: "2025-02-20T14:15:00Z",
+          dateSent: "2025-02-22T09:00:00Z",
+          status: "sent",
+          links: [],
+        },
+        {
+          id: "3",
+          subject: "DevOps Best Practices - April 2025",
+          dateCreated: "2025-04-01T08:45:00Z",
+          scheduledDate: "2025-04-05T09:00:00Z",
+          status: "scheduled",
+          links: [],
+        },
+        {
+          id: "4",
+          subject: "Frontend Framework Comparison - Draft",
+          dateCreated: "2025-04-10T16:20:00Z",
+          status: "draft",
+          links: [],
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
-    fetchNewsletters()
-  }, [])
+    fetchNewsletters();
+  }, [fetchNewsletters]);
 
   const filteredNewsletters = newsletters.filter((newsletter) => {
     const matchesSearch = searchTerm === "" || newsletter.subject.toLowerCase().includes(searchTerm.toLowerCase())

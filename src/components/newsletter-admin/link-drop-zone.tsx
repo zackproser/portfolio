@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState, useCallback } from "react"
-import { useDrop } from "react-dnd"
 import { NotepadText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,18 +17,7 @@ interface LinkDropZoneProps {
 export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps) {
   const [url, setUrl] = useState("")
   const [isDragging, setIsDragging] = useState(false)
-
-  const [{ isOver }, drop] = useDrop({
-    accept: "text/uri-list",
-    drop: (item: { urls: string[] }) => {
-      if (item.urls && item.urls.length > 0) {
-        onLinkAdd(item.urls[0])
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  })
+  const [isOver, setIsOver] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,16 +53,19 @@ export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(true)
+    setIsOver(true)
   }, [])
 
   const handleDragLeave = useCallback(() => {
     setIsDragging(false)
+    setIsOver(false)
   }, [])
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
       setIsDragging(false)
+      setIsOver(false)
 
       // Handle dropped text
       const text = e.dataTransfer.getData("text")
@@ -96,7 +87,6 @@ export default function LinkDropZone({ onLinkAdd, isLoading }: LinkDropZoneProps
 
   return (
     <Card
-      ref={drop}
       className={`border-2 border-dashed transition-colors ${
         isOver || isDragging ? "border-blue-400 bg-blue-900/30" : "border-white/20 bg-white/10"
       } backdrop-blur-sm text-white`}
