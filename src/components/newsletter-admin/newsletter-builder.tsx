@@ -1425,7 +1425,7 @@ export default function NewsletterBuilder() {
               <CardTitle className="text-lg">Newsletter Actions</CardTitle>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <Button 
                   variant="outline" 
                   className="border-white/20 text-white hover:bg-white/20"
@@ -1440,23 +1440,65 @@ export default function NewsletterBuilder() {
                   variant="outline"
                   className="border-blue-500 text-blue-300 hover:bg-blue-800/50"
                   onClick={handleCreateCampaign}
-                  disabled={isLoading || !subject}
+                  disabled={isLoading || !subject || links.length === 0}
                 >
                   <MessageSquarePlus className="h-4 w-4 mr-2" />
                   Create Campaign
                 </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-white/20 text-white hover:bg-white/20"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Load Draft
+                </Button>
               </div>
               
               {campaignId && (
-                <div className="pt-2">
+                <div className="pt-2 flex space-x-2">
                   <Button
-                    className="w-full bg-green-600 hover:bg-green-700"
-                    onClick={() => setShowScheduleDialog(true)}
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    onClick={() => handleSendCampaign()}
                     disabled={isLoading}
                   >
                     <Send className="h-4 w-4 mr-2" />
-                    Send Newsletter
+                    Send Now
                   </Button>
+                  
+                  <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+                    <DialogTrigger asChild>
+                      <Button
+                        disabled={isLoading || !campaignId}
+                        variant="outline"
+                        className="flex-1 border-white/20 text-white hover:bg-white/20"
+                      >
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Schedule
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-gray-900 text-white border-gray-700">
+                      <DialogHeader>
+                        <DialogTitle>Schedule Newsletter</DialogTitle>
+                        <DialogDescription className="text-gray-400">
+                          Select a date and time to send your newsletter
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="py-2">
+                        <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          onClick={() => handleSendCampaign(scheduleDate)}
+                          disabled={!scheduleDate}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          Schedule Send
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               )}
               
@@ -1470,69 +1512,6 @@ export default function NewsletterBuilder() {
               )}
             </CardContent>
           </Card>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 space-y-2">
-            <h3 className="text-lg font-bold text-white mb-1">Newsletter Actions</h3>
-            <div className="flex space-x-2">
-              <Button
-                onClick={handleCreateCampaign}
-                disabled={isLoading || !subject || links.length === 0}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Create
-              </Button>
-              <Button
-                onClick={() => handleSendCampaign()}
-                disabled={isLoading || !campaignId}
-                variant="default"
-                className="flex-1 bg-green-600 hover:bg-green-700"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Send
-              </Button>
-              <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
-                <DialogTrigger asChild>
-                  <Button
-                    disabled={isLoading || !campaignId}
-                    variant="outline"
-                    className="flex-1 border-white/20 text-white hover:bg-white/20"
-                  >
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Schedule
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-gray-900 text-white border-gray-700">
-                  <DialogHeader>
-                    <DialogTitle>Schedule Newsletter</DialogTitle>
-                    <DialogDescription className="text-gray-400">
-                      Select a date and time to send your newsletter
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="py-2">
-                    <DatePicker date={scheduleDate} setDate={setScheduleDate} showTimePicker />
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      onClick={() => handleSendCampaign(scheduleDate)}
-                      disabled={!scheduleDate}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      Schedule Send
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full border-white/20 text-white hover:bg-white/20"
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              Load Draft
-            </Button>
-          </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
             <h3 className="text-lg font-bold text-white mb-1 flex items-center">
