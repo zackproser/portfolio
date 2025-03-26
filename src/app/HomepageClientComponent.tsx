@@ -2,15 +2,12 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Brain } from "lucide-react"
 import Link from "next/link"
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import { usePathname } from "next/navigation"
 import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
-import Image from "next/image"
-import ragPipelineElements from '@/images/rag-tutorial-elements.webp'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
