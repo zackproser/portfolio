@@ -1,0 +1,81 @@
+.newsletter-link-card {
+  position: relative;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.newsletter-link-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-link-card.ProseMirror-selectednode {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.newsletter-link-card .drag-handle {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  cursor: move;
+}
+
+.newsletter-link-card:hover .drag-handle {
+  opacity: 1;
+}
+
+.newsletter-link-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.newsletter-link-card p {
+  margin: 0 0 0.5rem 0;
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.newsletter-link-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 0.5rem 0;
+}
+
+.newsletter-link-card ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.newsletter-link-card li {
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0.25rem 0;
+}
+
+.newsletter-link-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.newsletter-link-card .tag {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+} 

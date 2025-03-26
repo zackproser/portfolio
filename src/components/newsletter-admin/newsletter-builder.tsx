@@ -26,12 +26,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Mail, Calendar, Save, Upload, Sparkles, Tag, Bookmark, MessageSquarePlus, Zap, Copy, Search, Trash, Send } from "lucide-react"
+import { Mail, Calendar, Save, Upload, Sparkles, Tag, Bookmark, MessageSquarePlus, Zap, Copy, Search, Trash, Send, X } from "lucide-react"
 import ContentLibrarySidebar from "./content-library-sidebar"
 import NewsletterSidebar from "./newsletter-sidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import RichTextEditor from "./rich-text-editor"
 
 const mockEpisodes = [
   {
@@ -111,6 +112,7 @@ export default function NewsletterBuilder() {
   const [campaignId, setCampaignId] = useState<string | null>(null)
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null)
   const [rawHtmlContent, setRawHtmlContent] = useState<string | null>(null)
+  const [editorContent, setEditorContent] = useState<string>("")
   const [availableTags, setAvailableTags] = useState<string[]>([
     "JavaScript",
     "TypeScript",
@@ -398,8 +400,8 @@ export default function NewsletterBuilder() {
     try {
       setIsLoading(true)
       
-      // Use raw HTML if available, otherwise generate from links
-      const html = rawHtmlContent || generateNewsletterHtml()
+      // Use raw HTML if available, otherwise use editor content or generate from links
+      const html = rawHtmlContent || editorContent || generateNewsletterHtml()
       
       if (campaignId) {
         toast({
@@ -599,6 +601,7 @@ export default function NewsletterBuilder() {
             
             // Store the raw HTML content for direct editing
             setRawHtmlContent(htmlContent)
+            setEditorContent(htmlContent) // Set the WYSIWYG editor content
             
             // Also extract links for the structured editor as a fallback
             const extractedLinks = extractLinksFromHtml(htmlContent)
@@ -703,6 +706,7 @@ export default function NewsletterBuilder() {
             console.log("Found HTML content:", htmlContent.substring(0, 100) + "...")
             
             setRawHtmlContent(htmlContent)
+            setEditorContent(htmlContent) // Set the WYSIWYG editor content
             
             const extractedLinks = extractLinksFromHtml(htmlContent)
             
@@ -966,48 +970,60 @@ export default function NewsletterBuilder() {
   }
 
   const generateNewsletterHtml = () => {
-    const linksHtml = links
-      .map(
-        (link) => `
-      <div style="margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 30px;">
-        <h2 style="font-size: 22px; margin-bottom: 12px; color: #333;">
-          <a href="${link.url}" style="color: #0066cc; text-decoration: none; font-weight: 600;">${link.title}</a>
-        </h2>
-        ${
-          link.image
-            ? `
-          <div style="margin-bottom: 20px;">
-            <a href="${link.url}" style="text-decoration: none;">
-              <img src="${link.image}" alt="${link.title}" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #eee;" />
-            </a>
+    // Create a temporary div to parse the editor content
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = editorContent || ''
+
+    // Replace newsletter link cards with their final HTML
+    const linkCards = tempDiv.querySelectorAll('div[data-link-id]')
+    linkCards.forEach((card) => {
+      const linkId = card.getAttribute('data-link-id')
+      const link = links.find(l => l.id === linkId)
+      if (link) {
+        const linkHtml = `
+          <div style="margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 30px;">
+            <h2 style="font-size: 22px; margin-bottom: 12px; color: #333;">
+              <a href="${link.url}" style="color: #0066cc; text-decoration: none; font-weight: 600;">${link.title}</a>
+            </h2>
+            ${
+              link.image
+                ? `
+              <div style="margin-bottom: 20px;">
+                <a href="${link.url}" style="text-decoration: none;">
+                  <img src="${link.image}" alt="${link.title}" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid #eee;" />
+                </a>
+              </div>
+            `
+                : ""
+            }
+            <p style="color: #555; margin-bottom: 15px; line-height: 1.6;">${link.description}</p>
+            ${
+              link.bulletPoints.filter((bp) => bp.trim()).length > 0
+                ? `
+              <ul style="padding-left: 20px; margin-bottom: 20px; color: #444;">
+                ${link.bulletPoints
+                  .filter((bp) => bp.trim())
+                  .map(
+                    (bp) => `
+                  <li style="margin-bottom: 8px; line-height: 1.5;">${bp}</li>
+                `,
+                  )
+                  .join("")}
+              </ul>
+            `
+                : ""
+            }
+            <div style="margin-top: 15px;">
+              <a href="${link.url}" style="display: inline-block; padding: 8px 16px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 4px; font-weight: 500;">Read More</a>
+            </div>
           </div>
         `
-            : ""
-        }
-        <p style="color: #555; margin-bottom: 15px; line-height: 1.6;">${link.description}</p>
-        ${
-          link.bulletPoints.filter((bp) => bp.trim()).length > 0
-            ? `
-          <ul style="padding-left: 20px; margin-bottom: 20px; color: #444;">
-            ${link.bulletPoints
-              .filter((bp) => bp.trim())
-              .map(
-                (bp) => `
-              <li style="margin-bottom: 8px; line-height: 1.5;">${bp}</li>
-            `,
-              )
-              .join("")}
-          </ul>
-        `
-            : ""
-        }
-        <div style="margin-top: 15px;">
-          <a href="${link.url}" style="display: inline-block; padding: 8px 16px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 4px; font-weight: 500;">Read More</a>
-        </div>
-      </div>
-    `,
-      )
-      .join("")
+        card.outerHTML = linkHtml
+      }
+    })
+
+    // Get the processed HTML content
+    const processedContent = tempDiv.innerHTML
 
     return `
       <!DOCTYPE html>
@@ -1065,7 +1081,7 @@ export default function NewsletterBuilder() {
         </div>
         
         <main>
-          ${linksHtml}
+          ${processedContent}
         </main>
         
         <div class="footer">
@@ -1169,10 +1185,24 @@ export default function NewsletterBuilder() {
     }
   }
 
+  // When the editorContent changes, update the rawHtmlContent or HTML textarea view
+  useEffect(() => {
+    if (editorContent && !rawHtmlContent) {
+      setRawHtmlContent(editorContent);
+    }
+  }, [editorContent, rawHtmlContent]);
+
+  // When rawHtmlContent changes from the HTML editor, update the WYSIWYG editor
+  useEffect(() => {
+    if (rawHtmlContent) {
+      setEditorContent(rawHtmlContent);
+    }
+  }, [rawHtmlContent]);
+
   return (
     <>
       <div className="grid lg:grid-cols-12 h-full gap-4">
-        <div className="lg:col-span-3 h-full">
+        <div className="lg:col-span-4 h-full">
           <NewsletterSidebar
             currentId={campaignId}
             onSelectNewsletter={handleSelectNewsletter}
@@ -1181,7 +1211,7 @@ export default function NewsletterBuilder() {
           />
         </div>
 
-        <div className="lg:col-span-6 space-y-4">
+        <div className="lg:col-span-5 space-y-4">
           <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
             <CardContent className="p-4">
               <div className="space-y-4">
@@ -1202,42 +1232,6 @@ export default function NewsletterBuilder() {
           </Card>
 
           <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-            <CardContent className="p-4">
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <div className="bg-white/20 flex items-center gap-2 border border-white/20 rounded-l-md p-3 flex-grow">
-                    <Search className="h-4 w-4 text-white/70" />
-                    <Input
-                      value={urlInput}
-                      onChange={(e) => setUrlInput(e.target.value)}
-                      placeholder="Enter a URL to add..."
-                      className="bg-transparent border-0 p-0 text-white placeholder:text-white/50 focus-visible:ring-0 shadow-none"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && urlInput) {
-                          e.preventDefault()
-                          handleLinkAdd(urlInput)
-                          setUrlInput("")
-                        }
-                      }}
-                    />
-                  </div>
-                  <Button
-                    onClick={() => {
-                      if (urlInput) {
-                        handleLinkAdd(urlInput)
-                        setUrlInput("")
-                      }
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 border border-blue-600 rounded-l-none rounded-r-md"
-                  >
-                    Add Link
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">
                 Newsletter Content
@@ -1252,52 +1246,98 @@ export default function NewsletterBuilder() {
                 </TabsList>
                 
                 <TabsContent value="edit" className="p-2 space-y-2">
-                  {links.length === 0 ? (
-                    <div className="bg-blue-950/50 border border-blue-900 p-6 rounded-md text-center space-y-4">
-                      <Mail className="h-12 w-12 mx-auto text-blue-400" />
-                      <div className="space-y-2">
-                        <h3 className="text-xl font-medium text-white">No Content Yet</h3>
-                        <p className="text-blue-200">
-                          Add URLs above or select content from the library to build your newsletter.
-                        </p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="border-blue-500 text-blue-300 hover:bg-blue-800/50"
-                        onClick={() => {
-                          fileInputRef.current?.click()
-                        }}
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        Import from File
-                      </Button>
-                      <input
-                        type="file"
-                        accept=".json"
-                        className="hidden"
-                        ref={fileInputRef}
-                        onChange={handleFileImport}
-                      />
-                    </div>
-                  ) : (
-                    <DndProvider backend={HTML5Backend}>
-                      <LinkDropZone links={links} onReorder={handleReorderLinks} onLinkAdd={handleLinkAdd}>
-                        <LinkList
+                  <DndProvider backend={HTML5Backend}>
+                    <div className="space-y-4">
+                      <div className="bg-blue-950/50 border border-blue-900 rounded-md p-4 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-lg font-medium text-white">WYSIWYG Editor</h3>
+                        </div>
+                        <RichTextEditor 
+                          content={editorContent}
+                          onChange={(html) => {
+                            setEditorContent(html);
+                            // Keep rawHtmlContent in sync if it's being used
+                            if (rawHtmlContent) {
+                              setRawHtmlContent(html);
+                            }
+                          }}
                           links={links}
-                          selectedId={selectedLinkId}
-                          onSelect={handleSelectLink}
-                          onUpdate={handleUpdateLink}
-                          onDelete={handleDeleteLink}
-                          onTagAdd={handleAddTag}
-                          onBulletPointChange={handleBulletPointChange}
-                          onAddBulletPoint={handleAddBulletPoint}
-                          onRemoveBulletPoint={handleRemoveBulletPoint}
-                          onTagRemove={handleRemoveTag}
-                          availableTags={availableTags}
+                          onLinkRemove={handleDeleteLink}
                         />
-                      </LinkDropZone>
-                    </DndProvider>
-                  )}
+                      </div>
+                      
+                      <div className="bg-blue-950/50 border border-blue-900 rounded-md p-4 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-lg font-medium text-white">Links</h3>
+                          <div className="space-x-2">
+                            <Input
+                              placeholder="Enter URL..."
+                              value={urlInput}
+                              onChange={(e) => setUrlInput(e.target.value)}
+                              className="w-40 sm:w-60 bg-blue-900/50 border-blue-800 text-white"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" && urlInput) {
+                                  handleLinkAdd(urlInput);
+                                  setUrlInput("");
+                                }
+                              }}
+                            />
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="border-green-500 text-green-300 hover:bg-green-800/50"
+                              onClick={() => {
+                                if (urlInput) {
+                                  handleLinkAdd(urlInput);
+                                  setUrlInput("");
+                                }
+                              }}
+                              disabled={!urlInput || isLoading}
+                            >
+                              Add Link
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {links.map((link) => (
+                            <div
+                              key={link.id}
+                              className="p-3 bg-blue-900/30 rounded-md hover:bg-blue-900/40 transition-colors cursor-move"
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.setData('text/link-id', link.id);
+                                e.dataTransfer.effectAllowed = 'move';
+                              }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <h4 className="font-medium text-white">{link.title}</h4>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-300 hover:text-red-100 hover:bg-red-900/20"
+                                  onClick={() => handleDeleteLink(link.id)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              {link.description && (
+                                <p className="text-sm text-blue-200 mt-1">{link.description}</p>
+                              )}
+                              {link.tags && link.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {link.tags.map((tag) => (
+                                    <span key={tag} className="text-xs bg-blue-800/50 text-blue-200 px-2 py-0.5 rounded-full">
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </DndProvider>
                 </TabsContent>
 
                 <TabsContent value="html" className="p-2 space-y-2">
@@ -1337,7 +1377,7 @@ export default function NewsletterBuilder() {
                     
                     <textarea 
                       className="w-full h-[500px] bg-blue-950 text-white p-4 font-mono text-sm rounded-md border border-blue-900"
-                      value={rawHtmlContent || generateNewsletterHtml()}
+                      value={rawHtmlContent || editorContent || generateNewsletterHtml()}
                       onChange={(e) => setRawHtmlContent(e.target.value)}
                       spellCheck="false"
                     />
@@ -1362,15 +1402,15 @@ export default function NewsletterBuilder() {
                           );
                         }
 
-                        // Generate HTML content from either raw HTML or link structure
-                        const htmlContent = rawHtmlContent || generateNewsletterHtml();
+                        // Generate HTML content from either raw HTML, rich editor content, or link structure
+                        const htmlContent = rawHtmlContent || editorContent || generateNewsletterHtml();
                         
                         // Check if content is valid
                         if (!htmlContent || htmlContent.trim() === '') {
                           return (
                             <div className="p-4 bg-blue-50 text-blue-800 rounded-md">
                               <h3 className="text-lg font-bold mb-2">No Content</h3>
-                              <p>There is no content to preview. Please add links or HTML content.</p>
+                              <p>There is no content to preview. Please add links, use the WYSIWYG editor, or add HTML content.</p>
                             </div>
                           );
                         }

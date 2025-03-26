@@ -7,6 +7,7 @@ import { Providers } from '@/app/providers'
 import { SimpleNav } from '@/components/SimpleNav'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
+import '@/styles/newsletter-editor.css'
 
 // Initialize the Noto Sans font
 const notoSans = Noto_Sans({

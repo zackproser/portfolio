@@ -326,18 +326,18 @@ export default function NewsletterSidebar({
                     key={newsletter.id}
                     className={`p-3 rounded-md hover:bg-white/10 transition-colors border ${
                       currentId === newsletter.id ? "border-blue-500 bg-blue-500/10" : "border-white/10"
-                    } cursor-pointer`}
+                    } cursor-pointer group`}
                     onClick={() => onSelectNewsletter(newsletter.id)}
                   >
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-medium text-white text-sm line-clamp-1">{newsletter.subject}</h4>
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="font-medium text-white text-sm break-words flex-1">{newsletter.subject}</h4>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={(e) => e.stopPropagation()}
-                            className="h-6 w-6 p-0 ml-2 text-white hover:bg-white/20"
+                            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-white hover:bg-white/20 flex-shrink-0"
                           >
                             <ChevronDown className="h-3 w-3" />
                           </Button>

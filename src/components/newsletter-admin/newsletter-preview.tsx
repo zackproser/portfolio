@@ -25,10 +25,11 @@ export default function NewsletterPreview({ subject, links, html }: NewsletterPr
     })
   }
 
-  if (links.length === 0) {
+  // If there's HTML content directly, show it even if there are no links
+  if (links.length === 0 && !html) {
     return (
       <div className="text-center py-12 border border-white/20 rounded-md bg-white/5 text-white">
-        <p className="text-gray-300">No content to preview. Add links to see the newsletter preview.</p>
+        <p className="text-gray-300">No content to preview. Add links or use the WYSIWYG editor to see the newsletter preview.</p>
       </div>
     )
   }
