@@ -97,10 +97,10 @@ export default function HomepageClientComponent({
             <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
               <div className="flex-1 space-y-4 max-w-2xl">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white">
-                  Supercharge Your Development Workflow 
+                  Zero Bullshit AI
                 </h1>
                 <p className="text-lg text-gray-200 md:text-xl">
-                  Coding is changing. Don&apos;t get left behind. 
+                  Hype-free insights from the engineer who built at Cloudflare, Gruntwork.io, Pinecone, and WorkOS.
                 </p>
                 <div className="w-full max-w-sm space-y-2">
                   {formSuccess ? (
@@ -116,12 +116,12 @@ export default function HomepageClientComponent({
                         required
                       />
                       <Button type="submit" className="bg-yellow-400 font-bold text-white hover:bg-yellow-300 transition-colors">
-                        Count me in!
+                        Get Real Insights
                       </Button>
                     </form>
                   )}
                   <p className="text-xs text-gray-300">
-                    Get the latest tools, frameworks, and techniques for AI-assisted development, plus projects, tutorials and demos to keep you in the know. 
+                    Authentic technical knowledge on AI architectures, workflows, and tools from an engineer who actually built and shipped at Cloudflare, Gruntwork.io, Pinecone, and WorkOS.
                   </p>
                 </div>
               </div>
