@@ -33,6 +33,33 @@ export async function GET() {
   let videos = await getAllContent('videos')
   let courses = await getAllContent('learn/courses')
 
+  // Add important static pages
+  const staticPages = [
+    {
+      title: 'Services - AI Engineering & Consulting',
+      slug: 'services',
+      date: new Date().toISOString(),
+    },
+    {
+      title: 'Products - Developer Tools & Resources',
+      slug: 'products',
+      date: new Date().toISOString(),
+    }
+  ]
+
+  // Add static pages to feed
+  for (let page of staticPages) {
+    let publicUrl = `${siteUrl}/${page.slug}`
+    feed.addItem({
+      title: page.title,
+      id: publicUrl,
+      link: publicUrl,
+      author: [author],
+      contributor: [author],
+      date: new Date(page.date),
+    })
+  }
+
   for (let article of articles) {
     let publicUrl = `${siteUrl}/blog/${article.slug}`
     const title = article.title
