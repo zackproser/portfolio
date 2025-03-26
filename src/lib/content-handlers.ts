@@ -11,6 +11,7 @@ const prisma = new PrismaClient()
 
 // Directory where content is stored
 const contentDirectory = path.join(process.cwd(), 'src/content')
+const appDirectory = path.join(process.cwd(), 'src/app')
 
 /**
  * Get the content URL based on content type and slug
@@ -567,4 +568,59 @@ export async function getProductBySlug(slug: string): Promise<Purchasable | null
   }
 
   return null;
+}
+
+/**
+ * Get all valid top-level pages from the app directory
+ * @returns Array of valid page routes
+ */
+export async function getTopLevelPages(): Promise<string[]> {
+  const excludeDirs = ['api', 'rss', '[name]', '[slug]'];
+  const validPageFiles = ['page.tsx', 'page.jsx', 'page.js', 'page.mdx', 'page.md'];
+  const routes = new Set<string>();
+
+  // Add root route
+  routes.add('/');
+
+  function addRoutesRecursively(currentPath: string, relativePath: string = '') {
+    try {
+      const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+
+      for (const entry of entries) {
+        // Skip excluded directories and hidden files
+        if (excludeDirs.includes(entry.name) || entry.name.startsWith('.') || entry.name.startsWith('_')) {
+          continue;
+        }
+
+        const fullPath = path.join(currentPath, entry.name);
+        const relPath = path.join(relativePath, entry.name);
+
+        if (entry.isDirectory()) {
+          // Check if this directory contains any valid page files
+          const hasValidPage = validPageFiles.some(pageFile => 
+            fs.existsSync(path.join(fullPath, pageFile))
+          );
+
+          if (hasValidPage) {
+            // Add the route without the page file name
+            const routePath = `/${relPath}`.replace(/\\/g, '/');
+            routes.add(routePath);
+          }
+
+          // Recursively check subdirectories
+          addRoutesRecursively(fullPath, relPath);
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing directory ${currentPath}:`, error);
+    }
+  }
+
+  try {
+    addRoutesRecursively(appDirectory);
+    return Array.from(routes).sort();
+  } catch (error) {
+    console.error('Error getting top-level pages:', error);
+    return Array.from(routes).sort(); // Return what we have even if there's an error
+  }
 } 
