@@ -1,75 +1,44 @@
 import fs from 'fs';
 import path from 'path';
+import { getAllContent, getAllProducts, getTopLevelPages } from '@/lib/content-handlers';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
-const baseDir = 'src/app';
-const contentDir = 'src/content';
-const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons'];
+const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons', 'services', 'products'];
 const excludeDirs = ['api', 'rss'];
-const excludeFiles = ['[name]'];
 const dynamicDetailDirs = [
   { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
   { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
 ];
 
-function getRoutes() {
-  const fullPath = path.join(process.cwd(), baseDir);
-  const contentPath = path.join(process.cwd(), contentDir);
+async function getRoutes() {
   let routes = new Set(); // Use a Set to store unique routes
 
-  function addRoutesRecursively(currentPath, relativePath = '') {
-    const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+  // Get all top-level pages dynamically
+  const topLevelPages = await getTopLevelPages();
+  topLevelPages.forEach(page => routes.add(page));
 
-    entries.forEach(entry => {
-      const entryPath = path.join(currentPath, entry.name);
-      const entryRelativePath = path.join(relativePath, entry.name);
-
-      if (entry.isDirectory()) {
-        addRoutesRecursively(entryPath, entryRelativePath);
-      } else if (entry.isFile()) {
-        if ((entry.name === 'page.jsx' || entry.name === 'page.tsx' || entry.name.endsWith('.mdx')) 
-            && !excludeFiles.some(exclude => entryRelativePath.includes(exclude))) {
-          const routePath = `/${relativePath.replace(/\\/g, '/')}`;
-          routes.add(routePath.replace(/\/page$/, '')); // Add to Set
+  // Get all content for each content type
+  for (const contentType of dynamicDirs) {
+    if (!excludeDirs.includes(contentType)) {
+      const contents = await getAllContent(contentType);
+      contents.forEach(content => {
+        if (content.slug) {
+          // Remove any leading slashes to avoid double slashes
+          const cleanSlug = content.slug.replace(/^\/+/, '');
+          routes.add(`/${cleanSlug}`);
         }
-      }
-    });
+      });
+    }
   }
 
-  // Read the entries of the base directory
-  const entries = fs.readdirSync(fullPath, { withFileTypes: true });
-
-  entries.forEach(entry => {
-    if (entry.isDirectory() && !excludeDirs.includes(entry.name)) {
-      routes.add(`/${entry.name}`); // Add to Set
-
-      if (dynamicDirs.includes(entry.name)) {
-        const subDir = path.join(fullPath, entry.name);
-        addRoutesRecursively(subDir, entry.name);
-      }
+  // Get all products
+  const products = await getAllProducts();
+  products.forEach(product => {
+    if (product.slug) {
+      // Remove any leading slashes to avoid double slashes
+      const cleanSlug = product.slug.replace(/^\/+/, '');
+      routes.add(`/${cleanSlug}`);
     }
-  });
-
-  // Add routes for content in the new content directory structure
-  dynamicDirs.forEach(dir => {
-    const contentTypeDir = path.join(contentPath, dir);
-    
-    // Skip if the directory doesn't exist
-    if (!fs.existsSync(contentTypeDir)) return;
-    
-    // Get all subdirectories (slugs) in the content type directory
-    const slugs = fs.readdirSync(contentTypeDir, { withFileTypes: true })
-      .filter(item => item.isDirectory())
-      .map(item => item.name);
-    
-    // Add a route for each slug
-    slugs.forEach(slug => {
-      // Check if the directory contains a page.mdx file
-      const mdxPath = path.join(contentTypeDir, slug, 'page.mdx');
-      if (fs.existsSync(mdxPath)) {
-        routes.add(`/${dir}/${slug}`);
-      }
-    });
   });
 
   // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
@@ -102,8 +71,6 @@ function getRoutes() {
   }));
 }
 
-function sitemap() {
+export default async function sitemap() {
   return getRoutes();
 }
-
-export default sitemap;
