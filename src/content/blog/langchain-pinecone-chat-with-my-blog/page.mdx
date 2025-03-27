@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import chatWithMyBlog  from '@/images/custom-rag-chat-screenshot.webp'
 import chatWithMyBlogRelatedPosts from '@/images/custom-rag-chat-screenshot-dark.webp'
@@ -29,6 +30,16 @@ export const metadata = createMetadata(articleMetadata);
 
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
+<div className="relative my-4 overflow-hidden bg-blue-800 rounded-lg p-4 flex items-center justify-between">
+  <span className="text-white font-medium">This is the free version of the tutorial, which requires more effort.</span>
+  <Link
+    href="/products/rag-pipeline-tutorial"
+    className="px-4 py-2 font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0"
+  >
+    Get the premium version ($49)
+  </Link>
+</div>
+
 Here's a quick demo of it in action - or [you can try it out yourself](/chat): 
 
 <iframe 
@@ -56,7 +67,92 @@ Best of all, this site is [completely open-source](https://github.com/zackproser
 
 ## Table of contents
 
+
+
 ## Architecture and data flow
+
+{/* Comparison Advert */}
+<div className="relative my-8">
+  <div className="absolute inset-0 bg-blue-800 rounded-3xl blur-xl"></div>
+  
+  <div className="relative bg-purple-900 rounded-3xl border border-purple-500/20 p-8 shadow-2xl">
+    <div className="text-center mb-10">
+      <h2 className="text-3xl font-bold text-white">
+        Free Version vs. <span className="text-orange-400">Premium</span> Experience
+      </h2>
+      <span className="mt-2 text-purple-200 block">
+        Choose the version that matches your production needs
+      </span>
+    </div>
+    
+    <div className="grid md:grid-cols-2 gap-6">
+      {/* Free Version */}
+      <div className="bg-white/5 border border-purple-500/20 rounded-xl p-6 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-purple-500/10">
+            <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-white">Free Version</h3>
+        </div>
+        
+        <ul className="space-y-3">
+          {[
+            'Core implementation guide',
+            'Complete code provided, but you need to glue it together',
+            'Concept explanations',
+            'No step-by-step instructions',
+            'Community support'
+          ].map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <svg className="flex-shrink-0 w-5 h-5 text-purple-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-purple-100">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Premium Version */}
+      <div className="bg-green-700 rounded-xl p-6 shadow-inner shadow-orange-500/10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-orange-500/10">
+            <svg className="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-white">Premium Version</h3>
+        </div>
+        
+        <ul className="space-y-3 mb-6">
+          {[
+            'Jupyter Notebook that does the setup: ingest, embeddings, vectorization',
+            'Next.js site implementing the pipeline end-to-end',
+            'Uses the latest Vercel AI SDK',
+            'Step-by-step guide so you reach the goal state',
+            'Priority email support',
+          ].map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <svg className="flex-shrink-0 w-5 h-5 text-orange-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-white font-bold">{feature}</span>
+            </li>
+          ))}
+        </ul>
+        
+        <Link
+          href="/products/rag-pipeline-tutorial"
+          className="w-full inline-flex justify-center items-center px-6 py-3 font-bold text-white bg-orange-500 hover:from-orange-600 hover:to-orange-700 rounded-lg transition-all duration-300 shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-0.5 active:translate-y-0"
+        >
+          Upgrade Now ($49) →
+        </Link>
+      </div>
+    </div>
+  </div>
+</div>
 
 Here's a flowchart describing how the feature works end to end. 
 
