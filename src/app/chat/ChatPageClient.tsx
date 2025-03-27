@@ -19,6 +19,26 @@ declare global {
   }
 }
 
+// Feature bullet component to reduce duplication
+const FeatureBullet = ({ text, strong }: { text: string, strong: string }) => (
+  <div className="flex items-center space-x-2">
+    <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+    <span className="text-slate-200"><strong>{strong}</strong> {text}</span>
+  </div>
+);
+
+// Hero bullet component for the main hero section
+const HeroBullet = ({ text, strong }: { text: string, strong: string }) => (
+  <p className="flex items-start">
+    <svg className="w-5 h-5 text-emerald-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+    <span><strong className="text-zinc-800 dark:text-zinc-300">{strong}</strong> {text}</span>
+  </p>
+);
+
 // Add tutorial advertisement component
 const RagTutorialAd = ({ compact = false }) => {
   return (
@@ -26,7 +46,7 @@ const RagTutorialAd = ({ compact = false }) => {
       <div className={`flex flex-col ${compact ? '' : 'md:flex-row'} items-start gap-6`}>
         <div className="flex-1">
           <h2 className={`${compact ? 'text-xl' : 'text-2xl sm:text-3xl'} font-bold text-white`}>
-            Want to build this for your business?
+            Build a Chatbot That <span className="italic">Actually Knows Your Shit</span>
           </h2>
           <p className="mt-3 text-slate-200">
             This live demo is powered by the <strong className="text-emerald-300">exact RAG pipeline</strong> from my premium tutorial.
@@ -34,24 +54,9 @@ const RagTutorialAd = ({ compact = false }) => {
           
           {!compact && (
             <div className="mt-4 grid grid-cols-1 gap-3">
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-slate-200"><strong>No more hallucinations</strong> (real doc-based answers)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-slate-200"><strong>Top-tier performance</strong> Using the highly optimized Vercel AI SDK</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-slate-200"><strong>A foundational skill for the AI era</strong></span>
-              </div>
+              <FeatureBullet strong="No hallucinations" text="– Answers grounded in your docs" />
+              <FeatureBullet strong="Deploys in &lt;1 hour" text="– Next.js + Vercel templates included" />
+              <FeatureBullet strong="Battle-tested" text="– Same pipeline I shipped at Pinecone" />
             </div>
           )}
         </div>
@@ -146,20 +151,63 @@ export default function ChatPageClient() {
     await handleSubmit(customSubmitEvent);
   };
 
+  // Function to properly clear chat state
+  const clearChatState = () => {
+    console.log("Clearing chat state");
+    
+    // Clear the API state first
+    resetChat();
+    
+    // Clear other state 
+    setArticles([]);
+    
+    // This setInput needs to happen but is likely causing rerenders that trigger handleSearch
+    setInput("");
+    
+    // Skip any pending search on next render - add a flag to track clearing state
+    const currentMessages = messages.length;
+    
+    // Wait for next render cycle to ensure state has cleared
+    setTimeout(() => {
+      // If messages length is still the same, it means resetChat() didn't complete yet
+      if (messages.length === currentMessages) {
+        console.log("Force resetting messages");
+        resetChat();
+      }
+      console.log("Chat state cleared");
+    }, 100);
+  };
+
   return (
     <Container>
       <div className="max-w-7xl mx-auto mt-16 sm:mt-32">
         <div className="flex flex-col md:flex-row items-start mb-12">
           <div className="flex-1 pl-8">
             <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl mb-6">
-              Chat with me
+              Build a Chatbot That <span className="italic">Actually Knows Your Shit</span>
             </h1>
-            <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
-              This experience uses Pinecone, OpenAI and LangChain...
-            </p>
-            <p className="prose dark:text-white">
-              Learn how to build this <Link href="/blog/langchain-pinecone-chat-with-my-blog" className="text-emerald-500 hover:text-emerald-600">with my tutorial</Link>
-            </p>
+            <div className="space-y-3 text-base text-zinc-600 dark:text-zinc-400 mb-6">
+              <HeroBullet strong="No hallucinations" text="– Answers grounded in your docs" />
+              <HeroBullet strong="State of the art tech" text="Vercel AI SDK, embeddings, vector search" />
+              <HeroBullet strong="Battle-tested" text="I&apos;ve built production RAG pipelines for years" />
+            </div>
+            <div className="flex flex-col sm:flex-row items-start gap-3">
+              <Link 
+                href="/checkout?product=rag-pipeline-tutorial&type=blog"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                onClick={() => {
+                  track("hero_tutorial_click", {
+                    location: "chat_page",
+                    product: "rag_tutorial"
+                  })
+                }}
+              >
+                Get the $49 Tutorial
+              </Link>
+              <p className="text-sm text-zinc-500 italic mt-2 sm:mt-3">
+                (or try the demo below first)
+              </p>
+            </div>
           </div>
           <div className="mt-6 md:mt-0 w-full md:w-80 h-80">
             <Suspense fallback={<div className="w-full h-full bg-gray-200 rounded-lg pr-8 mr-8"></div>}>
@@ -175,11 +223,7 @@ export default function ChatPageClient() {
             onSearch={handleSearch}
             setIsLoading={setIsLoading}
             buttonText="Ask question"
-            onClearChat={() => { 
-              resetChat();
-              setInput("");
-              setArticles([]);
-            }}
+            onClearChat={clearChatState}
             showClearButton={messages.length > 0}
           />
         </div>
