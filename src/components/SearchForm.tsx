@@ -4,9 +4,10 @@ interface SearchFormProps {
   suggestedSearches: string[];
   onSearch: (query: string) => void;
   setIsLoading: (loading: boolean) => void;
+  buttonText?: string;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, setIsLoading }) => {
+const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, setIsLoading, buttonText = "➔" }) => {
   const [query, setQuery] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
 
@@ -54,10 +55,10 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
           onClick={(e: FormEvent) => {
             handleSubmit(e).then(() => setIsLoading(true));
           }}
-          className={`absolute top-1/2 transform -translate-y-1/2 -right-14 w-12 h-12 flex items-center justify-center bg-emerald-600 text-white rounded-full ${!query && 'opacity-50 bg-gray-600 cursor-not-allowed'}`}
+          className={`absolute top-1/2 transform -translate-y-1/2 -right-14 ${buttonText !== "➔" ? 'w-auto px-4' : 'w-12'} h-12 flex items-center justify-center bg-emerald-600 text-white rounded-full ${!query && 'opacity-50 bg-gray-600 cursor-not-allowed'}`}
           disabled={!query}
         >
-          ➔
+          {buttonText}
         </button>
         {showSuggestions && suggestedSearches.length > 0 && (
           <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
