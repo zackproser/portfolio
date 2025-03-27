@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/Button";
 import { track } from "@vercel/analytics";
+import clsx from 'clsx';
 
 function MailIcon(props) {
 	return (
@@ -28,7 +29,7 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body, successMessage, onSubscribe = () => {} }) {
+export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
 
@@ -91,7 +92,11 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 	) : (
 		<form
 			onSubmit={handleSubmit}
-			className="rounded-2xl border border-zinc-100 mb-6 p-6 dark:border-zinc-700/40 tracer-glow"
+			className={clsx(
+				"rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 tracer-glow",
+				"bg-white dark:bg-zinc-900",
+				className
+			)}
 		>
 			<h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100 not-prose">
 				<MailIcon className="h-6 w-6 flex-none" />
@@ -107,9 +112,9 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 					placeholder="Email address"
 					aria-label="Email address"
 					required
-					className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-teal-400 dark:focus:ring-teal-400/10 sm:text-sm"
+					className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-orange-400 dark:focus:ring-orange-400/10 sm:text-sm"
 				/>
-				<Button variant="solid" color="green" type="submit" className="ml-4 flex-none">
+				<Button variant="solid" color="orange" type="submit" className="ml-4 flex-none">
 					Count me in
 				</Button>
 			</div>
