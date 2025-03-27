@@ -19,6 +19,72 @@ declare global {
   }
 }
 
+// Add tutorial advertisement component
+const RagTutorialAd = () => {
+  return (
+    <div className="w-full my-8 rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-4 sm:p-6 shadow-2xl border-t-4 border-emerald-500/30">
+      <div className="flex flex-col md:flex-row items-start gap-6">
+        <div className="flex-1">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+            Want to build this for your business?
+          </h2>
+          <p className="mt-3 text-slate-200">
+            This live demo is powered by the <strong className="text-emerald-300">exact RAG pipeline</strong> from my premium tutorial.
+          </p>
+          
+          <div className="mt-4 grid grid-cols-1 gap-3">
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-slate-200"><strong>No more hallucinations</strong> (real doc-based answers)</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-slate-200"><strong>Top-tier performance</strong> Using the highly optimized Vercel AI SDK</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-slate-200"><strong>A foundational skill for the AI era</strong></span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="md:w-auto self-center md:self-end">
+          <Link 
+            href="/checkout?product=rag-pipeline-tutorial&type=blog"
+            className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors mr-3"
+            onClick={() => {
+              track("tutorial_banner_click", {
+                location: "chat_page",
+                product: "rag_tutorial"
+              })
+            }}
+          >
+            Get the $49 Tutorial →
+          </Link>
+          <Link 
+            href="/products/rag-pipeline-tutorial"
+            className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+            onClick={() => {
+              track("tutorial_learn_more_click", {
+                location: "chat_page",
+                product: "rag_tutorial"
+              })
+            }}
+          >
+            Learn More
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const prepopulatedQuestions = [
   "What is the programming bug?",
   "Why do you love Next.js so much?",
@@ -106,8 +172,22 @@ export default function ChatPageClient() {
             suggestedSearches={prepopulatedQuestions}
             onSearch={handleSearch}
             setIsLoading={setIsLoading}
+            buttonText="Ask question"
           />
+          <div className="mt-2 flex justify-end">
+            <button
+              onClick={() => { location.reload(); }}
+              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
+            >
+              Clear Chat
+            </button>
+          </div>
         </div>
+
+        {/* Add the RAG Tutorial advertisement before the chat starts */}
+        {!messages.length && (
+          <RagTutorialAd />
+        )}
 
         {isLoading && messages?.length > 0 && <LoadingAnimation />}
 
@@ -146,14 +226,11 @@ export default function ChatPageClient() {
             )}
           </div>
         </div>
-        <div className="mt-8 flex justify-end">
-          <button
-            onClick={() => { location.reload(); }}
-            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
-          >
-            Clear Chat
-          </button>
-        </div>
+        
+        {/* Add the RAG Tutorial advertisement after chat has started */}
+        {messages.length > 0 && (
+          <RagTutorialAd />
+        )}
       </div>
     </Container>
   );
