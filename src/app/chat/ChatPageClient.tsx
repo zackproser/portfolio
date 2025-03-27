@@ -178,6 +178,8 @@ export default function ChatPageClient() {
     }, 100);
   };
 
+  console.log('Article slugs:', articles.map(article => article.slug));
+
   return (
     <Container>
       <div className="max-w-7xl mx-auto mt-16 sm:mt-32">
@@ -269,9 +271,11 @@ export default function ChatPageClient() {
               <div className="mt-8">
                 <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
                 <div className="space-y-4">
-                  {(articles as BlogWithSlug[]).map((article) => (
-                    <ContentCard key={article.slug} article={article} />
-                  ))}
+                  {(articles as BlogWithSlug[]).map((article) => {
+                    // Temporary fix: Prepend `/blog/` to the slug if it's missing
+                    const correctedSlug = article.slug.startsWith('blog/') ? article.slug : `blog/${article.slug}`;
+                    return <ContentCard key={article.slug} article={{ ...article, slug: correctedSlug }} />;
+                  })}
                 </div>
               </div>
             )}
