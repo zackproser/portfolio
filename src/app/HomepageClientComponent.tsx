@@ -221,10 +221,10 @@ export default function HomepageClientComponent({
                   {/* Title and subtitle */}
                   <div className="mt-4 sm:mt-6">
                     <h2 className="font-display text-2xl sm:text-4xl font-bold text-white leading-tight">
-                      Need a chatbot that knows you?
+                      Build a Chatbot That <span className="italic">Actually Knows Your Shit</span>
                     </h2>
                     <p className="mt-3 sm:mt-6 text-base sm:text-lg text-slate-200 leading-relaxed">
-                     Learn to use the Vercel AI SDK to build a chatbot that answers questions about any docs. This premium tutorial includes: 
+                     Learn to create a chatbot that answers questions about your content.
                     </p>
                   </div>
 
@@ -234,19 +234,19 @@ export default function HomepageClientComponent({
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200">Jupyter Notebook: data pre-processing, embedding and vector storage.</span>
+                      <span className="text-sm sm:text-base text-slate-200"><strong>No hallucinations</strong> – Answers grounded in your docs</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200">Next.js site implementing the pipeline (Save 40+ hours of debugging)</span>
+                      <span className="text-sm sm:text-base text-slate-200"><strong>State of the art tech</strong> – Vercel AI SDK, embeddings, vector retrieval</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200">Step-by-step walkthrough so you don&apos;t get lost</span>
+                      <span className="text-sm sm:text-base text-slate-200"><strong>Battle-tested</strong> – I&apos;ve built production RAG pipelines for years</span>
                     </div>
                   </div>
                 </div>
