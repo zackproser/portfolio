@@ -5,9 +5,18 @@ interface SearchFormProps {
   onSearch: (query: string) => void;
   setIsLoading: (loading: boolean) => void;
   buttonText?: string;
+  onClearChat?: () => void;
+  showClearButton?: boolean;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, setIsLoading, buttonText = "➔" }) => {
+const SearchForm: React.FC<SearchFormProps> = ({ 
+  suggestedSearches, 
+  onSearch, 
+  setIsLoading, 
+  buttonText = "➔",
+  onClearChat,
+  showClearButton = false
+}) => {
   const [query, setQuery] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
 
@@ -32,6 +41,25 @@ const SearchForm: React.FC<SearchFormProps> = ({ suggestedSearches, onSearch, se
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      <div className="flex items-center justify-between mb-2">
+        {showClearButton && onClearChat && (
+          <button
+            onClick={() => {
+              onClearChat();
+              setQuery("");
+              setShowSuggestions(true);
+            }}
+            className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center"
+            type="button"
+          >
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Clear chat
+          </button>
+        )}
+        <div></div> {/* Spacer */}
+      </div>
       <form onSubmit={handleSubmit} className="relative w-full">
         <input
           type="text"
