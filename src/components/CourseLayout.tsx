@@ -64,6 +64,7 @@ export function CourseLayout({
               title={'Be notified when the next course drops!'} 
               body={'I build project-based learning courses for developers who want to level up'} 
               successMessage={'🎓 Thank you for subscribing! You&apos;ll be the first to know when new courses are released.'}
+              className="mb-6"
             />
             <FollowButtons />
           </div>
