@@ -466,17 +466,15 @@ export async function importContentMetadata(slug: string, contentType: string = 
     
     // Ensure the metadata has a slug (use the directory name if not provided)
     if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-      //console.log(`No valid slug in metadata for ${slug}, using directory name`)
+      // Use the directory name as the slug
       processedMetadata.slug = slug
     } else {
       // Normalize the slug to prevent path issues
       // Remove any leading slashes
-      let formattedSlug = processedMetadata.slug.replace(/^\/+/, '')
+      let formattedSlug = processedMetadata.slug.replace(/^\/+/g, '')
       
-      // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
-      if (formattedSlug.startsWith(`${contentType}/`)) {
-        formattedSlug = formattedSlug.substring(contentType.length + 1)
-      }
+      // Construct the slug based on the directory structure
+      formattedSlug = `${contentType}/${slug}`;
       
       // Update the slug in the metadata
       processedMetadata.slug = formattedSlug
