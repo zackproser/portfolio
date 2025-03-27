@@ -20,44 +20,46 @@ declare global {
 }
 
 // Add tutorial advertisement component
-const RagTutorialAd = () => {
+const RagTutorialAd = ({ compact = false }) => {
   return (
-    <div className="w-full my-8 rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-4 sm:p-6 shadow-2xl border-t-4 border-emerald-500/30">
-      <div className="flex flex-col md:flex-row items-start gap-6">
+    <div className={`w-full ${compact ? 'my-0' : 'my-8'} rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-4 sm:p-6 shadow-2xl border-t-4 border-emerald-500/30`}>
+      <div className={`flex flex-col ${compact ? '' : 'md:flex-row'} items-start gap-6`}>
         <div className="flex-1">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className={`${compact ? 'text-xl' : 'text-2xl sm:text-3xl'} font-bold text-white`}>
             Want to build this for your business?
           </h2>
           <p className="mt-3 text-slate-200">
             This live demo is powered by the <strong className="text-emerald-300">exact RAG pipeline</strong> from my premium tutorial.
           </p>
           
-          <div className="mt-4 grid grid-cols-1 gap-3">
-            <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-slate-200"><strong>No more hallucinations</strong> (real doc-based answers)</span>
+          {!compact && (
+            <div className="mt-4 grid grid-cols-1 gap-3">
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-200"><strong>No more hallucinations</strong> (real doc-based answers)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-200"><strong>Top-tier performance</strong> Using the highly optimized Vercel AI SDK</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-slate-200"><strong>A foundational skill for the AI era</strong></span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-slate-200"><strong>Top-tier performance</strong> Using the highly optimized Vercel AI SDK</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-slate-200"><strong>A foundational skill for the AI era</strong></span>
-            </div>
-          </div>
+          )}
         </div>
         
-        <div className="md:w-auto self-center md:self-end">
+        <div className={`${compact ? 'w-full mt-4' : 'md:w-auto self-center md:self-end'}`}>
           <Link 
             href="/checkout?product=rag-pipeline-tutorial&type=blog"
-            className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors mr-3"
+            className={`inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors ${compact ? 'w-full mb-2' : 'mr-3'}`}
             onClick={() => {
               track("tutorial_banner_click", {
                 location: "chat_page",
@@ -69,7 +71,7 @@ const RagTutorialAd = () => {
           </Link>
           <Link 
             href="/products/rag-pipeline-tutorial"
-            className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+            className={`inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors ${compact ? 'w-full' : ''}`}
             onClick={() => {
               track("tutorial_learn_more_click", {
                 location: "chat_page",
@@ -98,7 +100,7 @@ export default function ChatPageClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<BlogWithSlug[]>([]);
 
-  const { messages, input, setInput, handleSubmit } = useChat({
+  const { messages, input, setInput, handleSubmit, reload: resetChat } = useChat({
     onResponse(response) {
       const sourcesHeader = response.headers.get('x-sources');
       const parsedArticles: BlogWithSlug[] = sourcesHeader
@@ -173,15 +175,13 @@ export default function ChatPageClient() {
             onSearch={handleSearch}
             setIsLoading={setIsLoading}
             buttonText="Ask question"
+            onClearChat={() => { 
+              resetChat();
+              setInput("");
+              setArticles([]);
+            }}
+            showClearButton={messages.length > 0}
           />
-          <div className="mt-2 flex justify-end">
-            <button
-              onClick={() => { location.reload(); }}
-              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50"
-            >
-              Clear Chat
-            </button>
-          </div>
         </div>
 
         {/* Add the RAG Tutorial advertisement before the chat starts */}
@@ -214,8 +214,15 @@ export default function ChatPageClient() {
             ))}
           </div>
           <div className="md:w-1/3">
+            {/* Show compact ad at top of sidebar for active chats */}
+            {messages.length > 0 && (
+              <div className="mb-6">
+                <RagTutorialAd compact />
+              </div>
+            )}
+            
             {Array.isArray(articles) && (articles.length > 0) && (
-              <div className="">
+              <div className="mt-8">
                 <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
                 <div className="space-y-4">
                   {(articles as BlogWithSlug[]).map((article) => (
