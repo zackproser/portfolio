@@ -55,8 +55,8 @@ const RagTutorialAd = ({ compact = false }) => {
           {!compact && (
             <div className="mt-4 grid grid-cols-1 gap-3">
               <FeatureBullet strong="No hallucinations" text="– Answers grounded in your docs" />
-              <FeatureBullet strong="Deploys in &lt;1 hour" text="– Next.js + Vercel templates included" />
-              <FeatureBullet strong="Battle-tested" text="– Same pipeline I shipped at Pinecone" />
+              <FeatureBullet strong="State of the art tech" text="– Vercel AI SDK, embeddings, vector retrieval" />
+              <FeatureBullet strong="Battle-tested" text="– I've built production RAG pipelines for years" />
             </div>
           )}
         </div>
