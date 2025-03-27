@@ -44,10 +44,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
       <div className="flex items-center justify-between mb-2">
         {showClearButton && onClearChat && (
           <button
-            onClick={() => {
-              onClearChat();
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              // First clear the local state to prevent re-submission
               setQuery("");
-              setShowSuggestions(true);
+              setShowSuggestions(false);
+              
+              // Then call the parent's clear function
+              onClearChat();
             }}
             className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center"
             type="button"
