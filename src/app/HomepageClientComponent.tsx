@@ -8,6 +8,12 @@ import { usePathname } from "next/navigation"
 import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
+
+// Import company logos
+import logoCloudflare from '/public/images/logos/cloudflare.svg'
+import logoGruntwork from '/public/images/logos/terragrunt.svg'
+import logoPinecone from '@/images/logos/pinecone-logo.webp'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -100,8 +106,11 @@ export default function HomepageClientComponent({
                   Zero Bullshit AI
                 </h1>
                 <p className="text-lg text-gray-200 md:text-xl">
-                  Hype-free insights from the engineer who built at Cloudflare, Gruntwork.io, Pinecone, and WorkOS.
+                  <strong>Hype-free insights from an engineer who shipped production code at Cloudflare, Gruntwork, and Pinecone.</strong>
                 </p>
+                <div className="mt-6">
+                  <p className="text-yellow-400 font-bold text-xl mb-4">🔥 <span className="text-white">Free Tutorial</span>: Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK.</p>
+                </div>
                 <div className="w-full max-w-sm space-y-2">
                   {formSuccess ? (
                     <p className="text-green-400 font-semibold">Neural Network Activated! 🤖🧠❗ Thank you for joining our AI research community.</p>
@@ -115,14 +124,55 @@ export default function HomepageClientComponent({
                         className="flex-grow bg-white text-zinc-900"
                         required
                       />
-                      <Button type="submit" className="bg-yellow-400 font-bold text-white hover:bg-yellow-300 transition-colors">
-                        Get Real Insights
+                      <Button type="submit" className="bg-orange-500 font-bold text-white hover:bg-orange-400 transition-colors">
+                        Get the Free Tutorial
                       </Button>
                     </form>
                   )}
                   <p className="text-xs text-gray-300">
-                    Authentic technical knowledge on AI architectures, workflows, and tools from an engineer who actually built and shipped at Cloudflare, Gruntwork.io, Pinecone, and WorkOS.
+                    Join 900+ engineers learning to build what actually works.
                   </p>
+                  <div className="mt-8">
+                    <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                      <div className="flex flex-col items-center">
+                        <div className="h-8 w-auto flex items-center justify-center">
+                          <Image
+                            src={logoCloudflare}
+                            alt="Cloudflare"
+                            height={20} 
+                            width={80}
+                            className="brightness-0 invert"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-white mt-2">Cloudflare</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="h-8 w-auto flex items-center justify-center">
+                          <Image
+                            src={logoGruntwork}
+                            alt="Gruntwork"
+                            height={16}
+                            width={60}
+                            className="brightness-0 invert scale-75"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-white mt-2">Gruntwork</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="h-8 w-auto flex items-center justify-center">
+                          <Image
+                            src={logoPinecone}
+                            alt="Pinecone"
+                            height={20}
+                            width={80}
+                            className="brightness-0 invert"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-white mt-2">Pinecone</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               {!isMobile && (
@@ -139,7 +189,7 @@ export default function HomepageClientComponent({
             </div>
           </div>
         </section>
-
+        
         {/* Featured Product Section */}
         <section className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5">
           <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
@@ -148,38 +198,55 @@ export default function HomepageClientComponent({
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.1))]" />
               </div>
               <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
-                <div className="relative aspect-[4/3] w-full max-w-[600px] rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-8 shadow-2xl border-t-8 border-emerald-500/20">
-                  {/* Featured Tutorial Badge */}
-                  <div className="inline-flex items-center px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-200 text-sm font-medium">
-                    Featured Tutorial
+                <div className="relative aspect-[4/3] w-full max-w-[600px] rounded-2xl bg-gradient-to-br from-emerald-900 to-blue-900 p-4 sm:p-8 shadow-2xl border-t-8 border-emerald-500/20">
+                  {/* Badge and price in separate container with flexbox */}
+                  <div className="w-full flex flex-col gap-2 sm:block">
+                    <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-500/20 text-emerald-200 text-xs sm:text-sm font-medium">
+                      Featured Tutorial
+                    </div>
+                    
+                    <div className="hidden sm:block sm:absolute sm:top-8 sm:right-8">
+                      <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-emerald-500/20 rounded-full">
+                        <span className="text-xl sm:text-2xl font-bold text-white">$49</span>
+                      </div>
+                    </div>
+                    
+                    <div className="sm:hidden self-start">
+                      <div className="px-3 py-1.5 bg-emerald-500/20 rounded-full">
+                        <span className="text-xl font-bold text-white">$49</span>
+                      </div>
+                    </div>
                   </div>
                   
                   {/* Title and subtitle */}
-                  <div className="mt-6">
-                    <h2 className="font-display text-4xl font-bold text-white leading-tight">
-                      Build Your Own RAG Pipeline
+                  <div className="mt-4 sm:mt-6">
+                    <h2 className="font-display text-2xl sm:text-4xl font-bold text-white leading-tight">
+                      Need a chatbot that knows you?
                     </h2>
-                    <p className="mt-6 text-lg text-slate-200 leading-relaxed">
-                      Master the most in-demand Gen AI skill with a complete, production-ready RAG pipeline tutorial.
+                    <p className="mt-3 sm:mt-6 text-base sm:text-lg text-slate-200 leading-relaxed">
+                     Learn to use the Vercel AI SDK to build a chatbot that answers questions about any docs. This premium tutorial includes: 
                     </p>
                   </div>
 
                   {/* Feature list */}
-                  <div className="mt-8 grid grid-cols-1 gap-4">
-                    {['Data Processing Notebook', 'Complete Next.js Site', 'Step-by-Step Guide'].map((feature) => (
-                      <div key={feature} className="flex items-center space-x-2">
-                        <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-slate-200">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Price tag */}
-                  <div className="absolute top-8 right-8">
-                    <div className="px-4 py-2 bg-emerald-500/20 rounded-full">
-                      <span className="text-2xl font-bold text-white">$49</span>
+                  <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-2 sm:gap-4">
+                    <div className="flex items-center space-x-2">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-sm sm:text-base text-slate-200">Jupyter Notebook: data pre-processing, embedding and vector storage.</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-sm sm:text-base text-slate-200">Next.js site implementing the pipeline (Save 40+ hours of debugging)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-sm sm:text-base text-slate-200">Step-by-step walkthrough so you don&apos;t get lost</span>
                     </div>
                   </div>
                 </div>
@@ -204,7 +271,7 @@ export default function HomepageClientComponent({
                 </div>
                 <blockquote className="mt-8">
                   <p className="font-display text-xl font-medium text-slate-900">
-                    &ldquo;Thanks for publishing the tutorial, very helpful.&rdquo;
+                    &ldquo;Saved me 3 weeks of trial-and-error.&rdquo;
                   </p>
                 </blockquote>
                 <p className="mt-4 text-base text-slate-600">
@@ -216,20 +283,8 @@ export default function HomepageClientComponent({
               <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
-                    href="/products/rag-pipeline-tutorial"
-                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
-                    onClick={() => {
-                      track("featured_product_click", {
-                        location: "hero_section",
-                        product: "rag_tutorial"
-                      })
-                    }}
-                  >
-                    Learn More
-                  </Link>
-                  <Link 
                     href="/checkout?product=rag-pipeline-tutorial&type=blog"
-                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                     onClick={() => {
                       track("featured_product_click", {
                         location: "hero_section",
@@ -238,7 +293,20 @@ export default function HomepageClientComponent({
                       })
                     }}
                   >
-                    Get Full Access $49
+                    Get the $49 Tutorial →
+                  </Link>
+                  <Link 
+                    href="/chat"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-400 transition-colors"
+                    onClick={() => {
+                      track("featured_product_click", {
+                        location: "hero_section",
+                        product: "rag_tutorial",
+                        action: "demo"
+                      })
+                    }}
+                  >
+                    Try the live demo →
                   </Link>
                 </div>
               </div>
