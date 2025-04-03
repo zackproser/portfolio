@@ -29,9 +29,13 @@ export function TokenIdVisualization({
           onMouseLeave={() => onHoverToken(-1)}
         >
           <span className="text-sm font-bold">ID: {tokenId}</span>
-          <span className="text-xs">"{tokenTexts[index]}"</span>
+          <span className="text-xs">&quot;{tokenTexts[index]}&quot;</span>
         </div>
       ))}
     </div>
   );
-} 
+}
+
+<div className="text-sm text-zinc-600 dark:text-zinc-400">
+  Hover over a token to see its &quot;byte-level&quot; representation
+</div> 
