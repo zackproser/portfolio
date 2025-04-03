@@ -82,7 +82,7 @@ export function TokenPricingCalculator() {
       </div>
       
       <p className="mt-4 text-xs text-zinc-600 dark:text-zinc-400">
-        Note: This is an approximate calculation based on OpenAI's pricing. Actual token counts may vary slightly when using the official tokenizer.
+        Note: This is an approximate calculation based on OpenAI&apos;s pricing. Actual token counts may vary slightly when using the official tokenizer.
       </p>
     </div>
   );
