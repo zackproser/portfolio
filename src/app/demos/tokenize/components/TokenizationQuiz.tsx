@@ -5,44 +5,71 @@ import { Book } from 'lucide-react';
 
 const questions = [
   {
-    question: "Which tokenization method splits text character by character?",
-    options: ["Word tokenization", "Character tokenization", "BPE", "WordPiece"],
-    correctIndex: 1
+    question: "Which tokenization method processes text one character at a time?",
+    options: ["Word tokenization", "Character tokenization", "BPE", "Tiktoken"],
+    correctIndex: 1,
+    explanation: "Character tokenization treats each individual character as a separate token."
   },
   {
-    question: "What's the main advantage of subword tokenization over word tokenization?",
+    question: "What is the main advantage of subword tokenization methods like BPE?",
     options: [
-      "It's faster to implement", 
-      "It generates more tokens", 
-      "It handles rare and unseen words better", 
-      "It preserves full words always"
+      "They process text faster than other methods", 
+      "They always use fewer tokens than word tokenization", 
+      "They handle rare words by breaking them into subword units", 
+      "They don't require a vocabulary"
     ],
-    correctIndex: 2
+    correctIndex: 2,
+    explanation: "Subword methods like BPE can handle rare or unseen words by breaking them down into meaningful subword units."
   },
   {
-    question: "Which model family uses the tiktoken tokenizer?",
-    options: ["BERT", "T5", "GPT", "DALL-E"],
-    correctIndex: 2
+    question: "Which tokenizer is used by OpenAI's GPT models?",
+    options: ["WordPiece", "SentencePiece", "Tiktoken", "Byte-level BPE"],
+    correctIndex: 2,
+    explanation: "OpenAI's GPT models use Tiktoken, which is an implementation of byte-pair encoding (BPE) optimized for their models."
   },
   {
-    question: "Why is tokenization important for AI language models?",
+    question: "Why does tokenization matter for developers using LLMs?",
     options: [
-      "It makes the models run faster", 
-      "It converts text into numerical representations that models can process", 
-      "It preserves grammar rules", 
-      "It enables models to generate images"
+      "It affects API costs and context window limitations", 
+      "It determines how fast the model can generate text", 
+      "It controls the temperature parameter", 
+      "It enables model fine-tuning"
     ],
-    correctIndex: 1
+    correctIndex: 0,
+    explanation: "Tokenization directly impacts how much text fits in a context window and how much API calls cost, as pricing is per token."
   },
   {
-    question: "Which of these would likely produce the most tokens with a BPE tokenizer?",
+    question: "Which of these would typically require the most tokens when processed by a subword tokenizer?",
     options: [
-      "A paragraph of common English words", 
-      "A paragraph with many technical terms and rare words", 
-      "A series of numbers", 
-      "An email address"
+      "Common English phrases", 
+      "Technical terminology and rare words", 
+      "Simple numeric sequences", 
+      "Short code snippets"
     ],
-    correctIndex: 1
+    correctIndex: 1,
+    explanation: "Technical terminology and rare words often get broken down into multiple subword tokens, resulting in higher token counts."
+  },
+  {
+    question: "What is a vocabulary in the context of tokenization?",
+    options: [
+      "A dictionary of all English words", 
+      "A fixed set of tokens that the model recognizes", 
+      "The total number of unique words in the training data", 
+      "A list of stopwords to ignore during processing"
+    ],
+    correctIndex: 1,
+    explanation: "A tokenizer's vocabulary is the fixed set of tokens (words, subwords, or characters) that the model can recognize and process."
+  },
+  {
+    question: "Approximately how many tokens are in a typical LLM vocabulary?",
+    options: [
+      "1,000-5,000 tokens", 
+      "10,000-30,000 tokens", 
+      "50,000-100,000 tokens", 
+      "500,000-1,000,000 tokens"
+    ],
+    correctIndex: 2,
+    explanation: "Modern LLMs typically have vocabularies containing 50,000-100,000 tokens, as mentioned in our educational content."
   }
 ];
 
@@ -50,6 +77,7 @@ export function TokenizationQuiz() {
   const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   
   const handleAnswer = (questionIndex: number, answerIndex: number) => {
     const newAnswers = [...answers];
@@ -72,7 +100,11 @@ export function TokenizationQuiz() {
     setAnswers(new Array(questions.length).fill(-1));
     setShowResults(false);
     setScore(0);
+    setCurrentQuestionIndex(0);
   };
+
+  // Only show 5 questions at a time to keep the quiz manageable
+  const visibleQuestions = questions.slice(0, 5);
   
   return (
     <div className="p-4 bg-white dark:bg-zinc-800 rounded-lg mb-6 border border-zinc-200 dark:border-zinc-700">
@@ -81,7 +113,7 @@ export function TokenizationQuiz() {
         Tokenization Quiz
       </h3>
       
-      {questions.map((q, qIndex) => (
+      {visibleQuestions.map((q, qIndex) => (
         <div key={qIndex} className="mb-6">
           <h4 className="font-medium mb-2 text-zinc-800 dark:text-white">
             {qIndex + 1}. {q.question}
@@ -116,6 +148,13 @@ export function TokenizationQuiz() {
               </div>
             ))}
           </div>
+          
+          {/* Display explanation when showing results */}
+          {showResults && (
+            <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-100 dark:border-blue-800 text-sm text-blue-800 dark:text-blue-200">
+              <strong>Explanation:</strong> {q.explanation}
+            </div>
+          )}
         </div>
       ))}
       
@@ -123,9 +162,9 @@ export function TokenizationQuiz() {
         {showResults ? (
           <>
             <div className="text-lg text-zinc-800 dark:text-white">
-              Your score: <span className="font-bold">{score}/{questions.length}</span>
+              Your score: <span className="font-bold">{score}/{visibleQuestions.length}</span>
               <span className="ml-2 text-sm text-zinc-600 dark:text-zinc-400">
-                ({Math.round((score / questions.length) * 100)}%)
+                ({Math.round((score / visibleQuestions.length) * 100)}%)
               </span>
             </div>
             <button
@@ -138,11 +177,11 @@ export function TokenizationQuiz() {
         ) : (
           <button
             className={`px-4 py-2 rounded-md text-white ${
-              answers.some(a => a === -1)
+              answers.slice(0, visibleQuestions.length).some(a => a === -1)
                 ? 'bg-zinc-400 dark:bg-zinc-600 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-500'
             }`}
-            disabled={answers.some(a => a === -1)}
+            disabled={answers.slice(0, visibleQuestions.length).some(a => a === -1)}
             onClick={calculateScore}
           >
             Submit Answers
