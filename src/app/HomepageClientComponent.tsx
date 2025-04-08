@@ -193,12 +193,12 @@ export default function HomepageClientComponent({
         {/* Featured Product Section */}
         <section className="overflow-hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 lg:bg-transparent lg:px-5">
           <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
-            <div className="relative flex items-end lg:col-span-5 lg:row-span-2">
+            <div className="relative flex items-end lg:col-span-6 lg:row-span-2">
               <div className="absolute -top-20 -bottom-12 left-0 right-1/2 z-10 rounded-br-6xl bg-blue-600 text-white/10 md:bottom-8 lg:-inset-y-32 lg:left-[-100vw] lg:right-full lg:-mr-40">
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.1))]" />
               </div>
-              <div className="relative z-10 mx-auto flex w-64 rounded-xl shadow-xl md:w-80 lg:w-auto">
-                <div className="relative aspect-[4/3] w-full max-w-[600px] rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 p-4 sm:p-8 shadow-2xl border-t-8 border-blue-500/20">
+              <div className="relative z-10 mx-auto flex w-[90%] max-w-xl rounded-xl shadow-xl md:w-auto lg:w-auto">
+                <div className="relative aspect-[3.5/3] sm:aspect-[4/3] w-full max-w-[650px] rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 p-6 sm:p-8 shadow-2xl border-t-8 border-blue-500/20">
                   {/* Badge and price in separate container with flexbox */}
                   <div className="w-full flex flex-col gap-2 sm:block">
                     <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-500/20 text-blue-200 text-xs sm:text-sm font-medium">
@@ -211,7 +211,7 @@ export default function HomepageClientComponent({
                       </div>
                     </div>
                     
-                    <div className="sm:hidden self-start">
+                    <div className="sm:hidden absolute top-5 right-5">
                       <div className="px-3 py-1.5 bg-blue-500/20 rounded-full">
                         <span className="text-xl font-bold text-white">$49</span>
                       </div>
@@ -219,7 +219,7 @@ export default function HomepageClientComponent({
                   </div>
                   
                   {/* Title and subtitle */}
-                  <div className="mt-4 sm:mt-6">
+                  <div className="mt-5 sm:mt-6">
                     <h2 className="font-display text-2xl sm:text-4xl font-bold text-white leading-tight">
                       Build a Chatbot That <span className="italic">Actually Knows Your Shit</span>
                     </h2>
@@ -229,7 +229,7 @@ export default function HomepageClientComponent({
                   </div>
 
                   {/* Feature list */}
-                  <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-2 sm:gap-4">
+                  <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-3 sm:gap-4">
                     <div className="flex items-center space-x-2">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -252,7 +252,7 @@ export default function HomepageClientComponent({
                 </div>
               </div>
             </div>
-            <div className="relative px-4 sm:px-6 lg:col-span-7 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
+            <div className="relative px-4 sm:px-6 lg:col-span-6 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
               <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100" />
               <div className="relative">
                 <div className="flex justify-start">
@@ -279,7 +279,7 @@ export default function HomepageClientComponent({
                 </p>
               </div>
             </div>
-            <div className="bg-white pt-16 lg:col-span-7 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20">
+            <div className="bg-white pt-16 lg:col-span-6 lg:bg-transparent lg:pt-0 lg:pl-16 xl:pl-20">
               <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
