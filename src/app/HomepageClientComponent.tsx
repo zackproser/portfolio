@@ -23,7 +23,7 @@ const NeuralNetworkPulse = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="w-[600px] h-[600px] flex items-center justify-center">
+      <div className="w-[500px] h-[500px] flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading visualization...</div>
       </div>
     )
@@ -106,11 +106,8 @@ export default function HomepageClientComponent({
             <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
               <div className="flex-1 space-y-4 max-w-2xl">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
-                  Zero Bullshit AI
+                  AI Engineering Mastery for Teams That Ship
                 </h1>
-                <p className="text-lg text-gray-200 md:text-xl">
-                  <strong>Hype-free insights from an engineer who shipped production code at Cloudflare, Gruntwork, and Pinecone.</strong>
-                </p>
                 <div className="mt-6">
                   <p className="text-yellow-400 font-bold text-xl mb-4">🔥 <span className="text-white">Free Tutorial</span>: <span className="text-blue-200">Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK.</span></p>
                 </div>
@@ -124,16 +121,16 @@ export default function HomepageClientComponent({
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="input-email flex-grow text-gray-900 dark:text-gray-100"
+                        className="input-email flex-grow text-white placeholder:text-white/70 bg-white/10 border-white/20"
                         required
                       />
-                      <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors">
-                        Get the Free Tutorial
+                      <Button type="submit" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold transition-colors">
+                        Start with Free Tutorial
                       </Button>
                     </form>
                   )}
-                  <p className="text-xs text-gray-300">
-                    Join 900+ engineers learning to build what actually works.
+                  <p className="text-xs text-white flex items-center">
+                    Join 900+ engineers learning to build what actually works
                   </p>
                   <div className="mt-8">
                     <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>
@@ -181,27 +178,36 @@ export default function HomepageClientComponent({
               {!isMobile && (
                 <div className="flex-1 md:w-1/2 flex justify-center">
                   <Suspense fallback={
-                    <div className="w-[600px] h-[600px] flex items-center justify-center">
+                    <div className="w-[500px] h-[500px] flex items-center justify-center">
                       <div className="animate-pulse text-gray-400">Loading visualization...</div>
                     </div>
                   }>
-                    <NeuralNetworkPulse />
+                    <div className="scale-[0.833] origin-center">
+                      <NeuralNetworkPulse />
+                    </div>
                   </Suspense>
                 </div>
               )}
+            </div>
+            
+            {/* Scroll cue */}
+            <div className="flex justify-center mt-6">
+              <div className="animate-bounce bg-white/10 p-2 w-10 h-10 ring-1 ring-white/20 shadow-lg rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
             </div>
           </div>
         </section>
         
         {/* AI Engineering Blueprint Section */}
-        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af]">
+        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af] dark:from-gray-900 dark:to-blue-950">
           {/* Blueprint overlay pattern - more prominent */}
           <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
           
           {/* Engineering document appearance */}
           <div className="absolute inset-0 pointer-events-none">
-            {/* Corner fold effect - REMOVED to fix blue square issue */}
-            
             {/* Blueprint document border */}
             <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
           </div>
@@ -209,7 +215,7 @@ export default function HomepageClientComponent({
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="mb-6 text-center">
               <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-mono uppercase">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-sans uppercase">
                   AI Engineering Blueprint
                 </h2>
               </div>
@@ -240,8 +246,8 @@ export default function HomepageClientComponent({
         <section className="py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
-              <div className="inline-block bg-blue-600 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
-                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-mono uppercase">
+              <div className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-sans uppercase">
                   Featured Premium Project
                 </h2>
               </div>
@@ -261,17 +267,17 @@ export default function HomepageClientComponent({
                   {/* Badge and price in separate container with flexbox */}
                   <div className="w-full flex flex-col gap-2 sm:block">
                     <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-500/20 text-blue-200 text-xs sm:text-sm font-medium">
-                      Featured Premium Project
+                      <span className="mr-1">💎</span> Premium Project
                     </div>
                     
                     <div className="hidden sm:block sm:absolute sm:top-8 sm:right-8">
-                      <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-500/20 rounded-full">
+                      <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 rounded-full">
                         <span className="text-xl sm:text-2xl font-bold text-white">$49</span>
                       </div>
                     </div>
                     
                     <div className="sm:hidden absolute top-5 right-5">
-                      <div className="px-3 py-1.5 bg-blue-500/20 rounded-full">
+                      <div className="px-3 py-1.5 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 rounded-full">
                         <span className="text-xl font-bold text-white">$49</span>
                       </div>
                     </div>
@@ -290,19 +296,19 @@ export default function HomepageClientComponent({
                   {/* Feature list */}
                   <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-3 sm:gap-4">
                     <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-sm sm:text-base text-slate-200"><strong>No hallucinations</strong> – Answers grounded in your docs</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-sm sm:text-base text-slate-200"><strong>State of the art tech</strong> – Vercel AI SDK, embeddings, vector retrieval</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-sm sm:text-base text-slate-200"><strong>Battle-tested</strong> – I&apos;ve built production RAG pipelines for years</span>
@@ -315,7 +321,7 @@ export default function HomepageClientComponent({
               <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100" />
               <div className="relative">
                 <div className="flex justify-start">
-                  <div className="flex items-center text-blue-600">
+                  <div className="flex items-center text-amber-600">
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
@@ -343,7 +349,7 @@ export default function HomepageClientComponent({
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
                     href="/checkout?product=rag-pipeline-tutorial&type=blog"
-                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 shadow-md hover:shadow-lg transition-all duration-200"
                     onClick={() => {
                       track("featured_product_click", {
                         location: "hero_section",
@@ -373,9 +379,63 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
+        {/* Content Collections Section Header */}
+        <section className="py-12 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-10">
+              <div className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-sans uppercase">
+                  Knowledge Collections
+                </h2>
+              </div>
+              <p className="mt-3 text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Explore my comprehensive library of AI engineering resources and implementation guides.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 justify-center mt-8">
+              <Link 
+                href="/projects"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "projects"
+                  })
+                }}
+              >
+                All Projects →
+              </Link>
+              <Link 
+                href="/publications"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "publications"
+                  })
+                }}
+              >
+                All Publications →
+              </Link>
+              <Link 
+                href="/testimonials"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "testimonials"
+                  })
+                }}
+              >
+                Client Success Stories →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Deep and Machine Learning Tutorials</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">📚</span> Deep and Machine Learning Tutorials
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {deepMLTutorials.slice(0, 3).map((article, index) => (
                 <ContentCard key={`ml-tutorial-${index}`} article={article} />
@@ -386,7 +446,9 @@ export default function HomepageClientComponent({
 
         <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Open-source AI / ML / Pipelines Projects</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">⚙️</span> Open-source AI / ML / Pipelines Projects
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mlProjects.slice(0, 3).map((article, index) => (
                 <ContentCard key={`ml-project-${index}`} article={article} />
@@ -397,7 +459,9 @@ export default function HomepageClientComponent({
 
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">AI-assisted Development</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">🤖</span> AI-assisted Development
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {aiDev.slice(0, 3).map((article, index) => (
                 <ContentCard key={`ai-dev-${index}`} article={article} />
@@ -408,7 +472,9 @@ export default function HomepageClientComponent({
 
         <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Career Advice</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">💼</span> Career Advice
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {careerAdvice.slice(0, 3).map((article, index) => (
                 <ContentCard key={`career-${index}`} article={article} />
@@ -419,7 +485,9 @@ export default function HomepageClientComponent({
 
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Videos</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">🎥</span> Videos
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.slice(0, 3).map((article, index) => (
                 <ContentCard key={`video-${index}`} article={article} />
@@ -430,7 +498,9 @@ export default function HomepageClientComponent({
 
         <section className="bg-gray-100 dark:bg-gray-800 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Reference Architectures and Demos</h2>
+            <h2 className="text-2xl font-bold mb-6 flex items-center">
+              <span className="mr-2">🏗️</span> Reference Architectures and Demos
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {refArchitectures.slice(0, 3).map((article, index) => (
                 <ContentCard key={`ref-arch-${index}`} article={article} />
