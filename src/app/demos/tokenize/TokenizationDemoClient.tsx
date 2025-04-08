@@ -10,10 +10,19 @@ import {
   TokenizationQuiz
 } from './components';
 
+// New imports
+import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+
 export default function TokenizationDemoClient() {
   const [inputText, setInputText] = useState('');
   const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo');
   const [showAnalysis, setShowAnalysis] = useState(false);
+  // New state for stepped learning experience
+  const [currentSection, setCurrentSection] = useState(0);
+  const [expandedSections, setExpandedSections] = useState([false, false, false, false, false]);
+  // Add state for explanation panel
+  const [showVocabExplanation, setShowVocabExplanation] = useState(false);
+  const [tokenizationMethod, setTokenizationMethod] = useState('tiktoken'); // Default to tiktoken
 
   // Debounce text changes to prevent excessive re-renders
   useEffect(() => {
@@ -27,8 +36,136 @@ export default function TokenizationDemoClient() {
     setInputText(text);
   };
 
+  // Toggle section expansion
+  const toggleSection = (index: number) => {
+    const newExpandedSections = [...expandedSections];
+    newExpandedSections[index] = !newExpandedSections[index];
+    setExpandedSections(newExpandedSections);
+  };
+
+  // Define educational content sections
+  const educationalSections = [
+    {
+      title: "What is Tokenization?",
+      icon: <FiInfo className="text-blue-500" size={24} />,
+      content: (
+        <div className="space-y-3">
+          <p className="text-zinc-700 dark:text-zinc-300">
+            Tokenization is the process of converting text into smaller units called tokens. These tokens are the basic units that language models process.
+          </p>
+          <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
+            <h4 className="font-medium mb-2">Why tokenization matters:</h4>
+            <ul className="list-disc list-inside space-y-1 text-sm">
+              <li>Determines context window limitations</li>
+              <li>Affects pricing of API calls</li>
+              <li>Impacts model performance on different types of text</li>
+            </ul>
+          </div>
+          <div className="flex justify-center py-2">
+            <img 
+              src="/images/tokenization-overview.svg" 
+              alt="Tokenization process diagram" 
+              className="max-w-full h-auto rounded-lg shadow-md" 
+            />
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Tokenization Algorithms",
+      icon: <FiTool className="text-orange-500" size={24} />,
+      content: (
+        <div className="space-y-3">
+          <p className="text-zinc-700 dark:text-zinc-300">
+            Different algorithms break text into tokens in different ways, with significant implications for efficiency and accuracy.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+            <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
+              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Character Tokenization</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                Simplest approach where each character is a token. Inefficient for common words but handles any text.
+              </p>
+            </div>
+            <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
+              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Word Tokenization</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                Words become individual tokens. Efficient for common words but struggles with rare words and variants.
+              </p>
+            </div>
+            <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
+              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Subword Tokenization (BPE)</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                Balance between character and word methods. Handles common words as single tokens and breaks down rare words.
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      title: "Vocabulary & Token IDs",
+      icon: <FiBook className="text-purple-500" size={24} />,
+      content: (
+        <div className="space-y-3">
+          <p className="text-zinc-700 dark:text-zinc-300">
+            LLMs use a fixed vocabulary of tokens, each with a unique ID. This vocabulary is created during model training and determines how text is tokenized.
+          </p>
+          <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
+            <h4 className="font-medium mb-2">Key vocabulary concepts:</h4>
+            <ul className="list-disc list-inside space-y-1 text-sm">
+              <li>A vocabulary typically contains 50,000-100,000 tokens</li>
+              <li>Common words, subwords, and characters have their own tokens</li>
+              <li>Special tokens exist for formatting (e.g., &lt;|endoftext|&gt;)</li>
+              <li>Each token maps to a vector in the model&apos;s embedding space</li>
+            </ul>
+          </div>
+          <div className="mt-3 p-3 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+            <h4 className="font-medium mb-1 text-blue-800 dark:text-blue-300">Developer Insight:</h4>
+            <p className="text-sm text-blue-700 dark:text-blue-400">
+              Models from the same family (e.g., GPT-3.5, GPT-4) typically share the same tokenizer but may have different 
+              context window sizes, which limits how many tokens can be processed in one API call.
+            </p>
+          </div>
+        </div>
+      )
+    },
+  ];
+
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 space-y-8">
+      {/* Learning Progress */}
+      <div className="flex items-center space-x-1 overflow-x-auto pb-2">
+        {educationalSections.map((section, index) => (
+          <button 
+            key={index}
+            onClick={() => toggleSection(index)}
+            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              expandedSections[index] 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+            }`}
+          >
+            <span className="mr-2">{section.icon}</span>
+            <span className="whitespace-nowrap">{section.title}</span>
+            <span className="ml-1">
+              {expandedSections[index] ? <FiChevronDown size={14} /> : <FiChevronRight size={14} />}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Educational Content Sections */}
+      {educationalSections.map((section, index) => (
+        expandedSections[index] && (
+          <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
+              {section.title}
+            </h3>
+            {section.content}
+          </div>
+        )
+      ))}
+
       {/* Input Area */}
       <div className="space-y-4">
         <div className="flex items-start space-x-4">
@@ -56,7 +193,7 @@ export default function TokenizationDemoClient() {
           )}
         </div>
 
-        {/* Examples Section - Simplified */}
+        {/* Examples Section */}
         <div className="mt-2">
           <div className="flex flex-wrap gap-2">
             {["Common English Text", "Uncommon Words", "Numbers & Symbols", "Non-English Text", "Code Snippet"].map((title, index) => (
@@ -83,32 +220,124 @@ export default function TokenizationDemoClient() {
 
       {/* Tokenized Content Visualization */}
       <div className="space-y-4">
-        <TokenExplorer text={inputText || "Type something to see tokenization in action..."} showExample={!inputText} />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center">
+            <FiCode className="text-purple-500 mr-2" size={20} />
+            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Interactive Token Explorer</h3>
+          </div>
+          <button
+            onClick={() => setShowVocabExplanation(!showVocabExplanation)}
+            className="text-sm text-blue-600 dark:text-blue-400 flex items-center"
+          >
+            Learn about token vocabularies {showVocabExplanation ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}
+          </button>
+        </div>
+        
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+          See how your text is broken into tokens in real-time. Select different tokenization methods to understand their differences.
+        </p>
+        
+        {/* Tokenization Method Buttons - Moved up as requested */}
+        <div className="flex space-x-2 mb-4">
+          {['tiktoken', 'character', 'wordpiece', 'bpe'].map((method) => (
+            <button
+              key={method}
+              className={`px-3 py-1.5 text-xs font-medium rounded-md ${
+                tokenizationMethod === method 
+                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 border-2 border-purple-500' 
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+              }`}
+              onClick={() => setTokenizationMethod(method)}
+            >
+              {method === 'tiktoken' && 'OpenAI Tiktoken'}
+              {method === 'character' && 'Character Tokenization'}
+              {method === 'wordpiece' && 'Word Tokenization'}
+              {method === 'bpe' && 'BPE (Subword)'}
+            </button>
+          ))}
+        </div>
+        
+        {/* Vocabulary Explanation Panel - Collapsed by default */}
+        {showVocabExplanation && (
+          <div className="mb-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+            <h4 className="font-medium mb-2 text-purple-800 dark:text-purple-300">Understanding Token Vocabularies</h4>
+            <div className="text-sm text-purple-700 dark:text-purple-400 space-y-2">
+              <p>
+                <span className="font-semibold">Tiktoken (OpenAI):</span> Used by GPT models, with ~100K tokens optimized for English and code.
+                Efficiently handles common programming languages and common English patterns.
+              </p>
+              <p>
+                <span className="font-semibold">Character Tokenization:</span> Treats each character as a separate token.
+                Very inefficient (more tokens) but handles any text without unknown tokens.
+              </p>
+              <p>
+                <span className="font-semibold">Word Tokenization:</span> Common in earlier NLP models. Treats words as single tokens,
+                but struggles with rare words and needs special handling for punctuation.
+              </p>
+              <p>
+                <span className="font-semibold">BPE (Byte-Pair Encoding):</span> The foundation of modern tokenizers like Tiktoken.
+                Starts with characters and merges frequent pairs to form a vocabulary of subword units.
+              </p>
+            </div>
+            <div className="mt-3 text-xs text-purple-600 dark:text-purple-400">
+              <p>
+                <span className="font-semibold">Developer Note:</span> When developing applications with LLMs,
+                understanding tokenization helps you optimize prompts, estimate costs, and handle context window limitations more effectively.
+              </p>
+            </div>
+          </div>
+        )}
+        
+        <TokenExplorer 
+          text={inputText || "Type something to see tokenization in action..."} 
+          showExample={!inputText}
+          tokenizationMethod={tokenizationMethod}
+        />
       </div>
 
       {showAnalysis && (
-        <div className="flex items-center justify-between">
+        <div className="bg-zinc-50 dark:bg-zinc-850 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+          <div className="flex items-center mb-2">
+            <FiDollarSign className="text-green-500 mr-2" size={20} />
+            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Token Pricing Impact</h3>
+          </div>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+            Understand how tokens affect your API costs across different models.
+          </p>
           <TokenPricingCalculator text={inputText} model={selectedModel} />
         </div>
       )}
 
       {showAnalysis && (
         <>
-          {/* Comparison Section */}
-          <div className="space-y-4">
-            <div>
+          {/* Comparison Section with enhanced explanation */}
+          <div className="space-y-4 bg-zinc-50 dark:bg-zinc-850 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <div className="flex items-center mb-2">
+              <FiTool className="text-orange-500 mr-2" size={20} />
               <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">
                 Tokenization Methods Compared
               </h3>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Different tokenization methods have varying trade-offs. Character-based methods are simple but inefficient, 
-                while advanced methods like BPE and tiktoken balance efficiency with accuracy.
-              </p>
             </div>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Different tokenization methods have varying trade-offs. Character-based methods are simple but inefficient, 
+              while advanced methods like BPE and tiktoken balance efficiency with accuracy.
+            </p>
             <TokenizationComparison text={inputText} />
           </div>
         </>
       )}
+      
+      {/* Quiz section to test understanding */}
+      <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+        <div className="flex items-center mb-3">
+          <FiBook className="text-blue-500 mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Test Your Understanding</h3>
+        </div>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+          Apply what you&apos;ve learned with these interactive challenges.
+        </p>
+        <TokenizationQuiz />
+      </div>
     </div>
   );
 }
