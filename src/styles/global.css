@@ -56,6 +56,11 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
   animation: glow-animation 2s infinite alternate;
 }
 
+/* Shadow glow effect for UI elements */
+.shadow-glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
 @keyframes traceBorder {
   0%, 100% {
     box-shadow: 0 0 1px #21fc0d;
@@ -146,5 +151,53 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
 /* Trust Badge Styling */
 .trust-badge {
   @apply filter grayscale opacity-75 dark:opacity-50;
+}
+
+/* Blueprint background pattern */
+.bg-blueprint {
+  background-color: rgba(30, 58, 138, 0.2);
+  background-image: 
+    /* Major grid lines */
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    /* Medium grid lines */
+    linear-gradient(rgba(255, 255, 255, 0.07) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0.5px, transparent 0.5px),
+    /* Fine grid lines */
+    linear-gradient(rgba(255, 255, 255, 0.04) 0.25px, transparent 0.25px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0.25px, transparent 0.25px),
+    /* Coordinates X marks every 100px */
+    radial-gradient(circle 1px at 100px 100px, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    radial-gradient(circle 1px at 200px 200px, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    radial-gradient(circle 1px at 300px 300px, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 
+    20px 20px,  /* Major grid */
+    20px 20px,  /* Major grid */
+    5px 5px,    /* Medium grid */
+    5px 5px,    /* Medium grid */
+    2px 2px,    /* Fine grid */
+    2px 2px,    /* Fine grid */
+    400px 400px, /* X marks */
+    400px 400px, /* X marks */
+    400px 400px; /* X marks */
+  background-position: center center;
+}
+
+/* Custom scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
