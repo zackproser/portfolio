@@ -4,13 +4,14 @@ import { ContactContent } from './ContactContent'
 
 const data = {
   title: 'Contact me',
-  description:
-    'Have a project in mind? Let\'s discuss how I can help.'
+  description: 'Have a project in mind? Let\'s discuss how I can help.'
 };
 
 const ogUrl = generateOgUrl(data);
 
 export const metadata = {
+  title: data.title,
+  description: data.description,
   openGraph: {
     title: data.title,
     description: data.description,

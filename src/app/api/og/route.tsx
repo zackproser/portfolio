@@ -3,93 +3,132 @@ import { ImageResponse } from '@vercel/og';
 
 export const runtime = 'edge';
 
-const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
-  return Buffer.from(buffer).toString('base64');
-};
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url || '');
 
-  const title = searchParams.get('title') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
-  const image = searchParams.get('image') || searchParams.get('amp;image');
-  const description = searchParams.get('description') || searchParams.get('amp;description');
+  const title = searchParams.get('title') || 'Modern Coding';
+  const description = searchParams.get('description') || 'Zero Bullshit AI, tooling and projects. Just code that ships.';
 
-  const profileImageData = await fetch(new URL('/public/modern-coding-logo.png', import.meta.url)).then(
-    (res) => res.arrayBuffer(),
-  );
-
-  const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.png', import.meta.url);
-  const ultimateURL = image ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL;
-
-  let postImageData;
-  try {
-    postImageData = await fetch(ultimateURL).then((res) => res.arrayBuffer());
-  } catch (err) {
-    console.log(`og API route err: ${err} `);
-    return
-  }
-
-  const base64ProfileImage = `data:image/png;base64,${arrayBufferToBase64(profileImageData)}`;
-  const base64PostImage = `data:image/png;base64,${arrayBufferToBase64(postImageData)}`;
-
-  return new (ImageResponse as any)(
+  return new ImageResponse(
     <div
-      tw="flex flex-col w-full h-full bg-emerald-900"
       style={{
-        backgroundImage: 'linear-gradient(to bottom, rgba(75, 0, 130, 0.6), rgba(48, 25, 52, 0.4)), url(https://zackproser.com/alum.png)'
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        backgroundImage: 'linear-gradient(to right, rgba(30, 64, 175, 0.95), rgba(55, 48, 163, 0.95))',
+        fontFamily: 'Inter, sans-serif',
       }}
     >
-      <div tw="flex flex-col md:flex-row w-full">
-        <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
-          <img
-            src={base64ProfileImage}
-            alt="Zachary Proser"
-            className="w-full h-full object-cover"
-            style={{ borderRadius: 128 }}
-          />
-        </div>
-        <div tw="flex flex-col ml-4 items-center">
-          <h1 tw="text-4xl text-white">Modern Coding</h1>
-          <h2 tw="text-3xl text-white">Supercharge your development workflow</h2>
-        </div>
-      </div>
+      {/* Network background pattern */}
       <div
-        tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(75, 0, 130, 0.8), rgba(128, 0, 128, 0.8)), url(https://zackproser.com/subtle-stripes.png)`
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 0.2,
+          backgroundImage: `
+            radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 1px, transparent 3px),
+            radial-gradient(circle at 30% 65%, rgba(255, 255, 255, 0.4) 1px, transparent 3px),
+            radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.4) 1px, transparent 3px),
+            radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.4) 1px, transparent 3px),
+            radial-gradient(circle at 90% 40%, rgba(255, 255, 255, 0.4) 1px, transparent 3px)
+          `,
+          backgroundSize: '180px 180px',
         }}
-      >
-        <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
-          <div tw="flex flex-col">
+      />
+      
+      {/* Simple card layout - left side text, right side image */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        height: '100%',
+        padding: '40px',
+        position: 'relative',
+        zIndex: 10,
+      }}>
+        {/* Left section with content */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          width: '50%',
+          paddingRight: '32px',
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+            <h1 style={{
+              fontSize: '64px',
+              fontWeight: 'bold',
+              color: 'white',
+              textAlign: 'left',
+              whiteSpace: 'normal',
+              wordBreak: 'break-word',
+              maxWidth: '600px',
+              margin: 0,
+            }}>
+              {title}
+            </h1>
 
-            <h2 tw="pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left whitespace-normal break-words"
-              style={{ maxWidth: '600px' }}
-            >
-              <span tw="text-white font-extrabold">{title}</span>
-            </h2>
-
-            {description && (
-              <p tw="pl-2 text-1xl sm:text-2xl font-extrabold tracking-tight text-white text-left break-words"
-                style={{ maxWidth: '600px' }}
-              >{description}</p>
-            )}
+            <p style={{
+              fontSize: '32px',
+              fontWeight: '500',
+              color: 'rgb(191, 219, 254)',
+              textAlign: 'left',
+              wordBreak: 'break-word',
+              maxWidth: '600px',
+              margin: 0,
+              paddingTop: '24px',
+            }}>
+              {description}
+            </p>
           </div>
-          <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
+        </div>
+        
+        {/* Right section with logo */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '50%',
+          paddingLeft: '32px',
+        }}>
+          <div style={{
+            display: 'flex',
+            width: '450px',
+            height: '450px',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            backgroundColor: 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          }}>
             <img
-              src={base64PostImage}
-              alt="Post Image"
-              className="w-full h-full object-cover"
+              src="/modern-coding-logo.webp"
+              alt="Modern Coding Logo"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+              }}
             />
           </div>
         </div>
       </div>
-      <div tw="flex flex-col items-center">
-        <h1
-          tw="text-white text-3xl pb-2"
-        >
-          zackproser.com
-        </h1>
-      </div>
-    </div>
-  )
+    </div>,
+    {
+      width: 1200,
+      height: 630,
+      fonts: [],
+      emoji: 'twemoji',
+    }
+  );
 }
