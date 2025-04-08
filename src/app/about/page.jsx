@@ -61,24 +61,24 @@ export default function About() {
 						</div>
 					</div>
 					<div className="lg:order-first lg:row-span-2">
-						<h1 className="text-4xl font-bold tracking-tight text-black dark:text-zinc-100 sm:text-5xl">
+						<h1 className="text-4xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-5xl">
 							Hi, I&apos;m Zachary
 						</h1>
-						<div className="mt-6 space-y-7 text-base text-black dark:text-zinc-400">
+						<div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
 							<p>
 								I&apos;m a full-stack open source hacker with{" "}
-								<span className="text-green-500 font-bold">
+								<span className="text-blue-500 font-bold">
 									{RenderNumYearsExperience()} years
 								</span>{" "}
 								of software development experience at top startups and established enterprise companies.
 							</p>
 							<p>
-								<Link className="text-green-500 hover:text-green-700" href="/testimonials">See what my colleagues say</Link> about working with me.
+								<Link className="text-blue-500 hover:text-blue-700" href="/testimonials">See what my colleagues say</Link> about working with me.
 							</p>
 							<p>
 								I work in Developer Education at{" "}
 								<Link
-									className="font-bold text-green-500"
+									className="font-bold text-blue-500"
 									href="https://workos.com"
 								>
 									WorkOS
@@ -86,10 +86,10 @@ export default function About() {
 								, where we help companies add enterprise features to their apps in minutes, not months.
 							</p>
 							<p>
-								I offer <Link className="font-bold text-green-500" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-green-500" href="/services">services page</Link> to learn how I can help bring your AI project to life.
+								I offer <Link className="font-bold text-blue-500" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-blue-500" href="/services">services page</Link> to learn how I can help bring your AI project to life.
 							</p>
 							<Newsletter />
-							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-green-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
+							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-blue-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
 								<CV />
 							</div>
@@ -122,7 +122,7 @@ export default function About() {
 						<div className="mt-8">
 							<Link
 								href="/services"
-								className="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition-colors"
+								className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors"
 							>
 								View My Services
 								<svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
