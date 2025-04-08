@@ -2,33 +2,30 @@ import Link from 'next/link'
 
 import { Container } from '@/components/Container'
 
-const navigation = [
+const footerLinks = [
   {
-    title: 'Social',
+    title: 'Connect',
     links: [
+      { title: 'Contact', href: '/contact' },
       { title: 'Twitter', href: 'https://twitter.com/zackproser' },
-      { title: 'GitHub', href: 'https://github.com/zackproser' },
-      { title: 'LinkedIn', href: 'https://linkedin.com/in/zackproser' },
-    ],
-  },
-  {
-    title: 'Content',
-    links: [
-      { title: 'Research', href: '/blog' },
-      { title: 'Services', href: '/services' },
-      { title: 'Products', href: '/products' },
-      { title: 'Projects', href: '/projects' },
-    ],
+      { title: 'LinkedIn', href: 'https://linkedin.com/in/zackproser' }
+    ]
   },
   {
     title: 'Resources',
     links: [
-      { title: 'Publications', href: '/publications' },
-      { title: 'Videos', href: '/videos' },
-      { title: 'Devtools', href: '/devtools' },
-      { title: 'Vector DBs', href: '/vectordatabases' },
-    ],
+      { title: 'Technical Guides', href: '/tutorials' },
+      { title: 'Dev Tools', href: '/devtools' },
+      { title: 'API Reference', href: '/docs' }
+    ]
   },
+  {
+    title: 'Legal',
+    links: [
+      { title: 'Privacy Policy', href: '/privacy' },
+      { title: 'Terms', href: '/terms' }
+    ]
+  }
 ]
 
 export function Footer() {
@@ -37,7 +34,7 @@ export function Footer() {
       <Container>
         <div className="py-8">
           <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 md:grid-cols-4">
-            {navigation.map((section) => (
+            {footerLinks.map((section) => (
               <div key={section.title} className="flex flex-col gap-6">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   {section.title}
