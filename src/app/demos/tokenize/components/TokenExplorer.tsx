@@ -9,17 +9,37 @@ import { ENCODING_EXPLANATIONS, characterTokenize, wordTokenize, bpeTokenize, wo
 type TokenExplorerProps = {
   text: string;
   showExample?: boolean;
+  tokenizationMethod?: string;
 }
 
 export function TokenExplorer({
   text,
-  showExample = true
+  showExample = true,
+  tokenizationMethod = 'tiktoken'
 }: TokenExplorerProps) {
-  const [encodingType, setEncodingType] = useState<keyof typeof ENCODING_EXPLANATIONS>('character');
+  // Convert the passed tokenizationMethod to a valid encoding type
+  const getEncodingFromMethod = (method: string): keyof typeof ENCODING_EXPLANATIONS => {
+    switch (method) {
+      case 'tiktoken': return 'tiktoken';
+      case 'character': return 'character';
+      case 'wordpiece': return 'word';
+      case 'bpe': return 'bpe';
+      default: return 'tiktoken';
+    }
+  };
+
+  const [encodingType, setEncodingType] = useState<keyof typeof ENCODING_EXPLANATIONS>(
+    getEncodingFromMethod(tokenizationMethod)
+  );
   const [hoveredTokenIndex, setHoveredTokenIndex] = useState(-1);
   const [tokens, setTokens] = useState<number[]>([]);
   const [tokenTexts, setTokenTexts] = useState<string[]>([]);
   const [showExplanation, setShowExplanation] = useState(true);
+  
+  // Update encoding type when tokenizationMethod changes
+  useEffect(() => {
+    setEncodingType(getEncodingFromMethod(tokenizationMethod));
+  }, [tokenizationMethod]);
   
   useEffect(() => {
     // Update tokens based on encoding type
@@ -87,22 +107,6 @@ export function TokenExplorer({
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {Object.keys(ENCODING_EXPLANATIONS).map((type) => (
-          <button
-            key={type}
-            className={`px-3 py-1 text-sm rounded-md ${
-              encodingType === type 
-                ? 'bg-green-600 text-white' 
-                : 'bg-zinc-700 hover:bg-zinc-600'
-            }`}
-            onClick={() => setEncodingType(type as keyof typeof ENCODING_EXPLANATIONS)}
-          >
-            {ENCODING_EXPLANATIONS[type as keyof typeof ENCODING_EXPLANATIONS].title}
-          </button>
-        ))}
-      </div>
-      
       <div className="p-4 bg-zinc-800 rounded-lg">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">{explanation.title}</h3>
