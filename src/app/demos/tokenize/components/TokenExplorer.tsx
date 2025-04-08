@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Eye, EyeOff, Info } from 'lucide-react';
 import { TokenizedText } from './TokenizedText';
 import { TokenIdVisualization } from './TokenIdVisualization';
-import { ENCODING_EXPLANATIONS, characterTokenize, wordTokenize, mockBpeTokenize } from '../utils';
+import { ENCODING_EXPLANATIONS, characterTokenize, wordTokenize, bpeTokenize, wordpieceTokenize, tiktokenTokenize } from '../utils';
 
 type TokenExplorerProps = {
   text: string;
@@ -23,112 +23,120 @@ export function TokenExplorer({
   
   useEffect(() => {
     // Update tokens based on encoding type
-    if (encodingType === 'character') {
-      setTokenTexts(characterTokenize(text));
-      // Mock token IDs for character tokenization
-      setTokens(characterTokenize(text).map((_, i) => i + 33)); 
-    } else if (encodingType === 'word') {
-      setTokenTexts(wordTokenize(text));
-      // Mock token IDs for word tokenization
-      setTokens(wordTokenize(text).map((_, i) => i + 1000)); 
-    } else {
-      // For other methods, use our mock BPE implementation
-      setTokenTexts(mockBpeTokenize(text));
-      // Mock token IDs for BPE tokenization
-      setTokens(mockBpeTokenize(text).map((_, i) => i + 10000)); 
+    async function updateTokens() {
+      let texts: string[] = [];
+      let ids: number[] = [];
+      
+      try {
+        switch (encodingType) {
+          case 'character':
+            texts = characterTokenize(text);
+            ids = texts.map((_, i) => i + 33);
+            break;
+          case 'word':
+            texts = wordTokenize(text);
+            ids = texts.map((_, i) => i + 1000);
+            break;
+          case 'bpe':
+            texts = await bpeTokenize(text);
+            ids = texts.map((_, i) => i + 10000);
+            break;
+          case 'wordpiece':
+            texts = await wordpieceTokenize(text);
+            ids = texts.map((_, i) => i + 20000);
+            break;
+          case 'tiktoken':
+            texts = tiktokenTokenize(text);
+            ids = texts.map((_, i) => i + 30000);
+            break;
+        }
+        
+        setTokenTexts(texts);
+        setTokens(ids);
+      } catch (error) {
+        console.error('Error updating tokens:', error);
+        // Reset to character tokenization on error
+        texts = characterTokenize(text);
+        ids = texts.map((_, i) => i + 33);
+        setTokenTexts(texts);
+        setTokens(ids);
+      }
     }
+    
+    updateTokens();
   }, [text, encodingType]);
   
   // Get the explanation for the current encoding
   const explanation = ENCODING_EXPLANATIONS[encodingType];
   
   return (
-    <div className="mb-8 bg-white dark:bg-zinc-900 p-5 rounded-lg border border-zinc-200 dark:border-zinc-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold flex items-center gap-2 text-zinc-800 dark:text-white">
-          <Eye size={20} />
-          Token Explorer
-        </h3>
-        <div className="flex items-center gap-2">
-          <button 
-            className="bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
-            onClick={() => setShowExplanation(!showExplanation)}
+    <div className="space-y-4">
+      <div className="space-y-4">
+        <TokenizedText 
+          text={text} 
+          tokenType={encodingType}
+          highlightIndex={hoveredTokenIndex}
+          onHoverToken={setHoveredTokenIndex}
+        />
+        
+        <TokenIdVisualization 
+          tokens={tokens}
+          tokenTexts={tokenTexts}
+          highlightIndex={hoveredTokenIndex}
+          onHoverToken={setHoveredTokenIndex}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {Object.keys(ENCODING_EXPLANATIONS).map((type) => (
+          <button
+            key={type}
+            className={`px-3 py-1 text-sm rounded-md ${
+              encodingType === type 
+                ? 'bg-green-600 text-white' 
+                : 'bg-zinc-700 hover:bg-zinc-600'
+            }`}
+            onClick={() => setEncodingType(type as keyof typeof ENCODING_EXPLANATIONS)}
           >
-            {showExplanation ? <EyeOff size={16} /> : <Info size={16} />}
-            {showExplanation ? 'Hide' : 'Show'} explanation
+            {ENCODING_EXPLANATIONS[type as keyof typeof ENCODING_EXPLANATIONS].title}
           </button>
-        </div>
+        ))}
       </div>
       
-      {showExplanation && (
-        <div className="mb-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-          <h4 className="font-bold text-lg mb-2 text-zinc-800 dark:text-white">{explanation.title}</h4>
-          <p className="mb-3 text-zinc-700 dark:text-zinc-300">{explanation.description}</p>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h5 className="font-bold text-green-600 dark:text-green-400 mb-1">Advantages</h5>
-              <ul className="list-disc pl-5 text-zinc-700 dark:text-zinc-300">
-                {explanation.pros.map((pro, i) => (
-                  <li key={i}>{pro}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-bold text-red-600 dark:text-red-400 mb-1">Limitations</h5>
-              <ul className="list-disc pl-5 text-zinc-700 dark:text-zinc-300">
-                {explanation.cons.map((con, i) => (
-                  <li key={i}>{con}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      <div className="mb-4">
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-sm font-medium text-zinc-800 dark:text-white">Tokenization Method:</span>
-          {Object.keys(ENCODING_EXPLANATIONS).map((type) => (
-            <button
-              key={type}
-              className={`px-3 py-1 text-sm rounded-full ${
-                encodingType === type 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-800 dark:text-white'
-              }`}
-              onClick={() => setEncodingType(type as keyof typeof ENCODING_EXPLANATIONS)}
-            >
-              {ENCODING_EXPLANATIONS[type as keyof typeof ENCODING_EXPLANATIONS].title}
-            </button>
-          ))}
+      <div className="p-4 bg-zinc-800 rounded-lg">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">{explanation.title}</h3>
+          <button
+            className="text-sm text-zinc-400 hover:text-white"
+            onClick={() => setShowExplanation(!showExplanation)}
+          >
+            {showExplanation ? 'Hide' : 'Show'} Explanation
+          </button>
         </div>
         
-        <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg mb-4">
-          <h4 className="font-medium mb-2 text-zinc-800 dark:text-white">Original Text with Token Boundaries:</h4>
-          <TokenizedText 
-            text={text} 
-            tokenType={encodingType}
-            highlightIndex={hoveredTokenIndex}
-            onHoverToken={setHoveredTokenIndex}
-          />
-        </div>
-        
-        <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-          <h4 className="font-medium mb-2 text-zinc-800 dark:text-white">Tokens and Their IDs:</h4>
-          <TokenIdVisualization 
-            tokens={tokens}
-            tokenTexts={tokenTexts}
-            highlightIndex={hoveredTokenIndex}
-            onHoverToken={setHoveredTokenIndex}
-          />
-          <div className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
-            <span className="font-bold">Token Count:</span> {tokens.length} tokens
-            {encodingType === 'tiktoken' && (
-              <span> (≈ {Math.ceil(tokens.length / 4)} tokens billed by OpenAI)</span>
-            )}
+        {showExplanation && (
+          <div className="mb-4 space-y-3">
+            <p className="text-zinc-300">{explanation.description}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="text-sm font-semibold text-green-400 mb-2">Pros</h4>
+                <ul className="list-disc list-inside text-sm text-zinc-300">
+                  {explanation.pros.map((pro, i) => (
+                    <li key={i}>{pro}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-red-400 mb-2">Cons</h4>
+                <ul className="list-disc list-inside text-sm text-zinc-300">
+                  {explanation.cons.map((con, i) => (
+                    <li key={i}>{con}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
