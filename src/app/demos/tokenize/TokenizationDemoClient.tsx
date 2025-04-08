@@ -29,14 +29,6 @@ export default function TokenizationDemoClient() {
 
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 space-y-8">
-      {/* Title and Description */}
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Developer's Interactive Guide to Tokenization</h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Explore how different tokenization methods work and how they're used in modern models
-        </p>
-      </div>
-      
       {/* Input Area */}
       <div className="space-y-4">
         <div className="flex items-start space-x-4">
