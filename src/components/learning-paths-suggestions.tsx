@@ -11,6 +11,8 @@ interface LearningPathSuggestionProps {
   allTopics: any[]
 }
 
+type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+
 export default function LearningPathSuggestion({ completedTopics, allTopics }: LearningPathSuggestionProps) {
   const [nextTopic, setNextTopic] = useState<any | null>(null)
 
@@ -19,13 +21,13 @@ export default function LearningPathSuggestion({ completedTopics, allTopics }: L
     const accessibleTopics = allTopics.filter((topic) => {
       if (completedTopics.includes(topic.id)) return false
       if (!topic.dependencies) return true
-      return topic.dependencies.every((dep) => completedTopics.includes(dep))
+      return topic.dependencies.every((dep: string) => completedTopics.includes(dep))
     })
 
     // Sort by difficulty (beginner first)
     const sortedTopics = [...accessibleTopics].sort((a, b) => {
-      const difficultyOrder = { beginner: 0, intermediate: 1, advanced: 2 }
-      return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]
+      const difficultyOrder: Record<Difficulty, number> = { beginner: 0, intermediate: 1, advanced: 2 }
+      return difficultyOrder[a.difficulty as Difficulty] - difficultyOrder[b.difficulty as Difficulty]
     })
 
     setNextTopic(sortedTopics[0] || null)
