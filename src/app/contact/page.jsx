@@ -5,7 +5,7 @@ import { ContactContent } from './ContactContent'
 const data = {
   title: 'Contact me',
   description:
-    'Something on your mind? I am easy to find...'
+    'Have a project in mind? Let\'s discuss how I can help.'
 };
 
 const ogUrl = generateOgUrl(data);
@@ -15,7 +15,7 @@ export const metadata = {
     title: data.title,
     description: data.description,
     url: ogUrl,
-    siteName: 'Zack Proser&apos;s portfolio',
+    siteName: 'Modern Coding',
     images: [
       {
         url: ogUrl,
