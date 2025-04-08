@@ -287,6 +287,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.17)
+      tokenizers:
+        specifier: ^0.13.3
+        version: 0.13.3
       typescript:
         specifier: ^5.1.6
         version: 5.7.2
@@ -5653,6 +5656,10 @@ packages:
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
+
+  tokenizers@0.13.3:
+    resolution: {integrity: sha512-nWSQFwvWQTxE4xWZQEUYTZ00kDLjCUKEByUCpqZ6Fo4kJUsDgHBnZcVrIv/rbOvQs5WK3RUzmvaip+Z7IeZ5/A==}
+    engines: {node: '>= 10'}
 
   tough-cookie@4.1.4:
     resolution: {integrity: sha512-Loo5UUvLD9ScZ6jh8beX1T6sO1w2/MpCRpEP7V280GKMVUQ0Jzar2U3UJPsrdbziLEMMhu3Ujnq//rhiFuIeag==}
@@ -12473,6 +12480,8 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+
+  tokenizers@0.13.3: {}
 
   tough-cookie@4.1.4:
     dependencies:

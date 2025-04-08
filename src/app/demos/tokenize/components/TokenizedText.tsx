@@ -1,13 +1,14 @@
 'use client'
 
-import { characterTokenize, wordTokenize, mockBpeTokenize, getConsistentColor } from '../utils';
+import { useState, useEffect } from 'react';
+import { getConsistentColor, characterTokenize, wordTokenize, bpeTokenize, wordpieceTokenize, tiktokenTokenize } from '../utils';
 
-type TokenizedTextProps = { 
-  text: string; 
-  tokenType: 'character' | 'word' | 'bpe' | 'wordpiece' | 'unigram' | 'tiktoken';
+type TokenizedTextProps = {
+  text: string;
+  tokenType: string;
   highlightIndex?: number;
   onHoverToken?: (index: number) => void;
-}
+};
 
 export function TokenizedText({ 
   text, 
@@ -15,67 +16,113 @@ export function TokenizedText({
   highlightIndex = -1,
   onHoverToken = (index: number) => {}
 }: TokenizedTextProps) {
-  // Get tokens based on selected method
-  let tokens: string[] = [];
-  let positions: {start: number, end: number}[] = [];
+  const [tokens, setTokens] = useState<string[]>([]);
+  const [positions, setPositions] = useState<{start: number, end: number}[]>([]);
   
-  if (tokenType === 'character') {
-    tokens = characterTokenize(text);
-    // Calculate character positions
-    let pos = 0;
-    positions = tokens.map(token => {
-      const start = pos;
-      pos += token.length;
-      return {start, end: pos};
-    });
-  } else if (tokenType === 'word') {
-    tokens = wordTokenize(text);
-    
-    // Calculate word positions
-    let pos = 0;
-    const regex = /\S+/g;
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-      positions.push({start: match.index, end: match.index + match[0].length});
-    }
-  } else {
-    // For BPE and other subword methods, we'll use a mock implementation
-    tokens = mockBpeTokenize(text);
-    
-    // This is a simplified approximation of positions for the mock
-    let pos = 0;
-    const words = text.split(/\s+/).filter(w => w.length > 0);
-    let wordIndex = 0;
-    let subwordIndex = 0;
-    
-    positions = words.flatMap(word => {
-      const wordStart = text.indexOf(word, pos);
-      pos = wordStart + word.length;
-      
-      if (word.length <= 3 || 
-         (!word.endsWith('ing') && !word.endsWith('ed') && word.length <= 5)) {
-        return [{start: wordStart, end: wordStart + word.length}];
-      } else if (word.endsWith('ing')) {
-        const stem = word.slice(0, -3);
-        return [
-          {start: wordStart, end: wordStart + stem.length},
-          {start: wordStart + stem.length, end: wordStart + word.length}
-        ];
-      } else if (word.endsWith('ed')) {
-        const stem = word.slice(0, -2);
-        return [
-          {start: wordStart, end: wordStart + stem.length},
-          {start: wordStart + stem.length, end: wordStart + word.length}
-        ];
-      } else {
-        // Split longer words
-        const half = Math.ceil(word.length/2);
-        return [
-          {start: wordStart, end: wordStart + half},
-          {start: wordStart + half, end: wordStart + word.length}
-        ];
+  useEffect(() => {
+    async function updateTokenization() {
+      try {
+        let newTokens: string[] = [];
+        let newPositions: {start: number, end: number}[] = [];
+        
+        switch (tokenType) {
+          case 'character':
+            newTokens = characterTokenize(text);
+            // Calculate character positions
+            let pos = 0;
+            newPositions = newTokens.map(token => {
+              const start = pos;
+              pos += token.length;
+              return {start, end: pos};
+            });
+            break;
+            
+          case 'word':
+            newTokens = wordTokenize(text);
+            // Calculate word positions
+            let wordPos = 0;
+            const regex = /\S+/g;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+              newPositions.push({start: match.index, end: match.index + match[0].length});
+            }
+            break;
+            
+          case 'bpe':
+            newTokens = await bpeTokenize(text);
+            // Approximate positions for BPE tokens
+            newPositions = await calculateSubwordPositions(text, newTokens);
+            break;
+            
+          case 'wordpiece':
+            newTokens = await wordpieceTokenize(text);
+            // Approximate positions for WordPiece tokens
+            newPositions = await calculateSubwordPositions(text, newTokens);
+            break;
+            
+          case 'tiktoken':
+            newTokens = tiktokenTokenize(text);
+            // Approximate positions for tiktoken tokens
+            newPositions = await calculateSubwordPositions(text, newTokens);
+            break;
+        }
+        
+        setTokens(newTokens);
+        setPositions(newPositions);
+      } catch (error) {
+        console.error('Error in tokenization:', error);
+        // Fallback to character tokenization
+        const fallbackTokens = characterTokenize(text);
+        let pos = 0;
+        const fallbackPositions = fallbackTokens.map(token => {
+          const start = pos;
+          pos += token.length;
+          return {start, end: pos};
+        });
+        setTokens(fallbackTokens);
+        setPositions(fallbackPositions);
       }
-    });
+    }
+    
+    updateTokenization();
+  }, [text, tokenType]);
+  
+  // Helper function to calculate subword token positions
+  async function calculateSubwordPositions(text: string, tokens: string[]) {
+    const positions: {start: number, end: number}[] = [];
+    let currentPos = 0;
+    
+    for (const token of tokens) {
+      // Skip special tokens (those starting with special characters)
+      if (token.startsWith('Ġ') || token.startsWith('##') || token.startsWith('▁')) {
+        const actualToken = token.replace(/^(Ġ|##|▁)/, '');
+        // Find the next occurrence of this token after the current position
+        const nextPos = text.indexOf(actualToken, currentPos);
+        if (nextPos !== -1) {
+          positions.push({
+            start: nextPos,
+            end: nextPos + actualToken.length
+          });
+          currentPos = nextPos + actualToken.length;
+        } else {
+          // If we can't find the exact position, approximate it
+          positions.push({
+            start: currentPos,
+            end: currentPos + actualToken.length
+          });
+          currentPos += actualToken.length;
+        }
+      } else {
+        // For regular tokens, just use the current position
+        positions.push({
+          start: currentPos,
+          end: currentPos + token.length
+        });
+        currentPos += token.length;
+      }
+    }
+    
+    return positions;
   }
   
   // Create spans for each token
@@ -101,18 +148,21 @@ export function TokenizedText({
         className={`relative ${highlightIndex === i ? 'ring-2 ring-white' : ''}`}
         style={{ 
           backgroundColor: getConsistentColor(tokens[i], i),
+          color: 'black',
           borderRadius: '3px',
-          padding: '0 1px',
+          padding: '1px 2px',
           margin: '0 1px',
           cursor: 'pointer',
-          display: 'inline-block'
+          display: 'inline-block',
+          fontWeight: 500,
+          textShadow: '0 0 1px rgba(255,255,255,0.5)'
         }}
         onMouseEnter={() => onHoverToken(i)}
         onMouseLeave={() => onHoverToken(-1)}
       >
         {text.substring(start, end)}
         {highlightIndex === i && (
-          <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-1 rounded">
+          <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg z-10">
             Token {i}
           </span>
         )}

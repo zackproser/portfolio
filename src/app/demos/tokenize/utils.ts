@@ -1,3 +1,5 @@
+import { encodingForModel } from "js-tiktoken";
+
 export const TOKEN_COLORS = [
   '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff',
   '#fffffc', '#ffd8be', '#ffeedd', '#ddffbb', '#bee9e8', '#caf0f8', '#d0d1ff'
@@ -20,31 +22,93 @@ export const wordTokenize = (text: string) => {
   return text.split(/\s+/).filter(w => w.length > 0);
 };
 
-export const mockBpeTokenize = (text: string) => {
-  // This is a simplified mock of BPE tokenization
-  // In a real implementation, you would use a proper BPE tokenizer
+// Simple BPE-style tokenization that splits on common suffixes and prefixes
+export const simpleBpeTokenize = (text: string) => {
   const words = text.split(/\s+/).filter(w => w.length > 0);
-  let result: string[] = [];
+  const tokens: string[] = [];
   
-  words.forEach(word => {
-    if (word.length <= 3) {
-      result.push(word);
-    } else if (word.endsWith('ing')) {
-      result.push(word.slice(0, -3));
-      result.push('ing');
-    } else if (word.endsWith('ed')) {
-      result.push(word.slice(0, -2));
-      result.push('ed');
-    } else if (word.length > 5) {
-      // Split longer words arbitrarily to simulate subword tokenization
-      result.push(word.slice(0, Math.ceil(word.length/2)));
-      result.push(word.slice(Math.ceil(word.length/2)));
-    } else {
-      result.push(word);
+  const commonPrefixes = ['un', 're', 'in', 'dis', 'pre', 'post'];
+  const commonSuffixes = ['ing', 'ed', 'er', 'est', 'ly', 'tion', 'able', 'ible'];
+  
+  for (const word of words) {
+    let processed = false;
+    
+    // Check for prefixes
+    for (const prefix of commonPrefixes) {
+      if (word.startsWith(prefix) && word.length > prefix.length + 2) {
+        tokens.push(prefix);
+        tokens.push(word.slice(prefix.length));
+        processed = true;
+        break;
+      }
     }
-  });
+    
+    // Check for suffixes if no prefix was found
+    if (!processed) {
+      for (const suffix of commonSuffixes) {
+        if (word.endsWith(suffix) && word.length > suffix.length + 2) {
+          tokens.push(word.slice(0, -suffix.length));
+          tokens.push(suffix);
+          processed = true;
+          break;
+        }
+      }
+    }
+    
+    // If no prefix or suffix was found, split on capital letters or add as is
+    if (!processed) {
+      if (word.match(/[A-Z][a-z]+/g)) {
+        // Split on capital letters for camelCase/PascalCase
+        const subTokens = word.split(/(?=[A-Z])/).filter(t => t.length > 0);
+        tokens.push(...subTokens);
+      } else {
+        tokens.push(word);
+      }
+    }
+  }
   
-  return result;
+  return tokens;
+};
+
+// Simple WordPiece-style tokenization that splits unknown words into characters
+export const simpleWordpieceTokenize = (text: string) => {
+  const commonWords = new Set([
+    'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
+    'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+    'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she'
+  ]);
+  
+  const words = text.split(/\s+/).filter(w => w.length > 0);
+  const tokens: string[] = [];
+  
+  for (const word of words) {
+    const lowerWord = word.toLowerCase();
+    
+    if (commonWords.has(lowerWord)) {
+      tokens.push(word);
+    } else {
+      // Split into subwords based on common patterns
+      const subwords = word.split(/([A-Z][a-z]+|\d+|[^A-Za-z0-9]+)/).filter(sw => sw.length > 0);
+      
+      if (subwords.length > 1) {
+        tokens.push(...subwords);
+      } else {
+        // If no natural splits, split into overlapping character sequences
+        for (let i = 0; i < word.length; i += 2) {
+          const piece = word.slice(i, Math.min(i + 3, word.length));
+          tokens.push(piece);
+        }
+      }
+    }
+  }
+  
+  return tokens;
+};
+
+export const tiktokenTokenize = (text: string) => {
+  const enc = encodingForModel('gpt-3.5-turbo');
+  const tokenIds = enc.encode(text);
+  return tokenIds.map(id => enc.decode([id]));
 };
 
 // Detailed explanations for each tokenization method
@@ -63,26 +127,20 @@ export const ENCODING_EXPLANATIONS = {
   },
   bpe: {
     title: "Byte-Pair Encoding (BPE)",
-    description: "A subword tokenization method that starts with characters and iteratively merges the most common pairs. BPE balances efficiency and meaning by creating common subwords while handling rare combinations character by character.",
-    pros: ["Good balance between vocabulary size and token length", "Handles rare words well", "Used by many modern models (GPT, RoBERTa)"],
-    cons: ["More complex implementation", "Can create unintuitive splits", "Requires training on a corpus"]
+    description: "A simplified demonstration of BPE-style tokenization that splits words based on common prefixes and suffixes. Real BPE would learn these patterns from data.",
+    pros: ["Handles common word parts", "Balances word and subword tokens", "Demonstrates subword tokenization concepts"],
+    cons: ["Simplified implementation", "Fixed vocabulary", "Less sophisticated than real BPE"]
   },
   wordpiece: {
     title: "WordPiece",
-    description: "Similar to BPE but uses a different algorithm. Instead of merging most frequent pairs, it combines pairs that maximize likelihood of the training data. Used by BERT and other Google models.",
-    pros: ["Good for morphologically rich languages", "Handles compound words well", "Used by BERT and other Google models"],
-    cons: ["Complex training process", "Requires large corpus", "Can create unintuitive splits"]
-  },
-  unigram: {
-    title: "Unigram",
-    description: "Starts with a large vocabulary and iteratively removes tokens that don't significantly reduce the model's ability to compress the training data. This probabilistic approach often produces more natural subwords.",
-    pros: ["Often creates more natural subwords", "Probabilistic approach", "Used by many Japanese/Chinese models"],
-    cons: ["Most complex of the subword methods", "Computationally intensive training", "Larger initial vocabulary required"]
+    description: "A simplified WordPiece-style tokenizer that keeps common words intact and splits unknown words into overlapping pieces. Real WordPiece would use a learned vocabulary.",
+    pros: ["Preserves common words", "Handles unknown words", "Shows basic subword concepts"],
+    cons: ["Simplified implementation", "Limited vocabulary", "Basic splitting rules"]
   },
   tiktoken: {
-    title: "tiktoken (GPT Tokenizer)",
-    description: "OpenAI's custom BPE-based tokenizer used for ChatGPT and other GPT models. It works on bytes rather than unicode characters, which helps it handle any language and even binary data.",
-    pros: ["Works with any language", "Can encode any sequence of bytes", "Very efficient", "Used by ChatGPT and GPT models"],
-    cons: ["Complex implementation", "Can create unintuitive splits", "Special tokens need careful handling"]
+    title: "Tiktoken (OpenAI)",
+    description: "OpenAI's optimized tokenizer used for their models like GPT-3.5 and GPT-4. It's a BPE variant that's been trained on a large corpus and optimized for efficiency.",
+    pros: ["Fast and efficient", "Used by OpenAI models", "Well-optimized for English and code"],
+    cons: ["Closed vocabulary", "May not handle some languages well", "Specific to OpenAI models"]
   }
-} as const; 
+}; 

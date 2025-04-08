@@ -32,38 +32,34 @@ const examples = [
   }
 ];
 
-export function Examples() {
-  const [selectedExample, setSelectedExample] = useState(0);
+export function Examples({ onExampleSelect }: { onExampleSelect: (text: string) => void }) {
+  const [selectedExample, setSelectedExample] = useState<number | null>(null);
   
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap gap-2">
+    <div className="flex flex-col space-y-4">
+      <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Prepared Examples:</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {examples.map((example, index) => (
           <button
             key={index}
-            className={`px-3 py-1 text-sm rounded-md ${
+            className={`p-3 text-left rounded-lg border transition-colors ${
               selectedExample === index 
-                ? 'bg-green-600 text-white' 
-                : 'bg-zinc-700 hover:bg-zinc-600'
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
+                : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
             }`}
-            onClick={() => setSelectedExample(index)}
+            onClick={() => {
+              setSelectedExample(index);
+              onExampleSelect(example.text);
+            }}
           >
-            {example.title}
+            <div className="font-medium text-sm text-zinc-900 dark:text-white mb-1">
+              {example.title}
+            </div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">
+              {example.explanation}
+            </div>
           </button>
         ))}
-      </div>
-      
-      <div className="p-4 bg-zinc-800 rounded-lg mb-6">
-        <p className="mb-2 text-green-400 italic">&quot;{examples[selectedExample].text}&quot;</p>
-        <p className="text-sm text-zinc-400">{examples[selectedExample].explanation}</p>
-      </div>
-      
-      <TokenizationComparison text={examples[selectedExample].text} />
-      <TokenExplorer text={examples[selectedExample].text} />
-
-      <div className="text-sm bg-zinc-100 dark:bg-zinc-900 p-3 rounded border-l-4 border-green-500">
-        <span className="block text-zinc-600 dark:text-zinc-400 mb-1">Example:</span>
-        <span className="text-zinc-800 dark:text-zinc-200">I&apos;m a &quot;thing of beauty&quot; raging against the open winds</span>
       </div>
     </div>
   );
