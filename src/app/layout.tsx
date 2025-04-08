@@ -42,7 +42,7 @@ export default function RootLayout({
           href={`${process.env.NEXT_PUBLIC_SITE_URL}/rss/feed.json`}
         />
       </head>
-      <body className="flex h-full bg-gray-100 dark:bg-black font-sans">
+      <body className="flex h-full bg-neutral-50 dark:bg-gray-900 font-sans">
         <SessionProvider>
           <Providers>
             <div className="flex w-full flex-col">

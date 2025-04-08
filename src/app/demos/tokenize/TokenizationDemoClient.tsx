@@ -270,9 +270,9 @@ export default function TokenizationDemoClient() {
       <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 mb-4">
         <div className="flex items-center mb-2">
           <FiTool className="text-orange-500 mr-2" size={20} />
-          <h3 className="text-md font-semibold text-zinc-800 dark:text-white">Select Tokenization Method</h3>
+          <h3 className="text-md font-semibold text-blue-700 dark:text-blue-300">Select Tokenization Method</h3>
         </div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
           Different tokenization methods have varying trade-offs in efficiency and accuracy.
         </p>
         <div className="flex flex-wrap gap-2">
@@ -300,7 +300,7 @@ export default function TokenizationDemoClient() {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
             <FiCode className="text-purple-500 mr-2" size={20} />
-            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Interactive Token Explorer</h3>
+            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">How do language models &quot;see&quot; text?</h3>
           </div>
           <button
             onClick={() => setShowVocabExplanation(!showVocabExplanation)}
@@ -310,7 +310,7 @@ export default function TokenizationDemoClient() {
           </button>
         </div>
         
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
           See how your text is broken into tokens in real-time. Select different tokenization methods to understand their differences.
         </p>
         
@@ -356,9 +356,9 @@ export default function TokenizationDemoClient() {
         <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center mb-2">
             <FiDollarSign className="text-green-500 mr-2" size={20} />
-            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Token Pricing Impact</h3>
+            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Token Pricing Impact</h3>
           </div>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
             Understand how tokens affect your API costs across different models.
           </p>
           <TokenPricingCalculator text={debouncedText} model={selectedModel} />
@@ -369,9 +369,9 @@ export default function TokenizationDemoClient() {
       <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
         <div className="flex items-center mb-3">
           <FiBook className="text-blue-500 mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Test Your Understanding</h3>
+          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Test Your Understanding</h3>
         </div>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           Apply what you&apos;ve learned with these interactive challenges.
         </p>
         <TokenizationQuiz />

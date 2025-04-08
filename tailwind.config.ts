@@ -25,6 +25,27 @@ export default {
     },
     typography: typographyStyles,
     extend: {
+      colors: {
+        // Light mode colors
+        neutral: {
+          50: '#fafafa', // Main background
+        },
+        // Dark mode colors added to support the new scheme
+        gray: {
+          900: '#171717', // Dark mode main background
+          800: '#1f1f1f', // Dark mode panel background
+          700: '#404040', // Dark mode panel border
+          100: '#f5f5f5', // Dark mode text color
+        },
+        blue: {
+          900: '#1e3a8a', // Header gradient end
+          800: '#1e40af', // Header gradient start
+          600: '#2563eb', // Light mode accent text
+          500: '#3b82f6', // Light mode accent border
+          400: '#60a5fa', // Dark mode accent text/border
+          100: '#dbeafe', // Dark mode header text
+        },
+      },
       animation: {
         'float': 'float 3s ease-in-out infinite',
       },
