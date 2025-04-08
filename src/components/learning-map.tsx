@@ -698,20 +698,8 @@ export default function LearningMap() {
   }
 
   const drawPhaseLines = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    // Only draw subtle grid lines without phase labels
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"
-    ctx.lineWidth = 1
-    ctx.setLineDash([10, 5])
-
-    const phasePositions = [0.1, 0.3, 0.5, 0.7, 0.9]
-    phasePositions.slice(1).forEach(y => {
-      ctx.beginPath()
-      ctx.moveTo(0, y * height)
-      ctx.lineTo(width, y * height)
-      ctx.stroke()
-    })
-
-    ctx.setLineDash([])
+    // Remove all phase lines and labels - leaving this function empty to maintain code structure
+    // but removing the actual drawing functionality
   }
 
   const drawBlueprintConnection = (
@@ -863,27 +851,35 @@ export default function LearningMap() {
     onMouseEnter: () => void;
     onMouseLeave: () => void;
   }) => {
-    // Simplify the configuration to reduce variation in size
-    const typeConfig: {[key: string]: { iconScale: number, zIndex: number }} = {
-      'project': { iconScale: 1.1, zIndex: 40 },
-      'course': { iconScale: 1.1, zIndex: 35 },
-      'article': { iconScale: 1.0, zIndex: 30 },
-      'video': { iconScale: 1.0, zIndex: 25 },
-      'tool': { iconScale: 1.0, zIndex: 20 },
-      'paper': { iconScale: 1.0, zIndex: 15 }
+    // Gradient colors for different resource types
+    const typeGradients: Record<string, string> = {
+      project: "from-amber-500/70 to-orange-600/70",
+      course: "from-emerald-500/70 to-teal-600/70",
+      article: "from-blue-500/70 to-indigo-600/70",
+      video: "from-purple-500/70 to-fuchsia-600/70",
+      tool: "from-cyan-500/70 to-sky-600/70",
+      paper: "from-red-500/70 to-rose-600/70"
     };
     
-    const config = typeConfig[resource.type] || { iconScale: 1.0, zIndex: 10 };
+    // Badge colors for different resource types
+    const typeBadgeColors: Record<string, string> = {
+      project: "bg-amber-500/20 text-amber-200 border-amber-500/30",
+      course: "bg-emerald-500/20 text-emerald-200 border-emerald-500/30",
+      article: "bg-blue-500/20 text-blue-200 border-blue-500/30",
+      video: "bg-purple-500/20 text-purple-200 border-purple-500/30",
+      tool: "bg-cyan-500/20 text-cyan-200 border-cyan-500/30",
+      paper: "bg-red-500/20 text-red-200 border-red-500/30"
+    };
     
     return (
       <div
         className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
-          isHighlighted ? "scale-105 z-50" : "hover:scale-102"
+          isHighlighted ? "scale-110 z-50" : "hover:scale-105"
         }`}
         style={{
           top: `${position.y * 100}%`,
           left: `${position.x * 100}%`,
-          zIndex: isHighlighted ? 50 : config.zIndex,
+          zIndex: isHighlighted ? 50 : 30,
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -891,52 +887,59 @@ export default function LearningMap() {
         <div className="flex flex-col items-center">
           {/* Resource title - only show on hover */}
           {isHovered && (
-            <div className="w-[120px] mb-2 text-center">
-              <div className="bg-blue-900/90 backdrop-blur-md px-2 py-1 rounded-lg text-xs text-white font-medium shadow-md border border-blue-400/30 truncate">
+            <div className="mb-2 text-center">
+              <div className="bg-blue-950/90 backdrop-blur-lg px-3 py-1.5 rounded-lg text-sm text-white font-medium shadow-lg border border-indigo-400/30 max-w-[180px]">
                 {resource.title}
               </div>
             </div>
           )}
           
-          {/* Main resource button - fixed size */}
+          {/* Main resource button - with improved premium styling */}
           <button
             onClick={onClick}
             className={`
-              w-16 h-16 rounded-lg flex items-center justify-center
+              w-16 h-16 rounded-xl flex items-center justify-center relative overflow-hidden
               ${isHighlighted ? "ring-2 ring-white/80 ring-offset-2 ring-offset-blue-950" : ""}
               ${isCompleted
-                ? "bg-blue-500 border-2 border-white/80"
-                : `${getTypeColor(resource.type)} border-2 border-white/40 backdrop-blur-sm`
+                ? "bg-gradient-to-br from-blue-500/80 to-indigo-600/80 border border-blue-300/40"
+                : `bg-gradient-to-br ${typeGradients[resource.type]} border border-white/20 backdrop-blur-md`
               }
               shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.35)]
               transition-all duration-200
             `}
           >
-            <div className={`transform scale-[${config.iconScale * 1.5}]`}>
+            {/* Animated glow effect on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.2),transparent_70%)]"></div>
+            
+            {/* Icon */}
+            <div className="relative z-10 transform scale-[1.5]">
               {resource.icon}
             </div>
             
+            {/* Animated subtle shine effect */}
+            <div className="absolute inset-0 opacity-20 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.4)_50%,transparent_75%)] bg-[length:250%_250%] animate-shine"></div>
+            
             {/* Resource glow effect */}
-            <div className="absolute inset-0 rounded-lg bg-gradient-radial from-white/20 to-transparent -z-10 blur-md"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-radial from-white/20 to-transparent -z-10 blur-md"></div>
           </button>
           
-          {/* Type badge - always show */}
-          <div className="mt-1">
-            <Badge className={`${getTypeColor(resource.type)} px-2 py-0.5 text-xs font-medium shadow-md`}>
+          {/* Type badge - always show with premium styling */}
+          <div className="mt-2">
+            <Badge className={`${typeBadgeColors[resource.type]} px-2.5 py-0.5 text-xs font-medium shadow-md border`}>
               {resource.type}
             </Badge>
           </div>
           
-          {/* View button - only show on hover */}
+          {/* View button - only show on hover with premium styling */}
           {isHovered && (
-            <div className="mt-1">
+            <div className="mt-2">
               <Button 
                 size="sm"
-                className="bg-blue-600/90 hover:bg-blue-700/90 text-white text-xs py-0 h-6 shadow-md"
+                className="bg-gradient-to-r from-blue-600/90 to-indigo-600/90 hover:from-blue-500/90 hover:to-indigo-500/90 text-white text-xs py-0 h-7 shadow-lg px-4 border border-blue-400/30"
                 asChild
               >
                 <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                  View
+                  Explore
                 </a>
               </Button>
             </div>
@@ -1029,7 +1032,7 @@ export default function LearningMap() {
     return positions;
   };
 
-  // Simpler header component
+  // Premium redesigned header component
   const TypeHeader = ({ type, position }: { type: string, position: { x: number, y: number } }) => {
     const typeLabels: Record<string, string> = {
       project: "Projects",
@@ -1040,28 +1043,33 @@ export default function LearningMap() {
       paper: "Papers"
     };
     
-    const typeColors: Record<string, string> = {
-      project: "bg-amber-600 text-white",
-      course: "bg-green-600 text-white",
-      article: "bg-blue-600 text-white",
-      video: "bg-purple-600 text-white",
-      tool: "bg-cyan-600 text-white",
-      paper: "bg-red-600 text-white"
+    // Gradient colors for different resource types
+    const typeGradients: Record<string, string> = {
+      project: "from-amber-500/70 to-orange-600/70",
+      course: "from-emerald-500/70 to-teal-600/70",
+      article: "from-blue-500/70 to-indigo-600/70",
+      video: "from-purple-500/70 to-fuchsia-600/70",
+      tool: "from-cyan-500/70 to-sky-600/70",
+      paper: "from-red-500/70 to-rose-600/70"
     };
     
     return (
-      <div
-        className="absolute transform -translate-x-1/2 z-30"
+      <div 
+        className="absolute transform -translate-x-1/2 -translate-y-1/2"
         style={{
           top: `${position.y * 100}%`,
-          left: `${position.x * 100}%`
+          left: `${position.x * 100}%`,
+          zIndex: 30,
         }}
       >
-        <div className={`
-          px-4 py-2 rounded-md ${typeColors[type] || "bg-gray-600"} 
-          font-semibold text-sm shadow-md border border-white/20
-        `}>
-          {typeLabels[type] || type}
+        <div className={`bg-gradient-to-r ${typeGradients[type] || "from-blue-500/70 to-indigo-600/70"} text-center px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 border border-white/20 backdrop-blur-md`}>
+          <div className="p-2 bg-white/10 rounded-lg shadow-inner border border-white/10">
+            {getResourceIcon(type as Resource['type'])}
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-white">{typeLabels[type]}</span>
+            <div className="h-0.5 mt-1 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+          </div>
         </div>
       </div>
     );
@@ -1347,18 +1355,20 @@ export default function LearningMap() {
             backgroundSize: '50px 50px'
           }}></div>
           
-          {/* Blueprint title stamp */}
-          <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-800 to-blue-900 border-2 border-blue-400/70 p-5 rounded-xl shadow-xl backdrop-blur-md">
-            <div className="text-white font-mono text-lg font-bold flex items-center">
-              <span className="text-blue-300 mr-2">⚡</span>
-              {zoomedNode ? 
-                (topics.find(topic => topic.id === zoomedNode)?.title?.toUpperCase() || "AI ENGINEERING BLUEPRINT") + " RESOURCES" : 
-                "AI ENGINEERING BLUEPRINT"
-              }
+          {/* Blueprint title stamp - enhanced with premium styling */}
+          <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-900/90 to-indigo-900/90 border border-indigo-400/40 p-5 rounded-xl shadow-xl backdrop-blur-md">
+            <div className="text-white font-mono text-xl font-bold flex items-center">
+              <span className="text-blue-300 mr-3 text-2xl">⚡</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">
+                {zoomedNode ? 
+                  (topics.find(topic => topic.id === zoomedNode)?.title?.toUpperCase() || "AI ENGINEERING BLUEPRINT") + " RESOURCES" : 
+                  "AI ENGINEERING BLUEPRINT"
+                }
+              </span>
             </div>
-            <div className="text-blue-300 font-mono text-sm mt-1 font-medium flex items-center">
-              <span className="bg-blue-400/20 px-2 py-0.5 rounded border border-blue-400/30 mr-2">DRAFT</span>
-              REV. 2025-A
+            <div className="text-blue-200 font-mono text-sm mt-2 font-medium flex items-center">
+              <span className="bg-blue-500/20 px-3 py-1 rounded-md border border-blue-400/30 mr-2">PREMIUM</span>
+              <span className="opacity-70">REV. 2025-A</span>
             </div>
           </div>
 

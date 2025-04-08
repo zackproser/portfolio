@@ -192,7 +192,7 @@ export default function HomepageClientComponent({
         </section>
         
         {/* AI Engineering Blueprint Section */}
-        <section className="w-full py-12 md:py-16 lg:py-24 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af]">
+        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af]">
           {/* Blueprint overlay pattern - more prominent */}
           <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
           
@@ -204,26 +204,21 @@ export default function HomepageClientComponent({
             
             {/* Blueprint document border */}
             <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
-            
-            {/* Engineering stamp */}
-            <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 bg-blue-900/70 backdrop-blur-sm p-3 rounded-full border border-white/10 transform rotate-[-5deg] hidden md:block">
-              <div className="font-mono text-xs text-white/40 tracking-tight">CONFIDENTIAL</div>
-            </div>
           </div>
           
           <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="mb-10 text-center">
-              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-4 border border-white/20 rounded-sm shadow-lg">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white font-mono uppercase">
+            <div className="mb-6 text-center">
+              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-mono uppercase">
                   AI Engineering Blueprint
                 </h2>
               </div>
-              <p className="mt-4 text-lg text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-4 rounded-lg">
+              <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
                 Master the most effective AI and agentic architectures, RAG pipelines, and machine learning concepts to transform your dev team and business. Taught via hands-on projects and production-ready implementations built by an engineer who actually did this work at top tech companies.
               </p>
             </div>
             
-            <div className="relative p-8 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
+            <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
               <LearningGrid />
             </div>
           </div>
