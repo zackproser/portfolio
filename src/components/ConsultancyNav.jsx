@@ -6,7 +6,26 @@ import { Menu, X, ChevronDown } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
 import { AuthStatus } from './AuthStatus'
-import { navItems } from './ConsultancyNav'
+
+// Export navigation items to be used in components
+export const navItems = [
+  { name: 'Services', href: '/services' },
+  { name: 'Work', dropdown: [
+    { name: 'Products', href: '/products' },
+    { name: 'Case Studies', href: '/projects' },
+    { name: 'Demos', href: '/demos' },
+    { name: 'Collections', href: '/collections' }
+  ]},
+  { name: 'Insights', dropdown: [
+    { name: 'Blog', href: '/blog' },
+    { name: 'Research', href: '/publications' },
+    { name: 'Tutorials', href: '/tutorials' },
+    { name: 'Vector Databases', href: '/vectordatabases' },
+    { name: 'Comparisons', href: '/comparisons' }
+  ]},
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' }
+];
 
 function DropdownMenu({ label, items }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +90,7 @@ function DropdownMenu({ label, items }) {
   );
 }
 
-export function SimpleNav() {
+export function ConsultancyNav() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const handleRouteChange = useCallback(() => {
@@ -140,4 +159,4 @@ export function SimpleNav() {
       <NavigationEvents onRouteChange={handleRouteChange} />
     </header>
   )
-}
+} 
