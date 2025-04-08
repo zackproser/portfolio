@@ -96,7 +96,7 @@ export const NeuralNetworkPulse = () => {
 
   if (!isMounted) {
     return (
-      <div className="w-[600px] h-[600px] flex items-center justify-center">
+      <div className="w-[500px] h-[500px] flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading visualization...</div>
       </div>
     );
@@ -164,7 +164,7 @@ export const NeuralNetworkPulse = () => {
   );
 
   return (
-    <div className={`relative w-[600px] h-[600px] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`relative w-[500px] h-[500px] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       <svg className="absolute top-0 left-0 w-full h-full">
         {typeof window !== 'undefined' && svgContent}
       </svg>
