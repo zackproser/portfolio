@@ -23,7 +23,7 @@ const NeuralNetworkPulse = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="w-[600px] h-[600px] flex items-center justify-center">
+      <div className="w-[500px] h-[500px] flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading visualization...</div>
       </div>
     )
@@ -108,9 +108,6 @@ export default function HomepageClientComponent({
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
                   AI Engineering Mastery for Teams That Ship
                 </h1>
-                <p className="text-lg text-gray-200 md:text-xl">
-                  <strong>Transform your dev team with battle-tested architectures, RAG pipelines, and AI strategies from an engineer who scaled systems at Cloudflare, Pinecone, and Fortune 500s.</strong>
-                </p>
                 <div className="mt-6">
                   <p className="text-yellow-400 font-bold text-xl mb-4">🔥 <span className="text-white">Free Tutorial</span>: <span className="text-blue-200">Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK.</span></p>
                 </div>
@@ -124,17 +121,16 @@ export default function HomepageClientComponent({
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="input-email flex-grow text-gray-900 dark:text-gray-100"
+                        className="input-email flex-grow text-white placeholder:text-white/70 bg-white/10 border-white/20"
                         required
                       />
-                      <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors">
+                      <Button type="submit" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold transition-colors">
                         Start with Free Tutorial
                       </Button>
                     </form>
                   )}
-                  <p className="text-xs text-gray-300 flex items-center">
+                  <p className="text-xs text-white flex items-center">
                     Join 900+ engineers learning to build what actually works
-                    <span className="ml-2 text-xs text-yellow-300">→ Unlock enterprise-grade AI frameworks</span>
                   </p>
                   <div className="mt-8">
                     <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>
@@ -182,14 +178,25 @@ export default function HomepageClientComponent({
               {!isMobile && (
                 <div className="flex-1 md:w-1/2 flex justify-center">
                   <Suspense fallback={
-                    <div className="w-[600px] h-[600px] flex items-center justify-center">
+                    <div className="w-[500px] h-[500px] flex items-center justify-center">
                       <div className="animate-pulse text-gray-400">Loading visualization...</div>
                     </div>
                   }>
-                    <NeuralNetworkPulse />
+                    <div className="scale-[0.833] origin-center">
+                      <NeuralNetworkPulse />
+                    </div>
                   </Suspense>
                 </div>
               )}
+            </div>
+            
+            {/* Scroll cue */}
+            <div className="flex justify-center mt-6">
+              <div className="animate-bounce bg-white/10 p-2 w-10 h-10 ring-1 ring-white/20 shadow-lg rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </div>
             </div>
           </div>
         </section>
