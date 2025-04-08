@@ -62,7 +62,7 @@ async function getCourseSegments(course: string) {
   }))
   
   // Filter out null values
-  const validSegments = segments.filter(segment => segment !== null)
+  const validSegments = segments.filter((segment): segment is { dir: string; meta: any } => segment !== null)
   
   // Group segments by header
   const groupedSegments = validSegments.reduce<Record<string, Array<{ dir: string; meta: any }>>>((acc, { dir, meta }) => {
