@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { Database, Brain, BookOpen, Sparkles, Zap, BarChart, Layers, Code, GitBranch } from "lucide-react"
+import { Database, Brain, BookOpen, Sparkles, Zap, BarChart, Layers, Code, GitBranch, Network, Settings, Scale, Wrench, FileText, Video, ScrollText, Laptop, Lock, Shield } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -15,175 +15,194 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { track } from '@vercel/analytics'
 
-interface Topic {
+interface BaseNode {
   id: string
   title: string
   description: string
   position: { x: number; y: number }
   icon: React.ReactNode
+  value: number
+}
+
+interface Topic extends BaseNode {
   resources: Resource[]
   difficulty: "beginner" | "intermediate" | "advanced"
   dependencies?: string[]
-  value: number
   phase: number
-  track?: string
+  track: string
+  isParent: boolean
 }
 
-interface Resource {
-  title: string
+interface Resource extends BaseNode {
   type: "article" | "video" | "course" | "tool" | "paper" | "project"
   url: string
-  description: string
+  parentId: string
+  isResource: boolean
+}
+
+type Node = Topic | Resource
+
+const isResource = (node: Node): node is Resource => {
+  return 'type' in node && 'url' in node
+}
+
+const isTopic = (node: Node): node is Topic => {
+  return 'resources' in node && 'difficulty' in node
+}
+
+// Add a constant for the local storage key
+const COMPLETED_TOPICS_KEY = "learning-map-completed-topics"
+
+// Helper function to get icon for resource type
+const getResourceIcon = (type: Resource['type']) => {
+  switch (type) {
+    case "article":
+      return <FileText className="h-5 w-5 text-white" />
+    case "video":
+      return <Video className="h-5 w-5 text-white" />
+    case "tool":
+      return <Wrench className="h-5 w-5 text-white" />
+    case "course":
+      return <Laptop className="h-5 w-5 text-white" />
+    case "paper":
+      return <ScrollText className="h-5 w-5 text-white" />
+    case "project":
+      return <BookOpen className="h-5 w-5 text-white" />
+    default:
+      return <FileText className="h-5 w-5 text-white" />
+  }
+}
+
+// Convert topics and their resources into nodes
+const getAllNodes = (topics: Topic[]): Node[] => {
+  const nodes: Node[] = []
+  
+  topics.forEach(topic => {
+    // Add the topic as a node
+    nodes.push({
+      ...topic,
+      isParent: true
+    })
+    
+    // Add each resource as a node with reference to parent
+    topic.resources.forEach((resource, idx) => {
+      const angle = (2 * Math.PI * idx) / topic.resources.length
+      const radius = 0.15 // Distance from parent node
+      
+      nodes.push({
+        ...resource,
+        id: `${topic.id}-resource-${idx}`,
+        parentId: topic.id,
+        position: {
+          x: topic.position.x + (Math.cos(angle) * radius),
+          y: topic.position.y + (Math.sin(angle) * radius)
+        },
+        icon: getResourceIcon(resource.type),
+        value: 0.3,
+        isResource: true
+      })
+    })
+  })
+  
+  return nodes
 }
 
 export default function LearningMap() {
-  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
-  const [completedTopics, setCompletedTopics] = useState<string[]>([])
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+  const [completedNodes, setCompletedNodes] = useState<string[]>([])
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-  const [hoveredTopic, setHoveredTopic] = useState<string | null>(null)
-  const [highlightedTopic, setHighlightedTopic] = useState<string | null>(null)
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+  const [highlightedNode, setHighlightedNode] = useState<string | null>(null)
+
+  // Load completed topics from local storage on initial render
+  useEffect(() => {
+    const savedCompletedTopics = localStorage.getItem(COMPLETED_TOPICS_KEY)
+    if (savedCompletedTopics) {
+      try {
+        const parsed = JSON.parse(savedCompletedTopics)
+        if (Array.isArray(parsed)) {
+          setCompletedNodes(parsed)
+        }
+      } catch (e) {
+        console.error("Error loading completed topics from local storage:", e)
+      }
+    }
+  }, [])
+
+  // Save completed topics to local storage whenever they change
+  useEffect(() => {
+    localStorage.setItem(COMPLETED_TOPICS_KEY, JSON.stringify(completedNodes))
+  }, [completedNodes])
 
   const topics: Topic[] = [
-    // Phase 1: Fundamentals
+    // Phase 0: Introductions
     {
-      id: "embeddings-basics",
-      title: "Embeddings Basics",
-      description:
-        "Learn the fundamentals of vector embeddings and how they represent semantic meaning in a mathematical space.",
-      position: { x: 0.2, y: 0.2 },
+      id: "tokenization-guide",
+      title: "How LLMs See Text",
+      description: "Interactive exploration of how large language models tokenize input.",
+      position: { x: 0.2, y: 0.05 },
       icon: <Database className="h-5 w-5 text-white" />,
       difficulty: "beginner",
-      value: 0.7,
-      phase: 1,
+      value: 0.4,
+      phase: 0,
       track: "core",
+      isParent: true,
       resources: [
         {
+          id: "tokenization-guide-1",
           title: "Interactive Tokenization Demo",
           type: "tool",
           url: "/demos/tokenize",
-          description: "See how text is tokenized for LLMs - the foundation of embeddings",
-        },
-        {
-          title: "Chat with My Blog Tutorial",
-          type: "project",
-          url: "/blog/langchain-pinecone-chat-with-my-blog",
-          description: "Create your first embedding-based search application",
-        },
-      ],
+          description: "How language models break down text input.",
+          parentId: "tokenization-guide",
+          position: { x: 0, y: 0 },
+          icon: <Wrench className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
     {
-      id: "llm-fundamentals",
-      title: "LLM Fundamentals",
-      description: "Understand how Large Language Models work, their architecture, and capabilities.",
-      position: { x: 0.5, y: 0.2 },
+      id: "embedding-intro",
+      title: "What Are Embeddings?",
+      description: "Learn how embedding models represent meaning numerically.",
+      position: { x: 0.5, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
-      value: 0.8,
-      phase: 1,
+      value: 0.4,
+      phase: 0,
       track: "core",
+      isParent: true,
       resources: [
         {
-          title: "Interactive Tokenization Demo",
+          id: "embedding-intro-1",
+          title: "Interactive Embeddings Demo",
           type: "tool",
-          url: "/demos/tokenize",
-          description: "Hands-on exploration of how LLMs process text input",
+          url: "/demos/embeddings",
+          description: "See how vectors are generated and compared.",
+          parentId: "embedding-intro",
+          position: { x: 0, y: 0 },
+          icon: <Wrench className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
         {
-          title: "Build a RAG Pipeline",
-          type: "project",
-          url: "/blog/rag-pipeline-tutorial",
-          description: "Create your first LLM-powered application",
-        },
-      ],
-    },
-
-    // Phase 2: Intermediate
-    {
-      id: "vector-databases",
-      title: "Vector Databases",
-      description: "Explore specialized databases for storing and querying vector embeddings efficiently.",
-      position: { x: 0.2, y: 0.4 },
-      icon: <Database className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.6,
-      phase: 2,
-      track: "data",
-      dependencies: ["embeddings-basics"],
-      resources: [
-        {
-          title: "Vector DB Comparison",
+          id: "embedding-intro-2",
+          title: "Introduction to Embeddings",
           type: "article",
-          url: "/comparisons/vector-databases",
-          description: "Comparing different vector database options",
-        },
-        {
-          title: "Build with Pinecone",
-          type: "project",
-          url: "/blog/langchain-pinecone-chat-with-my-blog",
-          description: "Create a production-ready vector search application",
-        },
-        {
-          title: "CI/CD with Cloud Vector Databases",
-          type: "article",
-          url: "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/ci-cd/",
-          description: "Learn best practices for integrating vector DBs into CI/CD.",
-        },
-      ],
-    },
-    {
-      id: "prompt-engineering",
-      title: "Prompt Engineering",
-      description: "Master the art of crafting effective prompts to get the best results from LLMs.",
-      position: { x: 0.5, y: 0.4 },
-      icon: <Sparkles className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.65,
-      phase: 2,
-      track: "core",
-      dependencies: ["llm-fundamentals"],
-      resources: [
-        {
-          title: "Interactive Tokenization Demo",
-          type: "tool",
-          url: "/demos/tokenize",
-          description: "Understand how your prompts are processed by the model",
-        },
-        {
-          title: "Build a RAG Pipeline",
-          type: "project",
-          url: "/blog/rag-pipeline-tutorial",
-          description: "Create prompt templates for consistent outputs",
-        },
-      ],
-    },
-    {
-      id: "langchain",
-      title: "LangChain",
-      description: "Build applications with LLMs through composable components and tools.",
-      position: { x: 0.8, y: 0.4 },
-      icon: <Code className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.75,
-      phase: 2,
-      track: "tools",
-      dependencies: ["llm-fundamentals"],
-      resources: [
-        {
-          title: "LangChain Quickstart",
-          type: "article",
-          url: "https://python.langchain.com/docs/get_started/quickstart",
-          description: "Get started with LangChain framework",
-        },
-        {
-          title: "Build a Document Q&A System",
-          type: "project",
-          url: "https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/",
-          description: "Create a system that answers questions about your documents",
-        },
-      ],
+          url: "/blog/introduction-to-embeddings",
+          description: "Core concepts behind vector representations of text.",
+          parentId: "embedding-intro",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
 
     // Phase 3: Advanced Applications
@@ -198,26 +217,81 @@ export default function LearningMap() {
       phase: 3,
       track: "data",
       dependencies: ["vector-databases", "prompt-engineering"],
+      isParent: true,
       resources: [
         {
-          title: "What is Retrieval Augmented Generation (RAG)?",
+          id: "rag-systems-1",
+          title: "What is Retrieval Augmented Generation?",
           type: "article",
           url: "https://www.pinecone.io/learn/retrieval-augmented-generation/",
-          description: "Introduction to RAG from Pinecone.",
+          description: "High-level overview from Pinecone.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
         {
-          title: "Building RAG Systems",
-          type: "article",
+          id: "rag-systems-2",
+          title: "Premium RAG Pipeline Tutorial",
+          type: "project",
           url: "/blog/rag-pipeline-tutorial",
-          description: "Comprehensive guide to RAG architecture",
+          description: "Full-featured tutorial using Vercel AI SDK and Next.js.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
         {
-          title: "Interactive Tokenization Demo",
-          type: "tool",
-          url: "/demos/tokenize",
-          description: "Optimize token usage in your RAG system prompts",
+          id: "rag-systems-3",
+          title: "Free LangChain + Pinecone RAG Walkthrough",
+          type: "project",
+          url: "/blog/langchain-pinecone-chat-with-my-blog",
+          description: "Build a simple RAG app using LangChain and Pinecone.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
-      ],
+        {
+          id: "rag-systems-4",
+          title: "YouTube: Build a Blog Chatbot with LangChain",
+          type: "video",
+          url: "https://www.youtube.com/watch?v=Bxj4btI3TzY&t=1s",
+          description: "Step-by-step video walkthrough of the free RAG tutorial.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <Video className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        },
+        {
+          id: "rag-systems-5",
+          title: "Live Chat With Your Data (Demo)",
+          type: "tool",
+          url: "/chat",
+          description: "Try the final product from the RAG pipeline tutorial — an interactive chatbot powered by your documents.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <Wrench className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        },
+        {
+          id: "rag-systems-6",
+          title: "Evaluating RAG in Production",
+          type: "article",
+          url: "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/rag-evaluation/",
+          description: "Evaluate quality and accuracy of your RAG pipeline in real-world use cases.",
+          parentId: "rag-systems",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
     {
       id: "fine-tuning",
@@ -230,108 +304,177 @@ export default function LearningMap() {
       phase: 3,
       track: "core",
       dependencies: ["prompt-engineering"],
+      isParent: true,
       resources: [
         {
-          title: "Fine-tuning Guide",
+          id: "fine-tuning-1",
+          title: "OpenAI Fine-tuning Guide",
           type: "article",
           url: "https://platform.openai.com/docs/guides/fine-tuning",
-          description: "OpenAI's guide to fine-tuning models",
+          description: "Step-by-step guide for fine-tuning OpenAI models.",
+          parentId: "fine-tuning",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
         {
+          id: "fine-tuning-2",
           title: "Build a Custom Assistant",
           type: "project",
           url: "https://platform.openai.com/docs/tutorials/fine-tuning",
-          description: "Create a specialized assistant for your domain",
+          description: "Create a fine-tuned assistant using your domain data.",
+          parentId: "fine-tuning",
+          position: { x: 0, y: 0 },
+          icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
-      ],
+        {
+          id: "fine-tuning-3",
+          title: "LoRA & QLoRA: Lightweight Fine-Tuning",
+          type: "article",
+          url: "/blog/what-is-lora-and-qlora",
+          description: "Intro to parameter-efficient fine-tuning techniques for modern LLMs.",
+          parentId: "fine-tuning",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
 
     // Phase 4: Specializations
     {
-      id: "multimodal-models",
-      title: "Multimodal AI",
-      description: "Explore models that can process and generate multiple types of data like text, images, and audio.",
-      position: { x: 0.5, y: 0.8 },
+      id: "scaling-vector-infra",
+      title: "Scaling Vector Infrastructure",
+      description: "Learn how to scale RAG systems and vector databases using serverless architecture.",
+      position: { x: 0.5, y: 0.7 },
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
-      value: 0.45,
-      phase: 4,
-      track: "specialization",
-      dependencies: ["fine-tuning"],
-      resources: [
-        {
-          title: "Multimodal Learning",
-          type: "paper",
-          url: "https://arxiv.org/abs/2206.06488",
-          description: "Research on multimodal foundation models",
-        },
-        {
-          title: "Build a Vision+Language App",
-          type: "project",
-          url: "https://platform.openai.com/docs/guides/vision",
-          description: "Create an application that processes images and text",
-        },
-      ],
-    },
-    {
-      id: "evaluation-metrics",
-      title: "LLM Evaluation",
-      description: "Learn how to evaluate and benchmark LLM performance across different tasks and domains.",
-      position: { x: 0.2, y: 0.8 },
-      icon: <BarChart className="h-5 w-5 text-white" />,
-      difficulty: "advanced",
-      value: 0.5,
+      value: 0.55,
       phase: 4,
       track: "specialization",
       dependencies: ["rag-systems"],
+      isParent: true,
       resources: [
         {
-          title: "LLM Evaluation Guide",
+          id: "scaling-vector-infra-1",
+          title: "Scaling Pinecone with Serverless",
           type: "article",
-          url: "https://huggingface.co/blog/evaluating-mmlu-leaderboard",
-          description: "Comprehensive guide to LLM evaluation metrics",
-        },
-        {
-          title: "Build an Evaluation Pipeline",
-          type: "project",
-          url: "https://crfm.stanford.edu/helm/latest/",
-          description: "Create a system to benchmark your LLM applications",
-        },
-        {
-          title: "RAG Evaluation Guide",
-          type: "article",
-          url: "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/rag-evaluation/",
-          description: "Learn how to evaluate your RAG pipelines effectively.",
-        },
-      ],
+          url: "https://www.pinecone.io/learn/scaling-pinecone-serverless/",
+          description: "Best practices for scaling vector search systems with Pinecone's serverless tech.",
+          parentId: "scaling-vector-infra",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
     {
-      id: "agents",
-      title: "AI Agents",
-      description: "Build autonomous AI systems that can plan and execute complex tasks.",
-      position: { x: 0.8, y: 0.8 },
-      icon: <GitBranch className="h-5 w-5 text-white" />,
+      id: "secure-rag-fga",
+      title: "Secure RAG with Fine-Grained Authorization",
+      description: "Learn how to restrict access to RAG application results based on user identity and document permissions.",
+      position: { x: 0.35, y: 0.85 },
+      icon: <Lock className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.6,
       phase: 4,
       track: "specialization",
-      dependencies: ["langchain", "fine-tuning"],
+      dependencies: ["rag-systems", "fine-tuning"],
+      isParent: true,
       resources: [
         {
-          title: "AI Agents Architecture",
+          id: "secure-rag-fga-1",
+          title: "Tutorial: Secure RAG Apps with WorkOS FGA",
           type: "article",
-          url: "https://lilianweng.github.io/posts/2023-06-23-agent/",
-          description: "Deep dive into AI agent architectures",
+          url: "https://workos.com/blog/how-to-secure-rag-applications-with-fine-grained-authorization-tutorial-with-code",
+          description: "Step-by-step guide to applying fine-grained access control to RAG applications.",
+          parentId: "secure-rag-fga",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         },
         {
-          title: "Build an Autonomous Agent",
+          id: "secure-rag-fga-2",
+          title: "Companion Code Repo",
           type: "project",
-          url: "https://python.langchain.com/docs/modules/agents/",
-          description: "Create an agent that can solve complex tasks",
-        },
-      ],
+          url: "https://github.com/zackproser-workos/fga-pinecone-poc",
+          description: "Source code and implementation example of secure RAG using WorkOS FGA + Pinecone.",
+          parentId: "secure-rag-fga",
+          position: { x: 0, y: 0 },
+          icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
     },
+    {
+      id: "doc-access-control-fga",
+      title: "Document Access Control with FGA & AWS",
+      description: "Build access control using S3, Lambda Authorizers, and WorkOS FGA to secure document-based systems.",
+      position: { x: 0.65, y: 0.85 },
+      icon: <Shield className="h-5 w-5 text-white" />,
+      difficulty: "advanced",
+      value: 0.55,
+      phase: 4,
+      track: "specialization",
+      dependencies: ["secure-rag-fga"],
+      isParent: true,
+      resources: [
+        {
+          id: "doc-access-control-fga-1",
+          title: "Tutorial: Access Control with S3, Lambda, and WorkOS FGA",
+          type: "article",
+          url: "https://workos.com/blog/how-to-build-document-access-control-with-s3-workos-fga-and-lambda-authorizers",
+          description: "Guide to securing access to documents using AWS services and WorkOS FGA.",
+          parentId: "doc-access-control-fga",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        },
+        {
+          id: "doc-access-control-fga-2",
+          title: "Companion Code Repo",
+          type: "project",
+          url: "https://github.com/zackproser-workos/aws-lambda-authorizer-fga-cdk",
+          description: "Infrastructure-as-code example of secure access enforcement using AWS CDK and FGA.",
+          parentId: "doc-access-control-fga",
+          position: { x: 0, y: 0 },
+          icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    }
   ]
+
+  // Convert topics to nodes including resources
+  const nodes = getAllNodes(topics)
+
+  // Track node interactions
+  const trackNodeInteraction = (node: Node, action: string) => {
+    track('learning_map_interaction', {
+      node_id: node.id,
+      node_type: isResource(node) ? 'resource' : 'topic',
+      action,
+      node_title: node.title
+    })
+  }
+
+  const toggleCompleted = (nodeId: string) => {
+    trackNodeInteraction(nodes.find(n => n.id === nodeId)!, 'toggle_completion')
+    setCompletedNodes((prev) => {
+      const newCompleted = prev.includes(nodeId) 
+        ? prev.filter((id) => id !== nodeId)
+        : [...prev, nodeId]
+      return newCompleted
+    })
+  }
 
   useEffect(() => {
     if (containerRef.current) {
@@ -369,16 +512,16 @@ export default function LearningMap() {
     drawPhaseLines(ctx, canvas.width, canvas.height)
 
     // Draw connections between topics
-    topics.forEach((topic) => {
-      if (topic.dependencies) {
-        topic.dependencies.forEach((depId) => {
-          const depTopic = topics.find((t) => t.id === depId)
-          if (!depTopic) return
+    nodes.forEach((node) => {
+      if (isTopic(node) && node.dependencies) {
+        node.dependencies.forEach((depId) => {
+          const depNode = nodes.find((n) => n.id === depId)
+          if (!depNode) return
 
-          const fromX = depTopic.position.x * canvas.width
-          const fromY = depTopic.position.y * canvas.height
-          const toX = topic.position.x * canvas.width
-          const toY = topic.position.y * canvas.height
+          const fromX = depNode.position.x * canvas.width
+          const fromY = depNode.position.y * canvas.height
+          const toX = node.position.x * canvas.width
+          const toY = node.position.y * canvas.height
 
           // Draw blueprint-style connection
           drawBlueprintConnection(
@@ -387,11 +530,11 @@ export default function LearningMap() {
             fromY,
             toX,
             toY,
-            completedTopics.includes(depId) && completedTopics.includes(topic.id),
-            hoveredTopic === topic.id ||
-              hoveredTopic === depId ||
-              highlightedTopic === topic.id ||
-              highlightedTopic === depId,
+            completedNodes.includes(depId) && completedNodes.includes(node.id),
+            hoveredNode === node.id ||
+              hoveredNode === depId ||
+              highlightedNode === node.id ||
+              highlightedNode === depId,
           )
         })
       }
@@ -399,10 +542,10 @@ export default function LearningMap() {
 
     // Draw annotations
     drawBlueprintAnnotations(ctx, canvas.width, canvas.height)
-  }, [dimensions, completedTopics, hoveredTopic, highlightedTopic, topics])
+  }, [dimensions, completedNodes, hoveredNode, highlightedNode, nodes])
 
   const drawBlueprintGrid = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    // Draw grid
+    // Draw minimal grid
     ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"
     ctx.lineWidth = 1
 
@@ -421,63 +564,20 @@ export default function LearningMap() {
       ctx.lineTo(width, y)
       ctx.stroke()
     }
-
-    // Draw main coordinate axes
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"
-    ctx.lineWidth = 2
-
-    // Vertical center line
-    ctx.beginPath()
-    ctx.moveTo(width / 2, 0)
-    ctx.lineTo(width / 2, height)
-    ctx.stroke()
-
-    // Horizontal center line
-    ctx.beginPath()
-    ctx.moveTo(0, height / 2)
-    ctx.lineTo(width, height / 2)
-    ctx.stroke()
   }
 
   const drawPhaseLines = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    const phasePositions = [0.1, 0.3, 0.5, 0.7, 0.9]
-    const phaseLabels = [
-      "PHASE 1: FUNDAMENTALS",
-      "PHASE 2: INTERMEDIATE",
-      "PHASE 3: ADVANCED",
-      "PHASE 4: SPECIALIZATIONS",
-    ]
-
-    // Draw horizontal phase separator lines
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.15)"
-    ctx.lineWidth = 2
+    // Only draw subtle grid lines without phase labels
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)"
+    ctx.lineWidth = 1
     ctx.setLineDash([10, 5])
 
-    phasePositions.slice(1).forEach((y, i) => {
+    const phasePositions = [0.1, 0.3, 0.5, 0.7, 0.9]
+    phasePositions.slice(1).forEach(y => {
       ctx.beginPath()
       ctx.moveTo(0, y * height)
       ctx.lineTo(width, y * height)
       ctx.stroke()
-
-      // Add phase label with improved rendering
-      if (i < phaseLabels.length) {
-        // Clear a small background area for the text to improve readability
-        const textWidth = ctx.measureText(phaseLabels[i]).width
-        ctx.fillStyle = "rgba(30, 58, 138, 0.9)" // More opaque background
-        ctx.fillRect(15, (y - 0.1) * height + 5, textWidth + 20, 28) // Larger background
-
-        // Add a light border for better visibility
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
-        ctx.lineWidth = 1
-        ctx.strokeRect(15, (y - 0.1) * height + 5, textWidth + 20, 28)
-
-        // Draw text with crisp rendering
-        ctx.font = "bold 14px monospace"
-        ctx.fillStyle = "rgba(255, 255, 255, 0.95)" // More visible text
-        ctx.textAlign = "left"
-        ctx.textBaseline = "middle"
-        ctx.fillText(phaseLabels[i], 25, (y - 0.1) * height + 18) // Adjust text position
-      }
     })
 
     ctx.setLineDash([])
@@ -490,10 +590,10 @@ export default function LearningMap() {
     toX: number,
     toY: number,
     isCompleted: boolean,
-    isHovered: boolean,
+    isHighlighted: boolean,
   ) => {
     // Set line style based on completion and hover state
-    if (isHovered) {
+    if (isHighlighted) {
       ctx.strokeStyle = "rgba(255, 255, 255, 0.9)"
       ctx.lineWidth = 3
     } else if (isCompleted) {
@@ -545,77 +645,22 @@ export default function LearningMap() {
   }
 
   const drawBlueprintAnnotations = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    // Add some blueprint-style annotations
+    // Only keep the title stamp and remove coordinate markers
     ctx.font = "12px monospace"
-    ctx.fillStyle = "rgba(255, 255, 255, 0.6)" // More visible annotation text
-
-    // Add coordinate markers
-    for (let x = 100; x < width; x += 100) {
-      // Create a small background for the coordinates
-      ctx.fillStyle = "rgba(30, 58, 138, 0.8)"
-      const coordText = `${x}px`
-      const textWidth = ctx.measureText(coordText).width
-      ctx.fillRect(x + 2, 5, textWidth + 6, 16)
-      
-      // Draw the coordinate text
-      ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-      ctx.fillText(coordText, x + 5, 15)
-
-      // Small tick marks
-      ctx.beginPath()
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, 8)
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)" // More visible tick marks
-      ctx.lineWidth = 1
-      ctx.stroke()
-    }
-
-    for (let y = 100; y < height; y += 100) {
-      // Create a small background for the coordinates
-      ctx.fillStyle = "rgba(30, 58, 138, 0.8)"
-      const coordText = `${y}px`
-      const textWidth = ctx.measureText(coordText).width
-      ctx.fillRect(2, y - 15, textWidth + 6, 16)
-      
-      // Draw the coordinate text
-      ctx.fillStyle = "rgba(255, 255, 255, 0.8)"
-      ctx.fillText(coordText, 5, y - 5)
-
-      // Small tick marks
-      ctx.beginPath()
-      ctx.moveTo(0, y)
-      ctx.lineTo(8, y)
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)" // More visible tick marks
-      ctx.lineWidth = 1
-      ctx.stroke()
-    }
-
-    // Add blueprint title and scale
-    // Title at bottom left
-    ctx.font = "10px monospace"
-    ctx.fillStyle = "rgba(30, 58, 138, 0.9)"
-    ctx.fillRect(5, height - 20, 230, 16)
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
-    ctx.strokeRect(5, height - 20, 230, 16)
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)"
-    ctx.fillText("AI ENGINEERING BLUEPRINT v1.0", 10, height - 10)
     
-    // Scale at bottom right
-    ctx.fillStyle = "rgba(30, 58, 138, 0.9)"
-    ctx.fillRect(width - 105, height - 20, 100, 16)
+    // Add blueprint-like title stamp
+    ctx.fillStyle = "rgba(30, 58, 138, 0.8)"
+    const stampWidth = 200
+    const stampHeight = 40
+    ctx.fillRect(10, 10, stampWidth, stampHeight)
     ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
-    ctx.strokeRect(width - 105, height - 20, 100, 16)
+    ctx.strokeRect(10, 10, stampWidth, stampHeight)
+    
     ctx.fillStyle = "rgba(255, 255, 255, 0.9)"
-    ctx.fillText("SCALE: 1:100", width - 100, height - 10)
-  }
-
-  const toggleCompleted = (topicId: string) => {
-    setCompletedTopics((prev) => (prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]))
-  }
-
-  const isTopicAccessible = (topic: Topic) => {
-    if (!topic.dependencies) return true
-    return topic.dependencies.every((dep) => completedTopics.includes(dep))
+    ctx.font = "14px monospace"
+    ctx.fillText("AI ENGINEERING BLUEPRINT", 20, 30)
+    ctx.font = "10px monospace"
+    ctx.fillText("REV. 2025-A", 20, 42)
   }
 
   const getTypeColor = (type: string) => {
@@ -652,333 +697,75 @@ export default function LearningMap() {
     }
   }
 
-  // Group topics by phase
-  const topicsByPhase = topics.reduce(
-    (acc, topic) => {
-      if (!acc[topic.phase]) {
-        acc[topic.phase] = []
-      }
-      acc[topic.phase].push(topic)
-      return acc
-    },
-    {} as Record<number, Topic[]>,
-  )
-
   return (
     <div className="w-full flex flex-col md:flex-row gap-8">
       <div className="w-full md:w-1/3">
         <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/10 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-          <h2 className="text-2xl font-bold text-white mb-4">Learning Path</h2>
-          <p className="text-white/80 mb-6">
-            Follow this structured path to master AI concepts from fundamentals to advanced applications.
-          </p>
-
-          <div className="space-y-6">
-            {Object.entries(topicsByPhase).map(([phase, phaseTopics]) => (
-              <div key={phase} className="space-y-3">
-                <h3 className="text-white/90 font-bold border-b border-white/20 pb-2">
-                  Phase {phase}:{" "}
-                  {phase === "1"
-                    ? "Fundamentals"
-                    : phase === "2"
-                      ? "Intermediate"
-                      : phase === "3"
-                        ? "Advanced"
-                        : "Specializations"}
-                </h3>
-                <div className="space-y-3">
-                  {phaseTopics.map((topic) => {
-                    const isCompleted = completedTopics.includes(topic.id)
-                    const isAccessible = isTopicAccessible(topic)
-                    const isHighlighted = hoveredTopic === topic.id || highlightedTopic === topic.id
-
-                    return (
-                      <div
-                        key={topic.id}
-                        className={`p-4 rounded-lg transition-all border ${
-                          isHighlighted ? "border-white/50 shadow-glow" : "border-white/10"
-                        } ${
-                          isCompleted
-                            ? "bg-white/20"
-                            : isAccessible
-                              ? "bg-white/10 hover:bg-white/15"
-                              : "bg-white/5 opacity-50"
-                        }`}
-                        onMouseEnter={() => {
-                          setHoveredTopic(topic.id)
-                          setHighlightedTopic(topic.id)
-                        }}
-                        onMouseLeave={() => {
-                          setHoveredTopic(null)
-                          setHighlightedTopic(null)
-                        }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-8 h-8 rounded-full ${getTrackColor(topic.track || "")} flex items-center justify-center`}
-                            >
-                              {topic.icon}
-                            </div>
-                            <div>
-                              <h3 className="font-medium text-white">{topic.title}</h3>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge className="bg-blue-500/20 text-white border-0 text-xs">{topic.difficulty}</Badge>
-                                {isCompleted && (
-                                  <Badge className="bg-green-500/20 text-white border-0 text-xs">Completed</Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-                                disabled={!isAccessible}
-                              >
-                                Explore
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="bg-[#1e3a8a] border-white/10 text-white">
-                              <DialogHeader>
-                                <DialogTitle className="flex items-center gap-2 text-xl text-white">
-                                  <div
-                                    className={`w-8 h-8 rounded-full ${getTrackColor(topic.track || "")} flex items-center justify-center`}
-                                  >
-                                    {topic.icon}
-                                  </div>
-                                  <span>{topic.title}</span>
-                                  <Badge className="ml-2 bg-blue-500/20 border-0">{topic.difficulty}</Badge>
-                                </DialogTitle>
-                                <DialogDescription className="text-white/70 mt-2">
-                                  {topic.description}
-                                  {!isAccessible && topic.dependencies && (
-                                    <div className="mt-2 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-md text-yellow-200">
-                                      ⚠️ This topic is locked. Complete the prerequisites below to unlock it.
-                                    </div>
-                                  )}
-                                </DialogDescription>
-                              </DialogHeader>
-
-                              <div className="grid gap-4 py-4">
-                                <h3 className="text-lg font-semibold text-white">Learning Resources</h3>
-                                <div className="grid gap-3">
-                                  {topic.resources.map((resource, idx) => (
-                                    <Card key={idx} className="bg-white/10 border-white/10">
-                                      <CardHeader className="py-3">
-                                        <CardTitle className="text-md flex items-center gap-2 text-white">
-                                          {resource.title}
-                                          <Badge className={`${getTypeColor(resource.type)}`}>{resource.type}</Badge>
-                                          {resource.type === "tool" && (
-                                            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Interactive</Badge>
-                                          )}
-                                        </CardTitle>
-                                      </CardHeader>
-                                      <CardContent className="py-2">
-                                        <CardDescription className="text-white/70">
-                                          {resource.description}
-                                        </CardDescription>
-                                      </CardContent>
-                                      <CardFooter className="pt-0">
-                                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
-                                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                                            Explore Resource
-                                          </a>
-                                        </Button>
-                                      </CardFooter>
-                                    </Card>
-                                  ))}
-                                </div>
-                              </div>
-
-                              <div className="flex justify-between">
-                                <Button
-                                  variant={isCompleted ? "destructive" : "default"}
-                                  className={
-                                    isCompleted ? "bg-red-500 hover:bg-red-600" : "bg-blue-600 hover:bg-blue-700"
-                                  }
-                                  onClick={() => toggleCompleted(topic.id)}
-                                >
-                                  {isCompleted ? "Mark as Incomplete" : "Mark as Completed"}
-                                </Button>
-
-                                {topic.dependencies && topic.dependencies.length > 0 && (
-                                  <div className="text-sm text-white/60 flex items-center">
-                                    <span className="mr-2">Prerequisites:</span>
-                                    <div className="flex gap-1">
-                                      {topic.dependencies.map((dep) => {
-                                        const depTopic = topics.find((t) => t.id === dep)
-                                        if (!depTopic) return null
-                                        return (
-                                          <Badge
-                                            key={dep}
-                                            variant="outline"
-                                            className={`${
-                                              completedTopics.includes(dep)
-                                                ? "bg-green-500/20 text-white border-green-500/30"
-                                                : "bg-white/10 text-white/70 border-white/20"
-                                            }`}
-                                          >
-                                            {depTopic.title.split(" ")[0]}
-                                          </Badge>
-                                        )
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-                      </div>
-                    )
-                  })}
+          {selectedNode ? (
+            <div>
+              <Button 
+                variant="ghost" 
+                className="mb-4 text-white/70 hover:text-white"
+                onClick={() => {
+                  trackNodeInteraction(selectedNode, 'deselect')
+                  setSelectedNode(null)
+                }}
+              >
+                ← Back to Overview
+              </Button>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full ${getTrackColor('isResource' in selectedNode ? selectedNode.type : selectedNode.track || "")} flex items-center justify-center`}>
+                    {'isResource' in selectedNode ? getResourceIcon(selectedNode.type) : selectedNode.icon}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">{selectedNode.title}</h2>
+                    {'isResource' in selectedNode ? (
+                      <Badge className={`${getTypeColor(selectedNode.type)}`}>{selectedNode.type}</Badge>
+                    ) : (
+                      <Badge className="bg-blue-500/20 text-white border-0">{selectedNode.difficulty}</Badge>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
 
-          <div className="mt-8 p-4 bg-white/10 rounded-lg border border-white/10">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-bold text-white">Your Progress</h3>
-              <span className="text-white/80">
-                {completedTopics.length}/{topics.length} Topics
-              </span>
-            </div>
-            <div className="w-full bg-white/10 rounded-full h-2">
-              <div
-                className="bg-blue-500 h-2 rounded-full"
-                style={{ width: `${(completedTopics.length / topics.length) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
-      </div>
+                <p className="text-white/80">{selectedNode.description}</p>
 
-      <div className="w-full md:w-2/3 relative" ref={containerRef}>
-        <div className="aspect-square w-full relative bg-[#1e3a8a]/50 rounded-lg border border-white/10 overflow-hidden shadow-xl">
-          {/* Blueprint pattern overlay */}
-          <div className="absolute inset-0 bg-blueprint opacity-30"></div>
-          
-          {/* Add blueprint paper texture appearance */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-          
-          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-
-          {/* Topic nodes */}
-          {topics.map((topic) => {
-            const isCompleted = completedTopics.includes(topic.id)
-            const isAccessible = isTopicAccessible(topic)
-            const isHovered = hoveredTopic === topic.id
-            const isHighlighted = hoveredTopic === topic.id || highlightedTopic === topic.id
-
-            return (
-              <Dialog key={topic.id}>
-                <DialogTrigger asChild>
-                  <button
-                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                      isHighlighted ? "scale-125 z-10" : ""
-                    }`}
-                    style={{
-                      top: `${topic.position.y * 100}%`,
-                      left: `${topic.position.x * 100}%`,
-                    }}
-                    onMouseEnter={() => {
-                      setHoveredTopic(topic.id)
-                      setHighlightedTopic(topic.id)
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredTopic(null)
-                      setHighlightedTopic(null)
-                    }}
+                {'isResource' in selectedNode ? (
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4" 
+                    asChild
+                    onClick={() => trackNodeInteraction(selectedNode, 'explore_resource')}
                   >
-                    <div
-                      className={`relative flex items-center justify-center rounded-full ${
-                        isHighlighted ? "ring-2 ring-white shadow-glow" : ""
-                      } ${
-                        isCompleted
-                          ? "bg-blue-500 border-2 border-white/50"
-                          : isAccessible
-                            ? `${getTrackColor(topic.track || "")} border border-white/30`
-                            : "bg-white/20 border border-white/10"
-                      }`}
-                      style={{
-                        width: `${Math.max(40, topic.value * 60)}px`,
-                        height: `${Math.max(40, topic.value * 60)}px`,
-                      }}
-                    >
-                      {topic.icon}
-
-                      {/* Blueprint-style measurement lines */}
-                      {isHovered && (
-                        <>
-                          <div className="absolute -top-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
-                          <div className="absolute -bottom-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
-                          <div className="absolute top-1/2 -left-8 w-8 h-px border-t border-dashed border-white/40"></div>
-                          <div className="absolute top-1/2 -right-8 w-8 h-px border-t border-dashed border-white/40"></div>
-                        </>
-                      )}
-
-                      {isHovered && (
-                        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded text-white text-xs whitespace-nowrap border border-white/20">
-                          {topic.title}
-                        </div>
-                      )}
-
-                      {topic.value && (
-                        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded text-white text-xs border border-white/20">
-                          {topic.value.toFixed(2)}
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="bg-[#1e3a8a] border-white/10 text-white">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-xl text-white">
-                      <div
-                        className={`w-8 h-8 rounded-full ${getTrackColor(topic.track || "")} flex items-center justify-center`}
-                      >
-                        {topic.icon}
-                      </div>
-                      <span>{topic.title}</span>
-                      <Badge className="ml-2 bg-blue-500/20 border-0">{topic.difficulty}</Badge>
-                    </DialogTitle>
-                    <DialogDescription className="text-white/70 mt-2">
-                      {topic.description}
-                      {!isAccessible && topic.dependencies && (
-                        <div className="mt-2 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-md text-yellow-200">
-                          ⚠️ This topic is locked. Complete the prerequisites below to unlock it.
-                        </div>
-                      )}
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <div className="grid gap-4 py-4">
+                    <a href={selectedNode.url} target="_blank" rel="noopener noreferrer">
+                      Explore Resource
+                    </a>
+                  </Button>
+                ) : (
+                  <div className="space-y-4 mt-4">
                     <h3 className="text-lg font-semibold text-white">Learning Resources</h3>
                     <div className="grid gap-3">
-                      {topic.resources.map((resource, idx) => (
+                      {selectedNode.resources.map((resource, idx) => (
                         <Card key={idx} className="bg-white/10 border-white/10">
                           <CardHeader className="py-3">
                             <CardTitle className="text-md flex items-center gap-2 text-white">
                               {resource.title}
-                              <Badge className={`ml-auto ${getTypeColor(resource.type)}`}>
-                                {resource.type}
-                              </Badge>
+                              <Badge className={`${getTypeColor(resource.type)}`}>{resource.type}</Badge>
+                              {resource.type === "tool" && (
+                                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Interactive</Badge>
+                              )}
                             </CardTitle>
+                          </CardHeader>
+                          <CardContent className="py-2">
                             <CardDescription className="text-white/70">
                               {resource.description}
                             </CardDescription>
-                          </CardHeader>
-                          <CardFooter className="pt-0 pb-3">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                          </CardContent>
+                          <CardFooter className="pt-0">
+                            <Button 
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
                               asChild
+                              onClick={() => trackNodeInteraction(resource, 'explore_resource')}
                             >
                               <a href={resource.url} target="_blank" rel="noopener noreferrer">
                                 Explore Resource
@@ -989,48 +776,118 @@ export default function LearningMap() {
                       ))}
                     </div>
                   </div>
+                )}
 
-                  <div className="mt-4 pt-4 border-t border-white/10 flex justify-between">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-                      onClick={() => toggleCompleted(topic.id)}
-                    >
-                      {completedTopics.includes(topic.id) ? "Mark as Incomplete" : "Mark as Completed"}
-                    </Button>
-                  </div>
+                <Button
+                  variant={completedNodes.includes(selectedNode.id) ? "destructive" : "default"}
+                  className={
+                    completedNodes.includes(selectedNode.id)
+                      ? "bg-red-500 hover:bg-red-600 w-full mt-4" 
+                      : "bg-blue-600 hover:bg-blue-700 w-full mt-4"
+                  }
+                  onClick={() => toggleCompleted(selectedNode.id)}
+                >
+                  {completedNodes.includes(selectedNode.id) ? "Mark as Incomplete" : "Mark as Completed"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-white mb-4">Learning Path</h2>
+              <p className="text-white/80 mb-6">
+                Follow this structured path to master AI concepts from fundamentals to advanced applications.
+              </p>
 
-                  {topic.dependencies && topic.dependencies.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-white/10">
-                      <div className="text-sm font-medium text-white/70">Prerequisites:</div>
-                      <div className="flex gap-2 mt-2 flex-wrap">
-                        {topic.dependencies.map((depId) => {
-                          const depTopic = topics.find((t) => t.id === depId)
-                          if (!depTopic) return null
-                          return (
-                            <Badge 
-                              key={depId} 
-                              className={`
-                                ${completedTopics.includes(depId) ? "bg-green-500/20" : "bg-white/10"}
-                                text-white border-0
-                              `}
-                            >
-                              {depTopic.title}
-                            </Badge>
-                          )
-                        })}
+              <div className="mt-8 p-4 bg-white/10 rounded-lg border border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-bold text-white">Your Progress</h3>
+                  <span className="text-white/80">
+                    {completedNodes.length}/{nodes.length} Completed
+                  </span>
+                </div>
+                <div className="w-full bg-white/10 rounded-full h-2">
+                  <div
+                    className="bg-blue-500 h-2 rounded-full"
+                    style={{ width: `${(completedNodes.length / nodes.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="w-full md:w-2/3 relative" ref={containerRef}>
+        <div className="aspect-square w-full relative bg-[#1e3a8a]/50 rounded-lg border border-white/10 overflow-hidden shadow-xl">
+          <div className="absolute inset-0 bg-blueprint opacity-30"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+          {nodes.map((node) => {
+            const isCompleted = completedNodes.includes(node.id)
+            const isHovered = hoveredNode === node.id
+            const isHighlighted = hoveredNode === node.id || highlightedNode === node.id
+            const isResource = 'type' in node && 'url' in node
+
+            return (
+              <button
+                key={node.id}
+                className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
+                  isHighlighted ? "scale-125 z-10" : ""
+                }`}
+                style={{
+                  top: `${node.position.y * 100}%`,
+                  left: `${node.position.x * 100}%`,
+                }}
+                onClick={() => {
+                  trackNodeInteraction(node, 'select')
+                  setSelectedNode(node)
+                }}
+                onMouseEnter={() => {
+                  trackNodeInteraction(node, 'hover')
+                  setHoveredNode(node.id)
+                  setHighlightedNode(node.id)
+                }}
+                onMouseLeave={() => {
+                  setHoveredNode(null)
+                  setHighlightedNode(null)
+                }}
+              >
+                <div
+                  className={`relative flex items-center justify-center rounded-full ${
+                    isHighlighted ? "ring-2 ring-white shadow-glow" : ""
+                  } ${
+                    isCompleted
+                      ? "bg-blue-500 border-2 border-white/50"
+                      : `${isResource ? getTypeColor(node.type) : getTrackColor(node.track || "")} border border-white/30`
+                  }`}
+                  style={{
+                    width: `${Math.max(30, (node.value || 0.3) * 60)}px`,
+                    height: `${Math.max(30, (node.value || 0.3) * 60)}px`,
+                  }}
+                >
+                  {node.icon}
+
+                  {isHovered && (
+                    <>
+                      <div className="absolute -top-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
+                      <div className="absolute -bottom-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
+                      <div className="absolute top-1/2 -left-8 w-8 h-px border-t border-dashed border-white/40"></div>
+                      <div className="absolute top-1/2 -right-8 w-8 h-px border-t border-dashed border-white/40"></div>
+
+                      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded text-white text-xs whitespace-nowrap border border-white/20">
+                        {node.title}
                       </div>
-                    </div>
+                    </>
                   )}
-                </DialogContent>
-              </Dialog>
+                </div>
+              </button>
             )
           })}
 
-          {/* Blueprint legend - Ensuring this and subsequent code is not deleted */}
+          {/* Blueprint legend - Simplified */}
           <div className="absolute bottom-4 right-4 bg-[#1e3a8a]/80 backdrop-blur-sm p-3 rounded border border-white/20 text-xs text-white/70 shadow-lg">
-            <div className="font-bold text-white mb-2">BLUEPRINT LEGEND</div>
+            <div className="font-bold text-white mb-2">LEGEND</div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-2">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full bg-blue-500/30"></div>
@@ -1048,21 +905,7 @@ export default function LearningMap() {
                 <div className="w-3 h-3 rounded-full bg-purple-500/30"></div>
                 <span>Specialization</span>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="w-6 h-px border-t border-dashed border-white/40"></div>
-                <span>Dependency</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-6 h-px border-t border-blue-500/80"></div>
-                <span>Completed Path</span>
-              </div>
             </div>
-          </div>
-          
-          {/* Add blueprint-like title stamp */}
-          <div className="absolute top-4 left-4 bg-[#1e3a8a]/80 backdrop-blur-sm px-4 py-2 rounded border border-white/20 text-sm text-white/90 shadow-lg transform rotate-[-1deg]">
-            <div className="font-mono uppercase tracking-wider">AI Engineering Blueprint</div>
-            <div className="text-xs text-white/60 font-mono">REV. 2025-A</div>
           </div>
         </div>
       </div>
