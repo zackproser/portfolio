@@ -10,6 +10,7 @@ import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import LearningGrid from "@/components/learning-grid"
+import ConsultationForm from "@/components/ConsultationForm"
 
 // Import company logos
 import logoCloudflare from '/public/images/logos/cloudflare.svg'
@@ -58,6 +59,7 @@ export default function HomepageClientComponent({
   const [formSuccess, setFormSuccess] = useState(false)
   const referrer = usePathname()
   const [isMobile] = useState(serverIsMobile)
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
   const sendFormSubmissionEvent = () => {
     if (typeof window !== 'undefined' && 'gtag' in window) {
@@ -198,9 +200,7 @@ export default function HomepageClientComponent({
           
           {/* Engineering document appearance */}
           <div className="absolute inset-0 pointer-events-none">
-            {/* Corner fold effect */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-[#1e3a8a] shadow-lg transform rotate-[-1deg] -translate-x-2 -translate-y-3"></div>
-            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-[#1e40af] to-[#1e3a8a] transform rotate-[-1deg]"></div>
+            {/* Corner fold effect - REMOVED to fix blue square issue */}
             
             {/* Blueprint document border */}
             <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
@@ -209,13 +209,25 @@ export default function HomepageClientComponent({
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="mb-6 text-center">
               <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
-                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-mono uppercase">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-mono uppercase">
                   AI Engineering Blueprint
                 </h2>
               </div>
               <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
                 Master the most effective AI and agentic architectures, RAG pipelines, and machine learning concepts to transform your dev team and business. Taught via hands-on projects and production-ready implementations built by an engineer who actually did this work at top tech companies.
               </p>
+              
+              <div className="mt-6">
+                <Button 
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold text-base px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
+                  onClick={() => {
+                    track("blueprint_cta_click", { action: "schedule_call" });
+                    setIsConsultationOpen(true);
+                  }}
+                >
+                  Schedule Your Transformation →
+                </Button>
+              </div>
             </div>
             
             <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
@@ -229,7 +241,7 @@ export default function HomepageClientComponent({
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
               <div className="inline-block bg-blue-600 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white font-mono uppercase">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-mono uppercase">
                   Featured Premium Project
                 </h2>
               </div>
@@ -430,6 +442,10 @@ export default function HomepageClientComponent({
       </main>
       <footer className="w-full py-6 bg-gray-800 text-white">
       </footer>
+      <ConsultationForm 
+        isOpen={isConsultationOpen} 
+        onClose={() => setIsConsultationOpen(false)} 
+      />
     </div>
   )
 }
