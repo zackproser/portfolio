@@ -44,59 +44,62 @@ const interactiveItems = [
 function DropdownMenu({ label, items }) {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Toggle on mobile, desktop uses hover
-  const handleToggle = () => {
+  // Toggle dropdown visibility
+  const toggleDropdown = (e) => {
+    e.stopPropagation();
     setIsOpen(!isOpen);
   };
   
   // Close dropdown when clicking outside
-  const handleClickOutside = useCallback(() => {
+  const closeDropdown = useCallback(() => {
     setIsOpen(false);
   }, []);
   
-  // Use effect to add global click handler for mobile
+  // Add document click listener when dropdown is open
   React.useEffect(() => {
     if (isOpen) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener('click', closeDropdown);
     }
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', closeDropdown);
     };
-  }, [isOpen, handleClickOutside]);
+  }, [isOpen, closeDropdown]);
   
   return (
-    <div className="relative group">
-      {/* Mobile and desktop button */}
+    <div className="relative">
+      {/* Dropdown trigger button */}
       <button 
-        className="flex items-center gap-1 text-sm font-medium text-gray-50 dark:text-blue-100 group-hover:text-blue-200 transition-colors"
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent immediate close on mobile
-          handleToggle();
-        }}
+        className="flex items-center gap-1 text-sm font-medium text-gray-50 dark:text-blue-100 hover:text-blue-200 transition-colors"
+        onClick={toggleDropdown}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
       >
         {label}
-        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
+        <ChevronDown 
+          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`} 
+        />
       </button>
       
-      {/* Mobile visible when toggled, desktop visible on hover */}
-      <div 
-        className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 
-                    lg:opacity-0 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible 
-                    transition-all duration-150 z-50
-                    ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-      >
-        <div className="py-1" role="menu" aria-orientation="vertical">
-          {items.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="block px-4 py-2 text-sm text-gray-50 dark:text-blue-100 hover:bg-blue-700 dark:hover:bg-gray-700 hover:text-blue-200 transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
+      {/* Dropdown menu */}
+      {isOpen && (
+        <div 
+          className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+        >
+          <div className="py-1" role="menu" aria-orientation="vertical">
+            {items.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="block px-4 py-2 text-sm text-gray-50 dark:text-blue-100 hover:bg-blue-700 dark:hover:bg-gray-700 hover:text-blue-200 transition-colors"
+                role="menuitem"
+                onClick={closeDropdown}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -111,7 +114,7 @@ export function SimpleNav() {
   return (
     <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-blue-900 sticky top-0 shadow-md relative z-50">
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link className="flex items-center justify-center" href="/">
+        <Link className="flex items-center justify-center shrink-0" href="/">
           <svg 
             className="h-7 w-7 text-gray-50 dark:text-blue-100" 
             viewBox="0 0 24 24" 
@@ -125,7 +128,8 @@ export function SimpleNav() {
             <circle cx="12" cy="12" r="10" />
             <path d="M2 12h4M12 2v4M22 12h-4M12 22v-4" />
           </svg>
-          <span className="ml-2 text-2xl font-bold text-gray-50 dark:text-blue-100">Modern Coding</span>
+          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-blue-100 hidden sm:inline whitespace-nowrap">Modern Coding</span>
+          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-blue-100 sm:hidden">MC</span>
         </Link>
         <div className="lg:hidden">
           <button
@@ -139,21 +143,25 @@ export function SimpleNav() {
         </div>
         <nav 
           className={`absolute top-16 sm:top-18 left-0 w-full bg-blue-600 dark:bg-gray-800 lg:static lg:w-auto lg:bg-transparent 
-                      flex-col lg:flex-row lg:flex gap-6 sm:gap-8 items-center border-t lg:border-t-0 border-blue-500 dark:border-gray-700
+                      flex-col lg:flex-row lg:flex gap-4 items-center border-t lg:border-t-0 border-blue-500 dark:border-gray-700
                       ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}>
-          {mainNavItems.map((item) => (
-            <Link
-              key={item.label}
-              className="text-sm font-medium text-gray-50 dark:text-blue-100 hover:text-blue-200 transition-colors"
-              href={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <DropdownMenu label="Content" items={contentItems} />
-          <DropdownMenu label="Learn" items={resourceItems} />
-          <DropdownMenu label="Interactive" items={interactiveItems} />
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col lg:flex-row gap-2 items-center w-full lg:w-auto">
+            {mainNavItems.map((item) => (
+              <Link
+                key={item.label}
+                className="text-sm font-medium text-gray-50 dark:text-blue-100 hover:text-blue-200 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          <div className="flex flex-col lg:flex-row gap-2 items-center w-full lg:w-auto">
+            <DropdownMenu label="Content" items={contentItems} />
+            <DropdownMenu label="Learn" items={resourceItems} />
+            <DropdownMenu label="Interactive" items={interactiveItems} />
+          </div>
+          <div className="flex items-center gap-2 mt-4 lg:mt-0">
             <ThemeToggleWrapper />
             <AuthStatus />
           </div>
