@@ -152,6 +152,123 @@ const typeConfigs: Record<ResourceType, {
   }
 };
 
+const ResourceCard = ({ resource, isSelected, onSelect }: { 
+  resource: Resource; 
+  isSelected: boolean; 
+  onSelect: () => void;
+}) => {
+  const typeColors: Record<ResourceType, string> = {
+    project: "from-amber-600/80 to-amber-800/80 border-amber-500/40",
+    course: "from-green-600/80 to-green-800/80 border-green-500/40",
+    article: "from-blue-600/80 to-blue-800/80 border-blue-500/40",
+    video: "from-purple-600/80 to-purple-800/80 border-purple-500/40",
+    tool: "from-cyan-600/80 to-cyan-800/80 border-cyan-500/40",
+    paper: "from-red-600/80 to-red-800/80 border-red-500/40"
+  };
+
+  const typeCardColors: Record<ResourceType, string> = {
+    project: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200 border-amber-200 dark:border-amber-700/50",
+    course: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200 border-green-200 dark:border-green-700/50",
+    article: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 border-blue-200 dark:border-blue-700/50",
+    video: "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200 border-purple-200 dark:border-purple-700/50",
+    tool: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-200 border-cyan-200 dark:border-cyan-700/50",
+    paper: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200 border-red-200 dark:border-red-700/50"
+  };
+
+  // Get icon for the resource type
+  const iconMap = {
+    'article': '📝',
+    'video': '🎥',
+    'project': '⚙️',
+    'course': '📚',
+    'tool': '🧩',
+    'paper': '📄'
+  }
+  
+  const icon = iconMap[resource.type] || '📄'
+  
+  // Determine if resource is premium (projects are considered premium)
+  const isPremium = resource.type === "project";
+  const includesCode = resource.type === "project" || resource.type === "course";
+  
+  // Handle resource click to track and navigate
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the parent dialog close
+    track('learning_map_interaction', {
+      node_id: resource.id,
+      node_type: 'resource',
+      action: 'click_resource',
+      node_title: resource.title
+    })
+    
+    // The link inside will handle navigation
+  }
+
+  return (
+    <a 
+      href={resource.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+      className="block"
+    >
+      <div 
+        className={`
+          relative group cursor-pointer transition-all duration-300
+          ${isSelected ? 'scale-[1.03] ring-2 ring-white/60 shadow-xl' : 'hover:scale-[1.02] shadow-md hover:shadow-lg'}
+          ${isPremium ? 'shadow-gold' : ''}
+        `}
+      >
+        <div className={`
+          p-6 rounded-xl border-2 backdrop-blur-sm bg-gradient-to-br
+          ${typeColors[resource.type]}
+        `}>
+          {/* Premium badge */}
+          {isPremium && (
+            <span className="absolute top-4 left-4 inline-flex items-center gap-x-1 rounded-full px-3 py-1 text-xs font-bold bg-gradient-to-r from-amber-500/90 to-yellow-500/90 text-white shadow-md backdrop-blur-sm border border-amber-400/50 z-10">
+              <span className="mr-0.5">💎</span> Premium
+            </span>
+          )}
+
+          <div className="flex items-start gap-4">
+            <div className="p-3.5 rounded-lg bg-white/40 shadow-inner border border-white/60">
+              {/* Use icon from mapping instead of component */}
+              <span className="text-xl">{icon}</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-white text-lg group-hover:text-white/90">
+                {resource.title}
+              </h3>
+              <p className="text-sm text-white mt-2 line-clamp-2 font-medium">
+                {resource.description}
+              </p>
+              <div className="flex items-center gap-2 mt-4">
+                <Badge className={typeCardColors[resource.type]}>
+                  {resource.type}
+                </Badge>
+                {isPremium && (
+                  <Badge className="bg-gradient-to-r from-amber-400 to-orange-400 text-white border-amber-500 font-medium">
+                    Premium
+                  </Badge>
+                )}
+                {includesCode && (
+                  <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-200 dark:border-teal-700/50">
+                    <span className="mr-1">💻</span> Includes Code
+                  </Badge>
+                )}
+                <div className="flex-1" />
+                <div className="text-white font-medium text-sm py-1 px-2 bg-white/20 rounded-md inline-flex items-center hover:bg-white/30 transition-colors">
+                  {isPremium ? "Master This Skill →" : "Explore →"}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  )
+};
+
 export default function LearningGrid() {
   // State management (simplified from the original implementation)
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
@@ -668,20 +785,22 @@ export default function LearningGrid() {
                         {topic.description}
                       </DialogDescription>
                       
-                      <div className="mt-4 p-3 bg-blue-900/40 border border-blue-400/20 rounded-lg">
-                        <h3 className="font-medium text-blue-200 mb-2">After mastering this, your team will:</h3>
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <div className="mt-4 space-y-3">
+                        <p className="text-white/90 text-base">
+                          After mastering this, your team will:
+                        </p>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <li className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-emerald-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>Build {topic.track === "data" ? "RAG pipelines" : topic.track === "core" ? "LLM applications" : "specialized AI systems"} with enterprise-grade security</span>
+                            <span className="text-white/90">Build {topic.track === "data" ? "RAG pipelines" : topic.track === "core" ? "LLM applications" : "specialized AI systems"} with enterprise-grade security</span>
                           </li>
                           <li className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-emerald-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>Optimize for performance and accuracy in production environments</span>
+                            <span className="text-white/90">Optimize for performance and accuracy in production environments</span>
                           </li>
                         </ul>
                       </div>
@@ -689,146 +808,36 @@ export default function LearningGrid() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-2">
                       {topic.resources.map(resource => (
-                        <a 
+                        <ResourceCard 
                           key={resource.id}
-                          href={resource.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block group"
-                          onClick={(e) => handleResourceClick(resource, e)}
-                        >
-                          <div className="relative overflow-hidden rounded-xl transform transition-all duration-300 group-hover:scale-[1.02] shadow-lg group-hover:shadow-xl">
-                            {/* Gradient background with subtle animation */}
-                            <div className="absolute inset-0 bg-gradient-to-br 
-                              from-blue-800/80 to-indigo-900/90 group-hover:from-blue-700/80 group-hover:to-indigo-800/90 
-                              transition-all duration-500"></div>
-                            
-                            {/* Animated glow effect on hover */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.15),transparent_70%)]"></div>
-                            
-                            {/* Subtle grid pattern */}
-                            <div className="absolute inset-0 opacity-10 bg-grid-white/5"></div>
-                            
-                            {/* Content container */}
-                            <div className="relative p-6 z-10">
-                              <div className="flex items-start gap-4 mb-4">
-                                <div className={`p-3 rounded-lg ${
-                                  resource.type === "project" ? "bg-gradient-to-br from-amber-500/70 to-orange-600/70" :
-                                  resource.type === "course" ? "bg-gradient-to-br from-emerald-500/70 to-teal-600/70" :
-                                  resource.type === "article" ? "bg-gradient-to-br from-blue-500/70 to-indigo-600/70" :
-                                  resource.type === "video" ? "bg-gradient-to-br from-purple-500/70 to-fuchsia-600/70" :
-                                  resource.type === "tool" ? "bg-gradient-to-br from-cyan-500/70 to-sky-600/70" :
-                                  "bg-gradient-to-br from-red-500/70 to-rose-600/70"
-                                } border border-white/20 shadow-md`}>
-                                  {getResourceIcon(resource.type)}
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="font-bold text-xl text-white group-hover:text-blue-100 transition-colors">{resource.title}</h4>
-                                  <div className="mt-1 flex flex-wrap gap-2">
-                                    {resource.type === "project" && (
-                                      <Badge className="inline-flex items-center bg-gradient-to-r from-amber-400/20 to-amber-500/20 text-amber-100 border-amber-500/30 px-3 py-1 text-xs rounded-full font-medium">
-                                        <BookOpen className="h-3 w-3 mr-1" />
-                                        Includes: Code Template
-                                      </Badge>
-                                    )}
-                                    
-                                    {resource.type === "tool" && (
-                                      <div className="mt-4 bg-gradient-to-r from-slate-900 to-blue-900 p-3 rounded-lg border border-blue-500/20 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-grid-white/5 opacity-30"></div>
-                                        <div className="relative">
-                                          <h4 className="text-sm font-medium text-blue-300 flex items-center">
-                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                                            </svg>
-                                            Try it yourself: Tokenize your input in real-time
-                                          </h4>
-                                          
-                                          <div className="mt-2 bg-slate-800/50 border border-slate-700/50 rounded-md p-3 font-mono text-xs text-blue-200">
-                                            <div className="flex items-center border-b border-blue-900/50 pb-2 mb-2">
-                                              <div className="w-full bg-blue-950 rounded-sm px-2 py-1 text-blue-400 flex-1">Enter your text here...</div>
-                                              <button className="ml-2 px-2 py-1 bg-blue-600/50 rounded-sm text-white text-xs">Tokenize</button>
-                                            </div>
-                                            <div className="grid grid-cols-3 gap-1">
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;Hello&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">15496</span>
-                                              </div>
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;world&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">2159</span>
-                                              </div>
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;!&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">0</span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          
-                                          <div className="flex items-center justify-between mt-3">
-                                            <Badge className="inline-flex items-center bg-cyan-700/30 text-cyan-300 border-cyan-600/30 px-2 py-0.5 text-xs rounded-full">
-                                              <Code className="h-3 w-3 mr-1" />
-                                              Python code included
-                                            </Badge>
-                                            <span className="text-xs text-blue-400">OpenAI/GPT-4 compatible</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {resource.type === "course" && (
-                                      <Badge className="inline-flex items-center bg-gradient-to-r from-emerald-400/20 to-emerald-500/20 text-emerald-100 border-emerald-500/30 px-3 py-1 text-xs rounded-full font-medium">
-                                        <Laptop className="h-3 w-3 mr-1" />
-                                        Full Course
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <p className="text-white/90 text-base font-medium mb-5 line-clamp-3 leading-relaxed">{resource.description}</p>
-                              
-                              <div className="flex items-center justify-between">
-                                <div className="text-blue-300 text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform duration-300">
-                                  <span>Master This Skill</span>
-                                  <svg className="w-4 h-4 ml-1 group-hover:ml-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                  </svg>
-                                </div>
-                                
-                                {/* Preview indicator for certain resource types */}
-                                {(resource.type === "project" || resource.type === "tool") && (
-                                  <span className="text-xs px-2 py-1 rounded bg-blue-900/50 text-blue-300 border border-blue-500/20">
-                                    Includes code template
-                                  </span>
-                                )}
-                                
-                                {/* Subtle shine effect */}
-                                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </a>
+                          resource={resource}
+                          isSelected={false}
+                          onSelect={() => {}}
+                        />
                       ))}
                     </div>
                     
                     {/* CTA */}
-                    <div className="mt-8 mx-2 mb-4 p-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg text-white shadow-lg">
-                      <h3 className="text-xl font-bold mb-3">Ready to lead the AI revolution?</h3>
-                      <p className="mb-5">Accelerate your team&apos;s expertise and business outcomes with proven AI architectures.</p>
-                      <button 
-                        className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl transform hover:translate-y-[-2px]"
-                        onClick={() => setIsConsultationOpen(true)}
-                      >
-                        <span>Schedule Your Transformation</span>
-                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </button>
+                    <div className="mt-8 mx-2 mb-4">
+                      <hr className="border-indigo-500/20 mb-6" />
+                      <div className="text-center">
+                        <h3 className="text-xl font-bold mb-3 text-white">Ready to lead the AI revolution?</h3>
+                        <p className="mb-5 text-white/80 max-w-xl mx-auto">Accelerate your team&apos;s expertise and business outcomes with proven AI architectures.</p>
+                        <button 
+                          className="inline-flex items-center justify-center bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl transform hover:translate-y-[-2px]"
+                          onClick={() => setIsConsultationOpen(true)}
+                        >
+                          <span>Schedule Your Transformation</span>
+                          <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-center mt-4 pt-5 px-2">
+                    <div className="flex items-center justify-center mt-4 pt-5 px-2 pb-2">
                       <DialogClose asChild>
-                        <Button variant="outline" className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-white font-medium px-8">
+                        <Button className="bg-transparent hover:bg-indigo-600/10 text-white border border-indigo-400/30 font-medium px-8">
                           Close
                         </Button>
                       </DialogClose>

@@ -9,6 +9,9 @@
 
 :root {
   --glow-color: #FFD700; 
+  --premium-gold: #F59E0B;
+  --premium-gold-light: #FCD34D;
+  --premium-gold-dark: #B45309;
 }
 
 /* Add blue headers throughout the site */
@@ -61,6 +64,11 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.3);
 }
 
+/* Premium content gold glow */
+.shadow-gold {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
 @keyframes traceBorder {
   0%, 100% {
     box-shadow: 0 0 1px #21fc0d;
@@ -105,6 +113,14 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
   width: 10px;
   height: 10px;
   background-color: #3fe291;
+  clip-path: polygon(50% 0%, 61.8% 35.4%, 98.1% 35.4%, 68.3% 57.3%, 79.9% 91.6%, 50% 70.9%, 20.1% 91.6%, 31.7% 57.3%, 1.9% 35.4%, 38.2% 35.4%);
+  animation: sparkle-animation 2s infinite alternate;
+}
+
+.sparkle-gold {
+  width: 10px;
+  height: 10px;
+  background-color: var(--premium-gold-light);
   clip-path: polygon(50% 0%, 61.8% 35.4%, 98.1% 35.4%, 68.3% 57.3%, 79.9% 91.6%, 50% 70.9%, 20.1% 91.6%, 31.7% 57.3%, 1.9% 35.4%, 38.2% 35.4%);
   animation: sparkle-animation 2s infinite alternate;
 }
@@ -181,6 +197,46 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
     400px 400px, /* X marks */
     400px 400px; /* X marks */
   background-position: center center;
+}
+
+/* Dark mode blueprint with better contrast */
+.dark .bg-blueprint {
+  background-color: rgba(14, 27, 66, 0.3);
+  background-image: 
+    /* Major grid lines */
+    linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    /* Medium grid lines */
+    linear-gradient(rgba(255, 255, 255, 0.1) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0.5px, transparent 0.5px),
+    /* Highlights - gold accents */
+    radial-gradient(circle 2px at 60px 60px, rgba(245, 158, 11, 0.4) 1px, transparent 2px),
+    radial-gradient(circle 2px at 160px 260px, rgba(245, 158, 11, 0.4) 1px, transparent 2px),
+    radial-gradient(circle 2px at 260px 60px, rgba(245, 158, 11, 0.4) 1px, transparent 2px),
+    radial-gradient(circle 2px at 360px 160px, rgba(245, 158, 11, 0.4) 1px, transparent 2px);
+  background-size: 
+    20px 20px,  /* Major grid */
+    20px 20px,  /* Major grid */
+    5px 5px,    /* Medium grid */
+    5px 5px,    /* Medium grid */
+    400px 400px, /* Gold highlights */
+    400px 400px, /* Gold highlights */
+    400px 400px, /* Gold highlights */
+    400px 400px; /* Gold highlights */
+  background-position: center center;
+}
+
+/* Premium content classes */
+.premium-border {
+  @apply border-2 border-amber-300 dark:border-amber-500/40;
+}
+
+.premium-gradient {
+  @apply bg-gradient-to-r from-amber-400 to-yellow-400 dark:from-amber-500/90 dark:to-yellow-500/90;
+}
+
+.premium-text {
+  @apply text-amber-600 dark:text-amber-300 font-semibold;
 }
 
 /* Custom scrollbar styles */
