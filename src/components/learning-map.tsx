@@ -76,44 +76,13 @@ const getResourceIcon = (type: Resource['type']) => {
   }
 }
 
-// Convert topics and their resources into nodes
-const getAllNodes = (topics: Topic[]): Node[] => {
-  const NODE_DENSITY = 0.15  // Reduced density to spread out nodes
-  const RESOURCE_SPACING = 0.15  // Increased spacing
-  const Y_SCALE = 0.5 // More vertical compression for better spacing
-  const Y_OFFSET = 0.2 // Start 20% from top
-
-  return topics.flatMap(topic => {
-    // Normalize y position to be more compact
-    const normalizedY = topic.position.y * Y_SCALE + Y_OFFSET
-    const radius = Math.min(0.3, Math.max(0.15, (topic.resources.length * RESOURCE_SPACING) / (2 * Math.PI)))
-    
-    return [
-      {
-        ...topic,
-        position: {
-          x: topic.position.x * 0.8 + 0.1, // Keep topics more centered horizontally
-          y: normalizedY
-        },
-        isParent: true
-      },
-      ...topic.resources.map((resource, idx) => {
-        const angle = (Math.PI * 2 * idx) / topic.resources.length
-        return {
-          ...resource,
-          id: `${topic.id}-resource-${idx}`,
-          parentId: topic.id,
-          position: {
-            x: topic.position.x * 0.8 + 0.1 + Math.cos(angle) * radius * NODE_DENSITY,
-            y: normalizedY + Math.sin(angle) * radius * NODE_DENSITY
-          },
-          icon: getResourceIcon(resource.type),
-          value: 0.4,
-          isResource: true
-        }
-      })
-    ]
-  })
+// Define a type for the hierarchy data structure
+interface ResourceHierarchyNode {
+  name: string;
+  value?: number;
+  resourceType?: string;
+  resource?: Resource;
+  children?: ResourceHierarchyNode[];
 }
 
 interface SimulationNode extends d3.SimulationNodeDatum {
@@ -122,6 +91,50 @@ interface SimulationNode extends d3.SimulationNodeDatum {
   value: number
   isParent?: boolean
   isResource?: boolean
+  parentId?: string
+  type?: string
+}
+
+// Convert topics and their resources into nodes
+const getAllNodes = (topics: Topic[]): Node[] => {
+  const NODE_DENSITY = 0.2  // Increased for better spread
+  const RESOURCE_SPACING = 0.2  // Increased spacing between resource nodes
+  const Y_SCALE = 0.65 // Less vertical compression for better spacing 
+  const Y_OFFSET = 0.15 // Start a bit higher from the top
+  const HORIZONTAL_PADDING = 0.15 // Padding from edges
+
+  return topics.flatMap(topic => {
+    // Normalize y position for better vertical distribution
+    const normalizedY = topic.position.y * Y_SCALE + Y_OFFSET
+    const radius = Math.min(0.35, Math.max(0.2, (topic.resources.length * RESOURCE_SPACING) / (2 * Math.PI)))
+    
+    return [
+      {
+        ...topic,
+        position: {
+          x: topic.position.x * (1 - 2 * HORIZONTAL_PADDING) + HORIZONTAL_PADDING, // Keep topics within padded area
+          y: normalizedY
+        },
+        isParent: true
+      },
+      ...topic.resources.map((resource, idx) => {
+        // Calculate angle for even distribution in a circle, with offset to avoid exact horizontal/vertical alignment
+        const angle = (Math.PI * 2 * idx) / topic.resources.length + (Math.PI / topic.resources.length)
+        return {
+          ...resource,
+          id: `${topic.id}-resource-${idx}`,
+          parentId: topic.id,
+          position: {
+            x: topic.position.x * (1 - 2 * HORIZONTAL_PADDING) + HORIZONTAL_PADDING + Math.cos(angle) * radius * NODE_DENSITY,
+            y: normalizedY + Math.sin(angle) * radius * NODE_DENSITY
+          },
+          icon: getResourceIcon(resource.type),
+          value: 0.45, // Slightly larger resource nodes for better visibility
+          isResource: true
+        }
+      })
+    ]
+  })
 }
 
 export default function LearningMap() {
@@ -136,6 +149,10 @@ export default function LearningMap() {
   const [focusedCluster, setFocusedCluster] = useState<string | null>(null)
   const [nodePositions, setNodePositions] = useState<Map<string, { x: number, y: number }>>(new Map())
   const simulationRef = useRef<d3.Simulation<SimulationNode, undefined> | null>(null)
+  const [zoomedNode, setZoomedNode] = useState<string | null>(null)
+  const [zoomTransition, setZoomTransition] = useState(false)
+  const zoomRef = useRef<HTMLDivElement>(null)
+  const [activeResourceCard, setActiveResourceCard] = useState<string | null>(null)
 
   // Load completed topics from local storage on initial render
   useEffect(() => {
@@ -499,8 +516,11 @@ export default function LearningMap() {
   const toggleFilter = (track: string) => {
     setActiveFilters(prev => {
       const newFilters = new Set(prev)
+      // Only remove if we have more than one filter
       if (newFilters.has(track)) {
-        newFilters.delete(track)
+        if (newFilters.size > 1) {
+          newFilters.delete(track)
+        }
       } else {
         newFilters.add(track)
       }
@@ -536,6 +556,16 @@ export default function LearningMap() {
   useEffect(() => {
     if (!dimensions.width || !filteredNodes.length) return
 
+    // Resource type sizing weights for simulation
+    const typeWeights: {[key: string]: number} = {
+      'project': 3,
+      'course': 2.5,
+      'article': 2,
+      'video': 2,
+      'tool': 1.5,
+      'paper': 1.5
+    };
+
     const simNodes: SimulationNode[] = filteredNodes.map(node => ({
       ...node,
       x: node.position.x * dimensions.width,
@@ -549,13 +579,34 @@ export default function LearningMap() {
     }))
 
     const simulation = d3.forceSimulation<SimulationNode>(simNodes)
-      .force('charge', d3.forceManyBody<SimulationNode>().strength(-30))
-      .force('collide', d3.forceCollide<SimulationNode>().radius(d => d.value * 35).strength(0.8))
-      .force('x', d3.forceX<SimulationNode>(d => d.position.x * dimensions.width).strength(0.2))
-      .force('y', d3.forceY<SimulationNode>(d => d.position.y * dimensions.height).strength(0.2))
+      .force('charge', d3.forceManyBody<SimulationNode>().strength(d => 
+        zoomedNode ? -120 : -50 // Stronger repulsion in detail view
+      ))
+      .force('collide', d3.forceCollide<SimulationNode>().radius(d => {
+        if (zoomedNode && 'isResource' in d && 'type' in d) {
+          // Larger radius in detail view based on type
+          const type = (d as any).type;
+          return (typeWeights[type] || 2) * 15;
+        }
+        return d.value * 40;
+      }).strength(zoomedNode ? 1.2 : 0.9)) // Stronger collision force in detail view
+      .force('x', d3.forceX<SimulationNode>(d => {
+        if (zoomedNode && 'parentId' in d && d.parentId === zoomedNode) {
+          const pos = nodePositions.get(d.id);
+          return pos ? pos.x * dimensions.width : dimensions.width / 2;
+        }
+        return d.position.x * dimensions.width;
+      }).strength(d => zoomedNode ? 0.8 : 0.3))
+      .force('y', d3.forceY<SimulationNode>(d => {
+        if (zoomedNode && 'parentId' in d && d.parentId === zoomedNode) {
+          const pos = nodePositions.get(d.id);
+          return pos ? pos.y * dimensions.height : dimensions.height / 2;
+        }
+        return d.position.y * dimensions.height;
+      }).strength(d => zoomedNode ? 0.8 : 0.3))
       .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.05))
       .force('link', d3.forceLink<SimulationNode, any>()
-        .distance(50)
+        .distance(60) // Increased link distance
         .strength(0.3)
         .id(d => d.id))
 
@@ -564,9 +615,14 @@ export default function LearningMap() {
       const newPositions = new Map<string, { x: number, y: number }>()
       simNodes.forEach(node => {
         if (node.x !== undefined && node.y !== undefined) {
+          // Constrain nodes to stay within viewport with padding
+          const padding = 0.05; // 5% padding
+          const x = Math.max(padding * dimensions.width, Math.min((1 - padding) * dimensions.width, node.x));
+          const y = Math.max(padding * dimensions.height, Math.min((1 - padding) * dimensions.height, node.y));
+          
           newPositions.set(node.id, {
-            x: node.x / dimensions.width,
-            y: node.y / dimensions.height
+            x: x / dimensions.width,
+            y: y / dimensions.height
           })
         }
       })
@@ -578,7 +634,7 @@ export default function LearningMap() {
     return () => {
       simulation.stop()
     }
-  }, [dimensions, filteredNodes])
+  }, [dimensions, filteredNodes, zoomedNode]) // Add zoomedNode as dependency
 
   // Update node rendering to use simulated positions
   const getNodePosition = (node: Node) => {
@@ -606,38 +662,18 @@ export default function LearningMap() {
     // Draw phase lines and labels
     drawPhaseLines(ctx, canvas.width, canvas.height)
 
-    // Draw connections between topics
-    filteredNodes.forEach((node) => {
-      if (isTopic(node) && node.dependencies) {
-        node.dependencies.forEach((depId) => {
-          const depNode = filteredNodes.find((n) => n.id === depId)
-          if (!depNode) return
-
-          const fromX = depNode.position.x * canvas.width
-          const fromY = depNode.position.y * canvas.height
-          const toX = node.position.x * canvas.width
-          const toY = node.position.y * canvas.height
-
-          // Draw blueprint-style connection
-          drawBlueprintConnection(
-            ctx,
-            fromX,
-            fromY,
-            toX,
-            toY,
-            completedNodes.includes(depId) && completedNodes.includes(node.id),
-            hoveredNode === node.id ||
-              hoveredNode === depId ||
-              highlightedNode === node.id ||
-              highlightedNode === depId,
-          )
-        })
-      }
-    })
+    // Draw connections differently based on zoom state
+    if (zoomedNode) {
+      // In detail view we don't draw connections since there's no central node
+      // Removed connection drawing in detail view
+    } else {
+      // In normal view, don't draw connections between major topics
+      // The connection code is removed, only resource connections will be drawn when zoomed
+    }
 
     // Draw annotations
     drawBlueprintAnnotations(ctx, canvas.width, canvas.height)
-  }, [dimensions, completedNodes, hoveredNode, highlightedNode, filteredNodes])
+  }, [dimensions, completedNodes, hoveredNode, highlightedNode, filteredNodes, zoomedNode])
 
   const drawBlueprintGrid = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     // Draw minimal grid
@@ -686,21 +722,41 @@ export default function LearningMap() {
     toY: number,
     isCompleted: boolean,
     isHighlighted: boolean,
+    isResourceConnection: boolean = false
   ) => {
+    // Skip drawing connections between major topics when not in zoomed view
+    if (!isResourceConnection && !zoomedNode) {
+      return;
+    }
+
     // Set line style based on completion and hover state
     if (isHighlighted) {
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.9)"
-      ctx.lineWidth = 3
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.95)"
+      ctx.lineWidth = 3.5
     } else if (isCompleted) {
-      ctx.strokeStyle = "rgba(59, 130, 246, 0.8)"
-      ctx.lineWidth = 2
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.9)"
+      ctx.lineWidth = 2.5
     } else {
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
-      ctx.lineWidth = 1.5
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.4)" 
+      ctx.lineWidth = 2
     }
 
     // Create a blueprint-style dashed line
-    ctx.setLineDash([5, 3])
+    ctx.setLineDash([6, 3])
+
+    // For resource connections in detail view, use a more decorative style
+    if (isResourceConnection && zoomedNode) {
+      ctx.setLineDash([8, 4]); // Larger dash pattern
+      
+      // Draw a glowing effect for the connection
+      if (isHighlighted) {
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+        ctx.shadowBlur = 10;
+      } else {
+        ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
+        ctx.shadowBlur = 5;
+      }
+    }
 
     // Draw curved connection using Bézier
     ctx.beginPath()
@@ -724,14 +780,27 @@ export default function LearningMap() {
     )
     ctx.stroke()
 
+    // Reset shadow effects
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+
     // Reset dash pattern
     ctx.setLineDash([])
 
-    // Add circular endpoint
-    const arrowSize = 4
+    // Add circular endpoint with glow for better visibility
+    const arrowSize = 5
+    
+    // Add glow effect for better visibility
+    if (isHighlighted || isCompleted) {
+      ctx.beginPath()
+      ctx.arc(toX, toY, arrowSize + 2, 0, Math.PI * 2)
+      ctx.fillStyle = isCompleted ? "rgba(59, 130, 246, 0.4)" : "rgba(255, 255, 255, 0.4)"
+      ctx.fill()
+    }
+    
     ctx.beginPath()
     ctx.arc(toX, toY, arrowSize, 0, Math.PI * 2)
-    ctx.fillStyle = isCompleted ? "rgba(59, 130, 246, 0.8)" : "rgba(255, 255, 255, 0.3)"
+    ctx.fillStyle = isCompleted ? "rgba(59, 130, 246, 0.9)" : "rgba(255, 255, 255, 0.7)"
     ctx.fill()
   }
 
@@ -774,70 +843,108 @@ export default function LearningMap() {
     }
   }
 
-  // Add this function to generate more visually appealing resource cards
-  const ResourceCard = ({ resource, isSelected, onSelect }: { 
-    resource: Resource, 
-    isSelected: boolean,
-    onSelect: () => void
+  // Add the ResourceNode component here, after the helper functions
+  const ResourceNode = ({ 
+    resource, 
+    position, 
+    isHovered, 
+    isHighlighted, 
+    isCompleted, 
+    onClick, 
+    onMouseEnter, 
+    onMouseLeave 
+  }: { 
+    resource: Resource;
+    position: { x: number; y: number };
+    isHovered: boolean;
+    isHighlighted: boolean;
+    isCompleted: boolean;
+    onClick: () => void;
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
   }) => {
-    const typeColors = {
-      article: "from-blue-500/60 to-blue-600/40 border-blue-500/50",
-      video: "from-purple-500/60 to-purple-600/40 border-purple-500/50",
-      course: "from-green-500/60 to-green-600/40 border-green-500/50",
-      project: "from-amber-500/60 to-amber-600/40 border-amber-500/50",
-      tool: "from-cyan-500/60 to-cyan-600/40 border-cyan-500/50",
-      paper: "from-red-500/60 to-red-600/40 border-red-500/50"
-    }
-
+    // Simplify the configuration to reduce variation in size
+    const typeConfig: {[key: string]: { iconScale: number, zIndex: number }} = {
+      'project': { iconScale: 1.1, zIndex: 40 },
+      'course': { iconScale: 1.1, zIndex: 35 },
+      'article': { iconScale: 1.0, zIndex: 30 },
+      'video': { iconScale: 1.0, zIndex: 25 },
+      'tool': { iconScale: 1.0, zIndex: 20 },
+      'paper': { iconScale: 1.0, zIndex: 15 }
+    };
+    
+    const config = typeConfig[resource.type] || { iconScale: 1.0, zIndex: 10 };
+    
     return (
-      <div 
-        className={`
-          relative group cursor-pointer transition-all duration-300
-          ${isSelected ? 'scale-102 ring-2 ring-white/30' : 'hover:scale-101'}
-        `}
-        onClick={onSelect}
+      <div
+        className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
+          isHighlighted ? "scale-105 z-50" : "hover:scale-102"
+        }`}
+        style={{
+          top: `${position.y * 100}%`,
+          left: `${position.x * 100}%`,
+          zIndex: isHighlighted ? 50 : config.zIndex,
+        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
-        <div className={`
-          p-4 rounded-lg border backdrop-blur-md bg-gradient-to-br
-          ${typeColors[resource.type]}
-        `}>
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-lg bg-white/20 shadow-inner">
-              {resource.icon}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-white group-hover:text-white/90">
+        <div className="flex flex-col items-center">
+          {/* Resource title - only show on hover */}
+          {isHovered && (
+            <div className="w-[120px] mb-2 text-center">
+              <div className="bg-blue-900/90 backdrop-blur-md px-2 py-1 rounded-lg text-xs text-white font-medium shadow-md border border-blue-400/30 truncate">
                 {resource.title}
-              </h3>
-              <p className="text-sm text-white/80 mt-1 line-clamp-2">
-                {resource.description}
-              </p>
-              <div className="flex items-center gap-2 mt-3">
-                <Badge className={getTypeColor(resource.type)}>
-                  {resource.type}
-                </Badge>
-                {resource.type === "project" && (
-                  <Badge className="bg-gradient-to-r from-amber-500/50 to-orange-500/50 text-white border-amber-500/50">
-                    Premium
-                  </Badge>
-                )}
-                <div className="flex-1" />
-                <Button 
-                  size="sm"
-                  className="bg-white/20 hover:bg-white/30 text-white"
-                  asChild
-                >
-                  <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                    Explore →
-                  </a>
-                </Button>
               </div>
             </div>
+          )}
+          
+          {/* Main resource button - fixed size */}
+          <button
+            onClick={onClick}
+            className={`
+              w-16 h-16 rounded-lg flex items-center justify-center
+              ${isHighlighted ? "ring-2 ring-white/80 ring-offset-2 ring-offset-blue-950" : ""}
+              ${isCompleted
+                ? "bg-blue-500 border-2 border-white/80"
+                : `${getTypeColor(resource.type)} border-2 border-white/40 backdrop-blur-sm`
+              }
+              shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.35)]
+              transition-all duration-200
+            `}
+          >
+            <div className={`transform scale-[${config.iconScale * 1.5}]`}>
+              {resource.icon}
+            </div>
+            
+            {/* Resource glow effect */}
+            <div className="absolute inset-0 rounded-lg bg-gradient-radial from-white/20 to-transparent -z-10 blur-md"></div>
+          </button>
+          
+          {/* Type badge - always show */}
+          <div className="mt-1">
+            <Badge className={`${getTypeColor(resource.type)} px-2 py-0.5 text-xs font-medium shadow-md`}>
+              {resource.type}
+            </Badge>
           </div>
+          
+          {/* View button - only show on hover */}
+          {isHovered && (
+            <div className="mt-1">
+              <Button 
+                size="sm"
+                className="bg-blue-600/90 hover:bg-blue-700/90 text-white text-xs py-0 h-6 shadow-md"
+                asChild
+              >
+                <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                  View
+                </a>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   // Helper function to check if a node belongs to a cluster
   const isNodeInCluster = (node: Node, clusterId: string): boolean => {
@@ -851,21 +958,151 @@ export default function LearningMap() {
     return filteredNodes.filter(node => isNodeInCluster(node, clusterId));
   }
 
-  // Highlight all nodes in a cluster
+  // Replace getDetailViewPositions with this simpler version
+  const getDetailViewPositions = (
+    parentNode: Topic, 
+    resources: Resource[]
+  ): Map<string, { x: number, y: number }> => {
+    const positions = new Map<string, { x: number, y: number }>();
+    
+    // Hide parent node completely off-screen
+    positions.set(parentNode.id, { x: -100, y: -100 });
+    
+    if (resources.length === 0) return positions;
+    
+    // Group resources by type
+    const typeGroups: Record<string, Resource[]> = {};
+    const typeOrder = ['project', 'course', 'article', 'video', 'tool', 'paper'];
+    
+    // Initialize empty groups
+    typeOrder.forEach(type => {
+      typeGroups[type] = [];
+    });
+    
+    // Group resources by type
+    resources.forEach(resource => {
+      if (resource.type in typeGroups) {
+        typeGroups[resource.type].push(resource);
+      }
+    });
+    
+    // Filter to only types that have resources
+    const usedTypes = typeOrder.filter(type => typeGroups[type].length > 0);
+    
+    // Use simple grid layout - 2 columns
+    let currentRow = 0;
+    let currentCol = 0;
+    
+    // For each type that has resources
+    usedTypes.forEach(type => {
+      const resourcesOfType = typeGroups[type];
+      
+      // Position for the type header
+      const headerX = 0.25 + (currentCol * 0.5); // 0.25 for first column, 0.75 for second
+      const headerY = 0.15 + (currentRow * 0.35); // Each row is 35% of height
+      
+      // Add the header position
+      positions.set(`header-${type}`, { x: headerX, y: headerY });
+      
+      // For each resource in this type
+      const resourcesPerRow = 3; // 3 resources per row maximum
+      resourcesOfType.forEach((resource, index) => {
+        const resourceRow = Math.floor(index / resourcesPerRow);
+        const resourceCol = index % resourcesPerRow;
+        
+        // Calculate position
+        const resourceX = (currentCol * 0.5) + 0.1 + (resourceCol * 0.15); // Horizontal position
+        const resourceY = headerY + 0.08 + (resourceRow * 0.10); // Vertical position
+        
+        // Set position for this resource
+        positions.set(resource.id, { x: resourceX, y: resourceY });
+      });
+      
+      // Move to next position in grid
+      currentCol++;
+      if (currentCol >= 2) { // After 2 columns, move to next row
+        currentCol = 0;
+        currentRow++;
+      }
+    });
+    
+    return positions;
+  };
+
+  // Simpler header component
+  const TypeHeader = ({ type, position }: { type: string, position: { x: number, y: number } }) => {
+    const typeLabels: Record<string, string> = {
+      project: "Projects",
+      course: "Courses",
+      article: "Articles",
+      video: "Videos",
+      tool: "Tools",
+      paper: "Papers"
+    };
+    
+    const typeColors: Record<string, string> = {
+      project: "bg-amber-600 text-white",
+      course: "bg-green-600 text-white",
+      article: "bg-blue-600 text-white",
+      video: "bg-purple-600 text-white",
+      tool: "bg-cyan-600 text-white",
+      paper: "bg-red-600 text-white"
+    };
+    
+    return (
+      <div
+        className="absolute transform -translate-x-1/2 z-30"
+        style={{
+          top: `${position.y * 100}%`,
+          left: `${position.x * 100}%`
+        }}
+      >
+        <div className={`
+          px-4 py-2 rounded-md ${typeColors[type] || "bg-gray-600"} 
+          font-semibold text-sm shadow-md border border-white/20
+        `}>
+          {typeLabels[type] || type}
+        </div>
+      </div>
+    );
+  };
+
+  // Update the highlighted cluster function
   const highlightCluster = (clusterId: string) => {
     setFocusedCluster(clusterId);
+    setZoomedNode(clusterId);
+    setZoomTransition(true);
+    
+    // Apply the detail view positioning
+    const topicNode = topics.find(topic => topic.id === clusterId);
+    if (topicNode) {
+      const detailPositions = getDetailViewPositions(topicNode, topicNode.resources);
+      setNodePositions(detailPositions);
+    }
     
     // Track the interaction
     const clusterNode = filteredNodes.find(n => n.id === clusterId);
     if (clusterNode) {
       trackNodeInteraction(clusterNode, 'highlight_cluster');
     }
-  }
+    
+    // Slight delay to ensure transition effect is visible
+    setTimeout(() => {
+      setZoomTransition(false);
+    }, 500);
+  };
 
-  // Clear cluster highlighting
+  // Clear cluster highlighting and zoom
   const clearClusterHighlight = () => {
     setFocusedCluster(null);
-  }
+    setZoomedNode(null);
+    setZoomTransition(true);
+    
+    // Slight delay to ensure transition effect is visible
+    setTimeout(() => {
+      setZoomTransition(false);
+    }, 500);
+  };
 
   // Handle featured path click
   const handleFeaturedPathClick = (pathName: string) => {
@@ -889,7 +1126,7 @@ export default function LearningMap() {
         trackNodeInteraction(topicNode, 'select_featured_path');
       }
     }
-  }
+  };
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-8">
@@ -923,15 +1160,15 @@ export default function LearningMap() {
                   variant="outline" 
                   className="border-white/20 text-white/80 hover:text-white hover:bg-white/10"
                   onClick={() => {
-                    trackNodeInteraction(selectedNode, 'deselect')
-                    setSelectedNode(null)
-                    clearClusterHighlight()
+                    trackNodeInteraction(selectedNode, 'deselect');
+                    setSelectedNode(null);
+                    clearClusterHighlight();
                   }}
                 >
                   ← Back to Overview
                 </Button>
                 
-                {focusedCluster && (
+                {zoomedNode && (
                   <Button
                     variant="outline"
                     className="ml-auto border-blue-400/30 text-blue-400 hover:bg-blue-500/20"
@@ -996,44 +1233,37 @@ export default function LearningMap() {
                       <h3 className="text-xl font-semibold text-white">Learning Resources</h3>
                       <Badge className="bg-blue-500/20 text-white">{selectedNode.resources.length} resources</Badge>
                     </div>
-                    <div className="grid gap-4">
-                      {selectedNode.resources.map((resource, idx) => (
-                        <ResourceCard
-                          key={idx}
-                          resource={resource}
-                          isSelected={hoveredNode === `${selectedNode.id}-resource-${idx}`}
-                          onSelect={() => setHighlightedNode(`${selectedNode.id}-resource-${idx}`)}
-                        />
-                      ))}
-                    </div>
+                    
+                    {/* Don't show resource cards in sidebar when zoomed/detail view is active */}
+                    {!zoomedNode && (
+                      <div className="grid gap-4">
+                        {selectedNode.resources.map((resource, idx) => (
+                          <ResourceCard
+                            key={idx}
+                            resource={resource}
+                            isSelected={hoveredNode === `${selectedNode.id}-resource-${idx}`}
+                            onSelect={() => {
+                              trackNodeInteraction(resource, 'select');
+                              highlightCluster(selectedNode.id);
+                              setHighlightedNode(`${selectedNode.id}-resource-${idx}`);
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* When in zoomed view, show a message instead of duplicating cards */}
+                    {zoomedNode && (
+                      <div className="bg-blue-800/40 border border-blue-500/30 rounded-lg p-4 text-center text-white/80">
+                        Resources are displayed in the detailed view →
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
           ) : (
             <>
-              <div className="bg-gradient-to-r from-blue-600/30 to-purple-600/30 rounded-lg p-5 border border-blue-400/30 shadow-lg mb-8">
-                <h2 className="text-3xl font-bold text-white mb-3">AI Engineering Learning Path</h2>
-                <p className="text-white/90 leading-relaxed mb-4">
-                  A curated collection of resources to help you master AI engineering, from fundamentals to advanced applications. Explore the map to discover learning materials organized by topic.
-                </p>
-              
-                <div className="mt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-white">Your Progress</h3>
-                    <span className="text-white/90 font-medium">
-                      {completedNodes.length}/{topics.length} Topics Completed
-                    </span>
-                  </div>
-                  <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-blue-500 to-cyan-400 h-3 rounded-full"
-                      style={{ width: `${Math.max(5, (completedNodes.length / topics.length) * 100)}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              
               {/* Topic Overview Section - Shows all topics at once */}
               <div className="space-y-5">
                 <h3 className="text-xl font-semibold text-white">All Learning Paths</h3>
@@ -1083,8 +1313,28 @@ export default function LearningMap() {
       </div>
 
       <div className="w-full md:w-3/5 relative" ref={containerRef}>
-        <div className="aspect-square w-full relative bg-[#1e3a8a]/80 rounded-lg border border-white/20 overflow-hidden shadow-2xl">
-          {/* Blueprint background with only blue gradient - removed purple gradient */}
+        {/* Featured Learning Paths - above the map */}
+        {!zoomedNode && !selectedNode && (
+          <div className="mb-4 bg-blue-800 backdrop-blur-md border-2 border-blue-400 rounded-lg p-5 shadow-lg">
+            <h3 className="text-white font-bold text-lg mb-2">Featured Learning Paths</h3>
+            <p className="text-white/90 text-sm mb-3 font-medium">Select a path to explore specific areas of AI engineering</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {['RAG Systems', 'Fine-tuning LLMs', 'Secure AI Applications'].map((path, idx) => (
+                <div 
+                  key={idx} 
+                  className="bg-blue-700 hover:bg-blue-600 p-3 rounded-lg cursor-pointer transition-all duration-300 border border-blue-400 shadow-md hover:shadow-lg transform hover:scale-105"
+                  onClick={() => handleFeaturedPathClick(path)}
+                >
+                  <p className="text-white text-sm font-bold">{path}</p>
+                  <p className="text-white/90 text-xs mt-1 font-medium">View on map</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <div ref={zoomRef} className={`aspect-square w-full relative bg-[#1e3a8a]/80 rounded-lg border border-white/20 overflow-hidden shadow-2xl transition-all duration-500 ease-in-out ${zoomTransition ? 'scale-95 opacity-90' : 'scale-100 opacity-100'}`}>
+          {/* Blueprint background */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/40 to-blue-950/90"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
           
@@ -1098,173 +1348,236 @@ export default function LearningMap() {
           }}></div>
           
           {/* Blueprint title stamp */}
-          <div className="absolute top-4 left-4 bg-blue-950/90 border border-white/20 p-4 rounded-lg backdrop-blur-sm">
-            <div className="text-white/90 font-mono text-sm font-bold">AI ENGINEERING BLUEPRINT</div>
-            <div className="text-white/60 font-mono text-xs mt-1">REV. 2025-A</div>
+          <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-800 to-blue-900 border-2 border-blue-400/70 p-5 rounded-xl shadow-xl backdrop-blur-md">
+            <div className="text-white font-mono text-lg font-bold flex items-center">
+              <span className="text-blue-300 mr-2">⚡</span>
+              {zoomedNode ? 
+                (topics.find(topic => topic.id === zoomedNode)?.title?.toUpperCase() || "AI ENGINEERING BLUEPRINT") + " RESOURCES" : 
+                "AI ENGINEERING BLUEPRINT"
+              }
+            </div>
+            <div className="text-blue-300 font-mono text-sm mt-1 font-medium flex items-center">
+              <span className="bg-blue-400/20 px-2 py-0.5 rounded border border-blue-400/30 mr-2">DRAFT</span>
+              REV. 2025-A
+            </div>
           </div>
 
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-          {/* Display labels for parent nodes */}
-          {filteredNodes.filter(node => 'isParent' in node && node.isParent).map((node) => {
-            const position = getNodePosition(node)
-            // Abbreviate longer titles for better display
-            const displayTitle = node.title.length > 25 ? node.title.substring(0, 22) + '...' : node.title
-            
-            return (
-              <div
-                key={`label-${node.id}`}
-                className="absolute z-10 transform -translate-x-1/2 pointer-events-none"
-                style={{
-                  top: `${position.y * 100 + 8}%`,  // Added more spacing from node
-                  left: `${position.x * 100}%`,
-                  textAlign: 'center',
-                  width: '200px',  // Wider for better text display
-                }}
-              >
-                <div className="bg-blue-900/90 backdrop-blur-md px-3 py-2 rounded-md border border-blue-400/30 shadow-lg">
-                  <p className="text-white font-semibold text-sm truncate">{displayTitle}</p>
-                </div>
-              </div>
-            )
-          })}
+          {/* Render section headers in detail view */}
+          {zoomedNode && nodePositions && Array.from(nodePositions.entries())
+            .filter(([key]) => key.startsWith('header-'))
+            .map(([key, position]) => {
+              const type = key.replace('header-', '');
+              return <TypeHeader key={key} type={type} position={position} />;
+            })
+          }
 
-          {/* Node hover previews */}
-          {filteredNodes.map((node) => (
-            hoveredNode === node.id && (
-              <div
-                key={`preview-${node.id}`}
-                className="absolute z-20 transform -translate-x-1/2 transition-opacity duration-200"
-                style={{
-                  top: `${node.position.y * 100 + 8}%`,
-                  left: `${node.position.x * 100}%`,
-                }}
-              >
-                <div className="bg-black/90 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-64 shadow-xl">
-                  <h3 className="text-sm font-semibold text-white">{node.title}</h3>
-                  <p className="text-xs text-white/70 mt-2">{node.description}</p>
-                  {'isResource' in node && (
-                    <div className="mt-3 flex items-center gap-2">
-                      <Badge className={`${getTypeColor(node.type)}`}>
-                        {node.type}
-                      </Badge>
-                      <Badge className="bg-white/10 text-white/70">
-                        Click to explore
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )
-          ))}
-
+          {/* Render nodes */}
           {filteredNodes.map((node) => {
-            const position = getNodePosition(node)
-            const isCompleted = completedNodes.includes(node.id)
-            const isHovered = hoveredNode === node.id
-            const isHighlighted = hoveredNode === node.id || highlightedNode === node.id
-            const isParent = 'isParent' in node && node.isParent
-            const isResource = 'isResource' in node
-            
-            // Determine if node should be visible based on cluster focus
-            const isInFocusedCluster = focusedCluster ? isNodeInCluster(node, focusedCluster) : true
-            const shouldRenderDimmed = focusedCluster && !isInFocusedCluster
-            
-            // Skip rendering if node shouldn't be visible due to cluster focus
-            if (shouldRenderDimmed && isResource) {
-              return null
+            // Skip rendering nodes that aren't in focus when zoomed
+            if (zoomedNode) {
+              const isZoomedNode = node.id === zoomedNode;
+              const isZoomedNodeResource = 'isResource' in node && 'parentId' in node && node.parentId === zoomedNode;
+              
+              // Hide the parent node in detail view
+              if (isZoomedNode) {
+                return null;
+              }
+              
+              // Only show resources belonging to the zoomed parent
+              if (!isZoomedNodeResource) {
+                return null;
+              }
+              
+              // For resources in zoomed view, use the ResourceNode component
+              const position = getNodePosition(node);
+              const resource = node as Resource;
+              const isCompleted = completedNodes.includes(resource.id);
+              const isHovered = hoveredNode === resource.id;
+              const isHighlighted = hoveredNode === resource.id || highlightedNode === resource.id;
+              
+              return (
+                <ResourceNode
+                  key={resource.id}
+                  resource={resource}
+                  position={position}
+                  isHovered={isHovered}
+                  isHighlighted={isHighlighted}
+                  isCompleted={isCompleted}
+                  onClick={() => {
+                    trackNodeInteraction(resource, 'select');
+                    window.open(resource.url, '_blank');
+                  }}
+                  onMouseEnter={() => {
+                    trackNodeInteraction(resource, 'hover');
+                    setHoveredNode(resource.id);
+                    setHighlightedNode(resource.id);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredNode(null);
+                    setHighlightedNode(null);
+                  }}
+                />
+              );
             }
             
-            // Determine size multiplier - make parent nodes much larger
-            const sizeMultiplier = isParent ? 2.2 : 0.9  // Increased difference between parent and resource nodes
+            // For overview mode, use the original node rendering
+            const position = getNodePosition(node);
+            const isCompleted = completedNodes.includes(node.id);
+            const isHovered = hoveredNode === node.id;
+            const isHighlighted = hoveredNode === node.id || highlightedNode === node.id;
+            const isParent = 'isParent' in node && node.isParent;
+            const isNodeResource = 'isResource' in node;
             
-            // Skip rendering very small resource nodes if not highlighted to reduce visual clutter
-            if (isResource && !isHighlighted && node.value < 0.3) {
-              return null
-            }
-
+            // Simple size multiplier for overview
+            const sizeMultiplier = isParent ? 2.3 : 1.0;
+            
             return (
               <button
                 key={node.id}
-                className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isHighlighted ? "scale-110 z-20" : shouldRenderDimmed ? "opacity-20" : "hover:scale-105 z-10"
-                } ${isParent ? "z-10" : "z-5"}`}
+                className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${
+                  isHighlighted ? "scale-110 z-50" : "hover:scale-105"
+                }`}
                 style={{
                   top: `${position.y * 100}%`,
                   left: `${position.x * 100}%`,
-                  filter: isHighlighted ? 'drop-shadow(0 0 8px rgba(255,255,255,0.4))' : 'none',
+                  filter: isHighlighted ? 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' : 'none',
+                  zIndex: isHighlighted ? 50 : (isParent ? 20 : 10),
                 }}
                 onClick={() => {
-                  trackNodeInteraction(node, 'select')
-                  setSelectedNode(node)
-                  if (isParent) {
-                    highlightCluster(node.id)
-                  } else if ('parentId' in node) {
-                    highlightCluster(node.parentId)
+                  trackNodeInteraction(node, 'select');
+                  
+                  if (isNodeResource) {
+                    // In normal view, select the resource and zoom to its parent
+                    setSelectedNode(node);
+                    if ('parentId' in node) {
+                      highlightCluster(node.parentId);
+                    }
+                  } else if (isParent) {
+                    // When clicking a parent node, show detail view
+                    setSelectedNode(node);
+                    highlightCluster(node.id);
                   }
                 }}
                 onMouseEnter={() => {
-                  trackNodeInteraction(node, 'hover')
-                  setHoveredNode(node.id)
-                  setHighlightedNode(node.id)
+                  trackNodeInteraction(node, 'hover');
+                  setHoveredNode(node.id);
+                  setHighlightedNode(node.id);
                 }}
                 onMouseLeave={() => {
-                  setHoveredNode(null)
-                  setHighlightedNode(null)
+                  setHoveredNode(null);
+                  setHighlightedNode(null);
                 }}
               >
                 <div
                   className={`relative flex items-center justify-center ${
-                    'isResource' in node ? 'rounded-lg border-dashed' : 'rounded-full border-solid'
+                    isNodeResource ? 'rounded-lg border-dashed' : 'rounded-full border-solid'
                   } ${
-                    isHighlighted ? "ring-2 ring-white/70 ring-offset-2 ring-offset-blue-950" : ""
+                    isHighlighted ? "ring-2 ring-white/80 ring-offset-2 ring-offset-blue-950" : ""
                   } ${
                     isCompleted
-                      ? "bg-blue-500 border-2 border-white/70"
-                      : `${'isResource' in node ? getTypeColor(node.type) : getTrackColor(node.track || "")} border-2 ${isParent ? 'border-white/80' : 'border-white/20'} backdrop-blur-sm`
+                      ? "bg-blue-500 border-2 border-white/80"
+                      : `${isNodeResource ? getTypeColor((node as Resource).type) : getTrackColor((node as Topic).track || "")} border-2 ${isParent ? 'border-white/90' : 'border-white/40'} backdrop-blur-sm`
                   } ${
-                    isParent ? "shadow-[0_0_15px_rgba(255,255,255,0.2)]" : ""
-                  } transition-all duration-300 shadow-lg`}
+                    isParent ? "shadow-[0_0_20px_rgba(255,255,255,0.25)]" : ""
+                  } transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.35)]`}
                   style={{
-                    width: `${Math.max(40, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
-                    height: `${Math.max(40, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
-                    opacity: shouldRenderDimmed ? 0.3 : 1,
+                    width: `${Math.max(42, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
+                    height: `${Math.max(42, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
                   }}
                 >
                   <div className={`${isHighlighted ? 'scale-110' : ''} transition-transform duration-300`}>
-                    {/* Larger icons for parent nodes */}
-                    <div className={`${isParent ? 'transform scale-200' : 'transform scale-125'}`}>
+                    {/* Larger icons for better visibility */}
+                    <div className={`${isParent ? 'transform scale-[2.2]' : 'transform scale-[1.3]'}`}>
                       {node.icon}
                     </div>
                   </div>
                   
-                  {/* Add glow effect for parent nodes */}
+                  {/* Enhanced glow effect for parent nodes */}
                   {isParent && (
-                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-white/10 to-transparent -z-10 blur-md"></div>
+                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-white/15 to-transparent -z-10 blur-md"></div>
                   )}
                 </div>
               </button>
-            )
+            );
           })}
+        </div>
+      </div>
+    </div>
+  )
+}
 
-          {/* Add Featured Learning Path Highlights */}
-          <div className="absolute bottom-6 left-6 right-6 bg-blue-900/90 backdrop-blur-md border border-blue-400/30 rounded-lg p-4 shadow-xl">
-            <h3 className="text-white font-bold mb-3">Featured Learning Paths</h3>
-            <div className="grid grid-cols-3 gap-4">
-              {['RAG Systems', 'Fine-tuning LLMs', 'Secure AI Applications'].map((path, idx) => (
-                <div 
-                  key={idx} 
-                  className="bg-blue-800/40 hover:bg-blue-700/50 p-3 rounded-lg cursor-pointer transition-colors border border-blue-500/30"
-                  onClick={() => handleFeaturedPathClick(path)}
-                >
-                  <p className="text-white text-sm font-medium">{path}</p>
-                  <p className="text-white/70 text-xs mt-1">Click to explore this path</p>
-                </div>
-              ))}
+// Create a resource card component for the sidebar view
+const ResourceCard = ({ resource, isSelected, onSelect }: { 
+  resource: Resource, 
+  isSelected: boolean,
+  onSelect: () => void
+}) => {
+  const typeColors = {
+    article: "from-blue-600/80 to-blue-700/70 border-blue-400/70",
+    video: "from-purple-600/80 to-purple-700/70 border-purple-400/70",
+    course: "from-green-600/80 to-green-700/70 border-green-400/70",
+    project: "from-amber-600/80 to-amber-700/70 border-amber-400/70",
+    tool: "from-cyan-600/80 to-cyan-700/70 border-cyan-400/70",
+    paper: "from-red-600/80 to-red-700/70 border-red-400/70"
+  }
+
+  const typeCardColors = {
+    article: "bg-blue-200 text-blue-800 border-blue-300 font-medium",
+    video: "bg-purple-200 text-purple-800 border-purple-300 font-medium",
+    course: "bg-green-200 text-green-800 border-green-300 font-medium",
+    project: "bg-amber-200 text-amber-800 border-amber-300 font-medium",
+    tool: "bg-cyan-200 text-cyan-800 border-cyan-300 font-medium",
+    paper: "bg-red-200 text-red-800 border-red-300 font-medium"
+  }
+
+  return (
+    <div 
+      className={`
+        relative group cursor-pointer transition-all duration-300
+        ${isSelected ? 'scale-[1.03] ring-2 ring-white/60 shadow-xl' : 'hover:scale-[1.02] shadow-md hover:shadow-lg'}
+      `}
+      onClick={onSelect}
+    >
+      <div className={`
+        p-6 rounded-xl border-2 backdrop-blur-sm bg-gradient-to-br
+        ${typeColors[resource.type]}
+      `}>
+        <div className="flex items-start gap-4">
+          <div className="p-3.5 rounded-lg bg-white/40 shadow-inner border border-white/60">
+            {resource.icon}
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-white text-lg group-hover:text-white/90">
+              {resource.title}
+            </h3>
+            <p className="text-sm text-white mt-2 line-clamp-2 font-medium">
+              {resource.description}
+            </p>
+            <div className="flex items-center gap-2 mt-4">
+              <Badge className={typeCardColors[resource.type]}>
+                {resource.type}
+              </Badge>
+              {resource.type === "project" && (
+                <Badge className="bg-gradient-to-r from-amber-400 to-orange-400 text-white border-amber-500 font-medium">
+                  Premium
+                </Badge>
+              )}
+              <div className="flex-1" />
+              <Button 
+                size="sm"
+                className="bg-white/40 hover:bg-white/50 text-white font-medium shadow-sm"
+                asChild
+              >
+                <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                  Explore →
+                </a>
+              </Button>
             </div>
           </div>
         </div>
       </div>
     </div>
   )
-}
+};
