@@ -11,13 +11,13 @@ const StatusBadge = ({ status }) => {
   
   return (
     <span className={cn(
-      "inline-flex items-center gap-x-2 rounded-lg mt-4 px-3 py-2 text-sm font-semibold text-white",
-      "ring-2 ring-offset-2 ring-offset-gray-800 shadow-md transition duration-300 ease-in-out",
-      isActive ? "bg-green-700 hover:bg-gray-800 ring-green-500" : "bg-orange-500 hover:bg-gray-800 ring-yellow-500"
+      "inline-flex items-center gap-x-2 rounded-lg mt-4 px-4 py-2 text-base font-bold text-white",
+      "ring-2 ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900 shadow-md transition duration-300 ease-in-out",
+      isActive ? "bg-green-700 hover:bg-green-800 ring-green-500" : "bg-orange-600 hover:bg-orange-700 ring-orange-500"
     )}>
       <ClientSideIcon>
         <svg 
-          className="h-2 w-2" 
+          className="h-3 w-3" 
           viewBox="0 0 6 6" 
           aria-hidden="true"
         >
@@ -25,7 +25,7 @@ const StatusBadge = ({ status }) => {
             cx={3} 
             cy={3} 
             r={3} 
-            className={isActive ? "fill-green-500" : "fill-yellow-500"}
+            className={isActive ? "fill-green-300" : "fill-yellow-300"}
           />
         </svg>
       </ClientSideIcon>
@@ -39,7 +39,7 @@ const PriceBadge = ({ price }) => {
   
   return (
     <span className={cn(
-      "absolute top-4 right-4 inline-flex items-center gap-x-2 rounded-full px-3 py-1 text-sm font-semibold",
+      "absolute top-4 right-4 inline-flex items-center gap-x-2 rounded-full px-4 py-1.5 text-base font-bold",
       "bg-blue-600 dark:bg-blue-700 text-white shadow-lg transition duration-300 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-800",
       "ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 ring-offset-white dark:ring-offset-gray-800"
     )}>
@@ -131,13 +131,13 @@ function CardContent({ imageSource, title, formattedDate, date, description, typ
       </div>
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div className="flex-1">
-          <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-x-4 text-xs text-gray-600 dark:text-gray-300">
             {formattedDate && <time dateTime={date}>{formattedDate}</time>}
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition duration-300 ease-in-out mt-3">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition duration-300 ease-in-out mt-3 tracking-tight">
             {title}
           </h3>
-          <p className="mt-3 text-sm leading-6 text-gray-700 dark:text-gray-300 line-clamp-3">
+          <p className="mt-3 text-sm leading-6 text-gray-800 dark:text-gray-200 line-clamp-3 font-medium">
             {description}
           </p>
         </div>

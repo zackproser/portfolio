@@ -9,6 +9,8 @@ import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import LearningGrid from "@/components/learning-grid"
+import ConsultationForm from "@/components/ConsultationForm"
 
 // Import company logos
 import logoCloudflare from '/public/images/logos/cloudflare.svg'
@@ -57,6 +59,7 @@ export default function HomepageClientComponent({
   const [formSuccess, setFormSuccess] = useState(false)
   const referrer = usePathname()
   const [isMobile] = useState(serverIsMobile)
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
   const sendFormSubmissionEvent = () => {
     if (typeof window !== 'undefined' && 'gtag' in window) {
@@ -190,7 +193,63 @@ export default function HomepageClientComponent({
           </div>
         </section>
         
-        {/* Featured Product Section */}
+        {/* AI Engineering Blueprint Section */}
+        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af]">
+          {/* Blueprint overlay pattern - more prominent */}
+          <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
+          
+          {/* Engineering document appearance */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Corner fold effect - REMOVED to fix blue square issue */}
+            
+            {/* Blueprint document border */}
+            <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 md:px-6 relative z-10">
+            <div className="mb-6 text-center">
+              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-mono uppercase">
+                  AI Engineering Blueprint
+                </h2>
+              </div>
+              <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
+                Master the most effective AI and agentic architectures, RAG pipelines, and machine learning concepts to transform your dev team and business. Taught via hands-on projects and production-ready implementations built by an engineer who actually did this work at top tech companies.
+              </p>
+              
+              <div className="mt-6">
+                <Button 
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold text-base px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
+                  onClick={() => {
+                    track("blueprint_cta_click", { action: "schedule_call" });
+                    setIsConsultationOpen(true);
+                  }}
+                >
+                  Schedule Your Transformation →
+                </Button>
+              </div>
+            </div>
+            
+            <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
+              <LearningGrid />
+            </div>
+          </div>
+        </section>
+
+        {/* Premium Featured Project Title Section */}
+        <section className="py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center">
+              <div className="inline-block bg-blue-600 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-mono uppercase">
+                  Featured Premium Project
+                </h2>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Product Content */}
         <section className="overflow-hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 lg:bg-transparent lg:px-5">
           <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
             <div className="relative flex items-end lg:col-span-6 lg:row-span-2">
@@ -202,7 +261,7 @@ export default function HomepageClientComponent({
                   {/* Badge and price in separate container with flexbox */}
                   <div className="w-full flex flex-col gap-2 sm:block">
                     <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-500/20 text-blue-200 text-xs sm:text-sm font-medium">
-                      Featured Tutorial
+                      Featured Premium Project
                     </div>
                     
                     <div className="hidden sm:block sm:absolute sm:top-8 sm:right-8">
@@ -383,6 +442,10 @@ export default function HomepageClientComponent({
       </main>
       <footer className="w-full py-6 bg-gray-800 text-white">
       </footer>
+      <ConsultationForm 
+        isOpen={isConsultationOpen} 
+        onClose={() => setIsConsultationOpen(false)} 
+      />
     </div>
   )
 }
