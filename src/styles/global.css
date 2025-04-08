@@ -11,6 +11,30 @@
   --glow-color: #FFD700; 
 }
 
+/* Add blue headers throughout the site */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-blue-700 dark:text-blue-300;
+}
+
+/* Different blue shades for different heading levels */
+h1 { @apply text-blue-800 dark:text-blue-200; }
+h2 { @apply text-blue-700 dark:text-blue-300; }
+h3 { @apply text-blue-600 dark:text-blue-300; }
+h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
+
+/* Exception for headers in colored backgrounds */
+.bg-blue-800 h1, .bg-blue-900 h1, 
+.bg-blue-800 h2, .bg-blue-900 h2,
+.bg-blue-800 h3, .bg-blue-900 h3,
+.bg-blue-800 h4, .bg-blue-900 h4,
+.bg-blue-800 h5, .bg-blue-900 h5,
+.bg-blue-800 h6, .bg-blue-900 h6,
+.bg-gradient-to-r h1, .bg-gradient-to-r h2, 
+.bg-gradient-to-r h3, .bg-gradient-to-r h4,
+.bg-gradient-to-r h5, .bg-gradient-to-r h6 {
+  @apply text-white dark:text-blue-100;
+}
+
 @keyframes glow-animation {
   0% {
     text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 15px var(--glow-color), 0 0 20px var(--glow-color);
@@ -110,5 +134,17 @@
 
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
+}
+
+/* Email Input Style */
+.input-email {
+  @apply border-b-2 bg-transparent py-3 
+  focus:border-blue-500 focus:ring-0 
+  transition-colors duration-200;
+}
+
+/* Trust Badge Styling */
+.trust-badge {
+  @apply filter grayscale opacity-75 dark:opacity-50;
 }
 
