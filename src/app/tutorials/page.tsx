@@ -39,19 +39,19 @@ export default async function TutorialsPage() {
 
     return (
       <Container className="mt-16 sm:mt-32">
-        <header className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Hands-On Project-Based Learning
+        <header className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-blue-700 dark:text-blue-300 sm:text-5xl">
+            Tutorials & Learning Paths
           </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            There&apos;s no substitute for hands-on learning in software development. Level up your skills through practical, real-world projects and comprehensive tutorials that teach by doing.
+          <p className="mt-6 text-base text-gray-700 dark:text-gray-300">
+            Here you&apos;ll find in-depth tutorials and learning resources covering various technologies and concepts in software engineering and AI.
           </p>
         </header>
         <div className="mt-16 sm:mt-20">
           {tutorials.length > 0 && (
             <div className="space-y-20">
               <section>
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+                <h2 className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
                   Featured Tutorials
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -69,7 +69,7 @@ export default async function TutorialsPage() {
           {courses.length > 0 && (
             <div className="mt-20 space-y-20">
               <section>
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">
+                <h2 className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
                   Featured Courses
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">

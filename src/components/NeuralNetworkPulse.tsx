@@ -7,6 +7,7 @@ export const NeuralNetworkPulse = () => {
   const [nodeInfo, setNodeInfo] = useState<Record<number, { phrase: string, weight: number }>>({});
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [specialLine, setSpecialLine] = useState<{from: number, to: number} | null>(null);
 
   const phrases = useMemo(() => [
     "VSCode", "IntelliSense", "Git", "Terminal", "Debugger",
@@ -17,11 +18,22 @@ export const NeuralNetworkPulse = () => {
     "neural network", "deep learning", "machine learning", "AI",
     "data science", "computer vision", "natural language processing",
     "speech recognition", "text generation", "image generation",
-    "audio processing", "video processing", "generative AI",
-    "neural network", "deep learning", "machine learning", "AI",
-    "data science", "computer vision", "natural language processing",
-    "speech recognition", "text generation", "image generation",
-    "audio processing", "video processing", "generative AI",
+    
+    "How to Fine-tune Llama 3.1", 
+    "Cloud GPU Services Reviewed",
+    "RAG Evaluation",
+    "Chat with My Data using LangChain",
+    "How to Create a Custom Alpaca Dataset",
+    "Pinecone Reference Architecture",
+    "MNIST PyTorch Hand-Drawn Digit Recognizer",
+    "Vector Databases Compared",
+    "Build a Chatbot That Knows Your Content",
+    "What is LoRA and QLoRA?",
+    "Lightning.ai Studio for Fine-tuning",
+    "Retrieval Augmented Generation",
+    "Run Your Own Tech Blog",
+    "AI-assisted Development",
+    "Codeium vs ChatGPT",
   ], []);
 
   useEffect(() => {
@@ -30,6 +42,21 @@ export const NeuralNetworkPulse = () => {
 
   useEffect(() => {
     if (!isMounted) return;
+
+    const createRandomSpecialLine = () => {
+      const from = Math.floor(Math.random() * 15);
+      let to = Math.floor(Math.random() * 15);
+      while (to === from) {
+        to = Math.floor(Math.random() * 15);
+      }
+      setSpecialLine({ from, to });
+    };
+
+    createRandomSpecialLine();
+
+    const specialLineInterval = setInterval(() => {
+      createRandomSpecialLine();
+    }, 5000);
 
     const interval = setInterval(() => {
       setPulseNodes(prevNodes => {
@@ -52,7 +79,10 @@ export const NeuralNetworkPulse = () => {
       });
     }, 250);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearInterval(specialLineInterval);
+    };
   }, [isMounted, phrases]);
 
   useEffect(() => {
@@ -64,7 +94,6 @@ export const NeuralNetworkPulse = () => {
   const nodes = 15;
   const radius = 240;
 
-  // Don't render anything until mounted
   if (!isMounted) {
     return (
       <div className="w-[600px] h-[600px] flex items-center justify-center">
@@ -87,23 +116,29 @@ export const NeuralNetworkPulse = () => {
     }
   }
 
-  // Create SVG content only after mounting
   const svgContent = (
     <>
-      {lines.map(({ i, j, x1, y1, x2, y2 }) => (
-        <line
-          key={`${i}-${j}`}
-          x1={x1}
-          y1={y1}
-          x2={x2}
-          y2={y2}
-          stroke="#A0AEC0"
-          strokeWidth="1"
-          className={`transition-all duration-300 ${
-            pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-green-400 stroke-[1.5px]' : ''
-          }`}
-        />
-      ))}
+      {lines.map(({ i, j, x1, y1, x2, y2 }) => {
+        const isSpecialLine = specialLine && 
+          ((specialLine.from === i && specialLine.to === j) || 
+           (specialLine.from === j && specialLine.to === i));
+        
+        return (
+          <line
+            key={`${i}-${j}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#CBD5E0"
+            strokeWidth="1"
+            className={`transition-all duration-300 ${
+              isSpecialLine ? 'stroke-blue-300 stroke-[3px]' : 
+              pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-blue-500 stroke-[2px]' : ''
+            }`}
+          />
+        );
+      })}
 
       {[...Array(nodes)].map((_, i) => {
         const angle = (i / nodes) * 2 * Math.PI;
@@ -116,9 +151,11 @@ export const NeuralNetworkPulse = () => {
             cy={y}
             r={pulseNodes.includes(i) ? 12 : 8}
             className={`transition-all duration-300 ${
-              pulseNodes.includes(i) 
-                ? 'fill-green-400' 
-                : 'fill-blue-500'
+              specialLine && (specialLine.from === i || specialLine.to === i)
+                ? 'fill-blue-300'
+                : pulseNodes.includes(i) 
+                  ? 'fill-blue-600' 
+                  : 'fill-blue-400'
             }`}
           />
         );
@@ -142,10 +179,10 @@ export const NeuralNetworkPulse = () => {
             className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
             style={{ left: x, top: y - 30 }}
           >
-            <div className="bg-yellow-300 text-purple-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
+            <div className="bg-blue-100 text-blue-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
               {nodeInfo[i]?.weight}
             </div>
-            <div className="bg-purple-600 text-yellow-300 px-1 rounded text-xs font-bold animate-pulse">
+            <div className="bg-blue-600 text-white px-1 rounded text-xs font-bold animate-pulse max-w-[140px] text-center">
               {nodeInfo[i]?.phrase}
             </div>
           </div>
