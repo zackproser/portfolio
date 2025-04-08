@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import {
-  Examples,
   TokenExplorer,
   TokenPricingCalculator,
-  TokenApplications,
   TokenizationQuiz
 } from './components';
+
+import Image from 'next/image';
+import tokenizationDiagram from '@/images/tokenization-diagram.webp'
 
 // New imports
 import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';
@@ -66,8 +67,8 @@ export default function TokenizationDemoClient() {
             </ul>
           </div>
           <div className="flex justify-center py-2">
-            <img 
-              src="/images/tokenization-overview.svg" 
+            <Image 
+              src={tokenizationDiagram}
               alt="Tokenization process diagram" 
               className="max-w-full h-auto rounded-lg shadow-md" 
             />
