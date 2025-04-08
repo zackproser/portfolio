@@ -372,6 +372,58 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
+        {/* Content Collections Section Header */}
+        <section className="py-12 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-10">
+              <div className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-sans uppercase">
+                  Knowledge Collections
+                </h2>
+              </div>
+              <p className="mt-3 text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Explore my comprehensive library of AI engineering resources and implementation guides.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-4 justify-center mt-8">
+              <Link 
+                href="/projects"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "projects"
+                  })
+                }}
+              >
+                All Projects →
+              </Link>
+              <Link 
+                href="/publications"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "publications"
+                  })
+                }}
+              >
+                All Publications →
+              </Link>
+              <Link 
+                href="/testimonials"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                onClick={() => {
+                  track("main_cta_click", {
+                    destination: "testimonials"
+                  })
+                }}
+              >
+                Client Success Stories →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-white dark:bg-gray-900 py-12">
           <div className="container px-4 md:px-6 mx-auto">
             <h2 className="text-2xl font-bold mb-6 flex items-center">
