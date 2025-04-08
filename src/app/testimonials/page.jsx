@@ -43,8 +43,6 @@ export const metadata = {
   },
 };
 
-
-
 const featuredTestimonial = {
   body: "When I ran your software, I felt joy",
   author: {
@@ -200,7 +198,7 @@ export default function Example() {
             aria-hidden="true"
           >
             <div
-              className="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc]"
+              className="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-blue-600 to-blue-400"
               style={{
                 clipPath:
                   'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
@@ -208,11 +206,11 @@ export default function Example() {
             />
           </div>
           <div
-            className="absolute inset-x-0 top-0 -z-10 flex transform-gpu overflow-hidden opacity-25 blur-3xl sm:pt-40 xl:justify-end"
+            className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
             aria-hidden="true"
           >
             <div
-              className="ml-[-22rem] aspect-[1313/771] w-[82.0625rem] flex-none origin-top-right rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] xl:ml-0 xl:mr-[calc(50%-12rem)]"
+              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-blue-600 to-blue-400 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
               style={{
                 clipPath:
                   'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
@@ -220,23 +218,31 @@ export default function Example() {
             />
           </div>
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
-              <figure className="rounded-2xl bg-white shadow-lg ring-1 ring-gray-900/5 sm:col-span-2 xl:col-start-2 xl:row-end-1">
-                <blockquote className="p-6 text-lg font-semibold leading-7 tracking-tight text-gray-900 sm:p-12 sm:text-xl sm:leading-8">
+            <div className="mx-auto max-w-xl text-center">
+              <h2 className="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-2xl">
+                From colleagues, clients and collaborators
+              </h2>
+            </div>
+            <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 dark:text-gray-300 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
+              <figure className="col-span-2 hidden sm:block sm:rounded-2xl sm:bg-white sm:shadow-lg sm:ring-1 sm:ring-gray-900/5 dark:sm:bg-gray-800 dark:sm:ring-gray-700/5 xl:col-start-2 xl:row-end-1">
+                <blockquote className="p-12 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-100">
                   <p>{`"${featuredTestimonial.body}"`}</p>
                 </blockquote>
-                <figcaption className="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap">
+                <figcaption className="flex items-center gap-x-4 border-t border-gray-100 dark:border-gray-700 px-6 py-4">
                   <Image
-                    className="h-14 w-14 flex-none rounded-full bg-gray-50"
+                    className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
                     src={featuredTestimonial.author.imageUrl}
                     alt=""
+                    width={40}
+                    height={40}
                   />
-                  <div className="flex-auto">
-                    <div className="font-semibold">{featuredTestimonial.author.name}</div>
-                    <div className="text-gray-600">{`@${featuredTestimonial.author.title}`}</div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">{featuredTestimonial.author.name}</div>
+                    <div className="text-gray-600 dark:text-gray-400">{`${featuredTestimonial.author.title}`}</div>
                   </div>
                 </figcaption>
               </figure>
+              
               {testimonials.map((columnGroup, columnGroupIdx) => (
                 <div key={columnGroupIdx} className="space-y-8 xl:contents xl:space-y-0">
                   {columnGroup.map((column, columnIdx) => (
@@ -246,23 +252,29 @@ export default function Example() {
                         (columnGroupIdx === 0 && columnIdx === 0) ||
                           (columnGroupIdx === testimonials.length - 1 && columnIdx === columnGroup.length - 1)
                           ? 'xl:row-span-2'
-                          : 'xl:row-start-1',
+                          : '',
                         'space-y-8'
                       )}
                     >
                       {column.map((testimonial) => (
                         <figure
-                          key={testimonial.author.title}
-                          className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5"
+                          key={testimonial.author.name}
+                          className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-700/5"
                         >
-                          <blockquote className="text-gray-900">
+                          <blockquote className="text-gray-900 dark:text-gray-100">
                             <p>{`"${testimonial.body}"`}</p>
                           </blockquote>
-                          <figcaption className="flex items-center gap-x-4">
-                            <Image className="h-14 w-14 rounded-full bg-gray-50" src={testimonial.author.imageUrl} alt="" />
+                          <figcaption className="mt-6 flex items-center gap-x-4">
+                            <Image
+                              className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
+                              src={testimonial.author.imageUrl}
+                              alt=""
+                              width={40}
+                              height={40}
+                            />
                             <div>
-                              <div className="font-semibold">{testimonial.author.name}</div>
-                              <div className="text-gray-600">{`@${testimonial.author.title}`}</div>
+                              <div className="font-semibold text-blue-700 dark:text-blue-300">{testimonial.author.name}</div>
+                              <div className="text-gray-600 dark:text-gray-400">{`${testimonial.author.title}`}</div>
                             </div>
                           </figcaption>
                         </figure>
@@ -275,6 +287,7 @@ export default function Example() {
           </div>
         </div>
       </SimpleLayout>
-    </>)
+    </>
+  )
 }
 
