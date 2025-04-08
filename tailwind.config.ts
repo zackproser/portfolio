@@ -48,6 +48,17 @@ export default {
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',
+        'shine': 'shine 8s ease-in-out infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        shine: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '0 0' },
+        },
       },
       textShadow: {
         DEFAULT: '2px 2px 0 rgba(0, 0, 0, 0.5)',
