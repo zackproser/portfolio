@@ -19,7 +19,6 @@ export default function TokenizationDemoClient() {
   const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo');
   const [showAnalysis, setShowAnalysis] = useState(false);
   // New state for stepped learning experience
-  const [currentSection, setCurrentSection] = useState(0);
   const [expandedSections, setExpandedSections] = useState([false, false, false, false, false]);
   // Add state for explanation panel
   const [showVocabExplanation, setShowVocabExplanation] = useState(false);
