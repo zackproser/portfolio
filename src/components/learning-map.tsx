@@ -133,6 +133,7 @@ export default function LearningMap() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [highlightedNode, setHighlightedNode] = useState<string | null>(null)
+  const [focusedCluster, setFocusedCluster] = useState<string | null>(null)
   const [nodePositions, setNodePositions] = useState<Map<string, { x: number, y: number }>>(new Map())
   const simulationRef = useRef<d3.Simulation<SimulationNode, undefined> | null>(null)
 
@@ -773,42 +774,42 @@ export default function LearningMap() {
     }
   }
 
-  // Enhanced Resource Card Component
+  // Add this function to generate more visually appealing resource cards
   const ResourceCard = ({ resource, isSelected, onSelect }: { 
     resource: Resource, 
     isSelected: boolean,
     onSelect: () => void
   }) => {
     const typeColors = {
-      article: "from-blue-500/20 to-blue-600/20 border-blue-500/30",
-      video: "from-purple-500/20 to-purple-600/20 border-purple-500/30",
-      course: "from-green-500/20 to-green-600/20 border-green-500/30",
-      project: "from-amber-500/20 to-amber-600/20 border-amber-500/30",
-      tool: "from-cyan-500/20 to-cyan-600/20 border-cyan-500/30",
-      paper: "from-red-500/20 to-red-600/20 border-red-500/30"
+      article: "from-blue-500/60 to-blue-600/40 border-blue-500/50",
+      video: "from-purple-500/60 to-purple-600/40 border-purple-500/50",
+      course: "from-green-500/60 to-green-600/40 border-green-500/50",
+      project: "from-amber-500/60 to-amber-600/40 border-amber-500/50",
+      tool: "from-cyan-500/60 to-cyan-600/40 border-cyan-500/50",
+      paper: "from-red-500/60 to-red-600/40 border-red-500/50"
     }
 
     return (
       <div 
         className={`
           relative group cursor-pointer transition-all duration-300
-          ${isSelected ? 'scale-102 ring-2 ring-white/20' : 'hover:scale-101'}
+          ${isSelected ? 'scale-102 ring-2 ring-white/30' : 'hover:scale-101'}
         `}
         onClick={onSelect}
       >
         <div className={`
-          p-4 rounded-lg border backdrop-blur-sm bg-gradient-to-br
+          p-4 rounded-lg border backdrop-blur-md bg-gradient-to-br
           ${typeColors[resource.type]}
         `}>
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-lg bg-white/10">
+            <div className="p-3 rounded-lg bg-white/20 shadow-inner">
               {resource.icon}
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-white group-hover:text-white/90">
                 {resource.title}
               </h3>
-              <p className="text-sm text-white/70 mt-1">
+              <p className="text-sm text-white/80 mt-1 line-clamp-2">
                 {resource.description}
               </p>
               <div className="flex items-center gap-2 mt-3">
@@ -816,14 +817,14 @@ export default function LearningMap() {
                   {resource.type}
                 </Badge>
                 {resource.type === "project" && (
-                  <Badge className="bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-white border-amber-500/30">
+                  <Badge className="bg-gradient-to-r from-amber-500/50 to-orange-500/50 text-white border-amber-500/50">
                     Premium
                   </Badge>
                 )}
                 <div className="flex-1" />
                 <Button 
                   size="sm"
-                  className="bg-white/10 hover:bg-white/20 text-white"
+                  className="bg-white/20 hover:bg-white/30 text-white"
                   asChild
                 >
                   <a href={resource.url} target="_blank" rel="noopener noreferrer">
@@ -838,13 +839,65 @@ export default function LearningMap() {
     )
   }
 
+  // Helper function to check if a node belongs to a cluster
+  const isNodeInCluster = (node: Node, clusterId: string): boolean => {
+    if (node.id === clusterId) return true;
+    if ('parentId' in node && node.parentId === clusterId) return true;
+    return false;
+  }
+
+  // Get all nodes in a cluster (parent node and its resources)
+  const getClusterNodes = (clusterId: string): Node[] => {
+    return filteredNodes.filter(node => isNodeInCluster(node, clusterId));
+  }
+
+  // Highlight all nodes in a cluster
+  const highlightCluster = (clusterId: string) => {
+    setFocusedCluster(clusterId);
+    
+    // Track the interaction
+    const clusterNode = filteredNodes.find(n => n.id === clusterId);
+    if (clusterNode) {
+      trackNodeInteraction(clusterNode, 'highlight_cluster');
+    }
+  }
+
+  // Clear cluster highlighting
+  const clearClusterHighlight = () => {
+    setFocusedCluster(null);
+  }
+
+  // Handle featured path click
+  const handleFeaturedPathClick = (pathName: string) => {
+    // Map path names to topic IDs
+    const pathToTopicMap: {[key: string]: string} = {
+      'RAG Systems': 'rag-systems',
+      'Fine-tuning LLMs': 'fine-tuning',
+      'Secure AI Applications': 'secure-rag-fga'
+    };
+    
+    const topicId = pathToTopicMap[pathName];
+    if (topicId) {
+      // Find the topic node
+      const topicNode = filteredNodes.find(node => node.id === topicId);
+      if (topicNode) {
+        // Select the node and highlight its cluster
+        setSelectedNode(topicNode);
+        highlightCluster(topicId);
+        
+        // Track the interaction
+        trackNodeInteraction(topicNode, 'select_featured_path');
+      }
+    }
+  }
+
   return (
     <div className="w-full flex flex-col md:flex-row gap-8">
-      <div className="w-full md:w-1/3">
-        <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/10 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+      <div className="w-full md:w-2/5">
+        <div className="bg-blue-900/30 backdrop-blur-md p-6 rounded-lg border border-blue-400/30 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
           {/* Add filter controls */}
           <div className="mb-6 space-y-4">
-            <h3 className="text-sm font-semibold text-white/80">Filter by Track</h3>
+            <h3 className="text-lg font-semibold text-white/90">Filter by Track</h3>
             <div className="flex flex-wrap gap-2">
               {['core', 'data', 'tools', 'specialization'].map(track => (
                 <Button
@@ -854,7 +907,7 @@ export default function LearningMap() {
                     activeFilters.has(track) 
                       ? getTrackColor(track)
                       : 'bg-white/10 hover:bg-white/20'
-                  } text-white text-xs`}
+                  } text-white text-sm px-4 py-2`}
                   onClick={() => toggleFilter(track)}
                 >
                   {track.charAt(0).toUpperCase() + track.slice(1)}
@@ -865,37 +918,71 @@ export default function LearningMap() {
 
           {selectedNode ? (
             <div>
-              <Button 
-                variant="ghost" 
-                className="mb-4 text-white/70 hover:text-white"
-                onClick={() => {
-                  trackNodeInteraction(selectedNode, 'deselect')
-                  setSelectedNode(null)
-                }}
-              >
-                ← Back to Overview
-              </Button>
+              <div className="flex items-center gap-3 mb-5">
+                <Button 
+                  variant="outline" 
+                  className="border-white/20 text-white/80 hover:text-white hover:bg-white/10"
+                  onClick={() => {
+                    trackNodeInteraction(selectedNode, 'deselect')
+                    setSelectedNode(null)
+                    clearClusterHighlight()
+                  }}
+                >
+                  ← Back to Overview
+                </Button>
+                
+                {focusedCluster && (
+                  <Button
+                    variant="outline"
+                    className="ml-auto border-blue-400/30 text-blue-400 hover:bg-blue-500/20"
+                    onClick={clearClusterHighlight}
+                  >
+                    Show All Nodes
+                  </Button>
+                )}
+              </div>
               
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-lg ${getTrackColor('isResource' in selectedNode ? selectedNode.type : selectedNode.track || "")} flex items-center justify-center`}>
-                    {'isResource' in selectedNode ? getResourceIcon(selectedNode.type) : selectedNode.icon}
+              <div className="space-y-6">
+                <div className="bg-blue-800/30 rounded-lg p-5 border border-blue-500/30 shadow-lg">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-16 h-16 rounded-lg ${getTrackColor('isResource' in selectedNode ? selectedNode.type : selectedNode.track || "")} flex items-center justify-center shadow-lg`}>
+                      {'isResource' in selectedNode ? getResourceIcon(selectedNode.type) : selectedNode.icon}
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">{selectedNode.title}</h2>
+                      <div className="flex gap-2 mt-1">
+                        {'isResource' in selectedNode ? (
+                          <Badge className={`${getTypeColor(selectedNode.type)}`}>{selectedNode.type}</Badge>
+                        ) : (
+                          <Badge className="bg-blue-500/30 text-white border-blue-500/50">{selectedNode.difficulty}</Badge>
+                        )}
+                        
+                        {completedNodes.includes(selectedNode.id) && (
+                          <Badge className="bg-green-500/30 text-white border-green-500/50">Completed</Badge>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-white">{selectedNode.title}</h2>
-                    {'isResource' in selectedNode ? (
-                      <Badge className={`${getTypeColor(selectedNode.type)}`}>{selectedNode.type}</Badge>
-                    ) : (
-                      <Badge className="bg-blue-500/20 text-white border-0">{selectedNode.difficulty}</Badge>
-                    )}
-                  </div>
-                </div>
 
-                <p className="text-white/80">{selectedNode.description}</p>
+                  <p className="text-white/90 mt-4 leading-relaxed">{selectedNode.description}</p>
+
+                  <Button
+                    variant={completedNodes.includes(selectedNode.id) ? "destructive" : "default"}
+                    className={`
+                      mt-5 w-full
+                      ${completedNodes.includes(selectedNode.id)
+                        ? "bg-red-500/80 hover:bg-red-600/80" 
+                        : "bg-gradient-to-r from-blue-600/80 to-blue-700/80 hover:from-blue-700/80 hover:to-blue-800/80"}
+                    `}
+                    onClick={() => toggleCompleted(selectedNode.id)}
+                  >
+                    {completedNodes.includes(selectedNode.id) ? "Mark as Incomplete" : "Mark as Completed"}
+                  </Button>
+                </div>
 
                 {'isResource' in selectedNode ? (
                   <Button 
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4" 
+                    className="w-full bg-gradient-to-r from-blue-600/80 to-blue-700/80 hover:from-blue-700/80 hover:to-blue-800/80 text-white py-6" 
                     asChild
                     onClick={() => trackNodeInteraction(selectedNode, 'explore_resource')}
                   >
@@ -904,9 +991,12 @@ export default function LearningMap() {
                     </a>
                   </Button>
                 ) : (
-                  <div className="space-y-4 mt-6">
-                    <h3 className="text-lg font-semibold text-white">Learning Resources</h3>
-                    <div className="grid gap-3">
+                  <div className="space-y-5 mt-8">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold text-white">Learning Resources</h3>
+                      <Badge className="bg-blue-500/20 text-white">{selectedNode.resources.length} resources</Badge>
+                    </div>
+                    <div className="grid gap-4">
                       {selectedNode.resources.map((resource, idx) => (
                         <ResourceCard
                           key={idx}
@@ -918,40 +1008,73 @@ export default function LearningMap() {
                     </div>
                   </div>
                 )}
-
-                <Button
-                  variant={completedNodes.includes(selectedNode.id) ? "destructive" : "default"}
-                  className={`
-                    w-full mt-4
-                    ${completedNodes.includes(selectedNode.id)
-                      ? "bg-red-500 hover:bg-red-600" 
-                      : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"}
-                  `}
-                  onClick={() => toggleCompleted(selectedNode.id)}
-                >
-                  {completedNodes.includes(selectedNode.id) ? "Mark as Incomplete" : "Mark as Completed"}
-                </Button>
               </div>
             </div>
           ) : (
             <>
-              <h2 className="text-2xl font-bold text-white mb-4">Learning Path</h2>
-              <p className="text-white/80 mb-6">
-                Follow this structured path to master AI concepts from fundamentals to advanced applications.
-              </p>
-
-              <div className="mt-8 p-4 bg-white/10 rounded-lg border border-white/10">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-white">Your Progress</h3>
-                  <span className="text-white/80">
-                    {completedNodes.length}/{nodes.length} Completed
-                  </span>
+              <div className="bg-gradient-to-r from-blue-600/30 to-purple-600/30 rounded-lg p-5 border border-blue-400/30 shadow-lg mb-8">
+                <h2 className="text-3xl font-bold text-white mb-3">AI Engineering Learning Path</h2>
+                <p className="text-white/90 leading-relaxed mb-4">
+                  A curated collection of resources to help you master AI engineering, from fundamentals to advanced applications. Explore the map to discover learning materials organized by topic.
+                </p>
+              
+                <div className="mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-bold text-white">Your Progress</h3>
+                    <span className="text-white/90 font-medium">
+                      {completedNodes.length}/{topics.length} Topics Completed
+                    </span>
+                  </div>
+                  <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-cyan-400 h-3 rounded-full"
+                      style={{ width: `${Math.max(5, (completedNodes.length / topics.length) * 100)}%` }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="w-full bg-white/10 rounded-full h-2">
-                  <div
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{ width: `${(completedNodes.length / nodes.length) * 100}%` }}
-                  ></div>
+              </div>
+              
+              {/* Topic Overview Section - Shows all topics at once */}
+              <div className="space-y-5">
+                <h3 className="text-xl font-semibold text-white">All Learning Paths</h3>
+                <div className="grid gap-4">
+                  {topics.map(topic => (
+                    <div 
+                      key={topic.id}
+                      className={`
+                        p-4 rounded-lg cursor-pointer transition-all duration-300
+                        ${getTrackColor(topic.track)}
+                        hover:bg-opacity-80 border border-white/20 hover:border-white/40
+                        ${completedNodes.includes(topic.id) ? 'ring-2 ring-green-500/50' : ''}
+                      `}
+                      onClick={() => {
+                        setSelectedNode(topic);
+                        highlightCluster(topic.id);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-lg bg-white/10 shadow-inner">
+                          {topic.icon}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-white">{topic.title}</h4>
+                          <div className="flex gap-2 mt-1">
+                            <Badge className="bg-blue-500/30 text-white border-blue-500/50">
+                              {topic.difficulty}
+                            </Badge>
+                            <Badge className="bg-white/20 text-white border-white/30">
+                              {topic.resources.length} resources
+                            </Badge>
+                            {completedNodes.includes(topic.id) && (
+                              <Badge className="bg-green-500/30 text-white border-green-500/50">
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </>
@@ -959,7 +1082,7 @@ export default function LearningMap() {
         </div>
       </div>
 
-      <div className="w-full md:w-2/3 relative" ref={containerRef}>
+      <div className="w-full md:w-3/5 relative" ref={containerRef}>
         <div className="aspect-square w-full relative bg-[#1e3a8a]/80 rounded-lg border border-white/20 overflow-hidden shadow-2xl">
           {/* Blueprint background with only blue gradient - removed purple gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/40 to-blue-950/90"></div>
@@ -1040,11 +1163,20 @@ export default function LearningMap() {
             const isCompleted = completedNodes.includes(node.id)
             const isHovered = hoveredNode === node.id
             const isHighlighted = hoveredNode === node.id || highlightedNode === node.id
-            const isResource = 'isResource' in node
             const isParent = 'isParent' in node && node.isParent
+            const isResource = 'isResource' in node
             
-            // Determine size multiplier - make parent nodes larger
-            const sizeMultiplier = isParent ? 1.7 : 1.1  // Increased difference between parent and resource nodes
+            // Determine if node should be visible based on cluster focus
+            const isInFocusedCluster = focusedCluster ? isNodeInCluster(node, focusedCluster) : true
+            const shouldRenderDimmed = focusedCluster && !isInFocusedCluster
+            
+            // Skip rendering if node shouldn't be visible due to cluster focus
+            if (shouldRenderDimmed && isResource) {
+              return null
+            }
+            
+            // Determine size multiplier - make parent nodes much larger
+            const sizeMultiplier = isParent ? 2.2 : 0.9  // Increased difference between parent and resource nodes
             
             // Skip rendering very small resource nodes if not highlighted to reduce visual clutter
             if (isResource && !isHighlighted && node.value < 0.3) {
@@ -1055,8 +1187,8 @@ export default function LearningMap() {
               <button
                 key={node.id}
                 className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isHighlighted ? "scale-110 z-10" : "hover:scale-105"
-                }`}
+                  isHighlighted ? "scale-110 z-20" : shouldRenderDimmed ? "opacity-20" : "hover:scale-105 z-10"
+                } ${isParent ? "z-10" : "z-5"}`}
                 style={{
                   top: `${position.y * 100}%`,
                   left: `${position.x * 100}%`,
@@ -1065,6 +1197,11 @@ export default function LearningMap() {
                 onClick={() => {
                   trackNodeInteraction(node, 'select')
                   setSelectedNode(node)
+                  if (isParent) {
+                    highlightCluster(node.id)
+                  } else if ('parentId' in node) {
+                    highlightCluster(node.parentId)
+                  }
                 }}
                 onMouseEnter={() => {
                   trackNodeInteraction(node, 'hover')
@@ -1083,20 +1220,28 @@ export default function LearningMap() {
                     isHighlighted ? "ring-2 ring-white/70 ring-offset-2 ring-offset-blue-950" : ""
                   } ${
                     isCompleted
-                      ? "bg-blue-500 border-2 border-white/70"  // Increased contrast
-                      : `${'isResource' in node ? getTypeColor(node.type) : getTrackColor(node.track || "")} border-2 ${isParent ? 'border-white/60' : 'border-white/30'} backdrop-blur-sm`
+                      ? "bg-blue-500 border-2 border-white/70"
+                      : `${'isResource' in node ? getTypeColor(node.type) : getTrackColor(node.track || "")} border-2 ${isParent ? 'border-white/80' : 'border-white/20'} backdrop-blur-sm`
+                  } ${
+                    isParent ? "shadow-[0_0_15px_rgba(255,255,255,0.2)]" : ""
                   } transition-all duration-300 shadow-lg`}
                   style={{
-                    width: `${Math.max(40, (node.value || 0.4) * 90 * sizeMultiplier)}px`,  // Increased max size for better visibility
-                    height: `${Math.max(40, (node.value || 0.4) * 90 * sizeMultiplier)}px`,
+                    width: `${Math.max(40, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
+                    height: `${Math.max(40, (node.value || 0.4) * 100 * sizeMultiplier)}px`,
+                    opacity: shouldRenderDimmed ? 0.3 : 1,
                   }}
                 >
                   <div className={`${isHighlighted ? 'scale-110' : ''} transition-transform duration-300`}>
-                    {/* Larger icons */}
-                    <div className={`${isParent ? 'transform scale-170' : 'transform scale-130'}`}>
+                    {/* Larger icons for parent nodes */}
+                    <div className={`${isParent ? 'transform scale-200' : 'transform scale-125'}`}>
                       {node.icon}
                     </div>
                   </div>
+                  
+                  {/* Add glow effect for parent nodes */}
+                  {isParent && (
+                    <div className="absolute inset-0 rounded-full bg-gradient-radial from-white/10 to-transparent -z-10 blur-md"></div>
+                  )}
                 </div>
               </button>
             )
@@ -1107,7 +1252,11 @@ export default function LearningMap() {
             <h3 className="text-white font-bold mb-3">Featured Learning Paths</h3>
             <div className="grid grid-cols-3 gap-4">
               {['RAG Systems', 'Fine-tuning LLMs', 'Secure AI Applications'].map((path, idx) => (
-                <div key={idx} className="bg-blue-800/40 hover:bg-blue-700/50 p-3 rounded-lg cursor-pointer transition-colors border border-blue-500/30">
+                <div 
+                  key={idx} 
+                  className="bg-blue-800/40 hover:bg-blue-700/50 p-3 rounded-lg cursor-pointer transition-colors border border-blue-500/30"
+                  onClick={() => handleFeaturedPathClick(path)}
+                >
                   <p className="text-white text-sm font-medium">{path}</p>
                   <p className="text-white/70 text-xs mt-1">Click to explore this path</p>
                 </div>
