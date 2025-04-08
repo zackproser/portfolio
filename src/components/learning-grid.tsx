@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { track } from '@vercel/analytics'
+import ConsultationForm from "./ConsultationForm"
 
 // Reuse the same interfaces from the original implementation
 interface BaseNode {
@@ -156,7 +157,8 @@ export default function LearningGrid() {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
   const [completedNodes, setCompletedNodes] = useState<string[]>([])
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(['core', 'data', 'tools', 'specialization']))
-
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false)
+  
   // Load completed topics from local storage on initial render
   useEffect(() => {
     const savedCompletedTopics = localStorage.getItem(COMPLETED_TOPICS_KEY)
@@ -185,7 +187,7 @@ export default function LearningGrid() {
       title: "How LLMs See Text",
       description: "Interactive exploration of how large language models tokenize input.",
       position: { x: 0.25, y: 0.05 },
-      icon: <Database className="h-5 w-5 text-white" />,
+      icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
       value: 0.4,
       phase: 0,
@@ -197,7 +199,7 @@ export default function LearningGrid() {
           title: "Interactive Tokenization Demo",
           type: "tool",
           url: "/demos/tokenize",
-          description: "How language models break down text input.",
+          description: "Try it yourself: See how LLMs break down your text in real-time with this interactive tool.",
           parentId: "tokenization-guide",
           position: { x: 0, y: 0 },
           icon: <Wrench className="h-5 w-5 text-white" />,
@@ -574,12 +576,12 @@ export default function LearningGrid() {
                   <DialogTrigger asChild>
                     <div 
                       className={`
-                        p-4 rounded-xl cursor-pointer transition-all duration-300
+                        p-5 rounded-xl cursor-pointer transition-all duration-300
                         bg-gradient-to-br ${getTrackColor(topic.track).replace('bg-blue-500/30', 'from-blue-600/40 to-blue-800/40').replace('bg-green-500/30', 'from-green-600/40 to-green-800/40').replace('bg-amber-500/30', 'from-amber-600/40 to-amber-800/40').replace('bg-purple-500/30', 'from-purple-600/40 to-purple-800/40')}
                         hover:from-blue-600/50 hover:to-blue-800/50 border-2 border-white/20 hover:border-white/30
                         ${completedNodes.includes(topic.id) ? 'ring-2 ring-green-500/60 shadow-lg shadow-green-500/10' : 'shadow-md hover:shadow-xl'}
                         transform hover:scale-[1.02]
-                        w-full mx-auto h-full
+                        w-full mx-auto h-full relative
                       `}
                       onClick={() => handleOpenTopic(topic)}
                     >
@@ -588,13 +590,57 @@ export default function LearningGrid() {
                           {topic.icon}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-bold text-white text-lg">{topic.title}</h4>
-                          <p className="text-white/90 text-sm mt-2 leading-relaxed line-clamp-3">{topic.description}</p>
-                          <div className="mt-3">
-                            <span className="text-white/80 text-xs">{topic.resources.length} resources</span>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-white text-lg">{topic.title}</h4>
+                            {completedNodes.includes(topic.id) && (
+                              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            )}
+                          </div>
+                          
+                          <p className="text-white/90 text-sm mt-2 leading-relaxed line-clamp-2 mb-3">{topic.description}</p>
+                          
+                          {/* Modified the Business Impact section to remove track-specific language */}
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
+                            <p className="text-white/80 text-xs line-clamp-2">
+                              Accelerate development time and ship AI applications with production-ready architectures
+                            </p>
+                          </div>
+                          
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="flex items-center">
+                              {/* Removed badges per request */}
+                            </div>
+                            
+                            <span className="text-blue-300 text-xs flex items-center">
+                              Explore
+                              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </span>
                           </div>
                         </div>
                       </div>
+                      
+                      {/* Progress indicator for multi-part topics with many resources */}
+                      {topic.resources.length >= 4 && (
+                        <div className="mt-4 pt-2">
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className="text-white/70">Progress</span>
+                            <span className="text-white/70">
+                              {completedNodes.includes(topic.id) ? "Completed" : "0%"}
+                            </span>
+                          </div>
+                          <div className="w-full bg-white/10 rounded-full h-1.5">
+                            <div 
+                              className={`${completedNodes.includes(topic.id) ? "bg-emerald-500" : "bg-blue-500/50"} h-1.5 rounded-full`} 
+                              style={{ width: completedNodes.includes(topic.id) ? "100%" : "0%" }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </DialogTrigger>
                   
@@ -604,12 +650,16 @@ export default function LearningGrid() {
                         <div className={`p-5 rounded-xl ${getTrackColor(topic.track)} backdrop-blur-sm border border-white/30 shadow-lg`}>
                           {topic.icon}
                         </div>
-                        <div>
-                          <DialogTitle className="text-3xl font-bold text-white mb-2 tracking-tight">{topic.title}</DialogTitle>
-                          <div className="flex gap-2 mt-1">
-                            <span className="text-white/70 text-sm">{topic.resources.length} premium resources</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <DialogTitle className="text-3xl font-bold text-white mb-1 tracking-tight">{topic.title}</DialogTitle>
+                            <span className="ml-2 bg-blue-100 dark:bg-blue-900 text-xs px-2 py-1 rounded-full text-blue-900 dark:text-blue-100 font-semibold">
+                              {topic.resources.length} resources
+                            </span>
+                          </div>
+                          <div className="flex gap-2 mt-2">
                             {completedNodes.includes(topic.id) && (
-                              <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1">Completed</Badge>
+                              <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1 rounded-full">Completed</Badge>
                             )}
                           </div>
                         </div>
@@ -617,6 +667,24 @@ export default function LearningGrid() {
                       <DialogDescription className="text-white mt-5 text-lg font-medium leading-relaxed">
                         {topic.description}
                       </DialogDescription>
+                      
+                      <div className="mt-4 p-3 bg-blue-900/40 border border-blue-400/20 rounded-lg">
+                        <h3 className="font-medium text-blue-200 mb-2">After mastering this, your team will:</h3>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Build {topic.track === "data" ? "RAG pipelines" : topic.track === "core" ? "LLM applications" : "specialized AI systems"} with enterprise-grade security</span>
+                          </li>
+                          <li className="flex items-start">
+                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Optimize for performance and accuracy in production environments</span>
+                          </li>
+                        </ul>
+                      </div>
                     </DialogHeader>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-2">
@@ -656,21 +724,61 @@ export default function LearningGrid() {
                                 </div>
                                 <div className="flex-1">
                                   <h4 className="font-bold text-xl text-white group-hover:text-blue-100 transition-colors">{resource.title}</h4>
-                                  <div className="mt-1">
-                                    <Badge className={`${
-                                      resource.type === "project" ? "bg-amber-500/20 text-amber-200 border-amber-500/30" :
-                                      resource.type === "course" ? "bg-emerald-500/20 text-emerald-200 border-emerald-500/30" :
-                                      resource.type === "article" ? "bg-blue-500/20 text-blue-200 border-blue-500/30" :
-                                      resource.type === "video" ? "bg-purple-500/20 text-purple-200 border-purple-500/30" :
-                                      resource.type === "tool" ? "bg-cyan-500/20 text-cyan-200 border-cyan-500/30" :
-                                      "bg-red-500/20 text-red-200 border-red-500/30"
-                                    } px-2.5 py-0.5 text-xs rounded-md font-medium`}>
-                                      {resource.type}
-                                    </Badge>
-                                    
+                                  <div className="mt-1 flex flex-wrap gap-2">
                                     {resource.type === "project" && (
-                                      <Badge className="ml-2 bg-gradient-to-r from-amber-400/40 to-orange-500/40 text-amber-100 border-amber-500/30 px-2.5 py-0.5 text-xs rounded-md font-medium">
-                                        Premium
+                                      <Badge className="inline-flex items-center bg-gradient-to-r from-amber-400/20 to-amber-500/20 text-amber-100 border-amber-500/30 px-3 py-1 text-xs rounded-full font-medium">
+                                        <BookOpen className="h-3 w-3 mr-1" />
+                                        Includes: Code Template
+                                      </Badge>
+                                    )}
+                                    
+                                    {resource.type === "tool" && (
+                                      <div className="mt-4 bg-gradient-to-r from-slate-900 to-blue-900 p-3 rounded-lg border border-blue-500/20 relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-grid-white/5 opacity-30"></div>
+                                        <div className="relative">
+                                          <h4 className="text-sm font-medium text-blue-300 flex items-center">
+                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                            </svg>
+                                            Try it yourself: Tokenize your input in real-time
+                                          </h4>
+                                          
+                                          <div className="mt-2 bg-slate-800/50 border border-slate-700/50 rounded-md p-3 font-mono text-xs text-blue-200">
+                                            <div className="flex items-center border-b border-blue-900/50 pb-2 mb-2">
+                                              <div className="w-full bg-blue-950 rounded-sm px-2 py-1 text-blue-400 flex-1">Enter your text here...</div>
+                                              <button className="ml-2 px-2 py-1 bg-blue-600/50 rounded-sm text-white text-xs">Tokenize</button>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-1">
+                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
+                                                <span className="text-cyan-300">&quot;Hello&quot;</span>
+                                                <span className="text-amber-300 text-opacity-70">15496</span>
+                                              </div>
+                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
+                                                <span className="text-cyan-300">&quot;world&quot;</span>
+                                                <span className="text-amber-300 text-opacity-70">2159</span>
+                                              </div>
+                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
+                                                <span className="text-cyan-300">&quot;!&quot;</span>
+                                                <span className="text-amber-300 text-opacity-70">0</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                          <div className="flex items-center justify-between mt-3">
+                                            <Badge className="inline-flex items-center bg-cyan-700/30 text-cyan-300 border-cyan-600/30 px-2 py-0.5 text-xs rounded-full">
+                                              <Code className="h-3 w-3 mr-1" />
+                                              Python code included
+                                            </Badge>
+                                            <span className="text-xs text-blue-400">OpenAI/GPT-4 compatible</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {resource.type === "course" && (
+                                      <Badge className="inline-flex items-center bg-gradient-to-r from-emerald-400/20 to-emerald-500/20 text-emerald-100 border-emerald-500/30 px-3 py-1 text-xs rounded-full font-medium">
+                                        <Laptop className="h-3 w-3 mr-1" />
+                                        Full Course
                                       </Badge>
                                     )}
                                   </div>
@@ -681,11 +789,18 @@ export default function LearningGrid() {
                               
                               <div className="flex items-center justify-between">
                                 <div className="text-blue-300 text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform duration-300">
-                                  <span>Explore Resource</span>
+                                  <span>Master This Skill</span>
                                   <svg className="w-4 h-4 ml-1 group-hover:ml-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                   </svg>
                                 </div>
+                                
+                                {/* Preview indicator for certain resource types */}
+                                {(resource.type === "project" || resource.type === "tool") && (
+                                  <span className="text-xs px-2 py-1 rounded bg-blue-900/50 text-blue-300 border border-blue-500/20">
+                                    Includes code template
+                                  </span>
+                                )}
                                 
                                 {/* Subtle shine effect */}
                                 <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
@@ -696,7 +811,22 @@ export default function LearningGrid() {
                       ))}
                     </div>
                     
-                    <div className="flex items-center justify-center mt-8 pt-5 px-2">
+                    {/* CTA */}
+                    <div className="mt-8 mx-2 mb-4 p-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg text-white shadow-lg">
+                      <h3 className="text-xl font-bold mb-3">Ready to lead the AI revolution?</h3>
+                      <p className="mb-5">Accelerate your team&apos;s expertise and business outcomes with proven AI architectures.</p>
+                      <button 
+                        className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl transform hover:translate-y-[-2px]"
+                        onClick={() => setIsConsultationOpen(true)}
+                      >
+                        <span>Schedule Your Transformation</span>
+                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center justify-center mt-4 pt-5 px-2">
                       <DialogClose asChild>
                         <Button variant="outline" className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-white font-medium px-8">
                           Close
@@ -710,6 +840,10 @@ export default function LearningGrid() {
           </div>
         ))}
       </div>
+      <ConsultationForm 
+        isOpen={isConsultationOpen} 
+        onClose={() => setIsConsultationOpen(false)} 
+      />
     </>
   )
 } 
