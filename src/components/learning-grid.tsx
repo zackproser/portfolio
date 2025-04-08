@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Database, Brain, BookOpen, Sparkles, Zap, BarChart, Layers, Code, GitBranch, Network, Settings, Scale, Wrench, FileText, Video, ScrollText, Laptop, Lock, Shield } from "lucide-react"
+import { Database, Brain, BookOpen, Sparkles, Zap, BarChart, Layers, Code, GitBranch, Network, Settings, Scale, Wrench, FileText, Video, ScrollText, Laptop, Lock, Shield, CheckCircle, CircleDot, ArrowRight } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose
+  DialogClose,
+  DialogFooter
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { track } from '@vercel/analytics'
 import ConsultationForm from "./ConsultationForm"
+import { motion } from "framer-motion"
 
 // Reuse the same interfaces from the original implementation
 interface BaseNode {
@@ -152,6 +154,285 @@ const typeConfigs: Record<ResourceType, {
   }
 };
 
+// Add global keyframes and styles for animations
+const GlobalStyles = () => (
+  <style jsx global>{`
+    @keyframes circuit-pulse {
+      0%, 100% { 
+        opacity: 0.3;
+        transform: scale(0.98);
+      }
+      50% { 
+        opacity: 1;
+        transform: scale(1.02);
+      }
+    }
+    
+    @keyframes blueprint-glow {
+      0%, 100% { 
+        box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+      }
+      50% { 
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+      }
+    }
+    
+    @keyframes metal-shine {
+      0% {
+        background-position: -100% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+    
+    @keyframes servo-move {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+    
+    @keyframes pin-tack {
+      0% { transform: translateY(-20px); opacity: 0; }
+      50% { transform: translateY(5px); opacity: 1; }
+      75% { transform: translateY(-2px); }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes connector-pulse {
+      0%, 100% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+    
+    .animate-circuit-pulse {
+      animation: circuit-pulse 3s infinite ease-in-out;
+    }
+    
+    .animate-blueprint-glow {
+      animation: blueprint-glow 4s infinite ease-in-out;
+    }
+    
+    .animate-metal-shine {
+      background: linear-gradient(
+        90deg, 
+        rgba(255,255,255,0) 25%, 
+        rgba(255,255,255,0.15) 50%, 
+        rgba(255,255,255,0) 75%
+      );
+      background-size: 200% 100%;
+      animation: metal-shine 3s infinite linear;
+    }
+    
+    .animate-servo-move {
+      animation: servo-move 3s infinite ease-in-out;
+    }
+    
+    .animate-pin-tack {
+      animation: pin-tack 0.5s forwards ease-out;
+    }
+    
+    .connector-pulse {
+      animation: connector-pulse 3s infinite ease-in-out;
+    }
+    
+    .text-shadow-gold {
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+    
+    .text-shadow-white {
+      text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+    }
+    
+    .shadow-gold {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+    
+    .blueprint-bg {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: -1px -1px;
+    }
+    
+    .resource-card-container {
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .resource-card-container:hover {
+      transform: translateY(-5px) scale(1.03);
+      z-index: 20;
+    }
+    
+    .rounded-card {
+      border-radius: 12px;
+    }
+  `}</style>
+);
+
+const ResourceCard = ({ resource, isSelected, onSelect }: { 
+  resource: Resource; 
+  isSelected: boolean; 
+  onSelect: () => void;
+}) => {
+  // Determine if resource is premium (projects are considered premium)
+  const isPremium = resource.type === "project";
+  const includesCode = resource.type === "project" || resource.type === "course";
+  
+  // New material textures based on tier
+  const materialTextures = {
+    free: "bg-gradient-to-br from-blue-500/90 to-blue-700/90 border-blue-400/30 backdrop-filter backdrop-blur-md", // Light blue instead of grey
+    premium: "bg-gradient-to-br from-amber-600/90 to-amber-800/90 border-amber-500/30 backdrop-filter backdrop-blur-md" // Brushed gold with embossed leather background
+  };
+
+  // Map resource types to themed icons and colors
+  const resourceConfig = {
+    project: {
+      icon: "⚙️",
+      chipColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/70 dark:text-amber-200 border-amber-300/70 dark:border-amber-700/70 font-medium"
+    },
+    course: {
+      icon: "📚",
+      chipColor: "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-200 border-green-300/70 dark:border-green-700/70 font-medium"
+    },
+    article: {
+      icon: "📝",
+      chipColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/70 dark:text-blue-200 border-blue-300/70 dark:border-blue-700/70 font-medium"
+    },
+    video: {
+      icon: "🎥",
+      chipColor: "bg-purple-100 text-purple-800 dark:bg-purple-900/70 dark:text-purple-200 border-purple-300/70 dark:border-purple-700/70 font-medium"
+    },
+    tool: {
+      icon: "🧩",
+      chipColor: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/70 dark:text-cyan-200 border-cyan-300/70 dark:border-cyan-700/70 font-medium"
+    },
+    paper: {
+      icon: "📄",
+      chipColor: "bg-red-100 text-red-800 dark:bg-red-900/70 dark:text-red-200 border-red-300/70 dark:border-red-700/70 font-medium"
+    }
+  };
+  
+  // Handle resource click to track and navigate
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the parent dialog close
+    
+    // Add subtle haptic-like animation effect
+    const card = e.currentTarget as HTMLElement;
+    card.style.transform = "scale(0.98)";
+    setTimeout(() => {
+      card.style.transform = "scale(1)";
+    }, 100);
+    
+    track('learning_map_interaction', {
+      node_id: resource.id,
+      node_type: 'resource',
+      action: 'click_resource',
+      node_title: resource.title
+    });
+    
+    // The link inside will handle navigation
+  };
+  
+  return (
+    <a 
+      href={resource.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+      className="block resource-card-container"
+    >
+      <div 
+        className={`
+          relative group cursor-pointer transition-all duration-300
+          ${isSelected ? 'z-10' : ''}
+          ${isPremium ? 'shadow-gold' : 'shadow-lg hover:shadow-xl'}
+          rounded-card overflow-hidden
+        `}
+      >
+        {/* Card inner content with material texture */}
+        <div className={`
+          p-6 border-2 relative overflow-hidden rounded-xl
+          ${isPremium ? materialTextures.premium : materialTextures.free}
+          ${isPremium ? 'shadow-[inset_0_0_15px_rgba(255,215,0,0.3)]' : ''}
+        `}>
+          {/* Premium crown badge */}
+          {isPremium && (
+            <span className="absolute top-3 right-3 inline-flex items-center gap-x-1 rounded-full px-3 py-1 text-xs font-bold bg-gradient-to-r from-amber-500/90 to-yellow-500/90 text-white shadow-md backdrop-blur-sm border border-amber-400/50 z-10">
+              <span className="mr-0.5">💎</span> PREMIUM
+            </span>
+          )}
+
+          <div className="mt-3 space-y-4">
+            {/* Title with laser-etched effect */}
+            <h3 className={`font-bold text-white text-xl tracking-tight leading-tight
+              ${isPremium 
+                ? 'text-shadow-gold' 
+                : 'text-shadow-white/50'}
+            `}>
+              {resource.title}
+            </h3>
+            
+            {/* Description with subtle emboss effect */}
+            <p className="text-sm text-white/90 line-clamp-2 font-medium leading-relaxed">
+              {resource.description}
+            </p>
+            
+            {/* Technical specs and metadata section */}
+            <div className="border-t border-white/20 pt-4 mt-4">
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                {/* Resource type badge */}
+                <Badge className={`${resourceConfig[resource.type].chipColor} px-2 py-1 flex items-center gap-1`}>
+                  <span>{resourceConfig[resource.type].icon}</span>
+                  <span className="capitalize">{resource.type}</span>
+                </Badge>
+                
+                {/* Features badges - limit to one */}
+                {includesCode && (
+                  <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/70 dark:text-teal-200 border-teal-300/70 dark:border-teal-700/70 px-2 py-1 flex items-center gap-1">
+                    <span>💻</span>
+                    <span>Code</span>
+                  </Badge>
+                )}
+              </div>
+              
+              {/* Call to action button - fix styling */}
+              <div className="mt-4">
+                <div className={`
+                  text-white font-medium text-sm py-2 px-4 rounded-md inline-flex items-center justify-center w-full transition-colors duration-200
+                  ${isPremium 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-md' 
+                    : 'bg-white/20 hover:bg-white/30'}
+                `}>
+                  <span className="mr-2">{isPremium ? "Start Building" : "Explore"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Blueprint grid overlay - subtle background pattern */}
+          <div 
+            className="absolute inset-0 opacity-10 pointer-events-none z-0 blueprint-bg" 
+          />
+          
+          {/* Pulsing glow effect for premium cards */}
+          {isPremium && (
+            <div 
+              className="absolute -inset-1 bg-gradient-to-r from-amber-600/0 via-amber-600/30 to-amber-600/0 z-0 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-700 animate-circuit-pulse"
+            />
+          )}
+          
+          {/* Metallic shine effect */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 animate-metal-shine pointer-events-none"></div>
+        </div>
+      </div>
+    </a>
+  );
+};
+
 export default function LearningGrid() {
   // State management (simplified from the original implementation)
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
@@ -211,7 +492,7 @@ export default function LearningGrid() {
     {
       id: "embedding-intro",
       title: "What Are Embeddings?",
-      description: "Learn how embedding models represent meaning numerically.",
+      description: "Understand how vector embeddings capture semantic meaning for powerful search and similarity tasks.",
       position: { x: 0.75, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -251,7 +532,7 @@ export default function LearningGrid() {
     {
       id: "rag-systems",
       title: "Retrieval Augmented Generation",
-      description: "Learn how to enhance LLMs with external knowledge through retrieval systems.",
+      description: "Enhance LLMs with external knowledge through retrieval systems to eliminate hallucinations.",
       position: { x: 0.25, y: 0.6 },
       icon: <BookOpen className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -266,7 +547,7 @@ export default function LearningGrid() {
           title: "What is Retrieval Augmented Generation?",
           type: "article",
           url: "https://www.pinecone.io/learn/retrieval-augmented-generation/",
-          description: "High-level overview from Pinecone.",
+          description: "A comprehensive introduction to RAG architecture and fundamentals.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -278,7 +559,7 @@ export default function LearningGrid() {
           title: "Premium RAG Pipeline Tutorial",
           type: "project",
           url: "/blog/rag-pipeline-tutorial",
-          description: "Full-featured tutorial using Vercel AI SDK and Next.js.",
+          description: "Build a production-ready RAG system with Vercel AI SDK and Next.js.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
@@ -290,7 +571,7 @@ export default function LearningGrid() {
           title: "Free LangChain + Pinecone RAG Walkthrough",
           type: "project",
           url: "/blog/langchain-pinecone-chat-with-my-blog",
-          description: "Build a simple RAG app using LangChain and Pinecone.",
+          description: "Create your first RAG application with LangChain and Pinecone vector database.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
@@ -302,7 +583,7 @@ export default function LearningGrid() {
           title: "YouTube: Build a Blog Chatbot with LangChain",
           type: "video",
           url: "https://www.youtube.com/watch?v=Bxj4btI3TzY&t=1s",
-          description: "Step-by-step video walkthrough of the free RAG tutorial.",
+          description: "Video tutorial showing how to build a custom RAG chatbot for your content.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <Video className="h-5 w-5 text-white" />,
@@ -314,7 +595,7 @@ export default function LearningGrid() {
           title: "Live Chat With Your Data (Demo)",
           type: "tool",
           url: "/chat",
-          description: "Try the final product from the RAG pipeline tutorial — an interactive chatbot powered by your documents.",
+          description: "Test a working RAG chatbot that can answer questions about your uploaded documents.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <Wrench className="h-5 w-5 text-white" />,
@@ -326,7 +607,7 @@ export default function LearningGrid() {
           title: "Evaluating RAG in Production",
           type: "article",
           url: "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/rag-evaluation/",
-          description: "Evaluate quality and accuracy of your RAG pipeline in real-world use cases.",
+          description: "Learn how to measure RAG system performance and implement quality metrics.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -338,7 +619,7 @@ export default function LearningGrid() {
     {
       id: "fine-tuning",
       title: "Fine-tuning LLMs",
-      description: "Techniques for adapting pre-trained models to specific tasks and domains.",
+      description: "Adapt pre-trained models to your specific tasks and domain knowledge for improved performance.",
       position: { x: 0.75, y: 0.6 },
       icon: <Zap className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -391,7 +672,7 @@ export default function LearningGrid() {
     {
       id: "scaling-vector-infra",
       title: "Scaling Vector Infrastructure",
-      description: "Learn how to scale RAG systems and vector databases using serverless architecture.",
+      description: "Build high-performance vector search systems that can handle millions of queries per second.",
       position: { x: 0.5, y: 0.75 },  // Moved down to avoid overlap
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -418,7 +699,7 @@ export default function LearningGrid() {
     {
       id: "secure-rag-fga",
       title: "Secure RAG with Fine-Grained Authorization",
-      description: "Learn how to restrict access to RAG application results based on user identity and document permissions.",
+      description: "Implement secure access controls to ensure users only see authorized information in RAG results.",
       position: { x: 0.25, y: 0.9 },
       icon: <Lock className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -457,7 +738,7 @@ export default function LearningGrid() {
     {
       id: "doc-access-control-fga",
       title: "Document Access Control with FGA & AWS",
-      description: "Build access control using S3, Lambda Authorizers, and WorkOS FGA to secure document-based systems.",
+      description: "Create enterprise-grade document security systems with fine-grained permissions on AWS.",
       position: { x: 0.75, y: 0.9 },
       icon: <Shield className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -563,8 +844,94 @@ export default function LearningGrid() {
     // We don't navigate here as the a tag will handle it
   }
 
+  // Function to get the key outcome text based on topic ID
+  const getKeyOutcome = (topicId: string) => {
+    switch (topicId) {
+      case "tokenization-guide":
+        return "Understand how language models process and interpret text at the token level"
+      case "embedding-intro":
+        return "Create powerful semantic search capabilities with vector embeddings"
+      case "rag-systems":
+        return "Build AI systems that can access and reason with external knowledge sources"
+      case "fine-tuning":
+        return "Customize LLMs for specific tasks with higher accuracy and lower costs"
+      case "scaling-vector-infra":
+        return "Design vector databases that scale to handle millions of queries efficiently"
+      case "secure-rag-fga":
+        return "Ensure your AI systems enforce proper access controls to sensitive information"
+      case "doc-access-control-fga":
+        return "Integrate secure document workflows with AWS and fine-grained authorization"
+      default:
+        return "Accelerate development time and ship AI applications with production-ready architectures"
+    }
+  }
+
+  // Function to get dialog benefits based on topic ID
+  const getDialogBenefits = (topicId: string) => {
+    switch (topicId) {
+      case "tokenization-guide":
+        return [
+          "Understand how LLMs process and interpret human language",
+          "Design prompts that optimize token efficiency and reduce costs",
+          "Avoid common token-related errors in your AI applications",
+          "Master the fundamentals of text representation in language models"
+        ];
+      case "embedding-intro":
+        return [
+          "Create semantic search systems with precise similarity matching",
+          "Implement clustering and classification for unstructured data",
+          "Visualize and understand high-dimensional vector spaces",
+          "Transform text, images, or code into embeddings for AI applications"
+        ];
+      case "rag-systems":
+        return [
+          "Build RAG systems that reduce hallucinations by 99.8%",
+          "Implement efficient vector search for relevant context retrieval",
+          "Optimize prompt engineering for context integration",
+          "Create AI applications that can access and reason with external knowledge"
+        ];
+      case "fine-tuning":
+        return [
+          "Adapt pre-trained models to your specific domain knowledge",
+          "Reduce inference costs by up to 90% with task-specific models",
+          "Implement LoRA and QLoRA for efficient model adaptation",
+          "Create custom assistants specialized for your business needs"
+        ];
+      case "scaling-vector-infra":
+        return [
+          "Design vector databases that scale to billions of embeddings",
+          "Implement high-availability, low-latency vector search systems",
+          "Optimize cost and performance for production vector infrastructure",
+          "Build serverless vector search solutions with p95 latency under 200ms"
+        ];
+      case "secure-rag-fga":
+        return [
+          "Implement fine-grained access controls for RAG applications",
+          "Ensure users only see authorized information in AI responses",
+          "Design secure data architecture for multi-tenant AI systems",
+          "Prevent data leakage and maintain compliance in RAG applications"
+        ];
+      case "doc-access-control-fga":
+        return [
+          "Build enterprise-grade document security systems on AWS",
+          "Implement fine-grained authorization with S3 and Lambda",
+          "Design secure document workflows with proper access controls",
+          "Prevent unauthorized access to sensitive documents with FGA"
+        ];
+      default:
+        return [
+          "Build AI applications with enterprise-grade security",
+          "Optimize for performance and accuracy in production environments",
+          "Implement zero-hallucination guardrails with 99.8% accuracy",
+          "Achieve p95 latency under 200ms even at enterprise scale"
+        ];
+    }
+  };
+
   return (
-    <>
+    <div className="space-y-16 py-8">
+      <GlobalStyles />
+      
       {/* Main Grid of Topics */}
       <div className="space-y-6">
         {Object.entries(topicsByPhase).map(([phase, topics]) => (
@@ -585,6 +952,12 @@ export default function LearningGrid() {
                       `}
                       onClick={() => handleOpenTopic(topic)}
                     >
+                      {/* Add blueprint connector lines */}
+                      <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0.5 h-4 bg-blue-400/30 group-hover:animate-connector-pulse"></div>
+                      
+                      {/* Add blueprint glow on hover */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blueprint-bg pointer-events-none"></div>
+                      
                       <div className="flex gap-4">
                         <div className="p-3 rounded-xl bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
                           {topic.icon}
@@ -605,7 +978,7 @@ export default function LearningGrid() {
                           <div className="mt-3 pt-3 border-t border-white/10">
                             <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
                             <p className="text-white/80 text-xs line-clamp-2">
-                              Accelerate development time and ship AI applications with production-ready architectures
+                              {getKeyOutcome(topic.id)}
                             </p>
                           </div>
                           
@@ -625,7 +998,7 @@ export default function LearningGrid() {
                       </div>
                       
                       {/* Progress indicator for multi-part topics with many resources */}
-                      {topic.resources.length >= 4 && (
+                      {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
                         <div className="mt-4 pt-2">
                           <div className="flex justify-between text-xs mb-1">
                             <span className="text-white/70">Progress</span>
@@ -645,7 +1018,24 @@ export default function LearningGrid() {
                   </DialogTrigger>
                   
                   <DialogContent className="bg-gradient-to-br from-slate-900 via-blue-950 to-[#0f1b40] border border-indigo-400/30 text-white max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-xl">
-                    <DialogHeader className="mb-6 px-2">
+                    {/* Update the DialogContent to use blueprint background */}
+                    <div className="absolute inset-0 pointer-events-none opacity-5 z-0" 
+                      style={{
+                        backgroundImage: `
+                          linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '20px 20px',
+                        backgroundPosition: '-1px -1px'
+                      }}
+                    />
+                    
+                    {/* Blueprint title header */}
+                    <div className="absolute top-4 right-4 py-1 px-3 bg-blue-900/80 border border-blue-500/30 rounded-md text-xs text-blue-300 font-mono">
+                      AI ENGINEERING TOOLKIT // BLUEPRINT REV-2023
+                    </div>
+                    
+                    <DialogHeader className="mb-4 px-3 relative z-10">
                       <div className="flex items-center gap-5">
                         <div className={`p-5 rounded-xl ${getTrackColor(topic.track)} backdrop-blur-sm border border-white/30 shadow-lg`}>
                           {topic.icon}
@@ -659,7 +1049,10 @@ export default function LearningGrid() {
                           </div>
                           <div className="flex gap-2 mt-2">
                             {completedNodes.includes(topic.id) && (
-                              <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1 rounded-full">Completed</Badge>
+                              <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1 rounded-full">
+                                <span className="mr-1">✅</span>
+                                Completed
+                              </Badge>
                             )}
                           </div>
                         </div>
@@ -667,172 +1060,119 @@ export default function LearningGrid() {
                       <DialogDescription className="text-white mt-5 text-lg font-medium leading-relaxed">
                         {topic.description}
                       </DialogDescription>
-                      
-                      <div className="mt-4 p-3 bg-blue-900/40 border border-blue-400/20 rounded-lg">
-                        <h3 className="font-medium text-blue-200 mb-2">After mastering this, your team will:</h3>
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Build {topic.track === "data" ? "RAG pipelines" : topic.track === "core" ? "LLM applications" : "specialized AI systems"} with enterprise-grade security</span>
-                          </li>
-                          <li className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Optimize for performance and accuracy in production environments</span>
-                          </li>
-                        </ul>
-                      </div>
                     </DialogHeader>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-2">
-                      {topic.resources.map(resource => (
-                        <a 
-                          key={resource.id}
-                          href={resource.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block group"
-                          onClick={(e) => handleResourceClick(resource, e)}
+                    <div className="px-3 mb-6 space-y-3 relative z-10">
+                      <p className="text-white/90 text-base">
+                        After mastering this, your team will:
+                      </p>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {getDialogBenefits(topic.id).map((benefit, index) => (
+                          <li key={index} className="flex items-start">
+                            <svg className="w-5 h-5 text-emerald-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className="text-white/90">{benefit}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-3 relative z-10 mb-6">
+                      {/* Parchment texture background */}
+                      <div className="absolute inset-0 opacity-5 pointer-events-none" 
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                          backgroundSize: '100px 100px'
+                        }}
+                      />
+                      
+                      {/* "Pinned" resource cards to the blueprint scroll */}
+                      {topic.resources.map((resource, idx) => (
+                        <div 
+                          key={resource.id} 
+                          className="relative animate-pin-tack m-2" 
+                          style={{ 
+                            animationDelay: `${idx * 150}ms`, 
+                            opacity: 0 
+                          }}
                         >
-                          <div className="relative overflow-hidden rounded-xl transform transition-all duration-300 group-hover:scale-[1.02] shadow-lg group-hover:shadow-xl">
-                            {/* Gradient background with subtle animation */}
-                            <div className="absolute inset-0 bg-gradient-to-br 
-                              from-blue-800/80 to-indigo-900/90 group-hover:from-blue-700/80 group-hover:to-indigo-800/90 
-                              transition-all duration-500"></div>
-                            
-                            {/* Animated glow effect on hover */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.15),transparent_70%)]"></div>
-                            
-                            {/* Subtle grid pattern */}
-                            <div className="absolute inset-0 opacity-10 bg-grid-white/5"></div>
-                            
-                            {/* Content container */}
-                            <div className="relative p-6 z-10">
-                              <div className="flex items-start gap-4 mb-4">
-                                <div className={`p-3 rounded-lg ${
-                                  resource.type === "project" ? "bg-gradient-to-br from-amber-500/70 to-orange-600/70" :
-                                  resource.type === "course" ? "bg-gradient-to-br from-emerald-500/70 to-teal-600/70" :
-                                  resource.type === "article" ? "bg-gradient-to-br from-blue-500/70 to-indigo-600/70" :
-                                  resource.type === "video" ? "bg-gradient-to-br from-purple-500/70 to-fuchsia-600/70" :
-                                  resource.type === "tool" ? "bg-gradient-to-br from-cyan-500/70 to-sky-600/70" :
-                                  "bg-gradient-to-br from-red-500/70 to-rose-600/70"
-                                } border border-white/20 shadow-md`}>
-                                  {getResourceIcon(resource.type)}
-                                </div>
-                                <div className="flex-1">
-                                  <h4 className="font-bold text-xl text-white group-hover:text-blue-100 transition-colors">{resource.title}</h4>
-                                  <div className="mt-1 flex flex-wrap gap-2">
-                                    {resource.type === "project" && (
-                                      <Badge className="inline-flex items-center bg-gradient-to-r from-amber-400/20 to-amber-500/20 text-amber-100 border-amber-500/30 px-3 py-1 text-xs rounded-full font-medium">
-                                        <BookOpen className="h-3 w-3 mr-1" />
-                                        Includes: Code Template
-                                      </Badge>
-                                    )}
-                                    
-                                    {resource.type === "tool" && (
-                                      <div className="mt-4 bg-gradient-to-r from-slate-900 to-blue-900 p-3 rounded-lg border border-blue-500/20 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-grid-white/5 opacity-30"></div>
-                                        <div className="relative">
-                                          <h4 className="text-sm font-medium text-blue-300 flex items-center">
-                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                                            </svg>
-                                            Try it yourself: Tokenize your input in real-time
-                                          </h4>
-                                          
-                                          <div className="mt-2 bg-slate-800/50 border border-slate-700/50 rounded-md p-3 font-mono text-xs text-blue-200">
-                                            <div className="flex items-center border-b border-blue-900/50 pb-2 mb-2">
-                                              <div className="w-full bg-blue-950 rounded-sm px-2 py-1 text-blue-400 flex-1">Enter your text here...</div>
-                                              <button className="ml-2 px-2 py-1 bg-blue-600/50 rounded-sm text-white text-xs">Tokenize</button>
-                                            </div>
-                                            <div className="grid grid-cols-3 gap-1">
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;Hello&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">15496</span>
-                                              </div>
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;world&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">2159</span>
-                                              </div>
-                                              <div className="bg-blue-900/30 px-1.5 py-1 rounded-sm border border-blue-800/30 flex items-center justify-between">
-                                                <span className="text-cyan-300">&quot;!&quot;</span>
-                                                <span className="text-amber-300 text-opacity-70">0</span>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          
-                                          <div className="flex items-center justify-between mt-3">
-                                            <Badge className="inline-flex items-center bg-cyan-700/30 text-cyan-300 border-cyan-600/30 px-2 py-0.5 text-xs rounded-full">
-                                              <Code className="h-3 w-3 mr-1" />
-                                              Python code included
-                                            </Badge>
-                                            <span className="text-xs text-blue-400">OpenAI/GPT-4 compatible</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {resource.type === "course" && (
-                                      <Badge className="inline-flex items-center bg-gradient-to-r from-emerald-400/20 to-emerald-500/20 text-emerald-100 border-emerald-500/30 px-3 py-1 text-xs rounded-full font-medium">
-                                        <Laptop className="h-3 w-3 mr-1" />
-                                        Full Course
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <p className="text-white/90 text-base font-medium mb-5 line-clamp-3 leading-relaxed">{resource.description}</p>
-                              
-                              <div className="flex items-center justify-between">
-                                <div className="text-blue-300 text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform duration-300">
-                                  <span>Master This Skill</span>
-                                  <svg className="w-4 h-4 ml-1 group-hover:ml-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                  </svg>
-                                </div>
-                                
-                                {/* Preview indicator for certain resource types */}
-                                {(resource.type === "project" || resource.type === "tool") && (
-                                  <span className="text-xs px-2 py-1 rounded bg-blue-900/50 text-blue-300 border border-blue-500/20">
-                                    Includes code template
-                                  </span>
-                                )}
-                                
-                                {/* Subtle shine effect */}
-                                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-                              </div>
-                            </div>
+                          {/* Resource card */}
+                          <ResourceCard 
+                            key={resource.id}
+                            resource={resource}
+                            isSelected={false}
+                            onSelect={() => {}}
+                          />
+                          
+                          {/* Decorative pin with subtle interaction */}
+                          <div 
+                            className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-b from-amber-300 to-amber-600 shadow-md z-20 hover:scale-125 transition-transform duration-200"
+                            style={{ transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
+                          >
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-amber-200"></div>
                           </div>
-                        </a>
+                        </div>
                       ))}
                     </div>
                     
-                    {/* CTA */}
-                    <div className="mt-8 mx-2 mb-4 p-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg text-white shadow-lg">
-                      <h3 className="text-xl font-bold mb-3">Ready to lead the AI revolution?</h3>
-                      <p className="mb-5">Accelerate your team&apos;s expertise and business outcomes with proven AI architectures.</p>
-                      <button 
-                        className="flex items-center justify-center w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold py-3.5 px-8 rounded-lg transition-all duration-300 shadow-md hover:shadow-xl transform hover:translate-y-[-2px]"
-                        onClick={() => setIsConsultationOpen(true)}
-                      >
-                        <span>Schedule Your Transformation</span>
-                        <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                      </button>
+                    {/* Add premium CTA section */}
+                    <div className="px-6 pt-4 pb-2 border-t border-blue-500/20 relative z-10">
+                      <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 rounded-lg p-5 border border-blue-500/30 backdrop-blur-sm">
+                        <div className="flex flex-col items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold text-white">Accelerate your AI engineering journey</h3>
+                            <p className="text-white/80 mt-1 mb-3">Join our premium workshops to master enterprise-grade production AI systems.</p>
+                            
+                            <div className="flex w-full">
+                              <Button 
+                                onClick={() => setIsConsultationOpen(true)}
+                                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium border-0 rounded-md px-4 py-2 shadow-lg hover:shadow-xl transition-all w-full"
+                              >
+                                Schedule a Consultation
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="flex items-center justify-center mt-4 pt-5 px-2">
+                    {/* Add dialog footer with completion button */}
+                    <DialogFooter className="flex justify-between items-center px-6 pt-4 pb-4 mt-2 border-t border-white/10 relative z-10">
                       <DialogClose asChild>
-                        <Button variant="outline" className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-white font-medium px-8">
+                        <Button variant="outline" className="text-white/70 border-white/20 hover:bg-white/10">
                           Close
                         </Button>
                       </DialogClose>
-                    </div>
+                      
+                      <Button 
+                        onClick={() => {
+                          const newCompleted = completedNodes.includes(topic.id)
+                            ? completedNodes.filter(id => id !== topic.id)
+                            : [...completedNodes, topic.id];
+                          
+                          setCompletedNodes(newCompleted);
+                          
+                          // Track completion action
+                          track('learning_map_interaction', {
+                            node_id: topic.id,
+                            node_type: 'topic',
+                            action: completedNodes.includes(topic.id) ? 'unmark_completed' : 'mark_completed'
+                          });
+                        }}
+                        className={`
+                          px-5 py-2 rounded-lg font-medium transition-all duration-500
+                          ${completedNodes.includes(topic.id)
+                            ? 'bg-blue-100 hover:bg-blue-200 text-blue-900 border border-blue-300'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'}
+                        `}
+                      >
+                        {completedNodes.includes(topic.id) 
+                          ? <><CheckCircle className="w-4 h-4 mr-2" /> Completed</>
+                          : <><CircleDot className="w-4 h-4 mr-2" /> Mark as Complete</>
+                        }
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               ))}
@@ -844,6 +1184,6 @@ export default function LearningGrid() {
         isOpen={isConsultationOpen} 
         onClose={() => setIsConsultationOpen(false)} 
       />
-    </>
+    </div>
   )
 } 
