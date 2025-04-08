@@ -1,6 +1,6 @@
 'use client'
 
-import { ENCODING_EXPLANATIONS, characterTokenize, wordTokenize, mockBpeTokenize } from '../utils';
+import { ENCODING_EXPLANATIONS, characterTokenize, wordTokenize, simpleBpeTokenize, tiktokenTokenize } from '../utils';
 
 type TokenizationComparisonProps = {
   text: string;
@@ -10,17 +10,22 @@ export function TokenizationComparison({ text }: TokenizationComparisonProps) {
   const methods = ['character', 'word', 'bpe', 'tiktoken'] as const;
   
   // Get token counts for each method
-  const getTokenCount = (method: typeof methods[number]) => {
-    if (method === 'character') {
-      return characterTokenize(text).length;
-    } else if (method === 'word') {
-      return wordTokenize(text).length;
-    } else {
-      return mockBpeTokenize(text).length;
+  const getTokenCount = (text: string, method: typeof methods[number]) => {
+    switch (method) {
+      case 'character':
+        return characterTokenize(text).length;
+      case 'word':
+        return wordTokenize(text).length;
+      case 'bpe':
+        return simpleBpeTokenize(text).length;
+      case 'tiktoken':
+        return tiktokenTokenize(text).length;
+      default:
+        return 0;
     }
   };
   
-  const tokenCounts = methods.map(method => getTokenCount(method));
+  const tokenCounts = methods.map(method => getTokenCount(text, method));
   const maxCount = Math.max(...tokenCounts);
   
   return (
