@@ -40,8 +40,8 @@ const PriceBadge = ({ price }) => {
   return (
     <span className={cn(
       "absolute top-4 right-4 inline-flex items-center gap-x-2 rounded-full px-3 py-1 text-sm font-semibold",
-      "bg-green-600 text-white shadow-lg transition duration-300 ease-in-out hover:bg-green-700",
-      "ring-2 ring-green-500 ring-offset-2 ring-offset-gray-800"
+      "bg-blue-600 dark:bg-blue-700 text-white shadow-lg transition duration-300 ease-in-out hover:bg-blue-700 dark:hover:bg-blue-800",
+      "ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 ring-offset-white dark:ring-offset-gray-800"
     )}>
       ${price}
     </span>
@@ -83,7 +83,7 @@ export function ContentCard({ article }) {
   const imageSource = typeof image === 'string' ? image : image?.src || wakka;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-zinc-800 relative w-full">
+    <article className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 relative w-full">
       {isExternalLink ? (
         <a href={href} target="_blank" rel="noopener noreferrer" className="group w-full">
           <CardContent 
@@ -126,7 +126,7 @@ function CardContent({ imageSource, title, formattedDate, date, description, typ
           width={500}
           height={281}
         />
-        <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10" />
+        <div className="absolute inset-0 rounded-t-lg ring-1 ring-inset ring-gray-900/10 dark:ring-gray-700/50" />
         {commerce?.price && <PriceBadge price={commerce.price} />}
       </div>
       <div className="flex-1 p-6 flex flex-col justify-between">
@@ -134,10 +134,10 @@ function CardContent({ imageSource, title, formattedDate, date, description, typ
           <div className="flex items-center gap-x-4 text-xs text-gray-500 dark:text-gray-400">
             {formattedDate && <time dateTime={date}>{formattedDate}</time>}
           </div>
-          <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-gray-600 transition duration-300 ease-in-out mt-3">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition duration-300 ease-in-out mt-3">
             {title}
           </h3>
-          <p className="mt-3 text-sm leading-6 text-zinc-800 dark:text-zinc-400 line-clamp-3">
+          <p className="mt-3 text-sm leading-6 text-gray-700 dark:text-gray-300 line-clamp-3">
             {description}
           </p>
         </div>

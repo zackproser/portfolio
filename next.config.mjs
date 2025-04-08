@@ -17,10 +17,14 @@ const nextConfig = {
       "placehold.co",
       "avatars.githubusercontent.com"
     ],
+    formats: ['image/avif'], // 40% smaller than PNG
   },
   transpilePackages: [
     "react-tweet",
   ],
+  experimental: {
+    optimizeCss: true, // Inlines critical CSS
+  },
   async redirects() {
     return [
       {
