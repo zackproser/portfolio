@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { track } from '@vercel/analytics'
+import * as d3 from 'd3'
 
 interface BaseNode {
   id: string
@@ -77,46 +78,63 @@ const getResourceIcon = (type: Resource['type']) => {
 
 // Convert topics and their resources into nodes
 const getAllNodes = (topics: Topic[]): Node[] => {
-  const nodes: Node[] = []
-  
-  topics.forEach(topic => {
-    // Add the topic as a node
-    nodes.push({
-      ...topic,
-      isParent: true
-    })
+  const NODE_DENSITY = 0.15  // Reduced density to spread out nodes
+  const RESOURCE_SPACING = 0.15  // Increased spacing
+  const Y_SCALE = 0.5 // More vertical compression for better spacing
+  const Y_OFFSET = 0.2 // Start 20% from top
+
+  return topics.flatMap(topic => {
+    // Normalize y position to be more compact
+    const normalizedY = topic.position.y * Y_SCALE + Y_OFFSET
+    const radius = Math.min(0.3, Math.max(0.15, (topic.resources.length * RESOURCE_SPACING) / (2 * Math.PI)))
     
-    // Add each resource as a node with reference to parent
-    topic.resources.forEach((resource, idx) => {
-      const angle = (2 * Math.PI * idx) / topic.resources.length
-      const radius = 0.15 // Distance from parent node
-      
-      nodes.push({
-        ...resource,
-        id: `${topic.id}-resource-${idx}`,
-        parentId: topic.id,
+    return [
+      {
+        ...topic,
         position: {
-          x: topic.position.x + (Math.cos(angle) * radius),
-          y: topic.position.y + (Math.sin(angle) * radius)
+          x: topic.position.x * 0.8 + 0.1, // Keep topics more centered horizontally
+          y: normalizedY
         },
-        icon: getResourceIcon(resource.type),
-        value: 0.3,
-        isResource: true
+        isParent: true
+      },
+      ...topic.resources.map((resource, idx) => {
+        const angle = (Math.PI * 2 * idx) / topic.resources.length
+        return {
+          ...resource,
+          id: `${topic.id}-resource-${idx}`,
+          parentId: topic.id,
+          position: {
+            x: topic.position.x * 0.8 + 0.1 + Math.cos(angle) * radius * NODE_DENSITY,
+            y: normalizedY + Math.sin(angle) * radius * NODE_DENSITY
+          },
+          icon: getResourceIcon(resource.type),
+          value: 0.4,
+          isResource: true
+        }
       })
-    })
+    ]
   })
-  
-  return nodes
+}
+
+interface SimulationNode extends d3.SimulationNodeDatum {
+  id: string
+  position: { x: number; y: number }
+  value: number
+  isParent?: boolean
+  isResource?: boolean
 }
 
 export default function LearningMap() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null)
   const [completedNodes, setCompletedNodes] = useState<string[]>([])
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set(['core', 'data', 'tools', 'specialization']))
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [highlightedNode, setHighlightedNode] = useState<string | null>(null)
+  const [nodePositions, setNodePositions] = useState<Map<string, { x: number, y: number }>>(new Map())
+  const simulationRef = useRef<d3.Simulation<SimulationNode, undefined> | null>(null)
 
   // Load completed topics from local storage on initial render
   useEffect(() => {
@@ -144,7 +162,7 @@ export default function LearningMap() {
       id: "tokenization-guide",
       title: "How LLMs See Text",
       description: "Interactive exploration of how large language models tokenize input.",
-      position: { x: 0.2, y: 0.05 },
+      position: { x: 0.25, y: 0.05 },
       icon: <Database className="h-5 w-5 text-white" />,
       difficulty: "beginner",
       value: 0.4,
@@ -170,7 +188,7 @@ export default function LearningMap() {
       id: "embedding-intro",
       title: "What Are Embeddings?",
       description: "Learn how embedding models represent meaning numerically.",
-      position: { x: 0.5, y: 0.05 },
+      position: { x: 0.75, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
       value: 0.4,
@@ -210,7 +228,7 @@ export default function LearningMap() {
       id: "rag-systems",
       title: "Retrieval Augmented Generation",
       description: "Learn how to enhance LLMs with external knowledge through retrieval systems.",
-      position: { x: 0.35, y: 0.6 },
+      position: { x: 0.25, y: 0.6 },
       icon: <BookOpen className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.75,
@@ -297,7 +315,7 @@ export default function LearningMap() {
       id: "fine-tuning",
       title: "Fine-tuning LLMs",
       description: "Techniques for adapting pre-trained models to specific tasks and domains.",
-      position: { x: 0.65, y: 0.6 },
+      position: { x: 0.75, y: 0.6 },
       icon: <Zap className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.7,
@@ -350,7 +368,7 @@ export default function LearningMap() {
       id: "scaling-vector-infra",
       title: "Scaling Vector Infrastructure",
       description: "Learn how to scale RAG systems and vector databases using serverless architecture.",
-      position: { x: 0.5, y: 0.7 },
+      position: { x: 0.5, y: 0.75 },  // Moved down to avoid overlap
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.55,
@@ -377,7 +395,7 @@ export default function LearningMap() {
       id: "secure-rag-fga",
       title: "Secure RAG with Fine-Grained Authorization",
       description: "Learn how to restrict access to RAG application results based on user identity and document permissions.",
-      position: { x: 0.35, y: 0.85 },
+      position: { x: 0.25, y: 0.9 },
       icon: <Lock className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.6,
@@ -416,7 +434,7 @@ export default function LearningMap() {
       id: "doc-access-control-fga",
       title: "Document Access Control with FGA & AWS",
       description: "Build access control using S3, Lambda Authorizers, and WorkOS FGA to secure document-based systems.",
-      position: { x: 0.65, y: 0.85 },
+      position: { x: 0.75, y: 0.9 },
       icon: <Shield className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.55,
@@ -476,6 +494,28 @@ export default function LearningMap() {
     })
   }
 
+  // Add toggle filter function
+  const toggleFilter = (track: string) => {
+    setActiveFilters(prev => {
+      const newFilters = new Set(prev)
+      if (newFilters.has(track)) {
+        newFilters.delete(track)
+      } else {
+        newFilters.add(track)
+      }
+      return newFilters
+    })
+  }
+
+  // Filter nodes based on active tracks
+  const filteredNodes = nodes.filter(node => {
+    if ('isResource' in node) {
+      const parentNode = nodes.find(n => !('isResource' in n) && n.id === node.parentId) as Topic
+      return parentNode && activeFilters.has(parentNode.track)
+    }
+    return activeFilters.has(node.track)
+  })
+
   useEffect(() => {
     if (containerRef.current) {
       const updateDimensions = () => {
@@ -490,6 +530,60 @@ export default function LearningMap() {
       return () => window.removeEventListener("resize", updateDimensions)
     }
   }, [])
+
+  // Initialize simulation when nodes or dimensions change
+  useEffect(() => {
+    if (!dimensions.width || !filteredNodes.length) return
+
+    const simNodes: SimulationNode[] = filteredNodes.map(node => ({
+      ...node,
+      x: node.position.x * dimensions.width,
+      y: node.position.y * dimensions.height,
+      fx: 'isParent' in node ? node.position.x * dimensions.width : undefined,
+      fy: 'isParent' in node ? node.position.y * dimensions.height : undefined,
+      position: node.position,
+      value: node.value || 0.4,
+      isParent: 'isParent' in node,
+      isResource: 'isResource' in node
+    }))
+
+    const simulation = d3.forceSimulation<SimulationNode>(simNodes)
+      .force('charge', d3.forceManyBody<SimulationNode>().strength(-30))
+      .force('collide', d3.forceCollide<SimulationNode>().radius(d => d.value * 35).strength(0.8))
+      .force('x', d3.forceX<SimulationNode>(d => d.position.x * dimensions.width).strength(0.2))
+      .force('y', d3.forceY<SimulationNode>(d => d.position.y * dimensions.height).strength(0.2))
+      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.05))
+      .force('link', d3.forceLink<SimulationNode, any>()
+        .distance(50)
+        .strength(0.3)
+        .id(d => d.id))
+
+    // Update positions on simulation tick
+    simulation.on('tick', () => {
+      const newPositions = new Map<string, { x: number, y: number }>()
+      simNodes.forEach(node => {
+        if (node.x !== undefined && node.y !== undefined) {
+          newPositions.set(node.id, {
+            x: node.x / dimensions.width,
+            y: node.y / dimensions.height
+          })
+        }
+      })
+      setNodePositions(newPositions)
+    })
+
+    simulationRef.current = simulation
+
+    return () => {
+      simulation.stop()
+    }
+  }, [dimensions, filteredNodes])
+
+  // Update node rendering to use simulated positions
+  const getNodePosition = (node: Node) => {
+    const simPosition = nodePositions.get(node.id)
+    return simPosition || node.position
+  }
 
   useEffect(() => {
     if (!canvasRef.current || dimensions.width === 0) return
@@ -512,10 +606,10 @@ export default function LearningMap() {
     drawPhaseLines(ctx, canvas.width, canvas.height)
 
     // Draw connections between topics
-    nodes.forEach((node) => {
+    filteredNodes.forEach((node) => {
       if (isTopic(node) && node.dependencies) {
         node.dependencies.forEach((depId) => {
-          const depNode = nodes.find((n) => n.id === depId)
+          const depNode = filteredNodes.find((n) => n.id === depId)
           if (!depNode) return
 
           const fromX = depNode.position.x * canvas.width
@@ -542,7 +636,7 @@ export default function LearningMap() {
 
     // Draw annotations
     drawBlueprintAnnotations(ctx, canvas.width, canvas.height)
-  }, [dimensions, completedNodes, hoveredNode, highlightedNode, nodes])
+  }, [dimensions, completedNodes, hoveredNode, highlightedNode, filteredNodes])
 
   const drawBlueprintGrid = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     // Draw minimal grid
@@ -607,39 +701,35 @@ export default function LearningMap() {
     // Create a blueprint-style dashed line
     ctx.setLineDash([5, 3])
 
-    // Draw the main connection line
+    // Draw curved connection using Bézier
     ctx.beginPath()
-
-    // Calculate control points for a more structured path
-    // For a more blueprint-like appearance, we'll use right angles
-    const midY = (fromY + toY) / 2
-
     ctx.moveTo(fromX, fromY)
-
-    // If nodes are in different phases (horizontal sections), use right angles
-    if (Math.abs(fromY - toY) > 50) {
-      ctx.lineTo(fromX, midY)
-      ctx.lineTo(toX, midY)
-    } else {
-      // Otherwise, use a simple curve
-      ctx.lineTo(toX, toY)
-    }
-
-    ctx.lineTo(toX, toY)
+    
+    // Calculate control points for a smooth curve
+    const dx = toX - fromX
+    const dy = toY - fromY
+    const controlPoint1X = fromX + dx * 0.5
+    const controlPoint1Y = fromY
+    const controlPoint2X = toX - dx * 0.5
+    const controlPoint2Y = toY
+    
+    ctx.bezierCurveTo(
+      controlPoint1X,
+      controlPoint1Y,
+      controlPoint2X,
+      controlPoint2Y,
+      toX,
+      toY
+    )
     ctx.stroke()
 
     // Reset dash pattern
     ctx.setLineDash([])
 
-    // Add direction arrow
-    const arrowSize = 8
-    const angle = Math.atan2(toY - midY, toX - fromX)
-
+    // Add circular endpoint
+    const arrowSize = 4
     ctx.beginPath()
-    ctx.moveTo(toX, toY)
-    ctx.lineTo(toX - arrowSize * Math.cos(angle - Math.PI / 6), toY - arrowSize * Math.sin(angle - Math.PI / 6))
-    ctx.lineTo(toX - arrowSize * Math.cos(angle + Math.PI / 6), toY - arrowSize * Math.sin(angle + Math.PI / 6))
-    ctx.closePath()
+    ctx.arc(toX, toY, arrowSize, 0, Math.PI * 2)
     ctx.fillStyle = isCompleted ? "rgba(59, 130, 246, 0.8)" : "rgba(255, 255, 255, 0.3)"
     ctx.fill()
   }
@@ -647,20 +737,6 @@ export default function LearningMap() {
   const drawBlueprintAnnotations = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     // Only keep the title stamp and remove coordinate markers
     ctx.font = "12px monospace"
-    
-    // Add blueprint-like title stamp
-    ctx.fillStyle = "rgba(30, 58, 138, 0.8)"
-    const stampWidth = 200
-    const stampHeight = 40
-    ctx.fillRect(10, 10, stampWidth, stampHeight)
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
-    ctx.strokeRect(10, 10, stampWidth, stampHeight)
-    
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)"
-    ctx.font = "14px monospace"
-    ctx.fillText("AI ENGINEERING BLUEPRINT", 20, 30)
-    ctx.font = "10px monospace"
-    ctx.fillText("REV. 2025-A", 20, 42)
   }
 
   const getTypeColor = (type: string) => {
@@ -697,10 +773,96 @@ export default function LearningMap() {
     }
   }
 
+  // Enhanced Resource Card Component
+  const ResourceCard = ({ resource, isSelected, onSelect }: { 
+    resource: Resource, 
+    isSelected: boolean,
+    onSelect: () => void
+  }) => {
+    const typeColors = {
+      article: "from-blue-500/20 to-blue-600/20 border-blue-500/30",
+      video: "from-purple-500/20 to-purple-600/20 border-purple-500/30",
+      course: "from-green-500/20 to-green-600/20 border-green-500/30",
+      project: "from-amber-500/20 to-amber-600/20 border-amber-500/30",
+      tool: "from-cyan-500/20 to-cyan-600/20 border-cyan-500/30",
+      paper: "from-red-500/20 to-red-600/20 border-red-500/30"
+    }
+
+    return (
+      <div 
+        className={`
+          relative group cursor-pointer transition-all duration-300
+          ${isSelected ? 'scale-102 ring-2 ring-white/20' : 'hover:scale-101'}
+        `}
+        onClick={onSelect}
+      >
+        <div className={`
+          p-4 rounded-lg border backdrop-blur-sm bg-gradient-to-br
+          ${typeColors[resource.type]}
+        `}>
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-lg bg-white/10">
+              {resource.icon}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white group-hover:text-white/90">
+                {resource.title}
+              </h3>
+              <p className="text-sm text-white/70 mt-1">
+                {resource.description}
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <Badge className={getTypeColor(resource.type)}>
+                  {resource.type}
+                </Badge>
+                {resource.type === "project" && (
+                  <Badge className="bg-gradient-to-r from-amber-500/30 to-orange-500/30 text-white border-amber-500/30">
+                    Premium
+                  </Badge>
+                )}
+                <div className="flex-1" />
+                <Button 
+                  size="sm"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                  asChild
+                >
+                  <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                    Explore →
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full flex flex-col md:flex-row gap-8">
       <div className="w-full md:w-1/3">
         <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border border-white/10 max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          {/* Add filter controls */}
+          <div className="mb-6 space-y-4">
+            <h3 className="text-sm font-semibold text-white/80">Filter by Track</h3>
+            <div className="flex flex-wrap gap-2">
+              {['core', 'data', 'tools', 'specialization'].map(track => (
+                <Button
+                  key={track}
+                  variant={activeFilters.has(track) ? 'default' : 'secondary'}
+                  className={`${
+                    activeFilters.has(track) 
+                      ? getTrackColor(track)
+                      : 'bg-white/10 hover:bg-white/20'
+                  } text-white text-xs`}
+                  onClick={() => toggleFilter(track)}
+                >
+                  {track.charAt(0).toUpperCase() + track.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           {selectedNode ? (
             <div>
               <Button 
@@ -716,7 +878,7 @@ export default function LearningMap() {
               
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full ${getTrackColor('isResource' in selectedNode ? selectedNode.type : selectedNode.track || "")} flex items-center justify-center`}>
+                  <div className={`w-12 h-12 rounded-lg ${getTrackColor('isResource' in selectedNode ? selectedNode.type : selectedNode.track || "")} flex items-center justify-center`}>
                     {'isResource' in selectedNode ? getResourceIcon(selectedNode.type) : selectedNode.icon}
                   </div>
                   <div>
@@ -733,46 +895,25 @@ export default function LearningMap() {
 
                 {'isResource' in selectedNode ? (
                   <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4" 
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white mt-4" 
                     asChild
                     onClick={() => trackNodeInteraction(selectedNode, 'explore_resource')}
                   >
                     <a href={selectedNode.url} target="_blank" rel="noopener noreferrer">
-                      Explore Resource
+                      Explore Resource →
                     </a>
                   </Button>
                 ) : (
-                  <div className="space-y-4 mt-4">
+                  <div className="space-y-4 mt-6">
                     <h3 className="text-lg font-semibold text-white">Learning Resources</h3>
                     <div className="grid gap-3">
                       {selectedNode.resources.map((resource, idx) => (
-                        <Card key={idx} className="bg-white/10 border-white/10">
-                          <CardHeader className="py-3">
-                            <CardTitle className="text-md flex items-center gap-2 text-white">
-                              {resource.title}
-                              <Badge className={`${getTypeColor(resource.type)}`}>{resource.type}</Badge>
-                              {resource.type === "tool" && (
-                                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">Interactive</Badge>
-                              )}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="py-2">
-                            <CardDescription className="text-white/70">
-                              {resource.description}
-                            </CardDescription>
-                          </CardContent>
-                          <CardFooter className="pt-0">
-                            <Button 
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
-                              asChild
-                              onClick={() => trackNodeInteraction(resource, 'explore_resource')}
-                            >
-                              <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                                Explore Resource
-                              </a>
-                            </Button>
-                          </CardFooter>
-                        </Card>
+                        <ResourceCard
+                          key={idx}
+                          resource={resource}
+                          isSelected={hoveredNode === `${selectedNode.id}-resource-${idx}`}
+                          onSelect={() => setHighlightedNode(`${selectedNode.id}-resource-${idx}`)}
+                        />
                       ))}
                     </div>
                   </div>
@@ -780,11 +921,12 @@ export default function LearningMap() {
 
                 <Button
                   variant={completedNodes.includes(selectedNode.id) ? "destructive" : "default"}
-                  className={
-                    completedNodes.includes(selectedNode.id)
-                      ? "bg-red-500 hover:bg-red-600 w-full mt-4" 
-                      : "bg-blue-600 hover:bg-blue-700 w-full mt-4"
-                  }
+                  className={`
+                    w-full mt-4
+                    ${completedNodes.includes(selectedNode.id)
+                      ? "bg-red-500 hover:bg-red-600" 
+                      : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"}
+                  `}
                   onClick={() => toggleCompleted(selectedNode.id)}
                 >
                   {completedNodes.includes(selectedNode.id) ? "Mark as Incomplete" : "Mark as Completed"}
@@ -818,26 +960,107 @@ export default function LearningMap() {
       </div>
 
       <div className="w-full md:w-2/3 relative" ref={containerRef}>
-        <div className="aspect-square w-full relative bg-[#1e3a8a]/50 rounded-lg border border-white/10 overflow-hidden shadow-xl">
-          <div className="absolute inset-0 bg-blueprint opacity-30"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+        <div className="aspect-square w-full relative bg-[#1e3a8a]/80 rounded-lg border border-white/20 overflow-hidden shadow-2xl">
+          {/* Blueprint background with only blue gradient - removed purple gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-800/40 to-blue-950/90"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
+          
+          {/* Blueprint grid */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}></div>
+          
+          {/* Blueprint title stamp */}
+          <div className="absolute top-4 left-4 bg-blue-950/90 border border-white/20 p-4 rounded-lg backdrop-blur-sm">
+            <div className="text-white/90 font-mono text-sm font-bold">AI ENGINEERING BLUEPRINT</div>
+            <div className="text-white/60 font-mono text-xs mt-1">REV. 2025-A</div>
+          </div>
+
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-          {nodes.map((node) => {
+          {/* Display labels for parent nodes */}
+          {filteredNodes.filter(node => 'isParent' in node && node.isParent).map((node) => {
+            const position = getNodePosition(node)
+            // Abbreviate longer titles for better display
+            const displayTitle = node.title.length > 25 ? node.title.substring(0, 22) + '...' : node.title
+            
+            return (
+              <div
+                key={`label-${node.id}`}
+                className="absolute z-10 transform -translate-x-1/2 pointer-events-none"
+                style={{
+                  top: `${position.y * 100 + 8}%`,  // Added more spacing from node
+                  left: `${position.x * 100}%`,
+                  textAlign: 'center',
+                  width: '200px',  // Wider for better text display
+                }}
+              >
+                <div className="bg-blue-900/90 backdrop-blur-md px-3 py-2 rounded-md border border-blue-400/30 shadow-lg">
+                  <p className="text-white font-semibold text-sm truncate">{displayTitle}</p>
+                </div>
+              </div>
+            )
+          })}
+
+          {/* Node hover previews */}
+          {filteredNodes.map((node) => (
+            hoveredNode === node.id && (
+              <div
+                key={`preview-${node.id}`}
+                className="absolute z-20 transform -translate-x-1/2 transition-opacity duration-200"
+                style={{
+                  top: `${node.position.y * 100 + 8}%`,
+                  left: `${node.position.x * 100}%`,
+                }}
+              >
+                <div className="bg-black/90 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-64 shadow-xl">
+                  <h3 className="text-sm font-semibold text-white">{node.title}</h3>
+                  <p className="text-xs text-white/70 mt-2">{node.description}</p>
+                  {'isResource' in node && (
+                    <div className="mt-3 flex items-center gap-2">
+                      <Badge className={`${getTypeColor(node.type)}`}>
+                        {node.type}
+                      </Badge>
+                      <Badge className="bg-white/10 text-white/70">
+                        Click to explore
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          ))}
+
+          {filteredNodes.map((node) => {
+            const position = getNodePosition(node)
             const isCompleted = completedNodes.includes(node.id)
             const isHovered = hoveredNode === node.id
             const isHighlighted = hoveredNode === node.id || highlightedNode === node.id
-            const isResource = 'type' in node && 'url' in node
+            const isResource = 'isResource' in node
+            const isParent = 'isParent' in node && node.isParent
+            
+            // Determine size multiplier - make parent nodes larger
+            const sizeMultiplier = isParent ? 1.7 : 1.1  // Increased difference between parent and resource nodes
+            
+            // Skip rendering very small resource nodes if not highlighted to reduce visual clutter
+            if (isResource && !isHighlighted && node.value < 0.3) {
+              return null
+            }
 
             return (
               <button
                 key={node.id}
                 className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-                  isHighlighted ? "scale-125 z-10" : ""
+                  isHighlighted ? "scale-110 z-10" : "hover:scale-105"
                 }`}
                 style={{
-                  top: `${node.position.y * 100}%`,
-                  left: `${node.position.x * 100}%`,
+                  top: `${position.y * 100}%`,
+                  left: `${position.x * 100}%`,
+                  filter: isHighlighted ? 'drop-shadow(0 0 8px rgba(255,255,255,0.4))' : 'none',
                 }}
                 onClick={() => {
                   trackNodeInteraction(node, 'select')
@@ -854,57 +1077,41 @@ export default function LearningMap() {
                 }}
               >
                 <div
-                  className={`relative flex items-center justify-center rounded-full ${
-                    isHighlighted ? "ring-2 ring-white shadow-glow" : ""
+                  className={`relative flex items-center justify-center ${
+                    'isResource' in node ? 'rounded-lg border-dashed' : 'rounded-full border-solid'
+                  } ${
+                    isHighlighted ? "ring-2 ring-white/70 ring-offset-2 ring-offset-blue-950" : ""
                   } ${
                     isCompleted
-                      ? "bg-blue-500 border-2 border-white/50"
-                      : `${isResource ? getTypeColor(node.type) : getTrackColor(node.track || "")} border border-white/30`
-                  }`}
+                      ? "bg-blue-500 border-2 border-white/70"  // Increased contrast
+                      : `${'isResource' in node ? getTypeColor(node.type) : getTrackColor(node.track || "")} border-2 ${isParent ? 'border-white/60' : 'border-white/30'} backdrop-blur-sm`
+                  } transition-all duration-300 shadow-lg`}
                   style={{
-                    width: `${Math.max(30, (node.value || 0.3) * 60)}px`,
-                    height: `${Math.max(30, (node.value || 0.3) * 60)}px`,
+                    width: `${Math.max(40, (node.value || 0.4) * 90 * sizeMultiplier)}px`,  // Increased max size for better visibility
+                    height: `${Math.max(40, (node.value || 0.4) * 90 * sizeMultiplier)}px`,
                   }}
                 >
-                  {node.icon}
-
-                  {isHovered && (
-                    <>
-                      <div className="absolute -top-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
-                      <div className="absolute -bottom-8 left-1/2 w-px h-8 border-l border-dashed border-white/40"></div>
-                      <div className="absolute top-1/2 -left-8 w-8 h-px border-t border-dashed border-white/40"></div>
-                      <div className="absolute top-1/2 -right-8 w-8 h-px border-t border-dashed border-white/40"></div>
-
-                      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded text-white text-xs whitespace-nowrap border border-white/20">
-                        {node.title}
-                      </div>
-                    </>
-                  )}
+                  <div className={`${isHighlighted ? 'scale-110' : ''} transition-transform duration-300`}>
+                    {/* Larger icons */}
+                    <div className={`${isParent ? 'transform scale-170' : 'transform scale-130'}`}>
+                      {node.icon}
+                    </div>
+                  </div>
                 </div>
               </button>
             )
           })}
 
-          {/* Blueprint legend - Simplified */}
-          <div className="absolute bottom-4 right-4 bg-[#1e3a8a]/80 backdrop-blur-sm p-3 rounded border border-white/20 text-xs text-white/70 shadow-lg">
-            <div className="font-bold text-white mb-2">LEGEND</div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-blue-500/30"></div>
-                <span>Core Track</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-green-500/30"></div>
-                <span>Data Track</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-amber-500/30"></div>
-                <span>Tools Track</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-full bg-purple-500/30"></div>
-                <span>Specialization</span>
-              </div>
+          {/* Add Featured Learning Path Highlights */}
+          <div className="absolute bottom-6 left-6 right-6 bg-blue-900/90 backdrop-blur-md border border-blue-400/30 rounded-lg p-4 shadow-xl">
+            <h3 className="text-white font-bold mb-3">Featured Learning Paths</h3>
+            <div className="grid grid-cols-3 gap-4">
+              {['RAG Systems', 'Fine-tuning LLMs', 'Secure AI Applications'].map((path, idx) => (
+                <div key={idx} className="bg-blue-800/40 hover:bg-blue-700/50 p-3 rounded-lg cursor-pointer transition-colors border border-blue-500/30">
+                  <p className="text-white text-sm font-medium">{path}</p>
+                  <p className="text-white/70 text-xs mt-1">Click to explore this path</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
