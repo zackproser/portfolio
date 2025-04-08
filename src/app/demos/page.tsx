@@ -15,7 +15,7 @@ export const metadata: Metadata = createMetadata({
 // Hardcoded demo data since these are React components, not MDX files
 const demos: Content[] = [
   {
-    slug: 'embeddings',
+    slug: '/demos/embeddings',
     title: 'Embeddings Demo',
     description: 'Interactive demo of converting natural language into vectors or embeddings, a fundamental technique used in natural language processing (NLP) and generative AI.',
     author: 'Zachary Proser',
@@ -24,7 +24,7 @@ const demos: Content[] = [
     image: vectorDatabasesExamined
   },
   {
-    slug: 'tokenize',
+    slug: '/demos/tokenize',
     title: 'Tokenizer Demo',
     description: 'Interactive demo of how text is broken down into tokens for processing by language models.',
     author: 'Zachary Proser',
