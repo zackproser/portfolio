@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import {
   Examples,
   TokenExplorer,
-  TokenizationComparison,
   TokenPricingCalculator,
   TokenApplications,
   TokenizationQuiz
@@ -12,6 +11,7 @@ import {
 
 // New imports
 import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { characterTokenize, wordTokenize, simpleBpeTokenize, tiktokenTokenize } from './utils';
 
 export default function TokenizationDemoClient() {
   const [inputText, setInputText] = useState('');
@@ -23,17 +23,21 @@ export default function TokenizationDemoClient() {
   // Add state for explanation panel
   const [showVocabExplanation, setShowVocabExplanation] = useState(false);
   const [tokenizationMethod, setTokenizationMethod] = useState('tiktoken'); // Default to tiktoken
+  // Add state for debounced input text to improve performance
+  const [debouncedText, setDebouncedText] = useState('');
 
   // Debounce text changes to prevent excessive re-renders
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAnalysis(!!inputText);
+      setDebouncedText(inputText); // Update debounced text after delay
     }, 300);
     return () => clearTimeout(timer);
   }, [inputText]);
 
   const handleExampleSelect = (text: string) => {
     setInputText(text);
+    setDebouncedText(text); // Update debounced text immediately for examples
   };
 
   // Toggle section expansion
@@ -177,6 +181,46 @@ export default function TokenizationDemoClient() {
               rows={2}
               placeholder="Type or paste any text to see instant tokenization..."
             />
+            
+            {/* Token count visualization - added here */}
+            {debouncedText && (
+              <div className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 space-y-1">
+                {['tiktoken', 'bpe', 'word', 'character'].map((method) => {
+                  const getTokenCount = (text: string, method: string) => {
+                    switch (method) {
+                      case 'character': return characterTokenize(text).length;
+                      case 'word': return wordTokenize(text).length;
+                      case 'bpe': return simpleBpeTokenize(text).length;
+                      case 'tiktoken': return tiktokenTokenize(text).length;
+                      default: return 0;
+                    }
+                  };
+                  
+                  const count = getTokenCount(debouncedText, method);
+                  const maxCount = getTokenCount(debouncedText, 'character');
+                  const percentage = Math.round((count / maxCount) * 100);
+                  
+                  return (
+                    <div key={method} className="flex items-center space-x-2">
+                      <span className="w-24 inline-block font-medium">{method === 'tiktoken' ? 'OpenAI' : method}:</span>
+                      <span className="w-10 inline-block">{count}</span>
+                      <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
+                        <div 
+                          className="h-full rounded-full"
+                          style={{ 
+                            width: `${percentage}%`,
+                            backgroundColor: method === 'tiktoken' ? '#10b981' : '#3b82f6',
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <p className="text-xs mt-1 text-zinc-500 dark:text-zinc-500">
+                  Shorter bars indicate more efficient tokenization (fewer tokens)
+                </p>
+              </div>
+            )}
           </div>
           {showAnalysis && (
             <div className="flex-shrink-0">
@@ -195,6 +239,10 @@ export default function TokenizationDemoClient() {
 
         {/* Examples Section */}
         <div className="mt-2">
+          {/* Description for example buttons */}
+          <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-2">
+            Click on an example to see how different types of text are tokenized differently:
+          </p>
           <div className="flex flex-wrap gap-2">
             {["Common English Text", "Uncommon Words", "Numbers & Symbols", "Non-English Text", "Code Snippet"].map((title, index) => (
               <button
@@ -218,6 +266,35 @@ export default function TokenizationDemoClient() {
         </div>
       </div>
 
+      {/* Tokenization Method Selection - Moved here for better visibility */}
+      <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 mb-4">
+        <div className="flex items-center mb-2">
+          <FiTool className="text-orange-500 mr-2" size={20} />
+          <h3 className="text-md font-semibold text-zinc-800 dark:text-white">Select Tokenization Method</h3>
+        </div>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+          Different tokenization methods have varying trade-offs in efficiency and accuracy.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {['tiktoken', 'character', 'wordpiece', 'bpe'].map((method) => (
+            <button
+              key={method}
+              className={`px-3 py-2 text-sm font-medium rounded-md ${
+                tokenizationMethod === method 
+                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 border-2 border-purple-500' 
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+              }`}
+              onClick={() => setTokenizationMethod(method)}
+            >
+              {method === 'tiktoken' && 'OpenAI Tiktoken'}
+              {method === 'character' && 'Character Tokenization'}
+              {method === 'wordpiece' && 'Word Tokenization'}
+              {method === 'bpe' && 'BPE (Subword)'}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Tokenized Content Visualization */}
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-2">
@@ -236,26 +313,6 @@ export default function TokenizationDemoClient() {
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
           See how your text is broken into tokens in real-time. Select different tokenization methods to understand their differences.
         </p>
-        
-        {/* Tokenization Method Buttons - Moved up as requested */}
-        <div className="flex space-x-2 mb-4">
-          {['tiktoken', 'character', 'wordpiece', 'bpe'].map((method) => (
-            <button
-              key={method}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md ${
-                tokenizationMethod === method 
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 border-2 border-purple-500' 
-                  : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
-              }`}
-              onClick={() => setTokenizationMethod(method)}
-            >
-              {method === 'tiktoken' && 'OpenAI Tiktoken'}
-              {method === 'character' && 'Character Tokenization'}
-              {method === 'wordpiece' && 'Word Tokenization'}
-              {method === 'bpe' && 'BPE (Subword)'}
-            </button>
-          ))}
-        </div>
         
         {/* Vocabulary Explanation Panel - Collapsed by default */}
         {showVocabExplanation && (
@@ -289,14 +346,14 @@ export default function TokenizationDemoClient() {
         )}
         
         <TokenExplorer 
-          text={inputText || "Type something to see tokenization in action..."} 
-          showExample={!inputText}
+          text={debouncedText || "Type something to see tokenization in action..."} 
+          showExample={!debouncedText}
           tokenizationMethod={tokenizationMethod}
         />
       </div>
 
       {showAnalysis && (
-        <div className="bg-zinc-50 dark:bg-zinc-850 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center mb-2">
             <FiDollarSign className="text-green-500 mr-2" size={20} />
             <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">Token Pricing Impact</h3>
@@ -304,27 +361,8 @@ export default function TokenizationDemoClient() {
           <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
             Understand how tokens affect your API costs across different models.
           </p>
-          <TokenPricingCalculator text={inputText} model={selectedModel} />
+          <TokenPricingCalculator text={debouncedText} model={selectedModel} />
         </div>
-      )}
-
-      {showAnalysis && (
-        <>
-          {/* Comparison Section with enhanced explanation */}
-          <div className="space-y-4 bg-zinc-50 dark:bg-zinc-850 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
-            <div className="flex items-center mb-2">
-              <FiTool className="text-orange-500 mr-2" size={20} />
-              <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">
-                Tokenization Methods Compared
-              </h3>
-            </div>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Different tokenization methods have varying trade-offs. Character-based methods are simple but inefficient, 
-              while advanced methods like BPE and tiktoken balance efficiency with accuracy.
-            </p>
-            <TokenizationComparison text={inputText} />
-          </div>
-        </>
       )}
       
       {/* Quiz section to test understanding */}
