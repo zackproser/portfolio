@@ -9,7 +9,7 @@ import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import LearningMap from "@/components/learning-map"
+import LearningGrid from "@/components/learning-grid"
 
 // Import company logos
 import logoCloudflare from '/public/images/logos/cloudflare.svg'
@@ -223,7 +223,9 @@ export default function HomepageClientComponent({
               </p>
             </div>
             
-            <LearningMap />
+            <div className="relative p-8 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
+              <LearningGrid />
+            </div>
           </div>
         </section>
 
