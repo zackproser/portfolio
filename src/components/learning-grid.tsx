@@ -563,42 +563,10 @@ export default function LearningGrid() {
 
   return (
     <>
-      {/* Filter controls */}
-      <div className="flex justify-center mb-10">
-        <div className="flex flex-wrap gap-3 justify-center">
-          {['core', 'data', 'tools', 'specialization'].map(track => (
-            <Button
-              key={track}
-              variant={activeFilters.has(track) ? 'default' : 'secondary'}
-              className={`${
-                activeFilters.has(track) 
-                  ? `bg-gradient-to-r ${
-                      track === 'core' ? 'from-blue-600/70 to-blue-700/70 hover:from-blue-600/80 hover:to-blue-700/80 border border-blue-500/50' : 
-                      track === 'data' ? 'from-green-600/70 to-green-700/70 hover:from-green-600/80 hover:to-green-700/80 border border-green-500/50' :
-                      track === 'tools' ? 'from-amber-600/70 to-amber-700/70 hover:from-amber-600/80 hover:to-amber-700/80 border border-amber-500/50' :
-                      'from-purple-600/70 to-purple-700/70 hover:from-purple-600/80 hover:to-purple-700/80 border border-purple-500/50'
-                    } text-white shadow-md` 
-                  : 'bg-white/10 hover:bg-white/15 border border-white/30 text-white/80 hover:text-white'
-              } text-sm px-5 py-2.5 rounded-xl font-medium transition-all duration-300`}
-              onClick={() => toggleFilter(track)}
-            >
-              {track.charAt(0).toUpperCase() + track.slice(1)}
-            </Button>
-          ))}
-        </div>
-      </div>
-      
       {/* Main Grid of Topics */}
-      <div className="space-y-16">
+      <div className="space-y-6">
         {Object.entries(topicsByPhase).map(([phase, topics]) => (
-          <div key={phase} className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="inline-block bg-blue-900/60 backdrop-blur-sm px-8 py-3 rounded-xl border border-blue-400/30 shadow-lg">
-                <h3 className="text-2xl font-bold text-white">
-                  {phaseNames[Number(phase)]}
-                </h3>
-              </div>
-            </div>
+          <div key={phase} className="space-y-3">
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {topics.map(topic => (
@@ -606,67 +574,47 @@ export default function LearningGrid() {
                   <DialogTrigger asChild>
                     <div 
                       className={`
-                        p-5 rounded-xl cursor-pointer transition-all duration-300
+                        p-4 rounded-xl cursor-pointer transition-all duration-300
                         bg-gradient-to-br ${getTrackColor(topic.track).replace('bg-blue-500/30', 'from-blue-600/40 to-blue-800/40').replace('bg-green-500/30', 'from-green-600/40 to-green-800/40').replace('bg-amber-500/30', 'from-amber-600/40 to-amber-800/40').replace('bg-purple-500/30', 'from-purple-600/40 to-purple-800/40')}
                         hover:from-blue-600/50 hover:to-blue-800/50 border-2 border-white/20 hover:border-white/30
                         ${completedNodes.includes(topic.id) ? 'ring-2 ring-green-500/60 shadow-lg shadow-green-500/10' : 'shadow-md hover:shadow-xl'}
                         transform hover:scale-[1.02]
+                        w-full mx-auto h-full
                       `}
                       onClick={() => handleOpenTopic(topic)}
                     >
-                      <div className="flex gap-5">
-                        <div className="p-4 rounded-xl bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
+                      <div className="flex gap-4">
+                        <div className="p-3 rounded-xl bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
                           {topic.icon}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-bold text-white text-xl">{topic.title}</h4>
-                          <p className="text-white/90 text-sm mt-2 line-clamp-2 leading-relaxed">{topic.description}</p>
-                          <div className="flex flex-wrap gap-2 mt-4">
-                            <Badge className="bg-blue-500/40 text-white border-blue-400/50 px-3 py-1 font-medium">
-                              {topic.difficulty}
-                            </Badge>
-                            <Badge className="bg-white/20 text-white border-white/40 px-3 py-1 font-medium">
-                              {topic.resources.length} resources
-                            </Badge>
-                            {completedNodes.includes(topic.id) && (
-                              <Badge className="bg-gradient-to-r from-green-500/50 to-green-600/50 text-white border-green-400/50 px-3 py-1 font-medium">
-                                Completed
-                              </Badge>
-                            )}
+                          <h4 className="font-bold text-white text-lg">{topic.title}</h4>
+                          <p className="text-white/90 text-sm mt-2 leading-relaxed line-clamp-3">{topic.description}</p>
+                          <div className="mt-3">
+                            <span className="text-white/80 text-xs">{topic.resources.length} resources</span>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="mt-4 text-white/90 hover:text-white hover:bg-white/10 font-medium"
-                            onClick={(e) => toggleCompleted(topic.id, e)}
-                          >
-                            {completedNodes.includes(topic.id) 
-                              ? "Mark as Incomplete" 
-                              : "Mark as Completed"}
-                          </Button>
                         </div>
                       </div>
                     </div>
                   </DialogTrigger>
                   
-                  <DialogContent className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 border-2 border-blue-400/70 text-white max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-xl">
-                    <DialogHeader className="mb-8 px-2">
+                  <DialogContent className="bg-gradient-to-br from-slate-900 via-blue-950 to-[#0f1b40] border border-indigo-400/30 text-white max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-xl">
+                    <DialogHeader className="mb-6 px-2">
                       <div className="flex items-center gap-5">
-                        <div className={`p-5 rounded-xl ${getTrackColor(topic.track)} shadow-lg border border-white/40 backdrop-blur-sm`}>
+                        <div className={`p-5 rounded-xl ${getTrackColor(topic.track)} backdrop-blur-sm border border-white/30 shadow-lg`}>
                           {topic.icon}
                         </div>
                         <div>
-                          <DialogTitle className="text-3xl font-bold text-white mb-1">{topic.title}</DialogTitle>
-                          <div className="flex gap-2 mt-2">
-                            <Badge className="bg-blue-500/70 text-white border-blue-500/50 font-medium px-3 py-1">{topic.difficulty}</Badge>
-                            <Badge className="bg-white/30 text-white border-white/30 font-medium px-3 py-1">{topic.resources.length} resources</Badge>
+                          <DialogTitle className="text-3xl font-bold text-white mb-2 tracking-tight">{topic.title}</DialogTitle>
+                          <div className="flex gap-2 mt-1">
+                            <span className="text-white/70 text-sm">{topic.resources.length} premium resources</span>
                             {completedNodes.includes(topic.id) && (
-                              <Badge className="bg-green-500/70 text-white border-green-500/50 font-medium px-3 py-1">Completed</Badge>
+                              <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1">Completed</Badge>
                             )}
                           </div>
                         </div>
                       </div>
-                      <DialogDescription className="text-white mt-6 text-base font-medium leading-relaxed">
+                      <DialogDescription className="text-white mt-5 text-lg font-medium leading-relaxed">
                         {topic.description}
                       </DialogDescription>
                     </DialogHeader>
@@ -681,20 +629,66 @@ export default function LearningGrid() {
                           className="block group"
                           onClick={(e) => handleResourceClick(resource, e)}
                         >
-                          <div className="p-5 rounded-xl border-2 border-white/20 group-hover:border-white/40 bg-gradient-to-br from-white/10 to-white/5 group-hover:from-white/15 group-hover:to-white/10 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className={`p-3 rounded-lg ${getTypeColor(resource.type).replace('text-blue-800', 'text-white').replace('text-purple-800', 'text-white').replace('text-green-800', 'text-white').replace('text-amber-800', 'text-white').replace('text-cyan-800', 'text-white').replace('text-red-800', 'text-white')} border border-white/30 shadow-md`}>
-                                {getResourceIcon(resource.type)}
+                          <div className="relative overflow-hidden rounded-xl transform transition-all duration-300 group-hover:scale-[1.02] shadow-lg group-hover:shadow-xl">
+                            {/* Gradient background with subtle animation */}
+                            <div className="absolute inset-0 bg-gradient-to-br 
+                              from-blue-800/80 to-indigo-900/90 group-hover:from-blue-700/80 group-hover:to-indigo-800/90 
+                              transition-all duration-500"></div>
+                            
+                            {/* Animated glow effect on hover */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.15),transparent_70%)]"></div>
+                            
+                            {/* Subtle grid pattern */}
+                            <div className="absolute inset-0 opacity-10 bg-grid-white/5"></div>
+                            
+                            {/* Content container */}
+                            <div className="relative p-6 z-10">
+                              <div className="flex items-start gap-4 mb-4">
+                                <div className={`p-3 rounded-lg ${
+                                  resource.type === "project" ? "bg-gradient-to-br from-amber-500/70 to-orange-600/70" :
+                                  resource.type === "course" ? "bg-gradient-to-br from-emerald-500/70 to-teal-600/70" :
+                                  resource.type === "article" ? "bg-gradient-to-br from-blue-500/70 to-indigo-600/70" :
+                                  resource.type === "video" ? "bg-gradient-to-br from-purple-500/70 to-fuchsia-600/70" :
+                                  resource.type === "tool" ? "bg-gradient-to-br from-cyan-500/70 to-sky-600/70" :
+                                  "bg-gradient-to-br from-red-500/70 to-rose-600/70"
+                                } border border-white/20 shadow-md`}>
+                                  {getResourceIcon(resource.type)}
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-bold text-xl text-white group-hover:text-blue-100 transition-colors">{resource.title}</h4>
+                                  <div className="mt-1">
+                                    <Badge className={`${
+                                      resource.type === "project" ? "bg-amber-500/20 text-amber-200 border-amber-500/30" :
+                                      resource.type === "course" ? "bg-emerald-500/20 text-emerald-200 border-emerald-500/30" :
+                                      resource.type === "article" ? "bg-blue-500/20 text-blue-200 border-blue-500/30" :
+                                      resource.type === "video" ? "bg-purple-500/20 text-purple-200 border-purple-500/30" :
+                                      resource.type === "tool" ? "bg-cyan-500/20 text-cyan-200 border-cyan-500/30" :
+                                      "bg-red-500/20 text-red-200 border-red-500/30"
+                                    } px-2.5 py-0.5 text-xs rounded-md font-medium`}>
+                                      {resource.type}
+                                    </Badge>
+                                    
+                                    {resource.type === "project" && (
+                                      <Badge className="ml-2 bg-gradient-to-r from-amber-400/40 to-orange-500/40 text-amber-100 border-amber-500/30 px-2.5 py-0.5 text-xs rounded-md font-medium">
+                                        Premium
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                              <h4 className="font-bold text-lg group-hover:text-blue-300 transition-colors">{resource.title}</h4>
-                            </div>
-                            <p className="text-white/90 text-sm font-medium mb-4">{resource.description}</p>
-                            <div className="flex justify-between items-center">
-                              <Badge className={`${getTypeColor(resource.type)} px-3 py-1 text-sm`}>
-                                {resource.type}
-                              </Badge>
-                              <div className="text-blue-400 text-sm font-medium group-hover:text-blue-300">
-                                View Resource →
+                              
+                              <p className="text-white/90 text-base font-medium mb-5 line-clamp-3 leading-relaxed">{resource.description}</p>
+                              
+                              <div className="flex items-center justify-between">
+                                <div className="text-blue-300 text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform duration-300">
+                                  <span>Explore Resource</span>
+                                  <svg className="w-4 h-4 ml-1 group-hover:ml-2 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                  </svg>
+                                </div>
+                                
+                                {/* Subtle shine effect */}
+                                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                               </div>
                             </div>
                           </div>
@@ -702,22 +696,9 @@ export default function LearningGrid() {
                       ))}
                     </div>
                     
-                    <div className="flex items-center justify-between mt-8 pt-4 border-t border-white/10 px-2">
-                      <Button
-                        variant={completedNodes.includes(topic.id) ? "destructive" : "default"}
-                        className={`
-                          ${completedNodes.includes(topic.id)
-                            ? "bg-gradient-to-r from-red-600/90 to-red-700/90 hover:from-red-700 hover:to-red-800 border border-red-400/30" 
-                            : "bg-gradient-to-r from-blue-600/90 to-blue-700/90 hover:from-blue-700 hover:to-blue-800 border border-blue-400/30"}
-                          text-white font-medium px-6 py-2 shadow-md
-                        `}
-                        onClick={(e) => toggleCompleted(topic.id, e)}
-                      >
-                        {completedNodes.includes(topic.id) ? "Mark as Incomplete" : "Mark as Completed"}
-                      </Button>
-                      
+                    <div className="flex items-center justify-center mt-8 pt-5 px-2">
                       <DialogClose asChild>
-                        <Button variant="outline" className="border-white/30 hover:bg-white/10 text-white font-medium">
+                        <Button variant="outline" className="border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-white font-medium px-8">
                           Close
                         </Button>
                       </DialogClose>
