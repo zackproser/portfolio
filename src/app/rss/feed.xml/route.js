@@ -41,7 +41,7 @@ export async function GET() {
     // Get all content for each content-focused type
     for (const contentType of contentFocusedDirs) {
       try {
-        const contents = await getAllContent(contentType);
+        const contents = await getAllContent(contentType, undefined);
         for (const content of contents) {
           if (content.slug) {
             try {
