@@ -195,11 +195,12 @@ function CardContent({
           src={imageSource}
           alt={title}
           className={cn(
-            "aspect-[16/9] w-full rounded-t-lg object-cover",
+            "aspect-[16/9] w-full rounded-t-lg object-cover h-60 sm:h-64",
             isPremium && "brightness-[0.97]" // Subtle effect for premium content
           )}
-          width={500}
-          height={281}
+          width={600}
+          height={350}
+          priority={true}
         />
         <div className={cn(
           "absolute inset-0 rounded-t-lg ring-1 ring-inset",
