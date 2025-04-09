@@ -43,6 +43,7 @@ interface Resource extends BaseNode {
   url: string
   parentId: string
   isResource: boolean
+  premium?: boolean
 }
 
 type Node = Topic | Resource
@@ -313,8 +314,8 @@ const ResourceCard = ({ resource, isSelected, onSelect }: {
   isSelected: boolean; 
   onSelect: () => void;
 }) => {
-  // Determine if resource is premium (projects are considered premium)
-  const isPremium = resource.type === "project";
+  // Use the premium property directly or default to false if not specified
+  const isPremium = resource.premium ?? false;
   const includesCode = resource.type === "project" || resource.type === "course";
   
   // Blueprint styles based on tier
@@ -546,8 +547,8 @@ export default function LearningGrid() {
     // Phase 0: Introductions
     {
       id: "tokenization-guide",
-      title: "How LLMs See Text",
-      description: "Interactive exploration of how large language models tokenize input.",
+      title: "How do LLMs See Text?",
+      description: "Explore how large language models process and break down text into tokens for understanding.",
       position: { x: 0.25, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -573,7 +574,7 @@ export default function LearningGrid() {
     {
       id: "embedding-intro",
       title: "What Are Embeddings?",
-      description: "Understand how vector embeddings capture semantic meaning for powerful search and similarity tasks.",
+      description: "Learn how vector embeddings convert text and data into numerical representations for AI understanding.",
       position: { x: 0.75, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -613,7 +614,7 @@ export default function LearningGrid() {
     {
       id: "rag-systems",
       title: "Retrieval Augmented Generation",
-      description: "Enhance LLMs with external knowledge through retrieval systems to eliminate hallucinations.",
+      description: "Learn how to enhance LLMs with external knowledge sources to reduce hallucinations and improve accuracy.",
       position: { x: 0.25, y: 0.6 },
       icon: <BookOpen className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -628,7 +629,7 @@ export default function LearningGrid() {
           title: "What is Retrieval Augmented Generation?",
           type: "article",
           url: "https://www.pinecone.io/learn/retrieval-augmented-generation/",
-          description: "A comprehensive introduction to RAG architecture and fundamentals.",
+          description: "I wrote the guide to Retrieval Augmented Generation at Pinecone, which covers RAG architecture and fundamentals.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -645,7 +646,8 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: true
         },
         {
           id: "rag-systems-3",
@@ -657,7 +659,8 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: false
         },
         {
           id: "rag-systems-4",
@@ -700,7 +703,7 @@ export default function LearningGrid() {
     {
       id: "fine-tuning",
       title: "Fine-tuning LLMs",
-      description: "Adapt pre-trained models to your specific tasks and domain knowledge for improved performance.",
+      description: "Master techniques for customizing pre-trained language models to perform specific tasks in your domain.",
       position: { x: 0.75, y: 0.6 },
       icon: <Zap className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -711,11 +714,11 @@ export default function LearningGrid() {
       isParent: true,
       resources: [
         {
-          id: "fine-tuning-1",
-          title: "OpenAI Fine-tuning Guide",
+          id: "fine-tuning-3",
+          title: "LoRA & QLoRA: Lightweight Fine-Tuning",
           type: "article",
-          url: "https://platform.openai.com/docs/guides/fine-tuning",
-          description: "Step-by-step guide for fine-tuning OpenAI models.",
+          url: "/blog/what-is-lora-and-qlora",
+          description: "Intro to parameter-efficient fine-tuning techniques for modern LLMs.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -723,23 +726,23 @@ export default function LearningGrid() {
           isResource: true
         },
         {
-          id: "fine-tuning-2",
-          title: "Build a Custom Assistant",
-          type: "project",
-          url: "https://platform.openai.com/docs/tutorials/fine-tuning",
-          description: "Create a fine-tuned assistant using your domain data.",
+          id: "fine-tuning-4",
+          title: "Fine-tune Llama 3 with Lightning AI & TorchTune",
+          type: "article",
+          url: "/blog/how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune",
+          description: "Step-by-step guide to fine-tuning Llama 3 models using Lightning AI's infrastructure.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
-          icon: <BookOpen className="h-5 w-5 text-white" />,
+          icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true
         },
         {
-          id: "fine-tuning-3",
-          title: "LoRA & QLoRA: Lightweight Fine-Tuning",
+          id: "fine-tuning-5",
+          title: "Creating Custom Alpaca Datasets",
           type: "article",
-          url: "/blog/what-is-lora-and-qlora",
-          description: "Intro to parameter-efficient fine-tuning techniques for modern LLMs.",
+          url: "/blog/how-to-create-a-custom-alpaca-dastaset",
+          description: "Learn how to create instruction-tuning datasets in Alpaca format for LLM fine-tuning.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -753,7 +756,7 @@ export default function LearningGrid() {
     {
       id: "scaling-vector-infra",
       title: "Scaling Vector Infrastructure",
-      description: "Build high-performance vector search systems that can handle millions of queries per second.",
+      description: "Design and implement high-performance vector search systems that efficiently handle millions of queries.",
       position: { x: 0.5, y: 0.75 },  // Moved down to avoid overlap
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -780,7 +783,7 @@ export default function LearningGrid() {
     {
       id: "secure-rag-fga",
       title: "Secure RAG with Fine-Grained Authorization",
-      description: "Implement secure access controls to ensure users only see authorized information in RAG results.",
+      description: "Learn techniques to implement secure access controls in RAG systems to protect sensitive information.",
       position: { x: 0.25, y: 0.9 },
       icon: <Lock className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -812,14 +815,15 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: false
         }
       ]
     },
     {
       id: "doc-access-control-fga",
       title: "Document Access Control with FGA & AWS",
-      description: "Create enterprise-grade document security systems with fine-grained permissions on AWS.",
+      description: "Build secure document management systems with fine-grained authorization using AWS services.",
       position: { x: 0.75, y: 0.9 },
       icon: <Shield className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -850,6 +854,112 @@ export default function LearningGrid() {
           parentId: "doc-access-control-fga",
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true, 
+          premium: false
+        }
+      ]
+    },
+    {
+      id: "data-science-tools",
+      title: "Data Science Fundamentals",
+      description: "Learn core data science tools and concepts for effective machine learning and analysis workflows.",
+      position: { x: 0.5, y: 0.9 },
+      icon: <BarChart className="h-5 w-5 text-white" />,
+      difficulty: "beginner",
+      value: 0.45,
+      phase: 0,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "data-science-tools-1",
+          title: "Getting Started with Jupyter Notebooks",
+          type: "article",
+          url: "/blog/how-to-use-jupyter-notebooks",
+          description: "Complete guide to using Jupyter Notebooks for interactive data science workflows.",
+          parentId: "data-science-tools",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "vector-mathematics",
+      title: "Vector Mathematics",
+      description: "Explore the mathematical principles behind vector operations used in embedding models and AI.",
+      position: { x: 0.25, y: 0.25 },
+      icon: <Sparkles className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 0,
+      track: "data",
+      dependencies: ["embedding-intro"],
+      isParent: true,
+      resources: [
+        {
+          id: "vector-mathematics-1",
+          title: "Introduction to Dimensionality",
+          type: "article",
+          url: "/blog/introduction-to-dimensionality",
+          description: "Understanding high-dimensional spaces and their role in machine learning.",
+          parentId: "vector-mathematics",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "ai-implementation",
+      title: "AI Implementation Strategies",
+      description: "Discover proven patterns and approaches for designing and implementing robust AI systems.",
+      position: { x: 0.75, y: 0.25 },
+      icon: <GitBranch className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 1,
+      track: "specialization",
+      isParent: true,
+      resources: [
+        {
+          id: "ai-implementation-1",
+          title: "JavaScript AI Architecture",
+          type: "article",
+          url: "/blog/javascript-ai",
+          description: "Thought leadership on architectural patterns for JavaScript-based AI systems.",
+          parentId: "ai-implementation",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "practical-ml",
+      title: "Practical Machine Learning",
+      description: "Build real-world machine learning projects through hands-on tutorials and code examples.",
+      position: { x: 0.5, y: 0.4 },
+      icon: <Code className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 2,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "practical-ml-1",
+          title: "PyTorch MNIST Digit Recognizer",
+          type: "article",
+          url: "/blog/mnist-pytorch-hand-drawn-digit-recognizer",
+          description: "Build a handwritten digit recognition system with PyTorch and the MNIST dataset.",
+          parentId: "practical-ml",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true
         }
@@ -912,6 +1022,11 @@ export default function LearningGrid() {
     4: "Specializations"
   };
 
+  // Sort phases to ensure consistent order
+  const sortedPhases = Object.keys(topicsByPhase)
+    .map(Number)
+    .sort((a, b) => a - b);
+
   // Handle opening a topic
   const handleOpenTopic = (topic: Topic) => {
     setSelectedTopic(topic);
@@ -951,13 +1066,20 @@ export default function LearningGrid() {
     <div className="space-y-16 py-8">
       <GlobalStyles />
       
-      {/* Main Grid of Topics */}
-      <div className="space-y-6">
-        {Object.entries(topicsByPhase).map(([phase, topics]) => (
-          <div key={phase} className="space-y-3">
+      {/* Main Grid of Topics organized by phases */}
+      <div className="space-y-10">
+        {sortedPhases.map(phase => (
+          <div key={`phase-${phase}`} className="space-y-4">
+            {/* Phase header */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+              <h3 className="text-xl font-semibold text-white">{phaseNames[phase] || `Phase ${phase}`}</h3>
+              <div className="flex-1 h-px bg-blue-400/20"></div>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {topics.map(topic => (
+            {/* Grid for this phase */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
+              {topicsByPhase[phase].map(topic => (
                 <Dialog key={topic.id}>
                   <DialogTrigger asChild>
                     <div 
@@ -978,62 +1100,57 @@ export default function LearningGrid() {
                       {/* Add blueprint glow on hover */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blueprint-bg pointer-events-none"></div>
                       
-                      <div className="flex gap-4">
-                        <div className="p-3 rounded-xl bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
-                          {topic.icon}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-white text-lg">{topic.title}</h4>
-                            {completedNodes.includes(topic.id) && (
-                              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                            )}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2.5 rounded-lg bg-white/10 shadow-inner backdrop-blur-sm border border-white/20 flex-shrink-0">
+                            {topic.icon}
                           </div>
-                          
-                          <p className="text-white/90 text-sm mt-2 leading-relaxed line-clamp-2 mb-3">{topic.description}</p>
-                          
-                          {/* Modified the Business Impact section to remove track-specific language */}
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
-                            <p className="text-white/80 text-xs line-clamp-2">
-                              {getKeyOutcome(topic.id)}
-                            </p>
-                          </div>
-                          
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="flex items-center">
-                              {/* Removed badges per request */}
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-white text-lg">{topic.title}</h4>
+                              {completedNodes.includes(topic.id) && (
+                                <svg className="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              )}
                             </div>
-                            
-                            <span className="text-blue-300 text-xs flex items-center">
-                              Explore
-                              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </span>
+                          </div>
+                        </div>
+                        
+                        <p className="text-white/90 text-sm leading-relaxed line-clamp-4">{topic.description}</p>
+                        
+                        {/* Modified the Business Impact section to remove track-specific language */}
+                        <div className="mt-4 pt-3 border-t border-white/10">
+                          <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
+                          <p className="text-white/80 text-xs line-clamp-2">
+                            {getKeyOutcome(topic.id)}
+                          </p>
+                        </div>
+                        
+                        {/* Progress indicator for multi-part topics with many resources */}
+                        {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
+                          <div className="mt-4 pt-2">
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/70">Progress</span>
+                              <span className="text-white/70">
+                                {completedNodes.includes(topic.id) ? "Completed" : "0%"}
+                              </span>
+                            </div>
+                            <div className="w-full bg-white/10 rounded-full h-1.5">
+                              <div 
+                                className={`${completedNodes.includes(topic.id) ? "bg-emerald-500" : "bg-blue-500/50"} h-1.5 rounded-full`} 
+                                style={{ width: completedNodes.includes(topic.id) ? "100%" : "0%" }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center">
+                            {/* Removed badges per request */}
                           </div>
                         </div>
                       </div>
-                      
-                      {/* Progress indicator for multi-part topics with many resources */}
-                      {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
-                        <div className="mt-4 pt-2">
-                          <div className="flex justify-between text-xs mb-1">
-                            <span className="text-white/70">Progress</span>
-                            <span className="text-white/70">
-                              {completedNodes.includes(topic.id) ? "Completed" : "0%"}
-                            </span>
-                          </div>
-                          <div className="w-full bg-white/10 rounded-full h-1.5">
-                            <div 
-                              className={`${completedNodes.includes(topic.id) ? "bg-emerald-500" : "bg-blue-500/50"} h-1.5 rounded-full`} 
-                              style={{ width: completedNodes.includes(topic.id) ? "100%" : "0%" }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </DialogTrigger>
                   
@@ -1088,7 +1205,7 @@ export default function LearningGrid() {
                       </div>
                       
                       {/* "Pinned" resource cards to the blueprint scroll */}
-                      {topic.resources.map((resource, idx) => (
+                      {topic.resources.map((resource: Resource, idx: number) => (
                         <div 
                           key={resource.id} 
                           className="relative animate-pin-tack m-4" 

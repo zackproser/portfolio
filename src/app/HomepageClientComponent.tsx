@@ -271,13 +271,13 @@ export default function HomepageClientComponent({
                     </div>
                     
                     <div className="hidden sm:block sm:absolute sm:top-8 sm:right-8">
-                      <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 rounded-full">
+                      <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-amber-600 to-yellow-400 rounded-full">
                         <span className="text-xl sm:text-2xl font-bold text-white">$49</span>
                       </div>
                     </div>
                     
                     <div className="sm:hidden absolute top-5 right-5">
-                      <div className="px-3 py-1.5 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 rounded-full">
+                      <div className="px-3 py-1.5 bg-gradient-to-r from-amber-600 to-yellow-400 rounded-full">
                         <span className="text-xl font-bold text-white">$49</span>
                       </div>
                     </div>
