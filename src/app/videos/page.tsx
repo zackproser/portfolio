@@ -29,7 +29,7 @@ function VideoGrid({ videos }: { videos: ExtendedMetadata[] }) {
 
 export default async function VideosIndex() {
   // Use our helper function to get all video metadata
-  const videos = await getAllContent('videos')
+  const videos = await getAllContent('videos', undefined)
 
   return (
     <SimpleLayout

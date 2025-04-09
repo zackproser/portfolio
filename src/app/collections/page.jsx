@@ -1,6 +1,6 @@
 
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { ContentCard } from '@/components/ContentCard'
+import { CollectionCard } from '@/components/CollectionCard'
 import { getAllCollections } from '@/lib/collections'
 
 export default async function CollectionPage() {
@@ -10,7 +10,7 @@ export default async function CollectionPage() {
     <SimpleLayout title="Writing collections">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {collections.map(collection => (
-          <ContentCard key={collection.slug} article={collection} />
+          <CollectionCard key={collection.slug} collection={collection} />
         ))}
       </div>
     </SimpleLayout>

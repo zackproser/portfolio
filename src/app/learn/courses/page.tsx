@@ -33,7 +33,7 @@ function CourseGrid({ courses }: { courses: ExtendedMetadata[] }) {
 
 export default async function CoursesIndex() {
   // Use our helper function to get all course metadata
-  const courses = await getAllContent('learn/courses')
+  const courses = await getAllContent('learn/courses', undefined)
 
   return (
     <SimpleLayout
