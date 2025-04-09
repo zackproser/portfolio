@@ -43,6 +43,7 @@ interface Resource extends BaseNode {
   url: string
   parentId: string
   isResource: boolean
+  premium?: boolean
 }
 
 type Node = Topic | Resource
@@ -313,8 +314,8 @@ const ResourceCard = ({ resource, isSelected, onSelect }: {
   isSelected: boolean; 
   onSelect: () => void;
 }) => {
-  // Determine if resource is premium (projects are considered premium)
-  const isPremium = resource.type === "project";
+  // Use the premium property directly or default to false if not specified
+  const isPremium = resource.premium ?? false;
   const includesCode = resource.type === "project" || resource.type === "course";
   
   // Blueprint styles based on tier
@@ -645,7 +646,8 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: true
         },
         {
           id: "rag-systems-3",
@@ -657,7 +659,8 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: false
         },
         {
           id: "rag-systems-4",
@@ -711,11 +714,11 @@ export default function LearningGrid() {
       isParent: true,
       resources: [
         {
-          id: "fine-tuning-1",
-          title: "OpenAI Fine-tuning Guide",
+          id: "fine-tuning-3",
+          title: "LoRA & QLoRA: Lightweight Fine-Tuning",
           type: "article",
-          url: "https://platform.openai.com/docs/guides/fine-tuning",
-          description: "Step-by-step guide for fine-tuning OpenAI models.",
+          url: "/blog/what-is-lora-and-qlora",
+          description: "Intro to parameter-efficient fine-tuning techniques for modern LLMs.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -723,23 +726,23 @@ export default function LearningGrid() {
           isResource: true
         },
         {
-          id: "fine-tuning-2",
-          title: "Build a Custom Assistant",
-          type: "project",
-          url: "https://platform.openai.com/docs/tutorials/fine-tuning",
-          description: "Create a fine-tuned assistant using your domain data.",
+          id: "fine-tuning-4",
+          title: "Fine-tune Llama 3 with Lightning AI & TorchTune",
+          type: "article",
+          url: "/blog/how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune",
+          description: "Step-by-step guide to fine-tuning Llama 3 models using Lightning AI's infrastructure.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
-          icon: <BookOpen className="h-5 w-5 text-white" />,
+          icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true
         },
         {
-          id: "fine-tuning-3",
-          title: "LoRA & QLoRA: Lightweight Fine-Tuning",
+          id: "fine-tuning-5",
+          title: "Creating Custom Alpaca Datasets",
           type: "article",
-          url: "/blog/what-is-lora-and-qlora",
-          description: "Intro to parameter-efficient fine-tuning techniques for modern LLMs.",
+          url: "/blog/how-to-create-a-custom-alpaca-dastaset",
+          description: "Learn how to create instruction-tuning datasets in Alpaca format for LLM fine-tuning.",
           parentId: "fine-tuning",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -812,7 +815,8 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true,
+          premium: true
         }
       ]
     },
@@ -850,6 +854,111 @@ export default function LearningGrid() {
           parentId: "doc-access-control-fga",
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "data-science-tools",
+      title: "Data Science Fundamentals",
+      description: "Essential tools and concepts for machine learning and data analysis workflows.",
+      position: { x: 0.5, y: 0.9 },
+      icon: <BarChart className="h-5 w-5 text-white" />,
+      difficulty: "beginner",
+      value: 0.45,
+      phase: 0,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "data-science-tools-1",
+          title: "Getting Started with Jupyter Notebooks",
+          type: "article",
+          url: "/blog/how-to-use-jupyter-notebooks",
+          description: "Complete guide to using Jupyter Notebooks for interactive data science workflows.",
+          parentId: "data-science-tools",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "vector-mathematics",
+      title: "Vector Mathematics",
+      description: "Mathematical foundations that power embedding models and vector representations.",
+      position: { x: 0.25, y: 0.25 },
+      icon: <Sparkles className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 0,
+      track: "data",
+      dependencies: ["embedding-intro"],
+      isParent: true,
+      resources: [
+        {
+          id: "vector-mathematics-1",
+          title: "Introduction to Dimensionality",
+          type: "article",
+          url: "/blog/introduction-to-dimensionality",
+          description: "Understanding high-dimensional spaces and their role in machine learning.",
+          parentId: "vector-mathematics",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "ai-implementation",
+      title: "AI Implementation Strategies",
+      description: "Architectural patterns and approaches for building robust AI systems.",
+      position: { x: 0.75, y: 0.25 },
+      icon: <GitBranch className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 1,
+      track: "specialization",
+      isParent: true,
+      resources: [
+        {
+          id: "ai-implementation-1",
+          title: "JavaScript AI Architecture",
+          type: "article",
+          url: "/blog/javascript-ai",
+          description: "Thought leadership on architectural patterns for JavaScript-based AI systems.",
+          parentId: "ai-implementation",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "practical-ml",
+      title: "Practical Machine Learning",
+      description: "Hands-on projects and examples of machine learning in action.",
+      position: { x: 0.5, y: 0.4 },
+      icon: <Code className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 2,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "practical-ml-1",
+          title: "PyTorch MNIST Digit Recognizer",
+          type: "article",
+          url: "/blog/mnist-pytorch-hand-drawn-digit-recognizer",
+          description: "Build a handwritten digit recognition system with PyTorch and the MNIST dataset.",
+          parentId: "practical-ml",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true
         }
