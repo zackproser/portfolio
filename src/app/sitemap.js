@@ -20,7 +20,7 @@ async function getRoutes() {
   // Get all content for each content type
   for (const contentType of dynamicDirs) {
     if (!excludeDirs.includes(contentType)) {
-      const contents = await getAllContent(contentType);
+      const contents = await getAllContent(contentType, undefined);
       contents.forEach(content => {
         if (content.slug) {
           // Remove any leading slashes to avoid double slashes

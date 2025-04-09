@@ -33,7 +33,7 @@ export async function GET() {
 
   // Get all content for each content-focused type
   for (const contentType of contentFocusedDirs) {
-    const contents = await getAllContent(contentType);
+    const contents = await getAllContent(contentType, undefined);
     for (const content of contents) {
       if (content.slug) {
         // Remove any leading slashes to avoid double slashes
