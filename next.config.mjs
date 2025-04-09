@@ -28,6 +28,46 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/ai',
+        destination: '/collections/ai',
+        permanent: true
+      },
+      {
+        source: '/blog/chatgpt-4-experiment-and-ai-development',
+        destination: '/blog/chatgpt-4-experiment-ai-development',
+        permanent: true
+      },
+      {
+        source: '/blog/codecrafters.io',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/codeium-ai-pinecone-pr-agent',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/chatgpt-4-and-codeium-are-my-favorite-stack',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/blog/github-copilot',
+        destination: '/blog/ai-assisted-dev-tools-compared',
+        permanent: true
+      },
+      {
+        source: '/blog/cursor-review',
+        destination: '/blog/ai-assisted-dev-tools-compared',
+        permanent: true
+      },
+      {
+        source: '/blog/grit-io-review',
+        destination: '/blog/ai-assisted-dev-tools-compared',
+        permanent: true
+      },
+      {
         source: '/newsletter\.',
         destination: '/newsletter',
         permanent: true
