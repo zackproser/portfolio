@@ -107,11 +107,11 @@ export function TokenExplorer({
         />
       </div>
 
-      <div className="p-4 bg-zinc-800 rounded-lg">
+      <div className="p-4 bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">{explanation.title}</h3>
+          <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">{explanation.title}</h3>
           <button
-            className="text-sm text-zinc-400 hover:text-white"
+            className="text-sm text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
             onClick={() => setShowExplanation(!showExplanation)}
           >
             {showExplanation ? 'Hide' : 'Show'} Explanation
@@ -120,19 +120,19 @@ export function TokenExplorer({
         
         {showExplanation && (
           <div className="mb-4 space-y-3">
-            <p className="text-zinc-300">{explanation.description}</p>
+            <p className="text-zinc-700 dark:text-zinc-300">{explanation.description}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="text-sm font-semibold text-green-400 mb-2">Pros</h4>
-                <ul className="list-disc list-inside text-sm text-zinc-300">
+                <h4 className="text-sm font-semibold text-green-600 dark:text-green-400 mb-2">Pros</h4>
+                <ul className="list-disc list-inside text-sm text-zinc-700 dark:text-zinc-300">
                   {explanation.pros.map((pro, i) => (
                     <li key={i}>{pro}</li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-red-400 mb-2">Cons</h4>
-                <ul className="list-disc list-inside text-sm text-zinc-300">
+                <h4 className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">Cons</h4>
+                <ul className="list-disc list-inside text-sm text-zinc-700 dark:text-zinc-300">
                   {explanation.cons.map((con, i) => (
                     <li key={i}>{con}</li>
                   ))}
