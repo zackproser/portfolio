@@ -220,7 +220,7 @@ export default function HomepageClientComponent({
                 </h2>
               </div>
               <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
-                Master the most effective AI and agentic architectures, RAG pipelines, and machine learning concepts to transform your dev team and business. Taught via hands-on projects and production-ready implementations built by an engineer who actually did this work at top tech companies.
+                Transform your team with battle-tested architectures, RAG pipelines, and production-grade AI systems — honed at Cloudflare, Pinecone, and Fortune 500s, and distilled into code-first workshops.
               </p>
               
               <div className="mt-6">
