@@ -22,7 +22,7 @@ export default async function TutorialsPage() {
 
   try {
     // Use our new content system to get all content types
-    const allArticles = await getAllContent('blog')
+    const allArticles = await getAllContent('blog', undefined)
     
     // Filter tutorials from blog posts
     const tutorials = allArticles.filter(article => tutorialSlugs.includes(article.slug.split('/').pop() || ''))
@@ -30,7 +30,7 @@ export default async function TutorialsPage() {
     // Try to get courses, but handle the case where they don't exist yet
     let courses: Content[] = []
     try {
-      const allCourses = await getAllContent('learn/courses')
+      const allCourses = await getAllContent('learn/courses', undefined)
       courses = allCourses.filter(course => courseSlugs.includes(course.slug.split('/').pop() || ''))
     } catch (courseError) {
       console.warn('Could not load courses:', courseError)

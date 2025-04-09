@@ -18,27 +18,25 @@ function generateCollectionPages() {
     const dir = path.join(process.env.PWD, `/src/app/collections/${collectionDir}`);
     const filename = `${dir}/page.jsx`;
 
+    const formattedTitle = title.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
     const content = `
-
-import Image from 'next/image'
-
-import collectionImage from "@/images/${collection.image}"
-
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { ContentCard } from '@/components/ContentCard'
 import { getAllContent } from '@/lib/content-handlers'
 
 export const metadata = {
-  title: "${title.toUpperCase()}",
-  description: "${collection.description}",
-  image: collectionImage, 
+  title: "${formattedTitle}",
+  description: "${collection.description}"
 }
 
 export default async function CollectionPage() {
   let articles = await getAllContent('blog', ${JSON.stringify(collection.slugs)})
 
   return (
-    <SimpleLayout title="${title.charAt(0).toUpperCase() + title.slice(1)} collection">
+    <SimpleLayout title="${formattedTitle} Collection">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {articles.map(article => (
           <ContentCard key={article.slug} article={article} />
@@ -66,7 +64,7 @@ function generateCollectionIndexPage() {
 
     const content = `
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { ContentCard } from '@/components/ContentCard'
+import { CollectionCard } from '@/components/CollectionCard'
 import { getAllCollections } from '@/lib/collections'
 
 export default async function CollectionPage() {
@@ -76,7 +74,7 @@ export default async function CollectionPage() {
     <SimpleLayout title="${title}">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {collections.map(collection => (
-          <ContentCard key={collection.slug} article={collection} />
+          <CollectionCard key={collection.slug} collection={collection} />
         ))}
       </div>
     </SimpleLayout>

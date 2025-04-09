@@ -126,12 +126,12 @@ const nextConfig = {
       {
         source: '/comparisons',
         destination: '/vectordatabases',
-        permanent: true
+        permanent: false
       },
       {
-        source: '/comparisons/:comparison*',
+        source: '/comparisons/:db1(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)-vs-:db2(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)',
         destination: '/vectordatabases',
-        permanent: true
+        permanent: false
       }
     ]
   },

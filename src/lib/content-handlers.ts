@@ -129,12 +129,20 @@ export async function loadContent(contentType: string, slug: string) {
 /**
  * Get all content of a specific type
  * @param contentType The content type directory
+ * @param specificSlugs Optional array of specific slugs to filter by
  * @returns Array of content items
  */
-export async function getAllContent(contentType: string = 'blog'): Promise<Content[]> {
+export async function getAllContent(contentType: string = 'blog', specificSlugs?: string[]): Promise<Content[]> {
   try {
-    console.log(`Getting all content for type: ${contentType}`)
-    const slugs = getContentSlugs(contentType)
+    console.log(`Getting all content for type: ${contentType}${specificSlugs ? `, filtered to ${specificSlugs.length} specific slugs` : ''}`)
+    let slugs = getContentSlugs(contentType)
+    
+    // If specific slugs are provided, use only those that exist in the content directory
+    if (specificSlugs && specificSlugs.length > 0) {
+      console.log(`Filtering to specific slugs: ${specificSlugs.join(', ')}`)
+      slugs = slugs.filter(slug => specificSlugs.includes(slug))
+      console.log(`Found ${slugs.length} matching slugs in content directory`)
+    }
     
     const contentItemsPromises = slugs.map(async (slug) => {
       try {
@@ -498,10 +506,10 @@ export async function getAllProducts(): Promise<ProductContent[]> {
   try {
     // Get all content from all content types at once
     const allContent = await Promise.all([
-      getAllContent('blog'),
+      getAllContent('blog', undefined),
       // Only include courses if they're not disabled
-      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses')]),
-      getAllContent('videos')
+      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses', undefined)]),
+      getAllContent('videos', undefined)
     ]).then(results => results.flat());
     
     // Filter to only paid content
@@ -527,16 +535,21 @@ export async function getAllProducts(): Promise<ProductContent[]> {
  * @returns Array of purchasable content items
  */
 export async function getAllPurchasableContent(): Promise<Blog[]> {
-  const allContent = await Promise.all([
-    getAllContent('blog'),
-    // Only include courses if they're not disabled
-    ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses')]),
-    getAllContent('videos')
-  ]).then(results => results.flat());
-  
-  return allContent.filter((content) => 
-    content.type !== 'demo' && isPurchasable(content)
-  );
+  try {
+    // Get all content from all content types
+    const allContent = await Promise.all([
+      getAllContent('blog', undefined),
+      // Only include courses if they're not disabled
+      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses', undefined)]),
+      getAllContent('videos', undefined)
+    ]).then(results => results.flat());
+    
+    // Filter to only paid content
+    return allContent.filter(content => content.commerce?.isPaid) as Blog[];
+  } catch (error) {
+    console.error('Error loading purchasable content:', error);
+    return [];
+  }
 }
 
 /**
