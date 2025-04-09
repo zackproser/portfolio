@@ -30,7 +30,7 @@ function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
 
 export default async function ArticlesIndex() {
   // Use our helper function to get all blog post metadata
-  const articles = await getAllContent('blog');
+  const articles = await getAllContent('blog', undefined);
   
   // Add debugging to log the articles being loaded
   console.log(`Loaded ${articles.length} blog articles`);

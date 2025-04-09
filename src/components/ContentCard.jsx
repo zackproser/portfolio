@@ -106,7 +106,7 @@ export function ContentCard({ article }) {
     title = 'Untitled', 
     date = '', 
     description = '', 
-    image = wakka, 
+    image, 
     status, 
     commerce, 
     slug,
@@ -128,8 +128,33 @@ export function ContentCard({ article }) {
     day: 'numeric'
   }) : '';
 
-  // Handle image object or string
-  const imageSource = typeof image === 'string' ? image : image?.src || wakka;
+  // Handle image object or string with improved fallback
+  let imageSource; 
+  try {
+    if (typeof image === 'string') {
+      // Handle string paths
+      if (image.startsWith('/') || image.startsWith('http')) {
+        // External URLs or absolute paths
+        imageSource = image;
+      } else if (image.includes('/')) {
+        // If it has any slashes, keep as is
+        imageSource = image;
+      } else {
+        // For simple filenames, assume they're in public/images
+        // Next.js will look for them in the public directory
+        imageSource = wakka.src; // Use fallback image
+      }
+    } else if (image?.src) {
+      // Handle image objects (e.g. from next/image imports)
+      imageSource = image.src;
+    } else {
+      // Use default fallback
+      imageSource = wakka.src;
+    }
+  } catch (e) {
+    console.error('Error processing image in ContentCard:', e);
+    imageSource = wakka.src;
+  }
   
   // Check if content is premium (has a price)
   const isPremium = commerce?.price && commerce.price > 0;
