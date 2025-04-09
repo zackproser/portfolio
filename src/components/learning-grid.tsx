@@ -548,7 +548,7 @@ export default function LearningGrid() {
     {
       id: "tokenization-guide",
       title: "How do LLMs See Text?",
-      description: "Interactive exploration of how large language models tokenize input.",
+      description: "Explore how large language models process and break down text into tokens for understanding.",
       position: { x: 0.25, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -574,7 +574,7 @@ export default function LearningGrid() {
     {
       id: "embedding-intro",
       title: "What Are Embeddings?",
-      description: "Understand how vector embeddings capture semantic meaning for powerful search and similarity tasks.",
+      description: "Learn how vector embeddings convert text and data into numerical representations for AI understanding.",
       position: { x: 0.75, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -614,7 +614,7 @@ export default function LearningGrid() {
     {
       id: "rag-systems",
       title: "Retrieval Augmented Generation",
-      description: "Enhance LLMs with external knowledge through retrieval systems to eliminate hallucinations.",
+      description: "Learn how to enhance LLMs with external knowledge sources to reduce hallucinations and improve accuracy.",
       position: { x: 0.25, y: 0.6 },
       icon: <BookOpen className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -703,7 +703,7 @@ export default function LearningGrid() {
     {
       id: "fine-tuning",
       title: "Fine-tuning LLMs",
-      description: "Adapt pre-trained models to your specific tasks and domain knowledge for improved performance.",
+      description: "Master techniques for customizing pre-trained language models to perform specific tasks in your domain.",
       position: { x: 0.75, y: 0.6 },
       icon: <Zap className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -756,7 +756,7 @@ export default function LearningGrid() {
     {
       id: "scaling-vector-infra",
       title: "Scaling Vector Infrastructure",
-      description: "Build high-performance vector search systems that can handle millions of queries per second.",
+      description: "Design and implement high-performance vector search systems that efficiently handle millions of queries.",
       position: { x: 0.5, y: 0.75 },  // Moved down to avoid overlap
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -783,7 +783,7 @@ export default function LearningGrid() {
     {
       id: "secure-rag-fga",
       title: "Secure RAG with Fine-Grained Authorization",
-      description: "Implement secure access controls to ensure users only see authorized information in RAG results.",
+      description: "Learn techniques to implement secure access controls in RAG systems to protect sensitive information.",
       position: { x: 0.25, y: 0.9 },
       icon: <Lock className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -816,14 +816,14 @@ export default function LearningGrid() {
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true,
-          premium: true
+          premium: false
         }
       ]
     },
     {
       id: "doc-access-control-fga",
       title: "Document Access Control with FGA & AWS",
-      description: "Create enterprise-grade document security systems with fine-grained permissions on AWS.",
+      description: "Build secure document management systems with fine-grained authorization using AWS services.",
       position: { x: 0.75, y: 0.9 },
       icon: <Shield className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -855,14 +855,15 @@ export default function LearningGrid() {
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
-          isResource: true
+          isResource: true, 
+          premium: false
         }
       ]
     },
     {
       id: "data-science-tools",
       title: "Data Science Fundamentals",
-      description: "Essential tools and concepts for machine learning and data analysis workflows.",
+      description: "Learn core data science tools and concepts for effective machine learning and analysis workflows.",
       position: { x: 0.5, y: 0.9 },
       icon: <BarChart className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -888,7 +889,7 @@ export default function LearningGrid() {
     {
       id: "vector-mathematics",
       title: "Vector Mathematics",
-      description: "Mathematical foundations that power embedding models and vector representations.",
+      description: "Explore the mathematical principles behind vector operations used in embedding models and AI.",
       position: { x: 0.25, y: 0.25 },
       icon: <Sparkles className="h-5 w-5 text-white" />,
       difficulty: "intermediate",
@@ -915,7 +916,7 @@ export default function LearningGrid() {
     {
       id: "ai-implementation",
       title: "AI Implementation Strategies",
-      description: "Architectural patterns and approaches for building robust AI systems.",
+      description: "Discover proven patterns and approaches for designing and implementing robust AI systems.",
       position: { x: 0.75, y: 0.25 },
       icon: <GitBranch className="h-5 w-5 text-white" />,
       difficulty: "intermediate",
@@ -941,7 +942,7 @@ export default function LearningGrid() {
     {
       id: "practical-ml",
       title: "Practical Machine Learning",
-      description: "Hands-on projects and examples of machine learning in action.",
+      description: "Build real-world machine learning projects through hands-on tutorials and code examples.",
       position: { x: 0.5, y: 0.4 },
       icon: <Code className="h-5 w-5 text-white" />,
       difficulty: "intermediate",
@@ -1021,6 +1022,11 @@ export default function LearningGrid() {
     4: "Specializations"
   };
 
+  // Sort phases to ensure consistent order
+  const sortedPhases = Object.keys(topicsByPhase)
+    .map(Number)
+    .sort((a, b) => a - b);
+
   // Handle opening a topic
   const handleOpenTopic = (topic: Topic) => {
     setSelectedTopic(topic);
@@ -1060,13 +1066,20 @@ export default function LearningGrid() {
     <div className="space-y-16 py-8">
       <GlobalStyles />
       
-      {/* Main Grid of Topics */}
-      <div className="space-y-6">
-        {Object.entries(topicsByPhase).map(([phase, topics]) => (
-          <div key={phase} className="space-y-3">
+      {/* Main Grid of Topics organized by phases */}
+      <div className="space-y-10">
+        {sortedPhases.map(phase => (
+          <div key={`phase-${phase}`} className="space-y-4">
+            {/* Phase header */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+              <h3 className="text-xl font-semibold text-white">{phaseNames[phase] || `Phase ${phase}`}</h3>
+              <div className="flex-1 h-px bg-blue-400/20"></div>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {topics.map(topic => (
+            {/* Grid for this phase */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
+              {topicsByPhase[phase].map(topic => (
                 <Dialog key={topic.id}>
                   <DialogTrigger asChild>
                     <div 
@@ -1136,13 +1149,6 @@ export default function LearningGrid() {
                           <div className="flex items-center">
                             {/* Removed badges per request */}
                           </div>
-                          
-                          <span className="text-blue-300 text-xs flex items-center">
-                            Explore
-                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
                         </div>
                       </div>
                     </div>
@@ -1199,7 +1205,7 @@ export default function LearningGrid() {
                       </div>
                       
                       {/* "Pinned" resource cards to the blueprint scroll */}
-                      {topic.resources.map((resource, idx) => (
+                      {topic.resources.map((resource: Resource, idx: number) => (
                         <div 
                           key={resource.id} 
                           className="relative animate-pin-tack m-4" 
