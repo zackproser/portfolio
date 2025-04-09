@@ -216,7 +216,7 @@ export default function HomepageClientComponent({
             <div className="mb-6 text-center">
               <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-sans uppercase">
-                  AI Engineering Blueprint
+                  Your AI Engineering Blueprint
                 </h2>
               </div>
               <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
