@@ -573,8 +573,8 @@ export default function LearningGrid() {
     },
     {
       id: "embedding-intro",
-      title: "What Are Embeddings?",
-      description: "Learn how vector embeddings convert text and data into numerical representations for AI understanding.",
+      title: "Embeddings & Vector Mathematics",
+      description: "Learn how vectors represent data in AI systems and the mathematical principles that power them.",
       position: { x: 0.75, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
       difficulty: "beginner",
@@ -606,11 +606,101 @@ export default function LearningGrid() {
           icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true
+        },
+        {
+          id: "vector-mathematics-1",
+          title: "Introduction to Dimensionality",
+          type: "article",
+          url: "/blog/introduction-to-dimensionality",
+          description: "Understanding high-dimensional spaces and their role in machine learning.",
+          parentId: "embedding-intro",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "data-science-tools",
+      title: "Data Science Fundamentals",
+      description: "Learn core data science tools and concepts for effective machine learning and analysis workflows.",
+      position: { x: 0.5, y: 0.9 },
+      icon: <BarChart className="h-5 w-5 text-white" />,
+      difficulty: "beginner",
+      value: 0.45,
+      phase: 0,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "data-science-tools-1",
+          title: "Getting Started with Jupyter Notebooks",
+          type: "article",
+          url: "/blog/how-to-use-jupyter-notebooks",
+          description: "Complete guide to using Jupyter Notebooks for interactive data science workflows.",
+          parentId: "data-science-tools",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
         }
       ]
     },
 
-    // Phase 3: Advanced Applications
+    // Phase 1: Intermediate & Advanced Topics (all combined into phase 1)
+    {
+      id: "ai-implementation",
+      title: "AI Implementation Strategies",
+      description: "Discover proven patterns and approaches for designing and implementing robust AI systems.",
+      position: { x: 0.75, y: 0.25 },
+      icon: <GitBranch className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 1,
+      track: "specialization",
+      isParent: true,
+      resources: [
+        {
+          id: "ai-implementation-1",
+          title: "JavaScript AI Architecture",
+          type: "article",
+          url: "/blog/javascript-ai",
+          description: "Thought leadership on architectural patterns for JavaScript-based AI systems.",
+          parentId: "ai-implementation",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
+    {
+      id: "practical-ml",
+      title: "Practical Machine Learning",
+      description: "Build real-world machine learning projects through hands-on tutorials and code examples.",
+      position: { x: 0.5, y: 0.4 },
+      icon: <Code className="h-5 w-5 text-white" />,
+      difficulty: "intermediate",
+      value: 0.5,
+      phase: 1,
+      track: "tools",
+      isParent: true,
+      resources: [
+        {
+          id: "practical-ml-1",
+          title: "PyTorch MNIST Digit Recognizer",
+          type: "article",
+          url: "/blog/mnist-pytorch-hand-drawn-digit-recognizer",
+          description: "Build a handwritten digit recognition system with PyTorch and the MNIST dataset.",
+          parentId: "practical-ml",
+          position: { x: 0, y: 0 },
+          icon: <FileText className="h-5 w-5 text-white" />,
+          value: 0.3,
+          isResource: true
+        }
+      ]
+    },
     {
       id: "rag-systems",
       title: "Retrieval Augmented Generation",
@@ -619,7 +709,7 @@ export default function LearningGrid() {
       icon: <BookOpen className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.75,
-      phase: 3,
+      phase: 1,
       track: "data",
       dependencies: ["vector-databases", "prompt-engineering"],
       isParent: true,
@@ -708,8 +798,8 @@ export default function LearningGrid() {
       icon: <Zap className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.7,
-      phase: 3,
-      track: "core",
+      phase: 4,
+      track: "specialization",
       dependencies: ["prompt-engineering"],
       isParent: true,
       resources: [
@@ -756,7 +846,7 @@ export default function LearningGrid() {
     {
       id: "scaling-vector-infra",
       title: "Scaling Vector Infrastructure",
-      description: "Design and implement high-performance vector search systems that efficiently handle millions of queries.",
+      description: "Design vector database backed applications that efficiently handle millions of queries.",
       position: { x: 0.5, y: 0.75 },  // Moved down to avoid overlap
       icon: <Layers className="h-5 w-5 text-white" />,
       difficulty: "advanced",
@@ -782,10 +872,10 @@ export default function LearningGrid() {
     },
     {
       id: "secure-rag-fga",
-      title: "Secure RAG with Fine-Grained Authorization",
-      description: "Learn techniques to implement secure access controls in RAG systems to protect sensitive information.",
+      title: "Enterprise Security for AI Systems",
+      description: "Implement fine-grained security controls for RAG systems and document management on AWS.",
       position: { x: 0.25, y: 0.9 },
-      icon: <Lock className="h-5 w-5 text-white" />,
+      icon: <Shield className="h-5 w-5 text-white" />,
       difficulty: "advanced",
       value: 0.6,
       phase: 4,
@@ -807,7 +897,7 @@ export default function LearningGrid() {
         },
         {
           id: "secure-rag-fga-2",
-          title: "Companion Code Repo",
+          title: "Companion Code Repo for RAG Security",
           type: "project",
           url: "https://github.com/zackproser-workos/fga-pinecone-poc",
           description: "Source code and implementation example of secure RAG using WorkOS FGA + Pinecone.",
@@ -817,29 +907,14 @@ export default function LearningGrid() {
           value: 0.3,
           isResource: true,
           premium: false
-        }
-      ]
-    },
-    {
-      id: "doc-access-control-fga",
-      title: "Document Access Control with FGA & AWS",
-      description: "Build secure document management systems with fine-grained authorization using AWS services.",
-      position: { x: 0.75, y: 0.9 },
-      icon: <Shield className="h-5 w-5 text-white" />,
-      difficulty: "advanced",
-      value: 0.55,
-      phase: 4,
-      track: "specialization",
-      dependencies: ["secure-rag-fga"],
-      isParent: true,
-      resources: [
+        },
         {
           id: "doc-access-control-fga-1",
           title: "Tutorial: Access Control with S3, Lambda, and WorkOS FGA",
           type: "article",
           url: "https://workos.com/blog/how-to-build-document-access-control-with-s3-workos-fga-and-lambda-authorizers",
           description: "Guide to securing access to documents using AWS services and WorkOS FGA.",
-          parentId: "doc-access-control-fga",
+          parentId: "secure-rag-fga",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
           value: 0.3,
@@ -847,121 +922,16 @@ export default function LearningGrid() {
         },
         {
           id: "doc-access-control-fga-2",
-          title: "Companion Code Repo",
+          title: "Document Security Infrastructure with AWS CDK",
           type: "project",
           url: "https://github.com/zackproser-workos/aws-lambda-authorizer-fga-cdk",
           description: "Infrastructure-as-code example of secure access enforcement using AWS CDK and FGA.",
-          parentId: "doc-access-control-fga",
+          parentId: "secure-rag-fga",
           position: { x: 0, y: 0 },
           icon: <BookOpen className="h-5 w-5 text-white" />,
           value: 0.3,
           isResource: true, 
           premium: false
-        }
-      ]
-    },
-    {
-      id: "data-science-tools",
-      title: "Data Science Fundamentals",
-      description: "Learn core data science tools and concepts for effective machine learning and analysis workflows.",
-      position: { x: 0.5, y: 0.9 },
-      icon: <BarChart className="h-5 w-5 text-white" />,
-      difficulty: "beginner",
-      value: 0.45,
-      phase: 0,
-      track: "tools",
-      isParent: true,
-      resources: [
-        {
-          id: "data-science-tools-1",
-          title: "Getting Started with Jupyter Notebooks",
-          type: "article",
-          url: "/blog/how-to-use-jupyter-notebooks",
-          description: "Complete guide to using Jupyter Notebooks for interactive data science workflows.",
-          parentId: "data-science-tools",
-          position: { x: 0, y: 0 },
-          icon: <FileText className="h-5 w-5 text-white" />,
-          value: 0.3,
-          isResource: true
-        }
-      ]
-    },
-    {
-      id: "vector-mathematics",
-      title: "Vector Mathematics",
-      description: "Explore the mathematical principles behind vector operations used in embedding models and AI.",
-      position: { x: 0.25, y: 0.25 },
-      icon: <Sparkles className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.5,
-      phase: 0,
-      track: "data",
-      dependencies: ["embedding-intro"],
-      isParent: true,
-      resources: [
-        {
-          id: "vector-mathematics-1",
-          title: "Introduction to Dimensionality",
-          type: "article",
-          url: "/blog/introduction-to-dimensionality",
-          description: "Understanding high-dimensional spaces and their role in machine learning.",
-          parentId: "vector-mathematics",
-          position: { x: 0, y: 0 },
-          icon: <FileText className="h-5 w-5 text-white" />,
-          value: 0.3,
-          isResource: true
-        }
-      ]
-    },
-    {
-      id: "ai-implementation",
-      title: "AI Implementation Strategies",
-      description: "Discover proven patterns and approaches for designing and implementing robust AI systems.",
-      position: { x: 0.75, y: 0.25 },
-      icon: <GitBranch className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.5,
-      phase: 1,
-      track: "specialization",
-      isParent: true,
-      resources: [
-        {
-          id: "ai-implementation-1",
-          title: "JavaScript AI Architecture",
-          type: "article",
-          url: "/blog/javascript-ai",
-          description: "Thought leadership on architectural patterns for JavaScript-based AI systems.",
-          parentId: "ai-implementation",
-          position: { x: 0, y: 0 },
-          icon: <FileText className="h-5 w-5 text-white" />,
-          value: 0.3,
-          isResource: true
-        }
-      ]
-    },
-    {
-      id: "practical-ml",
-      title: "Practical Machine Learning",
-      description: "Build real-world machine learning projects through hands-on tutorials and code examples.",
-      position: { x: 0.5, y: 0.4 },
-      icon: <Code className="h-5 w-5 text-white" />,
-      difficulty: "intermediate",
-      value: 0.5,
-      phase: 2,
-      track: "tools",
-      isParent: true,
-      resources: [
-        {
-          id: "practical-ml-1",
-          title: "PyTorch MNIST Digit Recognizer",
-          type: "article",
-          url: "/blog/mnist-pytorch-hand-drawn-digit-recognizer",
-          description: "Build a handwritten digit recognition system with PyTorch and the MNIST dataset.",
-          parentId: "practical-ml",
-          position: { x: 0, y: 0 },
-          icon: <FileText className="h-5 w-5 text-white" />,
-          value: 0.3,
-          isResource: true
         }
       ]
     }
@@ -1016,12 +986,6 @@ export default function LearningGrid() {
     return acc;
   }, {} as Record<number, Topic[]>);
 
-  const phaseNames: Record<number, string> = {
-    0: "Foundations",
-    3: "Advanced Applications",
-    4: "Specializations"
-  };
-
   // Sort phases to ensure consistent order
   const sortedPhases = Object.keys(topicsByPhase)
     .map(Number)
@@ -1062,6 +1026,14 @@ export default function LearningGrid() {
     }
   }
 
+  // Merge phases 1 and 3 to reduce rows
+  const getMergedPhaseName = (phase: number) => {
+    if (phase === 0) return "Foundations"
+    if (phase === 1 || phase === 2 || phase === 3) return "Intermediate & Advanced Topics"
+    if (phase === 4) return "Specializations"
+    return `Phase ${phase}`
+  }
+
   return (
     <div className="space-y-16 py-8">
       <GlobalStyles />
@@ -1073,7 +1045,7 @@ export default function LearningGrid() {
             {/* Phase header */}
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-              <h3 className="text-xl font-semibold text-white">{phaseNames[phase] || `Phase ${phase}`}</h3>
+              <h3 className="text-xl font-semibold text-white">{getMergedPhaseName(phase)}</h3>
               <div className="flex-1 h-px bg-blue-400/20"></div>
             </div>
             
@@ -1094,9 +1066,6 @@ export default function LearningGrid() {
                       `}
                       onClick={() => handleOpenTopic(topic)}
                     >
-                      {/* Add blueprint connector lines */}
-                      <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0.5 h-4 bg-blue-400/30 group-hover:animate-connector-pulse"></div>
-                      
                       {/* Add blueprint glow on hover */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blueprint-bg pointer-events-none"></div>
                       
@@ -1128,7 +1097,7 @@ export default function LearningGrid() {
                         </div>
                         
                         {/* Progress indicator for multi-part topics with many resources */}
-                        {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
+                        {topic.resources.length >= 4 && topic.id !== "rag-systems" && topic.phase !== 4 && (
                           <div className="mt-4 pt-2">
                             <div className="flex justify-between text-xs mb-1">
                               <span className="text-white/70">Progress</span>
