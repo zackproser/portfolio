@@ -546,7 +546,7 @@ export default function LearningGrid() {
     // Phase 0: Introductions
     {
       id: "tokenization-guide",
-      title: "How LLMs See Text",
+      title: "How do LLMs See Text?",
       description: "Interactive exploration of how large language models tokenize input.",
       position: { x: 0.25, y: 0.05 },
       icon: <Brain className="h-5 w-5 text-white" />,
