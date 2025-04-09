@@ -978,11 +978,11 @@ export default function LearningGrid() {
                       {/* Add blueprint glow on hover */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blueprint-bg pointer-events-none"></div>
                       
-                      <div className="flex gap-4">
-                        <div className="p-3 rounded-xl bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
-                          {topic.icon}
-                        </div>
-                        <div className="flex-1">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-2 rounded-lg bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
+                            {topic.icon}
+                          </div>
                           <div className="flex items-center gap-2">
                             <h4 className="font-bold text-white text-lg">{topic.title}</h4>
                             {completedNodes.includes(topic.id) && (
@@ -991,29 +991,29 @@ export default function LearningGrid() {
                               </svg>
                             )}
                           </div>
-                          
-                          <p className="text-white/90 text-sm mt-2 leading-relaxed line-clamp-2 mb-3">{topic.description}</p>
-                          
-                          {/* Modified the Business Impact section to remove track-specific language */}
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
-                            <p className="text-white/80 text-xs line-clamp-2">
-                              {getKeyOutcome(topic.id)}
-                            </p>
+                        </div>
+                        
+                        <p className="text-white/90 text-sm leading-relaxed line-clamp-3 mb-3">{topic.description}</p>
+                        
+                        {/* Modified the Business Impact section to remove track-specific language */}
+                        <div className="mt-3 pt-3 border-t border-white/10">
+                          <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
+                          <p className="text-white/80 text-xs line-clamp-2">
+                            {getKeyOutcome(topic.id)}
+                          </p>
+                        </div>
+                        
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center">
+                            {/* Removed badges per request */}
                           </div>
                           
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="flex items-center">
-                              {/* Removed badges per request */}
-                            </div>
-                            
-                            <span className="text-blue-300 text-xs flex items-center">
-                              Explore
-                              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </span>
-                          </div>
+                          <span className="text-blue-300 text-xs flex items-center">
+                            Explore
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                       
