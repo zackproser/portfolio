@@ -207,6 +207,30 @@ const GlobalStyles = () => (
       }
     }
     
+    @keyframes gold-border-pulse {
+      0% { 
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      50% { 
+        box-shadow: 0 0 10px 1px rgba(255, 215, 0, 0.6);
+        border-color: rgba(255, 215, 0, 0.7);
+      }
+      100% { 
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    
+    @keyframes blink-warning {
+      0%, 92%, 100% { 
+        opacity: 1;
+      }
+      94%, 98% { 
+        opacity: 0.2;
+      }
+    }
+    
     .animate-circuit-pulse {
       animation: circuit-pulse 3s infinite ease-in-out;
     }
@@ -232,6 +256,14 @@ const GlobalStyles = () => (
     
     .animate-pin-tack {
       animation: pin-tack 0.5s forwards ease-out;
+    }
+    
+    .animate-gold-border-pulse {
+      animation: gold-border-pulse 2s ease-in-out;
+    }
+    
+    .hover-gold-border-pulse:hover {
+      animation: gold-border-pulse 2s infinite ease-in-out;
     }
     
     .connector-pulse {
@@ -269,6 +301,10 @@ const GlobalStyles = () => (
     .rounded-card {
       border-radius: 12px;
     }
+    
+    .blink-warning {
+      animation: blink-warning 4s infinite ease-in-out;
+    }
   `}</style>
 );
 
@@ -281,37 +317,43 @@ const ResourceCard = ({ resource, isSelected, onSelect }: {
   const isPremium = resource.type === "project";
   const includesCode = resource.type === "project" || resource.type === "course";
   
-  // New material textures based on tier
-  const materialTextures = {
-    free: "bg-gradient-to-br from-blue-500/90 to-blue-700/90 border-blue-400/30 backdrop-filter backdrop-blur-md", // Light blue instead of grey
-    premium: "bg-gradient-to-br from-amber-600/90 to-amber-800/90 border-amber-500/30 backdrop-filter backdrop-blur-md" // Brushed gold with embossed leather background
+  // Blueprint styles based on tier
+  const blueprintStyles = {
+    free: "bg-blue-900/95 border-blue-400/50", 
+    premium: "bg-indigo-900/95 border-amber-400/50"
   };
 
   // Map resource types to themed icons and colors
   const resourceConfig = {
     project: {
       icon: "⚙️",
-      chipColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/70 dark:text-amber-200 border-amber-300/70 dark:border-amber-700/70 font-medium"
+      chipColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/70 dark:text-amber-200 border-amber-300/70 dark:border-amber-700/70 font-medium",
+      cta: "🚀 Deploy Template"
     },
     course: {
       icon: "📚",
-      chipColor: "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-200 border-green-300/70 dark:border-green-700/70 font-medium"
+      chipColor: "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-200 border-green-300/70 dark:border-green-700/70 font-medium",
+      cta: "⚡ Start Training"
     },
     article: {
       icon: "📝",
-      chipColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/70 dark:text-blue-200 border-blue-300/70 dark:border-blue-700/70 font-medium"
+      chipColor: "bg-blue-100 text-blue-800 dark:bg-blue-900/70 dark:text-blue-200 border-blue-300/70 dark:border-blue-700/70 font-medium",
+      cta: "📖 Read Analysis"
     },
     video: {
       icon: "🎥",
-      chipColor: "bg-purple-100 text-purple-800 dark:bg-purple-900/70 dark:text-purple-200 border-purple-300/70 dark:border-purple-700/70 font-medium"
+      chipColor: "bg-purple-100 text-purple-800 dark:bg-purple-900/70 dark:text-purple-200 border-purple-300/70 dark:border-purple-700/70 font-medium",
+      cta: "▶️ Watch Walkthrough"
     },
     tool: {
       icon: "🧩",
-      chipColor: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/70 dark:text-cyan-200 border-cyan-300/70 dark:border-cyan-700/70 font-medium"
+      chipColor: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/70 dark:text-cyan-200 border-cyan-300/70 dark:border-cyan-700/70 font-medium",
+      cta: "🔧 Launch Tool"
     },
     paper: {
       icon: "📄",
-      chipColor: "bg-red-100 text-red-800 dark:bg-red-900/70 dark:text-red-200 border-red-300/70 dark:border-red-700/70 font-medium"
+      chipColor: "bg-red-100 text-red-800 dark:bg-red-900/70 dark:text-red-200 border-red-300/70 dark:border-red-700/70 font-medium",
+      cta: "🔍 Inspect Research"
     }
   };
   
@@ -348,85 +390,124 @@ const ResourceCard = ({ resource, isSelected, onSelect }: {
         className={`
           relative group cursor-pointer transition-all duration-300
           ${isSelected ? 'z-10' : ''}
-          ${isPremium ? 'shadow-gold' : 'shadow-lg hover:shadow-xl'}
-          rounded-card overflow-hidden
+          ${isPremium ? 'shadow-amber-400/20' : 'shadow-blue-400/20'} shadow-lg
+          rounded-lg overflow-hidden
         `}
       >
-        {/* Card inner content with material texture */}
+        {/* Card inner content with blueprint texture */}
         <div className={`
-          p-6 border-2 relative overflow-hidden rounded-xl
-          ${isPremium ? materialTextures.premium : materialTextures.free}
-          ${isPremium ? 'shadow-[inset_0_0_15px_rgba(255,215,0,0.3)]' : ''}
+          p-6 border-2 relative overflow-hidden rounded-lg
+          ${isPremium ? blueprintStyles.premium : blueprintStyles.free}
         `}>
-          {/* Premium crown badge */}
+          {/* Blueprint grid background */}
+          <div className="absolute inset-0 z-0" 
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '20px 20px',
+              backgroundPosition: '-1px -1px'
+            }}
+          />
+          
+          {/* Decorative blueprint elements */}
+          <div className="absolute top-1/2 left-0 w-10 h-px bg-blue-400/30"></div>
+          <div className="absolute top-1/2 right-0 w-10 h-px bg-blue-400/30"></div>
+          <div className="absolute bottom-10 -left-4 w-8 h-8 border-l-2 border-b-2 border-blue-400/30 rounded-bl-lg"></div>
+          <div className="absolute top-10 -right-4 w-8 h-8 border-r-2 border-t-2 border-blue-400/30 rounded-tr-lg"></div>
+          
+          {/* "Classified" or "DRAFT" stamp for premium resources */}
           {isPremium && (
-            <span className="absolute top-3 right-3 inline-flex items-center gap-x-1 rounded-full px-3 py-1 text-xs font-bold bg-gradient-to-r from-amber-500/90 to-yellow-500/90 text-white shadow-md backdrop-blur-sm border border-amber-400/50 z-10">
-              <span className="mr-0.5">💎</span> PREMIUM
-            </span>
+            <div className="absolute -top-1 -right-1 rotate-12 z-10">
+              <div className="bg-amber-600/80 text-white px-6 py-1 text-xs font-bold tracking-wider border border-amber-400/50 shadow-lg transform">
+                CLASSIFIED
+              </div>
+            </div>
           )}
 
-          <div className="mt-3 space-y-4">
-            {/* Title with laser-etched effect */}
-            <h3 className={`font-bold text-white text-xl tracking-tight leading-tight
-              ${isPremium 
-                ? 'text-shadow-gold' 
-                : 'text-shadow-white/50'}
-            `}>
-              {resource.title}
-            </h3>
+          {/* Technical specs border */}
+          <div className="absolute top-3 left-3 w-12 h-12 border-t-2 border-l-2 border-blue-400/50"></div>
+          <div className="absolute bottom-3 right-3 w-12 h-12 border-b-2 border-r-2 border-blue-400/50"></div>
+
+          {/* Title with technical-looking title block */}
+          <div className="relative z-10 mt-2 mb-6">
+            <div className="flex items-start mb-1">
+              <div className="w-3 h-3 rounded-full bg-blue-400/50 mr-2 mt-1.5"></div>
+              <h3 className="font-mono text-white text-xl tracking-tight leading-tight uppercase">
+                {resource.title}
+              </h3>
+            </div>
             
-            {/* Description with subtle emboss effect */}
-            <p className="text-sm text-white/90 line-clamp-2 font-medium leading-relaxed">
-              {resource.description}
-            </p>
+            {/* Technical blueprint divider line */}
+            <div className="flex items-center w-full gap-2 mt-2 mb-2">
+              <div className="flex-1 h-px bg-blue-400/40"></div>
+              <div className="w-4 h-4 rounded-full border-2 border-blue-400/70 flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-blue-400/90 rounded-full"></div>
+              </div>
+              <div className="flex-1 h-px bg-blue-400/40"></div>
+            </div>
             
-            {/* Technical specs and metadata section */}
-            <div className="border-t border-white/20 pt-4 mt-4">
-              <div className="flex flex-wrap items-center gap-2 mt-2">
-                {/* Resource type badge */}
-                <Badge className={`${resourceConfig[resource.type].chipColor} px-2 py-1 flex items-center gap-1`}>
-                  <span>{resourceConfig[resource.type].icon}</span>
-                  <span className="capitalize">{resource.type}</span>
-                </Badge>
-                
-                {/* Features badges - limit to one */}
-                {includesCode && (
-                  <Badge className="bg-teal-100 text-teal-800 dark:bg-teal-900/70 dark:text-teal-200 border-teal-300/70 dark:border-teal-700/70 px-2 py-1 flex items-center gap-1">
-                    <span>💻</span>
-                    <span>Code</span>
-                  </Badge>
-                )}
+            <div className="ml-5 mb-4">
+              <div className="font-mono text-blue-200/90 text-sm leading-relaxed pl-4 border-l-2 border-blue-400/40">
+                {resource.description}
+              </div>
+            </div>
+          </div>
+            
+          {/* Technical specs and metadata section */}
+          <div className="relative z-10 pt-3 border-t border-blue-400/30 mt-4">
+            <div className="flex justify-between">
+              <div className="flex-1">
+                <div className="text-xs uppercase tracking-wider text-blue-300/80 font-mono mb-1">
+                  RESOURCE TYPE
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className={`px-2 py-1 bg-blue-800/60 rounded-sm border border-blue-500/30 text-blue-200 text-xs font-mono uppercase tracking-wider flex items-center gap-1`}>
+                    <span>{resourceConfig[resource.type].icon}</span>
+                    <span>{resource.type}</span>
+                  </div>
+                </div>
               </div>
               
-              {/* Call to action button - fix styling */}
-              <div className="mt-4">
-                <div className={`
-                  text-white font-medium text-sm py-2 px-4 rounded-md inline-flex items-center justify-center w-full transition-colors duration-200
-                  ${isPremium 
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-md' 
-                    : 'bg-white/20 hover:bg-white/30'}
-                `}>
-                  <span className="mr-2">{isPremium ? "Start Building" : "Explore"}</span>
-                  <ArrowRight className="w-4 h-4" />
+              <div className="flex-1 flex justify-end">
+                <div className="flex flex-col items-end">
+                  <div className="text-xs uppercase tracking-wider text-blue-300/80 font-mono mb-1">
+                    SECURITY LEVEL
+                  </div>
+                  <div className={`px-2 py-1 rounded-sm border text-xs font-mono uppercase tracking-wider ${
+                    isPremium 
+                      ? "bg-amber-900/60 border-amber-500/50 text-amber-200" 
+                      : "bg-green-900/60 border-green-500/50 text-green-200"
+                  }`}>
+                    {isPremium ? "RESTRICTED" : "PUBLIC ACCESS"}
+                  </div>
                 </div>
+              </div>
+            </div>
+            
+            {/* Call to action button styled as a technical control panel */}
+            <div className="mt-4 relative">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-blue-600/20 via-blue-500/10 to-blue-600/20 rounded-md pointer-events-none"></div>
+              <div className={`
+                text-white font-mono text-sm py-2 px-4 rounded-md inline-flex items-center justify-center w-full
+                ${isPremium 
+                  ? 'bg-gradient-to-r from-green-600/80 to-green-800/80 hover:from-green-500/80 hover:to-green-700/80 border border-green-500/50 shadow-inner' 
+                  : 'bg-blue-700/50 hover:bg-blue-700/70 border border-blue-500/50 shadow-inner'}
+                transition-colors duration-200 relative overflow-hidden
+              `}>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent"></div>
+                <span className="mr-2">{resourceConfig[resource.type].cta}</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
           </div>
           
-          {/* Blueprint grid overlay - subtle background pattern */}
-          <div 
-            className="absolute inset-0 opacity-10 pointer-events-none z-0 blueprint-bg" 
-          />
-          
-          {/* Pulsing glow effect for premium cards */}
-          {isPremium && (
-            <div 
-              className="absolute -inset-1 bg-gradient-to-r from-amber-600/0 via-amber-600/30 to-amber-600/0 z-0 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-700 animate-circuit-pulse"
-            />
-          )}
-          
-          {/* Metallic shine effect */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 animate-metal-shine pointer-events-none"></div>
+          {/* Circular technical "nodes" at corners */}
+          <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full border-2 border-blue-400/50"></div>
+          <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full border-2 border-blue-400/50"></div>
+          <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full border-2 border-blue-400/50"></div>
+          <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full border-2 border-blue-400/50"></div>
         </div>
       </div>
     </a>
@@ -866,68 +947,6 @@ export default function LearningGrid() {
     }
   }
 
-  // Function to get dialog benefits based on topic ID
-  const getDialogBenefits = (topicId: string) => {
-    switch (topicId) {
-      case "tokenization-guide":
-        return [
-          "Understand how LLMs process and interpret human language",
-          "Design prompts that optimize token efficiency and reduce costs",
-          "Avoid common token-related errors in your AI applications",
-          "Master the fundamentals of text representation in language models"
-        ];
-      case "embedding-intro":
-        return [
-          "Create semantic search systems with precise similarity matching",
-          "Implement clustering and classification for unstructured data",
-          "Visualize and understand high-dimensional vector spaces",
-          "Transform text, images, or code into embeddings for AI applications"
-        ];
-      case "rag-systems":
-        return [
-          "Build RAG systems that reduce hallucinations by 99.8%",
-          "Implement efficient vector search for relevant context retrieval",
-          "Optimize prompt engineering for context integration",
-          "Create AI applications that can access and reason with external knowledge"
-        ];
-      case "fine-tuning":
-        return [
-          "Adapt pre-trained models to your specific domain knowledge",
-          "Reduce inference costs by up to 90% with task-specific models",
-          "Implement LoRA and QLoRA for efficient model adaptation",
-          "Create custom assistants specialized for your business needs"
-        ];
-      case "scaling-vector-infra":
-        return [
-          "Design vector databases that scale to billions of embeddings",
-          "Implement high-availability, low-latency vector search systems",
-          "Optimize cost and performance for production vector infrastructure",
-          "Build serverless vector search solutions with p95 latency under 200ms"
-        ];
-      case "secure-rag-fga":
-        return [
-          "Implement fine-grained access controls for RAG applications",
-          "Ensure users only see authorized information in AI responses",
-          "Design secure data architecture for multi-tenant AI systems",
-          "Prevent data leakage and maintain compliance in RAG applications"
-        ];
-      case "doc-access-control-fga":
-        return [
-          "Build enterprise-grade document security systems on AWS",
-          "Implement fine-grained authorization with S3 and Lambda",
-          "Design secure document workflows with proper access controls",
-          "Prevent unauthorized access to sensitive documents with FGA"
-        ];
-      default:
-        return [
-          "Build AI applications with enterprise-grade security",
-          "Optimize for performance and accuracy in production environments",
-          "Implement zero-hallucination guardrails with 99.8% accuracy",
-          "Achieve p95 latency under 200ms even at enterprise scale"
-        ];
-    }
-  };
-
   return (
     <div className="space-y-16 py-8">
       <GlobalStyles />
@@ -945,10 +964,11 @@ export default function LearningGrid() {
                       className={`
                         p-5 rounded-xl cursor-pointer transition-all duration-300
                         bg-gradient-to-br ${getTrackColor(topic.track).replace('bg-blue-500/30', 'from-blue-600/40 to-blue-800/40').replace('bg-green-500/30', 'from-green-600/40 to-green-800/40').replace('bg-amber-500/30', 'from-amber-600/40 to-amber-800/40').replace('bg-purple-500/30', 'from-purple-600/40 to-purple-800/40')}
-                        hover:from-blue-600/50 hover:to-blue-800/50 border-2 border-white/20 hover:border-white/30
+                        border-2 border-white/20 
                         ${completedNodes.includes(topic.id) ? 'ring-2 ring-green-500/60 shadow-lg shadow-green-500/10' : 'shadow-md hover:shadow-xl'}
                         transform hover:scale-[1.02]
                         w-full mx-auto h-full relative
+                        hover-gold-border-pulse
                       `}
                       onClick={() => handleOpenTopic(topic)}
                     >
@@ -1030,23 +1050,10 @@ export default function LearningGrid() {
                       }}
                     />
                     
-                    {/* Blueprint title header */}
-                    <div className="absolute top-4 right-4 py-1 px-3 bg-blue-900/80 border border-blue-500/30 rounded-md text-xs text-blue-300 font-mono">
-                      AI ENGINEERING TOOLKIT // BLUEPRINT REV-2023
-                    </div>
-                    
-                    <DialogHeader className="mb-4 px-3 relative z-10">
-                      <div className="flex items-center gap-5">
-                        <div className={`p-5 rounded-xl ${getTrackColor(topic.track)} backdrop-blur-sm border border-white/30 shadow-lg`}>
-                          {topic.icon}
-                        </div>
+                    <DialogHeader className="mb-8 px-3 relative z-10">
+                      <div className="flex items-center">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <DialogTitle className="text-3xl font-bold text-white mb-1 tracking-tight">{topic.title}</DialogTitle>
-                            <span className="ml-2 bg-blue-100 dark:bg-blue-900 text-xs px-2 py-1 rounded-full text-blue-900 dark:text-blue-100 font-semibold">
-                              {topic.resources.length} resources
-                            </span>
-                          </div>
+                          <DialogTitle className="text-3xl font-bold text-white mb-1 tracking-tight">{topic.title}</DialogTitle>
                           <div className="flex gap-2 mt-2">
                             {completedNodes.includes(topic.id) && (
                               <Badge className="bg-emerald-500/70 text-white border-emerald-500/50 font-medium px-3 py-1 rounded-full">
@@ -1062,36 +1069,29 @@ export default function LearningGrid() {
                       </DialogDescription>
                     </DialogHeader>
                     
-                    <div className="px-3 mb-6 space-y-3 relative z-10">
-                      <p className="text-white/90 text-base">
-                        After mastering this, your team will:
-                      </p>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {getDialogBenefits(topic.id).map((benefit, index) => (
-                          <li key={index} className="flex items-start">
-                            <svg className="w-5 h-5 text-emerald-400 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span className="text-white/90">{benefit}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-3 relative z-10 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6 relative z-10 mb-8">
                       {/* Parchment texture background */}
                       <div className="absolute inset-0 opacity-5 pointer-events-none" 
                         style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,
                           backgroundSize: '100px 100px'
                         }}
                       />
+                      
+                      {/* Section heading */}
+                      <div className="col-span-2 mb-4">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 rounded-full bg-blue-400/70 mr-2"></div>
+                          <h3 className="text-white text-xl font-mono tracking-tight uppercase">Available Resources</h3>
+                          <div className="flex-1 h-px bg-blue-400/30 ml-4"></div>
+                        </div>
+                      </div>
                       
                       {/* "Pinned" resource cards to the blueprint scroll */}
                       {topic.resources.map((resource, idx) => (
                         <div 
                           key={resource.id} 
-                          className="relative animate-pin-tack m-2" 
+                          className="relative animate-pin-tack m-4" 
                           style={{ 
                             animationDelay: `${idx * 150}ms`, 
                             opacity: 0 
@@ -1116,63 +1116,31 @@ export default function LearningGrid() {
                       ))}
                     </div>
                     
-                    {/* Add premium CTA section */}
-                    <div className="px-6 pt-4 pb-2 border-t border-blue-500/20 relative z-10">
+                    {/* Simplified footer with consultation CTA */}
+                    <div className="px-6 pb-6 relative z-10 flex flex-col gap-4">
                       <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 rounded-lg p-5 border border-blue-500/30 backdrop-blur-sm">
-                        <div className="flex flex-col items-start gap-4">
-                          <div className="flex-1">
-                            <h3 className="text-xl font-bold text-white">Accelerate your AI engineering journey</h3>
-                            <p className="text-white/80 mt-1 mb-3">Join our premium workshops to master enterprise-grade production AI systems.</p>
-                            
-                            <div className="flex w-full">
-                              <Button 
-                                onClick={() => setIsConsultationOpen(true)}
-                                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium border-0 rounded-md px-4 py-2 shadow-lg hover:shadow-xl transition-all w-full"
-                              >
-                                Schedule a Consultation
-                              </Button>
-                            </div>
-                          </div>
+                        <h3 className="text-xl font-bold text-white">Accelerate your AI engineering journey</h3>
+                        <p className="text-white/80 mt-1 mb-3">Join our premium workshops to master enterprise-grade production AI systems.</p>
+                        
+                        <div className="flex items-center gap-4 mt-2">
+                          <Button 
+                            onClick={() => setIsConsultationOpen(true)}
+                            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium border-0 rounded-md px-4 py-2 shadow-lg hover:shadow-xl transition-all flex-grow"
+                          >
+                            Schedule a Consultation
+                          </Button>
+                          
+                          <DialogClose asChild>
+                            <Button 
+                              variant="outline" 
+                              className="text-white/60 border-white/10 hover:bg-white/5 px-3 w-16 text-sm h-10"
+                            >
+                              Close
+                            </Button>
+                          </DialogClose>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Add dialog footer with completion button */}
-                    <DialogFooter className="flex justify-between items-center px-6 pt-4 pb-4 mt-2 border-t border-white/10 relative z-10">
-                      <DialogClose asChild>
-                        <Button variant="outline" className="text-white/70 border-white/20 hover:bg-white/10">
-                          Close
-                        </Button>
-                      </DialogClose>
-                      
-                      <Button 
-                        onClick={() => {
-                          const newCompleted = completedNodes.includes(topic.id)
-                            ? completedNodes.filter(id => id !== topic.id)
-                            : [...completedNodes, topic.id];
-                          
-                          setCompletedNodes(newCompleted);
-                          
-                          // Track completion action
-                          track('learning_map_interaction', {
-                            node_id: topic.id,
-                            node_type: 'topic',
-                            action: completedNodes.includes(topic.id) ? 'unmark_completed' : 'mark_completed'
-                          });
-                        }}
-                        className={`
-                          px-5 py-2 rounded-lg font-medium transition-all duration-500
-                          ${completedNodes.includes(topic.id)
-                            ? 'bg-blue-100 hover:bg-blue-200 text-blue-900 border border-blue-300'
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'}
-                        `}
-                      >
-                        {completedNodes.includes(topic.id) 
-                          ? <><CheckCircle className="w-4 h-4 mr-2" /> Completed</>
-                          : <><CircleDot className="w-4 h-4 mr-2" /> Mark as Complete</>
-                        }
-                      </Button>
-                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               ))}
