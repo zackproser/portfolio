@@ -58,7 +58,7 @@ function DropdownMenu({ label, items }) {
     <div className="relative">
       {/* Dropdown trigger button */}
       <button 
-        className="flex items-center gap-1 text-sm font-medium text-gray-50 dark:text-blue-100 hover:text-blue-200 transition-colors"
+        className="flex items-center gap-1 text-sm font-medium text-gray-50 dark:text-gray-50 hover:text-blue-200 dark:hover:text-gray-300 transition-colors"
         onClick={toggleDropdown}
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -72,14 +72,14 @@ function DropdownMenu({ label, items }) {
       {/* Dropdown menu */}
       {isOpen && (
         <div 
-          className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+          className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 dark:bg-gray-800 backdrop-blur-sm ring-1 ring-black ring-opacity-5 z-50"
         >
           <div className="py-1" role="menu" aria-orientation="vertical">
             {items.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="block px-4 py-2 text-sm text-gray-50 dark:text-blue-100 hover:bg-blue-700 dark:hover:bg-gray-700 hover:text-blue-200 transition-colors"
+                className="block px-4 py-2 text-sm text-gray-50 dark:text-gray-50 hover:bg-blue-700 dark:hover:bg-gray-700 hover:text-blue-200 dark:hover:text-gray-300 transition-colors"
                 role="menuitem"
                 onClick={closeDropdown}
               >
@@ -101,11 +101,11 @@ export function ConsultancyNav() {
   }, [])
 
   return (
-    <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-blue-900 sticky top-0 shadow-md relative z-50">
+    <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-900 dark:to-gray-800 sticky top-0 shadow-md relative z-50">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link className="flex items-center justify-center shrink-0" href="/">
           <svg 
-            className="h-7 w-7 text-gray-50 dark:text-blue-100" 
+            className="h-7 w-7 text-gray-50 dark:text-gray-50" 
             viewBox="0 0 24 24" 
             fill="none" 
             stroke="currentColor" 
@@ -117,14 +117,14 @@ export function ConsultancyNav() {
             <circle cx="12" cy="12" r="10" />
             <path d="M2 12h4M12 2v4M22 12h-4M12 22v-4" />
           </svg>
-          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-blue-100 hidden sm:inline whitespace-nowrap">Modern Coding</span>
-          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-blue-100 sm:hidden">MC</span>
+          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-gray-50 hidden sm:inline whitespace-nowrap">Modern Coding</span>
+          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-gray-50 sm:hidden">MC</span>
         </Link>
         <div className="lg:hidden">
           <button
             type="button"
             aria-label="Toggle menu"
-            className="text-gray-50 dark:text-blue-100 p-2 rounded-md hover:bg-blue-500 dark:hover:bg-blue-800 transition-colors"
+            className="text-gray-50 dark:text-gray-50 p-2 rounded-md hover:bg-blue-500 dark:hover:bg-gray-700 transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -145,7 +145,7 @@ export function ConsultancyNav() {
               ) : (
                 <Link
                   key={item.name}
-                  className="text-sm font-medium text-gray-50 dark:text-blue-100 hover:text-blue-200 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
+                  className="text-sm font-medium text-gray-50 dark:text-gray-50 hover:text-blue-200 dark:hover:text-gray-300 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
                   href={item.href}
                 >
                   {item.name}
