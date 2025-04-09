@@ -220,7 +220,7 @@ export default function HomepageClientComponent({
                 </h2>
               </div>
               <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
-                Transform your team with battle-tested architectures, RAG pipelines, and production-grade AI systems — honed at Cloudflare, Pinecone, and Fortune 500s, and distilled into code-first workshops.
+                Transform your team and business with battle-tested architectures, RAG pipelines, and production-grade AI systems — honed at Cloudflare, Pinecone, and Fortune 500s, and distilled into code-first workshops.
               </p>
               
               <div className="mt-6">
