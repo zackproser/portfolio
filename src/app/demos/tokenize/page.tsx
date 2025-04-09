@@ -5,8 +5,10 @@ import { Container } from '@/components/Container'
 import TokenizationDemoClient from './TokenizationDemoClient'
 
 export const metadata: Metadata = createMetadata({
-  title: "How do language models \"see\" text?",
-  description: 'Interactive demo showcasing the process of tokenization, a fundamental technique used in natural language processing (NLP) and generative AI.',
+  title: "Interactive tokenization demo for developers",
+  description: 'Explore how language models break text into tokens. Visualize different tokenization methods and understand their impact on AI performance, context limits, and costs.',
+  type: 'demo',
+  author: 'Zachary',
 })
 
 export default function TokenizationDemoPage() {
