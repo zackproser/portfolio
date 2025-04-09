@@ -628,7 +628,7 @@ export default function LearningGrid() {
           title: "What is Retrieval Augmented Generation?",
           type: "article",
           url: "https://www.pinecone.io/learn/retrieval-augmented-generation/",
-          description: "A comprehensive introduction to RAG architecture and fundamentals.",
+          description: "I wrote the guide to Retrieval Augmented Generation at Pinecone, which covers RAG architecture and fundamentals.",
           parentId: "rag-systems",
           position: { x: 0, y: 0 },
           icon: <FileText className="h-5 w-5 text-white" />,
@@ -979,29 +979,49 @@ export default function LearningGrid() {
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl blueprint-bg pointer-events-none"></div>
                       
                       <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-2 rounded-lg bg-white/10 shadow-inner backdrop-blur-sm border border-white/20">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="p-2.5 rounded-lg bg-white/10 shadow-inner backdrop-blur-sm border border-white/20 flex-shrink-0">
                             {topic.icon}
                           </div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-white text-lg">{topic.title}</h4>
-                            {completedNodes.includes(topic.id) && (
-                              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                            )}
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-bold text-white text-lg">{topic.title}</h4>
+                              {completedNodes.includes(topic.id) && (
+                                <svg className="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              )}
+                            </div>
                           </div>
                         </div>
                         
-                        <p className="text-white/90 text-sm leading-relaxed line-clamp-3 mb-3">{topic.description}</p>
+                        <p className="text-white/90 text-sm leading-relaxed line-clamp-4">{topic.description}</p>
                         
                         {/* Modified the Business Impact section to remove track-specific language */}
-                        <div className="mt-3 pt-3 border-t border-white/10">
+                        <div className="mt-4 pt-3 border-t border-white/10">
                           <h5 className="text-xs font-medium text-blue-300 uppercase tracking-wider mb-1">Key Outcomes</h5>
                           <p className="text-white/80 text-xs line-clamp-2">
                             {getKeyOutcome(topic.id)}
                           </p>
                         </div>
+                        
+                        {/* Progress indicator for multi-part topics with many resources */}
+                        {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
+                          <div className="mt-4 pt-2">
+                            <div className="flex justify-between text-xs mb-1">
+                              <span className="text-white/70">Progress</span>
+                              <span className="text-white/70">
+                                {completedNodes.includes(topic.id) ? "Completed" : "0%"}
+                              </span>
+                            </div>
+                            <div className="w-full bg-white/10 rounded-full h-1.5">
+                              <div 
+                                className={`${completedNodes.includes(topic.id) ? "bg-emerald-500" : "bg-blue-500/50"} h-1.5 rounded-full`} 
+                                style={{ width: completedNodes.includes(topic.id) ? "100%" : "0%" }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
                         
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center">
@@ -1016,24 +1036,6 @@ export default function LearningGrid() {
                           </span>
                         </div>
                       </div>
-                      
-                      {/* Progress indicator for multi-part topics with many resources */}
-                      {topic.resources.length >= 4 && topic.id !== "rag-systems" && (
-                        <div className="mt-4 pt-2">
-                          <div className="flex justify-between text-xs mb-1">
-                            <span className="text-white/70">Progress</span>
-                            <span className="text-white/70">
-                              {completedNodes.includes(topic.id) ? "Completed" : "0%"}
-                            </span>
-                          </div>
-                          <div className="w-full bg-white/10 rounded-full h-1.5">
-                            <div 
-                              className={`${completedNodes.includes(topic.id) ? "bg-emerald-500" : "bg-blue-500/50"} h-1.5 rounded-full`} 
-                              style={{ width: completedNodes.includes(topic.id) ? "100%" : "0%" }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </DialogTrigger>
                   
