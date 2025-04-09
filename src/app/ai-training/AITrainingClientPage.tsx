@@ -12,8 +12,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import ConsultationForm from "@/components/ConsultationForm"
 
-function TrainingCalculator() {
+function TrainingCalculator({ onConsultationClick }: { onConsultationClick: () => void }) {
   const [engineers, setEngineers] = useState(5)
   const [includeWorkshops, setIncludeWorkshops] = useState(true)
   
@@ -80,7 +81,10 @@ function TrainingCalculator() {
           </p>
         </div>
         
-        <Button className="w-full bg-amber-500 hover:bg-amber-600 text-blue-900 font-medium">
+        <Button 
+          className="w-full bg-amber-500 hover:bg-amber-600 text-blue-900 font-medium"
+          onClick={onConsultationClick}
+        >
           Schedule a Consultation
         </Button>
       </div>
@@ -89,6 +93,16 @@ function TrainingCalculator() {
 }
 
 export default function AITrainingClientPage() {
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false)
+  
+  const handleOpenConsultation = () => {
+    setIsConsultationOpen(true)
+  }
+  
+  const handleCloseConsultation = () => {
+    setIsConsultationOpen(false)
+  }
+
   return (
     <main className="flex min-h-screen flex-col bg-blue-600 dark:bg-zinc-950">
       {/* Hero Section */}
@@ -118,7 +132,12 @@ export default function AITrainingClientPage() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-white text-white hover:bg-white/10"
+                  onClick={handleOpenConsultation}
+                >
                   Schedule a Consultation
                 </Button>
               </div>
@@ -170,8 +189,8 @@ export default function AITrainingClientPage() {
                     </div>
                     
                     <div className="flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                        <Shield className="h-5 w-5 text-purple-300" />
+                      <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                        <Shield className="h-5 w-5 text-blue-300" />
                       </div>
                       <div>
                         <h4 className="text-white font-medium">Production Specialization</h4>
@@ -322,14 +341,14 @@ export default function AITrainingClientPage() {
             
             {/* Module 3: Specializations */}
             <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-purple-600"></div>
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <Shield className="h-5 w-5 text-purple-300" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <Shield className="h-5 w-5 text-blue-300" />
                   </div>
                   <div>
-                    <p className="text-purple-300 text-sm font-medium">MODULE 3</p>
+                    <p className="text-blue-300 text-sm font-medium">MODULE 3</p>
                     <CardTitle className="text-white">Production Specializations</CardTitle>
                   </div>
                 </div>
@@ -368,7 +387,7 @@ export default function AITrainingClientPage() {
                 </div>
                 
                 <div className="pt-4 mt-4 border-t border-blue-600/50">
-                  <h5 className="text-sm font-semibold text-purple-300 mb-2">LEARNING OUTCOMES</h5>
+                  <h5 className="text-sm font-semibold text-blue-300 mb-2">LEARNING OUTCOMES</h5>
                   <p className="text-white/80">Deploy secure, scalable AI infrastructure in production with enterprise-grade controls and customized models</p>
                 </div>
               </CardContent>
@@ -380,7 +399,7 @@ export default function AITrainingClientPage() {
               All modules include interactive demos, coding exercises, and integration into your team&apos;s actual projects for practical application.
             </p>
             <Button asChild className="bg-white hover:bg-white/90 text-blue-700">
-              <Link href="/learning-guide">
+              <Link href="/#blueprint">
                 View Detailed Curriculum
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -398,55 +417,45 @@ export default function AITrainingClientPage() {
                 Transparent Pricing
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold text-white">Calculate Your Training Investment</h2>
-              <p className="text-xl text-white/80 max-w-xl">
-                Our training program is designed for teams of 3-20 engineers, with flexible options for live workshops and hands-on implementation support.
+              <p className="text-xl text-white/80">
+                Our training program is priced based on the number of engineers in your team and the level of hands-on support you need.
               </p>
               
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-green-300" />
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                    <Users className="h-6 w-6 text-blue-300" />
                   </div>
                   <div>
-                    <h4 className="text-white font-medium">90-Day Money-Back Guarantee</h4>
-                    <p className="text-white/70">If your team doesn&apos;t ship a production AI feature within 90 days, you get a full refund</p>
+                    <h3 className="text-white font-medium text-lg">Team-based Pricing</h3>
+                    <p className="text-white/70">Flat rate per engineer with volume discounts for larger teams</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-green-300" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                    <Brain className="h-6 w-6 text-amber-300" />
                   </div>
                   <div>
-                    <h4 className="text-white font-medium">Access to All Course Materials</h4>
-                    <p className="text-white/70">Interactive demos, code samples, video tutorials, and practical exercises</p>
+                    <h3 className="text-white font-medium text-lg">Optional Live Workshops</h3>
+                    <p className="text-white/70">Add interactive sessions with AI experts to accelerate learning</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-green-300" />
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="h-6 w-6 text-green-300" />
                   </div>
                   <div>
-                    <h4 className="text-white font-medium">Weekly Progress Check-ins</h4>
-                    <p className="text-white/70">Regular sessions to ensure your team is on track and tackle any challenges</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-green-300" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium">Hands-On Project Guidance</h4>
-                    <p className="text-white/70">Support implementing an actual AI feature for your product during the program</p>
+                    <h3 className="text-white font-medium text-lg">Money-back Guarantee</h3>
+                    <p className="text-white/70">Full refund if your team doesn&apos;t ship an AI feature within 90 days</p>
                   </div>
                 </div>
               </div>
             </div>
             
             <div>
-              <TrainingCalculator />
+              <TrainingCalculator onConsultationClick={handleOpenConsultation} />
             </div>
           </div>
         </div>
@@ -601,6 +610,9 @@ export default function AITrainingClientPage() {
           </div>
         </div>
       </section>
+      
+      {/* Consultation Form */}
+      <ConsultationForm isOpen={isConsultationOpen} onClose={handleCloseConsultation} />
     </main>
   )
 } 
