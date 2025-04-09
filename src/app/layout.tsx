@@ -4,7 +4,7 @@ import { GoogleTagManager } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SessionProvider } from "next-auth/react"
 import { Providers } from '@/app/providers'
-import { SimpleNav } from '@/components/SimpleNav'
+import { ConsultancyNav } from '@/components/ConsultancyNav'
 import '@/styles/tailwind.css'
 import '@/styles/global.css'
 
@@ -46,7 +46,7 @@ export default function RootLayout({
         <SessionProvider>
           <Providers>
             <div className="flex w-full flex-col">
-              <SimpleNav />
+              <ConsultancyNav />
               <main className="flex-grow">{children}</main>
               <Analytics />
               <SpeedInsights />

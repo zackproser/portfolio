@@ -9,7 +9,10 @@ import { AuthStatus } from './AuthStatus'
 
 // Export navigation items to be used in components
 export const navItems = [
-  { name: 'Services', href: '/services' },
+  { name: 'Services', dropdown: [
+    { name: 'Custom Gen AI Solutions', href: '/services' },
+    { name: '90-Day AI Team Transformation', href: '/ai-training' }
+  ]},
   { name: 'Work', dropdown: [
     { name: 'Products', href: '/products' },
     { name: 'Case Studies', href: '/projects' },
