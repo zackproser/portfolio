@@ -13,6 +13,8 @@ import tokenizationDiagram from '@/images/tokenization-diagram.webp'
 // New imports
 import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { characterTokenize, wordTokenize, simpleBpeTokenize, tiktokenTokenize } from './utils';
+import { track } from '@vercel/analytics';
+import NewsletterWrapper from '@/components/NewsletterWrapper';
 
 export default function TokenizationDemoClient() {
   const [inputText, setInputText] = useState('');
@@ -46,7 +48,12 @@ export default function TokenizationDemoClient() {
     newExpandedSections[index] = !newExpandedSections[index];
     setExpandedSections(newExpandedSections);
   };
-
+  
+  const handleTokenizationMethodChange = (method: string) => {
+    setTokenizationMethod(method);
+    track('tokenization_method_change', { method });
+  };
+  
   // Define educational content sections
   const educationalSections = [
     {
@@ -63,6 +70,7 @@ export default function TokenizationDemoClient() {
               <li>Determines context window limitations</li>
               <li>Affects pricing of API calls</li>
               <li>Impacts model performance on different types of text</li>
+              <li>Affects prompt length (and cost) due to token count limits</li>
             </ul>
           </div>
           <div className="flex justify-center py-2">
@@ -99,7 +107,7 @@ export default function TokenizationDemoClient() {
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
               <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Subword Tokenization (BPE)</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Balance between character and word methods. Handles common words as single tokens and breaks down rare words.
+                BPE merges frequent pairs of characters into tokens iteratively, optimizing for compact vocabulary and high coverage. Handles common words as single tokens and rare words as multiple subword tokens.
               </p>
             </div>
           </div>
@@ -118,6 +126,7 @@ export default function TokenizationDemoClient() {
             <h4 className="font-medium mb-2">Key vocabulary concepts:</h4>
             <ul className="list-disc list-inside space-y-1 text-sm">
               <li>A vocabulary typically contains 50,000-100,000 tokens</li>
+              <li>A single word may be one token, or split into multiple tokens depending on the tokenizer and word rarity</li>
               <li>Common words, subwords, and characters have their own tokens</li>
               <li>Special tokens exist for formatting (e.g., &lt;|endoftext|&gt;)</li>
               <li>Each token maps to a vector in the model&apos;s embedding space</li>
@@ -227,7 +236,7 @@ export default function TokenizationDemoClient() {
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-md text-sm"
+                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-md text-sm"
               >
                 <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                 <option value="gpt-4">GPT-4</option>
@@ -267,7 +276,7 @@ export default function TokenizationDemoClient() {
       </div>
 
       {/* Tokenization Method Selection - Moved here for better visibility */}
-      <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 mb-4">
+      <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 mb-4">
         <div className="flex items-center mb-2">
           <FiTool className="text-orange-500 mr-2" size={20} />
           <h3 className="text-md font-semibold text-blue-700 dark:text-blue-300">Select Tokenization Method</h3>
@@ -284,7 +293,7 @@ export default function TokenizationDemoClient() {
                   ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 border-2 border-purple-500' 
                   : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
               }`}
-              onClick={() => setTokenizationMethod(method)}
+              onClick={() => handleTokenizationMethodChange(method)}
             >
               {method === 'tiktoken' && 'OpenAI Tiktoken'}
               {method === 'character' && 'Character Tokenization'}
@@ -303,7 +312,9 @@ export default function TokenizationDemoClient() {
             <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">How do language models &quot;see&quot; text?</h3>
           </div>
           <button
-            onClick={() => setShowVocabExplanation(!showVocabExplanation)}
+            onClick={() => {
+              setShowVocabExplanation(!showVocabExplanation);
+            }}
             className="text-sm text-blue-600 dark:text-blue-400 flex items-center"
           >
             Learn about token vocabularies {showVocabExplanation ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}
@@ -353,7 +364,7 @@ export default function TokenizationDemoClient() {
       </div>
 
       {showAnalysis && (
-        <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center mb-2">
             <FiDollarSign className="text-green-500 mr-2" size={20} />
             <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Token Pricing Impact</h3>
@@ -375,6 +386,16 @@ export default function TokenizationDemoClient() {
           Apply what you&apos;ve learned with these interactive challenges.
         </p>
         <TokenizationQuiz />
+      </div>
+
+      {/* Newsletter using site-wide component */}
+      <div className="mt-8">
+        <NewsletterWrapper 
+          title="Master Tokenization & LLM Performance"
+          body="Get exclusive access to practical guides, advanced tokenization techniques, and optimization strategies that help you build better AI applications with lower costs."
+          successMessage="Thanks! Check your inbox soon for tokenization resources."
+          onSubscribe={() => track('tokenization_newsletter_subscribe')}
+        />
       </div>
     </div>
   );
