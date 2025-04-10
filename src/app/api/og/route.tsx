@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
                     flexDirection: 'column',
                   }}>
                     <div style={{ 
-                      fontSize: '42px', 
+                      fontSize: '46px', 
                       fontWeight: 'bold', 
                       color: 'white', 
                       lineHeight: 1.2, 
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
                     
                     {description && (
                       <div style={{ 
-                        fontSize: '24px', 
+                        fontSize: '28px', 
                         color: '#dbeafe', 
                         marginBottom: '16px',
                         maxWidth: '100%',
@@ -197,7 +197,9 @@ export async function GET(request: NextRequest) {
                   alignItems: 'center',
                   width: '100%',
                   height: '100%',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
+                  padding: '5px'
                 }}>
                   <img 
                     src={imageUrl}
@@ -208,7 +210,9 @@ export async function GET(request: NextRequest) {
                       width: '110%',
                       height: '110%',
                       objectFit: 'contain',
-                      objectPosition: 'center'
+                      objectPosition: 'center',
+                      filter: 'brightness(1.2) contrast(1.1)',
+                      mixBlendMode: 'screen'
                     }}
                   />
                 </div>
