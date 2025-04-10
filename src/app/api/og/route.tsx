@@ -106,69 +106,78 @@ export async function GET(request: NextRequest) {
                 {/* Top text content */}
                 <div style={{
                   display: 'flex',
-                  flexDirection: 'column'
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%'
                 }}>
+                  {/* Top text content */}
                   <div style={{ 
                     fontSize: '36px', 
                     fontWeight: 'bold', 
                     color: 'white', 
                     lineHeight: 1.2, 
-                    marginBottom: '24px',
+                    marginBottom: '16px',
                     maxWidth: '100%',
                     wordWrap: 'break-word'
                   }}>
                     Modern Coding
                   </div>
                   
-                  <div style={{ 
-                    fontSize: '42px', 
-                    fontWeight: 'bold', 
-                    color: 'white', 
-                    lineHeight: 1.2, 
-                    marginBottom: '24px',
-                    maxWidth: '100%',
-                    wordWrap: 'break-word'
+                  {/* Center content - title and description */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
                   }}>
-                    {title}
-                  </div>
-                  
-                  {description && (
                     <div style={{ 
-                      fontSize: '24px', 
-                      color: '#dbeafe', 
-                      marginBottom: '16px',
+                      fontSize: '42px', 
+                      fontWeight: 'bold', 
+                      color: 'white', 
+                      lineHeight: 1.2, 
+                      marginBottom: '24px',
                       maxWidth: '100%',
                       wordWrap: 'break-word'
                     }}>
-                      {description}
+                      {title}
                     </div>
-                  )}
-                </div>
-                
-                {/* Bottom footer area */}
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  maxWidth: '100%'
-                }}>
-                  <div style={{
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    color: 'white',
-                    opacity: 0.9,
-                    marginRight: '16px'
-                  }}>
-                    zackproser.com
+                    
+                    {description && (
+                      <div style={{ 
+                        fontSize: '24px', 
+                        color: '#dbeafe', 
+                        marginBottom: '16px',
+                        maxWidth: '100%',
+                        wordWrap: 'break-word'
+                      }}>
+                        {description}
+                      </div>
+                    )}
                   </div>
+                  
+                  {/* Bottom footer area */}
                   <div style={{
-                    fontSize: '18px',
-                    color: 'white',
-                    opacity: 1,
-                    textAlign: 'center'
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    maxWidth: '100%'
                   }}>
-                    🔥 AI Engineering Mastery 
+                    <div style={{
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      color: 'white',
+                      opacity: 0.9,
+                      marginRight: '16px'
+                    }}>
+                      zackproser.com
+                    </div>
+                    <div style={{
+                      fontSize: '18px',
+                      color: 'white',
+                      opacity: 1,
+                      textAlign: 'center'
+                    }}>
+                      🔥 AI Engineering Mastery 
+                    </div>
                   </div>
                 </div>
               </div>
