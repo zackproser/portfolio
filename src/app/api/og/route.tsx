@@ -11,11 +11,11 @@ export async function GET(request: NextRequest) {
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
 
     // Direct image URL instead of using path module
-    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-nn.png`;
+    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-og-transparent.png`;
 
     // Image dimensions - explicit values prevent 'image size cannot be determined' errors
-    const imageWidth = 400;
-    const imageHeight = 400;
+    const imageWidth = 600;
+    const imageHeight = 600;
 
     return new ImageResponse(
       (
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
               <div style={{ 
                 display: 'flex', 
                 flexDirection: 'column', 
-                width: '60%', 
+                width: '50%', 
                 height: '100%',
                 justifyContent: 'space-between',
                 paddingTop: '8px',
@@ -187,7 +187,7 @@ export async function GET(request: NextRequest) {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: '40%',
+                width: '50%',
                 height: '100%',
                 zIndex: Number(5)
               }}>
@@ -195,8 +195,8 @@ export async function GET(request: NextRequest) {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  width: '90%',
-                  height: '90%',
+                  width: '100%',
+                  height: '100%',
                   overflow: 'hidden'
                 }}>
                   <img 
@@ -205,8 +205,8 @@ export async function GET(request: NextRequest) {
                     width={imageWidth}
                     height={imageHeight}
                     style={{
-                      width: '100%',
-                      height: '100%',
+                      width: '110%',
+                      height: '110%',
                       objectFit: 'contain',
                       objectPosition: 'center'
                     }}
