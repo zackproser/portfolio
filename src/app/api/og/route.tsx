@@ -13,6 +13,10 @@ export async function GET(request: NextRequest) {
     // Direct image URL instead of using path module
     const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-nn.png`;
 
+    // Image dimensions - explicit values prevent 'image size cannot be determined' errors
+    const imageWidth = 400;
+    const imageHeight = 400;
+
     return new ImageResponse(
       (
         <div
@@ -159,11 +163,12 @@ export async function GET(request: NextRequest) {
                     zackproser.com
                   </div>
                   <div style={{
-                    fontSize: '22px',
+                    fontSize: '18px',
                     color: 'white',
-                    opacity: 0.8
+                    opacity: 1,
+                    textAlign: 'center'
                   }}>
-                    🔥 AI Engineering Mastery
+                    🔥 AI Engineering Mastery 
                   </div>
                 </div>
               </div>
@@ -188,6 +193,8 @@ export async function GET(request: NextRequest) {
                   <img 
                     src={imageUrl}
                     alt="Neural network visualization"
+                    width={imageWidth}
+                    height={imageHeight}
                     style={{
                       width: '100%',
                       height: '100%',
