@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
 
     // Direct image URL instead of using path module
-    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-og-transparent.png`;
+    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-og-background.png`;
 
     // Image dimensions - explicit values prevent 'image size cannot be determined' errors
     const imageWidth = 600;
