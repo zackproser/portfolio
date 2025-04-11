@@ -6,16 +6,16 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: NextRequest) {
-  const { inputText } = await req.json();
+  const { inputText, model = 'text-embedding-3-small' } = await req.json();
 
   try {
     const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
+      model,
       input: inputText,
     });
 
     const generatedEmbeddings = response.data[0].embedding;
-    console.log(`Generated embeddings: %o`, generatedEmbeddings);
+    console.log(`Generated embeddings with model ${model}`);
 
     return NextResponse.json({ embeddings: generatedEmbeddings }, { status: 200 });
   } catch (error) {
