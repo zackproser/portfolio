@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { FiInfo, FiBook, FiTool, FiCode, FiDatabase, FiSearch, FiChevronDown, FiChevronRight, FiHelpCircle, FiPlay, FiCheck } from 'react-icons/fi';
 import Image from 'next/image';
 import embedDiagram from '@/images/neural-network-transform.webp';
@@ -316,7 +316,7 @@ export default function EmbeddingsDemoClient() {
   const [showNewsletterModal, setShowNewsletterModal] = useState(false);
 
   // Move handleExampleSelect declaration above its usage
-  const handleExampleSelect = (text: string) => {
+  const handleExampleSelect = useCallback((text: string) => {
     setInputText(text);
     // Mark example step as completed
     const newCompletedSteps = [...completedSteps];
@@ -338,7 +338,7 @@ export default function EmbeddingsDemoClient() {
       // For other examples, generate random embeddings
       setEmbeddings(getRandomVector(20));
     }
-  };
+  }, [completedSteps, demoEmbeddings, setCompletedSteps, setEmbeddings, setInputText]);
 
   useEffect(() => {
     const examples = {
@@ -411,7 +411,7 @@ export default function EmbeddingsDemoClient() {
     
     // Pre-select a default example to show visualization immediately
     handleExampleSelect("animal");
-  }, []);
+  }, [handleExampleSelect]);
 
   useEffect(() => {
     const newCompletedSteps = [...completedSteps];
@@ -432,7 +432,7 @@ export default function EmbeddingsDemoClient() {
     }
     
     // We'll track steps 3 and 4 with manual triggers when user interacts with those sections
-  }, [inputText, embeddings]); // Remove completedSteps from dependencies to prevent loop
+  }, [inputText, embeddings, completedSteps]);
 
   // Simplify the useEffect that previously tracked progress
   useEffect(() => {
