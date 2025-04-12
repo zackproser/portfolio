@@ -5,6 +5,8 @@ import { readFile, readdir } from 'fs/promises';
 import React from 'react';
 import sharp from 'sharp';
 
+export const maxDuration = 300;
+
 export async function GET(request: NextRequest) {
   try {
     // Parse the URL directly from request.url
