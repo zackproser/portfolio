@@ -201,6 +201,12 @@ export async function GET(request: NextRequest) {
                       lineHeight: 1.2, 
                       marginBottom: '24px',
                       maxWidth: '100%',
+                      maxHeight: '220px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
                       wordWrap: 'break-word'
                     }}>
                       {title}
@@ -212,6 +218,12 @@ export async function GET(request: NextRequest) {
                         color: '#dbeafe', 
                         marginBottom: '16px',
                         maxWidth: '100%',
+                        maxHeight: '112px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
                         wordWrap: 'break-word'
                       }}>
                         {description}
