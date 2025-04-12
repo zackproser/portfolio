@@ -1,17 +1,41 @@
 import { NextRequest } from 'next/server';
 import { ImageResponse } from '@vercel/og';
+import { join } from 'path';
+import { readFile } from 'fs/promises';
 import React from 'react';
-
-export const runtime = 'edge';
+import sharp from 'sharp';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
+    const heroImage = searchParams.get('heroImage');
 
-    // Direct image URL instead of using path module
-    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-og-background.png`;
+    console.log('heroImage', heroImage);
+
+    let imageData;
+    try {
+      let rawImageData;
+      if (heroImage) {
+        const imagePath = join(process.cwd(), 'src', 'images', heroImage);
+        rawImageData = await readFile(imagePath);
+      } else {
+        const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
+        rawImageData = await readFile(defaultPath);
+      }
+
+      // Convert any image format (including WebP) to PNG
+      imageData = await sharp(rawImageData)
+        .png()
+        .toBuffer();
+
+    } catch (error: any) {
+      console.error('Error loading/converting image:', error);
+      return new Response(`Failed to load/convert image: ${error.message}`, { status: 500 });
+    }
+
+    console.log('imageData', imageData);
 
     // Image dimensions - explicit values prevent 'image size cannot be determined' errors
     const imageWidth = 600;
@@ -202,8 +226,8 @@ export async function GET(request: NextRequest) {
                   padding: '5px'
                 }}>
                   <img 
-                    src={imageUrl}
-                    alt="Neural network visualization"
+                    src={`data:image/png;base64,${imageData.toString('base64')}`}
+                    alt="Page hero image"
                     width={imageWidth}
                     height={imageHeight}
                     style={{
