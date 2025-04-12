@@ -1,17 +1,83 @@
 import { NextRequest } from 'next/server';
 import { ImageResponse } from '@vercel/og';
+import { join } from 'path';
+import { readFile, readdir } from 'fs/promises';
 import React from 'react';
-
-export const runtime = 'edge';
+import sharp from 'sharp';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    // Parse the URL directly from request.url
+    const requestUrl = request.url;
+    // Replace HTML entities with actual characters
+    const cleanUrl = requestUrl.replace(/&amp;/g, '&');
+    
+    const { searchParams } = new URL(cleanUrl);
+    
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
+    const heroImage = searchParams.get('heroImage');
 
-    // Direct image URL instead of using path module
-    const imageUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'}/modern-coding-og-background.png`;
+    console.log('-----OG IMAGE DEBUG-----');
+    console.log('Request URL:', requestUrl);
+    console.log('Cleaned URL:', cleanUrl);
+    console.log('Parsed heroImage param:', heroImage);
+    
+    // If heroImage includes a hash, strip it to match the actual filename
+    let imageFilename = heroImage;
+    if (heroImage && heroImage.includes('.')) {
+      // Match the base name without the hash, like "walking-talking-ai" from "walking-talking-ai.cf7f5fd4.webp"
+      const match = heroImage.match(/^(.+?)(?:\.[a-f0-9]{8})?(\.\w+)$/);
+      if (match) {
+        imageFilename = match[1] + match[2]; // base name + extension
+        console.log('Extracted base filename:', imageFilename);
+      }
+    }
+
+    let imageData;
+    let base64Image; // Declare at function scope
+    try {
+      let rawImageData;
+      if (imageFilename) {
+        // Direct path from images directory
+        const imagePath = join(process.cwd(), 'src', 'images', imageFilename);
+        console.log('Attempting to load image from:', imagePath);
+        
+        try {
+          rawImageData = await readFile(imagePath);
+          console.log('✅ Successfully loaded image:', imageFilename);
+        } catch (error: any) {
+          console.error('❌ Failed to load image:', imagePath, error.code);
+          
+          // Fall back to default
+          console.log('Falling back to default image');
+          const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
+          rawImageData = await readFile(defaultPath);
+        }
+      } else {
+        console.log('No heroImage provided, using default');
+        const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
+        rawImageData = await readFile(defaultPath);
+      }
+
+      // Convert any image format (including WebP) to PNG
+      console.log('Converting image to PNG...');
+      imageData = await sharp(rawImageData)
+        .png()
+        .toBuffer();
+      console.log('✅ Successfully converted image to PNG');
+      console.log('Image buffer size:', imageData.length, 'bytes');
+      
+      // Create base64 encoding directly
+      base64Image = imageData.toString('base64');
+      console.log('Base64 image length:', base64Image.length);
+      
+    } catch (error: any) {
+      console.error('Error in image processing:', error);
+      return new Response(`Failed to load/convert image: ${error.message}`, { status: 500 });
+    }
+
+    console.log('imageData', imageData);
 
     // Image dimensions - explicit values prevent 'image size cannot be determined' errors
     const imageWidth = 600;
@@ -135,6 +201,12 @@ export async function GET(request: NextRequest) {
                       lineHeight: 1.2, 
                       marginBottom: '24px',
                       maxWidth: '100%',
+                      maxHeight: '220px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
                       wordWrap: 'break-word'
                     }}>
                       {title}
@@ -146,6 +218,12 @@ export async function GET(request: NextRequest) {
                         color: '#dbeafe', 
                         marginBottom: '16px',
                         maxWidth: '100%',
+                        maxHeight: '112px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
                         wordWrap: 'break-word'
                       }}>
                         {description}
@@ -202,8 +280,8 @@ export async function GET(request: NextRequest) {
                   padding: '5px'
                 }}>
                   <img 
-                    src={imageUrl}
-                    alt="Neural network visualization"
+                    src={`data:image/png;base64,${base64Image}`}
+                    alt="Page hero image"
                     width={imageWidth}
                     height={imageHeight}
                     style={{
