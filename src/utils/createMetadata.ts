@@ -109,7 +109,13 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   const contentType = type || (filePath ? getTypeFromPath(filePath) : 'blog');
 
   // Handle webpack-imported images and ensure we preserve the object structure
-  const processedImage = typeof image === 'string' ? { src: image } : image;
+  const processedImage = typeof image === 'string' 
+    ? { src: image } 
+    : image;
+    
+  // Add debug logging for image processing
+  console.log('Original image in createMetadata:', image);
+  console.log('Processed image in createMetadata:', processedImage);
 
   // Generate URL using the type and slug
   const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
@@ -138,10 +144,11 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       images: [
         {
           url: generateOgUrl({ 
-            title: title ? String(title) : undefined, 
-            description: description ? String(description) : undefined, 
-            image: processedImage?.src ? String(processedImage.src) : undefined 
+            title, 
+            description, 
+            image: processedImage 
           }),
+          alt: title || 'Untitled',
         },
       ],
     },
@@ -150,9 +157,9 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       title: title || 'Untitled',
       description: description || '',
       images: [generateOgUrl({ 
-        title: title ? String(title) : undefined, 
-        description: description ? String(description) : undefined, 
-        image: processedImage?.src ? String(processedImage.src) : undefined 
+        title, 
+        description, 
+        image: processedImage 
       })],
     },
     

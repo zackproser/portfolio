@@ -3,20 +3,33 @@ export function generateOgUrl({
   description = "Full-stack open-source hacker and technical writer",
   image = {}
 } = {}) {
-  const ogBaseURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
-
-  const ogTitle = encodeURIComponent(title.replace(/'/g, ''));
-  const ogDescription = description ? encodeURIComponent(description.replace(/'/g, '')) : '';
-  // Fix me
-  // Temporarily, intentionally omit images so that the fallback image can be rendered
-  //const ogImage = image.src || '';
-  const ogImage = '';
-
-  const ogURLParts = [
-    `title=${ogTitle}`,
-    ...(ogDescription ? [`description=${ogDescription}`] : []),
-    ...(ogImage ? [`image=${ogImage}`] : [])
-  ];
-
-  return `${ogBaseURL}?${ogURLParts.join('&')}`;
+  // Create a bare URL string with properly encoded components
+  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
+  const params = new URLSearchParams();
+  
+  // Add parameters
+  if (title) params.set('title', title);
+  if (description) params.set('description', description);
+  
+  // Extract image filename
+  if (image) {
+    const imageSrc = typeof image === 'string' ? image : image?.src;
+    if (imageSrc) {
+      // Extract just the filename
+      let filename;
+      if (imageSrc.includes('/')) {
+        const segments = imageSrc.split('/');
+        filename = segments[segments.length - 1];
+      } else {
+        filename = imageSrc;
+      }
+      
+      if (filename) {
+        params.set('heroImage', filename);
+      }
+    }
+  }
+  
+  // Return raw URL string without using toString() which could introduce encodings
+  return `${baseUrl}?${params.toString()}`;
 }
