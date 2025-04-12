@@ -11,23 +11,62 @@ export async function GET(request: NextRequest) {
   try {
     // Parse the URL directly from request.url
     const requestUrl = request.url;
-    // Replace HTML entities with actual characters
-    const cleanUrl = requestUrl.replace(/&amp;/g, '&');
+    // Replace all variations of HTML entities for & with the actual character
+    const cleanUrl = requestUrl
+      .replace(/&amp;/g, '&')
+      .replace(/&amp%3B/g, '&')
+      .replace(/%26amp%3B/g, '&')
+      .replace(/%26amp;/g, '&');
     
+    console.log('-----OG IMAGE DEBUG-----');
+    console.log('Request URL:', requestUrl);
+    console.log('Cleaned URL:', cleanUrl);
+
+    // Create a new URL from the cleaned URL string
     const { searchParams } = new URL(cleanUrl);
-    
+
+    // Extract query parameters after cleaning
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     const heroImage = searchParams.get('heroImage');
 
-    console.log('-----OG IMAGE DEBUG-----');
-    console.log('Request URL:', requestUrl);
-    console.log('Cleaned URL:', cleanUrl);
+    console.log('Parsed title:', title);
+    console.log('Parsed description:', description?.substring(0, 50) + '...');
     console.log('Parsed heroImage param:', heroImage);
     
-    // If heroImage includes a hash, strip it to match the actual filename
+    // Declare imageFilename at a higher scope
     let imageFilename = heroImage;
-    if (heroImage && heroImage.includes('.')) {
+
+    // If heroImage is null but might be in the original URL, try extracting it
+    if (!heroImage) {
+      console.log('Attempting to extract heroImage from URL path');
+      // Try extracting hero image from URL with regex
+      const heroImageMatch = cleanUrl.match(/heroImage=([^&]+)/);
+      if (heroImageMatch && heroImageMatch[1]) {
+        const extractedImage = decodeURIComponent(heroImageMatch[1]);
+        console.log('Extracted heroImage from URL:', extractedImage);
+        imageFilename = extractedImage;
+        
+        // If it has a hash, process it further
+        if (extractedImage.includes('.')) {
+          const match = extractedImage.match(/^(.+?)(?:\.[a-f0-9]{8})?(\.\w+)$/);
+          if (match) {
+            imageFilename = match[1] + match[2]; // base name + extension
+            console.log('Extracted base filename:', imageFilename);
+          }
+        }
+      } else {
+        // Last resort - try to check if title contains a hint about the image
+        console.log('No heroImage in URL, checking title for filename hints');
+        
+        if (title?.toLowerCase().includes('walking and talking with ai')) {
+          imageFilename = 'walking-talking-ai.webp';
+          console.log('Using hardcoded image based on title match:', imageFilename);
+        }
+      }
+    }
+    // If heroImage exists and includes a hash, strip it to match the actual filename
+    else if (heroImage && heroImage.includes('.')) {
       // Match the base name without the hash, like "walking-talking-ai" from "walking-talking-ai.cf7f5fd4.webp"
       const match = heroImage.match(/^(.+?)(?:\.[a-f0-9]{8})?(\.\w+)$/);
       if (match) {
