@@ -324,8 +324,16 @@ export default function EmbeddingsDemoClient() {
     setCompletedSteps(newCompletedSteps);
     
     // For demo purposes, immediately show embeddings for examples
-    if (Object.keys(demoEmbeddings).includes(text.toLowerCase())) {
-      setEmbeddings(demoEmbeddings[text.toLowerCase()]);
+    // Check case-insensitively to avoid issues with capitalization
+    const lowercaseText = text.toLowerCase();
+    if (Object.keys(demoEmbeddings).map(k => k.toLowerCase()).includes(lowercaseText)) {
+      // Find the actual key with the correct case
+      const actualKey = Object.keys(demoEmbeddings).find(
+        k => k.toLowerCase() === lowercaseText
+      );
+      if (actualKey) {
+        setEmbeddings(demoEmbeddings[actualKey]);
+      }
     } else {
       // For other examples, generate random embeddings
       setEmbeddings(getRandomVector(20));
@@ -334,64 +342,75 @@ export default function EmbeddingsDemoClient() {
 
   useEffect(() => {
     const examples = {
-      // Animals - cluster 1
+      // Words vs. Concepts cluster
       "dog": getRandomVector(),
       "puppy": getRandomVector(),
+      "canine companion": getRandomVector(),
+      "man's best friend": getRandomVector(),
+      
+      // Hierarchy of Meaning cluster
+      "animal": getRandomVector(),
       "cat": getRandomVector(),
       "kitten": getRandomVector(),
-      "animal": getRandomVector(),
+      "siamese cat": getRandomVector(),
       
-      // Technology - cluster 2
-      "computer": getRandomVector(),
-      "laptop": getRandomVector(),
-      "smartphone": getRandomVector(),
-      "technology": getRandomVector(),
-      
-      // Places - cluster 3
+      // Geographic Relationships cluster 
       "paris": getRandomVector(),
       "france": getRandomVector(),
       "tokyo": getRandomVector(),
       "japan": getRandomVector(),
-      "travel": getRandomVector(),
       
-      // Food - cluster 4
-      "pizza": getRandomVector(),
-      "pasta": getRandomVector(),
-      "sushi": getRandomVector(),
+      // Concept Distance cluster
       "food": getRandomVector(),
+      "sushi": getRandomVector(),
+      "technology": getRandomVector(),
+      "computer": getRandomVector(),
     };
     
     // Create clear semantic clusters by making similar concepts have similar vectors
-    // Animal cluster
+    // ------------------------------------------------------------------------
+    // Words vs. Concepts - Dog cluster
+    const dogBase = examples.dog;
+    // Make variations of "dog" with controlled similarity
+    examples.puppy = dogBase.map((v, i) => v * 0.92 + Math.random() * 0.08);
+    examples["canine companion"] = dogBase.map((v, i) => v * 0.85 + Math.random() * 0.15);
+    examples["man's best friend"] = dogBase.map((v, i) => v * 0.8 + Math.random() * 0.2);
+    
+    // ------------------------------------------------------------------------
+    // Hierarchy of Meaning - Animal cluster
     const animalBase = examples.animal;
-    examples.dog = animalBase.map((v, i) => v * 0.8 + Math.random() * 0.2);
-    examples.puppy = examples.dog.map((v, i) => v * 0.9 + Math.random() * 0.1);
+    // "cat" is a type of animal but different from dog
     examples.cat = animalBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
+    // Make "kitten" closer to "cat" than to "animal"
     examples.kitten = examples.cat.map((v, i) => v * 0.9 + Math.random() * 0.1);
+    // Make "siamese cat" closer to "cat" than "kitten" is
+    examples["siamese cat"] = examples.cat.map((v, i) => v * 0.95 + Math.random() * 0.05);
+    
+    // ------------------------------------------------------------------------
+    // Geographic Relationships - Places cluster
+    // Create relationship between places and countries
+    examples.paris = examples.france.map((v, i) => v * 0.8 + Math.random() * 0.2);
+    examples.tokyo = examples.japan.map((v, i) => v * 0.8 + Math.random() * 0.2);
+    
+    // ------------------------------------------------------------------------
+    // Concept Distance & Cross-relationships
+    // Make "sushi" related to both "food" and "japan" to demonstrate cross-category relationships
+    const foodBase = examples.food;
+    const japanBase = examples.japan;
+    
+    // First make sushi close to food (primary category)
+    const sushiTemp = foodBase.map((v, i) => v * 0.75 + Math.random() * 0.25);
+    // Then pull it a bit toward Japan (cross-category relationship)
+    examples.sushi = sushiTemp.map((v, i) => v * 0.8 + japanBase[i] * 0.15 + Math.random() * 0.05);
     
     // Technology cluster
     const techBase = examples.technology;
-    examples.computer = techBase.map((v, i) => v * 0.8 + Math.random() * 0.2);
-    examples.laptop = examples.computer.map((v, i) => v * 0.9 + Math.random() * 0.1);
-    examples.smartphone = techBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    
-    // Places cluster
-    const travelBase = examples.travel;
-    examples.paris = travelBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    examples.france = examples.paris.map((v, i) => v * 0.85 + Math.random() * 0.15);
-    examples.tokyo = travelBase.map((v, i) => v * 0.65 + Math.random() * 0.35);
-    examples.japan = examples.tokyo.map((v, i) => v * 0.85 + Math.random() * 0.15);
-    
-    // Food cluster
-    const foodBase = examples.food;
-    examples.pizza = foodBase.map((v, i) => v * 0.75 + Math.random() * 0.25);
-    examples.pasta = foodBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    examples.sushi = foodBase.map((v, i) => v * 0.65 + Math.random() * 0.35);
+    examples.computer = techBase.map((v, i) => v * 0.85 + Math.random() * 0.15);
     
     setDemoEmbeddings(examples);
     
     // Pre-select a default example to show visualization immediately
-    handleExampleSelect("dog");
+    handleExampleSelect("animal");
   }, []);
 
   useEffect(() => {
@@ -603,28 +622,33 @@ export default function EmbeddingsDemoClient() {
           {showSimilarityExamples && (
             <div className="grid grid-cols-1 gap-3 mt-2">
               <EmbeddingSimilarityExample 
-                text1="dog" 
-                text2="puppy" 
+                text1="Dog" 
+                text2="Puppy" 
                 similarity={0.92} 
               />
               <EmbeddingSimilarityExample 
-                text1="computer" 
-                text2="laptop" 
-                similarity={0.85} 
+                text1="Cat" 
+                text2="Kitten" 
+                similarity={0.90} 
               />
               <EmbeddingSimilarityExample 
-                text1="paris" 
-                text2="france" 
+                text1="Paris" 
+                text2="France" 
+                similarity={0.80} 
+              />
+              <EmbeddingSimilarityExample 
+                text1="Sushi" 
+                text2="Food" 
                 similarity={0.75} 
               />
               <EmbeddingSimilarityExample 
-                text1="computer" 
-                text2="smartphone" 
-                similarity={0.65} 
+                text1="Sushi" 
+                text2="Japan" 
+                similarity={0.55} 
               />
               <EmbeddingSimilarityExample 
-                text1="happy" 
-                text2="sad" 
+                text1="Dog" 
+                text2="Technology" 
                 similarity={0.15} 
               />
             </div>
@@ -709,12 +733,52 @@ export default function EmbeddingsDemoClient() {
     </div>
   );
 
-  // Add predefined phrases for users to select
+  // Add predefined phrases for users to select - updated to better demonstrate the semantic clustering concepts
   const predefinedPhrases = [
-    "The quick brown fox jumps over the lazy dog",
-    "A fast auburn fox leaps above a sleepy canine",
-    "Rapid tan foxes vault over lethargic hounds",
-    "Swift chestnut foxes bound over sluggish dogs"
+    // Words vs. Concepts examples
+    "Dog",
+    "Puppy",
+    "Canine companion",
+    "Man's best friend",
+    // Hierarchy of Meaning examples
+    "Cat",
+    "Kitten",
+    "Siamese cat",
+    "Animal",
+    // Geographic Relationships examples
+    "Paris",
+    "France",
+    "Tokyo",
+    "Japan",
+    // Concept Distance examples
+    "Sushi",
+    "Food",
+    "Technology",
+    "Computer"
+  ];
+
+  // Function to categorize phrases to make UI more organized and educational
+  const phrasesWithCategories = [
+    {
+      category: "Words vs. Concepts",
+      description: "Words with similar meanings cluster together",
+      phrases: ["Dog", "Puppy", "Canine companion", "Man's best friend"]
+    },
+    {
+      category: "Hierarchy of Meaning",
+      description: "Specific terms closer to their parent categories",
+      phrases: ["Animal", "Cat", "Kitten", "Siamese cat"]
+    },
+    {
+      category: "Geographic Relationships",
+      description: "Places relate to their countries",
+      phrases: ["Paris", "France", "Tokyo", "Japan"]
+    },
+    {
+      category: "Concept Distance & Cross-relationships",
+      description: "Some terms bridge multiple categories",
+      phrases: ["Sushi", "Food", "Japan", "Technology"]
+    }
   ];
 
   // Function to handle phrase selection
@@ -741,6 +805,19 @@ export default function EmbeddingsDemoClient() {
           Explore how embeddings position words in a multi-dimensional space, where related concepts naturally cluster together.
         </p>
         
+        {/* Add a hint box to guide users */}
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border border-yellow-100 dark:border-yellow-800 mb-4">
+          <div className="flex items-start">
+            <FiHelpCircle className="text-yellow-500 mr-2 mt-0.5" size={16} />
+            <div>
+              <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Try This:</h4>
+              <p className="text-xs text-yellow-700 dark:text-yellow-400">
+                Click on different examples below to observe how semantically related words form clusters. Notice how &quot;Sushi&quot; relates to both &quot;Food&quot; and &quot;Japan&quot;, demonstrating cross-category relationships.
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <VectorSpaceVisualizer 
           embeddings={demoEmbeddings} 
           currentEmbedding={embeddings} 
@@ -748,21 +825,29 @@ export default function EmbeddingsDemoClient() {
           onInteraction={handleVectorSpaceInteraction}
         />
         
-        {/* Predefined Phrases Section */}
+        {/* Predefined Phrases Section - Updated with categories */}
         <div className="mt-4 bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-zinc-800 dark:text-zinc-200 mb-2">Select a Phrase to Explore</h3>
+          <h3 className="text-sm font-medium text-zinc-800 dark:text-zinc-200 mb-2">Explore Semantic Clusters</h3>
           <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-3">
-            Choose from the following phrases to see how they are positioned in the vector space:
+            Click on these examples to see how semantically related terms cluster in the vector space:
           </p>
-          <div className="space-y-3">
-            {predefinedPhrases.map((phrase) => (
-              <button
-                key={phrase}
-                className="px-3 py-1 text-xs bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded-md"
-                onClick={() => handlePhraseSelect(phrase)}
-              >
-                {phrase}
-              </button>
+          <div className="space-y-6">
+            {phrasesWithCategories.map((category) => (
+              <div key={category.category} className="space-y-2">
+                <h4 className="text-xs font-semibold text-blue-600 dark:text-blue-400">{category.category}</h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 italic">{category.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {category.phrases.map((phrase) => (
+                    <button
+                      key={phrase}
+                      className="px-3 py-1.5 text-xs bg-zinc-100 dark:bg-zinc-700 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-md transition-colors"
+                      onClick={() => handlePhraseSelect(phrase)}
+                    >
+                      {phrase}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
