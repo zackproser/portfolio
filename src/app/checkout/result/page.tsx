@@ -8,6 +8,7 @@ import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/types';
 import { useSession, signIn } from 'next-auth/react';
 import { sendGAEvent } from '@next/third-parties/google';
+import { getContentUrl } from '@/lib/content-url';
 
 interface PurchasedContent {
   content: Blog;
@@ -73,7 +74,7 @@ function CheckoutResultContent() {
         }
 
         if (authStatus === 'authenticated') {
-          const contentUrl = getContentUrl(data.content, true);
+          const contentUrl = getContentUrl(data.content.type || 'blog', data.content.slug.replace(/^\/+/, ''), true);
           setTimeout(() => router.push(contentUrl), 1000);
         }
       } catch (err) {
@@ -105,12 +106,6 @@ function CheckoutResultContent() {
       setIsLoggingIn(false);
       setError('Failed to send verification email. Please try again.');
     }
-  };
-
-  const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
-    const cleanSlug = content.slug.replace(/^\/+/, '');
-    const url = `/blog/${cleanSlug}`;
-    return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
   };
 
   if (error) {
@@ -172,7 +167,7 @@ function CheckoutResultContent() {
     );
   }
 
-  const contentUrl = getContentUrl(content.content, true);
+  const contentUrl = getContentUrl(content.content.type || 'blog', content.content.slug.replace(/^\/+/, ''), true);
 
   return (
     <Container>
