@@ -6,8 +6,8 @@ import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/types';
-import { sendGTMEvent } from '@next/third-parties/google';
 import { useSession, signIn } from 'next-auth/react';
+import { sendGAEvent } from '@next/third-parties/google';
 
 interface PurchasedContent {
   content: Blog;
@@ -24,6 +24,7 @@ function CheckoutResultContent() {
   const [content, setContent] = useState<PurchasedContent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [conversionTracked, setConversionTracked] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const sessionId = searchParams.get('session_id');
@@ -39,83 +40,66 @@ function CheckoutResultContent() {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_SITE_URL}/api/checkout-sessions?session_id=${sessionId}`,
-          {
-            method: 'GET',
-          }
+          { method: 'GET' }
         );
 
-        if (!response.ok) {
-          throw new Error('Could not retrieve checkout session details');
-        }
+        if (!response.ok) throw new Error('Could not retrieve checkout session details');
 
         const data: PurchasedContent = await response.json();
-
-        if (data.payment_status !== 'paid') {
-          throw new Error('Payment not completed');
-        }
+        if (data.payment_status !== 'paid') throw new Error('Payment not completed');
 
         setContent(data);
 
-        // Send GTM event for successful purchase
-        sendGTMEvent({
-          event: 'purchase',
-          value: data.content.commerce?.price,
-          items: [
-            {
+        if (!conversionTracked && data.content.commerce?.price) {
+          sendGAEvent('purchase', {
+            currency: 'USD',
+            value: data.content.commerce.price,
+            transaction_id: sessionId,
+            items: [{
               item_name: data.content.title,
-              price: data.content.commerce?.price,
-            },
-          ],
-        });
+              item_id: data.content.slug,
+              price: data.content.commerce.price
+            }]
+          });
 
-        // If user is already authenticated, redirect them directly to the content
+          window.gtag('event', 'conversion', {
+            'send_to': 'AW-1009082087/wa84CK34vrgaEOe9leED',
+            'value': data.content.commerce.price,
+            'currency': 'USD',
+            'transaction_id': sessionId
+          });
+
+          setConversionTracked(true);
+        }
+
         if (authStatus === 'authenticated') {
           const contentUrl = getContentUrl(data.content, true);
-          // Add a small delay to ensure the GTM event is sent
-          setTimeout(() => {
-            router.push(contentUrl);
-          }, 1000);
+          setTimeout(() => router.push(contentUrl), 1000);
         }
-        // Otherwise, we'll show them a button to sign in
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       }
     };
 
     fetchCheckoutSession();
-  }, [sessionId, authStatus, router]);
+  }, [sessionId, authStatus, router, conversionTracked]);
 
-  // Function to handle email sign-in and redirect to verification page
   const handleEmailSignIn = async (email: string, contentUrl: string) => {
     try {
       setIsLoggingIn(true);
-      
-      // Use environment variable for base URL
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
+      if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
       
-      // Remove trailing slash from baseUrl if present
-      if (baseUrl.endsWith('/')) {
-        baseUrl = baseUrl.slice(0, -1);
-      }
-      
-      // Ensure the URL is absolute
       let absoluteUrl;
       if (contentUrl.startsWith('http')) {
         absoluteUrl = contentUrl;
       } else if (baseUrl) {
-        // If we have a base URL from env, use it
         absoluteUrl = `${baseUrl}${contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`}`;
       } else {
-        // Fallback to a simple path if no base URL is available
         absoluteUrl = contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`;
       }
       
-      // First, trigger the email sign-in process
-      await signIn("email", { 
-        email, 
-        callbackUrl: absoluteUrl,
-      });
-      
+      await signIn("email", { email, callbackUrl: absoluteUrl });
     } catch (error) {
       console.error('Error during sign-in process:', error);
       setIsLoggingIn(false);
@@ -123,15 +107,9 @@ function CheckoutResultContent() {
     }
   };
 
-  // Function to get the content URL based on content type
   const getContentUrl = (content: Blog, keepLeadingSlash = false) => {
-    // Remove any leading slashes from the slug
     const cleanSlug = content.slug.replace(/^\/+/, '');
-    
-    // For blog content, always use the /blog/ path
     const url = `/blog/${cleanSlug}`;
-    
-    // Remove leading slash for Next.js Link component if needed
     return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
   };
 
@@ -145,9 +123,7 @@ function CheckoutResultContent() {
             <p className="text-gray-700 mb-4">
               We&apos;ve received your payment and a receipt has been sent to your email. 
               {error.includes("being processed") ? (
-                <span className="block mt-2">
-                  {error}
-                </span>
+                <span className="block mt-2">{error}</span>
               ) : (
                 <span className="block mt-2">
                   There was a small issue with the automatic login: <span className="text-amber-700">{error}</span>
@@ -155,7 +131,7 @@ function CheckoutResultContent() {
               )}
             </p>
             <p className="text-gray-700 mb-4">
-              Don&apos;t worry! You can still access your content by logging in manually with the email you used for purchase.
+              Don&apos;t worry! You can still access your content by logging in manually.
             </p>
             <div className="mt-4 flex space-x-4">
               <button
@@ -210,7 +186,7 @@ function CheckoutResultContent() {
           {authStatus === 'unauthenticated' && (
             <span className="ml-2">
               <button
-                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
                 className="text-blue-600 underline hover:text-blue-800"
               >
                 Log in to access your content
@@ -232,7 +208,7 @@ function CheckoutResultContent() {
                 </Link>
               ) : (
                 <button
-                  onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                  onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
                   className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   Sign in to Read
@@ -261,7 +237,7 @@ function CheckoutResultContent() {
               </Link>
             ) : (
               <button
-                onClick={() => handleEmailSignIn(content.user.email, getContentUrl(content.content, true))}
+                onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
                 className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Sign in to Start Learning
@@ -292,4 +268,4 @@ export default function CheckoutResult() {
       <CheckoutResultContent />
     </Suspense>
   );
-} 
+}
