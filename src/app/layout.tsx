@@ -1,21 +1,19 @@
 import { Noto_Sans, Press_Start_2P } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
-import { GoogleTagManager } from '@next/third-parties/google'
+import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { SessionProvider } from "next-auth/react"
-import { Providers } from '@/app/providers'
-import { ConsultancyNav } from '@/components/ConsultancyNav'
-import '@/styles/tailwind.css'
-import '@/styles/global.css'
+import { SessionProvider } from "next-auth/react";
+import { Providers } from '@/app/providers';
+import { ConsultancyNav } from '@/components/ConsultancyNav';
+import '@/styles/tailwind.css';
+import '@/styles/global.css';
 
-// Initialize the Noto Sans font
 const notoSans = Noto_Sans({
   subsets: ['latin'],
   weight: ['400', '700'],
   variable: '--font-noto-sans',
 });
 
-// Initialize the Press Start 2P font for pixel art
 const pressStart2P = Press_Start_2P({
   subsets: ['latin'],
   weight: ['400'],
@@ -54,6 +52,7 @@ export default function RootLayout({
           </Providers>
         </SessionProvider>
       </body>
+      <GoogleAnalytics gaId="G-485610168" />
     </html>
-  )
+  );
 }
