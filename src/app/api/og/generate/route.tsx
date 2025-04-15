@@ -287,7 +287,7 @@ export async function GET(request: NextRequest) {
                     maxWidth: '100%',
                     wordWrap: 'break-word'
                   }}>
-                    Modern Coding
+                    🔥 AI Engineering Mastery
                   </div>
                   
                   {/* Center content - title and description */}
@@ -355,7 +355,7 @@ export async function GET(request: NextRequest) {
                       opacity: 1,
                       textAlign: 'center'
                     }}>
-                      🔥 AI Engineering Mastery 
+                      Modern Coding
                     </div>
                   </div>
                 </div>
