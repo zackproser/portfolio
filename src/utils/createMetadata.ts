@@ -134,7 +134,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   }
   
   // If the image is from a content directory (blog post), store the full path
-  if (processedImage?.src && typeof processedImage.src === 'string') {
+  if (processedImage && typeof processedImage === 'object' && 'src' in processedImage && typeof processedImage.src === 'string') {
     // Check if the image is a relative path in the content directory
     const srcPath = processedImage.src;
     console.log('Processing image src path:', srcPath);
