@@ -3,33 +3,47 @@ export function generateOgUrl({
   description = "Full-stack open-source hacker and technical writer",
   image = {}
 } = {}) {
-  // Create a bare URL string with properly encoded components
-  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
+  // Create a bare URL with properly encoded components
+  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og/generate`;
+  
+  // Always start with a new URLSearchParams object for clean encoding
   const params = new URLSearchParams();
   
-  // Add parameters
-  if (title) params.set('title', title);
-  if (description) params.set('description', description);
+  // Add title and description
+  if (title) {
+    params.set('title', String(title));
+  }
   
-  // Extract image filename
+  if (description) {
+    params.set('description', String(description));
+  }
+  
+  // Extract image info - with extra debugging
   if (image) {
-    const imageSrc = typeof image === 'string' ? image : image?.src;
-    if (imageSrc) {
-      // Extract just the filename
-      let filename;
-      if (imageSrc.includes('/')) {
-        const segments = imageSrc.split('/');
-        filename = segments[segments.length - 1];
-      } else {
-        filename = imageSrc;
-      }
+    console.log('[ogUrl] Processing image:', typeof image, 
+      typeof image === 'object' ? Object.keys(image).join(',') : '');
       
-      if (filename) {
-        params.set('heroImage', filename);
-      }
+    // For Next.js imported images with src property
+    if (typeof image === 'object' && image !== null && 'src' in image) {
+      console.log('[ogUrl] Using image src:', image.src);
+      params.set('imageSrc', image.src);
+    } 
+    // For string references
+    else if (typeof image === 'string') {
+      console.log('[ogUrl] Using image string:', image);
+      params.set('imageSrc', image);
+    }
+    // Special case - for imported images with default property
+    else if (typeof image === 'object' && image !== null && 'default' in image && 
+             typeof image.default === 'object' && image.default !== null && 'src' in image.default) {
+      console.log('[ogUrl] Using image.default.src:', image.default.src);
+      params.set('imageSrc', image.default.src);
     }
   }
   
-  // Return raw URL string without using toString() which could introduce encodings
-  return `${baseUrl}?${params.toString()}`;
+  // Generate the URL with properly encoded parameters
+  const url = `${baseUrl}?${params.toString()}`;
+  console.log('[ogUrl] Generated URL:', url);
+  
+  return url;
 }
