@@ -10,6 +10,9 @@ import { ExtendedMetadata } from '@/types'
 import MiniPaywall from './MiniPaywall'
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
+import { generateOgUrl } from '@/utils/ogUrl'
+import { useRouter } from 'next/navigation'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -26,6 +29,7 @@ export function ArticleLayout({
   metadata,
   serverHasPurchased = false,
 }: ArticleLayoutProps) {
+  const router = useRouter()
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(serverHasPurchased)
 
@@ -47,6 +51,16 @@ export function ArticleLayout({
   // Extract the base slug to help with matching
   const baseSlug = safeSlug.split('/').pop() || safeSlug;
   console.log(`[ArticleLayout] Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
+
+  // Generate the OG URL with proper slug parameter
+  const ogUrl = generateOgUrl({
+    title: safeTitle,
+    description: typeof metadata.description === 'string' ? metadata.description : undefined,
+    image: metadata.image,
+    slug: baseSlug as any // Force type to match expected null | undefined in generateOgUrl
+  });
+  
+  console.log(`[ArticleLayout] Generated OG URL: ${ogUrl}`);
 
   // Use the server purchase status instead of making a redundant API call
   // Only keep this useEffect for SSG pages or situations where serverHasPurchased might not be available
@@ -96,8 +110,37 @@ export function ArticleLayout({
     (metadata.miniPaywallTitle || metadata.commerce.miniPaywallTitle) &&
     (metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription);
 
+  // Build the full URL for og:url and twitter:url
+  let rootPath = '/blog/';
+  if (safeType === 'video') {
+    rootPath = '/videos/';
+  } else if (safeType === 'course') {
+    rootPath = '/learn/courses/';
+  }
+  
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${rootPath}${safeSlug}`;
+
   return (
     <>
+      <Head>
+        <title>{`${safeTitle} - Zachary Proser`}</title>
+        <meta name="description" content={metadata.description as string} />
+        
+        {/* Open Graph tags */}
+        <meta property="og:title" content={safeTitle} />
+        <meta property="og:description" content={metadata.description as string} />
+        <meta property="og:url" content={fullUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={ogUrl} />
+        
+        {/* Twitter card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={safeTitle} />
+        <meta name="twitter:description" content={metadata.description as string} />
+        <meta name="twitter:image" content={ogUrl} />
+        <meta name="twitter:domain" content="zackproser.com" />
+      </Head>
+      
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-2xl">
