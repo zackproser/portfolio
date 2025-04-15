@@ -1,6 +1,6 @@
 import { Noto_Sans, Press_Start_2P } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
-import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SessionProvider } from "next-auth/react";
 import { Providers } from '@/app/providers';
@@ -52,7 +52,7 @@ export default function RootLayout({
           </Providers>
         </SessionProvider>
       </body>
-      <GoogleAnalytics gaId="G-485610168" />
+      <GoogleTagManager gtmId="GTM-K9XTVH6V" />
     </html>
   );
 }
