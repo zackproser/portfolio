@@ -8,7 +8,10 @@ export interface ExtendedMetadata extends Metadata {
   author: string
   date: string
   description: string
-  image?: string | StaticImageData | { src: string }
+  image?: string | StaticImageData | { 
+    src: string;
+    fullPath?: string; // Added for OG image generation to track original image location
+  }
   type: 'blog' | 'course' | 'video' | 'demo'
   slug: string
   tags?: string[]
