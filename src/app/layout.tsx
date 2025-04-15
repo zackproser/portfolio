@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SessionProvider } from "next-auth/react";
 import { Providers } from '@/app/providers';
 import { ConsultancyNav } from '@/components/ConsultancyNav';
+import { Toaster } from '@/components/ui/toaster';
 import '@/styles/tailwind.css';
 import '@/styles/global.css';
 
@@ -46,6 +47,7 @@ export default function RootLayout({
             <div className="flex w-full flex-col">
               <ConsultancyNav />
               <main className="flex-grow">{children}</main>
+              <Toaster />
               <Analytics />
               <SpeedInsights />
             </div>
