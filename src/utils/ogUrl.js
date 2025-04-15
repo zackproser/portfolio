@@ -1,7 +1,8 @@
 export function generateOgUrl({
   title = "Zachary Proser's portfolio",
   description = "Full-stack open-source hacker and technical writer",
-  image = {}
+  image = {},
+  slug = null
 } = {}) {
   // Create a bare URL with properly encoded components
   const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
@@ -9,9 +10,33 @@ export function generateOgUrl({
   // Always start with a new URLSearchParams object for clean encoding
   const params = new URLSearchParams();
   
+  // PRIORITY 1: Add slug parameter (most important for static image lookup)
+  if (slug) {
+    // If slug contains slashes, just get the last part
+    const slugParts = slug.split('/');
+    const lastSlugPart = slugParts[slugParts.length - 1];
+    params.set('slug', lastSlugPart);
+    console.log('[ogUrl] Using provided slug:', lastSlugPart);
+  }
+  
   // Add title and description
   if (title) {
     params.set('title', String(title));
+    
+    // Only create slug from title if no slug was provided
+    if (!slug) {
+      // Create a slug from the title for OG image lookup
+      const titleSlug = title.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .replace(/-+/g, '-'); // Replace multiple hyphens with a single one
+      
+      // If this is a reasonable slug (not just a few characters), use it
+      if (titleSlug.length > 3) {
+        params.set('slug', titleSlug);
+        console.log('[ogUrl] Added slug from title:', titleSlug);
+      }
+    }
   }
   
   if (description) {
