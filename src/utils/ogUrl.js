@@ -4,7 +4,7 @@ export function generateOgUrl({
   image = {}
 } = {}) {
   // Create a bare URL with properly encoded components
-  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og/generate`;
+  const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
   
   // Always start with a new URLSearchParams object for clean encoding
   const params = new URLSearchParams();
@@ -26,18 +26,18 @@ export function generateOgUrl({
     // For Next.js imported images with src property
     if (typeof image === 'object' && image !== null && 'src' in image) {
       console.log('[ogUrl] Using image src:', image.src);
-      params.set('imageSrc', image.src);
+      params.set('image', image.src);
     } 
     // For string references
     else if (typeof image === 'string') {
       console.log('[ogUrl] Using image string:', image);
-      params.set('imageSrc', image);
+      params.set('image', image);
     }
     // Special case - for imported images with default property
     else if (typeof image === 'object' && image !== null && 'default' in image && 
              typeof image.default === 'object' && image.default !== null && 'src' in image.default) {
       console.log('[ogUrl] Using image.default.src:', image.default.src);
-      params.set('imageSrc', image.default.src);
+      params.set('image', image.default.src);
     }
   }
   
