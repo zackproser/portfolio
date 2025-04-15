@@ -14,7 +14,10 @@ export const dynamic = 'force-dynamic'; // Allow dynamic parameters
 export async function GET(request: NextRequest) {
   try {
     // Parse the URL directly from request.url
-    const { searchParams } = new URL(request.url);
+    const requestUrl = request.url;
+    // Decode HTML entities in the URL (convert &amp; to &)
+    const decodedUrl = requestUrl.replace(/&amp;/g, '&');
+    const { searchParams } = new URL(decodedUrl);
 
     // Extract the slug parameter and title for fallback
     const slug = searchParams.get('slug');

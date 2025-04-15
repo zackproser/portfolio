@@ -25,13 +25,16 @@ export async function GET(request: NextRequest) {
     // Extract query parameters
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
-    const imageSrc = searchParams.get('imageSrc')?.replace(/^"|"$/g, ''); // Remove surrounding quotes
+    
+    // Check for both parameter names for backward compatibility
+    const imageSrc = searchParams.get('imageSrc') || searchParams.get('image');
+    const finalImageSrc = imageSrc?.replace(/^"|"$/g, ''); // Remove surrounding quotes
     
     console.log('-----OG IMAGE GENERATOR-----');
     console.log('Generating OG image with:');
     console.log('Title:', title);
     console.log('Description:', description?.substring(0, 50) + '...');
-    console.log('Image Src:', imageSrc);
+    console.log('Image Src:', finalImageSrc);
     
     // Special debug endpoint to see what's happening
     if (debug) {
@@ -54,7 +57,7 @@ export async function GET(request: NextRequest) {
         params,
         imageDir,
         imageFiles,
-        imageSrcProvided: !!imageSrc
+        imageSrcProvided: !!finalImageSrc
       }, null, 2), {
         headers: { 'Content-Type': 'application/json' }
       });
@@ -68,19 +71,19 @@ export async function GET(request: NextRequest) {
       let rawImageData;
       
       // If we have a direct image src from Next.js
-      if (imageSrc) {
+      if (finalImageSrc) {
         // Extract just the base filename without any path or hash
         let baseFilename = '';
         
-        if (imageSrc.includes('/_next/static/media/')) {
+        if (finalImageSrc.includes('/_next/static/media/')) {
           // This is a Next.js optimized image path like "/_next/static/media/pair-coding-with-ai.123abc.webp"
           // We just want "pair-coding-with-ai"
-          const filename = path.basename(imageSrc); // Get "pair-coding-with-ai.123abc.webp"
+          const filename = path.basename(finalImageSrc); // Get "pair-coding-with-ai.123abc.webp"
           // Remove hash from filename (like .95561f3f)
           baseFilename = filename.split('.')[0].replace(/\.[a-f0-9]+$/, ''); 
         } else {
           // Direct string path, just use as is
-          baseFilename = path.basename(imageSrc).split('.')[0];
+          baseFilename = path.basename(finalImageSrc).split('.')[0];
         }
         
         console.log('Extracted base filename:', baseFilename);
