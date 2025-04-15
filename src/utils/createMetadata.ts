@@ -1,6 +1,7 @@
 import { ExtendedMetadata } from '@/types'
 import { generateOgUrl } from '@/utils/ogUrl'
 import path from 'path'
+import { Metadata } from 'next'
 
 type MetadataParams = Partial<ExtendedMetadata> & {
   /**
@@ -87,38 +88,95 @@ function getUrlForContent(type: string, slug: string): string {
  */
 export function createMetadata(params: MetadataParams): ExtendedMetadata {
   const { 
-    author, 
-    date, 
     title, 
     description, 
+    author,
     image,
-    type = 'blog',
+    filePath, 
+    type: providedType,
+    slug: providedSlug,
+    date,
+    keywords,
+    tags,
     commerce,
     landing,
-    slug,
-    filePath,
-  } = params;
+    ...rest
+  } = params
 
   // Generate a slug based on priority:
   // 1. Explicitly provided slug
   // 2. Generated from file path
   const pathBasedSlug = filePath ? getSlugFromPath(filePath) : '';
-  const finalSlug = slug || pathBasedSlug || 'untitled';
+  const finalSlug = providedSlug || pathBasedSlug || 'untitled';
 
   // Determine content type from file path if not explicitly provided
-  const contentType = type || (filePath ? getTypeFromPath(filePath) : 'blog');
+  const contentType = providedType || (filePath ? getTypeFromPath(filePath) : 'blog');
 
-  // Handle webpack-imported images and ensure we preserve the object structure
-  const processedImage = typeof image === 'string' 
-    ? { src: image } 
-    : image;
+  // Process the image to ensure it's correctly passed to the OG function
+  // This ensures we're passing the direct image object, not just its path
+  let processedImage = image;
+  
+  // Debug log to help diagnose image issues
+  console.log('[createMetadata] Image type:', image ? typeof image : 'none', 
+      image && typeof image === 'object' ? 'keys: ' + Object.keys(image).join(', ') : '');
+  
+  if (image) {
+    // For objects with src property (Next.js images), use them directly
+    if (typeof image === 'object' && 'src' in image) {
+      console.log('[createMetadata] Using image src:', image.src);
+      processedImage = image;
+    }
+    // For string paths, use them directly
+    else if (typeof image === 'string') {
+      console.log('[createMetadata] Using image string:', image);
+      processedImage = image;
+    }
+  }
+  
+  // If the image is from a content directory (blog post), store the full path
+  if (processedImage?.src && typeof processedImage.src === 'string') {
+    // Check if the image is a relative path in the content directory
+    const srcPath = processedImage.src;
+    console.log('Processing image src path:', srcPath);
     
-  // Add debug logging for image processing
-  console.log('Original image in createMetadata:', image);
-  console.log('Processed image in createMetadata:', processedImage);
+    if (filePath && srcPath.includes('/') && !srcPath.startsWith('http')) {
+      // Determine if this is a blog post image (if located in the same directory as the MDX file)
+      const mdxDir = path.dirname(filePath);
+      
+      console.log('MDX directory for image resolution:', mdxDir);
+      console.log('Source image path:', srcPath);
+      
+      // If using relative import, the path will be resolved relative to the MDX file
+      if (!srcPath.startsWith('/')) {
+        // Only set fullPath if processedImage allows it (matches our interface)
+        if (typeof processedImage === 'object' && 'src' in processedImage) {
+          (processedImage as { src: string; fullPath?: string }).fullPath = path.join(mdxDir, srcPath);
+          console.log('Resolved full image path:', 
+            (processedImage as { src: string; fullPath?: string }).fullPath);
+        }
+      }
+    }
+  } else if (typeof image === 'object' && image !== null && 'default' in (image as any)) {
+    // Handle Next.js imported image objects
+    const imageModule = (image as any).default || image;
+    if (typeof imageModule === 'object' && imageModule !== null && 'src' in imageModule) {
+      if (processedImage && typeof processedImage === 'object') {
+        (processedImage as any).src = imageModule.src as string;
+        console.log('Extracted image src from module:', (processedImage as any).src);
+      }
+    }
+  }
+  
+  // Check if we have a processed image with src before generating OG URL
+  if (processedImage && typeof processedImage === 'object' && 'src' in processedImage) {
+    console.log('Final image src for OG URL:', processedImage.src);
+  } else {
+    console.log('WARNING: No valid image src found for OG URL generation');
+  }
 
   // Generate URL using the type and slug
   const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
+  console.log('IMAGE DEBUG END -------');
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
   const metadata: ExtendedMetadata = {
