@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
-    "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && npm install --platform=linux --arch=x64 sharp && next build",
+    "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && next build",
     "build-no-db": "npm run prebuild && prisma generate && next build",
     "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && next build",
     "build-only": "prisma generate && next build",
@@ -42,7 +42,7 @@
     "@heroicons/react": "^2.1.1",
     "@mapbox/rehype-prism": "^0.9.0",
     "@next/mdx": "^13.4.16",
-    "@next/third-parties": "^14.1.0",
+    "@next/third-parties": "^14.2.28",
     "@pinecone-database/pinecone": "^2.2.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.0",
