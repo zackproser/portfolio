@@ -64,3 +64,6 @@ prisma/.env
 
 # Cursor rules
 .cursor/
+
+# Ignore optimized OG images
+public/og-images-optimized/
