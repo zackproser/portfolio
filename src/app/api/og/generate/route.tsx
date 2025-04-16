@@ -48,9 +48,9 @@ export async function GET(request: NextRequest) {
     const encodedTitle = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const encodedDescription = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
-    // Properly decode the URL-encoded parameters
-    const title = decodeURIComponent(encodedTitle);
-    const description = decodeURIComponent(encodedDescription);
+    // Properly decode the URL-encoded parameters and sanitize apostrophes
+    const title = decodeURIComponent(encodedTitle).replace(/'/g, "").replace(/'/g, "");
+    const description = decodeURIComponent(encodedDescription).replace(/'/g, "").replace(/'/g, "");
     
     // Check for both parameter names for backward compatibility
     const imageSrc = searchParams.get('imageSrc') || searchParams.get('image');
