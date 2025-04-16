@@ -9,6 +9,9 @@ const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
 const appDir = path.join(process.cwd(), 'src', 'app');
 const expectedMetadataFields = ['title', 'description', 'openGraph', 'twitter', 'author', 'date', 'image'];
 
+// Add verbose flag
+const isVerbose = process.argv.includes('--verbose');
+
 function analyzeFile(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
@@ -192,7 +195,21 @@ function writeReportAndLog(report) {
   const jsonReport = JSON.stringify(report, null, 2);
   fs.writeFileSync('metadata-report.json', jsonReport);
 
-  console.log(markdownReport);
+  // Only output full report when verbose flag is enabled
+  if (isVerbose) {
+    console.log(markdownReport);
+  } else {
+    // Print a concise summary instead
+    const totalPages = report.fullMetadata.length + report.partialMetadata.length + 
+                      report.noMetadata.length + report.errors.length;
+    
+    console.log(`Metadata check: ${report.fullMetadata.length} complete, ${report.partialMetadata.length} partial, ${report.noMetadata.length} missing, ${report.errors.length} errors (${totalPages} total)`);
+    
+    // Only show issues if there are any
+    if (report.partialMetadata.length > 0 || report.noMetadata.length > 0 || report.errors.length > 0) {
+      console.log('For details, see metadata-report.md and metadata-report.json');
+    }
+  }
 }
 
 async function debugMetadata(report) {

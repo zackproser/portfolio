@@ -10,6 +10,9 @@ import { ExtendedMetadata } from '@/types'
 import MiniPaywall from './MiniPaywall'
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
+import Head from 'next/head'
+import { generateOgUrl } from '@/utils/ogUrl'
+import { useRouter } from 'next/navigation'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -26,6 +29,7 @@ export function ArticleLayout({
   metadata,
   serverHasPurchased = false,
 }: ArticleLayoutProps) {
+  const router = useRouter()
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(serverHasPurchased)
 
@@ -46,7 +50,41 @@ export function ArticleLayout({
   
   // Extract the base slug to help with matching
   const baseSlug = safeSlug.split('/').pop() || safeSlug;
-  console.log(`[ArticleLayout] Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
+  
+  // Only log debug info if DEBUG_METADATA environment variable is set
+  const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
+  const debugLog = (message: string) => {
+    if (isDebugMode) {
+      console.log(`[ArticleLayout] ${message}`);
+    }
+  };
+  
+  debugLog(`Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
+
+  // Add more debug information about the image
+  if (metadata.image && isDebugMode) {
+    debugLog(`Image type: ${typeof metadata.image}`);
+    if (typeof metadata.image === 'object' && metadata.image !== null) {
+      debugLog(`Image keys: ${Object.keys(metadata.image).join(',')}`);
+      if ('src' in metadata.image) {
+        debugLog(`Image src: ${(metadata.image as any).src}`);
+      }
+    } else if (typeof metadata.image === 'string') {
+      debugLog(`Image string: ${metadata.image}`);
+    }
+  } else if (isDebugMode) {
+    debugLog(`No image provided for ${safeTitle}`);
+  }
+
+  // Generate the OG URL with proper slug parameter
+  const ogUrl = generateOgUrl({
+    title: safeTitle,
+    description: typeof metadata.description === 'string' ? metadata.description : undefined,
+    image: metadata.image,
+    slug: baseSlug as any // Force type to match expected parameter type
+  });
+  
+  debugLog(`Generated OG URL: ${ogUrl}`);
 
   // Use the server purchase status instead of making a redundant API call
   // Only keep this useEffect for SSG pages or situations where serverHasPurchased might not be available
@@ -54,7 +92,7 @@ export function ArticleLayout({
     // If we have received a definitive answer from the server (either true or false),
     // there's no need to check again - we trust the server's response
     if (serverHasPurchased !== undefined) {
-      console.log(`Using server-provided purchase status: ${serverHasPurchased}`);
+      debugLog(`Using server-provided purchase status: ${serverHasPurchased}`);
       return;
     }
 
@@ -70,7 +108,7 @@ export function ArticleLayout({
           ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
           : `/api/check-purchase?slug=${safeSlug}`;
         
-        console.log('No server purchase status available, performing client-side check');
+        debugLog('No server purchase status available, performing client-side check');
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -96,8 +134,37 @@ export function ArticleLayout({
     (metadata.miniPaywallTitle || metadata.commerce.miniPaywallTitle) &&
     (metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription);
 
+  // Build the full URL for og:url and twitter:url
+  let rootPath = '/blog/';
+  if (safeType === 'video') {
+    rootPath = '/videos/';
+  } else if (safeType === 'course') {
+    rootPath = '/learn/courses/';
+  }
+  
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${rootPath}${safeSlug}`;
+
   return (
     <>
+      <Head>
+        <title>{`${safeTitle} - Zachary Proser`}</title>
+        <meta name="description" content={metadata.description as string} />
+        
+        {/* Open Graph tags */}
+        <meta property="og:title" content={safeTitle} />
+        <meta property="og:description" content={metadata.description as string} />
+        <meta property="og:url" content={fullUrl} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={ogUrl} />
+        
+        {/* Twitter card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={safeTitle} />
+        <meta name="twitter:description" content={metadata.description as string} />
+        <meta name="twitter:image" content={ogUrl} />
+        <meta name="twitter:domain" content="zackproser.com" />
+      </Head>
+      
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-2xl">

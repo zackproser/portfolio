@@ -91,9 +91,8 @@ combinations.forEach(([tool1, tool2], _index) => {
   }
 });
 
-if (debug) {
-  console.log(`Generated ${combinations.length} comparison pages`);
-}
+// Always show the summary, even when debug is off
+console.log(`Generated ${combinations.length} AI tool comparison pages.`);
 
 module.exports = {
   generateCombinations,
