@@ -149,15 +149,27 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     const slugLabel = specificSlugs ? `filtered to ${specificSlugs.length} specific slugs` : 'all slugs';
     logSummary(`Loading content: ${contentType} (${slugLabel})`);
     
-    // Detailed logs only in verbose mode
-    logVerbose(`Getting all content for type: ${contentType}${specificSlugs ? `, filtered to ${specificSlugs.length} specific slugs` : ''}`);
+    // Get all directory slugs (these are the actual content directories)
     let slugs = getContentSlugs(contentType);
+    logVerbose(`Found ${slugs.length} content directories to process`);
     
-    // If specific slugs are provided, use only those that exist in the content directory
+    // If specific slugs are provided and we need early filtering for efficiency,
+    // we need to match against the directory names AND the basename of any path-based slugs
     if (specificSlugs && specificSlugs.length > 0) {
-      logVerbose(`Filtering to specific slugs: ${specificSlugs.join(', ')}`);
+      // Extract both the full slug and the basename (last part) of each specificSlug
+      const specificSlugSet = new Set();
+      specificSlugs.forEach(slug => {
+        // Add the original slug
+        specificSlugSet.add(slug);
+        // Add the basename (everything after the last /)
+        const basename = slug.split('/').pop();
+        if (basename) specificSlugSet.add(basename);
+      });
       
-      logVerbose(`Found ${slugs.length} total slugs in content directory, will filter after processing`);
+      // Now filter the directory slugs using this expanded set
+      const originalCount = slugs.length;
+      slugs = slugs.filter(dirSlug => specificSlugSet.has(dirSlug));
+      logVerbose(`Filtered from ${originalCount} to ${slugs.length} content directories based on specific slugs`);
     }
     
     const contentItemsPromises = slugs.map(async (slug) => {
@@ -172,7 +184,6 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
         
         // Ensure the metadata has a slug (use the directory name if not provided)
         if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-          //console.log(`No valid slug in metadata for ${slug}, using directory name`)
           processedMetadata.slug = slug
         } else {
           // Normalize the slug to prevent path issues
@@ -206,6 +217,7 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
           contentType === 'comparisons' ? 'comparisons' : 
           contentType;
         
+        // Store both the directory slug and the processed slug for reliable matching
         return {
           author: processedMetadata.author || 'Unknown',
           date: processedMetadata.date || new Date().toISOString(),
@@ -215,6 +227,7 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
           type: processedMetadata.type,
           slug: `/${typePath}/${processedMetadata.slug}`,  // Include the full path in the slug
           _id: processedMetadata._id,
+          directorySlug: slug, // Add the original directory slug for reliable matching
           ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
           ...(processedMetadata.landing && { landing: processedMetadata.landing }),
           ...(processedMetadata.tags && { tags: processedMetadata.tags })
@@ -234,23 +247,40 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
       item !== null && typeof item === 'object'
     )
     
-    // Now apply the specificSlugs filter AFTER processing the content items
-    // This ensures we're filtering with normalized slugs that match what the homepage expects
+    // If specific slugs were provided, apply final filtering
     if (specificSlugs && specificSlugs.length > 0) {
-      // Function to normalize slugs for comparison
-      const normalizeForComparison = (slug: string) => {
-        return slug.replace(/^\/+/, '').replace(/^(blog|videos)\//, '');
-      };
-      
-      // Apply filter using normalized comparisons
+      // Multiple matching strategies to ensure we find the right content
       validItems = validItems.filter(item => {
-        const normalizedItemSlug = normalizeForComparison(item.slug);
-        return specificSlugs.some(
-          specificSlug => normalizeForComparison(specificSlug) === normalizedItemSlug
-        );
+        // 1. Try to match against the directory slug (most reliable)
+        if (specificSlugs.includes(item.directorySlug)) {
+          logVerbose(`Matched on directory slug: ${item.directorySlug}`);
+          return true;
+        }
+        
+        // 2. Try to match the slug basename (remove path)
+        const itemSlugBasename = item.slug.split('/').pop() || '';
+        const specificSlugBasenames = specificSlugs.map(s => s.split('/').pop() || '');
+        if (specificSlugBasenames.includes(itemSlugBasename)) {
+          logVerbose(`Matched on slug basename: ${itemSlugBasename}`);
+          return true;
+        }
+        
+        // 3. Try to match any part of the slug path
+        for (const specificSlug of specificSlugs) {
+          if (item.slug.includes(specificSlug)) {
+            logVerbose(`Matched on slug substring: ${specificSlug} in ${item.slug}`);
+            return true;
+          }
+        }
+        
+        return false;
       });
       
-      logVerbose(`After filtering with specificSlugs, found ${validItems.length} matching items`);
+      // Output detailed log of which items matched
+      logVerbose(`After multi-strategy filtering, found ${validItems.length} matching items:`);
+      validItems.forEach(item => {
+        logVerbose(`  - ${item.title} (${item.directorySlug} → ${item.slug})`);
+      });
     }
     
     // Sort by date, with proper null checks
@@ -262,8 +292,6 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     
     // Just one summary log in default mode
     logSummary(`Loaded ${validItems.length} ${contentType} content items${specificSlugs ? ' (filtered)' : ''}`);
-    // More details in verbose mode
-    logVerbose(`Returning ${validItems.length} valid content items for ${contentType}`);
     
     return validItems
   } catch (error) {
