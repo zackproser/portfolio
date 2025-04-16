@@ -105,7 +105,11 @@ if (combinations.length > 0) {
   console.log('First combination:', combinations[0][0].name, 'vs', combinations[0][1].name);
 }
 
-combinations.forEach(([db1, db2], _index) => {
+// Add a summary counter
+let generatedCount = 0;
+let errorCount = 0;
+
+combinations.forEach(([db1, db2], index) => {
   try {
     const slug = `${slugify(db1.name)}-vs-${slugify(db2.name)}`;
     const dir = path.join(process.env.PWD, `/src/app/comparisons/${slug}`)
@@ -116,7 +120,8 @@ combinations.forEach(([db1, db2], _index) => {
     if (fs.existsSync(filename)) {
       const existingContent = fs.readFileSync(filename, 'utf8');
       existingDate = extractDateFromContent(existingContent);
-      console.log(`Existing date for ${db1.name} vs ${db2.name}: ${existingDate}`);
+      // Remove verbose logging
+      // console.log(`Existing date for ${db1.name} vs ${db2.name}: ${existingDate}`);
     }
 
     const content = generatePostContent(db1, db2, existingDate);
@@ -125,8 +130,14 @@ combinations.forEach(([db1, db2], _index) => {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
-    console.log(`Generated content for ${db1.name} vs ${db2.name} and wrote to ${filename}`);
+    // Remove verbose logging
+    // console.log(`Generated content for ${db1.name} vs ${db2.name} and wrote to ${filename}`);
+    generatedCount++;
   } catch (error) {
     console.error(`Error generating post for: ${db1.name} vs ${db2.name}: ${error}`);
+    errorCount++;
   }
 });
+
+// Add a single line summary at the end
+console.log(`Generated ${generatedCount} vector database comparison posts (${errorCount} errors).`);

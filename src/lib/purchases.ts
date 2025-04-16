@@ -1,5 +1,17 @@
 import { prisma } from './prisma';
 
+// Add a debug logger based on environment variable
+const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_PURCHASES === 'true';
+const debugLog = (message: string, data?: any) => {
+  if (isDebugMode) {
+    if (data) {
+      console.log(`[purchases] ${message}`, data);
+    } else {
+      console.log(`[purchases] ${message}`);
+    }
+  }
+};
+
 /**
  * Check if a user or email has purchased a specific content
  */
@@ -52,12 +64,12 @@ export async function hasUserPurchased(
     }
     
     if (purchase) {
-      console.log(`[hasUserPurchased] Purchase found: ${JSON.stringify({
+      debugLog(`Purchase found:`, {
         id: purchase.id,
         contentType: purchase.contentType,
         contentSlug: purchase.contentSlug,
         hasStripeId: !!purchase.stripePaymentId,
-      })}`);
+      });
     }
     
     return !!purchase;
