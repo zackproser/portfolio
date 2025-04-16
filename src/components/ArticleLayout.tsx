@@ -52,12 +52,27 @@ export function ArticleLayout({
   const baseSlug = safeSlug.split('/').pop() || safeSlug;
   console.log(`[ArticleLayout] Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
 
+  // Add more debug information about the image
+  if (metadata.image) {
+    console.log(`[ArticleLayout] Image type: ${typeof metadata.image}`);
+    if (typeof metadata.image === 'object' && metadata.image !== null) {
+      console.log(`[ArticleLayout] Image keys: ${Object.keys(metadata.image).join(',')}`);
+      if ('src' in metadata.image) {
+        console.log(`[ArticleLayout] Image src: ${(metadata.image as any).src}`);
+      }
+    } else if (typeof metadata.image === 'string') {
+      console.log(`[ArticleLayout] Image string: ${metadata.image}`);
+    }
+  } else {
+    console.log(`[ArticleLayout] No image provided for ${safeTitle}`);
+  }
+
   // Generate the OG URL with proper slug parameter
   const ogUrl = generateOgUrl({
     title: safeTitle,
     description: typeof metadata.description === 'string' ? metadata.description : undefined,
     image: metadata.image,
-    slug: baseSlug as any // Force type to match expected null | undefined in generateOgUrl
+    slug: baseSlug as any // Force type to match expected parameter type
   });
   
   console.log(`[ArticleLayout] Generated OG URL: ${ogUrl}`);
