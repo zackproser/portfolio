@@ -4,10 +4,21 @@ import { join } from 'path';
 import { readFile } from 'fs/promises';
 import React from 'react';
 import fs from 'fs';
+import { ogLogger } from '@/utils/logger';
 
 // This route is only for generating images and won't be used in production
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
+
+// Only log in development or when explicitly enabled
+const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
+
+// Helper function to conditionally log
+const log = (message: string, ...args: any[]) => {
+  if (shouldLog) {
+    console.log(message, ...args);
+  }
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,10 +29,10 @@ export async function GET(request: NextRequest) {
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
-    console.log('-----OG IMAGE GENERATOR-----');
-    console.log('Generating OG image with:');
-    console.log('Title:', title);
-    console.log('Description:', description?.substring(0, 50) + '...');
+    ogLogger.info('-----OG IMAGE GENERATOR-----');
+    ogLogger.info('Generating OG image with:');
+    ogLogger.info('Title:', title);
+    ogLogger.info('Description:', description?.substring(0, 50) + '...');
     
     // Load default background image
     let imageData;
@@ -33,7 +44,7 @@ export async function GET(request: NextRequest) {
         return new Response('Default image not found', { status: 500 });
       }
     } catch (error: any) {
-      console.error('Error loading default image:', error);
+      ogLogger.error('Error loading default image:', error);
       return new Response(`Failed to load default image: ${error.message}`, { status: 500 });
     }
 
@@ -268,7 +279,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error: any) {
-    console.error(`OG image generation error:`, error);
+    ogLogger.error(`OG image generation error:`, error);
     return new Response(`Failed to generate image: ${error.message}`, {
       status: 500,
     });
