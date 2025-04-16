@@ -151,9 +151,93 @@ export async function loadContent(contentType: string, slug: string) {
  */
 export async function getAllContent(contentType: string = 'blog', specificSlugs?: string[]): Promise<Content[]> {
   try {
-    // Log high-level summary of what we're loading
-    const slugLabel = specificSlugs ? `filtered to ${specificSlugs.length} specific slugs` : 'all slugs';
-    logSummary(`Loading content: ${contentType} (${slugLabel})`);
+    // Optimize for the case when specific slugs are provided
+    if (specificSlugs && specificSlugs.length > 0) {
+      logSummary(`Loading specific ${contentType} content: ${specificSlugs.length} slugs`);
+      
+      // Process only the specified slugs directly without loading all content
+      const contentItemsPromises = specificSlugs.map(async (requestedSlug) => {
+        try {
+          // Normalize the slug to match file system
+          const normalizedSlug = normalizeSlug(requestedSlug);
+          
+          // Load only this specific content item
+          const result = await loadContent(contentType, normalizedSlug);
+          if (!result) {
+            logVerbose(`Content not found for slug: ${contentType}/${normalizedSlug}`);
+            return null;
+          }
+          
+          const { metadata } = result;
+          
+          // Process metadata to ensure consistent slug and ID generation
+          let processedMetadata = { ...metadata } as ExtendedMetadata;
+          
+          // Ensure the metadata has a slug (use the normalized slug if not provided)
+          if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
+            processedMetadata.slug = normalizedSlug;
+          }
+          
+          // Add a unique ID that's deterministic based on content type and slug
+          processedMetadata._id = `${contentType}-${normalizedSlug}`;
+          
+          // Ensure the type is set correctly
+          processedMetadata.type = processedMetadata.type || (
+            contentType === 'blog' ? 'blog' : 
+            contentType === 'videos' ? 'video' : 
+            contentType === 'learn/courses' ? 'course' : 'blog'
+          );
+          
+          // Create the full path for the content
+          const typePath = 
+            contentType === 'videos' ? 'videos' : 
+            contentType === 'blog' ? 'blog' : 
+            contentType === 'learn/courses' ? 'learn/courses' : 
+            contentType === 'comparisons' ? 'comparisons' : 
+            contentType;
+          
+          return {
+            author: processedMetadata.author || 'Unknown',
+            date: processedMetadata.date || new Date().toISOString(),
+            title: typeof processedMetadata.title === 'string' ? processedMetadata.title : (processedMetadata.title as any)?.default || 'Untitled',
+            description: processedMetadata.description || '',
+            image: processedMetadata.image || '',
+            type: processedMetadata.type,
+            slug: `/${typePath}/${normalizedSlug}`,
+            _id: processedMetadata._id,
+            directorySlug: normalizedSlug,
+            ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
+            ...(processedMetadata.landing && { landing: processedMetadata.landing }),
+            ...(processedMetadata.tags && { tags: processedMetadata.tags })
+          } as Content;
+        } catch (error) {
+          console.error(`Error processing content for ${contentType}/${requestedSlug}:`, error);
+          return null;
+        }
+      });
+      
+      // Wait for all promises to resolve
+      const contentItems = await Promise.all(contentItemsPromises);
+      
+      // Filter out any null items
+      let validItems = contentItems.filter((item): item is Content => 
+        item !== null && typeof item === 'object'
+      );
+      
+      // Sort by date
+      validItems.sort((a, b) => {
+        const dateA = a?.date ? new Date(a.date).getTime() : 0;
+        const dateB = b?.date ? new Date(b.date).getTime() : 0;
+        return dateB - dateA;
+      });
+      
+      logSummary(`Loaded ${validItems.length}/${specificSlugs.length} requested ${contentType} content items`);
+      
+      return validItems;
+    }
+    
+    // Default behavior (unchanged): Load all content items
+    logSummary(`Loading all ${contentType} content items`);
     
     // Get all directory slugs (these are the actual content directories)
     let slugs = getContentSlugs(contentType);
@@ -657,4 +741,94 @@ export async function getTopLevelPages(): Promise<string[]> {
     console.error('Error getting top-level pages:', error);
     return Array.from(routes).sort(); // Return what we have even if there's an error
   }
+}
+
+/**
+ * Load a single content item directly by slug with maximum performance
+ * @param contentType The content type directory (e.g., 'blog', 'videos')
+ * @param slug The exact slug of the content to load
+ * @returns The direct content item or null if not found
+ */
+export async function getContentBySlugDirect(contentType: string, slug: string): Promise<Content | null> {
+  try {
+    // Construct the exact file path directly - no normalization
+    const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx');
+    
+    // Check if file exists before attempting to load
+    if (!fs.existsSync(contentMdxPath)) {
+      logVerbose(`Content not found: ${contentType}/${slug}`);
+      return null;
+    }
+    
+    // Import only what we need from the MDX file
+    const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`);
+    const metadata = mdxModule.metadata as ExtendedMetadata;
+    
+    if (!metadata) {
+      logVerbose(`No metadata found for: ${contentType}/${slug}`);
+      return null;
+    }
+    
+    // Create the full path for the content URL
+    const typePath = 
+      contentType === 'videos' ? 'videos' : 
+      contentType === 'blog' ? 'blog' : 
+      contentType === 'learn/courses' ? 'learn/courses' : 
+      contentType === 'comparisons' ? 'comparisons' : 
+      contentType;
+    
+    // Return a Content object with minimal processing
+    return {
+      author: metadata.author || 'Unknown',
+      date: metadata.date || new Date().toISOString(),
+      title: typeof metadata.title === 'string' ? metadata.title : (metadata.title as any)?.default || 'Untitled',
+      description: metadata.description || '',
+      image: metadata.image || '',
+      type: metadata.type || contentType,
+      slug: `/${typePath}/${slug}`,
+      _id: `${contentType}-${slug}`,
+      directorySlug: slug,
+      ...(metadata.commerce && { commerce: metadata.commerce }),
+      ...(metadata.landing && { landing: metadata.landing }),
+      ...(metadata.tags && { tags: metadata.tags })
+    };
+  } catch (error) {
+    console.error(`Error loading content for ${contentType}/${slug}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Load multiple content items directly by slugs with maximum performance
+ * @param contentType The content type directory (e.g., 'blog', 'videos')
+ * @param slugs Array of exact slugs to load
+ * @returns Array of content items (null values are filtered out)
+ */
+export async function getContentBySlugs(contentType: string, slugs: string[]): Promise<Content[]> {
+  if (!slugs || slugs.length === 0) {
+    logVerbose(`No slugs provided for direct content load of type: ${contentType}`);
+    return [];
+  }
+  
+  logSummary(`Direct loading ${slugs.length} ${contentType} items`);
+  
+  // Create an array of promises for each slug
+  const contentPromises = slugs.map(slug => getContentBySlugDirect(contentType, slug));
+  
+  // Wait for all promises to resolve
+  const results = await Promise.all(contentPromises);
+  
+  // Filter out null results and ensure type safety
+  const validItems = results.filter((item): item is Content => item !== null);
+  
+  // Sort by date (newest first)
+  validItems.sort((a, b) => {
+    const dateA = a?.date ? new Date(a.date).getTime() : 0;
+    const dateB = b?.date ? new Date(b.date).getTime() : 0;
+    return dateB - dateA;
+  });
+  
+  logSummary(`Directly loaded ${validItems.length}/${slugs.length} ${contentType} items`);
+  
+  return validItems;
 } 
