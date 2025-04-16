@@ -2,13 +2,14 @@
   "name": "zackproser-portfolio",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.8.1",
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
-    "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && next build",
-    "build-no-db": "npm run prebuild && prisma generate && next build",
-    "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && next build",
-    "build-only": "prisma generate && next build",
+    "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build-no-db": "npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
+    "build-only": "prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "start": "next start",
     "lint": "next lint",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
@@ -20,7 +21,13 @@
     "test:watch": "NODE_ENV=development jest --watch",
     "test:coverage": "NODE_ENV=development jest --coverage",
     "ci": "NODE_ENV=development jest && npm run lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "og:generate": "node scripts/og-image-generator.js",
+    "og:generate-for": "node scripts/og-image-generator.js --slug",
+    "og:clean": "rm -rf public/og-images/*.png",
+    "og:clean-orphans": "tsx --tsconfig scripts/tsconfig.json scripts/clean-og-images.ts",
+    "og:optimize": "node scripts/optimize-og-images.js",
+    "og:optimize-replace": "node scripts/optimize-og-images.js --replace"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -36,10 +43,8 @@
     "@headlessui/react": "^1.7.13",
     "@heroicons/react": "^2.1.1",
     "@mapbox/rehype-prism": "^0.9.0",
-    "@mdx-js/loader": "^2.3.0",
-    "@mdx-js/react": "^2.3.0",
     "@next/mdx": "^13.4.16",
-    "@next/third-parties": "^14.1.0",
+    "@next/third-parties": "^14.2.28",
     "@pinecone-database/pinecone": "^2.2.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.0",
@@ -77,6 +82,7 @@
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.9",
     "braces": "^3.0.3",
+    "canvas": "^3.1.0",
     "chalk": "^5.3.0",
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
@@ -118,6 +124,7 @@
     "remark-gfm": "^3.0.1",
     "remark-toc": "^9.0.0",
     "sharp": "^0.32.6",
+    "source-map": "^0.7.4",
     "stripe": "^14.12.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.4",
@@ -130,6 +137,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@mdx-js/react": "^2.3.0",
     "@prisma/client": "^6.4.1",
     "@tailwindcss/typography": "^0.5.10",
     "@testing-library/jest-dom": "^6.6.3",
@@ -144,6 +152,9 @@
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.0.1",
     "prettier-plugin-tailwindcss": "^0.5.2",
-    "prisma": "^6.4.1"
+    "prisma": "^6.4.1",
+    "source-map-js": "^1.2.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3"
   }
 }
