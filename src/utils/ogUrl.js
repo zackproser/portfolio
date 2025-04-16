@@ -1,3 +1,5 @@
+import { ogLogger } from './logger';
+
 export function generateOgUrl({
   title = "Zachary Proser's portfolio",
   description = "Full-stack open-source hacker and technical writer",
@@ -16,7 +18,7 @@ export function generateOgUrl({
     const slugParts = slug.split('/');
     const lastSlugPart = slugParts[slugParts.length - 1];
     params.set('slug', lastSlugPart);
-    console.log('[ogUrl] Using provided slug:', lastSlugPart);
+    ogLogger.debug('Using provided slug:', lastSlugPart);
   }
   
   // Add title and description
@@ -34,7 +36,7 @@ export function generateOgUrl({
       // If this is a reasonable slug (not just a few characters), use it
       if (titleSlug.length > 3) {
         params.set('slug', titleSlug);
-        console.log('[ogUrl] Added slug from title:', titleSlug);
+        ogLogger.debug('Added slug from title:', titleSlug);
       }
     }
   }
@@ -45,30 +47,30 @@ export function generateOgUrl({
   
   // Extract image info - with extra debugging
   if (image) {
-    console.log('[ogUrl] Processing image:', typeof image, 
+    ogLogger.debug('Processing image:', typeof image, 
       typeof image === 'object' ? Object.keys(image).join(',') : '');
       
     // For Next.js imported images with src property
     if (typeof image === 'object' && image !== null && 'src' in image) {
-      console.log('[ogUrl] Using image src:', image.src);
+      ogLogger.debug('Using image src:', image.src);
       params.set('image', image.src);
     } 
     // For string references
     else if (typeof image === 'string') {
-      console.log('[ogUrl] Using image string:', image);
+      ogLogger.debug('Using image string:', image);
       params.set('image', image);
     }
     // Special case - for imported images with default property
     else if (typeof image === 'object' && image !== null && 'default' in image && 
              typeof image.default === 'object' && image.default !== null && 'src' in image.default) {
-      console.log('[ogUrl] Using image.default.src:', image.default.src);
+      ogLogger.debug('Using image.default.src:', image.default.src);
       params.set('image', image.default.src);
     }
   }
   
   // Generate the URL with properly encoded parameters
   const url = `${baseUrl}?${params.toString()}`;
-  console.log('[ogUrl] Generated URL:', url);
+  ogLogger.debug('Generated URL:', url);
   
   return url;
 }
