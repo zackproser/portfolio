@@ -130,7 +130,7 @@ export default function HomepageClientComponent({
                     </form>
                   )}
                   <p className="text-xs text-white flex items-center">
-                    Join 1100+ engineers learning to build what actually works
+                    Join 1500+ engineers learning to build what actually works
                   </p>
                   <div className="mt-8">
                     <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>

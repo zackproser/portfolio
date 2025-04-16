@@ -11,13 +11,17 @@ interface NewsletterWrapperProps {
   body: string;
   successMessage?: string;
   onSubscribe?: () => void;
+  position?: string;
+  className?: string;
 }
 
 const NewsletterWrapper = ({ 
   title, 
   body, 
   successMessage,
-  onSubscribe 
+  onSubscribe,
+  position = "content",
+  className
 }: NewsletterWrapperProps) => {
   const [showSticky, setShowSticky] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -56,7 +60,8 @@ const NewsletterWrapper = ({
         body={body} 
         successMessage={successMessage}
         onSubscribe={onSubscribe}
-        className="mb-6"
+        position={position}
+        className={className || "mb-6"}
       />
       
       {/* Sticky Newsletter */}
@@ -74,6 +79,7 @@ const NewsletterWrapper = ({
             body="Get my free LangChain guide →"
             successMessage="Thanks! Tutorial link sent to your email."
             onSubscribe={onSubscribe}
+            position="sticky-side"
             className="rounded-2xl bg-white dark:bg-zinc-900"
           />
         </div>
