@@ -1,8 +1,5 @@
 import { NextRequest } from 'next/server';
-import { ImageResponse } from '@vercel/og';
-import { join } from 'path';
 import { readFile } from 'fs/promises';
-import React from 'react';
 import fs from 'fs';
 import path from 'path';
 
