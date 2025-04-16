@@ -30,8 +30,13 @@ for (let i = 0; i < args.length; i++) {
   }
 }
 
-console.log('Args:', args);
-console.log('Using slug:', singleSlug);
+// Add verbose mode flag - only log detailed information when this is enabled
+const isVerbose = args.includes('--verbose');
+const log = (message, ...args) => {
+  if (isVerbose) {
+    console.log(message, ...args);
+  }
+};
 
 // Function to make HTTP/HTTPS requests
 function makeRequest(url) {
@@ -39,7 +44,7 @@ function makeRequest(url) {
     // Do NOT encode the URL as it's already properly formatted
     const protocol = url.startsWith('https:') ? https : http;
     
-    console.log(`Making request to: ${url}`);
+    log(`Making request to: ${url}`);
     
     const req = protocol.get(url, (res) => {
       const chunks = [];
@@ -74,7 +79,7 @@ function makeRequest(url) {
           // Handle redirects by following the location header
           const location = res.headers.location;
           if (location) {
-            console.log(`Following redirect to: ${location}`);
+            log(`Following redirect to: ${location}`);
             resolve(makeRequest(location.startsWith('http') ? location : new URL(location, url).toString()));
           } else {
             reject(new Error(`Redirect without location header: ${res.statusCode}`));
@@ -107,10 +112,10 @@ async function getContentSlugs(contentType) {
       .filter(entry => entry.isDirectory())
       .map(entry => entry.name);
     
-    console.log(`Found ${slugs.length} slugs for ${contentType}`);
+    log(`Found ${slugs.length} slugs for ${contentType}`);
     return slugs;
   } catch (error) {
-    console.log(`Content directory not found: ${contentDir}`);
+    log(`Content directory not found: ${contentDir}`);
     return [];
   }
 }
@@ -138,7 +143,7 @@ async function getContentMetadata(contentType, slug) {
         const variableName = importMatch[1];
         const imagePath = importMatch[2];
         importMap[variableName] = imagePath;
-        console.log(`Found import: ${variableName} -> ${imagePath}`);
+        log(`Found import: ${variableName} -> ${imagePath}`);
       }
       
       // Simple frontmatter extraction
@@ -154,7 +159,7 @@ async function getContentMetadata(contentType, slug) {
       if (imageMatch && imageMatch[1]) {
         // Clean up the image path
         let imagePath = imageMatch[1].trim();
-        console.log(`Found raw image path: "${imagePath}"`);
+        log(`Found raw image path: "${imagePath}"`);
         
         // Case 1: Direct import reference like 'image: bloggingPeacefully,'
         if (importMap[imagePath]) {
@@ -163,7 +168,7 @@ async function getContentMetadata(contentType, slug) {
           // Format as Next.js image path
           const imagePathWithoutExt = importedImagePath.split('.')[0];
           image = `/_next/static/media/${imagePathWithoutExt}.webp`;
-          console.log(`Resolved imported image variable: ${imagePath} -> ${image}`);
+          log(`Resolved imported image variable: ${imagePath} -> ${image}`);
         }
         // Case 2: Direct path like '@/images/example.png'
         else if (imagePath.includes('@/images/')) {
@@ -175,7 +180,7 @@ async function getContentMetadata(contentType, slug) {
           // If it includes a directory path, keep it
           const imagePathWithoutExt = srcPath.split('.')[0];
           image = `/_next/static/media/${imagePathWithoutExt}.webp`;
-          console.log(`Converted to Next.js image path: "${image}"`);
+          log(`Converted to Next.js image path: "${image}"`);
         } 
         // Case 3: Quoted string like 'image: "example.png",'
         else if (imagePath.includes("'") || imagePath.includes('"')) {
@@ -203,7 +208,9 @@ async function getContentMetadata(contentType, slug) {
         image
       };
     } catch (error) {
-      console.error(`Error reading MDX file for ${contentType}/${slug}:`, error);
+      if (isVerbose) {
+        console.error(`Error reading MDX file for ${contentType}/${slug}:`, error);
+      }
       
       // Fallback with basic info
       return {
@@ -215,13 +222,15 @@ async function getContentMetadata(contentType, slug) {
       };
     }
   } catch (error) {
-    console.error(`Error getting metadata for ${contentType}/${slug}:`, error);
+    if (isVerbose) {
+      console.error(`Error getting metadata for ${contentType}/${slug}:`, error);
+    }
     return null;
   }
 }
 
 /**
- * Generate OG image by calling the API endpoint
+ * Generate an OG image for the given content
  * @param {Object} content 
  * @returns {Promise<boolean>}
  */
@@ -264,38 +273,38 @@ async function generateOGImage(content) {
       }
       
       if (defaultImage) {
-        console.log(`Using default image for ${content.slug}: ${defaultImage}`);
+        log(`Using default image for ${content.slug}: ${defaultImage}`);
         urlParams.append('imageSrc', defaultImage);
       }
     }
     
     const apiEndpoint = `${API_URL}/api/og/generate?${urlParams.toString()}`;
-    console.log(`Fetching from API: ${apiEndpoint}`);
+    log(`Fetching from API: ${apiEndpoint}`);
     
     // Add a debug option to see what's happening
     const debugEnabled = process.env.DEBUG_OG === 'true' || args.includes('--debug');
-    if (debugEnabled) {
+    if (debugEnabled && isVerbose) {
       // First check if the API is running and supports the debug mode
       const debugUrl = new URL(apiEndpoint);
       debugUrl.searchParams.append('debug', 'true');
-      console.log(`Debug URL: ${debugUrl.toString()}`);
+      log(`Debug URL: ${debugUrl.toString()}`);
       
       try {
         const debugResponse = await makeRequest(debugUrl.toString());
         if (debugResponse.ok) {
           const debugBuffer = await debugResponse.buffer();
           const debugData = JSON.parse(debugBuffer.toString());
-          console.log('Debug data:', JSON.stringify(debugData, null, 2));
+          log('Debug data:', JSON.stringify(debugData, null, 2));
           
           // Check if our image path is properly understood by the API
           if (debugData.imageSrcProvided && debugData.imageFiles && debugData.imageFiles.length > 0) {
-            console.log('API successfully recognized our image path.');
+            log('API successfully recognized our image path.');
           } else {
-            console.log('⚠️ Warning: API could not find the image. Will try to generate anyway.');
+            log('⚠️ Warning: API could not find the image. Will try to generate anyway.');
           }
         }
       } catch (error) {
-        console.log('Debug request failed, continuing with normal request:', error.message);
+        log('Debug request failed, continuing with normal request:', error.message);
       }
     }
     
@@ -331,7 +340,7 @@ async function main() {
 
   // Test the OG image API directly with a debug call
   if (args.includes('--test-api')) {
-    console.log('Testing OG image API endpoint directly...');
+    console.log('Testing OG image API endpoint...');
     try {
       const testParams = new URLSearchParams();
       testParams.append('title', 'Test OG Image');
@@ -340,23 +349,25 @@ async function main() {
       testParams.append('imageSrc', '/_next/static/media/modern-coding-og-background.webp');
       
       const testUrl = `${API_URL}/api/og/generate?${testParams.toString()}`;
-      console.log(`Making test request to: ${testUrl}`);
+      log(`Making test request to: ${testUrl}`);
       
       const response = await makeRequest(testUrl);
-      const data = JSON.parse(await response.buffer().then(b => b.toString()));
-      console.log('API Response:', JSON.stringify(data, null, 2));
+      if (isVerbose) {
+        const data = JSON.parse(await response.buffer().then(b => b.toString()));
+        console.log('API Response:', JSON.stringify(data, null, 2));
+      }
       
-      console.log('✅ API test complete');
+      console.log('API test complete');
       return;
     } catch (error) {
-      console.error('❌ API test failed:', error);
+      console.error('API test failed:', error);
       process.exit(1);
     }
   }
 
   // Single slug mode
   if (singleSlug) {
-    console.log(`Generating OG image for slug: ${singleSlug}`);
+    log(`Generating OG image for slug: ${singleSlug}`);
     
     // Try to find content in different content types
     const contentTypes = ['blog', 'videos', 'learn/courses'];
@@ -375,16 +386,16 @@ async function main() {
         slug: `/blog/${singleSlug}`,
         type: 'blog'
       };
-      console.log(`⚠️ Content not found for slug "${singleSlug}", using fallback data`);
+      console.log(`Content not found for slug "${singleSlug}", using fallback data`);
     }
     
     await generateOGImage(content);
-    console.log('✅ Done!');
+    console.log('Done!');
     return;
   }
 
   // Full generation mode
-  console.log('Generating OG images for all content...');
+  console.log('Generating OG images...');
   
   // Get content from different types
   const contentTypes = ['blog', 'videos', 'learn/courses'];
@@ -401,7 +412,7 @@ async function main() {
     }
   }
   
-  console.log(`Found ${allContent.length} content items to process`);
+  log(`Found ${allContent.length} content items to process`);
   
   // Process in batches to avoid overwhelming the system
   const BATCH_SIZE = 5;
@@ -413,7 +424,7 @@ async function main() {
     const batchEnd = Math.min(batchStart + BATCH_SIZE, allContent.length);
     const batch = allContent.slice(batchStart, batchEnd);
     
-    console.log(`\nProcessing batch ${batchIndex + 1}/${totalBatches} (${batch.length} items)`);
+    log(`Processing batch ${batchIndex + 1}/${totalBatches} (${batch.length} items)`);
     
     // Process batch concurrently
     const results = await Promise.all(
@@ -423,19 +434,12 @@ async function main() {
     // Count generated images
     const batchGenerated = results.filter(Boolean).length;
     generated += batchGenerated;
-    
-    console.log(`Batch ${batchIndex + 1} complete: ${batchGenerated} images generated`);
-    
-    // Add a small delay between batches to avoid overwhelming the API
-    if (batchIndex < totalBatches - 1) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
   }
   
-  console.log(`\n✅ Done! Generated ${generated} new images (${allContent.length - generated} were cached)`);
+  console.log(`Done! Generated ${generated} new images (${allContent.length - generated} cached)`);
 }
 
 main().catch(error => {
-  console.error('Error in main function:', error);
+  console.error('Script failed:', error);
   process.exit(1);
 }); 

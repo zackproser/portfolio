@@ -1,28 +1,24 @@
 #!/usr/bin/env node
 import path from 'path';
 import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 import React from 'react';
 import { dirname } from 'path';
 
-// Get the current file's directory using __dirname approach instead of import.meta
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Use process.cwd() instead of import.meta.url
+const __dirname = process.cwd();
 
 // Setup paths
-const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og-images');
-const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
+const OUTPUT_DIR = path.join(__dirname, 'public', 'og-images');
+const CONTENT_DIR = path.join(__dirname, 'src', 'content');
 
-// Parse arguments - use a more robust approach
+// Parse arguments
 const args = process.argv.slice(2);
 let singleSlug: string | null = null;
 
 // Find the actual slug value, handling various ways arguments might be passed
 for (let i = 0; i < args.length; i++) {
-  // Check for the slug after any --slug flag, skipping any -- separators
   if (args[i] === '--slug') {
-    // Try to find the first non-flag argument after --slug
     for (let j = i + 1; j < args.length; j++) {
       if (!args[j].startsWith('--')) {
         singleSlug = args[j];
@@ -33,8 +29,13 @@ for (let i = 0; i < args.length; i++) {
   }
 }
 
-console.log('Args:', args);
-console.log('Using slug:', singleSlug);
+// Reduce verbosity by only logging if specified
+const isVerbose = args.includes('--verbose');
+const log = (message: string, ...args: any[]) => {
+  if (isVerbose) {
+    console.log(message, ...args);
+  }
+};
 
 // Image settings
 const WIDTH = 1200;
@@ -61,10 +62,10 @@ async function getContentSlugs(contentType: string): Promise<string[]> {
       .filter(entry => entry.isDirectory())
       .map(entry => entry.name);
     
-    console.log(`Found ${slugs.length} slugs for ${contentType}`);
+    log(`Found ${slugs.length} slugs for ${contentType}`);
     return slugs;
   } catch (error) {
-    console.log(`Content directory not found: ${contentDir}`);
+    log(`Content directory not found: ${contentDir}`);
     return [];
   }
 }
@@ -116,7 +117,10 @@ async function getContentMetadata(contentType: string, slug: string): Promise<Co
         image
       };
     } catch (error) {
-      console.error(`Error reading MDX file for ${contentType}/${slug}:`, error);
+      // Only log errors in verbose mode to reduce build output
+      if (isVerbose) {
+        console.error(`Error reading MDX file for ${contentType}/${slug}:`, error);
+      }
       
       // Fallback with basic info
       return {
@@ -128,7 +132,10 @@ async function getContentMetadata(contentType: string, slug: string): Promise<Co
       };
     }
   } catch (error) {
-    console.error(`Error getting metadata for ${contentType}/${slug}:`, error);
+    // Only log errors in verbose mode
+    if (isVerbose) {
+      console.error(`Error getting metadata for ${contentType}/${slug}:`, error);
+    }
     return null;
   }
 }
@@ -161,22 +168,19 @@ async function generateOGImage(content: Content): Promise<boolean> {
     if (content.image) {
       // Try to load the post's hero image
       const heroImagePath = path.join(process.cwd(), 'src', 'images', content.image);
-      console.log(`Attempting to load hero image: ${heroImagePath}`);
+      
       try {
         rawImageData = await fs.readFile(heroImagePath);
-        console.log(`✅ Successfully loaded hero image: ${content.image}`);
+        // Only log critical errors, not successful operations
       } catch (error: any) {
-        console.error(`❌ Failed to load hero image: ${heroImagePath}`, error.code);
-        // Fall back to default
+        // Fall back to default without verbose logging
         const defaultPath = path.join(process.cwd(), 'public', 'modern-coding-og-background.png');
         rawImageData = await fs.readFile(defaultPath);
-        console.log('Using default fallback image');
       }
     } else {
       // Use default background
       const defaultPath = path.join(process.cwd(), 'public', 'modern-coding-og-background.png');
       rawImageData = await fs.readFile(defaultPath);
-      console.log('No hero image specified, using default');
     }
 
     // Convert any image format to PNG
@@ -299,7 +303,7 @@ async function main() {
 
   // Single slug mode
   if (singleSlug) {
-    console.log(`Generating OG image for slug: ${singleSlug}`);
+    log(`Generating OG image for slug: ${singleSlug}`);
     
     // Try to find content in different content types
     const contentTypes = ['blog', 'videos', 'learn/courses'];
@@ -318,16 +322,16 @@ async function main() {
         slug: `/blog/${singleSlug}`,
         type: 'blog'
       };
-      console.log(`⚠️ Content not found for slug "${singleSlug}", using fallback data`);
+      console.log(`Content not found for slug "${singleSlug}", using fallback data`);
     }
     
     await generateOGImage(content);
-    console.log('✅ Done!');
+    console.log('Done!');
     return;
   }
 
   // Full generation mode
-  console.log('Generating OG images for all content...');
+  console.log('Generating OG images...');
   
   // Get content from different types
   const contentTypes = ['blog', 'videos', 'learn/courses'];
@@ -344,7 +348,7 @@ async function main() {
     }
   }
   
-  console.log(`Found ${allContent.length} content items to process`);
+  log(`Found ${allContent.length} content items to process`);
   
   // Generate images
   let generatedCount = 0;
@@ -356,12 +360,17 @@ async function main() {
         generatedCount++;
       }
     } catch (error) {
-      console.error(`Error processing ${content.slug}:`, error);
       errorCount++;
+      if (isVerbose) {
+        console.error(`Error processing ${content.slug}:`, error);
+      }
     }
   }
 
-  console.log(`\n✅ Done! Generated ${generatedCount} new images (${allContent.length - generatedCount} cached, ${errorCount} errors)`);
+  console.log(`Done! Generated ${generatedCount} new images, ${errorCount} errors`);
 }
 
-main().catch(console.error);
+main().catch(error => {
+  console.error('Script failed:', error);
+  process.exit(1);
+});

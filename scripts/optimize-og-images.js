@@ -14,6 +14,14 @@ const dryRun = args.includes('--dry-run');
 const quality = args.includes('--quality') 
   ? parseInt(args[args.indexOf('--quality') + 1], 10) 
   : 80; // Default quality is 80
+const isVerbose = args.includes('--verbose');
+
+// Add a logging helper to control verbosity
+const log = (message, ...args) => {
+  if (isVerbose) {
+    console.log(message, ...args);
+  }
+};
 
 console.log(`Optimizing OG images with quality: ${quality}${dryRun ? ' (DRY RUN)' : ''}`);
 
@@ -36,7 +44,10 @@ async function optimizeImage(filePath, outputPath) {
     const newSizeKB = Math.round(newStats.size / 1024);
     const savingsPercent = Math.round((1 - (newSizeKB / originalSizeKB)) * 100);
     
-    console.log(`✅ ${path.basename(filePath)}: ${originalSizeKB}KB → ${newSizeKB}KB (${savingsPercent}% reduction)`);
+    // Only log details of each file if verbose mode is enabled
+    if (isVerbose) {
+      console.log(`${path.basename(filePath)}: ${originalSizeKB}KB → ${newSizeKB}KB (${savingsPercent}% reduction)`);
+    }
     
     return {
       filename: path.basename(filePath),
@@ -45,14 +56,14 @@ async function optimizeImage(filePath, outputPath) {
       savingsPercent
     };
   } catch (error) {
-    console.error(`❌ Error optimizing ${path.basename(filePath)}:`, error.message);
+    console.error(`Error optimizing ${path.basename(filePath)}:`, error.message);
     return null;
   }
 }
 
 async function main() {
   if (!fs.existsSync(OG_IMAGES_DIR)) {
-    console.error(`❌ Error: OG images directory not found: ${OG_IMAGES_DIR}`);
+    console.error(`Error: OG images directory not found: ${OG_IMAGES_DIR}`);
     process.exit(1);
   }
   
@@ -80,11 +91,11 @@ async function main() {
     batches.push(files.slice(i, i + BATCH_SIZE));
   }
   
-  console.log(`Processing in ${batches.length} batches of up to ${BATCH_SIZE} images`);
+  log(`Processing in ${batches.length} batches of up to ${BATCH_SIZE} images`);
   
   for (let i = 0; i < batches.length; i++) {
     const batch = batches[i];
-    console.log(`\nProcessing batch ${i + 1}/${batches.length} (${batch.length} images)`);
+    log(`Processing batch ${i + 1}/${batches.length} (${batch.length} images)`);
     
     const batchResults = await Promise.all(
       batch.map(filePath => {
@@ -113,24 +124,23 @@ async function main() {
   
   const totalSavingsPercent = Math.round((1 - (totalNewSize / totalOriginalSize)) * 100);
   
-  console.log('\n===== OPTIMIZATION SUMMARY =====');
   console.log(`Processed ${results.length}/${files.length} images successfully`);
   console.log(`Total size reduction: ${totalOriginalSize}KB → ${totalNewSize}KB (${totalSavingsPercent}% reduction)`);
   
   if (!dryRun) {
-    console.log('\nTo replace the original files with optimized versions:');
-    console.log('1. Back up your original images (recommended)');
-    console.log('2. Run: node scripts/optimize-og-images.js --replace');
+    log('\nTo replace the original files with optimized versions:');
+    log('1. Back up your original images (recommended)');
+    log('2. Run: node scripts/optimize-og-images.js --replace');
   }
 }
 
 // If --replace flag is specified, replace original files with optimized ones
 if (args.includes('--replace') && !dryRun) {
-  console.log('⚠️ REPLACING ORIGINAL FILES WITH OPTIMIZED VERSIONS');
+  console.log('REPLACING ORIGINAL FILES WITH OPTIMIZED VERSIONS');
   
   // Make sure output directory exists
   if (!fs.existsSync(OUTPUT_DIR)) {
-    console.error(`❌ Error: Optimized images directory not found: ${OUTPUT_DIR}`);
+    console.error(`Error: Optimized images directory not found: ${OUTPUT_DIR}`);
     console.log('Run the script without --replace first to generate optimized images');
     process.exit(1);
   }
@@ -144,13 +154,14 @@ if (args.includes('--replace') && !dryRun) {
     try {
       // Copy optimized file over the original
       fs.copyFileSync(sourcePath, destPath);
-      console.log(`✅ Replaced: ${file}`);
+      // Only log details in verbose mode
+      log(`Replaced: ${file}`);
     } catch (error) {
-      console.error(`❌ Error replacing ${file}:`, error.message);
+      console.error(`Error replacing ${file}:`, error.message);
     }
   }
   
-  console.log('\n✅ Replacement complete');
+  console.log('Replacement complete');
   process.exit(0);
 }
 

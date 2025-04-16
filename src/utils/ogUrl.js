@@ -9,27 +9,8 @@ export function generateOgUrl({
   // Create a bare URL with properly encoded components
   const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
   
-  // IMPORTANT: Log all incoming parameters to diagnose issues
-  ogLogger.debug('--------------- GENERATING OG URL ---------------');
-  ogLogger.debug('Title:', title);
-  ogLogger.debug('Description:', description?.substring(0, 50) + (description?.length > 50 ? '...' : ''));
-  ogLogger.debug('Image type:', typeof image);
-  ogLogger.debug('Image keys:', image && typeof image === 'object' ? Object.keys(image).join(',') : 'N/A');
-  
-  // More detailed image logging
-  if (image) {
-    if (typeof image === 'object' && 'src' in image) {
-      ogLogger.debug('Image src:', image.src);
-    }
-    if (typeof image === 'object' && 'default' in image) {
-      ogLogger.debug('Image has default property:', typeof image.default);
-      if (typeof image.default === 'object' && image.default && 'src' in image.default) {
-        ogLogger.debug('Image default.src:', image.default.src);
-      }
-    }
-  }
-  
-  ogLogger.debug('Slug:', slug);
+  // Reduced logging - only log essential parameters at debug level
+  ogLogger.debug('Generating OG URL', { title: title?.substring(0, 30), slug });
   
   // Always start with a new URLSearchParams object for clean encoding
   const params = new URLSearchParams();
@@ -40,40 +21,31 @@ export function generateOgUrl({
     const slugParts = slug.split('/');
     const lastSlugPart = slugParts[slugParts.length - 1];
     params.set('slug', lastSlugPart);
-    ogLogger.debug('Using provided slug:', lastSlugPart);
   }
   
   // IMPROVED IMAGE EXTRACTION LOGIC
   let imageSrc = null;
   
   if (image) {
-    ogLogger.debug('Processing image for OG URL:');
-    
     // Case 1: Direct src property (most common for Next.js imported images)
     if (typeof image === 'object' && image !== null && 'src' in image) {
       imageSrc = image.src;
-      ogLogger.debug('Found direct src property:', imageSrc);
     } 
     // Case 2: String path
     else if (typeof image === 'string') {
       imageSrc = image;
-      ogLogger.debug('Using string image path:', imageSrc);
     }
     // Case 3: Default export with src (common pattern from imports)
     else if (typeof image === 'object' && image !== null && 'default' in image) {
       if (typeof image.default === 'object' && image.default !== null && 'src' in image.default) {
         imageSrc = image.default.src;
-        ogLogger.debug('Found src in default export:', imageSrc);
       } else if (typeof image.default === 'string') {
         imageSrc = image.default;
-        ogLogger.debug('Found string in default export:', imageSrc);
       }
     }
     
     // Deep search for src if not found by simpler methods
     if (!imageSrc && typeof image === 'object' && image !== null) {
-      ogLogger.debug('Performing deep search for image src');
-      
       // Recursively search for src property
       const findSrc = (obj, depth = 0) => {
         if (depth > 2) return null;
@@ -95,9 +67,6 @@ export function generateOgUrl({
       };
       
       imageSrc = findSrc(image);
-      if (imageSrc) {
-        ogLogger.debug('Found src through deep search:', imageSrc);
-      }
     }
     
     // Clean up image path if found
@@ -105,7 +74,6 @@ export function generateOgUrl({
       // Remove any URL parameters
       if (imageSrc.includes('?')) {
         imageSrc = imageSrc.split('?')[0];
-        ogLogger.debug('Removed URL parameters from image path:', imageSrc);
       }
       
       // Set the image parameter
@@ -113,10 +81,6 @@ export function generateOgUrl({
       
       // Also set imageSrc as an alternative parameter for the generator to catch
       params.set('imageSrc', imageSrc);
-      
-      ogLogger.debug('Final image path for OG URL:', imageSrc);
-    } else {
-      ogLogger.warn('Could not extract image source from provided image object or string');
     }
   }
   
@@ -136,7 +100,6 @@ export function generateOgUrl({
       // If this is a reasonable slug (not just a few characters), use it
       if (titleSlug.length > 3) {
         params.set('slug', titleSlug);
-        ogLogger.debug('Added slug from title:', titleSlug);
       }
     }
   }
@@ -144,21 +107,14 @@ export function generateOgUrl({
   // Add description and properly encode it to prevent truncation at apostrophes
   if (description) {
     // Ensure description is properly encoded
-    ogLogger.debug('Encoding description for URL');
     params.set('description', encodeURIComponent(String(description)));
   }
   
   // Generate the URL with properly encoded parameters
   const url = `${baseUrl}?${params.toString()}`;
   
-  // Log the final URL for debugging
-  ogLogger.debug('--------------- FINAL OG URL ---------------');
-  ogLogger.debug('URL:', url);
-  ogLogger.debug('URL parameters:');
-  for (const [key, value] of params.entries()) {
-    ogLogger.debug(`- ${key}: ${value}`);
-  }
-  ogLogger.debug('-------------------------------------------');
+  // Only log the final URL at debug level
+  ogLogger.debug('OG URL generated');
   
   return url;
 }

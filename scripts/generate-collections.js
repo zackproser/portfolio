@@ -3,6 +3,9 @@ const path = require('path');
 
 const collections = require('../schema/data/collections.json'); 
 
+// Add verbose flag
+const isVerbose = process.argv.includes('--verbose');
+
 const collectionNameDir  = (collectionName) => {
   const parts = collectionName.split('-')
   if (parts.length > 0) {
@@ -12,6 +15,8 @@ const collectionNameDir  = (collectionName) => {
 }
 
 function generateCollectionPages() {
+  let pagesGenerated = 0;
+  
   Object.entries(collections).forEach(([collectionName, collection]) => {
     const title = collectionName.replace(/-/g, ' ');
     const collectionDir = collectionNameDir(collectionName)
@@ -51,18 +56,25 @@ export default async function CollectionPage() {
       fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(filename, content, 'utf8');
-    console.log(`Generated collection page for ${collectionName} with posts at ${filename}`);
+    
+    if (isVerbose) {
+      console.log(`Generated collection page for ${collectionName} with posts at ${filename}`);
+    }
+    pagesGenerated++;
   });
+  
+  return pagesGenerated;
 }
 
 function generateCollectionIndexPage() {
-  Object.entries(collections).forEach(([collectionName, slugs]) => {
-    const title = "Writing collections"
-    const name = collectionNameDir(collectionName)
-    const dir = path.join(process.env.PWD, '/src/app/collections')
-    const filename = path.join(dir, 'page.jsx')
+  let indexPageGenerated = false;
+  
+  // We only need to generate one index page, not one per collection
+  const title = "Writing collections"
+  const dir = path.join(process.env.PWD, '/src/app/collections')
+  const filename = path.join(dir, 'page.jsx')
 
-    const content = `
+  const content = `
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { CollectionCard } from '@/components/CollectionCard'
 import { getAllCollections } from '@/lib/collections'
@@ -81,13 +93,20 @@ export default async function CollectionPage() {
   );
 }
 `;
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(filename, content, 'utf8');
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  fs.writeFileSync(filename, content, 'utf8');
+  
+  if (isVerbose) {
     console.log(`Generated collection index page at ${filename}`);
-  })
+  }
+  
+  return true;
 }
 
-generateCollectionPages();
-generateCollectionIndexPage();
+const collectionPagesGenerated = generateCollectionPages();
+const indexGenerated = generateCollectionIndexPage();
+
+// A single summary line at the end instead of many individual logs
+console.log(`Generated ${collectionPagesGenerated} collection pages and 1 index page.`);
