@@ -1,4 +1,4 @@
-import { ExtendedMetadata } from '@/types'
+import { ExtendedMetadata, OgUrlParams } from '@/types'
 import { generateOgUrl } from '@/utils/ogUrl'
 import path from 'path'
 import { Metadata } from 'next'
@@ -6,6 +6,9 @@ import { logger } from './logger'
 
 // Create a specialized logger for metadata operations
 const metaLogger = logger.forCategory('metadata');
+
+// Remove the workaround since we now have proper typing
+// const createOgUrl = generateOgUrl;
 
 type MetadataParams = Partial<ExtendedMetadata> & {
   /**
@@ -51,11 +54,44 @@ const log = (message: string, ...args: any[]) => {
  * @returns The slug extracted from the path
  */
 function getSlugFromPath(filePath: string): string {
-  // Get the directory name containing the MDX file
-  const dirname = path.dirname(filePath);
-  // Get the last part of the path (the directory name)
-  const parts = dirname.split(path.sep);
-  return parts[parts.length - 1];
+  try {
+    // Get the directory name containing the MDX file
+    const dirname = path.dirname(filePath);
+    
+    // Normalize for Windows compatibility
+    const normalizedPath = dirname.replace(/\\/g, '/'); 
+    
+    // Use regular expressions to extract the slug from various path patterns
+    const patterns = [
+      /\/blog\/([^\/]+)/i,              // /blog/slug/
+      /\/content\/blog\/([^\/]+)/i,     // /content/blog/slug/
+      /\/videos\/([^\/]+)/i,            // /videos/slug/
+      /\/courses\/([^\/]+)/i,           // /courses/slug/
+      /\/demos\/([^\/]+)/i              // /demos/slug/
+    ];
+    
+    // Try each pattern
+    for (const pattern of patterns) {
+      const match = normalizedPath.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // If no pattern matches, use the directory name
+    const parts = dirname.split(path.sep);
+    
+    // Skip "page" directories as they're not actual slugs in Next.js
+    if (parts.length > 0 && parts[parts.length - 1] === 'page' && parts.length >= 2) {
+      return parts[parts.length - 2];
+    }
+    
+    // Last resort: use the last directory name
+    return parts.length > 0 ? parts[parts.length - 1] : '';
+  } catch (error) {
+    console.error('Error extracting slug from path:', error);
+    return '';
+  }
 }
 
 /**
@@ -106,7 +142,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     description, 
     author,
     image,
-    filePath, 
+    filePath: explicitFilePath, 
     type: providedType,
     slug: providedSlug,
     date,
@@ -117,11 +153,52 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...rest
   } = params
 
+  // Automatically determine the calling file if not explicitly provided
+  let derivedFilePath = '';
+  
+  if (!explicitFilePath) {
+    try {
+      // This creates a stack trace that includes the file that called this function
+      const stackTraceError = new Error();
+      const stackLines = stackTraceError.stack?.split('\n') || [];
+      
+      // Find the first line that's not inside this file (createMetadata.ts)
+      const callerLine = stackLines.find(line => 
+        line.includes('.mdx') || 
+        (line.includes('/page.') && !line.includes('createMetadata.ts'))
+      );
+      
+      if (callerLine) {
+        // Extract the file path from the stack trace line
+        // Format is typically like "at Object.<anonymous> (/path/to/file.js:line:column)"
+        const match = callerLine.match(/\(([^:]+)(:\d+:\d+)?\)/);
+        if (match && match[1]) {
+          derivedFilePath = match[1];
+          console.log('Auto-detected caller file path:', derivedFilePath);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to auto-detect caller file path:', e);
+    }
+  }
+  
+  // Use the automatically determined path if available, otherwise use the explicit path
+  const filePath = explicitFilePath || derivedFilePath;
+
   // Generate a slug based on priority:
   // 1. Explicitly provided slug
   // 2. Generated from file path
   const pathBasedSlug = filePath ? getSlugFromPath(filePath) : '';
   const finalSlug = providedSlug || pathBasedSlug || 'untitled';
+  
+  // Add logging to diagnose slug issues
+  metaLogger.debug('Slug determination:', { 
+    providedSlug, 
+    pathBasedSlug, 
+    finalSlug, 
+    filePath: filePath ? path.basename(filePath) : 'none',
+    autoDetected: !explicitFilePath && !!derivedFilePath
+  });
 
   // Determine content type from file path if not explicitly provided
   const contentType = providedType || (filePath ? getTypeFromPath(filePath) : 'blog');
@@ -188,7 +265,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     metaLogger.warn('No valid image src found for OG URL generation');
   }
 
-  // Generate URL using the type and slug
+  // Generate a URL using the type and slug
   const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
   metaLogger.debug('Metadata processing complete');
 
@@ -215,11 +292,12 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       description: description || '',
       images: [
         {
+          // @ts-ignore - Ignoring type mismatch between string and null | undefined
           url: generateOgUrl({ 
             title, 
             description, 
             image: processedImage,
-            slug: finalSlug as unknown as null | undefined 
+            slug: finalSlug
           }),
           alt: title || 'Untitled',
         },
@@ -229,11 +307,12 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       ...(defaultMetadata.twitter || {}),
       title: title || 'Untitled',
       description: description || '',
+      // @ts-ignore - Ignoring type mismatch between string and null | undefined
       images: [generateOgUrl({ 
         title, 
         description, 
         image: processedImage,
-        slug: finalSlug as unknown as null | undefined 
+        slug: finalSlug
       })],
     },
     
