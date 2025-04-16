@@ -52,6 +52,12 @@ const logVerbose = (message: string, data?: any) => {
   }
 };
 
+// Add helper function for slug normalization (same as used in page.tsx)
+const normalizeSlug = (slug: string) => {
+  // Remove any leading slashes and 'blog/' or 'videos/' prefix
+  return slug.replace(/^\/+/, '').replace(/^(blog|videos)\//, '')
+}
+
 /**
  * Get all slugs for a content type
  * @param contentType The content type directory (e.g., 'blog', 'videos')
@@ -153,24 +159,7 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     let slugs = getContentSlugs(contentType);
     logVerbose(`Found ${slugs.length} content directories to process`);
     
-    // If specific slugs are provided and we need early filtering for efficiency,
-    // we need to match against the directory names AND the basename of any path-based slugs
-    if (specificSlugs && specificSlugs.length > 0) {
-      // Extract both the full slug and the basename (last part) of each specificSlug
-      const specificSlugSet = new Set();
-      specificSlugs.forEach(slug => {
-        // Add the original slug
-        specificSlugSet.add(slug);
-        // Add the basename (everything after the last /)
-        const basename = slug.split('/').pop();
-        if (basename) specificSlugSet.add(basename);
-      });
-      
-      // Now filter the directory slugs using this expanded set
-      const originalCount = slugs.length;
-      slugs = slugs.filter(dirSlug => specificSlugSet.has(dirSlug));
-      logVerbose(`Filtered from ${originalCount} to ${slugs.length} content directories based on specific slugs`);
-    }
+    // Directory filtering done later after processing to ensure consistent slug matching
     
     const contentItemsPromises = slugs.map(async (slug) => {
       try {
@@ -217,7 +206,7 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
           contentType === 'comparisons' ? 'comparisons' : 
           contentType;
         
-        // Store both the directory slug and the processed slug for reliable matching
+        // Store the directory slug for debugging purposes
         return {
           author: processedMetadata.author || 'Unknown',
           date: processedMetadata.date || new Date().toISOString(),
@@ -227,7 +216,7 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
           type: processedMetadata.type,
           slug: `/${typePath}/${processedMetadata.slug}`,  // Include the full path in the slug
           _id: processedMetadata._id,
-          directorySlug: slug, // Add the original directory slug for reliable matching
+          directorySlug: slug, // Store original directory slug for debugging
           ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
           ...(processedMetadata.landing && { landing: processedMetadata.landing }),
           ...(processedMetadata.tags && { tags: processedMetadata.tags })
@@ -241,46 +230,18 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     // Wait for all promises to resolve
     const contentItems = await Promise.all(contentItemsPromises)
     
-    // Filter out any null items and sort by date
-    // Use a more explicit type guard to satisfy TypeScript
+    // Filter out any null items
     let validItems = contentItems.filter((item): item is Content => 
       item !== null && typeof item === 'object'
     )
     
-    // If specific slugs were provided, apply final filtering
+    // Filter by specificSlugs if provided (using the same pattern as in page.tsx)
     if (specificSlugs && specificSlugs.length > 0) {
-      // Multiple matching strategies to ensure we find the right content
-      validItems = validItems.filter(item => {
-        // 1. Try to match against the directory slug (most reliable)
-        if (specificSlugs.includes(item.directorySlug)) {
-          logVerbose(`Matched on directory slug: ${item.directorySlug}`);
-          return true;
-        }
-        
-        // 2. Try to match the slug basename (remove path)
-        const itemSlugBasename = item.slug.split('/').pop() || '';
-        const specificSlugBasenames = specificSlugs.map(s => s.split('/').pop() || '');
-        if (specificSlugBasenames.includes(itemSlugBasename)) {
-          logVerbose(`Matched on slug basename: ${itemSlugBasename}`);
-          return true;
-        }
-        
-        // 3. Try to match any part of the slug path
-        for (const specificSlug of specificSlugs) {
-          if (item.slug.includes(specificSlug)) {
-            logVerbose(`Matched on slug substring: ${specificSlug} in ${item.slug}`);
-            return true;
-          }
-        }
-        
-        return false;
-      });
-      
-      // Output detailed log of which items matched
-      logVerbose(`After multi-strategy filtering, found ${validItems.length} matching items:`);
-      validItems.forEach(item => {
-        logVerbose(`  - ${item.title} (${item.directorySlug} → ${item.slug})`);
-      });
+      const beforeCount = validItems.length;
+      validItems = validItems.filter(item => 
+        specificSlugs.some(slug => normalizeSlug(item.slug) === normalizeSlug(slug))
+      );
+      logVerbose(`Filtered from ${beforeCount} to ${validItems.length} items by specific slugs`);
     }
     
     // Sort by date, with proper null checks
