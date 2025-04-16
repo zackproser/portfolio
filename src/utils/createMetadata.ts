@@ -218,7 +218,8 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
           url: generateOgUrl({ 
             title, 
             description, 
-            image: processedImage 
+            image: processedImage,
+            slug: finalSlug as unknown as null | undefined 
           }),
           alt: title || 'Untitled',
         },
@@ -231,7 +232,8 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       images: [generateOgUrl({ 
         title, 
         description, 
-        image: processedImage 
+        image: processedImage,
+        slug: finalSlug as unknown as null | undefined 
       })],
     },
     
