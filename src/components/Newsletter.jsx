@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/Button";
 import { track } from "@vercel/analytics";
@@ -29,21 +29,30 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className }) {
+export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className, position = "content" }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
+	const [formError, setError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const sendFormSubmissionEvent = () => {
+		console.log('Tracking newsletter signup event with:', { method: "newsletter", source: referrer, position });
 		track("newsletter-signup", {
 			method: "newsletter",
-			source: referrer
-		})
+			source: referrer,
+			position: position,
+			slug: referrer?.split('/').pop() || 'homepage'
+		});
 	};
 
 	// Handle the submit event on form submit.
 	const handleSubmit = async (event) => {
 		// Stop the form from submitting and refreshing the page.
 		event.preventDefault();
+
+		// Reset error state
+		setError(false);
+		setErrorMessage("");
 
 		// Cast the event target to an html form
 		const form = event.target;
@@ -54,41 +63,64 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 			referrer,
 		};
 
+		// Track the event first to ensure it's always called
+		sendFormSubmissionEvent();
+		
+		// Call the onSubscribe callback if provided
+		if (typeof onSubscribe === 'function') {
+			onSubscribe();
+		}
+
 		// Send the form data to our API and get a response.
-		await fetch("/api/form", {
-			// Body of the request is the JSON data we created above.
-			body: JSON.stringify(data),
-			// Tell the server we're sending JSON.
-			headers: {
-				"Content-Type": "application/json",
-			},
-			// The method is POST because we are sending data.
-			method: "POST",
-		})
-			.then(() => {
-				// Send the GA4 event for newsletter subscription
-				sendFormSubmissionEvent();
-				
-				// Call the onSubscribe callback if provided
-				if (typeof onSubscribe === 'function') {
-					onSubscribe();
-				}
-				
-				// Update the form UI to show the user their subscription was successful
-				setSuccess(true);
-			})
-			.catch((e) => {
-				console.error(e);
+		try {
+			const response = await fetch("/api/form", {
+				// Body of the request is the JSON data we created above.
+				body: JSON.stringify(data),
+				// Tell the server we're sending JSON.
+				headers: {
+					"Content-Type": "application/json",
+				},
+				// The method is POST because we are sending data.
+				method: "POST",
 			});
+				
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.data || "Failed to subscribe");
+			}
+				
+			// Update the form UI to show the user their subscription was successful
+			setSuccess(true);
+		} catch (e) {
+			console.error("Newsletter submission error:", e);
+			setError(true);
+			setErrorMessage(e.message || "Something went wrong. Please try again.");
+		}
 	};
 
 	return formSuccess ? (
-		<h2 className="flex mt-6 mb-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-			<span className="ml-3">
-				{" "}
-				{successMessage || "🔥 You are awesome! 🔥 Thank you for subscribing 🥳"}{" "}
-			</span>
-		</h2>
+		<div className="flex flex-col mt-6 mb-6 p-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-700/40 rounded-lg border border-zinc-200 dark:border-zinc-700">
+			<h2 className="flex items-center text-lg">
+				<span className="mr-2">🧠</span>
+				<span>Neural Network Activated! 🤖❗</span>
+			</h2>
+			<p className="mt-2">
+				{successMessage || "Thank you for joining our AI research community! More AI engineering wisdom coming your way soon."}
+			</p>
+		</div>
+	) : formError ? (
+		<div className="flex flex-col mt-6 mb-6 p-4 text-sm font-semibold text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+			<h2 className="flex items-center text-lg">
+				<span className="mr-2">⚠️</span>
+				<span>Something went wrong</span>
+			</h2>
+			<p className="mt-2">
+				{errorMessage || "We couldn't process your subscription."}
+			</p>
+			<p className="mt-2">
+				Please email <a href="mailto:zackproser@gmail.com" className="underline text-blue-600 dark:text-blue-400">zackproser@gmail.com</a> for support.
+			</p>
+		</div>
 	) : (
 		<form
 			onSubmit={handleSubmit}
