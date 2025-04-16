@@ -3,9 +3,7 @@ import { ImageResponse } from '@vercel/og';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 import React from 'react';
-import sharp from 'sharp';
 import fs from 'fs';
-import path from 'path';
 
 // This route is only for generating images and won't be used in production
 export const maxDuration = 300;
@@ -13,166 +11,33 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    // Parse the URL directly from request.url
-    const requestUrl = request.url;
-    // Decode HTML entities in the URL (convert &amp; to &)
-    const decodedUrl = requestUrl.replace(/&amp;/g, '&');
-    const { searchParams } = new URL(decodedUrl);
-
-    // Check if this is a debug request
-    const debug = searchParams.get('debug') === 'true';
+    // Parse URL and extract query parameters
+    const { searchParams } = new URL(request.url);
     
     // Extract query parameters
     const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
-    // Check for both parameter names for backward compatibility
-    const imageSrc = searchParams.get('imageSrc') || searchParams.get('image');
-    const finalImageSrc = imageSrc?.replace(/^"|"$/g, ''); // Remove surrounding quotes
-    
     console.log('-----OG IMAGE GENERATOR-----');
     console.log('Generating OG image with:');
     console.log('Title:', title);
     console.log('Description:', description?.substring(0, 50) + '...');
-    console.log('Image Src:', finalImageSrc);
     
-    // Special debug endpoint to see what's happening
-    if (debug) {
-      // Collect all search params
-      const params: Record<string, string> = {};
-      searchParams.forEach((value, key) => {
-        params[key] = value;
-      });
-      
-      // List image directory contents
-      const imageDir = join(process.cwd(), 'src', 'images');
-      let imageFiles: string[] = [];
-      
-      if (fs.existsSync(imageDir)) {
-        imageFiles = fs.readdirSync(imageDir).slice(0, 20);
-      }
-      
-      return new Response(JSON.stringify({
-        requestUrl,
-        params,
-        imageDir,
-        imageFiles,
-        imageSrcProvided: !!finalImageSrc
-      }, null, 2), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    // Process image
+    // Load default background image
     let imageData;
-    let base64Image;
-    
     try {
-      let rawImageData;
-      
-      // If we have a direct image src from Next.js
-      if (finalImageSrc) {
-        // Extract just the base filename without any path or hash
-        let baseFilename = '';
-        
-        if (finalImageSrc.includes('/_next/static/media/')) {
-          // This is a Next.js optimized image path like "/_next/static/media/pair-coding-with-ai.123abc.webp"
-          // We just want "pair-coding-with-ai"
-          const filename = path.basename(finalImageSrc); // Get "pair-coding-with-ai.123abc.webp"
-          // Remove hash from filename (like .95561f3f)
-          baseFilename = filename.split('.')[0].replace(/\.[a-f0-9]+$/, ''); 
-        } else {
-          // Direct string path, just use as is
-          baseFilename = path.basename(finalImageSrc).split('.')[0];
-        }
-        
-        console.log('Extracted base filename:', baseFilename);
-        
-        // Now look for any file with this name in src/images directory
-        const imageDir = join(process.cwd(), 'src', 'images');
-        
-        if (fs.existsSync(imageDir)) {
-          // Get all files recursively including in subdirectories
-          const getAllFiles = (dir: string, fileList: string[] = []): string[] => {
-            const files = fs.readdirSync(dir);
-            
-            files.forEach(file => {
-              const filePath = path.join(dir, file);
-              if (fs.statSync(filePath).isDirectory()) {
-                fileList = getAllFiles(filePath, fileList);
-              } else {
-                // Store relative path from imageDir
-                const relativePath = path.relative(imageDir, filePath);
-                fileList.push(relativePath);
-              }
-            });
-            
-            return fileList;
-          };
-          
-          const allFiles = getAllFiles(imageDir);
-          console.log('Found', allFiles.length, 'files in images directory');
-          
-          // Look for an exact match by basename first
-          const exactMatch = allFiles.find(file => path.basename(file) === `${baseFilename}.webp`);
-          if (exactMatch) {
-            console.log('Found exact match by basename:', exactMatch);
-            const imagePath = join(imageDir, exactMatch);
-            rawImageData = await readFile(imagePath);
-          }
-          // Then look for matches containing the basename
-          else {
-            const match = allFiles.find(file => path.basename(file).startsWith(`${baseFilename}.`));
-            if (match) {
-              console.log('Found match starting with base name:', match);
-              const imagePath = join(imageDir, match);
-              rawImageData = await readFile(imagePath);
-            } 
-            // Finally, try to find a match considering the full path
-            else {
-              const fullPathMatch = allFiles.find(file => file.includes(`/${baseFilename}.`) || file === `${baseFilename}.webp`);
-              if (fullPathMatch) {
-                console.log('Found match in full path:', fullPathMatch);
-                const imagePath = join(imageDir, fullPathMatch);
-                rawImageData = await readFile(imagePath);
-              } else {
-                console.log('No matching file found for base name:', baseFilename);
-                console.log('First 5 files in directory:', allFiles.slice(0, 5));
-              }
-            }
-          }
-        } else {
-          console.log('Image directory does not exist:', imageDir);
-        }
+      const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
+      if (fs.existsSync(defaultPath)) {
+        imageData = await readFile(defaultPath);
+      } else {
+        return new Response('Default image not found', { status: 500 });
       }
-      
-      // Fallback to default if no image was found
-      if (!rawImageData) {
-        console.log('No image found, using default');
-        const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
-        if (fs.existsSync(defaultPath)) {
-          rawImageData = await readFile(defaultPath);
-        } else {
-          return new Response('Default image not found', { status: 500 });
-        }
-      }
-
-      // Convert any image format to PNG for consistency
-      console.log('Converting image to PNG...');
-      imageData = await sharp(rawImageData)
-        .png()
-        .toBuffer();
-      console.log('✅ Successfully converted image to PNG');
-      
-      // Create base64 encoding directly
-      base64Image = imageData.toString('base64');
-      
     } catch (error: any) {
-      console.error('Error in image processing:', error);
-      return new Response(`Failed to load/convert image: ${error.message}`, { status: 500 });
+      console.error('Error loading default image:', error);
+      return new Response(`Failed to load default image: ${error.message}`, { status: 500 });
     }
 
-    // Force number type for zIndex values - removing 'px' from values
+    // Force number type for zIndex values
     const zIndexes = {
       background: 1,
       border: 2,
@@ -181,10 +46,6 @@ export async function GET(request: NextRequest) {
       textColumn: 10,
       imageColumn: 5
     };
-
-    // Image dimensions 
-    const imageWidth = 600;
-    const imageHeight = 600;
 
     // Generate the OG image
     return new ImageResponse(
@@ -384,10 +245,8 @@ export async function GET(request: NextRequest) {
                   padding: '5px'
                 }}>
                   <img 
-                    src={`data:image/png;base64,${base64Image}`}
+                    src={`data:image/png;base64,${imageData.toString('base64')}`}
                     alt="Page hero image"
-                    width={imageWidth}
-                    height={imageHeight}
                     style={{
                       width: '110%',
                       height: '110%',
