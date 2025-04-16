@@ -50,21 +50,30 @@ export function ArticleLayout({
   
   // Extract the base slug to help with matching
   const baseSlug = safeSlug.split('/').pop() || safeSlug;
-  console.log(`[ArticleLayout] Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
+  
+  // Only log debug info if DEBUG_METADATA environment variable is set
+  const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
+  const debugLog = (message: string) => {
+    if (isDebugMode) {
+      console.log(`[ArticleLayout] ${message}`);
+    }
+  };
+  
+  debugLog(`Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
 
   // Add more debug information about the image
-  if (metadata.image) {
-    console.log(`[ArticleLayout] Image type: ${typeof metadata.image}`);
+  if (metadata.image && isDebugMode) {
+    debugLog(`Image type: ${typeof metadata.image}`);
     if (typeof metadata.image === 'object' && metadata.image !== null) {
-      console.log(`[ArticleLayout] Image keys: ${Object.keys(metadata.image).join(',')}`);
+      debugLog(`Image keys: ${Object.keys(metadata.image).join(',')}`);
       if ('src' in metadata.image) {
-        console.log(`[ArticleLayout] Image src: ${(metadata.image as any).src}`);
+        debugLog(`Image src: ${(metadata.image as any).src}`);
       }
     } else if (typeof metadata.image === 'string') {
-      console.log(`[ArticleLayout] Image string: ${metadata.image}`);
+      debugLog(`Image string: ${metadata.image}`);
     }
-  } else {
-    console.log(`[ArticleLayout] No image provided for ${safeTitle}`);
+  } else if (isDebugMode) {
+    debugLog(`No image provided for ${safeTitle}`);
   }
 
   // Generate the OG URL with proper slug parameter
@@ -75,7 +84,7 @@ export function ArticleLayout({
     slug: baseSlug as any // Force type to match expected parameter type
   });
   
-  console.log(`[ArticleLayout] Generated OG URL: ${ogUrl}`);
+  debugLog(`Generated OG URL: ${ogUrl}`);
 
   // Use the server purchase status instead of making a redundant API call
   // Only keep this useEffect for SSG pages or situations where serverHasPurchased might not be available
@@ -83,7 +92,7 @@ export function ArticleLayout({
     // If we have received a definitive answer from the server (either true or false),
     // there's no need to check again - we trust the server's response
     if (serverHasPurchased !== undefined) {
-      console.log(`Using server-provided purchase status: ${serverHasPurchased}`);
+      debugLog(`Using server-provided purchase status: ${serverHasPurchased}`);
       return;
     }
 
@@ -99,7 +108,7 @@ export function ArticleLayout({
           ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
           : `/api/check-purchase?slug=${safeSlug}`;
         
-        console.log('No server purchase status available, performing client-side check');
+        debugLog('No server purchase status available, performing client-side check');
         const response = await fetch(url);
         
         if (!response.ok) {

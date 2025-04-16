@@ -203,4 +203,4 @@ if (!fs.existsSync(dir)) {
 }
 
 fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
-console.log(`Generated content for "The Giant List of AI-Assisted Developer Tools Compared and Reviewed" and wrote to ${filename}`);
+console.log(`Generated AI-Assisted Developer Tools comparison post.`);

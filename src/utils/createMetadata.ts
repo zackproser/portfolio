@@ -174,7 +174,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
         const match = callerLine.match(/\(([^:]+)(:\d+:\d+)?\)/);
         if (match && match[1]) {
           derivedFilePath = match[1];
-          console.log('Auto-detected caller file path:', derivedFilePath);
+          // Reducing logging - removed console.log for file path detection
         }
       }
     } catch (e) {
@@ -191,14 +191,8 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   const pathBasedSlug = filePath ? getSlugFromPath(filePath) : '';
   const finalSlug = providedSlug || pathBasedSlug || 'untitled';
   
-  // Add logging to diagnose slug issues
-  metaLogger.debug('Slug determination:', { 
-    providedSlug, 
-    pathBasedSlug, 
-    finalSlug, 
-    filePath: filePath ? path.basename(filePath) : 'none',
-    autoDetected: !explicitFilePath && !!derivedFilePath
-  });
+  // Minimal logging with essential info only
+  metaLogger.debug('Creating metadata', { title, slug: finalSlug });
 
   // Determine content type from file path if not explicitly provided
   const contentType = providedType || (filePath ? getTypeFromPath(filePath) : 'blog');
@@ -207,19 +201,13 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   // This ensures we're passing the direct image object, not just its path
   let processedImage = image;
   
-  // Debug log to help diagnose image issues
-  metaLogger.debug('Image type:', image ? typeof image : 'none', 
-      image && typeof image === 'object' ? 'keys: ' + Object.keys(image).join(', ') : '');
-  
   if (image) {
     // For objects with src property (Next.js images), use them directly
     if (typeof image === 'object' && 'src' in image) {
-      metaLogger.debug('Using image src:', image.src);
       processedImage = image;
     }
     // For string paths, use them directly
     else if (typeof image === 'string') {
-      metaLogger.debug('Using image string:', image);
       processedImage = image;
     }
   }
@@ -228,22 +216,16 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   if (processedImage && typeof processedImage === 'object' && 'src' in processedImage && typeof processedImage.src === 'string') {
     // Check if the image is a relative path in the content directory
     const srcPath = processedImage.src;
-    metaLogger.debug('Processing image src path:', srcPath);
     
     if (filePath && srcPath.includes('/') && !srcPath.startsWith('http')) {
       // Determine if this is a blog post image (if located in the same directory as the MDX file)
       const mdxDir = path.dirname(filePath);
-      
-      metaLogger.debug('MDX directory for image resolution:', mdxDir);
-      metaLogger.debug('Source image path:', srcPath);
       
       // If using relative import, the path will be resolved relative to the MDX file
       if (!srcPath.startsWith('/')) {
         // Only set fullPath if processedImage allows it (matches our interface)
         if (typeof processedImage === 'object' && 'src' in processedImage) {
           (processedImage as { src: string; fullPath?: string }).fullPath = path.join(mdxDir, srcPath);
-          metaLogger.debug('Resolved full image path:', 
-            (processedImage as { src: string; fullPath?: string }).fullPath);
         }
       }
     }
@@ -253,21 +235,20 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     if (typeof imageModule === 'object' && imageModule !== null && 'src' in imageModule) {
       if (processedImage && typeof processedImage === 'object') {
         (processedImage as any).src = imageModule.src as string;
-        metaLogger.debug('Extracted image src from module:', (processedImage as any).src);
       }
     }
-  }
-  
-  // Check if we have a processed image with src before generating OG URL
-  if (processedImage && typeof processedImage === 'object' && 'src' in processedImage) {
-    metaLogger.debug('Final image src for OG URL:', processedImage.src);
-  } else {
-    metaLogger.warn('No valid image src found for OG URL generation');
   }
 
   // Generate a URL using the type and slug
   const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
-  metaLogger.debug('Metadata processing complete');
+
+  // Fix the type error: pass null for slug parameter to match the expected type
+  const ogImageUrl = generateOgUrl({ 
+    title, 
+    description, 
+    image: processedImage,
+    slug: null // Set to null to match the expected type in the function signature
+  });
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
   const metadata: ExtendedMetadata = {
@@ -292,13 +273,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       description: description || '',
       images: [
         {
-          // @ts-ignore - Ignoring type mismatch between string and null | undefined
-          url: generateOgUrl({ 
-            title, 
-            description, 
-            image: processedImage,
-            slug: finalSlug
-          }),
+          url: ogImageUrl,
           alt: title || 'Untitled',
         },
       ],
@@ -307,13 +282,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       ...(defaultMetadata.twitter || {}),
       title: title || 'Untitled',
       description: description || '',
-      // @ts-ignore - Ignoring type mismatch between string and null | undefined
-      images: [generateOgUrl({ 
-        title, 
-        description, 
-        image: processedImage,
-        slug: finalSlug
-      })],
+      images: [ogImageUrl],
     },
     
     // Additional optional fields

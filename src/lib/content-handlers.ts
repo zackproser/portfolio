@@ -19,6 +19,39 @@ const prisma = new PrismaClient()
 const contentDirectory = path.join(process.cwd(), 'src/content')
 const appDirectory = path.join(process.cwd(), 'src/app')
 
+// Logging configuration
+const LOG_LEVELS = {
+  SILENT: 0,   // No logs
+  BASIC: 1,    // Basic summary logs only (default)
+  VERBOSE: 2   // All detailed logs
+};
+
+// Set default log level to BASIC, can be overridden with DEBUG_CONTENT env var
+const getLogLevel = () => {
+  if (process.env.DEBUG_CONTENT === 'verbose') return LOG_LEVELS.VERBOSE;
+  if (process.env.DEBUG_CONTENT === 'silent') return LOG_LEVELS.SILENT;
+  return LOG_LEVELS.BASIC; // Default
+};
+
+const LOG_LEVEL = getLogLevel();
+
+// Logger functions for different verbosity levels
+const logSummary = (message: string) => {
+  if (LOG_LEVEL >= LOG_LEVELS.BASIC) {
+    console.log(`[content] ${message}`);
+  }
+};
+
+const logVerbose = (message: string, data?: any) => {
+  if (LOG_LEVEL >= LOG_LEVELS.VERBOSE) {
+    if (data) {
+      console.log(`[content:verbose] ${message}`, data);
+    } else {
+      console.log(`[content:verbose] ${message}`);
+    }
+  }
+};
+
 /**
  * Get all slugs for a content type
  * @param contentType The content type directory (e.g., 'blog', 'videos')
@@ -27,14 +60,14 @@ const appDirectory = path.join(process.cwd(), 'src/app')
 export function getContentSlugs(contentType: string) {
   // If courses are disabled and the content type is courses, return an empty array
   if (COURSES_DISABLED && contentType === 'learn/courses') {
-    console.log('Courses are temporarily disabled');
+    logVerbose('Courses are temporarily disabled');
     return [];
   }
 
   const contentDir = path.join(contentDirectory, contentType)
   
   if (!fs.existsSync(contentDir)) {
-    console.log(`Content directory does not exist: ${contentDir}`)
+    logVerbose(`Content directory does not exist: ${contentDir}`)
     return []
   }
   
@@ -49,7 +82,7 @@ export function getContentSlugs(contentType: string) {
       return fs.existsSync(mdxPath)
     });
   
-  console.log(`Found ${slugs.length} total slugs for ${contentType} in content directory`);
+  logVerbose(`Found ${slugs.length} total slugs for ${contentType} in content directory`);
   return slugs;
 }
 
@@ -64,9 +97,9 @@ export function contentExists(contentType: string, slug: string): boolean {
   const exists = fs.existsSync(contentMdxPath)
   
   if (exists) {
-    console.log(`Content found: ${contentType}/${slug}`)
+    logVerbose(`Content found: ${contentType}/${slug}`)
   } else {
-    console.log(`Content not found: ${contentType}/${slug}`)
+    logVerbose(`Content not found: ${contentType}/${slug}`)
   }
   
   return exists
@@ -83,18 +116,17 @@ export async function loadContent(contentType: string, slug: string) {
     const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
     
     if (!fs.existsSync(contentMdxPath)) {
-      console.log(`Content not found: ${contentType}/${slug}`)
+      logVerbose(`Content not found: ${contentType}/${slug}`)
       return null
     }
     
-    //console.log(`Loading content: ${contentType}/${slug}`)
     // Dynamically import the MDX content
     const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
     const MdxContent = mdxModule.default
     const metadata = mdxModule.metadata
 
     if (!MdxContent) {
-      console.log(`No MDX content found for: ${contentType}/${slug}`)
+      logVerbose(`No MDX content found for: ${contentType}/${slug}`)
       return null
     }
     
@@ -113,14 +145,19 @@ export async function loadContent(contentType: string, slug: string) {
  */
 export async function getAllContent(contentType: string = 'blog', specificSlugs?: string[]): Promise<Content[]> {
   try {
-    console.log(`Getting all content for type: ${contentType}${specificSlugs ? `, filtered to ${specificSlugs.length} specific slugs` : ''}`)
-    let slugs = getContentSlugs(contentType)
+    // Log high-level summary of what we're loading
+    const slugLabel = specificSlugs ? `filtered to ${specificSlugs.length} specific slugs` : 'all slugs';
+    logSummary(`Loading content: ${contentType} (${slugLabel})`);
+    
+    // Detailed logs only in verbose mode
+    logVerbose(`Getting all content for type: ${contentType}${specificSlugs ? `, filtered to ${specificSlugs.length} specific slugs` : ''}`);
+    let slugs = getContentSlugs(contentType);
     
     // If specific slugs are provided, use only those that exist in the content directory
     if (specificSlugs && specificSlugs.length > 0) {
-      console.log(`Filtering to specific slugs: ${specificSlugs.join(', ')}`)
-      slugs = slugs.filter(slug => specificSlugs.includes(slug))
-      console.log(`Found ${slugs.length} matching slugs in content directory`)
+      logVerbose(`Filtering to specific slugs: ${specificSlugs.join(', ')}`);
+      slugs = slugs.filter(slug => specificSlugs.includes(slug));
+      logVerbose(`Found ${slugs.length} matching slugs in content directory`);
     }
     
     const contentItemsPromises = slugs.map(async (slug) => {
@@ -204,7 +241,11 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
       return dateB - dateA
     })
     
-    console.log(`Returning ${validItems.length} valid content items for ${contentType}`)
+    // Just one summary log in default mode
+    logSummary(`Loaded ${validItems.length} ${contentType} content items${specificSlugs ? ' (filtered)' : ''}`);
+    // More details in verbose mode
+    logVerbose(`Returning ${validItems.length} valid content items for ${contentType}`);
+    
     return validItems
   } catch (error) {
     console.error(`Error getting all content for ${contentType}:`, error)
@@ -246,36 +287,32 @@ export async function generateContentMetadata(contentType: string, slug: string)
  * @returns Whether the user has purchased the content
  */
 export async function hasUserPurchased(userIdOrEmail: string | null | undefined, slug: string): Promise<boolean> {
-  console.log(`[hasUserPurchased] userIdOrEmail: ${userIdOrEmail}, slug: ${slug}`)
-
   if (!userIdOrEmail) {
-    console.log(`[hasUserPurchased] No userIdOrEmail provided, returning false`)
     return false
   }
   
+  // Parse content type and slug from the provided slug
+  const parts = slug.split('/')
+  let contentType = 'blog'
+  let contentSlug = slug
+  
+  // Handle case where slug is in the format "blog/my-post"
+  if (parts.length > 1) {
+    contentType = parts[0]
+    contentSlug = parts.slice(1).join('/')
+  }
+  
+  // For backward compatibility where we sometimes store the full slug
+  const slugCondition = {
+    OR: [
+      { contentSlug },
+      { contentSlug: slug }
+    ]
+  }
+  
   const isEmail = typeof userIdOrEmail === 'string' && userIdOrEmail.includes('@')
-  console.log(`[hasUserPurchased] Checking purchase status for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, slug: ${slug}`)
   
   try {
-    // Convert blog/article type to 'article' as used in the database
-    const contentType = 'article' // For articles, we use 'article' in the database
-    
-    // Extract the base slug without path components
-    // This normalization ensures consistent slug handling across the application
-    const baseSlug = slug.split('/').pop() || slug
-    console.log(`[hasUserPurchased] Using baseSlug: ${baseSlug} from original slug: ${slug}`)
-    
-    // Create a more flexible search condition for contentSlug
-    // Will match any path variation of the same content
-    const slugCondition = {
-      OR: [
-        { contentSlug: slug },
-        { contentSlug: baseSlug },
-        { contentSlug: { contains: `/${baseSlug}` } },
-        { contentSlug: { endsWith: `/${baseSlug}` } }
-      ]
-    }
-    
     let purchase = null
     
     if (isEmail) {
@@ -287,7 +324,7 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
           ...slugCondition
         }
       })
-      console.log(`[hasUserPurchased] Email query result: ${JSON.stringify(purchase)}`)
+      logVerbose(`Email query result: ${purchase ? `Found (ID: ${purchase.id})` : 'Not found'}`);
     } else {
       // Check by user ID
       purchase = await prisma.purchase.findFirst({
@@ -297,12 +334,12 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
           ...slugCondition
         }
       })
-      console.log(`[hasUserPurchased] User ID query result: ${JSON.stringify(purchase)}`)
+      logVerbose(`User ID query result: ${purchase ? `Found (ID: ${purchase.id})` : 'Not found'}`);
     }
     
     // If purchase found, log details
     if (purchase) {
-      console.log(`[hasUserPurchased] Purchase found: ${purchase.id}, contentSlug: ${purchase.contentSlug}, userEmail: ${purchase.email}`)
+      logVerbose(`Purchase found: ${purchase.id}, contentSlug: ${purchase.contentSlug}, userEmail: ${purchase.email}`);
     }
     
     return !!purchase
@@ -396,7 +433,7 @@ export async function getContentBySlug(slug: string, contentType: string = 'blog
   try {
     const result = await loadContent(contentType, slug)
     if (!result) {
-      console.log(`Content not found or failed to load: ${contentType}/${slug}`)
+      logVerbose(`Content not found or failed to load: ${contentType}/${slug}`)
       return null
     }
     
@@ -434,17 +471,16 @@ export async function importContentMetadata(slug: string, contentType: string = 
     const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
     
     if (!fs.existsSync(contentMdxPath)) {
-      console.log(`Content not found: ${contentType}/${slug}`)
+      logVerbose(`Content not found: ${contentType}/${slug}`);
       return null
     }
     
-    //console.log(`Loading metadata: ${contentType}/${slug}`)
     // Dynamically import the MDX content
     const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
     const metadata = mdxModule.metadata
 
     if (!metadata) {
-      console.log(`No metadata found for: ${contentType}/${slug}`)
+      logVerbose(`No metadata found for: ${contentType}/${slug}`);
       return null
     }
     
