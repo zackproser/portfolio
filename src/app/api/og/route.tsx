@@ -2,11 +2,22 @@ import { NextRequest } from 'next/server';
 import { readFile } from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
+import { ogLogger } from '@/utils/logger';
 
 export const maxDuration = 300;
 
 // Set to be as fast as possible - only fetch static files
 export const dynamic = 'force-dynamic'; // Allow dynamic parameters
+
+// Only log in development or when explicitly enabled
+const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
+
+// Helper function to conditionally log
+const log = (message: string, ...args: any[]) => {
+  if (shouldLog) {
+    console.log(message, ...args);
+  }
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +31,7 @@ export async function GET(request: NextRequest) {
     const slug = searchParams.get('slug');
     const title = searchParams.get('title') || 'Modern Coding';
     
-    console.log('OG route - looking for static image for slug:', slug);
+    ogLogger.info('Looking for static image for slug:', slug);
     
     // DIRECT STATIC FILE LOOKUP
     // Check for a pre-generated OG image using slug
@@ -34,7 +45,7 @@ export async function GET(request: NextRequest) {
       
       // Check if the static file exists
       if (fs.existsSync(ogImagePath)) {
-        console.log(`✅ Found static OG image for: ${lastSlugPart}`);
+        ogLogger.info(`Found static OG image for: ${lastSlugPart}`);
         const imageData = await readFile(ogImagePath);
         
         return new Response(imageData, {
@@ -58,11 +69,11 @@ export async function GET(request: NextRequest) {
     
     const generateUrl = `/api/og/generate?${redirectParams.toString()}`;
     
-    console.log(`🔄 No static image found, redirecting to generator: ${generateUrl}`);
+    ogLogger.info(`No static image found, redirecting to generator: ${generateUrl}`);
     
     return Response.redirect(new URL(generateUrl, request.url));
   } catch (error: any) {
-    console.error(`OG route error:`, error);
+    ogLogger.error(`OG route error:`, error);
     return new Response(`Error: ${error.message}`, {
       status: 500,
     });
