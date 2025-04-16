@@ -3,6 +3,7 @@ import { ExtendedMetadata } from './metadata'
 // Base content type for anything on the site
 export interface Content extends ExtendedMetadata {
   tags?: string[]
+  directorySlug?: string  // The original directory name, used for reliable matching
 }
 
 // For blog posts and courses
