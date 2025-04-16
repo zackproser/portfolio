@@ -36,28 +36,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function Page({ params }: PageProps) {
-  const resolvedParams = await params;
-  const { slug } = resolvedParams;
+  const { slug } = await params;
+  const CONTENT_TYPE = 'blog';
 
-  console.log(`[blog/[slug]/page.tsx] Loading content for slug: ${slug}`);
+  // Only log in development and when debug is enabled
+  const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
+  const debugLog = (message: string, data?: any) => {
+    if (isDebugMode) {
+      if (data) {
+        console.log(`[blog/[slug]/page.tsx] ${message}`, data);
+      } else {
+        console.log(`[blog/[slug]/page.tsx] ${message}`);
+      }
+    }
+  };
   
-  // Load the content
+  debugLog(`Loading content for slug: ${slug}`);
   const result = await loadContent(CONTENT_TYPE, slug);
-  console.log(`[blog/[slug]/page.tsx] Content load result: ${result ? 'Success' : 'Failed'}`);
+  debugLog(`Content load result: ${result ? 'Success' : 'Failed'}`);
   
   if (!result) {
-    console.log(`[blog/[slug]/page.tsx] Content not found, returning 404`);
+    debugLog(`Content not found, returning 404`);
     return notFound();
   }
   
   const { MdxContent, metadata } = result;
-  console.log(`[blog/[slug]/page.tsx] Loaded metadata:`, JSON.stringify(metadata, null, 2));
+  
+  // Only log metadata in debug mode
+  if (isDebugMode) {
+    debugLog(`Loaded metadata:`, JSON.stringify(metadata, null, 2));
+  }
 
   metadata.slug = slug;
 
   // Get the user session
   const session = await auth();
-  console.log(`[blog/[slug]/page.tsx] User session:`, session ? 'Authenticated' : 'Not authenticated');
+  debugLog(`User session: ${session ? 'Authenticated' : 'Not authenticated'}`);
   
   // First check if user has purchased the content by user ID
   let hasPurchased = false;
@@ -67,12 +81,12 @@ export default async function Page({ params }: PageProps) {
     
     // If not found by user ID, try with email as a fallback
     if (!hasPurchased && session?.user?.email) {
-      console.log(`[blog/[slug]/page.tsx] Not found by user ID, trying email: ${session.user.email}`);
+      debugLog(`Not found by user ID, trying email: ${session.user.email}`);
       hasPurchased = await hasUserPurchased(session.user.email, slug);
     }
   }
   
-  console.log(`[blog/[slug]/page.tsx] Is paid content: ${metadata?.commerce?.isPaid}, Has purchased: ${hasPurchased}`);
+  debugLog(`Is paid content: ${metadata?.commerce?.isPaid}, Has purchased: ${hasPurchased}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
   return (

@@ -273,6 +273,14 @@ export function ArticleLayout({
 
   // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
   let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
+  
+  // Add slug parameter from metadata to ensure static image lookup works
+  if (metadata.slug) {
+    // Extract the last part of the slug (e.g., "opengraph-integration" from "blog/opengraph-integration")
+    const slugParts = metadata.slug.split('/');
+    const lastSlugPart = slugParts[slugParts.length - 1];
+    ogURL += `&slug=${lastSlugPart}`;
+  }
 
   // If the post includes an image, append it as a query param to the final opengraph endpoint
   if (metadata.image && metadata.image.src) {
