@@ -156,8 +156,8 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     // If specific slugs are provided, use only those that exist in the content directory
     if (specificSlugs && specificSlugs.length > 0) {
       logVerbose(`Filtering to specific slugs: ${specificSlugs.join(', ')}`);
-      slugs = slugs.filter(slug => specificSlugs.includes(slug));
-      logVerbose(`Found ${slugs.length} matching slugs in content directory`);
+      
+      logVerbose(`Found ${slugs.length} total slugs in content directory, will filter after processing`);
     }
     
     const contentItemsPromises = slugs.map(async (slug) => {
@@ -230,9 +230,28 @@ export async function getAllContent(contentType: string = 'blog', specificSlugs?
     
     // Filter out any null items and sort by date
     // Use a more explicit type guard to satisfy TypeScript
-    const validItems = contentItems.filter((item): item is Content => 
+    let validItems = contentItems.filter((item): item is Content => 
       item !== null && typeof item === 'object'
     )
+    
+    // Now apply the specificSlugs filter AFTER processing the content items
+    // This ensures we're filtering with normalized slugs that match what the homepage expects
+    if (specificSlugs && specificSlugs.length > 0) {
+      // Function to normalize slugs for comparison
+      const normalizeForComparison = (slug: string) => {
+        return slug.replace(/^\/+/, '').replace(/^(blog|videos)\//, '');
+      };
+      
+      // Apply filter using normalized comparisons
+      validItems = validItems.filter(item => {
+        const normalizedItemSlug = normalizeForComparison(item.slug);
+        return specificSlugs.some(
+          specificSlug => normalizeForComparison(specificSlug) === normalizedItemSlug
+        );
+      });
+      
+      logVerbose(`After filtering with specificSlugs, found ${validItems.length} matching items`);
+    }
     
     // Sort by date, with proper null checks
     validItems.sort((a, b) => {
