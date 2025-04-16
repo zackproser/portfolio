@@ -395,6 +395,7 @@ export default function TokenizationDemoClient() {
           body="Get exclusive access to practical guides, advanced tokenization techniques, and optimization strategies that help you build better AI applications with lower costs."
           successMessage="Thanks! Check your inbox soon for tokenization resources."
           onSubscribe={() => track('tokenization_newsletter_subscribe')}
+          position="tokenization-demo-footer"
         />
       </div>
     </div>
