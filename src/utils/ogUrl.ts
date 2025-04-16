@@ -1,11 +1,21 @@
 import { ogLogger } from './logger';
+import { OgUrlParams } from '@/types/metadata';
 
+/**
+ * Generates an OpenGraph URL for social media sharing
+ * This version has an empty string as default for slug to match createMetadata usage
+ */
 export function generateOgUrl({
   title = "Zachary Proser's portfolio",
   description = "Full-stack open-source hacker and technical writer",
   image = {},
-  slug = null // Type should be string | null | undefined
-} = {}) {
+  slug = ""  // Empty string default to match how it's used in createMetadata
+}: {
+  title?: string;
+  description?: string;
+  image?: any;
+  slug?: string | null | undefined;  // Updated to allow null or undefined
+} = {}): string {
   // Create a bare URL with properly encoded components
   const baseUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`;
   
@@ -44,7 +54,7 @@ export function generateOgUrl({
   }
   
   // IMPROVED IMAGE EXTRACTION LOGIC
-  let imageSrc = null;
+  let imageSrc: string | null = null;
   
   if (image) {
     ogLogger.debug('Processing image for OG URL:');
@@ -75,7 +85,7 @@ export function generateOgUrl({
       ogLogger.debug('Performing deep search for image src');
       
       // Recursively search for src property
-      const findSrc = (obj, depth = 0) => {
+      const findSrc = (obj: any, depth = 0): string | null => {
         if (depth > 2) return null;
         if (!obj || typeof obj !== 'object') return null;
         
@@ -161,4 +171,4 @@ export function generateOgUrl({
   ogLogger.debug('-------------------------------------------');
   
   return url;
-}
+} 

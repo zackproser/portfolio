@@ -3,52 +3,196 @@ import { ImageResponse } from '@vercel/og';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 import React from 'react';
+import sharp from 'sharp';
 import fs from 'fs';
-import { ogLogger } from '@/utils/logger';
+import path from 'path';
 
 // This route is only for generating images and won't be used in production
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
-// Only log in development or when explicitly enabled
-const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
-
-// Helper function to conditionally log
-const log = (message: string, ...args: any[]) => {
-  if (shouldLog) {
-    console.log(message, ...args);
-  }
-};
-
 export async function GET(request: NextRequest) {
   try {
-    // Parse URL and extract query parameters
-    const { searchParams } = new URL(request.url);
+    // Parse the URL directly from request.url
+    const requestUrl = request.url;
+    // Decode HTML entities in the URL (convert &amp; to &)
+    let decodedUrl = requestUrl;
     
+    // Multiple passes to handle potentially nested encodings
+    for (let i = 0; i < 3; i++) {
+      decodedUrl = decodedUrl
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&#x2F;/g, '/');
+    }
+    
+    console.log('Original URL:', requestUrl);
+    console.log('Decoded URL:', decodedUrl);
+    
+    const { searchParams } = new URL(decodedUrl);
+
+    // Log all parameters for debugging
+    console.log('🔍 All parameters received in generator:');
+    for (const [key, value] of searchParams.entries()) {
+      console.log(`- ${key}: ${value.substring(0, 100)}${value.length > 100 ? '...' : ''}`);
+    }
+    
+    // Check if slug exists
+    const slug = searchParams.get('slug');
+    console.log('📌 Slug parameter:', slug);
+
     // Extract query parameters
-    const title = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
-    const description = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
+    const encodedTitle = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
+    const encodedDescription = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
-    ogLogger.info('-----OG IMAGE GENERATOR-----');
-    ogLogger.info('Generating OG image with:');
-    ogLogger.info('Title:', title);
-    ogLogger.info('Description:', description?.substring(0, 50) + '...');
+    // Properly decode the URL-encoded parameters
+    const title = decodeURIComponent(encodedTitle);
+    const description = decodeURIComponent(encodedDescription);
     
-    // Load default background image
+    // Check for both parameter names for backward compatibility
+    const imageSrc = searchParams.get('imageSrc') || searchParams.get('image');
+    const finalImageSrc = imageSrc?.replace(/^"|"$/g, ''); // Remove surrounding quotes
+    
+    console.log('-----OG IMAGE GENERATOR-----');
+    console.log('Generating OG image with:');
+    console.log('Slug:', slug);
+    console.log('Title:', title);
+    console.log('Description:', description?.substring(0, 50) + '...');
+    console.log('Image Src:', finalImageSrc);
+    
+    // Process image
     let imageData;
+    let base64Image;
+    
     try {
-      const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
-      if (fs.existsSync(defaultPath)) {
-        imageData = await readFile(defaultPath);
-      } else {
-        return new Response('Default image not found', { status: 500 });
+      let rawImageData;
+      
+      // If we have a direct image src from Next.js
+      if (finalImageSrc) {
+        // Extract just the base filename without any path or hash
+        let baseFilename = '';
+        
+        console.log('Original image source:', finalImageSrc);
+        
+        if (finalImageSrc.includes('/_next/static/media/')) {
+          // This is a Next.js optimized image path like "/_next/static/media/pair-coding-with-ai.123abc.webp"
+          // We just want "pair-coding-with-ai"
+          const filename = path.basename(finalImageSrc); // Get "pair-coding-with-ai.123abc.webp"
+          // Remove hash from filename (like .95561f3f)
+          baseFilename = filename.split('.')[0].replace(/\.[a-f0-9]+$/, ''); 
+        } else {
+          // Direct string path, just use as is
+          const fullFilename = path.basename(finalImageSrc).split('?')[0]; // Remove any query params
+          baseFilename = path.basename(fullFilename, path.extname(fullFilename));
+        }
+        
+        console.log('Extracted base filename:', baseFilename);
+        
+        // Only look in src/images directory as specified
+        const imageDir = join(process.cwd(), 'src', 'images');
+        console.log('Searching for images in:', imageDir);
+        
+        if (fs.existsSync(imageDir)) {
+          // Get all files recursively including in subdirectories
+          const getAllFiles = (dir: string, fileList: string[] = []): string[] => {
+            try {
+              const files = fs.readdirSync(dir);
+              
+              files.forEach(file => {
+                const filePath = path.join(dir, file);
+                if (fs.statSync(filePath).isDirectory()) {
+                  fileList = getAllFiles(filePath, fileList);
+                } else {
+                  // Only include .webp files as specified
+                  const ext = path.extname(file).toLowerCase();
+                  if (ext === '.webp') {
+                    // Store full path for easier access
+                    fileList.push(filePath);
+                  }
+                }
+              });
+            } catch (err) {
+              console.log(`Error reading directory ${dir}:`, err);
+            }
+            
+            return fileList;
+          };
+          
+          const allFiles = getAllFiles(imageDir);
+          console.log(`Found ${allFiles.length} webp files in src/images directory`);
+          
+          // First try exact match by basename
+          const exactMatches = allFiles.filter(file => 
+            path.basename(file, '.webp') === baseFilename
+          );
+          
+          if (exactMatches.length > 0) {
+            console.log(`Found ${exactMatches.length} exact matches:`, 
+              exactMatches.map(f => path.basename(f)).join(', '));
+            
+            // Use the first exact match
+            const matchFile = exactMatches[0];
+            console.log('Using exact match:', matchFile);
+            rawImageData = await readFile(matchFile);
+          } 
+          // If no exact match, try files containing the basename
+          else {
+            const containingMatches = allFiles.filter(file => 
+              path.basename(file).includes(baseFilename)
+            );
+            
+            if (containingMatches.length > 0) {
+              console.log(`Found ${containingMatches.length} containing matches:`, 
+                containingMatches.map(f => path.basename(f)).join(', '));
+              
+              // Use the first containing match
+              const matchFile = containingMatches[0];
+              console.log('Using containing match:', matchFile);
+              rawImageData = await readFile(matchFile);
+            } else {
+              console.log('❌ No matching image found for base name:', baseFilename);
+              if (allFiles.length > 0) {
+                console.log('Sample files:', allFiles.slice(0, 5).map(f => path.basename(f)));
+              }
+            }
+          }
+        } else {
+          console.log('Image directory does not exist:', imageDir);
+        }
       }
+      
+      // Fallback to default if no image was found
+      if (!rawImageData) {
+        console.log('No image found, using default');
+        const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
+        if (fs.existsSync(defaultPath)) {
+          rawImageData = await readFile(defaultPath);
+          console.log('Using default image:', defaultPath);
+        } else {
+          console.error('Default image not found at path:', defaultPath);
+          return new Response('Default image not found', { status: 500 });
+        }
+      }
+
+      // Convert any image format to PNG for consistency
+      console.log('Converting image to PNG...');
+      imageData = await sharp(rawImageData)
+        .png()
+        .toBuffer();
+      console.log('✅ Successfully converted image to PNG');
+      
+      // Create base64 encoding directly
+      base64Image = imageData.toString('base64');
+      
     } catch (error: any) {
-      ogLogger.error('Error loading default image:', error);
-      return new Response(`Failed to load default image: ${error.message}`, { status: 500 });
+      console.error('Error in image processing:', error);
+      return new Response(`Failed to load/convert image: ${error.message}`, { status: 500 });
     }
 
-    // Force number type for zIndex values
+    // Force number type for zIndex values - removing 'px' from values
     const zIndexes = {
       background: 1,
       border: 2,
@@ -57,6 +201,10 @@ export async function GET(request: NextRequest) {
       textColumn: 10,
       imageColumn: 5
     };
+
+    // Image dimensions 
+    const imageWidth = 600;
+    const imageHeight = 600;
 
     // Generate the OG image
     return new ImageResponse(
@@ -256,8 +404,10 @@ export async function GET(request: NextRequest) {
                   padding: '5px'
                 }}>
                   <img 
-                    src={`data:image/png;base64,${imageData.toString('base64')}`}
+                    src={`data:image/png;base64,${base64Image}`}
                     alt="Page hero image"
+                    width={imageWidth}
+                    height={imageHeight}
                     style={{
                       width: '110%',
                       height: '110%',
@@ -279,7 +429,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error: any) {
-    ogLogger.error(`OG image generation error:`, error);
+    console.error(`OG image generation error:`, error);
     return new Response(`Failed to generate image: ${error.message}`, {
       status: 500,
     });
