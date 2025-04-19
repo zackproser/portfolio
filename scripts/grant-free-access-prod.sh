@@ -4,12 +4,12 @@
 # Usage: ./grant-free-access-prod.sh -p product-slug -e email@example.com
 
 # Get your production database URL from your deployment environment (Vercel, etc.)
-# Replace this with your actual production database URL or source it from a secure location
-PROD_DB_URL=$(grep POSTGRES_URL .env.production | cut -d '=' -f2-)
+# Using the non-pooling URL to avoid connection issues from outside Vercel's network
+PROD_DB_URL=$(grep POSTGRES_URL_NON_POOLING .env.production | cut -d '=' -f2- | tr -d '"')
 
 if [ -z "$PROD_DB_URL" ]; then
-  echo "Error: Could not find production database URL in .env.production"
-  echo "Please make sure you have a .env.production file with POSTGRES_URL set"
+  echo "Error: Could not find non-pooling database URL in .env.production"
+  echo "Please make sure you have a .env.production file with POSTGRES_URL_NON_POOLING set"
   exit 1
 fi
 
