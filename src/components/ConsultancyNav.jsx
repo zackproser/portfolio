@@ -25,7 +25,8 @@ export const navItems = [
     { name: 'Tutorials', href: '/tutorials' },
     { name: 'Videos', href: '/videos' },
     { name: 'Vector Databases', href: '/vectordatabases' },
-    { name: 'Comparisons', href: '/comparisons' }
+    { name: 'Comparisons', href: '/comparisons' },
+    { name: 'Chat', href: '/chat' }
   ]},
   { name: 'About', href: '/about' },
   { name: 'Testimonials', href: '/testimonials' },

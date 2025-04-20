@@ -65,19 +65,12 @@ export default async function CourseSlugPage({ params }: PageProps) {
               so no need to render it separately here unless you want a specific preview structure */}
           {/* <MdxContent /> */} 
           {renderPaywalledContent(MdxContent, content, userHasPurchased)} 
-          {/* Pass necessary props from content to Paywall */}
+          {/* Pass the entire content object to Paywall */}
           <Paywall 
-            price={content.commerce.price}
-            slug={slug} 
-            title={content.title}
+            content={content}
             paywallHeader={content.commerce.paywallHeader || defaultText.header}
             paywallBody={content.commerce.paywallBody || defaultText.body}
             buttonText={content.commerce.buttonText || defaultText.buttonText}
-            image={typeof content.image === 'object' && content.image?.src 
-                     ? content.image.src 
-                     : typeof content.image === 'string' 
-                       ? content.image 
-                       : undefined}
           />
         </>
       )

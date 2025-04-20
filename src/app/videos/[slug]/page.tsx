@@ -56,13 +56,10 @@ export default async function VideoSlugPage({ params }: PageProps) {
         <>
           <MdxContent />
           <Paywall 
-            price={content.commerce.price}
-            slug={slug} 
-            title={content.title}
+            content={content}
             paywallHeader={content.commerce.paywallHeader || defaultText.header}
             paywallBody={content.commerce.paywallBody || defaultText.body}
             buttonText={content.commerce.buttonText || defaultText.buttonText}
-            image={typeof content.image === 'object' ? content.image.src : content.image}
           />
         </>
       )
