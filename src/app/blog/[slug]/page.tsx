@@ -4,13 +4,14 @@ import {
   generateContentStaticParams, 
   generateContentMetadata, 
   hasUserPurchased,
-  loadContent,
+  getContentWithComponentByDirectorySlug,
   renderPaywalledContent
 } from '@/lib/content-handlers'
 import { notFound } from 'next/navigation'
 import { ArticleLayout } from '@/components/ArticleLayout'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
+import { metadataLogger as logger } from '@/utils/logger'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -32,6 +33,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
+  logger.debug(`Generating metadata for slug: ${slug}`);
   return generateContentMetadata(CONTENT_TYPE, slug)
 }
 
@@ -39,59 +41,50 @@ export default async function Page({ params }: PageProps) {
   const { slug } = await params;
   const CONTENT_TYPE = 'blog';
 
-  // Only log in development and when debug is enabled
-  const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
-  const debugLog = (message: string, data?: any) => {
-    if (isDebugMode) {
-      if (data) {
-        console.log(`[blog/[slug]/page.tsx] ${message}`, data);
-      } else {
-        console.log(`[blog/[slug]/page.tsx] ${message}`);
-      }
-    }
-  };
-  
-  debugLog(`Loading content for slug: ${slug}`);
-  const result = await loadContent(CONTENT_TYPE, slug);
-  debugLog(`Content load result: ${result ? 'Success' : 'Failed'}`);
+  logger.debug(`Loading content for slug: ${slug}`);
+  const result = await getContentWithComponentByDirectorySlug(CONTENT_TYPE, slug);
+  logger.debug(`Content load result: ${result ? 'Success' : 'Failed'}`);
   
   if (!result) {
-    debugLog(`Content not found, returning 404`);
+    logger.warn(`Content not found for slug ${slug}, returning 404`);
     return notFound();
   }
   
-  const { MdxContent, metadata } = result;
+  const { MdxContent, content } = result;
   
-  // Only log metadata in debug mode
-  if (isDebugMode) {
-    debugLog(`Loaded metadata:`, JSON.stringify(metadata, null, 2));
-  }
+  logger.debug(`Loaded content data for slug ${slug}:`, JSON.stringify(content, null, 2));
 
-  metadata.slug = slug;
+  // Ensure slug is set on the content object if needed elsewhere (seems redundant as it's already in content.slug)
+  // content.slug = slug;
 
   // Get the user session
   const session = await auth();
-  debugLog(`User session: ${session ? 'Authenticated' : 'Not authenticated'}`);
+  logger.debug(`User session status: ${session ? 'Authenticated' : 'Not authenticated'}`);
   
   // First check if user has purchased the content by user ID
   let hasPurchased = false;
-  if (metadata?.commerce?.isPaid) {
+  if (content?.commerce?.isPaid) {
+    logger.debug(`Checking purchase status for paid content (${slug})`);
     // First try with user ID
-    hasPurchased = await hasUserPurchased(session?.user?.id, slug);
+    hasPurchased = await hasUserPurchased(session?.user?.id, CONTENT_TYPE, slug);
+    logger.debug(`Purchase check by user ID (${session?.user?.id || 'N/A'}): ${hasPurchased}`);
     
     // If not found by user ID, try with email as a fallback
     if (!hasPurchased && session?.user?.email) {
-      debugLog(`Not found by user ID, trying email: ${session.user.email}`);
-      hasPurchased = await hasUserPurchased(session.user.email, slug);
+      logger.debug(`Not found by user ID, trying email: ${session.user.email}`);
+      hasPurchased = await hasUserPurchased(session.user.email, CONTENT_TYPE, slug);
+      logger.debug(`Purchase check by email (${session.user.email}): ${hasPurchased}`);
     }
+  } else {
+    logger.debug(`Content (${slug}) is not marked as paid.`);
   }
   
-  debugLog(`Is paid content: ${metadata?.commerce?.isPaid}, Has purchased: ${hasPurchased}`);
+  logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
   return (
     <>
-    <ArticleLayout metadata={metadata} serverHasPurchased={hasPurchased}>
+    <ArticleLayout metadata={content} serverHasPurchased={hasPurchased}>
       {hasPurchased ? (
         <div className="purchased-content">
           <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 mb-6">
@@ -101,7 +94,7 @@ export default async function Page({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderPaywalledContent(MdxContent, metadata, hasPurchased)
+        renderPaywalledContent(MdxContent, content, hasPurchased)
       )}
     </ArticleLayout>
     </>
