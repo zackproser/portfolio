@@ -1,8 +1,8 @@
 'use client'
 
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/Container';
-import { useState, Suspense } from 'react';
 import { useChat } from 'ai/react';
 import { track } from '@vercel/analytics';
 import { clsx } from 'clsx';
@@ -104,6 +104,7 @@ const prepopulatedQuestions = [
 export default function ChatPageClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<BlogWithSlug[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
   const { messages, input, setInput, handleSubmit, reload: resetChat } = useChat({
     onResponse(response) {
@@ -178,7 +179,10 @@ export default function ChatPageClient() {
     }, 100);
   };
 
-  console.log('Article slugs:', articles.map(article => article.slug));
+  // Cleanup function to remove the event listener
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <Container>

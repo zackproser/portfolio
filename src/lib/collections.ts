@@ -3,7 +3,7 @@ import glob from 'fast-glob'
 import path from 'path'
 import fs from 'fs'
 
-import { getAllContent } from './content-handlers'
+import { getAllContent } from '@/lib/content-handlers'
 
 // Default fallback image
 import wakka from '@/images/wakka.webp'
@@ -31,7 +31,7 @@ function getImagePath(imageName: string): string {
 }
 
 export async function getAllCollections(): Promise<Collection[]> {
-  let articles = await getAllContent('blog', undefined)
+  let articles = await getAllContent('blog')
 
   let collections = [
     {

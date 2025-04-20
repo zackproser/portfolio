@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendFreeChaptersEmail } from "@/lib/postmark";
-import { loadContent } from "@/lib/content-handlers";
 import fs from 'fs';
 import path from 'path';
+import { emailLogger as logger } from "@/utils/logger";
 
 export async function GET(request: NextRequest) {
-  console.log('📧 [TEST] Starting test email endpoint');
+  logger.info('[TEST_EMAIL] Starting test email endpoint');
   
   // Only allow in development mode
   if (process.env.NODE_ENV !== 'development') {
-    console.log('📧 [TEST] Rejecting request: not in development mode');
+    logger.warn('[TEST_EMAIL] Rejecting request: not in development mode');
     return NextResponse.json(
       { error: 'This endpoint is only available in development mode' },
       { status: 403 }
@@ -24,11 +24,11 @@ export async function GET(request: NextRequest) {
   // Remove any leading slashes from the productSlug
   const productSlug = rawProductSlug.replace(/^\/+/, '');
   
-  console.log(`📧 [TEST] Request parameters: email=${email}, rawProductSlug=${rawProductSlug}, normalized=${productSlug}`);
+  logger.info(`[TEST_EMAIL] Request parameters: email=${email}, rawProductSlug=${rawProductSlug}, normalized=${productSlug}`);
 
   // Validate email
   if (!email) {
-    console.log('📧 [TEST] Rejecting request: missing email parameter');
+    logger.warn('[TEST_EMAIL] Rejecting request: missing email parameter');
     return NextResponse.json(
       { error: 'Email parameter is required' },
       { status: 400 }
@@ -40,12 +40,12 @@ export async function GET(request: NextRequest) {
     const contentDir = path.join(process.cwd(), 'src/content/blog', productSlug);
     const contentFile = path.join(contentDir, 'page.mdx');
     
-    console.log(`📧 [DEBUG] Checking if content file exists: ${contentFile}`);
+    logger.debug(`[TEST_EMAIL] Checking if content file exists: ${contentFile}`);
     const fileExists = fs.existsSync(contentFile);
-    console.log(`📧 [DEBUG] File exists: ${fileExists}`);
+    logger.debug(`[TEST_EMAIL] File exists: ${fileExists}`);
     
     if (!fileExists) {
-      console.log(`📧 [TEST] Rejecting request: content file not found at ${contentFile}`);
+      logger.error(`[TEST_EMAIL] Rejecting request: content file not found at ${contentFile}`);
       return NextResponse.json(
         { error: `Content file not found for slug: ${productSlug}` },
         { status: 404 }
@@ -60,9 +60,9 @@ export async function GET(request: NextRequest) {
     // Extract title from metadata
     const titleMatch = fileContent.match(/title: ["'](.+?)["']/);
     const title = titleMatch ? titleMatch[1] : productSlug;
-    console.log(`📧 [DEBUG] Extracted title: ${title}`);
+    logger.debug(`[TEST_EMAIL] Extracted title: ${title}`);
     
-    console.log(`📧 [TEST] Sending test email to ${email} for content "${title}" (${productSlug})`);
+    logger.info(`[TEST_EMAIL] Sending test email to ${email} for content "${title}" (${productSlug})`);
     
     try {
       // Send the email
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         ProductSlug: productSlug
       });
       
-      console.log(`📧 [TEST] Email sent successfully:`, result);
+      logger.info(`[TEST_EMAIL] Email sent successfully via Postmark:`, result);
       
       return NextResponse.json({
         success: true,
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
         content: title
       });
     } catch (error) {
-      console.error('📧 [TEST] Error sending test email:', error);
+      logger.error('[TEST_EMAIL] Error sending test email:', error);
       
       return NextResponse.json(
         { 
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error(`📧 [DEBUG] Error checking content file:`, error);
+    logger.error(`[TEST_EMAIL] Error checking content file:`, error);
     return NextResponse.json(
       { 
         error: 'Failed to check content file',

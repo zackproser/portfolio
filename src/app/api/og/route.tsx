@@ -10,14 +10,14 @@ export const maxDuration = 300;
 export const dynamic = 'force-dynamic'; // Allow dynamic parameters
 
 // Only log in development or when explicitly enabled
-const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
+// const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
 
 // Helper function to conditionally log
-const log = (message: string, ...args: any[]) => {
-  if (shouldLog) {
-    console.log(message, ...args);
-  }
-};
+// const log = (message: string, ...args: any[]) => {
+//   if (shouldLog) {
+//     console.log(message, ...args);
+//   }
+// };
 
 export async function GET(request: NextRequest) {
   try {

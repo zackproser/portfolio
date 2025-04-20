@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { PrismaClient } from '@prisma/client'
 import { headers } from 'next/headers'
-import { importContentMetadata } from '@/lib/content-handlers'
+import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
 import { Content } from '@/types'
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -36,10 +36,8 @@ export async function POST(req: NextRequest) {
 			)
 		}
 
-		const content = await importContentMetadata(
-			slug, 
-			type === 'course' ? 'learn/courses' : 'blog'
-		)
+		const contentType = type === 'course' ? 'learn/courses' : type;
+		const content = await getContentItemByDirectorySlug(contentType, slug)
 		
 		if (!content) {
 			return NextResponse.json(
@@ -130,10 +128,10 @@ export async function GET(req: Request) {
 			console.log('Found manually provisioned purchase:', purchase);
 			
 			// Determine the content type directory
-			let contentDir = purchase.contentType === 'course' ? 'learn/courses' : 'blog';
+			let contentDir = purchase.contentType === 'course' ? 'learn/courses' : purchase.contentType;
 			
-			// Load the content metadata
-			const content = await importContentMetadata(purchase.contentSlug, contentDir);
+			// Load the content metadata using the new function
+			const content = await getContentItemByDirectorySlug(contentDir, purchase.contentSlug);
 			if (!content) {
 				return NextResponse.json({ error: 'Content not found' }, { status: 404 });
 			}
@@ -198,10 +196,8 @@ export async function GET(req: Request) {
 			}
 		}
 
-		const content = await importContentMetadata(
-			slug, 
-			type === 'course' ? 'learn/courses' : 'blog'
-		)
+		const contentType = type === 'course' ? 'learn/courses' : type;
+		const content = await getContentItemByDirectorySlug(contentType, slug)
 
 		return NextResponse.json({
 			content,
