@@ -1,15 +1,21 @@
 import { headers } from 'next/headers'
 import { UAParser } from 'ua-parser-js'
 import { createMetadata } from '@/utils/createMetadata'
-import { getContentBySlugs } from '@/lib/content-handlers'
+import { getContentsByDirectorySlugs } from '@/lib/content-handlers'
 import HomepageClientComponent from './HomepageClientComponent'
+import { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = createMetadata({
+const baseMetadata = createMetadata({
   title: 'Modern Coding',
   description: 'AI Engineering Mastery for Teams that Ship',
 });
+
+export const metadata: Metadata = {
+  ...baseMetadata,
+  metadataBase: new URL('https://zackproser.com'),
+};
 
 export default async function Page() {
   const deepMLTutorialSlugs = [
@@ -50,12 +56,12 @@ export default async function Page() {
 
   try {
     // Directly load each content collection with our optimized functions
-    const deepMLTutorials = await getContentBySlugs('blog', deepMLTutorialSlugs)
-    const mlProjects = await getContentBySlugs('blog', mlProjectSlugs)
-    const aiDev = await getContentBySlugs('blog', aiDevSlugs)
-    const refArchitectures = await getContentBySlugs('blog', refArchitectureSlugs)
-    const careerAdvice = await getContentBySlugs('blog', careerAdviceSlugs)
-    const videos = await getContentBySlugs('videos', videoSlugs)
+    const deepMLTutorials = await getContentsByDirectorySlugs('blog', deepMLTutorialSlugs)
+    const mlProjects = await getContentsByDirectorySlugs('blog', mlProjectSlugs)
+    const aiDev = await getContentsByDirectorySlugs('blog', aiDevSlugs)
+    const refArchitectures = await getContentsByDirectorySlugs('blog', refArchitectureSlugs)
+    const careerAdvice = await getContentsByDirectorySlugs('blog', careerAdviceSlugs)
+    const videos = await getContentsByDirectorySlugs('videos', videoSlugs)
 
     console.log(`Homepage: Loaded content directly with optimized performance`)
     console.log(`- Deep ML Tutorials: ${deepMLTutorials.length}/${deepMLTutorialSlugs.length}`)

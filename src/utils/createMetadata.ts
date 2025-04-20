@@ -89,7 +89,7 @@ function getSlugFromPath(filePath: string): string {
     // Last resort: use the last directory name
     return parts.length > 0 ? parts[parts.length - 1] : '';
   } catch (error) {
-    console.error('Error extracting slug from path:', error);
+    metaLogger.error('Error extracting slug from path:', error);
     return '';
   }
 }
@@ -174,11 +174,11 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
         const match = callerLine.match(/\(([^:]+)(:\d+:\d+)?\)/);
         if (match && match[1]) {
           derivedFilePath = match[1];
-          // Reducing logging - removed console.log for file path detection
+          metaLogger.debug('Auto-detected caller file path:', derivedFilePath);
         }
       }
     } catch (e) {
-      console.warn('Failed to auto-detect caller file path:', e);
+      metaLogger.warn('Failed to auto-detect caller file path:', e);
     }
   }
   

@@ -493,6 +493,19 @@ export default function HomepageClientComponent({
                 <ContentCard key={`video-${index}`} article={article} />
               ))}
             </div>
+            <div className="text-center mt-6">
+              <Link 
+                href="/videos"
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm"
+                onClick={() => {
+                  track("see_all_click", {
+                    contentType: "videos"
+                  })
+                }}
+              >
+                See all videos →
+              </Link>
+            </div>
           </div>
         </section>
 

@@ -7,10 +7,17 @@ import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/types'
 import ArticleSearch from '@/components/ArticleSearch'
 
-export const metadata: Metadata = createMetadata({
+// Base metadata using createMetadata
+const baseMetadata = createMetadata({
   title: 'Modern Coding - Research',
   description: 'Staff AI engineer - technical writing and development blog',
 })
+
+// Export final metadata including metadataBase
+export const metadata: Metadata = {
+  ...baseMetadata,
+  metadataBase: new URL('https://zackproser.com'),
+}
 
 function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
   return (
@@ -30,12 +37,13 @@ function ArticleGrid({ articles }: { articles: ExtendedMetadata[] }) {
 
 export default async function ArticlesIndex() {
   // Use our helper function to get all blog post metadata
-  const articles = await getAllContent('blog', undefined);
+  const articles = await getAllContent('blog');
   
   // Add debugging to log the articles being loaded
-  console.log(`Loaded ${articles.length} blog articles`);
+  // console.log(`Loaded ${articles.length} blog articles`); // Commented out verbose log
   
   // Log the first few articles for debugging
+  /* // Commented out verbose log
   articles.slice(0, 3).forEach((article, index) => {
     console.log(`Article ${index + 1}:`, {
       title: article.title,
@@ -43,6 +51,7 @@ export default async function ArticlesIndex() {
       type: article.type
     });
   });
+  */
   
   return (
     <SimpleLayout
