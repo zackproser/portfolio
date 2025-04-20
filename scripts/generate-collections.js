@@ -21,7 +21,7 @@ function generateCollectionPages() {
     const title = collectionName.replace(/-/g, ' ');
     const collectionDir = collectionNameDir(collectionName)
     const dir = path.join(process.env.PWD, `/src/app/collections/${collectionDir}`);
-    const filename = `${dir}/page.jsx`;
+    const filename = `${dir}/page.tsx`;
 
     const formattedTitle = title.split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -30,7 +30,7 @@ function generateCollectionPages() {
     const content = `
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { ContentCard } from '@/components/ContentCard'
-import { getAllContent } from '@/lib/content-handlers'
+import { getContentsByDirectorySlugs } from '@/lib/content-handlers'
 
 export const metadata = {
   title: "${formattedTitle}",
@@ -38,10 +38,10 @@ export const metadata = {
 }
 
 export default async function CollectionPage() {
-  let articles = await getAllContent('blog', ${JSON.stringify(collection.slugs)})
+  let articles = await getContentsByDirectorySlugs('blog', ${JSON.stringify(collection.slugs)})
 
   return (
-    <SimpleLayout title="${formattedTitle} Collection">
+    <SimpleLayout title="${formattedTitle} Collection" intro="${collection.description}">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {articles.map(article => (
           <ContentCard key={article.slug} article={article} />
@@ -51,6 +51,9 @@ export default async function CollectionPage() {
   );
 }
     `;
+
+    // Debug log to verify slugs being embedded
+    // console.log(`[generate-collections] Generating page for ${collectionName}. Slugs: ${JSON.stringify(collection.slugs)}`);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
@@ -72,7 +75,8 @@ function generateCollectionIndexPage() {
   // We only need to generate one index page, not one per collection
   const title = "Writing collections"
   const dir = path.join(process.env.PWD, '/src/app/collections')
-  const filename = path.join(dir, 'page.jsx')
+  const filename = path.join(dir, 'page.tsx')
+  const introText = "Explore collections of my writing on various topics.";
 
   const content = `
 import { SimpleLayout } from '@/components/SimpleLayout'
@@ -83,7 +87,7 @@ export default async function CollectionPage() {
   let collections = await getAllCollections()
 
   return (
-    <SimpleLayout title="${title}">
+    <SimpleLayout title="${title}" intro="${introText}">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {collections.map(collection => (
           <CollectionCard key={collection.slug} collection={collection} />
