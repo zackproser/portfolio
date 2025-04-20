@@ -1,6 +1,8 @@
 import { ServerClient } from 'postmark'
-import { renderPaywalledContent, loadContent } from "./content-handlers";
+// import { renderPaywalledContent, loadContent } from "./content-handlers"; // Note: loadContent might be deprecated, check content-handlers
+import { getContentWithComponentByDirectorySlug } from "./content-handlers"; // Use this instead of loadContent
 import { ExtendedMetadata } from '@/types'
+import { emailLogger as logger } from '@/utils/logger' // Import centralized email logger
 
 // Define the MessageSendingResponse interface based on Postmark API response
 interface MessageSendingResponse {
@@ -48,10 +50,10 @@ interface SendReceiptEmailInput {
 const sendReceiptEmail = async (
 	receipt: SendReceiptEmailInput,
 ): Promise<MessageSendingResponse> => {
-	console.log('📧 Postmark API Key configured:', !!process.env.POSTMARK_API_KEY)
-	console.log('📧 Sending receipt email to:', receipt.To)
-	console.log('📧 From address:', receipt.From)
-	console.log('📧 Template:', receipt.TemplateAlias)
+	logger.debug('Postmark API Key configured:', !!process.env.POSTMARK_API_KEY)
+	logger.info('Sending receipt email to:', receipt.To)
+	logger.debug('From address:', receipt.From)
+	logger.debug('Template:', receipt.TemplateAlias)
 	
 	const emailData = {
 		From: receipt.From,
@@ -76,14 +78,14 @@ const sendReceiptEmail = async (
 		},
 	};
 	
-	console.log('📧 Sending email with data:', JSON.stringify(emailData, null, 2))
+	logger.debug('Sending email with data:', JSON.stringify(emailData, null, 2))
 	
 	try {
 		const response = await client.sendEmailWithTemplate(emailData);
-		console.log('📧 Email sent successfully:', response)
+		logger.info('Email sent successfully:', response)
 		return response;
 	} catch (error) {
-		console.error('📧 Failed to send email:', error)
+		logger.error('Failed to send receipt email:', error)
 		throw error;
 	}
 };
@@ -125,16 +127,18 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 	// This assumes all products are blog posts - adjust if you have different content types
 	const contentType = 'blog';
 	
-	console.log(`📧 [PROCESS] Extracting preview content for: ${contentType}/${normalizedSlug}`);
-	const result = await loadContent(contentType, normalizedSlug);
+	logger.info(`Extracting preview content for: ${contentType}/${normalizedSlug}`);
+	// Use getContentWithComponentByDirectorySlug to load content + metadata
+	const result = await getContentWithComponentByDirectorySlug(contentType, normalizedSlug);
 	if (!result) {
-		console.log(`📧 [WARN] No content found for slug: ${productSlug}`);
+		logger.warn(`No content found for slug: ${productSlug}`);
 		return null;
 	}
-	const { metadata } = result;
+	// Access the metadata via result.content
+	const { content: metadata } = result;
 	
 	// Create a simple HTML preview with a link to the content
-	console.log(`📧 [PROCESS] Creating preview content...`);
+	logger.info(`Creating preview content...`);
 	try {
 		// Get the base URL
 		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -159,19 +163,20 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 			</p>
 		`;
 		
-		console.log(`📧 [DEBUG] Preview content created`);
-		console.log('----------------------------------------');
-		console.log(previewContent);
-		console.log('----------------------------------------');
+		logger.debug(`Preview content created`);
+		// Debugging large content can be noisy, consider removing or shortening
+		// logger.debug('----------------------------------------');
+		// logger.debug(previewContent);
+		// logger.debug('----------------------------------------');
 
 		return {
 			previewContent,
 			metadata
 		};
 	} catch (error) {
-		console.error(`📧 [ERROR] Failed to create preview content:`, error);
+		logger.error(`Failed to create preview content:`, error);
 		// Fallback to description
-		console.log(`📧 [WARN] Using description as fallback for preview content`);
+		logger.warn(`Using description as fallback for preview content`);
 		return {
 			previewContent: metadata.description || 'No preview available.',
 			metadata
@@ -187,39 +192,40 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 const sendFreeChaptersEmail = async (
 	input: SendFreeChaptersEmailInput
 ): Promise<MessageSendingResponse | null> => {
-	console.log(`📧 [START] Sending free chapters email to: ${input.To}`);
-	console.log(`📧 [CONFIG] Postmark API Key configured: ${!!process.env.POSTMARK_API_KEY}`);
-	console.log(`📧 [CONFIG] Product slug: ${input.ProductSlug}`);
+	logger.info(`[START] Sending free chapters email to: ${input.To}`);
+	logger.debug(`[CONFIG] Postmark API Key configured: ${!!process.env.POSTMARK_API_KEY}`);
+	logger.debug(`[CONFIG] Product slug: ${input.ProductSlug}`);
 	
 	// Get the base URL for links
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-	console.log(`📧 [CONFIG] Base URL: ${baseUrl}`);
+	logger.debug(`[CONFIG] Base URL: ${baseUrl}`);
 	
 	// Normalize the slug and construct the product URL
 	const normalizedSlug = input.ProductSlug.replace(/^\/+/, '');
 	const productUrl = `${baseUrl}${getContentUrl('article', normalizedSlug)}`;
-	console.log(`📧 [CONFIG] Product URL: ${productUrl}`);
+	logger.debug(`[CONFIG] Product URL: ${productUrl}`);
 	
 	// Extract preview content from the actual product
-	console.log(`📧 [PROCESS] Starting content extraction...`);
+	logger.info(`[PROCESS] Starting content extraction...`);
 
 	const result = await extractPreviewContent(normalizedSlug);
 
 	if (!result) {
-		console.log(`📧 [WARN] No content found for slug: ${input.ProductSlug}`);
+		logger.warn(`No content found for slug: ${input.ProductSlug}`);
 		return null;
 	}
 
+	// The result from extractPreviewContent already contains the correct metadata
 	const { previewContent, metadata } = result;
 
-	console.log(`📧 [DEBUG] Result extracted content length: ${previewContent.length} characters`);
+	logger.debug(`[DEBUG] Result extracted content length: ${previewContent.length} characters`);
 	
 	// Get the title
 	const title = typeof metadata.title === 'string' 
 		? metadata.title 
 		: (metadata.title as any)?.default || 'Untitled';
 		
-	console.log(`📧 [PROCESS] Building email data...`);
+	logger.info(`[PROCESS] Building email data...`);
 	const emailData = {
 		From: "newsletter@zackproser.com",
 		To: input.To,
@@ -251,26 +257,22 @@ You're receiving this email because you requested a preview from Zachary Proser.
 		MessageStream: "outbound",
 	};
 	
-	// Log the final HTML content for debugging
-	console.log(`📧 [DEBUG] Final email HTML content length: ${emailData.HtmlBody.length} characters`);
-	
+	logger.debug('[SEND] Sending email with data:', { 
+    To: emailData.To, 
+    Subject: emailData.Subject, 
+    HtmlBodyLength: emailData.HtmlBody?.length, 
+    TextBodyLength: emailData.TextBody?.length 
+  }); // Avoid logging full potentially large body
+
 	try {
-		console.log(`📧 [SEND] Preparing to send email via Postmark:`, JSON.stringify({
-			To: emailData.To,
-			From: emailData.From,
-			Subject: emailData.Subject,
-			HtmlBodyLength: emailData.HtmlBody.length,
-			TextBodyLength: emailData.TextBody.length,
-			MessageStream: emailData.MessageStream
-		}, null, 2));
-		
-		console.log(`📧 [SEND] Calling Postmark client.sendEmail()...`);
 		const response = await client.sendEmail(emailData);
-		console.log(`📧 [SUCCESS] Email sent successfully:`, response);
+		logger.info(`[SUCCESS] Email sent successfully to ${input.To}:`, response);
 		return response;
 	} catch (error) {
-		console.error(`📧 [ERROR] Failed to send free chapters email:`, error);
-		throw error;
+		logger.error(`[FAIL] Failed to send email to ${input.To}:`, error);
+		// Handle specific Postmark errors if needed
+		// e.g., if (error.code === 406) { ... }
+		return null;
 	}
 };
 

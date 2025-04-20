@@ -6,13 +6,14 @@ import GiscusWrapper from '@/components/GiscusWrapper'
 import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
-import { ExtendedMetadata } from '@/types'
+import { ExtendedMetadata, Content } from '@/types'
 import MiniPaywall from './MiniPaywall'
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { generateOgUrl } from '@/utils/ogUrl'
 import { useRouter } from 'next/navigation'
+import { metadataLogger as logger } from '@/utils/logger'
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -36,7 +37,7 @@ export function ArticleLayout({
   // Add a debug log to help identify which articles are missing slugs
   if (!metadata.slug || metadata.slug === '') {
     // Instead of just logging an error, log more details to help debug
-    console.warn('ArticleLayout: metadata missing slug', { 
+    logger.warn('ArticleLayout: metadata missing slug', { 
       title: metadata.title, 
       type: metadata.type,
       date: metadata.date
@@ -52,28 +53,28 @@ export function ArticleLayout({
   const baseSlug = safeSlug.split('/').pop() || safeSlug;
   
   // Only log debug info if DEBUG_METADATA environment variable is set
-  const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
-  const debugLog = (message: string) => {
-    if (isDebugMode) {
-      console.log(`[ArticleLayout] ${message}`);
-    }
-  };
+  // const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
+  // const debugLog = (message: string) => {
+  //   if (isDebugMode) {
+  //     console.log(`[ArticleLayout] ${message}`);
+  //   }
+  // };
   
-  debugLog(`Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
+  logger.debug(`Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
 
   // Add more debug information about the image
-  if (metadata.image && isDebugMode) {
-    debugLog(`Image type: ${typeof metadata.image}`);
+  if (metadata.image) {
+    logger.debug(`Image type: ${typeof metadata.image}`);
     if (typeof metadata.image === 'object' && metadata.image !== null) {
-      debugLog(`Image keys: ${Object.keys(metadata.image).join(',')}`);
+      logger.debug(`Image keys: ${Object.keys(metadata.image).join(',')}`);
       if ('src' in metadata.image) {
-        debugLog(`Image src: ${(metadata.image as any).src}`);
+        logger.debug(`Image src: ${(metadata.image as any).src}`);
       }
     } else if (typeof metadata.image === 'string') {
-      debugLog(`Image string: ${metadata.image}`);
+      logger.debug(`Image string: ${metadata.image}`);
     }
-  } else if (isDebugMode) {
-    debugLog(`No image provided for ${safeTitle}`);
+  } else {
+    logger.debug(`No image provided for ${safeTitle}`);
   }
 
   // Generate the OG URL with proper slug parameter
@@ -84,7 +85,7 @@ export function ArticleLayout({
     slug: baseSlug as any // Force type to match expected parameter type
   });
   
-  debugLog(`Generated OG URL: ${ogUrl}`);
+  logger.debug(`Generated OG URL: ${ogUrl}`);
 
   // Use the server purchase status instead of making a redundant API call
   // Only keep this useEffect for SSG pages or situations where serverHasPurchased might not be available
@@ -92,7 +93,7 @@ export function ArticleLayout({
     // If we have received a definitive answer from the server (either true or false),
     // there's no need to check again - we trust the server's response
     if (serverHasPurchased !== undefined) {
-      debugLog(`Using server-provided purchase status: ${serverHasPurchased}`);
+      logger.debug(`Using server-provided purchase status: ${serverHasPurchased}`);
       return;
     }
 
@@ -108,7 +109,7 @@ export function ArticleLayout({
           ? `/api/check-purchase?slug=${safeSlug}&email=${encodeURIComponent(email)}`
           : `/api/check-purchase?slug=${safeSlug}`;
         
-        debugLog('No server purchase status available, performing client-side check');
+        logger.debug('No server purchase status available, performing client-side check');
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -118,7 +119,7 @@ export function ArticleLayout({
         const data = await response.json();
         setHasPurchased(data.purchased);
       } catch (error) {
-        console.error('Error checking purchase status:', error);
+        logger.error('Error checking purchase status:', error);
         setHasPurchased(false);
       }
     };
@@ -170,13 +171,7 @@ export function ArticleLayout({
           <div className="mx-auto max-w-2xl">
             {shouldShowMiniPaywall && (
               <MiniPaywall
-                price={metadata.commerce?.price || 0}
-                slug={safeSlug}
-                title={safeTitle}
-                type={safeType}
-                miniTitle={metadata.miniPaywallTitle || metadata.commerce?.miniPaywallTitle || null}
-                miniDescription={metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription || null}
-                image={typeof metadata.image === 'object' && 'src' in metadata.image ? metadata.image.src : metadata.image}
+                content={metadata as Content}
               />
             )}
             <article>

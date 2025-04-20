@@ -1,9 +1,14 @@
-import { ProductLanding } from '@/components/ProductLanding';
+import React from 'react'
+import { createMetadata } from '@/utils/createMetadata'
+import { notFound } from 'next/navigation'
+import { ProductLanding, generateMetadata as productMetadata } from '@/components/ProductLanding'
+import {
+  getAllPurchasableContent,
+  getProductByDirectorySlug,
+  getContentSlugs
+} from '@/lib/content-handlers'
+import { Content } from '@/types'
 import path from 'path';
-import { notFound } from 'next/navigation';
-import { getProductBySlug } from '@/lib/content-handlers';
-import { Content } from '@/types';
-import { generateMetadata as productMetadata } from '@/components/ProductLanding';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -18,7 +23,7 @@ export default async function ProductPage({
   searchParams 
 }: Props) {
   const resolvedParams = await params;
-  const product = await getProductBySlug(resolvedParams.slug);
+  const product = await getProductByDirectorySlug(resolvedParams.slug);
 
   if (!product) {
     notFound();

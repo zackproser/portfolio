@@ -13,7 +13,7 @@ import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
 import { Metadata, ResolvingMetadata } from 'next'
-import { getProductBySlug } from '@/lib/content-handlers'
+import { getProductByDirectorySlug } from '@/lib/content-handlers'
 import { getConversionTestimonials } from '@/data/testimonials'
 
 interface PageProps {
@@ -27,7 +27,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   // Fetch the content based on the slug
   const resolvedParams = await params;
-  const content = await getProductBySlug(resolvedParams.slug);
+  const content = await getProductByDirectorySlug(resolvedParams.slug);
   
   if (!content) {
     return {
@@ -53,6 +53,7 @@ export async function generateMetadata(
   // Return the metadata in Next.js expected format
   return {
     ...metadata,
+    metadataBase: new URL('https://zackproser.com'), 
     openGraph: {
       ...metadata.openGraph,
       images: [
@@ -75,6 +76,7 @@ export function ProductLanding({ content }: { content: Content }) {
     commerce,
     landing,
     slug = '',
+    directorySlug = '',
     type = 'course',
     title = ''
   } = content;
@@ -113,8 +115,8 @@ export function ProductLanding({ content }: { content: Content }) {
 
   const bio = `I'm a software engineer with over ${RenderNumYearsExperience()} years of experience building production systems.`
 
-  // Generate the checkout URL
-  const checkoutUrl = `/checkout?product=${slug}&type=${type}`;
+  // Generate the checkout URL using directorySlug
+  const checkoutUrl = `/checkout?product=${directorySlug}&type=${type}`;
 
   // Ensure all string values have defaults
   const safeDescription = String(description || '');
@@ -166,7 +168,7 @@ export function ProductLanding({ content }: { content: Content }) {
                 </p>
                 <div className="mt-8">
                   <a
-                    href={`/checkout?product=${slug}&type=${type}`}
+                    href={`/checkout?product=${directorySlug}&type=${type}`}
                     className="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                   >
                     Get instant access
@@ -197,7 +199,7 @@ export function ProductLanding({ content }: { content: Content }) {
           title={title || safeDescription}
           description={safePaywallBody}
           checkoutUrl={checkoutUrl}
-          productSlug={slug}
+          productSlug={directorySlug}
           productType={type}
         />
         <Author 
