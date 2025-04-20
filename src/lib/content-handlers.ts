@@ -470,7 +470,7 @@ export function renderPaywalledContent(
       // Pass necessary data from processed content metadata
       showFullContent: showFullContent,
       price: content.commerce?.price || 0,
-      slug: content.slug, // Use the full generated slug
+      slug: content.directorySlug, // Use directorySlug here
       title: content.title, // Use the processed title
       previewLength: content.commerce?.previewLength,
       previewElements: content.commerce?.previewElements,

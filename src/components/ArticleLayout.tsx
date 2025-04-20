@@ -6,7 +6,7 @@ import GiscusWrapper from '@/components/GiscusWrapper'
 import NewsletterWrapper from '@/components/NewsletterWrapper'
 import FollowButtons from '@/components/FollowButtons'
 import { Suspense } from 'react'
-import { ExtendedMetadata } from '@/types'
+import { ExtendedMetadata, Content } from '@/types'
 import MiniPaywall from './MiniPaywall'
 import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
@@ -171,13 +171,7 @@ export function ArticleLayout({
           <div className="mx-auto max-w-2xl">
             {shouldShowMiniPaywall && (
               <MiniPaywall
-                price={metadata.commerce?.price || 0}
-                slug={safeSlug}
-                title={safeTitle}
-                type={safeType}
-                miniTitle={metadata.miniPaywallTitle || metadata.commerce?.miniPaywallTitle || null}
-                miniDescription={metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription || null}
-                image={typeof metadata.image === 'object' && 'src' in metadata.image ? metadata.image.src : metadata.image}
+                content={metadata as Content}
               />
             )}
             <article>
