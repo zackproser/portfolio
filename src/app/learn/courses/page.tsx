@@ -9,11 +9,18 @@ import { Suspense } from 'react'
 import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/types'
 
-export const metadata: Metadata = createMetadata({
+// Base metadata using createMetadata
+const baseMetadata = createMetadata({
   title: 'Courses',
   description: 'Comprehensive courses on programming, development, and technology topics',
   type: 'course'
 })
+
+// Export final metadata including metadataBase
+export const metadata: Metadata = {
+  ...baseMetadata,
+  metadataBase: new URL('https://zackproser.com'),
+}
 
 function CourseGrid({ courses }: { courses: ExtendedMetadata[] }) {
   return (
@@ -33,7 +40,7 @@ function CourseGrid({ courses }: { courses: ExtendedMetadata[] }) {
 
 export default async function CoursesIndex() {
   // Use our helper function to get all course metadata
-  const courses = await getAllContent('learn/courses', undefined)
+  const courses = await getAllContent('learn/courses')
 
   return (
     <SimpleLayout

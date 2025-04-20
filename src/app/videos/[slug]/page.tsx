@@ -5,7 +5,7 @@ import {
   generateContentStaticParams, 
   generateContentMetadata, 
   hasUserPurchased,
-  loadContent,
+  getContentWithComponentByDirectorySlug,
   getDefaultPaywallText
 } from '@/lib/content-handlers'
 
@@ -35,20 +35,20 @@ export default async function VideoSlugPage({ params }: PageProps) {
   const { slug } = resolvedParams;
   
   // Load the content
-  const result = await loadContent(CONTENT_TYPE, slug)
+  const result = await getContentWithComponentByDirectorySlug(CONTENT_TYPE, slug)
   
   // Handle notFound case
   if (!result) return null
   
-  const { MdxContent, metadata } = result
+  const { MdxContent, content } = result
   
   // Check if content is paid and handle paywall logic
-  if (metadata?.commerce?.isPaid) {
+  if (content?.commerce?.isPaid) {
     // Get the user session using the auth() function
     const session = await auth()
     
     // If no user is logged in or hasn't purchased, show a preview with paywall
-    if (!session?.user || !(await hasUserPurchased(session.user.id, slug))) {
+    if (!session?.user || !(await hasUserPurchased(session.user.id, CONTENT_TYPE, slug))) {
       const defaultText = getDefaultPaywallText(CONTENT_TYPE)
       
       // Show a limited preview with a paywall
@@ -56,13 +56,10 @@ export default async function VideoSlugPage({ params }: PageProps) {
         <>
           <MdxContent />
           <Paywall 
-            price={metadata.commerce.price} 
-            slug={slug} 
-            title={metadata.title}
-            paywallHeader={metadata.commerce.paywallHeader || defaultText.header}
-            paywallBody={metadata.commerce.paywallBody || defaultText.body}
-            buttonText={metadata.commerce.buttonText || defaultText.buttonText}
-            image={metadata.image}
+            content={content}
+            paywallHeader={content.commerce.paywallHeader || defaultText.header}
+            paywallBody={content.commerce.paywallBody || defaultText.body}
+            buttonText={content.commerce.buttonText || defaultText.buttonText}
           />
         </>
       )

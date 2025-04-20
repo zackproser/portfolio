@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { getAllContent, getAllProducts, getTopLevelPages } from '@/lib/content-handlers';
+import { getAllContent, getAllProducts, getAppPageRoutesPaths } from '@/lib/content-handlers';
+// import { siteConfig } from '@/config/site'; // Removed unused import
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons', 'services', 'products'];
@@ -11,35 +12,45 @@ const dynamicDetailDirs = [
 ];
 
 async function getRoutes() {
-  let routes = new Set(); // Use a Set to store unique routes
+  const routes = new Set();
 
-  // Get all top-level pages dynamically
-  const topLevelPages = await getTopLevelPages();
-  topLevelPages.forEach(page => routes.add(page));
+  // Add homepage
+  routes.add('/');
 
-  // Get all content for each content type
-  for (const contentType of dynamicDirs) {
-    if (!excludeDirs.includes(contentType)) {
-      const contents = await getAllContent(contentType, undefined);
-      contents.forEach(content => {
-        if (content.slug) {
-          // Remove any leading slashes to avoid double slashes
-          const cleanSlug = content.slug.replace(/^\/+/, '');
-          routes.add(`/${cleanSlug}`);
+  // Add static pages by scanning src/app directory
+  const appDir = path.join(process.cwd(), 'src/app');
+  const scanDir = (dir, prefix = '') => {
+    const items = fs.readdirSync(dir);
+    items.forEach(item => {
+      const fullPath = path.join(dir, item);
+      const relativePath = prefix ? `${prefix}/${item}` : item;
+      if (fs.statSync(fullPath).isDirectory()) {
+        // Exclude API routes and directories starting with '_'
+        if (item !== 'api' && !item.startsWith('_') && !item.startsWith('(')) {
+          scanDir(fullPath, relativePath);
         }
-      });
-    }
-  }
+      } else if (item === 'page.tsx' || item === 'page.js') {
+        // Add the route, removing 'page.tsx' or 'page.js'
+        routes.add(prefix ? `/${prefix}` : '/');
+      }
+    });
+  };
+  scanDir(appDir);
 
-  // Get all products
+  // Get all dynamic content routes (blog, videos, etc.)
+  const blogContent = await getAllContent('blog');
+  blogContent.forEach(item => routes.add(item.slug));
+
+  const videoContent = await getAllContent('videos'); // Assuming 'videos' is a content type
+  videoContent.forEach(item => routes.add(item.slug));
+
+  // Get all product routes
   const products = await getAllProducts();
-  products.forEach(product => {
-    if (product.slug) {
-      // Remove any leading slashes to avoid double slashes
-      const cleanSlug = product.slug.replace(/^\/+/, '');
-      routes.add(`/${cleanSlug}`);
-    }
-  });
+  products.forEach(product => routes.add(product.slug));
+
+  // Get all top-level pages dynamically using the replacement function
+  const topLevelPages = await getAppPageRoutesPaths();
+  topLevelPages.forEach(page => routes.add(page));
 
   // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
   dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {
@@ -65,12 +76,12 @@ async function getRoutes() {
 
   return uniqueRoutes.map(route => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    lastModified: new Date().toISOString(),
     changeFrequency: 'weekly',
     priority: 1.0,
   }));
 }
 
 export default async function sitemap() {
-  return getRoutes();
+  return getRoutes(); // Revert to original function call
 }

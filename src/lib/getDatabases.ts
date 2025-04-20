@@ -1,7 +1,9 @@
 import { Database } from '@/types/database';
 import { databases } from '../data/databases';
+import { dbLogger as logger } from '@/utils/logger'; // Import centralized logger
 
 export const getDatabases = (): Database[] => {
+  logger.info('Starting database retrieval and validation...');
   // Track seen IDs to filter out duplicates
   const seenIds = new Set<string>();
   const uniqueDatabases: Database[] = [];
@@ -10,7 +12,7 @@ export const getDatabases = (): Database[] => {
   const validatedDatabases = databases.map((db, index) => {
     // Check if this database has a valid ID
     if (!db.id) {
-      console.warn(`Database at index ${index} (${db.name}) has no ID, generating one`);
+      logger.warn(`Database at index ${index} (${db.name}) has no ID, generating one from name.`);
       return {
         ...db,
         id: db.name.toLowerCase().replace(/\s+/g, '-')
@@ -33,20 +35,20 @@ export const getDatabases = (): Database[] => {
       id: finalId
     };
     
-    console.log(`Processing database[${index}]: ${validatedDb.name} (ID: ${validatedDb.id})`);
+    logger.debug(`Processing database[${index}]: ${validatedDb.name} (ID: ${validatedDb.id})`);
     
     if (seenIds.has(validatedDb.id)) {
-      console.warn(`Duplicate database entry skipped: ${validatedDb.name} with ID ${validatedDb.id}`);
+      logger.warn(`Duplicate database entry skipped: ${validatedDb.name} with ID ${validatedDb.id}`);
     } else {
       seenIds.add(validatedDb.id);
       uniqueDatabases.push(validatedDb);
     }
   });
   
-  console.log(`Original databases count: ${databases.length}`);
-  console.log(`Validated databases count: ${validatedDatabases.length}`);
-  console.log(`Unique databases count: ${uniqueDatabases.length}`);
-  console.log(`Unique database names: ${uniqueDatabases.map(db => db.name).join(', ')}`);
+  logger.info(`Original databases count: ${databases.length}`);
+  logger.info(`Validated databases count: ${validatedDatabases.length}`);
+  logger.info(`Unique databases count: ${uniqueDatabases.length}`);
+  logger.debug(`Unique database names: ${uniqueDatabases.map(db => db.name).join(', ')}`);
   
   return uniqueDatabases;
 };

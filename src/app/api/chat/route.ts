@@ -2,9 +2,17 @@ import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { PineconeRecord } from "@pinecone-database/pinecone"
 import { Metadata, getContext } from '../../services/context'
-import { importContentMetadata } from '@/lib/content-handlers'
+import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
 import path from 'path';
 import { BlogWithSlug } from '@/types';
+import { NextRequest, NextResponse } from 'next/server'
+import {
+  Content,
+  Blog,
+  Purchasable,
+  ProductContent,
+  ExtendedMetadata,
+} from '@/types'
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
@@ -38,7 +46,7 @@ export async function POST(req: Request) {
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const metadata = await importContentMetadata(blogPath, 'blog');
+    const metadata = await getContentItemByDirectorySlug('blog', blogPath)
     
     if (metadata) {
       relatedBlogPosts.push({ ...metadata });
