@@ -1,450 +1,407 @@
-import { Metadata } from 'next'
-import fs from 'fs'
-import path from 'path'
-import { ExtendedMetadata, Content, Blog, isPurchasable, Purchasable, BlogWithSlug, ProductContent, COURSES_DISABLED } from '@/types'
-import React from 'react'
-import { PrismaClient } from '@prisma/client'
-import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'
-import dynamic from 'next/dynamic'
-import { getContentUrl } from './content-url'
+// use server directive might be needed depending on your Next.js setup, 
+// Next.js 15.3 often benefits from it for RSCs involving file system/db
+import 'server-only';
 
-// Mark this file as server-side only
+import { Metadata } from 'next';
+import fs from 'fs';
+import path from 'path';
+import { Content, Blog, Purchasable, ProductContent, COURSES_DISABLED, ExtendedMetadata } from '@/types'; // Assuming ExtendedMetadata is defined here or in '@/types'
+import React from 'react';
+import { PrismaClient } from '@prisma/client';
+import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'; // Adjust path if necessary
+import dynamic from 'next/dynamic'; // Although this file is server-only, dynamic is used for the ArticleContent component
+// import { getContentUrl } from './content-url' // Removed as it was unused
+import { contentLogger as logger } from '@/utils/logger'; // Import the centralized logger
+
+// Mark this file as server-side only (already present)
 export const config = {
   runtime: 'nodejs'
-}
+};
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 // Directory where content is stored
-const contentDirectory = path.join(process.cwd(), 'src/content')
-const appDirectory = path.join(process.cwd(), 'src/app')
+const contentDirectory = path.join(process.cwd(), 'src/content');
+const appDirectory = path.join(process.cwd(), 'src/app');
 
-// Logging configuration
-const LOG_LEVELS = {
-  SILENT: 0,   // No logs
-  BASIC: 1,    // Basic summary logs only (default)
-  VERBOSE: 2   // All detailed logs
-};
-
-// Set default log level to BASIC, can be overridden with DEBUG_CONTENT env var
-const getLogLevel = () => {
-  if (process.env.DEBUG_CONTENT === 'verbose') return LOG_LEVELS.VERBOSE;
-  if (process.env.DEBUG_CONTENT === 'silent') return LOG_LEVELS.SILENT;
-  return LOG_LEVELS.BASIC; // Default
-};
-
-const LOG_LEVEL = getLogLevel();
-
-// Logger functions for different verbosity levels
-const logSummary = (message: string) => {
-  if (LOG_LEVEL >= LOG_LEVELS.BASIC) {
-    console.log(`[content] ${message}`);
-  }
-};
-
-const logVerbose = (message: string, data?: any) => {
-  if (LOG_LEVEL >= LOG_LEVELS.VERBOSE) {
-    if (data) {
-      console.log(`[content:verbose] ${message}`, data);
-    } else {
-      console.log(`[content:verbose] ${message}`);
+// Add helper function for slug normalization (useful for comparing potential route params to content slugs)
+// Remove any leading slashes and 'blog/' or 'videos/' prefix IF they exist at the start
+const normalizeRouteOrFileSlug = (slug: string) => {
+  let cleanedSlug = slug.replace(/^\/+/, ''); // Remove leading slashes
+  // Optionally remove content type prefix if it seems like a full path
+  const contentTypePrefixes = ['blog/', 'videos/', 'learn/courses/', 'comparisons/']; // Add other types as needed
+  for (const prefix of contentTypePrefixes) {
+    if (cleanedSlug.startsWith(prefix)) {
+      cleanedSlug = cleanedSlug.substring(prefix.length);
+      break; // Assume only one prefix
     }
   }
-};
+  return cleanedSlug;
+}
 
-// Add helper function for slug normalization (same as used in page.tsx)
-const normalizeSlug = (slug: string) => {
-  // Remove any leading slashes and 'blog/' or 'videos/' prefix
-  return slug.replace(/^\/+/, '').replace(/^(blog|videos)\//, '')
+
+// --- Internal Helpers ---
+
+/**
+ * Internal: Dynamically imports MDX module and extracts content component and metadata.
+ * Does basic existence check first.
+ * @param contentType The content type directory (e.g., 'blog', 'videos')
+ * @param directorySlug The directory name for the specific content item
+ * @returns Imported MDX module components and metadata, or null if not found/failed.
+ */
+async function _loadMDXModule(contentType: string, directorySlug: string) {
+  const contentMdxPath = path.join(contentDirectory, contentType, directorySlug, 'page.mdx');
+
+  if (!fs.existsSync(contentMdxPath)) {
+    logger.debug(`MDX file not found: ${contentType}/${directorySlug}`);
+    return null;
+  }
+
+  try {
+    // Use template literal syntax for dynamic import path
+    const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);
+    const MdxContent = mdxModule.default;
+    const metadata = mdxModule.metadata as ExtendedMetadata;
+
+    if (!MdxContent && !metadata) {
+      logger.debug(`MDX module loaded but no default export or metadata found for: ${contentType}/${directorySlug}`);
+      return null; // Or return { MdxContent, metadata } if partial loads are possible/useful
+    }
+
+    logger.debug(`Successfully loaded MDX module: ${contentType}/${directorySlug}`);
+    return { MdxContent, metadata };
+  } catch (error: any) {
+    // Catch potential errors during import itself
+    if (error.code === 'MODULE_NOT_FOUND') {
+        logger.debug(`MDX module import failed (MODULE_NOT_FOUND): ${contentType}/${directorySlug}`);
+        // This case should ideally be caught by fs.existsSync, but keeping it for robustness
+    } else {
+        logger.error(`Error dynamically importing MDX module for ${contentType}/${directorySlug}:`, error);
+    }
+    return null;
+  }
 }
 
 /**
- * Get all slugs for a content type
+ * Internal: Processes raw MDX metadata into a consistent Content object structure.
+ * Handles defaults, slug/ID generation, and type mapping.
  * @param contentType The content type directory (e.g., 'blog', 'videos')
- * @returns Array of slugs
+ * @param directorySlug The directory name for the specific content item
+ * @param rawMetadata The raw metadata object imported from the MDX file
+ * @returns A processed Content object.
  */
-export function getContentSlugs(contentType: string) {
-  // If courses are disabled and the content type is courses, return an empty array
-  if (COURSES_DISABLED && contentType === 'learn/courses') {
-    logVerbose('Courses are temporarily disabled');
+function _processContentMetadata(contentType: string, directorySlug: string, rawMetadata: ExtendedMetadata): Content {
+  let processedMetadata = { ...rawMetadata };
+
+  // Ensure the content's unique slug is based on structure, not just metadata field
+  const finalContentSlug = `/${contentType}/${directorySlug}`;
+
+  // Ensure a unique deterministic ID
+  const contentId = `${contentType}-${directorySlug}`;
+
+  // Ensure the type is set correctly, defaulting based on content type directory
+  const determinedType = processedMetadata.type || (
+    contentType === 'blog' ? 'blog' :
+    contentType === 'videos' ? 'video' :
+    contentType === 'learn/courses' ? 'course' :
+    contentType === 'comparisons' ? 'comparison' :
+    'blog' // Default fallback type
+  );
+
+  // Standardize the title processing (handle string or object with default)
+  const standardizedTitle = typeof processedMetadata.title === 'string'
+    ? processedMetadata.title
+    : (processedMetadata.title as any)?.default || 'Untitled';
+
+
+  const content: Content = {
+    _id: contentId,
+    slug: finalContentSlug, // Full URL path slug
+    directorySlug: directorySlug, // Store original directory identifier
+    type: determinedType,
+    title: standardizedTitle,
+    description: processedMetadata.description || '',
+    author: processedMetadata.author || 'Unknown',
+    date: processedMetadata.date || new Date().toISOString(),
+    image: processedMetadata.image || '',
+
+    // Include optional fields only if they exist in source metadata
+    ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
+    ...(processedMetadata.landing && { landing: processedMetadata.landing }),
+    ...(processedMetadata.tags && { tags: processedMetadata.tags })
+  };
+
+  logger.debug(`Processed metadata for ${contentType}/${directorySlug}`, content);
+  return content;
+}
+
+/**
+ * Internal: Loads multiple content items by their directory slugs, processes, filters, and sorts.
+ * @param contentType The content type directory
+ * @param directorySlugs Array of exact directory slugs to load
+ * @returns Array of processed Content objects.
+ */
+async function _loadAndProcessContentsArray(contentType: string, directorySlugs: string[]): Promise<Content[]> {
+  if (!directorySlugs || directorySlugs.length === 0) {
+    logger.debug(`No directory slugs provided for loading type: ${contentType}`);
     return [];
   }
 
-  const contentDir = path.join(contentDirectory, contentType)
-  
-  if (!fs.existsSync(contentDir)) {
-    logVerbose(`Content directory does not exist: ${contentDir}`)
-    return []
+  const contentItemsPromises = directorySlugs.map(async (directorySlug) => {
+    const mdxModule = await _loadMDXModule(contentType, directorySlug);
+    if (!mdxModule || !mdxModule.metadata) {
+      // _loadMDXModule already logs debug messages here
+      return null;
+    }
+    try {
+      return _processContentMetadata(contentType, directorySlug, mdxModule.metadata);
+    } catch (error) {
+      logger.error(`Error processing metadata for ${contentType}/${directorySlug}:`, error);
+      return null;
+    }
+  });
+
+  const results = await Promise.all(contentItemsPromises);
+
+  // Filter out any null items (failed loads or processing)
+  let validItems = results.filter((item): item is Content => item !== null);
+
+  // Sort by date (newest first)
+  validItems.sort((a, b) => {
+    const dateA = a?.date ? new Date(a.date).getTime() : 0;
+    const dateB = b?.date ? new Date(b.date).getTime() : 0;
+    return dateB - dateA;
+  });
+
+  return validItems;
+}
+
+
+// --- Public Functions ---
+
+/**
+ * Get all directory slugs for a content type.
+ * These slugs correspond to the directory names within the content type folder.
+ * Skips disabled content types (e.g., courses).
+ * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
+ * @returns Array of directory slugs (string[])
+ */
+export function getContentSlugs(contentType: string): string[] {
+  // If courses are disabled and the content type is courses, return an empty array
+  if (COURSES_DISABLED && contentType === 'learn/courses') {
+    logger.debug('Courses are temporarily disabled. Skipping content slugs for learn/courses.');
+    return [];
   }
-  
+
+  const contentDir = path.join(contentDirectory, contentType);
+
+  if (!fs.existsSync(contentDir)) {
+    logger.debug(`Content directory does not exist for type: ${contentType}`);
+    return [];
+  }
+
+  // Read directories, filter for directories containing page.mdx
   const slugs = fs.readdirSync(contentDir)
     .filter(item => {
-      const itemPath = path.join(contentDir, item)
-      return fs.statSync(itemPath).isDirectory()
-    })
-    .filter(slug => {
-      // Only include directories that have a page.mdx file
-      const mdxPath = path.join(contentDir, slug, 'page.mdx')
-      return fs.existsSync(mdxPath)
+      const itemPath = path.join(contentDir, item);
+      const stat = fs.statSync(itemPath);
+      // Check if it's a directory and contains page.mdx
+      return stat.isDirectory() && fs.existsSync(path.join(itemPath, 'page.mdx'));
     });
-  
-  logVerbose(`Found ${slugs.length} total slugs for ${contentType} in content directory`);
+
+  logger.debug(`Found ${slugs.length} valid content directory slugs for type: ${contentType}`);
   return slugs;
 }
 
 /**
- * Check if content exists
+ * Check if content exists for a specific content type and directory slug.
  * @param contentType The content type directory
- * @param slug The content slug
- * @returns Whether the content exists
+ * @param directorySlug The directory name for the specific content item
+ * @returns Whether the content's page.mdx file exists.
  */
-export function contentExists(contentType: string, slug: string): boolean {
-  const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
-  const exists = fs.existsSync(contentMdxPath)
-  
-  if (exists) {
-    logVerbose(`Content found: ${contentType}/${slug}`)
-  } else {
-    logVerbose(`Content not found: ${contentType}/${slug}`)
-  }
-  
-  return exists
+export function contentExists(contentType: string, directorySlug: string): boolean {
+  const contentMdxPath = path.join(contentDirectory, contentType, directorySlug, 'page.mdx');
+  const exists = fs.existsSync(contentMdxPath);
+
+  logger.debug(`Checking content existence for ${contentType}/${directorySlug}: ${exists}`);
+  return exists;
 }
 
 /**
- * Load content by slug
+ * Get a single processed Content object (including metadata) by its content type and directory slug.
+ * Does NOT include the MDX React component. Useful for listing pages, displaying metadata snippets, etc.
  * @param contentType The content type directory
- * @param slug The content slug
- * @returns The content component and metadata
+ * @param directorySlug The directory name for the specific content item
+ * @returns The processed Content object or null if not found or failed to load/process.
  */
-export async function loadContent(contentType: string, slug: string) {
+export async function getContentItemByDirectorySlug(contentType: string, directorySlug: string): Promise<Content | null> {
+  const mdxModule = await _loadMDXModule(contentType, directorySlug);
+  if (!mdxModule || !mdxModule.metadata) {
+     // _loadMDXModule already logged detailed reason
+     return null;
+  }
+
   try {
-    const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
-    
-    if (!fs.existsSync(contentMdxPath)) {
-      logVerbose(`Content not found: ${contentType}/${slug}`)
-      return null
-    }
-    
-    // Dynamically import the MDX content
-    const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
-    const MdxContent = mdxModule.default
-    const metadata = mdxModule.metadata
-
-    if (!MdxContent) {
-      logVerbose(`No MDX content found for: ${contentType}/${slug}`)
-      return null
-    }
-    
-    return { MdxContent, metadata }
+    return _processContentMetadata(contentType, directorySlug, mdxModule.metadata);
   } catch (error) {
-    console.error(`Error loading content for ${contentType}/${slug}:`, error)
-    return null
+    logger.error(`Error processing metadata for ${contentType}/${directorySlug}:`, error);
+    return null;
   }
 }
 
 /**
- * Get all content of a specific type
+ * Get a single content item, including the MDX React component and processed metadata.
+ * Useful for rendering a specific content page.
  * @param contentType The content type directory
- * @param specificSlugs Optional array of specific slugs to filter by
- * @returns Array of content items
+ * @param directorySlug The directory name for the specific content item
+ * @returns An object containing the MDX component and processed content metadata, or null if not found or failed.
  */
-export async function getAllContent(contentType: string = 'blog', specificSlugs?: string[]): Promise<Content[]> {
+export async function getContentWithComponentByDirectorySlug(contentType: string, directorySlug: string): Promise<{ MdxContent: React.ComponentType, content: Content } | null> {
+  const mdxModule = await _loadMDXModule(contentType, directorySlug);
+  if (!mdxModule || !mdxModule.MdxContent || !mdxModule.metadata) {
+    // _loadMDXModule already logged detailed reason
+    // Add specific check if component or metadata is missing even if module loaded
+    if (mdxModule && !mdxModule.MdxContent) logger.debug(`MDX module found but MdxContent component is missing for ${contentType}/${directorySlug}`);
+    if (mdxModule && !mdxModule.metadata) logger.debug(`MDX module found but metadata is missing for ${contentType}/${directorySlug}`);
+    return null;
+  }
+
   try {
-    // Optimize for the case when specific slugs are provided
-    if (specificSlugs && specificSlugs.length > 0) {
-      logSummary(`Loading specific ${contentType} content: ${specificSlugs.length} slugs`);
-      
-      // Process only the specified slugs directly without loading all content
-      const contentItemsPromises = specificSlugs.map(async (requestedSlug) => {
-        try {
-          // Normalize the slug to match file system
-          const normalizedSlug = normalizeSlug(requestedSlug);
-          
-          // Load only this specific content item
-          const result = await loadContent(contentType, normalizedSlug);
-          if (!result) {
-            logVerbose(`Content not found for slug: ${contentType}/${normalizedSlug}`);
-            return null;
-          }
-          
-          const { metadata } = result;
-          
-          // Process metadata to ensure consistent slug and ID generation
-          let processedMetadata = { ...metadata } as ExtendedMetadata;
-          
-          // Ensure the metadata has a slug (use the normalized slug if not provided)
-          if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-            processedMetadata.slug = normalizedSlug;
-          }
-          
-          // Add a unique ID that's deterministic based on content type and slug
-          processedMetadata._id = `${contentType}-${normalizedSlug}`;
-          
-          // Ensure the type is set correctly
-          processedMetadata.type = processedMetadata.type || (
-            contentType === 'blog' ? 'blog' : 
-            contentType === 'videos' ? 'video' : 
-            contentType === 'learn/courses' ? 'course' : 'blog'
-          );
-          
-          // Create the full path for the content
-          const typePath = 
-            contentType === 'videos' ? 'videos' : 
-            contentType === 'blog' ? 'blog' : 
-            contentType === 'learn/courses' ? 'learn/courses' : 
-            contentType === 'comparisons' ? 'comparisons' : 
-            contentType;
-          
-          return {
-            author: processedMetadata.author || 'Unknown',
-            date: processedMetadata.date || new Date().toISOString(),
-            title: typeof processedMetadata.title === 'string' ? processedMetadata.title : (processedMetadata.title as any)?.default || 'Untitled',
-            description: processedMetadata.description || '',
-            image: processedMetadata.image || '',
-            type: processedMetadata.type,
-            slug: `/${typePath}/${normalizedSlug}`,
-            _id: processedMetadata._id,
-            directorySlug: normalizedSlug,
-            ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
-            ...(processedMetadata.landing && { landing: processedMetadata.landing }),
-            ...(processedMetadata.tags && { tags: processedMetadata.tags })
-          } as Content;
-        } catch (error) {
-          console.error(`Error processing content for ${contentType}/${requestedSlug}:`, error);
-          return null;
-        }
-      });
-      
-      // Wait for all promises to resolve
-      const contentItems = await Promise.all(contentItemsPromises);
-      
-      // Filter out any null items
-      let validItems = contentItems.filter((item): item is Content => 
-        item !== null && typeof item === 'object'
-      );
-      
-      // Sort by date
-      validItems.sort((a, b) => {
-        const dateA = a?.date ? new Date(a.date).getTime() : 0;
-        const dateB = b?.date ? new Date(b.date).getTime() : 0;
-        return dateB - dateA;
-      });
-      
-      logSummary(`Loaded ${validItems.length}/${specificSlugs.length} requested ${contentType} content items`);
-      
-      return validItems;
-    }
-    
-    // Default behavior (unchanged): Load all content items
-    logSummary(`Loading all ${contentType} content items`);
-    
-    // Get all directory slugs (these are the actual content directories)
-    let slugs = getContentSlugs(contentType);
-    logVerbose(`Found ${slugs.length} content directories to process`);
-    
-    // Directory filtering done later after processing to ensure consistent slug matching
-    
-    const contentItemsPromises = slugs.map(async (slug) => {
-      try {
-        const result = await loadContent(contentType, slug)
-        if (!result) return null
-        
-        const { metadata } = result
-        
-        // Process metadata to ensure consistent slug and ID generation
-        let processedMetadata = { ...metadata } as ExtendedMetadata
-        
-        // Ensure the metadata has a slug (use the directory name if not provided)
-        if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-          processedMetadata.slug = slug
-        } else {
-          // Normalize the slug to prevent path issues
-          // Remove any leading slashes
-          let formattedSlug = processedMetadata.slug.replace(/^\/+/, '')
-          
-          // Remove content type prefix if it exists (e.g., 'blog/' from 'blog/my-post')
-          if (formattedSlug.startsWith(`${contentType}/`)) {
-            formattedSlug = formattedSlug.substring(contentType.length + 1)
-          }
-          
-          // Update the slug in the metadata
-          processedMetadata.slug = formattedSlug
-        }
-        
-        // Add a unique ID that's deterministic based on content type and slug
-        processedMetadata._id = `${contentType}-${processedMetadata.slug}`
-        
-        // Ensure the type is set correctly
-        processedMetadata.type = processedMetadata.type || (
-          contentType === 'blog' ? 'blog' : 
-          contentType === 'videos' ? 'video' : 
-          contentType === 'learn/courses' ? 'course' : 'blog'
-        )
-        
-        // Create the full path for the content
-        const typePath = 
-          contentType === 'videos' ? 'videos' : 
-          contentType === 'blog' ? 'blog' : 
-          contentType === 'learn/courses' ? 'learn/courses' : 
-          contentType === 'comparisons' ? 'comparisons' : 
-          contentType;
-        
-        // Store the directory slug for debugging purposes
-        return {
-          author: processedMetadata.author || 'Unknown',
-          date: processedMetadata.date || new Date().toISOString(),
-          title: typeof processedMetadata.title === 'string' ? processedMetadata.title : (processedMetadata.title as any)?.default || 'Untitled',
-          description: processedMetadata.description || '',
-          image: processedMetadata.image || '',  // Ensure image is always a string, even if empty
-          type: processedMetadata.type,
-          slug: `/${typePath}/${processedMetadata.slug}`,  // Include the full path in the slug
-          _id: processedMetadata._id,
-          directorySlug: slug, // Store original directory slug for debugging
-          ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
-          ...(processedMetadata.landing && { landing: processedMetadata.landing }),
-          ...(processedMetadata.tags && { tags: processedMetadata.tags })
-        } as Content  // Explicitly cast to Content type
-      } catch (error) {
-        console.error(`Error processing content for ${contentType}/${slug}:`, error)
-        return null
-      }
-    })
-    
-    // Wait for all promises to resolve
-    const contentItems = await Promise.all(contentItemsPromises)
-    
-    // Filter out any null items
-    let validItems = contentItems.filter((item): item is Content => 
-      item !== null && typeof item === 'object'
-    )
-    
-    // Filter by specificSlugs if provided (using the same pattern as in page.tsx)
-    if (specificSlugs && specificSlugs.length > 0) {
-      const beforeCount = validItems.length;
-      validItems = validItems.filter(item => 
-        specificSlugs.some(slug => normalizeSlug(item.slug) === normalizeSlug(slug))
-      );
-      logVerbose(`Filtered from ${beforeCount} to ${validItems.length} items by specific slugs`);
-    }
-    
-    // Sort by date, with proper null checks
-    validItems.sort((a, b) => {
-      const dateA = a?.date ? new Date(a.date).getTime() : 0
-      const dateB = b?.date ? new Date(b.date).getTime() : 0
-      return dateB - dateA
-    })
-    
-    // Just one summary log in default mode
-    logSummary(`Loaded ${validItems.length} ${contentType} content items${specificSlugs ? ' (filtered)' : ''}`);
-    
-    return validItems
+    const content = _processContentMetadata(contentType, directorySlug, mdxModule.metadata);
+    return {
+      MdxContent: mdxModule.MdxContent,
+      content: content
+    };
   } catch (error) {
-    console.error(`Error getting all content for ${contentType}:`, error)
-    return []
+    logger.error(`Error processing metadata and getting component for ${contentType}/${directorySlug}:`, error);
+    return null;
   }
 }
 
 /**
- * Generate static params for content of a specific type
+ * Get multiple processed Content objects by a list of exact directory slugs.
+ * Does NOT include MDX React components. Useful for loading specific related items.
  * @param contentType The content type directory
- * @returns Array of slug params for static generation
+ * @param directorySlugs Array of exact directory slugs to load and process.
+ * @returns Array of processed Content objects (nulls are filtered out).
+ */
+export async function getContentsByDirectorySlugs(contentType: string, directorySlugs: string[]): Promise<Content[]> {
+  logger.info(`Attempting to load ${directorySlugs.length} items for type ${contentType} by directory slugs`);
+  const items = await _loadAndProcessContentsArray(contentType, directorySlugs);
+  logger.info(`Loaded ${items.length} items for type ${contentType} by directory slugs`);
+  return items;
+}
+
+
+/**
+ * Get all available processed Content objects (metadata only, no component) for a specific type.
+ * @param contentType The content type directory (defaults to 'blog').
+ * @returns Array of processed Content objects.
+ */
+export async function getAllContent(contentType: string = 'blog'): Promise<Content[]> {
+  logger.info(`Loading all content items for type: ${contentType}`);
+
+  // Get all directory slugs for this type
+  const directorySlugs = getContentSlugs(contentType);
+  logger.debug(`Found ${directorySlugs.length} directory slugs for type ${contentType}`);
+
+  // Load and process all of them
+  const contentItems = await _loadAndProcessContentsArray(contentType, directorySlugs);
+
+  logger.info(`Finished loading ${contentItems.length} content items for type: ${contentType}`);
+  return contentItems;
+}
+
+/**
+ * Generate static params for content of a specific content type for Next.js static generation.
+ * Returns an array of objects like `{ slug: 'my-post' }`.
+ * @param contentType The content type directory
+ * @returns Array of directory slug params for static generation.
  */
 export async function generateContentStaticParams(contentType: string) {
-  const slugs = getContentSlugs(contentType)
-  return slugs.map(slug => ({ slug }))
+  const directorySlugs = getContentSlugs(contentType);
+  // Returns params using the directory slug, as this is what the page route slug will be
+  return directorySlugs.map(directorySlug => ({ slug: directorySlug }));
 }
 
 /**
- * Generate metadata for a content item
+ * Generate metadata for a content item for Next.js generateMetadata function.
+ * This loads the *raw* metadata directly from the MDX file.
  * @param contentType The content type directory
- * @param slug The content slug
- * @returns Metadata for the content
+ * @param directorySlug The directory name for the specific content item
+ * @returns Raw Metadata object imported from the MDX file, or empty object.
  */
-export async function generateContentMetadata(contentType: string, slug: string): Promise<Metadata> {
+export async function generateContentMetadata(contentType: string, directorySlug: string): Promise<Metadata> {
+  // Only load the raw metadata, do not process it into the full Content object structure
+  // as Next.js generateMetadata expects a Metadata type or undefined
   try {
-    const result = await loadContent(contentType, slug)
-    if (!result) return {}
-    
-    return result.metadata
+    const mdxModule = await _loadMDXModule(contentType, directorySlug);
+    // Return raw metadata if available, otherwise an empty object conforms to Metadata type
+    const baseMetadata = mdxModule?.metadata || {};
+    // Inject metadataBase here
+    return {
+      ...baseMetadata,
+      metadataBase: new URL('https://zackproser.com'),
+    };
   } catch (error) {
-    return {}
+    logger.error(`Error generating metadata for ${contentType}/${directorySlug}:`, error);
+    // Return empty object with metadataBase even on error?
+    // Or just empty object? Let's return empty with metadataBase for consistency.
+    return {
+      metadataBase: new URL('https://zackproser.com'),
+    };
   }
 }
 
 /**
- * Check if a user has purchased a specific content
+ * Check if a user has purchased a specific content item.
+ * Uses the standard content identifier (content type and directory slug).
  * @param userIdOrEmail The user ID or email
- * @param slug The content slug
- * @returns Whether the user has purchased the content
+ * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
+ * @param directorySlug The directory name for the specific content item
+ * @returns Whether the user has purchased the content.
  */
-export async function hasUserPurchased(userIdOrEmail: string | null | undefined, slug: string): Promise<boolean> {
+export async function hasUserPurchased(userIdOrEmail: string | null | undefined, contentType: string, directorySlug: string): Promise<boolean> {
   if (!userIdOrEmail) {
-    return false
+    logger.debug(`Purchase check: No user ID or email provided for ${contentType}/${directorySlug}`);
+    return false;
   }
-  
-  // Parse content type and slug from the provided slug
-  const parts = slug.split('/')
-  let contentType = 'blog'
-  let contentSlug = slug
-  
-  // Handle case where slug is in the format "blog/my-post"
-  if (parts.length > 1) {
-    contentType = parts[0]
-    contentSlug = parts.slice(1).join('/')
-  }
-  
-  // For backward compatibility where we sometimes store the full slug
-  const slugCondition = {
-    OR: [
-      { contentSlug },
-      { contentSlug: slug }
-    ]
-  }
-  
-  const isEmail = typeof userIdOrEmail === 'string' && userIdOrEmail.includes('@')
-  
+
+  const isEmail = typeof userIdOrEmail === 'string' && userIdOrEmail.includes('@');
+
   try {
-    let purchase = null
-    
-    if (isEmail) {
-      // Check by email
-      purchase = await prisma.purchase.findFirst({
-        where: {
-          email: userIdOrEmail,
-          contentType,
-          ...slugCondition
-        }
-      })
-      logVerbose(`Email query result: ${purchase ? `Found (ID: ${purchase.id})` : 'Not found'}`);
-    } else {
-      // Check by user ID
-      purchase = await prisma.purchase.findFirst({
-        where: {
-          userId: userIdOrEmail,
-          contentType,
-          ...slugCondition
-        }
-      })
-      logVerbose(`User ID query result: ${purchase ? `Found (ID: ${purchase.id})` : 'Not found'}`);
-    }
-    
-    // If purchase found, log details
+    let purchase = null;
+
+    // Prisma query looks for purchases matching the identifying information
+    const whereCondition = {
+      contentType: contentType,
+      contentSlug: directorySlug, // Assuming 'contentSlug' in DB maps to the directory slug
+      ...(isEmail ? { email: userIdOrEmail } : { userId: userIdOrEmail }),
+    };
+
+    logger.debug(`Checking purchase for ${isEmail ? 'email' : 'user ID'} '${userIdOrEmail}' on ${contentType}/${directorySlug}`);
+    purchase = await prisma.purchase.findFirst({
+      where: whereCondition,
+    });
+
+    // If purchase found, log details verbosely
     if (purchase) {
-      logVerbose(`Purchase found: ${purchase.id}, contentSlug: ${purchase.contentSlug}, userEmail: ${purchase.email}`);
+      logger.debug(`Purchase found: ID ${purchase.id}, content: ${purchase.contentType}/${purchase.contentSlug}, userEmail: ${purchase.email}, userId: ${purchase.userId}`);
+    } else {
+      logger.debug(`No purchase found for ${contentType}/${directorySlug} for user/email '${userIdOrEmail}'`);
     }
-    
-    return !!purchase
-  } catch (error) {
-    console.error(`[hasUserPurchased] Error checking purchase status: ${error}`)
-    return false
+
+    return !!purchase;
+  } catch (error: any) {
+    logger.error(`[hasUserPurchased] Error checking purchase status for ${contentType}/${directorySlug}:`, error);
+    return false;
   }
 }
 
 /**
- * Get default paywall text for a content type
+ * Get default paywall text for a content type.
  * @param contentType The content type
- * @returns Default paywall text
+ * @returns Default paywall text structure.
  */
 export function getDefaultPaywallText(contentType: string): {
   header: string;
@@ -457,378 +414,265 @@ export function getDefaultPaywallText(contentType: string): {
         header: "Get Access to the Full Video",
         body: "This is premium video content. Purchase to get full access.",
         buttonText: "Purchase Now"
-      }
+      };
     case 'learn/courses':
       return {
         header: "Get Access to the Full Course",
         body: "This is a premium course. Purchase to get full access.",
         buttonText: "Purchase Now"
+      };
+    case 'article': // Assuming 'blog' content type metadata might use 'article' type
+    case 'blog':
+      return {
+        header: "Get Access to the Full Article",
+        body: "This is premium article content. Purchase to get full access.",
+        buttonText: "Purchase Now",
       }
     default:
       return {
         header: "Get Access to the Full Content",
         body: "This is premium content. Purchase to get full access.",
         buttonText: "Purchase Now"
-      }
+      };
   }
 }
 
 /**
- * Render content with appropriate paywall handling
- * @param MdxContent The MDX content component
- * @param metadata The content metadata
+ * Render content with appropriate paywall handling using the ArticleContent component.
+ * Requires the MDX component and processed content metadata.
+ * @param MdxContent The MDX content component (default export)
+ * @param content The processed Content object (metadata)
  * @param hasPurchased Whether the user has purchased the content
- * @returns The rendered content with appropriate paywall if needed
+ * @returns The rendered content with appropriate paywall if needed.
  */
 export function renderPaywalledContent(
   MdxContent: React.ComponentType,
-  metadata: ExtendedMetadata,
+  content: Content, // Use the processed Content type
   hasPurchased: boolean
 ) {
   // Determine if we should show the full content
-  const showFullContent = !metadata.commerce?.isPaid || hasPurchased;
-  
-  // If content is not paid or user has purchased, we can still use ArticleContent
-  // but with showFullContent=true to avoid the paywall
-  const defaultText = getDefaultPaywallText(metadata.type || 'blog');
-  
-  // Import ArticleContent dynamically to avoid circular dependencies
-  const ArticleContent = dynamic(() => import("@/components/ArticleContent"));
-  
+  const showFullContent = !content.commerce?.isPaid || hasPurchased;
+
+  // Get default paywall text based on content type
+  const defaultText = getDefaultPaywallText(content.type);
+
+  // Dynamically import ArticleContent to avoid circular dependencies if this file is imported in components
+  // Note: This file is marked 'server-only', but ArticleContent likely exists client-side,
+  // so dynamic import with `ssr: false` might be needed depending on ArticleContent's usage.
+  // Assuming ArticleContent is a Server Component based on context, keeping simple dynamic import.
+  const ArticleContent = dynamic(() => import("@/components/ArticleContent") as Promise<{ default: React.ComponentType<any> }>);
+
   return React.createElement(
     ArticleContent,
     {
-      // eslint-disable-next-line react/no-children-prop
+      // Pass MDX content as children prop to ArticleContent
       children: React.createElement(MdxContent),
-      showFullContent,
-      price: metadata.commerce?.price || 0,
-      slug: metadata.slug || '',
-      title: typeof metadata.title === 'string' 
-        ? metadata.title 
-        : (metadata.title as any)?.default || 'Untitled',
-      previewLength: metadata.commerce?.previewLength,
-      previewElements: metadata.commerce?.previewElements,
-      paywallHeader: metadata.commerce?.paywallHeader || defaultText.header,
-      paywallBody: metadata.commerce?.paywallBody || defaultText.body,
-      buttonText: metadata.commerce?.buttonText || defaultText.buttonText,
+      // Pass necessary data from processed content metadata
+      showFullContent: showFullContent,
+      price: content.commerce?.price || 0,
+      slug: content.slug, // Use the full generated slug
+      title: content.title, // Use the processed title
+      previewLength: content.commerce?.previewLength,
+      previewElements: content.commerce?.previewElements,
+      paywallHeader: content.commerce?.paywallHeader || defaultText.header,
+      paywallBody: content.commerce?.paywallBody || defaultText.body,
+      buttonText: content.commerce?.buttonText || defaultText.buttonText,
+      // Pass content object itself if ArticleContent needs more data
+      content: content,
     }
   );
 }
 
 /**
- * Get content by slug with error handling
- * @param slug The content slug
- * @param contentType The content type directory (defaults to 'blog')
- * @returns The content or null if not found
+ * Get all content items across all types that are marked as purchasable (`commerce.isPaid: true`).
+ * Returns processed Content objects (metadata only).
+ * @returns Array of purchasable Content items.
  */
-export async function getContentBySlug(slug: string, contentType: string = 'blog') {
+export async function getAllPurchasableContent(): Promise<Content[]> {
+  logger.info('Loading all purchasable content items.');
   try {
-    const result = await loadContent(contentType, slug)
-    if (!result) {
-      logVerbose(`Content not found or failed to load: ${contentType}/${slug}`)
-      return null
-    }
-    
-    const { MdxContent, metadata } = result
-    
-    // Ensure we have a valid slug
-    const validSlug = slug && slug !== 'untitled' ? slug : metadata.slug || slug
-    
-    return {
-      MdxContent,
-      metadata: {
-        ...metadata,
-        slug: validSlug,
-        type: metadata.type || (
-          contentType === 'blog' ? 'blog' : 
-          contentType === 'videos' ? 'video' : 
-          contentType === 'learn/courses' ? 'course' : 'blog'
-        )
-      }
-    }
+    // Get content from relevant types
+    const contentTypes = COURSES_DISABLED ? ['blog', 'videos'] : ['blog', 'learn/courses', 'videos'];
+
+    const allContentPromises = contentTypes.map(type => getAllContent(type));
+    const allContent = (await Promise.all(allContentPromises)).flat();
+
+    // Filter to only paid content
+    const purchasableContent = allContent.filter(content => content.commerce?.isPaid);
+
+    logger.info(`Found ${purchasableContent.length} purchasable content items.`);
+    return purchasableContent; // These are already Content objects
   } catch (error) {
-    console.error(`Error getting content by slug ${contentType}/${slug}:`, error)
-    return null
+    logger.error('Error loading all purchasable content:', error);
+    return [];
   }
 }
 
 /**
- * Import only metadata from MDX files
- * @param slug The content slug
- * @param contentType The content type directory
- * @returns The metadata from the MDX file
- */
-export async function importContentMetadata(slug: string, contentType: string = 'blog') {
-  try {
-    const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx')
-    
-    if (!fs.existsSync(contentMdxPath)) {
-      logVerbose(`Content not found: ${contentType}/${slug}`);
-      return null
-    }
-    
-    // Dynamically import the MDX content
-    const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`)
-    const metadata = mdxModule.metadata
-
-    if (!metadata) {
-      logVerbose(`No metadata found for: ${contentType}/${slug}`);
-      return null
-    }
-    
-    // Process metadata to ensure consistent slug and ID generation
-    let processedMetadata = { ...metadata } as ExtendedMetadata
-    
-    // Ensure the metadata has a slug (use the directory name if not provided)
-    if (!processedMetadata.slug || processedMetadata.slug === 'untitled') {
-      // Use the directory name as the slug
-      processedMetadata.slug = slug
-    } else {
-      // Normalize the slug to prevent path issues
-      // Remove any leading slashes
-      let formattedSlug = processedMetadata.slug.replace(/^\/+/g, '')
-      
-      // Construct the slug based on the directory structure
-      formattedSlug = `${contentType}/${slug}`;
-      
-      // Update the slug in the metadata
-      processedMetadata.slug = formattedSlug
-    }
-    
-    // Add a unique ID that's deterministic based on content type and slug
-    processedMetadata._id = `${contentType}-${processedMetadata.slug}`
-    
-    return processedMetadata
-  } catch (error) {
-    console.error(`Error importing metadata for ${contentType}/${slug}:`, error)
-    return null
-  }
-}
-
-/**
- * Get all products (any content with isPaid=true)
- * @returns Array of product content items
+ * Get all products. Products are purchasable content items processed into the ProductContent structure.
+ * @returns Array of ProductContent items.
  */
 export async function getAllProducts(): Promise<ProductContent[]> {
+  logger.info('Loading all products.');
   try {
-    // Get all content from all content types at once
-    const allContent = await Promise.all([
-      getAllContent('blog', undefined),
-      // Only include courses if they're not disabled
-      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses', undefined)]),
-      getAllContent('videos', undefined)
-    ]).then(results => results.flat());
-    
-    // Filter to only paid content
-    const paidContent = allContent.filter(content => content.commerce?.isPaid);
-    
-    // Transform to product content
-    const productContent = paidContent.map(content => {
+     // Get all purchasable content items first
+    const purchasableContent = await getAllPurchasableContent();
+
+    // Transform to product content using appropriate generators
+    const productContentPromises = purchasableContent.map(async content => {
+      // Assuming generateProductFromCourse needs the full Content object and potentially component/other data?
+      // The original code cast content as `any` and `BlogWithSlug`. Let's pass the full processed Content object.
+      // If these generation functions require the MDX component, we'd need to load that too.
+      // Based on generateProductFromArticle(content as BlogWithSlug), it seems like it just needs metadata fields.
+      // Let's refine this: If generators ONLY need metadata from the Content object, we pass 'content'.
+      // If they need the MDX component, this function needs to load it or be refactored.
+      // Assuming they only need metadata for product details:
       if (content.type === 'course' && !COURSES_DISABLED) {
-        return generateProductFromCourse(content as any);
+        // Assuming generateProductFromCourse can work with the Content type
+        return generateProductFromCourse(content as any); // Cast to 'any' to bypass type error - revisit if needed
       }
-      return generateProductFromArticle(content as BlogWithSlug);
+      // Assuming generateProductFromArticle can work with the Content type (Blog extends Content)
+      return generateProductFromArticle(content as Blog); // Casting to Blog which extends Content
     });
-    
-    return productContent.filter((p): p is ProductContent => p !== null);
+
+    const productContent = await Promise.all(productContentPromises);
+
+    const validProductItems = productContent.filter((p): p is ProductContent => p !== null); // Filter out any nulls from generators
+
+    logger.info(`Generated ${validProductItems.length} product items.`);
+    return validProductItems;
   } catch (error) {
-    console.error('Error loading products:', error);
+    logger.error('Error loading products:', error);
     return [];
   }
 }
 
-/**
- * Get all purchasable content
- * @returns Array of purchasable content items
- */
-export async function getAllPurchasableContent(): Promise<Blog[]> {
-  try {
-    // Get all content from all content types
-    const allContent = await Promise.all([
-      getAllContent('blog', undefined),
-      // Only include courses if they're not disabled
-      ...(COURSES_DISABLED ? [] : [getAllContent('learn/courses', undefined)]),
-      getAllContent('videos', undefined)
-    ]).then(results => results.flat());
-    
-    // Filter to only paid content
-    return allContent.filter(content => content.commerce?.isPaid) as Blog[];
-  } catch (error) {
-    console.error('Error loading purchasable content:', error);
-    return [];
-  }
-}
 
 /**
- * Get a product by its slug
- * @param slug The product slug
- * @returns The product content or null if not found
+ * Get a single purchasable content item (Product) by its directory slug, searching across content types.
+ * Includes the MDX component alongside the processed content metadata.
+ * @param directorySlug The directory name of the product content item.
+ * @returns The Purchasable item (Content with MdxComponent) or null if not found or not purchasable.
  */
-export async function getProductBySlug(slug: string): Promise<Purchasable | null> {
-  // Try to find the content in any content type
-  const contentTypes = COURSES_DISABLED 
-    ? ['blog', 'videos'] 
-    : ['blog', 'learn/courses', 'videos'];
-    
+export async function getProductByDirectorySlug(directorySlug: string): Promise<Purchasable | null> {
+  logger.info(`Looking for product with directory slug: ${directorySlug}`);
+  // Try to find the content in relevant content types
+  const contentTypes = COURSES_DISABLED
+    ? ['blog', 'videos']
+    : ['blog', 'learn/courses', 'videos', 'comparisons']; // Added comparisons potentially? Adjust as needed.
+
   for (const contentType of contentTypes) {
-    const content = await getContentBySlug(slug, contentType);
-    
-    if (content && content.metadata && content.metadata.commerce?.isPaid) {
-      // Transform to match the expected Purchasable structure
-      const transformedContent = {
-        ...content.metadata,
-        MdxContent: content.MdxContent,
-        type: content.metadata.type || contentType
-      } as unknown as Purchasable;
-      
-      return transformedContent;
+    logger.debug(`Checking for product in ${contentType}/${directorySlug}`);
+    // Use the function that gets both component and processed metadata
+    const result = await getContentWithComponentByDirectorySlug(contentType, directorySlug);
+
+    // Check if found and is marked as paid
+    if (result && result.content.commerce?.isPaid) {
+      logger.info(`Found product: ${contentType}/${directorySlug}`);
+      // The Purchasable type seems to be Blog & { MdxContent: any }
+      // Blog extends Content. So Purchasable is Content & { MdxContent: any }.
+      // The structure returned by getContentWithComponentByDirectorySlug is { MdxContent, content: Content }
+      // We need to return something that matches Purchasable. Let's merge them.
+      const purchasableItem: Purchasable = {
+        ...result.content, // Spread all properties from Content
+        MdxContent: result.MdxContent, // Add the MdxContent component
+      } as Purchasable; // Cast to Purchasable type
+
+      // Ensure correct type is set on the resulting object if needed by Purchasable type
+      // The _processContentMetadata already sets content.type, but explicit cast might need it.
+      // purchasableItem.type = result.content.type; // Already included by spreading result.content
+
+      return purchasableItem;
     }
+     if (result && !result.content.commerce?.isPaid) {
+        logger.debug(`Found content ${contentType}/${directorySlug}, but it is not marked as paid. Skipping.`);
+     }
   }
 
+  logger.info(`Product with directory slug ${directorySlug} not found or not purchasable.`);
   return null;
 }
 
+
 /**
- * Get all valid top-level pages from the app directory
- * @returns Array of valid page routes
+ * Get all valid top-level pages from the app directory for purposes like sitemaps.
+ * Note: This function works on the app directory structure, not the content MDX files.
+ * @returns Array of valid page routes (string[]).
  */
-export async function getTopLevelPages(): Promise<string[]> {
-  const excludeDirs = ['api', 'rss', '[name]', '[slug]'];
-  const validPageFiles = ['page.tsx', 'page.jsx', 'page.js', 'page.mdx', 'page.md'];
+export async function getAppPageRoutesPaths(): Promise<string[]> {
+  const excludeDirs = ['api', 'rss', '[name]', '[slug]', '_lib']; // Added _lib, adjust excludeDirs as needed
+  const validPageFiles = ['page.tsx', 'page.jsx', 'page.js', 'page.mdx', 'page.md']; // Includes MDX/MD pages
   const routes = new Set<string>();
 
-  // Add root route
-  routes.add('/');
+  // Add root route if a page file exists at the root, or if index content exists (less likely in app dir)
+  // For simplicity, just add the root route '/' if app/page.* exists
+  if (validPageFiles.some(file => fs.existsSync(path.join(appDirectory, file)))) {
+      routes.add('/');
+  }
+
 
   function addRoutesRecursively(currentPath: string, relativePath: string = '') {
     try {
       const entries = fs.readdirSync(currentPath, { withFileTypes: true });
 
       for (const entry of entries) {
-        // Skip excluded directories and hidden files
-        if (excludeDirs.includes(entry.name) || entry.name.startsWith('.') || entry.name.startsWith('_')) {
+        // Skip excluded directories, hidden files, and Next.js convention files/dirs
+        if (
+            excludeDirs.includes(entry.name) ||
+            entry.name.startsWith('.') ||
+            entry.name.startsWith('_') || // e.g., _components, _lib
+            entry.name === 'node_modules'
+           ) {
           continue;
         }
 
         const fullPath = path.join(currentPath, entry.name);
-        const relPath = path.join(relativePath, entry.name);
+        const relPath = path.join(relativePath, entry.name); // relative path without leading /
 
         if (entry.isDirectory()) {
           // Check if this directory contains any valid page files
-          const hasValidPage = validPageFiles.some(pageFile => 
+          const hasValidPage = validPageFiles.some(pageFile =>
             fs.existsSync(path.join(fullPath, pageFile))
           );
 
           if (hasValidPage) {
-            // Add the route without the page file name
-            const routePath = `/${relPath}`.replace(/\\/g, '/');
+            // Add the normalized route path (e.g., '/about', '/products/item1')
+            const routePath = `/${relPath.replace(/\\/g, '/')}`; // Ensure forward slashes
             routes.add(routePath);
+
+             logger.debug(`Found app page directory: ${routePath}`); // Log found pages
           }
 
           // Recursively check subdirectories
           addRoutesRecursively(fullPath, relPath);
         }
+        // Individual page files at the root won't be caught unless the root check handles it
+        // or if they are within a directory. Standard app dir puts page.* inside dirs.
       }
     } catch (error) {
-      console.error(`Error processing directory ${currentPath}:`, error);
+      logger.error(`Error processing directory ${currentPath}:`, error);
     }
   }
 
   try {
     addRoutesRecursively(appDirectory);
-    return Array.from(routes).sort();
+    // Also add slugs from content types if they are top-level routes (e.g. /blog/* requires /blog)
+    // This is more complex as it depends on your app/[type]/[slug]/page.tsx structure.
+    // If you have app/blog/page.tsx, it's covered by the recursive scan.
+    // If you only have app/blog/[slug]/page.tsx, you might need to add the parent '/blog' path manually if it's a list page.
+    // Assuming the recursive scan catches pages like app/blog/page.tsx or app/learn/courses/page.tsx
+
+    const sortedRoutes = Array.from(routes).sort((a, b) => {
+        // Sort alphabetically, but put '/' first
+        if (a === '/') return -1;
+        if (b === '/') return 1;
+        return a.localeCompare(b);
+    });
+
+     logger.info(`Found ${sortedRoutes.length} app page routes.`);
+    return sortedRoutes;
   } catch (error) {
-    console.error('Error getting top-level pages:', error);
-    return Array.from(routes).sort(); // Return what we have even if there's an error
+    logger.error('Error getting app page routes:', error);
+    return Array.from(routes).sort((a,b) => a === '/' ? -1 : b === '/' ? 1 : a.localeCompare(b)); // Return what we have even if there's an error
   }
 }
-
-/**
- * Load a single content item directly by slug with maximum performance
- * @param contentType The content type directory (e.g., 'blog', 'videos')
- * @param slug The exact slug of the content to load
- * @returns The direct content item or null if not found
- */
-export async function getContentBySlugDirect(contentType: string, slug: string): Promise<Content | null> {
-  try {
-    // Construct the exact file path directly - no normalization
-    const contentMdxPath = path.join(contentDirectory, contentType, slug, 'page.mdx');
-    
-    // Check if file exists before attempting to load
-    if (!fs.existsSync(contentMdxPath)) {
-      logVerbose(`Content not found: ${contentType}/${slug}`);
-      return null;
-    }
-    
-    // Import only what we need from the MDX file
-    const mdxModule = await import(`@/content/${contentType}/${slug}/page.mdx`);
-    const metadata = mdxModule.metadata as ExtendedMetadata;
-    
-    if (!metadata) {
-      logVerbose(`No metadata found for: ${contentType}/${slug}`);
-      return null;
-    }
-    
-    // Create the full path for the content URL
-    const typePath = 
-      contentType === 'videos' ? 'videos' : 
-      contentType === 'blog' ? 'blog' : 
-      contentType === 'learn/courses' ? 'learn/courses' : 
-      contentType === 'comparisons' ? 'comparisons' : 
-      contentType;
-    
-    // Return a Content object with minimal processing
-    return {
-      author: metadata.author || 'Unknown',
-      date: metadata.date || new Date().toISOString(),
-      title: typeof metadata.title === 'string' ? metadata.title : (metadata.title as any)?.default || 'Untitled',
-      description: metadata.description || '',
-      image: metadata.image || '',
-      type: metadata.type || contentType,
-      slug: `/${typePath}/${slug}`,
-      _id: `${contentType}-${slug}`,
-      directorySlug: slug,
-      ...(metadata.commerce && { commerce: metadata.commerce }),
-      ...(metadata.landing && { landing: metadata.landing }),
-      ...(metadata.tags && { tags: metadata.tags })
-    };
-  } catch (error) {
-    console.error(`Error loading content for ${contentType}/${slug}:`, error);
-    return null;
-  }
-}
-
-/**
- * Load multiple content items directly by slugs with maximum performance
- * @param contentType The content type directory (e.g., 'blog', 'videos')
- * @param slugs Array of exact slugs to load
- * @returns Array of content items (null values are filtered out)
- */
-export async function getContentBySlugs(contentType: string, slugs: string[]): Promise<Content[]> {
-  if (!slugs || slugs.length === 0) {
-    logVerbose(`No slugs provided for direct content load of type: ${contentType}`);
-    return [];
-  }
-  
-  logSummary(`Direct loading ${slugs.length} ${contentType} items`);
-  
-  // Create an array of promises for each slug
-  const contentPromises = slugs.map(slug => getContentBySlugDirect(contentType, slug));
-  
-  // Wait for all promises to resolve
-  const results = await Promise.all(contentPromises);
-  
-  // Filter out null results and ensure type safety
-  const validItems = results.filter((item): item is Content => item !== null);
-  
-  // Sort by date (newest first)
-  validItems.sort((a, b) => {
-    const dateA = a?.date ? new Date(a.date).getTime() : 0;
-    const dateB = b?.date ? new Date(b.date).getTime() : 0;
-    return dateB - dateA;
-  });
-  
-  logSummary(`Directly loaded ${validItems.length}/${slugs.length} ${contentType} items`);
-  
-  return validItems;
-} 

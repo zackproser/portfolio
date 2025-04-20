@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendFreeChaptersEmail } from "@/lib/postmark";
-import { getContentBySlug, loadContent } from "@/lib/content-handlers";
+import { getContentWithComponentByDirectorySlug, getAllPurchasableContent, getContentSlugs } from "@/lib/content-handlers";
 import { recordFreeChapterRequest, markFreeChapterRequestFulfilled } from "@/lib/free-chapters";
 import { auth } from "../../../../auth";
 
@@ -68,32 +68,29 @@ export async function POST(req: NextRequest) {
 
 		// Get the product details to include in the email
 		console.log(`📬 [API] Loading content for product slug: ${productSlug}`);
-		const contentResult = await loadContent('blog', productSlug);
+		const contentResult = await getContentWithComponentByDirectorySlug(
+			'blog',
+			productSlug
+		);
 		
 		if (!contentResult) {
-			console.log(`📬 [API] Content not found for slug: ${productSlug}`);
-			throw new Error(`Content not found for slug: ${productSlug}`);
+			console.error(`🚨 [API] Failed to load content for product: ${productSlug}`);
+			return NextResponse.json({ error: "Failed to load chapter content." }, { status: 500 });
 		}
 		
-		console.log(`📬 [API] Content loaded successfully`);
-		console.log(`📬 [API] Content metadata:`, JSON.stringify({
-			title: contentResult.metadata?.title,
-			hasCommerce: !!contentResult.metadata?.commerce,
-			hasMdxContent: !!contentResult.MdxContent
-		}, null, 2));
-		
-		// Extract the product name from the content metadata
-		let productName = productSlug;
-		if (contentResult && contentResult.metadata) {
-			const { metadata } = contentResult;
-			if (metadata.title) {
-				productName = typeof metadata.title === 'string' 
-					? metadata.title 
-					: 'Untitled Product';
-			}
-		}
+		// Extract the content (metadata) and the MDX component
+		const { MdxContent, content } = contentResult;
 
-		console.log(`📬 [API] Using product name: "${productName}" for email`);
+		console.log(`📬 [API] Content loaded successfully for: ${productSlug}`);
+		console.log(`📬 [API] Sending free chapter email for ${email} - Chapter: ${content.title}, Product: ${content.title}`);
+
+		await sendFreeChaptersEmail({
+			To: email,
+			ProductName: content.title || 'Your Requested Content',
+			ProductSlug: productSlug,
+		});
+
+		console.log(`📬 [API] Free chapters email requested via Postmark for ${email}`);
 
 		// Get the current user session (if any)
 		console.log(`📬 [API] Checking for authenticated user session`);
@@ -105,15 +102,6 @@ export async function POST(req: NextRequest) {
 		console.log(`📬 [API] Recording free chapter request in database`);
 		await recordFreeChapterRequest(email, productSlug, userId);
 		console.log(`📬 [API] Free chapter request recorded successfully`);
-
-		// Send the email with free chapters
-		console.log(`📬 [API] Sending free chapters email`);
-		await sendFreeChaptersEmail({
-			To: email,
-			ProductName: productName,
-			ProductSlug: productSlug,
-		});
-		console.log(`📬 [API] Free chapters email sent successfully`);
 
 		// Update the database to mark the request as fulfilled
 		console.log(`📬 [API] Marking free chapter request as fulfilled in database`);

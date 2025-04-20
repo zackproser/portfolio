@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductDetails, ProductDetails } from "@/utils/productUtils";
 import { sql } from '@vercel/postgres'
-import { getContentBySlug } from '@/lib/content-handlers'
+import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
 
 export async function GET(req: NextRequest) {
 	console.log("GET /products");
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
 	try {
 		if (type === 'blog') {
-			const article = await getContentBySlug(productSlug, 'blog')
+			const article = await getContentItemByDirectorySlug('blog', productSlug)
 			
 			if (!article) {
 				return NextResponse.json({ error: 'Article not found' }, { status: 404 })

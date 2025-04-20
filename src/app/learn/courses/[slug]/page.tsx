@@ -1,3 +1,4 @@
+import React from 'react'
 import { Metadata } from 'next'
 import { auth } from '../../../../../auth'
 import Paywall from '@/components/Paywall'
@@ -5,7 +6,9 @@ import {
   generateContentStaticParams, 
   generateContentMetadata, 
   hasUserPurchased,
-  loadContent,
+  getContentWithComponentByDirectorySlug,
+  getContentSlugs,
+  renderPaywalledContent,
   getDefaultPaywallText
 } from '@/lib/content-handlers'
 
@@ -34,41 +37,58 @@ export default async function CourseSlugPage({ params }: PageProps) {
   const resolvedParams = await params;
   const { slug } = resolvedParams;
   
-  // Load the content
-  const result = await loadContent(CONTENT_TYPE, slug)
+  // Fetch content for the course
+  const result = await getContentWithComponentByDirectorySlug('learn/courses', slug)
   
   // Handle notFound case
   if (!result) return null
   
-  const { MdxContent, metadata } = result
+  const { content, MdxContent } = result
   
-  // Courses are typically paid content
-  if (metadata?.commerce?.isPaid) {
-    // Get the user session using the auth() function
-    const session = await auth()
-    
-    // If no user is logged in or hasn't purchased, show a preview with paywall
-    if (!session?.user || !(await hasUserPurchased(session.user.id, slug))) {
+  // Get user ID from session
+  const session = await auth()
+  const userId = session?.user.id
+  
+  // Check if user has purchased access
+  const userHasPurchased = await hasUserPurchased(userId, CONTENT_TYPE, slug)
+  
+  // Check if content requires payment
+  if (content?.commerce?.isPaid) {
+    // If no user is logged in or hasn't purchased, show paywall
+    if (!session?.user || !userHasPurchased) {
       const defaultText = getDefaultPaywallText(CONTENT_TYPE)
       
-      // Show a limited preview with a paywall
+      // Render the paywall component
       return (
         <>
-          <MdxContent />
+          {/* Note: We pass MdxContent to renderPaywalledContent below, 
+              so no need to render it separately here unless you want a specific preview structure */}
+          {/* <MdxContent /> */} 
+          {renderPaywalledContent(MdxContent, content, userHasPurchased)} 
+          {/* Pass necessary props from content to Paywall */}
           <Paywall 
-            price={metadata.commerce.price} 
+            price={content.commerce.price}
             slug={slug} 
-            title={metadata.title}
-            paywallHeader={metadata.commerce.paywallHeader || defaultText.header}
-            paywallBody={metadata.commerce.paywallBody || defaultText.body}
-            buttonText={metadata.commerce.buttonText || defaultText.buttonText}
-            image={metadata.image}
+            title={content.title}
+            paywallHeader={content.commerce.paywallHeader || defaultText.header}
+            paywallBody={content.commerce.paywallBody || defaultText.body}
+            buttonText={content.commerce.buttonText || defaultText.buttonText}
+            image={typeof content.image === 'object' && content.image?.src 
+                     ? content.image.src 
+                     : typeof content.image === 'string' 
+                       ? content.image 
+                       : undefined}
           />
         </>
       )
     }
   }
-  
-  // For free content or if the user has purchased, render the full content
-  return <MdxContent />
+
+  // If content is not paid, or user has purchased, render the full content
+  return (
+    <>
+      {/* Render potentially paywalled content (will render full if purchased or not paid) */}
+      {renderPaywalledContent(MdxContent, content, userHasPurchased)}
+    </>
+  )
 } 
