@@ -1,6 +1,6 @@
 "use client"
 
-import type { Tool } from "@/types/tools"
+import type { Tool } from "@prisma/client"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,7 @@ export function ToolCard({ tool, onViewDetails }: ToolCardProps) {
             variant="secondary"
             className="bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 text-blue-700 dark:text-blue-300 hover:from-blue-200 hover:to-blue-300 dark:hover:from-blue-800 dark:hover:to-blue-700"
           >
-            {tool.categoryName}
+            {tool.category}
           </Badge>
           {tool.pricing && (
             <Badge variant="outline" className="text-slate-600 dark:text-slate-300 dark:border-gray-600">
@@ -64,7 +64,7 @@ export function ToolCard({ tool, onViewDetails }: ToolCardProps) {
             </Badge>
           )}
         </div>
-        <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">{tool.description}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-3">{tool.description}</p>
       </CardContent>
 
       <CardFooter className="pt-2 flex justify-between">

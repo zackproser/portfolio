@@ -27,7 +27,8 @@
     "og:clean": "rm -rf public/og-images/*.png",
     "og:clean-orphans": "tsx --tsconfig scripts/tsconfig.json scripts/clean-og-images.ts",
     "og:optimize": "node scripts/optimize-og-images.js",
-    "og:optimize-replace": "node scripts/optimize-og-images.js --replace"
+    "og:optimize-replace": "node scripts/optimize-og-images.js --replace",
+    "prisma:seed": "tsx --tsconfig prisma/tsconfig.json prisma/seed.ts"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -128,7 +129,7 @@
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^3.0.1",
     "remark-toc": "^9.0.0",
-    "sharp": "^0.32.6",
+    "sharp": "^0.34.1",
     "source-map": "^0.7.4",
     "stripe": "^14.12.0",
     "tailwind-merge": "^2.3.0",

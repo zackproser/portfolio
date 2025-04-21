@@ -48,7 +48,9 @@ function analyzeFile(filePath) {
             if (declaration.id.name === 'metadata') {
               hasMetadata = true;
               if (declaration.init.properties) {
-                definedFields = declaration.init.properties.map(prop => prop.key.name);
+                definedFields = declaration.init.properties
+                  .filter(prop => prop.key)
+                  .map(prop => prop.key.name);
               }
             }
           }
