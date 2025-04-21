@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, Search, ExternalLink } from "lucide-react"
-import { toolsData } from "@/data/tools"
+import type { Tool } from "@prisma/client"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,16 +17,34 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/hooks/use-toast"
 import { deleteTool } from "@/actions/tool-actions"
+import { EditToolForm } from "./edit-tool-form"
 
-export function ToolsList() {
+// Define props for ToolsList
+interface ToolsListProps {
+  initialTools: Tool[]
+}
+
+export function ToolsList({ initialTools }: ToolsListProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [deleteToolId, setDeleteToolId] = useState<string | null>(null)
+  const [editingToolId, setEditingToolId] = useState<string | null>(null)
   const { toast } = useToast()
 
-  // In a real app, this would fetch from an API or database
-  const tools = toolsData
+  // Use initialTools passed from props
+  const tools: Tool[] = initialTools
+
+  // Find the tool being edited
+  const toolToEdit = tools.find(tool => tool.id === editingToolId)
 
   // Filter tools based on search term
   const filteredTools = tools.filter(
@@ -54,6 +72,16 @@ export function ToolsList() {
         variant: "destructive",
       })
     }
+  }
+
+  const handleEditClick = (toolId: string) => {
+    setEditingToolId(toolId)
+    // We'll add logic here later to open an edit form/modal
+    console.log("Editing tool:", toolId) // Placeholder
+  }
+
+  const handleEditSuccess = () => {
+    setEditingToolId(null) // Close the dialog on successful edit
   }
 
   const getCategoryName = (categoryId: string) => {
@@ -130,7 +158,12 @@ export function ToolsList() {
                         <ExternalLink className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <span className="sr-only">View</span>
                       </Button>
-                      <Button variant="ghost" size="icon" className="hover:bg-slate-100 dark:hover:bg-gray-800">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="hover:bg-slate-100 dark:hover:bg-gray-800"
+                        onClick={() => handleEditClick(tool.id)}
+                      >
                         <Pencil className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         <span className="sr-only">Edit</span>
                       </Button>
@@ -166,6 +199,24 @@ export function ToolsList() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={!!editingToolId} onOpenChange={() => setEditingToolId(null)}>
+        <DialogContent className="sm:max-w-[800px] bg-white dark:bg-gray-900 border-slate-200 dark:border-gray-800">
+          <DialogHeader>
+            <DialogTitle className="text-slate-900 dark:text-slate-100">Edit Tool: {toolToEdit?.name}</DialogTitle>
+            <DialogDescription className="text-slate-600 dark:text-slate-400">
+              Make changes to the tool details below. Click save when you&apos;re done.
+            </DialogDescription>
+          </DialogHeader>
+          {toolToEdit && (
+            <ScrollArea className="max-h-[70vh] pr-6">
+              <div className="py-4">
+                <EditToolForm tool={toolToEdit} onSuccess={handleEditSuccess} />
+              </div>
+            </ScrollArea>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

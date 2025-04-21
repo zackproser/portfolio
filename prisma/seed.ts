@@ -1,11 +1,14 @@
-import type { Tool } from "@/types/tools"
+import { PrismaClient } from '@prisma/client'
 
-export const toolsData: Tool[] = [
+const prisma = new PrismaClient()
+
+// Tooling data extracted from git diff
+const toolsData = [
   {
     id: "openai",
     name: "OpenAI API",
     description:
-      "OpenAI offers powerful language models like GPT-4 and GPT-3.5 through their API, enabling developers to build applications with natural language understanding and generation capabilities.",
+      "Provides access to OpenAI's powerful language models like GPT-4o, GPT-4, and GPT-3.5 Turbo for various natural language processing tasks.",
     category: "llm",
     categoryName: "LLM APIs",
     pricing: "Pay-per-token",
@@ -13,24 +16,24 @@ export const toolsData: Tool[] = [
     githubUrl: undefined,
     logoUrl: "/placeholder.svg?height=40&width=40",
     features: [
-      "Access to GPT-4, GPT-3.5, and other models",
-      "Text generation, embeddings, and fine-tuning",
-      "Moderation API for content filtering",
-      "Image generation with DALL-E",
-      "Assistants API for building AI assistants",
+      "Access to state-of-the-art LLMs",
+      "Fine-tuning capabilities",
+      "Embeddings API",
+      "Image generation (DALL-E)",
+      "Speech-to-text (Whisper)",
     ],
     pros: [
-      "State-of-the-art model performance",
-      "Reliable and scalable infrastructure",
-      "Comprehensive documentation",
-      "Regular model updates and improvements",
-      "Strong safety measures and content filtering",
+      "High model performance",
+      "Extensive documentation and community support",
+      "Easy integration",
+      "Regular updates and new features",
+      "Wide range of applications",
     ],
     cons: [
-      "Higher cost compared to open-source alternatives",
-      "Rate limits on free tier",
-      "Potential vendor lock-in",
-      "Limited control over model behavior",
+      "Can be expensive for high usage",
+      "Rate limits on free/lower tiers",
+      "Potential for biased or harmful outputs",
+      "API changes can require code updates",
     ],
     openSource: false,
     apiAccess: true,
@@ -402,9 +405,7 @@ export const toolsData: Tool[] = [
     reviewCount: 423,
     reviewUrl: "https://example.com/reviews/ollama",
   },
-
   // ==================== 15 NEW TOOLS ====================
-
   {
     id: "github-copilot",
     name: "GitHub Copilot",
@@ -957,3 +958,63 @@ export const toolsData: Tool[] = [
     reviewUrl: "https://example.com/reviews/outerbase",
   },
 ]
+
+async function main() {
+  console.log(`Start seeding ...`)
+
+  // Clear existing data
+  await prisma.tool.deleteMany();
+  console.log("Deleted records in tool table");
+
+  for (const tool of toolsData) {
+    // Map the data to match the Prisma schema
+    const toolData = {
+      name: tool.name,
+      description: tool.description,
+      logoUrl: tool.logoUrl,
+      category: tool.category,
+      pricing: tool.pricing,
+      websiteUrl: tool.websiteUrl,
+      githubUrl: tool.githubUrl === undefined ? null : tool.githubUrl, // Convert undefined to null
+      openSource: tool.openSource ?? false, // Provide default if undefined
+      apiAccess: tool.apiAccess ?? false, // Provide default if undefined
+      documentationQuality: tool.documentationQuality,
+      communitySize: tool.communitySize,
+      lastUpdated: tool.lastUpdated,
+      features: tool.features,
+      pros: tool.pros,
+      cons: tool.cons,
+      languages: tool.languages,
+      reviewCount: tool.reviewCount === undefined ? null : tool.reviewCount, // Convert undefined to null
+      reviewUrl: tool.reviewUrl === undefined ? null : tool.reviewUrl, // Convert undefined to null
+    };
+
+    // Check for nullish values that should be omitted if optional in the schema
+    Object.keys(toolData).forEach(key => {
+      if (toolData[key as keyof typeof toolData] === undefined || toolData[key as keyof typeof toolData] === null) {
+        // Only delete if the field is truly optional in the schema
+        // Assuming all fields are optional except those explicitly marked as required
+        const requiredFields = ['name', 'description', 'category', 'websiteUrl'];
+        if (!requiredFields.includes(key)) {
+           delete toolData[key as keyof typeof toolData];
+        }
+      }
+    });
+
+    await prisma.tool.create({
+      data: toolData,
+    });
+    console.log(`Created tool with name: ${tool.name}`)
+  }
+
+  console.log(`Seeding finished.`)
+}
+
+main()
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  }) 

@@ -37,24 +37,26 @@ export function ToolDetailModal({ toolId, isOpen, onClose }: ToolDetailModalProp
               <DialogTitle className="text-2xl bg-gradient-to-r from-blue-700 to-blue-600 text-transparent bg-clip-text">
                 {tool.name}
               </DialogTitle>
-              {tool.reviewCount && (
-                <a
-                  href={tool.reviewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-slate-600 hover:text-blue-700 mt-1"
-                >
-                  <MessageSquare className="h-3 w-3" />
-                  {tool.reviewCount} reviews
-                </a>
-              )}
+              <div className="mt-2 text-sm text-slate-700">
+                {tool.reviewCount && tool.reviewUrl && (
+                  <a
+                    href={tool.reviewUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-slate-600 hover:text-blue-700 mt-1"
+                  >
+                    <MessageSquare className="h-3 w-3" />
+                    {tool.reviewCount} reviews
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </DialogHeader>
 
         <div className="flex flex-wrap gap-2 mt-4">
           <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700">
-            {tool.categoryName}
+            {tool.category}
           </Badge>
           {tool.pricing && (
             <Badge variant="outline" className="text-slate-700 border-slate-200">
@@ -85,7 +87,7 @@ export function ToolDetailModal({ toolId, isOpen, onClose }: ToolDetailModalProp
           <TabsContent value="features" className="mt-4">
             <h3 className="text-lg font-medium mb-2 text-slate-800 dark:text-slate-200">Key Features</h3>
             <ul className="list-disc pl-5 space-y-2 text-slate-700 dark:text-slate-300">
-              {tool.features?.map((feature, index) => (
+              {tool.features?.map((feature: string, index: number) => (
                 <li key={index}>{feature}</li>
               ))}
             </ul>
@@ -95,7 +97,7 @@ export function ToolDetailModal({ toolId, isOpen, onClose }: ToolDetailModalProp
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-900">
                 <h3 className="text-lg font-medium mb-2 text-green-700 dark:text-green-400">Pros</h3>
                 <ul className="list-disc pl-5 space-y-2 text-green-700 dark:text-green-400">
-                  {tool.pros?.map((pro, index) => (
+                  {tool.pros?.map((pro: string, index: number) => (
                     <li key={index}>{pro}</li>
                   ))}
                 </ul>
@@ -103,7 +105,7 @@ export function ToolDetailModal({ toolId, isOpen, onClose }: ToolDetailModalProp
               <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-100 dark:border-red-900">
                 <h3 className="text-lg font-medium mb-2 text-red-700 dark:text-red-400">Cons</h3>
                 <ul className="list-disc pl-5 space-y-2 text-red-700 dark:text-red-400">
-                  {tool.cons?.map((con, index) => (
+                  {tool.cons?.map((con: string, index: number) => (
                     <li key={index}>{con}</li>
                   ))}
                 </ul>
@@ -137,11 +139,9 @@ export function ToolDetailModal({ toolId, isOpen, onClose }: ToolDetailModalProp
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">Languages</h3>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {tool.languages?.map((lang, index) => (
-                      <Badge key={index} variant="outline" className="bg-white dark:bg-gray-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-gray-700">
-                        {lang}
-                      </Badge>
+                  <div className="flex flex-wrap gap-2">
+                    {tool.languages?.map((lang: string, index: number) => (
+                      <Badge key={index} variant="secondary">{lang}</Badge>
                     ))}
                   </div>
                 </div>

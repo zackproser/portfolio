@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Check, X, Minus } from "lucide-react"
-import type { Tool } from "@/types/tools"
+import type { Tool } from "@prisma/client"
 import { getAllTools } from "@/actions/tool-actions"
 
 export default function ComparisonPage() {

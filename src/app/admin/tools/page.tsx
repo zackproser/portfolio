@@ -1,14 +1,17 @@
-"use client"
-
-import { useState } from "react"
+// Remove client-side imports
+// import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { AddToolForm } from "@/components/admin/add-tool-form"
-import { ToolsList } from "@/components/admin/tools-list"
-import { Plus, ArrowLeft } from "lucide-react"
+// import { AddToolForm } from "@/components/admin/add-tool-form"
+// import { ToolsList } from "@/components/admin/tools-list"
+import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { getAllTools } from "@/actions/tool-actions"
+import type { Tool } from "@prisma/client"
+import { ToolsAdminClient } from "@/components/admin/tools-admin-client" // Import the client component
 
-export default function ToolsAdminPage() {
-  const [isAddingTool, setIsAddingTool] = useState(false)
+export default async function ToolsAdminPage() {
+  // const [isAddingTool, setIsAddingTool] = useState(false) // Remove state
+  const tools: Tool[] = await getAllTools()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -22,30 +25,15 @@ export default function ToolsAdminPage() {
         <h1 className="text-2xl font-bold text-blue-800 dark:text-blue-200">Manage Tools</h1>
       </div>
 
-      {isAddingTool ? (
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-gray-800 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300">Add New Tool</h2>
-            <Button variant="outline" onClick={() => setIsAddingTool(false)} className="bg-white dark:bg-gray-900 dark:border-gray-700">
-              Cancel
-            </Button>
-          </div>
-          <AddToolForm onSuccess={() => setIsAddingTool(false)} />
-        </div>
-      ) : (
-        <Button 
-          onClick={() => setIsAddingTool(true)} 
-          className="mb-8 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 dark:from-blue-700 dark:to-blue-900 dark:hover:from-blue-600 dark:hover:to-blue-800 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add New Tool
-        </Button>
-      )}
+      {/* Render the client component with fetched tools */}
+      <ToolsAdminClient initialTools={tools} />
 
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-gray-800">
+      {/* Remove the old conditional rendering logic */}
+      {/* {isAddingTool ? (...) : (...)} */}
+      {/* <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-gray-800">
         <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-6">All Tools</h2>
-        <ToolsList />
-      </div>
+        <ToolsList initialTools={tools} />
+      </div> */}
     </div>
   )
 } 
