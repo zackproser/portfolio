@@ -7,8 +7,15 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 
-// Initialize PrismaClient
-const prisma = new PrismaClient();
+// Debug the connection
+console.log('Database URL (masked):', process.env.POSTGRES_URL ? 
+  `${process.env.POSTGRES_URL.split('@')[0].substring(0, 10)}...@${process.env.POSTGRES_URL.split('@')[1]?.substring(0, 20)}...` : 
+  'Not set');
+
+// Initialize PrismaClient with logging
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+});
 
 // Setup a readline interface for interactive prompts
 const rl = readline.createInterface({
@@ -125,6 +132,8 @@ const isValidEmail = (email) => {
 // Grant access to a product for an email
 const grantAccess = async (email, productSlug) => {
   try {
+    console.log(`Attempting to grant access to ${productSlug} for ${email}...`);
+    
     // First check if this combination already exists
     const existingPurchase = await prisma.purchase.findFirst({
       where: {
@@ -143,8 +152,15 @@ const grantAccess = async (email, productSlug) => {
       where: { email }
     });
     
+    if (user) {
+      console.log(`Found user account for ${email}, associating purchase with user ID: ${user.id}`);
+    } else {
+      console.log(`No user account found for ${email}, creating purchase with email only`);
+    }
+    
     // Generate unique Stripe-like ID for free access
     const stripePaymentId = generateFakeStripeId();
+    console.log(`Generated payment ID: ${stripePaymentId}`);
     
     // Create a new purchase record
     const purchaseData = {
@@ -158,19 +174,38 @@ const grantAccess = async (email, productSlug) => {
     
     // If user exists, associate the purchase with their account
     if (user) {
-      console.log(`Found user account for ${email}, associating purchase with user ID: ${user.id}`);
       purchaseData.userId = user.id;
     }
 
-    const purchase = await prisma.purchase.create({
-      data: purchaseData
+    console.log('Creating purchase with data:', JSON.stringify(purchaseData, null, 2));
+    
+    // Use explicit transaction for better error handling
+    const purchase = await prisma.$transaction(async (tx) => {
+      const result = await tx.purchase.create({
+        data: purchaseData
+      });
+      console.log(`Transaction complete, purchase ID: ${result.id}`);
+      return result;
     });
 
     console.log(`✅ Successfully granted access to ${productSlug} for ${email}`);
     console.log(`Purchase ID: ${purchase.id}`);
+    
+    // Verify the record was actually created
+    const verifyPurchase = await prisma.purchase.findUnique({
+      where: { id: purchase.id }
+    });
+    
+    if (verifyPurchase) {
+      console.log(`✅ Verified purchase record exists in database`);
+    } else {
+      console.error(`❌ WARNING: Purchase record could not be verified after creation!`);
+    }
+    
     return true;
   } catch (error) {
     console.error(`❌ Error granting access to ${productSlug} for ${email}:`, error);
+    if (error.meta) console.error('Error metadata:', error.meta);
     return false;
   }
 };
@@ -340,9 +375,11 @@ const main = async () => {
       }
       
       console.log(`✅ Successfully granted access to ${successCount} out of ${emails.length} email(s)`);
+      console.log('Please verify these purchases exist in the database');
     }
   } catch (error) {
     console.error('An error occurred:', error);
+    if (error.meta) console.error('Error metadata:', error.meta);
   } finally {
     rl.close();
     await prisma.$disconnect();
