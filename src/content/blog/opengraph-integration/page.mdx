@@ -39,21 +39,35 @@ make your site look more professional.
 This took me a bit to wrap my head around. The [examples Vercel provides](https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-examples) were helpful and high quality as usual, (they even have a helpful [opengraph playground](https://og-playground.vercel.app/)) but I wish there had been more of them. It took me a while to figure out how to implement the exact
 workflow I wanted: 
 
-1. I add a "hero" image to each of my posts which renders on my [blog's index page](/blog). I wanted my opengraph image for a post to contain the post's title as well as its hero image 
-2. I wanted a fallback image to render for my home or index pages - and in case the individual post's image couldn't be rendered for whatever reason
+1. **Hero Image Integration:** Each post has a "hero" image displayed on the [blog index page](/blog). I wanted the Open Graph image for a post to feature both the post's title and its associated hero image.
+2. **Dynamic Generation:** The image generation happens on-the-fly using `@vercel/og`.
+3. **Caching:** To improve performance and reduce generation costs, successfully generated images are cached as static files. Subsequent requests for the same image serve the static file directly.
+4. **Fallback Image:** A default fallback image is used for pages without a specific hero image (like the home page or index pages) or if an error occurs during generation.
 
-In this way, I could have an attractive opengraph image for each post shared online, while having a sane default image that does a good job of promoting my site in case of any issues. 
+This setup ensures an attractive, relevant Open Graph image for shared posts, a consistent fallback for other pages, and efficient delivery through caching.
 
-In general, I'm pretty happy with how the final result turned out, but knowing myself I'll likely have additional tweaks to make in the future to improve it further. 
-
-If you look closely (right click the image and open it in a new tab), you can see that my image has two linear gradients, one for the green background which transitions between greens from top to bottom, and one for blue which transitions left to right. 
+If you look closely at the default image (right click the image below and open it in a new tab), you can see that my image has two linear gradients, one for the green background which transitions between greens from top to bottom, and one for blue which transitions left to right. 
 
 In addition, each band has a semi-transparent background image - giving a brushed aluminum effect to the top and bottom green bands and a striped paper effect to the center blue card where the title and hero image are rendered. I was able to 
-pull this off due to the fact that Vercel's '@vercel/og' package allows you to use Tailwind CSS in combination with inline styles. 
+pull this off due to the fact that Vercel's `@vercel/og` package allows you to use Tailwind CSS in combination with inline styles. 
 
-## Per-post images plus a fallback image for home and index pages
+## The API Routes: Caching and Generation
 
-This is my fallback image, and it is being rendered by hitting the local `/api/og` endpoint. It's `src` parameter is `${process.env.NEXT_PUBLIC_SITE_URL/api/og}` which computes to "${process.env.NEXT_PUBLIC_SITE_URL}/api/og".
+My implementation uses two API routes:
+
+1. `/api/og`: This is the primary endpoint used in `<meta>` tags.
+    * It first checks if a pre-generated, cached static image exists for the requested `slug` (e.g., `/api/og?slug=/blog/my-cool-post`).
+    * If a cached image is found, it's served immediately (usually via Vercel's Edge Network).
+    * If no cached image exists, it redirects the request to the `/api/og/generate` endpoint, passing along the original parameters.
+2. `/api/og/generate`: This endpoint handles the actual image generation.
+    * It looks up the hero image associated with the provided `slug`.
+    * If no `slug` is provided or no hero image is found for that slug, it uses the default fallback background.
+    * It takes `title` and `description` query parameters to render the text onto the image.
+    * It generates the image using `@vercel/og` and serves it directly. It also triggers a background process to save this newly generated image to the static cache for future requests to `/api/og`.
+
+### Fallback Image Example
+
+This is my fallback image, rendered by hitting `/api/og` without a `slug` parameter. Its `src` parameter is `${process.env.NEXT_PUBLIC_SITE_URL}/api/og`, which computes to "${process.env.NEXT_PUBLIC_SITE_URL}/api/og".
 
 <Image 
     width={1200}
@@ -62,174 +76,82 @@ This is my fallback image, and it is being rendered by hitting the local `/api/o
     alt="Zachary Proser's default topengraph image" 
 />
 
-Example dynamically rendered opengraph images for posts: 
+### Dynamically Rendered Examples
 
+Here's how the URL looks for a specific blog post. The `/api/og` endpoint uses the `slug` to find the cached image or trigger generation.
 
-**Blog post with dynamic title and hero image**
-```javascript
+**Blog post with dynamic title and hero image looked up via slug:**
 
-src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
-    ?title=Retrieval Augmented Generation (RAG)
-    &image=/_next/static/media/retrieval-augmented-generation.2337c1a1.webp`}
+```jsx
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?slug=/blog/retrieval-augmented-generation`}
 ```
 
 <Image 
     width={1200}
     height={630}
-    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=Retrieval Augmented Generation (RAG)&image=/_next/static/media/retrieval-augmented-generation.2337c1a1.webp`} 
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?slug=/blog/retrieval-augmented-generation`} 
     alt="Retrieval Augmented Generation post" 
 />
 
-**Another blog post with dynamic title and hero image**
-```javascript
+**Another blog post example:**
 
-src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
-    ?title='AI-powered and built with...JavaScript?
-    &image=/_next/static/media/javascript-ai.71499014.webp`}
+```jsx
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?slug=/blog/javascript-ai`}
 ```
 
 <Image 
     width={1200}
     height={630}
-    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=A-powered and built with...JavaScript?&image=/_next/static/media/javascript-ai.71499014.webp`} 
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?slug=/blog/javascript-ai`} 
     alt="AI-powered and built with JavaScript post" 
 />
 
-**Blog post with dynamic title but fallback image**
+**Direct Generation (Less Common):**
 
-Having gone through this exercise, I would highly recommend implementing a fallback image that renders in two cases: 
-1. If the page or post shared did not have a hero image associated with it (because it's your home page, for example)
-2. Some error was encountered in rendering the hero image
+While the primary method is using `/api/og?slug=...`, you *can* hit the `/api/og/generate` endpoint directly if needed, perhaps for testing. It requires `title` and `description`. If you omit a specific `imageUrl` param, it will attempt the hero image lookup based on `slug` if provided, or use the default background.
 
-Here's an example opengraph image where the title was rendered dynamically, but the fallback image was used: 
+```jsx
+// Example generating directly with title/description, letting it use default background
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og/generate?title=This is a Test Title&description=Description goes here`}
 
-```javascript
+// Example forcing a specific background image URL
+src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og/generate?title=Test Title&description=Desc&imageUrl=/_next/static/media/some-image.webp`}
 
-src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og
-    ?title=This is still a dynamically generated title}
 ```
 
 <Image 
     width={1200}
     height={630}
-    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=This is still a dynamically generated title`} 
-    alt="This is still a dynamically generated title" 
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og/generate?title=This is still a dynamically generated title&description=Using default background`} 
+    alt="Dynamically generated title with default background" 
 />
 
-## Understanding the flow of Vercel's '@vercel/og' package and Next.js 
+## Understanding the Flow
 
-This is a flowchart of how the sequence works: 
+The core idea is that your Next.js site provides metadata in the `<head>` of each page. For Open Graph images, this looks like:
 
-<Image src={opengraphSequence} alt="Opengraph sequence"/>
+```html
+<meta property="og:image" content="https://your-site.com/api/og?slug=/your-page-slug" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+```
 
-In essence, you're creating an API route in your Next.js site that can read two query parameters from requests it receives: 
-1. The title of the post to generate an image for 
-2. The hero image to include in the dynamic image 
+When a social media crawler (or a browser) sees this tag, it makes a request to the specified URL (`/api/og?slug=...`).
 
-and use these values to render the final `@vercel/og ImageResponse`. Honestly, it was a huge pain in the ass to get it all working the way I wanted, but it would be far worse without this library and Next.js integration. 
+1. **Request hits `/api/og`:** The server checks its static cache (e.g., a designated directory like `/public/og-cache/`) for an image corresponding to `/your-page-slug`.
+2. **Cache Hit:** If `your-page-slug.png` (or similar) exists in the cache, it's served directly and quickly.
+3. **Cache Miss:** If the image isn't cached, `/api/og` issues a redirect (HTTP 307 or 308) to `/api/og/generate?slug=/your-page-slug` (preserving any other relevant parameters like title/description if they were initially passed, though `slug` is primary).
+4. **Request hits `/api/og/generate`:**
+    * The generation route fetches necessary data (post title, description, hero image path based on the `slug` from a data source like a CMS or local files).
+    * It constructs the image content using `@vercel/og`, rendering the fetched text and hero image (or fallback background).
+    * It returns the generated image (`ImageResponse`) to the crawler/browser.
+    * *(Asynchronously)* It saves the generated image to the static cache directory (`/public/og-cache/your-page-slug.png`) so the *next* request to `/api/og?slug=/your-page-slug` results in a cache hit.
 
-In exchange for the semi-tedious experience of building out your custom OG image you get tremendous flexibility within certain hard limitations, which you can read about here. 
+This combination of on-demand generation and static caching provides both flexibility and performance.
 
-Here's my current `/api/og` route code, which still needs to be improved and cleaned up, but I'm sharing it in case it helps anyone else trying to figure out this exact same flow. 
+The actual implementation details of the API routes can be found in the site's source code.
 
 This entire site is open-source and available at [github.com/zackproser/portfolio](https://github.com/zackproser/portfolio)
-
-```javascript
-import { ImageResponse } from '@vercel/og';
-
-export const config = {
-  runtime: 'edge',
-};
-
-export default async function handler(request) {
-  try {
-    const { searchParams } = request.nextUrl || new URL(request.url);
-    console.log(`og API route searchParams %o:`, searchParams)
-    const hasTitle = searchParams.has('title');
-    const title = hasTitle ? searchParams.get('title') : 'Portfolio, blog, videos and open-source projects';
-    // This is horrific - need to figure out and fix this 
-    const hasImage = searchParams.has('image') || searchParams.has('amp;image')
-    // This is equally horrific - need to figure out and fix this for good
-    const image = hasImage ? (searchParams.get('image') || searchParams.get('amp;image')) : undefined;
-
-    console.log(`og API route hasImage: ${hasImage}, image: ${image}`)
-
-    // My profile image is stored in /public so that we don't need to rely on an external host like GitHub 
-    // that might go down
-    const profileImageFetchURL = new URL('/public/zack.webp', import.meta.url);
-
-    const profileImageData = await fetch(profileImageFetchURL).then(
-      (res) => res.arrayBuffer(),
-    );
-
-    // This is the fallback image I use if the current post doesn't have an image for whatever reason (like it's the homepage)
-    const fallBackImageURL = new URL('/public/zack-proser-dev-advocate.webp', import.meta.url);
-
-    // This is the URL to the image on my site 
-    const ultimateURL = hasImage ? new URL(`${process.env.NEXT_PUBLIC_SITE_URL}${image} `) : fallBackImageURL
-
-    const postImageData = await fetch(ultimateURL).then(
-      (res) => res.arrayBuffer(),
-    ).catch((err) => {
-      console.log(`og API route err: ${err} `);
-    });
-
-    return new ImageResponse(
-      <div
-        tw="flex flex-col w-full h-full bg-emerald-900"
-        style={{
-          background_image: 'linear-gradient(to bottom, rgba(45, 211, 12, 0.6), rgba(2, 91, 48, 0.4)), url(https://zackproser.com/alum.webp)'
-        }}
-      >
-        <div tw="flex flex-col md:flex-row w-full">
-          <div tw="flex w-40 h-40 rounded-full overflow-hidden ml-29">
-            <img
-              src={profileImageData}
-              alt="Zachary Proser"
-              className="w-full h-full object-cover"
-              style={{ borderRadius: 128 }}
-            />
-          </div>
-          <div tw="flex flex-col ml-4 items-center">
-            <h1 tw="text-4xl text-white">Zachary Proser</h1>
-            <h2 tw="text-3xl text-white">Staff Developer Advocate @Pinecone.io</h2>
-          </div>
-        </div>
-        <div
-          tw="bg-slate-900 bg-opacity-50 border-1 border-white flex w-full"
-          style={{
-            background_image: `linear-gradient(to right, rgba(31, 97, 141, 0.8), rgba(15, 23, 42, 0.8)), url(https://zackproser.com/subtle-stripes.webp)`
-          }}
-        >
-          <div tw="flex flex-col md:flex-row w-full pt-8 px-4 md:items-center justify-between p-4">
-            <h2 tw="flex flex-col pl-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-              <span tw="text-white font-extrabold">{title}</span>
-            </h2>
-
-            <div tw="flex w-64 h-85 rounded overflow-hidden mt-4">
-              <img
-                src={postImageData}
-                alt="Post Image"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-        <div tw="flex flex-col items-center">
-          <h1
-            tw="text-white text-3xl pb-2"
-          >
-            zackproser.com
-          </h1>
-        </div>
-      </div>
-    )
-  } catch (error) {
-    console.error('Error in OG image generation:', error);
-    return new Response('Failed to generate OG image', { status: 500 });
-  }
-}
-```
 
 Here's my `ArticleLayout.jsx` component, which forms the `<meta name="og:image" content={ogURL} />` in the head of each post to provide the URL that social media sites will call when rendering
 their cards: 
