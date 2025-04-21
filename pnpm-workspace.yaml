@@ -1,0 +1,10 @@
+ignoredBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@vercel/speed-insights'
+  - bufferutil
+  - canvas
+  - esbuild
+  - prisma
+  - sharp
+  - utf-8-validate
