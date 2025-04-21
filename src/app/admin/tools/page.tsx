@@ -10,9 +10,35 @@ import type { Tool } from "@prisma/client"
 import { ToolsAdminClient } from "@/components/admin/tools-admin-client" // Import the client component
 
 export default async function ToolsAdminPage() {
-  // const [isAddingTool, setIsAddingTool] = useState(false) // Remove state
-  const tools: Tool[] = await getAllTools()
+  console.log("ADMIN TOOLS PAGE (Prod Test): Attempting to fetch tools..."); // Add log
+  let tools: Tool[] = [];
+  let fetchError = null;
 
+  // const [isAddingTool, setIsAddingTool] = useState(false) // Remove state
+  // const tools: Tool[] = await getAllTools()
+  try {
+    tools = await getAllTools();
+    console.log(`ADMIN TOOLS PAGE (Prod Test): Successfully fetched ${tools.length} tools.`); // Add log
+  } catch (error) {
+    console.error("ADMIN TOOLS PAGE (Prod Test): Error directly calling getAllTools:", error); // Add log
+    fetchError = error; 
+  }
+
+  // Optional: Add a check for the error to display something different
+  if (fetchError) {
+     console.error("ADMIN TOOLS PAGE (Prod Test): Rendering error state due to fetchError."); // Add log
+     return (
+        <div className="container mx-auto px-4 py-8">
+          {/* Basic error display */}
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading Tools</h1>
+          <p className="text-red-500">Failed to fetch tools from the database. Please check server logs or contact support.</p>
+          {/* You could potentially log the error message here too, but be careful about exposing sensitive info */}
+          {/* <pre className="mt-4 p-2 bg-red-100 text-red-800 rounded">{JSON.stringify(fetchError, null, 2)}</pre> */}
+         </div>
+      )
+  }
+
+  console.log(`ADMIN TOOLS PAGE (Prod Test): Rendering ToolsAdminClient with ${tools.length} tools.`); // Add log
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center mb-8">
