@@ -78,7 +78,7 @@ export function ComparisonModal({ isOpen, onClose }: ComparisonModalProps) {
                 {selectedToolDetails.map((tool) => (
                   <TableCell key={`${tool.id}-features`}>
                     <ul className="list-disc pl-5 space-y-1">
-                      {tool.features?.map((feature, index) => (
+                      {tool.features?.map((feature: string, index: number) => (
                         <li key={index} className="text-sm text-slate-700">
                           {feature}
                         </li>
@@ -92,7 +92,7 @@ export function ComparisonModal({ isOpen, onClose }: ComparisonModalProps) {
                 {selectedToolDetails.map((tool) => (
                   <TableCell key={`${tool.id}-pros`}>
                     <ul className="list-disc pl-5 space-y-1">
-                      {tool.pros?.map((pro, index) => (
+                      {tool.pros?.map((pro: string, index: number) => (
                         <li key={index} className="text-sm text-green-700">
                           {pro}
                         </li>
@@ -106,7 +106,7 @@ export function ComparisonModal({ isOpen, onClose }: ComparisonModalProps) {
                 {selectedToolDetails.map((tool) => (
                   <TableCell key={`${tool.id}-cons`}>
                     <ul className="list-disc pl-5 space-y-1">
-                      {tool.cons?.map((con, index) => (
+                      {tool.cons?.map((con: string, index: number) => (
                         <li key={index} className="text-sm text-red-700">
                           {con}
                         </li>

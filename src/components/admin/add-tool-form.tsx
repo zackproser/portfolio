@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,33 +13,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { addTool } from "@/actions/tool-actions"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
+import { toolFormSchema, type ToolFormValues } from "@/schemas/tool-schema"
+import type { Tool } from "@prisma/client"
 
-// Define the form schema with Zod
-const toolFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  description: z.string().min(10, { message: "Description must be at least 10 characters" }),
-  category: z.string().min(1, { message: "Please select a category" }),
-  pricing: z.string().min(1, { message: "Please enter pricing information" }),
-  websiteUrl: z.string().url({ message: "Please enter a valid URL" }),
-  githubUrl: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
-  logoUrl: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
-  openSource: z.boolean().default(false),
-  apiAccess: z.boolean().default(false),
-  documentationQuality: z.string().optional(),
-  communitySize: z.string().optional(),
-  lastUpdated: z.string().optional(),
-  features: z.string().optional(),
-  pros: z.string().optional(),
-  cons: z.string().optional(),
-  languages: z.string().optional(),
-  reviewCount: z
-    .string()
-    .transform((val) => (val ? Number.parseInt(val, 10) : undefined))
-    .optional(),
-  reviewUrl: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
-})
-
-type ToolFormValues = z.infer<typeof toolFormSchema>
+// Type for action data
+type AddToolActionData = Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>;
 
 interface AddToolFormProps {
   onSuccess?: () => void
@@ -51,9 +28,10 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
   const router = useRouter()
   const { toast } = useToast()
 
-  // Initialize the form
+  // Use simplified shared schema
   const form = useForm<ToolFormValues>({
     resolver: zodResolver(toolFormSchema),
+    // Default values remain the same (matching form input expectations)
     defaultValues: {
       name: "",
       description: "",
@@ -71,43 +49,65 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
       pros: "",
       cons: "",
       languages: "",
-      reviewCount: "",
+      reviewCount: undefined,
       reviewUrl: "",
+      license: "",
     },
   })
 
-  // Handle form submission
+  // onSubmit receives data conforming to simplified schema (ToolFormValues)
   async function onSubmit(data: ToolFormValues) {
     setIsSubmitting(true)
 
     try {
-      // Process arrays from comma-separated strings
-      const processedData = {
-        ...data,
-        features: data.features ? data.features.split(",").map((item) => item.trim()) : undefined,
-        pros: data.pros ? data.pros.split(",").map((item) => item.trim()) : undefined,
-        cons: data.cons ? data.cons.split(",").map((item) => item.trim()) : undefined,
-        languages: data.languages ? data.languages.split(",").map((item) => item.trim()) : undefined,
-      }
+      // Prepare data for the server action, performing null conversions here
+      const dataForAction: AddToolActionData = {
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        websiteUrl: data.websiteUrl,
+        openSource: data.openSource,
+        apiAccess: data.apiAccess,
+        // Convert optional strings: empty string or undefined becomes null
+        pricing: data.pricing || null,
+        githubUrl: data.githubUrl || null,
+        logoUrl: data.logoUrl === "/placeholder.svg?height=40&width=40" || !data.logoUrl ? null : data.logoUrl,
+        reviewUrl: data.reviewUrl || null,
+        documentationQuality: data.documentationQuality || null,
+        communitySize: data.communitySize || null,
+        lastUpdated: data.lastUpdated || null,
+        license: data.license || null,
+        // Convert optional number string: empty/undefined becomes null, otherwise parse
+        reviewCount: data.reviewCount && data.reviewCount.trim() !== "" ? Number.parseInt(data.reviewCount.trim(), 10) : null,
+        // Convert comma-separated strings to arrays
+        features: data.features ? data.features.split(",").map(s => s.trim()).filter(Boolean) : [],
+        pros: data.pros ? data.pros.split(",").map(s => s.trim()).filter(Boolean) : [],
+        cons: data.cons ? data.cons.split(",").map(s => s.trim()).filter(Boolean) : [],
+        languages: data.languages ? data.languages.split(",").map(s => s.trim()).filter(Boolean) : [],
+      };
 
-      // In a real app, this would call a server action to save to a database
-      // For this demo, we'll simulate a successful save
-      await addTool(processedData)
+      // Validate required fields that might have become null if Prisma doesn't allow null
+      // For example, if pricing CANNOT be null in Prisma:
+      if (dataForAction.pricing === null) {
+         console.error("Pricing is required but became null");
+         // Potentially throw error or handle default
+         dataForAction.pricing = ""; // Or some default
+      }
+      // Add similar checks for other non-nullable Prisma fields if necessary
+
+      await addTool(dataForAction);
 
       toast({
         title: "Tool added successfully",
         description: `${data.name} has been added to your comparison platform.`,
       })
 
-      // Reset the form
       form.reset()
 
-      // Call the onSuccess callback if provided
       if (onSuccess) {
         onSuccess()
       }
 
-      // Refresh the page data
       router.refresh()
     } catch (error) {
       console.error("Error adding tool:", error)
@@ -121,7 +121,6 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
     }
   }
 
-  // Categories for the dropdown
   const categories = [
     { id: "llm", name: "LLM APIs" },
     { id: "vector-db", name: "Vector Databases" },
@@ -137,7 +136,6 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Basic Information */}
           <div className="space-y-6">
             <FormField
               control={form.control}
@@ -247,7 +245,6 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
             </div>
           </div>
 
-          {/* URLs and Additional Info */}
           <div className="space-y-6">
             <FormField
               control={form.control}
@@ -375,10 +372,23 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="license"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>License</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., MIT, Apache 2.0" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 
-        {/* Features, Pros, Cons */}
         <div className="space-y-6">
           <FormField
             control={form.control}

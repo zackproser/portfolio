@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react"
-import { Tool } from "@/types/tools"
+import type { Tool } from "@prisma/client"
 import { getAllTools } from "@/actions/tool-actions"
 
 type ToolsContextType = {
@@ -55,7 +55,6 @@ export function ToolsProvider({ children }: { children: ReactNode }) {
           tool.name.toLowerCase().includes(term) ||
           tool.description.toLowerCase().includes(term) ||
           tool.category.toLowerCase().includes(term) ||
-          tool.categoryName?.toLowerCase().includes(term) ||
           tool.features?.some((feature) => feature.toLowerCase().includes(term)) ||
           tool.pros?.some((pro) => pro.toLowerCase().includes(term)) ||
           tool.cons?.some((con) => con.toLowerCase().includes(term))
@@ -71,13 +70,12 @@ export function ToolsProvider({ children }: { children: ReactNode }) {
   }, [searchTerm, selectedCategories, tools])
 
   // Create categories list
-  const categories = Array.from(new Set(tools.map((tool) => tool.category))).map((category) => {
-    const tool = tools.find((t) => t.category === category)
-    return {
+  const categories = Array.from(new Set(tools.map((tool) => tool.category)))
+    .map((category) => ({
       id: category,
-      name: tool?.categoryName || category
-    }
-  })
+      name: tools.find(tool => tool.category === category)?.category || category,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   const addToComparison = (toolId: string) => {
     if (selectedTools.includes(toolId) || selectedTools.length >= 4) return

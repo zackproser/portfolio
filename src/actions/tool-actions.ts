@@ -1,72 +1,53 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { toolsData } from "@/data/tools"
-import { Tool } from "@/types/tools"
+import { PrismaClient } from "@prisma/client"
+import type { Tool } from "@prisma/client"
+
+// Instantiate Prisma Client
+const prisma = new PrismaClient()
 
 // In a real app, this would interact with a database
 // For this demo, we'll just simulate the action with the data in memory
 
-let dynamicTools = [...toolsData]
+// let dynamicTools = [...toolsData] // Remove dependency on static data
 
-export async function addTool(toolData: any) {
+export async function addTool(data: Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>) {
+  console.log("Adding tool (using Prisma):", data)
   try {
-    // Simulate a delay to mimic a database operation
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Generate a unique ID (in a real app, this would be handled by the database)
-    const id = `tool-${Date.now()}`
-
-    // Process the category to get the category name
-    const categoryNames: Record<string, string> = {
-      llm: "LLM APIs",
-      "vector-db": "Vector Databases",
-      framework: "AI Frameworks",
-      agent: "Agent Frameworks",
-      embedding: "Embedding Models",
-      orchestration: "Orchestration",
-      evaluation: "Evaluation Tools",
-      "fine-tuning": "Fine-tuning",
-    }
-
-    const categoryName = categoryNames[toolData.category] || toolData.category
-
-    // Create the new tool object
-    const newTool: Tool = {
-      id,
-      ...toolData,
-      categoryName,
-    }
-
-    // In a real app, you would save this to a database
-    dynamicTools.push(newTool)
-    console.log("New tool created:", newTool)
-
-    // Revalidate the tools page to show the new tool
-    revalidatePath("/admin/tools")
+    const newTool = await prisma.tool.create({ data });
+    revalidatePath("/admin/tools") // Revalidate relevant paths
     revalidatePath("/")
-
-    return { success: true, tool: newTool }
+    return { success: true, data: newTool }
   } catch (error) {
     console.error("Error adding tool:", error)
     return { success: false, error: "Failed to add tool" }
   }
 }
 
-export async function deleteTool(id: string) {
+export async function updateTool(id: string, data: Partial<Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>>) {
+  console.log(`Updating tool ${id} (using Prisma):`, data)
   try {
-    // Simulate a delay to mimic a database operation
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // In a real app, you would delete this from a database
-    dynamicTools = dynamicTools.filter(tool => tool.id !== id)
-    console.log("Tool deleted:", id)
-
-    // Revalidate the tools page
-    revalidatePath("/admin/tools")
+    const updatedTool = await prisma.tool.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/admin/tools") // Revalidate relevant paths
     revalidatePath("/")
+    return { success: true, id, data: updatedTool }
+  } catch (error) {
+    console.error("Error updating tool:", error)
+    return { success: false, error: "Failed to update tool" }
+  }
+}
 
-    return { success: true }
+export async function deleteTool(id: string) {
+  console.log(`Deleting tool ${id} (using Prisma)`);
+  try {
+    await prisma.tool.delete({ where: { id } });
+    revalidatePath("/admin/tools") // Revalidate relevant paths
+    revalidatePath("/")
+    return { success: true, id };
   } catch (error) {
     console.error("Error deleting tool:", error)
     return { success: false, error: "Failed to delete tool" }
@@ -74,6 +55,12 @@ export async function deleteTool(id: string) {
 }
 
 export async function getAllTools(): Promise<Tool[]> {
-  // This would fetch from a database in a real app
-  return dynamicTools
+  console.log("Fetching all tools (using Prisma)")
+  try {
+    const tools = await prisma.tool.findMany();
+    return tools;
+  } catch (error) {
+    console.error("Error fetching tools:", error)
+    return []; // Return empty array on error
+  }
 } 
