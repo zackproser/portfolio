@@ -12,6 +12,7 @@ interface ToolsAdminClientProps {
 }
 
 export function ToolsAdminClient({ initialTools }: ToolsAdminClientProps) {
+  console.log('ToolsAdminClient received initialTools:', initialTools);
   const [isAddingTool, setIsAddingTool] = useState(false)
 
   return (
