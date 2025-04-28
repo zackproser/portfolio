@@ -28,6 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable}`} suppressHydrationWarning>
+      <GoogleTagManager gtmId="GTM-K9XTVH6V" />
       <head>
         <link
           rel="alternate"
@@ -53,7 +54,6 @@ export default function RootLayout({
           </Providers>
         </SessionProvider>
       </body>
-      <GoogleTagManager gtmId="GTM-K9XTVH6V" />
     </html>
   );
 }
