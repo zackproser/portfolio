@@ -19,14 +19,19 @@ export async function POST(req: NextRequest) {
 	const newMemberEmailAddress = body.email;
 	const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`;
 
-	const data = {
+	const data: { [key: string]: any } = {
 		api_key: emailOctopusAPIKey,
 		email_address: newMemberEmailAddress,
 		fields: {
 			Referrer: body.referrer,
 		},
 		status: "SUBSCRIBED",
+		tags: body.tags && Array.isArray(body.tags) ? body.tags : []
 	};
+
+	if (data.tags && data.tags.length === 0) {
+		delete data.tags;
+	}
 
 	const requestOptions = {
 		crossDomain: true,

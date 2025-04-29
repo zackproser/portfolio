@@ -249,11 +249,16 @@ h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  background: #888;
+  border-radius: 6px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background: #555;
+}
+
+/* Style inline code within prose blocks */
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+    @apply text-white;
 }
 
