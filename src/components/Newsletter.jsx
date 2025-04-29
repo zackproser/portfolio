@@ -29,18 +29,19 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className, position = "content" }) {
+export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className, position = "content", tags = [] }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
 	const [formError, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const sendFormSubmissionEvent = () => {
-		console.log('Tracking newsletter signup event with:', { method: "newsletter", source: referrer, position });
+		console.log('Tracking newsletter signup event with:', { method: "newsletter", source: referrer, position, tags });
 		track("newsletter-signup", {
 			method: "newsletter",
 			source: referrer,
 			position: position,
+			tags: tags,
 			slug: referrer?.split('/').pop() || 'homepage'
 		});
 	};
@@ -54,13 +55,13 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 		setError(false);
 		setErrorMessage("");
 
-		// Cast the event target to an html form
 		const form = event.target;
 
 		// Get data from the form.
 		const data = {
 			email: form.email.value,
 			referrer,
+			tags,
 		};
 
 		// Track the event first to ensure it's always called
@@ -84,9 +85,10 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 				method: "POST",
 			});
 				
+			const responseData = await response.json();
+
 			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.data || "Failed to subscribe");
+				throw new Error(responseData.data || "Failed to subscribe");
 			}
 				
 			// Update the form UI to show the user their subscription was successful
