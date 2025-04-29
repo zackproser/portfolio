@@ -42,10 +42,11 @@ const imagePaths = [
 ];
 
 const RandomPortrait = ({ width, height }) => {
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(imagePaths[0]);
 
   useEffect(() => {
-    setRandomPortrait();
+    const randomIndex = Math.floor(Math.random() * imagePaths.length);
+    setSelectedImage(imagePaths[randomIndex]);
   }, []);
 
   const setRandomPortrait = () => {
@@ -53,8 +54,6 @@ const RandomPortrait = ({ width, height }) => {
     const randomIndex = Math.floor(Math.random() * imagePaths.length);
     setSelectedImage(imagePaths[randomIndex]);
   };
-
-  if (!selectedImage) return null;
 
   const imageProps = width && height
     ? { width, height }
