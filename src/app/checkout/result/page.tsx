@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/types';
 import { useSession, signIn } from 'next-auth/react';
-import { sendGAEvent } from '@next/third-parties/google';
+import { sendGTMEvent } from '@next/third-parties/google';
 import { getContentUrl } from '@/lib/content-url';
 
 interface PurchasedContent {
@@ -52,22 +52,16 @@ function CheckoutResultContent() {
         setContent(data);
 
         if (!conversionTracked && data.content.commerce?.price) {
-          sendGAEvent('purchase', {
-            currency: 'USD',
+          sendGTMEvent({
+            event: 'purchase',
             value: data.content.commerce.price,
+            currency: 'USD',
             transaction_id: sessionId,
             items: [{
               item_name: data.content.title,
               item_id: data.content.slug,
               price: data.content.commerce.price
             }]
-          });
-
-          window.gtag('event', 'conversion', {
-            'send_to': 'AW-1009082087/wa84CK34vrgaEOe9leED',
-            'value': data.content.commerce.price,
-            'currency': 'USD',
-            'transaction_id': sessionId
           });
 
           setConversionTracked(true);
