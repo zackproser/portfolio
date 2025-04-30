@@ -11,6 +11,7 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import LearningGrid from "@/components/learning-grid"
 import ConsultationForm from "@/components/ConsultationForm"
+import { sendGTMEvent } from '@next/third-parties/google'
 
 // Import company logos
 import logoCloudflare from '/public/images/logos/cloudflare.svg'
@@ -62,12 +63,10 @@ export default function HomepageClientComponent({
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
   const sendFormSubmissionEvent = () => {
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      // @ts-ignore
-      window.gtag("event", "sign_up", {
-        method: "newsletter",
-      })
-    }
+    sendGTMEvent({
+      event: "sign-up-newsletter",
+      method: "newsletter"
+    });
 
     track("newsletter-signup", {
       method: "newsletter",
