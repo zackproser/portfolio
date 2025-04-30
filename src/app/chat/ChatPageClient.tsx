@@ -11,13 +11,7 @@ import SearchForm from '@/components/SearchForm';
 import { LoadingAnimation } from '@/components/LoadingAnimation';
 import { ContentCard } from '@/components/ContentCard';
 import { BlogWithSlug } from '@/types';
-
-// Add gtag type definition
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+import { sendGTMEvent } from '@next/third-parties/google';
 
 // Feature bullet component to reduce duplication
 const FeatureBullet = ({ text, strong }: { text: string, strong: string }) => (
@@ -118,13 +112,11 @@ export default function ChatPageClient() {
     },
     headers: {},
     onFinish() {
-      // Make gtag calls safe
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag("event", "chat_question", {
-          event_category: "chat",
-          event_label: input,
-        });
-      }
+      sendGTMEvent({
+        event: "chat_question",
+        event_category: "chat",
+        event_label: input,
+      });
       track("chat", { question: input });
     },
     onError() {
@@ -135,13 +127,11 @@ export default function ChatPageClient() {
   const handleSearch = async (query: string) => {
     setInput(query);
 
-    // Make gtag calls safe
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag("event", "chat_use_precanned_question", {
-        event_category: "chat",
-        event_label: query,
-      });
-    }
+    sendGTMEvent({
+      event: "chat_use_precanned_question",
+      event_category: "chat",
+      event_label: query,
+    });
 
     track("chat-precanned", { question: query });
 
