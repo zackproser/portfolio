@@ -5,7 +5,7 @@ import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
 import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
 import { COURSES_DISABLED } from '@/types'
 import { stripeLogger as logger } from '@/utils/logger' // Import centralized logger
-import { getContentUrl } from '@/lib/content-url'
+import { getContentUrlFromObject } from '@/lib/content-url'
 import { normalizeRouteOrFileSlug } from '@/lib/content-handlers'
 
 // Initialize Stripe and Prisma
@@ -196,7 +196,12 @@ export async function POST(req: Request) {
         })
         logger.info('WEBHOOK: Existing email notifications found:', existingNotification ? 1 : 0)
         // Always use directorySlug for URLs to avoid double-prepending
-        const productUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrl(type, directorySlug)}`;
+        let productUrl = '';
+        if (loadedContent) {
+          productUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrlFromObject(loadedContent)}`;
+        } else {
+          productUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${type}/${directorySlug}`;
+        }
         logger.info('WEBHOOK: Preparing to send email')
         const emailInput: SendReceiptEmailInput = {
           From: "purchases@zackproser.com",

@@ -1,6 +1,5 @@
-// use server directive might be needed depending on your Next.js setup, 
 // Next.js 15.3 often benefits from it for RSCs involving file system/db
-import 'server-only';
+// import 'server-only';
 
 import { Metadata } from 'next';
 import fs from 'fs';

@@ -1,26 +1,25 @@
+import type { Content } from '@/types/content';
+
 /**
- * Get the content URL based on content type and slug
- * @param contentType The content type (e.g., 'article', 'blog', 'course')
- * @param slug The content slug
- * @param keepLeadingSlash Whether to keep the leading slash (default: true)
- * @returns The URL path for the content
+ * Returns the canonical relative URL path for a given Content object.
+ * Throws if required fields are missing. Never prefixes with baseUrl.
+ * @param content The Content object
+ * @returns The canonical relative URL path for the content
  */
-export function getContentUrl(contentType: string, slug: string, keepLeadingSlash = true) {
+export function getContentUrlFromObject(content: Content, keepLeadingSlash = true): string {
+  if (!content) throw new Error('No content object provided');
+  const { type, directorySlug } = content as any;
+  if (!type) throw new Error('Content object missing type');
+  if (!directorySlug) throw new Error('Content object missing directorySlug');
   // Remove any leading slashes from the slug
-  const cleanSlug = slug.replace(/^\/+/, '');
-  
-  // Generate the URL path based on content type
+  const cleanSlug = directorySlug.replace(/^\/+/,'');
   let url = '';
-  
-  if (contentType === 'article' || contentType === 'blog') {
+  if (type === 'article' || type === 'blog') {
     url = `/blog/${cleanSlug}`;
-  } else if (contentType === 'course') {
+  } else if (type === 'course') {
     url = `/learn/courses/${cleanSlug}/0`;
   } else {
-    // Fallback to a generic path
-    url = `/${contentType}/${cleanSlug}`;
+    url = `/${type}/${cleanSlug}`;
   }
-  
-  // Remove leading slash if needed
   return (keepLeadingSlash || !url.startsWith('/')) ? url : url.substring(1);
 } 
