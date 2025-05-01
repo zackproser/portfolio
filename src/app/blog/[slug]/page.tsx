@@ -65,14 +65,16 @@ export default async function Page({ params }: PageProps) {
   let hasPurchased = false;
   if (content?.commerce?.isPaid) {
     logger.debug(`Checking purchase status for paid content (${slug})`);
+    // Always use the canonical type and directorySlug from the content object
+    const directorySlug = content.directorySlug || slug;
+    const contentType = content.type || CONTENT_TYPE;
     // First try with user ID
-    hasPurchased = await hasUserPurchased(session?.user?.id, CONTENT_TYPE, slug);
+    hasPurchased = await hasUserPurchased(session?.user?.id, contentType, directorySlug);
     logger.debug(`Purchase check by user ID (${session?.user?.id || 'N/A'}): ${hasPurchased}`);
-    
     // If not found by user ID, try with email as a fallback
     if (!hasPurchased && session?.user?.email) {
       logger.debug(`Not found by user ID, trying email: ${session.user.email}`);
-      hasPurchased = await hasUserPurchased(session.user.email, CONTENT_TYPE, slug);
+      hasPurchased = await hasUserPurchased(session.user.email, contentType, directorySlug);
       logger.debug(`Purchase check by email (${session.user.email}): ${hasPurchased}`);
     }
   } else {

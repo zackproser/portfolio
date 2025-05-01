@@ -68,7 +68,7 @@ function CheckoutResultContent() {
         }
 
         if (authStatus === 'authenticated') {
-          const contentUrl = getContentUrl(data.content.type || 'blog', data.content.slug.replace(/^\/+/, ''), true);
+          const contentUrl = getContentUrl(data.content.type || 'blog', data.content.directorySlug || '', true);
           setTimeout(() => router.push(contentUrl), 1000);
         }
       } catch (err) {
@@ -82,6 +82,7 @@ function CheckoutResultContent() {
   const handleEmailSignIn = async (email: string, contentUrl: string) => {
     try {
       setIsLoggingIn(true);
+      sessionStorage.setItem("signInEmail", email);
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
       if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
       
@@ -94,7 +95,11 @@ function CheckoutResultContent() {
         absoluteUrl = contentUrl.startsWith('/') ? contentUrl : `/${contentUrl}`;
       }
       
-      await signIn("email", { email, callbackUrl: absoluteUrl });
+      const urlObj = new URL(absoluteUrl, window.location.origin);
+      urlObj.searchParams.set('email', email);
+      const callbackUrlWithEmail = urlObj.toString();
+      
+      await signIn("email", { email, callbackUrl: callbackUrlWithEmail });
     } catch (error) {
       console.error('Error during sign-in process:', error);
       setIsLoggingIn(false);
@@ -161,7 +166,7 @@ function CheckoutResultContent() {
     );
   }
 
-  const contentUrl = getContentUrl(content.content.type || 'blog', content.content.slug.replace(/^\/+/, ''), true);
+  const contentUrl = getContentUrl(content.content.type || 'blog', content.content.directorySlug || '', true);
 
   return (
     <Container>
@@ -190,7 +195,7 @@ function CheckoutResultContent() {
             <div className="mt-4">
               {authStatus === 'authenticated' ? (
                 <Link
-                  href={`/${contentUrl}`}
+                  href={contentUrl}
                   className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   Read Now
@@ -219,7 +224,7 @@ function CheckoutResultContent() {
             </p>
             {authStatus === 'authenticated' ? (
               <Link
-                href={`/${contentUrl}`}
+                href={contentUrl}
                 className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Start Learning
