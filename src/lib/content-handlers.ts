@@ -1,6 +1,5 @@
-// use server directive might be needed depending on your Next.js setup, 
 // Next.js 15.3 often benefits from it for RSCs involving file system/db
-import 'server-only';
+// import 'server-only';
 
 import { Metadata } from 'next';
 import fs from 'fs';
@@ -26,7 +25,7 @@ const appDirectory = path.join(process.cwd(), 'src/app');
 
 // Add helper function for slug normalization (useful for comparing potential route params to content slugs)
 // Remove any leading slashes and 'blog/' or 'videos/' prefix IF they exist at the start
-const normalizeRouteOrFileSlug = (slug: string) => {
+export const normalizeRouteOrFileSlug = (slug: string) => {
   let cleanedSlug = slug.replace(/^\/+/, ''); // Remove leading slashes
   // Optionally remove content type prefix if it seems like a full path
   const contentTypePrefixes = ['blog/', 'videos/', 'learn/courses/', 'comparisons/']; // Add other types as needed

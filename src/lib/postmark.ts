@@ -3,6 +3,7 @@ import { ServerClient } from 'postmark'
 import { getContentWithComponentByDirectorySlug } from "./content-handlers"; // Use this instead of loadContent
 import { ExtendedMetadata } from '@/types'
 import { emailLogger as logger } from '@/utils/logger' // Import centralized email logger
+import { getContentUrlFromObject } from './content-url'
 
 // Define the MessageSendingResponse interface based on Postmark API response
 interface MessageSendingResponse {
@@ -100,15 +101,6 @@ interface SendFreeChaptersEmailInput {
 	}[];
 }
 
-// Function to get the content URL based on content type
-const getContentUrl = (type: string, slug: string) => {
-	// Remove any leading slashes from the slug
-	const cleanSlug = slug.replace(/^\/+/, '');
-	
-	// For all content types, use the /blog/ path since we're only selling blog content
-	return `/blog/${cleanSlug}`;
-};
-
 /**
  * Extract preview content from a product's MDX content using server-side approach
  * @param productSlug The slug of the product
@@ -121,12 +113,10 @@ const getContentUrl = (type: string, slug: string) => {
  */
 async function extractPreviewContent(productSlug: string): Promise<PreviewContentResult | null> {
 	// Remove any leading slashes from the productSlug
-	const normalizedSlug = productSlug.replace(/^\/+/, '');
-	
+	const normalizedSlug = productSlug.replace(/^\/+/,'');
 	// For blog posts, the content type is 'blog'
 	// This assumes all products are blog posts - adjust if you have different content types
 	const contentType = 'blog';
-	
 	logger.info(`Extracting preview content for: ${contentType}/${normalizedSlug}`);
 	// Use getContentWithComponentByDirectorySlug to load content + metadata
 	const result = await getContentWithComponentByDirectorySlug(contentType, normalizedSlug);
@@ -136,13 +126,11 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
 	}
 	// Access the metadata via result.content
 	const { content: metadata } = result;
-	
-	// Create a simple HTML preview with a link to the content
 	logger.info(`Creating preview content...`);
 	try {
 		// Get the base URL
 		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-		const productUrl = `${baseUrl}${getContentUrl(contentType, normalizedSlug)}`;
+		const productUrl = `${baseUrl}${getContentUrlFromObject(metadata)}`;
 		
 		// Create a simple HTML preview with the description and a link
 		const title = typeof metadata.title === 'string' 
@@ -201,22 +189,29 @@ const sendFreeChaptersEmail = async (
 	logger.debug(`[CONFIG] Base URL: ${baseUrl}`);
 	
 	// Normalize the slug and construct the product URL
-	const normalizedSlug = input.ProductSlug.replace(/^\/+/, '');
-	const productUrl = `${baseUrl}${getContentUrl('article', normalizedSlug)}`;
+	const normalizedSlug = input.ProductSlug.replace(/^\/+/,'');
+	let productUrl = '';
+	const result = await getContentWithComponentByDirectorySlug('blog', normalizedSlug);
+	if (result && result.content) {
+		productUrl = `${baseUrl}${getContentUrlFromObject(result.content)}`;
+	} else {
+		logger.warn(`Could not load content for slug: ${input.ProductSlug} to generate product URL.`);
+		productUrl = `${baseUrl}/blog/${normalizedSlug}`; // fallback
+	}
 	logger.debug(`[CONFIG] Product URL: ${productUrl}`);
 	
 	// Extract preview content from the actual product
 	logger.info(`[PROCESS] Starting content extraction...`);
 
-	const result = await extractPreviewContent(normalizedSlug);
+	const previewResult = await extractPreviewContent(normalizedSlug);
 
-	if (!result) {
+	if (!previewResult) {
 		logger.warn(`No content found for slug: ${input.ProductSlug}`);
 		return null;
 	}
 
 	// The result from extractPreviewContent already contains the correct metadata
-	const { previewContent, metadata } = result;
+	const { previewContent, metadata } = previewResult;
 
 	logger.debug(`[DEBUG] Result extracted content length: ${previewContent.length} characters`);
 	
