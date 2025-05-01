@@ -3,6 +3,7 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import path from 'path'
 import { Metadata } from 'next'
 import { logger } from './logger'
+import { getContentUrlFromObject } from '@/lib/content-url'
 
 // Create a specialized logger for metadata operations
 const metaLogger = logger.forCategory('metadata');
@@ -116,22 +117,6 @@ function getTypeFromPath(filePath: string): 'blog' | 'course' | 'video' | 'demo'
 }
 
 /**
- * Generate a URL for any content type and slug
- * @param type Content type
- * @param slug Content slug
- * @returns Full URL path
- */
-function getUrlForContent(type: string, slug: string): string {
-  const baseDir = TYPE_PATHS[type];
-
-  if (!baseDir) {
-    return `/${type}/${slug}`;
-  }
-  
-  return `/${baseDir}/${slug}`;
-}
-
-/**
  * Creates a fully typed ExtendedMetadata object with all required fields
  * @param params Partial metadata parameters
  * @returns Complete ExtendedMetadata object
@@ -240,7 +225,10 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   }
 
   // Generate a URL using the type and slug
-  const contentUrl = finalSlug ? getUrlForContent(contentType, finalSlug) : undefined;
+  let contentUrl: string | undefined = undefined;
+  if (contentType && finalSlug) {
+    contentUrl = getContentUrlFromObject({ type: contentType, directorySlug: finalSlug } as any);
+  }
 
   // Fix the type error: pass null for slug parameter to match the expected type
   const ogImageUrl = generateOgUrl({ 
