@@ -8,7 +8,7 @@ import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/types';
 import { useSession, signIn } from 'next-auth/react';
 import { sendGTMEvent } from '@next/third-parties/google';
-import { getContentUrl } from '@/lib/content-url';
+import { getContentUrlFromObject } from '@/lib/content-url';
 
 interface PurchasedContent {
   content: Blog;
@@ -68,7 +68,7 @@ function CheckoutResultContent() {
         }
 
         if (authStatus === 'authenticated') {
-          const contentUrl = getContentUrl(data.content.type || 'blog', data.content.directorySlug || '', true);
+          const contentUrl = getContentUrlFromObject(data.content, true);
           setTimeout(() => router.push(contentUrl), 1000);
         }
       } catch (err) {
@@ -166,7 +166,7 @@ function CheckoutResultContent() {
     );
   }
 
-  const contentUrl = getContentUrl(content.content.type || 'blog', content.content.directorySlug || '', true);
+  const contentUrl = getContentUrlFromObject(content.content, true);
 
   return (
     <Container>
