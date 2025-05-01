@@ -1,0 +1,449 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+import secretsHero from '@/images/vibe-coding-survival-guide.webp';
+import gettingGot from '@/images/getting-got.webp';
+
+import { createMetadata } from '@/utils/createMetadata';
+import { importContentMetadata } from '@/lib/content-handlers'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2025-04-28",
+    title: "Vibe Coding Mastery: Premium Edition",
+    description: "The complete guide to building safely with AI tools - protect your API keys, master Git basics, and deploy with confidence.",
+    image: secretsHero,
+    commerce: {
+        isPaid: true,
+        price: 49,
+        previewLength: 450,
+        previewElements: 32,
+        paywallHeader: "Vibe Coding Mastery: The Complete Package",
+        paywallBody: "Get everything you need to build safely with AI tools: secret management scripts, Git safety hooks, Cursor rules engine, and complete deployment guides. Perfect for developers using AI tools who want to avoid costly mistakes.",
+        buttonText: "Get the complete package ($49)",
+        miniPaywallTitle: "Master safe development with AI tools",
+        miniPaywallDescription: "Includes secret manager scripts, Git hooks, Cursor rules, and step-by-step guides.",
+        paywallImage: secretsHero,
+        paywallImageAlt: "The complete Vibe Coding Mastery package: Scripts, Rules, and Guides",
+        profileImage: gettingGot
+    },
+    landing: {
+        heroTitle: "Build Safely with AI Tools: The Complete Vibe Coding Guide",
+        subtitle: "Learn to protect your API keys, master Git basics, and deploy with confidence. Includes secret management scripts, Git hooks, and step-by-step instructions.",
+        problemSolved: "Worried about leaking API keys or making costly mistakes with AI tools?",
+        benefitStatement: "Build confidently with AI tools while keeping your secrets and wallet safe",
+        features: [
+            {
+                title: "Complete Secret Management",
+                description: "Automated tools to protect your API keys and prevent accidental exposure"
+            },
+            {
+                title: "Git Safety System",
+                description: "Pre-configured hooks and rules to prevent committing sensitive data"
+            },
+            {
+                title: "Deployment Checklist",
+                description: "Step-by-step guides for safely deploying your AI-powered applications"
+            },
+            {
+                title: "Emergency Recovery",
+                description: "Know exactly what to do if something goes wrong"
+            }
+        ],
+        contentSections: [
+            {
+                title: "Getting Started",
+                subsections: [
+                    "What This Guide Will Help You With",
+                    "How to Use This Guide",
+                    "Installing Protection Tools"
+                ]
+            },
+            {
+                title: "Secret Management",
+                subsections: [
+                    "What Are Secrets",
+                    "How API Key Leaks Happen",
+                    "Installing the Secret Manager",
+                    "Using the Secret Manager",
+                    "Scanning for Exposed Secrets"
+                ]
+            },
+            {
+                title: "Git Safety Net",
+                subsections: [
+                    "Git Basics for Vibe Coders",
+                    "Setting Up Git Safely",
+                    "Your First Safe Commit",
+                    "Pushing to GitHub",
+                    "Creating Branches"
+                ]
+            },
+            {
+                title: "Safe Deployment",
+                subsections: [
+                    "Pre-Deployment Checklist",
+                    "Deploying to Vercel",
+                    "Testing Your Deployment",
+                    "Other Deployment Options"
+                ]
+            },
+            {
+                title: "Emergency Recovery",
+                subsections: [
+                    "If You've Pushed a Secret",
+                    "Monitoring Usage",
+                    "Recovery Steps"
+                ]
+            },
+            {
+                title: "Cursor Rules Engine",
+                subsections: [
+                    "Installing Cursor Rules",
+                    "Sample Rules",
+                    "Custom Rules"
+                ]
+            }
+        ]
+    }
+});
+
+# Vibe Coding Mastery: Premium Edition
+
+Welcome to the premium version of Vibe Coding Mastery! This guide is designed specifically for non-traditional developers who are using AI tools to build real projects but might not have years of traditional programming experience.
+
+## What This Guide Will Help You With
+
+If you've been using tools like ChatGPT, Claude, or GitHub Copilot to build apps, you're in the right place. This guide will help you:
+
+1. **Protect your API keys** - Never get hit with a $500 bill because of leaked keys
+2. **Use Git and GitHub safely** - Commit code without accidentally exposing secrets
+3. **Deploy your projects confidently** - Get your app online without mistakes
+4. **Recover from emergencies** - Know exactly what to do if something goes wrong
+
+## How to Use This Guide
+
+1. **Install the protection tools first** - Start with the installation script below
+2. **Reference as needed** - Come back to specific sections as you encounter issues
+3. **Take it step by step** - You don't need to understand everything at once
+
+Let's get started!
+
+---
+
+## Part 1: The Secret Manager - Never Leak API Keys Again
+
+### What Are "Secrets" and Why Do They Matter?
+
+In simple terms, **secrets** are pieces of sensitive information that give access to services or data. The most common types are:
+
+- **API keys** (like your OpenAI, Pinecone, or Google Maps key)
+- **Database credentials** (usernames, passwords, connection strings)
+- **Access tokens** (GitHub, AWS, etc.)
+
+Why do they matter? **If someone gets your API key, they can use your account and run up charges on your behalf.** This is not theoretical - it happens constantly to new developers.
+
+### How API Key Leaks Happen
+
+The most common way secrets get leaked is through **git commits**. Here's what typically happens:
+
+1. You add your API key directly in your code to test it:
+   ```js
+   const openaiKey = "sk-Abcd1234ThisIsWhereYouPutYourSuperSecretKey";
+   ```
+
+2. You commit your code to GitHub without removing the key
+
+3. Automated bots constantly scan GitHub for API key patterns and find yours within seconds
+
+4. Your key gets used by someone else, and you're stuck with the bill
+
+### Installing the Secret Manager
+
+Our secret manager tool helps you safely store and manage API keys. Run this command in your project directory to install it:
+
+```bash
+# Install the secret manager
+curl -sSL https://raw.githubusercontent.com/zackproser/vibe-coding-mastery/main/install.sh | bash
+```
+
+This will install:
+- The secret-manager.sh script
+- Git safety hooks to prevent accidental commits
+- .env and .gitignore files configured correctly
+
+### Using the Secret Manager
+
+Once installed, you can use the secret manager with:
+
+```bash
+./secret-manager.sh
+```
+
+You'll see a menu like this:
+
+```
+🔒 Vibe Coding Mastery - Secret Manager
+===============================================
+What would you like to do?
+1. Add a new secret
+2. List existing secrets
+3. Scan codebase for exposed secrets
+4. Exit
+```
+
+#### Adding Your First Secret
+
+Let's add your OpenAI API key:
+
+1. Select option 1: "Add a new secret"
+2. When prompted, enter the name: `OPENAI_API_KEY`
+3. Enter your actual API key when asked
+
+That's it! The manager has:
+- Added your key to the .env file
+- Made sure .env is in your .gitignore
+- Scanned your code to make sure the key isn't exposed elsewhere
+
+#### Using Your Secret in Code
+
+Now instead of putting your API key directly in your code, you'll reference it like this:
+
+```javascript
+// JavaScript/Node.js
+const openaiKey = process.env.OPENAI_API_KEY;
+```
+
+```python
+# Python
+import os
+openai_key = os.environ['OPENAI_API_KEY']
+```
+
+### Scanning for Exposed Secrets
+
+Any time you want to check if you've accidentally exposed secrets in your code:
+
+1. Run `./secret-manager.sh`
+2. Select option 3: "Scan codebase for exposed secrets"
+
+The scanner will automatically find common patterns that look like API keys and warn you if they're found.
+
+---
+
+## Part 2: Git Safety Net - Commit Without Fear
+
+### Git Basics for Vibe Coders
+
+Git can be intimidating, but you only need to understand a few core concepts:
+
+- **Repository** - The folder containing your project and its history
+- **Commit** - A saved checkpoint of your code
+- **Branch** - A separate line of development
+- **Remote** - The copy of your repository on GitHub or similar service
+
+### Setting Up Git Safely
+
+The installation script already set up Git with safety protections. Let's check them:
+
+1. There's a .gitignore file that tells Git what NOT to track
+2. There's a pre-commit hook that checks for secrets before allowing commits
+
+### Your First Safe Commit
+
+Here's how to safely save your work:
+
+1. First, check what's about to be committed:
+   ```bash
+   git status
+   ```
+
+2. Add the files you want to commit:
+   ```bash
+   git add index.js app.js
+   ```
+
+3. Commit with a message about what you did:
+   ```bash
+   git commit -m "Add chat interface"
+   ```
+
+The pre-commit hook will automatically scan for API keys and block the commit if it finds anything suspicious.
+
+### Pushing to GitHub
+
+To put your code on GitHub:
+
+1. Create a repository on GitHub.com
+2. Connect your local repository:
+   ```bash
+   git remote add origin https://github.com/yourusername/your-repo.git
+   ```
+
+3. Push your code:
+   ```bash
+   git push -u origin main
+   ```
+
+### Creating a Branch for Experiments
+
+When trying something new, create a branch to keep your experiments separate:
+
+```bash
+# Create and switch to a new branch
+git checkout -b experiment
+
+# Make changes, commit them...
+
+# When done, switch back to main
+git checkout main
+```
+
+### What If I Made a Mistake?
+
+If you accidentally committed something you shouldn't:
+
+1. Run `./secret-manager.sh` and select "Scan codebase"
+2. If it finds secrets, use option 1 to fix them properly
+3. Then commit the fix:
+   ```bash
+   git add .
+   git commit -m "Remove exposed secrets and use .env instead"
+   ```
+
+If you've already pushed to GitHub, there's an extra recovery step - see Part 4 below.
+
+---
+
+## Part 3: Deploying Without Disaster
+
+### Before You Deploy
+
+Before putting your app online, run through this quick checklist:
+
+1. Run the secret scanner to check for exposed keys:
+   ```bash
+   ./secret-manager.sh
+   # Select option 3
+   ```
+
+2. Make sure your .env file is properly set up and not being committed
+
+3. Test your app locally making sure it reads from environment variables
+
+### Deploying to Vercel
+
+Vercel is one of the easiest platforms to deploy your Next.js, React, or other JavaScript apps. Here's how to deploy safely:
+
+1. Install the Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Login:
+   ```bash
+   vercel login
+   ```
+
+3. **CRITICAL STEP**: Add your environment variables in the Vercel dashboard:
+   - Go to your project
+   - Click "Settings" > "Environment Variables"
+   - Add each key from your .env file
+
+4. Deploy:
+   ```bash
+   vercel
+   ```
+
+### Testing Your Deployment
+
+After deploying, test to make sure:
+
+1. Your app works correctly
+2. Your API calls are working (which means env vars are set up right)
+3. There are no error messages about missing API keys
+
+### Other Deployment Options
+
+Similar principles apply for other platforms:
+
+- **Netlify**: Use their UI to add environment variables
+- **Railway**: Configure environment variables in their dashboard
+- **Render**: Add environment variables in settings
+
+---
+
+## Part 4: Emergency Recovery - What to Do When Things Go Wrong
+
+### If You've Pushed a Secret to GitHub
+
+If you've already pushed code with secrets to GitHub:
+
+1. **Change your API key immediately**
+   - Go to the service provider (OpenAI, etc.)
+   - Find the option to regenerate or rotate your key
+   - Get a new key and update your .env file
+
+2. **Clean your Git history** (advanced, but necessary):
+   ```bash
+   # Install BFG Repo Cleaner
+   curl -sSL https://raw.githubusercontent.com/zackproser/vibe-coding-mastery/main/install-bfg.sh | bash
+   
+   # Use it to remove the secret (replace with your actual key)
+   bfg --replace-text secret-patterns.txt your-repo-directory
+   
+   # Force push the cleaned repository
+   git push --force
+   ```
+
+3. **Check usage and set up alerts**
+   - Check your service dashboard for any unexpected usage
+   - Set up billing alerts if available
+
+### Monitoring for Unauthorized Usage
+
+Even after fixing a leak, monitor your accounts for unusual activity:
+
+1. Check your OpenAI dashboard regularly for unexpected usage
+2. Set up spending limits where possible
+3. Consider using services like GitGuardian that alert you to exposed secrets
+
+---
+
+## Part 5: The Cursor Rules Engine
+
+If you're using the Cursor editor, we've created special rules that provide real-time guidance as you code.
+
+### Installing Cursor Rules
+
+1. Make sure Cursor is installed
+2. Run the setup command:
+   ```bash
+   ./install-cursor-rules.sh
+   ```
+
+3. Restart Cursor
+
+Now as you code, you'll get helpful warnings and suggestions about security best practices directly in your editor.
+
+### Sample Rules Included
+
+- API Key Protection Rule - Warns when adding keys directly to code
+- Git Safety Rule - Explains good commit practices
+- Environment Variable Helper - Shows how to properly use env vars
+
+---
+
+## Conclusion
+
+Building with AI tools is exciting, but it comes with real responsibilities, especially when using paid API services. By following the practices in this guide, you'll avoid the common pitfalls that trip up new developers.
+
+Remember:
+1. Always use the secret manager for API keys
+2. Check for exposures before committing to Git
+3. Set up environment variables properly when deploying
+4. Know how to recover if something goes wrong
+
+If you have questions or need help, email support@zackproser.com with "Vibe Coding Help" in the subject line.
+
+Happy (and safe) building! 
