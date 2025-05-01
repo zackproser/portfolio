@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.8.1",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"pnpm stripe:webhook\"",
     "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
     "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-no-db": "npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
@@ -161,6 +161,7 @@
     "prisma": "^6.4.1",
     "source-map-js": "^1.2.1",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.3"
+    "tsx": "^4.19.3",
+    "concurrently": "^8.2.2"
   }
 }

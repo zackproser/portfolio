@@ -5,9 +5,8 @@ import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
 import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
 import { COURSES_DISABLED } from '@/types'
 import { stripeLogger as logger } from '@/utils/logger' // Import centralized logger
-
-// Remove the import from content-handlers
-// import { getContentUrl } from '@/lib/content-handlers'
+import { getContentUrlFromObject } from '@/lib/content-url'
+import { normalizeRouteOrFileSlug } from '@/lib/content-handlers'
 
 // Initialize Stripe and Prisma
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -18,201 +17,199 @@ const prisma = new PrismaClient()
 // This is your Stripe webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
-// Function to get the content URL based on content type
-const getContentUrl = (type: string, slug: string) => {
-  // Remove any leading slashes from the slug
-  const cleanSlug = slug.replace(/^\/+/, '');
-  
-  // For all content types, use the /blog/ path since we're only selling blog content
-  return `/blog/${cleanSlug}`;
-};
-
 export async function POST(req: Request) {
-  logger.info('Webhook received - START')
-  logger.debug('Webhook secret configured:', !!process.env.STRIPE_WEBHOOK_SECRET)
-  logger.debug('Postmark API key configured:', !!process.env.POSTMARK_API_KEY)
-  
+  logger.info('WEBHOOK: Handler entry')
   const payload = await req.text()
+  logger.debug('WEBHOOK: Raw payload:', payload)
   const sig = req.headers.get('stripe-signature')!
-  logger.debug('Stripe signature present:', !!sig)
+  logger.debug('WEBHOOK: Stripe signature:', sig)
 
   let event: Stripe.Event
 
   try {
     event = stripe.webhooks.constructEvent(payload, sig, endpointSecret)
-    logger.info('Event constructed successfully')
-    logger.info('Event type:', event.type)
-    logger.debug('Event data:', JSON.stringify(event.data.object, null, 2)) // Keep as debug
+    logger.info('WEBHOOK: Event constructed successfully')
+    logger.info('WEBHOOK: Event type:', event.type)
+    logger.debug('WEBHOOK: Event data:', JSON.stringify(event.data.object, null, 2))
   } catch (err) {
-    logger.error('Webhook signature verification failed:', err)
-    logger.error('Webhook secret used:', endpointSecret?.substring(0, 5) + '...')
+    logger.error('WEBHOOK: Signature verification failed:', err)
+    logger.error('WEBHOOK: Secret used:', endpointSecret?.substring(0, 5) + '...')
     return NextResponse.json({ error: 'Webhook error' }, { status: 400 })
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    logger.info('Processing checkout.session.completed')
-    logger.debug('Session metadata:', session.metadata)
+    logger.info('WEBHOOK: Processing checkout.session.completed')
+    logger.debug('WEBHOOK: Session metadata:', session.metadata)
+    logger.debug('WEBHOOK: Session customer_details:', session.customer_details)
+    logger.debug('WEBHOOK: Session customer_email:', session.customer_email)
     
     if (!session.metadata?.slug || !session.metadata?.type) {
-      logger.error('Missing required metadata:', session.metadata)
+      logger.error('WEBHOOK: Missing required metadata:', session.metadata)
       return NextResponse.json({ error: 'Missing required metadata' }, { status: 400 })
     }
     
     const { slug, type } = session.metadata
     const userId = session.metadata?.userId
+    logger.debug('WEBHOOK: Slug:', slug, 'Type:', type, 'UserId:', userId)
+    
+    // Normalize the slug to always use the directory slug
+    const directorySlug = normalizeRouteOrFileSlug(slug);
+    logger.debug('WEBHOOK: Normalized directorySlug:', directorySlug)
     
     // Get email from Stripe session - first check metadata, then customer_details
-    // This ensures we always have an email for the purchase
     const email = session.metadata?.email || 
                   session.customer_details?.email || 
                   session.customer_email
+    logger.debug('WEBHOOK: Resolved email:', email)
     
     if (!email) {
-      logger.error('No email found in session data')
+      logger.error('WEBHOOK: No email found in session data')
       return NextResponse.json({ error: 'No email found in session data' }, { status: 400 })
     }
     
-    logger.info('Processing completed checkout details:', { slug, userId, email, type })
+    logger.info('WEBHOOK: Processing completed checkout details:', { slug, userId, email, type })
 
     try {
       // Check if we have a userId or need to look it up by email
       let user = null
-      
       if (userId) {
-        // Verify the user exists and get their details
-        logger.debug('Verifying user exists by ID')
+        logger.debug('WEBHOOK: Verifying user exists by ID')
         user = await prisma.user.findUnique({
           where: { id: userId },
           select: { id: true, email: true, name: true }
         })
-        
-        if (user) {
-          logger.debug('Found user by ID:', { email: user.email, name: user.name })
-        }
+        logger.debug('WEBHOOK: User by ID lookup result:', user)
       }
-      
       if (!user && email) {
-        // Try to find user by email
-        logger.debug('Looking up user by email:', email)
+        logger.debug('WEBHOOK: Looking up user by email:', email)
         user = await prisma.user.findUnique({
           where: { email },
           select: { id: true, email: true, name: true }
         })
-        
-        if (user) {
-          logger.debug('Found user by email:', { id: user.id, name: user.name })
-        } else {
-          logger.debug('No user found with email:', email)
-          // We'll proceed with just the email for the purchase
-        }
+        logger.debug('WEBHOOK: User by email lookup result:', user)
       }
-
-      // 1. Record the purchase
-      logger.info('Recording purchase')
+      // 1. Load the canonical content object to get the true type
+      const loadedContent = await getContentItemByDirectorySlug('blog', directorySlug);
+      if (!loadedContent || !loadedContent.type) {
+        logger.error('WEBHOOK: FATAL - Could not load canonical content or type missing', { directorySlug, loadedContent });
+        return NextResponse.json({ error: 'Could not load canonical content or type missing' }, { status: 500 });
+      }
+      const canonicalType = loadedContent.type;
+      logger.info('WEBHOOK: Using canonical content type for purchase record:', canonicalType);
+      // 2. Record the purchase
+      logger.info('WEBHOOK: Recording purchase')
       try {
-        const contentType = type === 'article' || type === 'blog' ? 'article' : type
-        const contentSlug = slug
-        
-        logger.debug('PURCHASE DEBUG - Purchase details:', { 
-          userId: user?.id || null,
-          contentType,
-          type,
-          contentSlug,
-          email,
-          sessionId: session.id
-        })
-        
-        // Record the purchase in the database
-        const result = await prisma.purchase.upsert({
-          where: {
-            userId_contentType_contentSlug: {
-              userId: user?.id || '',
+        const contentType = canonicalType;
+        const contentSlug = directorySlug;
+        logger.debug('WEBHOOK: Purchase upsert details:', { userId: user?.id, contentType, contentSlug, email, sessionId: session.id })
+        let result;
+        if (user?.id) {
+          logger.debug('WEBHOOK: Upserting by userId')
+          result = await prisma.purchase.upsert({
+            where: {
+              userId_contentType_contentSlug: {
+                userId: user.id,
+                contentType,
+                contentSlug
+              }
+            },
+            update: {
+              purchaseDate: new Date(),
+              stripePaymentId: session.id,
+              amount: session.amount_total! / 100,
+              email: email
+            },
+            create: {
+              userId: user.id,
               contentType,
-              contentSlug
+              contentSlug,
+              purchaseDate: new Date(),
+              stripePaymentId: session.id,
+              amount: session.amount_total! / 100,
+              email: email
             }
-          },
-          update: {
-            purchaseDate: new Date(),
-            stripePaymentId: session.id,
-            amount: session.amount_total! / 100,
-            email: email // Always include the email
-          },
-          create: {
-            userId: user?.id || null,
-            contentType,
-            contentSlug,
-            purchaseDate: new Date(),
-            stripePaymentId: session.id,
-            amount: session.amount_total! / 100,
-            email: email // Always include the email
-          }
-        })
-        
-        logger.debug('PURCHASE DEBUG - Purchase record result:', result)
-        
-        // Course enrollments are disabled
-        // If it's a course and we have a user, also record in courseenrollments
-        if (type === 'course' && user && !COURSES_DISABLED) {
-          // This code is temporarily disabled as courses are disabled
-          logger.warn('Course purchase detected but course enrollments are temporarily disabled');
+          })
+        } else {
+          logger.debug('WEBHOOK: Upserting by email')
+          result = await prisma.purchase.upsert({
+            where: {
+              email_contentType_contentSlug: {
+                email,
+                contentType,
+                contentSlug
+              }
+            },
+            update: {
+              purchaseDate: new Date(),
+              stripePaymentId: session.id,
+              amount: session.amount_total! / 100,
+              email: email
+            },
+            create: {
+              userId: null,
+              contentType,
+              contentSlug,
+              purchaseDate: new Date(),
+              stripePaymentId: session.id,
+              amount: session.amount_total! / 100,
+              email: email
+            }
+          })
         }
-        
-        logger.info('Purchase recorded successfully')
+        logger.debug('WEBHOOK: Purchase upsert result:', result)
+        logger.info('WEBHOOK: Purchase recorded successfully')
       } catch (dbError) {
-        logger.error('PURCHASE DEBUG - Failed to record purchase:', dbError instanceof Error ? dbError.message : String(dbError));
-        logger.error('PURCHASE DEBUG - Error details:', dbError);
-        // Don't throw the error, just log it and continue
-        // This allows the webhook to complete even if there's an issue with recording the purchase
+        logger.error('WEBHOOK: Failed to record purchase:', dbError instanceof Error ? dbError.message : String(dbError))
+        logger.error('WEBHOOK: Error details:', dbError)
       }
-
-      // 2. Get content details
-      logger.info('Fetching content details for slug:', slug);
+      // 3. Get content details
+      logger.info('WEBHOOK: Fetching content details for slug:', slug)
       try {
         let content;
         if (type === 'article' || type === 'blog') {
-          content = await getContentItemByDirectorySlug('blog', slug)
+          content = await getContentItemByDirectorySlug('blog', directorySlug)
         } else if (type === 'course') {
-          // Courses are disabled, use a fallback
-          logger.warn('Course purchase detected, using fallback content details as courses are disabled');
+          logger.warn('WEBHOOK: Course purchase detected, using fallback content details as courses are disabled')
           content = {
             title: `Course: ${slug}`,
             description: 'Premium Course Content'
           };
         }
-        
-        logger.debug('Found content:', { title: content?.title });
+        logger.debug('WEBHOOK: Found content:', { title: content?.title })
         if (!content) {
-          logger.error(`No content found with slug ${slug}. Using fallback for email.`);
-          // Instead of throwing, we'll continue with a fallback
+          logger.error('WEBHOOK: No content found with slug', slug)
           content = {
             title: `${type === 'article' ? 'Article' : 'Course'} ${slug}`,
             description: `Premium ${type === 'article' ? 'Article' : 'Course'} Content`
           };
         }
-
-        // 3. Check if we've already sent an email for this purchase
-        logger.info('Checking for existing email notification')
+        // 4. Check if we've already sent an email for this purchase
+        logger.info('WEBHOOK: Checking for existing email notification')
         const existingNotification = await prisma.emailNotification.findFirst({
           where: {
             email,
             contentType: type,
-            contentSlug: slug,
+            contentSlug: directorySlug,
             emailType: 'purchase_confirmation'
           }
         })
-        
-        logger.info('Existing email notifications found:', existingNotification ? 1 : 0)
-
-        // Always attempt to send the email for purchases
-        logger.info('Preparing to send email')
+        logger.info('WEBHOOK: Existing email notifications found:', existingNotification ? 1 : 0)
+        // Always use directorySlug for URLs to avoid double-prepending
+        let productUrl = '';
+        if (loadedContent) {
+          productUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrlFromObject(loadedContent)}`;
+        } else {
+          productUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${type}/${directorySlug}`;
+        }
+        logger.info('WEBHOOK: Preparing to send email')
         const emailInput: SendReceiptEmailInput = {
           From: "purchases@zackproser.com",
           To: email,
           TemplateAlias: "receipt",
           TemplateModel: {
             CustomerName: user?.name || 'Valued Customer',
-            ProductURL: `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrl(type, slug)}`,
+            ProductURL: productUrl,
             ProductName: content?.title || `${type === 'article' ? 'Article' : 'Course'}: ${slug}`,
             Date: new Date().toLocaleDateString('en-US'),
             ReceiptDetails: {
@@ -222,59 +219,46 @@ export async function POST(req: Request) {
             },
             Total: `$${session.amount_total! / 100}`,
             SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
-            ActionURL: `${process.env.NEXT_PUBLIC_SITE_URL}${getContentUrl(type, slug)}`,
+            ActionURL: productUrl,
             CompanyName: "Modern Coding",
             CompanyAddress: "2416 Dwight Way Berkeley CA 94710",
           },
         }
-
-        logger.debug('Sending email with input:', JSON.stringify(emailInput, null, 2))
-        logger.debug('User email:', email)
-        logger.debug('Content title:', content?.title || 'No title available')
-        logger.debug('NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL)
-        
+        logger.debug('WEBHOOK: Sending email with input:', JSON.stringify(emailInput, null, 2))
         try {
-          logger.info('Attempting to send email...')
+          logger.info('WEBHOOK: Attempting to send email...')
           const emailResponse = await sendReceiptEmail(emailInput)
-          logger.info('Email sent successfully:', emailResponse)
-
-          // Only record the email notification if we haven't before and the send was successful
+          logger.info('WEBHOOK: Email sent successfully:', emailResponse)
           if (!existingNotification) {
-            logger.info('Recording email notification')
+            logger.info('WEBHOOK: Recording email notification')
             try {
               await prisma.emailNotification.create({
                 data: {
                   userId: user?.id || null,
                   contentType: type,
-                  contentSlug: slug,
+                  contentSlug: directorySlug,
                   emailType: 'purchase_confirmation',
                   email
                 }
               })
-              logger.info('Email notification recorded')
+              logger.info('WEBHOOK: Email notification recorded')
             } catch (notificationError) {
-              logger.error('Failed to record email notification:', notificationError)
-              // Continue processing even if notification recording fails
+              logger.error('WEBHOOK: Failed to record email notification:', notificationError)
             }
           }
         } catch (emailError) {
-          logger.error('Failed to send receipt email:', emailError)
-          // Continue processing even if email sending fails
+          logger.error('WEBHOOK: Failed to send receipt email:', emailError)
         }
       } catch (contentError) {
-         logger.error('Failed to fetch content details for email:', contentError)
-         // Continue processing webhook even if content lookup fails
+         logger.error('WEBHOOK: Failed to fetch content details for email:', contentError)
       }
-
     } catch (error) {
-      logger.error('🔴 Unexpected error processing checkout session:', error)
+      logger.error('WEBHOOK: Unexpected error processing checkout session:', error)
     }
-
-    // Send response after processing
-    logger.info('✅ Webhook processing complete')
+    logger.info('WEBHOOK: Processing complete')
     return NextResponse.json({ received: true })
   } else {
-    logger.warn(`Unhandled event type: ${event.type}`)
+    logger.warn('WEBHOOK: Unhandled event type:', event.type)
     return NextResponse.json({ received: true, message: `Unhandled event type: ${event.type}` })
   }
 } 
