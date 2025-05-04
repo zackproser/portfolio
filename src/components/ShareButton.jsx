@@ -6,7 +6,7 @@ import { Button } from '@/components/Button'
 import { ClipboardIcon, CheckIcon } from '@heroicons/react/24/outline' // Using Heroicons for feedback
 import clsx from 'clsx'
 
-export default function ShareButton({ buttonText = 'Share this guide', copiedText = 'Link Copied!', ...props }) {
+export default function ShareButton({ buttonText = 'Share this guide', copiedText = 'Link Copied!', onCopy, ...props }) {
   const [isCopied, setIsCopied] = useState(false)
   const pathname = usePathname()
   const [fullUrl, setFullUrl] = useState('')
@@ -24,6 +24,9 @@ export default function ShareButton({ buttonText = 'Share this guide', copiedTex
     try {
       await navigator.clipboard.writeText(fullUrl)
       setIsCopied(true)
+      if (typeof onCopy === 'function') {
+        onCopy()
+      }
       setTimeout(() => {
         setIsCopied(false)
       }, 2000) // Reset icon/text after 2 seconds
