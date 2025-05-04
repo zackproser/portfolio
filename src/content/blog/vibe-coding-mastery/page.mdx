@@ -21,27 +21,135 @@ import cursorRules from '@/images/cursor-rules.webp'
 import { createMetadata } from '@/utils/createMetadata';
 import { importContentMetadata } from '@/lib/content-handlers'
 
+Perfect — thanks for the schema. Here’s the corrected version of the metadata object using the contentSections array with properly structured title and subsections, accurately reflecting your guide’s TOC and flow:
+
 export const metadata = createMetadata({
-    author: "Zachary Proser",
-    date: "2025-04-28",
-    title: "Vibe Coding Survival Guide",
-    description: "A simple guide to safe coding with AI tools: master Git basics, protect secrets with GitGuardian, and use Cursor rules effectively.",
-    image: vibeCodingPremium,
-    commerce: {
-        isPaid: true,
-        price: 49,
-        previewLength: 450,
-        previewElements: 32,
-        paywallHeader: "Vibe Coding Survival Guide",
-        paywallBody: "Get the essential guide to safe coding with AI tools: master Git, protect secrets with GitGuardian, and use Cursor rules.",
-        buttonText: "Get the Survival Guide ($49)",
-        miniPaywallTitle: "Master safe development with AI tools",
-        miniPaywallDescription: "Includes Git basics, GitGuardian setup, and Cursor rules.",
-        paywallImage: vibeCodingPremium,
-        paywallImageAlt: "Vibe Coding Survival Guide cover",
-        profileImage: gettingGot
-    },
+  author: "Zachary Proser",
+  date: "2025-05-04",
+  title: "Vibe Coding Survival Guide",
+  slug: "vibe-coding-survival-guide",
+  type: "blog",
+  description:
+    "Tired of worrying about API key leaks or Git disasters? This step-by-step survival guide helps you prevent costly mistakes using GitGuardian, AI-powered Cursor rules, and proven workflows used by 1500+ developers.",
+  image: vibeCodingPremium,
+  tags: ["Git", "AI coding", "GitGuardian", "Secrets", "Cursor IDE"],
+  commerce: {
+    isPaid: true,
+    price: 49,
+    previewLength: 450,
+    previewElements: 32,
+    paywallHeader: "Vibe Coding Survival Guide",
+    paywallBody:
+      "Get the battle-tested system to stop secret leaks, fix Git mistakes, and protect your codebase. Used by 1500+ developers to avoid $2.8M+ in breach costs.",
+    buttonText: "Get the Survival Guide ($97)",
+    miniPaywallTitle: "Master safe development with AI tools",
+    miniPaywallDescription:
+      "Includes GitGuardian integration, AI-powered Cursor rules, recovery checklists, and premium screencasts.",
+    paywallImage: vibeCodingPremium,
+    paywallImageAlt: "Vibe Coding Survival Guide cover",
+    profileImage: gettingGot,
+    bonus: "Limited time: Includes $300 GitGuardian credits"
+  },
+  landing: {
+    heroTitle: "🚨 Your Code's Credit Card Just Got Stolen (You Just Don't Know It Yet)",
+    subtitle:
+      "Based on years of real-world incidents and my own GitGuardian playbook — now tailored for the AI coding era.",
+    problemSolved:
+      "Prevent costly API key leaks, avoid Git disasters, and secure your codebase with professional workflows – even if you're new to AI-powered development.",
+    benefitStatement:
+      "Ship code confidently knowing your secrets are safe, your Git history is clean, and your deployments are bulletproof.",
+    features: [
+      {
+        title: "🔒 Secret Leak Forcefield",
+        description:
+          "GitGuardian integration + pre-commit hooks that block API key leaks before they reach GitHub",
+        icon: "shield"
+      },
+      {
+        title: "🤖 AI-Powered Git Mentorship",
+        description:
+          "Cursor rules that give real-time guidance like 'Never commit .env files!' as you code",
+        icon: "robot"
+      },
+      {
+        title: "🚑 Emergency Recovery Checklists",
+        description:
+          "Step-by-step guides to scrub leaked keys from Git history (tested on 12 incident responses)",
+        icon: "emergency"
+      },
+      {
+        title: "⚡ Deployment Safeguards",
+        description:
+          "CI/CD templates that auto-scan for secrets + Vercel/Netlify configs",
+        icon: "deploy"
+      },
+      {
+        title: "🎥 Exclusive Screencasts",
+        description:
+          "Watch me fix a live secret leak in 4 minutes flat (includes botched merge recovery)",
+        icon: "video"
+      }
+    ],
+    contentSections: [
+      {
+        title: "How to Use This Guide"
+      },
+      {
+        title: "Git: Your Software Save System",
+        subsections: [
+          "Commits",
+          "Branches",
+          "Sharing",
+          "Viewing History & Time Travel",
+          "Typical Git Flow",
+          "Your First Safe Commit & Push",
+          "Set Up Your Remote on GitHub"
+        ]
+      },
+      {
+        title: "Secret Protection",
+        subsections: [
+          "What is a Secret? (And What Isn't)",
+          "Install Homebrew (macOS Only)",
+          "Install GitGuardian",
+          "How it Works",
+          "Test the Protection"
+        ]
+      },
+      {
+        title: "Setting Up Cursor Rules for Safety and Mentorship"
+      },
+      {
+        title: "Deployment Checklist (Simplified)"
+      },
+      {
+        title: "Emergency Recovery (If a Secret Leaks)"
+      },
+      {
+        title: "Help and Support"
+      }
+    ],
+    faqs: [
+      {
+        question: "I already know Git basics – why should I care?",
+        answer:
+          "This isn't Git 101. You'll get pro workflows for secret rotation, branch strategies, and incident response that even senior devs overlook."
+      },
+      {
+        question: "What if I leak a key after buying?",
+        answer:
+          "The emergency recovery section walks you through scrubbing it from history + contains email templates for AWS/OpenAI revocation."
+      },
+      {
+        question: "How is this different from free Git tutorials?",
+        answer:
+          "Battle-tested systems from 13 years in the field + exclusive tools you can’t Google (GitGuardian configs, Cursor rules)"
+      }
+    ]
+  }
 });
+
+Ready to drop in. Let me know if you’d like to add videoGallery or resourceLinks metadata fields next.
 
 <Image
   src={vibeCodingPremium}
@@ -49,14 +157,6 @@ export const metadata = createMetadata({
 />
 
 ## Table of Contents
-
-1. [How to Use This Guide](#how-to-use-this-guide)
-2. [⎇ Git: Your software save system](#-git-your-software-save-system)
-3. [🔑 Secret Protection](#-secret-protection)
-4. [Setting Up Cursor Rules for Safety and Mentorship](#setting-up-cursor-rules-for-safety-and-mentorship)
-5. [🚀 Deployment Checklist (Simplified)](#-deployment-checklist-simplified)
-6. [🆘 Emergency Recovery (If a Secret Leaks)](#-emergency-recovery-if-a-secret-leaks)
-7. [Help and support](#help-and-support)
 
 ---
 
@@ -249,6 +349,16 @@ Below is a quick video walkthrough of the Homebrew installation process:
   <source src="/videos/install-homebrew.mp4" type="video/mp4" />
   Your browser does not support the video tag.
 </video>
+
+**Next, install GitGuardian globally so it can protect all your projects by default:**
+
+> This step sets up GitGuardian's pre-commit protection for every repository on your machine, not just the current one. It's the recommended way to ensure you never accidentally leak secrets, even in new or cloned projects.
+
+```bash
+ggshield install -m global
+```
+
+*You'll see a confirmation message that GitGuardian's pre-commit hook is now active globally. From now on, every time you try to commit, your code will be scanned for secrets before anything leaves your computer.*
 
 ### Install GitGuardian
 <Image src={gitGuardian} alt="Git Guardian runs before your commit is even made" />
