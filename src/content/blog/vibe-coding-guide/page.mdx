@@ -15,6 +15,7 @@ import vibeCodingPremium from '@/images/vibe-coding-premium.webp'
 import secretsHero from '@/images/vibe-coding-survival-guide.webp'
 import gitSafetyNet from '@/images/git-safety-net.webp'
 import gettingGot  from '@/images/getting-got.webp'
+import introToGit from '@/images/intro-to-git.webp'
 import secretsFlow from '@/images/secrets-flow.webp'
 import secretsGuard from '@/images/secret-guard.webp'
 import secretsLeak from '@/images/secrets-leak.webp'
@@ -73,8 +74,8 @@ Building with AI feels like you've hacked the system... until you:
 - Realize your "private" repo was public all along  
 
 **This happens because:**  
-Cursor, Windsurf and Claude Code are still tools designed for professional developers, which assumes you know things like:
-- Where secrets actually live in production  
+Cursor, Windsurf and Claude Code are still tools designed for professional developers, which assume you know things like:
+- How to safely manage secrets in production (and that you SHOULD be using DIFFERENT secrets for local development and production!) 
 - How Git history really works  
 - That API keys = credit cards  
 
@@ -148,16 +149,20 @@ git reset --hard HEAD~1
 2. Panic? No! Run `git reset --hard HEAD~1` to revert to your last save.
 3. Try again on a new branch: `git checkout -b retry-feature`.
 
-<div className="not-prose my-4 p-4 rounded-md border border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200">
-  <strong className="font-semibold">🔒 Premium Only:</strong> Get pre-commit hooks and AI-powered rules that nudge Cursor to offer branches or checkpoints.
-  <Image src={secretsGuard} alt="The premium version of this guide protects your secrets" />
-</div>
+<Link href="/products/vibe-coding-mastery">
+  <div className="not-prose my-4 p-4 rounded-md border border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200 cursor-pointer">
+    <strong className="font-semibold">🔒 Premium Only:</strong> Get zero-bullshit, highly-visual and easy-to-understand explanations. Only what you need to know so you can get back to building.
+    <Image src={introToGit} alt="The premium version of this guide explains git and secrets in a visual-first manner" />
+  </div>
+</Link>
 
 ---
 
 ## 3. Secrets & Environment Variables — Baby Steps 🍼
 
-<Image src={secretsFlow} alt="How secrets flow" />
+<Link href="/products/vibe-coding-mastery">
+  <Image src={secretsFlow} alt="How secrets flow" />
+</Link>
 
 **Secret** = Your code's credit card number. Leak it, pay for it.  
 **Branch** = A sandbox for experiments. No branch? Bugs go live.  
@@ -174,26 +179,12 @@ Quick checklist:
 ### 💡 Try This (Free):
 Run `git add . && git commit -m "test"` to save your code.
 
-**Premium Bonus:** Watch the screencast and get the exact commands to set up a tool that makes it impossible to leak your secrets via git!**
-
----
-
-## Set Up GitGuardian for Automatic Secret Scanning
-
-To make sure you never accidentally commit secrets to any of your projects, you can install a global pre-commit hook with GitGuardian. This is a one-time setup that protects every repo on your machine.
-
-**What does this mean?**
-- A "pre-commit hook" is a tiny program that runs every time you try to make a Git commit.
-- With GitGuardian, this hook will automatically scan your code for secrets (like API keys) before the commit goes through.
-- If it finds something dangerous, it will block the commit and show you exactly what needs fixing—before anything leaks!
-
-**To install the global pre-commit hook, run:**
-
-```bash
-ggshield install -m global
-```
-
-*This is a powerful safety net: it works for every project on your computer, not just one folder.*
+<Link href="/products/vibe-coding-mastery">
+  <div className="not-prose my-4 p-4 rounded-md border border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200 cursor-pointer">
+    <strong className="font-semibold">🔒 Premium Only:</strong> Watch the screencast and get the exact commands to set up a tool that makes it impossible to leak your secrets via git!
+    <Image src={secretsGuard} alt="The premium version of this guide protects your secrets" />
+  </div>
+</Link>
 
 ---
 
@@ -211,5 +202,3 @@ ggshield install -m global
 
 </Link>
 *Premium unlocks screencasts, exact commands, tools that auto-block leaks before they happen, and custom Cursor Rules to help you learn and protect you as you vibe code.*
-
-[Join Waitlist for Early Access](/contact)
