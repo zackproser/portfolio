@@ -1,0 +1,498 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+import vibeCodingPremium from '@/images/vibe-coding-premium.webp';
+import gettingGot from '@/images/getting-got.webp'
+import introToGit from '@/images/intro-to-git.webp'
+import simpleGitFlow from '@/images/simple-git-flow.webp'
+import gitBranches from '@/images/git-branches.webp'
+import gitCommit from '@/images/git-commit.webp'
+import gitSharing from '@/images/git-sharing.webp'
+import gitTimeline from '@/images/git-timeline.webp'
+import gitGuardian from '@/images/git-guardian-flow.webp'
+import gitPopped from '@/images/git-popped.webp'
+import gitignore from '@/images/gitignore.webp'
+import neverCommitEnv from '@/images/never-commit-env.webp'
+import secretsFlow from '@/images/secrets-flow.webp'
+import secretsLeak from '@/images/secrets-leak.webp'
+import secretsVsNonSecrets from '@/images/secrets-non-secrets.webp'
+import cursorRules from '@/images/cursor-rules.webp'
+
+import { createMetadata } from '@/utils/createMetadata';
+import { importContentMetadata } from '@/lib/content-handlers'
+
+Perfect — thanks for the schema. Here’s the corrected version of the metadata object using the contentSections array with properly structured title and subsections, accurately reflecting your guide’s TOC and flow:
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2025-05-04",
+  title: "Vibe Coding Survival Guide",
+  slug: "vibe-coding-survival-guide",
+  type: "blog",
+  description:
+    "Tired of worrying about API key leaks or Git disasters? This step-by-step survival guide helps you prevent costly mistakes using GitGuardian, AI-powered Cursor rules, and proven workflows used by 1500+ developers.",
+  image: vibeCodingPremium,
+  tags: ["Git", "AI coding", "GitGuardian", "Secrets", "Cursor IDE"],
+  commerce: {
+    isPaid: true,
+    price: 49,
+    previewLength: 450,
+    previewElements: 32,
+    paywallHeader: "Vibe Coding Survival Guide",
+    paywallBody:
+      "Get the battle-tested system to stop secret leaks, fix Git mistakes, and protect your codebase. Used by 1500+ developers to avoid $2.8M+ in breach costs.",
+    buttonText: "Get the Survival Guide ($97)",
+    miniPaywallTitle: "Master safe development with AI tools",
+    miniPaywallDescription:
+      "Includes GitGuardian integration, AI-powered Cursor rules, recovery checklists, and premium screencasts.",
+    paywallImage: vibeCodingPremium,
+    paywallImageAlt: "Vibe Coding Survival Guide cover",
+    profileImage: gettingGot,
+    bonus: "Limited time: Includes $300 GitGuardian credits"
+  },
+  landing: {
+    heroTitle: "🚨 Your Code's Credit Card Just Got Stolen (You Just Don't Know It Yet)",
+    subtitle:
+      "Based on years of real-world incidents and my own GitGuardian playbook — now tailored for the AI coding era.",
+    problemSolved:
+      "Prevent costly API key leaks, avoid Git disasters, and secure your codebase with professional workflows – even if you're new to AI-powered development.",
+    benefitStatement:
+      "Ship code confidently knowing your secrets are safe, your Git history is clean, and your deployments are bulletproof.",
+    features: [
+      {
+        title: "🔒 Secret Leak Forcefield",
+        description:
+          "GitGuardian integration + pre-commit hooks that block API key leaks before they reach GitHub",
+        icon: "shield"
+      },
+      {
+        title: "🤖 AI-Powered Git Mentorship",
+        description:
+          "Cursor rules that give real-time guidance like 'Never commit .env files!' as you code",
+        icon: "robot"
+      },
+      {
+        title: "🚑 Emergency Recovery Checklists",
+        description:
+          "Step-by-step guides to scrub leaked keys from Git history (tested on 12 incident responses)",
+        icon: "emergency"
+      },
+      {
+        title: "⚡ Deployment Safeguards",
+        description:
+          "CI/CD templates that auto-scan for secrets + Vercel/Netlify configs",
+        icon: "deploy"
+      },
+      {
+        title: "🎥 Exclusive Screencasts",
+        description:
+          "Watch me fix a live secret leak in 4 minutes flat (includes botched merge recovery)",
+        icon: "video"
+      }
+    ],
+    contentSections: [
+      {
+        title: "How to Use This Guide"
+      },
+      {
+        title: "Git: Your Software Save System",
+        subsections: [
+          "Commits",
+          "Branches",
+          "Sharing",
+          "Viewing History & Time Travel",
+          "Typical Git Flow",
+          "Your First Safe Commit & Push",
+          "Set Up Your Remote on GitHub"
+        ]
+      },
+      {
+        title: "Secret Protection",
+        subsections: [
+          "What is a Secret? (And What Isn't)",
+          "Install Homebrew (macOS Only)",
+          "Install GitGuardian",
+          "How it Works",
+          "Test the Protection"
+        ]
+      },
+      {
+        title: "Setting Up Cursor Rules for Safety and Mentorship"
+      },
+      {
+        title: "Deployment Checklist (Simplified)"
+      },
+      {
+        title: "Emergency Recovery (If a Secret Leaks)"
+      },
+      {
+        title: "Help and Support"
+      }
+    ],
+    faqs: [
+      {
+        question: "I already know Git basics – why should I care?",
+        answer:
+          "This isn't Git 101. You'll get pro workflows for secret rotation, branch strategies, and incident response that even senior devs overlook."
+      },
+      {
+        question: "What if I leak a key after buying?",
+        answer:
+          "The emergency recovery section walks you through scrubbing it from history + contains email templates for AWS/OpenAI revocation."
+      },
+      {
+        question: "How is this different from free Git tutorials?",
+        answer:
+          "Battle-tested systems from 13 years in the field + exclusive tools you can’t Google (GitGuardian configs, Cursor rules)"
+      }
+    ]
+  }
+});
+
+Ready to drop in. Let me know if you’d like to add videoGallery or resourceLinks metadata fields next.
+
+<Image
+  src={vibeCodingPremium}
+  alt="Vibe coding survival guide hero"
+/>
+
+## Table of Contents
+
+---
+
+## How to Use This Guide
+
+This guide is designed to be used *while you build*. Each section is concise and focused on keeping you safe from costly mistakes.
+
+**How to get the most out of it:**
+- 🗂️ **Follow the sections in order:** Git → Secrets → Cursor → Deploy
+- 🎬 **Use the screencasts** if you get stuck
+- 📋 **Copy-paste** the commands—they're designed to work as-is
+- 🛡️ **Install the Cursor rules** for real-time help in your editor
+- 🆘 When in doubt, check [Emergency Recovery](#-emergency-recovery-if-a-secret-leaks) or [contact me](/contact)
+
+# ⎇ Git: Your software save system
+
+<Image src={introToGit} alt="Git is a save system that also helps you share your software" />
+
+Git is a save system for your code. It lives inside a special folder called a **repository** (or repo).
+
+Here's the minimum you need to know to be productive without leaking keys or getting your credit card popped:
+
+### Commits
+<Image src={gitCommit} alt="" />
+
+Commits are checkpoints for your project. You create them when you've made meaningful changes, like adding a new feature.
+
+```bash
+# Stage your changes (tell Git which files to include in the checkpoint)
+git add .
+
+# Create the checkpoint (commit) with a descriptive message
+git commit -m "Added new login feature"
+```
+
+### Branches
+<Image src={gitBranches} alt="" />
+
+Branches are parallel universes for your code. You can create a branch to try out new ideas without messing up your main working version.
+
+```bash
+# Create a new branch
+git branch my-new-feature
+
+# Switch to the new branch
+git checkout my-new-feature
+
+# Or, create and switch in one step:
+git checkout -b another-new-feature
+```
+
+### Sharing
+<Image src={gitSharing} alt="Git is also for sharing your software with other developers and deployment platforms" />
+
+Repositories aren't just for saving; they let you share your code and collaborate with others using platforms like GitHub. Services like Vercel can also deploy directly from these platforms.
+
+```bash
+# Send your committed changes to GitHub (or similar)
+# Assumes your remote is named 'origin' and you're pushing the 'main' branch
+git push origin main
+```
+
+### Viewing History & Time Travel
+<Image src={gitTimeline} alt="Git is like a time machine" />
+
+Git keeps a log of all your commits (checkpoints), acting like a time machine.
+
+- **See History:** Use `git log` to view past commits.
+    ```bash
+    # Show a compact view of commit history
+    git log --oneline
+    ```
+- **Visit the Past:** You can temporarily go back to view the state of your project at any previous commit.
+    ```bash
+    # Example: Go back to view a specific commit (replace <commit-hash> with an actual ID from git log)
+    git checkout <commit-hash>
+
+    # IMPORTANT: You are now in a 'detached HEAD' state - viewing the past.
+    # Make NO NEW commits here unless you know what you're doing (use branches for experiments!).
+
+    # Go back to your latest work on the main branch
+    git checkout main
+    ```
+    *Careful!* While viewing the past is safe, *changing* past history that's already shared is complex and risky. Stick to `checkout` for viewing and branches for new work.
+
+### Typical git flow
+<Image src={simpleGitFlow} alt="The standard git workflow while developing" />
+
+While you work on your project, make commits regularly.
+
+Most developers make TOO FEW commits while working, thereby failing to give themselves enough meaningful save points. You can make a commit every few minutes as you get new functionality working.
+
+The standard git flow is:
+- Make some changes to your application
+- "Stage" the files by adding them
+- Commit and add a message creating a save point
+- Run git push to save your work to a remote, which can be restored even if you lose your current laptop
+
+### Your First Safe Commit & Push
+<Image src={gitPopped} alt="Most secrets leaks happen because people don't realize .env is being committed to git" />
+
+Most secrets leaks occur because people don't realize that their .env file is committed to git.
+
+Let's get your code saved and backed up.
+
+🎬 **[Screen Recording Needed]: Setting up Git for the first time (if needed) and making your initial commit.**
+🎬 **[Screen Recording Needed]: Pushing your first commit to GitHub.**
+🖼️ **[Diagram Needed]: Simple Git flow: modify -> add -> commit -> push.**
+
+### Set Up Your Remote on GitHub
+
+<div className="not-prose my-6">
+  <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-700/40 rounded-lg p-4 shadow-md text-center">
+    <strong>🎬 Creating your first GitHub repo and pushing to it — takes 60 seconds.</strong>
+    <br />
+    <em>(Screencast coming soon!)</em>
+  </div>
+</div>
+
+To back up your code and collaborate with others, you'll want to push your project to GitHub. If you don't have a GitHub account yet, <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">create one here</a>.
+
+**Step-by-step:**
+1. Go to <a href="https://github.com/" target="_blank" rel="noopener noreferrer">github.com</a> and log in.
+2. Click <strong>New Repository</strong> (usually a green button at the top left or right).
+3. Name your repo (e.g., <code>my-app</code>). You can leave all other settings as default.
+4. Click <strong>Create repository</strong>.
+5. Copy the remote URL (it will look like <code>git@github.com:your-username/your-repo.git</code> or <code>https://github.com/your-username/your-repo.git</code>).
+6. In your terminal, run:
+
+```bash
+git remote add origin <your-remote-url>
+git push -u origin main
+```
+
+Now your work is safely backed up and ready to share or deploy!
+
+# 🔑 Secret Protection
+
+### What is a Secret? (And What Isn't)
+
+It's crucial to understand what needs protecting.
+
+<Image src={secretsVsNonSecrets} alt="Diagram showing examples of secrets like API keys and passwords versus non-secrets like feature flags and public URLs" />
+
+**Secrets** are credentials that grant access to services or data:
+- API Keys (OpenAI, Stripe, AWS, etc.)
+- Database Passwords
+- Private Certificates
+- Cryptographic Private Keys
+
+<Image src={gitignore} alt="How .gitignore protects your secrets from being committed to Git" className="my-6" />
+<small className="block text-center text-zinc-500 mb-4">How <code>.gitignore</code> acts as a shield, preventing sensitive files from being committed to your repository.</small>
+
+Things that are generally **NOT** secrets (though often best kept in `.env` files for configuration management):
+- Public API endpoints or URLs
+- Feature flags
+- UI configuration (themes, labels)
+- Public keys
+
+<Image src={gettingGot} alt="Once your API keys are leaked to GitHub, automated bots and hackers can scrape them instantly" />
+
+Many secret leaks happen because developers accidentally commit sensitive files (like `.env`) to Git, especially when using GitHub for sharing or backup. Once a secret is pushed to a public or even private repository, it can be discovered and misused—leading to unauthorized access, data breaches, or surprise costs. 
+
+Git's history makes it easy to accidentally expose secrets, even if you later delete them from your code.
+
+<Image src={secretsLeak} alt="This is how most secrets get leaked via GitHub" />
+
+To prevent these accidents, you need a tool that integrates with Git and scans for secrets before they ever leave your machine. **GitGuardian** is purpose-built to catch these mistakes at commit time, blocking leaks before they happen.
+
+### Install Homebrew (macOS Only)
+
+Before you can install GitGuardian or many other developer tools, you'll want to set up [Homebrew](https://brew.sh)—the most popular package manager for macOS. Homebrew makes it much easier to install and manage software on your Mac.
+
+**How to install Homebrew:**
+1. Visit [brew.sh](https://brew.sh) in your browser.
+2. Copy the install command from the homepage.
+3. Paste it into your terminal in Cursor and press Enter.
+4. You'll be prompted for your **sudo password**—this is the same password you use to log in to your Mac.
+5. After entering your password, you'll be asked for a final confirmation. Just press Enter to continue.
+
+Below is a quick video walkthrough of the Homebrew installation process:
+
+<video
+  controls
+  preload="none"
+  poster="/images/vibe-coding-premium.webp"
+  aria-label="Video walkthrough: Installing Homebrew on macOS"
+  className="w-full max-w-2xl mx-auto my-6 rounded-lg border border-zinc-200 dark:border-zinc-700/40 shadow-lg"
+>
+  <source src="/videos/install-homebrew.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+**Next, install GitGuardian globally so it can protect all your projects by default:**
+
+> This step sets up GitGuardian's pre-commit protection for every repository on your machine, not just the current one. It's the recommended way to ensure you never accidentally leak secrets, even in new or cloned projects.
+
+```bash
+ggshield install -m global
+```
+
+*You'll see a confirmation message that GitGuardian's pre-commit hook is now active globally. From now on, every time you try to commit, your code will be scanned for secrets before anything leaves your computer.*
+
+### Install GitGuardian
+<Image src={gitGuardian} alt="Git Guardian runs before your commit is even made" />
+
+GitGuardian integrates with Git to automatically scan your code for secrets *before* you commit them.
+
+Before you start pushing code to GitHub, it's smart to set up a tool that will catch any secrets you accidentally commit. [GitGuardian](https://www.gitguardian.com/) scans your code for API keys and other sensitive info before it ever leaves your machine.
+
+**How to install GitGuardian's CLI (`ggshield`) with Homebrew:**
+1. Open the terminal in Cursor
+2. Paste and run this command:
+```bash
+brew install gitguardian/tap/ggshield
+```
+
+Below is a quick video walkthrough of the installation process:
+
+<video
+  controls
+  preload="none"
+  poster="/images/vibe-coding-premium.webp"
+  aria-label="Video walkthrough: Installing GitGuardian CLI with Homebrew"
+  className="w-full max-w-2xl mx-auto my-6 rounded-lg border border-zinc-200 dark:border-zinc-700/40 shadow-lg"
+>
+  <source src="/videos/git-guardian-install.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+### How it Works
+
+When you try to commit:
+1. The pre-commit hook runs automatically.
+2. GitGuardian scans the files you're trying to commit.
+3. If it finds anything that looks like a secret (API key, password pattern, etc.), it blocks the commit and tells you exactly where the problem is.
+
+🖼️ **[Diagram Needed]: Commit attempt -> Pre-commit hook triggers GitGuardian -> Scan files -> Secret found? -> Block commit / Allow commit.**
+
+### Test the Protection
+
+See GitGuardian in action!
+
+🎬 **[Screen Recording Needed]: Trying to commit a file containing a fake API key and showing how GitGuardian blocks it.**
+
+# Setting Up Cursor Rules for Safety and Mentorship
+
+<Image src={cursorRules} alt="Cursor rules" />
+
+To get the most out of Cursor, you should add custom rules that provide safety nets and clear, friendly guidance as you code. These rules will:
+- Prevent accidental secret leaks
+- Offer plain-English, step-by-step mentorship
+
+**How to add these rules:**
+1. In your project root, create a folder called `.cursor/rules` if it doesn't already exist.
+2. Save each rule below as a separate file in that folder:
+   - `00-guard-secrets.mdc` for secret protection
+   - `01-green-path.mdc` for mentorship and guidance
+3. The rules are set to always apply, so you'll get help from your very first keystroke.
+
+---
+
+#### .cursor/rules/00-guard-secrets.mdc
+```md
+---
+description: Beginner safeguard – prevent accidental secret leaks
+globs:
+  - "**/.env*"
+  - "**/*.env"
+  - "**/*.pem"
+  - "**/*.key"
+  - "**/*.p12"
+alwaysApply: true
+---
+
+# 🚨 Secret‑Safe Workflow
+
+- **Red‑flag anything that looks like a credential.**  
+  If a line resembles a key, token, or password, treat it as "radioactive."
+- **Intervene before `git add / commit / push`.**  
+  Remind the user to keep secrets out of Git and suggest adding the right patterns to `.gitignore`.
+- **Default to secure storage.**  
+  Prefer Cursor‑encrypted secrets, Vercel/Netlify dashboards, or `gh secret set` over plain files.
+- **Never echo full secret values back.**  
+  Mask with `*****` or the last 4 chars.
+- **Use vivid metaphors.**  
+  "Exposing an API key in GitHub is like taping your house key to the front door."
+- **Offer an immediate fix.**  
+  Provide the one‑liner or UI path to revert a leaked commit (`git filter‑repo`, GitHub Secret Scanning, etc.).
+```
+
+---
+
+#### .cursor/rules/01-green-path.mdc
+```md
+---
+description: Green‑path mentorship – friendly, metaphor‑rich guidance
+alwaysApply: true
+---
+
+# 🌱 "Explain‑Like‑I'm‑New" Style Guide
+
+- **Assume zero coding background.**  
+  Replace jargon with quick metaphors:  
+  > "A *repository* is a time‑machine for your files."
+- **One small step at a time.**  
+  Lead with an action verb and the expected result:  
+  > "Click **New Project** – you should now see a folder named `my‑app`."
+- **Tiny code, plain English.**  
+  Keep snippets ≤ 10 lines; follow with a one‑sentence summary.
+- **Safety rails everywhere.**  
+  After any command that changes files, include a quick undo tip.
+- **Celebrate progress, lightly.**  
+  A single ⭐ emoji is enough; no hype words like *game‑changer*.
+- **Clarify instead of guessing.**  
+  If the user's intent is ambiguous, ask a yes/no question before proceeding.
+```
+
+# 🚀 Deployment Checklist (Simplified)
+
+Before deploying:
+- Run `ggshield scan repo` to check for any missed secrets.
+- Verify environment variables are set securely **in your deployment environment (e.g., Vercel)**, NOT in your committed code.
+- Use platform-specific checklists (e.g., Vercel's deployment settings).
+
+Deploy with confidence!
+
+# 🆘 Emergency Recovery (If a Secret Leaks)
+
+If you accidentally push a secret:
+- **Revoke the key immediately** with the service provider (AWS, OpenAI, etc.). This is the MOST important step.
+- Use tools like `git-filter-repo` or BFG Repo-Cleaner to scrub the secret from your entire Git history (this is complex and requires rewriting history). 🎬 **[Screen Recording Needed]: Demonstrating a history rewrite (use with caution!).**
+- Monitor usage for suspicious activity.
+
+Stay calm and act fast.
+
+## Help and support
+
+[Reach out for support if you're stuck!](/contact)
