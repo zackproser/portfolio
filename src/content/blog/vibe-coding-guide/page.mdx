@@ -197,6 +197,29 @@ Quick mental checklist
 	-	Keep your .env file **out of Git** so it never lands on GitHub.
 	-	Load the variable in code with process.env.OPENAI_API_KEY (Node) or framework helpers.
 
+## Install GitGuardian to Auto-Detect Leaked Secrets 🛡️
+
+Before you start pushing code to GitHub, it's smart to set up a tool that will catch any secrets you accidentally commit. [GitGuardian](https://www.gitguardian.com/) scans your code for API keys and other sensitive info before it ever leaves your machine.
+
+**How to install GitGuardian's CLI (`ggshield`) with Homebrew:**
+
+1. Open the terminal in Cursor
+2. Paste and run this command:
+
+```bash
+brew install gitguardian/tap/ggshield
+```
+
+Below is a quick video walkthrough of the installation process:
+
+<video
+  src="/videos/git-guardian-install.mp4"
+  controls
+  className="w-full max-w-2xl mx-auto my-6 rounded-lg border border-zinc-200 dark:border-zinc-700/40 shadow-lg"
+  poster="/images/vibe-coding-survival-guide.webp"
+  aria-label="Video walkthrough: Installing GitGuardian CLI with Homebrew"
+/>
+
 ## Your First Safe Deploy — 5-Minute Walk-through 🚀
 
 Follow this once, and you'll have a real-world loop you can repeat for every project.
