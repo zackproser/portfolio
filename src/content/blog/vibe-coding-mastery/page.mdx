@@ -48,20 +48,30 @@ export const metadata = createMetadata({
   alt="Vibe coding survival guide hero"
 />
 
-## Table of contents
+## Table of Contents
+
+1. [How to Use This Guide](#how-to-use-this-guide)
+2. [⎇ Git: Your software save system](#-git-your-software-save-system)
+3. [🔑 Secret Protection](#-secret-protection)
+4. [Setting Up Cursor Rules for Safety and Mentorship](#setting-up-cursor-rules-for-safety-and-mentorship)
+5. [🚀 Deployment Checklist (Simplified)](#-deployment-checklist-simplified)
+6. [🆘 Emergency Recovery (If a Secret Leaks)](#-emergency-recovery-if-a-secret-leaks)
+7. [Help and support](#help-and-support)
+
+---
 
 ## How to Use This Guide
 
-This guide is built to be used *as you build*. Each section is short and it keeps you safe from costly mistakes.
+This guide is designed to be used *while you build*. Each section is concise and focused on keeping you safe from costly mistakes.
 
-Here's how to use it:
-- **Follow the sections in order**: Git → Secrets → Cursor → Deploy
-- **Use the screencasts** if you feel stuck
-- **Copy-paste** the ommands – they're designed to work out of the box
-- **Install the Cursor rules** to get real-time help in your editor
-- When in doubt, head to [Emergency Recovery] or [contact me](/contact)
+**How to get the most out of it:**
+- 🗂️ **Follow the sections in order:** Git → Secrets → Cursor → Deploy
+- 🎬 **Use the screencasts** if you get stuck
+- 📋 **Copy-paste** the commands—they're designed to work as-is
+- 🛡️ **Install the Cursor rules** for real-time help in your editor
+- 🆘 When in doubt, check [Emergency Recovery](#-emergency-recovery-if-a-secret-leaks) or [contact me](/contact)
 
-# ⎇ Git: Your software save system 
+# ⎇ Git: Your software save system
 
 <Image src={introToGit} alt="Git is a save system that also helps you share your software" />
 
@@ -69,11 +79,10 @@ Git is a save system for your code. It lives inside a special folder called a **
 
 Here's the minimum you need to know to be productive without leaking keys or getting your credit card popped:
 
-### Commits 
-
+### Commits
 <Image src={gitCommit} alt="" />
 
-Checkpoints of your project. You create them when you've made meaningful changes. For example, adding a new feature or capability to your application.
+Commits are checkpoints for your project. You create them when you've made meaningful changes, like adding a new feature.
 
 ```bash
 # Stage your changes (tell Git which files to include in the checkpoint)
@@ -84,10 +93,9 @@ git commit -m "Added new login feature"
 ```
 
 ### Branches
-
 <Image src={gitBranches} alt="" />
 
-Parallel universes for your code. You can create a branch to try out new ideas without messing up your main working version.
+Branches are parallel universes for your code. You can create a branch to try out new ideas without messing up your main working version.
 
 ```bash
 # Create a new branch
@@ -100,11 +108,10 @@ git checkout my-new-feature
 git checkout -b another-new-feature
 ```
 
-### Sharing 
-
+### Sharing
 <Image src={gitSharing} alt="Git is also for sharing your software with other developers and deployment platforms" />
 
-(GitHub/GitLab etc.):** Repositories aren't just for saving; they let you share your code and collaborate with others using platforms like GitHub. Services like Vercel can also deploy directly from these platforms.
+Repositories aren't just for saving; they let you share your code and collaborate with others using platforms like GitHub. Services like Vercel can also deploy directly from these platforms.
 
 ```bash
 # Send your committed changes to GitHub (or similar)
@@ -113,18 +120,16 @@ git push origin main
 ```
 
 ### Viewing History & Time Travel
+<Image src={gitTimeline} alt="Git is like a time machine" />
 
 Git keeps a log of all your commits (checkpoints), acting like a time machine.
 
-
-<Image src={gitTimeline} alt="Git is like a time machine" />
-
-*   **See History:** Use `git log` to view past commits.
+- **See History:** Use `git log` to view past commits.
     ```bash
     # Show a compact view of commit history
     git log --oneline
     ```
-*   **Visit the Past:** You can temporarily go back to view the state of your project at any previous commit.
+- **Visit the Past:** You can temporarily go back to view the state of your project at any previous commit.
     ```bash
     # Example: Go back to view a specific commit (replace <commit-hash> with an actual ID from git log)
     git checkout <commit-hash>
@@ -137,23 +142,20 @@ Git keeps a log of all your commits (checkpoints), acting like a time machine.
     ```
     *Careful!* While viewing the past is safe, *changing* past history that's already shared is complex and risky. Stick to `checkout` for viewing and branches for new work.
 
-### Typical git flow 
-
+### Typical git flow
 <Image src={simpleGitFlow} alt="The standard git workflow while developing" />
 
-While you work on your project, make commits regularly. 
+While you work on your project, make commits regularly.
 
-Most developers make TOO FEW commits while working, thereby failing to give themselves enough meaningful save points. You can 
-make a commit every few minutes as you get new functionality working.
+Most developers make TOO FEW commits while working, thereby failing to give themselves enough meaningful save points. You can make a commit every few minutes as you get new functionality working.
 
-The standard git flow is the following: 
-* Make some changes to your application
-* "Stage" the files by adding them
-* Commit and add a message creating a save point 
-* Run git push to save your work to a local remote, which can be restored even if you lose your current laptop
+The standard git flow is:
+- Make some changes to your application
+- "Stage" the files by adding them
+- Commit and add a message creating a save point
+- Run git push to save your work to a remote, which can be restored even if you lose your current laptop
 
 ### Your First Safe Commit & Push
-
 <Image src={gitPopped} alt="Most secrets leaks happen because people don't realize .env is being committed to git" />
 
 Most secrets leaks occur because people don't realize that their .env file is committed to git.
@@ -177,7 +179,6 @@ Let's get your code saved and backed up.
 To back up your code and collaborate with others, you'll want to push your project to GitHub. If you don't have a GitHub account yet, <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">create one here</a>.
 
 **Step-by-step:**
-
 1. Go to <a href="https://github.com/" target="_blank" rel="noopener noreferrer">github.com</a> and log in.
 2. Click <strong>New Repository</strong> (usually a green button at the top left or right).
 3. Name your repo (e.g., <code>my-app</code>). You can leave all other settings as default.
@@ -190,9 +191,9 @@ git remote add origin <your-remote-url>
 git push -u origin main
 ```
 
-This connects your local project to GitHub and pushes your code up to the cloud. Now your work is safely backed up and ready to share or deploy!
+Now your work is safely backed up and ready to share or deploy!
 
-# 🔑 Secret Protection 
+# 🔑 Secret Protection
 
 ### What is a Secret? (And What Isn't)
 
@@ -201,25 +202,25 @@ It's crucial to understand what needs protecting.
 <Image src={secretsVsNonSecrets} alt="Diagram showing examples of secrets like API keys and passwords versus non-secrets like feature flags and public URLs" />
 
 **Secrets** are credentials that grant access to services or data:
-
-*   API Keys (OpenAI, Stripe, AWS, etc.)
-*   Database Passwords
-*   Private Certificates
-*   Cryptographic Private Keys
+- API Keys (OpenAI, Stripe, AWS, etc.)
+- Database Passwords
+- Private Certificates
+- Cryptographic Private Keys
 
 <Image src={gitignore} alt="How .gitignore protects your secrets from being committed to Git" className="my-6" />
-
 <small className="block text-center text-zinc-500 mb-4">How <code>.gitignore</code> acts as a shield, preventing sensitive files from being committed to your repository.</small>
 
 Things that are generally **NOT** secrets (though often best kept in `.env` files for configuration management):
+- Public API endpoints or URLs
+- Feature flags
+- UI configuration (themes, labels)
+- Public keys
 
-*   Public API endpoints or URLs
-*   Feature flags
-*   UI configuration (themes, labels)
-*   Public keys
+<Image src={gettingGot} alt="Once your API keys are leaked to GitHub, automated bots and hackers can scrape them instantly" />
 
+Many secret leaks happen because developers accidentally commit sensitive files (like `.env`) to Git, especially when using GitHub for sharing or backup. Once a secret is pushed to a public or even private repository, it can be discovered and misused—leading to unauthorized access, data breaches, or surprise costs. 
 
-Many secret leaks happen because developers accidentally commit sensitive files (like `.env`) to Git, especially when using GitHub for sharing or backup. Once a secret is pushed to a public or even private repository, it can be discovered and misused—leading to unauthorized access, data breaches, or surprise costs. Git's history makes it easy to accidentally expose secrets, even if you later delete them from your code.
+Git's history makes it easy to accidentally expose secrets, even if you later delete them from your code.
 
 <Image src={secretsLeak} alt="This is how most secrets get leaked via GitHub" />
 
@@ -227,14 +228,13 @@ To prevent these accidents, you need a tool that integrates with Git and scans f
 
 ### Install Homebrew (macOS Only)
 
-Before you can install GitGuardian or many other developer tools, you'll want to set up [Homebrew](https://brew.sh) — the most popular package manager for macOS. Homebrew makes it much easier to install and manage software on your Mac.
+Before you can install GitGuardian or many other developer tools, you'll want to set up [Homebrew](https://brew.sh)—the most popular package manager for macOS. Homebrew makes it much easier to install and manage software on your Mac.
 
 **How to install Homebrew:**
-
 1. Visit [brew.sh](https://brew.sh) in your browser.
 2. Copy the install command from the homepage.
 3. Paste it into your terminal in Cursor and press Enter.
-4. You'll be prompted for your **sudo password** — this is the same password you use to log in to your Mac.
+4. You'll be prompted for your **sudo password**—this is the same password you use to log in to your Mac.
 5. After entering your password, you'll be asked for a final confirmation. Just press Enter to continue.
 
 Below is a quick video walkthrough of the Homebrew installation process:
@@ -251,7 +251,6 @@ Below is a quick video walkthrough of the Homebrew installation process:
 </video>
 
 ### Install GitGuardian
-
 <Image src={gitGuardian} alt="Git Guardian runs before your commit is even made" />
 
 GitGuardian integrates with Git to automatically scan your code for secrets *before* you commit them.
@@ -259,10 +258,8 @@ GitGuardian integrates with Git to automatically scan your code for secrets *bef
 Before you start pushing code to GitHub, it's smart to set up a tool that will catch any secrets you accidentally commit. [GitGuardian](https://www.gitguardian.com/) scans your code for API keys and other sensitive info before it ever leaves your machine.
 
 **How to install GitGuardian's CLI (`ggshield`) with Homebrew:**
-
 1. Open the terminal in Cursor
 2. Paste and run this command:
-
 ```bash
 brew install gitguardian/tap/ggshield
 ```
@@ -283,9 +280,9 @@ Below is a quick video walkthrough of the installation process:
 ### How it Works
 
 When you try to commit:
-1.  The pre-commit hook runs automatically.
-2.  GitGuardian scans the files you're trying to commit.
-3.  If it finds anything that looks like a secret (API key, password pattern, etc.), it blocks the commit and tells you exactly where the problem is.
+1. The pre-commit hook runs automatically.
+2. GitGuardian scans the files you're trying to commit.
+3. If it finds anything that looks like a secret (API key, password pattern, etc.), it blocks the commit and tells you exactly where the problem is.
 
 🖼️ **[Diagram Needed]: Commit attempt -> Pre-commit hook triggers GitGuardian -> Scan files -> Secret found? -> Block commit / Allow commit.**
 
@@ -293,9 +290,9 @@ When you try to commit:
 
 See GitGuardian in action!
 
-🎬 **[Screen Recording Needed]: Trying to commit a filecontaining a fake API key and showing how GitGuardian blocks it.**
+🎬 **[Screen Recording Needed]: Trying to commit a file containing a fake API key and showing how GitGuardian blocks it.**
 
-### Setting Up Cursor Rules for Safety and Mentorship
+# Setting Up Cursor Rules for Safety and Mentorship
 
 <Image src={cursorRules} alt="Cursor rules" />
 
@@ -304,7 +301,6 @@ To get the most out of Cursor, you should add custom rules that provide safety n
 - Offer plain-English, step-by-step mentorship
 
 **How to add these rules:**
-
 1. In your project root, create a folder called `.cursor/rules` if it doesn't already exist.
 2. Save each rule below as a separate file in that folder:
    - `00-guard-secrets.mdc` for secret protection
@@ -387,6 +383,6 @@ If you accidentally push a secret:
 
 Stay calm and act fast.
 
-## Help and support 
+## Help and support
 
 [Reach out for support if you're stuck!](/contact)
