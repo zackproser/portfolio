@@ -13,6 +13,7 @@ import gitGuardian from '@/images/git-guardian-flow.webp'
 import gitPopped from '@/images/git-popped.webp'
 import gitignore from '@/images/gitignore.webp'
 import neverCommitEnv from '@/images/never-commit-env.webp'
+import homebrew from '@/images/homebrew.webp'
 import secretsFlow from '@/images/secrets-flow.webp'
 import secretsLeak from '@/images/secrets-leak.webp'
 import secretsVsNonSecrets from '@/images/secrets-non-secrets.webp'
@@ -20,8 +21,6 @@ import cursorRules from '@/images/cursor-rules.webp'
 
 import { createMetadata } from '@/utils/createMetadata';
 import { importContentMetadata } from '@/lib/content-handlers'
-
-Perfect — thanks for the schema. Here’s the corrected version of the metadata object using the contentSections array with properly structured title and subsections, accurately reflecting your guide’s TOC and flow:
 
 export const metadata = createMetadata({
   author: "Zachary Proser",
@@ -149,8 +148,6 @@ export const metadata = createMetadata({
   }
 });
 
-Ready to drop in. Let me know if you’d like to add videoGallery or resourceLinks metadata fields next.
-
 <Image
   src={vibeCodingPremium}
   alt="Vibe coding survival guide hero"
@@ -260,21 +257,9 @@ The standard git flow is:
 
 Most secrets leaks occur because people don't realize that their .env file is committed to git.
 
-Let's get your code saved and backed up.
-
-🎬 **[Screen Recording Needed]: Setting up Git for the first time (if needed) and making your initial commit.**
-🎬 **[Screen Recording Needed]: Pushing your first commit to GitHub.**
-🖼️ **[Diagram Needed]: Simple Git flow: modify -> add -> commit -> push.**
+So, let's get your code saved and backed up to GitHub correctly, without leaking your API keys.
 
 ### Set Up Your Remote on GitHub
-
-<div className="not-prose my-6">
-  <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-700/40 rounded-lg p-4 shadow-md text-center">
-    <strong>🎬 Creating your first GitHub repo and pushing to it — takes 60 seconds.</strong>
-    <br />
-    <em>(Screencast coming soon!)</em>
-  </div>
-</div>
 
 To back up your code and collaborate with others, you'll want to push your project to GitHub. If you don't have a GitHub account yet, <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">create one here</a>.
 
@@ -326,7 +311,9 @@ Git's history makes it easy to accidentally expose secrets, even if you later de
 
 To prevent these accidents, you need a tool that integrates with Git and scans for secrets before they ever leave your machine. **GitGuardian** is purpose-built to catch these mistakes at commit time, blocking leaks before they happen.
 
-### Install Homebrew (macOS Only)
+### Step 1. Install Homebrew (macOS Only)
+
+<Image src={homebrew} alt="Homebrew is a package manager for MacOSX and Linux" />
 
 Before you can install GitGuardian or many other developer tools, you'll want to set up [Homebrew](https://brew.sh)—the most popular package manager for macOS. Homebrew makes it much easier to install and manage software on your Mac.
 
@@ -350,22 +337,15 @@ Below is a quick video walkthrough of the Homebrew installation process:
   Your browser does not support the video tag.
 </video>
 
-**Next, install GitGuardian globally so it can protect all your projects by default:**
 
-> This step sets up GitGuardian's pre-commit protection for every repository on your machine, not just the current one. It's the recommended way to ensure you never accidentally leak secrets, even in new or cloned projects.
+## Step 2. Install GitGuardian using Homebrew
 
-```bash
-ggshield install -m global
-```
+Now that you have the Homebrew package manager installed, you can use it to install GitGuardian, 
+the tool that protects you from leaking secrets.
 
-*You'll see a confirmation message that GitGuardian's pre-commit hook is now active globally. From now on, every time you try to commit, your code will be scanned for secrets before anything leaves your computer.*
-
-### Install GitGuardian
 <Image src={gitGuardian} alt="Git Guardian runs before your commit is even made" />
 
 GitGuardian integrates with Git to automatically scan your code for secrets *before* you commit them.
-
-Before you start pushing code to GitHub, it's smart to set up a tool that will catch any secrets you accidentally commit. [GitGuardian](https://www.gitguardian.com/) scans your code for API keys and other sensitive info before it ever leaves your machine.
 
 **How to install GitGuardian's CLI (`ggshield`) with Homebrew:**
 1. Open the terminal in Cursor
@@ -373,6 +353,8 @@ Before you start pushing code to GitHub, it's smart to set up a tool that will c
 ```bash
 brew install gitguardian/tap/ggshield
 ```
+
+**Note: this one may take a while, especially if your connection is slow. Be patient and let it complete.**
 
 Below is a quick video walkthrough of the installation process:
 
@@ -394,13 +376,22 @@ When you try to commit:
 2. GitGuardian scans the files you're trying to commit.
 3. If it finds anything that looks like a secret (API key, password pattern, etc.), it blocks the commit and tells you exactly where the problem is.
 
-🖼️ **[Diagram Needed]: Commit attempt -> Pre-commit hook triggers GitGuardian -> Scan files -> Secret found? -> Block commit / Allow commit.**
+GitGuardian is an excellent tool, and if used properly makes it **impossible** for you to leak secrets via Git.
 
-### Test the Protection
+## Step 3. install GitGuardian globally 
 
-See GitGuardian in action!
+GitGuardian can be installed globally. Globally means that it will run 
+ANY time you try to commit code in ANY project - **not just the project you're working in now**. 
 
-🎬 **[Screen Recording Needed]: Trying to commit a file containing a fake API key and showing how GitGuardian blocks it.**
+This is the preferred way to install GitGuardian and I highly recommend it.
+
+> This step sets up GitGuardian's pre-commit protection for every repository on your machine, not just the current one. It's the recommended way to ensure you never accidentally leak secrets, even in new or cloned projects.
+
+```bash
+ggshield install -m global
+```
+
+*You'll see a confirmation message that GitGuardian's pre-commit hook is now active globally. From now on, every time you try to commit, your code will be scanned for secrets before anything leaves your computer!*
 
 # Setting Up Cursor Rules for Safety and Mentorship
 
