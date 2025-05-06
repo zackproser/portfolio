@@ -35,8 +35,10 @@ export async function POST(req: Request) {
 
   (context as PineconeRecord[]).forEach(match => {
     const source = (match.metadata as Metadata).source
+
+    console.log(`source: %o`, source)
     // Ensure source is a blog url, meaning it contains the path src/app/blog
-    if (!source.includes('src/app/blog')) return
+    if (!source.includes('src/content/blog')) return
     blogUrls.add((match.metadata as Metadata).source);
     docs.push((match.metadata as Metadata).text);
   });
