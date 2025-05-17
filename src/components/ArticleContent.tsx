@@ -2,6 +2,8 @@
 
 import React from 'react'
 import Paywall from './Paywall'
+import NewsletterWrapper from './NewsletterWrapper'
+import EmailSignupGate from './EmailSignupGate'
 import { StaticImageData } from 'next/image'
 import { Content } from '@/types'
 
@@ -14,24 +16,28 @@ interface ArticleContentProps {
   paywallBody?: string
   buttonText?: string
   content: Content
+  requiresEmail?: boolean
+  isSubscribed?: boolean
 }
 
 export default function ArticleContent({ 
-  children, 
+  children,
   showFullContent,
   previewLength = 150,
   previewElements = 3,
   paywallHeader,
   paywallBody,
   buttonText,
-  content
+  content,
+  requiresEmail = false,
+  isSubscribed = false
 }: ArticleContentProps) {
   if (!content.slug) {
     console.warn('ArticleContent: content.slug is missing, rendering full content')
     return <>{children}</>
   }
 
-  if (showFullContent) {
+  if (showFullContent || (requiresEmail && isSubscribed)) {
     return <>{children}</>
   }
 
@@ -58,12 +64,19 @@ export default function ArticleContent({
       <div className="article-preview">
         {preview}
       </div>
-      <Paywall 
-        content={content}
-        paywallHeader={paywallHeader}
-        paywallBody={paywallBody}
-        buttonText={buttonText}
-      />
+      {requiresEmail ? (
+        <EmailSignupGate
+          header={paywallHeader}
+          body={paywallBody}
+        />
+      ) : (
+        <Paywall
+          content={content}
+          paywallHeader={paywallHeader}
+          paywallBody={paywallBody}
+          buttonText={buttonText}
+        />
+      )}
     </>
   )
-} 
+}

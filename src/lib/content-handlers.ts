@@ -447,13 +447,28 @@ export function getDefaultPaywallText(contentType: string): {
 export function renderPaywalledContent(
   MdxContent: React.ComponentType,
   content: Content, // Use the processed Content type
-  hasPurchased: boolean
+  hasPurchased: boolean,
+  isSubscribed: boolean
 ) {
   // Determine if we should show the full content
-  const showFullContent = !content.commerce?.isPaid || hasPurchased;
+  const showFullContent =
+    (!content.commerce?.isPaid && !content.commerce?.requiresEmail) ||
+    hasPurchased ||
+    (content.commerce?.requiresEmail && isSubscribed);
 
   // Get default paywall text based on content type
   const defaultText = getDefaultPaywallText(content.type);
+
+  let paywallHeader = defaultText.header;
+  let paywallBody = defaultText.body;
+
+  if (content.commerce?.requiresEmail) {
+    paywallHeader = content.commerce.paywallHeader || 'Sign in & subscribe to read for free';
+    paywallBody = content.commerce.paywallBody || 'Sign in to zackproser.com and subscribe to unlock this content.';
+  } else {
+    paywallHeader = content.commerce?.paywallHeader || defaultText.header;
+    paywallBody = content.commerce?.paywallBody || defaultText.body;
+  }
 
   // Dynamically import ArticleContent to avoid circular dependencies if this file is imported in components
   // Note: This file is marked 'server-only', but ArticleContent likely exists client-side,
@@ -473,9 +488,11 @@ export function renderPaywalledContent(
       title: content.title, // Use the processed title
       previewLength: content.commerce?.previewLength,
       previewElements: content.commerce?.previewElements,
-      paywallHeader: content.commerce?.paywallHeader || defaultText.header,
-      paywallBody: content.commerce?.paywallBody || defaultText.body,
+      paywallHeader: paywallHeader,
+      paywallBody: paywallBody,
       buttonText: content.commerce?.buttonText || defaultText.buttonText,
+      requiresEmail: content.commerce?.requiresEmail,
+      isSubscribed: isSubscribed,
       // Pass content object itself if ArticleContent needs more data
       content: content,
     }
