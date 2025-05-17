@@ -9,28 +9,37 @@ import { AuthStatus } from './AuthStatus'
 
 // Export navigation items to be used in components
 export const navItems = [
-  { name: 'Services', dropdown: [
-    { name: 'Custom Gen AI Solutions', href: '/services' },
-    { name: '90-Day AI Team Transformation', href: '/ai-training' }
-  ]},
-  { name: 'Work', dropdown: [
-    { name: 'Products', href: '/products' },
-    { name: 'Case Studies', href: '/projects' },
-    { name: 'Demos', href: '/demos' },
-    { name: 'Collections', href: '/collections' }
-  ]},
-  { name: 'Insights', dropdown: [
-    { name: 'Blog', href: '/blog' },
-    { name: 'Research', href: '/publications' },
-    { name: 'Tutorials', href: '/tutorials' },
-    { name: 'Videos', href: '/videos' },
-    { name: 'Vector Databases', href: '/vectordatabases' },
-    { name: 'Comparisons', href: '/comparisons' },
-    { name: 'Chat', href: '/chat' }
-  ]},
+  {
+    name: 'Services',
+    dropdown: [
+      { name: 'Custom Gen AI Solutions', href: '/services' },
+      { name: '90-Day AI Team Transformation', href: '/ai-training' },
+    ],
+  },
+  {
+    name: 'Products',
+    dropdown: [
+      { name: 'All Products', href: '/products' },
+      { name: 'Tutorials', href: '/tutorials' },
+      { name: 'Case Studies', href: '/projects' },
+      { name: 'Demos', href: '/demos' },
+      { name: 'Collections', href: '/collections' },
+    ],
+  },
+  {
+    name: 'Resources',
+    dropdown: [
+      { name: 'Blog', href: '/blog' },
+      { name: 'Research', href: '/publications' },
+      { name: 'Videos', href: '/videos' },
+      { name: 'Vector Databases', href: '/vectordatabases' },
+      { name: 'Comparisons', href: '/comparisons' },
+      { name: 'Chat', href: '/chat' },
+    ],
+  },
   { name: 'About', href: '/about' },
   { name: 'Testimonials', href: '/testimonials' },
-  { name: 'Contact', href: '/contact' }
+  { name: 'Contact', href: '/contact' },
 ];
 
 function DropdownMenu({ label, items }) {

@@ -5,6 +5,7 @@ import { ContentCard } from '@/components/ContentCard'
 import { Container } from '@/components/Container'
 import { createMetadata } from '@/utils/createMetadata'
 import { Content } from '@/types'
+import Link from 'next/link'
 
 // Base metadata using createMetadata
 const baseMetadata = createMetadata({
@@ -53,6 +54,10 @@ export default async function TutorialsPage() {
           </h1>
           <p className="mt-6 text-base text-gray-700 dark:text-gray-300">
             Here you&apos;ll find in-depth tutorials and learning resources covering various technologies and concepts in software engineering and AI.
+          </p>
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            Looking for complete, project-based guides? Browse our{' '}
+            <Link href="/products" className="underline font-medium text-blue-700 dark:text-blue-300">digital products</Link>.
           </p>
         </header>
         <div className="mt-16 sm:mt-20">
