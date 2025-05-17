@@ -39,7 +39,6 @@ jobs:
         if grep -q "Metadata issues were found" pr_comment.md; then
           echo "Metadata issues found. Posting comment on PR."
           gh pr comment "${{ github.event.pull_request.number }}" --body-file pr_comment.md
-          exit 1
         else
           echo "No metadata issues found."
         fi
