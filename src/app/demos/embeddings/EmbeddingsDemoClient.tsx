@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { FiInfo, FiBook, FiTool, FiCode, FiDatabase, FiSearch, FiChevronDown, FiChevronRight, FiHelpCircle, FiPlay, FiCheck } from 'react-icons/fi';
 import Image from 'next/image';
 import embedDiagram from '@/images/neural-network-transform.webp';
 import { track } from '@vercel/analytics';
 import NewsletterWrapper from '@/components/NewsletterWrapper';
 import dynamic from 'next/dynamic';
+import { HARD_CODED_EMBEDDINGS } from './hardcodedEmbeddings';
 
 // Add keyframes for the animation
 const animateFadeInUp = `
@@ -64,6 +65,23 @@ const getColorForValue = (value: number) => {
 
 function getRandomVector(dimension: number = 20): number[] {
   return Array.from({ length: dimension }, () => (Math.random() * 2 - 1));
+}
+
+// Deterministically generate a vector based on input text so results
+// remain the same across sessions without calling an API
+function getDeterministicVector(text: string, dimension: number = 20): number[] {
+  let seed = 0;
+  for (const char of text) {
+    seed = (seed + char.charCodeAt(0)) % 2147483647;
+    seed = (seed * 16807) % 2147483647;
+  }
+  const vector: number[] = [];
+  for (let i = 0; i < dimension; i++) {
+    seed = (seed * 16807) % 2147483647;
+    const value = (seed / 2147483647) * 2 - 1;
+    vector.push(parseFloat(value.toFixed(3)));
+  }
+  return vector;
 }
 
 // Mini component to show a portion of the vector in a more readable way
@@ -309,90 +327,32 @@ export default function EmbeddingsDemoClient() {
   const [expandedSections, setExpandedSections] = useState([false, false, false, false]);
   const [selectedModel, setSelectedModel] = useState('text-embedding-ada-002');
   const [showSimilarityExamples, setShowSimilarityExamples] = useState(false);
-  const [demoEmbeddings, setDemoEmbeddings] = useState<{[key: string]: number[]}>({});
+  const [demoEmbeddings, setDemoEmbeddings] = useState<{[key: string]: number[]}>(HARD_CODED_EMBEDDINGS);
   const [quickStartStep, setQuickStartStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([false, false, false, false]);
   const [interactedWithDemo, setInteractedWithDemo] = useState(false);
   const [showNewsletterModal, setShowNewsletterModal] = useState(false);
 
-  // Move handleExampleSelect declaration and wrap in useCallback
-  const handleExampleSelect = useCallback((text: string) => {
+  // Helper to populate the demo with one of the example words
+  const handleExampleSelect = (text: string) => {
     setInputText(text);
-    // Mark example step as completed
-    const newCompletedSteps = [...completedSteps];
-    newCompletedSteps[3] = true;
-    setCompletedSteps(newCompletedSteps);
-    
-    // For demo purposes, immediately show embeddings for examples
+    setCompletedSteps(prev => {
+      const next = [...prev];
+      next[3] = true;
+      return next;
+    });
+
     if (Object.keys(demoEmbeddings).includes(text.toLowerCase())) {
       setEmbeddings(demoEmbeddings[text.toLowerCase()]);
     } else {
-      // For other examples, generate random embeddings
-      setEmbeddings(getRandomVector(20));
+      setEmbeddings(getDeterministicVector(text));
     }
-  }, [completedSteps, demoEmbeddings, setCompletedSteps, setEmbeddings, setInputText]);
+  };
 
+  // Pre-select a default example to show visualization immediately
   useEffect(() => {
-    const examples = {
-      // Animals - cluster 1
-      "dog": getRandomVector(),
-      "puppy": getRandomVector(),
-      "cat": getRandomVector(),
-      "kitten": getRandomVector(),
-      "animal": getRandomVector(),
-      
-      // Technology - cluster 2
-      "computer": getRandomVector(),
-      "laptop": getRandomVector(),
-      "smartphone": getRandomVector(),
-      "technology": getRandomVector(),
-      
-      // Places - cluster 3
-      "paris": getRandomVector(),
-      "france": getRandomVector(),
-      "tokyo": getRandomVector(),
-      "japan": getRandomVector(),
-      "travel": getRandomVector(),
-      
-      // Food - cluster 4
-      "pizza": getRandomVector(),
-      "pasta": getRandomVector(),
-      "sushi": getRandomVector(),
-      "food": getRandomVector(),
-    };
-    
-    // Create clear semantic clusters by making similar concepts have similar vectors
-    // Animal cluster
-    const animalBase = examples.animal;
-    examples.dog = animalBase.map((v, i) => v * 0.8 + Math.random() * 0.2);
-    examples.puppy = examples.dog.map((v, i) => v * 0.9 + Math.random() * 0.1);
-    examples.cat = animalBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    examples.kitten = examples.cat.map((v, i) => v * 0.9 + Math.random() * 0.1);
-    
-    // Technology cluster
-    const techBase = examples.technology;
-    examples.computer = techBase.map((v, i) => v * 0.8 + Math.random() * 0.2);
-    examples.laptop = examples.computer.map((v, i) => v * 0.9 + Math.random() * 0.1);
-    examples.smartphone = techBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    
-    // Places cluster
-    const travelBase = examples.travel;
-    examples.paris = travelBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    examples.france = examples.paris.map((v, i) => v * 0.85 + Math.random() * 0.15);
-    examples.tokyo = travelBase.map((v, i) => v * 0.65 + Math.random() * 0.35);
-    examples.japan = examples.tokyo.map((v, i) => v * 0.85 + Math.random() * 0.15);
-    
-    // Food cluster
-    const foodBase = examples.food;
-    examples.pizza = foodBase.map((v, i) => v * 0.75 + Math.random() * 0.25);
-    examples.pasta = foodBase.map((v, i) => v * 0.7 + Math.random() * 0.3);
-    examples.sushi = foodBase.map((v, i) => v * 0.65 + Math.random() * 0.35);
-    
-    setDemoEmbeddings(examples);
-    
-    // Pre-select a default example to show visualization immediately
-    handleExampleSelect("dog");
-  }, [handleExampleSelect]);
+    handleExampleSelect('dog');
+  }, []);
 
   useEffect(() => {
     const newCompletedSteps = [...completedSteps];
@@ -469,34 +429,19 @@ export default function EmbeddingsDemoClient() {
   
   const handleGenerateEmbeddings = async () => {
     if (!inputText.trim()) return;
-    
+
     setIsLoading(true);
     try {
-      const response = await fetch('/api/embeddings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          inputText,
-          model: selectedModel 
-        }),
-      });
-
-      const data = await response.json();
-      if (data && data.embeddings) {
-        setEmbeddings(data.embeddings);
-        track('embeddings_generated', { model: selectedModel, textLength: inputText.length });
-
-        // Calculate similarity/dissimilarity with existing embeddings
-        const similarities = Object.entries(demoEmbeddings).map(([key, vector]) => ({
-          key,
-          similarity: calculateSimilarity(data.embeddings, vector)
-        }));
-
-        // Log or visualize similarities as needed
-        console.log('Similarities:', similarities);
+      let vector: number[];
+      const key = inputText.toLowerCase();
+      if (demoEmbeddings[key]) {
+        vector = demoEmbeddings[key];
+      } else {
+        vector = getDeterministicVector(inputText);
       }
+
+      setEmbeddings(vector);
+      track('embeddings_generated', { model: selectedModel, textLength: inputText.length });
     } catch (error) {
       console.error('Error generating embeddings:', error);
       setEmbeddings(getRandomVector(20));
