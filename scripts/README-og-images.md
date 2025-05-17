@@ -58,8 +58,8 @@ npm run og:clean-orphans
 
 ### Script Locations
 
-- `scripts/generate-og-images.js` - Main generation script
-- `scripts/clean-og-images.js` - Script to clean orphaned images
+- `scripts/generate-og-images.ts` - Main generation script
+- `scripts/clean-og-images.ts` - Script to clean orphaned images
 
 ### API Endpoint
 
