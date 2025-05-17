@@ -19,8 +19,8 @@ export const metadata = createMetadata({
 --- 
 
 <Image src={metadata.image} alt="Introduction to vectors"/>
+<figcaption>An overview of vector embeddings.</figcaption>
 
-## Table of contents 
 
 In the rapidly evolving world of artificial intelligence (AI) and machine learning, there's a concept that's revolutionizing the way machines understand and process data: embeddings. Embeddings, also known as vectors, are floating-point numerical representations of the "features" of a given piece of data. These powerful tools allow machines to achieve a granular "understanding" of the data we provide, enabling them to process and analyze it in ways that were previously impossible. In this comprehensive guide, we'll explore the basics of embeddings, their history, and how they're revolutionizing various fields.
 
@@ -29,6 +29,7 @@ In the rapidly evolving world of artificial intelligence (AI) and machine learni
 At the heart of embeddings lies the process of feature extraction. When we talk about "features" in this context, we're referring to the key characteristics or attributes of the data that we want our machine learning models to learn and understand. For example, in the case of natural language data (like text), features might include the semantic meaning of words, the syntactic structure of sentences, or the overall sentiment of a document.
 
 <Image src={featureExtraction} alt="Feature extraction"/>
+<figcaption>Neural models extract key features from data.</figcaption>
 
 To obtain embeddings, you feed your data to an embedding model, which uses a neural network to extract these relevant features. The neural network learns to map the input data to a high-dimensional vector space, where each dimension represents a specific feature. The resulting vectors, or embeddings, capture the essential information about the input data in a compact, numerical format that machines can easily process and analyze.
 
@@ -45,7 +46,7 @@ When we pass this string of natural language into an embedding model, the model 
 [0.283939734973434, -0.119420836293, 0.0894208490832, ..., -0.20392492842, 0.1294809231993, 0.0329842098324]
 ```
 
-Each value in this vector is a floating-point number, typically ranging from -1 to 1. These numbers represent the presence or absence of specific features in the input data. For example, one dimension of the vector might correspond to the concept of "speed," while another might represent "animal." The embedding model learns to assign higher values to dimensions that are more strongly associated with the input data, and lower values to dimensions that are less relevant.
+Each value in this vector is a floating-point number, often between -1 and 1, though the exact range depends on the model. These numbers indicate how strongly the input exhibits certain learned features. In practice, individual dimensions rarely correspond to a single, human-readable concept. Instead, meaning is distributed across many dimensions, which together encode the semantics of the data. The embedding model learns to assign higher values to dimensions that are more strongly associated with the input data and lower values to those that are less relevant.
 
 So, in our example, the embedding vector might have a high value in the "speed" dimension (capturing the concept of "quick"), a moderate value in the "animal" dimension (representing "fox" and "dog"), and relatively low values in dimensions that are less relevant to the input text (like "technology" or "politics").
 
@@ -58,7 +59,14 @@ The true power of embeddings lies in their ability to capture complex relationsh
 
 The potential applications of embeddings are vast and diverse, spanning across multiple domains and industries. Some of the most prominent areas where embeddings are making a significant impact include:
 
-Natural Language Processing (NLP) In the field of NLP, embeddings have become an essential tool for a wide range of tasks, such as:
+* **Natural Language Processing (NLP)**
+* **Image and Video Analysis**
+* **Recommendation Systems**
+* **Anomaly Detection**
+
+### Natural Language Processing (NLP)
+
+Embeddings have become an essential tool for a wide range of tasks, such as:
 
 ### Text classification 
 
@@ -140,6 +148,7 @@ The concept of embeddings has its roots in the field of natural language process
 Word2Vec revolutionized NLP by demonstrating that neural networks could be trained to produce dense vector representations of words, capturing their semantic similarities and relationships in a highly efficient and scalable manner. The key insight behind Word2Vec was that the meaning of a word could be inferred from its context – that is, the words that typically appear around it in a sentence or document.
 
 <Image src={neuralNetwork} alt="Neural network"/>
+<figcaption>A simplified neural network architecture.</figcaption>
 
 By training a shallow neural network to predict the context words given a target word (or vice versa), Word2Vec was able to learn highly meaningful word embeddings that captured semantic relationships like synonymy, antonymy, and analogy. For example, the embedding for the word "king" would be more similar to the embedding for "queen" than to the embedding for "car," reflecting their semantic relatedness.
 
