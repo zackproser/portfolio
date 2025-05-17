@@ -9,6 +9,8 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import RandomPortrait from '@/components/RandomPortrait'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import { RealTestimonials } from '@/components/RealTestimonials'
+import { Footer } from '@/components/Footer'
 
 // Company logos
 import logoWorkOS from '@/images/logos/workos.svg'
@@ -21,6 +23,12 @@ import logoBrightcontext from '@/images/logos/brightcontext.png'
 export default function ProductsPageClient({ products }: { products: ProductContent[] }) {
   // No filters needed, directly use all products
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  const lowestPriced = products.reduce((prev, curr) =>
+    curr.pricing.price < prev.pricing.price ? curr : prev,
+    products[0]
+  )
+  const lowestPriceSlug = lowestPriced.slug.split('/').pop()
 
   // Terminal-style hacker animation effect with value prop
   useEffect(() => {
@@ -318,16 +326,26 @@ export default function ProductsPageClient({ products }: { products: ProductCont
       <div className="relative">
         {/* Hero section with terminal animation */}
         <div className="mb-4 relative">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl mb-4 max-w-3xl mx-auto text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl mb-2 max-w-3xl mx-auto text-center">
             Supercharge your career
           </h1>
-          
-          <div className="h-[240px] relative bg-transparent">
-            <canvas 
-              ref={canvasRef} 
+          <p className="text-lg text-zinc-600 dark:text-zinc-400 text-center max-w-xl mx-auto">
+            Master developer tools with expert guides and tutorials
+          </p>
+          <div className="h-[240px] relative bg-transparent mt-4">
+            <canvas
+              ref={canvasRef}
               className="absolute inset-0 bg-transparent"
-              aria-hidden="true" 
+              aria-hidden="true"
             />
+          </div>
+          <div className="mt-4 flex justify-center">
+            <Link
+              href="/tutorials"
+              className="rounded-md bg-emerald-600 px-5 py-3 text-white font-medium hover:bg-emerald-700"
+            >
+              Explore Tutorials
+            </Link>
           </div>
         </div>
         
@@ -346,12 +364,17 @@ export default function ProductsPageClient({ products }: { products: ProductCont
                 initial="hidden"
                 animate="visible"
                 variants={productVariants}
-                className="group flex flex-col overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg"
+                className="group flex flex-col overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg"
               >
               {/* Product Image */}
               <div className="relative h-64 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                {product.pricing.price === lowestPriced.pricing.price && (
+                  <span className="absolute top-2 left-2 z-10 rounded-md bg-emerald-600 px-2 py-1 text-xs font-semibold text-white">
+                    Most Popular
+                  </span>
+                )}
                 {product.heroImage ? (
-                  <Image 
+                  <Image
                     src={product.heroImage}
                     alt={product.title}
                     fill
@@ -396,6 +419,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
                 <div className="mt-6 flex items-center justify-between">
                   <div className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
                     {product.pricing.currency}{product.pricing.price}
+                    <span className="ml-1 text-sm font-normal text-zinc-500 dark:text-zinc-400">&nbsp;&ndash; One-time payment, lifetime access</span>
                   </div>
                   
                   <button
@@ -416,6 +440,15 @@ export default function ProductsPageClient({ products }: { products: ProductCont
         </div>
 
         {/* No "products not found" message needed */}
+
+        <div className="mt-20">
+          <RealTestimonials count={3} />
+        </div>
+
+        <div className="mt-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 p-6 max-w-3xl mx-auto text-center">
+          <p className="text-lg font-semibold text-emerald-800 dark:text-emerald-200">30-Day Risk-Free Trial</p>
+          <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-300">If you're not satisfied, get a full refund within 30 days.</p>
+        </div>
         
         {/* Author Section */}
         <section
@@ -437,6 +470,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
                 </h2>
                 <div className="mt-6 space-y-6 text-base text-slate-700 dark:text-slate-300">
                   <p>I&apos;m a software engineer with over {RenderNumYearsExperience()} years of experience building production systems. I create high-quality resources that help developers learn practical skills without the fluff.</p>
+                  <p className="font-medium text-zinc-700 dark:text-zinc-300">50K+ developers taught through my guides and workshops.</p>
                   <div className="mt-8 flex flex-col space-y-5">
                     {[
                       {
@@ -522,6 +556,13 @@ export default function ProductsPageClient({ products }: { products: ProductCont
           </div>
         </section>
       </div>
+      <Footer />
+      <Link
+        href={`/products/${lowestPriceSlug}`}
+        className="md:hidden fixed bottom-4 right-4 z-50 rounded-full bg-emerald-600 px-5 py-3 text-sm font-medium text-white shadow-lg"
+      >
+        Buy Now
+      </Link>
     </Container>
   )
 }
