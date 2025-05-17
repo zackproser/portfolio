@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { LeadAnalysis } from '@/types';
 import { prisma } from '@/lib/prisma';
 import { auth } from '../../../../../auth';
+import { sendLeadNotificationEmail } from '@/lib/postmark';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
@@ -95,6 +96,14 @@ Respond with a JSON object containing:
               nextSteps: result.nextSteps
             }
           });
+
+          if (result.confidence > 0.7) {
+            await sendLeadNotificationEmail({
+              messages,
+              analysis: result,
+              email,
+            });
+          }
         } catch (error) {
           console.error('Failed to process lead:', error);
         }
