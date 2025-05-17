@@ -1,17 +1,11 @@
-import { redirect } from 'next/navigation'
-import { auth } from '../../../auth'
+import { requireAdmin } from '@/lib/require-admin'
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
-  
-  // Check if user is authenticated and has the correct email
-  if (!session || session.user?.email !== 'zackproser@gmail.com') {
-    redirect('/auth/login?callbackUrl=/admin')
-  }
+  await requireAdmin('/admin')
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-blue-900">

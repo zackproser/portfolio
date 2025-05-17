@@ -1,14 +1,8 @@
-import { redirect } from 'next/navigation'
 import NewsletterBuilder from "@/components/newsletter-admin/newsletter-builder"
-import { auth } from '../../../../auth'
+import { requireAdmin } from '@/lib/require-admin'
 
 export default async function NewsletterAdminPage() {
-  const session = await auth()
-  
-  // Check if user is authenticated and has the correct email
-  if (!session || session.user?.email !== 'zackproser@gmail.com') {
-    redirect('/auth/login?callbackUrl=/admin/newsletter')
-  }
+  await requireAdmin('/admin/newsletter')
 
   return (
     <div className="w-full p-0">
