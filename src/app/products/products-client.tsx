@@ -45,17 +45,19 @@ export default function ProductsPageClient({ products }: { products: ProductCont
       padding: 24,
       fontFamily: 'monospace',
       backgroundColor: 'rgba(20, 20, 30, 0.95)',
-      textColor: '#38a169', // Darker green for better readability
       cursorColor: '#38a169',
       glowColor: 'rgba(56, 161, 105, 0.4)',
-      borderRadius: 8
+      borderRadius: 8,
+      textColors: ['#38a169', '#0ea5e9', '#facc15'],
     }
     
     // Value proposition statements that will be typed into the terminal
     const valuePropStrings = [
       'git checkout a new skill',
       'git push yourself',
-      'git paid'
+      'git commit to greatness',
+      'git merge knowledge',
+      'git rebase your career',
     ]
     
     // Terminal class
@@ -187,7 +189,6 @@ export default function ProductsPageClient({ products }: { products: ProductCont
         ctx.fillText('premium-dev-tools ~ zsh', this.x + this.width / 2, this.y + 20)
         
         // Draw text content
-        ctx.fillStyle = terminalConfig.textColor
         ctx.textAlign = 'left'
         
         // Calculate maximum width to avoid text cutoff
@@ -216,6 +217,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
         
         // Draw previous lines with flash effects
         this.text.forEach((line, i) => {
+          const lineColor = terminalConfig.textColors[i % terminalConfig.textColors.length]
           // Check if this line has a flash effect
           const flashEffect = this.flashEffects?.find(e => e.lineIndex === i)
           
@@ -223,15 +225,16 @@ export default function ProductsPageClient({ products }: { products: ProductCont
             // Apply scaling effect
             const fontSize = terminalConfig.charSize * flashEffect.scale
             ctx.font = `bold ${fontSize}px ${terminalConfig.fontFamily}`
-            
+
             // Add a more pronounced glow for flash effect
-            ctx.shadowColor = terminalConfig.textColor
+            ctx.shadowColor = lineColor
             ctx.shadowBlur = 10
             // Make text brighter during the effect
             ctx.fillStyle = '#4ade80'
           } else {
             ctx.font = `bold ${terminalConfig.charSize}px ${terminalConfig.fontFamily}`
             ctx.shadowBlur = 0
+            ctx.fillStyle = lineColor
           }
           
           ctx.fillText(
@@ -248,6 +251,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
         
         // Draw current line with cursor
         const currentLineY = this.y + terminalConfig.padding + 40 + this.text.length * terminalConfig.charSize
+        ctx.fillStyle = terminalConfig.textColors[this.text.length % terminalConfig.textColors.length]
         ctx.fillText(this.currentLine, this.x + terminalConfig.padding, currentLineY, maxWidth)
         
         // Draw cursor
