@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { Handlebars } = require('handlebars');
+const Handlebars = require('handlebars');
 const { format } = require('date-fns');
 
 interface NewsletterData {
