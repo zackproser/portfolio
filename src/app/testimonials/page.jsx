@@ -21,8 +21,8 @@ import AnthonyDavanzo from '@/images/anthony-davanzo.webp'
 import { generateOgUrl } from '@/utils/ogUrl'
 
 const data = {
-  title: 'Testimonials and social proof',
-  description: 'What is it like to work with me?',
+  title: 'Professional endorsements',
+  description: "What's it like to work with me?",
 };
 
 const ogUrl = generateOgUrl(data);
@@ -182,7 +182,7 @@ export default function Example() {
   return (
     <>
       <Head>
-        <title>Testimonials - Zachary Proser</title>
+        <title>Professional endorsements - Zachary Proser</title>
         <meta
           name="description"
           content="Endorsements from professionals I've worked with"
@@ -218,11 +218,6 @@ export default function Example() {
             />
           </div>
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto max-w-xl text-center">
-              <h2 className="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-2xl">
-                Testimonials
-              </h2>
-            </div>
             <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 dark:text-gray-300 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
               <figure className="col-span-2 hidden sm:block sm:rounded-2xl sm:bg-white sm:shadow-lg sm:ring-1 sm:ring-gray-900/5 dark:sm:bg-gray-800 dark:sm:ring-gray-700/5 xl:col-start-2 xl:row-end-1">
                 <blockquote className="p-12 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-100">
