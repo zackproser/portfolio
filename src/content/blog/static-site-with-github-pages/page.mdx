@@ -1,0 +1,152 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import hero from '@/images/first-static-site-hero.webp'
+import gitSaveButton from '@/images/git-is-your-save-button-3.webp'
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: 'Zachary Proser',
+  date: '2023-10-18',
+  title: 'Build a Static Site with GitHub Pages',
+  description: 'A beginner-friendly guide to creating and deploying a portfolio site using Jekyll and GitHub Pages.',
+  image: hero,
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<Image src={hero} alt="Build a static site" width={600} height={600} />
+
+## Build Your First Portfolio Website with GitHub Pages
+
+Welcome to your first step into web development! This tutorial will guide you through building a simple yet elegant portfolio website using HTML and CSS. You'll learn how to deploy your site for free using GitHub Pages.
+
+### What You'll Learn
+
+- Basics of HTML and CSS
+- How to structure your first web page
+- Adding styles to bring your website to life
+- Using Git for version control
+- Deploying your website using GitHub Pages
+
+## Static vs. Dynamic Websites
+
+Before we dive into HTML, let's clarify the difference between static and dynamic websites:
+
+* **Static Websites**: Basic web pages that deliver content without the need for server-side processing. The content remains the same for every user and is easy to create and host, making them ideal for beginners.
+* **Dynamic Websites**: These websites generate content on the fly, often pulling information from databases or external sources. They require server-side processing and are more complex to develop and maintain.
+
+For this tutorial, we'll focus on building a static portfolio website.
+
+## HTML: The Structure of Your Website
+
+HTML is the backbone of any website. It allows you to structure your web content using various elements, such as headings, paragraphs, links and images.
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your First Web Page</title>
+</head>
+<body>
+  <h1>Welcome to My Portfolio</h1>
+  <p>This is the beginning of your professional web presence.</p>
+</body>
+</html>
+```
+
+You can expand this structure to include sections for about, projects and contact information.
+
+## CSS: Painting Your Website
+
+If HTML is the structure of your house, CSS is the paint and design that makes it appealing. CSS lets you control the presentation of your HTML elements with colors, fonts and layouts.
+
+```css
+h1 {
+  color: blue;
+  text-align: center;
+}
+
+p {
+  color: gray;
+  text-align: center;
+}
+```
+
+Try experimenting with different CSS properties to see how they affect your page.
+
+<iframe width="100%" height="300" src="//jsfiddle.net/zackproser/r4w76any/1/embedded/html,css,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+
+## Preparing Your Development Environment
+
+Before you start coding, you'll need a solid development environment:
+
+* **Text Editor**: We recommend [Visual Studio Code](https://code.visualstudio.com/), a free and powerful code editor.
+* **Web Browser**: Chrome, Firefox, or Edge work well and include great developer tools.
+* **Git**: A version control system for tracking code changes and collaborating with others.
+
+Follow the instructions for your operating system to install Visual Studio Code and Git. Once installed, create a new project folder (e.g., `my-portfolio`) and open it in VS Code.
+
+## Set Up Git
+
+Git helps you track changes and collaborate. After installing Git, configure your username and email:
+
+```
+git config --global user.name "Your Name"
+git config --global user.email "youremail@example.com"
+```
+
+<Image src={gitSaveButton} alt="Git is your save button" width={600} height={400} />
+
+## Create Your First Repository on GitHub
+
+1. On GitHub, click the **+** icon and choose **New repository**.
+2. Name your repo something like `your-username.github.io`.
+3. Add a description and choose **Public** visibility.
+4. Initialize with a README file and, optionally, a `.gitignore` and license.
+
+Clone the repository to your computer and place your website files inside it.
+
+## Install Ruby and Bundler
+
+Jekyll is built on Ruby, so you'll need Ruby and Bundler installed.
+
+```
+# macOS example using Homebrew
+brew install ruby
+
+gem install bundler
+```
+
+## Scaffold Your Site with Jekyll
+
+With Ruby and Bundler ready, install Jekyll and create your site:
+
+```
+gem install jekyll
+cd your-username.github.io
+jekyll new --force .
+```
+
+Serve the site locally to check it out:
+
+```
+bundle exec jekyll serve
+```
+
+Visit `http://localhost:4000` in your browser to see the default Jekyll site. Feel free to modify the Markdown files or `_config.yml` to customize the look and feel.
+
+## Deploying with GitHub Pages
+
+When you're ready to share your site, push your files to GitHub:
+
+```
+git add .
+git commit -m "Prepare site for deployment"
+git push origin main
+```
+
+Enable GitHub Pages in your repository settings under **Pages** and select the `main` branch. After a minute or two, your site will be live at `https://your-username.github.io`.
+
+Whenever you update your site, commit and push your changes, and GitHub Pages will automatically rebuild and redeploy it.
+
+Congratulations! You've successfully built and deployed a static site using GitHub Pages.
