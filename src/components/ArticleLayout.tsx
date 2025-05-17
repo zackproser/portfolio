@@ -23,12 +23,14 @@ interface ArticleLayoutProps {
     miniPaywallDescription?: string | null
   }
   serverHasPurchased?: boolean
+  hideNewsletter?: boolean
 }
 
 export function ArticleLayout({
   children,
   metadata,
   serverHasPurchased = false,
+  hideNewsletter = false,
 }: ArticleLayoutProps) {
   const router = useRouter()
   const { data: session } = useSession()
@@ -192,10 +194,12 @@ export function ArticleLayout({
                 {children}
               </Prose>
             </article>
-            <NewsletterWrapper 
-              title={'If you made it this far, you can do anything!'} 
-              body={'I publish technical content for developers who want to skill up, and break down AI, vector databases and tools for investors'} 
-            />
+            {!hideNewsletter && (
+              <NewsletterWrapper
+                title={'If you made it this far, you can do anything!'}
+                body={'I publish technical content for developers who want to skill up, and break down AI, vector databases and tools for investors'}
+              />
+            )}
             <Suspense fallback={<div>Loading...</div>}>
               <GiscusWrapper />
             </Suspense>
