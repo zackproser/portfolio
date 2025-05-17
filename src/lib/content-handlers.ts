@@ -447,10 +447,14 @@ export function getDefaultPaywallText(contentType: string): {
 export function renderPaywalledContent(
   MdxContent: React.ComponentType,
   content: Content, // Use the processed Content type
-  hasPurchased: boolean
+  hasPurchased: boolean,
+  isSubscribed: boolean
 ) {
   // Determine if we should show the full content
-  const showFullContent = !content.commerce?.isPaid || hasPurchased;
+  const showFullContent =
+    (!content.commerce?.isPaid && !content.commerce?.requiresEmail) ||
+    hasPurchased ||
+    (content.commerce?.requiresEmail && isSubscribed);
 
   // Get default paywall text based on content type
   const defaultText = getDefaultPaywallText(content.type);
@@ -476,6 +480,8 @@ export function renderPaywalledContent(
       paywallHeader: content.commerce?.paywallHeader || defaultText.header,
       paywallBody: content.commerce?.paywallBody || defaultText.body,
       buttonText: content.commerce?.buttonText || defaultText.buttonText,
+      requiresEmail: content.commerce?.requiresEmail,
+      isSubscribed: isSubscribed,
       // Pass content object itself if ArticleContent needs more data
       content: content,
     }

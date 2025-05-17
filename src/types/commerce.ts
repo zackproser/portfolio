@@ -3,6 +3,11 @@ import { StaticImageData } from 'next/image'
 // Commerce-related types
 export interface CommerceConfig {
   isPaid: boolean
+  /**
+   * When true, the content is free but requires the user to submit
+   * their email and be subscribed to the newsletter.
+   */
+  requiresEmail?: boolean
   price: number
   stripe_price_id?: string
   previewLength?: number
