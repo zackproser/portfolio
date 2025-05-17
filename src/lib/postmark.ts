@@ -1,7 +1,7 @@
 import { ServerClient } from 'postmark'
 // import { renderPaywalledContent, loadContent } from "./content-handlers"; // Note: loadContent might be deprecated, check content-handlers
 import { getContentWithComponentByDirectorySlug } from "./content-handlers"; // Use this instead of loadContent
-import { ExtendedMetadata } from '@/types'
+import { ExtendedMetadata, LeadAnalysis } from '@/types'
 import { emailLogger as logger } from '@/utils/logger' // Import centralized email logger
 import { getContentUrlFromObject } from './content-url'
 
@@ -178,7 +178,7 @@ async function extractPreviewContent(productSlug: string): Promise<PreviewConten
  * @returns Postmark response
  */
 const sendFreeChaptersEmail = async (
-	input: SendFreeChaptersEmailInput
+        input: SendFreeChaptersEmailInput
 ): Promise<MessageSendingResponse | null> => {
 	logger.info(`[START] Sending free chapters email to: ${input.To}`);
 	logger.debug(`[CONFIG] Postmark API Key configured: ${!!process.env.POSTMARK_API_KEY}`);
@@ -268,7 +268,55 @@ You're receiving this email because you requested a preview from Zachary Proser.
 		// Handle specific Postmark errors if needed
 		// e.g., if (error.code === 406) { ... }
 		return null;
-	}
+        }
 };
 
-export { sendReceiptEmail, sendFreeChaptersEmail, type SendReceiptEmailInput, type SendFreeChaptersEmailInput };
+interface SendLeadNotificationInput {
+  messages: { role: string; content: string }[];
+  analysis: LeadAnalysis;
+  email?: string | null;
+}
+
+const sendLeadNotificationEmail = async (
+  input: SendLeadNotificationInput
+): Promise<MessageSendingResponse | null> => {
+  const adminEmail = process.env.ADMIN_EMAIL || 'zackproser@gmail.com';
+
+  const conversationText = input.messages
+    .map((m) => `${m.role}: ${m.content}`)
+    .join('\n');
+
+  const emailData = {
+    From: 'notifications@zackproser.com',
+    To: adminEmail,
+    Subject: 'New Potential Lead from Chatbot',
+    HtmlBody: `
+      <h1>New Potential Lead Detected</h1>
+      <p><strong>Email:</strong> ${input.email || 'unknown'}</p>
+      <p><strong>Confidence:</strong> ${input.analysis.confidence}</p>
+      <p><strong>Reasons:</strong> ${input.analysis.reasons.join(', ')}</p>
+      <p><strong>Topics:</strong> ${input.analysis.topics.join(', ')}</p>
+      <p><strong>Next Steps:</strong> ${input.analysis.nextSteps.join(', ')}</p>
+      <pre style="white-space:pre-wrap">${conversationText}</pre>
+    `,
+    TextBody: `New Potential Lead\nEmail: ${input.email || 'unknown'}\nConfidence: ${input.analysis.confidence}\nReasons: ${input.analysis.reasons.join(', ')}\nTopics: ${input.analysis.topics.join(', ')}\nNext Steps: ${input.analysis.nextSteps.join(', ')}\nConversation:\n${conversationText}`,
+    MessageStream: 'outbound',
+  };
+
+  try {
+    const response = await client.sendEmail(emailData);
+    logger.info('[SUCCESS] Lead notification sent:', response);
+    return response;
+  } catch (error) {
+    logger.error('[FAIL] Failed to send lead notification:', error);
+    return null;
+  }
+};
+
+export {
+  sendReceiptEmail,
+  sendFreeChaptersEmail,
+  sendLeadNotificationEmail,
+  type SendReceiptEmailInput,
+  type SendFreeChaptersEmailInput,
+};

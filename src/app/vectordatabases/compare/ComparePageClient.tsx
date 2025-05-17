@@ -264,9 +264,9 @@ export default function ComparePageClient({
                     const categoryObj = db[category] as { [feature: string]: any } || {};
                     const value = categoryObj[feature];
                     return (
-                      <TableCell key={db.name}>
+                      <TableCell key={db.name} className="text-center">
                         {typeof value === 'boolean' ? (
-                          <span className={value ? 'text-green-600' : 'text-red-600'}>
+                          <span className={value ? 'text-green-600 text-xl' : 'text-red-600 text-xl'}>
                             {getEmoji(value.toString())}
                           </span>
                         ) : (
