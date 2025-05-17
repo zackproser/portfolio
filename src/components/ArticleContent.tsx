@@ -68,7 +68,14 @@ export default function ArticleContent({
         <EmailSignupGate
           header={paywallHeader}
           body={paywallBody}
-        />
+        >
+          <NewsletterWrapper
+            title={paywallHeader || 'Join the newsletter to continue'}
+            body={paywallBody || 'Enter your email to unlock this content.'}
+            successMessage="Thanks for subscribing! Refresh to view the full article."
+            position="gate"
+          />
+        </EmailSignupGate>
       ) : (
         <Paywall
           content={content}
