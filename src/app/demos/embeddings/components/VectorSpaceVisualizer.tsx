@@ -79,9 +79,9 @@ const VectorSpaceVisualizer = ({
   
   // Initial render when component mounts - force immediate rendering
   useEffect(() => {
-    if (isMounted && svgRef.current && Object.keys(embeddings).length > 0 && !isComputing) {
+    if (isMounted && svgRef.current && Object.keys(embeddings).length > 0) {
       setIsComputing(true);
-      
+
       setTimeout(() => {
         try {
           renderVisualization();
@@ -91,15 +91,15 @@ const VectorSpaceVisualizer = ({
         }
       }, 10);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMounted, embeddings, isComputing]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted, embeddings]);
   
   // Re-render when these props change
   useEffect(() => {
-    if (!svgRef.current || Object.keys(embeddings).length === 0 || !isMounted || isComputing) return;
-    
+    if (!svgRef.current || Object.keys(embeddings).length === 0 || !isMounted) return;
+
     setIsComputing(true);
-    
+
     setTimeout(() => {
       try {
         renderVisualization();
@@ -107,9 +107,8 @@ const VectorSpaceVisualizer = ({
         setIsComputing(false);
       }
     }, 10);
-    
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentEmbedding, currentLabel, projectionMethod, isComputing]);
+  }, [currentEmbedding, currentLabel, projectionMethod]);
   
   const renderVisualization = async () => {
     if (!svgRef.current) return;
