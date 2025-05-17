@@ -32,6 +32,8 @@ const Demo = () => {
   const [performingQuery, setPerformingQuery] = useState(false);
   const [embeddingProgress, setEmbeddingProgress] = useState(0);
   const [embeddingsGenerated, setEmbeddingsGenerated] = useState(false);
+  const [queryText, setQueryText] = useState('');
+  const [queryResults, setQueryResults] = useState<any[]>([]);
   const [phrases, setPhrases] = useState<DemoPhrase[]>([{
     text: 'The quick brown fox jumps over the lazy dog',
     selected: false,
@@ -1219,16 +1221,42 @@ const Demo = () => {
     handleSectionCompletion(1);
   }
 
-  const handleCreateNamespace = () => {
+  const handleCreateNamespace = async () => {
+    await fetch('/api/pineconenamespaces', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ namespace, vectorsToUpsert: [] }),
+    });
     handleSectionCompletion(2);
   }
 
   const handlePhraseSelection = (phrase: string) => {
-    setPhrases(phrases.filter((p) => {
-      if (p.text === phrase) {
-        p.selected = !p.selected;
-      }
-    }))
+    setPhrases(prev =>
+      prev.map(p =>
+        p.text === phrase ? { ...p, selected: !p.selected } : p
+      )
+    );
+  };
+
+  const handleMetadataChange = (key: string, value: string) => {
+    setMetadata(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleMetadataDelete = (key: string) => {
+    setMetadata(prev => {
+      const newMeta = { ...prev };
+      delete newMeta[key];
+      return newMeta;
+    });
+  };
+
+  const handleAddMetadata = () => {
+    if (metadata.key && metadata.value) {
+      setMetadata(prev => {
+        const { key, value, ...rest } = prev;
+        return { ...rest, [metadata.key]: metadata.value };
+      });
+    }
   };
 
   const handleGenerateEmbeddings = async () => {
@@ -1267,6 +1295,7 @@ const Demo = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          namespace,
           vectorsToUpsert,
         }),
       });
@@ -1280,6 +1309,36 @@ const Demo = () => {
       console.error('Error upserting vectors:', error);
     } finally {
       setUpsertingVectors(false);
+    }
+  };
+
+  const handleQuery = async () => {
+    setPerformingQuery(true);
+    try {
+      const params = new URLSearchParams({
+        namespace,
+        query: queryText,
+      });
+      const response = await fetch(`/api/pineconenamespaces?${params.toString()}`);
+      const data = await response.json();
+      setQueryResults(data.matches || []);
+    } catch (e) {
+      console.error('Error querying vectors:', e);
+    } finally {
+      setPerformingQuery(false);
+    }
+  };
+
+  const handleCleanup = async () => {
+    try {
+      await fetch('/api/pineconenamespaces', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ namespace }),
+      });
+      handleSectionCompletion(0);
+    } catch (e) {
+      console.error('Error deleting namespace:', e);
     }
   };
 
@@ -1503,7 +1562,7 @@ const Demo = () => {
                   />
                   <button
                     className="ml-2 text-blue-500 hover:text-blue-700 text-sm"
-                    onClick={undefined}
+                    onClick={handleAddMetadata}
                   >
                     Add
                   </button>
@@ -1544,10 +1603,17 @@ const Demo = () => {
             In this section, you can perform a similarity search on the index. Enter a query phrase
             and find the most similar vectors based on semantic meaning.
           </p>
-          {/* Add form or input fields for querying the index */}
+          <input
+            type="text"
+            className="border border-gray-300 rounded p-2 mb-4 w-full text-black"
+            placeholder="Search phrase"
+            value={queryText}
+            onChange={(e) => setQueryText(e.target.value)}
+          />
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-            onClick={() => handleSectionCompletion(4)}
+            onClick={handleQuery}
+            disabled={!queryText || performingQuery}
           >
             {performingQuery ? (
               <svg
@@ -1572,6 +1638,15 @@ const Demo = () => {
               'Search'
             )}
           </button>
+          {queryResults.length > 0 && (
+            <ul className="mt-4 space-y-2">
+              {queryResults.map((r, i) => (
+                <li key={i} className="text-sm">
+                  <span className="font-semibold">{r.id}</span> - score: {r.score?.toFixed(2)}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       ),
     },
@@ -1588,31 +1663,9 @@ const Demo = () => {
           </p>
           <button
             className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded"
-            onClick={() => handleSectionCompletion(0)}
-            disabled={sections[4].loading}
+            onClick={handleCleanup}
           >
-            {sections[4].loading ? (
-              <svg
-                className="animate-spin h-5 w-5 mr-3 inline"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-            ) : (
-              'Delete Namespace'
-            )}
+            Delete Namespace
           </button>
         </div>
       ),
