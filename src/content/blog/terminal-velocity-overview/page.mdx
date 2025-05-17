@@ -128,7 +128,7 @@ I may execute many different tasks during the course of a day: write a new featu
 
 This involves getting data from one place like a `terraform output` into a command line argument, and then copying and pasting the output of that command into the separate log file you're keeping, which you then separately want to pipe into another operation in a different pane. I think of my tmux panes as unix pipes. 
 
-The main idea is that my workspace is a fluid thing that can shift and scale up or down in order to accomodate the task at hand. If I'm writing code that needs to know the docker image ID of a particular image I built recently, I can pop open a new tmux pane and run whatever Docker commands I need to get that information. Because each pane is a shell, I can script against and further process my output with any and every unix tool to get exactly what I want. 
+The main idea is that my workspace is a fluid thing that can shift and scale up or down in order to accommodate the task at hand. If I'm writing code that needs to know the docker image ID of a particular image I built recently, I can pop open a new tmux pane and run whatever Docker commands I need to get that information. Because each pane is a shell, I can script against and further process my output with any and every unix tool to get exactly what I want.
 
 Let's make this more concrete with an example. In the following demo gif, I use neovim to edit code, which means my editor is just another tmux pane. In this case, I'm writing some code that needs a Docker image ID. I need only create a new split and do my Docker work there. When I have the Docker image ID I need, I can close the extra pane, recovering the full screen's real estate for my focused coding task.
 
