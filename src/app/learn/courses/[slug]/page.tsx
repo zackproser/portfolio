@@ -11,6 +11,7 @@ import {
   renderPaywalledContent,
   getDefaultPaywallText
 } from '@/lib/content-handlers'
+import { isEmailSubscribed } from '@/lib/newsletter'
 
 // Content type for this handler
 const CONTENT_TYPE = 'learn/courses'
@@ -48,9 +49,14 @@ export default async function CourseSlugPage({ params }: PageProps) {
   // Get user ID from session
   const session = await auth()
   const userId = session?.user.id
-  
+
   // Check if user has purchased access
   const userHasPurchased = await hasUserPurchased(userId, CONTENT_TYPE, slug)
+
+  let isSubscribed = false
+  if (content?.commerce?.requiresEmail) {
+    isSubscribed = await isEmailSubscribed(session?.user?.email || null)
+  }
   
   // Check if content requires payment
   if (content?.commerce?.isPaid) {
@@ -64,7 +70,7 @@ export default async function CourseSlugPage({ params }: PageProps) {
           {/* Note: We pass MdxContent to renderPaywalledContent below, 
               so no need to render it separately here unless you want a specific preview structure */}
           {/* <MdxContent /> */} 
-          {renderPaywalledContent(MdxContent, content, userHasPurchased)} 
+          {renderPaywalledContent(MdxContent, content, userHasPurchased, isSubscribed)}
           {/* Pass the entire content object to Paywall */}
           <Paywall 
             content={content}
@@ -81,7 +87,7 @@ export default async function CourseSlugPage({ params }: PageProps) {
   return (
     <>
       {/* Render potentially paywalled content (will render full if purchased or not paid) */}
-      {renderPaywalledContent(MdxContent, content, userHasPurchased)}
+      {renderPaywalledContent(MdxContent, content, userHasPurchased, isSubscribed)}
     </>
   )
 } 
