@@ -182,15 +182,15 @@ export default function Example() {
   return (
     <>
       <Head>
-        <title>Zachary Proser testimonials</title>
+        <title>Testimonials - Zachary Proser</title>
         <meta
           name="description"
-          content="testimonials from people who have worked with me"
+          content="Endorsements from professionals I've worked with"
         />
       </Head>
       <SimpleLayout
         title="What's it like to work with me?"
-        intro="Let's ask some folks who have..."
+        intro="Hear directly from professionals who have collaborated with me."
       >
         <div className="relative isolate">
           <div
@@ -220,7 +220,7 @@ export default function Example() {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-xl text-center">
               <h2 className="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-2xl">
-                From colleagues, clients and collaborators
+                Testimonials
               </h2>
             </div>
             <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 dark:text-gray-300 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
@@ -232,7 +232,7 @@ export default function Example() {
                   <Image
                     className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
                     src={featuredTestimonial.author.imageUrl}
-                    alt=""
+                    alt={featuredTestimonial.author.name}
                     width={40}
                     height={40}
                   />
@@ -268,7 +268,7 @@ export default function Example() {
                             <Image
                               className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
                               src={testimonial.author.imageUrl}
-                              alt=""
+                              alt={testimonial.author.name}
                               width={40}
                               height={40}
                             />
