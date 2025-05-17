@@ -21,8 +21,8 @@ import AnthonyDavanzo from '@/images/anthony-davanzo.webp'
 import { generateOgUrl } from '@/utils/ogUrl'
 
 const data = {
-  title: 'Testimonials and social proof',
-  description: 'What is it like to work with me?',
+  title: 'Professional endorsements',
+  description: "What's it like to work with me?",
 };
 
 const ogUrl = generateOgUrl(data);
@@ -182,7 +182,7 @@ export default function Example() {
   return (
     <>
       <Head>
-        <title>Testimonials - Zachary Proser</title>
+        <title>Professional endorsements - Zachary Proser</title>
         <meta
           name="description"
           content="Endorsements from professionals I've worked with"
