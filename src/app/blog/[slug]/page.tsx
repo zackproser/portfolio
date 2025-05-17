@@ -12,6 +12,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
 import { metadataLogger as logger } from '@/utils/logger'
+import { isEmailSubscribed } from '@/lib/newsletter'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -80,13 +81,20 @@ export default async function Page({ params }: PageProps) {
   } else {
     logger.debug(`Content (${slug}) is not marked as paid.`);
   }
+
+  let isSubscribed = false;
+  if (content?.commerce?.requiresEmail) {
+    isSubscribed = await isEmailSubscribed(session?.user?.email || null);
+  }
   
   logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
+  const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
+
   return (
     <>
-    <ArticleLayout metadata={content} serverHasPurchased={hasPurchased}>
+    <ArticleLayout metadata={content} serverHasPurchased={hasPurchased} hideNewsletter={hideNewsletter}>
       {hasPurchased ? (
         <div className="purchased-content">
           <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 mb-6">
@@ -96,7 +104,7 @@ export default async function Page({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderPaywalledContent(MdxContent, content, hasPurchased)
+        renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed)
       )}
     </ArticleLayout>
     </>
