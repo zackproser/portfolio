@@ -129,7 +129,9 @@ export default function ProductsPageClient({ products }: { products: ProductCont
           
           // Command completed, execute it (use currentCommand to track the correct command)
           this.text.push(this.currentLine)
-          
+          this.currentLine = '$ '
+          this.cursorPos = 2
+
           // Add flash effect data for the newly added line
           this.flashEffects = this.flashEffects || []
           this.flashEffects.push({
