@@ -12,6 +12,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
 import { metadataLogger as logger } from '@/utils/logger'
+import { isEmailSubscribed } from '@/lib/newsletter'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -80,6 +81,11 @@ export default async function Page({ params }: PageProps) {
   } else {
     logger.debug(`Content (${slug}) is not marked as paid.`);
   }
+
+  let isSubscribed = false;
+  if (content?.commerce?.requiresEmail) {
+    isSubscribed = await isEmailSubscribed(session?.user?.email || null);
+  }
   
   logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
 
@@ -96,7 +102,7 @@ export default async function Page({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderPaywalledContent(MdxContent, content, hasPurchased)
+        renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed)
       )}
     </ArticleLayout>
     </>
