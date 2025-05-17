@@ -7,6 +7,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import embeddingsDemoHero from '@/images/embeddings-demo-hero.webp'
 import tokenizationDemoHero from '@/images/tokenization-demo-hero.webp'
 import chatbotDemoHero from '@/images/chatbot-demo-hero.webp'
+import vectorDatabaseDemoHero from '@/images/pinecone-vector-databases.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
@@ -41,6 +42,15 @@ const demos: Content[] = [
     date: '2024-01-01',
     type: 'demo',
     image: tokenizationDemoHero
+  },
+  {
+    slug: '/demos/vectordatabase',
+    title: 'Vector Database Demo',
+    description: 'Step through the basics of namespaces, upserts, and similarity search.',
+    author: 'Zachary Proser',
+    date: '2024-01-01',
+    type: 'demo',
+    image: vectorDatabaseDemoHero
   }
 ];
 
