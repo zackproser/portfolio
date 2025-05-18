@@ -1,0 +1,122 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+
+import codexHero from '@/images/codex-hero.webp'
+import codexChat from '@/images/codex-main-chat-interface.webp'
+import createPr from '@/images/codex-create-pr.webp'
+import creatingPr from '@/images/codex-creating-pr.webp'
+import newTasksFromOne from '@/images/codex-new-tasks-from-one.webp'
+import familiarChatInterface from '@/images/codex-familiar-chat-interface.webp'
+import codexRealTask from '@/images/codex-real-task.webp'
+import resolveMergeIssue from'@/images/resolve-merge-issue.webp'
+import chatThread from '@/images/chat-thread.webp'
+import launchNewEnv from '@/images/codex-launch-new-environment.webp'
+import codexFinal from '@/images/codex-final.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+    author: "Zachary Proser",
+    date: "2025-05-18",
+    title: "OpenAI Codex Hands-on Review",
+    description: "On May 16th, 2025, I gained access to OpenAI's Codex research preview. Here's what I think",
+    image: codexHero,
+});
+
+<Image src={codexHero} alt="I got hands-on with OpenAI's Codex research preview. Here's what I thought..." />
+
+## Table of contents 
+
+On May 16th, 2025, I gained access to OpenAI's Codex research preview. I connected Codex to my GitHub organization and spent 
+the next few days using it to ship improvements and bug fixes to my site and some micro sass projects simultaneously. 
+
+Here are my current thoughts...
+
+## Codex: How it works 
+
+Codex is currently a chat-first experience. You gain access by being invited or by paying for the Pro ($200/per month) subscription. 
+
+<Image src={codexChat} alt="Codex is a chat-first experience now" />
+
+Once you've got access, you start by enabling multi-factor authentication, which is required to use Codex, and then you connect your GitHub organization. 
+
+## Things I like about Codex 
+
+### Consciousness and desire are multi-threaded 
+
+Codex feels like it was designed for me. 
+
+This GitHub connection allows you to specify which repository and which branch your current instructions are for, because the primary chat interface is contemplated as a place for you to 
+rapid-fire a day's worth of tasks into the interface to spin up multiple tasks in parallel.
+
+<Image src={codexRealTask} alt="A real Codex task" /> 
+
+I took a swing through the Codex best practices guide, which encourages you to spin up as many tasks as you need. The current rate limits support you doing this.
+
+This is one of the things I like most about Codex and that I'm most excited for as the platform improves, because this gels with the way I work. 
+
+<Image src={resolveMergeIssue} alt="Asking Codex to resolve a merge issue" />
+
+By the time I start work, I tend to have a laundry list of items I want to complete, so initiating a ton of them in parallel via natural language feels like a reasonable interface. 
+
+### Follow ups via chat
+
+Once your initial task has had some time to bake, you can click into it to view its progress, see the logs and make follow-up requests via a very familiar chat interface.
+
+<Image src={chatThread} alt="Codex exposes a familiar chat interface" />
+
+### Looks good - ship it!
+
+<Image src={createPr} alt="Once you're satisfied, Codex can open your PRs" />
+
+Once you're satisfied with the changes on a given branch, you can tell Codex to open a PR for you, and it will automatically 
+fill in the description. 
+
+<Image src={creatingPr} alt="Codex hard at working opening your pull request" />
+
+### Monitor logs and progress of tasks
+
+You can step into any tasks to see the chat pane but also the raw logs, which show you the commands and shells that Codex is spawning 
+in order to make changes.
+
+<Image src={launchNewEnv} alt="Launching a new environment via Codex" />
+
+## Things I'm waiting on to improve 
+
+### Code quality and one-shot task execution
+
+I've been experimenting with Codex for about 3 days at the time of writing. I haven't yet noticed a marked difference in the performance of the Codex model, which OpenAI explains is a descendant of GPT-3 and is proficient in more 
+than 12 programming languages.
+
+Right now, it feels like I can spin up multiple tasks in parallel with a 40-60% chance that I'll be content enough with the result to hit the Open PR button instead of requesting changes.
+
+### Multi-turn updates on a branch 
+
+Updating existing PRs is rough. 
+
+It's not clear when or if changes will be pushed on an existing branch, and right now the app encourages you to create more pull requests. 
+
+### Lack of network connectivity in execution sandboxes 
+
+This currently blocks the use of Codex for a lot of the tasks that working developers are going to want to use it for, namely
+resolving annoying dependency issues by installing a more recent version of a package and regenerating the relevant lockfiles in the process.
+
+Codex can't reach the internet right now, but it does have your repo freshly cloned and made available to its execution environment. 
+
+This means it can't `pnpm add @tar-fs@latest` even if you ask it to. So, for now, I'll still pulling down these branches and fixing them locally or 
+commenting `@dependabot rebase` on PRs that support it.
+
+## Did it unlock insane productivity gains for me? 
+
+Not yet, but I can see how it will once: 
+
+- More tasks become one-shottable via additional refinements or model training or perhaps even the ability to multipex between different models for different tasks
+- The dev ex around opening and pushing to existing branches to update an already open pull request is improved
+- Codex enables more integrations with additional OpenAI platform capabilities such as generating images. 
+- Codex (potentially) becomes more of the high-level orchestration and signaling layer that humans primarily work out of
+
+<Image src={codexFinal} alt="I'm sure that imminent improvements will make Codex even more usable soon" />
+
+I'm confident that shortly I'll be able to use Codex as an indeal interface for starting a day of work and for keeping tabs on what needs attention and what is up next.
