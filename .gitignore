@@ -41,6 +41,7 @@ metadata-report*
 
 # Generated pages (excluding page files)
 src/app/comparisons/*
+!src/app/comparisons/**/
 !src/app/comparisons/**/page.tsx
 !src/app/comparisons/**/page.jsx
 !src/app/comparisons/**/page.mdx

@@ -10,6 +10,7 @@ export function getCategories() {
 
 export function getToolByName(name) {
   const normalizedName = name.toLowerCase().replace(/-/g, ' ');
-  const tool = data.tools.find(tool => tool.slug === normalizedName || tool.name.toLowerCase() === normalizedName);
+  const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+  const tool = data.tools.find(tool => slugify(tool.name) === slugify(normalizedName));
   return tool
 }
