@@ -38,7 +38,7 @@ export default function Page() {
   const tool2 = ${JSON.stringify(tool2)}
   const proseParagraphs = ${JSON.stringify(proseParagraphs, null, 2)}
 
-  return <ComparisonPageLayout tool1={tool1} tool2={tool2} proseParagraphs={proseParagraphs} />
+  return <ComparisonPageLayout metadata={metadata} tool1={tool1} tool2={tool2} proseParagraphs={proseParagraphs} />
 }
 `;
 };

@@ -19,6 +19,22 @@ const sentenceVariations = {
     "The main features of {tool1} are {uniqueFeatures1}. {tool2}'s primary offerings are {uniqueFeatures2}.",
     "{tool1} emphasizes {uniqueFeatures1} in its feature set. {tool2} highlights {uniqueFeatures2} as its core functionalities."
   ],
+  businessInfo: [
+    "{tool1} was founded in {foundingYear1} and has raised {funding1}. {tool2} started in {foundingYear2} with {funding2}.",
+    "{tool1} dates back to {foundingYear1} with funding of {funding1}, whereas {tool2} began in {foundingYear2} with {funding2}."
+  ],
+  usageStats: [
+    "{tool1} counts about {users1} users and {stars1} GitHub stars. {tool2} reports {users2} users and {stars2} stars.",
+    "{tool1} boasts {users1} users with {stars1} stars on GitHub, while {tool2} has {users2} users and {stars2} stars."
+  ],
+  marketPosition: [
+    "{tool1} holds roughly {share1} market share and competes with {competitors1}. {tool2} claims {share2} share competing with {competitors2}.",
+    "In terms of market share, {tool1} sits at {share1} against competitors {competitors1}. {tool2} occupies {share2} with rivals {competitors2}."
+  ],
+  innovation: [
+    "Recent updates for {tool1}: {updates1}. Next up: {roadmap1}. {tool2} recently {updates2} and plans {roadmap2}.",
+    "{tool1} recently {updates1}; upcoming plans include {roadmap1}. {tool2} has {updates2} and aims for {roadmap2}."
+  ],
   sharedFeature: "Both {tool1} and {tool2} offer {sharedFeature} as a key feature."
 };
 
@@ -97,14 +113,53 @@ module.exports = {
     });
 
     // Generate sentence for exclusive features
-    if (exclusiveFeatures1.length > 0 || exclusiveFeatures2.length > 0) {
-      const uniqueFeaturesParagraph = getRandomSentence('uniqueFeatures')
-        .replace(/{tool1}/g, tool1.name || 'Tool 1')
-        .replace(/{tool2}/g, tool2.name || 'Tool 2')
-        .replace(/{uniqueFeatures1}/g, exclusiveFeatures1.join(', '))
-        .replace(/{uniqueFeatures2}/g, exclusiveFeatures2.join(', '));
-      proseParagraphs.push(uniqueFeaturesParagraph);
-    }
+  if (exclusiveFeatures1.length > 0 || exclusiveFeatures2.length > 0) {
+    const uniqueFeaturesParagraph = getRandomSentence('uniqueFeatures')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{uniqueFeatures1}/g, exclusiveFeatures1.join(', '))
+      .replace(/{uniqueFeatures2}/g, exclusiveFeatures2.join(', '));
+    proseParagraphs.push(uniqueFeaturesParagraph);
+  }
+
+    const formatNumber = (n) =>
+      n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    const businessParagraph = getRandomSentence('businessInfo')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{foundingYear1}/g, tool1.business_info?.founding_year || 'unknown')
+      .replace(/{foundingYear2}/g, tool2.business_info?.founding_year || 'unknown')
+      .replace(/{funding1}/g, tool1.business_info?.funding || 'undisclosed funding')
+      .replace(/{funding2}/g, tool2.business_info?.funding || 'undisclosed funding');
+    proseParagraphs.push(businessParagraph);
+
+    const usageParagraph = getRandomSentence('usageStats')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{users1}/g, formatNumber(tool1.usage_stats?.number_of_users || 0))
+      .replace(/{users2}/g, formatNumber(tool2.usage_stats?.number_of_users || 0))
+      .replace(/{stars1}/g, formatNumber(tool1.usage_stats?.github_stars || 0))
+      .replace(/{stars2}/g, formatNumber(tool2.usage_stats?.github_stars || 0));
+    proseParagraphs.push(usageParagraph);
+
+    const marketParagraph = getRandomSentence('marketPosition')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{share1}/g, tool1.market_position?.market_share || 'a portion')
+      .replace(/{share2}/g, tool2.market_position?.market_share || 'a portion')
+      .replace(/{competitors1}/g, (tool1.market_position?.competitors || []).join(', ') || 'others')
+      .replace(/{competitors2}/g, (tool2.market_position?.competitors || []).join(', ') || 'others');
+    proseParagraphs.push(marketParagraph);
+
+    const innovationParagraph = getRandomSentence('innovation')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{updates1}/g, tool1.innovation?.recent_updates || 'recent updates')
+      .replace(/{updates2}/g, tool2.innovation?.recent_updates || 'recent updates')
+      .replace(/{roadmap1}/g, tool1.innovation?.future_roadmap || 'future plans')
+      .replace(/{roadmap2}/g, tool2.innovation?.future_roadmap || 'future plans');
+    proseParagraphs.push(innovationParagraph);
 
     // Add newlines between paragraphs
     return proseParagraphs.flatMap(paragraph => [paragraph, "\n\n"]).slice(0, -1);

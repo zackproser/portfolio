@@ -2,14 +2,11 @@ import React from 'react';
 import ToolComparisonIntro from './ToolComparisonIntro';
 import { BarCharts, BusinessInfo, DetailedComparison } from './AIToolComparison';
 import NewsletterWrapper from './NewsletterWrapper';
-import { SimpleLayout } from '@/components/SimpleLayout';
+import { ArticleLayout } from '@/components/ArticleLayout';
 
-const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
+const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs, metadata }) => {
   return (
-    <SimpleLayout
-      title={`${tool1.name} vs ${tool2.name}`}
-      intro="A detailed comparison of AI-assisted developer tools."
-    >
+    <ArticleLayout metadata={metadata}>
       <h2 className="text-2xl font-bold mt-8 mb-4">Growth compared</h2>
       <p>Let&apos;s start by breaking down the key metrics of each tool. You can hover over the chart for more information.</p>
       <BarCharts selectedTools={[tool1, tool2]} />
@@ -34,7 +31,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
         title="If you made it this far, you can do anything."
         body="Get honest reviews of AI-assisted development from someone who codes every day."
       />
-    </SimpleLayout>
+    </ArticleLayout>
   );
 };
 
