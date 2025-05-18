@@ -36,11 +36,11 @@ Here are my current thoughts...
 
 ## Codex: How it works 
 
-Codex is currently a chat-first experience. You gain access by being invited or by paying for the Pro ($200/per month) subscription. 
+Codex is currently a chat-first experience. You gain access by being invited or by paying for the Pro ($200/per month) subscription.
 
 <Image src={codexChat} alt="Codex is a chat-first experience now" />
 
-Once you've got access, you start by enabling multi-factor authentication, which is required to use Codex, and then you connect your GitHub organization. 
+Once you've got access, you start by enabling multi-factor authentication, which is required to use Codex. Next, you authorize the Codex GitHub app for each organization you want it to work with. Codex then clones your repositories into its own sandboxes so it can run commands and create branches on your behalf. If you maintain dozens of public and private repositories, this setup is fantastic because you can jump between projects and queue up tasks for each of them without leaving the interface. If you only keep a single repo or two, the overhead may feel heavier than just asking an LLM for help or working in an AI-powered editor like Cursor.
 
 ## Things I like about Codex 
 
@@ -92,11 +92,14 @@ than 12 programming languages.
 
 Right now, it feels like I can spin up multiple tasks in parallel with a 40-60% chance that I'll be content enough with the result to hit the Open PR button instead of requesting changes.
 
+So far Codex has been perfect for firing off a bunch of maintenance-level updates: dependency bumps, minor copy tweaks and other small chores. I've tried asking it to tackle larger refactors and the experience quickly becomes cumbersome. The current workflow wants to open a fresh pull request for every iteration, which means pushing follow-up commits to an existing branch is awkward at best.
+
 ### Multi-turn updates on a branch 
 
-Updating existing PRs is rough. 
+Updating existing PRs is rough.
 
-It's not clear when or if changes will be pushed on an existing branch, and right now the app encourages you to create more pull requests. 
+It's not clear when or if changes will be pushed on an existing branch, and right now the app encourages you to create more pull requests.
+That makes multi-step refactors tricky because you can't reliably iterate on the same branch within Codex. Until this becomes smoother, I plan to use it mainly for the quick wins that can ship in a single pass.
 
 ### Lack of network connectivity in execution sandboxes 
 
