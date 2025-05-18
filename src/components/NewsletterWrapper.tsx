@@ -13,20 +13,29 @@ interface NewsletterWrapperProps {
   onSubscribe?: () => void;
   position?: string;
   className?: string;
+  /**
+   * When true, the sticky sidebar variant of the newsletter
+   * will not be rendered. Useful for paywall flows where only
+   * a single signup form should be displayed.
+   */
+  disableSticky?: boolean;
 }
 
-const NewsletterWrapper = ({ 
-  title, 
-  body, 
+const NewsletterWrapper = ({
+  title,
+  body,
   successMessage,
   onSubscribe,
   position = "content",
-  className
+  className,
+  disableSticky = false
 }: NewsletterWrapperProps) => {
   const [showSticky, setShowSticky] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
+    if (disableSticky) return;
+
     // Check if user has previously dismissed the newsletter
     const hasUserDismissed = localStorage.getItem('newsletter-dismissed');
     if (hasUserDismissed) {
@@ -43,7 +52,7 @@ const NewsletterWrapper = ({
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [disableSticky]);
 
   const handleDismiss = () => {
     setIsDismissed(true);
@@ -65,7 +74,7 @@ const NewsletterWrapper = ({
       />
       
       {/* Sticky Newsletter */}
-      {showSticky && !isDismissed && (
+      {showSticky && !isDismissed && !disableSticky && (
         <div className="fixed bottom-4 right-4 z-50 w-96 shadow-xl animate-slide-up">
           <button
             onClick={handleDismiss}
