@@ -447,7 +447,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
 
         <div className="mt-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 p-6 max-w-3xl mx-auto text-center">
           <p className="text-lg font-semibold text-emerald-800 dark:text-emerald-200">30-Day Risk-Free Trial</p>
-          <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-300">If you're not satisfied, get a full refund within 30 days.</p>
+          <p className="mt-2 text-sm text-emerald-700 dark:text-emerald-300">If you&apos;re not satisfied, get a full refund within 30 days.</p>
         </div>
         
         {/* Author Section */}
