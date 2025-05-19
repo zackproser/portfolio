@@ -13,7 +13,7 @@ export async function importComparison(
   return {
     ...metadata,
     type: 'blog',
-    slug: path.basename(comparisonFilename, '.mdx')
+    slug: path.dirname(comparisonFilename)
   }
 }
 
