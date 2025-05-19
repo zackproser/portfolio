@@ -13,6 +13,8 @@ import chatThread from '@/images/chat-thread.webp'
 import launchNewEnv from '@/images/codex-launch-new-environment.webp'
 import codexFinal from '@/images/codex-final.webp'
 import poorErrorHandling from '@/images/codex-poor-error-handling.webp'
+import phone from '@/images/codex-phone.webp'
+import phoneTwo from '@/images/codex-phone-2.webp'
 
 import ConsultingCTA from '@/components/ConsultingCTA'
 
@@ -27,6 +29,8 @@ export const metadata = createMetadata({
 });
 
 <Image src={codexHero} alt="I got hands-on with OpenAI's Codex research preview. Here's what I thought..." />
+
+<figcaption>The interface I want and the performance I'll have to wait for...</figcaption>
 
 ## Table of contents 
 
@@ -61,6 +65,17 @@ This is one of the things I like most about Codex and that I'm most excited for 
 <Image src={resolveMergeIssue} alt="Asking Codex to resolve a merge issue" />
 
 By the time I start work, I tend to have a laundry list of items I want to complete, so initiating a ton of them in parallel via natural language feels like a reasonable interface. 
+
+### I think this will eventually support my dream untethered workflow
+
+As I wrote about in [/blog/walking-and-talking-with-ai](Walking and talking with AI in the woods), ideally I'd like to start my morning in an office, launch a bunch of tasks, 
+get some planning out of the way, and then step out for a long walk in nature.
+
+<Image src={phone} alt="Codex is even usable on mobile" />
+
+I think, ultimately, once some of the sharp edges are polished, Codex will support me and others in performing our work effectively away from our desks.
+
+<Image src={phoneTwo} alt="Codex and similar tools will ultimately support workers who want to be effective away from their desks" />
 
 ### Follow ups via chat
 
@@ -110,6 +125,8 @@ Updating existing PRs is rough.
 It's not clear when or if changes will be pushed on an existing branch, and right now the app encourages you to create more pull requests. 
 
 ### Lack of network connectivity in execution sandboxes 
+
+To be clear, I understand this is an intentional design choice. It mitigates remote code execution vulnerabilities amongst others.
 
 This currently blocks the use of Codex for a lot of the tasks that working developers are going to want to use it for, namely
 resolving annoying dependency issues by installing a more recent version of a package and regenerating the relevant lockfiles in the process.
