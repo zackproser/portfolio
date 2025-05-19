@@ -86,3 +86,13 @@ If you're deploying on Vercel, you can get your production database URL from the
 ### How It Works
 
 The script scans the content directories for articles with `isPaid: true` in their metadata, which identifies them as paid products. It then creates purchase records in the database with a phony Stripe payment ID, effectively granting free access to the specified product. When the user logs in with their email, they'll have access to the product as if they had purchased it. 
+## Comparison Page Generator
+
+The `create-ai-assisted-dev-tools-comparison-pages.js` script generates MDX pages comparing developer tools pairwise. Each page now uses `ArticleLayout` for consistent styling with the rest of the site. The underlying prose generator has been expanded to include company history, usage statistics, market position and recent innovation details for each tool. Run it manually with:
+
+```bash
+node scripts/create-ai-assisted-dev-tools-comparison-pages.js
+```
+
+Run with `--debug` to log extra details.
+
