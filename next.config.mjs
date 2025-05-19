@@ -5,11 +5,6 @@ import remarkMermaid from "remark-mermaid";
 import rehypePrism from "@mapbox/rehype-prism";
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import bundleAnalyzer from "@next/bundle-analyzer";
-
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
-});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -178,4 +173,4 @@ const withMDX = nextMDX({
   },
 });
 
-export default withBundleAnalyzer(withMDX(nextConfig));
+export default withMDX(nextConfig);
