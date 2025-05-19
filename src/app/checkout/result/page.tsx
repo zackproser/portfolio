@@ -69,7 +69,7 @@ function CheckoutResultContent() {
 
         if (authStatus === 'authenticated') {
           const contentUrl = getContentUrlFromObject(data.content, true);
-          setTimeout(() => router.push(contentUrl), 1000);
+          setTimeout(() => router.push(contentUrl as any), 1000);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -129,7 +129,7 @@ function CheckoutResultContent() {
             </p>
             <div className="mt-4 flex space-x-4">
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => router.push('/login' as any)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Log in
@@ -195,7 +195,7 @@ function CheckoutResultContent() {
             <div className="mt-4">
               {authStatus === 'authenticated' ? (
                 <Link
-                  href={contentUrl}
+                  href={contentUrl as any}
                   className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
                   Read Now
@@ -224,7 +224,7 @@ function CheckoutResultContent() {
             </p>
             {authStatus === 'authenticated' ? (
               <Link
-                href={contentUrl}
+                href={contentUrl as any}
                 className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
                 Start Learning

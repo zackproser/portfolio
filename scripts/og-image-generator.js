@@ -148,7 +148,17 @@ async function getContentMetadata(contentType, slug) {
       
       // Simple frontmatter extraction
       const titleMatch = content.match(/title:\s*['"](.+?)['"]/);
-      const descriptionMatch = content.match(/description:\s*['"](.+?)['"]/);
+      
+      // Use a more robust regex for description that can handle apostrophes
+      // First try to match backtick style, then double quotes, then single quotes
+      let descriptionMatch = content.match(/description:\s*`([\s\S]*?)`/);
+      if (!descriptionMatch) {
+        descriptionMatch = content.match(/description:\s*"((?:[^"\\]|\\.)*)"/);
+      }
+      if (!descriptionMatch) {
+        descriptionMatch = content.match(/description:\s*'((?:[^'\\]|\\.)*?)'/);
+      }
+      
       const typeMatch = content.match(/type:\s*['"](.+?)['"]/);
       
       // Try to extract image information from frontmatter
@@ -196,7 +206,28 @@ async function getContentMetadata(contentType, slug) {
       }
       
       const title = titleMatch ? titleMatch[1] : slug;
-      const description = descriptionMatch ? descriptionMatch[1] : '';
+      
+      // Extract description from match and handle special characters
+      let description = '';
+      if (descriptionMatch && descriptionMatch[1]) {
+        description = descriptionMatch[1];
+        log(`[DEBUG] Found description: "${description}"`);
+      }
+      
+      // Log the raw description to verify it's being extracted correctly
+      let hasSpecialChars = false;
+      if (description.includes("'") || description.includes('"') || description.includes('&') || 
+          description.includes('<') || description.includes('>')) {
+        hasSpecialChars = true;
+        log(`[WARN] Description contains special characters that need escaping for ${contentType}/${slug}`);
+      }
+      
+      if (isVerbose) {
+        log(`[DEBUG] Raw description for ${contentType}/${slug}: "${description}"`);
+        if (hasSpecialChars) {
+          log(`[DEBUG] JSON stringified description: ${JSON.stringify(description)}`);
+        }
+      }
       const type = typeMatch ? typeMatch[1] : contentType === 'blog' ? 'blog' : 
                               contentType === 'videos' ? 'video' : 'content';
       
@@ -251,15 +282,39 @@ async function generateOGImage(content) {
   try {
     // Construct API URL with parameters
     const urlParams = new URLSearchParams();
-    urlParams.append('title', content.title);
-    // Decode any HTML entities in the description before passing to the API
-    const decodedDescription = content.description ? content.description
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'") : '';
-    urlParams.append('description', decodedDescription);
+    
+    // Ensure we have valid title and description
+    const safeTitle = content.title || 'Untitled';
+    urlParams.append('title', safeTitle);
+    
+    // Ensure we have a description and properly handle special characters
+    // We want to decode HTML entities first, then encode for URL parameters
+    let safeDescription = '';
+    if (content.description) {
+      // First decode any HTML entities
+      safeDescription = content.description
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      // Log the description processing
+      if (isVerbose) {
+        log(`[DEBUG] Original description: "${content.description}"`);
+        log(`[DEBUG] Decoded description: "${safeDescription}"`);
+        
+        if (safeDescription.includes("'") || safeDescription.includes('"') || 
+            safeDescription.includes('&') || safeDescription.includes('<') || 
+            safeDescription.includes('>')) {
+          log(`[WARN] Description contains special characters that might need escaping`);
+          log(`[DEBUG] Description JSON: ${JSON.stringify(safeDescription)}`);
+        }
+      }
+    }
+    
+    // The URLSearchParams will handle the proper encoding for us
+    urlParams.append('description', safeDescription);
     
     if (content.image) {
       urlParams.append('imageSrc', content.image);

@@ -52,7 +52,7 @@ export default async function LearningHome() {
             className="mt-4"
             variant="solid"
             color="green"
-            href={`/learn/about`}
+            href={`/learn/about` as any}
           >
             Learn more
           </Button>

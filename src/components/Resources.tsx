@@ -7,28 +7,28 @@ const resources = [
     description:
       'A comprehensive guide to choosing and using vector databases in RAG applications.',
     image: '/images/resources/vector-db.png',
-    href: '/resources/vector-db-guide',
+    href: '/resources/vector-db-guide' as any,
   },
   {
     title: 'Chunking Strategies',
     description:
       'Learn different document chunking strategies and when to use each one.',
     image: '/images/resources/chunking.png',
-    href: '/resources/chunking-strategies',
+    href: '/resources/chunking-strategies' as any,
   },
   {
     title: 'Prompt Engineering',
     description:
       'Master the art of crafting effective prompts for RAG applications.',
     image: '/images/resources/prompts.png',
-    href: '/resources/prompt-engineering',
+    href: '/resources/prompt-engineering' as any,
   },
   {
     title: 'Cost Optimization',
     description:
       'Strategies for optimizing costs in production RAG deployments.',
     image: '/images/resources/costs.png',
-    href: '/resources/cost-optimization',
+    href: '/resources/cost-optimization' as any,
   },
 ]
 
