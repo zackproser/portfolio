@@ -230,12 +230,12 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     contentUrl = getContentUrlFromObject({ type: contentType, directorySlug: finalSlug } as any);
   }
 
-  // Fix the type error: pass null for slug parameter to match the expected type
+  // Pass the finalSlug to the OG URL generator instead of null
   const ogImageUrl = generateOgUrl({ 
     title, 
     description, 
     image: processedImage,
-    slug: null // Set to null to match the expected type in the function signature
+    slug: finalSlug // Use the finalSlug instead of null
   });
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata

@@ -36,36 +36,29 @@ export function ArticleLayout({
   const { data: session } = useSession()
   const [hasPurchased, setHasPurchased] = useState(serverHasPurchased)
 
+  // Ensure we have string values for required fields with proper defaults
+  const safeSlug = metadata?.slug || '';
+  const safeTitle = metadata?.title as string || 'Untitled';
+  const safeType = typeof metadata?.type === 'string' ? metadata.type : 'blog';
+  const safeDescription = metadata?.description as string || '';
+  
   // Add a debug log to help identify which articles are missing slugs
-  if (!metadata.slug || metadata.slug === '') {
+  if (!safeSlug) {
     // Instead of just logging an error, log more details to help debug
     logger.warn('ArticleLayout: metadata missing slug', { 
-      title: metadata.title, 
-      type: metadata.type,
-      date: metadata.date
+      title: safeTitle, 
+      type: safeType,
+      date: metadata?.date
     });
   }
-
-  // Ensure we have string values for required fields
-  const safeSlug = metadata.slug || '';
-  const safeTitle = metadata.title as string || 'Untitled';
-  const safeType = metadata.type || 'blog';
   
-  // Extract the base slug to help with matching
-  const baseSlug = safeSlug.split('/').pop() || safeSlug;
-  
-  // Only log debug info if DEBUG_METADATA environment variable is set
-  // const isDebugMode = process.env.NODE_ENV === 'development' && process.env.DEBUG_METADATA === 'true';
-  // const debugLog = (message: string) => {
-  //   if (isDebugMode) {
-  //     console.log(`[ArticleLayout] ${message}`);
-  //   }
-  // };
+  // Extract the base slug to help with matching - handle empty strings gracefully
+  const baseSlug = safeSlug ? safeSlug.split('/').pop() || safeSlug : '';
   
   logger.debug(`Rendering for slug: ${safeSlug}, baseSlug: ${baseSlug}`);
 
   // Add more debug information about the image
-  if (metadata.image) {
+  if (metadata?.image) {
     logger.debug(`Image type: ${typeof metadata.image}`);
     if (typeof metadata.image === 'object' && metadata.image !== null) {
       logger.debug(`Image keys: ${Object.keys(metadata.image).join(',')}`);
@@ -82,8 +75,8 @@ export function ArticleLayout({
   // Generate the OG URL with proper slug parameter
   const ogUrl = generateOgUrl({
     title: safeTitle,
-    description: typeof metadata.description === 'string' ? metadata.description : undefined,
-    image: metadata.image,
+    description: safeDescription || undefined,
+    image: metadata?.image,
     slug: baseSlug as any // Force type to match expected parameter type
   });
   
@@ -100,7 +93,8 @@ export function ArticleLayout({
     }
 
     const checkPurchaseStatus = async () => {
-      if (!metadata.commerce?.isPaid || !safeSlug) return;
+      // Make sure both conditions are checked with null/undefined safety
+      if (!metadata?.commerce?.isPaid || !safeSlug) return;
       
       try {
         // If user is signed in, use their email
@@ -127,35 +121,39 @@ export function ArticleLayout({
     };
 
     checkPurchaseStatus();
-  }, [session, safeSlug, metadata.commerce?.isPaid, serverHasPurchased]);
+  }, [session, safeSlug, metadata?.commerce?.isPaid, serverHasPurchased]);
 
-  // Determine if we should show the mini paywall
+  // Determine if we should show the mini paywall - add null checks for all properties
   const shouldShowMiniPaywall = 
-    metadata.commerce?.isPaid && 
-    !metadata.hideMiniPaywall && 
+    metadata?.commerce?.isPaid && 
+    !metadata?.hideMiniPaywall && 
     !hasPurchased && 
-    (metadata.miniPaywallTitle || metadata.commerce.miniPaywallTitle) &&
-    (metadata.miniPaywallDescription || metadata.commerce?.miniPaywallDescription);
+    (metadata?.miniPaywallTitle || metadata?.commerce?.miniPaywallTitle) &&
+    (metadata?.miniPaywallDescription || metadata?.commerce?.miniPaywallDescription);
 
   // Build the full URL for og:url and twitter:url
   let rootPath = '/blog/';
+  
+  // Use a more flexible approach to determine the root path
   if (safeType === 'video') {
     rootPath = '/videos/';
   } else if (safeType === 'course') {
     rootPath = '/learn/courses/';
+  } else if (typeof safeType === 'string' && safeType.includes('comparison') || safeSlug.includes('comparisons/')) {
+    rootPath = '/comparisons/';
   }
   
-  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${rootPath}${safeSlug}`;
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ''}${rootPath}${safeSlug}`;
 
   return (
     <>
       <Head>
         <title>{`${safeTitle} - Zachary Proser`}</title>
-        <meta name="description" content={metadata.description as string} />
+        <meta name="description" content={safeDescription} />
         
         {/* Open Graph tags */}
         <meta property="og:title" content={safeTitle} />
-        <meta property="og:description" content={metadata.description as string} />
+        <meta property="og:description" content={safeDescription} />
         <meta property="og:url" content={fullUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content={ogUrl} />
@@ -163,7 +161,7 @@ export function ArticleLayout({
         {/* Twitter card tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={safeTitle} />
-        <meta name="twitter:description" content={metadata.description as string} />
+        <meta name="twitter:description" content={safeDescription} />
         <meta name="twitter:image" content={ogUrl} />
         <meta name="twitter:domain" content="zackproser.com" />
       </Head>
@@ -171,7 +169,7 @@ export function ArticleLayout({
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
           <div className="mx-auto max-w-2xl">
-            {shouldShowMiniPaywall && (
+            {shouldShowMiniPaywall && metadata && (
               <MiniPaywall
                 content={metadata as Content}
               />
@@ -182,11 +180,11 @@ export function ArticleLayout({
                   {safeTitle}
                 </h1>
                 <time
-                  dateTime={metadata.date}
+                  dateTime={metadata?.date}
                   className="order-first flex items-center text-base text-gray-500 dark:text-gray-400"
                 >
                   <span className="h-4 w-0.5 rounded-full bg-blue-200 dark:bg-blue-700" />
-                  <span className="ml-3">{metadata.date}</span>
+                  <span className="ml-3">{metadata?.date}</span>
                 </time>
               </header>
               

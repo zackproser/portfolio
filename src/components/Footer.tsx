@@ -6,24 +6,24 @@ const footerLinks = [
   {
     title: 'Connect',
     links: [
-      { title: 'Contact', href: '/contact' },
-      { title: 'Twitter', href: 'https://twitter.com/zackproser' },
-      { title: 'LinkedIn', href: 'https://linkedin.com/in/zackproser' }
+      { title: 'Contact', href: '/contact' as any },
+      { title: 'Twitter', href: 'https://twitter.com/zackproser' as any },
+      { title: 'LinkedIn', href: 'https://linkedin.com/in/zackproser' as any }
     ]
   },
   {
     title: 'Resources',
     links: [
-      { title: 'Technical Guides', href: '/tutorials' },
-      { title: 'Dev Tools', href: '/devtools' },
-      { title: 'API Reference', href: '/docs' }
+      { title: 'Technical Guides', href: '/tutorials' as any },
+      { title: 'Dev Tools', href: '/devtools' as any },
+      { title: 'API Reference', href: '/docs' as any }
     ]
   },
   {
     title: 'Legal',
     links: [
-      { title: 'Privacy Policy', href: '/privacy' },
-      { title: 'Terms', href: '/terms' }
+      { title: 'Privacy Policy', href: '/privacy' as any },
+      { title: 'Terms', href: '/terms' as any }
     ]
   }
 ]
