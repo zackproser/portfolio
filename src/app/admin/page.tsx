@@ -14,14 +14,14 @@ export default function AdminDashboard() {
       title: "Tools Management",
       description: "Add, edit, and remove developer tools from the database",
       icon: Wrench,
-      href: "/admin/tools",
+      href: "/admin/tools" as any,
       color: "from-violet-600 to-purple-600"
     },
     {
       title: "Categories",
       description: "Manage tool categories and classifications",
       icon: Tags,
-      href: "/admin/categories",
+      href: "/admin/categories" as any,
       color: "from-blue-600 to-cyan-600"
     }
   ]

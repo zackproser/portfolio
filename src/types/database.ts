@@ -4,6 +4,8 @@ export interface Database {
   name: string;
   logoId: string;
   description: string;
+  pros?: string[];
+  cons?: string[];
   deployment?: {
     local?: boolean;
     cloud?: boolean;

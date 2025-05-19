@@ -19,7 +19,7 @@ const generateComparisonPageContent = (tool1, tool2, existingDate) => {
   const proseParagraphs = generateComparison(tool1, tool2, categories);
 
   return `
-import ComparisonPageLayout from '@/components/ComparisonPageLayout'
+import { ComparisonPageLayout } from '@/components/ComparisonPageLayout'
 import { createMetadata } from '@/utils/createMetadata'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
