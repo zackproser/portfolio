@@ -5,6 +5,11 @@ import remarkMermaid from "remark-mermaid";
 import rehypePrism from "@mapbox/rehype-prism";
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,7 +23,7 @@ const nextConfig = {
       "placehold.co",
       "avatars.githubusercontent.com"
     ],
-    formats: ['image/avif'], // 40% smaller than PNG
+    formats: ['image/webp'], // Changed from avif to webp
   },
   transpilePackages: [
     "react-tweet",
@@ -173,4 +178,4 @@ const withMDX = nextMDX({
   },
 });
 
-export default withMDX(nextConfig);
+export default withBundleAnalyzer(withMDX(nextConfig));

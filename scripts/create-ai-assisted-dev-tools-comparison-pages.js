@@ -33,6 +33,8 @@ export const metadata = createMetadata({
   slug: "${slug}"
 })
 
+export const revalidate = 3600;
+
 export default function Page() {
   const tool1 = ${JSON.stringify(tool1)}
   const tool2 = ${JSON.stringify(tool2)}
