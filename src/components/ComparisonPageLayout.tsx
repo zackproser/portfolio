@@ -1,0 +1,113 @@
+import React from 'react';
+import type { Database } from '@/types/database';
+// We might need to define these types or import them if they exist elsewhere
+// For now, inline simple definitions based on getCategories/getFeatures from getDatabases.ts
+import Image from 'next/image';
+import { ProsConsDisplay } from './ProsConsDisplay';
+import { ComparisonSummaryTable } from './ComparisonSummaryTable';
+// import { DetailedFeatureComparison } from './DetailedFeatureComparison'; // Placeholder for now
+import { ArticleLayout } from './ArticleLayout'; // Or use a more basic wrapper
+import CrossLinkCallout from './CrossLinkCallout'; // Existing component
+
+// Define simple types for Category and Feature for now
+// These would ideally come from a shared types file and match getCategories/getFeatures return structure
+interface CategoriesFromLib {
+  [key: string]: {
+    description: string;
+    importance: string;
+  };
+}
+
+interface FeaturesFromLib {
+  [key: string]: {
+    description: string;
+  };
+}
+interface ComparisonPageLayoutProps {
+  db1: Database;
+  db2: Database;
+  categories: CategoriesFromLib;
+  features: FeaturesFromLib;
+  metadata: any; // For ArticleLayout or SEO
+  children?: React.ReactNode; // To pass through MDX content if any
+}
+
+export const ComparisonPageLayout: React.FC<ComparisonPageLayoutProps> = ({
+  db1,
+  db2,
+  categories,
+  features,
+  metadata,
+  children
+}) => {
+  // Placeholder for logo fetching logic - assuming logoId maps to a path in /public/images/logos/ or similar
+  const db1Logo = db1.logoId ? `/images/logos/${db1.logoId}.svg` : '/images/placeholder-logo.svg';
+  const db2Logo = db2.logoId ? `/images/logos/${db2.logoId}.svg` : '/images/placeholder-logo.svg';
+
+  return (
+    <ArticleLayout metadata={metadata}> {/* Using ArticleLayout as the base for now */}
+      <div className="container mx-auto px-4 py-8">
+        
+        {/* Top Section: Logos and Title */}
+        <header className="mb-8 text-center">
+          <div className="flex justify-center items-center space-x-8 mb-4">
+            {/* Ensure images are not too large - adjust w-h as needed */}
+            <div className="w-20 h-20 md:w-24 md:h-24 relative"><Image src={db1Logo} alt={`${db1.name} logo`} layout="fill" objectFit="contain" /></div>
+            <span className="text-3xl md:text-4xl font-bold">vs</span>
+            <div className="w-20 h-20 md:w-24 md:h-24 relative"><Image src={db2Logo} alt={`${db2.name} logo`} layout="fill" objectFit="contain" /></div>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{`${db1.name} vs ${db2.name}`}</h1>
+          <p className="text-md md:text-lg text-gray-600 dark:text-gray-400">
+            A detailed comparison to help you choose the best vector database for your needs.
+          </p>
+        </header>
+
+        <div className="mb-8">
+          <CrossLinkCallout
+            title="Compare Vector Databases Dynamically"
+            description={`Use my interactive tool to compare ${db1.name}, ${db2.name}, and other vector databases side by side.`}
+            linkText={`Compare ${db1.name} and ${db2.name} now`}
+            linkHref={`/vectordatabases/compare?dbs=${encodeURIComponent(db1.name)},${encodeURIComponent(db2.name)}`}
+            variant="info"
+          />
+        </div>
+
+        {/* At-a-Glance Summary */}
+        <ComparisonSummaryTable db1={db1} db2={db2} />
+
+        {/* Pros and Cons Section */}
+        <section className="my-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-2xl font-semibold mb-4 text-center md:text-left">{db1.name}</h3>
+              <ProsConsDisplay database={db1} />
+            </div>
+            <div>
+              <h3 className="text-2xl font-semibold mb-4 text-center md:text-left">{db2.name}</h3>
+              <ProsConsDisplay database={db2} />
+            </div>
+          </div>
+        </section>
+        
+        {/* MDX Content (if any passed down from the page) */}
+        {children && <div className="prose dark:prose-invert max-w-none my-8">{children}</div>}
+
+        {/* Detailed Feature Comparison (Placeholder for now) */}
+        <section className="my-8">
+          <h2 className="text-3xl font-bold mb-6 text-center">Detailed Feature Comparison</h2>
+          {/* <DetailedFeatureComparison db1={db1} db2={db2} categories={categories} features={features} /> */}
+          <div className="p-4 bg-yellow-100 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700 rounded-md text-yellow-700 dark:text-yellow-200">
+            <p><strong>Note:</strong> The detailed feature-by-feature breakdown component is under construction. The existing accordion-style comparison will be shown below for now until this new section is complete.</p>
+          </div>
+        </section>
+
+        {/* TODO: Eventually, the old VectorDBComparison component or its refactored version (DetailedFeatureComparison)
+             will be placed here. For now, the MDX generated by the script will still include
+             the old <VectorDBComparison ... /> call, which will appear after this layout's content.
+             We'll address this when we modify the script.
+        */}
+
+      </div>
+    </ArticleLayout>
+  );
+}; 

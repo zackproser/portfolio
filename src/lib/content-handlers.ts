@@ -62,6 +62,9 @@ async function _loadMDXModule(contentType: string, directorySlug: string) {
     const MdxContent = mdxModule.default;
     const metadata = mdxModule.metadata as ExtendedMetadata;
 
+    // Debug log for raw metadata.description
+    logger.debug(`[DEBUG] Loaded metadata.description for ${contentType}/${directorySlug}:`, metadata?.description);
+
     if (!MdxContent && !metadata) {
       logger.debug(`MDX module loaded but no default export or metadata found for: ${contentType}/${directorySlug}`);
       return null; // Or return { MdxContent, metadata } if partial loads are possible/useful
