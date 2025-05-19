@@ -243,7 +243,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...defaultMetadata,
     // Required fields with default values
     title: title || 'Untitled',
-    description: description || '',
+    description: description !== undefined && description !== null ? String(description).trim() : '',
     author: author || 'Unknown',
     date: date ? String(date) : new Date().toISOString(),
     type: contentType,
@@ -258,7 +258,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     openGraph: {
       ...defaultMetadata.openGraph,
       title: title || 'Untitled',
-      description: description || '',
+      description: description !== undefined && description !== null ? String(description).trim() : '',
       images: [
         {
           url: ogImageUrl,
@@ -269,7 +269,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     twitter: {
       ...(defaultMetadata.twitter || {}),
       title: title || 'Untitled',
-      description: description || '',
+      description: description !== undefined && description !== null ? String(description).trim() : '',
       images: [ogImageUrl],
     },
     
@@ -277,6 +277,16 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...(commerce && { commerce }),
     ...(landing && { landing })
   };
+
+  // Log the created metadata for debugging
+  if (shouldLog) {
+    metaLogger.debug('Created metadata', { 
+      title: metadata.title,
+      description: metadata.description?.substring(0, 50) + (metadata.description && metadata.description.length > 50 ? '...' : ''),
+      type: metadata.type,
+      slug: metadata.slug
+    });
+  }
 
   return metadata;
 }
