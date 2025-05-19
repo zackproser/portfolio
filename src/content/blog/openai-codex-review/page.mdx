@@ -78,6 +78,8 @@ By the time I start work, I tend to have a laundry list of items I want to compl
 As I wrote about in <Link href="/blog/walking-and-talking-with-ai">Walking and talking with AI in the woods</Link>, ideally I'd like to start my morning in an office, launch a bunch of tasks,
 get some planning out of the way, and then step out for a long walk in nature.
 
+Codex is usable from my phone even today:
+
 <Image src={phone} alt="Codex is even usable on mobile" />
 
 I think, ultimately, once some of the sharp edges are polished, Codex will support me and others in performing our work effectively away from our desks.
@@ -125,7 +127,7 @@ than 12 programming languages.
 
 Right now, it feels like I can spin up multiple tasks in parallel with a 40-60% chance that I'll be content enough with the result to hit the Open PR button instead of requesting changes.
 
-So far Codex has been perfect for firing off a bunch of maintenance-level updates: minor copy tweaks, stylistic changes, and other small chores. I've tried asking it to tackle larger refactors and the experience quickly becomes cumbersome. The current workflow wants to open a fresh pull request for every iteration, which means pushing follow-up commits to an existing branch is awkward at best.
+So far Codex has been perfect for firing off a bunch of maintenance-level updates: minor copy tweaks, style changes and other small chores. I've tried asking it to tackle larger refactors and the experience quickly becomes cumbersome. The current workflow wants to open a fresh pull request for every iteration, which means pushing follow-up commits to an existing branch is awkward at best.
 
 ### Multi-turn updates on a branch 
 
@@ -143,7 +145,7 @@ resolving annoying dependency issues by installing a more recent version of a pa
 
 Codex can't reach the internet right now, but it does have your repo freshly cloned and made available to its execution environment. 
 
-This means it can't `pnpm add @tar-fs@latest` even if you ask it to. So, for now, I'll still pulling down these branches and fixing them locally or 
+This means it can't `pnpm add @tar-fs@latest` even if you ask it to. So, for now, I'll still be pulling down these branches and fixing them locally or 
 commenting `@dependabot rebase` on PRs that support it.
 
 ## Did it unlock insane productivity gains for me? 

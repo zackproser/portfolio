@@ -18,7 +18,7 @@ const nextConfig = {
       "placehold.co",
       "avatars.githubusercontent.com"
     ],
-    formats: ['image/avif'], // 40% smaller than PNG
+    formats: ['image/webp'], 
   },
   transpilePackages: [
     "react-tweet",
@@ -123,11 +123,6 @@ const nextConfig = {
         source: '/blog/vector-databases-compared',
         destination: '/vectordatabases',
         permanent: true
-      },
-      {
-        source: '/comparisons',
-        destination: '/vectordatabases',
-        permanent: false
       },
       {
         source: '/comparisons/:db1(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)-vs-:db2(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)',
