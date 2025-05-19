@@ -19,7 +19,18 @@ const sentenceVariations = {
     "The main features of {tool1} are {uniqueFeatures1}. {tool2}'s primary offerings are {uniqueFeatures2}.",
     "{tool1} emphasizes {uniqueFeatures1} in its feature set. {tool2} highlights {uniqueFeatures2} as its core functionalities."
   ],
-  sharedFeature: "Both {tool1} and {tool2} offer {sharedFeature} as a key feature."
+  sharedFeature: "Both {tool1} and {tool2} offer {sharedFeature} as a key feature.",
+  useCases: [
+    "{tool1} is particularly well-suited for {useCases1}, while {tool2} is ideal for {useCases2}.",
+    "Developers typically choose {tool1} for {useCases1}. On the other hand, {tool2} is preferred for {useCases2}.",
+    "If you're looking to {useCases1}, {tool1} is an excellent choice. For {useCases2}, {tool2} would be more suitable.",
+    "{tool1} shines when used for {useCases1}, whereas {tool2} performs best for {useCases2}."
+  ],
+  performance: [
+    "In terms of performance, {tool1} {performance1}, while {tool2} {performance2}.",
+    "{tool1}'s performance is characterized by {performance1}. Meanwhile, {tool2} {performance2}.",
+    "Performance-wise, {tool1} {performance1}. {tool2}, however, {performance2}."
+  ]
 };
 
 module.exports = {
@@ -39,6 +50,64 @@ module.exports = {
     const getCategoryDescription = (categoryName) => {
       const category = categories.find(cat => cat.name === categoryName);
       return category ? category.description : '';
+    };
+    
+    // Helper to extract use cases from tool data
+    const getUseCases = (tool) => {
+      if (tool.market_position?.use_cases && Array.isArray(tool.market_position.use_cases)) {
+        return tool.market_position.use_cases.join(', ');
+      }
+      
+      // Generate some based on features if not explicitly defined
+      const useCases = [];
+      
+      if (tool.features?.beginner_friendly) {
+        useCases.push('beginners learning to code');
+      }
+      
+      if (tool.features?.enterprise_ready) {
+        useCases.push('large enterprise development teams');
+      }
+      
+      if (tool.features?.code_completion) {
+        useCases.push('rapid code development');
+      }
+      
+      if (tool.features?.code_refactoring) {
+        useCases.push('refactoring existing codebases');
+      }
+      
+      if (tool.open_source?.client || tool.open_source?.backend) {
+        useCases.push('open source development');
+      }
+      
+      return useCases.length ? useCases.join(', ') : 'various development tasks';
+    };
+    
+    // Helper to extract performance characteristics
+    const getPerformanceDetails = (tool) => {
+      if (tool.performance_metrics?.description) {
+        return tool.performance_metrics.description;
+      }
+      
+      // Generate based on available metrics
+      const descriptions = [];
+      
+      if (tool.performance_metrics?.latency < 100) {
+        descriptions.push('offers low-latency responses');
+      } else if (tool.performance_metrics?.latency > 300) {
+        descriptions.push('may have higher latency');
+      }
+      
+      if (tool.features?.offline_capabilities) {
+        descriptions.push('can work offline');
+      }
+      
+      if (tool.pricing?.free_tier) {
+        descriptions.push('performs well even in its free tier');
+      }
+      
+      return descriptions.length ? descriptions.join(' and ') : 'offers standard performance for most use cases';
     };
 
     let proseParagraphs = [];
@@ -62,7 +131,7 @@ module.exports = {
     }
     proseParagraphs.push(categoryParagraph);
 
-    // Pricing (logic kept but not rendered)
+    // Pricing (now included but commented out in the original code)
     const price1 = getLowestHighestPrice(tool1);
     const price2 = getLowestHighestPrice(tool2);
     const pricingParagraph = getRandomSentence('pricing')
@@ -74,7 +143,7 @@ module.exports = {
       .replace(/{highestPrice1}/g, `$${price1.highest}`)
       .replace(/{lowestPrice2}/g, `$${price2.lowest}`)
       .replace(/{highestPrice2}/g, `$${price2.highest}`);
-    // proseParagraphs.push(pricingParagraph); // Commented out to prevent rendering
+    proseParagraphs.push(pricingParagraph); // Now included in output
 
     // Unique Features
     const uniqueFeatures1 = tool1.market_position?.unique_selling_points || ['unique features'];
@@ -101,10 +170,26 @@ module.exports = {
       const uniqueFeaturesParagraph = getRandomSentence('uniqueFeatures')
         .replace(/{tool1}/g, tool1.name || 'Tool 1')
         .replace(/{tool2}/g, tool2.name || 'Tool 2')
-        .replace(/{uniqueFeatures1}/g, exclusiveFeatures1.join(', '))
-        .replace(/{uniqueFeatures2}/g, exclusiveFeatures2.join(', '));
+        .replace(/{uniqueFeatures1}/g, exclusiveFeatures1.join(', ') || 'standard features')
+        .replace(/{uniqueFeatures2}/g, exclusiveFeatures2.join(', ') || 'standard features');
       proseParagraphs.push(uniqueFeaturesParagraph);
     }
+    
+    // Add use cases paragraph
+    const useCaseParagraph = getRandomSentence('useCases')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{useCases1}/g, getUseCases(tool1))
+      .replace(/{useCases2}/g, getUseCases(tool2));
+    proseParagraphs.push(useCaseParagraph);
+    
+    // Add performance paragraph
+    const performanceParagraph = getRandomSentence('performance')
+      .replace(/{tool1}/g, tool1.name || 'Tool 1')
+      .replace(/{tool2}/g, tool2.name || 'Tool 2')
+      .replace(/{performance1}/g, getPerformanceDetails(tool1))
+      .replace(/{performance2}/g, getPerformanceDetails(tool2));
+    proseParagraphs.push(performanceParagraph);
 
     // Add newlines between paragraphs
     return proseParagraphs.flatMap(paragraph => [paragraph, "\n\n"]).slice(0, -1);
