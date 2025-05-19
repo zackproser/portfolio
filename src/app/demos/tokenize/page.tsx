@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { createMetadata } from '@/utils/createMetadata'
 import { Container } from '@/components/Container'
-import TokenizationDemoClient from './TokenizationDemoClient'
+import TokenizeDemoLoader from './TokenizeDemoLoader'
 
 export const metadata: Metadata = createMetadata({
   title: "Interactive tokenization demo for developers",
@@ -24,7 +24,7 @@ export default function TokenizationDemoPage() {
           </p>
         </header>
         <Suspense fallback={<div>Loading...</div>}>
-          <TokenizationDemoClient />
+          <TokenizeDemoLoader />
         </Suspense>
       </div>
     </Container>

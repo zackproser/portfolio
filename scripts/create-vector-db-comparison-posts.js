@@ -53,6 +53,8 @@ export const metadata = {
   slug: "${slug}"
 }
 
+export const revalidate = 3600;
+
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <Image src={vectorDatabasesCompared} alt="vector databases compared" />

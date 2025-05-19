@@ -117,9 +117,20 @@ export function ContentCard({ article }) {
   // Simple check for external links
   const isExternalLink = slug?.startsWith('http://') || slug?.startsWith('https://');
   
-  // For external links, use the slug directly
-  // For internal links, use the slug as is - the parent component should provide the full path
-  const href = isExternalLink ? slug : slug || '#';
+  let calculatedHref = '#';
+  if (isExternalLink) {
+    calculatedHref = slug;
+  } else if (slug) {
+    if (type === 'comparison') {
+      // Ensure no double slashes if slug might accidentally have one (it shouldn't from our generator)
+      calculatedHref = `/comparisons/${slug.startsWith('/') ? slug.substring(1) : slug}`;
+    } else {
+      // For other internal links, assume slug is the intended href.
+      // If it's not a full path (e.g. /blog/my-post) Link component will resolve it relatively.
+      // If it is a full path (e.g. /blog/my-post), Link will use it as is.
+      calculatedHref = slug;
+    }
+  }
   
   // Format the date
   const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
@@ -167,7 +178,7 @@ export function ContentCard({ article }) {
         : "shadow-lg hover:shadow-xl border-gray-200 dark:border-gray-700"
     )}>
       {isExternalLink ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="group w-full">
+        <a href={calculatedHref} target="_blank" rel="noopener noreferrer" className="group w-full">
           <CardContent 
             imageSource={imageSource} 
             title={title} 
@@ -182,7 +193,7 @@ export function ContentCard({ article }) {
           />
         </a>
       ) : (
-        <Link href={href} className="group w-full">
+        <Link href={calculatedHref} className="group w-full">
           <CardContent 
             imageSource={imageSource} 
             title={title} 
