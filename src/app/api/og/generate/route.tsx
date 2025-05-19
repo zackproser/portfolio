@@ -48,9 +48,20 @@ export async function GET(request: NextRequest) {
     const encodedTitle = searchParams.get('title') || 'AI Engineering Mastery for Teams That Ship';
     const encodedDescription = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
-    // Properly decode the URL-encoded parameters and sanitize apostrophes
-    const title = decodeURIComponent(encodedTitle).replace(/'/g, "").replace(/'/g, "");
-    const description = decodeURIComponent(encodedDescription).replace(/'/g, "").replace(/'/g, "");
+    // Properly decode the URL-encoded parameters, handling special characters
+    const title = decodeURIComponent(encodedTitle);
+    let description = '';
+    
+    try {
+      // Handle potential double-encoding or malformed encoding
+      if (encodedDescription) {
+        description = decodeURIComponent(encodedDescription);
+        console.log('Successfully decoded description');
+      }
+    } catch (e) {
+      console.error('Error decoding description:', e);
+      description = encodedDescription || '';
+    }
     
     // Check for both parameter names for backward compatibility
     const imageSrc = searchParams.get('imageSrc') || searchParams.get('image');
@@ -350,7 +361,7 @@ export async function GET(request: NextRequest) {
                         WebkitBoxOrient: 'vertical',
                         wordWrap: 'break-word'
                       }}>
-                        {description}
+                        {description.replace(/&apos;/g, "'").replace(/&quot;/g, '"')}
                       </div>
                     )}
                   </div>
