@@ -43,17 +43,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const navItems = [
     {
       title: "Dashboard",
-      href: "/admin",
+      href: "/admin" as any,
       icon: LayoutDashboard
     },
     {
       title: "Tools",
-      href: "/admin/tools",
+      href: "/admin/tools" as any,
       icon: Wrench
     },
     {
       title: "Categories",
-      href: "/admin/categories",
+      href: "/admin/categories" as any,
       icon: Tags
     }
   ]

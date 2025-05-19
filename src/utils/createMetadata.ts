@@ -230,12 +230,12 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     contentUrl = getContentUrlFromObject({ type: contentType, directorySlug: finalSlug } as any);
   }
 
-  // Fix the type error: pass null for slug parameter to match the expected type
+  // Pass the finalSlug to the OG URL generator instead of null
   const ogImageUrl = generateOgUrl({ 
     title, 
     description, 
     image: processedImage,
-    slug: null // Set to null to match the expected type in the function signature
+    slug: finalSlug // Use the finalSlug instead of null
   });
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
@@ -243,7 +243,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...defaultMetadata,
     // Required fields with default values
     title: title || 'Untitled',
-    description: description || '',
+    description: description !== undefined && description !== null ? String(description).trim() : '',
     author: author || 'Unknown',
     date: date ? String(date) : new Date().toISOString(),
     type: contentType,
@@ -258,7 +258,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     openGraph: {
       ...defaultMetadata.openGraph,
       title: title || 'Untitled',
-      description: description || '',
+      description: description !== undefined && description !== null ? String(description).trim() : '',
       images: [
         {
           url: ogImageUrl,
@@ -269,7 +269,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     twitter: {
       ...(defaultMetadata.twitter || {}),
       title: title || 'Untitled',
-      description: description || '',
+      description: description !== undefined && description !== null ? String(description).trim() : '',
       images: [ogImageUrl],
     },
     
@@ -277,6 +277,16 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     ...(commerce && { commerce }),
     ...(landing && { landing })
   };
+
+  // Log the created metadata for debugging
+  if (shouldLog) {
+    metaLogger.debug('Created metadata', { 
+      title: metadata.title,
+      description: metadata.description?.substring(0, 50) + (metadata.description && metadata.description.length > 50 ? '...' : ''),
+      type: metadata.type,
+      slug: metadata.slug
+    });
+  }
 
   return metadata;
 }
