@@ -66,6 +66,21 @@ async function getRoutes() {
     }
   });
 
+  // Add dynamic comparison routes generated from AI tools data
+  const toolsPath = path.join(process.cwd(), 'schema/data/ai-assisted-developer-tools.json');
+  if (fs.existsSync(toolsPath)) {
+    const toolsData = JSON.parse(fs.readFileSync(toolsPath, 'utf-8'));
+    const tools = toolsData.tools || [];
+    const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+
+    for (let i = 0; i < tools.length; i++) {
+      for (let j = i + 1; j < tools.length; j++) {
+        const slug = `${slugify(tools[i].name)}-vs-${slugify(tools[j].name)}`;
+        routes.add(`/comparisons/${slug}`);
+      }
+    }
+  }
+
   // Add RSS feed routes
   routes.add('/rss/feed.json');
   routes.add('/rss/feed.xml');
