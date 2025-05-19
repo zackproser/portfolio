@@ -16,7 +16,7 @@ export const ProsConsDisplay: React.FC<ProsConsDisplayProps> = ({ database }) =>
         <div className="mb-4">
           <h4 className="text-lg font-semibold mb-2 text-green-700 dark:text-green-500">Pros</h4>
           <ul className="list-disc list-inside space-y-1 text-sm">
-            {database.pros.map((pro, index) => (
+            {database.pros.map((pro: string, index: number) => (
               <li key={`pro-${index}`}>{pro}</li>
             ))}
           </ul>
@@ -27,7 +27,7 @@ export const ProsConsDisplay: React.FC<ProsConsDisplayProps> = ({ database }) =>
         <div>
           <h4 className="text-lg font-semibold mb-2 text-red-700 dark:text-red-500">Cons</h4>
           <ul className="list-disc list-inside space-y-1 text-sm">
-            {database.cons.map((con, index) => (
+            {database.cons.map((con: string, index: number) => (
               <li key={`con-${index}`}>{con}</li>
             ))}
           </ul>

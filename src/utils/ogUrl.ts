@@ -45,7 +45,7 @@ export function generateOgUrl({
   const params = new URLSearchParams();
   
   // PRIORITY 1: Add slug parameter (most important for static image lookup)
-  if (slug && typeof slug === 'string') {
+  if (slug && typeof slug === 'string' && slug.length > 0) {
     // If slug contains slashes, just get the last part
     const slugParts = slug.split('/');
     const lastSlugPart = slugParts[slugParts.length - 1];
@@ -136,7 +136,7 @@ export function generateOgUrl({
     params.set('title', encodeURIComponent(String(title)));
     
     // Only create slug from title if no slug was provided
-    if (!slug) {
+    if (!slug || (typeof slug !== 'string') || slug.length === 0) {
       // Create a slug from the title for OG image lookup
       const titleSlug = title.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
