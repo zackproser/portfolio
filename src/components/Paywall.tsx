@@ -42,7 +42,7 @@ export default function Paywall({
     }
 
     try {
-      router.push(checkoutUrl);
+      router.push(checkoutUrl as any);
     } catch (error) {
       console.error('Error navigating to checkout:', error)
       alert('Failed to initiate checkout navigation. Please try again.')

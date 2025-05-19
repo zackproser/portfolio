@@ -4,8 +4,8 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Check, X } from 'lucide-react'; // For boolean display
 
 interface ComparisonSummaryTableProps {
-  db1: Database;
-  db2: Database;
+  db1: Database | any;
+  db2: Database | any;
 }
 
 const renderFeature = (value: any) => {
@@ -19,28 +19,58 @@ const renderFeature = (value: any) => {
 };
 
 export const ComparisonSummaryTable: React.FC<ComparisonSummaryTableProps> = ({ db1, db2 }) => {
-  const summaryFeatures = [
+  // Try to detect if we're dealing with vector databases or tools
+  const isVectorDb = !!(db1.company || db1.features || db1.performance || db1.aiCapabilities);
+  
+  // Different summary features based on item type
+  const vectorDbFeatures = [
     {
       label: 'Founded Year',
-      accessor: (db: Database) => db.company?.founded,
+      accessor: (db: any) => db.company?.founded,
     },
     {
       label: 'Serverless Option',
-      accessor: (db: Database) => db.features?.serverless,
+      accessor: (db: any) => db.features?.serverless,
     },
     {
       label: 'Query Latency (ms)',
-      accessor: (db: Database) => db.performance?.queryLatencyMs,
+      accessor: (db: any) => db.performance?.queryLatencyMs,
     },
     {
       label: 'LLM Integration Score',
-      accessor: (db: Database) => db.aiCapabilities?.scores?.llmIntegration,
+      accessor: (db: any) => db.aiCapabilities?.scores?.llmIntegration,
     },
     {
       label: 'RAG Support',
-      accessor: (db: Database) => db.aiCapabilities?.features?.ragSupport,
+      accessor: (db: any) => db.aiCapabilities?.features?.ragSupport,
     },
   ];
+
+  const toolFeatures = [
+    {
+      label: 'Open Source',
+      accessor: (tool: any) => tool.open_source?.client || tool.open_source?.backend || tool.open_source?.model,
+    },
+    {
+      label: 'Free Tier',
+      accessor: (tool: any) => tool.free_tier,
+    },
+    {
+      label: 'Founded Year',
+      accessor: (tool: any) => tool.business_info?.founding_year,
+    },
+    {
+      label: 'VS Code Support',
+      accessor: (tool: any) => tool.ide_support?.vs_code,
+    },
+    {
+      label: 'Local Model Support',
+      accessor: (tool: any) => tool.supports_local_model,
+    },
+  ];
+
+  // Choose which features to display
+  const summaryFeatures = isVectorDb ? vectorDbFeatures : toolFeatures;
 
   return (
     <div className="my-6">

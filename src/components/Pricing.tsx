@@ -93,7 +93,7 @@ function Plan({
           </ul>
         </div>
         <Button
-          href={href}
+          href={href as any}
           color={featured ? 'white' : 'slate'}
           className="mt-8"
           aria-label={`Get started with the ${name} plan for $${price}`}
@@ -152,7 +152,7 @@ export function Pricing({
                   <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600 dark:text-slate-600">USD</span>
                 </p>
                 <Button
-                  href={checkoutUrl}
+                  href={checkoutUrl as any}
                   color="blue"
                   className="mt-10 block w-full"
                 >
