@@ -14,12 +14,31 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
-  const tools = [tool1, tool2];
+  // Create a normalized format that works with the existing components
+  const normalizedTool1 = {
+    ...tool1,
+    // Ensure properties expected by components exist
+    features: tool1.features || [],
+    languages: tool1.languages || [],
+    cons: tool1.cons || [],
+    pros: tool1.pros || []
+  };
+  
+  const normalizedTool2 = {
+    ...tool2,
+    // Ensure properties expected by components exist
+    features: tool2.features || [],
+    languages: tool2.languages || [],
+    cons: tool2.cons || [],
+    pros: tool2.pros || []
+  };
+  
+  const tools = [normalizedTool1, normalizedTool2];
 
   return (
     <SimpleLayout>
       {/* Hero section with logo vs logo */}
-      <ToolComparisonHero tool1={tool1} tool2={tool2} />
+      <ToolComparisonHero tool1={normalizedTool1} tool2={normalizedTool2} />
       
       {/* Early newsletter capture - positioned right after hero */}
       <div className="mb-10 p-5 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20">
@@ -46,7 +65,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
       {/* Introduction text for what these tools are */}
       <div className="prose dark:prose-invert mb-12 max-w-none">
         <h2 className="text-3xl font-bold mb-6">Overview</h2>
-        {proseParagraphs.map((paragraph, index) => (
+        {proseParagraphs && proseParagraphs.map((paragraph, index) => (
           <React.Fragment key={index}>
             {paragraph ? <p className="text-lg">{paragraph}</p> : <br />}
           </React.Fragment>
@@ -105,7 +124,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
       <ToolRecommendation tools={tools} />
       
       {/* Author info section - replaced with newsletter */}
-      <ToolComparisonIntro tool1={tool1.name} tool2={tool2.name} />
+      <ToolComparisonIntro tool1={normalizedTool1.name} tool2={normalizedTool2.name} />
       
       {/* Final call to action */}
       <div className="mt-12 p-8 max-w-6xl mx-auto rounded-xl bg-gradient-to-r from-blue-600 to-purple-700 border border-blue-200 dark:border-blue-800 shadow-2xl text-white">
