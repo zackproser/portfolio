@@ -283,3 +283,39 @@ pre[class*="language-"], code[class*="language-"] {
   }
 }
 
+/* Fix for dropdown transparency */
+.dropdown-menu,
+[role="combobox"],
+[role="listbox"],
+.select__menu,
+.select__option,
+.select__control,
+.select__menu-list {
+  background-color: white !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+}
+
+.dark .dropdown-menu,
+.dark [role="combobox"],
+.dark [role="listbox"],
+.dark .select__menu,
+.dark .select__option,
+.dark .select__control,
+.dark .select__menu-list {
+  background-color: rgb(31, 41, 55) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+}
+
+/* Ensure dropdown options are visible against their background */
+.select__option,
+[role="option"] {
+  color: #000 !important;
+}
+
+.dark .select__option,
+.dark [role="option"] {
+  color: #fff !important;
+}
+
