@@ -17,6 +17,7 @@ import {
   Code,
   DollarSign
 } from 'lucide-react'
+import { nameToSlug } from '@/utils/slug-helpers'
 
 interface DynamicComparisonSearchProps {
   tools: Tool[]
@@ -98,15 +99,15 @@ export function DynamicComparisonSearch({ tools }: DynamicComparisonSearchProps)
 
   const handleCompare = () => {
     if (selectedTool1 && selectedTool2) {
-      const tool1Slug = selectedTool1.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
-      const tool2Slug = selectedTool2.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
+      const tool1Slug = nameToSlug(selectedTool1.name)
+      const tool2Slug = nameToSlug(selectedTool2.name)
       router.push(`/comparisons/${tool1Slug}/vs/${tool2Slug}`)
     }
   }
 
   const handlePopularComparison = (tool1: Tool, tool2: Tool) => {
-    const tool1Slug = tool1.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
-    const tool2Slug = tool2.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '')
+    const tool1Slug = nameToSlug(tool1.name)
+    const tool2Slug = nameToSlug(tool2.name)
     router.push(`/comparisons/${tool1Slug}/vs/${tool2Slug}`)
   }
 
