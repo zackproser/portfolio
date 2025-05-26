@@ -68,21 +68,54 @@ export async function getAllTools(): Promise<Tool[]> {
 export async function getToolBySlug(slug: string): Promise<Tool | null> {
   console.log(`Fetching tool by slug: ${slug} (using Prisma)`)
   try {
-    // Convert slug back to a readable name for searching
-    const searchName = slug
+    // Generate search patterns inline to avoid dynamic import issues
+    const patterns = []
+    
+    // Original slug
+    patterns.push(slug)
+    
+    // Title case version
+    const titleCase = slug
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .join(' ')
+    patterns.push(titleCase)
     
+    // All lowercase version
+    patterns.push(slug.replace(/-/g, ' '))
+    
+    // All uppercase version
+    patterns.push(titleCase.toUpperCase())
+    
+    // Handle common variations
+    const variations = [
+      slug.replace(/-/g, ''), // Remove all hyphens
+      slug.replace(/-/g, '_'), // Replace hyphens with underscores
+      slug.replace(/-ai$/, ' AI'), // Handle AI suffix
+      slug.replace(/-io$/, '.io'), // Handle .io domains
+    ]
+    
+    patterns.push(...variations)
+    const searchPatterns = [...new Set(patterns)] // Remove duplicates
+    
+    console.log(`Search patterns for slug "${slug}":`, searchPatterns)
+    
+    // Try exact matches first, then fuzzy matches
     const tool = await prisma.tool.findFirst({
       where: { 
-        OR: [
-          { name: { equals: searchName, mode: 'insensitive' } },
-          { name: { contains: slug, mode: 'insensitive' } },
-          { name: { contains: searchName, mode: 'insensitive' } }
-        ]
+        OR: searchPatterns.flatMap(pattern => [
+          { name: { equals: pattern, mode: 'insensitive' } },
+          { name: { contains: pattern, mode: 'insensitive' } }
+        ])
       }
     });
+    
+    if (tool) {
+      console.log(`Found tool: ${tool.name} for slug: ${slug}`)
+    } else {
+      console.log(`No tool found for slug: ${slug}`)
+    }
+    
     return tool;
   } catch (error) {
     console.error("Error fetching tool by slug:", error)
