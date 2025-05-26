@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.8.1",
   "scripts": {
     "dev": "concurrently \"next dev\" \"pnpm stripe:webhook\"",
-    "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js && node scripts/create-vector-db-comparison-posts.js && node scripts/create-ai-assisted-dev-tools-comparison-post.js && node scripts/create-ai-assisted-dev-tools-comparison-pages.js",
+    "prebuild": "node scripts/check-metadata.js && node scripts/generate-collections.js",
     "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-no-db": "npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
@@ -13,7 +13,6 @@
     "start": "next start",
     "lint": "next lint",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
-    "debug-comparisons": "node scripts/create-ai-assisted-dev-tools-comparison-pages.js --debug",
     "check-metadata": "node scripts/check-metadata.js",
     "debug-metadata": "node scripts/check-metadata.js --debug",
     "grant-access": "node scripts/grant-free-access.js",
