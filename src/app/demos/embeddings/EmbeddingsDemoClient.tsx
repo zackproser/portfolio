@@ -552,8 +552,8 @@ export default function EmbeddingsDemoClient() {
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
               <h4 className="font-medium mb-2">🔍 Smart Search</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Search for "car" and find results about "automobile" or "vehicle" 
-                even if they don't contain the exact word.
+                Search for &quot;car&quot; and find results about &quot;automobile&quot; or &quot;vehicle&quot; 
+                even if they don&apos;t contain the exact word.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
@@ -567,14 +567,14 @@ export default function EmbeddingsDemoClient() {
               <h4 className="font-medium mb-2">📱 Recommendations</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
                 Netflix, Spotify, and shopping sites use embeddings to suggest 
-                content similar to what you've enjoyed before.
+                content similar to what you&apos;ve enjoyed before.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
               <h4 className="font-medium mb-2">🌐 Translation</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Google Translate uses embeddings to understand that "hello" in English 
-                has the same meaning as "hola" in Spanish.
+                Google Translate uses embeddings to understand that &quot;hello&quot; in English 
+                has the same meaning as &quot;hola&quot; in Spanish.
               </p>
             </div>
           </div>
@@ -754,7 +754,7 @@ export default function EmbeddingsDemoClient() {
                       onClick={() => handleComparisonExample(text1, text2)}
                       className="px-3 py-1 text-xs bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 rounded-md"
                     >
-                      "{text1}" vs "{text2}"
+                      &quot;{text1}&quot; vs &quot;{text2}&quot;
                     </button>
                   ))}
                 </div>
