@@ -1,22 +1,25 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { getAllComparisons } from '@/lib/comparisons'
+import { getAllTools } from '@/actions/tool-actions'
 import { createMetadata } from '@/utils/createMetadata'
-import  ComparisonSearch  from '@/components/ComparisonSearch'
+import { DynamicComparisonSearch } from '@/components/dynamic-comparison-search'
 
 export const metadata = createMetadata({
-  title: "Vector Database Comparisons",
-  description: "Compare different vector databases side by side"
+  title: "Developer Tool Comparisons",
+  description: "Compare developer tools side by side to find the best fit for your needs"
 });
 
 export default async function ComparisonsIndex() {
-  let comparisons = await getAllComparisons()
+  const tools = await getAllTools()
 
   return (
     <SimpleLayout
-      title="Vector Database and Dev tools compared"
-      intro="Compare different vector databases and devtools to find the best fit for your needs"
+      title="Developer Tools Compared"
+      intro="Compare developer tools side by side to find the perfect fit for your project needs. All comparisons are generated dynamically from our comprehensive database."
     >
-      <ComparisonSearch comparisons={JSON.parse(JSON.stringify(comparisons))} />
+      <DynamicComparisonSearch tools={tools} />
     </SimpleLayout>
   )
 }
+
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600

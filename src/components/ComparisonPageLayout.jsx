@@ -130,3 +130,4 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
 };
 
 export default ComparisonPageLayout;
+export { ComparisonPageLayout };
