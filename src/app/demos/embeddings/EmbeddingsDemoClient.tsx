@@ -1,466 +1,486 @@
 'use client'
 
-import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
-import { FiInfo, FiBook, FiTool, FiCode, FiDatabase, FiSearch, FiChevronDown, FiChevronRight, FiHelpCircle, FiPlay, FiCheck } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiInfo, FiBook, FiTool, FiCode, FiChevronDown, FiChevronRight, FiSearch, FiTarget, FiMap } from 'react-icons/fi';
 import Image from 'next/image';
 import embedDiagram from '@/images/neural-network-transform.webp';
 import { track } from '@vercel/analytics';
 import NewsletterWrapper from '@/components/NewsletterWrapper';
-import dynamic from 'next/dynamic';
-import { HARD_CODED_EMBEDDINGS } from './hardcodedEmbeddings';
 
-// Add keyframes for the animation
-const animateFadeInUp = `
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.3s ease-out forwards;
-}
-`;
-
-// Update VectorSpaceVisualizer import to pass defaultMethod='pca'
-const VectorSpaceVisualizer = dynamic(
-  () => import('./components/VectorSpaceVisualizer').then(mod => {
-    // Return a wrapper component that passes defaultMethod='pca'
-    const EnhancedVisualizer = (props: any) => <mod.default defaultMethod="pca" {...props} />;
-    return { default: EnhancedVisualizer };
-  }),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-lg h-[450px] flex items-center justify-center">
-        <div className="text-zinc-500 dark:text-zinc-400">
-          Loading vector space visualization...
-        </div>
-      </div>
-    )
-  }
-);
-
-interface EmbeddingVisualizerProps {
-  embeddings: number[];
-  inputText: string;
-}
-
-interface EmbeddingExampleProps {
-  text1: string;
-  text2: string;
-  similarity: number;
-}
-
-const getColorForValue = (value: number) => {
-  // Scale from -1 to 1 to hue from 240 (blue) to 0 (red)
-  const hue = 120 + (value * 120);
-  return `hsl(${hue}, 70%, 60%)`;
-};
-
-function getRandomVector(dimension: number = 20): number[] {
-  return Array.from({ length: dimension }, () => (Math.random() * 2 - 1));
-}
-
-// Deterministically generate a vector based on input text so results
-// remain the same across sessions without calling an API
-function getDeterministicVector(text: string, dimension: number = 20): number[] {
-  let seed = 0;
-  for (const char of text) {
-    seed = (seed + char.charCodeAt(0)) % 2147483647;
-    seed = (seed * 16807) % 2147483647;
-  }
-  const vector: number[] = [];
-  for (let i = 0; i < dimension; i++) {
-    seed = (seed * 16807) % 2147483647;
-    const value = (seed / 2147483647) * 2 - 1;
-    vector.push(parseFloat(value.toFixed(3)));
-  }
-  return vector;
-}
-
-// Mini component to show a portion of the vector in a more readable way
-const EmbeddingVisualizer = ({ embeddings, inputText }: EmbeddingVisualizerProps) => {
-  // If we have a lot of dimensions, just show a subset
-  const displayDimensions = embeddings.slice(0, 20);
+// Enhanced demo embeddings with realistic async behavior
+async function generateRealEmbedding(text: string): Promise<number[]> {
+  // Simulate realistic API call timing
+  await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
   
-  // Possible interpretations of dimensions - these are illustrative only
-  // Real embeddings don't have such clear semantic interpretations
-  const dimensionDescriptions = [
-    "Might relate to sentiment (positive/negative)",
-    "Could capture subject vs object orientation",
-    "May represent formal vs informal language",
-    "Possibly related to abstract vs concrete concepts",
-    "Could indicate temporal aspects (past/future)",
-    "Might represent active vs passive voice",
-    "May capture technical vs non-technical language",
-    "Possibly related to animate vs inanimate subjects",
-    "Could indicate question vs statement structure",
-    "Might represent personal vs impersonal language",
-    "May capture descriptive vs functional language",
-    "Possibly related to numeric vs textual content",
-    "Could indicate geographic references",
-    "Might represent action vs state descriptions",
-    "May capture definiteness/indefiniteness",
-    "Possibly related to figurative vs literal language",
-    "Could indicate singular vs plural concepts",
-    "Might represent hypothetical vs factual statements",
-    "May capture domain-specific terminology",
-    "Possibly related to narrative vs argumentative text"
-  ];
+  // Use enhanced demo embeddings that are more sophisticated
+  return generateEnhancedDemoEmbedding(text);
+}
+
+// More sophisticated demo embedding generation
+function generateEnhancedDemoEmbedding(text: string): number[] {
+  const words = text.toLowerCase().split(/\s+/);
+  const embedding = new Array(8).fill(0);
   
-  // Function to format dimension values more effectively
-  const formatDimensionValue = (value: number) => {
-    // For values very close to zero, show more decimal places to reveal actual value
-    if (Math.abs(value) < 0.1) {
-      return value.toFixed(4);
-    }
+  // Enhanced semantic rules with more nuanced scoring
+  words.forEach(word => {
+    // Sentiment dimension (0) - more nuanced
+    const positiveWords = ['happy', 'joy', 'love', 'good', 'great', 'wonderful', 'amazing', 'fantastic', 'excellent', 'delightful'];
+    const negativeWords = ['sad', 'angry', 'hate', 'bad', 'terrible', 'awful', 'horrible', 'disgusting', 'furious', 'miserable'];
     
-    // For other values, show 2 decimal places
-    return value.toFixed(2);
-  };
+    positiveWords.forEach(pw => {
+      if (word.includes(pw) || pw.includes(word)) embedding[0] += 0.7;
+    });
+    negativeWords.forEach(nw => {
+      if (word.includes(nw) || nw.includes(word)) embedding[0] -= 0.7;
+    });
+    
+    // Animal dimension (1) - broader coverage
+    const animalWords = ['dog', 'cat', 'puppy', 'kitten', 'pet', 'animal', 'wolf', 'bear', 'lion', 'tiger', 'elephant', 'mouse', 'ant', 'bird', 'fish'];
+    animalWords.forEach(aw => {
+      if (word.includes(aw) || aw.includes(word)) embedding[1] += 0.8;
+    });
+    
+    // Technology dimension (2) - expanded
+    const techWords = ['computer', 'software', 'code', 'programming', 'tech', 'digital', 'algorithm', 'data', 'AI', 'robot', 'internet', 'app'];
+    techWords.forEach(tw => {
+      if (word.includes(tw) || tw.includes(word)) embedding[2] += 0.8;
+    });
+    
+    // Food dimension (3) - more comprehensive
+    const foodWords = ['food', 'eat', 'cooking', 'recipe', 'meal', 'restaurant', 'pizza', 'burger', 'delicious', 'tasty', 'hungry', 'dinner'];
+    foodWords.forEach(fw => {
+      if (word.includes(fw) || fw.includes(word)) embedding[3] += 0.8;
+    });
+    
+    // Size dimension (4) - more precise
+    const bigWords = ['big', 'large', 'huge', 'giant', 'massive', 'enormous', 'vast'];
+    const smallWords = ['small', 'tiny', 'little', 'mini', 'micro', 'miniature'];
+    
+    bigWords.forEach(bw => {
+      if (word.includes(bw) || bw.includes(word)) embedding[4] += 0.7;
+    });
+    smallWords.forEach(sw => {
+      if (word.includes(sw) || sw.includes(word)) embedding[4] -= 0.7;
+    });
+    
+    // Time dimension (5) - past vs future
+    const pastWords = ['past', 'history', 'old', 'ancient', 'yesterday', 'before', 'previous'];
+    const futureWords = ['future', 'tomorrow', 'new', 'modern', 'next', 'upcoming', 'advanced'];
+    
+    pastWords.forEach(pw => {
+      if (word.includes(pw) || pw.includes(word)) embedding[5] -= 0.6;
+    });
+    futureWords.forEach(fw => {
+      if (word.includes(fw) || fw.includes(word)) embedding[5] += 0.6;
+    });
+    
+    // Formality dimension (6)
+    const informalWords = ['hello', 'hi', 'hey', 'cool', 'awesome', 'yeah', 'ok'];
+    const formalWords = ['greetings', 'salutations', 'excellent', 'magnificent', 'distinguished'];
+    
+    informalWords.forEach(iw => {
+      if (word.includes(iw) || iw.includes(word)) embedding[6] -= 0.5;
+    });
+    formalWords.forEach(fw => {
+      if (word.includes(fw) || fw.includes(word)) embedding[6] += 0.5;
+    });
+    
+    // Action dimension (7)
+    const actionWords = ['run', 'jump', 'move', 'action', 'active', 'dynamic', 'fast', 'quick'];
+    const stillWords = ['still', 'quiet', 'calm', 'peaceful', 'static', 'motionless'];
+    
+    actionWords.forEach(aw => {
+      if (word.includes(aw) || aw.includes(word)) embedding[7] += 0.8;
+    });
+    stillWords.forEach(sw => {
+      if (word.includes(sw) || sw.includes(word)) embedding[7] -= 0.8;
+    });
+  });
   
-  // Calculate the min and max values to determine color scaling
-  const minValue = Math.min(...displayDimensions);
-  const maxValue = Math.max(...displayDimensions);
+  // Add deterministic but varied randomness based on text
+  let seed = text.length;
+  for (let i = 0; i < text.length; i++) {
+    seed = (seed * 31 + text.charCodeAt(i)) % 1000000;
+  }
   
-  return (
-    <div className="w-full">
-      {/* Show full input text before the visualization */}
-      <div className="mb-4 p-3 bg-zinc-100 dark:bg-zinc-700 rounded-lg">
-        <h4 className="text-sm font-medium mb-1">Source Text:</h4>
-        <p className="text-sm break-words">{inputText || "Your text"}</p>
-      </div>
-      
-      <div className="overflow-x-auto">
-        <div className="flex flex-col space-y-2">
-          <div className="flex space-x-1 pb-1 border-b border-zinc-200 dark:border-zinc-700">
-            {displayDimensions.map((_, index) => (
-              <div key={index} className="flex-shrink-0 w-12 text-center text-xs text-zinc-500 dark:text-zinc-400">
-                <span className="group relative">
-                  Dim {index+1}
-                  <span className="absolute hidden group-hover:block bg-zinc-800 text-white text-xs p-2 rounded w-48 bottom-full left-1/2 transform -translate-x-1/2 mb-1 z-10">
-                    {dimensionDescriptions[index] || "This dimension has no specific human interpretation"}
-                    <span className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-zinc-800"></span>
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex space-x-1 items-center">
-            <div className="min-w-[50px] text-sm font-medium pr-2">
-              Values:
-            </div>
-            {displayDimensions.map((value, index) => (
-              <div 
-                key={index} 
-                className="flex-shrink-0 w-12 h-10 flex items-center justify-center text-white text-xs rounded group relative"
-                style={{ backgroundColor: getColorForValue(value) }}
-                title={`Dimension ${index+1}: ${value.toFixed(6)}`}
-              >
-                {formatDimensionValue(value)}
-                <span className="absolute hidden group-hover:block bg-zinc-800 text-white text-xs p-2 rounded w-48 bottom-full left-1/2 transform -translate-x-1/2 mb-1 z-10">
-                  <span className="font-semibold">Value: {value.toFixed(6)}</span><br/>
-                  <span className="text-zinc-300">
-                    {value > 0.5 ? "Strongly positive" : 
-                     value > 0.1 ? "Moderately positive" : 
-                     value > -0.1 ? "Neutral" : 
-                     value > -0.5 ? "Moderately negative" : "Strongly negative"}
-                  </span><br/>
-                  <span className="text-zinc-400 text-[10px]">{dimensionDescriptions[index]}</span>
-                  <span className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-zinc-800"></span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      
-      <details className="mt-1">
-        <summary className="cursor-pointer font-medium">What do these dimensions mean?</summary>
-        <div className="pl-4 pt-2 space-y-1">
-          <p>These dimensions don&apos;t have specific interpretable meanings - they&apos;re learned by the model during training.</p>
-          <p>Unlike manually created features, embedding dimensions capture complex patterns that represent various semantic aspects of the text.</p>
-          <p>What matters is how these values position the text in the embedding space, creating a mathematical representation of meaning.</p>
-          <p className="text-xs italic mt-1">The tooltips show possible interpretations for educational purposes, but real models don&apos;t have such clear semantic dimensions.</p>
-        </div>
-      </details>
-      <p className="mt-1">Real embeddings typically have hundreds or thousands of dimensions - this is just a small sample.</p>
-    </div>
-  );
-};
-
-// Component to show example similarity between embeddings - updated with more concrete examples
-const EmbeddingSimilarityExample = ({ text1, text2, similarity }: EmbeddingExampleProps) => {
-  const getSimilarityLevel = (value: number) => {
-    if (value >= 0.9) return "Very High";
-    if (value >= 0.7) return "High";
-    if (value >= 0.5) return "Moderate";
-    if (value >= 0.3) return "Low";
-    return "Very Low";
-  };
-
-  const similarityLevel = getSimilarityLevel(similarity);
-  
-  return (
-    <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-      <div className="flex justify-between items-center mb-2">
-        <div className="font-medium text-zinc-800 dark:text-zinc-200">
-          <span className="mr-2">Similarity: {(similarity * 100).toFixed(1)}%</span>
-          <span className={`text-xs px-2 py-0.5 rounded ${
-            similarity >= 0.7 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-            similarity >= 0.4 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-          }`}>
-            {similarityLevel}
-          </span>
-        </div>
-        <div 
-          className="w-16 h-4 rounded-full" 
-          style={{
-            background: `linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%)`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: `${(similarity * 100)}% 0`
-          }}
-        >
-          <div 
-            className="w-3 h-3 rounded-full bg-white border border-zinc-300 dark:border-zinc-500 transform translate-y-0.5" 
-            style={{ marginLeft: `calc(${similarity * 100}% - 6px)` }}
-          ></div>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-2 text-sm">
-        <div className="p-2 bg-zinc-200 dark:bg-zinc-600 rounded">
-          &quot;{text1}&quot;
-        </div>
-        <div className="p-2 bg-zinc-200 dark:bg-zinc-600 rounded">
-          &quot;{text2}&quot;
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface QuickStartStepProps {
-  number: number;
-  title: string;
-  isCompleted: boolean;
-  isActive: boolean;
-  onClick: () => void;
+  // Normalize and add slight variation
+  return embedding.map((val, i) => {
+    const random = ((seed * (i + 1)) % 1000) / 1000 * 0.2 - 0.1;
+    return Math.max(-1, Math.min(1, val + random));
+  });
 }
 
-const QuickStartStep = ({ number, title, isCompleted, isActive, onClick }: QuickStartStepProps) => {
+// Simple deterministic embedding generation for demo purposes
+function generateDemoEmbedding(text: string): number[] {
+  const words = text.toLowerCase().split(/\s+/);
+  const embedding = new Array(8).fill(0); // Use 8 dimensions for simplicity
+  
+  // Simple rules to make embeddings meaningful for demo
+  words.forEach(word => {
+    // Sentiment dimension (0)
+    if (['happy', 'joy', 'love', 'good', 'great', 'wonderful'].includes(word)) embedding[0] += 0.8;
+    if (['sad', 'angry', 'hate', 'bad', 'terrible', 'awful'].includes(word)) embedding[0] -= 0.8;
+    
+    // Animal dimension (1)
+    if (['dog', 'cat', 'puppy', 'kitten', 'pet', 'animal'].includes(word)) embedding[1] += 0.9;
+    
+    // Technology dimension (2)
+    if (['computer', 'software', 'code', 'programming', 'tech', 'digital'].includes(word)) embedding[2] += 0.9;
+    
+    // Food dimension (3)
+    if (['food', 'eat', 'cooking', 'recipe', 'meal', 'restaurant'].includes(word)) embedding[3] += 0.9;
+    
+    // Size dimension (4)
+    if (['big', 'large', 'huge', 'giant', 'massive'].includes(word)) embedding[4] += 0.7;
+    if (['small', 'tiny', 'little', 'mini', 'micro'].includes(word)) embedding[4] -= 0.7;
+    
+    // Time dimension (5)
+    if (['past', 'history', 'old', 'ancient', 'yesterday'].includes(word)) embedding[5] -= 0.6;
+    if (['future', 'tomorrow', 'new', 'modern', 'next'].includes(word)) embedding[5] += 0.6;
+    
+    // Formality dimension (6)
+    if (['hello', 'hi', 'hey', 'cool', 'awesome'].includes(word)) embedding[6] -= 0.5;
+    if (['greetings', 'salutations', 'excellent', 'magnificent'].includes(word)) embedding[6] += 0.5;
+    
+    // Action dimension (7)
+    if (['run', 'jump', 'move', 'action', 'active', 'dynamic'].includes(word)) embedding[7] += 0.8;
+    if (['still', 'quiet', 'calm', 'peaceful', 'static'].includes(word)) embedding[7] -= 0.8;
+  });
+  
+  // Add some randomness based on text length and characters for uniqueness
+  let seed = text.length;
+  for (let i = 0; i < text.length; i++) {
+    seed = (seed * 31 + text.charCodeAt(i)) % 1000000;
+  }
+  
+  // Normalize and add slight randomness
+  return embedding.map((val, i) => {
+    const random = ((seed * (i + 1)) % 1000) / 1000 * 0.3 - 0.15;
+    return Math.max(-1, Math.min(1, val + random));
+  });
+}
+
+// Calculate cosine similarity
+function calculateSimilarity(vec1: number[], vec2: number[]): number {
+  const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
+  const mag1 = Math.sqrt(vec1.reduce((sum, val) => sum + val * val, 0));
+  const mag2 = Math.sqrt(vec2.reduce((sum, val) => sum + val * val, 0));
+  return dotProduct / (mag1 * mag2);
+}
+
+// Simple 2D projection for visualization (using first two meaningful dimensions)
+function projectTo2D(embedding: number[]): { x: number, y: number } {
+  // Use a combination of dimensions to create meaningful 2D coordinates
+  // X-axis: Sentiment + Technology vs Animals + Food
+  const x = (embedding[0] + embedding[2]) - (embedding[1] + embedding[3]);
+  // Y-axis: Size + Action vs Time + Formality  
+  const y = (embedding[4] + embedding[7]) - (embedding[5] + embedding[6]);
+  
+  // Scale more dramatically to spread points out and center for SVG
+  return { x: x * 80 + 250, y: y * 80 + 200 }; // Increased scale and canvas size
+}
+
+// 2D Semantic Space Visualizer
+const SemanticSpaceVisualizer = ({ currentText, currentEmbedding }: { 
+  currentText: string, 
+  currentEmbedding: number[] 
+}) => {
+  // Predefined examples to show clustering with more diverse and contrasting examples
+  const examples = [
+    { text: "happy dog", category: "positive animals" },
+    { text: "joyful puppy", category: "positive animals" },
+    { text: "sad cat", category: "negative animals" },
+    { text: "angry wolf", category: "negative animals" },
+    { text: "computer programming", category: "technology" },
+    { text: "software development", category: "technology" },
+    { text: "delicious pizza", category: "food" },
+    { text: "tasty burger", category: "food" },
+    { text: "huge elephant", category: "large animals" },
+    { text: "massive whale", category: "large animals" },
+    { text: "tiny ant", category: "small animals" },
+    { text: "little mouse", category: "small animals" },
+    { text: "ancient history", category: "past time" },
+    { text: "future technology", category: "future time" },
+  ];
+
+  const examplePoints = examples.map(example => ({
+    ...example,
+    embedding: generateDemoEmbedding(example.text),
+    position: projectTo2D(generateDemoEmbedding(example.text))
+  }));
+
+  const currentPosition = currentEmbedding.length > 0 ? projectTo2D(currentEmbedding) : null;
+
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      "positive animals": "#10b981", // green
+      "negative animals": "#ef4444", // red
+      "technology": "#3b82f6", // blue
+      "food": "#f59e0b", // amber
+      "large animals": "#8b5cf6", // purple
+      "small animals": "#ec4899", // pink
+      "past time": "#6b7280", // gray
+      "future time": "#06b6d4", // cyan
+    };
+    return colors[category as keyof typeof colors] || "#6b7280";
+  };
+
   return (
-    <button 
-      onClick={onClick}
-      className={`flex items-center p-3 w-full text-left rounded-md transition-colors ${
-        isActive 
-          ? 'bg-blue-100 dark:bg-blue-900' 
-          : 'hover:bg-zinc-100 dark:hover:bg-zinc-700'
-      }`}
-    >
-      <div className={`flex items-center justify-center w-6 h-6 rounded-full mr-3 ${
-        isCompleted 
-          ? 'bg-green-500 text-white' 
-          : isActive 
-            ? 'bg-blue-500 text-white' 
-            : 'bg-zinc-200 dark:bg-zinc-600 text-zinc-700 dark:text-zinc-300'
-      }`}>
-        {isCompleted ? <FiCheck size={14} /> : <span>{number}</span>}
+    <div className="space-y-4">
+      <div className="bg-zinc-100 dark:bg-zinc-700 p-3 rounded-lg">
+        <h4 className="font-medium mb-2">Semantic Space Map</h4>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          This 2D map shows how different concepts cluster together based on their meaning. 
+          Similar concepts appear closer together.
+        </p>
       </div>
-      <span className={`font-medium ${
-        isActive ? 'text-blue-700 dark:text-blue-300' : 'text-zinc-700 dark:text-zinc-300'
-      }`}>
-        {title}
-      </span>
-    </button>
+
+             <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-4">
+         <svg width="500" height="400" className="w-full h-auto">
+          {/* Grid lines for reference */}
+          <defs>
+            <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 30" fill="none" stroke="#e5e7eb" strokeWidth="1" opacity="0.3"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          
+                     {/* Axis labels */}
+           <text x="250" y="25" textAnchor="middle" className="text-xs fill-zinc-500">
+             Tech/Sentiment ← → Animals/Food
+           </text>
+           <text x="25" y="200" textAnchor="middle" className="text-xs fill-zinc-500" transform="rotate(-90, 25, 200)">
+             Size/Action ← → Time/Formality
+           </text>
+          
+          {/* Example points */}
+          {examplePoints.map((point, index) => (
+            <g key={index}>
+              <circle
+                cx={point.position.x}
+                cy={point.position.y}
+                r="6"
+                fill={getCategoryColor(point.category)}
+                opacity="0.7"
+                className="hover:opacity-100 transition-opacity"
+              />
+              <text
+                x={point.position.x}
+                y={point.position.y - 10}
+                textAnchor="middle"
+                className="text-xs fill-zinc-600 dark:fill-zinc-300 pointer-events-none"
+                fontSize="10"
+              >
+                {point.text}
+              </text>
+            </g>
+          ))}
+          
+          {/* Current user input */}
+          {currentPosition && (
+            <g>
+              <circle
+                cx={currentPosition.x}
+                cy={currentPosition.y}
+                r="8"
+                fill="#dc2626"
+                stroke="#ffffff"
+                strokeWidth="2"
+                className="animate-pulse"
+              />
+              <text
+                x={currentPosition.x}
+                y={currentPosition.y - 15}
+                textAnchor="middle"
+                className="text-xs font-bold fill-red-600 dark:fill-red-400"
+                fontSize="11"
+              >
+                {currentText}
+              </text>
+            </g>
+          )}
+        </svg>
+        
+                 {/* Legend */}
+         <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+           {Object.entries({
+             "positive animals": "#10b981",
+             "negative animals": "#ef4444", 
+             "technology": "#3b82f6",
+             "food": "#f59e0b",
+             "large animals": "#8b5cf6",
+             "small animals": "#ec4899",
+             "past time": "#6b7280",
+             "future time": "#06b6d4"
+           }).map(([category, color]) => (
+            <div key={category} className="flex items-center space-x-2">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: color }}
+              ></div>
+              <span className="text-zinc-600 dark:text-zinc-400 capitalize">
+                {category.replace(" ", " ")}
+              </span>
+            </div>
+          ))}
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 rounded-full bg-red-600 border border-white"></div>
+            <span className="text-zinc-600 dark:text-zinc-400 font-medium">Your text</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800 p-2 rounded">
+        💡 <strong>What you&apos;re seeing:</strong> Words with similar meanings cluster together in this space. 
+        The closer two points are, the more similar their meanings. Your text appears as a red dot 
+        showing where it fits in this semantic landscape.
+      </div>
+    </div>
   );
 };
 
-const QuickStartTutorial = ({ onStepClick, activeStep, completedSteps }: {
-  onStepClick: (step: number) => void;
-  activeStep: number;
-  completedSteps: boolean[];
-}) => {
-  const steps = [
-    "Enter a word or phrase",
-    "Generate its embedding",
-    "Explore the vector space",
-    "Try different examples"
+// Simple embedding visualizer component
+const EmbeddingVisualizer = ({ embedding, text }: { embedding: number[], text: string }) => {
+  const dimensionNames = [
+    'Sentiment', 'Animals', 'Technology', 'Food', 
+    'Size', 'Time', 'Formality', 'Action'
   ];
-
+  
+  const getColorForValue = (value: number) => {
+    const intensity = Math.abs(value);
+    const hue = value >= 0 ? 120 : 0; // Green for positive, red for negative
+    return `hsl(${hue}, 70%, ${50 + intensity * 30}%)`;
+  };
+  
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4 mb-6">
-      <div className="flex items-center mb-3">
-        <FiPlay className="text-green-500 mr-2" size={20} />
-        <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">Quick Start Guide</h3>
+    <div className="space-y-3">
+      <div className="bg-zinc-100 dark:bg-zinc-700 p-3 rounded-lg">
+        <h4 className="font-medium mb-2">Text: &quot;{text}&quot;</h4>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          See how this text is represented as numbers that capture different aspects of meaning:
+        </p>
       </div>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-        Follow these steps to understand how computers translate words into a code they can understand:
-      </p>
-      <div className="space-y-2">
-        {steps.map((step, index) => (
-          <QuickStartStep 
-            key={index}
-            number={index + 1}
-            title={step}
-            isCompleted={completedSteps[index]}
-            isActive={activeStep === index}
-            onClick={() => onStepClick(index)}
-          />
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {embedding.map((value, index) => (
+          <div key={index} className="text-center">
+            <div className="text-xs font-medium mb-1">{dimensionNames[index]}</div>
+            <div 
+              className="h-16 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+              style={{ backgroundColor: getColorForValue(value) }}
+            >
+              {value.toFixed(2)}
+            </div>
+            <div className="text-xs mt-1 text-zinc-500">
+              {Math.abs(value) > 0.3 ? (value > 0 ? 'Strong +' : 'Strong -') : 'Neutral'}
+            </div>
+          </div>
         ))}
+      </div>
+      
+      <div className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800 p-2 rounded">
+        💡 <strong>How to read this:</strong> Each number represents how much this text relates to that concept. 
+        Positive numbers (green) mean strong presence, negative numbers (red) mean absence or opposite, 
+        and values near zero mean neutral/irrelevant.
+      </div>
+    </div>
+  );
+};
+
+// Similarity comparison component
+const SimilarityComparison = ({ text1, text2, embedding1, embedding2 }: {
+  text1: string, text2: string, embedding1: number[], embedding2: number[]
+}) => {
+  const similarity = calculateSimilarity(embedding1, embedding2);
+  const percentage = Math.round((similarity + 1) * 50); // Convert from [-1,1] to [0,100]
+  
+  const getSimilarityDescription = (sim: number) => {
+    if (sim > 0.8) return { text: "Very Similar", color: "text-green-600" };
+    if (sim > 0.5) return { text: "Quite Similar", color: "text-green-500" };
+    if (sim > 0.2) return { text: "Somewhat Similar", color: "text-yellow-600" };
+    if (sim > -0.2) return { text: "Not Very Similar", color: "text-orange-600" };
+    return { text: "Very Different", color: "text-red-600" };
+  };
+  
+  const description = getSimilarityDescription(similarity);
+  
+  return (
+    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+      <h4 className="font-medium mb-3">Similarity Comparison</h4>
+      <div className="space-y-2 mb-3">
+        <div className="text-sm"><strong>Text 1:</strong> &quot;{text1}&quot;</div>
+        <div className="text-sm"><strong>Text 2:</strong> &quot;{text2}&quot;</div>
+      </div>
+      
+      <div className="flex items-center space-x-3">
+        <div className="flex-1">
+          <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-4">
+            <div 
+              className="h-full rounded-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-400"
+              style={{ width: `${percentage}%` }}
+            ></div>
+          </div>
+        </div>
+        <div className={`font-bold ${description.color}`}>
+          {description.text}
+        </div>
+      </div>
+      
+      <div className="text-xs mt-2 text-zinc-600 dark:text-zinc-400">
+        Similarity score: {similarity.toFixed(3)} (Range: -1 to 1, where 1 means identical meaning)
       </div>
     </div>
   );
 };
 
 export default function EmbeddingsDemoClient() {
-  const [inputText, setInputText] = useState('');
-  const [embeddings, setEmbeddings] = useState<number[]>([]);
+  const [inputText, setInputText] = useState('happy dog');
+  const [compareText, setCompareText] = useState('joyful puppy');
+  const [embedding1, setEmbedding1] = useState<number[]>([]);
+  const [embedding2, setEmbedding2] = useState<number[]>([]);
+  const [expandedSections, setExpandedSections] = useState([false, false, false]);
+  const [showComparison, setShowComparison] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedSections, setExpandedSections] = useState([false, false, false, false]);
-  const [selectedModel, setSelectedModel] = useState('text-embedding-ada-002');
-  const [showSimilarityExamples, setShowSimilarityExamples] = useState(false);
-  const [demoEmbeddings, setDemoEmbeddings] = useState<{[key: string]: number[]}>(HARD_CODED_EMBEDDINGS);
-  const [quickStartStep, setQuickStartStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState([false, false, false, false]);
-  const [interactedWithDemo, setInteractedWithDemo] = useState(false);
-  const [showNewsletterModal, setShowNewsletterModal] = useState(false);
+  const [modelStatus] = useState<'ready'>('ready'); // Using enhanced demo embeddings
 
-  // Move handleExampleSelect declaration and wrap in useCallback
-  const handleExampleSelect = useCallback((text: string) => {
-    setInputText(text);
-    // Mark example step as completed
-    const newCompletedSteps = [...completedSteps];
-    newCompletedSteps[3] = true;
-    setCompletedSteps(newCompletedSteps);
-    
-    // For demo purposes, immediately show embeddings for examples
-    if (Object.keys(demoEmbeddings).includes(text.toLowerCase())) {
-      setEmbeddings(demoEmbeddings[text.toLowerCase()]);
-    } else {
-      // Generate deterministic embeddings for other examples
-      setEmbeddings(getDeterministicVector(text));
-    }
-  }, [completedSteps, demoEmbeddings, setCompletedSteps, setEmbeddings, setInputText]);
-
-  // Pre-select a default example to show visualization immediately
+  // Generate embeddings when text changes
   useEffect(() => {
-    handleExampleSelect('dog');
-  }, [handleExampleSelect]);
+    if (inputText.trim()) {
+      setIsLoading(true);
+      generateRealEmbedding(inputText).then((embedding) => {
+        setEmbedding1(embedding);
+        setIsLoading(false);
+      });
+    }
+  }, [inputText]);
 
   useEffect(() => {
-    const newCompletedSteps = [...completedSteps];
-    
-    // Step 1: Enter a word or phrase
-    if (inputText.trim().length > 0 && !newCompletedSteps[0]) {
-      newCompletedSteps[0] = true;
+    if (compareText.trim()) {
+      generateRealEmbedding(compareText).then((embedding) => {
+        setEmbedding2(embedding);
+      });
     }
-    
-    // Step 2: Generate embedding
-    if (embeddings.length > 0 && !newCompletedSteps[1]) {
-      newCompletedSteps[1] = true;
-    }
-    
-    // Only update state if there are changes
-    if (JSON.stringify(newCompletedSteps) !== JSON.stringify(completedSteps)) {
-      setCompletedSteps(newCompletedSteps);
-    }
-    
-    // We'll track steps 3 and 4 with manual triggers when user interacts with those sections
-  }, [inputText, embeddings, completedSteps]);
+  }, [compareText]);
 
-  // Simplify the useEffect that previously tracked progress
-  useEffect(() => {
-    // Show newsletter modal after meaningful interaction
-    if (embeddings.length > 0 && completedSteps[2] && !showNewsletterModal && !interactedWithDemo) {
-      setInteractedWithDemo(true);
-      setTimeout(() => {
-        setShowNewsletterModal(true);
-      }, 2000);
-    }
-  }, [embeddings, completedSteps, interactedWithDemo, showNewsletterModal]);
-  
-  // Handle newsletter modal close
-  const handleCloseNewsletterModal = () => {
-    setShowNewsletterModal(false);
-  };
-
-  // Toggle section expansion
   const toggleSection = (index: number) => {
-    const newExpandedSections = [...expandedSections];
-    newExpandedSections[index] = !newExpandedSections[index];
-    setExpandedSections(newExpandedSections);
-    
-    if (index === 3 && !newExpandedSections[index]) {
-      setShowSimilarityExamples(false);
-    }
+    const newExpanded = [...expandedSections];
+    newExpanded[index] = !newExpanded[index];
+    setExpandedSections(newExpanded);
   };
 
-  // Handler for quick start step clicks
-  const handleQuickStartStepClick = (step: number) => {
-    setQuickStartStep(step);
-    
-    // Scroll to relevant section based on step
-    const scrollTargets = [
-      'input-section',     // Step 1: Enter text
-      'generate-button',   // Step 2: Generate embedding
-      'vector-space-section', // Step 3: Explore vector space
-      'examples-section'   // Step 4: Try examples
-    ];
-    
-    const targetElement = document.getElementById(scrollTargets[step]);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-  
-  // Track vector space interaction
-  const handleVectorSpaceInteraction = () => {
-    const newCompletedSteps = [...completedSteps];
-    newCompletedSteps[2] = true;
-    setCompletedSteps(newCompletedSteps);
-  };
-  
-  const handleGenerateEmbeddings = async () => {
-    if (!inputText.trim()) return;
-
-    setIsLoading(true);
-    try {
-      let vector: number[];
-      const key = inputText.toLowerCase();
-      if (demoEmbeddings[key]) {
-        vector = demoEmbeddings[key];
-      } else {
-        vector = getDeterministicVector(inputText);
-      }
-
-      setEmbeddings(vector);
-      track('embeddings_generated', { model: selectedModel, textLength: inputText.length });
-    } catch (error) {
-      console.error('Error generating embeddings:', error);
-      setEmbeddings(getRandomVector(20));
-    } finally {
-      setIsLoading(false);
-      setQuickStartStep(2);
-    }
+  const handleExampleSelect = (text: string) => {
+    setInputText(text);
+    track('embeddings_example_selected', { text });
   };
 
-  // Calculate cosine similarity between two vectors
-  const calculateSimilarity = (vec1: number[], vec2: number[]): number => {
-    const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
-    const mag1 = Math.sqrt(vec1.reduce((sum, val) => sum + val * val, 0));
-    const mag2 = Math.sqrt(vec2.reduce((sum, val) => sum + val * val, 0));
-    return dotProduct / (mag1 * mag2);
+  const handleComparisonExample = (text1: string, text2: string) => {
+    setInputText(text1);
+    setCompareText(text2);
+    setShowComparison(true);
+    track('embeddings_comparison_example', { text1, text2 });
   };
 
-  // Educational content sections - Updated with simplified analogies
+  // Educational content sections
   const educationalSections = [
     {
       title: "What are Embeddings?",
@@ -468,15 +488,16 @@ export default function EmbeddingsDemoClient() {
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
-            Embeddings translate words into a &apos;code&apos; computers understand, where similar words (e.g., &apos;dog&apos; and &apos;puppy&apos;) are grouped closer in a hidden map.
+            Embeddings are like a &quot;fingerprint&quot; for text - they convert words and sentences into lists of numbers 
+            that capture their meaning. Similar meanings get similar numbers.
           </p>
           <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Why embeddings matter:</h4>
+            <h4 className="font-medium mb-2">Think of it like this:</h4>
             <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>They create a &quot;search by meaning&quot; system (beyond just keywords)</li>
-              <li>Allow computers to find similar concepts automatically</li>
-              <li>Power recommendation systems (&quot;you might also like...&quot;)</li>
-              <li>Help AI systems retrieve knowledge to answer questions accurately</li>
+                          <li>Each word gets a unique &quot;address&quot; in a mathematical space</li>
+            <li>Words with similar meanings live in the same &quot;neighborhood&quot;</li>
+            <li>Computers can find related concepts by looking at nearby &quot;addresses&quot;</li>
+              <li>This powers search engines, recommendations, and AI assistants</li>
             </ul>
           </div>
           <div className="flex justify-center py-2">
@@ -484,36 +505,35 @@ export default function EmbeddingsDemoClient() {
               src={embedDiagram}
               alt="Text-to-embedding process diagram" 
               className="max-w-full h-auto rounded-lg shadow-md"
-              width={500}
-              height={300}
-              style={{ height: 'auto' }}
+              width={400}
+              height={200}
             />
-          </div>
-          <div className="text-sm bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
-            <span className="font-medium text-blue-700 dark:text-blue-300">Think of it like this:</span> Imagine a vast library where books are shelved not by author or title, but by meaning. Books about dogs are near books about pets, cooking books near recipe books. This is what embeddings do for AI—organize information by meaning!
           </div>
         </div>
       )
     },
     {
-      title: "How Embeddings Work",
+      title: "How Do They Work?",
       icon: <FiTool className="text-orange-500" size={24} />,
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
-            Embedding models transform text into high-dimensional vectors where semantic similarities become geometric relationships.
+            AI models learn to create embeddings by reading millions of texts and discovering patterns 
+            in how words are used together.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Vector Space Mapping</h4>
+              <h4 className="font-medium mb-2">Learning Process</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Words and concepts with similar meanings are placed close together in the vector space. This creates a mathematical representation where semantic relationships become geometric relationships.
+                Models learn that &quot;dog&quot; and &quot;puppy&quot; often appear in similar contexts, 
+                so they assign them similar embedding values.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Dimensionality</h4>
+              <h4 className="font-medium mb-2">Multiple Dimensions</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Most embedding models produce vectors with hundreds or thousands of dimensions. The OpenAI text-embedding-ada-002 model produces 1,536-dimensional vectors. These dimensions capture different semantic features of the text.
+                Each dimension captures different aspects: sentiment, topic, formality, etc. 
+                Real embeddings have hundreds of dimensions.
               </p>
             </div>
           </div>
@@ -521,250 +541,248 @@ export default function EmbeddingsDemoClient() {
       )
     },
     {
-      title: "Measuring Similarity",
-      icon: <FiSearch className="text-purple-500" size={24} />,
+      title: "Real-World Applications",
+      icon: <FiSearch className="text-green-500" size={24} />,
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
-            Cosine similarity is the most common way to measure how similar two embeddings are. It measures the cosine of the angle between two vectors.
+            Embeddings power many AI applications you use every day.
           </p>
-          <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Similarity in embeddings:</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>1.0 (100%) means identical semantic meaning</li>
-              <li>0.7-0.9 (70-90%) indicates strong semantic relatedness</li>
-              <li>0.4-0.6 (40-60%) suggests moderate similarity</li>
-              <li>Below 0.3 (30%) typically means minimal relationship</li>
-              <li>0.0 means completely unrelated</li>
-            </ul>
-          </div>
-          <button
-            onClick={() => setShowSimilarityExamples(!showSimilarityExamples)}
-            className="mt-2 text-blue-600 dark:text-blue-400 text-sm flex items-center"
-          >
-            {showSimilarityExamples ? 'Hide examples' : 'Show examples'} 
-            {showSimilarityExamples ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}
-          </button>
-          
-          {showSimilarityExamples && (
-            <div className="grid grid-cols-1 gap-3 mt-2">
-              <EmbeddingSimilarityExample 
-                text1="dog" 
-                text2="puppy" 
-                similarity={0.92} 
-              />
-              <EmbeddingSimilarityExample 
-                text1="computer" 
-                text2="laptop" 
-                similarity={0.85} 
-              />
-              <EmbeddingSimilarityExample 
-                text1="paris" 
-                text2="france" 
-                similarity={0.75} 
-              />
-              <EmbeddingSimilarityExample 
-                text1="computer" 
-                text2="smartphone" 
-                similarity={0.65} 
-              />
-              <EmbeddingSimilarityExample 
-                text1="happy" 
-                text2="sad" 
-                similarity={0.15} 
-              />
-            </div>
-          )}
-        </div>
-      )
-    },
-    {
-      title: "Applications",
-      icon: <FiDatabase className="text-green-500" size={24} />,
-      content: (
-        <div className="space-y-3">
-          <p className="text-zinc-700 dark:text-zinc-300">
-            Embeddings power a wide range of AI applications that require understanding semantic meaning.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Semantic Search</h4>
+              <h4 className="font-medium mb-2">🔍 Smart Search</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Find relevant documents based on meaning rather than just keywords. Used in advanced search engines and RAG (Retrieval-Augmented Generation) systems.
+                Search for "car" and find results about "automobile" or "vehicle" 
+                even if they don't contain the exact word.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">RAG Systems</h4>
+              <h4 className="font-medium mb-2">🤖 AI Assistants</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Retrieval-Augmented Generation enhances LLMs by retrieving relevant information from a knowledge base using embeddings, significantly improving their factual accuracy.
+                ChatGPT and similar tools use embeddings to understand your questions 
+                and find relevant information to answer them.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Recommendation Systems</h4>
+              <h4 className="font-medium mb-2">📱 Recommendations</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Suggest similar products, content, or services by finding items with embeddings similar to ones the user has shown interest in.
+                Netflix, Spotify, and shopping sites use embeddings to suggest 
+                content similar to what you've enjoyed before.
               </p>
             </div>
             <div className="bg-zinc-100 dark:bg-zinc-700 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-zinc-800 dark:text-zinc-200">Content Clustering</h4>
+              <h4 className="font-medium mb-2">🌐 Translation</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Automatically organize and categorize content by grouping items with similar embeddings, useful for content discovery and organization.
+                Google Translate uses embeddings to understand that "hello" in English 
+                has the same meaning as "hola" in Spanish.
               </p>
             </div>
           </div>
         </div>
       )
-    },
+    }
   ];
-
-  // Add a section to explain semantic clustering
-  const SemanticClusteringExplanation = () => (
-    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800">
-      <h3 className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2">
-        Understanding Semantic Clustering
-      </h3>
-      <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
-        Notice how semantically related words form distinct clusters in the vector space:
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="bg-white dark:bg-blue-900/30 p-3 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Words vs. Concepts</h4>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            Embeddings capture meaning, not just spelling. &quot;Dog&quot; and &quot;puppy&quot; cluster together because they represent similar concepts, not because the words look similar.
-          </p>
-        </div>
-        <div className="bg-white dark:bg-blue-900/30 p-3 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Hierarchy of Meaning</h4>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            More specific concepts (&quot;kitten&quot;) appear closer to their parent category (&quot;cat&quot;) than to other categories (&quot;technology&quot;). This reflects real-world taxonomy.
-          </p>
-        </div>
-        <div className="bg-white dark:bg-blue-900/30 p-3 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Geographic Relationships</h4>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            &quot;Paris&quot; is closer to &quot;France&quot; than to &quot;Japan&quot;, showing how embeddings capture real-world relationships between places and countries.
-          </p>
-        </div>
-        <div className="bg-white dark:bg-blue-900/30 p-3 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Concept Distance</h4>
-          <p className="text-xs text-blue-600 dark:text-blue-400">
-            The distance between &quot;food&quot; and &quot;animal&quot; clusters shows semantic separation, while terms like &quot;sushi&quot; might show some relationship to &quot;japan&quot; across categories.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Add predefined phrases for users to select
-  const predefinedPhrases = [
-    "The quick brown fox jumps over the lazy dog",
-    "A fast auburn fox leaps above a sleepy canine",
-    "Rapid tan foxes vault over lethargic hounds",
-    "Swift chestnut foxes bound over sluggish dogs"
-  ];
-
-  // Function to handle phrase selection
-  const handlePhraseSelect = (phrase: string) => {
-    setInputText(phrase);
-    handleGenerateEmbeddings();
-  };
 
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 space-y-8">
-      {/* Add the animation style */}
-      <style jsx global>{animateFadeInUp}</style>
-      
-      {/* Vector Space Visualization */}
-      <div id="vector-space-section" className="space-y-4">
-        <div className="flex items-center mb-4">
-          <FiSearch className="text-green-500 mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Vector Space Explorer</h3>
-        </div>
-        
-        <SemanticClusteringExplanation />
-
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Explore how embeddings position words in a multi-dimensional space, where related concepts naturally cluster together.
-        </p>
-        
-        <VectorSpaceVisualizer 
-          embeddings={demoEmbeddings} 
-          currentEmbedding={embeddings} 
-          currentLabel={inputText || "Your input"}
-          onInteraction={handleVectorSpaceInteraction}
-        />
-        
-        {/* Predefined Phrases Section */}
-        <div className="mt-4 bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-zinc-800 dark:text-zinc-200 mb-2">Select a Phrase to Explore</h3>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mb-3">
-            Choose from the following phrases to see how they are positioned in the vector space:
-          </p>
-          <div className="space-y-3">
-            {predefinedPhrases.map((phrase) => (
-              <button
-                key={phrase}
-                className="px-3 py-1 text-xs bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded-md"
-                onClick={() => handlePhraseSelect(phrase)}
-              >
-                {phrase}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Educational Content Sections */}
-      {educationalSections.map((section, index) => (
-        <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+      {/* Learning Progress */}
+      <div className="flex items-center space-x-1 overflow-x-auto pb-2">
+        {educationalSections.map((section, index) => (
           <button 
+            key={index}
             onClick={() => toggleSection(index)}
-            className="flex items-center w-full text-left"
+            className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              expandedSections[index] 
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
+            }`}
           >
             <span className="mr-2">{section.icon}</span>
-            <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
-              {section.title}
-            </h3>
+            <span className="whitespace-nowrap">{section.title}</span>
             <span className="ml-1">
               {expandedSections[index] ? <FiChevronDown size={14} /> : <FiChevronRight size={14} />}
             </span>
           </button>
-          {expandedSections[index] && section.content}
-        </div>
+        ))}
+      </div>
+
+      {/* Educational Content Sections */}
+      {educationalSections.map((section, index) => (
+        expandedSections[index] && (
+          <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
+              {section.title}
+            </h3>
+            {section.content}
+          </div>
+        )
       ))}
 
-      {/* Embedding Dimensions */}
-      {embeddings.length > 0 && inputText && !Object.keys(demoEmbeddings).includes(inputText.toLowerCase()) && (
-        <div id="dimensions-section" className="mt-6 mb-6">
-          <div className="flex items-center mb-4">
-            <FiCode className="text-purple-500 mr-2" size={20} />
-            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Embedding Dimensions</h3>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            See the raw numerical values of the embedding vector across its dimensions.
+      {/* Main Interactive Demo */}
+      <div className="space-y-6">
+        <div className="flex items-center">
+          <FiCode className="text-purple-500 mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+            See Text Become Numbers
+          </h3>
+        </div>
+        
+        <div className="space-y-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Type any text below to see how it gets converted into an embedding - a list of numbers that captures its meaning.
+            <strong className="text-blue-600 dark:text-blue-400"> Your text will appear as a red dot on the semantic map below!</strong>
           </p>
-          <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-            <EmbeddingVisualizer embeddings={embeddings} inputText={inputText} />
+          
+          {/* Model Status Indicator */}
+          <div className="flex items-center space-x-2 text-xs">
+            <div className={`w-2 h-2 rounded-full ${
+              modelStatus === 'ready' ? 'bg-green-500' : 
+              modelStatus === 'loading' ? 'bg-yellow-500 animate-pulse' : 
+              'bg-orange-500'
+            }`}></div>
+            <span className="text-zinc-500 dark:text-zinc-400">
+              Using enhanced demo embeddings with realistic behavior
+            </span>
           </div>
         </div>
-      )}
 
-      {/* Add an input field for user phrases */}
-      <div className="mt-4">
-        <h3 className="text-sm font-medium text-zinc-800 dark:text-zinc-200 mb-2">Enter a Word or Phrase</h3>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          className="w-full p-2 border border-zinc-300 dark:border-zinc-600 rounded-md"
-          placeholder="Type a word or phrase..."
+        {/* Input Area */}
+        <div className="space-y-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              className="w-full p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white pr-10"
+              placeholder="Type any word or phrase..."
+            />
+            {isLoading && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+              </div>
+            )}
+          </div>
+
+          {/* Example buttons */}
+          <div className="space-y-2">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              Try these examples to see how different types of text create different embeddings:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "happy dog", "angry wolf", "computer programming", "delicious pizza",
+                "tiny ant", "huge elephant", "ancient history", "future technology"
+              ].map((example) => (
+                <button
+                  key={example}
+                  onClick={() => handleExampleSelect(example)}
+                  className="px-3 py-1 text-xs bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 rounded-md"
+                >
+                  {example}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Semantic Space Visualization */}
+        {embedding1.length > 0 && (
+          <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <div className="flex items-center mb-4">
+              <FiMap className="text-indigo-500 mr-2" size={20} />
+              <h4 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+                Semantic Space Visualization
+              </h4>
+            </div>
+            <SemanticSpaceVisualizer currentText={inputText} currentEmbedding={embedding1} />
+          </div>
+        )}
+
+        {/* Embedding Visualization */}
+        {embedding1.length > 0 && (
+          <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
+            <EmbeddingVisualizer embedding={embedding1} text={inputText} />
+          </div>
+        )}
+
+        {/* Similarity Comparison Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <FiTarget className="text-green-500 mr-2" size={20} />
+              <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+                Compare Meanings
+              </h3>
+            </div>
+            <button
+              onClick={() => setShowComparison(!showComparison)}
+              className="text-sm text-blue-600 dark:text-blue-400 flex items-center"
+            >
+              {showComparison ? 'Hide' : 'Show'} comparison
+              {showComparison ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}
+            </button>
+          </div>
+
+          {showComparison && (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Enter a second text to see how similar its meaning is to the first one:
+              </p>
+              
+              <input
+                type="text"
+                value={compareText}
+                onChange={(e) => setCompareText(e.target.value)}
+                className="w-full p-3 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-white"
+                placeholder="Enter text to compare..."
+              />
+
+              {/* Comparison example buttons */}
+              <div className="space-y-2">
+                <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                  Try these comparison pairs:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    ["happy dog", "joyful puppy"],
+                    ["sad cat", "angry dog"],
+                    ["computer code", "software programming"],
+                    ["big elephant", "tiny mouse"]
+                  ].map(([text1, text2]) => (
+                    <button
+                      key={`${text1}-${text2}`}
+                      onClick={() => handleComparisonExample(text1, text2)}
+                      className="px-3 py-1 text-xs bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 rounded-md"
+                    >
+                      "{text1}" vs "{text2}"
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Similarity visualization */}
+              {embedding1.length > 0 && embedding2.length > 0 && (
+                <SimilarityComparison 
+                  text1={inputText} 
+                  text2={compareText}
+                  embedding1={embedding1}
+                  embedding2={embedding2}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Newsletter */}
+      <div className="mt-8">
+        <NewsletterWrapper 
+          title="Master AI Embeddings & Semantic Search"
+          body="Get practical guides on building semantic search, RAG systems, and recommendation engines using embeddings."
+          successMessage="Thanks! Check your inbox for embedding resources."
+          onSubscribe={() => track('embeddings_newsletter_subscribe')}
+          position="embeddings-demo-footer"
         />
-        <button
-          onClick={handleGenerateEmbeddings}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Visualize
-        </button>
       </div>
     </div>
   );
