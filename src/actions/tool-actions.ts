@@ -63,4 +63,29 @@ export async function getAllTools(): Promise<Tool[]> {
     console.error("Error fetching tools:", error)
     return []; // Return empty array on error
   }
+}
+
+export async function getToolBySlug(slug: string): Promise<Tool | null> {
+  console.log(`Fetching tool by slug: ${slug} (using Prisma)`)
+  try {
+    // Convert slug back to a readable name for searching
+    const searchName = slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    const tool = await prisma.tool.findFirst({
+      where: { 
+        OR: [
+          { name: { equals: searchName, mode: 'insensitive' } },
+          { name: { contains: slug, mode: 'insensitive' } },
+          { name: { contains: searchName, mode: 'insensitive' } }
+        ]
+      }
+    });
+    return tool;
+  } catch (error) {
+    console.error("Error fetching tool by slug:", error)
+    return null;
+  }
 } 
