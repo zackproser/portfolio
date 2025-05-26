@@ -67,3 +67,4 @@ prisma/.env
 
 # Ignore optimized OG images
 public/og-images-optimized/
+.env.production
