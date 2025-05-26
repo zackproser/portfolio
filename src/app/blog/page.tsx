@@ -20,8 +20,7 @@ export default async function ArticlesIndex() {
   const articles = await getAllContent('blog');
 
   const years = [...new Set(articles.map((a) => new Date(a.date).getFullYear().toString()))].sort((a, b) => parseInt(b) - parseInt(a));
-  const allTags = [...new Set(articles.flatMap((a) => a.tags ?? []))].sort();
 
-  return <BlogClient articles={articles} years={years} allTags={allTags} />;
+  return <BlogClient articles={articles} years={years} />;
 }
 
