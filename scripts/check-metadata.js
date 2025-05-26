@@ -3,8 +3,7 @@ const path = require('path');
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 
-const { generateCombinations, slugify } = require('./create-ai-assisted-dev-tools-comparison-pages');
-const { tools } = require('../schema/data/ai-assisted-developer-tools.json');
+// Removed static comparison generation - now using dynamic database-driven system
 
 const appDir = path.join(process.cwd(), 'src', 'app');
 const expectedMetadataFields = ['title', 'description', 'openGraph', 'twitter', 'author', 'date', 'image'];
@@ -71,24 +70,7 @@ function analyzeFile(filePath) {
   }
 }
 
-function handleDynamicPages() {
-  const dynamicPages = [];
-
-  const vectorDbDir = path.join(process.cwd(), 'src', 'app', 'comparisons', 'vector-databases');
-  dynamicPages.push(path.join(vectorDbDir, 'page.mdx'));
-
-  const combinations = generateCombinations(tools);
-  combinations.forEach(([tool1, tool2]) => {
-    const slug = `${slugify(tool1.name)}-vs-${slugify(tool2.name)}`;
-    const comparisonDir = path.join(process.cwd(), 'src', 'app', 'comparisons', slug);
-    dynamicPages.push(path.join(comparisonDir, 'page.mdx'));
-  });
-
-  const mainComparisonDir = path.join(process.cwd(), 'src', 'app', 'blog', 'ai-assisted-dev-tools-compared');
-  dynamicPages.push(path.join(mainComparisonDir, 'page.mdx'));
-
-  return dynamicPages;
-}
+// Removed handleDynamicPages - no longer generating static comparison pages
 
 function generateReport() {
   const report = {
@@ -115,10 +97,7 @@ function generateReport() {
 
   traverseDir(appDir);
 
-  const dynamicPages = handleDynamicPages();
-  dynamicPages.forEach(pagePath => {
-    analyzeAndAddToReport(pagePath, report);
-  });
+  // No longer checking dynamic comparison pages - using database-driven system
 
   return report;
 }
