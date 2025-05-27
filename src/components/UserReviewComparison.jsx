@@ -139,8 +139,26 @@ const UserReviewComparison = ({ tools }) => {
     ]
   }
   
+  // Simple hash function to create deterministic "random" values
+  const hashString = (str) => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32-bit integer
+    }
+    return Math.abs(hash)
+  }
+
+  // Generate deterministic "random" number based on seed
+  const seededRandom = (seed, min = 0, max = 1) => {
+    const hash = hashString(seed.toString())
+    const normalized = (hash % 1000) / 1000
+    return Math.floor(normalized * (max - min + 1)) + min
+  }
+
   // Generate realistic-looking reviews based on rating
-  const generateReviews = (proxyData) => {
+  const generateReviews = (proxyData, toolName) => {
     const rating = proxyData.rating
     const reviews = []
     
@@ -152,27 +170,30 @@ const UserReviewComparison = ({ tools }) => {
     // Add positive reviews
     for (let i = 0; i < positiveCount; i++) {
       const review = { ...sampleReviews.positive[i % sampleReviews.positive.length] }
-      review.user = `User ${Math.floor(Math.random() * 1000)}`
-      review.rating = 4 + Math.floor(Math.random() * 2) // 4 or 5 stars
-      review.date = `${Math.floor(Math.random() * 12) + 1}/${Math.floor(Math.random() * 28) + 1}/2023`
+      const seed = `${toolName}-positive-${i}`
+      review.user = `User ${seededRandom(seed, 100, 999)}`
+      review.rating = 4 + seededRandom(`${seed}-rating`, 0, 1) // 4 or 5 stars
+      review.date = `${seededRandom(`${seed}-month`, 1, 12)}/${seededRandom(`${seed}-day`, 1, 28)}/2023`
       reviews.push(review)
     }
     
     // Add neutral reviews
     for (let i = 0; i < neutralCount; i++) {
       const review = { ...sampleReviews.neutral[i % sampleReviews.neutral.length] }
-      review.user = `User ${Math.floor(Math.random() * 1000)}`
+      const seed = `${toolName}-neutral-${i}`
+      review.user = `User ${seededRandom(seed, 100, 999)}`
       review.rating = 3
-      review.date = `${Math.floor(Math.random() * 12) + 1}/${Math.floor(Math.random() * 28) + 1}/2023`
+      review.date = `${seededRandom(`${seed}-month`, 1, 12)}/${seededRandom(`${seed}-day`, 1, 28)}/2023`
       reviews.push(review)
     }
     
     // Add negative reviews
     for (let i = 0; i < negativeCount; i++) {
       const review = { ...sampleReviews.negative[i % sampleReviews.negative.length] }
-      review.user = `User ${Math.floor(Math.random() * 1000)}`
-      review.rating = 1 + Math.floor(Math.random() * 2) // 1 or 2 stars
-      review.date = `${Math.floor(Math.random() * 12) + 1}/${Math.floor(Math.random() * 28) + 1}/2023`
+      const seed = `${toolName}-negative-${i}`
+      review.user = `User ${seededRandom(seed, 100, 999)}`
+      review.rating = 1 + seededRandom(`${seed}-rating`, 0, 1) // 1 or 2 stars
+      review.date = `${seededRandom(`${seed}-month`, 1, 12)}/${seededRandom(`${seed}-day`, 1, 28)}/2023`
       reviews.push(review)
     }
     
@@ -192,7 +213,7 @@ const UserReviewComparison = ({ tools }) => {
           total_reviews: proxyData.reviewCount,
           source: proxyData.source,
           reviewUrl: proxyData.reviewUrl,
-          reviews: generateReviews(proxyData)
+          reviews: generateReviews(proxyData, tool.name)
         }
       }
     }
