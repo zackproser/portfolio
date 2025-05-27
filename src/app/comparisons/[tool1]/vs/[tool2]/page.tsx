@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { getToolBySlug, getAllTools } from '@/actions/tool-actions'
 import ComparisonPageLayout from '@/components/ComparisonPageLayout'
-import { generateComparisonProse } from '@/utils/comparison-helpers'
+
 import { createMetadata } from '@/utils/createMetadata'
 import { ComparisonPageSkeleton } from '@/components/comparison-page-skeleton'
 
@@ -101,7 +101,13 @@ async function ComparisonContent({ tool1Slug, tool2Slug }: { tool1Slug: string, 
       notFound()
     }
     
-    const proseParagraphs = generateComparisonProse(tool1, tool2)
+    // Generate simple comparison prose
+    const proseParagraphs = [
+      `Choosing between ${tool1.name} and ${tool2.name} is a common decision for developers. Both tools have their unique strengths and serve different use cases in the development workflow.`,
+      `${tool1.name} ${tool1.description ? `is ${tool1.description.toLowerCase()}` : 'offers a comprehensive set of features'}, making it suitable for teams that prioritize reliability and ease of use.`,
+      `${tool2.name} ${tool2.description ? `focuses on ${tool2.description.toLowerCase()}` : 'provides powerful capabilities'}, which appeals to developers who value performance and flexibility.`,
+      `When making your decision, consider factors like your budget, team size, integration requirements, and long-term scalability needs. This comparison will help you understand which tool aligns better with your specific requirements.`
+    ]
     
     return (
       <ComparisonPageLayout 
