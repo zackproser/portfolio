@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getAllContent, getAllProducts, getAppPageRoutesPaths } from '@/lib/content-handlers';
+import { getAllTools } from '@/actions/tool-actions';
 // import { siteConfig } from '@/config/site'; // Removed unused import
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
@@ -10,6 +11,16 @@ const dynamicDetailDirs = [
   { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
   { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
 ];
+
+// Helper function to create slug from tool name (same logic as in comparison page)
+function createSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+}
 
 async function getRoutes() {
   const routes = new Set();
@@ -66,13 +77,42 @@ async function getRoutes() {
     }
   });
 
+  // Add all comparison routes
+  try {
+    console.log('Generating comparison routes for sitemap...');
+    const tools = await getAllTools();
+    console.log(`Found ${tools.length} tools for comparison routes`);
+    
+    // Generate combinations in canonical order only (alphabetical by slug) to avoid duplicates
+    for (let i = 0; i < tools.length; i++) {
+      for (let j = i + 1; j < tools.length; j++) {
+        const tool1 = tools[i];
+        const tool2 = tools[j];
+        
+        const tool1Slug = createSlug(tool1.name);
+        const tool2Slug = createSlug(tool2.name);
+        
+        // Only add the alphabetically first combination to avoid duplicates
+        if (tool1Slug < tool2Slug) {
+          routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
+        } else {
+          routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
+        }
+      }
+    }
+    
+    console.log(`Added canonical comparison routes to sitemap`);
+  } catch (error) {
+    console.error('Error generating comparison routes for sitemap:', error);
+  }
+
   // Add RSS feed routes
   routes.add('/rss/feed.json');
   routes.add('/rss/feed.xml');
 
   // Convert Set to Array and log the routes for debugging
   const uniqueRoutes = Array.from(routes);
-  console.log('Generated routes:', uniqueRoutes);
+  console.log(`Generated ${uniqueRoutes.length} total routes for sitemap`);
 
   return uniqueRoutes.map(route => ({
     url: `${baseUrl}${route}`,
