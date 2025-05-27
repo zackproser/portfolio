@@ -61,6 +61,7 @@ describe('ProductLanding', () => {
   const mockPaidContent: Blog = {
     type: 'blog',
     slug: 'test-blog',
+    title: 'Test Blog Title',
     description: 'Test Blog Description',
     author: 'Test Author',
     date: '2024-02-24',
@@ -96,6 +97,7 @@ describe('ProductLanding', () => {
   const mockFreeContent: Blog = {
     type: 'blog',
     slug: 'free-blog',
+    title: 'Free Blog Title',
     description: 'Free Blog Description',
     author: 'Test Author',
     date: '2024-02-24'

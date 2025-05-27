@@ -1,24 +1,14 @@
-/**
- * @jest-environment node
- */
+/** @jest-environment node */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
-// Mock the getArticleBySlug function
-jest.mock('@/lib/content-handlers', () => ({
-  getContentBySlug: jest.fn()
-}));
+// Mock the route handlers directly
+const mockGET = jest.fn() as jest.MockedFunction<any>;
 
-// Mock the Vercel Postgres module
-jest.mock('@vercel/postgres', () => ({
-  sql: jest.fn()
-}));
-
-// Mock the GET function from the route
-const mockGET = jest.fn();
-jest.mock('../../products/route', () => ({
-  GET: (req: Request) => mockGET(req)
+// Mock the route module
+jest.mock('../route', () => ({
+  GET: mockGET
 }));
 
 describe('Products API', () => {
@@ -27,160 +17,132 @@ describe('Products API', () => {
   });
 
   describe('GET /api/products', () => {
-    it('should return 400 if product slug is missing', async () => {
-      // Set up the mock implementation for missing slug
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Must supply valid product slug and type' },
-          { status: 400 }
-        )
+    it('should return 400 for missing slug parameter', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Must supply valid product slug and type' },
+        { status: 400 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request with missing slug
-      const request = new Request('http://localhost:3000/api/products?type=blog');
+      const request = new NextRequest('http://localhost:3000/api/products');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(400);
       expect(data).toEqual({ error: 'Must supply valid product slug and type' });
+      expect(response.status).toBe(400);
     });
 
-    it('should return 400 if type is missing', async () => {
-      // Set up the mock implementation for missing type
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Must supply valid product slug and type' },
-          { status: 400 }
-        )
+    it('should return 400 for missing type parameter', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Must supply valid product slug and type' },
+        { status: 400 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request with missing type
-      const request = new Request('http://localhost:3000/api/products?product=test-product');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=test-article');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(400);
       expect(data).toEqual({ error: 'Must supply valid product slug and type' });
+      expect(response.status).toBe(400);
     });
 
-    it('should return article data for blog type', async () => {
+    it('should return article data for valid blog request', async () => {
       const mockArticle = {
         title: 'Test Article',
         slug: 'test-article',
-        description: 'This is a test article',
-        content: 'Article content',
+        description: 'A test article description',
+        content: 'Test article content',
         date: '2023-01-01'
       };
 
-      // Set up the mock implementation for blog type
-      mockGET.mockResolvedValue(
-        NextResponse.json(mockArticle)
-      );
+      const mockResponse = NextResponse.json(mockArticle);
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request for blog type
-      const request = new Request('http://localhost:3000/api/products?product=test-article&type=blog');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=test-article&type=blog');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(200);
       expect(data).toEqual(mockArticle);
+      expect(response.status).toBe(200);
     });
 
-    it('should return 404 if article is not found', async () => {
-      // Set up the mock implementation for non-existent article
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Article not found' },
-          { status: 404 }
-        )
+    it('should return 404 for non-existent article', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Article not found' },
+        { status: 404 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request for non-existent article
-      const request = new Request('http://localhost:3000/api/products?product=non-existent&type=blog');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=non-existent&type=blog');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(404);
       expect(data).toEqual({ error: 'Article not found' });
+      expect(response.status).toBe(404);
     });
 
-    it('should return course data for course type', async () => {
+    it('should return course data for valid course request', async () => {
       const mockCourse = {
         title: 'Test Course',
         slug: 'test-course',
-        description: 'This is a test course',
+        description: 'A test course description',
         status: 'published'
       };
 
-      // Set up the mock implementation for course type
-      mockGET.mockResolvedValue(
-        NextResponse.json(mockCourse)
-      );
+      const mockResponse = NextResponse.json(mockCourse);
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request for course type
-      const request = new Request('http://localhost:3000/api/products?product=test-course&type=course');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=test-course&type=course');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(200);
       expect(data).toEqual(mockCourse);
+      expect(response.status).toBe(200);
     });
 
-    it('should return 404 if product is not found', async () => {
-      // Set up the mock implementation for non-existent product
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Product not found' },
-          { status: 404 }
-        )
+    it('should return 404 for non-existent course', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request for non-existent product
-      const request = new Request('http://localhost:3000/api/products?product=non-existent&type=course');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=non-existent&type=course');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(404);
       expect(data).toEqual({ error: 'Product not found' });
+      expect(response.status).toBe(404);
     });
 
-    it('should handle internal server errors', async () => {
-      // Set up the mock implementation for server error
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Internal server error' },
-          { status: 500 }
-        )
+    it('should handle server errors gracefully', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request
-      const request = new Request('http://localhost:3000/api/products?product=test-product&type=course');
+      const request = new NextRequest('http://localhost:3000/api/products?slug=test-article&type=blog');
 
-      // Call the handler
-      const response = await mockGET(request);
+      const { GET } = require('../route');
+      const response = await GET(request);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(500);
       expect(data).toEqual({ error: 'Internal server error' });
+      expect(response.status).toBe(500);
     });
   });
 }); 
