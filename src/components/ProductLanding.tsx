@@ -8,6 +8,7 @@ import { Pricing } from '@/components/Pricing'
 import { TableOfContents } from '@/components/TableOfContents'
 import { CanvasPattern } from '@/components/CanvasPattern'
 import { RealTestimonials } from '@/components/RealTestimonials'
+import { WhatsIncluded } from '@/components/WhatsIncluded'
 import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import Image from 'next/image'
@@ -107,7 +108,8 @@ export function ProductLanding({ content }: { content: Content }) {
         description: 'One-time purchase with unlimited future access'
       }
     ],
-    testimonials: []
+    testimonials: [],
+    whatsIncluded: []
   };
 
   // Use provided landing data or fallback to default
@@ -147,6 +149,16 @@ export function ProductLanding({ content }: { content: Content }) {
           description={safeDescription}
           features={landingData.features}
         />
+        
+        {/* What's Included Section - only render if whatsIncluded data exists */}
+        {landingData?.whatsIncluded && landingData.whatsIncluded.length > 0 && (
+          <WhatsIncluded 
+            items={landingData.whatsIncluded}
+            sectionTitle="What's Included"
+            sectionSubtitle="Everything you need to build production-ready solutions"
+          />
+        )}
+        
         <NavBar />
         <TableOfContents content={content} />
         <FreeChapters 
