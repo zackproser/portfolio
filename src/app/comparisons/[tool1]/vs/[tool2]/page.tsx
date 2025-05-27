@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import { getToolBySlug, getAllTools } from '@/actions/tool-actions'
 import ComparisonPageLayout from '@/components/ComparisonPageLayout'
@@ -14,44 +14,47 @@ interface PageProps {
   }>
 }
 
-// Generate static params for all possible tool combinations
+// Helper function to create slug from tool name
+const createSlug = (name: string) => {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+}
+
+// Generate static params for all possible tool combinations (canonical direction only)
 export async function generateStaticParams() {
   try {
     const tools = await getAllTools()
     const params = []
     
-    // Generate all possible combinations of tools
+    // Generate combinations in canonical order only (alphabetical by slug)
     for (let i = 0; i < tools.length; i++) {
       for (let j = i + 1; j < tools.length; j++) {
         const tool1 = tools[i]
         const tool2 = tools[j]
         
-        // Create slug from tool name
-        const createSlug = (name: string) => {
-          return name
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-            .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
-        }
-        
         const tool1Slug = createSlug(tool1.name)
         const tool2Slug = createSlug(tool2.name)
         
-        // Add both combinations (tool1 vs tool2 and tool2 vs tool1)
-        params.push({
-          tool1: tool1Slug,
-          tool2: tool2Slug
-        })
-        params.push({
-          tool1: tool2Slug,
-          tool2: tool1Slug
-        })
+        // Only add the alphabetically first combination to avoid duplicates
+        if (tool1Slug < tool2Slug) {
+          params.push({
+            tool1: tool1Slug,
+            tool2: tool2Slug
+          })
+        } else {
+          params.push({
+            tool1: tool2Slug,
+            tool2: tool1Slug
+          })
+        }
       }
     }
     
-    console.log(`Generated ${params.length} static params for comparison routes`)
+    console.log(`Generated ${params.length} static params for comparison routes (canonical direction only)`)
     return params
   } catch (error) {
     console.error('Error generating static params for comparisons:', error)
@@ -92,6 +95,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 async function ComparisonContent({ tool1Slug, tool2Slug }: { tool1Slug: string, tool2Slug: string }) {
   try {
+    // Check if this is the canonical URL order, if not redirect
+    if (tool1Slug > tool2Slug) {
+      redirect(`/comparisons/${tool2Slug}/vs/${tool1Slug}`)
+    }
+    
     const [tool1, tool2] = await Promise.all([
       getToolBySlug(tool1Slug),
       getToolBySlug(tool2Slug)
