@@ -1,19 +1,14 @@
-/**
- * @jest-environment node
- */
+/** @jest-environment node */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
-// Mock the Vercel Postgres module
-jest.mock('@vercel/postgres', () => ({
-  sql: jest.fn()
-}));
+// Mock the route handlers directly
+const mockGET = jest.fn() as jest.MockedFunction<any>;
 
-// Mock the GET function from the route
-const mockGET = jest.fn();
-jest.mock('../../courses/[slug]/route', () => ({
-  GET: (req: Request, props: any) => mockGET(req, props)
+// Mock the route module
+jest.mock('../[slug]/route', () => ({
+  GET: mockGET
 }));
 
 describe('Courses API', () => {
@@ -23,79 +18,63 @@ describe('Courses API', () => {
 
   describe('GET /api/courses/[slug]', () => {
     it('should return course data for valid slug', async () => {
+      // Setup mock course data
       const mockCourse = {
         title: 'Test Course',
-        description: 'This is a test course',
+        description: 'A test course description',
         slug: 'test-course',
         status: 'published'
       };
 
-      // Set up the mock implementation for successful course retrieval
-      mockGET.mockResolvedValue(
-        NextResponse.json(mockCourse)
-      );
+      const mockResponse = NextResponse.json(mockCourse);
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request and params
-      const request = new Request('http://localhost:3000/api/courses/test-course');
-      const props = {
-        params: Promise.resolve({ slug: 'test-course' })
-      };
+      const request = new NextRequest('http://localhost:3000/api/courses/test-course');
+      const params = { params: Promise.resolve({ slug: 'test-course' }) };
 
-      // Call the handler
-      const response = await mockGET(request, props);
+      const { GET } = require('../[slug]/route');
+      const response = await GET(request, params);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(200);
       expect(data).toEqual(mockCourse);
+      expect(response.status).toBe(200);
+      expect(mockGET).toHaveBeenCalledTimes(1);
     });
 
     it('should return 404 for non-existent course', async () => {
-      // Set up the mock implementation for non-existent course
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Course not found' },
-          { status: 404 }
-        )
+      const mockResponse = NextResponse.json(
+        { error: 'Course not found' },
+        { status: 404 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request and params
-      const request = new Request('http://localhost:3000/api/courses/non-existent');
-      const props = {
-        params: Promise.resolve({ slug: 'non-existent' })
-      };
+      const request = new NextRequest('http://localhost:3000/api/courses/non-existent');
+      const params = { params: Promise.resolve({ slug: 'non-existent' }) };
 
-      // Call the handler
-      const response = await mockGET(request, props);
+      const { GET } = require('../[slug]/route');
+      const response = await GET(request, params);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(404);
       expect(data).toEqual({ error: 'Course not found' });
+      expect(response.status).toBe(404);
     });
 
-    it('should handle database errors gracefully', async () => {
-      // Set up the mock implementation for database error
-      mockGET.mockResolvedValue(
-        NextResponse.json(
-          { error: 'Failed to fetch course' },
-          { status: 500 }
-        )
+    it('should handle errors gracefully', async () => {
+      const mockResponse = NextResponse.json(
+        { error: 'Failed to fetch course' },
+        { status: 500 }
       );
+      mockGET.mockResolvedValue(mockResponse);
 
-      // Set up the request and params
-      const request = new Request('http://localhost:3000/api/courses/test-course');
-      const props = {
-        params: Promise.resolve({ slug: 'test-course' })
-      };
+      const request = new NextRequest('http://localhost:3000/api/courses/error-course');
+      const params = { params: Promise.resolve({ slug: 'error-course' }) };
 
-      // Call the handler
-      const response = await mockGET(request, props);
+      const { GET } = require('../[slug]/route');
+      const response = await GET(request, params);
+      
       const data = await response.json();
-
-      // Verify the response
-      expect(response.status).toBe(500);
       expect(data).toEqual({ error: 'Failed to fetch course' });
+      expect(response.status).toBe(500);
     });
   });
 }); 

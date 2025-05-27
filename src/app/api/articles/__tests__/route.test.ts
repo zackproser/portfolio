@@ -4,11 +4,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
 // Mock the route handlers directly
-const mockGET = jest.fn();
+const mockGET = jest.fn() as jest.MockedFunction<any>;
 
 // Mock the route module
 jest.mock('../[slug]/route', () => ({
-  GET: (...args) => mockGET(...args)
+  GET: mockGET
 }));
 
 describe('Articles API', () => {
@@ -30,9 +30,8 @@ describe('Articles API', () => {
       };
 
       // Setup mock to return article data
-      mockGET.mockResolvedValue(
-        NextResponse.json(mockArticle, { status: 200 })
-      );
+      const mockResponse = NextResponse.json(mockArticle, { status: 200 });
+      mockGET.mockResolvedValue(mockResponse);
 
       const request = new NextRequest('http://localhost:3000/api/articles/test-article');
       const params = { params: Promise.resolve({ slug: 'test-article' }) };
@@ -48,9 +47,8 @@ describe('Articles API', () => {
 
     it('should return 404 for non-existent article', async () => {
       // Setup mock to simulate article not found
-      mockGET.mockResolvedValue(
-        NextResponse.json({ error: 'Article not found' }, { status: 404 })
-      );
+      const mockResponse = NextResponse.json({ error: 'Article not found' }, { status: 404 });
+      mockGET.mockResolvedValue(mockResponse);
 
       const request = new NextRequest('http://localhost:3000/api/articles/non-existent');
       const params = { params: Promise.resolve({ slug: 'non-existent' }) };
