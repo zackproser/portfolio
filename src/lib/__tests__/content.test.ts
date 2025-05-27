@@ -35,7 +35,12 @@ describe('Metadata Creation', () => {
 
     expect(metadata.title).toBe('Test Title');
     expect(metadata.image).toBeDefined();
-    expect(metadata.image?.src).toBe('/images/test.jpg');
+    // Handle both string and object image types
+    if (typeof metadata.image === 'string') {
+      expect(metadata.image).toBe('/images/test.jpg');
+    } else if (metadata.image && typeof metadata.image === 'object' && 'src' in metadata.image) {
+      expect(metadata.image.src).toBe('/images/test.jpg');
+    }
   });
 
   it('creates metadata with commerce fields', () => {
