@@ -1,5 +1,16 @@
 import { Feed } from 'feed'
 import { getAllContent } from '@/lib/content-handlers'
+import { getAllTools } from '@/actions/tool-actions'
+
+// Helper function to create slug from tool name (same logic as in comparison page)
+function createSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+}
 
 export async function GET() {
   try {
@@ -79,6 +90,57 @@ export async function GET() {
         console.error(`Error processing content type ${contentType}:`, contentError);
         // Continue with other content types
       }
+    }
+
+    // Add comparison routes to feed
+    try {
+      console.log('Adding comparison routes to XML feed...');
+      const tools = await getAllTools();
+      
+      // Generate comparison entries (limit to avoid overwhelming the feed, canonical order only)
+      const comparisonEntries = [];
+      for (let i = 0; i < tools.length && comparisonEntries.length < 50; i++) {
+        for (let j = i + 1; j < tools.length && comparisonEntries.length < 50; j++) {
+          const tool1 = tools[i];
+          const tool2 = tools[j];
+          
+          const tool1Slug = createSlug(tool1.name);
+          const tool2Slug = createSlug(tool2.name);
+          
+          // Only add the alphabetically first combination to avoid duplicates
+          let comparisonUrl;
+          let title;
+          if (tool1Slug < tool2Slug) {
+            comparisonUrl = `${siteUrl}/comparisons/${tool1Slug}/vs/${tool2Slug}`;
+            title = `${tool1.name} vs ${tool2.name}`;
+          } else {
+            comparisonUrl = `${siteUrl}/comparisons/${tool2Slug}/vs/${tool1Slug}`;
+            title = `${tool2.name} vs ${tool1.name}`;
+          }
+          
+          comparisonEntries.push({
+            title: title,
+            id: comparisonUrl,
+            link: comparisonUrl,
+            author: [author],
+            contributor: [author],
+            date: new Date(), // Use current date for comparisons
+            description: `Compare ${tool1.name} and ${tool2.name} - features, pricing, pros and cons. Find the best tool for your development needs.`,
+          });
+        }
+      }
+      
+      // Add comparison entries to feed
+      comparisonEntries.forEach(entry => {
+        try {
+          feed.addItem(entry);
+        } catch (itemError) {
+          console.error(`Error adding comparison item ${entry.title}:`, itemError);
+        }
+      });
+      console.log(`Added ${comparisonEntries.length} canonical comparison entries to XML feed`);
+    } catch (error) {
+      console.error('Error adding comparison routes to XML feed:', error);
     }
 
     // Generate XML with error handling
