@@ -35,6 +35,12 @@ export interface ExtendedMetadata extends Metadata {
       description: string
       icon?: string
     }>
+    whatsIncluded?: Array<{
+      title: string
+      description: string
+      image: string | StaticImageData
+      imageAlt?: string
+    }>
     contentSections?: Array<{
       title: string
       subsections?: Array<string>
