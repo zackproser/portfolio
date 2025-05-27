@@ -3,20 +3,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jest } from '@jest/globals';
 
-// Mock the importContentMetadata function
+// Mock the content-handlers functions
 jest.mock('@/lib/content-handlers', () => ({
-  importContentMetadata: jest.fn()
+  getContentItemByDirectorySlug: jest.fn()
 }));
 
 // Import the mocked function
-import { importContentMetadata } from '@/lib/content-handlers';
-
-// Mock the route handlers directly
-const mockGET = jest.fn();
+import { getContentItemByDirectorySlug } from '@/lib/content-handlers';
 
 // Mock the route module
+const mockGET = jest.fn() as jest.MockedFunction<any>;
 jest.mock('../route', () => ({
-  GET: (...args: any[]) => mockGET(...args)
+  GET: mockGET
 }));
 
 describe('Articles API', () => {
@@ -37,10 +35,8 @@ describe('Articles API', () => {
         tags: ['test', 'article']
       };
 
-      // Setup mock to return article data
-      mockGET.mockResolvedValue(
-        NextResponse.json(mockArticle, { status: 200 })
-      );
+      const mockResponse = NextResponse.json(mockArticle, { status: 200 });
+      mockGET.mockResolvedValue(mockResponse);
 
       const request = new NextRequest('http://localhost:3000/api/articles/test-article');
       const params = { params: Promise.resolve({ slug: 'test-article' }) };
@@ -55,10 +51,8 @@ describe('Articles API', () => {
     });
 
     it('should return 404 for non-existent article', async () => {
-      // Setup mock to simulate article not found
-      mockGET.mockResolvedValue(
-        NextResponse.json({ error: 'Article not found' }, { status: 404 })
-      );
+      const mockResponse = NextResponse.json({ error: 'Article not found' }, { status: 404 });
+      mockGET.mockResolvedValue(mockResponse);
 
       const request = new NextRequest('http://localhost:3000/api/articles/non-existent');
       const params = { params: Promise.resolve({ slug: 'non-existent' }) };
@@ -73,13 +67,8 @@ describe('Articles API', () => {
     });
 
     it('should handle errors gracefully', async () => {
-      // Setup mock to throw an error
-      mockGET.mockRejectedValue(new Error('Unexpected error'));
-      
-      // Setup error handler mock
-      mockGET.mockResolvedValueOnce(
-        NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-      );
+      const mockResponse = NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+      mockGET.mockResolvedValue(mockResponse);
 
       const request = new NextRequest('http://localhost:3000/api/articles/error-article');
       const params = { params: Promise.resolve({ slug: 'error-article' }) };
