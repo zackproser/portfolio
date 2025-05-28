@@ -17,7 +17,6 @@ import { purchaseLogger as logger } from '@/utils/logger'; // Import the central
  * Check if a user or email has purchased a specific content
  */
 export async function hasUserPurchased(
-  contentType: string,
   contentSlug: string,
   userIdOrEmail: string
 ): Promise<boolean> {
@@ -25,7 +24,7 @@ export async function hasUserPurchased(
   const isEmail = userIdOrEmail.includes('@');
   
   // Use logger.info for general flow, logger.debug for details
-  logger.info(`Checking purchase for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, content: ${contentType}/${contentSlug}`);
+  logger.info(`Checking purchase for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, content: ${contentSlug}`);
   
   try {
     let purchase = null;
@@ -35,7 +34,6 @@ export async function hasUserPurchased(
       purchase = await prisma.purchase.findFirst({
         where: {
           email: userIdOrEmail,
-          contentType,
           contentSlug,
         },
       });
@@ -47,7 +45,6 @@ export async function hasUserPurchased(
         purchase = await prisma.purchase.findFirst({
           where: {
             email: { equals: userIdOrEmail, mode: 'insensitive' },
-            contentType,
             contentSlug,
           },
         });
@@ -58,7 +55,6 @@ export async function hasUserPurchased(
       purchase = await prisma.purchase.findFirst({
         where: {
           userId: userIdOrEmail,
-          contentType,
           contentSlug,
         },
       });
@@ -68,7 +64,6 @@ export async function hasUserPurchased(
     if (purchase) {
       logger.debug(`Purchase found:`, {
         id: purchase.id,
-        contentType: purchase.contentType,
         contentSlug: purchase.contentSlug,
         hasStripeId: !!purchase.stripePaymentId,
       });
@@ -76,7 +71,7 @@ export async function hasUserPurchased(
     
     return !!purchase;
   } catch (error) {
-    logger.error(`Error checking purchase status for ${contentType}/${contentSlug}:`, error);
+    logger.error(`Error checking purchase status for ${contentSlug}:`, error);
     return false;
   }
 }
@@ -85,7 +80,6 @@ export async function hasUserPurchased(
  * Record a purchase for a user or email
  */
 export async function recordPurchase(
-  contentType: string,
   contentSlug: string,
   userIdOrEmail: string,
   stripePaymentId: string,
@@ -93,7 +87,7 @@ export async function recordPurchase(
 ): Promise<boolean> {
   const isEmail = userIdOrEmail.includes('@');
   
-  logger.info(`Recording purchase for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, content: ${contentType}/${contentSlug}, amount: ${amount}`);
+  logger.info(`Recording purchase for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}, content: ${contentSlug}, amount: ${amount}`);
   
   try {
     let userId: string | null = null;
@@ -131,7 +125,6 @@ export async function recordPurchase(
     // Create the purchase record
     const createdPurchase = await prisma.purchase.create({
       data: {
-        contentType,
         contentSlug,
         userId, // Will be null if only email was provided and no user found
         email: userEmail, // Store email if available, even if userId is set
@@ -144,32 +137,25 @@ export async function recordPurchase(
     return true;
 
   } catch (error) {
-    logger.error(`Error recording purchase for ${contentType}/${contentSlug}:`, error);
+    logger.error(`Error recording purchase for ${contentSlug}:`, error);
     return false;
   }
 }
 
 /**
- * Get all purchases for a user or email
+ * Get all purchases for a user by their ID or email
  */
 export async function getUserPurchases(userIdOrEmail: string) {
   const isEmail = userIdOrEmail.includes('@');
   logger.info(`Fetching purchases for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}`);
   
   try {
-    let purchases;
-    if (isEmail) {
-      purchases = await prisma.purchase.findMany({
-        where: { email: userIdOrEmail },
-        orderBy: { purchaseDate: 'desc' },
-      });
-    } else {
-      purchases = await prisma.purchase.findMany({
-        where: { userId: userIdOrEmail },
-        orderBy: { purchaseDate: 'desc' },
-      });
-    }
-    logger.info(`Found ${purchases.length} purchases for ${isEmail ? 'email' : 'userId'}: ${userIdOrEmail}`);
+    const purchases = await prisma.purchase.findMany({
+      where: isEmail ? { email: userIdOrEmail } : { userId: userIdOrEmail },
+      orderBy: { purchaseDate: 'desc' },
+      include: { user: true },
+    });
+    logger.info(`Found ${purchases.length} purchases for ${isEmail ? 'email' : 'userId'} ${userIdOrEmail}`);
     return purchases;
   } catch (error) {
     logger.error(`Error fetching user purchases for ${userIdOrEmail}:`, error);
@@ -207,21 +193,20 @@ export async function associatePurchasesToUser(email: string, userId: string): P
 /**
  * Get all purchases for a specific content
  */
-export async function getContentPurchases(contentType: string, contentSlug: string) {
-  logger.info(`Fetching purchases for content: ${contentType}/${contentSlug}`);
+export async function getContentPurchases(contentSlug: string) {
+  logger.info(`Fetching purchases for content: ${contentSlug}`);
   try {
     const purchases = await prisma.purchase.findMany({
       where: {
-        contentType,
         contentSlug,
       },
       orderBy: { purchaseDate: 'desc' },
       include: { user: true },
     });
-    logger.info(`Found ${purchases.length} purchases for content ${contentType}/${contentSlug}`);
+    logger.info(`Found ${purchases.length} purchases for content ${contentSlug}`);
     return purchases;
   } catch (error) {
-    logger.error(`Error fetching content purchases for ${contentType}/${contentSlug}:`, error);
+    logger.error(`Error fetching content purchases for ${contentSlug}:`, error);
     return [];
   }
 }
@@ -230,16 +215,14 @@ export async function getContentPurchases(contentType: string, contentSlug: stri
  * Send a purchase confirmation email
  */
 export async function sendPurchaseConfirmationEmail(
-  contentType: string,
   contentSlug: string,
   email: string
 ): Promise<boolean> {
-  logger.info(`Recording email notification send attempt: type=purchase_confirmation, email=${email}, content=${contentType}/${contentSlug}`);
+  logger.info(`Recording email notification send attempt: type=purchase_confirmation, email=${email}, content=${contentSlug}`);
   try {
     // Create a record of the email notification
     await prisma.emailNotification.create({
       data: {
-        contentType,
         contentSlug,
         email,
         emailType: 'purchase_confirmation',
@@ -253,7 +236,7 @@ export async function sendPurchaseConfirmationEmail(
     
     return true;
   } catch (error) {
-    logger.error(`Error recording/sending purchase confirmation email for ${contentType}/${contentSlug} to ${email}:`, error);
+    logger.error(`Error recording/sending purchase confirmation email for ${contentSlug} to ${email}:`, error);
     return false;
   }
 } 

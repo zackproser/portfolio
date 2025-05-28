@@ -48,7 +48,7 @@ export default async function VideoSlugPage({ params }: PageProps) {
     const session = await auth()
     
     // If no user is logged in or hasn't purchased, show a preview with paywall
-    if (!session?.user || !(await hasUserPurchased(session.user.id, CONTENT_TYPE, slug))) {
+    if (!session?.user || !(await hasUserPurchased(session.user.id, slug))) {
       const defaultText = getDefaultPaywallText(CONTENT_TYPE)
       
       // Show a limited preview with a paywall

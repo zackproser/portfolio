@@ -127,8 +127,8 @@ export async function GET(req: Request) {
 			
 			console.log('Found manually provisioned purchase:', purchase);
 			
-			// Determine the content type directory
-			let contentDir = purchase.contentType === 'course' ? 'learn/courses' : purchase.contentType;
+			// Default to 'blog' content directory since we no longer store contentType
+			const contentDir = 'blog';
 			
 			// Load the content metadata using the new function
 			const content = await getContentItemByDirectorySlug(contentDir, purchase.contentSlug);
