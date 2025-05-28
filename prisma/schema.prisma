@@ -68,7 +68,6 @@ model VerificationToken {
 model Purchase {
   id              String   @id @default(cuid())
   userId          String?  @map("user_id")
-  contentType     String   @map("content_type")
   contentSlug     String   @map("content_slug")
   purchaseDate    DateTime @default(now()) @map("purchase_date")
   stripePaymentId String?  @map("stripe_payment_id")
@@ -76,8 +75,8 @@ model Purchase {
   email           String?
   user            User?    @relation(fields: [userId], references: [id])
 
-  @@unique([userId, contentType, contentSlug])
-  @@unique([email, contentType, contentSlug])
+  @@unique([userId, contentSlug])
+  @@unique([email, contentSlug])
   @@map("purchases")
 }
 
@@ -85,14 +84,13 @@ model EmailNotification {
   id          String   @id @default(cuid())
   userId      String?  @map("user_id")
   email       String?
-  contentType String   @map("content_type")
   contentSlug String   @map("content_slug")
   emailType   String   @map("email_type")
   sentAt      DateTime @default(now()) @map("sent_at")
   user        User?    @relation(fields: [userId], references: [id])
 
-  @@unique([userId, contentType, contentSlug, emailType])
-  @@unique([email, contentType, contentSlug, emailType])
+  @@unique([userId, contentSlug, emailType])
+  @@unique([email, contentSlug, emailType])
   @@map("email_notifications")
 }
 
