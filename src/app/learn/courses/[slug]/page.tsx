@@ -51,7 +51,7 @@ export default async function CourseSlugPage({ params }: PageProps) {
   const userId = session?.user.id
 
   // Check if user has purchased access
-  const userHasPurchased = await hasUserPurchased(userId, CONTENT_TYPE, slug)
+  const userHasPurchased = await hasUserPurchased(userId, slug)
 
   let isSubscribed = false
   if (content?.commerce?.requiresEmail) {
