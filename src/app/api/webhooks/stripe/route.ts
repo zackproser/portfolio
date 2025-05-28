@@ -95,22 +95,20 @@ export async function POST(req: Request) {
         logger.error('WEBHOOK: FATAL - Could not load canonical content or type missing', { directorySlug, loadedContent });
         return NextResponse.json({ error: 'Could not load canonical content or type missing' }, { status: 500 });
       }
-      const canonicalType = loadedContent.type;
-      logger.info('WEBHOOK: Using canonical content type for purchase record:', canonicalType);
+      logger.info('WEBHOOK: Using canonical content for purchase record');
+      
       // 2. Record the purchase
       logger.info('WEBHOOK: Recording purchase')
       try {
-        const contentType = canonicalType;
         const contentSlug = directorySlug;
-        logger.debug('WEBHOOK: Purchase upsert details:', { userId: user?.id, contentType, contentSlug, email, sessionId: session.id })
+        logger.debug('WEBHOOK: Purchase upsert details:', { userId: user?.id, contentSlug, email, sessionId: session.id })
         let result;
         if (user?.id) {
           logger.debug('WEBHOOK: Upserting by userId')
           result = await prisma.purchase.upsert({
             where: {
-              userId_contentType_contentSlug: {
+              userId_contentSlug: {
                 userId: user.id,
-                contentType,
                 contentSlug
               }
             },
@@ -122,7 +120,6 @@ export async function POST(req: Request) {
             },
             create: {
               userId: user.id,
-              contentType,
               contentSlug,
               purchaseDate: new Date(),
               stripePaymentId: session.id,
@@ -134,9 +131,8 @@ export async function POST(req: Request) {
           logger.debug('WEBHOOK: Upserting by email')
           result = await prisma.purchase.upsert({
             where: {
-              email_contentType_contentSlug: {
+              email_contentSlug: {
                 email,
-                contentType,
                 contentSlug
               }
             },
@@ -148,7 +144,6 @@ export async function POST(req: Request) {
             },
             create: {
               userId: null,
-              contentType,
               contentSlug,
               purchaseDate: new Date(),
               stripePaymentId: session.id,
@@ -189,7 +184,6 @@ export async function POST(req: Request) {
         const existingNotification = await prisma.emailNotification.findFirst({
           where: {
             email,
-            contentType: type,
             contentSlug: directorySlug,
             emailType: 'purchase_confirmation'
           }
@@ -235,7 +229,6 @@ export async function POST(req: Request) {
               await prisma.emailNotification.create({
                 data: {
                   userId: user?.id || null,
-                  contentType: type,
                   contentSlug: directorySlug,
                   emailType: 'purchase_confirmation',
                   email

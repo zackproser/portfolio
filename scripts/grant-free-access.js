@@ -165,7 +165,7 @@ const grantAccess = async (email, productSlug) => {
     // Create a new purchase record
     const purchaseData = {
       email,
-      contentType: 'article', // Assuming all products are articles for now
+      
       contentSlug: productSlug,
       stripePaymentId,
       amount: 0, // Free access
