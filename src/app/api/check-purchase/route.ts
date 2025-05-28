@@ -15,13 +15,11 @@ export async function GET(req: Request) {
     // Get parameters from URL
     const { searchParams } = new URL(req.url)
     const slug = searchParams.get('slug')
-    const type = searchParams.get('type') || 'blog'  // Default to blog if not specified
     const email = searchParams.get('email')  // Allow checking by email parameter
 
     // Add detailed logging of all parameters
     console.log('CHECK-PURCHASE DEBUG - Request parameters:', { 
       slug, 
-      type, 
       email,
       session: session ? {
         id: session.user?.id,
@@ -33,10 +31,6 @@ export async function GET(req: Request) {
     if (!slug) {
       return NextResponse.json({ error: 'Missing slug parameter' }, { status: 400 })
     }
-
-    // Convert type to contentType format used in the database
-    const contentType = type === 'blog' ? 'article' : type
-    console.log('CHECK-PURCHASE DEBUG - Converted content type:', { originalType: type, convertedType: contentType })
 
     // Extract the base slug without path components
     // This allows products like 'rag-pipeline-tutorial' to be found regardless of path
@@ -60,9 +54,7 @@ export async function GET(req: Request) {
         id: session.user.id, 
         email: session.user.email, 
         slug, 
-        baseSlug,
-        type,
-        contentType 
+        baseSlug
       })
 
       // First, check if the user ID is valid (not empty string)
@@ -72,7 +64,6 @@ export async function GET(req: Request) {
         const purchase = await prisma.purchase.findFirst({
           where: {
             userId: session.user.id,
-            contentType,
             ...slugCondition
           }
         })
@@ -92,16 +83,13 @@ export async function GET(req: Request) {
       console.log('CHECK-PURCHASE DEBUG - Checking purchase for email:', { 
         email: userEmail, 
         slug,
-        baseSlug,
-        type,
-        contentType 
+        baseSlug
       })
       
       // Check for purchases with exact email match
       const purchase = await prisma.purchase.findFirst({
         where: {
           email: userEmail,
-          contentType,
           ...slugCondition
         }
       })
@@ -116,7 +104,6 @@ export async function GET(req: Request) {
       const purchaseCaseInsensitive = await prisma.purchase.findFirst({
         where: {
           email: { equals: userEmail, mode: 'insensitive' },
-          contentType,
           ...slugCondition
         }
       })

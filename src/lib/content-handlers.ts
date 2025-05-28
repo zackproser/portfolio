@@ -357,15 +357,14 @@ export async function generateContentMetadata(contentType: string, directorySlug
 
 /**
  * Check if a user has purchased a specific content item.
- * Uses the standard content identifier (content type and directory slug).
+ * Uses the content slug to identify the purchase.
  * @param userIdOrEmail The user ID or email
- * @param contentType The content type directory (e.g., 'blog', 'videos', 'learn/courses')
  * @param directorySlug The directory name for the specific content item
  * @returns Whether the user has purchased the content.
  */
-export async function hasUserPurchased(userIdOrEmail: string | null | undefined, contentType: string, directorySlug: string): Promise<boolean> {
+export async function hasUserPurchased(userIdOrEmail: string | null | undefined, directorySlug: string): Promise<boolean> {
   if (!userIdOrEmail) {
-    logger.debug(`Purchase check: No user ID or email provided for ${contentType}/${directorySlug}`);
+    logger.debug(`Purchase check: No user ID or email provided for ${directorySlug}`);
     return false;
   }
 
@@ -376,26 +375,25 @@ export async function hasUserPurchased(userIdOrEmail: string | null | undefined,
 
     // Prisma query looks for purchases matching the identifying information
     const whereCondition = {
-      contentType: contentType,
-      contentSlug: directorySlug, // Assuming 'contentSlug' in DB maps to the directory slug
+      contentSlug: directorySlug, // contentSlug maps to the directory slug
       ...(isEmail ? { email: userIdOrEmail } : { userId: userIdOrEmail }),
     };
 
-    logger.debug(`Checking purchase for ${isEmail ? 'email' : 'user ID'} '${userIdOrEmail}' on ${contentType}/${directorySlug}`);
+    logger.debug(`Checking purchase for ${isEmail ? 'email' : 'user ID'} '${userIdOrEmail}' on ${directorySlug}`);
     purchase = await prisma.purchase.findFirst({
       where: whereCondition,
     });
 
     // If purchase found, log details verbosely
     if (purchase) {
-      logger.debug(`Purchase found: ID ${purchase.id}, content: ${purchase.contentType}/${purchase.contentSlug}, userEmail: ${purchase.email}, userId: ${purchase.userId}`);
+      logger.debug(`Purchase found: ID ${purchase.id}, content: ${purchase.contentSlug}, userEmail: ${purchase.email}, userId: ${purchase.userId}`);
     } else {
-      logger.debug(`No purchase found for ${contentType}/${directorySlug} for user/email '${userIdOrEmail}'`);
+      logger.debug(`No purchase found for ${directorySlug} for user/email '${userIdOrEmail}'`);
     }
 
     return !!purchase;
   } catch (error: any) {
-    logger.error(`[hasUserPurchased] Error checking purchase status for ${contentType}/${directorySlug}:`, error);
+    logger.error(`[hasUserPurchased] Error checking purchase status for ${directorySlug}:`, error);
     return false;
   }
 }
