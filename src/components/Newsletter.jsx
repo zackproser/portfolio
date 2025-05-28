@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/Button";
 import { track } from "@vercel/analytics";
+import { sendGTMEvent } from '@next/third-parties/google';
 import clsx from 'clsx';
 
 function MailIcon(props) {
@@ -37,6 +38,18 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 
 	const sendFormSubmissionEvent = () => {
 		console.log('Tracking newsletter signup event with:', { method: "newsletter", source: referrer, position, tags });
+		
+		// Send to GTM for conversion tracking
+		sendGTMEvent({
+			event: "newsletter-signup-conversion",
+			method: "newsletter",
+			source: referrer,
+			position: position,
+			tags: tags?.join(',') || '',
+			slug: referrer?.split('/').pop() || 'homepage'
+		});
+
+		// Send to Vercel Analytics
 		track("newsletter-signup", {
 			method: "newsletter",
 			source: referrer,
