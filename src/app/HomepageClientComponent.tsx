@@ -63,8 +63,8 @@ export default function HomepageClientComponent({
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
   const sendFormSubmissionEvent = () => {
-    sendGTMEvent({
-      event: "sign-up-newsletter",
+            sendGTMEvent({
+          event: "newsletter-signup-conversion",
       method: "newsletter"
     });
 
