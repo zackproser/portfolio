@@ -104,7 +104,7 @@ async function getSegmentContent(course: string, segment: string) {
 async function userPurchasedCourse(userEmail: string, courseId: number): Promise<boolean> {
   try {
     // Use the hasUserPurchased function to check if the user has purchased the course
-    return await hasUserPurchased('course', courseId.toString(), userEmail);
+    return await hasUserPurchased(userEmail, courseId.toString());
   } catch (error) {
     console.error('Error checking if user purchased course:', error);
     return false;
