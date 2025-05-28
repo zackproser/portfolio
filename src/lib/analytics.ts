@@ -11,8 +11,21 @@ export function trackPurchase(purchaseData: {
     transactionId: string
     value: number
     itemName: string
+    userEmail?: string
+    userName?: string
   }) {
     if (isBrowser && (window as any).gtag) {
+      // Set user data for enhanced conversions if available
+      if (purchaseData.userEmail) {
+        (window as any).gtag('set', 'user_data', {
+          email: purchaseData.userEmail,
+          ...(purchaseData.userName && {
+            first_name: purchaseData.userName.split(' ')[0],
+            last_name: purchaseData.userName.split(' ').slice(1).join(' ')
+          })
+        });
+      }
+
       (window as any).gtag('event', 'conversion', {
         'send_to': 'AW-1009082087/lDmiCNPQ8ZYZEOe9leED',
         'value': purchaseData.value,
