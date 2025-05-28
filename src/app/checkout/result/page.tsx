@@ -52,6 +52,7 @@ function CheckoutResultContent() {
         setContent(data);
 
         if (!conversionTracked && data.content.commerce?.price) {
+          // Send enhanced conversion with user data for Google Ads
           sendGTMEvent({
             event: 'purchase',
             value: data.content.commerce.price,
@@ -61,7 +62,16 @@ function CheckoutResultContent() {
               item_name: data.content.title,
               item_id: data.content.slug,
               price: data.content.commerce.price
-            }]
+            }],
+            // Enhanced conversions user data
+            user_data: {
+              email: data.user.email,
+              // Add other user data if available
+              ...(data.user.name && {
+                first_name: data.user.name.split(' ')[0],
+                last_name: data.user.name.split(' ').slice(1).join(' ')
+              })
+            }
           });
 
           setConversionTracked(true);
