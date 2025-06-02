@@ -38,6 +38,7 @@ export const navItems = [
     ],
   },
   { name: 'About', href: '/about' },
+  { name: 'Speaking', href: '/speaking' },
   { name: 'Testimonials', href: '/testimonials' },
   { name: 'Contact', href: '/contact' },
 ];
