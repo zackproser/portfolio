@@ -15,8 +15,7 @@ export const metadata = createMetadata({
   title: 'Speaking Engagements - Zachary Proser',
   description: 'AI engineer speaker, conference presenter, and technical trainer. Public talks on AI, infrastructure as code, vector databases, and developer tools. Available for speaking engagements and corporate training.',
   author: 'Zachary Proser',
-  date: '2024-12-19',
-  type: 'blog',
+  date: '2025-6-02',
   slug: 'speaking',
   image: a16z1,
   keywords: [
