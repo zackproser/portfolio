@@ -3,13 +3,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { createMetadata } from '@/utils/createMetadata'
-import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon } from 'lucide-react'
+import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap } from 'lucide-react'
 
 // Import speaking images from the a16z blog post
 import a16z1 from '@/images/a16z-1.webp'
+import a16z2 from '@/images/a16z-2.webp'
 // Import WorkOS internal training images
 import aiFundamentals from '@/images/ai-fundamentals.webp'
 import neuralNetworksLearn from '@/images/neural-networks-learn.webp'
+// Import AI Engineering World Fair workshop image
+import aieWorkshop from '@/images/aie-workshop-room.webp'
+// Import additional speaking and conference images
+import zackAndNick from '@/images/zack-and-nick.webp'
+import aieZackBadge from '@/images/aie-zack-badge.webp'
 
 export const metadata = createMetadata({
   title: 'Speaking Engagements - Zachary Proser',
@@ -50,6 +56,18 @@ export const metadata = createMetadata({
 // Speaking engagements data
 const speakingEngagements = [
   {
+    id: 'aie-world-fair-june-2025',
+    type: 'public',
+    title: 'AI Pipelines and Agents in Pure TypeScript with Mastra.ai',
+    event: 'AI Engineering World Fair',
+    date: 'June 3, 2025',
+    location: 'Workshop Session',
+    description: 'We taught over 70 engineers over the course of a live 2 hour workshop how to build workflows to accomplish discrete tasks and how to grant access to those workflows to agents - which are the ideal human interface for accomplishing tasks with natural language.',
+    image: aieWorkshop,
+    audience: '70+ engineers',
+    topics: ['AI Pipelines', 'Agents', 'TypeScript', 'Mastra.ai', 'Workflow Automation', 'Natural Language Interfaces']
+  },
+  {
     id: 'a16z-dec-2023',
     type: 'public',
     title: 'Navigating from Jupyter Notebooks to Production',
@@ -71,8 +89,7 @@ const speakingEngagements = [
         url: 'https://twitter.com/zackproser/status/1732228822626619637',
         label: 'Twitter Thread'
       }
-    ],
-    featured: true
+    ]
   },
   {
     id: 'ai-fundamentals-internal',
@@ -83,9 +100,8 @@ const speakingEngagements = [
     location: 'In-person',
     description: 'Comprehensive introduction to AI concepts, machine learning fundamentals, and practical applications for software engineering teams. Covered LLMs, vector databases, RAG, and hands-on implementation strategies.',
     image: aiFundamentals,
-    audience: 'Engineering Team (25 developers)',
-    topics: ['Machine Learning', 'Large Language Models', 'Vector Databases', 'RAG', 'AI Engineering'],
-    internal: true
+    audience: 'Engineering Team (40 developers)',
+    topics: ['Machine Learning', 'Large Language Models', 'Vector Databases', 'RAG', 'AI Engineering']
   },
   {
     id: 'ai-content-creation-internal',
@@ -96,9 +112,8 @@ const speakingEngagements = [
     location: 'In-person',
     description: 'Interactive workshop teaching content teams how to leverage AI tools for writing, editing, ideation, and content optimization. Practical hands-on session with real-world use cases and workflow optimization.',
     image: neuralNetworksLearn,
-    audience: 'Marketing & Content Team (15 members)',
-    topics: ['AI Writing Tools', 'Content Strategy', 'Workflow Optimization', 'Prompt Engineering', 'Content Marketing'],
-    internal: true
+    audience: 'Marketing & Content Team (25 members)',
+    topics: ['AI Writing Tools', 'Content Strategy', 'Workflow Optimization', 'Prompt Engineering', 'Content Marketing']
   }
 ];
 
@@ -171,14 +186,7 @@ function SpeakingCard({ engagement }) {
             {engagement.type === 'internal' ? 'Internal' : 'Public'}
           </span>
         </div>
-        {/* Featured badge */}
-        {engagement.featured && (
-          <div className="absolute top-4 right-4">
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
-              ⭐ Featured
-            </span>
-          </div>
-        )}
+
       </div>
 
       {/* Content */}
@@ -255,33 +263,13 @@ export default function Speaking() {
         title="Speaking Engagements"
         intro="I speak at conferences, meetups, and corporate events about AI, infrastructure as code, vector databases, and developer tools. I also provide internal training for engineering and content teams."
       >
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-              {publicEngagements.length}
-            </div>
-            <div className="text-blue-800 dark:text-blue-300 font-medium">Public Talks</div>
-          </div>
-          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-              {internalEngagements.length}
-            </div>
-            <div className="text-amber-800 dark:text-amber-300 font-medium">Internal Training</div>
-          </div>
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-              165+
-            </div>
-            <div className="text-green-800 dark:text-green-300 font-medium">Total Attendees</div>
-          </div>
-        </div>
+
 
         {/* Public Engagements */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Users className="h-6 w-6 text-green-600" />
-            Public Speaking
+            <Mic className="h-6 w-6 text-blue-600" />
+            Conference Talks & Public Workshops
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {publicEngagements.map((engagement) => (
@@ -290,11 +278,41 @@ export default function Speaking() {
           </div>
         </section>
 
+        {/* Speaking Gallery */}
+        <section className="mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
+              <Image
+                src={zackAndNick}
+                alt="Speaking at conferences and events"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
+              <Image
+                src={a16z2}
+                alt="Speaking at a16z venue"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
+              <Image
+                src={aieZackBadge}
+                alt="AI Engineering World Fair badge"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Internal Training */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-amber-600" />
-            Corporate Training & Workshops
+            <GraduationCap className="h-6 w-6 text-amber-600" />
+            Corporate Training & Team Development
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {internalEngagements.map((engagement) => (
@@ -304,9 +322,9 @@ export default function Speaking() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-purple-700 rounded-xl p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-4">Looking for a Speaker?</h2>
-          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+        <section className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Looking for a Speaker?</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
             I&apos;m available for conference talks, meetups, corporate training, and workshops. 
             I speak about AI engineering, infrastructure as code, vector databases, developer tools, 
             and practical machine learning implementations.
@@ -314,13 +332,13 @@ export default function Speaking() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-md hover:bg-blue-50 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors"
             >
               Book a Speaking Engagement
             </Link>
             <Link
               href="/ai-training"
-              className="inline-flex items-center justify-center px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white font-semibold rounded-md transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold rounded-md transition-colors"
             >
               View Training Services
             </Link>
