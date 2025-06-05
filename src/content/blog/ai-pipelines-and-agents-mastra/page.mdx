@@ -1,0 +1,36 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import aieWorkshop from '@/images/aie-workshop-room.webp'
+import aieFisheye from '@/images/aie-workshop-fisheye.webp'
+import zackAndNick from '@/images/zack-and-nick.webp'
+import a16z1 from '@/images/a16z-1.webp'
+
+export const metadata = createMetadata({
+  author: 'Zachary Proser',
+  date: '2025-06-03',
+  title: 'AI Pipelines and Agents in Pure TypeScript with Mastra.ai',
+  description: 'Nick Nisi and I taught 70 engineers how to build AI workflows and agents with Mastra.ai at the AI Engineer World Fair in San Francisco.',
+  image: aieWorkshop,
+  slug: '/blog/ai-pipelines-and-agents-mastra',
+})
+
+<Image src={aieWorkshop} alt="Nick Nisi presenting with me" />
+
+On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop at the **AI Engineer World Fair** in San Francisco. The event gathered more than 70 engineers eager to build AI powered workflows in their own products.
+
+Mastra.ai provided an early preview of their workflow tooling, which allows you to orchestrate tasks using pure TypeScript. We showed how to chain those workflows together into pipelines and grant access to them through natural language driven agents.
+
+<Image src={zackAndNick} alt="Zack and Nick ready to teach" />
+
+The hands-on format let attendees build a simple pipeline from scratch, then wrap it with an agent interface. Seeing the agents successfully complete tasks through our pipelines was an awesome moment for everyone in the room.
+
+We tied the workshop back to lessons from my [earlier talk at a16z](/blog/a16z-sf-dec-2023-ai-apps-production) about taking prototypes to production. This time, it was all coded live in TypeScript with the Mastra.ai SDK.
+
+<Image src={a16z1} alt="Speaking at the a16z meetup" />
+
+<Image src={aieFisheye} alt="Workshop room fisheye view" />
+
+By the end, every seat in the workshop was filled and participants were trading ideas on how to use Mastra.ai in their own workflows. It was easily one of my favorite experiences as a speaker since that [a16z meetup](/blog/a16z-sf-dec-2023-ai-apps-production).
+
+If you want to see more events like this one, check out my <Link href="/speaking">speaking page</Link>.
