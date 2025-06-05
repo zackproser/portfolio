@@ -18,6 +18,11 @@ import logoCloudflare from '/public/images/logos/cloudflare.svg'
 import logoGruntwork from '/public/images/logos/terragrunt.svg'
 import logoPinecone from '@/images/logos/pinecone-logo.webp'
 
+// Import demo hero images
+import embeddingsDemoHero from '@/images/embeddings-demo-hero.webp'
+import tokenizationDemoHero from '@/images/tokenization-demo-hero.webp'
+import chatbotDemoHero from '@/images/chatbot-demo-hero.webp'
+
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
   () => import('@/components/NeuralNetworkPulse').then(mod => mod.NeuralNetworkPulse),
@@ -373,6 +378,85 @@ export default function HomepageClientComponent({
                     Try the live demo →
                   </Link>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Demos Section */}
+        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af] dark:from-gray-900 dark:to-blue-950">
+          {/* Blueprint overlay pattern */}
+          <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
+          
+          {/* Engineering document appearance */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 md:px-6 relative z-10">
+            <div className="mb-6 text-center">
+              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-sans uppercase">
+                  Interactive AI Laboratory
+                </h2>
+              </div>
+              <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
+                Learn by doing! Explore how AI systems work under the hood through hands-on interactive experiences.
+              </p>
+            </div>
+            
+                         <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
+               <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                 <ContentCard 
+                   key="chatbot-demo"
+                   article={{
+                     slug: '/chat',
+                     title: 'How do you give an AI system your specific knowledge?',
+                     description: 'Try a live AI chatbot powered by RAG (Retrieval Augmented Generation) that knows my content. See how AI systems can be grounded with specific data to avoid hallucinations.',
+                     author: 'Zachary Proser',
+                     date: '2024-01-01',
+                     type: 'demo',
+                     image: chatbotDemoHero
+                   }} 
+                 />
+                 <ContentCard 
+                   key="embeddings-demo"
+                   article={{
+                     slug: '/demos/embeddings',
+                     title: 'How do LLMs understand meaning in text?',
+                     description: 'Visualize how text transforms into vectors that capture semantic meaning. See why similar concepts cluster together and understand the foundation of RAG systems.',
+                     author: 'Zachary Proser',
+                     date: '2024-01-01',
+                     type: 'demo',
+                     image: embeddingsDemoHero
+                   }} 
+                 />
+                 <ContentCard 
+                   key="tokenization-demo"
+                   article={{
+                     slug: '/demos/tokenize',
+                     title: 'Why do LLMs have context limits and token costs?',
+                     description: 'See how language models break text into tokens. Understand why context windows exist, how pricing works, and optimize your prompts for better performance.',
+                     author: 'Zachary Proser',
+                     date: '2024-01-01',
+                     type: 'demo',
+                     image: tokenizationDemoHero
+                   }} 
+                 />
+               </div>
+
+              <div className="text-center mt-8">
+                <Link 
+                  href="/demos"
+                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold text-base px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
+                  onClick={() => {
+                    track("main_cta_click", {
+                      destination: "all_demos"
+                    })
+                  }}
+                >
+                  View All Interactive Demos →
+                </Link>
               </div>
             </div>
           </div>
