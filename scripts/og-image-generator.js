@@ -11,6 +11,7 @@ const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og-images');
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
 const IMAGES_DIR = path.join(process.cwd(), 'src', 'images');
 const API_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const METADATA_CACHE = path.join(process.cwd(), 'metadata-cache.json');
 
 // Parse arguments
 const args = process.argv.slice(2);
@@ -121,142 +122,67 @@ async function getContentSlugs(contentType) {
 }
 
 /**
- * Get metadata from MDX frontmatter
+ * Get metadata from the pre-generated metadata cache
  * @param {string} contentType 
  * @param {string} slug 
  * @returns {Promise<{title: string, description: string, slug: string, type: string, image: string|null}|null>}
  */
 async function getContentMetadata(contentType, slug) {
   try {
-    const mdxPath = path.join(CONTENT_DIR, contentType, slug, 'page.mdx');
-    
-    try {
-      // Read the file but don't try to import it
-      const content = await fsPromises.readFile(mdxPath, 'utf-8');
-      
-      // First look for image imports at the top of the file
-      const importMap = {};
-      const importRegex = /import\s+(\w+)\s+from\s+['"]@\/images\/([^'"]+)['"]/g;
-      let importMatch;
-      
-      while ((importMatch = importRegex.exec(content)) !== null) {
-        const variableName = importMatch[1];
-        const imagePath = importMatch[2];
-        importMap[variableName] = imagePath;
-        log(`Found import: ${variableName} -> ${imagePath}`);
-      }
-      
-      // Simple frontmatter extraction
-      const titleMatch = content.match(/title:\s*['"](.+?)['"]/);
-      
-      // Use a more robust regex for description that can handle apostrophes
-      // First try to match backtick style, then double quotes, then single quotes
-      let descriptionMatch = content.match(/description:\s*`([\s\S]*?)`/);
-      if (!descriptionMatch) {
-        descriptionMatch = content.match(/description:\s*"((?:[^"\\]|\\.)*)"/);
-      }
-      if (!descriptionMatch) {
-        descriptionMatch = content.match(/description:\s*'((?:[^'\\]|\\.)*?)'/);
-      }
-      
-      const typeMatch = content.match(/type:\s*['"](.+?)['"]/);
-      
-      // Try to extract image information from frontmatter
-      // Look for patterns like: image: bloggingPeacefully,
-      let imageMatch = content.match(/image:\s*(.+?)(?:,|\n|\})/);
-      let image = null;
-      
-      if (imageMatch && imageMatch[1]) {
-        // Clean up the image path
-        let imagePath = imageMatch[1].trim();
-        log(`Found raw image path: "${imagePath}"`);
-        
-        // Case 1: Direct import reference like 'image: bloggingPeacefully,'
-        if (importMap[imagePath]) {
-          // This is a variable that was imported, use its path
-          const importedImagePath = importMap[imagePath];
-          // Format as Next.js image path
-          const imagePathWithoutExt = importedImagePath.split('.')[0];
-          image = `/_next/static/media/${imagePathWithoutExt}.webp`;
-          log(`Resolved imported image variable: ${imagePath} -> ${image}`);
-        }
-        // Case 2: Direct path like '@/images/example.png'
-        else if (imagePath.includes('@/images/')) {
-          // Extract just the filename part from something like @/images/example.png
-          // or @/images/subdirectory/example.png
-          imagePath = imagePath.replace(/['"]/g, ''); // Remove quotes if any
-          const srcPath = imagePath.split('@/images/')[1];
-          
-          // If it includes a directory path, keep it
-          const imagePathWithoutExt = srcPath.split('.')[0];
-          image = `/_next/static/media/${imagePathWithoutExt}.webp`;
-          log(`Converted to Next.js image path: "${image}"`);
-        } 
-        // Case 3: Quoted string like 'image: "example.png",'
-        else if (imagePath.includes("'") || imagePath.includes('"')) {
-          // Extract from quoted string
-          const quotedMatch = imagePath.match(/['"](.+?)['"]/);
-          if (quotedMatch) {
-            const imageFilename = quotedMatch[1];
-            // Format as Next.js image path
-            const filenameWithoutExt = imageFilename.split('.')[0];
-            image = `/_next/static/media/${filenameWithoutExt}.webp`;
-          }
-        }
-      }
-      
-      const title = titleMatch ? titleMatch[1] : slug;
-      
-      // Extract description from match and handle special characters
-      let description = '';
-      if (descriptionMatch && descriptionMatch[1]) {
-        description = descriptionMatch[1];
-        log(`[DEBUG] Found description: "${description}"`);
-      }
-      
-      // Log the raw description to verify it's being extracted correctly
-      let hasSpecialChars = false;
-      if (description.includes("'") || description.includes('"') || description.includes('&') || 
-          description.includes('<') || description.includes('>')) {
-        hasSpecialChars = true;
-        log(`[WARN] Description contains special characters that need escaping for ${contentType}/${slug}`);
-      }
-      
-      if (isVerbose) {
-        log(`[DEBUG] Raw description for ${contentType}/${slug}: "${description}"`);
-        if (hasSpecialChars) {
-          log(`[DEBUG] JSON stringified description: ${JSON.stringify(description)}`);
-        }
-      }
-      const type = typeMatch ? typeMatch[1] : contentType === 'blog' ? 'blog' : 
-                              contentType === 'videos' ? 'video' : 'content';
-      
-      return {
-        title,
-        description,
-        slug: `/${contentType}/${slug}`,
-        type,
-        image
-      };
-    } catch (error) {
-      if (isVerbose) {
-        console.error(`Error reading MDX file for ${contentType}/${slug}:`, error);
-      }
-      
-      // Fallback with basic info
+    if (!fs.existsSync(METADATA_CACHE)) {
+      console.log(`Metadata cache not found at ${METADATA_CACHE}. Run 'node scripts/extract-metadata.js' first.`);
       return {
         title: slug.replace(/-/g, ' '),
         description: `${contentType} content`,
         slug: `/${contentType}/${slug}`,
         type: contentType === 'blog' ? 'blog' : 
-              contentType === 'videos' ? 'video' : 'content'
+              contentType === 'videos' ? 'video' : 'content',
+        image: null
       };
     }
+
+    const metadataCache = JSON.parse(fs.readFileSync(METADATA_CACHE, 'utf-8'));
+    const key = `${contentType}/${slug}`;
+    const metadata = metadataCache[key];
+
+    if (!metadata) {
+      log(`No metadata found in cache for ${key}`);
+      return {
+        title: slug.replace(/-/g, ' '),
+        description: `${contentType} content`,
+        slug: `/${contentType}/${slug}`,
+        type: contentType === 'blog' ? 'blog' : 
+              contentType === 'videos' ? 'video' : 'content',
+        image: null
+      };
+    }
+
+    log(`Successfully loaded metadata from cache for ${key}:`, {
+      title: metadata.title,
+      description: metadata.description?.substring(0, 50) + '...'
+    });
+
+    return {
+      title: metadata.title || slug,
+      description: metadata.description || '',
+      slug: metadata.slug || `/${contentType}/${slug}`,
+      type: metadata.type || contentType,
+      image: metadata.image || null
+    };
   } catch (error) {
     if (isVerbose) {
       console.error(`Error getting metadata for ${contentType}/${slug}:`, error);
     }
-    return null;
+    
+    // Fallback with basic info
+    return {
+      title: slug.replace(/-/g, ' '),
+      description: `${contentType} content`,
+      slug: `/${contentType}/${slug}`,
+      type: contentType === 'blog' ? 'blog' : 
+            contentType === 'videos' ? 'video' : 'content',
+      image: null
+    };
   }
 }
 
