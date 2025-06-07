@@ -35,6 +35,7 @@ yarn-error.log*
 # generated files
 /public/rss/
 headlines.json
+metadata-cache.json
 
 # metadata report
 metadata-report*
