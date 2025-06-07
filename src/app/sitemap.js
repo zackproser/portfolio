@@ -83,25 +83,33 @@ async function getRoutes() {
     const tools = await getAllTools();
     console.log(`Found ${tools.length} tools for comparison routes`);
     
-    // Generate combinations in canonical order only (alphabetical by slug) to avoid duplicates
-    for (let i = 0; i < tools.length; i++) {
-      for (let j = i + 1; j < tools.length; j++) {
-        const tool1 = tools[i];
-        const tool2 = tools[j];
-        
-        const tool1Slug = createSlug(tool1.name);
-        const tool2Slug = createSlug(tool2.name);
-        
-        // Only add the alphabetically first combination to avoid duplicates
-        if (tool1Slug < tool2Slug) {
-          routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
-        } else {
-          routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
+    // For sitemap, we want to include all possible comparison routes for SEO
+    // but we'll generate them more efficiently in batches
+    const batchSize = 50; // Process tools in batches to avoid memory issues
+    let comparisonCount = 0;
+    
+    for (let i = 0; i < tools.length; i += batchSize) {
+      const toolBatch = tools.slice(i, i + batchSize);
+      
+      for (const tool1 of toolBatch) {
+        for (const tool2 of tools) {
+          if (tool1.id >= tool2.id) continue; // Avoid duplicates and self-comparisons
+          
+          const tool1Slug = createSlug(tool1.name);
+          const tool2Slug = createSlug(tool2.name);
+          
+          // Always use canonical order (alphabetical)
+          if (tool1Slug < tool2Slug) {
+            routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
+          } else {
+            routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
+          }
+          comparisonCount++;
         }
       }
     }
     
-    console.log(`Added canonical comparison routes to sitemap`);
+    console.log(`Added ${comparisonCount} canonical comparison routes to sitemap`);
   } catch (error) {
     console.error('Error generating comparison routes for sitemap:', error);
   }

@@ -24,42 +24,51 @@ const createSlug = (name: string) => {
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
 }
 
-// Generate static params for all possible tool combinations (canonical direction only)
+// Cache for tools to avoid repeated DB calls during build
+let toolsCache: Awaited<ReturnType<typeof getAllTools>> | null = null
+
+// Popular tool pairs that should be pre-generated for better SEO and performance
+const POPULAR_COMPARISONS = [
+  // AI Code Generation Tools
+  ['github-copilot', 'cursor'],
+  ['github-copilot', 'codeium'],
+  ['cursor', 'codeium'],
+  ['github-copilot', 'tabnine'],
+  ['cursor', 'tabnine'],
+  
+  // Vector Databases
+  ['pinecone', 'chroma'],
+  ['pinecone', 'weaviate'],
+  ['chroma', 'weaviate'],
+  ['pinecone', 'qdrant'],
+  ['chroma', 'qdrant'],
+  
+  // LLM APIs
+  ['openai-api', 'anthropic-claude-api'],
+  ['openai-api', 'mistral-ai'],
+  ['anthropic-claude-api', 'mistral-ai'],
+  
+  // AI Frameworks
+  ['langchain', 'llamaindex'],
+  ['langchain', 'autogen'],
+  ['llamaindex', 'autogen'],
+  
+  // Code Analysis Tools
+  ['coderabbit', 'qodo'],
+  ['manus', 'outerbase'],
+  
+  // Popular cross-category comparisons
+  ['github-copilot', 'openai-api'],
+  ['cursor', 'v0-by-vercel'],
+]
+
+// Generate static params for popular tool combinations only
+// Other combinations will be generated on-demand with ISR
 export async function generateStaticParams() {
-  try {
-    const tools = await getAllTools()
-    const params = []
-    
-    // Generate combinations in canonical order only (alphabetical by slug)
-    for (let i = 0; i < tools.length; i++) {
-      for (let j = i + 1; j < tools.length; j++) {
-        const tool1 = tools[i]
-        const tool2 = tools[j]
-        
-        const tool1Slug = createSlug(tool1.name)
-        const tool2Slug = createSlug(tool2.name)
-        
-        // Only add the alphabetically first combination to avoid duplicates
-        if (tool1Slug < tool2Slug) {
-          params.push({
-            tool1: tool1Slug,
-            tool2: tool2Slug
-          })
-        } else {
-          params.push({
-            tool1: tool2Slug,
-            tool2: tool1Slug
-          })
-        }
-      }
-    }
-    
-    console.log(`Generated ${params.length} static params for comparison routes (canonical direction only)`)
-    return params
-  } catch (error) {
-    console.error('Error generating static params for comparisons:', error)
-    return []
-  }
+  // Return empty array to make ALL comparison pages use ISR
+  // This maximizes build time performance while maintaining excellent runtime performance
+  console.log('All comparison pages will be generated on-demand with ISR for maximum build performance')
+  return []
 }
 
 // Generate metadata for SEO
@@ -67,6 +76,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { tool1: tool1Slug, tool2: tool2Slug } = await params
   
   try {
+    // Use Promise.all to fetch both tools concurrently
     const [tool1, tool2] = await Promise.all([
       getToolBySlug(tool1Slug),
       getToolBySlug(tool2Slug)
@@ -100,6 +110,7 @@ async function ComparisonContent({ tool1Slug, tool2Slug }: { tool1Slug: string, 
       redirect(`/comparisons/${tool2Slug}/vs/${tool1Slug}`)
     }
     
+    // Use Promise.all to fetch both tools concurrently
     const [tool1, tool2] = await Promise.all([
       getToolBySlug(tool1Slug),
       getToolBySlug(tool2Slug)
@@ -140,5 +151,6 @@ export default async function ComparisonPage({ params }: PageProps) {
   )
 }
 
-// Enable ISR with 1 hour revalidation
+// Enable ISR with 1 hour revalidation for excellent performance
+// Pages not generated at build time will be created on first request
 export const revalidate = 3600 

@@ -11,10 +11,22 @@ const expectedMetadataFields = ['title', 'description', 'openGraph', 'twitter', 
 // Add verbose flag
 const isVerbose = process.argv.includes('--verbose');
 
+// Cache for parsed files to avoid re-parsing during build
+const fileCache = new Map();
+
 function analyzeFile(filePath) {
   try {
+    // Check cache first
+    const stat = fs.statSync(filePath);
+    const cacheKey = `${filePath}:${stat.mtime.getTime()}`;
+    
+    if (fileCache.has(cacheKey)) {
+      return fileCache.get(cacheKey);
+    }
+
     const content = fs.readFileSync(filePath, 'utf8');
     const fileExtension = path.extname(filePath);
+    let result;
 
     if (fileExtension === '.mdx') {
       const directMetadataMatch = content.match(/export\s+const\s+metadata\s*=\s*({[\s\S]*?})/);
@@ -22,15 +34,16 @@ function analyzeFile(filePath) {
       
       if (directMetadataMatch || createMetadataMatch) {
         const metadataString = directMetadataMatch ? directMetadataMatch[1] : createMetadataMatch[1];
-        const definedFields = metadataString.match(/(\w+):/g).map(field => field.replace(':', ''));
+        const definedFields = metadataString.match(/(\w+):/g)?.map(field => field.replace(':', '')) || [];
         
         if (createMetadataMatch) {
           definedFields.push('openGraph', 'twitter');
         }
         
-        return { hasMetadata: true, definedFields };
+        result = { hasMetadata: true, definedFields };
+      } else {
+        result = { hasMetadata: false, definedFields: [] };
       }
-      return { hasMetadata: false, definedFields: [] };
     } else {
       const ast = parse(content, {
         sourceType: 'module',
@@ -62,8 +75,12 @@ function analyzeFile(filePath) {
         },
       });
 
-      return { hasMetadata, definedFields };
+      result = { hasMetadata, definedFields };
     }
+
+    // Cache the result
+    fileCache.set(cacheKey, result);
+    return result;
   } catch (error) {
     console.error(`Error analyzing file ${filePath}: ${error.message}`);
     return { hasMetadata: false, definedFields: [] };
@@ -80,22 +97,36 @@ function generateReport() {
     errors: [],
   };
 
-  function traverseDir(dir) {
-    const files = fs.readdirSync(dir);
+  // Collect all files first to reduce file system operations
+  const filesToAnalyze = [];
 
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
+  function collectFiles(dir) {
+    try {
+      const files = fs.readdirSync(dir);
 
-      if (stat.isDirectory()) {
-        traverseDir(filePath);
-      } else if (file === 'page.js' || file === 'page.tsx' || file === 'page.mdx' || file === 'layout.js' || file === 'layout.tsx') {
-        analyzeAndAddToReport(filePath, report);
+      for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+          collectFiles(filePath);
+        } else if (file === 'page.js' || file === 'page.tsx' || file === 'page.mdx' || file === 'layout.js' || file === 'layout.tsx') {
+          filesToAnalyze.push(filePath);
+        }
       }
+    } catch (error) {
+      console.error(`Error reading directory ${dir}: ${error.message}`);
     }
   }
 
-  traverseDir(appDir);
+  collectFiles(appDir);
+
+  // Process files in batches for better performance
+  const batchSize = 10;
+  for (let i = 0; i < filesToAnalyze.length; i += batchSize) {
+    const batch = filesToAnalyze.slice(i, i + batchSize);
+    batch.forEach(filePath => analyzeAndAddToReport(filePath, report));
+  }
 
   // No longer checking dynamic comparison pages - using database-driven system
 
