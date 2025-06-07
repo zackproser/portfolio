@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.8.1",
   "scripts": {
     "dev": "concurrently \"next dev\" \"pnpm stripe:webhook\"",
-    "prebuild": "node scripts/extract-metadata.js && node scripts/check-metadata.js && node scripts/generate-collections.js",
+    "prebuild": "tsx scripts/extract-metadata.ts && node scripts/check-metadata.js && node scripts/generate-collections.js",
     "build": "npm run prebuild && prisma generate && (prisma migrate deploy || echo 'Database migration failed, continuing with build...') && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-no-db": "npm run prebuild && prisma generate && NODE_OPTIONS=--max-old-space-size=6144 next build",
     "build-with-tests": "npm run test && npm run prebuild && prisma generate && prisma migrate deploy && NODE_OPTIONS=--max-old-space-size=6144 next build",
