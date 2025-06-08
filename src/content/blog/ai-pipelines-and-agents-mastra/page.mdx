@@ -10,6 +10,7 @@ import good3 from '@/images/good3.jpg'
 import good4 from '@/images/good4.jpeg'
 import feedback1 from '@/images/mastra-workshop-feedback-1.webp'
 import feedback2 from '@/images/mastra-workshop-feedback-2.webp'
+import mastraWorkshopGif from '@/images/mastra-workshop.gif'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
@@ -23,6 +24,19 @@ export const metadata = createMetadata({
 <Image src={aieWorkshop} alt="Nick Nisi presenting with me" />
 
 On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop at the **AI Engineer World Fair** in San Francisco. The event gathered more than 70 engineers eager to build AI powered workflows in their own products using **Mastra.ai** - a new framework that allows you to orchestrate AI tasks using pure TypeScript.
+
+<figure>
+  <Image 
+    src={mastraWorkshopGif} 
+    alt="Mastra workshop in action - building AI workflows with TypeScript"
+    width={640}
+    height={360}
+    className="rounded-lg shadow-lg"
+  />
+  <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+    Watch our hands-on workshop as we guide 70+ engineers through building AI-powered workflows using Mastra.ai
+  </figcaption>
+</figure>
 
 <figure>
   <Image src={zackAndNick} alt="Zack and Nick ready to teach" />
@@ -314,11 +328,11 @@ While our workshop focused on meme generation, the same patterns apply to seriou
 
 Want to bring hands-on AI training to your organization? I provide workshops and training sessions on building production AI workflows, agentic systems, and practical machine learning implementations.
 
-<section className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center">
+<div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center">
   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Looking for Technical Training?</h2>
-  <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+  <div className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
     I'm available for corporate workshops, conference talks, and team training sessions on AI engineering, workflow automation, and developer tools. From hands-on coding sessions to strategic AI implementation planning.
-  </p>
+  </div>
   <div className="flex flex-col sm:flex-row gap-4 justify-center">
     <Link
       href="/speaking"
@@ -333,6 +347,6 @@ Want to bring hands-on AI training to your organization? I provide workshops and
       Get in Touch
     </Link>
   </div>
-</section>
+</div>
 
 We can't wait to run more of these sessions in the future. If you want to follow along with the workshop materials yourself, head to the [mastra-agents-meme-generator](https://github.com/workos/mastra-agents-meme-generator) repo.
