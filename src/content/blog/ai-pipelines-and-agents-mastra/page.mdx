@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
+import mastraWorkshopHero from '@/images/mastra-workshop-hero.webp'
 import aieWorkshop from '@/images/aie-workshop-room.webp'
 import aieFisheye from '@/images/aie-workshop-fisheye.webp'
 import zackAndNick from '@/images/zack-and-nick.webp'
+import zackExplaining from '@/images/zack-explaining.webp'
 import good1 from '@/images/good1.jpeg'
 import good2 from '@/images/good2.png'
 import good3 from '@/images/good3.jpg'
@@ -11,19 +13,29 @@ import good4 from '@/images/good4.jpeg'
 import feedback1 from '@/images/mastra-workshop-feedback-1.webp'
 import feedback2 from '@/images/mastra-workshop-feedback-2.webp'
 import mastraWorkshopGif from '@/images/mastra-workshop.gif'
+import GitHubRepoCard from '@/components/GitHubRepoCard'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2025-06-03',
   title: 'Live Workshop: AI Pipelines & Agents in TypeScript w Mastra.ai - Nick Nisi and Zack Proser',
   description: 'Nick Nisi and I taught 70 engineers how to build AI workflows and agents with Mastra.ai at the AI Engineer World Fair in San Francisco.',
-  image: aieWorkshop,
+  image: mastraWorkshopHero,
   slug: '/blog/ai-pipelines-and-agents-mastra',
 })
 
-<Image src={aieWorkshop} alt="Nick Nisi presenting with me" />
+<Image src={mastraWorkshopHero} alt="Mastra workshop hero - AI Pipelines & Agents in TypeScript" />
 
-On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop at the **AI Engineer World Fair** in San Francisco. The event gathered more than 70 engineers eager to build AI powered workflows in their own products using **Mastra.ai** - a new framework that allows you to orchestrate AI tasks using pure TypeScript.
+On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop at the **AI Engineer World Fair** in San Francisco.
+
+<figure>
+  <Image src={zackAndNick} alt="Zack and Nick ready to teach at the AI Engineer World Fair" />
+  <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+    Nick Nisi and I on stage delivering our agentic workshop at the AI Engineer World Fair in San Francisco
+  </figcaption>
+</figure>
+
+The event gathered more than 70 engineers eager to build AI powered workflows in their own products using **Mastra.ai** - a new framework that allows you to orchestrate AI tasks using pure TypeScript.
 
 <figure>
   <Image 
@@ -34,20 +46,31 @@ On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop a
     className="rounded-lg shadow-lg"
   />
   <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-    Watch our hands-on workshop as we guide 70+ engineers through building AI-powered workflows using Mastra.ai
+    We had over 70 engineers attend, follow our materials and use our repo to reach the goal state: building an agentic AI application 
   </figcaption>
 </figure>
 
 <figure>
-  <Image src={zackAndNick} alt="Zack and Nick ready to teach" />
+  <Image src={zackExplaining} alt="Zack explaining AI workflows and Mastra concepts on stage" />
   <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-    Nick Nisi is a TypeScript expert, and I'm a full stack developer who has gone deep into GenAI and the <Link href="/blog/vercel-ai-sdk" className="text-blue-600 hover:text-blue-700 underline">Vercel AI SDK</Link>.
+    Breaking down the core concepts of AI pipelines and agent workflows using Mastra's TypeScript framework
   </figcaption>
 </figure>
 
+## Open Source Workshop Materials
+
+All workshop materials are available in our open source repository. Follow along with our step-by-step guide and build the complete agentic meme generator yourself:
+
+<GitHubRepoCard 
+  repo="workos/mastra-agents-meme-generator" 
+  className="my-6"
+  fallbackTitle="mastra-agents-meme-generator"
+  fallbackDescription="Complete workshop materials for building AI-powered meme generators with Mastra.ai. Includes step-by-step guides, TypeScript workflows, and agentic AI patterns."
+/>
+
 ## Live Demo: AI Meme Generator in Action
 
-Here's our complete workshop demonstration showing the agentic application we built running end-to-end. Watch how workplace frustrations get transformed into shareable memes through a multi-step AI workflow:
+What were we building? Here's a demo showing the agentic meme-generating application we built running end-to-end. Watch how workplace frustrations get transformed into shareable memes through a multi-step AI workflow:
 
 <div style={{ position: 'relative', width: '100%', height: 0, paddingBottom: '56.25%' }}>
   <iframe 
