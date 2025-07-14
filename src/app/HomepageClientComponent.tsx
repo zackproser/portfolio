@@ -186,7 +186,12 @@ export default function HomepageClientComponent({
                       <div className="animate-pulse text-gray-400">Loading visualization...</div>
                     </div>
                   }>
-                    <div className="scale-[0.833] origin-center">
+                    <div 
+                      className="scale-[0.833] origin-center"
+                      style={{
+                        animation: 'spinIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both'
+                      }}
+                    >
                       <NeuralNetworkPulse />
                     </div>
                   </Suspense>

@@ -1,0 +1,238 @@
+'use client'
+
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
+import { appliedAiSkills, SkillData } from '@/data/applied-ai-skills'
+
+const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true })
+
+  // Convert proficiency to numeric for signal bars
+  const proficiencyLevels = { 'Intermediate': 3, 'Advanced': 4, 'Expert': 5 }
+  const level = proficiencyLevels[skill.proficiency]
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
+    >
+      {/* Skill Level Indicator - Signal Bars */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
+        <div className="flex items-center gap-1">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ height: 4 }}
+              animate={isInView ? { 
+                height: i < level ? [4, 12 + (i * 4), 12 + (i * 4)] : 4,
+                backgroundColor: i < level ? '#3B82F6' : '#374151'
+              } : { height: 4 }}
+              transition={{ duration: 0.8, delay: index * 0.1 + i * 0.1 }}
+              className="w-2 bg-gray-600 rounded-sm"
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Proficiency and Experience */}
+      <div className="flex items-center justify-between">
+        <span className="px-3 py-1 text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-400/30">
+          {skill.proficiency}
+        </span>
+        {skill.yearsExperience && (
+          <span className="text-sm text-blue-200">
+            {skill.yearsExperience} years
+          </span>
+        )}
+      </div>
+
+      {/* Hover Effect */}
+      <motion.div
+        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)'
+        }}
+      />
+    </motion.div>
+  )
+}
+
+const TechStack = () => {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true })
+
+  const stackLayers = [
+    {
+      name: 'Frontend & UI',
+      tech: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+      color: 'from-cyan-400 to-blue-500'
+    },
+    {
+      name: 'AI/ML Pipeline',
+      tech: ['LangChain', 'OpenAI', 'Pinecone', 'RAG', 'Vector Embeddings'],
+      color: 'from-purple-400 to-pink-500'
+    },
+    {
+      name: 'Backend & APIs',
+      tech: ['Node.js', 'Python', 'Go', 'PostgreSQL', 'RESTful APIs'],
+      color: 'from-green-400 to-emerald-500'
+    },
+    {
+      name: 'DevOps & Cloud',
+      tech: ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'CI/CD'],
+      color: 'from-orange-400 to-red-500'
+    },
+    {
+      name: 'Data Science',
+      tech: ['Jupyter', 'Pandas', 'NumPy', 'Matplotlib', 'TensorFlow'],
+      color: 'from-indigo-400 to-purple-500'
+    }
+  ]
+
+  return (
+    <div ref={ref} className="relative">
+      <h3 className="text-2xl font-bold text-white mb-8 text-center">Full-Stack AI Engineering</h3>
+      <div className="space-y-4">
+        {stackLayers.map((layer, index) => (
+          <motion.div
+            key={layer.name}
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: index * 0.2 }}
+            className="relative"
+          >
+            <div className={`bg-gradient-to-r ${layer.color} p-4 rounded-lg bg-opacity-20 border border-white/10`}>
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-lg font-semibold text-white">{layer.name}</h4>
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.3
+                  }}
+                  className="w-3 h-3 bg-green-400 rounded-full"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {layer.tech.map((tech, techIndex) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                    transition={{ duration: 0.4, delay: index * 0.2 + techIndex * 0.1 }}
+                    className="px-2 py-1 text-sm bg-white/10 text-white rounded border border-white/20"
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+            
+            {/* Connection lines */}
+            {index < stackLayers.length - 1 && (
+              <motion.div
+                initial={{ height: 0 }}
+                animate={isInView ? { height: '1rem' } : { height: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
+                className="w-px bg-gradient-to-b from-blue-400 to-transparent mx-auto"
+              />
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function SkillsMatrix() {
+  // Flatten all skills from all categories for the right side
+  const allSkills = appliedAiSkills.flatMap(category => category.skills)
+
+  return (
+    <section id="skills" className="py-20 bg-gradient-to-b from-gray-900 to-blue-900">
+      <div className="container mx-auto px-4 md:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Technical Expertise
+          </h2>
+          <p className="text-xl text-blue-200 max-w-3xl mx-auto">
+            From frontend interfaces to backend systems, AI pipelines to cloud infrastructure - 
+            delivering end-to-end solutions that scale.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Left side - Tech Stack Visualization */}
+          <TechStack />
+
+          {/* Right side - Skill Categories */}
+          <div className="space-y-8">
+            {appliedAiSkills.map((category, categoryIndex) => (
+              <motion.div
+                key={category.category}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <h3 className="text-xl font-bold text-white mb-4">{category.category}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {category.skills.map((skill, skillIndex) => (
+                    <SkillCard 
+                      key={skill.name} 
+                      skill={skill} 
+                      index={categoryIndex * 10 + skillIndex} 
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom stats/certifications */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="mt-16 text-center"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400">13+</div>
+              <div className="text-white">Years Experience</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400">{allSkills.length}</div>
+              <div className="text-white">Core Technologies</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400">4</div>
+              <div className="text-white">AI Companies</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400">100%</div>
+              <div className="text-white">Production Ready</div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+} 
