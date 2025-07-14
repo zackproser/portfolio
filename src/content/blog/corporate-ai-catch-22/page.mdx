@@ -9,14 +9,16 @@ import embeddings from '@/images/embeddings.webp'
 
 export const metadata = createMetadata({
   author: 'Zachary Proser',
-  date: '2025-05-20',
-  title: 'The Corporate AI Catch-22: Solving the Internal Training Problem',
+  date: '2025-07-14',
+  title: 'The Corporate AI Catch-22: Solving the Internal AI Training Problem',
   description: 'How we compressed the AI learning curve for our entire company, built safe experimentation environments, and changed how teams approach new technology.',
   image: aiFundamentals,
   slug: '/blog/corporate-ai-catch-22',
 })
 
 <Image src={aiFundamentals} alt="AI Fundamentals - WorkOS Internal Training" />
+
+## Table of contents
 
 **What's the fastest way to destroy your company's reputation?**
 
@@ -77,20 +79,19 @@ We bought several pro and enterprise plans and provisioned seats for everyone in
 
 I started with a 30-minute talk that covered the fundamentals everyone needs: 
 
-* embeddings, 
+* [embeddings](/demos/embeddings), 
 * neural networks, 
 * how LLMs work and how they [democratize specialist outputs but not understandings](/blog/llms-democratize-specialist-outputs)
 * hallucinations and why we need to spot them (brand damage, errors)
-* Retrieval Augmented Generation (RAG)
+* [Retrieval Augmented Generation (RAG)](/blog/langchain-pinecone-chat-with-my-blog)
 
-Not theoretical nonsense—live demos showing exactly how these systems work and where they break. 
+Not theoretical nonsense—but [live demos](/demos) showing exactly how these systems work and where they break. 
 
 <Image src={embeddings} alt="Visualizing embeddings on a plot helps build an intuitive understanding for semantic meaning" />
 
-I used [live demos](/demos) to improve engagement and communicate more in less time - visualizing embeddings across a 2D plot is usually one of the "Aha" moments when people intuitively begin to grasp 
-semantic meaning and semantic search.
+Visualizing embeddings across a 2D plot is usually one of the "Aha" moments when people intuitively begin to grasp semantic meaning and semantic search.
 
-This wasn't optional background. You can't safely use tools you don't understand, and you can't identify the sharp edges until you know what you're looking at. Most companies skip this step and wonder why their teams either avoid AI entirely or use it recklessly.
+This wasn't optional background. You can't safely use tools you don't understand, and you can't identify the sharp edges until you know what you're looking at. Most companies skip this step and wonder why their teams either avoid AI entirely (they're afraid of breaking something) or use it recklessly.
 
 ### Forcing Uncomfortable Learning with Hands-on Workshops
 
@@ -100,24 +101,28 @@ The next session I delivered, "AI-Enabled Content Creation", deliberately made p
 
 A designer had to become competent enough in quantum computing to give a presentation. A developer had to research competitive dynamics in the pharmaceutical industry. Marketing had to explain the technical architecture decisions behind database indexing strategies.
 
-The structure was deliberately progressive:
+- Phase 1: Use AI to build foundational understanding of an unfamiliar topic. Get from "Holy shit, what?" to "Oh, I see"
+- Phase 2: Create a structured outline for a presentation  
+- Phase 3: Turn that outline into a draft with supporting arguments  
+- Phase 4: Generate visuals that would normally require a design team  
+- Phase 5: Polish everything using our company style guide  
+- Phase 6: Practice the presentation with AI feedback
 
-- 5 minutes: Use AI to build foundational understanding of an unfamiliar topic.Get from "Holy shit, what?" to "Oh, I see".
-- 5 minutes: Create a structured outline for a presentation  
-- 5 minutes: Turn that outline into a draft with supporting arguments  
-- 5 minutes: Generate visuals that would normally require a design team  
-- 5 minutes: Polish everything using our company style guide  
-- 5 minutes: Practice the presentation with AI feedback
+Each phase was timeboxed to 5 minutes, forcing rapid iteration and preventing perfectionism.
 
 By the end of thiry minutes, people who knew nothing about a topic were presenting confidently on it. The realization wasn't that AI replaced their expertise—it was that AI could accelerate their ability to develop new expertise at speeds that felt impossible.
 
-The "holy shit what" in the beginning helped, because folks had the experience of going from "I do not know what this is" to, "I am presenting on my post about X" in a half hour. This was an eye-opening experience for anyone who was regularly experimenting at the forefront of AI. 
+The "holy shit what" in the beginning helped, because folks had the experience of going from "I do not know what this is" to, "I am presenting on my post about X" in a half hour. 
+
+This was an eye-opening experience for anyone who had not already been regularly experimenting at the forefront of AI. 
 
 ### The Security Reality Check
 
 Before anyone touched external AI services, our security team walked through the actual risks. Not hypothetical concerns, but specific examples of how companies have leaked data, violated compliance requirements, and created legal exposure through careless AI usage.
 
 This wasn't about restricting AI usage—it was about enabling safe exploration at the speed business actually moves.
+
+By the time we reached the offsite, everyone had accounts on approved tools that had already been put through their paces from a security and compliance perspective.
 
 ### Building an AI-First Culture
 
@@ -147,28 +152,32 @@ People discovered the difference between AI capabilities and their actual workfl
 
 Six months later, the shift wasn't just about tool adoption—it was about default thinking patterns. Instead of starting with traditional approaches and occasionally trying AI, people began with AI-first approaches and fell back to traditional methods only when necessary.
 
-## Key recommendations
+## Where to Learn More About AI
 
-### Compress the Learning Curve
+> the mind is not a vessel to be filled but a fire to be kindled
 
-Don't spread AI training across months. Concentrate it into intensive periods where learning is the primary job, not a side project. The tools are changing too fast for gradual adoption strategies.
+It's not just about what your team learns—it's about teaching them where to go to keep learning as the field evolves. The best teams know how to find the signal in the noise.
 
-### Start with Technical Reality
+**DeepLearning.ai** courses can sometimes feel thin, but they're excellent proxies for keeping up with what's changing in the field. They're updated frequently and can help you and your team stay current on the latest trends and techniques.
 
-Teach people how these systems actually work before letting them use the tools. You can't identify risks or opportunities if you don't understand what you're working with.
+#### Recommended AI Newsletters
 
-### Force Cross-Domain Learning
+Staying up to date is easier when you have a few high-signal sources in your inbox. Here are some of my favorites:
 
-Push people to use AI in areas outside their expertise. The goal isn't to make everyone an expert in everything—it's to help them understand how quickly they can become competent in unfamiliar domains.
+- [Daniel Miessler's Unsupervised Learning](https://newsletter.danielmiessler.com/subscribe)
+- [Santiago Valderrama's Data Machina](https://www.svpino.com/)
+- [Zachary Proser's AI & Engineering Newsletter](/newsletter)
 
-### Address Security First
+It's also worth following key figures in the industry, like [Andrew Ng](https://www.deeplearning.ai/) and [Andrej Karpathy](https://karpathy.ai/), as well as seeking out the people who are actually doing the research and reading the latest papers. The field moves fast, and the best insights often come directly from those pushing the boundaries.
 
-Build safe experimentation environments before people start exploring. One data leak can destroy years of competitive advantage.
+Ultimately, the key point is that different people will find different things interesting—and this phase of AI carries massive disruption with it. My expectation is that people will be able to:
 
-### Bridge to Production Immediately
+1. Use AI to learn faster
+2. Use AI to learn things they previously did not attempt
+3. Use AI to switch roles, jobs, or careers faster than they previously could have
 
-End training with immediate application to real current projects. The gap between learning environment and production environment reveals what actually works versus what just seems impressive.
+Therefore, the real key is to get the tools in folks' hands and get them building, working, and querying in the new way—so that their real interests shake out of it through hands-on exploration.
 
-The companies that solve this first won't just have AI-literate teams—they'll have teams that can adapt to whatever technological shift comes next. Because this isn't really about AI adoption. It's about building an organization that can develop new capabilities faster than the market can move.
+This is an approximation of how my personal creative loop works, and it's similar to what Rick Rubin describes in [The Creative Act: A Way of Being](https://www.amazon.com/Creative-Act-Way-Being/dp/0593652886). It's about constantly gathering seeds: sometimes from a LinkedIn post, sometimes from a book, something someone mentions at work, or simply an itch to experiment with something new.
 
-And right now, the market is moving very, very fast. 
+There's also a gestation and experimentation period, and then I force myself to share the work—because actually publishing increases luck and serendipity. The act of sharing is what often leads to the most unexpected and valuable connections.
