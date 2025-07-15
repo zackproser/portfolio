@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+import fs from 'fs';
 const core = require('@actions/core');
 const github = require('@actions/github');
 const axios = require('axios');
@@ -89,7 +91,7 @@ async function run(): Promise<void> {
     // Save headlines to a file
     const headlinesFile = 'headlines.json';
     await new Promise<void>((resolve, reject) => {
-      fs.writeFile(headlinesFile, JSON.stringify(allHeadlines, null, 2), (err: Error) => {
+      fs.writeFile(headlinesFile, JSON.stringify(allHeadlines, null, 2), (err: NodeJS.ErrnoException | null) => {
         if (err) {
           reject(err);
         } else {
