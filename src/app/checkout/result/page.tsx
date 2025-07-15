@@ -226,34 +226,6 @@ function CheckoutResultContent() {
             </div>
           </div>
         )}
-
-        {content.content.type === 'course' && (
-          <div className="mb-8">
-            <p className="mb-4">
-              Your course is now available. You can start learning right away!
-            </p>
-            {authStatus === 'authenticated' ? (
-              <Link
-                href={contentUrl as any}
-                className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                Start Learning
-              </Link>
-            ) : (
-              <button
-                onClick={() => handleEmailSignIn(content.user.email, contentUrl)}
-                className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                Sign in to Start Learning
-              </button>
-            )}
-            {authStatus === 'unauthenticated' && (
-              <p className="mt-2 text-sm text-gray-600">
-                You&apos;ll need to verify your email before accessing the full course.
-              </p>
-            )}
-          </div>
-        )}
       </div>
     </Container>
   );
