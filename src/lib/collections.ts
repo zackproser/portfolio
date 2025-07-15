@@ -31,7 +31,7 @@ function getImagePath(imageName: string): string {
 }
 
 export async function getAllCollections(): Promise<Collection[]> {
-  let articles = await getAllContent('blog')
+  let articles = (await getAllContent('blog')).filter((a) => a.type === 'blog' || a.type === 'video' || a.type === 'demo') as ArticleWithSlug[];
 
   let collections = [
     {

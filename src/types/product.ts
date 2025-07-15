@@ -29,13 +29,6 @@ export interface ProductContent {
   features: ProductFeature[];
   testimonials?: ProductTestimonial[];
   pricing: ProductPricing;
-  chapters?: {
-    title: string;
-    items: {
-      title: string;
-      description: string;
-    }[];
-  }[];
   faqs?: {
     question: string;
     answer: string;
@@ -44,7 +37,7 @@ export interface ProductContent {
     text: string;
     href: string;
   };
-  type: 'article' | 'course';
+  type: 'article';
   slug: string;
   isPaid: boolean;
   previewLength?: number;

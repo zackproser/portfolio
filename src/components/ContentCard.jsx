@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientSideIcon } from './ClientSideIcon'
-import { COURSES_DISABLED } from '@/types'
 
 import wakka from '@/images/wakka.webp'
 
@@ -266,7 +265,6 @@ function CardContent({
           </p>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          {type === 'course' && !COURSES_DISABLED && <StatusBadge status={status} />}
           {isPremium && (
             <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mt-2 flex items-center">
               <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

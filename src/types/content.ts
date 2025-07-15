@@ -8,7 +8,7 @@ export interface Content extends ExtendedMetadata {
 
 // For blog posts and courses
 export interface Blog extends Content {
-  type: 'blog' | 'course' | 'video' | 'demo'
+  type: 'blog' | 'video' | 'demo'
 }
 
 // For demos and other non-purchasable content
@@ -24,36 +24,11 @@ export type Purchasable = Content & {
   commerce: NonNullable<Blog['commerce']> & { isPaid: true }
 }
 
-// Flag to temporarily disable courses
-export const COURSES_DISABLED = true;
-
-// Type guard to check if content is purchasable
-export function isPurchasable(content: Content): content is Purchasable {
-  // If courses are disabled and the content is a course, return false
-  if (COURSES_DISABLED && content.type === 'course') {
-    return false;
-  }
-  return content.type !== 'demo' && 'commerce' in content && (content as any).commerce?.isPaid === true;
-}
-
 // Helper to generate default landing page content
 export function getDefaultLanding(blog: Blog): NonNullable<Blog['landing']> {
   const defaults = {
     subtitle: blog.description,
-    features: blog.type === 'course' ? [
-      {
-        title: 'Complete Course Access',
-        description: 'Get full access to all course materials and video content'
-      },
-      {
-        title: 'Hands-on Projects',
-        description: 'Learn through practical, real-world examples'
-      },
-      {
-        title: 'Lifetime Access',
-        description: 'Access all content and future updates forever'
-      }
-    ] : [
+    features: [
       {
         title: 'Complete Access',
         description: 'Get full access to this in-depth content with all code examples'
@@ -68,7 +43,6 @@ export function getDefaultLanding(blog: Blog): NonNullable<Blog['landing']> {
       }
     ]
   };
-
   return {
     ...defaults,
     ...blog.landing
@@ -77,16 +51,4 @@ export function getDefaultLanding(blog: Blog): NonNullable<Blog['landing']> {
 
 // Export both BlogWithSlug and ArticleWithSlug (for backward compatibility)
 export type BlogWithSlug = Blog;
-export type ArticleWithSlug = BlogWithSlug; // Alias for backward compatibility
-
-export interface CourseContent extends Content {
-  type: 'course';
-  price_id: string;
-  chapters?: Array<{
-    title: string;
-    items: Array<{
-      title: string;
-      description: string;
-    }>;
-  }>;
-} 
+export type ArticleWithSlug = BlogWithSlug; // Alias for backward compatibility 

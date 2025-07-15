@@ -3,7 +3,6 @@ import Stripe from 'stripe'
 import { PrismaClient } from '@prisma/client'
 import { sendReceiptEmail, SendReceiptEmailInput } from '@/lib/postmark'
 import { getContentItemByDirectorySlug } from '@/lib/content-handlers'
-import { COURSES_DISABLED } from '@/types'
 import { stripeLogger as logger } from '@/utils/logger' // Import centralized logger
 import { getContentUrlFromObject } from '@/lib/content-url'
 import { normalizeRouteOrFileSlug } from '@/lib/content-handlers'
@@ -162,14 +161,8 @@ export async function POST(req: Request) {
       logger.info('WEBHOOK: Fetching content details for slug:', slug)
       try {
         let content;
-        if (type === 'article' || type === 'blog') {
+        if (type === 'article' || type === 'blog' || type === 'video') {
           content = await getContentItemByDirectorySlug('blog', directorySlug)
-        } else if (type === 'course') {
-          logger.warn('WEBHOOK: Course purchase detected, using fallback content details as courses are disabled')
-          content = {
-            title: `Course: ${slug}`,
-            description: 'Premium Course Content'
-          };
         }
         logger.debug('WEBHOOK: Found content:', { title: content?.title })
         if (!content) {
@@ -204,10 +197,10 @@ export async function POST(req: Request) {
           TemplateModel: {
             CustomerName: user?.name || 'Valued Customer',
             ProductURL: productUrl,
-            ProductName: content?.title || `${type === 'article' ? 'Article' : 'Course'}: ${slug}`,
+            ProductName: content?.title || `Article: ${slug}`,
             Date: new Date().toLocaleDateString('en-US'),
             ReceiptDetails: {
-              Description: content?.description || `Premium ${type === 'article' ? 'Article' : 'Course'} Access`,
+              Description: content?.description || `Premium Article Access`,
               Amount: `$${session.amount_total! / 100}`,
               SupportURL: `${process.env.NEXT_PUBLIC_SITE_URL}/support`,
             },

@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import BlogClient from './blog-client'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAllContent } from '@/lib/content-handlers'
+import { Blog } from '@/types/content'
 
 // Base metadata using createMetadata
 const baseMetadata = createMetadata({
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 
 
 export default async function ArticlesIndex() {
-  const articles = await getAllContent('blog');
+  const articles = (await getAllContent('blog')).filter((a) => a.type === 'blog' || a.type === 'video' || a.type === 'demo') as Blog[];
 
   const years = [...new Set(articles.map((a) => new Date(a.date).getFullYear().toString()))].sort((a, b) => parseInt(b) - parseInt(a));
 
