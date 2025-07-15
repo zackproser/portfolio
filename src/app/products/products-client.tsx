@@ -6,7 +6,7 @@ import { SectionHeading } from '@/components/SectionHeading'
 import { ProductContent } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, easeInOut } from 'framer-motion'
 import RandomPortrait from '@/components/RandomPortrait'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import { RealTestimonials } from '@/components/RealTestimonials'
@@ -316,7 +316,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
       transition: {
         delay: i * 0.1,
         duration: 0.5,
-        ease: "easeOut"
+        ease: easeInOut
       }
     })
   }
