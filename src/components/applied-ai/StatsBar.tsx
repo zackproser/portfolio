@@ -1,0 +1,205 @@
+'use client'
+
+import { motion, useInView } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
+import { Users, BookOpen, Calendar, Wrench } from 'lucide-react'
+
+interface StatItem {
+  number: string
+  label: string
+  icon?: React.ComponentType<{ className?: string }>
+}
+
+interface StatsBarProps {
+  stats: StatItem[]
+}
+
+interface AnimatedNumberProps {
+  value: string
+  duration?: number
+}
+
+const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
+  const [displayValue, setDisplayValue] = useState('0')
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true })
+
+  useEffect(() => {
+    if (!isInView) return
+
+    // Extract number from value (e.g., "35,000+" -> 35000)
+    const numericValue = parseInt(value.replace(/[^\d]/g, ''), 10)
+    if (isNaN(numericValue)) {
+      setDisplayValue(value)
+      return
+    }
+
+    let startTime: number
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime
+      const elapsed = currentTime - startTime
+      const progress = Math.min(elapsed / (duration * 1000), 1)
+      
+      // Enhanced easing function for more dramatic effect
+      const easeOutCubic = 1 - Math.pow(1 - progress, 3)
+      const currentValue = Math.floor(numericValue * easeOutCubic)
+      
+      // Format the number back to string with original formatting
+      let formattedValue = currentValue.toLocaleString()
+      
+      // Add back any suffix (like + or K)
+      if (value.includes('+')) formattedValue += '+'
+      if (value.includes('K')) formattedValue = Math.floor(currentValue / 1000) + 'K+'
+      
+      setDisplayValue(formattedValue)
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      } else {
+        setDisplayValue(value) // Ensure final value is exact
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }, [isInView, value, duration])
+
+  return <span ref={ref}>{displayValue}</span>
+}
+
+const defaultStats: StatItem[] = [
+  { number: "50,000+", label: "Monthly Blog Readers", icon: Users },
+  { number: "1,700+", label: "Newsletter Subscribers", icon: BookOpen },
+  { number: "3+ Years", label: "AI Infrastructure Experience", icon: Calendar },
+  { number: "13+ Years", label: "Total Engineering Experience", icon: Wrench }
+]
+
+export function StatsBar({ stats = defaultStats }: StatsBarProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true })
+
+  return (
+    <section ref={ref} className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20 border-t border-gray-200 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Mobile: Horizontal scrolling */}
+        <div className="md:hidden">
+          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                  animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: index * 0.15,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10
+                  }}
+                  className="flex-shrink-0 min-w-[220px] text-center"
+                >
+                  <div className="relative bg-gradient-to-br from-white via-blue-50/80 to-indigo-100/60 dark:from-blue-900/30 dark:via-indigo-900/40 dark:to-purple-900/30 rounded-2xl p-8 border border-blue-200/50 dark:border-blue-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 group backdrop-blur-sm">
+                    {/* Animated background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {Icon && (
+                      <motion.div 
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+                        transition={{ duration: 0.8, delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                        className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300"
+                      >
+                        <Icon className="w-8 h-8 text-white" />
+                      </motion.div>
+                    )}
+                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-3">
+                      <AnimatedNumber value={stat.number} duration={2.5} />
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 font-semibold">
+                      {stat.label}
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Desktop: Grid layout */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.9 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: index * 0.15,
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 10
+                }}
+                className="text-center group"
+              >
+                <div className="relative bg-gradient-to-br from-white via-blue-50/80 to-indigo-100/60 dark:from-blue-900/30 dark:via-indigo-900/40 dark:to-purple-900/30 rounded-2xl p-10 border border-blue-200/50 dark:border-blue-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm">
+                  {/* Animated background gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Floating particles effect */}
+                  <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                    <motion.div
+                      animate={{ 
+                        x: [0, 10, 0],
+                        y: [0, -5, 0],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ 
+                        duration: 4,
+                        repeat: Infinity,
+                        delay: index * 0.5
+                      }}
+                      className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full opacity-20"
+                    />
+                    <motion.div
+                      animate={{ 
+                        x: [0, -8, 0],
+                        y: [0, 8, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ 
+                        duration: 3,
+                        repeat: Infinity,
+                        delay: index * 0.3
+                      }}
+                      className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-indigo-400 rounded-full opacity-30"
+                    />
+                  </div>
+                  
+                  {Icon && (
+                    <motion.div 
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
+                      transition={{ duration: 0.8, delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                      className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-8 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110"
+                    >
+                      <Icon className="w-10 h-10 text-white" />
+                    </motion.div>
+                  )}
+                  <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-4 group-hover:scale-105 transition-transform duration-300">
+                    <AnimatedNumber value={stat.number} duration={2.5} />
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300 font-semibold text-lg group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300">
+                    {stat.label}
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+} 

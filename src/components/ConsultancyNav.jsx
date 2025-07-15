@@ -14,6 +14,7 @@ export const navItems = [
     dropdown: [
       { name: 'Custom Gen AI Solutions', href: '/services' },
       { name: '90-Day AI Team Transformation', href: '/ai-training' },
+      { name: 'Applied AI Engineer', href: '/applied-ai-engineer' },
     ],
   },
   {

@@ -166,7 +166,7 @@ export const NeuralNetworkPulse = () => {
   return (
     <div className={`relative w-[500px] h-[500px] transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       <svg className="absolute top-0 left-0 w-full h-full">
-        {typeof window !== 'undefined' && svgContent}
+        {isMounted && svgContent}
       </svg>
 
       {pulseNodes.map(i => {
