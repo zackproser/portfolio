@@ -24,44 +24,6 @@ const createSlug = (name: string) => {
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
 }
 
-// Generate static params for all possible tool combinations (canonical direction only)
-export async function generateStaticParams() {
-  try {
-    const tools = await getAllTools()
-    const params = []
-    
-    // Generate combinations in canonical order only (alphabetical by slug)
-    for (let i = 0; i < tools.length; i++) {
-      for (let j = i + 1; j < tools.length; j++) {
-        const tool1 = tools[i]
-        const tool2 = tools[j]
-        
-        const tool1Slug = createSlug(tool1.name)
-        const tool2Slug = createSlug(tool2.name)
-        
-        // Only add the alphabetically first combination to avoid duplicates
-        if (tool1Slug < tool2Slug) {
-          params.push({
-            tool1: tool1Slug,
-            tool2: tool2Slug
-          })
-        } else {
-          params.push({
-            tool1: tool2Slug,
-            tool2: tool1Slug
-          })
-        }
-      }
-    }
-    
-    console.log(`Generated ${params.length} static params for comparison routes (canonical direction only)`)
-    return params
-  } catch (error) {
-    console.error('Error generating static params for comparisons:', error)
-    return []
-  }
-}
-
 // Generate metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { tool1: tool1Slug, tool2: tool2Slug } = await params

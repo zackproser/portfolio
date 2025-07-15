@@ -148,23 +148,23 @@ const nextConfig = {
       }
     ]
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Ignore specific critical dependency warnings from dependencies
-    config.ignoreWarnings = [
-      ...(config.ignoreWarnings || []),
-      {
-        module: /node_modules\/source-map\/lib\/source-map\/source-map-generator\.js$/,
-        message: /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
-      },
-      {
-        module: /node_modules\/uglify-js\/tools\/node\.js$/,
-        message: /Critical dependency: the request of a dependency is an expression/,
-      },
-    ];
-
-    // Important: return the modified config
-    return config;
-  },
+  // webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  //   // Ignore specific critical dependency warnings from dependencies
+  //   config.ignoreWarnings = [
+  //     ...(config.ignoreWarnings || []),
+  //     {
+  //       module: /node_modules\/source-map\/lib\/source-map\/source-map-generator\.js$/,
+  //       message: /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+  //     },
+  //     {
+  //       module: /node_modules\/uglify-js\/tools\/node\.js$/,
+  //       message: /Critical dependency: the request of a dependency is an expression/,
+  //     },
+  //   ];
+  //
+  //   // Important: return the modified config
+  //   return config;
+  // },
 }
 
 const withMDX = nextMDX({
