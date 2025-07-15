@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const Handlebars = require('handlebars');
-const { format } = require('date-fns');
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
+import { format } from 'date-fns';
 
 interface NewsletterData {
   date: string;
