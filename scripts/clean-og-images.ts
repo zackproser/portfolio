@@ -12,7 +12,6 @@ const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og-images');
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
 
 // Access environment variables
-const COURSES_DISABLED = process.env.COURSES_DISABLED === 'true';
 
 // Get slugs from filesystem
 async function getContentSlugs(contentType: string): Promise<string[]> {
@@ -37,9 +36,6 @@ async function cleanOrphanedImages() {
 
   // Get all valid content slugs from different content types
   const contentTypes = ['blog', 'videos'];
-  if (!COURSES_DISABLED) {
-    contentTypes.push('learn/courses');
-  }
 
   // Get all valid slugs
   const validSlugs = (await Promise.all(
