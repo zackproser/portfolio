@@ -4,10 +4,10 @@
 import { Metadata } from 'next';
 import fs from 'fs';
 import path from 'path';
-import { Content, Blog, Purchasable, ProductContent, COURSES_DISABLED, ExtendedMetadata } from '@/types'; // Assuming ExtendedMetadata is defined here or in '@/types'
+import { Content, Blog, Purchasable, ProductContent, ExtendedMetadata } from '@/types'; // Assuming ExtendedMetadata is defined here or in '@/types'
 import React from 'react';
 import { PrismaClient } from '@prisma/client';
-import { generateProductFromArticle, generateProductFromCourse } from './productGenerator'; // Adjust path if necessary
+import { generateProductFromArticle } from './productGenerator'; // Adjust path if necessary
 import dynamic from 'next/dynamic'; // Although this file is server-only, dynamic is used for the ArticleContent component
 // import { getContentUrl } from './content-url' // Removed as it was unused
 import { contentLogger as logger } from '@/utils/logger'; // Import the centralized logger
@@ -105,8 +105,6 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
   const determinedType = processedMetadata.type || (
     contentType === 'blog' ? 'blog' :
     contentType === 'videos' ? 'video' :
-    contentType === 'learn/courses' ? 'course' :
-    contentType === 'comparisons' ? 'comparison' :
     'blog' // Default fallback type
   );
 
@@ -189,28 +187,17 @@ async function _loadAndProcessContentsArray(contentType: string, directorySlugs:
  * @returns Array of directory slugs (string[])
  */
 export function getContentSlugs(contentType: string): string[] {
-  // If courses are disabled and the content type is courses, return an empty array
-  if (COURSES_DISABLED && contentType === 'learn/courses') {
-    logger.debug('Courses are temporarily disabled. Skipping content slugs for learn/courses.');
-    return [];
-  }
-
   const contentDir = path.join(contentDirectory, contentType);
-
   if (!fs.existsSync(contentDir)) {
     logger.debug(`Content directory does not exist for type: ${contentType}`);
     return [];
   }
-
-  // Read directories, filter for directories containing page.mdx
   const slugs = fs.readdirSync(contentDir)
     .filter(item => {
       const itemPath = path.join(contentDir, item);
       const stat = fs.statSync(itemPath);
-      // Check if it's a directory and contains page.mdx
       return stat.isDirectory() && fs.existsSync(path.join(itemPath, 'page.mdx'));
     });
-
   logger.debug(`Found ${slugs.length} valid content directory slugs for type: ${contentType}`);
   return slugs;
 }
@@ -415,13 +402,7 @@ export function getDefaultPaywallText(contentType: string): {
         body: "This is premium video content. Purchase to get full access.",
         buttonText: "Purchase Now"
       };
-    case 'learn/courses':
-      return {
-        header: "Get Access to the Full Course",
-        body: "This is a premium course. Purchase to get full access.",
-        buttonText: "Purchase Now"
-      };
-    case 'article': // Assuming 'blog' content type metadata might use 'article' type
+    case 'article':
     case 'blog':
       return {
         header: "Get Access to the Full Article",
@@ -508,17 +489,12 @@ export function renderPaywalledContent(
 export async function getAllPurchasableContent(): Promise<Content[]> {
   logger.info('Loading all purchasable content items.');
   try {
-    // Get content from relevant types
-    const contentTypes = COURSES_DISABLED ? ['blog', 'videos'] : ['blog', 'learn/courses', 'videos'];
-
+    const contentTypes = ['blog', 'videos'];
     const allContentPromises = contentTypes.map(type => getAllContent(type));
     const allContent = (await Promise.all(allContentPromises)).flat();
-
-    // Filter to only paid content
     const purchasableContent = allContent.filter(content => content.commerce?.isPaid);
-
     logger.info(`Found ${purchasableContent.length} purchasable content items.`);
-    return purchasableContent; // These are already Content objects
+    return purchasableContent;
   } catch (error) {
     logger.error('Error loading all purchasable content:', error);
     return [];
@@ -532,30 +508,12 @@ export async function getAllPurchasableContent(): Promise<Content[]> {
 export async function getAllProducts(): Promise<ProductContent[]> {
   logger.info('Loading all products.');
   try {
-     // Get all purchasable content items first
     const purchasableContent = await getAllPurchasableContent();
-
-    // Transform to product content using appropriate generators
     const productContentPromises = purchasableContent.map(async content => {
-      // Assuming generateProductFromCourse needs the full Content object and potentially component/other data?
-      // The original code cast content as `any` and `BlogWithSlug`. Let's pass the full processed Content object.
-      // If these generation functions require the MDX component, we'd need to load that too.
-      // Based on generateProductFromArticle(content as BlogWithSlug), it seems like it just needs metadata fields.
-      // Let's refine this: If generators ONLY need metadata from the Content object, we pass 'content'.
-      // If they need the MDX component, this function needs to load it or be refactored.
-      // Assuming they only need metadata for product details:
-      if (content.type === 'course' && !COURSES_DISABLED) {
-        // Assuming generateProductFromCourse can work with the Content type
-        return generateProductFromCourse(content as any); // Cast to 'any' to bypass type error - revisit if needed
-      }
-      // Assuming generateProductFromArticle can work with the Content type (Blog extends Content)
-      return generateProductFromArticle(content as Blog); // Casting to Blog which extends Content
+      return generateProductFromArticle(content as Blog);
     });
-
     const productContent = await Promise.all(productContentPromises);
-
-    const validProductItems = productContent.filter((p): p is ProductContent => p !== null); // Filter out any nulls from generators
-
+    const validProductItems = productContent.filter((p): p is ProductContent => p !== null);
     logger.info(`Generated ${validProductItems.length} product items.`);
     return validProductItems;
   } catch (error) {
@@ -573,39 +531,22 @@ export async function getAllProducts(): Promise<ProductContent[]> {
  */
 export async function getProductByDirectorySlug(directorySlug: string): Promise<Purchasable | null> {
   logger.info(`Looking for product with directory slug: ${directorySlug}`);
-  // Try to find the content in relevant content types
-  const contentTypes = COURSES_DISABLED
-    ? ['blog', 'videos']
-    : ['blog', 'learn/courses', 'videos', 'comparisons']; // Added comparisons potentially? Adjust as needed.
-
+  const contentTypes = ['blog', 'videos'];
   for (const contentType of contentTypes) {
     logger.debug(`Checking for product in ${contentType}/${directorySlug}`);
-    // Use the function that gets both component and processed metadata
     const result = await getContentWithComponentByDirectorySlug(contentType, directorySlug);
-
-    // Check if found and is marked as paid
     if (result && result.content.commerce?.isPaid) {
       logger.info(`Found product: ${contentType}/${directorySlug}`);
-      // The Purchasable type seems to be Blog & { MdxContent: any }
-      // Blog extends Content. So Purchasable is Content & { MdxContent: any }.
-      // The structure returned by getContentWithComponentByDirectorySlug is { MdxContent, content: Content }
-      // We need to return something that matches Purchasable. Let's merge them.
       const purchasableItem: Purchasable = {
-        ...result.content, // Spread all properties from Content
-        MdxContent: result.MdxContent, // Add the MdxContent component
-      } as Purchasable; // Cast to Purchasable type
-
-      // Ensure correct type is set on the resulting object if needed by Purchasable type
-      // The _processContentMetadata already sets content.type, but explicit cast might need it.
-      // purchasableItem.type = result.content.type; // Already included by spreading result.content
-
+        ...result.content,
+        MdxContent: result.MdxContent,
+      } as Purchasable;
       return purchasableItem;
     }
-     if (result && !result.content.commerce?.isPaid) {
-        logger.debug(`Found content ${contentType}/${directorySlug}, but it is not marked as paid. Skipping.`);
-     }
+    if (result && !result.content.commerce?.isPaid) {
+      logger.debug(`Found content ${contentType}/${directorySlug}, but it is not marked as paid. Skipping.`);
+    }
   }
-
   logger.info(`Product with directory slug ${directorySlug} not found or not purchasable.`);
   return null;
 }

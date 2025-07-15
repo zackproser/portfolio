@@ -3,7 +3,6 @@ import { Metadata } from 'next';
 import { createMetadata } from '@/utils/createMetadata';
 
 import { Container } from "@/components/Container";
-import CourseIndex from '@/components/CourseIndex';
 import { Button } from "@/components/Button";
 
 import advice from '@/images/advice.webp'
@@ -203,7 +202,7 @@ export default async function LearnPage() {
         </div>
       </section>
       <h2 className="text-3xl font-semibold mt-5 py-5 text-center">Courses</h2>
-      <CourseIndex />
+      <Features features={features} />
     </Container>
   )
 }

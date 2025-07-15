@@ -50,8 +50,8 @@ export async function POST(req: Request) {
     const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
     const metadata = await getContentItemByDirectorySlug('blog', blogPath)
     
-    if (metadata) {
-      relatedBlogPosts.push({ ...metadata });
+    if (metadata && (metadata.type === 'blog' || metadata.type === 'video' || metadata.type === 'demo')) {
+      relatedBlogPosts.push(metadata as Blog);
     }
   }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result

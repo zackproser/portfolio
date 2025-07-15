@@ -8,7 +8,6 @@ import GithubSignin from '@/components/github-signin';
 import Image from 'next/image';
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button';
-import CourseIndex from '@/components/CourseIndex';
 
 import zpSchoolForHackers from '@/images/zp-school-for-hackers.webp'
 
@@ -60,7 +59,6 @@ export default async function LearningHome() {
         <p className="mt-6 text-lg leading-8 text-gray-300">
           <h2 className="text-2l font-bold tracking-tight text-white sm:text-4xl">Coming soon...</h2>
         </p>
-        <CourseIndex />
       </div>
     </SimpleLayout >
   )
