@@ -1,18 +1,6 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import semanticSearch from '@/images/semantic-search-typescript.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-08-23",
-  title: "Semantic Search with TypeScript and Pinecone",
-  description: "Join Roie Schwaber-Cohen and I as we first discuss and then review the code for doing semantic search with Pinecone's vector database",
-  image: semanticSearch
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export default (props) => <ArticleLayout {...props} />
 
 <iframe 
   class="youtube-video"

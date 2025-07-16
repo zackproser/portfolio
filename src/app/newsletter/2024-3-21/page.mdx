@@ -5,17 +5,7 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import beaker from '@/images/beaker.webp'
 
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2024-03-21",
-    title: "Episode 2: Interactive Machine Learning demos, vector databases compared, and developer anxiety", 
-    description: "Introducing a new section of my site - interactive demos!",
-    image: beaker
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export default (props) => <ArticleLayout {...props} />
 
 ## Table of contents
 

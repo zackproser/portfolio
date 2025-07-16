@@ -11,13 +11,8 @@ import { createMetadata } from '@/utils/createMetadata'
 
 import Callout from '@/components/Callout'
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-05-29",
-  title: "Codeium with Neovim for A.I. powered code-completion: so far so good",
-  description: "Generally unimpressed with GitHub's Copilot (not Copilot X), I gave the alternative, Codeium a shot.",
-  image: codeiumExample,
-})
+import rawMetadata from './metadata.json'
+export const metadata = createMetadata(rawMetadata)
 
 ## Codeium is a GitHub Copilot alternative that I'm trying out 
 
