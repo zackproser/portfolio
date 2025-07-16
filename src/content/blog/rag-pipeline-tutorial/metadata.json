@@ -1,0 +1,21 @@
+{
+  "author": "Zachary Proser",
+  "date": "2025-01-05",
+  "title": "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
+  "description": "Step by step tutorial: how to build a production-ready RAG pipeline.",
+  "image": "/src/images/rag-chatbot.webp",
+  "commerce": {
+    "isPaid": true,
+    "price": 149,
+    "previewLength": 450,
+    "previewElements": 32,
+    "paywallHeader": "Master RAG Development: The Complete Package",
+    "paywallBody": "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
+    "buttonText": "Get the complete package ($149)",
+    "miniPaywallTitle": "Master RAG pipeline creation",
+    "miniPaywallDescription": "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
+    "paywallImage": "/src/images/rag-tutorial-elements.webp",
+    "paywallImageAlt": "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site",
+    "profileImage": "/src/images/rag-chatbot-profile.webp"
+  }
+} 

@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-11-27",
+  "title": "Deploying a jump host for the Pinecone AWS Reference Architecture",
+  "description": "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
+  "image": "/src/images/pinecone-ref-arch-jumphost.webp"
+} 

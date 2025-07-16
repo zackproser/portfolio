@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-08-23",
+  "title": "Semantic Search with TypeScript and Pinecone",
+  "description": "Join Roie Schwaber-Cohen and I as we first discuss and then review the code for doing semantic search with Pinecone's vector database",
+  "image": "/src/images/semantic-search-typescript.webp"
+} 
