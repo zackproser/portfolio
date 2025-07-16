@@ -1,0 +1,23 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar1.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+import rawMetadata from './metadata.json' assert { type: 'json' };
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/GIwt3P_5b9g"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I co-hosted a webinar with Pulumi's Scott Lowe about: 
+
+* The delta between getting an AI or ML technique working in a Jupyter Notebook and prod
+* How to deploy AI applications to production using the Pinecone AWS Reference Architecture 
+* How Infrastructure as Code can simplif y productionizing AI applications

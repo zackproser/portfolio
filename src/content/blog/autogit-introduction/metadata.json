@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-05-15",
+  "title": "Autogit - never forget to pull the latest changes again",
+  "description": "Autogit is an open source shell script that you can wire up to your `cd` command to ensure you always have the latest code, branches, and remotes when you open up a local git repository.",
+  "image": "/images/autogit.gif"
+}

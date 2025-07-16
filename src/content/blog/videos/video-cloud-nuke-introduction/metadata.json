@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2022-01-01",
+  "title": "Cloud-Nuke - A Handy Open-Source Tool for Managing AWS Resources ",
+  "description": "cloud-nuke is a free, powerful open-source tool that efficiently scans for specific resources in your AWS account and can also optionally delete them efficiently for you as well. ",
+  "image": "/images/cloud-nuke-intro.webp"
+}

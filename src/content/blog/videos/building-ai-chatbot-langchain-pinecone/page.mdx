@@ -1,0 +1,23 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import aiChatbot from '@/images/building-an-ai-chatbot.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+import rawMetadata from './metadata.json' assert { type: 'json' };
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/I6ZcquRsfPU" 
+  title="Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel" 
+  frameborder="0" 
+  allow="fullscreen;">
+ </iframe>
+
+What's involved in building an AI chatbot that is trained on a custom corpus of knowledge? In this video I breakdown the data preparation, training and app development components and explain why Jupyter notebooks were such a handy tool while creating this app and tweaking my model.
+
+App is open source at https://github.com/zackproser/office-... and a demo is currently available at https://office-oracle.vercel.app.
+

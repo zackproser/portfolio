@@ -1,0 +1,23 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+
+import vectorDbsInProd from '@/images/rag-evaluation.webp'
+
+import ConsultingCTA from '@/components/ConsultingCTA'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const href = "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/rag-evaluation/"
+
+import rawMetadata from './metadata.json' assert { type: 'json' };
+export const metadata = createMetadata(rawMetadata);
+
+--- 
+
+## Evaluating Retrieval Augmented Generation pipeline performance 
+
+<Image src={metadata.image} alt="I wrote the RAG evaluation chapter for Pinecone's latest book" />
+
+I wrote the RAG evaluation chapter for Pinecone's latest learn series: Vector Databases in Production for Busy Engineers.
+
+<Button href={href} variant="solid" color="blue">Read chapter</Button>
