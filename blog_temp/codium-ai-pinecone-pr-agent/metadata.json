@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-09-20",
+  "title": "Making it easier to maintain open-source projects with CodiumAI and Pinecone",
+  "description": "CodiumAI's PR-agent integration leverages Pinecone under the hood to perform semantic search for similar GitHub issues",
+  "image": "/images/octocat-similar-issues-search.webp"
+}
