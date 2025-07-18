@@ -1,11 +1,11 @@
 import Image from 'next/image'
 
-import logoCloudflare from '@/images/logos/cloudflare.svg'
-import logoCloudmark from '@/images/logos/cloudmark.png'
-import logoGrunty from '@/images/logos/grunty.png'
-import logoPinecone from '@/images/logos/pinecone-logo.png'
-import logoBrightcontext from '@/images/logos/brightcontext.png'
-import logoWorkOS from '@/images/logos/workos.svg'
+const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
+const logoCloudmark = 'https://zackproser.b-cdn.net/images/logos/cloudmark.png'
+const logoGrunty = 'https://zackproser.b-cdn.net/images/logos/grunty.png'
+const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png'
+const logoBrightcontext = 'https://zackproser.b-cdn.net/images/logos/brightcontext.png'
+const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
 
 function BriefcaseIcon(props) {
   return (

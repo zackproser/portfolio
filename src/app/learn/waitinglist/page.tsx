@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button';
 
-import zpSchoolForHackers from '@/images/zp-school-for-hackers.webp'
+const zpSchoolForHackers = 'https://zackproser.b-cdn.net/images/zp-school-for-hackers.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "Join the Waiting List - School for Hackers",

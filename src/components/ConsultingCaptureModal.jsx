@@ -5,7 +5,7 @@ import { Button } from '@/components/Button';
 import { track } from '@vercel/analytics';
 
 
-import hackerForHire from '@/images/hacker-for-hire.webp'
+const hackerForHire = 'https://zackproser.b-cdn.net/images/hacker-for-hire.webp'
 
 import RenderNumYearsExperience from './NumYearsExperience'; RenderNumYearsExperience
 

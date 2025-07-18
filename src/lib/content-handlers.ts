@@ -75,7 +75,7 @@ async function _loadMDXModule(contentType: string, directorySlug: string) {
   // 2. Fallback to MDX export if metadata.json missing or malformed
   if (!metadata) {
     try {
-    const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);
+      const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);
       MdxContent = mdxModule.default;
       metadata = mdxModule.metadata as ExtendedMetadata | undefined;
       if (metadata) {
@@ -85,7 +85,7 @@ async function _loadMDXModule(contentType: string, directorySlug: string) {
       logger.error(`Failed to import MDX for ${contentType}/${directorySlug}: ${err.message}`);
       return null;
     }
-    } else {
+  } else {
     // If metadata.json succeeded, still need to import MDX for the default export
     try {
       const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);

@@ -8,7 +8,7 @@ import {
 } from './components';
 
 import Image from 'next/image';
-import tokenizationDiagram from '@/images/tokenization-diagram.webp'
+const tokenizationDiagram = 'https://zackproser.b-cdn.net/images/tokenization-diagram.webp'
 
 // New imports
 import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';

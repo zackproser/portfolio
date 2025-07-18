@@ -5,12 +5,12 @@ import { SectionHeading } from '@/components/SectionHeading'
 import RandomPortrait from '@/components/RandomPortrait'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
-import logoWorkOS from '@/images/logos/workos.svg'
-import logoPinecone from '@/images/logos/pinecone-logo.png'
-import logoGrunty from '@/images/logos/grunty.png'
-import logoCloudflare from '@/images/logos/cloudflare.svg'
-import logoCloudmark from '@/images/logos/cloudmark.png'
-import logoBrightcontext from '@/images/logos/brightcontext.png'
+const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
+const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png'
+const logoGrunty = 'https://zackproser.b-cdn.net/images/logos/grunty.png'
+const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
+const logoCloudmark = 'https://zackproser.b-cdn.net/images/logos/cloudmark.png'
+const logoBrightcontext = 'https://zackproser.b-cdn.net/images/logos/brightcontext.png'
 
 interface AuthorProps {
   name: string

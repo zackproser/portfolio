@@ -5,13 +5,13 @@ import { createMetadata } from '@/utils/createMetadata';
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 
-import advice from '@/images/advice.webp'
-import projects from '@/images/projects.webp'
-import portfolio from '@/images/portfolio.webp'
-import getHired from '@/images/get-hired.webp'
-import skills from '@/images/skills.webp'
-import community from '@/images/community.webp'
-import mentorship from '@/images/mentorship.webp'
+const advice = 'https://zackproser.b-cdn.net/images/advice.webp'
+const projects = 'https://zackproser.b-cdn.net/images/projects.webp'
+const portfolio = 'https://zackproser.b-cdn.net/images/portfolio.webp'
+const getHired = 'https://zackproser.b-cdn.net/images/get-hired.webp'
+const skills = 'https://zackproser.b-cdn.net/images/skills.webp'
+const community = 'https://zackproser.b-cdn.net/images/community.webp'
+const mentorship = 'https://zackproser.b-cdn.net/images/mentorship.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "Learn AI Development - School for Hackers",

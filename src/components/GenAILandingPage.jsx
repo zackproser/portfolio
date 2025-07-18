@@ -15,11 +15,11 @@ import Callout from '@/components/Callout'
 import CV from '@/components/CV'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
-import genAIHero from '@/images/gen-ai-hero.webp'
-import genAIScreenshot1 from '@/images/generative-ai-screenshot-1.webp'
-import genAIScreenshot2 from '@/images/generative-ai-screenshot-2.webp'
-import zacharyProser from '@/images/zachary-proser.webp'
-import a16z2 from '@/images/a16z-2.webp'
+const genAIHero = 'https://zackproser.b-cdn.net/images/gen-ai-hero.webp'
+const genAIScreenshot1 = 'https://zackproser.b-cdn.net/images/generative-ai-screenshot-1.webp'
+const genAIScreenshot2 = 'https://zackproser.b-cdn.net/images/generative-ai-screenshot-2.webp'
+const zacharyProser = 'https://zackproser.b-cdn.net/images/zachary-proser.webp'
+const a16z2 = 'https://zackproser.b-cdn.net/images/a16z-2.webp'
 const learnings = [
   {
     name: 'Generative AI',

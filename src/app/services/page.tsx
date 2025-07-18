@@ -16,16 +16,16 @@ import Link from "next/link"
 import { createMetadata } from "@/utils/createMetadata"
 
 // Import logos
-import logoCloudflare from '@/images/logos/cloudflare.svg'
-// import logoGrunty from '@/images/logos/grunty.webp'
-import logoPinecone from '@/images/logos/pinecone-logo.webp'
-import logoWorkOS from '@/images/logos/workos.svg'
+const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
+// const logoGrunty = 'https://zackproser.b-cdn.net/images/logos/grunty.webp'
+const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.webp'
+const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
 
 // Import case study images
-import legalSemanticSearchImg from '@/images/legal-semantic-search.webp'
-import pineconeRefArchImg from '@/images/pinecone-refarch-logo.webp'
-import pineconeAssistantImg from '@/images/pinecone-assistant.webp'
-import officeOracleImg from '@/images/office-oracle-screenshot.webp'
+const legalSemanticSearchImg = 'https://zackproser.b-cdn.net/images/legal-semantic-search.webp'
+const pineconeRefArchImg = 'https://zackproser.b-cdn.net/images/pinecone-refarch-logo.webp'
+const pineconeAssistantImg = 'https://zackproser.b-cdn.net/images/pinecone-assistant.webp'
+const officeOracleImg = 'https://zackproser.b-cdn.net/images/office-oracle-screenshot.webp'
 
 export const metadata = createMetadata({
   title: "I build production-ready AI apps. You launch faster.",

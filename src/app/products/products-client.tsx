@@ -13,12 +13,12 @@ import { RealTestimonials } from '@/components/RealTestimonials'
 import { Footer } from '@/components/Footer'
 
 // Company logos
-import logoWorkOS from '@/images/logos/workos.svg'
-import logoPinecone from '@/images/logos/pinecone-logo.png'
-import logoGrunty from '@/images/logos/grunty.png'
-import logoCloudflare from '@/images/logos/cloudflare.svg'
-import logoCloudmark from '@/images/logos/cloudmark.png'
-import logoBrightcontext from '@/images/logos/brightcontext.png'
+const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
+const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png'
+const logoGrunty = 'https://zackproser.b-cdn.net/images/logos/grunty.png'
+const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
+const logoCloudmark = 'https://zackproser.b-cdn.net/images/logos/cloudmark.png'
+const logoBrightcontext = 'https://zackproser.b-cdn.net/images/logos/brightcontext.png'
 
 export default function ProductsPageClient({ products }: { products: ProductContent[] }) {
   // No filters needed, directly use all products

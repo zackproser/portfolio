@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FiInfo, FiBook, FiTool, FiCode, FiChevronDown, FiChevronRight, FiSearch, FiTarget, FiMap } from 'react-icons/fi';
 import Image from 'next/image';
-import embedDiagram from '@/images/neural-network-transform.webp';
+const embedDiagram = 'https://zackproser.b-cdn.net/images/neural-network-transform.webp';
 import { track } from '@vercel/analytics';
 import NewsletterWrapper from '@/components/NewsletterWrapper';
 

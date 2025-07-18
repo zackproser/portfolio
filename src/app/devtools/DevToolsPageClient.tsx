@@ -9,7 +9,7 @@ import DevToolSearchFilter from '@/components/DevToolSearchFilter'
 import { Button } from "@/components/ui/button"
 import { DiffIcon, SearchIcon, CodeIcon } from "lucide-react"
 import { getLogoById } from '@/lib/logoImports'
-import heroImage from '@/images/ai-hacking.webp'
+const heroImage = 'https://zackproser.b-cdn.net/images/ai-hacking.webp'
 
 interface Tool {
   name: string

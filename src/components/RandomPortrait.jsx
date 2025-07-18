@@ -4,22 +4,22 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { track } from '@vercel/analytics';
 
-import one from '@/images/avatars/1.webp'
-import two from '@/images/avatars/2.webp'
-import three from '@/images/avatars/3.webp'
-import four from '@/images/avatars/4.webp'
-import five from '@/images/avatars/5.webp'
-import six from '@/images/avatars/6.webp'
-import seven from '@/images/avatars/7.webp'
-import eight from '@/images/avatars/8.webp'
-import nine from '@/images/avatars/9.webp'
-import ten from '@/images/avatars/10.webp'
-import eleven from '@/images/avatars/11.webp'
-import twelve from '@/images/avatars/12.webp'
-import thirteen from '@/images/avatars/13.webp'
-import fourteen from '@/images/avatars/14.webp'
-import fifteen from '@/images/avatars/15.webp'
-import sixteen from '@/images/avatars/16.webp'
+const one = 'https://zackproser.b-cdn.net/images/avatars/1.webp'
+const two = 'https://zackproser.b-cdn.net/images/avatars/2.webp'
+const three = 'https://zackproser.b-cdn.net/images/avatars/3.webp'
+const four = 'https://zackproser.b-cdn.net/images/avatars/4.webp'
+const five = 'https://zackproser.b-cdn.net/images/avatars/5.webp'
+const six = 'https://zackproser.b-cdn.net/images/avatars/6.webp'
+const seven = 'https://zackproser.b-cdn.net/images/avatars/7.webp'
+const eight = 'https://zackproser.b-cdn.net/images/avatars/8.webp'
+const nine = 'https://zackproser.b-cdn.net/images/avatars/9.webp'
+const ten = 'https://zackproser.b-cdn.net/images/avatars/10.webp'
+const eleven = 'https://zackproser.b-cdn.net/images/avatars/11.webp'
+const twelve = 'https://zackproser.b-cdn.net/images/avatars/12.webp'
+const thirteen = 'https://zackproser.b-cdn.net/images/avatars/13.webp'
+const fourteen = 'https://zackproser.b-cdn.net/images/avatars/14.webp'
+const fifteen = 'https://zackproser.b-cdn.net/images/avatars/15.webp'
+const sixteen = 'https://zackproser.b-cdn.net/images/avatars/16.webp'
 
 
 const imagePaths = [
