@@ -2,6 +2,7 @@ import { type MDXComponents } from 'mdx/types'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/LinkButton'
+import { ContentCard } from '@/components/ContentCard'
 
 export function useMDXComponents(components: MDXComponents) {
   return {
@@ -24,6 +25,9 @@ export function useMDXComponents(components: MDXComponents) {
         height={height || 600} 
         {...props} 
       />
+    ),
+    ContentCard: ({ article, ...props }: { article: any; [key: string]: any }) => (
+      <ContentCard article={article} {...props} />
     ),
     // Allow other components to be passed in
     ...components,
