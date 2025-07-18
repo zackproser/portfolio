@@ -69,3 +69,7 @@ prisma/.env
 # Ignore optimized OG images
 public/og-images-optimized/
 .env.production
+
+# Image directories - now served from Bunny CDN
+src/images/
+public/images/
