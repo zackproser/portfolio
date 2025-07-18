@@ -3,5 +3,5 @@
   "author": "Zachary Proser",
   "date": "2024-4-8",
   "description": "aws-vault is an excellent open-source tool written in Golang that allows you to manage the credentials for multiple AWS accounts securely. ",
-  "image": "/images/aws-vault.webp"
+  "image": "https://zackproser.b-cdn.net/images/aws-vault.webp"
 } 

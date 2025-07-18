@@ -1,8 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import { createMetadata } from '@/utils/createMetadata'
-
-export default (props) => <ArticleLayout {...props} />
 
 <iframe 
   class="youtube-video"
@@ -14,3 +10,8 @@ export default (props) => <ArticleLayout {...props} />
 
 In this video, I demonstrate how to load Jupyter Notebooks into Google Colab and run them for free. I show how to load Notebooks from GitHub and how to execute individual cells and how to run 
 Notebooks end to end. I also discuss some important security considerations around leaking API keys via Jupyter Notebooks.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

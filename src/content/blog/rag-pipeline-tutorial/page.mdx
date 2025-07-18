@@ -1,126 +1,3 @@
-import Image from 'next/image';
-import Link from 'next/link';
-
-import ragPipelineTutorialLogo from '@/images/rag-chatbot.webp';
-import ragProfileImage from '@/images/rag-chatbot-profile.webp';
-import customRagChat from '@/images/rag-pipeline-ui.webp'
-import customRagFlowchart from '@/images/rag-pipeline-tutorial.webp';
-import googleColabSecrets from '@/images/rag-pipeline-jupyter.webp';
-import cloneExampleSite from '@/images/rag-pipeline-tutorial-clone-example-site.webp';
-import docsSanity from '@/images/rag-tutorial-docs-sanity.webp';
-import queryIndex from '@/images/rag-pipeline-tutorial-query-index.webp';
-import chunking from '@/images/chunking.webp';
-import ragPipelineElements from '@/images/rag-tutorial-elements.webp';
-
-import { createMetadata } from '@/utils/createMetadata';
-import { importContentMetadata } from '@/lib/content-handlers'
-
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2025-01-05",
-    title: "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
-    description: "Step by step tutorial: how to build a production-ready RAG pipeline.",
-    image: ragPipelineTutorialLogo,
-    commerce: {
-        isPaid: true,
-        price: 149,
-        previewLength: 450,
-        previewElements: 32,
-        paywallHeader: "Master RAG Development: The Complete Package",
-        paywallBody: "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
-        buttonText: "Get the complete package ($149)",
-        miniPaywallTitle: "Master RAG pipeline creation",
-        miniPaywallDescription: "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
-        paywallImage: ragPipelineElements,
-        paywallImageAlt: "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site",
-        profileImage: ragProfileImage
-    },
-    landing: {
-        heroTitle: "Create AI Chat Experiences with Your Own Data: The Complete RAG Pipeline Guide",
-        subtitle: "Build a production-ready AI solution that answers questions from your own content with accurate citations. Includes a complete Jupyter notebook, Next.js example site, and step-by-step instructions.",
-        problemSolved: "Need a chatbot that knows your business data inside and out?",
-        benefitStatement: "Create an AI assistant that answers questions using only your content - with zero hallucinations",
-        features: [
-            {
-                title: "Complete End-to-End Solution",
-                description: "From data processing to deployment, learn every step needed to build a production-ready RAG pipeline"
-            },
-            {
-                title: "Ready-to-Use Jupyter Notebook",
-                description: "Process your own data with our pre-built notebook that handles chunking, embedding, and vector database creation"
-            },
-            {
-                title: "Next.js Example Application",
-                description: "Full source code for a modern web application with streaming responses and citation support"
-            },
-            {
-                title: "No Hallucinations, Real Answers",
-                description: "Learn how to ground AI responses in your actual content for accurate, trustworthy results"
-            }
-        ],
-        whatsIncluded: [
-            {
-                title: "Interactive Jupyter Notebook",
-                description: "A complete, ready-to-run notebook that walks you through data processing, embedding creation, and vector database setup. Simply add your API keys and run each cell to process your own content. Includes detailed explanations of chunking strategies, embedding techniques, and Pinecone integration.",
-                image: googleColabSecrets,
-                imageAlt: "Jupyter Notebook interface showing data processing and vector database creation"
-            },
-            {
-                title: "Production-Ready Next.js Application",
-                description: "Full source code for a modern web application built with the Vercel AI SDK. Features streaming responses, citation support, related content suggestions, and a beautiful chat interface. Deploy it to Vercel with one click or run it locally for development.",
-                image: customRagChat,
-                imageAlt: "Next.js chat application with streaming responses and citations"
-            },
-            {
-                title: "Comprehensive Step-by-Step Tutorial",
-                description: "Detailed written guide that explains every concept, from RAG fundamentals to advanced implementation patterns. Learn not just how to build it, but why each piece works and how to customize it for your specific use case. Perfect for developers who want to truly understand the technology.",
-                image: customRagFlowchart,
-                imageAlt: "RAG pipeline architecture diagram showing the complete system flow"
-            }
-        ],
-        contentSections: [
-            {
-                title: "Getting Started",
-                subsections: [
-                    "Complete Example Code",
-                    "Try It Yourself",
-                    "What skills will I learn?",
-                    "System Architecture"
-                ]
-            },
-            {
-                title: "Phase 1: Data Processing",
-                subsections: [
-                    "Load and configure the data processing notebook",
-                    "Clone the data source",
-                    "Install dependencies",
-                    "Loading blog posts into memory",
-                    "Creating a Pinecone index",
-                    "Creating a vectorstore with LangChain",
-                    "Understanding Document Chunking"
-                ]
-            },
-            {
-                title: "Phase 2: Application Development",
-                subsections: [
-                    "Create the supporting services",
-                    "The context service",
-                    "The embeddings service",
-                    "The Pinecone service",
-                    "Create the chat API",
-                    "Create the user interface"
-                ]
-            },
-            {
-                title: "Phase 3: Deployment",
-                subsections: [
-                    "Additional Resources"
-                ]
-            }
-        ]
-    }
-});
-
 This tutorial contains everything you need to build production-ready Retrieval Augmented Generation (RAG) pipelines on your own data. 
 
 Whether you're working with a corporate knowledge base, personal blog, or ticketing system, you'll learn how to create an AI-powered chat interface that provides accurate answers with citations.
@@ -134,7 +11,7 @@ The full source code for this tutorial is available in the [companion repository
 See the complete working demo at [/chat](/chat). This tutorial walks you through building this exact same experience:
 
 <Link href="/chat">
-<Image src={customRagChat} alt="Chat interface with related posts suggestions" />
+
 </Link>
 
 <iframe 
@@ -166,7 +43,7 @@ See the complete working demo at [/chat](/chat). This tutorial walks you through
 
 Let's understand the complete system we'll be creating:
 
-<Image src={customRagFlowchart} alt="RAG Pipeline Architecture" />
+
 
 This is a Retrieval Augmented Generation (RAG) pipeline that allows users to chat with your content. Here's how it works:
 
@@ -212,7 +89,7 @@ Name your OpenAI API key secret `OPENAI_API_KEY` your Pinecone API key secret `P
 
 Ensure the **Notebook access** toggles are enabled for both secrets. This grants your notebook access to the secrets.
 
-<Image src={googleColabSecrets} alt="Google Colab Secrets" />
+
 
 Now that you've configured your secrets, we're ready to step through the notebook, understanding and executing each cell. 
 
@@ -220,7 +97,7 @@ Now that you've configured your secrets, we're ready to step through the noteboo
 
 The next cell clones [the open source companion example site](https://github.com/zackproser/rag-pipeline-tutorial) which contains the blog posts. Run it to pull down the site, which you can then view in the content sidebar: 
 
-<Image src={cloneExampleSite} alt="Clone my portfolio" />
+
 
 ### Step 3: Install dependencies
 
@@ -245,7 +122,7 @@ You should see the docs being loaded into memory and then printed out in the con
 
 Note that due to a quirk of the Google Colab environment / LangChain, you may need to run the `loader.load()` cell twice if you encounter an error the first time. 
 
-<Image src={docsSanity} alt="Sanity check: print the documents to make sure they loaded correctly" />
+
 
 ### Step 5: Loading your Open AI and Pinecone API keys into the environment  
 
@@ -290,7 +167,7 @@ If all went well, you should see the index stats printed out in the console:
 ```javascript
 {'dimension': 3072,
  'index_fullness': 0.0,
- 'namespaces': {},
+ 'namespaces': ,
  'total_vector_count': 0}
 ```
 
@@ -341,7 +218,7 @@ text_splitter = RecursiveCharacterTextSplitter(
 split_docs = text_splitter.split_documents(docs)
 ```
 
-<Image src={chunking} alt="Document chunking visualization" />
+
 
 Chunking affects three key aspects of your RAG pipeline:
 
@@ -365,7 +242,7 @@ vectorstore = PineconeVectorStore.from_documents(split_docs, embeddings, index_n
 
 As a sanity check, let's run a query against the index to see if it's working. We can ask, "What are some Kubernetes best practices?" and see if the index returns the relevant content:
 
-<Image src={queryIndex} alt="Querying the index" />
+
 
 A good result should:
 - Have a similarity score above 0.7
@@ -382,7 +259,7 @@ The system operates as a series of transformations, starting with a user's quest
 
 Let's review the flow of the application:
 
-<Image src={customRagFlowchart} alt="RAG Pipeline Flowchart" />
+
 
 ### Step 1. Create the supporting services 
 
@@ -391,9 +268,6 @@ The application is built around three specialized services that work together to
  #### The context service 
 ```typescript
 // src/app/services/context.ts
-import { getEmbeddings } from './embeddings'
-import { queryPineconeVectorStore } from './pinecone'
-
 export interface Metadata {
   source: string
   text: string
@@ -418,8 +292,6 @@ The `maxTokens` parameter ensures we don't overflow the LLM's context window, wh
 #### The embeddings service
 ```typescript
 // src/app/services/embeddings.ts
-import { OpenAIApi, Configuration } from 'openai-edge'
-
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
@@ -444,8 +316,6 @@ This mathematical representation is what enables our system to understand that a
 #### The Pinecone service
 ```typescript
 // src/app/services/pinecone.ts
-import { Pinecone } from '@pinecone-database/pinecone'
-
 const pc = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY!,
 })
@@ -484,12 +354,6 @@ Each time a user asks a question, the chat endpoint will:
 
 ```typescript
 // src/app/api/chat/route.ts
-import { streamText } from 'ai'
-import { openai } from '@ai-sdk/openai'
-import { PineconeRecord } from "@pinecone-database/pinecone"
-import { Metadata, getContext } from '../../services/context'
-import { importContentMetadata } from '@/lib/content-handlers'
-
 export async function POST(req: Request) {
   const { messages } = await req.json()
   const lastMessage = messages[messages.length - 1]
@@ -503,9 +367,9 @@ export async function POST(req: Request) {
   
   context.forEach(match => {
     const metadata = match.metadata as Metadata
-    if (metadata.source.includes('src/app/blog')) {
-      blogUrls.add(metadata.source)
-      docs.push(metadata.text)
+    if (.includes('src/app/blog')) {
+      blogUrls.add()
+      docs.push()
     }
   })
 
@@ -575,10 +439,6 @@ The frontend brings this all together in a responsive interface:
 ```typescript
 // src/app/chat/page.tsx
 'use client'
-
-import { useChat } from 'ai/react'
-import { useState } from 'react'
-import { ArticleWithSlug } from '@/types'
 
 export default function ChatPage() {
   const [articles, setArticles] = useState<ArticleWithSlug[]>([])

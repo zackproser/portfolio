@@ -1,10 +1,3 @@
-import { createMetadata } from '@/utils/createMetadata'
-
-import wakka from '@/images/wakka.webp'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
 ## Overview
 At [Gruntwork](https://gruntwork.io), we use CircleCI as the continuous integration tool for the vast majority of our repositories. This article shares a couple of tips and tricks I've figured out along the way for more easily working with CircleCI locally, since the test cycles in the cloud can be pretty long, depending on what you're using CircleCI for.
 
@@ -40,3 +33,8 @@ yaml merge-expand .circleci/config.yml my-expanded-output.yml
 ```
 
 This is a great way to verify, for example, that your changes to an environment variable mapping are being rendered as you expect.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

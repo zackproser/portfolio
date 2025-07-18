@@ -1,12 +1,4 @@
-import Image from 'next/image'
-import Link from 'next/link'
 
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import beaker from '@/images/beaker.webp'
-import genAICourseTeaser from '@/images/gen-ai-course-teaser.webp'
-
-export default (props) => <ArticleLayout {...props} />
 
 ## Table of contents
 
@@ -31,7 +23,7 @@ I will aim to publish and send a new episode every two weeks.
 I've released my first course!
 
 <Link href={'/learn/courses/generative-ai-bootcamp'}>
-<Image src={genAICourseTeaser} alt="The Generative AI Bootcamp: Developer Tooling" />
+
 </Link>
 
 The [Generative AI Bootcamp: DevTools course](/learn/courses/generative-ai-bootcamp) is designed for semi and non-technical folks who want to understand: 
@@ -91,3 +83,8 @@ Currently neck and neck between ChatGPT 4 and Anthropic's Claude 3 Opus. Stay tu
 [Kapwing AI](https://kapwing.com)
 
 That's all for this episode! If you liked this content or found it helpful in any way, please pass it on to someone you know who could benefit.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

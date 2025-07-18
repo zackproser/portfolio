@@ -1,18 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import neovimDevDiary from '@/images/neovim-dev-diary-image.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-01-23",
-  title: "Exploring a Custom Terminal-Based Developer Workflow -  Tmux, Neovim, Awesome Window Manager, and More",
-  description: "check out my custom developer setup in action, complete with my favorite Gruvbox theme. I'll cover the tools I'm using and how they work together to form an IDE-like experience in the terminal, for free - without having to pay any ongoing subscription to a company. ",
-  image: neovimDevDiary
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   class="youtube-video"
@@ -35,3 +21,8 @@ Throughout the video, I share a variety of other open-source tools that I have i
 One of the key takeaways from the video is how important customization and personalization are when it comes to a developer's workflow. By combining these open-source tools and tailoring them to their specific needs, I have created a workflow that helps me work faster, more efficiently, and with greater satisfaction.
 
 So, if you're looking for inspiration on how to build your terminal-based developer workflow, this YouTube video is a must-watch. See what I've learned so far in setting up a custom terminal-based setup for ultimate productivity and economy of movement. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

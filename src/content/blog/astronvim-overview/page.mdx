@@ -1,16 +1,4 @@
-import astronvimLogo from '@/images/astronvim.webp'
-import astronvimLive from '@/images/astro-live.webp' 
-import astronvim3Columns from '@/images/astronvim-3-columns.webp'
-import itsAnIDE from '@/images/its-an-ide.webp'
-import luaConfig from '@/images/astronvim-lua-config.webp'
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-import { createMetadata } from '@/utils/createMetadata'
-
-<Image src={metadata.image} alt="AstroNvim is a community-maintained open-source project for Neovim" />
 <figcaption>For the last couple of years, I've been happily using the community open-source project AstroNvim, which extends Neovim into a full-fledged IDE experience</figcaption>
 
 ## Table of contents
@@ -25,7 +13,7 @@ Think of it like vim extended with filetree, LSP support, git integrations, lang
 
 Here's what AstroNvim looks like when I'm running it in a tmux session:
 
-<Image src={astronvimLive} alt="This is what it looks like when I'm hacking with AstroNvim" />
+
 
 In other words, think of VSCode or one of JetBrains' IDE offerings, but completely free, with no sign-up required and you're also 
 on your own when things go bad. 
@@ -33,7 +21,7 @@ on your own when things go bad.
 That last part is not entirely true, of course, because you've got the whole helpful community in GitHub and elsewhere who share configurations, bug reports, patches and workarounds 
 with one another online.
 
-<Image src={astronvim3Columns} alt="This is what AstroNvim looks like out of the box" />
+
 <figcaption>If you do not configure AstroNvim at all, it comes out of the box with batteries included - everything from debugger to support for any programming language or syntax</figcaption>
 
 ## What does AstroNvim configure out of the box?
@@ -53,7 +41,7 @@ with one another online.
 
 ## Why would I do this to myself? 
 
-<Image src={itsAnIDE} alt="I SWEAR GUYS ITS LIKE A FULL IDE IN YOUR TERMINAL" />
+
 <figcaption>SERIOUSLY IT'S LIKE A FULL IDE RIGHT IN YOUR TERMINAL AND ALL YOU HAVE TO DO IS...</figcaption>
 
 Around now you may be starting to say to yourself, "Self, I think this guy is losing it, and/or something of sadist". And you'd be right. But there's actually more than one reason 
@@ -84,7 +72,7 @@ Tmux, and the ability it grants me to effortlessly resize my workflow to the sco
 It takes some time to become comfortable with Lua syntax if you've never seen it before. It takes some head-scratching, quitting, killing Neovim, re-opening it and trying hotkeys again before your first few 
 plugins install smoothly. 
 
-<Image src={luaConfig} alt="Configuring your AstroNvim theme with Lua" />
+
 <figcaption>This is all the code required to flip your colorscheme to `Catpuccin`</figcaption>
 
 But after a little bit it's pretty comfortable and fun to find new Neovim plugins and install, combine and configure them to your liking. 
@@ -104,3 +92,8 @@ Luckily, because AstroNvim itself is open-source, and the [project docs recommen
 to see [my config](https://github.com/zackproser/astronvim_config). 
 
 Hell, you can even jump directly to [the commit](https://github.com/zackproser/astronvim_config/commit/ec850dd06fae803219f786c3ab1099bb8645c731) where I installed my favorite Gruvbox dark theme.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

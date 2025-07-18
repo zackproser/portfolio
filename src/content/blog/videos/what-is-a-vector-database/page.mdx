@@ -1,15 +1,8 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);.",
+.",
   image: whatIsAVectorDB
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
 
 <iframe 
   className="youtube-video"
@@ -22,3 +15,8 @@ I walk through what a vector database is, by first explaining the types of probl
 
 I use clowns as an example of a large corpus of training data from which we can extract high level features, and I discuss architectures such as 
 semantic search and RAG.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

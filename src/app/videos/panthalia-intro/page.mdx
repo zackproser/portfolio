@@ -1,6 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-export default (props) => <ArticleLayout {...props} />
 
 <iframe 
   className="youtube-video"
@@ -32,3 +30,8 @@ I've been working on this side project for several months now, and it's ready en
 * Start and complete high quality blog posts in MDX one-handed while on the go
 
 Panthalia is open-source and available at [github.com/zackproser/panthalia](https://github.com/zackproser/panthalia)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

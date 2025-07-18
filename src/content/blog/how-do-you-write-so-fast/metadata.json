@@ -1,0 +1,21 @@
+{
+  "title": "How Do You Write So Fast",
+  "description": "A blog post about how do you write so fast",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "tags": [
+    "blog"
+  ],
+  "image": "/images/default-blog-image.webp",
+  "type": "blog",
+  "slug": "how-do-you-write-so-fast",
+  "landing": {
+    "subtitle": "A blog post about how do you write so fast",
+    "features": [],
+    "testimonials": []
+  },
+  "commerce": {
+    "isPaid": false,
+    "price": 0
+  }
+}

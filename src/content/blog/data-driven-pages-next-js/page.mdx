@@ -1,12 +1,4 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
 
-import dataDrivenPages from '@/images/nextjs-data-driven-website.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-
-<Image src={dataDrivenPages} alt="Building data-driven pages with Next.js" />
 
 I've begun experimenting with building some of my blog posts - especially those that are heavy on data, tables, comparisons and multi-dimensional considerations - using scripts, JSON and home-brewed schemas. 
 
@@ -120,74 +112,6 @@ const generatePostContent = (categories, tools, existingDate) => {
   }).join('\n');
 
   return `
-import { ArticleLayout } from '@/components/ArticleLayout'
-import Image from 'next/image'
-import Link from 'next/link'
-import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
-
-export const metadata = createMetadata({
-  title: "The Giant List of AI-Assisted Developer Tools Compared and Reviewed",
-  author: "Zachary Proser",
-  date: "${dateToUse}",
-  description: "A comprehensive comparison and review of AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools.",
-  image: aiAssistedDevTools
-}
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
-<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
-
-## Introduction
-
-Here's a comprehensive comparison AI-assisted developer tools, including code autocompletion, intelligent terminals/shells, and video editing tools. Reviews are linked when available.
-
-I recommend using the Table of Contents below to jump to the section you're most interested in. 
-
-At the top level, this page is separated by tool categories.Beneath each category is an aspect I find worthy of consideration for the category that tool is in. 
-
-Each aspect has a table displaying each tool and how it measures up in a direct feature for feature comparison.  
-
-This page will be updated regularly in the future, so please bookmark it, share it with friends and check back frequently for the latest information. 
-
-## Table of Contents
-
-## Tools and reviews
-
-${toolTable}
-
-${categorySections}
-
-## Remember to bookmark and share 
-
-This page will be updated regularly with new information, revisions and enhancements.Be sure to share it and check back frequently.
-`;
-};
-```
-
-This function generates the full markdown content of the blog post, including the metadata, introduction, table of contents, tool table, and category sections. 
-
-By breaking this out into a separate function, we can focus on the high-level structure of the post without getting bogged down in the details of how each section is generated.
-
-### Writing the Generated Page to a File
-
-Another key part of the script is the code that writes the generated page content to a file in the correct location. Here's what that looks like:
-
-```javascript
-
-const dir = path.join(process.env.PWD, `/src/app/blog/ai-assisted-dev-tools-compared`);
-const filename = `${dir}/page.mdx`;
-
-let existingDate = null;
-
-if (fs.existsSync(filename)) {
-  const existingContent = fs.readFileSync(filename, 'utf8');
-  existingDate = extractDateFromContent(existingContent);
-}
-
-const content = generatePostContent(categories, tools, existingDate);
-
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
 }
 
 fs.writeFileSync(filename, content, { encoding: 'utf-8', flag: 'w' });
@@ -197,7 +121,7 @@ console.log(`Generated content for "The Giant List of AI-Assisted Developer Tool
 This code does a few important things:
 
 1. It determines the correct directory and filename for the generated page based on the project structure.
-1. It checks if the file already exists and, if so, extracts the existing date from the page's metadata. This allows us to preserve the original publication date if we're regenerating the page.
+1. It checks if the file already exists and, if so, extracts the existing date from the page's  allows us to preserve the original publication date if we're regenerating the page.
 1. It generates the full page content using the `generatePostContent` function.
 1. It creates the directory if it doesn't already exist.
 1. It writes the generated content to the file.
@@ -257,3 +181,8 @@ While the full script is quite long and complex, breaking it down into logical s
 1. By automating the process of generating and saving the page content, we can save time and reduce the risk of errors or inconsistencies.
 
 While the initial setup and scripting can be complex, the benefits in terms of time savings, consistency, and maintainability are well worth the effort.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

@@ -1,25 +1,8 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import cloudGPUServices from '@/images/cloud-gpu-services-reviewed.webp'
-import cloudGPUSuccess from '@/images/cloud-gpu-services-success.webp'
-import lightningAIStudio from '@/images/lightning-ai-successful-run.webp'
-import googleColabHighRam from '@/images/google-colab-job-high-ram.webp'
-import paperspaceGradient from '@/images/paperspace.webp'
-import cloudGPUServicesFailure from '@/images/cloud-gpu-services-failure.webp'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
 --- 
 
 ## Cloud GPU Services for Jupyter Notebooks and Deep Learning: A Review
 
-<Image src={cloudGPUServices} alt="Cloud GPU Services" />
+
 <figcaption>Me, paying for yet another set of compute credits on Google Colab Pro :(</figcaption>
 
 ## Table of contents
@@ -59,7 +42,7 @@ I'm creating or maintaining demo Jupyter Notebooks.
 
 ### Google Colab (Pro)
 
-<Image src={googleColabHighRam} alt="Google Colab High Ram" />
+
 <figcaption>Even with Google Colab Pro, I needed to purchase additional credits to fine-tune my model, and was constantly encountering OOM errors</figcaption>
 
 An upgraded version of Google Colab with premium features for more demanding users.
@@ -77,7 +60,7 @@ An upgraded version of Google Colab with premium features for more demanding use
 
 ### Paperspace Gradient
 
-<Image src={paperspaceGradient} alt="Paperspace Gradient" />
+
 <figcaption>Paperspace Gradient is Digital Ocean's quite sloppy attempt to slap a serviceable Jupyter Notebook IDE/interface on top of their powerful GPU-backed compute infrastructure.</figcaption>
 
 Paperspace Gradient is Digital Ocean's quite sloppy attempt to slap a serviceable Jupyter Notebook IDE/interface on top of their powerful GPU-backed compute infrastructure.
@@ -100,14 +83,14 @@ It doesn't seem like this product is ready for production use, and it doesn't ap
 
 ### Lightning.ai (Use this one!)
 
-<Image src={lightningAIStudio} alt="Lightning.ai Studio" />
+
 <figcaption>Successfully fine-tuning an LLM on Lightning.ai - after 3 weeks of banging my heads against OOM errors and configuration problems with other platforms</figcaption>
 
 Lightning.ai offers a premium platform designed for scalable AI research and development. 
 
 Unlike Gradient Paperspace, it was very clearly built - either in consultation with, or by - people who actually use Jupyter Notebooks to get deep and machine learning work done.
 
-<Image src={cloudGPUSuccess} alt="Cloud GPU Services Success" />
+
 <figcaption>Successfully fine-tuning an LLM on Lightning.ai</figcaption>
 
 **Pros**:
@@ -125,7 +108,7 @@ Unlike Gradient Paperspace, it was very clearly built - either in consultation w
 
 ### Google Vertex AI / AI Notebook Studio 
 
-<Image src={cloudGPUServicesFailure} alt="Cloud GPU Services Failure" />
+
 <figcaption>Google Vertex AI and AI Notebook Studio are unusable</figcaption>
 
 Most of Google's product UX is unusable shame-tier dogshit, in my humble opinion, and Google Vertex AI and Notebooks Studio are no exception. Having done years of backend, infrastructure and cloud development, I winced gravely while having to enable 
@@ -149,3 +132,7 @@ Cons:
 ## TLDR
 
 Use Google Colab for free and small projects, and when creating and iterating on simple Jupyter Notebooks. Use Lightning.ai Studio for anything more complicated, and any serious projects that you actually need to run to completion. 
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

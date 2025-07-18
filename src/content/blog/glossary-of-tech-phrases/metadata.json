@@ -1,0 +1,21 @@
+{
+  "title": "Glossary Of Tech Phrases",
+  "description": "A blog post about glossary of tech phrases",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "tags": [
+    "blog"
+  ],
+  "image": "/images/default-blog-image.webp",
+  "type": "blog",
+  "slug": "glossary-of-tech-phrases",
+  "landing": {
+    "subtitle": "A blog post about glossary of tech phrases",
+    "features": [],
+    "testimonials": []
+  },
+  "commerce": {
+    "isPaid": false,
+    "price": 0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Trace The System In Your Head",
+  "description": "A blog post about trace the system in your head",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "tags": [
+    "blog"
+  ],
+  "image": "/images/default-blog-image.webp",
+  "type": "blog",
+  "slug": "trace-the-system-in-your-head",
+  "landing": {
+    "subtitle": "A blog post about trace the system in your head",
+    "features": [],
+    "testimonials": []
+  },
+  "commerce": {
+    "isPaid": false,
+    "price": 0
+  }
+}

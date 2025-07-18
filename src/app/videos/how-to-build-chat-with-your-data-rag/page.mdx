@@ -1,18 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import chatWithYourData from '@/images/build-chat-with-your-data.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2024-05-29",
-  title: "How to build chat with your data using Pinecone, LangChain and OpenAI",
-  description: "I show step by step how to build a RAG chatbot to talk to your data in this easy to follow tutorial for beginners.",
-  image: chatWithYourData
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   className="youtube-video"
@@ -25,3 +11,8 @@ I demonstrate how to build a RAG chatbot in a Jupyter Notebook end to end.
 
 This tutorial is perfect for beginners who want help getting started, and for experienced developers who want to understand how LangChain, Pinecone and OpenAI 
 all fit together.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

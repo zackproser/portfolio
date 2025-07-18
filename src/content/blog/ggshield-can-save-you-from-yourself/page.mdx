@@ -1,21 +1,3 @@
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import leakingASecret from '@/images/leaking-a-secret.webp'
-import engineersTryingToFixACommittedSecret from '@/images/engineers-realizing-a-secret-was-committed.webp'
-import gitGuardian from '@/images/gitguardian-logo.webp'
-import ggShieldFindingASecret from '@/images/ggshield-pre-commit-scan.webp'
-import ggShieldPreventingEscape from '@/images/ggshield-preventing-a-secret-from-escaping.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-
-<Image src={leakingASecret} alt="ggshield can save you from yourself. Never accidentally commit secrets again" />
 <figcaption>A developer watching the API key they accidentally committed to GitHub migrating throughout the internet - thinking of the Slack messages they're about to have to send...</figcaption>
 
 Committing a secret, like an API key or service token, to version control is a painful mistake, which I've done myself and seen plenty of others do, too. Fixing it usually involves 
@@ -23,7 +5,7 @@ at least some degree of emotional pain - you need to announce the incident and w
 
 You may need to ask others for assistance, either in generating a new secret or helping you rotate the compromised one if you don't have sufficient access yourself. 
 
-<Image src={engineersTryingToFixACommittedSecret} alt="Engineers from multiple teams attempting to remove a secret from Git history"/>
+
 <figcaption>Engineers from the Ops, API and frontend teams attempting to excise an exposed secret from Git history, while the director of engineering sobs in the background</figcaption>
 
 Depending on the size of your org, this could involve filing 
@@ -34,7 +16,7 @@ you by preventing you from committing anything that looks like a secret in the f
 
 ## ggshield is an amazing tool from GitGuardian
 
-<Image src={gitGuardian}  alt="GitGuardian" />
+
 
 You may have heard of GitGuardian - a service that runs against public GitHub repositories, scans them for secrets (API keys, tokens, passwords, etc) which may have been accidentally committed, and 
 then emails you an alert and some helpful tips on remediating the issue. 
@@ -46,7 +28,7 @@ ensuring you're not about to leak something sensitive.
 
 ## What does it look like when ggshield saves your ass?
 
-<Image src={ggShieldFindingASecret} alt="ggshield finding a secret" />
+
 
 Here's a screenshot of a test I ran against a local repository. First, I used `openssl` to generate a certificate that was just sitting in my local repository. I then ran `ggshield secret scan repo`, and the tool 
 correctly found my secret, before I committed it and ruined everyone's day. 
@@ -64,5 +46,10 @@ a hurry.
 Of course it's critical to perform code reviews, and ask your team for a second set of eyes to ensure you're keeping your secrets out of version control, but having this extra layer of automated scanning works very 
 well in concert with these other best practices.
 
-<Image src={ggShieldPreventingEscape} alt="ggshield preventing a secret from escaping" />
+
 <figcaption>ggshield preventing a secret from escaping</figcaption>
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

@@ -1,15 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-
-import futureOfSoftwareCreation from '@/images/future-of-software-creation.webp'
-import futureOfSoftwareInterfaces from '@/images/future-of-software-interfaces.webp'
-import cursorConversation from '@/images/cursor-convo-1.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
 --- 
 
 I've spoken with many investors and analysts over the past year and a half about AI assisted developer tooling. With some exceptions, their questions tend to frame developer tooling 
@@ -23,7 +11,7 @@ As someone who codes and builds systems every day, I've had enough of these conv
 
 The most important question is: how will developers create software in the future?  How will they *want to* create software?
 
-<Image src={futureOfSoftwareCreation} alt="The future of software interfaces" />
+
 
 <figcaption>Today, you can already talk to your laptop to build applications and systems. What will we have tomorrow?</figcaption>
 
@@ -38,7 +26,7 @@ And that's all well and good. And it became table stakes for developer tooling i
 
 Cursor and Zed are two tools that are pushing the boundaries of what's possible in developer tooling ***by changing the input to the software creation process from code to plain English.***
 
-<Image src={cursorConversation} alt="Cursor conversation" />
+
 
 By the way, Cursor has its own autocomplete built-in, although folks who tend to adopt Cursor happily end up typing in less and less code (maybe more prose).
 
@@ -48,3 +36,7 @@ could not unsee my own productivity gains.
 In fact, using Cursor has only pushed my expectations higher - and I suspect this year I'll be able to build an app by speaking into my phone while walking my dog.
 
 If I were just an autocomplete tool, I'd be extremely worried.
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

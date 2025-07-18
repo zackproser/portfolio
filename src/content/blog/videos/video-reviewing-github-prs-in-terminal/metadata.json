@@ -3,5 +3,5 @@
   "date": "2022-06-15",
   "title": "Master GitHub Pull Request Reviews with gh-dash and Octo - A YouTube Video Tutorial",
   "description": "Discover the power of terminal-based GitHub pull request reviews using open-source tools gh-dash and the neovim plugin Octo. Learn how these tools can streamline your review process, enhance collaboration, and save time. In this video tutorial, we'll demonstrate how to harness the benefits of a terminal workflow, including powerful command-line functionality, customization options, offline access, and cross-platform compatibility",
-  "image": "/images/hacker-reviewing-code.webp"
+  "image": "https://zackproser.b-cdn.net/images/hacker-reviewing-code.webp"
 }

@@ -1,0 +1,21 @@
+{
+  "title": "Vibe Coding Mastery",
+  "description": "A blog post about vibe coding mastery",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "tags": [
+    "blog"
+  ],
+  "image": "/images/default-blog-image.webp",
+  "type": "blog",
+  "slug": "vibe-coding-mastery",
+  "landing": {
+    "subtitle": "A blog post about vibe coding mastery",
+    "features": [],
+    "testimonials": []
+  },
+  "commerce": {
+    "isPaid": false,
+    "price": 0
+  }
+}

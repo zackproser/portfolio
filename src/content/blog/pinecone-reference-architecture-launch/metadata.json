@@ -3,6 +3,6 @@
   "date": "2023-11-27",
   "title": "Announcing the Pinecone AWS Reference Architecture in Pulumi",
   "description": "Deploy production-ready systems using Pinecone in minutes with the AWS Reference Architecture",
-  "image": "/images/pinecone-refarch-logo.webp",
+  "image": "https://zackproser.b-cdn.net/images/pinecone-refarch-logo.webp",
   "slug": "/blog/pinecone-reference-architecture-launch"
 }

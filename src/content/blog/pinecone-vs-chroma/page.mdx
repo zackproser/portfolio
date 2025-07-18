@@ -1,13 +1,6 @@
 
 
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import vectorDatabasesCompared from '@/images/vector-databases-compared.webp'
-
-<Image src={vectorDatabasesCompared} alt="vector databases compared" />
 
 ## Table of contents
 
@@ -75,3 +68,7 @@ You can also check out my [detailed breakdown of the most popular vector databas
 | Pay-as-you-go | ✅ | ✅ |
 | Enterprise Plans | ✅ | ✅ |
   
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

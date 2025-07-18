@@ -1,14 +1,4 @@
-import  Image  from 'next/image'
 
-import githubCopilot from '@/images/github-copilot-review.webp'
-import githubCopilot2 from '@/images/github-copilot-review-2.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-
-<Image src={githubCopilot} alt="GitHub Copilot review" />
 <figcaption>GitHub Copilot has immense potential, but continues to underwhelm</figcaption>
 
 When I signed up to try out GitHub Copilot, I was delighted to find that GitHub gifted me a free license to use it based on my being an [active open-source developer](https://github.com/zackproser).
@@ -28,7 +18,7 @@ In these cases, Copilot can usually be trusted to handle completing the boilerpl
 
 ## ChatGPT4 upgrade, product page teasers and developer rage 
 
-<Image src={githubCopilot2} alt="GitHub Copilot review" />
+
 <figcaption>GitHub Copilot X might be the promised land, but the launch and teaser has been handled poorly</figcaption>
 
 For many months now, GitHub's Copilot product page has teased the fact that the next version of GitHub Copilot, known currently as Copilot X, will use ChatGPT4 under the hood and will handle way more than code completions. 
@@ -59,3 +49,8 @@ generating boilerplate code and for assistance debugging complex stack traces an
 In the long term, developer experience and UX will win the game, and developers will coalesce around the tools that most reliably deliver them acceleration, peace of mind, and enhanced abilities to tackle additional scope and more ambitious 
 projects. GitHub Copilot X would do well to take a more open approach, state their intentions clearly and be transparent about their plans for developer experience, because developers in the market for AI-assisted tooling are falling in love 
 with their many competitors in the meantime. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

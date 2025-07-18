@@ -1,20 +1,7 @@
 
-import { ArticleLayout } from '@/components/ArticleLayout'
-import Image from 'next/image'
-import Link from 'next/link'
-import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
-export const metadata = {
-  title: "Descript - AI-Assisted Developer Tool Comparison",
-  author: "Zachary Proser",
-  date: "2024-07-06",
-  description: "A detailed comparison of Descript, an AI-assisted developer tool.",
-  image: aiAssistedDevTools
-}
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
 
 ## Descript
 
@@ -41,3 +28,8 @@ No language support information available
 
 - [Homepage](https://www.descript.com/)
 - [Review](Coming soon)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

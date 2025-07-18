@@ -1,23 +1,4 @@
-import warpChat from '/images/warp-chat.webp'
-import warpTesting from '/images/warp-testing.webp'
-import warpCoreExperience from '/images/warp-core-experience.webp'
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
- title: "Warp AI terminal review",
- author: "Zachary Proser",
- date: "2024-4-13",
- description: "The Warp terminal is a serious boon for anyone looking for help on the command line, but it's not yet perfect",
- image: warpChat,
-})
-
-<Image src={metadata.image} alt="Warp brings AI assistance into your terminal" />
 <figcaption>Warp brings AI assistance into your terminal to make you more efficient</figcaption>
 
 ## Table of contents 
@@ -35,7 +16,7 @@ Warp is a full on replacement for your current terminal emulator.
 The core experience works out of the box as advertised: it's pretty intuitive to get help with complex commmands, ask about errors and get 
 back useful responses that help you to move forward more quickly. 
 
-<Image src={warpCoreExperience} alt="Warp's core value props work as advertised" />
+
 
 ### It's pretty
 
@@ -60,7 +41,7 @@ that support will be.
 
 I have another quibble about the default experience of running warp on Linux currently: 
 
-<Image src={warpTesting} alt="It's currently a bit awkward to run warp on linux" />
+
 
 It's currently a bit awkward, because I launch the `warp-terminal` binary from my current terminal emulator, meaning that I get a somewhat janky experience and an extra floating window to manage. 
 
@@ -89,3 +70,8 @@ Not every developer wants to be a terminal nerd - but they do want to get stuff 
 I can see warp being a great tool to helping folks accomplish that.
 
 Check out my [detailed comparison of the top AI-assisted developer tools](/blog/ai-assisted-dev-tools-compared).
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

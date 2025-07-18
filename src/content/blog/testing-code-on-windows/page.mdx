@@ -1,19 +1,17 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
-import wikka from '@/images/wikka.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata); to make provisioning Windows test instances easier. In this post, I also provide a working Packer template and Terraform configuration to deploy your own Windows test instance, as well as instructions for mounting a local folder over RDP.",
+to make provisioning Windows test instances easier. In this post, I also provide a working Packer template and Terraform configuration to deploy your own Windows test instance, as well as instructions for mounting a local folder over RDP.",
     href: "https://blog.gruntwork.io/how-to-write-code-on-mac-or-linux-but-test-on-windows-with-hot-reloading-b218de5383d1",
     image: wikka,
   slug: '/blog/testing-code-on-windows',
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
 
 --- 
-<Button href={metadata.href}>Read article</Button>
+<Button href="#">Read article</Button>
 
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

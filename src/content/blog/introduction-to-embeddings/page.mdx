@@ -1,18 +1,6 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-import Link from 'next/link'
-import introToVectors from '@/images/introduction-to-vectors.webp'
-import featureExtraction from '@/images/feature-extraction.webp'
-import highDimensionalVectorSpace from '@/images/high-dimensional-vector-space.webp'
-import neuralNetwork from '@/images/neural-network.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-
 --- 
 
-<Image src={introToVectors} alt="Introduction to vectors"/>
+
 <figcaption>An overview of vector embeddings.</figcaption>
 
 
@@ -22,7 +10,7 @@ In the rapidly evolving world of artificial intelligence (AI) and machine learni
 
 At the heart of embeddings lies the process of feature extraction. When we talk about "features" in this context, we're referring to the key characteristics or attributes of the data that we want our machine learning models to learn and understand. For example, in the case of natural language data (like text), features might include the semantic meaning of words, the syntactic structure of sentences, or the overall sentiment of a document.
 
-<Image src={featureExtraction} alt="Feature extraction"/>
+
 <figcaption>Neural models extract key features from data.</figcaption>
 
 To obtain embeddings, you feed your data to an embedding model, which uses a neural network to extract these relevant features. The neural network learns to map the input data to a high-dimensional vector space, where each dimension represents a specific feature. The resulting vectors, or embeddings, capture the essential information about the input data in a compact, numerical format that machines can easily process and analyze.
@@ -44,7 +32,7 @@ Each value in this vector is a floating-point number, often between -1 and 1, th
 
 So, in our example, the embedding vector might have a high value in the "speed" dimension (capturing the concept of "quick"), a moderate value in the "animal" dimension (representing "fox" and "dog"), and relatively low values in dimensions that are less relevant to the input text (like "technology" or "politics").
 
-<Image src={highDimensionalVectorSpace} alt="High dimensional vector space"/>
+
 <figcaption>High dimensional vector space - each point is a vector and their distance from one another represents their similarity.</figcaption>
 
 The true power of embeddings lies in their ability to capture complex relationships and similarities between different pieces of data. By representing data as dense vectors in a high-dimensional space, embedding models can learn to group similar items together and separate dissimilar items. This enables machines to perform tasks like semantic similarity analysis, clustering, and classification with remarkable accuracy and efficiency.
@@ -141,7 +129,7 @@ The concept of embeddings has its roots in the field of natural language process
 
 Word2Vec revolutionized NLP by demonstrating that neural networks could be trained to produce dense vector representations of words, capturing their semantic similarities and relationships in a highly efficient and scalable manner. The key insight behind Word2Vec was that the meaning of a word could be inferred from its context – that is, the words that typically appear around it in a sentence or document.
 
-<Image src={neuralNetwork} alt="Neural network"/>
+
 <figcaption>A simplified neural network architecture.</figcaption>
 
 By training a shallow neural network to predict the context words given a target word (or vice versa), Word2Vec was able to learn highly meaningful word embeddings that captured semantic relationships like synonymy, antonymy, and analogy. For example, the embedding for the word "king" would be more similar to the embedding for "queen" than to the embedding for "car," reflecting their semantic relatedness.
@@ -206,3 +194,8 @@ By investing time in learning about embeddings and experimenting with different 
 Embeddings are a fundamental building block of modern artificial intelligence, enabling machines to understand and reason about complex data in ways that were once thought impossible. By learning dense, continuous vector representations of the key features and relationships in data, embedding models provide a powerful framework for a wide range of AI applications, from natural language processing and computer vision to recommendation systems and anomaly detection.
 
 As we've seen in this post, the concept of embeddings has a rich history and a bright future, with ongoing research pushing the boundaries of what's possible in terms of multimodal learning, domain specialization, interpretability, and efficiency. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

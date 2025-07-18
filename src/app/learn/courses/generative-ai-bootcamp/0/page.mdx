@@ -1,33 +1,5 @@
-import Image from 'next/image';
-import Link from 'next/link';
 
-import { ArticleLayout } from '@/components/ArticleLayout';
-import { timeElapsedSinceJanuary2023 } from '@/components/timeSince';
 
-import Callout from '@/components/Callout';
-
-import generativeAIBootcamp from '@/images/generative-ai-bootcamp.webp'
-import zacharyProser from '@/images/zachary-proser.webp'
-import a16z2 from '@/images/a16z-2.webp'
-import aiImageGeneration from '@/images/ai-image-generation.webp'
-import genAiExampleImageGeneration from '@/images/gen-ai-image-generation-example.webp'
-import vercelV0Dev from '@/images/vercel-v0-dev.webp'
-import pulumiAI from '@/images/pulumi-ai-example.webp'
-import genAIHow from '@/images/generative-ai-how.webp'
-import genAIMoment from '@/images/generative-ai-moment.webp'
-import tmuxFlow from '@/images/tmux-flow.gif'
-import codingAutocomplete from '@/images/coding-autocomplete.webp'
-import learningGenerations from '@/images/learning-generations.webp'
-import vscodeHomepage from '@/images/vscode-homepage.webp'
-import githubCopilotDemo from '@/images/github-copilot-example.webp'
-
-export const metadata = {
-    header: "Introduction",
-    title: "Generative AI Bootcamp: Dev Tools",
-    description: "Generative AI Bootcamp",
-}
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 ## Welcome, all! 
 
@@ -35,7 +7,7 @@ Non technical folks and computer nerds are equally welcome here.
 
 This course introduces Generative AI, and its many opportunitites and challenges, with a particular focus on AI-assisted developer tools. 
 
-<Image width={800} src={generativeAIBootcamp} alt="Generative AI is here"/>
+
 
 ## Table of contents
 
@@ -56,13 +28,13 @@ This course is ideal for investors, strategists, marketing experts, and anyone w
 Hi, I'm Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database 
 that provides long-term memory for AI applications. 
 
-<Image src={zacharyProser} alt="Zachary Proser" />
+
 
 My full title at Pinecone is "Staff Developer Advocate (open-source)". I build AI applications and pipelines in public to demonstrate the power and flexibility of Pinecone's vector database. 
 
 I also maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications, which demonstrate machine learning and AI techniques such as semantic search and Retrieval Augmented Generation (RAG).
 
-<Image src={a16z2} alt="Zachary Proser" />
+
 <figcaption>Me speaking at Andreesen Horowitz about taking Generative AI applications to production with the AWS Reference Architecture I created.</figcaption>
 
 I also wrote [Pinecone's first production example](https://www.pinecone.io/blog/aws-reference-architecture/) in the [AWS Reference Architecture with Pulumi](https://github.com/pinecone-io/aws-reference-architecture-pulumi), which demonstrates how to perform 
@@ -78,7 +50,7 @@ I have been a full stack open-source developer since 2012.
 
 In this course, we'll examine exactly how and why Generative AI is able to do this, and what it means for creative types like software developers, artists, writers, designers and for creative industry in general.
 
-<Image src={aiImageGeneration} alt="Generative AI is here" width={800} />
+
 <figcaption>Generative AI instantly fulfills complex requests for software, images, text, and even video. It's like having a genie in your computer you can ask for any digital assets.</figcaption>
 
 <Callout title={"Explain the transformative impact of Generative AI"} type={"Focus"} body={"We'll begin our discussion by understanding what Generative AI is and why it is so powerful"}/>
@@ -159,7 +131,7 @@ Here's an example of me asking ChatGPT4 to generate me an image with the followi
 
 > I'm creating a video game about horses enhanced with Jetpacks. Please generate me a beautiful, cheerful and friendly sprite of a horse with a jetpack strapped onto its back that would be suitable for use in my HTML5 game.  Use a bright, cheery and professional retro pixel-art style. 
 
-<Image src={genAiExampleImageGeneration} alt="Generative AI can generate images as well as text" width={800} />
+
 <figcaption>I can use Large Language Models (LLMs) like ChatGPT to generate pixel art and other assets for my web and gaming projects.</figcaption>
 
 Within a few moments, I got back a workable image that was more or less on the money given my prompt. 
@@ -168,7 +140,7 @@ I didn't have to open my image editor, spend hours tweaking pixels using special
 
 ## How does GenAI work? 
 
-<Image src={genAIHow} alt="GenAI is the confluence of many complimentary components and approaches reaching maturity at the same time" width={800} />
+
 <figcaption>Generative AI works by "learning" from massive datasets, to draw out similarities and "features"</figcaption>
 
 Generative AI systems learn from vast datasets to build a model that allows them to produce new outputs. 
@@ -181,7 +153,7 @@ Imagine you have a very smart robot that you want to teach to understand and use
 
 Each time the robot goes through all this information, it's like it's completing a grade in school, learning a little more about how words fit together and how they can be used to express ideas.
 
-<Image src={learningGenerations} alt="Learning generations" />
+
 
 In each "grade" or cycle, the robot pays attention to what it got right and what it got wrong, trying to improve. Think of it like learning to play a video game or a sport; the more you practice, the better you get. The robot is doing something similar with language, trying to get better at understanding and generating it each time it goes through all the information.
 
@@ -191,7 +163,7 @@ With each "generation" of learning, the robot gets smarter and better at using l
 
 ## Why is GenAI having its moment right now? 
 
-<Image src={genAIMoment} alt="GenAI is having its moment right now" width={800} />
+
 <figcaption>GenAI is the confluence of many complimentary components and approaches reaching maturity at the same time</figcaption>
 
 * **Data**: Availability of massive datasets and computing power to train extremely robust models, some with billions of parameters
@@ -231,7 +203,7 @@ Since the initial explosion of interest around GenAI, most companies have sprint
 Here's a look at some of the tools leveraging Generative AI successfully to accelerate their end users:
 
 ### v0.dev
-<Image src={vercelV0Dev} alt="Vercel's v0.dev tool generates user interfaces in React in response to natural language queries" width={800} />
+
 Vercel's v0.dev tool which generates user interfaces in React in response to natural language queries.
 
 In the above example, I prompted the app with: 
@@ -250,7 +222,7 @@ There are some current pain points, such as the tool
 strongly favoring older versions of Pulumi code which are now "deprecated" or slated for removal, but in general this tool is capable of saving a developer a lot of time 
 by outining the patterns to get a tricky configuration working with AWS.
 
-<Image src={pulumiAI} alt="Pulumi AI can write working Pulumi programs in any supported language" />
+
 
 ## Insight: GenAI accelerates specialists
 
@@ -338,7 +310,7 @@ Neovim is another IDE centered around modal editing optimized for speed and keyb
 
 For example, the following gif demonstrates a custom IDE using `tmux` and Neovim (my personal preference): 
 
-<Image src={tmuxFlow} alt="Tmux is a powerful terminal multiplexer favored by many developers" />
+
 <figcaption>My personal preference is to combine tmux with Neovim for a highly flexible setup that expands and contracts to the size of my current task.</figcaption>
 
 Developers tend to "live in" their preferred IDE - meaning they spend a lot of time coding. Developers are also highly incentivized to tweak their IDE and add automations for common tasks in order to make themselves more efficient. 
@@ -360,7 +332,7 @@ Codeium and GitHub Copilot represent the cutting edge of Generative AI in softwa
 
 While GitHub Copilot is built on OpenAI's Codex, Codeium offers its unique AI-driven approach. The key differences lie in their integration capabilities, coding style adaptations, and the breadth of languages and frameworks they support, making each tool uniquely valuable depending on the developer's needs.
 
-<Image src={githubCopilotDemo}  alt="GitHub Copilot demo" />
+
 
 These tools, while serving the common purpose of enhancing coding efficiency through AI-assisted suggestions, exhibit distinct features and use cases that cater to different aspects of the development workflow.
 
@@ -386,7 +358,7 @@ Imagine AI developer tools as ethereal companions residing within your IDE, whis
 
 They blend into the background but are always there to offer a helping hand, whether it's completing a line of code or suggesting an entire function. These "code spirits" are revolutionizing how developers write code, making the process faster, more efficient, and often more enjoyable.
 
-<Image src={codingAutocomplete} alt="AI developer tools as code spirits that live in a developer's IDE" />
+
 
 <Callout title={"My thoughts as a developer"} type={"PracticalInsights"} body={`Here's what I think about the future of Generative AI, after evaluating different tools and pair-coding with AI for ${timeElapsedSinceJanuary2023()}`}/>
 
@@ -503,3 +475,8 @@ We need measures to catch and correct or flag AI mistakes.
 Having worked alongside Generative AI for some time now, the experience has been occasionally panic-inducing, but mostly enjoyable. 
 
 Coding alongside ChatGPT4 throughout the day feels like having a second brain that's tirelessly available to bounce ideas off, troubleshoot problems, and help me tackle larger and more complex development challenges on my own.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

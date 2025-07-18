@@ -1,14 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar2.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 <iframe 
   className="youtube-video"
   src="https://www.youtube.com/embed/D0cOJNf0pCQ"
@@ -21,3 +10,8 @@ I co-hosted a webinar with Pulumi's Engin Diri about:
 * How it's been updated to use Pinecone Serverless and the Pinecone Pulumi provider
 * How to deploy an AI application to production using infrastructure as code
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

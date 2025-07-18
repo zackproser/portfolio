@@ -1,0 +1,21 @@
+{
+  "title": "Warp Ai Terminal Review",
+  "description": "A blog post about warp ai terminal review",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "tags": [
+    "blog"
+  ],
+  "image": "/images/default-blog-image.webp",
+  "type": "blog",
+  "slug": "warp-ai-terminal-review",
+  "landing": {
+    "subtitle": "A blog post about warp ai terminal review",
+    "features": [],
+    "testimonials": []
+  },
+  "commerce": {
+    "isPaid": false,
+    "price": 0
+  }
+}

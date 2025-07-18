@@ -1,18 +1,6 @@
-import Newsletter from '@/components/NewsletterWrapper'
-
-import maxSlackMsg from '@/images/max-slack-msg.webp'
-import autogitGif from '@/images/autogit.gif'
-import autogitMasterMainGif from '@/images/autogit-master-main.gif'
-import autogitStashedChangesGif from '@/images/autogit-stashed-changes.gif'
-
-import Image from 'next/image'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-
 Even experienced programmers make mistakes - lately I've been forgetting to git pull on my local repos when working quickly, leading my poor colleague Max to have to Slack me messages like this while we're on pair-coding calls:
 
-<Image src={maxSlackMsg} alt="colleague trying to help me remember to git pull" />
+
  
 Sorry, Max! Forgetting to git pull means we're more likely to open a pull request with outdated code. We can do better than this, and use automation to augment our fallible human nature.
 
@@ -27,7 +15,7 @@ Autogit is [an open-source shell script](https://github.com/zackproser/automatio
 
 It is designed to be run everytime you change directories into a local git repository. 
 
-<Image src={autogitGif} alt="Introducing Autogit, an open source shell script that handles updating git repos for you" />
+
 
 In this way, autogit attempts to stay out of your way, run as quickly as possible, never run when unnecessary, and otherwise remove the cognitive burden around remembering to git pull when you're in the middle of an incident and trying to move quickly.
 
@@ -45,7 +33,7 @@ Project A may use a default branch of master, while Project B, C, and D use main
 
 Just use autogit - it can detect this edge case, checkout the correct default branch locally, and pull the latest changes for you.
 
-<Image src={autogitMasterMainGif} alt="Autogit detects and handles the case when the remote repo changed its default branch" />
+
 
 
 ### 2. Designed to handle dirty worktrees and uncommitted changes
@@ -53,7 +41,7 @@ Just use autogit - it can detect this edge case, checkout the correct default br
 Autogit is designed to assist working developers. If you have a feature branch checked out in the git repo that you `cd` into, autogit will automatically stash your changes, 
 checkout your default branch and pull, then checkout your original branch and re-apply your stashed changes.
 
-<Image src={autogitStashedChangesGif} alt="Autogit can handle dirty worktrees and feature branches, too" />
+
 
 ### 3. Smart about when to work and when to do nothing 
 
@@ -77,3 +65,8 @@ Thank you for reading! If you've found this post helpful at all, please consider
 3. [Sponsoring me on GitHub](https://github.com/sponsors/zackproser)
 
 Every little bit helps and I greatly appreciate your taking the time to read my post!
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

@@ -1,21 +1,3 @@
-import  Image  from 'next/image'
-
-import myFavoriteAIStack from '@/images/my-favorite-ai-stack.webp'
-import robotUpliftingHuman from '@/images/robot-uplifting-human.webp'
-import workingWithAI from '@/images/working-with-ai.webp'
-import complimentaryAI from '@/images/complimentary-ai.webp'
-import mostAIToolsDontWork from '@/images/most-ai-tools-dont-work.webp'
-import robotAndHumanTogetherness from '@/images/robot-and-human-togetherness.webp'
-import aiDirectEnhancement from '@/images/ai-direct-enhancement.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={myFavoriteAIStack} alt="As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it" />
 <figcaption>As of October 10th, 2023, ChatGPT4 and Codeium are all I need to make excellent progress and have fun doing it.</figcaption>
 
 As of October 10th, 2023, the Generative AI hype cycle is still in full-swing and there are more startups with their own developer-focused AI-assisted coding tools than ever before. Here's why 
@@ -28,13 +10,13 @@ conversational history is available to me. Now that ChatGPT4 is available on And
 
 ## They are low-friction
 
-<Image src={robotUpliftingHuman} alt="Using ChatGPT4 is extremely convenient" />
+
 
 Now that ChatGPT4 is on my phone, I can start up a new conversation when I'm walking and away from my desk. Some days, after working all day and winding down for sleep, I'll still have a couple of exciting 
 creative threads I don't want to miss out on, so I'll quickly jot or speak a paragraph of context into a new new GPT4 chat thread to get it whirring away on the idea. I can either tune it by giving it more 
 feedback or just pass out and pick up the conversation the next day. 
 
-<Image src={workingWithAI} alt="ChatGPT4 and Codeium are both easy to work with" />
+
 
 I don't always stick to stock ChatGPT4 form-factors, however. Charmbracelet's [`mods`](https://github.com/charmbraclet/mods) wrapper is the highest quality and most delightful tool I've found for working with 
 GPT4 in your unix pipes or just asking quick questions in your terminal such as, "Remind me of the `psql` command to connect to my Postgres host". 
@@ -48,7 +30,7 @@ Codium works like a dream once you get it installed. I tend to use Neovim by pre
 
 ## Most everything else I've tried doesn't work 
 
-<Image src={mostAIToolsDontWork} alt="The reality is that today, most developer-focused AI tools don't work" />
+
 
 No disrespect to these tools or the teams behind them. I do believe the potential is there and that many of them will become very successful in due time once the initial kinks are worked out. 
 
@@ -65,7 +47,7 @@ app idea, architectural discussion or line of inquiry to help cement my understa
 
 ## They are complimentary 
 
-<Image src={complimentaryAI} alt="ChatGPT4 and Codeium are complimentary" />
+
 
 ChatGPT4 excels at having long-winded discussions with me about the many ways I might implement desired functionality in one of my applications or side projects. It often suggests things that I would have missed 
 on my first pass, such as the fact that Vercel has deployment hooks I can take advantage of, and it's especially useful once the project is underway. 
@@ -91,7 +73,7 @@ I have settled on a workflow that accelerates me and, perhaps more importantly, 
 
 ## Looking forward and what I'm still missing 
 
-<Image src={robotAndHumanTogetherness} alt="I dream of the day I can just speak to my favorite AI tool wherever I am" />
+
 
 I have no doubt that the current generation of developer-focused AI tools are going to continue improving at a rapid pace. ChatGPT itself has seen nothing but enhancement at breakneck speed since I started using it and I haven't 
 even gotten my hands on its multi-modal (vision, hearing, etc) capabilities yet. 
@@ -103,7 +85,7 @@ The quality of its answers are occasionally hobbled by its inability to load my 
 
 I'm confident with additional work and a litle time, it won't be long until ChatGPT4 or one of its competitors is able to say: "The reason your current Jest test is choking on that import statement is because you're missing this specific setting and value in your .tsconfig file". 
 
-<Image src={aiDirectEnhancement} alt="I want AI assistance directly where I'm working" />
+
 
 I'm able to get that information out of it now, but it just takes a good bit of careful prompting and more copy/paste than I would ideally like. What I really want is the helpful daemon looking over my shoulder, who is smart enough to know 
 when to raise its hand to point out something that's going to cause the build to fail, and when to keep quiet because even if it knows better that's just my personal coding style preference so better to leave it alone. 
@@ -119,3 +101,8 @@ Indeed, many different companies both large and small are sprinting full-tilt to
 * [Codeium review](/blog/codeium-review)
 * [CodiumAI PR agent for eased GitHub maintenance](/blog/codeium-ai-pinecone-pr-agent)
 * [Can ChatGPT4 help me complete side projects more quickly?](/blog/chatgpt-4-experiment-and-ai-development)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

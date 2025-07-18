@@ -3,5 +3,5 @@
   "author": "Zachary Proser",
   "date": "2024-7-28",
   "description": "I trained a neural net to recognize hand-drawn digits, then built a Next.js UI for it",
-  "image": "/images/mnist-mind-mapper-splash.webp"
+  "image": "https://zackproser.b-cdn.net/images/mnist-mind-mapper-splash.webp"
 }

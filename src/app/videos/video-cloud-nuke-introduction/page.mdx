@@ -1,8 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import { createMetadata } from '@/utils/createMetadata'
-
-export default (props) => <ArticleLayout {...props} />
 
 <iframe 
   class="youtube-video"
@@ -27,3 +23,8 @@ One thing to keep in mind when using cloud-nuke is that it's important to review
 In addition to using cloud-nuke as a standalone tool, you can also integrate it with other cloud management tools and services. This will help you create a more comprehensive cloud management strategy, making it easier to keep your environment secure and well-organized.
 
 To sum it up, cloud-nuke is a versatile open-source tool that can help you manage your AWS resources more effectively. Its efficient search and deletion capabilities, support for regex filters and config files, and easy configuration make it a valuable addition to any developer's or system administrator's toolkit. So, if you're looking for a better way to manage your AWS resources, give cloud-nuke a try and see how it can make your life easier.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

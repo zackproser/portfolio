@@ -1,25 +1,3 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-import Link from 'next/link'
-
-import vercelAISDK from '@/images/vercel-ai-sdk.webp'
-import aiSDKNutshell from '@/images/ai-sdk-nutshell.webp'
-import toxindex from '@/images/toxindex.webp'
-import chatUI from '@/images/chat-ui.webp'
-import upgrade from '@/images/upgrade.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image 
-    src={vercelAISDK} 
-    alt="The Vercel AI SDK"
-/>
-
 ## Table of contents
 
 After using it for a few years now and building multiple production applications with it, I've had enough time to give the Vercel AI SDK a thorough review. 
@@ -34,19 +12,13 @@ At its core, the Vercel AI SDK was Vercel scooping everyone on the GenAI party w
 
 Its essence is communicated by this widget: 
 
-<Image 
-    src={aiSDKNutshell}
-    alt="The Vercel AI SDK in a nutshell"
-/>
+
 
 The Vercel AI SDK is a piece of technology, but it's also a convention and contract: it standardizes methods for interacting with LLMs 
 that are abstracted across providers - it really requires only a few character change in a pull request to swap from Anthropic's Claude to the latest Google Gemini model 
 without changing your prompt: 
 
-<Image 
-    src={upgrade}
-    alt="The Vercel AI SDK makes model and provider changes dead simple"
-/>
+
 
 The result is that, once you learn to use the SDK, you can rapidly build high-quality GenAI applications on Vercel, which is exactly what Vercel intends.
 
@@ -59,9 +31,6 @@ Let's check out the latest additions to version 4.2 of the SDK. [Model Context P
 Reasoning models like Anthropic's Claude 3.7 Sonnet and DeepSeek R1 can now work seamlessly through the AI SDK, with access to their reasoning tokens:
 
 ```javascript
-import { generateText } from 'ai';
-import { anthropic } from '@ai-sdk/anthropic';
-
 const { text, reasoning } = await generateText({
   model: anthropic('claude-3-7-sonnet-20250219'),
   prompt: 'How many people will live in the world in 2040?',
@@ -73,9 +42,6 @@ const { text, reasoning } = await generateText({
 Connect to MCP servers for tools like GitHub, Slack, and Filesystem access:
 
 ```javascript
-import { experimental_createMCPClient as createMCPClient } from 'ai';
-import { openai } from '@ai-sdk/openai';
-
 const mcpClient = await createMCPClient({
   transport: {
     type: 'sse',
@@ -132,9 +98,6 @@ One of the biggest wins is how trivial it is to swap between different LLMs, or 
 
 ```javascript
 // Using OpenAI
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
-
 const { text } = await generateText({
   model: openai("gpt-4o"),
   prompt: "What is love?"
@@ -143,9 +106,6 @@ const { text } = await generateText({
 
 ```javascript
 // Switch to Anthropic with minimal changes
-import { generateText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
-
 const { text } = await generateText({
   model: anthropic("claude-3-5-sonnet-latest"),
   prompt: "What is love?"
@@ -159,8 +119,6 @@ That ability to multiplex across providers is huge, and is something that many o
 The AI SDK offers a clean, consistent API for text generation and beyond:
 
 ```javascript
-import { streamText } from "ai";
-
 export default async function handler(req, res) {
   // Create a streaming text completion with minimal configuration
   const textStream = await streamText({
@@ -176,8 +134,6 @@ export default async function handler(req, res) {
 And for streaming structured objects:
 
 ```javascript
-import { streamObject } from "ai";
-
 export default async function handler(req, res) {
   const objectStream = await streamObject({
     model: "openai/gpt-4o",
@@ -203,8 +159,6 @@ One of the most underrated aspects of the AI SDK is how it standardizes UI patte
 
 ```javascript
 // The useChat hook handles everything from streaming to message history
-import { useChat } from 'ai/react';
-
 function ChatComponent() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   
@@ -238,16 +192,13 @@ This abstracts away all the complexity of managing websockets, handling errors, 
 [Toxindex](https://toxindex) is a GenAI chatbot that does Retrieval Augmented Generation with a a proprietary chemical toxicity prediction model.
 
 <Link href={"https://toxindex.com"}>
-<Image 
-    src={toxindex}
-    alt="Toxindex is a GenAI chatbot that does RAG with a proprietary chemical toxicity prediction model"
-/>
+
 </Link>
 
 ### RAG chat-with-my-data experience
 
 <Link href={"https://zackproser.com/chat"}>
-    <Image src={chatUI} alt="Chat with my blog RAG experience"/>
+    
 </Link>
 
 Let me share a concrete example from my own work. I built [a chat interface for my blog](https://zackproser.com/chat) that allows visitors to ask questions about my writing using Retrieval Augmented Generation (RAG). This showcases the Vercel AI SDK's power in a real production environment.
@@ -265,14 +216,6 @@ The implementation follows this flow:
 Here's the complete API route handling this flow:
 
 ```javascript
-import { openai } from '@ai-sdk/openai';
-import { PineconeRecord } from "@pinecone-database/pinecone"
-import { streamText } from 'ai';
-import { Metadata, getContext } from '../../services/context'
-import { importContentMetadata } from '@/lib/content-handlers'
-import path from 'path';
-import { ArticleWithSlug } from '@/types';
-
 export async function POST(req: Request) {
   const { messages } = await req.json();
   // Get the last message
@@ -340,11 +283,6 @@ The frontend uses the Vercel AI SDK's `useChat` hook to handle the streaming res
 
 ```javascript
 'use client';
-import { useChat } from 'ai/react';
-import { useState } from 'react';
-import { ContentCard } from '@/components/ContentCard';
-import { ArticleWithSlug } from '@/types';
-
 export default function Chat() {
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
   

@@ -1,23 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
-import { createMetadata } from '@/utils/createMetadata'
-import Image from 'next/image'
-import ConsultingCTA from '@/components/ConsultingCTA'
-import NewsletterWrapper from '@/components/NewsletterWrapper'
-
-import thirtyFiveThousandReaders from '@/images/thirty-five-thousand-readers.webp'
-import googleClicks from '@/images/google-clicks.webp'
-import pagespeed from '@/images/pagespeed.webp'
-import markdown from '@/images/markdown.webp'
-import gitActivity from '@/images/2023-git-activity.webp'
-import typefully from '@/images/typefully.webp'
-import devtoolsComparison from '@/images/devtools-comparison.webp'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={thirtyFiveThousandReaders} alt="35,000 readers" />
-
 One year ago, I published [Run your own tech blog](/blog/run-your-own-tech-blog). 
 
 Since then:
@@ -31,7 +11,7 @@ Here's how I got there—and how you can, too. 👇
 
 Slow pages = lower search rankings.
 
-<Image src={pagespeed} alt="Pagespeed" />
+
 
 Using Vercel, I kept my site fast, hitting a perfect PageSpeed score (screenshot below). 🚦
 
@@ -60,11 +40,11 @@ Tech stack:
 
  This is what it looks like when I'm writing a post: 
 
- <Image src={markdown} alt="Markdown" />
+ 
 
 ## 2. I iterated relentlessly on user experience 
 
-<Image src={gitActivity} alt="Git activity" />
+
 
 Engagement doesn't just come from good writing—it comes from readable writing. Cleaner layouts, better typography, and simplified navigation made my content easier to consume and share.
 
@@ -86,13 +66,13 @@ Publishing was only half the battle. Sharing was just as important. I shared my 
 
 I found success using Typefully, a tool that allows you to schedule tweets, threads, Bluesky, Twitter, Mastodon, and LinkedIn posts simultaneously.
 
-<Image src={typefully} alt="Typefully" />
+
 
 The key is to write regularly. Make it a habit, even if you're not publishing everything you write.
 
 ## 4. I built tools, not just blog posts
 
-<Image src={devtoolsComparison} alt="Devtools comparison" />
+
 
 Some of my most popular pages weren't articles—they were tools I built to solve real problems. Tools are a unique way to provide immediate value and drive sustained traffic.
 
@@ -102,7 +82,7 @@ If you have technical skills, consider what common challenges your audience face
 
 ## 5. I let analytics guide me 
 
-<Image src={googleClicks} alt="Google clicks" />
+
 
 Google Search Console became my feedback loop. By analyzing search performance, I identified:
 * **What resonated:** Doubling down on topics that performed well
@@ -121,3 +101,8 @@ There's no magic formula to growing a successful blog. It's about iteration, exp
 * Learn
 
 Start today. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

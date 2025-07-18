@@ -1,18 +1,10 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import Image from 'next/image'
-import awsVault from '@/images/aws-vault.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata); and is a much more efficient way to access multiple AWS accounts.",
+and is a much more efficient way to access multiple AWS accounts.",
   image: awsVault
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-![Manage your AWS credentials securely with AWS vault](/images/aws-vault.webp)
+
+![Manage your AWS credentials securely with AWS vault](https://zackproser.b-cdn.net/images/aws-vault.webp)
 <figcaption>Don't hardcode your AWS credentials into your dotfiles or code! Use aws-vault to store them securely</figcaption>
 
 <iframe 
@@ -37,3 +29,8 @@ The video emphasizes how using aws-vault can significantly improve your command 
 If you're a developer or system administrator looking to enhance your AWS account management skills, this YouTube video is for you. 
 
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

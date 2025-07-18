@@ -1,32 +1,4 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-import Link from 'next/link'
 
-import chatWithMyBlog  from '@/images/custom-rag-chat-screenshot.webp'
-import chatWithMyBlogRelatedPosts from '@/images/custom-rag-chat-screenshot-dark.webp'
-import chatWithBlogFlowchart from '@/images/chat-with-blog-flowchart.webp'
-import ragWithSources from '@/images/rag-with-sources.webp'
-import pineconeConsole from '@/images/pinecone-console-rag-pipeline.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-import { importContentMetadata } from '@/lib/content-handlers'
-import { SimpleLayout } from '@/components/SimpleLayout'
-import { ContentCard } from '@/components/ContentCard'
-import { ArticleWithSlug } from '@/types'
-import { LoadingAnimation } from '@/components/LoadingAnimation'
-import { clsx } from 'clsx'
-
-export const articleMetadata = {
-    author: "Zachary Proser", 
-    date: "2024-05-10",
-    title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
-    description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
-    image: chatWithMyBlog,
-};
-
-export const metadata = createMetadata(articleMetadata);
 
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
 
@@ -50,7 +22,7 @@ Here's a quick demo of it in action - or [you can try it out yourself](/chat):
   allow="fullscreen;">
  </iframe>
 
-<Image src={chatWithMyBlog} alt="I built a chat with my blog feature" />
+
 
 My solution recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
 with citations. 
@@ -61,7 +33,7 @@ And in this blog post, I'm giving you everything you need to build your own simi
 * the server-side API route code that handles embeddings, context retrieval via vector search, and chat
 * the client-side chat interface that [you can play with here](/chat)
 
-<Image src={chatWithMyBlogRelatedPosts} alt="Related blog posts" />
+
 
 Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
 
@@ -156,7 +128,7 @@ Best of all, this site is [completely open-source](https://github.com/zackproser
 
 Here's a flowchart describing how the feature works end to end. 
 
-<Image src={chatWithBlogFlowchart} alt="Chat with my blog flowchart" />
+
 
 Let's talk through it from the user's perspective. They ask a question on my client-side chat interface. Their question is sent to my `/api/chat` route. 
 
@@ -238,10 +210,6 @@ export async function POST(req: Request) {
 Here's what the context service looks like:
 
 ```javascript
-import type { PineconeRecord } from "@pinecone-database/pinecone";
-import { getEmbeddings } from './embeddings';
-import { getMatchesFromEmbeddings } from "./pinecone";
-
 export type Metadata = {
   source: string,
   text: string,
@@ -268,8 +236,6 @@ It is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functi
 Here's the `getEmbeddings` function, which is a thin wrapper around OpenAI's embeddings endpoint: 
 
 ```javascript
-import { OpenAIApi, Configuration } from "openai-edge";
-
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
@@ -298,8 +264,6 @@ for similarity search.
 The `getMatchesFromEmbeddings` function demonstrates how we use Pinecone to execute our query and return the nearest neighbors:
 
 ```javascript
-import { Pinecone, type ScoredPineconeRecord } from "@pinecone-database/pinecone";
-
 export type Metadata = {
   url: string,
   text: string,
@@ -347,9 +311,7 @@ into something meaningful to our application?
 If I'm just getting back a list of floating point numbers, how do I go from that to the blog thumbnail and relative 
 URL I want to render for the user?
 
-The bridge between ambiguous natural language and structured data is metadata. 
-
-Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
+The bridge between ambiguous natural language and structured data is  is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
 
 ```
 // Imagine metadata like a JavaScript object
@@ -391,7 +353,7 @@ First, let's look at the raw matches. As you can see in this print out of two re
         '\n' +
         'I also knew I wanted to host my site on Vercel and that I wanted my site to be completely static once built, with serverless functions to handle things like form submissions so that I could customize my own email list tie-in and have more excuses to learn the Next.js framework and Vercel platform well.\n' +
         '\n' +
-        '<Image src={bloggingWebPerformance} alt="Web performance monitoring" /> <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
+        ' <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
     }
   },
 ```
@@ -520,14 +482,6 @@ My favorite part of this is that it's re-using the display code I already use fo
 
 'use client';
 
-import { useChat } from 'ai/react';
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { SimpleLayout } from '@/components/SimpleLayout';
-import { ContentCard } from '@/components/ContentCard';
-import { ArticleWithSlug } from '@/types';
-import { LoadingAnimation } from '@/components/LoadingAnimation';
-
 export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
@@ -541,7 +495,7 @@ export default function Chat() {
       setArticles(parsedArticles);
       setIsLoading(false);
     },
-    headers: {},
+    headers: ,
     onFinish() {
       // Log the user's question
       gtag("event", "chat_question", {
@@ -655,7 +609,7 @@ const handlePrepopulatedQuestion = (question: string) => {
   setIsLoading(true); // Set loading state here to indicate submission is processing
 
   const customSubmitEvent = {
-    preventDefault: () => { },
+    preventDefault: () => ,
   } as unknown as React.FormEvent<HTMLFormElement>;
 
   // Submit immediately after updating the input
@@ -686,7 +640,7 @@ text or medical documents.
 The overall experience is richer because the user is able to have a conversation while also getting visually appealling 
 pointers toward further reading that is highly relevant to their query.
 
-<Image src={ragWithSources} alt="RAG with sources" />
+
 
 ## Full API route and client-side code
 
@@ -698,14 +652,6 @@ Here's the complete client-side code:
 
 ```javascript
 'use client';
-
-import { useChat } from 'ai/react';
-import { useState } from 'react';
-import { clsx } from 'clsx';
-import { SimpleLayout } from '@/components/SimpleLayout';
-import { ContentCard } from '@/components/ContentCard';
-import { ArticleWithSlug } from '@/types';
-import { LoadingAnimation } from '@/components/LoadingAnimation';
 
 const prepopulatedQuestions = [
   "What is the programming bug?",
@@ -729,7 +675,7 @@ export default function Chat() {
       setArticles(parsedArticles);
       setIsLoading(false);
     },
-    headers: {},
+    headers: ,
     onFinish() {
       // Log the user's question
       gtag("event", "chat_question", {
@@ -759,7 +705,7 @@ export default function Chat() {
     setIsLoading(true); // Set loading state here to indicate submission is processing
 
     const customSubmitEvent = {
-      preventDefault: () => { },
+      preventDefault: () => ,
     } as unknown as React.FormEvent<HTMLFormElement>;
 
     // Submit immediately after updating the input
@@ -835,14 +781,6 @@ export default function Chat() {
 ### Entire API route
 
 ```javascript
-
-import { openai } from '@ai-sdk/openai';
-import { PineconeRecord } from "@pinecone-database/pinecone"
-import { streamText } from 'ai';
-import { Metadata, getContext } from '../../services/context'
-import { importContentMetadata } from '@/lib/content-handlers'
-import path from 'path';
-import { ArticleWithSlug } from '@/types';
 
 // Allow this serverless function to run for up to 5 minutes
 export const maxDuration = 300;
@@ -1046,7 +984,7 @@ but also as a tool for checking that my RAG pipeline's knowledgebase is healthy.
 
 However, note that you can also use the [Pinecone Console](https://app.pinecone.io) to query and manage your index.
 
-<Image src={pineconeConsole} alt="Pinecone Console" />
+
 
 ## Updating the knowledgebase programatically via CI/CD
 

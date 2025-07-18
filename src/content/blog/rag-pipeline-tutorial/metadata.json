@@ -3,7 +3,7 @@
   "date": "2025-01-05",
   "title": "Tutorial: Build a RAG pipeline with LangChain, OpenAI and Pinecone",
   "description": "Step by step tutorial: how to build a production-ready RAG pipeline.",
-  "image": "/images/rag-chatbot.webp",
+  "image": "https://zackproser.b-cdn.net/images/rag-chatbot.webp",
   "commerce": {
     "isPaid": true,
     "price": 149,

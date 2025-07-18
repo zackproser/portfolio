@@ -1,22 +1,5 @@
 
-import frustration from '/images/frustration.webp' 
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
- author: "Zachary Proser",
- date: "2023-9-9",
- title: "Glossary of tech phrases",
- description: "If you're coming from Hacker News, I've learned that I need to spell out at the beginning that this post is partly facetious...",
- image: frustration,
-})
-
-<Image src={frustration} alt="frustration"/>
 
 ## If you came here from Hacker News...
 
@@ -41,3 +24,8 @@ Then I've learned that I need to explicitly spell out in the beginning of the po
 |Happy to help!|I'm updating my resume.|
 | I'll take a look | Let me Google that for you, you incompetent ninny. I'm also positive you got a larger equity grant than I did. | 
 | You're one of our top performers | We're underpaying you. |
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

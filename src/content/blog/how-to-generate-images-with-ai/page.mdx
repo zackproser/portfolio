@@ -1,23 +1,4 @@
-import  Image  from 'next/image'
 
-import aiImageGeneration from '@/images/ai-image-generation.webp'
-import bingCreateInterface from '@/images/bing-create-interface.webp'
-import bingCreateCloseUp from '@/images/bing-create-closeup.webp'
-import my404Page from '@/images/my-404-page.webp'
-import discordStableDiffusion from '@/images/discord-stable-diffusion.webp'
-import replicateOverview from '@/images/replicate-overview.webp'
-import usingReplicateStableDiffusion from '@/images/using-replicate-stable-diffusion.webp'
-import replicateRestAPI from '@/images/replicate-rest-api.webp'
-import AUTOMATIC111 from '@/images/automatic111.webp'
-import civitAI from '@/images/civitai.webp'
-import whyCreateAIImages from '@/images/why-create-ai-images.webp'
-import haterade from '@/images/haterade.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-<Image src={aiImageGeneration} alt="Today we live in a golden age of AI-assisted image generation" />
 <figcaption>You can generate images using AI for free online through a variety of methods</figcaption>
 
 I've been generating images using models such as StableDiffusion and DALLE for blog posts for months now. I can quickly produce 
@@ -35,18 +16,18 @@ Overall, this is probably the best option right now if you want high quality ima
 You will need a Microsoft live account (which is free), 
 but otherwise you just log into [bing.com/create](https://bing.com/create) and you write your prompt directly into the text input at the top: 
 
-<Image src={bingCreateInterface} alt="Bing Create interface for DALLE-3" />
+
 
 This is using OpenAI's DALLE-3 model under the hood, which is noticeably better at converting the specific details and instructions in natural human language into an image that 
 resembles what the user intended. 
 
 I have been generally pretty impressed with its outputs, using them for recent blog post hero images as well as my own [404 page](/this-page-doesnt-exist).
 
-<Image src={my404Page} alt="my custom 404 page" />
+
 
 For example, I used Bing and DALLE-3 to generate the hero image for this post in particular via the following prompt:
 
-<Image src={bingCreateCloseUp} alt="Bing Create interface for DALLE-3" />
+
 
 > Neon punk style. A close up of a hand holding a box and waving a magic wand over it. From the box, many different polaroid photos of different pixel art scenes are flying upward and outward.
 
@@ -58,7 +39,7 @@ Using DALLE-3 in this way also supports specifying the style of art you want gen
 
 Discord is the easiest and lowest friction way to get started generating images via StableDiffusion right now, especially if you're unwilling to pay for anything.
 
-<Image src={discordStableDiffusion} alt="Discord bot for StableDiffusion" />
+
 
 Stable Foundation is a popular Discord channel that hosts several different instances of the bot that you can ask for image generations via chat prompts. 
 
@@ -93,7 +74,7 @@ REST API in [my Panthalia project](https://github.com/zackproser/panthalia) whic
 Replicate.com hosts popular machine learning and AI models and makes them available through 
 a simple UI that you can click around in and type image requests into, as well as a REST API for developers to integrate into their applications. 
 
-<Image src={replicateOverview} alt="Replicate.com" />
+
 
 Replicate.com is one of those "totally obvious in retrospect" ideas: with the explosion of useful machine learning models, providing a uniform interface to running those models 
 easily was pretty brilliant. 
@@ -103,19 +84,19 @@ but for the sake of this tutorial, look for StableDiffusionXL.
 
 Once you're on the StableDiffusionXL model page, you can enter the prompt for the image you want to generate. Here's an example of a simple prompt that works well: 
 
-<Image src={usingReplicateStableDiffusion} alt="Using Replicate\'s StableDiffusion model" />
+
 
 > Pixel art style. Large aquarium full of colorful fish, algae and aquarium decorations. Toy rocks.
 
 If you're a developer and you don't feel like wrangling Python models into microservices or figuring out how to properly Dockerize StableDiffusion, you can take advantage of Replicate's REST API, which is truly a delight, from experience: 
 
-<Image src={replicateRestAPI} alt="Replicate\'s REST API" />
+
 
 I have generated a ton of images via Replicate every month for the past several months and the most they've charged me is $2 and some change. Highly recommended.
 
 ## AUTOMATIC111
 
-<Image src={AUTOMATIC111} alt="AUTOMATIC111 for private AI image generation totally locally" />
+
 
 [This open-source option](https://github.com/AUTOMATIC1111/stable-diffusion-webui) requires that you be comfortable with GitHub and git at a minimum, but it's very powerful because it allows you to run StableDiffusion, as well as checkpoint models based on StableDiffusion, 
 completely locally. 
@@ -144,7 +125,7 @@ AUTOMATIC111 is the way to go.
 
 If you are working with AUTOMATIC111, one of the more popular websites for finding checkpoint, LoRa and LyCORIS models is civit.ai which hosts a vast array of both SFW and NSFW models contributed by the community.
 
-<Image src={civitAI} alt="civit.ai" />
+
 
 ## Prompt basics 
 
@@ -182,7 +163,7 @@ can help.
 
 ## Why generate images with AI?
 
-<Image src={whyCreateAIImages} alt="Why create AI images?" />
+
 
 > Neon punk style. An android artist wearing a french beret, sitting in the greek thinker position, and staring at a half-finished canvas of an oil painting landscape. In a french loft apartment with an open window revealing a beautiful cityscape. 
 
@@ -197,9 +178,14 @@ certainly less involved.
 I've gotten negative comments on Hacker News before (I know, it sounds unlikely, but hear me out) over my use of AI-generated images in my blog posts, but in fairness to those commenters who didn't feel the need 
 to use their real names in their handles, they woke up and started their day with a large warm bowl of Haterade. 
 
-<Image src={haterade} alt="Starting your day with a warm glass of Haterade" />
+
 
 I believe that the content I produce is more interesting overall because it features pretty images that help to tell my overall story. 
 
 
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

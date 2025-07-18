@@ -1,17 +1,3 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-
-import cursorConvoOne from '@/images/cursor-convo-1.webp'
-import cursorConvoTwo from '@/images/cursor-convo-2.webp'
-import cursorConvoThree from '@/images/cursor-convo-3.webp'
-import cursorModelSwitch from '@/images/cursor-model-switching.webp'
-import codingWithCursor from '@/images/cursor-ai-assisted-coding.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
 The first time my colleague at Pinecone got me to try out Cursor, I hated it. VSCode always felt too heavy to me - the experience reminded me of running Windows. (Cursor is a fork of VSCode, with significant modifications).
 
 *Why am I clicking all of this garbage? What happened to all my beautiful terminal real estate?  Could you throw up any MORE toast notifications when I try to load a file to edit?*
@@ -30,7 +16,7 @@ Cursor changed the primary interface to natural language.
 
 ## Natural language interfaces are the key disruptor
 
-<Image src={cursorConvoTwo} alt="Conversing with Cursor to build software more quickly" />
+
 
 In retrospect, I think the Cursor team's decision to use VSCode as the starting point makes a lot of sense. VSCode was is a fully featured IDE, meaning that it puts code front and center and offers programmers many rich tools for understanding, finding, 
 refactoring, debugging and writing code. 
@@ -59,7 +45,7 @@ If copy and pasting back and forth between ChatGPT.com is crawling, then Cursor'
 Being able to discuss the code, architecture, a single file, or to tell Cursor to use a file as inspiration when 
 making other changes is my favorite feature of Cursor.
 
-<Image src={cursorConvoThree} alt="Mentioning a file in Cursor" />
+
 
 ### Model interop 
 
@@ -67,7 +53,7 @@ LLMs and models appear to be heading toward rapid commoditization. They're at le
 
 If Claude 3.5 Sonnet, the current champ of commercial LLMs for coding at this moment, failed to meet your needs in that last refactor request - you could try the exact same prompt with ChatGPT 4o in one click.
 
-<Image src={cursorModelSwitch} alt="Switching between models in Cursor" />
+
 
 I'm seeing this pattern in many popular projects. Users want control over which model they're running and want to be able to swap them quickly or provide their own API keys as needed to avoid limits.
 
@@ -82,3 +68,8 @@ I expect this to be the next big thing, and I expect the Cursor team does, too. 
 
 Once all the kinks are worked out, I look forward to being able to rip through a dozen repos that all need fixes, updates, patches over my morning coffee.
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

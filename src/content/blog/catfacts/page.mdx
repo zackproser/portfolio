@@ -1,16 +1,3 @@
-import Image from 'next/image'
-import Link from 'next/link'
-
-import catfactsBlog from '@/images/catfacts-screens/catfacts-blog.webp'
-import catfactsScreenshot from '@/images/catfacts-screens/catfacts.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={catfactsBlog} alt="pick up the phone - it's CATFACTS"/>
-
 <Link href="https://github.com/zackproser/super-catfacts-attack-service">Visit the project page on GitHub</Link>
 
 ## What Developers Are Saying About This Project
@@ -21,7 +8,7 @@ It was important to me to get community buy-in and feedback on this project from
 
 > "F#@KING STOP WITH THE F#@KING CATFACTS DUDE. SERIOUSLY. THIS WAS NOT FUNNY AFTER THE FIRST 30 MINUTES. I HAD TO PAY $75 TO AT&T ON MY ONE DAY OFF TO CHANGE MY PHONE NUMBER. I GET THE CONCEPT OF THE PRANK AND WE'RE FRIENDS BUT YOU ARE SERIOUSLY PUSHING ME RIGHT NOW AND I DON"T APPRECIATE IT. DO NOT TEXT ME AGAIN."
 
-<Image src={catfactsScreenshot} alt="Catfacts prank screenshot" />
+
 
 ## Hear the Super CatFacts Call Menu
 
@@ -442,3 +429,8 @@ When an admin sends a stop command with the number of the victim whose phone sho
         }
     }
 ```
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

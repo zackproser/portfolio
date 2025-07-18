@@ -1,16 +1,3 @@
-import  Image  from 'next/image'
-
-import hackerEvaluation from '@/images/hacker-evaluation.webp'
-import frustratedDeveloper from '@/images/frustrated-developer.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={frustratedDeveloper} alt="Your crappy tools are frustrating developers because they don't work as advertised" />
 <figcaption>A frustated senior developer trying our your improperly tested dev tool for the first time</figcaption>
 
 When I evaluate a new AI-assisted developer tool, such as [codeium](/blog/codeium-review), GitHub CoPilot or OpenAI's ChatGPT4, this is the thought process I use to determine if it's something I can't live without or if 
@@ -55,3 +42,8 @@ Most experienced developers would rather move on and give your competitors a sho
 
 Trust me - when I was in the market for an AI-assisted video editor, I spent 4 evenings in a row trying everything from incumbents
 like Vimeo to small-time startups before finding and settling on Kapwing AI, because it was the first tool that actually worked and supported my desired workflow. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

@@ -1,10 +1,4 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import simpleStepsGif from '@/images/stages.gif'
-import elmArchitecture from '@/images/elm-architecture.svg'
-import bubbleteaStagesGif from '@/images/bubbletea-stages.gif'
 
-<Image src={simpleStepsGif} alt="Demo of the bubbletea stages CLI workflow" />
 
 <Link href="https://github.com/zackproser/bubbletea-stages">Check out the project code on GitHub</Link>
 
@@ -80,7 +74,7 @@ To be honest, it took me a couple of tries with some example bubbletea programs 
 really clicking for me - but I read the bubbletea tutorials a couple of times and kept at it and eventually it started to feel natural to extend and manage a program via distinct message types and 
 handlers in the update function - and even pleasant because it did help me to keep the program logic clear and maintainable even as it grew in complexity and functionality.
 
-<Image src={elmArchitecture} alt="The Elm architecture that inspired Bubbletea" />
+
 
 * `Init` - useful for performing initial setup work or to kick off the main process
 * `Update` - called by Bubbletea - used for handling I/O in an asynchronous manner, which keeps the UI loop snappy and responsive. 
@@ -100,7 +94,7 @@ func runStage() tea.Msg {
 		// Run the current stage, and record its result status
 		stages[stageIndex].Error = stages[stageIndex].Action()
 	}
-	return stageCompleteMsg{}
+	return stageCompleteMsg
 }
 ```
 
@@ -191,3 +185,8 @@ With these building blocks, you can create robust tools that can recovery gracef
 
 Be sure to <Link href="https://github.com/zackproser/bubbletea-stages">check out the sample code on GitHub</Link>. Thank you for reading!
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

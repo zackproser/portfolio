@@ -3,5 +3,5 @@
   "date": "2023-11-27",
   "title": "Deploying a jump host for the Pinecone AWS Reference Architecture",
   "description": "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
-  "image": "/images/pinecone-ref-arch-jumphost.webp"
+  "image": "https://zackproser.b-cdn.net/images/pinecone-ref-arch-jumphost.webp"
 }

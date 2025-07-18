@@ -1,14 +1,3 @@
-import Newsletter from '@/components/NewsletterWrapper'
-
-import OfficeOracle from '@/images/michael-scott-oracle.webp'
-import OfficeOracle2 from '@/images/michael-scott-oracle-2.webp'
-import OfficeOracle3 from '@/images/office-oracle-3.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import Image from 'next/image'
-
-
 Image src={OfficeOracle} alt="Office Oracle AI chatbot project" />
 
 ## What is this?
@@ -21,7 +10,7 @@ for yourself, to produce an AI chatbot with any identity, who can answer factual
 For the purposes of demonstration, I used the popular Office television series, but this same stack and approach will work for AI chatbots who can answer for a company's documentation, or specific processes, products, 
 policies and more. 
 
-<Image src={OfficeOracle3} alt="Office Oracle AI chatbot project" />
+
 
 ## Video series
 
@@ -54,3 +43,8 @@ The data workbench notebook handles fetching, parsing and writing the data to lo
 The test workbench notebook demonstrates how to create a streamlined test harness that allows you to spot check and tweak your data model without requiring significant development changes to your application layer. 
 
 I also open sourced [the next.js application itself](https://github.com/zackproser/office-oracle)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

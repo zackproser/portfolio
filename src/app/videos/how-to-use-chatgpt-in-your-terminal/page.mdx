@@ -1,18 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import chatGPTInYourTerminal from '@/images/chatgpt-in-your-terminal.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2024-05-29",
-  title: "How to use ChatGPT in your terminal",
-  description: "Did you know you can use ChatGPT in your terminal? No more copying and pasting...",
-  image: chatGPTInYourTerminal
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   className="youtube-video"
@@ -24,3 +10,8 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 If you're still copying and pasting back and forth between ChatGPT in your browser and your code in your IDE, you're missing out. 
 
 Check out how easily you can use ChatGPT in your terminal!
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

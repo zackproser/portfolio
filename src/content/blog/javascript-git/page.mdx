@@ -1,13 +1,5 @@
 
-import drunkWithPower from '@/images/drunk-with-power.webp' 
-import panthaliaGitFlow from '@/images/panthalia-git-flow.webp'
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-<Image src={drunkWithPower} alt="Using isomorphic-git in a Vercel serverless function" />
 
 What do you do if you need to run git in a context where you cannot install whatever you want? What if you need to run git 
 in a serverless environment that only supports JavaScript?
@@ -26,7 +18,7 @@ I'm developing a tool for myself to streamline my blog post authoring workflow, 
 
 The mobile client allows me to author new blog posts rapidly, because I tend to have several new post ideas at one time. This means the name of the game is capture speed.
 
-<Image src={panthaliaGitFlow} alt="Panthalia workflow" />
+
 <figcaption>The workflow that Panthalia performs to make changes to my website that hosts my blog</figcaption>
 
 As you can see in the above flow diagram, Panthalia makes changes to my site via git. It clones my site, adds new posts, pushes changes up on a new branch and uses a GitHub token to open pull requests. 
@@ -174,3 +166,8 @@ I knew that I wanted to ship Next.js and deploy it on Vercel because the develop
 in the JavaScript serverless function context. 
 
 The [isomorphic-git project](https://isomorphic-git.org/) allows me to implement a complete programmatic git workflow in my Next.js app running on Vercel, and it works very well.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

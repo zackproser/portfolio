@@ -1,19 +1,3 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
-
-import customAlpacaDataset from '@/images/custom-alpaca-dataset.webp'
-import myWriting from '@/images/my-writing.webp'
-import huggingFaceDatasetUploaded from '@/images/huggingface-dataset-uploaded.webp'
-
-import ConsultingCTA from '@/components/ConsultingCTA'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={customAlpacaDataset} alt="How to create a custom dataset for fine-tuning LLMs like Llama 3.1" />
-
 ## Table of contents
 
 
@@ -68,7 +52,7 @@ For the purpose of demonstration, the companion Jupyter Notebook fetches and pro
 
 I use MDX for my content. MDX is Markdown interspersed with JSX / JavaScript components.
 
-<Image src={myWriting} alt="My writing" />
+
 
 Getting my whole site within a Jupyter Notebook is a single command: 
 
@@ -90,7 +74,7 @@ def create_alpaca_entry(content):
     metadata = extract_metadata(content)
     cleaned_content = clean_content(content)
 
-    article_name = metadata.get('title', 'an article').strip('"')
+    article_name = ('title', 'an article').strip('"')
 
     return {
         "instruction": f'Write an article about "{article_name}"',
@@ -169,5 +153,10 @@ https://huggingface.co/datasets/zackproser/wakka-test/blob/main/training_data.js
 
 If all went well, you should be able to see your dataset on Hugging Face at the URL in the output.
 
-<Image src={huggingFaceDatasetUploaded} alt="Hugging Face dataset uploaded" />
 
+
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

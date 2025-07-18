@@ -3,5 +3,5 @@
   "date": "2024-05-05",
   "title": "Vector Databases in Production for Busy Engineers: CI/CD",
   "description": "I wrote the CI/CD chapter for Pinecone's latest book",
-  "image": "/images/vector-databases-in-production-for-busy-engineers.webp"
+  "image": "https://zackproser.b-cdn.net/images/vector-databases-in-production-for-busy-engineers.webp"
 }

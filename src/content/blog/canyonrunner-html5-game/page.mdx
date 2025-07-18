@@ -1,27 +1,6 @@
-import Newsletter from '@/components/NewsletterWrapper'
-
-import canyonRunnerBlog from '@/images/canyonrunner-blog.webp'
-import canyonRunnerSplash from '@/images/canyonrunner.webp'
-
-import aerialCombat from '@/images/canyonrunner-screens/CanyonRunner-Aerial-Combat.webp'
-import chapterScreen from '@/images/canyonrunner-screens/CanyonRunner-Chapter-Screen.webp'
-import environmentalEffects from '@/images/canyonrunner-screens/CanyonRunner-Environmental-Effects.webp'
-import mobileTouchpad from '@/images/canyonrunner-screens/CanyonRunner-Mobile-Touchpad.webp'
-import canyonrunnerSuccess from '@/images/canyonrunner-screens/CanyonRunner-Success.webp'
-import canyonrunnerTitleScreen from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
-import multipleEndings from '@/images/canyonrunner-screens/CanyonRunner-Two-Different-Endings.webp'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
 <Link
   href="https://canyonrunner.pages.dev">
-<Image src={canyonRunnerSplash} alt="CanyonRunner - a complete HTML5 game" />
+
 </Link>
 
 ## I Open Sourced My Game
@@ -47,31 +26,31 @@ Here's a look at some screenshots from the actual game. I wanted the game to hav
 
 **_Intense Aerial Dogfights. Fight Off Marauding Bandits_**.
 
-<Image src={aerialCombat} alt="HTML5 dogfighting" />
+
 
 **_Wind Your Way Through the Eerie Story_**
 
-<Image src={chapterScreen} alt="CanyonRunner Chapter Screen" />
+
 
 **_Intense Environmental Effects_**
 
-<Image src={environmentalEffects} alt="CanyonRunner Environmental Effects" />
+
 
 **_Auto-detects Mobile agents and renders a touchpad_**
 
-<Image src={mobileTouchpad} alt="Game auto-detects mobile layouts and renders a touchpad when necessary" />
+
 
 **_Catchy Music Keeps The Pace Throughout The Game_**
 
-<Image src={canyonrunnerSuccess} alt="CanyonRunner Success" />
+
 
 **_Save System Keeps Your Score & Progress_**
 
-<Image src={canyonrunnerTitleScreen} alt="CanyonRunner Title Screen" />
+
 
 **_Multiple Endings For Higher Replay Value_**
 
-<Image src={multipleEndings} alt="CanyonRunner Two Different Endings" />
+
 
 ## Playthrough Video
 
@@ -599,9 +578,7 @@ One of the first contact points our players will have with our game is the splas
 
 Here is the full MainMenu.js file for CanyonRunner, which sets up the intro splashscreen and waits for the player to click the Start button:
 ```javascript
-    CanyonRunner.MainMenu = function(game) {
-
-    };
+    CanyonRunner.MainMenu = function(game) ;
 
     CanyonRunner.MainMenu.prototype = {
 
@@ -1210,3 +1187,8 @@ As you can see in the code, Phaser is doing all the heavy lifting for us when it
 I hope this tutorial and examination of some of CanyonRunner's game mechanics and features was helpful to you. If it was, please say thanks by sharing this post or starring [the CanyonRunner repo on Github](https://github.com/zackproser/CanyonRunner).
 
 If something isn't clear or if you'd like to see some other feature or mechanic explained that isn't called out here, or if you just have general feedback, please [drop me an e-mail.](mailto:zackproser@gmail.com)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

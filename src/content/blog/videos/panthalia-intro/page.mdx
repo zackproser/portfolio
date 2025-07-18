@@ -1,14 +1,3 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import panthaliaVideo from '@/images/panthalia-video.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 <iframe 
   class="youtube-video"
   src="https://www.youtube.com/embed/sz0vehJQ_Jo"
@@ -39,3 +28,8 @@ I've been working on this side project for several months now, and it's ready en
 * Start and complete high quality blog posts in MDX one-handed while on the go
 
 Panthalia is open-source and available at [github.com/zackproser/panthalia](https://github.com/zackproser/panthalia)
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

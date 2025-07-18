@@ -3,5 +3,5 @@
   "date": "2023-07-18",
   "title": "ggshield can save you from yourself. Never accidentally commit secrets again",
   "description": "Stop yourself from committing a secret to git with ggshield",
-  "image": "/images/leaking-a-secret.webp"
+  "image": "https://zackproser.b-cdn.net/images/leaking-a-secret.webp"
 }

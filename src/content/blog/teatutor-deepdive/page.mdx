@@ -1,19 +1,11 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import Image from 'next/image'
-import teatutorLogo from '@/images/teatutor-logo.webp'
-import bubbleViewportExample from '@/images/bubble-viewport-example.gif'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata); library from Charm.sh. It can be served over an SSH connection.",
+library from Charm.sh. It can be served over an SSH connection.",
  image: teatutorLogo,
   slug: '/blog/teatutor-deepdive',
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
-<Image src={teatutorLogo} alt="Tea Tutor Bubbletea SSH Quiz Application"/>
+
+
 
 [View and clone the project here](https://github.com/zackproser/teatutor)
 
@@ -94,7 +86,7 @@ Here’s the WindowSizeMsg handler in my app. As you can see, we’re actually h
 
 In the case of Tea Tutor, I render the user’s final score in a Viewport “Bubble”:
 
-<Image src={bubbleViewportExample} alt="Bubbletea viewport example" />
+
 
 However, I was noticing an unfortunate bug whenever I ran my app over SSH and connected to it as a client:
 
@@ -176,7 +168,7 @@ I found that when working with multiple views, it’s nice to have your sub-view
 
 ```go 
 func(m model) View() string {
-    s: = strings.Builder {}
+    s: = strings.Builder 
     if m.displayingResults {
         s.WriteString(m.RenderResultsView())
     } else if m.playingIntro {
@@ -193,3 +185,8 @@ func(m model) View() string {
 This would also work well with a switch statement.
 
 That’s all for this post! Thanks for reading and keep an eye out for the next post in the series!
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

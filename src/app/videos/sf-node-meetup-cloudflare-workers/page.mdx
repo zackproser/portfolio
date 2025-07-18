@@ -1,18 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import workersTalk from '@/images/cloudflare-workers-talk.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2018-06-01",
-  title: "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
-  description: "How we dogfooded Cloudflare workers on the API team",
-  image: workersTalk
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   class="youtube-video"
@@ -26,3 +12,8 @@ On the Cloudflare API team, we were responsible for api.cloudflare.com as well a
 both properties, without any downtime.
 
 And no, if you're paying attention, my name is not Zack Prosner, it's Zack Proser :) 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

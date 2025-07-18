@@ -1,13 +1,4 @@
-import { Button } from '@/components/Button'
-import Image from 'next/image'
 
-import mlOps from '@/images/mlops.webp'
-import zpMLOps from '@/images/zp-mlops.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-
-<Image src={mlOps} alt="MLOps" />
 <figcaption>I've been on an MLOps adventure lately, taking any excuse to get hands on with neural nets, fine-tuning, and creating datasets.</figcaption>
 
 ## Table of contents
@@ -18,7 +9,7 @@ Neural networks fascinate me. As an application and infrastructure developer by 
 
 I'm going looking for tedium, frustration, and sharp edges and I'm rarely disappointed.
 
-<Image src={zpMLOps} alt="ZP MLOps" />
+
 <figcaption>I learn by building, so I've been doing a ton of MLOps focused projects lately</figcaption>
 
 ## Cloud GPU Services and Jupyter Notebooks
@@ -92,3 +83,7 @@ Looking ahead, I'm excited to explore:
 4. **MLOps at Scale**: Tackling the challenges of large-scale deployment, monitoring, and maintenance of ML systems in production environments.
 5. Developing more sophisticated custom datasets for various domains.
 6. Experimenting with different model architectures to solve complex problems.
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

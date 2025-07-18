@@ -1,26 +1,9 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { createMetadata } from '@/utils/createMetadata'
-import mastraWorkshopHero from '@/images/mastra-workshop-hero.webp'
-import aieWorkshop from '@/images/aie-workshop-room.webp'
-import aieFisheye from '@/images/aie-workshop-fisheye.webp'
-import zackAndNick from '@/images/zack-and-nick.webp'
-import zackExplaining from '@/images/zack-explaining.webp'
-import good1 from '@/images/good1.jpeg'
-import good2 from '@/images/good2.png'
-import good3 from '@/images/good3.jpg'
-import good4 from '@/images/good4.jpeg'
-import feedback1 from '@/images/mastra-workshop-feedback-1.webp'
-import feedback2 from '@/images/mastra-workshop-feedback-2.webp'
-import mastraWorkshopGif from '@/images/mastra-workshop.gif'
-import GitHubRepoCard from '@/components/GitHubRepoCard'
 
-<Image src={mastraWorkshopHero} alt="Mastra workshop hero - AI Pipelines & Agents in TypeScript" />
 
 On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop at the **AI Engineer World Fair** in San Francisco.
 
 <figure>
-  <Image src={zackAndNick} alt="Zack and Nick ready to teach at the AI Engineer World Fair" />
+  
   <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
     Nick Nisi and I on stage delivering our agentic workshop at the AI Engineer World Fair in San Francisco
   </figcaption>
@@ -29,20 +12,14 @@ On June 3rd, 2025, my colleague **Nick Nisi** and I hosted a two hour workshop a
 The event gathered more than 70 engineers eager to build AI powered workflows in their own products using **Mastra.ai** - a new framework that allows you to orchestrate AI tasks using pure TypeScript.
 
 <figure>
-  <Image 
-    src={mastraWorkshopGif} 
-    alt="Mastra workshop in action - building AI workflows with TypeScript"
-    width={640}
-    height={360}
-    className="rounded-lg shadow-lg"
-  />
+  
   <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
     We had over 70 engineers attend, follow our materials and use our repo to reach the goal state: building an agentic AI application 
   </figcaption>
 </figure>
 
 <figure>
-  <Image src={zackExplaining} alt="Zack explaining AI workflows and Mastra concepts on stage" />
+  
   <figcaption className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
     Breaking down the core concepts of AI pipelines and agent workflows using Mastra's TypeScript framework
   </figcaption>
@@ -251,23 +228,23 @@ Here are actual memes generated during our workshop, showcasing how workplace fr
 
 ### Open Office Nightmares → Workplace Reality
 
-<Image src={good1} alt="Open floor plan noise meme" />
+
 
 *When they move all the engineers to an open floor plan with noisy co-workers...*
 
 ### Compensation Blues → The Talent Paradox
 
-<Image src={good2} alt="Excellent but underpaid meme" />
+
 
 *Being told you're excellent at your job but somehow still underpaid...*
 
 ### The Helper's Dilemma → Salary Irony
 
-<Image src={good3} alt="Helping higher paid colleague meme" />
+
 
 *When you refer an engineer who constantly asks for your help but gets paid more than you...*
 
-<Image src={good4} alt="Salary disparity meme" />
+
 
 *That awkward moment when your mentee's starting salary is higher than your current one...*
 
@@ -310,7 +287,7 @@ One of us stayed on the mic while the other roamed the room answering questions 
 
 We tied the workshop back to lessons from my [earlier talk at a16z](/blog/a16z-sf-dec-2023-ai-apps-production) about taking prototypes to production. This time, it was all coded live in TypeScript with the Mastra.ai SDK.
 
-<Image src={aieFisheye} alt="Workshop room fisheye view" />
+
 
 By the end, almost every attendee succeeded in getting the finished agent running. The energy in the room was incredible, and we were fired up by how many developers were brainstorming ways to use Mastra.ai in their own workflows.
 
@@ -319,8 +296,8 @@ By the end, almost every attendee succeeded in getting the finished agent runnin
 The response from workshop attendees was overwhelmingly positive. Here's what engineers said about the experience:
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-  <Image src={feedback1} alt="Workshop feedback highlighting practical learning" className="rounded-lg shadow-lg" />
-  <Image src={feedback2} alt="Workshop feedback praising hands-on approach" className="rounded-lg shadow-lg" />
+  
+  
 </div>
 
 The feedback validated our approach of combining humor with serious technical patterns - attendees appreciated both the engaging format and the practical, production-ready skills they gained.
@@ -364,3 +341,8 @@ Want to bring hands-on AI training to your organization? I provide workshops and
 </div>
 
 We can't wait to run more of these sessions in the future. If you want to follow along with the workshop materials yourself, head to the [mastra-agents-meme-generator](https://github.com/workos/mastra-agents-meme-generator) repo.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

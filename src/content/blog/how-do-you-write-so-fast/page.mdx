@@ -1,22 +1,5 @@
 
-import writeSoFast from '/images/write-so-fast.webp' 
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
- title: "How do you write so fast?",
- author: "Zachary Proser",
- date: "2024-4-17",
- description: "Sometimes someone will ask me how I am able to write new content so quickly. This is my answer. ",
- image: writeSoFast,
-});
-
-<Image src={metadata.image} alt="How do you write so fast?" />
 
 ## How do I write so fast?
 
@@ -41,3 +24,8 @@ When I have an idea that I want to develop into a full post, I will capture it i
 I've found there's a significant motivational benefit to ***only needing to finish an open pull request*** versus writing an entire article from scratch. 
 
 Going from post fragment (or, the kernel of the idea) to open pull request reduces the perceived lift of the task.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

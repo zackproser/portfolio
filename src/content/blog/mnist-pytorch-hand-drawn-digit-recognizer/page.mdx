@@ -1,22 +1,3 @@
-import Image from 'next/image'
-import { ContentCard } from '@/components/ContentCard'
-import { createMetadata } from '@/utils/createMetadata'
-
-import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
-import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
-import vercelPythonDataTooLong from '@/images/vercel-python-data-too-long.webp'
-import vercelPythonGithubExcludeFiles from '@/images/vercel-python-github-exclude-files.webp'
-import neuralNetwork from '@/images/pytorch-mnist-neural-network.webp'
-import modalDashboard from '@/images/modal-dashboard.webp'
-import pytorchMNISTLogo from '@/images/pytorch-mnist-logo.webp'
-import MNISTMindMapperLogo from '@/images/MNIST-mind-mapper-hero.webp'
-import MNISTTestImage from '@/images/mnist-test-images.webp'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata);
-
-<Image src={mnistMindMapper} alt={"The MNIST mind mapper"} />
-
 ## Table of contents
 
 ## Demo of the "MNIST mind-mapper" app in action
@@ -34,7 +15,7 @@ You can watch this short demo to see how the app works:
 
 I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
 
-<Image src={neuralNetwork} alt={"A neural network"} />
+
 
 I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
 to play with it, because interacting with something is more engaging than reading a text description of it.
@@ -74,7 +55,7 @@ I open source most of my work, and this project is no exception:
 
 Let's step through how the app works, end to end:
 
-<Image src={mnistMindMapperFlow} alt={"The MNIST mind mapper"} />
+
 
 The frontend exposes a small drawable canvas, which the user scribbles on. 
 
@@ -179,7 +160,7 @@ With the training complete, I wanted to quickly sanity check the trained network
 You can view the entire `main.py` file in [the repository](https://github.com/zackproser/pytorch-mnist/blob/main/main.py), but we'll examine the route itself here, which runs a self-test and shares 
 the output as a PNG image like so: 
 
-<Image src={MNISTTestImage} alt={"MNIST test image"} />
+
 
 ```python
 app = FastAPI()
@@ -232,7 +213,7 @@ Unfortunately, the docs Vercel has for using their Python runtime are very spars
 
 Errors are also opaque. The showstopper for getting my Python backend deployed successfully on Vercel was an unintuitive error message: `data too long`. 
 
-<Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
+
 
 I was pretty sure that pytorch and torchvision were likely blowing out the 4.5MB size limit on serverless functions, but there wasn't a great way to confirm this. My model/weights file was just under 400KB.
 
@@ -240,7 +221,7 @@ Things that you'd expect to be extensively documented, such as how to get around
 
 You find extremely important details like this hiding out in 4 year old GitHub issue comment threads: 
 
-<Image src={vercelPythonGithubExcludeFiles} alt={""} />
+
 
 ## Converting to ONNX and trying again
 
@@ -256,7 +237,7 @@ functioned as intended. The potential size savings from ONNX did not end up maki
 
 In researching platforms that host your Python code as cloud functions, I found modal.com which was lightweight and fast to set up. 
 
-<Image src={modalDashboard} alt={"Modal.com dashboard"} />
+
 
 I ended up converting the local version of my Fast API Python backend to a file I named `modal_function.py` which I 
 then deployed like so: 
@@ -269,3 +250,8 @@ being exactly what I wanted in the absence of that.
 Modal.com lets you sign up quickly, install their CLI and deploy your Python code as a serverless function or a deployed REST API, or an ephemeral testing endpoint. So far, it's been great.
 
 There is the issue of cold starts, because Modal will spin down your container when your service is not receiving traffic, but overall I've been impressed with the developer experience. 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

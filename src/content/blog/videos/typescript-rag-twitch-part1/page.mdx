@@ -1,16 +1,9 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import ragPart1 from '@/images/typescript-rag-livestream-part1.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-import rawMetadata from './metadata.json' assert { type: 'json' };
-export const metadata = createMetadata(rawMetadata); Part #1",
+Part #1",
   description: "Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
   image: ragPart1
 })
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
 
 <iframe 
   className="youtube-video"
@@ -26,3 +19,8 @@ This is an excellent video to watch if you are learning about Generative AI, wan
 
 The majority of this content was originally captured as a live Twitch.tv stream co-hosted by Roie (rschwabco) and myself (zackproser). Be sure to follow us on Twitch for more Generative AI deep dives, tutorials, live demos, and conversations about the rapidly developing world of Artificial Intelligence.
 
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

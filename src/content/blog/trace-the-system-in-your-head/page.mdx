@@ -1,21 +1,4 @@
-import traceTheSystem from '/images/trace-the-system-in-your-head.webp' 
 
-import { Newsletter } from '@/components/Newsletter'
-
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
- title: "Trace the system in your head",
- author: "Zachary Proser",
- date: "2024-4-10",
- description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
- image: traceTheSystem,
-})
-
-<Image src={traceTheSystem} alt="Trace the system in your head" height={600} />
 
 One of the best engineering managers I've ever worked with was at Cloudflare.
 
@@ -46,3 +29,8 @@ The longer I do this job, the more I notice the most effective developers and te
 They can point you to where you need to go - even if they haven't committed to the repositories they're referring to. 
 
 Trace the whole system in your head. Even the parts that don't belong to your team!
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

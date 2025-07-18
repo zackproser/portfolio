@@ -1,12 +1,7 @@
 
-import { ArticleLayout } from '@/components/ArticleLayout'
-import Image from 'next/image'
-import Link from 'next/link'
-import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
 
-export default (props) => <ArticleLayout {...props} />
 
-<Image src={aiAssistedDevTools} alt="AI-Assisted Developer Tools" />
+
 
 ## Introduction
 
@@ -430,3 +425,8 @@ Enhanced IDE tools are more comprehensive than autocompletion tools. For example
 ## Remember to bookmark and share 
 
 This page will be updated regularly with new information, revisions and enhancements. Be sure to share it and check back frequently.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

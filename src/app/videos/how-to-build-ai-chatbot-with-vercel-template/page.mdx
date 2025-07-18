@@ -1,20 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 
-import Link from 'next/link'
-
-import aiChatbot from '@/images/ai-chatbot-vercel-template.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-07-03",
-  title: "How to build an AI chatbot using Vercel's ai-chatbot template",
-  description: "How to extend and modify Vercel's base ai-chatbot template for your own purposes",
-  image: aiChatbot
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <iframe 
   class="youtube-video"
@@ -28,3 +12,8 @@ export default (props) => <ArticleLayout metadata={metadata} {...props} />
 Curious how you might take Vercel's ai-chatbot template repository from GitHub and turn it into your own GPT-like chatbot of any identity? That's what I walkthrough in this video. 
 
 I show the git diffs and commit history while talking through how I integrated langchain, OpenAI, ElevenLabs for voice cloning and text to speech and Pinecone.io for the vector database in order to create a fully featured chat-GPT-like custom AI bot that can answer, factually, for an arbitrary corpus of knowledge.
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}
