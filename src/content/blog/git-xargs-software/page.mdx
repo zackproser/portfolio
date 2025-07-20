@@ -1,8 +1,20 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
 ----
 
 ## Demo
 
-
+<Image src="https://zackproser.b-cdn.net/images/git-xargs-demo.gif" alt="git-xargs demo" width={800} height={600}/>
 
 ## Intro
 
@@ -21,7 +33,7 @@ git-xargs \
 
 In this example, every repo in the my-example-org GitHub org have a CONTRIBUTIONS.txt file added, and an easy to read report will be printed to STDOUT :
 
-
+<Image src="https://zackproser.b-cdn.net/images/git-xargs-table.webp" alt="Git xargs table report" width={800} height={600}/>
 
 ## Try it out
 
@@ -30,6 +42,3 @@ git-xargs is free and open-source - so you can grab it here: [https://github.com
 ## Learn more
 
 Read [the introductory blog post](https://blog.gruntwork.io/introducing-git-xargs-an-open-source-tool-to-update-multiple-github-repos-753f9f3675ec) to better understand what git-xargs can do and its genesis story.
-
-
-

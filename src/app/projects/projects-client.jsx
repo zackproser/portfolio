@@ -176,21 +176,19 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                         className="overflow-hidden hover:shadow-md transition-shadow duration-300 h-full flex flex-col bg-white dark:bg-slate-800"
                       >
                         <div className="relative h-48">
-                          <Image
-                            src={project.logo}
+                          <Image src={project.logo}
                             alt={project.name}
                             fill
                             className="object-cover"
-                          />
+                           />
                           {project.company && companyLogos[project.company] && (
                             <div className="absolute top-2 right-2">
                               <div className="relative flex h-8 w-8 flex-none items-center justify-center shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                                <Image
-                                  src={companyLogos[project.company]}
+                                <Image src={companyLogos[project.company]}
                                   alt={project.company}
                                   className="h-5 w-5"
                                   unoptimized
-                                />
+                                 width={800} height={600}/>
                               </div>
                             </div>
                           )}
@@ -232,21 +230,19 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                         className="flex flex-col md:flex-row gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:shadow-sm transition-shadow"
                       >
                         <div className="relative w-full md:w-48 h-48 flex-shrink-0">
-                          <Image
-                            src={project.logo}
+                          <Image src={project.logo}
                             alt={project.name}
                             fill
                             className="object-cover rounded-lg"
-                          />
+                           />
                           {project.company && companyLogos[project.company] && (
                             <div className="absolute top-2 right-2">
                               <div className="relative flex h-8 w-8 flex-none items-center justify-center shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                                <Image
-                                  src={companyLogos[project.company]}
+                                <Image src={companyLogos[project.company]}
                                   alt={project.company}
                                   className="h-5 w-5"
                                   unoptimized
-                                />
+                                 width={800} height={600}/>
                               </div>
                             </div>
                           )}

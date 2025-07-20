@@ -1,3 +1,19 @@
+import { Newsletter } from '@/components/Newsletter'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src={metadata.image} alt="How do you write so fast?"  width={800} height={600}/>
 <figcaption>Codeium is still my favorite AI-assisted autocomplete tool. Here's a look at why, and at the company behind it.</figcaption>
 
 ## Table of contents
@@ -12,14 +28,14 @@ Now, I'm revisiting Codeium. I'll explain why I still prefer Codeium over other 
 
 While I have VSCode and Cursor installed and will occasionally jump between IDEs, for the most part I code in Neovim, and run the [AstroNvim](https://astronvim.com/) project. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/astro-live.webp" alt="AstroNvim is my favorite IDE" width={800} height={600} />
 <figcaption>AstroNvim is an open-source project that composes Neovim plugins together using a Lua API to create a full fledged IDE experience in your terminal. And Codeium's Neovim integration works well here.</figcaption>
 
 [AstroNvim](https://astronvim.com/) is an open-source community-maintained configuration of Neovim plugins and associated config to turn stock Neovim into an IDE similar to VSCode.
 
 These days, I primarily work with the Next.js framework, and ship JavaScript, Typescript, Python, and more while working on full stack applications, data science Jupyter Notebooks, and large scale distributed systems defined via Infrastructure as Code.
 
-
+<Image src="https://zackproser.b-cdn.net/images/codeium-dashboard.webp" alt="Codeium dashboard shows your completions and streaks" width={800} height={600} />
 <figcaption>Codeium's dashboard keeps track of your completions and streaks.</figcaption>
 
 ## Why Codeium is Still My Favorite Tool
@@ -32,7 +48,7 @@ This feature speeds up the development process and reduces errors, making coding
 
 ### **Proprietary context-aware model leads to higher accuracy**
 
-
+<Image src="https://zackproser.b-cdn.net/images/codeium-context-module-workflow.webp" alt="Codeium's context module is a big part of why it all works so well" width={800} height={600} />
 
 Codeium's proprietary model ([ContextModule](https://codeium.com/blog/context-aware-everything-more-advanced-realtime-context-than-github-copilot)) takes into account: 
 
@@ -197,6 +213,3 @@ Codeium provides robust security features, including end-to-end encryption for d
 ### **Transparency and Trust**
 
 Codeium's transparent approach to handling user data and its proactive communication about privacy practices have helped it build trust within the developer community. This is particularly important in an era where data breaches and privacy violations are common.
-
-
-

@@ -51,13 +51,12 @@ export default function DevToolsPageClient({ initialTools }: DevToolsPageClientP
       intro="Compare different AI-assisted developer tools to find the best fit for your needs"
     >
       <div className="relative w-full h-64 mb-8">
-        <Image
-          src={heroImage}
+        <Image src={heroImage}
           alt="AI Hacking"
           layout="fill"
           objectFit="cover"
           className="rounded-lg"
-        />
+         />
       </div>
       <DevToolSearchFilter 
         tools={initialTools} 

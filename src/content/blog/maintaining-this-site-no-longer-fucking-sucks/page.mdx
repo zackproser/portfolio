@@ -1,3 +1,17 @@
+import Newsletter  from '@/components/NewsletterWrapper'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+import { Inter } from 'next/font/google'
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 Ten days ago, I wrote about how maintaining the last generation of my personal portfolio site <Link href="/blog/maintaining-this-site-fucking-sucks">absolutely FUCKING SUCKED</Link>, and 
 how I knowingly did things the painful way on purpose for years.
 
@@ -5,7 +19,7 @@ And yet, here I am *exactly ten days later*, writing that maintaining this site 
 
 ***
 
-
+<Image src="https://zackproser.b-cdn.net/images/holy-computer.webp" width={800} height={600} alt="Maintaining this site no longer fucking sucks" />
 
 ## I tried Vercel, and the latest Next.js
 
@@ -20,7 +34,7 @@ In this post, I'll share what I learned during my most recent total site re-writ
 ### Even as a grumpy developer,  I was pleasantly surprised. This stuff is *fast*
 Why? Error reporting is light-years better than I ever remember it being for frontend development. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/next-js-errors.webp" width={800} height={600} alt="Next.js errors are pleasant to work with and human-legible" />
 
 The errors were human legible and I experienced very few WTF moments throughout a weekend of furious hacking. This is some of the highest ratio of time spent just building features and shipping content versus wrestling with my tooling and debugging why something simple isn't working. 
 
@@ -38,10 +52,9 @@ Here's how you use Google Fonts now in a next.js project, by writing out its nam
 
 ```jsx
 // pages/_app.js
-// If loading a variable font, you don't need to specify the font weight
-const inter = Inter({ subsets: ['latin'] })
 
-export default function MyApp({ Component, pageProps }) {
+// If loading a variable font, you don't need to specify the font weight
+
   return (
     <main className={inter.className}>
       <Component {...pageProps} />
@@ -73,17 +86,16 @@ So far, the MDX integration has been exactly how I wanted to work with my blog c
 Here's a quick snippet to show what I mean. For the most part, it's still just markdown, but now you can build and import rich graphs and diagrams, images, gifs (which I use for terminal demos on my site), and much more: 
 
 ```jsx
-export const meta = {
+
   author: 'Zachary Proser',
   date: '2022-07-14',
   title: 'A powerful and open source content optimizer',
   description: 'A full technical deep-dive on my optimizer app and its features',
-  image: 'optimizer-blog.webp'
+  image: "https://zackproser.b-cdn.net/images/optimizer-blog.webp"
 }
 
 
-
-
+<Image src="https://zackproser.b-cdn.net/images/holy-computer.webp" width={800} height={600} alt="Article optimizer splash screen" />
 
 ## Overview
 
@@ -115,7 +127,6 @@ But where do you put the form handling backend code? And how can you securely pr
 
 For API handling, Next.js allows you to add code to `pages/api/<blah.js>` .  For example, the following code, written in `pages/api/user.js` would return  a JSON response representing the user when you git `/api/user`
 ```jsx
-export default function handler(req, res) {
   res.status(200).json({ name: 'John Doe' })
 }
 ```
@@ -130,7 +141,6 @@ All this means that you can write frontend and backend code in an organized way 
 Here's the form processing code for my simple email subscribe form:
 
 ```jsx
-export default async function handler(req, res) {
   // Get data submitted in request's body.
   const body = req.body
 
@@ -170,13 +180,13 @@ export default async function handler(req, res) {
 Within the Vercel dashboard, without doing any additional work whatsoever, you now get first class logging for every request to your functions: 
 
 
-
+<Image src="https://zackproser.b-cdn.net/images/vercel-functions-logging.webp" width={800} height={600} alt="Logging is first-class for Vercel serverless functions"/>
 
 ### The vercel integration is scary good 
 
 I mean that literally. I'm slightly unnerved by how smooth of an experience deploying to Vercel was, because now I find myself wanting to launch tons of sites and projects there - which I'm certain is exactly their business model. But I am also impressed. As a first time user, I will also be a return user, and the cognitive barrier to entry for launching my next projects just went way, way down.
 
-
+<Image src="https://zackproser.b-cdn.net/images/vercel-integrated-analytics.webp" width={800} height={600} alt="Vercel integrated analytics dashboard" />
 
 
 ### What does this all mean together? Next.js is fast - stupidly fast - to work with

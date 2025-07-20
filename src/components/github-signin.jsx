@@ -13,7 +13,7 @@ export default function Component() {
 
           return (
                     <Link onClick={handleClick} href="/learn" passHref>
-                              <Image width={1200} src={githubSignin} alt="Github Signin" />
+                              <Image width={1200} src={githubSignin} alt="Github Signin"  height={600}/>
                     </Link>
           );
 }

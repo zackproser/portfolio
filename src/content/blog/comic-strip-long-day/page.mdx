@@ -1,7 +1,29 @@
-# Article Coming Soon
+import { Newsletter } from '@/components/Newsletter'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-This article is currently being written. Please check back soon!
+export const metadata = createMetadata(rawMetadata);
 
----
 
-*This is a placeholder while the full article is being prepared.*
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-1.webp" alt="A tough morning at the office" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-2.webp" alt="A tough midday at the office" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-3.webp" alt="A tough evening at the office" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-4.webp" alt="A tough evening at the office" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-5.webp" alt="A tough end to a day at the office. Coming downstairs" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-6.webp" alt="A surprising distraction" width={800} height={600} />
+
+<Image src="https://zackproser.b-cdn.net/images/comic-strip-7.webp" alt="A great day overall" width={800} height={600} />

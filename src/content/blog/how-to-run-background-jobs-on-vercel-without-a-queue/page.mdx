@@ -1,3 +1,20 @@
+import { Newsletter } from '@/components/Newsletter'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+import rawMetadata from './metadata.json';
+
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src={metadata.image} alt={metadata.title}  width={800} height={600}/>
 
 ## Table of contents
 
@@ -18,9 +35,8 @@ The solution is to use a fire and forget function. Forget, in the sense that we'
 Here's what my fire-and-forget function looks like in my app [Panthalia](https://github.com/zackproser/panthalia): 
 
 ```javascript
-export async function startBackgroundJobs(post: Post) {
+
   
-  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 
   try {
     await fetch(`${baseUrl}/api/jobs`, {
@@ -43,7 +59,7 @@ This is a React Server Component (RSC) by default because it does not include th
 
 Because this is a server component, we actually have to determine the `${baseUrl}` for our API call - whereas you may be familiar with calling fetch on a partial API route like so: 
 
-`await fetch('/api/jobs', )`
+`await fetch('/api/jobs', {})`
 
 in our server component we must supply a fully qualified URL to fetch. 
 
@@ -56,13 +72,14 @@ Everything that other route needs to start processing work in a separate invocat
 This means the API route can immediately return a response to the client after accepting the new task for processing: 
 
 ```javascript
+
+
 // This route accepts new blog posts created by the Panthalia client
 // It calls a function, `startBackgroundJobs` which itself calls a separate 
 // API route, passing the information necessary to continue processing 
 // long-running jobs that will operate on the post data
 // Meanwhile, the client receives a response immediately and is freed up to
 // create more posts
-export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
 
@@ -147,6 +164,3 @@ export async function POST(request: Request) {
 ## Wrapping up 
 
 And there you have it. Using this pattern, you can return a response to your client immediately to keep your application quick and responsive, while simultaneously handling longer-running jobs in a separate execution context.
-
-
-

@@ -1,12 +1,22 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
 export const href = "https://www.pinecone.io/learn/jupyter-notebooks"
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 
 --- 
 
-
+<Image src={metadata.image} alt="How to use Jupyter Notebooks for Machine Learning and AI" width={800} height={600}/>
 
 This was the third article I published while working at Pinecone: 
 
 <Button href={href} variant="solid" color="green">Read article</Button>
-
-
-

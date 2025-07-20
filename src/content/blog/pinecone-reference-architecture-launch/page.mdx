@@ -1,16 +1,20 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
 export const  href = "https://pinecone.io/blog/aws-reference-architecture"
+
+export const metadata = createMetadata(rawMetadata);
 
 --- 
 
-
+<Image src={metadata.image} alt="Announcing the Pinecone AWS Reference Architecture" width={800} height={600}/>
 
 I built Pinecone's first AWS Reference Architecture using Pulumi. 
 
 This is the sixth article I wrote while working at Pinecone: 
 
 <Button href={href} variant="solid" color="green">Read article</Button>
-
-
-
 
 

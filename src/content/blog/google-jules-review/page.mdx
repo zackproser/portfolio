@@ -1,3 +1,21 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/jules-coding.webp" alt="I got hands-on with Google's Jules AI coding assistant. Here's what I thought..." width={800} height={600}/>
+
 <figcaption>Google enters the AI coding assistant race with Jules</figcaption>
 
 ## Table of contents 
@@ -12,7 +30,7 @@ Like Codex, Jules is currently available through a research preview with limited
 
 After receiving an invitation, you're guided through a setup process that includes connecting to your GitHub account and authorizing the Jules GitHub app to access your repositories.
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-connect-github.webp" alt="Jules main interface" width={800} height={600}/>
 
 Jules creates sandboxed environments for your repositories, allowing it to run commands and generate code changes without affecting your production branches until you explicitly approve them.
 
@@ -24,11 +42,11 @@ In early testing, Jules' user experience feels noticeably more refined than [the
 
 One standout feature is how it formulates an execution plan before taking any action:
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-review-plan.webp" alt="Jules formulates a plan before executing" width={800} height={600}/>
 
 For each task you submit, Jules presents a detailed plan and asks for your approval. What's particularly clever is that if you don't respond within 5 minutes, Jules assumes approval and proceeds with executing the plan.
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-coding.webp" alt="Jules approval flow with 5-minute automatic proceed" width={800} height={600}/>
 
 This strikes an excellent balance between giving you control and maintaining momentum - you don't need to babysit the process, but you still have the opportunity to course-correct if needed.
 
@@ -36,7 +54,7 @@ Once the plan is approved, Jules gets to work making code changes and adding fil
 
 What did catch my eye is that Jules added tests alongside its implementations, a behavior I rarely observe in other flagship LLMs / integrations.
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-coding.webp" alt="Once you approve the plan, Jules starts coding" width={800} height={600}/>
 
 ### A more intuitive branching and PR flow
 
@@ -44,7 +62,7 @@ The branching and PR workflow in Jules feels more natural than what I experience
 
 When Jules completes a task, it allows you to optionally publish the branch containing its changes, but leaves you to author and open the pull request yourself.
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-publish-branch.webp" alt="Jules branch publishing flow" width={800} height={600}/>
 
 While this approach is technically less automated than Codex's one-click PR creation, it actually feels smoother in practice. 
 
@@ -56,7 +74,7 @@ By separating branch creation from PR submission, Jules avoids some of the error
 
 In its current research preview, Jules limits users to 5 tasks per day:
 
-
+<Image src="https://zackproser.b-cdn.net/images/jules-task-limit.webp" alt="Jules 5 task per day limit" width={800} height={600}/>
 
 If you need more capacity, you have to contact Google directly to request an upgrade. This contrasts sharply with Codex's approach, which is only available to pro users paying $200 per month but encourages spinning up as many parallel tasks as you need.
 
@@ -82,6 +100,3 @@ It's still early days for both Jules and Codex. Each platform shows tremendous p
 For now, I'll likely use both platforms strategically - Jules for high-priority, complex tasks where I value reliability and a smoother git workflow, and Codex for lower-priority tasks where I can leverage its unlimited parallel execution.
 
 I'm excited to see how both platforms evolve as they move from research previews to general availability, and how competition between Google and OpenAI drives innovation in this space.
-
-
-

@@ -1,14 +1,18 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
 export const href = "https://pinecone.io/blog/pain-poetry-python"
+
+export const metadata = createMetadata(rawMetadata);
 
 --- 
 
-
+<Image src={metadata.image} alt="The Pain and Poetry of Python" width={800} height={600}/>
 
 This was the fourth article I published while working at Pinecone: 
 
 <Button href={href} variant="solid" color="green">Read article</Button>
-
-
-
 
 

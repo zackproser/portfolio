@@ -1,6 +1,8 @@
+import { Button } from '@/components/Button'
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 
-
-
+export const metadata = createMetadata(rawMetadata);
 
 <Button href="/blog/article-react-lambda-pipeline">Read the article</Button>
 

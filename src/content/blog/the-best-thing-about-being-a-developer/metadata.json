@@ -1,21 +1,8 @@
 {
-  "title": "The Best Thing About Being A Developer",
-  "description": "A blog post about the best thing about being a developer",
-  "date": "2025-07-18",
-  "author": "Zack Proser",
-  "tags": [
-    "blog"
-  ],
-  "image": "/images/default-blog-image.webp",
-  "type": "blog",
-  "slug": "the-best-thing-about-being-a-developer",
-  "landing": {
-    "subtitle": "A blog post about the best thing about being a developer",
-    "features": [],
-    "testimonials": []
-  },
-  "commerce": {
-    "isPaid": false,
-    "price": 0
-  }
+  "title": "The best thing about being a developer",
+  "author": "Zachary Proser",
+  "date": "2024-4-11",
+  "description": "The best thing about being a developer is being able to build your own tools, to your exact specifications.",
+  "image": "https://zackproser.b-cdn.net/best-thing-about-being-a-developer.webp",
+  "slug": "/blog/the-best-thing-about-being-a-developer"
 }

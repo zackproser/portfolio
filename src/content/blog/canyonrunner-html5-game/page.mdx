@@ -1,6 +1,22 @@
+import Newsletter from '@/components/NewsletterWrapper'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+
 <Link
   href="https://canyonrunner.pages.dev">
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner.webp" width={800} height={600} alt="CanyonRunner - a complete HTML5 game" />
 </Link>
 
 ## I Open Sourced My Game
@@ -26,37 +42,37 @@ Here's a look at some screenshots from the actual game. I wanted the game to hav
 
 **_Intense Aerial Dogfights. Fight Off Marauding Bandits_**.
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Aerial-Combat.webp" width={800} height={600} alt="HTML5 dogfighting" />
 
 **_Wind Your Way Through the Eerie Story_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Chapter-Screen.webp" width={800} height={600} alt="CanyonRunner Chapter Screen" />
 
 **_Intense Environmental Effects_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Environmental-Effects.webp" width={800} height={600} alt="CanyonRunner Environmental Effects" />
 
 **_Auto-detects Mobile agents and renders a touchpad_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Mobile-Touchpad.webp" width={800} height={600} alt="Game auto-detects mobile layouts and renders a touchpad when necessary" />
 
 **_Catchy Music Keeps The Pace Throughout The Game_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Success.webp" width={800} height={600} alt="CanyonRunner Success" />
 
 **_Save System Keeps Your Score & Progress_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp" width={800} height={600} alt="CanyonRunner Title Screen" />
 
 **_Multiple Endings For Higher Replay Value_**
 
-
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Two-Different-Endings.webp" width={800} height={600} alt="CanyonRunner Two Different Endings" />
 
 ## Playthrough Video
 
 Want to get a sense of the gameplay without dodging spires yourself? Watch this full playthrough of the game to quickly get up to speed on the feel and main game mechanics of CanyonRunner.
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/DP49IKYYzZc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/DP49IKYYzZc" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ## Table of Contents
 
@@ -578,7 +594,9 @@ One of the first contact points our players will have with our game is the splas
 
 Here is the full MainMenu.js file for CanyonRunner, which sets up the intro splashscreen and waits for the player to click the Start button:
 ```javascript
-    CanyonRunner.MainMenu = function(game) ;
+    CanyonRunner.MainMenu = function(game) {
+
+    };
 
     CanyonRunner.MainMenu.prototype = {
 
@@ -1187,6 +1205,3 @@ As you can see in the code, Phaser is doing all the heavy lifting for us when it
 I hope this tutorial and examination of some of CanyonRunner's game mechanics and features was helpful to you. If it was, please say thanks by sharing this post or starring [the CanyonRunner repo on Github](https://github.com/zackproser/CanyonRunner).
 
 If something isn't clear or if you'd like to see some other feature or mechanic explained that isn't called out here, or if you just have general feedback, please [drop me an e-mail.](mailto:zackproser@gmail.com)
-
-
-

@@ -1,3 +1,13 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+
+
+
 
 
 <iframe 
@@ -11,6 +21,3 @@ I demonstrate how to build a RAG chatbot in a Jupyter Notebook end to end.
 
 This tutorial is perfect for beginners who want help getting started, and for experienced developers who want to understand how LangChain, Pinecone and OpenAI 
 all fit together.
-
-
-

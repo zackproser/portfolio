@@ -1,6 +1,15 @@
+import { Button } from '@/components/Button'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import NewsletterWrapper from '@/components/NewsletterWrapper'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
 --- 
 
-
+<Image src="https://zackproser.b-cdn.net/images/multiple-git-profiles.webp" alt="Automatically switch Git profiles based on the directory" width={800} height={600} />
 
 ## Automatically switch Git profiles based on the directory you're in 
 
@@ -97,5 +106,3 @@ git config user.name
 The output should change based on your current directory, confirming that the automation is working.
 
 Have you implemented similar automations in your development workflow? Share your approach in the comments.
-
-

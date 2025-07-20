@@ -1,21 +1,8 @@
 {
-  "title": "Programmer Emotions",
-  "description": "A blog post about programmer emotions",
-  "date": "2025-07-18",
-  "author": "Zack Proser",
-  "tags": [
-    "blog"
-  ],
-  "image": "/images/default-blog-image.webp",
-  "type": "blog",
-  "slug": "programmer-emotions",
-  "landing": {
-    "subtitle": "A blog post about programmer emotions",
-    "features": [],
-    "testimonials": []
-  },
-  "commerce": {
-    "isPaid": false,
-    "price": 0
-  }
+  "author": "Zachary Proser",
+  "date": "2023-9-11",
+  "title": "Programmer emotions",
+  "description": "Programmers are people, and this is how I feel when...",
+  "image": "https://zackproser.b-cdn.net/a-hacker-meditating-on-a-mat.webp",
+  "slug": "/blog/programmer-emotions"
 }

@@ -1,12 +1,23 @@
+import Link from 'next/link'
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
 ---
 
-
+<Image src="https://zackproser.b-cdn.net/images/quake-in-fargate.webp" width={800} height={600} alt={metadata.title} />
 
 <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-    
+    {metadata.description}
 </p>
 
-<Button href="#">Read article</Button>
-
-
-
+<a 
+  href="https://medium.com/@zackproser/how-to-run-a-quake-server-in-an-aws-fargate-task-aac75c3ab81f"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex justify-center rounded-md bg-blue-600 py-2 px-4 text-base font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:bg-blue-700 active:text-white/80 disabled:opacity-30 disabled:hover:bg-blue-600 transition-colors duration-200"
+>
+  Read article →
+</a>

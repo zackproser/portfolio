@@ -1,7 +1,0 @@
-{
-  "title": "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
-  "author": "Zachary Proser",
-  "date": "2024-7-28",
-  "description": "I trained a neural net to recognize hand-drawn digits, then built a Next.js UI for it",
-  "image": "/images/mnist-mind-mapper-splash.webp"
-}

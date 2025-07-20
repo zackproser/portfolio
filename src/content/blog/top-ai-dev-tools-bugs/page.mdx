@@ -1,4 +1,18 @@
+import  Image  from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import rawMetadata from './metadata.json';
 
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/hacker-bladerunner-confused.webp" alt="A confused developer trying to make sense of Cursor's strange output" width={800} height={600}/>
 <figcaption>A confused hacker trying to figure out why the AI-assisted IDE Cursor just broke his entire file by inlining its generated code in the wrong place</figcaption>
 
 ## Inlining response code in the wrong place. 
@@ -6,7 +20,7 @@
 Cursor, I'm looking at you. If I select a block of code in my IDE, then pop up the cursor prompt with command+k and ask for a reasonable unit test to be generated, then, 
 believe it or not, I don't want that unit test generated directly inside my application code, breaking my entire file as it sprays itself across functions and comments. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/hacker-enraged-at-inlined-code-response.webp" alt="A hacker enraged that AI just inlined a response directly in their application code" width={800} height={600}/>
 
 This is a symptom of the follow-up problem, where an agent or AI in a complex environment hasn't been sufficiently prompted to determine when it needs to ask follow-up 
 questions in order to perform the task correctly. 
@@ -23,7 +37,7 @@ Ideally, the first time I ask for a unit test to be generated, the agent should:
 
 ## "Forgetting" its original prompting after long breaks in coding sessions 
 
-
+<Image src="https://zackproser.b-cdn.net/images/agent-forgetting-its-prompting.webp" alt="A confused agent forgetting its original prompting after a long break" width={800} height={600}/>
 
 I've noticed this to be most pronounced in Sourcegraph's Cody tool, which is otherwise excellent and, I feel, one of the more promising AI-assisted developer tools. 
 
@@ -63,7 +77,7 @@ to be the most effective coding and architectural discussion partner of all the 
 
 ## Having poor setup UX
 
-
+<Image src="https://zackproser.b-cdn.net/images/your-ai-dev-tool-sucks.webp" alt="Your AI dev tool sucks and is insufficiently instrumented to send home errors" width={800} height={600}/>
 
 This is sort of par for the course with Neovim plugins, and tends to be considered a feature, more than a bug, because Neovim users are somewhat inured to painful setups. After all, we 
 volunteer to install a plugin from a stranger's GitHub respository and configure it with various different styles of lua snippets depending on which plugin manager (of several options) we 
@@ -126,6 +140,3 @@ money in order to continue using it.
 
 But most AI devtool startups I've evaluated over the past year continue to ignore getting step 0 rock solid at their own peril, and attempt to sprint before they can crawl. They're leaving a trail of silently frustrated developers 
 in their wake, and most of them have better things to do than to write you up detailed bug reports about exactly where your offering is falling short. That silence you're getting back on your end should be a very loud alarm. 
-
-
-

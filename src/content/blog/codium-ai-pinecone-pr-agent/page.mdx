@@ -1,14 +1,24 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
 export const href = "https://pinecone.io/blog/codiumai-pinecone-similar-issues"
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 
 --- 
 
-
+<Image src={metadata.image} alt="CodiumAI PR-agent similar image search" width={800} height={600}/>
 
 This was the fifth article I published while working at Pinecone: 
 
 <Button href={href} variant="solid" color="green">Read article</Button>
-
-
-
 
 

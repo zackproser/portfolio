@@ -1,3 +1,15 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+
+
+
+
+
 <iframe 
   class="youtube-video"
   src="https://www.youtube.com/embed/1Z8T36sZ9WI" 
@@ -8,6 +20,3 @@
 
 In this video, I demonstrate how to load Jupyter Notebooks into Google Colab and run them for free. I show how to load Notebooks from GitHub and how to execute individual cells and how to run 
 Notebooks end to end. I also discuss some important security considerations around leaking API keys via Jupyter Notebooks.
-
-
-

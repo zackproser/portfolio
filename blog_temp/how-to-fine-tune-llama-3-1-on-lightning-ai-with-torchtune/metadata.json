@@ -1,8 +1,0 @@
-{
-  "author": "Zachary Proser",
-  "date": "2024-09-22",
-  "title": "How to Fine-tune Llama 3.1 on Lightning.ai with Torchtune",
-  "description": "One of the better Jupyter Notebooks to GPU-backed environment experiences I've had...",
-  "image": "/images/fine-tune-llama.webp",
-  "slug": "/blog/how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune"
-}

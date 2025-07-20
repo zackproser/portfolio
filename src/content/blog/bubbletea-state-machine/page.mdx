@@ -1,4 +1,12 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
 
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/stages.gif" alt="Demo of the bubbletea stages CLI workflow" width={800} height={600}/>
 
 <Link href="https://github.com/zackproser/bubbletea-stages">Check out the project code on GitHub</Link>
 
@@ -74,7 +82,7 @@ To be honest, it took me a couple of tries with some example bubbletea programs 
 really clicking for me - but I read the bubbletea tutorials a couple of times and kept at it and eventually it started to feel natural to extend and manage a program via distinct message types and 
 handlers in the update function - and even pleasant because it did help me to keep the program logic clear and maintainable even as it grew in complexity and functionality.
 
-
+<Image src="https://zackproser.b-cdn.net/images/elm-architecture.svg" alt="The Elm architecture that inspired Bubbletea" width={800} height={600}/>
 
 * `Init` - useful for performing initial setup work or to kick off the main process
 * `Update` - called by Bubbletea - used for handling I/O in an asynchronous manner, which keeps the UI loop snappy and responsive. 
@@ -94,7 +102,7 @@ func runStage() tea.Msg {
 		// Run the current stage, and record its result status
 		stages[stageIndex].Error = stages[stageIndex].Action()
 	}
-	return stageCompleteMsg
+	return stageCompleteMsg{}
 }
 ```
 
@@ -184,7 +192,4 @@ var stages = []Stage{
 With these building blocks, you can create robust tools that can recovery gracefully from errors, report detailed issue breakdowns to end users, and successfully drive even long-running multi-step deployments end to end. 
 
 Be sure to <Link href="https://github.com/zackproser/bubbletea-stages">check out the sample code on GitHub</Link>. Thank you for reading!
-
-
-
 

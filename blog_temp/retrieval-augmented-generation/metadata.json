@@ -1,8 +1,0 @@
-{
-  "author": "Zachary Proser",
-  "date": "2023-08-04",
-  "title": "Retrieval Augmented Generation (RAG)",
-  "description": "How to reduce hallucinations in your Generative AI applications",
-  "image": "/images/retrieval-augmented-generation.webp",
-  "slug": "/blog/retrieval-augmented-generation"
-}

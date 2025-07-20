@@ -1,3 +1,19 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+
+
+
+
+
+
+<Image src={hackerReviewingCode2} alt="Hacker reviewing code in his terminal"  width={800} height={600}/>
+
 In this video tutorial, I demonstrate the power of combining gh-dash and Octo for a seamless terminal-based GitHub pull request review experience. In this video, I show you how these two powerful tools can be used together to quickly find, organize, and review pull requests on GitHub, all from the comfort of your terminal.
 
 <iframe 
@@ -31,6 +47,3 @@ See how Octo takes code reviews to the next level by allowing you to leave detai
 In the final segment of the video tutorial, we'll demonstrate how to create a seamless workflow that combines the strengths of gh-dash and Octo. Learn how to harness the power of both tools to optimize your GitHub pull request review process, from locating pull requests using gh-dash to conducting comprehensive code reviews with Octo.
 
 By the end of this video tutorial, you will have witnessed the incredible potential of combining gh-dash and Octo for a robust terminal-based GitHub pull request review experience. We hope you'll be inspired to integrate these powerful tools into your workflow, maximizing your efficiency and productivity in managing and reviewing pull requests on GitHub. Happy coding!
-
-
-

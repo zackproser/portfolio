@@ -1,3 +1,15 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+
+
+
+
+
 <iframe 
   className="youtube-video"
   src="https://www.youtube.com/embed/ArH4H1cGfzk"
@@ -6,6 +18,3 @@
 </iframe>
 
 In this three part video series, I deploy the Pinecone AWS Reference Architecture with Pulumi from start to finish.
-
-
-

@@ -1,6 +1,12 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
 
 
+export const metadata = createMetadata(rawMetadata);
 
+<Image src="https://zackproser.b-cdn.net/images/ai-assisted-dev-tools.webp" alt="AI-Assisted Developer Tools" width={800} height={600} />
 
 ## Introduction
 
@@ -67,7 +73,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ❌ | ❌ | ❌ |
 | Figstack | ❌ | ❌ | ❌ |
 
-,
 ### Ide support
 
 
@@ -86,7 +91,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ |
 | Figstack | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-,
 ### Pricing
 
 
@@ -105,7 +109,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | free | Individual: Free |
 | Figstack | freemium | Free: Free, Starter: $9 per month, Unlimited: $29 per month |
 
-,
 ### Free tier
 
 
@@ -124,7 +127,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ✅ |
 | Figstack | ✅ |
 
-,
 ### Chat interface
 
 
@@ -143,7 +145,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ✅ |
 | Figstack | ❌ |
 
-,
 ### Creator
 
 
@@ -162,7 +163,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | Amazon Web Services |
 | Figstack | Figstack Inc |
 
-,
 ### Language support
 
 
@@ -181,7 +181,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ✅ | ✅ | ✅ | ❌ |
 | Figstack | ✅ | ✅ | ✅ | ✅ |
 
-,
 ### Supports local model
 
 
@@ -200,7 +199,6 @@ Code autocompletion tools save developers time and effort by automatically sugge
 | Amazon CodeWhisperer | ❌ |
 | Figstack | ❌ |
 
-,
 ### Supports offline use
 
 
@@ -241,7 +239,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|-|-|-|
 | Warp | ❌ | ❌ | ❌ |
 
-,
 ### Pricing
 
 
@@ -249,7 +246,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|-------|------|
 | Warp | subscription | Free: Free, Pro: $15 per month, Team: $22 per month, Enterprise: Custom |
 
-,
 ### Free tier
 
 
@@ -257,7 +253,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|------|
 | Warp | ✅ |
 
-,
 ### Chat interface
 
 
@@ -265,7 +260,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|------|
 | Warp | ✅ |
 
-,
 ### Command completion
 
 
@@ -273,7 +267,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|------|
 | Warp | ✅ |
 
-,
 ### Advanced history
 
 
@@ -281,7 +274,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|------|
 | Warp | ✅ |
 
-,
 ### Supports local model
 
 
@@ -289,7 +281,6 @@ Intelligent terminals and shells enhance the command-line experience with featur
 |------|------|
 | Warp | ❌ |
 
-,
 ### Supports offline use
 
 
@@ -314,7 +305,6 @@ AI-assisted video editing tools simplify the video editing process by offering f
 | Kapwing | ❌ | ❌ | ❌ |
 | OpusClip | ❌ | ❌ | ❌ |
 
-,
 ### Pricing
 
 
@@ -324,7 +314,6 @@ AI-assisted video editing tools simplify the video editing process by offering f
 | Kapwing | subscription | Free: Free, Pro: $16 per month, Business: $50 per month, Enterprise: Custom |
 | OpusClip | subscription | Free: Free, limited features, Starter: $15 per month, Pro: $29 per month |
 
-,
 ### Free tier
 
 
@@ -334,7 +323,6 @@ AI-assisted video editing tools simplify the video editing process by offering f
 | Kapwing | ✅ |
 | OpusClip | ✅ |
 
-,
 ### Works in browser
 
 
@@ -344,7 +332,6 @@ AI-assisted video editing tools simplify the video editing process by offering f
 | Kapwing | ✅ |
 | OpusClip | ✅ |
 
-,
 ### Supports autotranscribe
 
 
@@ -354,7 +341,6 @@ AI-assisted video editing tools simplify the video editing process by offering f
 | Kapwing | ✅ |
 | OpusClip | ✅ |
 
-,
 ### Edit via transcription
 
 
@@ -379,7 +365,6 @@ Mutation testing tools enhance software quality by injecting faults into the cod
 |------|-|-|-|
 | Mutahunter | ✅ | ✅ | ❌ |
 
-,
 ### Language support
 
 
@@ -387,7 +372,6 @@ Mutation testing tools enhance software quality by injecting faults into the cod
 |------|-|-|-|-|
 | Mutahunter | ✅ | ✅ | ✅ | ❌ |
 
-,
 ### Supports local model
 
 
@@ -395,7 +379,6 @@ Mutation testing tools enhance software quality by injecting faults into the cod
 |------|------|
 | Mutahunter | ✅ |
 
-,
 ### Supports offline use
 
 
@@ -403,7 +386,6 @@ Mutation testing tools enhance software quality by injecting faults into the cod
 |------|------|
 | Mutahunter | ❌ |
 
-,
 ### Pricing
 
 
@@ -424,6 +406,3 @@ Enhanced IDE tools are more comprehensive than autocompletion tools. For example
 ## Remember to bookmark and share 
 
 This page will be updated regularly with new information, revisions and enhancements. Be sure to share it and check back frequently.
-
-
-

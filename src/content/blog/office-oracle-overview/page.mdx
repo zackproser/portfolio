@@ -1,4 +1,18 @@
-Image src={OfficeOracle} alt="Office Oracle AI chatbot project" />
+import Newsletter from '@/components/NewsletterWrapper'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/office-oracle-3.webp" width={800} height={600} alt="Office Oracle AI chatbot project" />
 
 ## What is this?
 
@@ -10,7 +24,7 @@ for yourself, to produce an AI chatbot with any identity, who can answer factual
 For the purposes of demonstration, I used the popular Office television series, but this same stack and approach will work for AI chatbots who can answer for a company's documentation, or specific processes, products, 
 policies and more. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/office-oracle-3.webp" width={800} height={600} alt="Office Oracle AI chatbot project" />
 
 ## Video series
 
@@ -21,15 +35,15 @@ I used and modified for this project:
 
 ### Intro video and demo 
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ### Jupyter notebooks deep-dive 
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ### Next.js vercel template ai-chatbot deep-dive
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/FiUaEi1q1pI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/FiUaEi1q1pI" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ## Open source code 
 
@@ -43,6 +57,3 @@ The data workbench notebook handles fetching, parsing and writing the data to lo
 The test workbench notebook demonstrates how to create a streamlined test harness that allows you to spot check and tweak your data model without requiring significant development changes to your application layer. 
 
 I also open sourced [the next.js application itself](https://github.com/zackproser/office-oracle)
-
-
-

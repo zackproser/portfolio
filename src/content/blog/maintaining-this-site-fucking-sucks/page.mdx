@@ -1,4 +1,11 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
 
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/sisyphus-crt-monitor-2.webp" alt="Me working on the previous iteration of this website, which I mostly hand-rolled" width={800} height={600} />
 <figcaption>A photo of myself working on the previous iteration of this website, which I mostly hand-rolled in order to do things the hard way</figcaption>
 
 <b>Note, this article was written in reference to the previous iteration of my portfolio site.</b>
@@ -39,7 +46,4 @@ Sure, the number of times that I've sat down with a finished blog post that I wa
 ...now truly defies my tallying, because maintaining this site fucking sucks!
 
 And that's exactly why I do it. It's one of the best projects I've ever created. 
-
-
-
 

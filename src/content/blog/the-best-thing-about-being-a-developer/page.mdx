@@ -1,6 +1,11 @@
- 
+import { Newsletter } from '@/components/Newsletter';
+import { createMetadata } from '@/utils/createMetadata';
+import Image from 'next/image';
+import Link from 'next/link';
+import rawMetadata from './metadata.json';
 
 
+export const metadata = createMetadata(rawMetadata);
 
 ## Table of contents 
 
@@ -30,7 +35,7 @@ I believe this helps you to have more compassion for the experience of end users
 
 ## It's fun
 
-
+<Image src="https://zackproser.b-cdn.net/images/building-your-own-tools.webp" alt="Building your own software tools" width={800} height={600}/>
 
 Especially as the functionality you originally desired begins to take shape.
 
@@ -48,6 +53,3 @@ The skills and experience you pick up while hacking are applicable to full-time 
 those who are constantly scratching their own technical itches by trying things out in code. 
 
 A little bit down the road, when you're using at your day job what you learned in your spare personal hacking time, you'll see the value of contantly building things for practice.
-
-
-

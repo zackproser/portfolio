@@ -1,3 +1,20 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/codex-hero.webp" alt="I got hands-on with OpenAI's Codex research preview. Here's what I thought..."  width={800} height={600}/>
 
 <figcaption>The interface I want and the performance I'll have to wait for...</figcaption>
 
@@ -12,7 +29,7 @@ Here are my current thoughts...
 
 Codex is currently a chat-first experience. You gain access by being invited or by paying for the Pro ($200/per month) subscription.
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-main-chat-interface.webp" alt="Codex is a chat-first experience now"  width={800} height={600}/>
 
 Once you've got access, you start by enabling multi-factor authentication, which is required to use Codex. Next, you authorize the Codex GitHub app for each organization you want it to work with. 
 
@@ -31,13 +48,13 @@ Codex feels like it was designed for me.
 This GitHub connection allows you to specify which repository and which branch your current instructions are for, because the primary chat interface is contemplated as a place for you to 
 rapid-fire a day's worth of tasks into the interface to spin up multiple tasks in parallel.
 
- 
+<Image src="https://zackproser.b-cdn.net/images/codex-real-task.webp" alt="A real Codex task"  width={800} height={600}/> 
 
 I took a swing through the Codex best practices guide, which encourages you to spin up as many tasks as you need. The current rate limits support you doing this.
 
 This is one of the things I like most about Codex and that I'm most excited for as the platform improves, because this gels with the way I work. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/resolve-merge-issue.webp" alt="Asking Codex to resolve a merge issue"  width={800} height={600}/>
 
 By the time I start work, I tend to have a laundry list of items I want to complete, so initiating a ton of them in parallel via natural language feels like a reasonable interface. 
 
@@ -48,33 +65,33 @@ get some planning out of the way, and then step out for a long walk in nature.
 
 Codex is usable from my phone even today:
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-phone.webp" alt="Codex is even usable on mobile"  width={800} height={600}/>
 
 I think, ultimately, once some of the sharp edges are polished, Codex will support me and others in performing our work effectively away from our desks.
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-phone-2.webp" alt="Codex and similar tools will ultimately support workers who want to be effective away from their desks"  width={800} height={600}/>
 
 ### Follow ups via chat
 
 Once your initial task has had some time to bake, you can click into it to view its progress, see the logs and make follow-up requests via a very familiar chat interface.
 
-
+<Image src="https://zackproser.b-cdn.net/images/chat-thread.webp" alt="Codex exposes a familiar chat interface"  width={800} height={600}/>
 
 ### Looks good - ship it!
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-create-pr.webp" alt="Once you're satisfied, Codex can open your PRs"  width={800} height={600}/>
 
 Once you're satisfied with the changes on a given branch, you can tell Codex to open a PR for you, and it will automatically 
 fill in the description. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-creating-pr.webp" alt="Codex hard at working opening your pull request"  width={800} height={600}/>
 
 ### Monitor logs and progress of tasks
 
 You can step into any tasks to see the chat pane but also the raw logs, which show you the commands and shells that Codex is spawning 
 in order to make changes.
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-launch-new-environment.webp" alt="Launching a new environment via Codex"  width={800} height={600}/>
 
 ## Things I'm waiting on to improve 
 
@@ -84,7 +101,7 @@ Starting tasks fails. Opening pull requests fails.
 
 Why? 
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-poor-error-handling.webp" alt="Codex currently shows evidence of poor or incomplete error handling"  width={800} height={600}/>
 
 Who knows.
 
@@ -129,8 +146,6 @@ At the moment, Codex is useful for flushing the low priority yet numerous and te
 
 For significant refactoring or feature-building, I'm still better served doing that myself in an IDE with optional LLM support.
 
-
+<Image src="https://zackproser.b-cdn.net/images/codex-final.webp" alt="I'm sure that imminent improvements will make Codex even more usable soon"  width={800} height={600}/>
 
 I'm confident that shortly I'll be able to use Codex as an indeal interface for starting a day of work and for keeping tabs on what needs attention and what is up next.
-
-

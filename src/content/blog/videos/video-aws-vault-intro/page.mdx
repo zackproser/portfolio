@@ -1,10 +1,11 @@
-and is a much more efficient way to access multiple AWS accounts.",
-  image: awsVault
-})
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata);
 
 
-
-![Manage your AWS credentials securely with AWS vault](https://zackproser.b-cdn.net/images/aws-vault.webp)
+<Image src="https://zackproser.b-cdn.net/images/aws-vault.webp" alt="Manage your AWS credentials securely with AWS vault" width={800} height={600} />
 <figcaption>Don't hardcode your AWS credentials into your dotfiles or code! Use aws-vault to store them securely</figcaption>
 
 <iframe 
@@ -27,8 +28,5 @@ In this video, I demonstrate the following aspects of aws-vault:
 
 The video emphasizes how using aws-vault can significantly improve your command line efficiency and speed up your workflow while working with various test and production environments. 
 If you're a developer or system administrator looking to enhance your AWS account management skills, this YouTube video is for you. 
-
-
-
 
 

@@ -1,5 +1,13 @@
+import { Newsletter } from '@/components/Newsletter';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
 
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={metadata.image} alt="How do you write so fast?"  width={800} height={600}/>
 
 ## How do I write so fast?
 
@@ -24,6 +32,3 @@ When I have an idea that I want to develop into a full post, I will capture it i
 I've found there's a significant motivational benefit to ***only needing to finish an open pull request*** versus writing an entire article from scratch. 
 
 Going from post fragment (or, the kernel of the idea) to open pull request reduces the perceived lift of the task.
-
-
-

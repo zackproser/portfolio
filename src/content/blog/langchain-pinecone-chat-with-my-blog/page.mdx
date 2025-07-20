@@ -1,3 +1,24 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+    author: "Zachary Proser", 
+    date: "2024-05-10",
+    title: "Build a RAG pipeline for your blog with LangChain, OpenAI and Pinecone",
+    description: "You can chat with my writing and ask me questions I've already answered even when I'm not around",
+    image: chatWithMyBlog,
+};
 
 
 I built [a chat with my blog experience](/chat) into my site, allowing visitors to ask questions of my writing.
@@ -22,7 +43,7 @@ Here's a quick demo of it in action - or [you can try it out yourself](/chat):
   allow="fullscreen;">
  </iframe>
 
-
+<Image src="https://zackproser.b-cdn.net/images/chat-with-my-blog.webp" width={800} height={600} alt="I built a chat with my blog feature" />
 
 My solution recommends related blog posts that were used to answer the question as the LLM responds. This is [Retrieval Augmented Generation](https://pinecone.io/learn/retrieval-augmented-generation) 
 with citations. 
@@ -33,7 +54,7 @@ And in this blog post, I'm giving you everything you need to build your own simi
 * the server-side API route code that handles embeddings, context retrieval via vector search, and chat
 * the client-side chat interface that [you can play with here](/chat)
 
-
+<Image src="https://zackproser.b-cdn.net/images/chat-with-blog-flowchart.webp" width={800} height={600} alt="Related blog posts" />
 
 Best of all, this site is [completely open-source](https://github.com/zackproser/portfolio), so you can view and borrow my implementation. 
 
@@ -128,7 +149,7 @@ Best of all, this site is [completely open-source](https://github.com/zackproser
 
 Here's a flowchart describing how the feature works end to end. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/chat-with-blog-flowchart.webp" width={800} height={600} alt="Chat with my blog flowchart" />
 
 Let's talk through it from the user's perspective. They ask a question on my client-side chat interface. Their question is sent to my `/api/chat` route. 
 
@@ -194,7 +215,6 @@ We'll step through the server-side API route section by section, building up to 
 When the `/api/chat` route receives a request, I pop the latest user message off the request body and hand it to my context retrieval service: 
 
 ```javascript
-export async function POST(req: Request) {
   const { messages } = await req.json();
 
   // Get the last message
@@ -203,20 +223,18 @@ export async function POST(req: Request) {
   // Get the context from the last message, specifying that we want to use 
   // a maxtokens value of 3000 and that we're only interested 
   // in items scored as 0.8 relevance or higher by Pinecone
-  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
   ... 
 ```
 
 Here's what the context service looks like:
 
 ```javascript
-export type Metadata = {
+
   source: string,
   text: string,
 }
 
 // The function `getContext` is used to retrieve the context of a given message
-export const getContext = async (message: string, namespace: string, maxTokens = 3000, minScore = 0.7, getOnlyText = true): Promise<PineconeRecord[]> => {
 
   // Get the embeddings of the input message
   const embedding = await getEmbeddings(message);
@@ -236,12 +254,12 @@ It is a wrapper around the `getEmbeddings` and `getMatchesFromEmbeddings` functi
 Here's the `getEmbeddings` function, which is a thin wrapper around OpenAI's embeddings endpoint: 
 
 ```javascript
+
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
 const openai = new OpenAIApi(config)
 
-export async function getEmbeddings(input: string) {
   try {
     const response = await openai.createEmbedding({
       model: "text-embedding-3-large",
@@ -264,7 +282,7 @@ for similarity search.
 The `getMatchesFromEmbeddings` function demonstrates how we use Pinecone to execute our query and return the nearest neighbors:
 
 ```javascript
-export type Metadata = {
+
   url: string,
   text: string,
   chunk: string,
@@ -276,7 +294,6 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
   // Obtain a client for Pinecone
   const pinecone = new Pinecone();
 
-  const indexName: string = process.env.PINECONE_INDEX || '';
   if (indexName === '') {
     throw new Error('PINECONE_INDEX environment variable not set')
   }
@@ -284,7 +301,6 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
   const index = pinecone!.Index<Metadata>(indexName);
 
   // Get the namespace
-  const pineconeNamespace = index.namespace(namespace ?? '')
 
   try {
     // Query the index with the defined request
@@ -301,7 +317,6 @@ const getMatchesFromEmbeddings = async (embeddings: number[], topK: number, name
   }
 }
 
-export { getMatchesFromEmbeddings };
 ```
 ### Retrieving related blog posts
 
@@ -311,7 +326,9 @@ into something meaningful to our application?
 If I'm just getting back a list of floating point numbers, how do I go from that to the blog thumbnail and relative 
 URL I want to render for the user?
 
-The bridge between ambiguous natural language and structured data is  is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
+The bridge between ambiguous natural language and structured data is metadata. 
+
+Pinecone is returning vectors, but when I initially upserted my vectors to create my knowledgebase, I attached metadata to each set of embeddings: 
 
 ```
 // Imagine metadata like a JavaScript object
@@ -353,7 +370,7 @@ First, let's look at the raw matches. As you can see in this print out of two re
         '\n' +
         'I also knew I wanted to host my site on Vercel and that I wanted my site to be completely static once built, with serverless functions to handle things like form submissions so that I could customize my own email list tie-in and have more excuses to learn the Next.js framework and Vercel platform well.\n' +
         '\n' +
-        ' <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
+        '<Image src="https://zackproser.b-cdn.net/images/blogging-web-performance.webp" width={800} height={600} alt="Web performance monitoring" /> <figcaption>Running your own tech blog is a great excuse to go deep on web performance monitoring and pagespeed optimization.</figcaption>'
     }
   },
 ```
@@ -378,8 +395,6 @@ let relatedBlogPosts: ArticleWithSlug[] = []
 
 // Loop through all the blog urls and get the metadata for each
 for (const blogUrl of blogUrls) {
-    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
     relatedBlogPosts.push({ slug, ...metadata });
 }
 ```
@@ -482,20 +497,19 @@ My favorite part of this is that it's re-using the display code I already use fo
 
 'use client';
 
-export default function Chat() {
+
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
 
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
       const parsedArticles: ArticleWithSlug[] = sourcesHeader
         ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
         : [];
       setArticles(parsedArticles);
       setIsLoading(false);
     },
-    headers: ,
+    headers: {},
     onFinish() {
       // Log the user's question
       gtag("event", "chat_question", {
@@ -609,7 +623,7 @@ const handlePrepopulatedQuestion = (question: string) => {
   setIsLoading(true); // Set loading state here to indicate submission is processing
 
   const customSubmitEvent = {
-    preventDefault: () => ,
+    preventDefault: () => { },
   } as unknown as React.FormEvent<HTMLFormElement>;
 
   // Submit immediately after updating the input
@@ -640,7 +654,7 @@ text or medical documents.
 The overall experience is richer because the user is able to have a conversation while also getting visually appealling 
 pointers toward further reading that is highly relevant to their query.
 
-
+<Image src="https://zackproser.b-cdn.net/images/rag-with-sources.webp" width={800} height={600} alt="RAG with sources" />
 
 ## Full API route and client-side code
 
@@ -653,6 +667,7 @@ Here's the complete client-side code:
 ```javascript
 'use client';
 
+
 const prepopulatedQuestions = [
   "What is the programming bug?",
   "Why do you love Next.js so much?",
@@ -661,13 +676,11 @@ const prepopulatedQuestions = [
   "What is ggshield and why is it important?"
 ];
 
-export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
 
   const { messages, input, setInput, handleInputChange, handleSubmit } = useChat({
     onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
       const parsedArticles: ArticleWithSlug[] = sourcesHeader
         ? (JSON.parse(atob(sourcesHeader as string)) as ArticleWithSlug[])
         : [];
@@ -675,7 +688,7 @@ export default function Chat() {
       setArticles(parsedArticles);
       setIsLoading(false);
     },
-    headers: ,
+    headers: {},
     onFinish() {
       // Log the user's question
       gtag("event", "chat_question", {
@@ -705,7 +718,7 @@ export default function Chat() {
     setIsLoading(true); // Set loading state here to indicate submission is processing
 
     const customSubmitEvent = {
-      preventDefault: () => ,
+      preventDefault: () => { },
     } as unknown as React.FormEvent<HTMLFormElement>;
 
     // Submit immediately after updating the input
@@ -782,17 +795,15 @@ export default function Chat() {
 
 ```javascript
 
-// Allow this serverless function to run for up to 5 minutes
-export const maxDuration = 300;
 
-export async function POST(req: Request) {
+// Allow this serverless function to run for up to 5 minutes
+
   const { messages } = await req.json();
 
   // Get the last message
   const lastMessage = messages[messages.length - 1]
 
   // Get the context from the last message
-  const context = await getContext(lastMessage.content, '', 3000, 0.8, false)
 
   // Create a new set for blog urls
   let blogUrls = new Set<string>()
@@ -811,8 +822,6 @@ export async function POST(req: Request) {
 
   // Loop through all the blog urls and get the metadata for each
   for (const blogUrl of blogUrls) {
-    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const { slug, ...metadata } = await importContentMetadata(blogPath, 'blog');
     relatedBlogPosts.push({ slug, ...metadata });
   }
   // Join all the chunks of text together, truncate to the maximum number of tokens, and return the result
@@ -884,8 +893,6 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-import os
-import glob
 
 # Use LangChain's DirectoryLoader to grab all my MDX files 
 # across all subdirectories in my portfolio project. Use 
@@ -984,7 +991,7 @@ but also as a tool for checking that my RAG pipeline's knowledgebase is healthy.
 
 However, note that you can also use the [Pinecone Console](https://app.pinecone.io) to query and manage your index.
 
-
+<Image src="https://zackproser.b-cdn.net/images/pinecone-console-rag-pipeline.webp" width={800} height={600} alt="Pinecone Console" />
 
 ## Updating the knowledgebase programatically via CI/CD
 
@@ -1046,7 +1053,6 @@ jobs:
         if: env.CHANGED_MDX_FILES
         run: |
           python -c "
-          import os
           from langchain_pinecone import PineconeVectorStore
           from langchain_openai import OpenAIEmbeddings
           from langchain.docstore.document import Document
@@ -1066,7 +1072,6 @@ jobs:
         if: env.CHANGED_MDX_FILES
         run: |
           python -c "
-          import os
           from pinecone import Pinecone
           pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
           index = pc.Index('zack-portfolio-3072')

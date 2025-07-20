@@ -74,11 +74,10 @@ export default function TokenizationDemoClient() {
             </ul>
           </div>
           <div className="flex justify-center py-2">
-            <Image 
-              src={tokenizationDiagram}
+            <Image src={tokenizationDiagram}
               alt="Tokenization process diagram" 
               className="max-w-full h-auto rounded-lg shadow-md" 
-            />
+             width={800} height={600}/>
           </div>
         </div>
       )

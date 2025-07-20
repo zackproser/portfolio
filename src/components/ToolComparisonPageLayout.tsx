@@ -68,11 +68,11 @@ export const ToolComparisonPageLayout: React.FC<ToolComparisonPageLayoutProps> =
           {/* Optional: Display tool logos if you have them and want to show them
           <div className="flex justify-center items-center space-x-8 mb-4">
             <div className="w-20 h-20 md:w-24 md:h-24 relative">
-              {tool1.logoId && <Image src={tool1Logo} alt={`${tool1.name} logo`} layout="fill" objectFit="contain" />}
+              {tool1.logoId && <Image src={tool1Logo} alt={`${tool1.name} logo`} fill style={{ objectFit: "contain" }} />}
             </div>
             <span className="text-3xl md:text-4xl font-bold">vs</span>
             <div className="w-20 h-20 md:w-24 md:h-24 relative">
-              {tool2.logoId && <Image src={tool2Logo} alt={`${tool2.name} logo`} layout="fill" objectFit="contain" />}
+              {tool2.logoId && <Image src={tool2Logo} alt={`${tool2.name} logo`} fill style={{ objectFit: "contain" }} />}
             </div>
           </div>
           */}

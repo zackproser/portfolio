@@ -1,7 +1,0 @@
-{
-  "author": "Zachary Proser",
-  "date": "2023-07-03",
-  "title": "How to build an AI chatbot using Vercel's ai-chatbot template",
-  "description": "How to extend and modify Vercel's base ai-chatbot template for your own purposes",
-  "image": "/images/ai-chatbot-vercel-template.webp"
-}

@@ -1,14 +1,27 @@
+import { Button } from '@/components/LinkButton'
+import Image from 'next/image'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
 export const href = "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/ci-cd/"
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
 
 --- 
 
 ## Integrated cloud-based vector databases in your CI/CD pipelines 
 
-
+<Image src="https://zackproser.b-cdn.net/images/vector-databases-in-production-for-busy-engineers.webp" alt="I wrote the CI/CD chapter for Pinecone's latest book" width={800} height={600}/>
 
 I wrote the CI/CD chapter for Pinecone's latest learn series: Vector Databases in Production for Busy Engineers.
 
 <Button href={href} variant="solid" color="blue">Read chapter</Button>
-
-
-

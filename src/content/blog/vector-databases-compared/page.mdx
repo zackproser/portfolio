@@ -1,3 +1,19 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import Newsletter from '@/components/NewsletterWrapper'
+import CrossLinkCallout from '@/components/CrossLinkCallout';
+import Callout from '@/components/Callout'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 --- 
 
 <Callout type={"SpecialCallout"} title={"🚀 New Interactive Comparison Tool Available!"} body={"This blog post has been upgraded to an interactive comparison tool. Check out the new experience at /vectordatabases to compare vector databases in real-time and get personalized recommendations based on your needs."} />
@@ -221,6 +237,3 @@ This is the foundation of the architecture where a human user asks for a product
 ## Check back soon
 
 I'm treating this post as a living piece of content - so it will receive some updates over time. Be sure to bookmark / share it if you'd like to stay up-to-date.
-
-
-

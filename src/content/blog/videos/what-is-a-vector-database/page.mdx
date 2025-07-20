@@ -1,7 +1,7 @@
-.",
-  image: whatIsAVectorDB
-})
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 
+export const metadata = createMetadata(rawMetadata);
 
 
 <iframe 
@@ -15,6 +15,3 @@ I walk through what a vector database is, by first explaining the types of probl
 
 I use clowns as an example of a large corpus of training data from which we can extract high level features, and I discuss architectures such as 
 semantic search and RAG.
-
-
-

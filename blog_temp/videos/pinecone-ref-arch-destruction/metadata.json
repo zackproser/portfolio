@@ -1,7 +1,0 @@
-{
-  "author": "Zachary Proser",
-  "date": "2023-11-27",
-  "title": "Destroying the Pinecone AWS Reference Architecture",
-  "description": "I demonstrate how to destroy the Pinecone AWS Reference Architecture using Pulumi",
-  "image": "/images/pinecone-ref-arch-destruction.webp"
-}

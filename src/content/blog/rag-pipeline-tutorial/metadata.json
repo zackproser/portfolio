@@ -14,8 +14,92 @@
     "buttonText": "Get the complete package ($149)",
     "miniPaywallTitle": "Master RAG pipeline creation",
     "miniPaywallDescription": "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
-    "paywallImage": "/images/rag-tutorial-elements.webp",
+    "paywallImage": "https://zackproser.b-cdn.net/images/rag-tutorial-elements.webp",
     "paywallImageAlt": "The complete RAG development package: Tutorial, Jupyter Notebook, and Example Site",
-    "profileImage": "/images/rag-chatbot-profile.webp"
+    "profileImage": "https://zackproser.b-cdn.net/images/rag-chatbot-profile.webp"
+  },
+  "landing": {
+    "heroTitle": "Create AI Chat Experiences with Your Own Data: The Complete RAG Pipeline Guide",
+    "subtitle": "Build a production-ready AI solution that answers questions from your own content with accurate citations. Includes a complete Jupyter notebook, Next.js example site, and step-by-step instructions.",
+    "problemSolved": "Need a chatbot that knows your business data inside and out?",
+    "benefitStatement": "Create an AI assistant that answers questions using only your content - with zero hallucinations",
+    "features": [
+      {
+        "title": "Complete End-to-End Solution",
+        "description": "From data processing to deployment, learn every step needed to build a production-ready RAG pipeline"
+      },
+      {
+        "title": "Ready-to-Use Jupyter Notebook",
+        "description": "Process your own data with our pre-built notebook that handles chunking, embedding, and vector database creation"
+      },
+      {
+        "title": "Next.js Example Application",
+        "description": "Full source code for a modern web application with streaming responses and citation support"
+      },
+      {
+        "title": "No Hallucinations, Real Answers",
+        "description": "Learn how to ground AI responses in your actual content for accurate, trustworthy results"
+      }
+    ],
+    "whatsIncluded": [
+      {
+        "title": "Interactive Jupyter Notebook",
+        "description": "A complete, ready-to-run notebook that walks you through data processing, embedding creation, and vector database setup. Simply add your API keys and run each cell to process your own content. Includes detailed explanations of chunking strategies, embedding techniques, and Pinecone integration.",
+        "image": "https://zackproser.b-cdn.net/images/rag-pipeline-jupyter.webp",
+        "imageAlt": "Jupyter Notebook interface showing data processing and vector database creation"
+      },
+      {
+        "title": "Production-Ready Next.js Application",
+        "description": "Full source code for a modern web application built with the Vercel AI SDK. Features streaming responses, citation support, related content suggestions, and a beautiful chat interface. Deploy it to Vercel with one click or run it locally for development.",
+        "image": "https://zackproser.b-cdn.net/images/rag-pipeline-ui.webp",
+        "imageAlt": "Next.js chat application with streaming responses and citations"
+      },
+      {
+        "title": "Comprehensive Step-by-Step Tutorial",
+        "description": "Detailed written guide that explains every concept, from RAG fundamentals to advanced implementation patterns. Learn not just how to build it, but why each piece works and how to customize it for your specific use case. Perfect for developers who want to truly understand the technology.",
+        "image": "https://zackproser.b-cdn.net/images/rag-pipeline-tutorial.webp",
+        "imageAlt": "RAG pipeline architecture diagram showing the complete system flow"
+      }
+    ],
+    "contentSections": [
+      {
+        "title": "Getting Started",
+        "subsections": [
+          "Complete Example Code",
+          "Try It Yourself",
+          "What skills will I learn?",
+          "System Architecture"
+        ]
+      },
+      {
+        "title": "Phase 1: Data Processing",
+        "subsections": [
+          "Load and configure the data processing notebook",
+          "Clone the data source",
+          "Install dependencies",
+          "Loading blog posts into memory",
+          "Creating a Pinecone index",
+          "Creating a vectorstore with LangChain",
+          "Understanding Document Chunking"
+        ]
+      },
+      {
+        "title": "Phase 2: Application Development",
+        "subsections": [
+          "Create the supporting services",
+          "The context service",
+          "The embeddings service",
+          "The Pinecone service",
+          "Create the chat API",
+          "Create the user interface"
+        ]
+      },
+      {
+        "title": "Phase 3: Deployment",
+        "subsections": [
+          "Additional Resources"
+        ]
+      }
+    ]
   }
 } 

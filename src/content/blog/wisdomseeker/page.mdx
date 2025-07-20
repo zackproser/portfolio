@@ -1,3 +1,17 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-home.webp" alt="Wisdomseeker application homepage" width={800} height={600} />
+
 Wikipedia is known to be structured in such a way that [many articles ultimately lead to Philosophy](http://www.xefer.com/2011/05/wikipedia) - if you click the first main body link of each article in succession.
 
 Wisdom Seeker performs this task for you automatically and reports on the path it took to reach Philosophy.
@@ -10,9 +24,9 @@ It also knows when it is stuck in a loop - and will report loops as well as mean
 
 **_Easy one-step form accepts any Wikipedia link_**
 
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-success.webp" alt="Wisdom Seeker Node App Succeeds in finding Philosophy Article" width={800} height={600} />
 
-
-
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-loop.webp" alt="Wisdom Seeker Node App Gets Stuck in a Loop - And Reports it!" width={800} height={600} />
 
 ## Key Features
 
@@ -32,6 +46,3 @@ Wisdom Seeker was a fun app that explored an interesting quirk of Wikipedia that
 The biggest challenge in building this app was selecting the exact first link within the body paragraph, given that each Wikipedia page has so many links.
 
 Ultimately, a combination of aggressive jQuery style selectors and regex filtering of retrieved HTML did the trick.
-
-
-

@@ -1,32 +1,30 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+
+export const metadata = createMetadata(rawMetadata);
+
 ## Table of contents
 
-After using it for a few years now and building multiple production applications with it, I've had enough time to give the Vercel AI SDK a thorough review. 
+After using it for a few years now and building multiple production applications with it, I've had enough time to give the Vercel AI SDK a thorough review.
 
-My biggest gripe is the usual for Next.js and Vercel docs: the examples are quite sparse, requiring some trial and error to implement more complex patterns. 
+My biggest gripe is the usual for Next.js and Vercel docs: the examples are quite sparse, requiring some trial and error to implement more complex patterns.
 
 What's most curious to me, though, is that more developers aren't talking about this toolkit - it's a surprisingly underappreciated gem in the AI ecosystem.
 
-## What is the Vercel AI SDK? 
+## What is the Vercel AI SDK?
 
-At its core, the Vercel AI SDK was Vercel scooping everyone on the GenAI party while most people were still snoozing: 
+At its core, the Vercel AI SDK was Vercel scooping everyone on the GenAI party while most people were still snoozing.
 
-Its essence is communicated by this widget: 
-
-
-
-The Vercel AI SDK is a piece of technology, but it's also a convention and contract: it standardizes methods for interacting with LLMs 
-that are abstracted across providers - it really requires only a few character change in a pull request to swap from Anthropic's Claude to the latest Google Gemini model 
-without changing your prompt: 
-
-
+The Vercel AI SDK is a piece of technology, but it's also a convention and contract: it standardizes methods for interacting with LLMs that are abstracted across providers - it really requires only a few character change in a pull request to swap from Anthropic's Claude to the latest Google Gemini model without changing your prompt.
 
 The result is that, once you learn to use the SDK, you can rapidly build high-quality GenAI applications on Vercel, which is exactly what Vercel intends.
 
 ## Latest features in AI SDK 4.2
 
-Let's check out the latest additions to version 4.2 of the SDK. [Model Context Protocol](https://workos.com/blog/model-context-protocol) has been making the rounds lately, so it's not surprising to see first class support for it. 
+Let's check out the latest additions to version 4.2 of the SDK. Model Context Protocol has been making the rounds lately, so it's not surprising to see first class support for it.
 
-### Reasoning support 
+### Reasoning support
 
 Reasoning models like Anthropic's Claude 3.7 Sonnet and DeepSeek R1 can now work seamlessly through the AI SDK, with access to their reasoning tokens:
 
@@ -85,10 +83,12 @@ function Chat() {
 
 The Vercel AI SDK isn't just a convenience layer - it's built on infrastructure specifically optimized for AI workloads. When you use this toolkit, you're leveraging Vercel's work to:
 
-* Handle streaming responses efficiently through their Edge Functions
-* Optimize memory usage during large model responses
-* Automatically scale to handle concurrent AI requests
-* Minimize latency between model providers and your frontend
+<ul>
+  <li>Handle streaming responses efficiently through their Edge Functions</li>
+  <li>Optimize memory usage during large model responses</li>
+  <li>Automatically scale to handle concurrent AI requests</li>
+  <li>Minimize latency between model providers and your frontend</li>
+</ul>
 
 This means your AI features don't just work - they work with production-grade performance out of the box.
 
@@ -102,9 +102,7 @@ const { text } = await generateText({
   model: openai("gpt-4o"),
   prompt: "What is love?"
 });
-```
 
-```javascript
 // Switch to Anthropic with minimal changes
 const { text } = await generateText({
   model: anthropic("claude-3-5-sonnet-latest"),
@@ -119,260 +117,36 @@ That ability to multiplex across providers is huge, and is something that many o
 The AI SDK offers a clean, consistent API for text generation and beyond:
 
 ```javascript
-export default async function handler(req, res) {
-  // Create a streaming text completion with minimal configuration
-  const textStream = await streamText({
-    model: "openai/gpt-4o",  // Provider/model format makes switching easy
-    prompt: "Explain the benefits of streaming responses."
-    // Additional parameters like temperature, maxTokens can be added here
-  });
-  
-  // The SDK handles all the complexity of streaming the response to the client
-  res.send(textStream);
-}
+// Create a streaming text completion with minimal configuration
+const textStream = await streamText({
+  model: "openai/gpt-4o",  // Provider/model format makes switching easy
+  prompt: "Explain the benefits of streaming responses.",
+  // Additional parameters like temperature, maxTokens can be added here
+});
+
+// The SDK handles all the complexity of streaming the response to the client
+res.send(textStream);
 ```
+
 And for streaming structured objects:
 
 ```javascript
-export default async function handler(req, res) {
-  const objectStream = await streamObject({
-    model: "openai/gpt-4o",
-    prompt: "Suggest some structured data for product recommendations",
-    // Example JSON schema for the object
-    schema: {
-      type: "object",
-      properties: {
-        item: { type: "string" },
-        description: { type: "string" },
-        price: { type: "number" }
-      },
-      required: ["item", "description", "price"]
-    }
-  });
-  res.send(objectStream);
-}
-```
-
-## Simplified UI patterns
-
-One of the most underrated aspects of the AI SDK is how it standardizes UI patterns for AI interactions. The React hooks they've developed encapsulate best practices that would take significant effort to build yourself:
-
-```javascript
-// The useChat hook handles everything from streaming to message history
-function ChatComponent() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
-  
-  return (
-    <div>
-      {messages.map(m => (
-        <div key={m.id}>
-          {m.role === 'user' ? 'User: ' : 'AI: '}
-          {m.content}
-        </div>
-      ))}
-      
-      <form onSubmit={handleSubmit}>
-        <input
-          value={input}
-          onChange={handleInputChange}
-          placeholder="Say something..."
-        />
-        <button type="submit">Send</button>
-      </form>
-    </div>
-  );
-}
-```
-This abstracts away all the complexity of managing websockets, handling errors, and processing streaming responses, letting you focus on your application's unique value.
-
-## What I've built with it 
-
-### Toxindex 
-
-[Toxindex](https://toxindex) is a GenAI chatbot that does Retrieval Augmented Generation with a a proprietary chemical toxicity prediction model.
-
-<Link href={"https://toxindex.com"}>
-
-</Link>
-
-### RAG chat-with-my-data experience
-
-<Link href={"https://zackproser.com/chat"}>
-    
-</Link>
-
-Let me share a concrete example from my own work. I built [a chat interface for my blog](https://zackproser.com/chat) that allows visitors to ask questions about my writing using Retrieval Augmented Generation (RAG). This showcases the Vercel AI SDK's power in a real production environment.
-
-### The RAG pipeline architecture
-
-The implementation follows this flow:
-
-1. User submits a question through the frontend UI
-1. Next.js API route converts the question to embeddings using OpenAI
-1. Embeddings are used to query Pinecone for relevant blog post content
-1. Retrieved context is injected into the prompt
-1. LLM response is streamed back while relevant blog posts are displayed alongside
-
-Here's the complete API route handling this flow:
-
-```javascript
-export async function POST(req: Request) {
-  const { messages } = await req.json();
-  // Get the last message
-  const lastMessage = messages[messages.length - 1]
-  
-  // Get relevant context from Pinecone (min score 0.8)
-  const context = await getContext(lastMessage.content, '', 3000, 0.8);
-  
-  // Extract blog URLs and document content
-  let blogUrls = new Set<string>()
-  let docs: string[] = [];
-  
-  (context as PineconeRecord[]).forEach(match => {
-    const source = (match.metadata as Metadata).source
-    // Only include blog posts
-    if (!source.includes('src/app/blog')) return
-    blogUrls.add((match.metadata as Metadata).source);
-    docs.push((match.metadata as Metadata).text);
-  });
-  
-  // Convert blog URLs to metadata for frontend display
-  let relatedBlogPosts: ArticleWithSlug[] = []
-  for (const blogUrl of blogUrls) {
-    const blogPath = path.basename(blogUrl.replace('page.mdx', ''))
-    const { slug, ...metadata } = await importContentMetadata(blogPath);
-    relatedBlogPosts.push({ slug, ...metadata });
+const objectStream = await streamObject({
+  model: "openai/gpt-4o",
+  prompt: "Suggest some structured data for product recommendations",
+  // Example JSON schema for the object
+  schema: {
+    type: "object",
+    properties: {
+      item: { type: "string" },
+      description: { type: "string" },
+      price: { type: "number" }
+    },
+    required: ["item", "description", "price"]
   }
-  
-  // Prepare context for the prompt
-  const contextText = docs.join("\n").substring(0, 3000)
-  const prompt = `
-    Zachary Proser is a Staff developer, open-source maintainer.
-    Zachary Proser's traits include expert knowledge, helpfulness.
-    START CONTEXT BLOCK
-    ${contextText}
-    END OF CONTEXT BLOCK
-    Zachary will take into account any CONTEXT BLOCK that is provided.
-    If the context does not provide the answer to question, Zachary will say so.
-  `;
-  
-  // Stream the response using Vercel AI SDK
-  const result = streamText({
-    model: openai('gpt-4o'),
-    system: prompt,
-    prompt: lastMessage.content,
-  });
-  
-  // Encode related blog posts as base64 for header transmission
-  const serializedArticles = Buffer.from(
-    JSON.stringify(relatedBlogPosts)
-  ).toString('base64')
-  
-  // Return streaming response with blog metadata in headers
-  return result.toDataStreamResponse({
-    headers: {
-      'x-sources': serializedArticles
-    }
-  });
-}
+});
 ```
 
-### Frontend implementation
+## Conclusion
 
-The frontend uses the Vercel AI SDK's `useChat` hook to handle the streaming response while simultaneously extracting and displaying related blog posts:
-
-```javascript
-'use client';
-export default function Chat() {
-  const [articles, setArticles] = useState<ArticleWithSlug[]>([]);
-  
-  // useChat handles streaming messages and UI state
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    // Extract blog posts from headers and update state
-    onResponse(response) {
-      const sourcesHeader = response.headers.get('x-sources');
-      if (sourcesHeader) {
-        // Decode and parse blog post metadata
-        const parsedArticles = JSON.parse(
-          atob(sourcesHeader as string)
-        ) as ArticleWithSlug[];
-        setArticles(parsedArticles);
-      }
-    }
-  });
-  
-  return (
-    <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto">
-      {/* Chat messages area */}
-      <div className="flex-1 px-6">
-        {messages.map((m) => (
-          <div key={m.id} className="mb-4 whitespace-pre-wrap">
-            <span className={m.role === 'user' ? 'text-blue-700' : 'text-green-700'}>
-              {m.role === 'user' ? 'You: ' : "Zachary's Writing: "}
-            </span>
-            {m.content}
-          </div>
-        ))}
-        
-        {/* Input form */}
-        <form onSubmit={handleSubmit} className="mt-4">
-          <input
-            className="w-full p-2 border rounded"
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Ask a question about my writing..."
-          />
-        </form>
-      </div>
-      
-      {/* Related blog posts sidebar */}
-      {articles.length > 0 && (
-        <div className="md:w-1/3 px-6 py-4">
-          <h3 className="mb-4 text-xl font-semibold">Related Posts</h3>
-          {articles.map((article) => (
-            <ContentCard key={article.slug} article={article} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-### How it all fits together
-
-This implementation leverages several key capabilities of the Vercel AI SDK:
-
-* Streaming Responses: The streamText function enables real-time streaming of AI responses, so users see answers being generated word by word.
-* Headers for Metadata: The SDK's toDataStreamResponse method allows passing metadata (related blog posts) alongside the streaming content through HTTP headers.
-* React Integration: The useChat hook manages the entire chat experience, including message history, user input, form submission, and handling the response.
-* Error Handling: All network errors, rate limits, and other potential issues are gracefully handled by the SDK.
-
-The most elegant aspect is how the design separates concerns:
-
-The backend handles the knowledge retrieval logic (finding relevant blog posts)
-The LLM response generation occurs in parallel with metadata preparation
-The frontend consumes both streams of information and composes them into a unified interface
-
-Adding new AI providers or switching models requires changing just one line - `model: openai('gpt-4o')` to, for example, `model: anthropic('claude-3-7-sonnet')`.
-If you want to see the complete implementation, including vector store setup and document processing, check out [my detailed RAG pipeline tutorial](/products/rag-pipeline-tutorial).
-
-## The learning curve—and why it's worth it
-
-The AI SDK might initially seem complex if you're used to making direct API calls. However, once you grasp the power of streaming and object calls—and how the same approach works across providers—the small time investment pays dividends.
-
-I've used it for real-world projects like my chat-with-blog experience where generative AI features make an otherwise static dataset shine. When all your tooling (framework, deployment, AI) converges nicely, you spend far less time on boilerplate and more on user-facing features.
-
-## Why the Vercel AI SDK is a terrific choice
-
-* Provider-Agnostic Flexibility: Swap LLM providers with a quick code tweak
-* Streamlined Developer Experience: Handle streaming completions and structured data without reinventing the wheel
-* Rich Model Library: Official providers for OpenAI, Anthropic, Google, Amazon Bedrock, xAI Grok, and more
-* Next.js Integration: Build full-stack AI features quickly while keeping deployment straightforward
-* Reduced Time to Market: Perfect for hackathons yet robust enough for production apps
-
-## Final thoughts
-
-The Vercel AI SDK is a cohesive platform that simplifies streaming text completions and structured object generation. 
-
-With the latest 4.2 release bringing reasoning capabilities, MCP clients, image generation, and improved provider support, it continues to lead the way in generative AI development.
+The Vercel AI SDK is a powerful tool for building production-ready AI applications. Its ability to abstract away provider differences, handle streaming efficiently, and provide a consistent API makes it an excellent choice for developers looking to integrate AI into their applications.

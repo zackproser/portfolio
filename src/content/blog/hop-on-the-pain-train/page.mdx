@@ -1,4 +1,19 @@
-![Dont play it safe](https://zackproser.b-cdn.net/images/dont-play-it-safe.webp)
+import { Newsletter } from '@/components/Newsletter'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/dont-play-it-safe.webp" width={800} height={600} alt="Dont play it safe" />
 <figcaption>Junior developers playing it real safe to avoid falling into traps</figcaption>
 
 I've noticed some junior engineers are so worried about playing it safe, not making a mistake, 
@@ -18,6 +33,3 @@ Companies hiring you expect you to struggle and grow. They know that you are sti
 When the next seemingly scary migration, release, project, customer call, planning exercise, speaking event or presentation comes up...
 
 <span className="font-bold text-4xl">HOP ON THE PAIN TRAIN</span>
-
-
-

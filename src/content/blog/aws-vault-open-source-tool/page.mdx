@@ -1,4 +1,13 @@
-![aws-vault](https://zackproser.b-cdn.net/images/aws-vault.webp)
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import { Newsletter } from '@/components/Newsletter'
+import Image from 'next/image'
+import Link from 'next/link'
+
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/aws-vault.webp" alt="aws-vault" width={800} height={600} />
 
 One of the best open-source tools for working with AWS that you haven't heard about is aws-vault.
 
@@ -93,6 +102,3 @@ Each team member can have their own IAM user with appropriate permissions, and a
 aws-vault's configuration files are just text, so you can share them across your team members. They are half of the equation (you still need credentials stored locally in your keychain).
 
 That said, you can go pretty crazy with this piece if you wish. At Gruntwork, we had utilities built into our CLI tools that would auto-generate aws-vault configuration files to target AWS accounts, allowing team members to access them quickly. 
-
-
-

@@ -65,12 +65,11 @@ const RandomPortrait = ({ width, height }) => {
       onMouseOver={setRandomPortrait}
       onClick={setRandomPortrait}
       style={{ cursor: 'pointer' }}>
-      <Image
-        src={selectedImage}
+      <Image src={selectedImage}
         alt="Zachary Proser - full stack developer"
         {...imageProps}
         className={`${width && height ? '' : 'object-cover'} rounded-2xl bg-zinc-100 dark:bg-zinc-800`}
-      />
+       width={800} height={600}/>
     </div>
   );
 };

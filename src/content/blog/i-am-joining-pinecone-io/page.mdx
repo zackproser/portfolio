@@ -1,3 +1,20 @@
+import Newsletter  from '@/components/NewsletterWrapper'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/joining-pinecone.webp" alt="Joining Pinecone.io as a developer advocate" width={800} height={600} />
+
 <figcaption>I'm pivoting from a career of pure software engineering roles to developer advocacy!</figcaption>
 
 I'm excited to share that I'm joining Pinecone.io as a Staff Developer Advocate!
@@ -7,7 +24,7 @@ I'm excited to share that I'm joining Pinecone.io as a Staff Developer Advocate!
 <Link href={"https://pinecone.io"}>Pinecone.io</Link> makes the world's most performant cloud-native vector database, which is essential for storing and efficiently querying embeddings. Vector databases are **critical infrastructure** in the midst of the 
 AI revolution we're currently experiencing. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/pinecone-vector-databases.webp" alt="Pinecone.io vector databases" width={800} height={600} />
 
 Over the last half year or so, I've been getting deeper into Generative AI and its many use cases, particularly focusing on how to improve and enhance developer workflows (such as my own) with tools like ChatGPT, [Codeium](/blog/codeium-review), etc.
 
@@ -28,7 +45,7 @@ After considering a few other opportunities, I found that I was most excited abo
 
 In short, I've figured out that I love technical storytelling as much as I love building systems and applications. 
 
-
+<Image src="https://zackproser.b-cdn.net/images/technical-storytelling.webp" alt="I love technical storytelling as much as I love building systems and apps" width={800} height={600} />
 
 I've always been a writer, but since January of 2023, I've found myself increasingly itching to not only produce technical tutorials and deep-dives, but also share them with my fellow developers. 
 
@@ -55,9 +72,6 @@ I do the same to give back to the developer community and broader technically-mi
 
 If you're interested in joining the Pinecone team, check out <Link href={"https://pinecone.io/careers"}>this page</Link>!
 
-
-
-
-
+<Image src="https://zackproser.b-cdn.net/images/pinecone-hiring.webp" alt="Pinecone.io is hiring!" width={800} height={600} />
 
 

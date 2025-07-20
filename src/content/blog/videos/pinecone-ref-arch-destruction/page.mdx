@@ -1,3 +1,15 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+
+
+
+
+
 <iframe 
   className="youtube-video"
   src="https://www.youtube.com/embed/bxWWxKUIa3s"
@@ -6,6 +18,3 @@
 </iframe>
 
 I demonstrate how to destroy a deployed Pinecone AWS Reference Architecture using Pulumi.
-
-
-

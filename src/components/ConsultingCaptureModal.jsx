@@ -81,11 +81,10 @@ export default function ConsultingCaptureModal({ delay }) {
         </button>
         <div className="flex flex-col md:flex-row">
           <div className="w-full md:w-1/2 bg-slate-900 hidden md:block">
-            <Image
-              src={hackerForHire}
+            <Image src={hackerForHire}
               className="w-100"
               alt="Hacker for hire"
-            />
+             width={800} height={600}/>
           </div>
           <div className="w-full md:w-2/3 pl-6 pr-6">
             <p className="text-3xl font-bold tracking-tight text-indigo-500 sm:text-4xl">Hacker for hire!</p>
