@@ -1,26 +1,12 @@
-import { Newsletter } from '@/components/Newsletter';
-import Image from 'next/image';
-import Link from 'next/link';
-import { createMetadata } from '@/utils/createMetadata';
-import rawMetadata from './metadata.json';
+import { Newsletter } from '@/components/Newsletter'
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
+export const metadata = createMetadata(rawMetadata)
 
-export const metadata = createMetadata(rawMetadata);
-
-
-
-
-
-
-
- title: "Trace the system in your head",
- author: "Zachary Proser",
- date: "2024-4-10",
- description: "One of the best engineering managers I ever had was at Cloudflare. Here's what he did in his free time...",
- image: traceTheSystem,
-})
-
-<Image src="https://zackproser.b-cdn.net/images/trace-the-system.webp" alt="Trace the system in your head" height={600}  width={800}/>
+<Image src="https://zackproser.b-cdn.net/images/trace-the-system-in-your-head.webp" alt="Trace the system in your head" height={600} width={800} />
 
 One of the best engineering managers I've ever worked with was at Cloudflare.
 

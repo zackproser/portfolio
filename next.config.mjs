@@ -28,6 +28,10 @@ const nextConfig = {
     optimizeCss: true, // Inlines critical CSS
     typedRoutes: true,
   },
+  // Build performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   // These were moved from experimental to top level
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,
@@ -145,6 +149,11 @@ const nextConfig = {
       {
         source: '/comparisons/:db1(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)-vs-:db2(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)',
         destination: '/vectordatabases',
+        permanent: false
+      },
+      {
+        source: '/learn',
+        destination: '/products',
         permanent: false
       }
     ]
