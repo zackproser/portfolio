@@ -28,7 +28,7 @@ export const appliedAiExperience: ExperienceData[] = [
       "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
       "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
       "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
-      "Reduced developer implementation time through hands-on code examples and working applications"
+      "Developed internal AI tooling for content creation, social media automation, and content throughput optimization"
     ],
     technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS", "MCP", "RAG", "TypeScript"]
   },
@@ -40,12 +40,12 @@ export const appliedAiExperience: ExperienceData[] = [
     description: "Staff Developer Advocate leading enterprise adoption of vector database technology for production AI applications.",
     achievements: [
       "Built Pinecone's first AWS Reference Architecture demonstrating semantic search at enterprise scale",
-      "Created comprehensive RAG pipeline tutorials and examples used by 1,500+ engineers",
-      "Developed sample applications showcasing vector database + LLM integrations for enterprise use cases",
-      "Increased developer adoption through technical content, webinars, and conference presentations",
-      "Collaborated directly with enterprise customers on AI architecture and implementation strategies"
+      "Created comprehensive RAG pipeline tutorials and examples reaching thousands of engineers globally",
+      "Developed and maintained open-source Machine Learning notebooks in Jupyter for vector database integrations",
+      "Fixed and optimized Python and JavaScript programs for enterprise customers and community developers",
+      "Architected sample applications showcasing vector database + LLM integrations for production use cases"
     ],
-    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Semantic Search", "Vector Embeddings"]
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"]
   },
   {
     company: "Gruntwork",
