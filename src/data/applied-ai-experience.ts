@@ -25,7 +25,12 @@ export const appliedAiExperience: ExperienceData[] = [
       "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
       "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
       "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
-      "Developed internal AI tooling for content creation, social media automation, and content throughput optimization"
+      "Developed internal AI tooling for content creation, social media automation, and content throughput optimization",
+      "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
+      "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
+      "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
+      "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
+      "Reduced developer implementation time through hands-on code examples and working applications"
     ],
     technologies: ["Next.js", "OpenAI API", "Anthropic Claude", "TypeScript", "Enterprise Auth"],
     aiRelevance: "Leading AI education and building AI-powered developer tools for enterprise customers"
@@ -42,7 +47,8 @@ export const appliedAiExperience: ExperienceData[] = [
       "Fixed and optimized Python and JavaScript programs for enterprise customers and community developers",
       "Architected sample applications showcasing vector database + LLM integrations for production use cases"
     ],
-    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"]
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"],
+    aiRelevance: "Leading vector database education and RAG system development for AI applications"
   },
   {
     company: "Gruntwork",
