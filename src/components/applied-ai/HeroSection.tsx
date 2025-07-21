@@ -52,8 +52,8 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-4xl"
               >
-                From building production AI systems to leading corporate workshops at Fortune 500 companies.
-                I architect, code, speak, and train teams on everything from neural networks to infrastructure as code.
+                13+ years building scalable systems, from real-time stream processing to enterprise AI applications.
+                I architect, code, and educate on everything from vector databases to infrastructure as code.
               </motion.p>
             </div>
 
@@ -67,16 +67,16 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="flex flex-wrap gap-8 text-blue-100">
                 <div>
-                  <div className="text-2xl font-bold text-white">50,000+</div>
-                  <div className="text-sm">Engineers Reading</div>
-                </div>
-                <div>
                   <div className="text-2xl font-bold text-white">1,500+</div>
-                  <div className="text-sm">Developers Trained</div>
+                  <div className="text-sm">Engineers Reached</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-white">4</div>
-                  <div className="text-sm">AI-Forward Companies</div>
+                  <div className="text-2xl font-bold text-white">13+</div>
+                  <div className="text-sm">Years Experience</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">6</div>
+                  <div className="text-sm">Tech Companies</div>
                 </div>
               </div>
             </motion.div>

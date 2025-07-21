@@ -24,19 +24,21 @@ export const appliedAiSkills: SkillCategory[] = [
   {
     category: "Programming Languages",
     skills: [
-      { name: "Python", proficiency: "Expert", yearsExperience: 8 },
-      { name: "JavaScript/TypeScript", proficiency: "Expert", yearsExperience: 10 },
-      { name: "Go", proficiency: "Advanced", yearsExperience: 5 },
-      { name: "SQL", proficiency: "Advanced", yearsExperience: 8 }
+      { name: "Python", proficiency: "Expert", yearsExperience: 9 },
+      { name: "JavaScript/TypeScript", proficiency: "Expert", yearsExperience: 12 },
+      { name: "Go", proficiency: "Expert", yearsExperience: 7 },
+      { name: "PHP", proficiency: "Advanced", yearsExperience: 5 },
+      { name: "Bash", proficiency: "Advanced", yearsExperience: 10 }
     ]
   },
   {
     category: "Infrastructure & Cloud",
     skills: [
-      { name: "AWS", proficiency: "Expert", yearsExperience: 6 },
-      { name: "Kubernetes", proficiency: "Advanced", yearsExperience: 4 },
-      { name: "Docker", proficiency: "Expert", yearsExperience: 7 },
-      { name: "Terraform", proficiency: "Advanced", yearsExperience: 3 }
+      { name: "AWS", proficiency: "Expert", yearsExperience: 10 },
+      { name: "Kubernetes", proficiency: "Advanced", yearsExperience: 6 },
+      { name: "Docker", proficiency: "Expert", yearsExperience: 9 },
+      { name: "Terraform", proficiency: "Expert", yearsExperience: 4 },
+      { name: "Linux", proficiency: "Expert", yearsExperience: 13 }
     ]
   },
   {
@@ -44,8 +46,8 @@ export const appliedAiSkills: SkillCategory[] = [
     skills: [
       { name: "Next.js", proficiency: "Expert", yearsExperience: 5 },
       { name: "React", proficiency: "Expert", yearsExperience: 7 },
-      { name: "Tailwind CSS", proficiency: "Advanced", yearsExperience: 3 },
-      { name: "Node.js", proficiency: "Expert", yearsExperience: 8 }
+      { name: "Node.js", proficiency: "Expert", yearsExperience: 12 },
+      { name: "CSS/SASS", proficiency: "Advanced", yearsExperience: 10 }
     ]
   }
 ]; 

@@ -8,10 +8,11 @@ export interface ExperienceData {
   company: string;
   role: string;
   duration: string;
+  location?: string;
   logo: any;
+  description: string;
   achievements: string[];
   technologies: string[];
-  aiRelevance: string;
 }
 
 export const appliedAiExperience: ExperienceData[] = [
@@ -19,52 +20,96 @@ export const appliedAiExperience: ExperienceData[] = [
     company: "WorkOS",
     role: "Developer Education",
     duration: "Oct 2024 - Present",
+    location: "Remote",
     logo: logoWorkOS,
+    description: "Drive developer education and adoption for enterprises building AI-powered applications with secure authentication and authorization.",
     achievements: [
-      "Led AI fundamentals training for 40+ engineering team members on LLMs, embeddings, and semantic search",
-      "Built AI-powered developer onboarding tools reducing new hire ramp time by 60%",
-      "Designed educational content on enterprise AI authentication and security patterns"
+      "Build educational content and examples for AI applications integrating with enterprise auth systems",
+      "Create technical tutorials on scaling AI applications with proper access controls", 
+      "Collaborate with engineering teams on developer experience for AI-powered features",
+      "Reduced developer implementation time through comprehensive integration guides and examples"
     ],
-    technologies: ["Next.js", "OpenAI API", "Anthropic Claude", "TypeScript", "Enterprise Auth"],
-    aiRelevance: "Leading AI education and building AI-powered developer tools for enterprise customers"
+    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS"]
   },
   {
     company: "Pinecone",
     role: "Staff Developer Advocate",
     duration: "Jul 2023 - Oct 2024",
     logo: logoPinecone,
+    description: "Staff Developer Advocate leading enterprise adoption of vector database technology for production AI applications.",
     achievements: [
-      "Architected and launched AWS Reference Architecture for vector databases, adopted by Fortune 500 companies",
-      "Spoke at a16z on 'Taking AI Apps to Production' to 125+ AI engineers and VCs",
-      "Created RAG tutorials and content consuming by 50,000+ engineers, becoming top-performing devrel content"
+      "Built Pinecone's first AWS Reference Architecture demonstrating semantic search at enterprise scale",
+      "Created comprehensive RAG pipeline tutorials and examples used by 1,500+ engineers",
+      "Developed sample applications showcasing vector database + LLM integrations for enterprise use cases",
+      "Increased developer adoption through technical content, webinars, and conference presentations",
+      "Collaborated directly with enterprise customers on AI architecture and implementation strategies"
     ],
-    technologies: ["Python", "LangChain", "Vector Databases", "AWS", "Pulumi", "RAG"],
-    aiRelevance: "Led enterprise adoption of vector database technology for production AI systems"
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Semantic Search", "Vector Embeddings"]
   },
   {
     company: "Gruntwork",
-    role: "Tech Lead",
-    duration: "Mar 2020 - Jul 2023",
+    role: "Senior Software Engineer & Tech Lead",
+    duration: "Feb 2020 - Jun 2023",
     logo: logoGrunty,
+    description: "Lead engineer on Reference Architecture product, building infrastructure-as-code solutions and managing technical teams.",
     achievements: [
-      "Led technical strategy for infrastructure-as-code platform serving 100+ enterprise clients",
-      "Architected multi-cloud deployment solutions supporting ML/AI workload requirements",
-      "Built automated infrastructure pipelines reducing deployment time from days to hours"
+      "Led team building including hiring, technical interviews, training, mentoring, and code reviews",
+      "Built deployments, tooling, infrastructure and automated testing for Reference Architecture product",
+      "Open-sourced git-xargs: https://github.com/gruntwork-io/git-xargs",
+      "Provided customer support for Infrastructure as Code library serving enterprise clients",
+      "Enhanced Reference Architecture with new features, bug fixes, automation and documentation"
     ],
-    technologies: ["Terraform", "AWS", "Go", "Docker", "Kubernetes", "Infrastructure as Code"],
-    aiRelevance: "Infrastructure expertise directly applicable to AI model deployment, scaling, and MLOps"
+    technologies: ["Terraform", "Golang", "Bash", "AWS", "Docker", "Python", "Infrastructure as Code"]
   },
   {
     company: "Cloudflare",
-    role: "Senior Software Engineer",
-    duration: "Apr 2017 - Mar 2020",
+    role: "Software Engineer",
+    duration: "Apr 2017 - Feb 2020",
+    location: "San Francisco Bay Area",
     logo: logoCloudflare,
+    description: "Full stack developer on core API team designing and implementing systems, services and web applications at global scale.",
     achievements: [
-      "Maintained global CDN infrastructure serving 25+ billion requests daily with 99.99% uptime",
-      "Optimized edge computing performance for high-throughput applications and APIs",
-      "Implemented security and DDoS protection systems for 15+ million websites"
+      "Designed and implemented 2FA backup codes system for Cloudflare dashboard",
+      "Built high scale distributed web performance metrics testing system in AWS",
+      "Improved Cloudflare API developer stack and provided cross-team documentation and support",
+      "Built and open-sourced cf-terraforming tool for extracting Cloudflare setups into Terraform state",
+      "Designed distributed error and schema-drift alerting system adopted by all product teams",
+      "Wrote the first Cloudflare Workers deployed in front of api.cloudflare.com and www.cloudflare.com",
+      "Built first iteration of Project Jengo and handled weekly API releases"
     ],
-    technologies: ["Go", "Rust", "Linux", "DNS", "CDN", "Edge Computing"],
-    aiRelevance: "Experience with high-performance distributed systems essential for AI model serving at scale"
+    technologies: ["Golang", "PHP", "Node.js", "JavaScript", "Python", "Docker", "Kubernetes", "Terraform", "Bash"]
+  },
+  {
+    company: "Cloudmark",
+    role: "Software Engineer", 
+    duration: "Feb 2015 - Apr 2017",
+    location: "San Francisco Bay Area",
+    logo: logoCloudflare, // Using cloudflare logo as placeholder since we don't have cloudmark
+    description: "Full stack developer designing and implementing solutions across multiple teams and technologies.",
+    achievements: [
+      "Designed and implemented Golang messaging microservice",
+      "Built custom authentication system for protected content integrating with Salesforce",
+      "Worked cross-team to implement and publish quarterly threat reports using d3.js",
+      "Handled LAMP stack feature development, legacy monolith maintenance and bug fixes",
+      "Designed custom build pipeline for Node.js project leveraging Docker"
+    ],
+    technologies: ["PHP", "Node.js", "JavaScript", "Golang", "CSS", "SASS", "Bash", "Docker", "d3.js"]
+  },
+  {
+    company: "BrightContext Corporation",
+    role: "Software Engineer",
+    duration: "Apr 2012 - Apr 2014", 
+    location: "Falls Church, VA",
+    logo: logoGrunty, // Using grunty logo as placeholder since we don't have brightcontext
+    description: "Employee #9 at real-time stream processing engine startup, handling diverse responsibilities from engineering to marketing.",
+    achievements: [
+      "Built web applications in Node.js demonstrating use of JavaScript SDKs",
+      "Verified behavior of cloud stream-processing engine following each release",
+      "Built and maintained suite of Selenium tests for manager application",
+      "Served as primary QA for stream-processing engine and manager app functionality",
+      "Wrote and maintained documentation for JavaScript SDKs and cloud stream-processing engine",
+      "Created press releases, thought pieces and statements of work"
+    ],
+    technologies: ["Node.js", "JavaScript", "Selenium", "AWS"]
   }
 ]; 
