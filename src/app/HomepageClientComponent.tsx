@@ -134,7 +134,7 @@ export default function HomepageClientComponent({
                     </form>
                   )}
                   <p className="text-xs text-white flex items-center">
-                    Join 1500+ engineers learning to build what actually works
+                    Join 1,700+ engineers learning to build what actually works
                   </p>
                   <div className="mt-8">
                     <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>
@@ -199,14 +199,16 @@ export default function HomepageClientComponent({
               )}
             </div>
             
-            {/* Scroll cue */}
-            <div className="flex justify-center mt-6">
-              <div className="animate-bounce bg-white/10 p-2 w-10 h-10 ring-1 ring-white/20 shadow-lg rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
+            {/* Scroll cue - hidden on mobile */}
+            {!isMobile && (
+              <div className="flex justify-center mt-6">
+                <div className="animate-bounce bg-white/10 p-2 w-10 h-10 ring-1 ring-white/20 shadow-lg rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                  </svg>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
         

@@ -226,10 +226,10 @@ export default function SkillsMatrix() {
               <div className="text-3xl font-bold text-blue-400">4</div>
               <div className="text-white">AI Companies</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400">100%</div>
-              <div className="text-white">Production Ready</div>
-            </div>
+                          <div className="text-center">
+                <div className="text-3xl font-bold text-blue-400">1,700+</div>
+                <div className="text-white">Newsletter Readers</div>
+              </div>
           </div>
         </motion.div>
       </div>

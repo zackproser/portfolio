@@ -67,8 +67,8 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="flex flex-wrap gap-8 text-blue-100">
                 <div>
-                  <div className="text-2xl font-bold text-white">50,000+</div>
-                  <div className="text-sm">Engineers Reading</div>
+                  <div className="text-2xl font-bold text-white">1,700+</div>
+                  <div className="text-sm">Newsletter Subscribers</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">1,500+</div>

@@ -21,9 +21,11 @@ export const appliedAiExperience: ExperienceData[] = [
     duration: "Oct 2024 - Present",
     logo: logoWorkOS,
     achievements: [
-      "Led AI fundamentals training for 40+ engineering team members on LLMs, embeddings, and semantic search",
-      "Built AI-powered developer onboarding tools reducing new hire ramp time by 60%",
-      "Designed educational content on enterprise AI authentication and security patterns"
+      "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
+      "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
+      "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
+      "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
+      "Developed internal AI tooling for content creation, social media automation, and content throughput optimization"
     ],
     technologies: ["Next.js", "OpenAI API", "Anthropic Claude", "TypeScript", "Enterprise Auth"],
     aiRelevance: "Leading AI education and building AI-powered developer tools for enterprise customers"
@@ -34,12 +36,13 @@ export const appliedAiExperience: ExperienceData[] = [
     duration: "Jul 2023 - Oct 2024",
     logo: logoPinecone,
     achievements: [
-      "Architected and launched AWS Reference Architecture for vector databases, adopted by Fortune 500 companies",
-      "Spoke at a16z on 'Taking AI Apps to Production' to 125+ AI engineers and VCs",
-      "Created RAG tutorials and content consuming by 50,000+ engineers, becoming top-performing devrel content"
+      "Built Pinecone's first AWS Reference Architecture demonstrating semantic search at enterprise scale",
+      "Created comprehensive RAG pipeline tutorials and examples reaching thousands of engineers globally",
+      "Developed and maintained open-source Machine Learning notebooks in Jupyter for vector database integrations",
+      "Fixed and optimized Python and JavaScript programs for enterprise customers and community developers",
+      "Architected sample applications showcasing vector database + LLM integrations for production use cases"
     ],
-    technologies: ["Python", "LangChain", "Vector Databases", "AWS", "Pulumi", "RAG"],
-    aiRelevance: "Led enterprise adoption of vector database technology for production AI systems"
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"]
   },
   {
     company: "Gruntwork",
