@@ -24,12 +24,13 @@ export const appliedAiExperience: ExperienceData[] = [
     logo: logoWorkOS,
     description: "Drive developer education and adoption for enterprises building AI-powered applications with secure authentication and authorization.",
     achievements: [
-      "Build educational content and examples for AI applications integrating with enterprise auth systems",
-      "Create technical tutorials on scaling AI applications with proper access controls", 
-      "Collaborate with engineering teams on developer experience for AI-powered features",
-      "Reduced developer implementation time through comprehensive integration guides and examples"
+      "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
+      "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
+      "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
+      "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
+      "Reduced developer implementation time through hands-on code examples and working applications"
     ],
-    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS"]
+    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS", "MCP", "RAG", "TypeScript"]
   },
   {
     company: "Pinecone",
