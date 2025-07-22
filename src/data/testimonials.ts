@@ -1,13 +1,15 @@
-const JimBrikman = 'https://zackproser.b-cdn.net/images/jim-brikman.webp'
-const JohnFunge = 'https://zackproser.b-cdn.net/images/john-funge.webp'
-const SachinFernandes = 'https://zackproser.b-cdn.net/images/sachin-fernandes.webp'
-const PhilinaFan = 'https://zackproser.b-cdn.net/images/philina.webp'
-const StevenFusco = 'https://zackproser.b-cdn.net/images/steven-fusco.webp'
-const ChristianPaulus = 'https://zackproser.b-cdn.net/images/christian-paulus.webp'
-const AnthonyDavanzo = 'https://zackproser.b-cdn.net/images/anthony-davanzo.webp'
-const TomLandesman = 'https://zackproser.b-cdn.net/images/tom-landesman.webp'
-const TomLuechtefeld = 'https://zackproser.b-cdn.net/images/tom-luechtefeld.webp'
-const JoeryVanDruten = 'https://zackproser.b-cdn.net/images/joery.webp'
+import JimBrikman from '@/images/jim-brikman.webp'
+import JohnFunge from '@/images/john-funge.webp'
+import SachinFernandes from '@/images/sachin-fernandes.webp'
+import PhilinaFan from '@/images/philina.webp'
+import StevenFusco from '@/images/steven-fusco.webp'
+import ChristianPaulus from '@/images/christian-paulus.webp'
+import AnthonyDavanzo from '@/images/anthony-davanzo.webp'
+import TomLandesman from '@/images/tom-landesman.webp'
+import TomLuechtefeld from '@/images/tom-luechtefeld.webp'
+import JoeryVanDruten from '@/images/joery.webp'
+import CorbettWaddingham from '@/images/testimonials/cory.webp'
+import KevinButler from '@/images/testimonials/kevin.webp'
 
 /**
  * Structure for a testimonial author
@@ -133,6 +135,24 @@ export const allTestimonials: Testimonial[] = [
       imageUrl: JoeryVanDruten
     },
     category: ['dedication', 'detail-oriented', 'improvement']
+  },
+  {
+    content: "Zack is one of the most talented coders I've worked with. His ability to think outside the box and find novel solutions to old problems is unmatched. On top of all that, his stage presence, whether conducting a webinar or giving a presentation to a crowded room, is top tier. And personally he's a great guy to work with, always willing to help and go above and beyond.",
+    author: {
+      name: "Corbett Waddingham",
+      role: "Senior Staff Engineer at Gruntwork",
+      imageUrl: CorbettWaddingham
+    },
+    category: ['technical', 'creativity', 'presentation', 'helpfulness']
+  },
+  {
+    content: "I had the pleasure of working closely with Zack on the Pinecone Showcase project—a platform we built to empower the entire Pinecone team with on-demand, interactive demos to showcase the power of vector databases. Together, we developed everything from full-stack infrastructure (database, authentication, front-end, and backend) to a suite of compelling, real-world demonstrations. Zack brought deep full-stack expertise to the table, and I was consistently impressed not just by how much he already knew, but by how quickly he could pick up new technologies with curiosity, discipline, and zero reliance on shortcuts. He approaches challenges head-on, with a blend of thoroughness and creativity that's rare and refreshing. Beyond his technical chops, Zack is a fantastic teammate. He's a go-to sounding board—both thoughtful and generous with his time—and he brings a great sense of humor that makes collaboration fun. He's also a natural in developer relations: clear, patient, and compelling in front of any audience. I'd trust him to represent a product, teach a workshop, or dive deep into code with a customer—he's that versatile. Zack is the kind of person you want on your team—technically exceptional, endlessly curious, and genuinely enjoyable to work with.",
+    author: {
+      name: "Kevin Butler",
+      role: "Senior Software Engineer at Pinecone",
+      imageUrl: KevinButler
+    },
+    category: ['technical', 'full-stack', 'learning', 'teamwork', 'devrel']
   }
 ];
 
