@@ -1,21 +1,6 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import Image from 'next/image'
-import pairCodingWithAI from '@/images/pair-coding-with-ai.webp'
-import { Button } from '@/components/Button'
 
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2023-10-18',
-  title: 'Pair coding with AI', 
-  description: 'If you have never paired with AI, you may be missing out. Learn the most effective techniques to enhancing your own capabilities',
-  image: pairCodingWithAI,
-})
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
-<Image src={pairCodingWithAI}  alt="Pair coding with AI" />
 
 ## More than the sum of its parts... 
 
@@ -24,10 +9,10 @@ can make you more productive, and can even make your work more enjoyable and les
 
 This course shows you how. 
 
-<Button 
-  variant={"green"}
-  href={`/learn/pair-coding-with-ai/0`}
->
-Pair coding with AI - start course
-</Button>
 
+
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

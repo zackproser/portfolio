@@ -1,24 +1,15 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 import Link from 'next/link'
-import introToVectors from '@/images/introduction-to-vectors.webp'
-import featureExtraction from '@/images/feature-extraction.webp'
-import highDimensionalVectorSpace from '@/images/high-dimensional-vector-space.webp'
-import neuralNetwork from '@/images/neural-network.webp'
 
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2024-4-04",
-    title: "Introduction to embeddings (vectors) and how they work", 
-    description: "Embeddings are numerical representations of the key features of some data",
-    image: introToVectors,
-})
+export const metadata = createMetadata(rawMetadata);
 
 --- 
 
-<Image src={metadata.image} alt="Introduction to vectors"/>
+<Image src="https://zackproser.b-cdn.net/images/introduction-to-vectors.webp" alt="Introduction to vectors" width={800} height={600} />
 <figcaption>An overview of vector embeddings.</figcaption>
 
 
@@ -28,7 +19,7 @@ In the rapidly evolving world of artificial intelligence (AI) and machine learni
 
 At the heart of embeddings lies the process of feature extraction. When we talk about "features" in this context, we're referring to the key characteristics or attributes of the data that we want our machine learning models to learn and understand. For example, in the case of natural language data (like text), features might include the semantic meaning of words, the syntactic structure of sentences, or the overall sentiment of a document.
 
-<Image src={featureExtraction} alt="Feature extraction"/>
+<Image src="https://zackproser.b-cdn.net/images/feature-extraction.webp" alt="Feature extraction" width={800} height={600} />
 <figcaption>Neural models extract key features from data.</figcaption>
 
 To obtain embeddings, you feed your data to an embedding model, which uses a neural network to extract these relevant features. The neural network learns to map the input data to a high-dimensional vector space, where each dimension represents a specific feature. The resulting vectors, or embeddings, capture the essential information about the input data in a compact, numerical format that machines can easily process and analyze.
@@ -50,7 +41,7 @@ Each value in this vector is a floating-point number, often between -1 and 1, th
 
 So, in our example, the embedding vector might have a high value in the "speed" dimension (capturing the concept of "quick"), a moderate value in the "animal" dimension (representing "fox" and "dog"), and relatively low values in dimensions that are less relevant to the input text (like "technology" or "politics").
 
-<Image src={highDimensionalVectorSpace} alt="High dimensional vector space"/>
+<Image src="https://zackproser.b-cdn.net/images/high-dimensional-vector-space.webp" alt="High dimensional vector space" width={800} height={600} />
 <figcaption>High dimensional vector space - each point is a vector and their distance from one another represents their similarity.</figcaption>
 
 The true power of embeddings lies in their ability to capture complex relationships and similarities between different pieces of data. By representing data as dense vectors in a high-dimensional space, embedding models can learn to group similar items together and separate dissimilar items. This enables machines to perform tasks like semantic similarity analysis, clustering, and classification with remarkable accuracy and efficiency.
@@ -147,7 +138,7 @@ The concept of embeddings has its roots in the field of natural language process
 
 Word2Vec revolutionized NLP by demonstrating that neural networks could be trained to produce dense vector representations of words, capturing their semantic similarities and relationships in a highly efficient and scalable manner. The key insight behind Word2Vec was that the meaning of a word could be inferred from its context – that is, the words that typically appear around it in a sentence or document.
 
-<Image src={neuralNetwork} alt="Neural network"/>
+<Image src="https://zackproser.b-cdn.net/images/neural-network.webp" alt="Neural network" width={800} height={600} />
 <figcaption>A simplified neural network architecture.</figcaption>
 
 By training a shallow neural network to predict the context words given a target word (or vice versa), Word2Vec was able to learn highly meaningful word embeddings that captured semantic relationships like synonymy, antonymy, and analogy. For example, the embedding for the word "king" would be more similar to the embedding for "queen" than to the embedding for "car," reflecting their semantic relatedness.

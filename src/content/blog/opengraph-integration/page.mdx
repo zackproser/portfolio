@@ -1,19 +1,15 @@
 import Image from 'next/image'
-
-import opengraphFallbackImg from '@/images/og.webp'
-import opengraphPreview from '@/images/opengraph-preview.webp'
-import opengraphSequence from '@/images/opengraph-sequence.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { Container } from '@/components/Container'
+import { Newsletter } from '@/components/Newsletter'
+import FollowButtons from '@/components/FollowButtons'
+import { Prose } from '@/components/Prose'
+import { formatDate } from '@/lib/formatDate'
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2023-08-22",
-    title: "Opengraph dynamic social images", 
-    description: "I built a custom opengraph image with '@vercel/og' that includes a fallback image for index pages",
-    image: opengraphFallbackImg,
-    slug: '/blog/opengraph-integration'
-})
+export const metadata = createMetadata(rawMetadata);
 
 <Image 
     width={1200}
@@ -26,10 +22,7 @@ export const metadata = createMetadata({
 
 Opengraph is a standard for social media image formats. It's the "card" that is rendered whenever you or someone else shares a URL to your site on social media: 
 
-<Image 
-    src={opengraphPreview}
-    alt="Opengraph images and markdown determine what social media cards are shown"
-/>
+<Image src="https://zackproser.b-cdn.net/images/opengraph-preview.webp" alt="Opengraph images and markdown determine what social media cards are shown" width={800} height={600} />
 
 It's considered a good idea to have an opengraph image associated with each of your posts because it's a bit of nice eye candy that theoretically helps improve your click-through rate. A high quality opengraph image can help 
 make your site look more professional.
@@ -157,14 +150,7 @@ Here's my `ArticleLayout.jsx` component, which forms the `<meta name="og:image" 
 their cards: 
 
 ```javascript
-import Head from 'next/head'
-import { useRouter } from 'next/router'
 
-import { Container } from '@/components/Container'
-import { Newsletter } from '@/components/Newsletter'
-import FollowButtons from '@/components/FollowButtons'
-import { Prose } from '@/components/Prose'
-import { formatDate } from '@/lib/formatDate'
 
 function ArrowLeftIcon(props) {
   return (
@@ -179,7 +165,6 @@ function ArrowLeftIcon(props) {
   )
 }
 
-export function ArticleLayout({
   children,
   metadata,
   isRssFeed = false,
@@ -191,7 +176,6 @@ export function ArticleLayout({
     return children
   }
 
-  const sanitizedTitle = encodeURIComponent(metadata.title.replace(/'/g, ''));
 
   // opengraph URL that gets rendered into the HTML, but is really a URL to call our backend opengraph dynamic image generating API endpoint
   let ogURL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/og?title=${sanitizedTitle}`
@@ -199,7 +183,6 @@ export function ArticleLayout({
   // Add slug parameter from metadata to ensure static image lookup works
   if (metadata.slug) {
     // Extract the last part of the slug (e.g., "opengraph-integration" from "blog/opengraph-integration")
-    const slugParts = metadata.slug.split('/');
     const lastSlugPart = slugParts[slugParts.length - 1];
     ogURL += `&slug=${lastSlugPart}`;
   }

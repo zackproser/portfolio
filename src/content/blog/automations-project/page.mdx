@@ -1,26 +1,18 @@
 import Newsletter from '@/components/NewsletterWrapper'
-
-import automationsGif from '@/images/automations.gif'
-import autogitGif from '@/images/autogit.gif'
-import autoreviewGif from '@/images/autoreview.gif'
-import autoreviewResultGif from '@/images/autoreview-result.gif'
-import autocommitmessageGif from '@/images/autocommitmessage.gif'
-import autopullrequestGif from '@/images/autopullrequest.gif'
-import autopullrequestExample from '@/images/autopullrequest-example.webp'
-
 import Image from 'next/image'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-05-24",
-  title: "Automations - shell scripts leveraging OpenAI to make your developer workflow buttery smooth and way more fun",
-  description: "I have open sourced my automations project, which is a collection of shell scripts that automatically handle git operations, provide local code reviews, pull requests, and more!",
-  image: automationsGif,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={automationsGif} alt="Automations open source project" />
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/automations.gif" alt="Automations open source project" width={800} height={600}/>
 
 ## What is this?
 
@@ -45,17 +37,17 @@ With that out of the way, let's get into the automations themselves:
 
 When you change into a new local repository, autogit runs (thanks to an alias you've configured for your shell) and ensures that your default branch is up to date with the remote. This helps prevent you from opening pull requests with stale changes. 
 
-<Image src={autogitGif} alt="autogit" />
+<Image src="https://zackproser.b-cdn.net/images/autogit.gif" alt="autogit" width={800} height={600}/>
 
 ## autoreview
 
 Want a Senior-level code review right in your terminal to help you catch all the low-hanging fruit before you bug a human teammate? `autoreview` does just that. 
 
-<Image src={autoreviewGif} alt="autoreview" />
+<Image src="https://zackproser.b-cdn.net/images/autoreview.gif" alt="autoreview" width={800} height={600}/>
 
 Here's an example of the kind of review it can produce, and it writes the file to `~/.autoreview` so that you can revisit them or lift code from them. 
 
-<Image src={autoreviewResultGif} alt="autoreview result" />
+<Image src="https://zackproser.b-cdn.net/images/autoreview-result.gif" alt="autoreview result" width={800} height={600}/>
 
 ## autocommitmessage
 
@@ -63,19 +55,19 @@ So far, this may be the automation that has saved me the most time. I love the w
 
 It actually describes the context of your changes pretty effectively, so it's currently hitting the sweet spot (at least for me) of combining increased speed with increased quality. 
 
-<Image src={autocommitmessageGif} alt="autocommitmessage" />
+<Image src="https://zackproser.b-cdn.net/images/autocommitmessage.gif" alt="autocommitmessage" width={800} height={600}/>
 
 Typing my personal alias for it, `gcai`, is so fast there's no excuse for writing "check in latest" anymore.
 
 ## autopullrequest
 
-<Image src={autopullrequestGif} alt="autopullrequest" />
+<Image src="https://zackproser.b-cdn.net/images/autopullrequest.gif" alt="autopullrequest" width={800} height={600}/>
 
 This is the most recent automation, but it's pretty promising so far. It uses the official GitHub CLI, `gh` to open pull requests. It uses ChatGPT4 to generate clear, succinct and professional PR descriptions and titles, and then it opens the pull request for you. 
 
 Here's an example pull request it recently opened for me: 
 
-<Image src={autopullrequestExample} alt="autopullrequest example" />
+<Image src="https://zackproser.b-cdn.net/images/autopullrequest-example.webp" alt="autopullrequest example" width={800} height={600}/>
 
 ## What's next? 
 

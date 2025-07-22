@@ -15,8 +15,7 @@ export function BookCover({ title, description, coverImage }: BookCoverProps) {
       {/* Cover image if available */}
       {coverImage && (
         <div className="absolute inset-0 opacity-20">
-          <Image
-            src={coverImage}
+          <Image src={coverImage}
             alt={`${title} background`}
             fill
             className="object-cover mix-blend-overlay"

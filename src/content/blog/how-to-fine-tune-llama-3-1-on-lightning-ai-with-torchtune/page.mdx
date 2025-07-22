@@ -1,24 +1,17 @@
 import { Button } from '@/components/Button'
 import Image from 'next/image'
-
-import fineTuneLlama from '@/images/fine-tune-llama.webp'
-import lightningAISuccessfulRun from '@/images/lightning-ai-successful-run.webp'
-import lightningAIGPUPicker from '@/images/lightning-ai-gpu-picker.webp'
-import lightningAINewStudio from '@/images/lightning-ai-new-studio.webp'
-import wandbMetrics from '@/images/wandb-metrics.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-    author: "Zachary Proser",
-    date: "2024-09-22",
-    title: "How to Fine-tune Llama 3.1 on Lightning.ai with Torchtune",
-    description: "One of the better Jupyter Notebooks to GPU-backed environment experiences I've had...",
-    image: fineTuneLlama,
-    slug: '/blog/how-to-fine-tune-llama-3-1-on-lightning-ai-with-torchtune'
-});
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={fineTuneLlama} alt="Fine-tune Llama 3.1 on Lightning.ai with Torchtune" />
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/fine-tune-llama.webp" alt="Fine-tune Llama 3.1 on Lightning.ai with Torchtune" width={800} height={600} />
 <figcaption>Fine-tuning Llama 3.1 on Lightning.ai with Torchtune is a breeze...</figcaption>
 
 ## Table of contents
@@ -37,7 +30,7 @@ If you'd like to learn more about fine-tuning and how LoRA (Low-Rank Adaptation)
 2. Import the [companion Jupyter Notebook for this project](https://github.com/zackproser/llama-3-1-8b-finetune-lightning-ai-torchtune/blob/main/llama-3-1-8b-finetune-lightning-ai-torchtune.ipynb) by clicking the New file button in the top-left corner and selecting "Upload Notebook".
 3. Initially, select a free CPU-backed studio to set up and test our environment.
 
-<Image src={lightningAINewStudio} alt="Lightning.ai new studio" />
+<Image src="https://zackproser.b-cdn.net/images/lightning-ai-new-studio.webp" alt="Lightning.ai new studio" width={800} height={600} />
 <figcaption>Lightning.ai's UX really shines - a lot of care and thought has been put into making it easy to work with</figcaption>
 
 This allows us to set up our environment and ensure everything is working correctly before we move to GPU resources for the actual fine-tuning process.
@@ -56,7 +49,6 @@ Now that we have our Notebook set up in Lightning.ai Studio, let's install the n
 Next, we'll log in to Weights & Biases for experiment tracking.
 
 ```python
-import wandb
 wandb.login()
 ```
 
@@ -73,7 +65,7 @@ to tell Torchtune to send logs and metrics to your Weights & Biases project. Be 
 
 Once you've fully configured your Weights & Biases project, you'll be able to log into your W&B dashboard and see your metrics during Fine-tuning: 
 
-<Image src={wandbMetrics} alt="Weights & Biases metrics" />
+<Image src="https://zackproser.b-cdn.net/images/wandb-metrics.webp" alt="Weights & Biases metrics" width={800} height={600} />
 <figcaption>Metrics and logs are sent to your Weights & Biases project, so you can monitor even long-running jobs closely</figcaption>
 
 
@@ -196,7 +188,7 @@ If everything looks good, we're ready to switch to a GPU-backed environment for 
 
 Now that we've confirmed our setup is working, let's switch to a GPU-backed environment in Lightning.ai Studio for the actual fine-tuning process:
 
-<Image src={lightningAIGPUPicker} alt="Lightning.ai GPU picker" />
+<Image src="https://zackproser.b-cdn.net/images/lightning-ai-gpu-picker.webp" alt="Lightning.ai GPU picker" width={800} height={600} />
 <figcaption>Lightning.ai makes it dead-simple to switch to a GPU backed environment when you're ready to start training</figcaption>
 
  In the top-right corner of the Studio, click on the icon that says "4 CPU", which opens the GPU picker, allowing you to view the different GPU options available.
@@ -213,7 +205,7 @@ With our GPU-backed environment ready, we can start the full fine-tuning process
 
 This command initiates the fine-tuning process using our defined configuration. The process will log metrics to Weights & Biases, allowing us to monitor the training in real-time.
 
-<Image src={lightningAISuccessfulRun} alt="Lightning.ai successful run" />
+<Image src="https://zackproser.b-cdn.net/images/lightning-ai-successful-run.webp" alt="Lightning.ai successful run" width={800} height={600} />
 <figcaption>A recent successful Fine-tuning run on Lightning.ai</figcaption>
 
 ## 9. Publish Your Fine-tuned Model
@@ -223,7 +215,6 @@ Upload your fine-tuned model to the Hugging Face Hub for easy access and sharing
 Prior to doing so, you'll need to export your Hugging Face token to your environment:
 
 ```python
-import os
 os.environ['HF_TOKEN'] = '<your-hf-token>' 
 ```
 
@@ -254,7 +245,6 @@ You will probably want to update your `prompt` as well prior to testing.
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from peft import PeftModel
-import torch
 
 model_name = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 new_model = "zackproser/Meta-Llama-3.1-8B-instruct-zp-writing-ft-qlora"

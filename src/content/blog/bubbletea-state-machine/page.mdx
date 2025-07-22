@@ -1,22 +1,12 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
 import Link from 'next/link'
-import simpleStepsGif from '@/images/stages.gif'
-import elmArchitecture from '@/images/elm-architecture.svg'
-import bubbleteaStagesGif from '@/images/bubbletea-stages.gif'
 
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
- author: "Zachary Proser",
- date: "2023-04-25", 
- title: "The Bubbletea (TUI) State Machine pattern",
- description: "Combining a lightweight state machine plus the Bubbletea charm library leads to a very powerful pattern for tooling that needs to orchestrate slow or expensive steps.",
- image: bubbleteaStagesGif
-})
+export const metadata = createMetadata(rawMetadata);
 
-## A powerful pattern for CLI's that orchestrate complex deployments or workflows 
-
-<Image src={simpleStepsGif} alt="Demo of the bubbletea stages CLI workflow" />
+<Image src="https://zackproser.b-cdn.net/images/stages.gif" alt="Demo of the bubbletea stages CLI workflow" width={800} height={600}/>
 
 <Link href="https://github.com/zackproser/bubbletea-stages">Check out the project code on GitHub</Link>
 
@@ -92,7 +82,7 @@ To be honest, it took me a couple of tries with some example bubbletea programs 
 really clicking for me - but I read the bubbletea tutorials a couple of times and kept at it and eventually it started to feel natural to extend and manage a program via distinct message types and 
 handlers in the update function - and even pleasant because it did help me to keep the program logic clear and maintainable even as it grew in complexity and functionality.
 
-<Image src={elmArchitecture} alt="The Elm architecture that inspired Bubbletea" />
+<Image src="https://zackproser.b-cdn.net/images/elm-architecture.svg" alt="The Elm architecture that inspired Bubbletea" width={800} height={600}/>
 
 * `Init` - useful for performing initial setup work or to kick off the main process
 * `Update` - called by Bubbletea - used for handling I/O in an asynchronous manner, which keeps the UI loop snappy and responsive. 

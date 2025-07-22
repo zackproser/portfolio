@@ -1,15 +1,18 @@
-import warpChat from '/src/images/warp-chat.webp'
-import warpTesting from '/src/images/warp-testing.webp'
-import warpCoreExperience from '/src/images/warp-core-experience.webp'
+import { Newsletter } from '@/components/Newsletter';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
-import { Newsletter } from '@/components/Newsletter'
 
-import Image from 'next/image'
-import Link from 'next/link'
+export const metadata = createMetadata(rawMetadata);
 
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
+
+
+
+
+
  title: "Warp AI terminal review",
  author: "Zachary Proser",
  date: "2024-4-13",
@@ -17,7 +20,7 @@ export const metadata = createMetadata({
  image: warpChat,
 })
 
-<Image src={metadata.image} alt="Warp brings AI assistance into your terminal" />
+<Image src="https://zackproser.b-cdn.net/images/warp-core-experience.webp" alt="Warp brings AI assistance into your terminal" width={800} height={600}/>
 <figcaption>Warp brings AI assistance into your terminal to make you more efficient</figcaption>
 
 ## Table of contents 
@@ -35,7 +38,7 @@ Warp is a full on replacement for your current terminal emulator.
 The core experience works out of the box as advertised: it's pretty intuitive to get help with complex commmands, ask about errors and get 
 back useful responses that help you to move forward more quickly. 
 
-<Image src={warpCoreExperience} alt="Warp's core value props work as advertised" />
+<Image src="https://zackproser.b-cdn.net/images/warp-core-experience.webp" alt="Warp's core value props work as advertised" width={800} height={600} />
 
 ### It's pretty
 
@@ -60,7 +63,7 @@ that support will be.
 
 I have another quibble about the default experience of running warp on Linux currently: 
 
-<Image src={warpTesting} alt="It's currently a bit awkward to run warp on linux" />
+<Image src="https://zackproser.b-cdn.net/images/warp-testing.webp" alt="It's currently a bit awkward to run warp on linux" width={800} height={600} />
 
 It's currently a bit awkward, because I launch the `warp-terminal` binary from my current terminal emulator, meaning that I get a somewhat janky experience and an extra floating window to manage. 
 

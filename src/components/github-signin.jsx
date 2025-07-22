@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import githubSignin from '@/images/github-signin.webp';
+const githubSignin = 'https://zackproser.b-cdn.net/images/github-signin.webp';
 
 export default function Component() {
           const handleClick = (e) => {
@@ -13,7 +13,7 @@ export default function Component() {
 
           return (
                     <Link onClick={handleClick} href="/learn" passHref>
-                              <Image width={1200} src={githubSignin} alt="Github Signin" />
+                              <Image width={1200} src={githubSignin} alt="Github Signin"  height={600}/>
                     </Link>
           );
 }

@@ -1,24 +1,22 @@
 import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
 import Link from 'next/link'
-import pineconeRefArch from '@/images/pinecone-ref-arch-blueprint.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
 export const href = "https://pinecone.io/learn/aws-reference-architecture"
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2023-11-27",
-    title: "Pinecone AWS Reference Architecture Technical Walkthrough", 
-    description: "An examination of the Reference Architecture components and functionality",
-    image: pineconeRefArch,
-    slug: '/blog/pinecone-reference-architecture-technical-walkthrough'
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 
 --- 
 
-<Image src={metadata.image} alt="Announcing the Pinecone AWS Reference Architecture"/>
+<Image src={metadata.image} alt="Announcing the Pinecone AWS Reference Architecture" width={800} height={600}/>
 
 I built Pinecone's first AWS Reference Architecture using Pulumi. 
 

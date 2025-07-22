@@ -1,25 +1,8 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
-import tmuxFlow from '@/images/tmux-flow.gif'
-import myCustomDevSetup from '@/images/my-custom-development-setup.webp'
-import viper from '@/images/viper.webp'
-import fzf from '@/images/fzf.gif'
-import neotreeDemo from '@/images/neotree.gif'
-import ripgrepDemo from '@/images/ripgrep.gif'
-import symbolOutlineDemo from '@/images/symboloutline.gif'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2022-04-27",
-  title: "Terminal velocity - how to get faster as a developer ",
-  description: "I obssess a decent amount over my own developer productivity and my customized tmux, neovim and awesome window manager linux setup, and now I pass my best learnings on to you",
-  image: myCustomDevSetup,
-  slug: '/blog/terminal-velocity-overview'
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export const metadata = createMetadata(rawMetadata);
 
 *"You could be the greatest architect in the world, but that won't matter much if it takes you forever to type everything into your computer."* [**Hugo Posca**](https://www.linkedin.com/in/hugoposca/)
 
@@ -30,13 +13,13 @@ When you're finished reading this article, you'll understand the *why* and *how*
 
 Here's a screenshot of my setup, captured from a streaming session. 
 
-<Image src={myCustomDevSetup} alt="My custom developer workflow" />
+<Image src="https://zackproser.b-cdn.net/images/my-custom-development-setup.webp" alt="My custom developer workflow" width={800} height={600}/>
 
 If you're interested in developer productivity and tooling and you want to watch me hack on open source using my complete setup, be sure to check out my [my YouTube channel](https://youtube.com/@zackproser).
 
 In this blog post, I'm going to show you exactly what I type in my terminal, and exactly how I navigate my filesystem and work on projects, using high fidelity demos:
 
-<Image src={tmuxFlow} alt="tmux is your friend" />
+<Image src="https://zackproser.b-cdn.net/images/tmux-flow.gif" alt="tmux is your friend" width={800} height={600}/>
 
 Perhaps more importantly, this initial overview post will explain the *why* - why do I go to the trouble to learn, configure, debug and combine all these tools in exactly this way? Ultimately, my workflow reflects what I've learned so far in my career.
 
@@ -62,7 +45,7 @@ In general, don't use the mouse. Browse the web using your keyboard. Yes, it wil
 
 "You need to move a little faster than that son. Speed is Life." **Viper, Titanfall 2**
 
-<Image src={viper} alt="Speed is life" />
+<Image src="https://zackproser.b-cdn.net/images/viper.webp" alt="Speed is life" width={800} height={600}/>
 
 For a more real world and less silly example, see also Boyd's Law.
 
@@ -86,13 +69,13 @@ Once I started managing my code locally, fzf particularly began to shine as a to
 
 ## `fzf` in action
 
-<Image src={fzf} alt="fzf demo - jumping to any directory very quickly" />
+<Image src="https://zackproser.b-cdn.net/images/viper.webp" alt="fzf demo - jumping to any directory very quickly" width={800} height={600}/>
 
 ## The default is navigation 
 
 If I run `vim` in the root of any directory, my neovim setup will automatically open the directory in neotree, which makes navigating and understanding the file system easy and fast. 
 
-<Image src={neotreeDemo} alt="Neotree is baked into AstroNvim" />
+<Image src="https://zackproser.b-cdn.net/images/viper.webp" alt="Neotree is baked into AstroNvim" width={800} height={600}/>
 
 ## Navigating to code, in the browser
 
@@ -103,13 +86,13 @@ For general keyboard-based browsing, I use the Vimium plugin for Firefox. Here's
 * Expand and use even the special functions behind an ellipses menu
 * Start editing a file within a pull request, if desired
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/gRa3vEOPK_o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/gRa3vEOPK_o" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ### Understanding or mapping code quickly 
 
 When I open a new project or file, I want to orient myself quickly and develop a general understanding of the project layout and the structure of the program. To accomplish this, I lean on AstroNvim's configuration to pop up a symbol outline in my current file that I can use to navigate and understand the code: 
 
-<Image src={symbolOutlineDemo} alt="Symbol outline demo" />
+<Image src="https://zackproser.b-cdn.net/images/symboloutline.gif" alt="Symbol outline demo" width={800} height={600}/>
 
 ### Finding files, code or arbitrary strings on your local machine 
 
@@ -121,7 +104,7 @@ Whether you're working on a new feature, trying to orient yourself to a new code
 
 And many, many more. You'd be surprised how many of these questions ripgrep can answer for you. I recommend learning as many of the flags for `rg` as you can. I picked up ripgrep a few years ago and it remains one of the things I run constantly throughout the day to get my work done more efficiently.
 
-<Image src={ripgrepDemo} alt="ripgrep is ideal for finding arbitrary strings across files" />
+<Image src="https://zackproser.b-cdn.net/images/viper.webp" alt="ripgrep is ideal for finding arbitrary strings across files" width={800} height={600}/>
 
 ## Learning #3 - Reflow your workspace to fit your work
 I may execute many different tasks during the course of a day: write a new feature in one language, fix up some flaky or slow tests in another, write an RFC in markdown, create new configuration files, perform a deployment, etc. 
@@ -132,7 +115,7 @@ The main idea is that my workspace is a fluid thing that can shift and scale up 
 
 Let's make this more concrete with an example. In the following demo gif, I use neovim to edit code, which means my editor is just another tmux pane. In this case, I'm writing some code that needs a Docker image ID. I need only create a new split and do my Docker work there. When I have the Docker image ID I need, I can close the extra pane, recovering the full screen's real estate for my focused coding task.
 
-<Image src={tmuxFlow} alt="tmux is a powerful terminal multiplexer" />
+<Image src="https://zackproser.b-cdn.net/images/tmux-flow.gif" alt="tmux is a powerful terminal multiplexer" width={800} height={600}/>
 
 In my day to day work, I might have between 3 and 8 different terminal panes open on a single screen, depending on the task. Panes show up to do some work and get some output that can be easily piped to any other pane. Panes whose work is finished can get closed down, recovering screen real-estate for other tasks.  I constantly reflow my workspace to my work.
 

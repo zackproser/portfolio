@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-07-04",
+  "title": "Office Oracle - a complete AI Chatbot leveraging langchain, Pinecone.io and OpenAI",
+  "description": "I open sourced my next.js AI chatbot and the Jupyter notebooks I used to build it, plus created a video series walking through it all on YouTube",
+  "image": "https://zackproser.b-cdn.net/images/michael-scott-oracle-2.webp"
+}

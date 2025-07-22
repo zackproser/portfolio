@@ -5,13 +5,13 @@ import { createMetadata } from '@/utils/createMetadata';
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 
-import advice from '@/images/advice.webp'
-import projects from '@/images/projects.webp'
-import portfolio from '@/images/portfolio.webp'
-import getHired from '@/images/get-hired.webp'
-import skills from '@/images/skills.webp'
-import community from '@/images/community.webp'
-import mentorship from '@/images/mentorship.webp'
+const advice = 'https://zackproser.b-cdn.net/images/advice.webp'
+const projects = 'https://zackproser.b-cdn.net/images/projects.webp'
+const portfolio = 'https://zackproser.b-cdn.net/images/portfolio.webp'
+const getHired = 'https://zackproser.b-cdn.net/images/get-hired.webp'
+const skills = 'https://zackproser.b-cdn.net/images/skills.webp'
+const community = 'https://zackproser.b-cdn.net/images/community.webp'
+const mentorship = 'https://zackproser.b-cdn.net/images/mentorship.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "Learn AI Development - School for Hackers",
@@ -72,42 +72,35 @@ function Features({ features }: FeaturesProps) {
         </div>
         <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Replace with your image elements */}
-          <Image
-            src={projects}
+          <Image src={projects}
             alt="Real software projects"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
-          <Image
-            src={advice}
+           width={800} height={600}/>
+          <Image src={advice}
             alt="High quality advice"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
-          <Image
-            src={community}
+           width={800} height={600}/>
+          <Image src={community}
             alt="Network with other students"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
-          <Image
-            src={portfolio}
+           width={800} height={600}/>
+          <Image src={portfolio}
             alt="Build a real portfolio"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
-          <Image
-            src={skills}
+           width={800} height={600}/>
+          <Image src={skills}
             alt="Develop hands-on skills"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
-          <Image
-            src={mentorship}
+           width={800} height={600}/>
+          <Image src={mentorship}
             alt="Mentorship"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
+           width={800} height={600}/>
 
-          <Image
-            src={getHired}
+          <Image src={getHired}
             alt="Build a real portfolio"
             className="rounded-lg bg-gray-100 dark:bg-gray-700"
-          />
+           width={800} height={600}/>
 
         </div>
       </div>

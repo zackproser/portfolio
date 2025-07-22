@@ -1,36 +1,22 @@
 import Newsletter from '@/components/NewsletterWrapper'
-
-import sparkOfLearning from '@/images/spark-of-learning.webp'
-import foundTheSpark from '@/images/found-the-spark.webp'
-import programmingBug from '@/images/programming-bug.webp'
-import exploringProgramming from '@/images/exploring-programming.webp'
-import learningToCodeMap from '@/images/learning-to-code-map.webp'
-import workingHacker from '@/images/working-hacker.webp'
-import hookedOnHacking from '@/images/hooked-on-hacking.webp'
-import hackerEncouragement from '@/images/hacker-encouraging.webp'
-import programmingBugReleased from '@/images/programming-bug-released.webp'
-import programmersInSnowglobe from '@/images/programmers-in-snowglobe.webp'
-import programmingIsMagic from '@/images/programming-is-magic.webp'
-import givingUpCoin from '@/images/giving-up-coins.webp'
-
-import descentCoverArt from '@/images/descent.webp'
-
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { createMetadata } from '@/utils/createMetadata'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-07-17",
-  title: "First, find out if you've got the programming bug",
-  description: "I get this question a lot: how do I get into coding? This is my best advice.",
-  image: sparkOfLearning,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={foundTheSpark} alt="The spark that ignites an interest in programming" />
+
+
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/found-the-spark.webp" width={800} height={600} alt="The spark that ignites an interest in programming" />
 
 > I'm thinking about learning to code. Which laptop should I get? Should I do a bootcamp? Does my child need special classes or prep in order to tackle a computer science degree?
 
@@ -44,13 +30,13 @@ Before you should worry about any of that: your major, which school you're tryin
 This will require a bit of exploration and effort on your part, but the good news is there's a ton of high quality and free resources online that will give you enough of a taste for coding and 
 building to help you determine if this is something worth pursuing as a career or hobby. I'll share some of my favorites in this post.
 
-<Image src={sparkOfLearning} alt="The spark of learning"/>
+<Image src="https://zackproser.b-cdn.net/images/spark-of-learning.webp" width={800} height={600} alt="The spark of learning"/>
 
 ## What is the programming bug?
 
 "The programming bug" is the spark of innate curiosity that drives your learning forward. Innate meaning that it's coming from you - other people don't need to push you to do it.
 
-<Image src={programmingBug} alt="The programming bug" />
+<Image src="https://zackproser.b-cdn.net/images/programming-bug.webp" width={800} height={600} alt="The programming bug" />
 
 In software development, coding, systems engineering, machine learning, data science; basically, in working with computers while also possibly working with people - there are periods of profound frustration and tedium, punctuated by anxiety and stress. 
 
@@ -60,7 +46,7 @@ tears to my eyes countless times. If you pursue the path of a digital craftspers
 I also happen to think that being able to describe to machines of all shapes and sizes exactly what you want them to do in their own languages; to solve problems in collaboration with machines, and to be able to bring an idea from your imagination all the 
 way to a publicly accessible piece of software that people from around the world use and find utility or joy in - borders on magic. 
 
-<Image src={programmingIsMagic} alt="Programming is magic" />
+<Image src="https://zackproser.b-cdn.net/images/programming-is-magic.webp" width={800} height={600} alt="Programming is magic" />
 
 <Newsletter />
 
@@ -77,7 +63,7 @@ Don't buy a new macbook. Don't sign up for a bootcamp. Not at first.
 
 Use the many excellent free resources on the internet that are designed to help folks try out programming in many different languages and contexts. 
 
-<Image src={exploringProgramming} alt="Exploring programming" />
+<Image src="https://zackproser.b-cdn.net/images/exploring-programming.webp" width={800} height={600} alt="Exploring programming" />
 
 Here are a few that I can recommend to get you started: 
 
@@ -104,7 +90,7 @@ Nevertheless, it can be helpful to watch some professional developers do develop
 Luckily, plenty of developers make it easy for you to do that, by sharing content on YouTube and Twitch. This is very far from an exhaustive list, but here's a few channels I've watched recently that can help you see some 
 on-screen action for yourself: 
 
-<Image src={programmersInSnowglobe} alt="Programmers working in a snowglobe" />
+<Image src="https://zackproser.b-cdn.net/images/programmers-in-snowglobe.webp" width={800} height={600} alt="Programmers working in a snowglobe" />
 
 * [Ants Are Everywhere](https://www.youtube.com/@ants_are_everywhere) - An ex-Googler reads the source code to popular open-source projects on YouTube, thinking through the process and showing how he answers his own questions 
 as they arise. Really excellent code spelunking. 
@@ -124,13 +110,13 @@ soft skill development as well.
 
 ## You may not might find the programming bug overnight 
 
-<Image src={learningToCodeMap} alt="Learning to code can be a winding path and it can look different for everyone" />
+<Image src="https://zackproser.b-cdn.net/images/learning-to-code-map.webp" width={800} height={600} alt="Learning to code can be a winding path and it can look different for everyone" />
 
 I've been on a computer since I was 3 years old, but for the first few years I was really only playing games, making diaramas with paint and similar programs. 
 
 Around age 11, I had a neighborhood friend who showed me an early Descent game on his PC.  
 
-<Image src={descentCoverArt} alt="One of the earliest Descent PC games" />
+<Image src="https://zackproser.b-cdn.net/images/descent.webp" width={800} height={600} alt="One of the earliest Descent PC games" />
 
 He also had a C++ textbook that he let me borrow and read through. At the tender age of 11, I was thinking to myself that I would read this book, become a developer, and then make my own games. I started by 
 trying to understand the textbook material. This didn't pan out - and it would be another 15 years until I'd make a conscious decision to learn to code. 
@@ -138,12 +124,12 @@ trying to understand the textbook material. This didn't pan out - and it would b
 At age 26, I joined my first tech company as a marketing associate. Luckily, there was a component of the job that was also quality assurance, and our product was very technical, so I had to use the command line
 to send various test payloads into our engine and verify the outputs made sense. I was hooked. 
 
-<Image src={hookedOnHacking} alt="hooked on hacking" />
+<Image src="https://zackproser.b-cdn.net/images/hooked-on-hacking.webp" width={800} height={600} alt="hooked on hacking" />
 
 The staff-level developer who was sitting next to me gave me just the right amount of encouragement and said that if I kept at it - I would be like "this" (he made a motion with his hand of an upward ramp). From that point forward, I was teaching myself everything I could on nights and weekends. Practicing, coding, reading about 
 coding and trying to build things. And I've never stopped. 
 
-<Image src={hackerEncouragement} alt="Hacker encouragement"/>
+<Image src="https://zackproser.b-cdn.net/images/working-hacker.webp" width={800} height={600} alt="Hacker encouragement"/>
 
 The timeline for learning to code can be lumpy and will look different for different people. That's okay, too. 
 
@@ -155,7 +141,7 @@ So what should you do if you try out some of these types of programming exercise
 
 What do you do next? **Start building and never stop**. This is the advice from a Stack Overflow developer survey from a few years ago about how to stay current and how to grow as a developer: "Build things all the time and never stop". I couldn't agree more. 
 
-<Image src={programmingBugReleased} alt="Build things all the time and never stop" />
+<Image src="https://zackproser.b-cdn.net/images/programming-bug-released.webp" width={800} height={600} alt="Build things all the time and never stop" />
 
 The first complete web app I built for myself was my [Article Optimizer](/blog/open-sourced-article-optimizer). It was brutal. I didn't even know the names of the things I didn't know - so I couldn't Google them. I had to work backwards by examining apps that were similar enough 
 to what I was trying to build (for example, an app that presented the user with a form they could use to submit data) and reverse engineer it, reading the page source code, and trying to find out more information about the base technologies. 
@@ -172,7 +158,7 @@ than last time around - something that will push you out of your comfort zone ag
 
 ## Don't pony up your cash until you've gotten a free taste 
 
-<Image src={givingUpCoin} alt="You could drop a ton of money on bootcamps or hardware, but it's far cheaper to first try out programming for free" />
+<Image src="https://zackproser.b-cdn.net/images/giving-up-coins.webp" width={800} height={600} alt="You could drop a ton of money on bootcamps or hardware, but it's far cheaper to first try out programming for free" />
 
 I've seen people take out a loan for $12,000 in order to complete a coding bootcamp, just to discover during their first job placement that they don't actually enjoy working on the computer all day or want to continue building digital things. 
 
@@ -184,7 +170,7 @@ Software development, hacking, designing and building systems, creating apps and
 
 *You* need to figure out if *you* can find that spark and continually use it to renew your own interest and passion. 
 
-<Image src={workingHacker} alt="Working hacker"/>
+<Image src="https://zackproser.b-cdn.net/images/working-hacker.webp" width={800} height={600} alt="Working hacker"/>
 
 Looking for advice or have a question? You can subscribe to my newsletter below, and the first email in the series will allow you to reply in order to share with me any challenges you're currently facing in your career, or questions you might have. 
 

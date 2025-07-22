@@ -1,3 +1,5 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,29 +10,8 @@ import ShareButton from '@/components/ShareButton'
 import Newsletter from '@/components/Newsletter'
 import ShareButtonTracked from '@/components/ShareButtonTracked'
 
-import secretsProtection from '@/images/secret-protection.webp'
-import secretsVsNonSecrets from '@/images/secrets-non-secrets.webp'
-import vibeCodingProtection from '@/images/vibe-coding-protection.webp'
-import vibeCodingPremium from '@/images/vibe-coding-premium.webp'
-import secretsHero from '@/images/vibe-coding-survival-guide.webp'
-import gitSafetyNet from '@/images/git-safety-net.webp'
-import gettingGot  from '@/images/getting-got.webp'
-import introToGit from '@/images/intro-to-git.webp'
-import secretsFlow from '@/images/secrets-flow.webp'
-import secretsGuard from '@/images/secret-guard.webp'
-import secretsLeak from '@/images/secrets-leak.webp'
-import neverCommitEnv from '@/images/never-commit-env.webp'
 
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2025-04-28',
-  title: 'Vibe Coding Survival Guide – Secrets & Git Basics for Cursor-First Builders',
-  description:
-    'A no-jargon crash-course that keeps your AI side-projects from torching your wallet. Perfect for vibe coders with zero engineering background.',
-  image: secretsHero,
-})
+export const metadata = createMetadata(rawMetadata);
 
 ## Why Secrets Matter (The $500 tweet)
 
@@ -47,7 +28,7 @@ export const metadata = createMetadata({
 <figcaption>Don't end up like Leo. Learn enough to protect yourself, or buy the premium package to protect your secrets.</figcaption>
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={vibeCodingProtection} alt="Vibe coding premium protects you against leaking secrets" />
+  <Image src="https://zackproser.b-cdn.net/images/vibe-coding-protection.webp" alt="Vibe coding premium protects you against leaking secrets" width={800} height={600}/>
 </Link>
 
 <figcaption>Premium includes a step-by-step screencast and instructions on setting up a special tool that makes it impossible for you to commit secrets to git (so you never end up like Leo).*</figcaption>
@@ -57,7 +38,7 @@ Publishing an OpenAI key to a public repo is the software equivalent of tweeting
 Attackers can crank out four‑figure bills (or worse, wipe data) before you notice the email from Stripe.
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={secretsLeak} alt="How secrets get leaked and abused" className="my-6" />
+  <Image src="https://zackproser.b-cdn.net/images/secrets-leak.webp" alt="How secrets get leaked and abused" className="my-6" width={800} height={600}/>
 </Link>
 
 *I've spent 13+ years securing apps at companies like Cloudflare and Pinecone. [Connect on LinkedIn](https://www.linkedin.com/in/zackproser/). Trust me: leaking secrets hurts worse than forgetting to save your game.*
@@ -82,7 +63,7 @@ Cursor, Windsurf and Claude Code are still tools designed for professional devel
 ## What actually counts as a secret?
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={secretsVsNonSecrets} alt="What is a secret and what isn't?" />
+  <Image src="https://zackproser.b-cdn.net/images/secrets-non-secrets.webp" alt="What is a secret and what isn't?" width={800} height={600}/>
 </Link>
 
 ### 🚨 Always Keep Private:
@@ -107,7 +88,7 @@ Cursor, Windsurf and Claude Code are still tools designed for professional devel
 ## Git = Save Game, Explained 💾
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={gitSafetyNet} alt="Git is like a save system or safety net" />
+  <Image src="https://zackproser.b-cdn.net/images/git-safety-net.webp" alt="Git is like a save system or safety net" width={800} height={600}/>
 </Link>
 
 Imagine your project is a video-game world:
@@ -152,7 +133,7 @@ git reset --hard HEAD~1
 <Link href="/products/vibe-coding-mastery">
   <div className="not-prose my-4 p-4 rounded-md border border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200 cursor-pointer">
     <strong className="font-semibold">🔒 Premium Only:</strong> Get zero-bullshit, highly-visual and easy-to-understand explanations. Only what you need to know so you can get back to building.
-    <Image src={introToGit} alt="The premium version of this guide explains git and secrets in a visual-first manner" />
+    <Image src="https://zackproser.b-cdn.net/images/intro-to-git.webp" width={800} height={600} alt="The premium version of this guide explains git and secrets in a visual-first manner" />
   </div>
 </Link>
 
@@ -161,7 +142,7 @@ git reset --hard HEAD~1
 ## 3. Secrets & Environment Variables — Baby Steps 🍼
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={secretsFlow} alt="How secrets flow" />
+  <Image src="https://zackproser.b-cdn.net/images/secrets-flow.webp" alt="How secrets flow" width={800} height={600}/>
 </Link>
 
 **Secret** = Your code's credit card number. Leak it, pay for it.  
@@ -182,7 +163,7 @@ Run `git add . && git commit -m "test"` to save your code.
 <Link href="/products/vibe-coding-mastery">
   <div className="not-prose my-4 p-4 rounded-md border border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-600/30 dark:bg-yellow-900/20 dark:text-yellow-200 cursor-pointer">
     <strong className="font-semibold">🔒 Premium Only:</strong> Watch the screencast and get the exact commands to set up a tool that makes it impossible to leak your secrets via git!
-    <Image src={secretsGuard} alt="The premium version of this guide protects your secrets" />
+    <Image src="https://zackproser.b-cdn.net/images/secret-guard.webp" alt="The premium version of this guide protects your secrets" width={800} height={600}/>
   </div>
 </Link>
 
@@ -191,7 +172,7 @@ Run `git add . && git commit -m "test"` to save your code.
 ## 🎥 What's in Premium?
 
 <Link href="/products/vibe-coding-mastery">
-  <Image src={vibeCodingPremium} alt="Vibe Coding Mastery protects your secrets and makes everything as simple as possible to understand" />
+  <Image src="https://zackproser.b-cdn.net/images/vibe-coding-premium.webp" width={800} height={600} alt="Vibe Coding Mastery protects your secrets and makes everything as simple as possible to understand" />
 </Link>
 
 - **Screencasts:** In addition to the exact commands, you can watch me perform all the setup tasks in Cursor 

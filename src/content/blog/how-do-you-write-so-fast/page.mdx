@@ -1,22 +1,13 @@
+import { Newsletter } from '@/components/Newsletter';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
-import writeSoFast from '/src/images/write-so-fast.webp' 
 
-import { Newsletter } from '@/components/Newsletter'
+export const metadata = createMetadata(rawMetadata);
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
- title: "How do you write so fast?",
- author: "Zachary Proser",
- date: "2024-4-17",
- description: "Sometimes someone will ask me how I am able to write new content so quickly. This is my answer. ",
- image: writeSoFast,
-});
-
-<Image src={metadata.image} alt="How do you write so fast?" />
+<Image src={metadata.image} alt="How do you write so fast?"  width={800} height={600}/>
 
 ## How do I write so fast?
 

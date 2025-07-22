@@ -1,22 +1,13 @@
-import awsVault from '/src/images/aws-vault.webp' 
-
-import { ArticleLayout } from '@/components/ArticleLayout'
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
 import { Newsletter } from '@/components/Newsletter'
-
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
- title: "aws-vault - the best way to manage AWS credentials for multiple accounts",
- author: "Zachary Proser",
- date: "2024-4-8",
- description: "aws-vault is an excellent open-source tool written in Golang that allows you to manage the credentials for multiple AWS accounts securely. ",
- image: awsVault,
-});
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={awsVault} alt="aws-vault" />
+<Image src="https://zackproser.b-cdn.net/images/aws-vault.webp" alt="aws-vault" width={800} height={600} />
 
 One of the best open-source tools for working with AWS that you haven't heard about is aws-vault.
 

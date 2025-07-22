@@ -54,6 +54,17 @@ To remove images that don't correspond to any content:
 npm run og:clean-orphans
 ```
 
+## Overwriting Existing OG Images
+
+- By default, running the script will **skip generating/uploading an OG image if it already exists in blob storage** for that slug.
+- To force regeneration and overwrite existing OG images, use the `--overwrite` flag:
+  ```sh
+  node scripts/og-image-generator.js --overwrite
+  # or
+  npm run og:generate -- --overwrite
+  ```
+- This is useful if you update a post's hero image, title, or description and want to refresh the OG image in blob storage.
+
 ## Technical Details
 
 ### Script Locations

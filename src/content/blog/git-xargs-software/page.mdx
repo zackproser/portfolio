@@ -1,23 +1,20 @@
 import Image from 'next/image'
-import gitXargsDemo from '@/images/git-xargs-demo.gif'
-import gitXargsTable from '@/images/git-xargs-table.webp'
-import gitXargsBanner from '@/images/git-xargs-banner.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2021-04-19",
-  title: "Git-xargs allows you to run commands and scripts against many Github repos simultaneously",
-  description: "Git-xargs allows you to run commands and scripts against many Github repos simultaneously",
-  image: gitXargsBanner, 
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 
 ----
 
 ## Demo
 
-<Image src={gitXargsDemo} alt="git-xargs demo" />
+<Image src="https://zackproser.b-cdn.net/images/git-xargs-demo.gif" alt="git-xargs demo" width={800} height={600}/>
 
 ## Intro
 
@@ -36,7 +33,7 @@ git-xargs \
 
 In this example, every repo in the my-example-org GitHub org have a CONTRIBUTIONS.txt file added, and an easy to read report will be printed to STDOUT :
 
-<Image src={gitXargsTable} alt="Git xargs table report" />
+<Image src="https://zackproser.b-cdn.net/images/git-xargs-table.webp" alt="Git xargs table report" width={800} height={600}/>
 
 ## Try it out
 

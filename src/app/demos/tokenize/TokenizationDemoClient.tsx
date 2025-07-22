@@ -8,7 +8,7 @@ import {
 } from './components';
 
 import Image from 'next/image';
-import tokenizationDiagram from '@/images/tokenization-diagram.webp'
+const tokenizationDiagram = 'https://zackproser.b-cdn.net/images/tokenization-diagram.webp'
 
 // New imports
 import { FiInfo, FiBook, FiTool, FiDollarSign, FiCode, FiChevronDown, FiChevronRight } from 'react-icons/fi';
@@ -74,11 +74,10 @@ export default function TokenizationDemoClient() {
             </ul>
           </div>
           <div className="flex justify-center py-2">
-            <Image 
-              src={tokenizationDiagram}
+            <Image src={tokenizationDiagram}
               alt="Tokenization process diagram" 
               className="max-w-full h-auto rounded-lg shadow-md" 
-            />
+             width={800} height={600}/>
           </div>
         </div>
       )

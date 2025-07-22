@@ -1,21 +1,18 @@
 import  Image  from 'next/image'
-
-import githubCopilot from '@/images/github-copilot-review.webp'
-import githubCopilot2 from '@/images/github-copilot-review-2.webp'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2023-10-07',
-  title: 'GitHub Copilot review', 
-  description: 'I got Copilot access for free as an active GitHub open-source maintainer, but would I pay for it?',
-  image: githubCopilot,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={githubCopilot} alt="GitHub Copilot review" />
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/github-copilot-review.webp" alt="GitHub Copilot review" width={800} height={600} />
 <figcaption>GitHub Copilot has immense potential, but continues to underwhelm</figcaption>
 
 When I signed up to try out GitHub Copilot, I was delighted to find that GitHub gifted me a free license to use it based on my being an [active open-source developer](https://github.com/zackproser).
@@ -35,7 +32,7 @@ In these cases, Copilot can usually be trusted to handle completing the boilerpl
 
 ## ChatGPT4 upgrade, product page teasers and developer rage 
 
-<Image src={githubCopilot2} alt="GitHub Copilot review" />
+<Image src="https://zackproser.b-cdn.net/images/github-copilot-review-2.webp" alt="GitHub Copilot review" width={800} height={600} />
 <figcaption>GitHub Copilot X might be the promised land, but the launch and teaser has been handled poorly</figcaption>
 
 For many months now, GitHub's Copilot product page has teased the fact that the next version of GitHub Copilot, known currently as Copilot X, will use ChatGPT4 under the hood and will handle way more than code completions. 

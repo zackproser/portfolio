@@ -16,7 +16,8 @@ const nextConfig = {
       "www.zackproser.com",
       "img.youtube.com", 
       "placehold.co",
-      "avatars.githubusercontent.com"
+      "avatars.githubusercontent.com",
+      "zackproser.b-cdn.net"
     ],
     formats: ['image/webp'], 
   },
@@ -26,6 +27,10 @@ const nextConfig = {
   experimental: {
     optimizeCss: true, // Inlines critical CSS
     typedRoutes: true,
+  },
+  // Build performance optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   // These were moved from experimental to top level
   skipTrailingSlashRedirect: true,
@@ -145,26 +150,31 @@ const nextConfig = {
         source: '/comparisons/:db1(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)-vs-:db2(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)',
         destination: '/vectordatabases',
         permanent: false
+      },
+      {
+        source: '/learn',
+        destination: '/products',
+        permanent: false
       }
     ]
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Ignore specific critical dependency warnings from dependencies
-    config.ignoreWarnings = [
-      ...(config.ignoreWarnings || []),
-      {
-        module: /node_modules\/source-map\/lib\/source-map\/source-map-generator\.js$/,
-        message: /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
-      },
-      {
-        module: /node_modules\/uglify-js\/tools\/node\.js$/,
-        message: /Critical dependency: the request of a dependency is an expression/,
-      },
-    ];
-
-    // Important: return the modified config
-    return config;
-  },
+  // webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  //   // Ignore specific critical dependency warnings from dependencies
+  //   config.ignoreWarnings = [
+  //     ...(config.ignoreWarnings || []),
+  //     {
+  //       module: /node_modules\/source-map\/lib\/source-map\/source-map-generator\.js$/,
+  //       message: /Critical dependency: require function is used in a way in which dependencies cannot be statically extracted/,
+  //     },
+  //     {
+  //       module: /node_modules\/uglify-js\/tools\/node\.js$/,
+  //       message: /Critical dependency: the request of a dependency is an expression/,
+  //     },
+  //   ];
+  //
+  //   // Important: return the modified config
+  //   return config;
+  // },
 }
 
 const withMDX = nextMDX({

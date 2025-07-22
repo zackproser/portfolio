@@ -1,26 +1,16 @@
 import Image from 'next/image'
 import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-import mnistMindMapper from '@/images/mnist-mind-mapper-splash.webp'
-import mnistMindMapperFlow from '@/images/mnist-mind-mapper-flow.webp'
-import vercelPythonDataTooLong from '@/images/vercel-python-data-too-long.webp'
-import vercelPythonGithubExcludeFiles from '@/images/vercel-python-github-exclude-files.webp'
-import neuralNetwork from '@/images/pytorch-mnist-neural-network.webp'
-import modalDashboard from '@/images/modal-dashboard.webp'
-import pytorchMNISTLogo from '@/images/pytorch-mnist-logo.webp'
-import MNISTMindMapperLogo from '@/images/MNIST-mind-mapper-hero.webp'
-import MNISTTestImage from '@/images/mnist-test-images.webp'
+export const metadata = createMetadata(rawMetadata);
 
-export const metadata = createMetadata({
-  title: "Building a Hand-Drawn Digit Recognizer with PyTorch and MNIST",
-  author: "Zachary Proser",
-  date: "2024-7-28",
-  description: "I trained a neural net to recognize hand-drawn digits, then built a Next.js UI for it",
-  image: mnistMindMapper,
-});
 
-<Image src={mnistMindMapper} alt={"The MNIST mind mapper"} />
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/mnist-mind-mapper-splash.webp" alt="The MNIST mind mapper" width={800} height={600}/>
 
 ## Table of contents
 
@@ -39,7 +29,7 @@ You can watch this short demo to see how the app works:
 
 I've been an application and infrastructure developer for the majority of my career, so I wanted to get hands-on with training and deploying a neural network.
 
-<Image src={neuralNetwork} alt={"A neural network"} />
+<Image src="https://zackproser.b-cdn.net/images/neural-network.webp" alt={"A neural network"}  width={800} height={600}/>
 
 I also wanted to wrap that trained neural network in a REST API, so that I could build a frontend that would allow folks 
 to play with it, because interacting with something is more engaging than reading a text description of it.
@@ -59,7 +49,7 @@ I open source most of my work, and this project is no exception:
       slug: 'https://github.com/zackproser/pytorch-mnist',
       title: 'pytorch-mnist - model training repo',
       description: 'Repository for training the PyTorch MNIST model',
-      image: pytorchMNISTLogo,
+      image: "https://zackproser.b-cdn.net/images/pytorch-mnist-logo.webp",
       date: '2024-07-28'
     }}
   />
@@ -69,7 +59,7 @@ I open source most of my work, and this project is no exception:
       slug: 'https://github.com/zackproser/mnist-mind-mapper',
       title: 'mnist-mind-mapper application',
       description: 'The MNIST mind mapper app built using PyTorch and Next.js',
-      image: MNISTMindMapperLogo,
+      image: "https://zackproser.b-cdn.net/images/mnist-mind-mapper-logo.webp",
       date: '2024-07-28'
     }}
   />
@@ -79,7 +69,7 @@ I open source most of my work, and this project is no exception:
 
 Let's step through how the app works, end to end:
 
-<Image src={mnistMindMapperFlow} alt={"The MNIST mind mapper"} />
+<Image src="https://zackproser.b-cdn.net/images/mnist-mind-mapper-flow.webp" alt="The MNIST mind mapper" width={800} height={600}/>
 
 The frontend exposes a small drawable canvas, which the user scribbles on. 
 
@@ -107,9 +97,6 @@ The following code is all that's needed with pytorch to:
 4. Save the model to disk so that it can be loaded and reused later
 
 ```python
-import torch
-import torch.nn as nn
-import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
@@ -184,7 +171,7 @@ With the training complete, I wanted to quickly sanity check the trained network
 You can view the entire `main.py` file in [the repository](https://github.com/zackproser/pytorch-mnist/blob/main/main.py), but we'll examine the route itself here, which runs a self-test and shares 
 the output as a PNG image like so: 
 
-<Image src={MNISTTestImage} alt={"MNIST test image"} />
+<Image src="https://zackproser.b-cdn.net/images/mnist-test-images.webp" alt="MNIST test image" width={800} height={600}/>
 
 ```python
 app = FastAPI()
@@ -237,7 +224,7 @@ Unfortunately, the docs Vercel has for using their Python runtime are very spars
 
 Errors are also opaque. The showstopper for getting my Python backend deployed successfully on Vercel was an unintuitive error message: `data too long`. 
 
-<Image src={vercelPythonDataTooLong} alt={"Vercel's Python support is immature"} />
+<Image src="https://zackproser.b-cdn.net/images/vercel-python-data-too-long.webp" alt="Vercel's Python support is immature" width={800} height={600}/>
 
 I was pretty sure that pytorch and torchvision were likely blowing out the 4.5MB size limit on serverless functions, but there wasn't a great way to confirm this. My model/weights file was just under 400KB.
 
@@ -245,7 +232,7 @@ Things that you'd expect to be extensively documented, such as how to get around
 
 You find extremely important details like this hiding out in 4 year old GitHub issue comment threads: 
 
-<Image src={vercelPythonGithubExcludeFiles} alt={""} />
+<Image src="https://zackproser.b-cdn.net/images/vercel-python-github-exclude-files.webp" alt="" width={800} height={600}/>
 
 ## Converting to ONNX and trying again
 
@@ -261,7 +248,7 @@ functioned as intended. The potential size savings from ONNX did not end up maki
 
 In researching platforms that host your Python code as cloud functions, I found modal.com which was lightweight and fast to set up. 
 
-<Image src={modalDashboard} alt={"Modal.com dashboard"} />
+<Image src="https://zackproser.b-cdn.net/images/modal-dashboard.webp" alt="Modal.com dashboard" width={800} height={600}/>
 
 I ended up converting the local version of my Fast API Python backend to a file I named `modal_function.py` which I 
 then deployed like so: 

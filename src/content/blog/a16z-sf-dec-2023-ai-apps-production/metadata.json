@@ -1,0 +1,8 @@
+{
+  "author": "Zachary Proser",
+  "date": "2023-12-6",
+  "title": "Talk @ a16z: Taking AI applications to Production",
+  "description": "I introduced the new Pinecone AWS Reference Architecture with Pulumi and explained infrastructure as code",
+  "image": "https://zackproser.b-cdn.net/images/a16z-1.webp",
+  "slug": "/blog/a16z-sf-dec-2023-ai-apps-production"
+}

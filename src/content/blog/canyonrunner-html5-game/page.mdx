@@ -1,32 +1,22 @@
 import Newsletter from '@/components/NewsletterWrapper'
-
-import canyonRunnerBlog from '@/images/canyonrunner-blog.webp'
-import canyonRunnerSplash from '@/images/canyonrunner.webp'
-
-import aerialCombat from '@/images/canyonrunner-screens/CanyonRunner-Aerial-Combat.webp'
-import chapterScreen from '@/images/canyonrunner-screens/CanyonRunner-Chapter-Screen.webp'
-import environmentalEffects from '@/images/canyonrunner-screens/CanyonRunner-Environmental-Effects.webp'
-import mobileTouchpad from '@/images/canyonrunner-screens/CanyonRunner-Mobile-Touchpad.webp'
-import canyonrunnerSuccess from '@/images/canyonrunner-screens/CanyonRunner-Success.webp'
-import canyonrunnerTitleScreen from '@/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp'
-import multipleEndings from '@/images/canyonrunner-screens/CanyonRunner-Two-Different-Endings.webp'
-
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2019-02-28",
-  title: "CanyonRunner - a complete HTML5 game",
-  description: "I open sourced my first HTML5 game as a resource for other developers working with Phaser.js or wanting to build their own game",
-  image: canyonRunnerBlog,
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
 
 <Link
   href="https://canyonrunner.pages.dev">
-<Image src={canyonRunnerSplash} alt="CanyonRunner - a complete HTML5 game" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner.webp" width={800} height={600} alt="CanyonRunner - a complete HTML5 game" />
 </Link>
 
 ## I Open Sourced My Game
@@ -52,37 +42,37 @@ Here's a look at some screenshots from the actual game. I wanted the game to hav
 
 **_Intense Aerial Dogfights. Fight Off Marauding Bandits_**.
 
-<Image src={aerialCombat} alt="HTML5 dogfighting" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Aerial-Combat.webp" width={800} height={600} alt="HTML5 dogfighting" />
 
 **_Wind Your Way Through the Eerie Story_**
 
-<Image src={chapterScreen} alt="CanyonRunner Chapter Screen" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Chapter-Screen.webp" width={800} height={600} alt="CanyonRunner Chapter Screen" />
 
 **_Intense Environmental Effects_**
 
-<Image src={environmentalEffects} alt="CanyonRunner Environmental Effects" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Environmental-Effects.webp" width={800} height={600} alt="CanyonRunner Environmental Effects" />
 
 **_Auto-detects Mobile agents and renders a touchpad_**
 
-<Image src={mobileTouchpad} alt="Game auto-detects mobile layouts and renders a touchpad when necessary" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Mobile-Touchpad.webp" width={800} height={600} alt="Game auto-detects mobile layouts and renders a touchpad when necessary" />
 
 **_Catchy Music Keeps The Pace Throughout The Game_**
 
-<Image src={canyonrunnerSuccess} alt="CanyonRunner Success" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Success.webp" width={800} height={600} alt="CanyonRunner Success" />
 
 **_Save System Keeps Your Score & Progress_**
 
-<Image src={canyonrunnerTitleScreen} alt="CanyonRunner Title Screen" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp" width={800} height={600} alt="CanyonRunner Title Screen" />
 
 **_Multiple Endings For Higher Replay Value_**
 
-<Image src={multipleEndings} alt="CanyonRunner Two Different Endings" />
+<Image src="https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Two-Different-Endings.webp" width={800} height={600} alt="CanyonRunner Two Different Endings" />
 
 ## Playthrough Video
 
 Want to get a sense of the gameplay without dodging spires yourself? Watch this full playthrough of the game to quickly get up to speed on the feel and main game mechanics of CanyonRunner.
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/DP49IKYYzZc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/DP49IKYYzZc" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ## Table of Contents
 

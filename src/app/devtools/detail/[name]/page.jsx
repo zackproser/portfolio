@@ -17,6 +17,8 @@ import OpenSourceStatus from '@/components/OpenSourceStatus';
 import LanguageSupportBlade from '@/components/LanguageSupportBlade';
 import BusinessInfoBlade from '@/components/BusinessInfoBlade';
 
+export const revalidate = 3600;
+
 export default function ToolDetailPage(props) {
   const params = use(props.params);
   const toolName = decodeURIComponent(params.name);

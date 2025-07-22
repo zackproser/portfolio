@@ -1,19 +1,4 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { generateOgUrl } from '@/utils/ogUrl'
-import emotionalIntelligenceForDevs from '@/images/emotional-iq-for-developers.webp'
-import { Button } from '@/components/Button'
 
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2023-10-18',
-  title: 'Emotional Intelligence for Developers', 
-  description: 'Procrastination is about negative emotions, plus how to deal with frustration and difficult co-workers',
-  image: emotionalIntelligenceForDevs, 
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
 <img src={emotionalIntelligenceForDevs.src} />
 
@@ -25,10 +10,10 @@ As you get further into your career, you come to realize that the technical chop
 Mastering your own emotions, working with emotional beings (other humans), and recognizing when something has come up and needs attention or 
 skillful processing will take you further than memorizing 50 new books or development patterns.
 
-<Button 
-  variant={"green"}
-  href={`/learn/emotional-intelligence-for-developers/0`}
->
-Emotional Intelligence for Developers - start course
-</Button>
 
+
+
+
+export default function Page() {
+  return <div dangerouslySetInnerHTML={{ __html: "" }} />
+}

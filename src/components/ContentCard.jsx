@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientSideIcon } from './ClientSideIcon'
 
-import wakka from '@/images/wakka.webp'
+const wakka = 'https://zackproser.b-cdn.net/images/wakka.webp'
 
 const StatusBadge = ({ status }) => {
   const isActive = status !== undefined && status !== null;
@@ -152,18 +152,18 @@ export function ContentCard({ article }) {
       } else {
         // For simple filenames, assume they're in public/images
         // Next.js will look for them in the public directory
-        imageSource = wakka.src; // Use fallback image
+        imageSource = wakka; // Use fallback image
       }
     } else if (image?.src) {
       // Handle image objects (e.g. from next/image imports)
       imageSource = image.src;
     } else {
       // Use default fallback
-      imageSource = wakka.src;
+      imageSource = wakka;
     }
   } catch (e) {
     console.error('Error processing image in ContentCard:', e);
-    imageSource = wakka.src;
+    imageSource = wakka;
   }
   
   // Check if content is premium (has a price)

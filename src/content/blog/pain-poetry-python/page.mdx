@@ -1,26 +1,15 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
 import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
-import PPP from '@/images/pain-poetry-python.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
 export const href = "https://pinecone.io/blog/pain-poetry-python"
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2023-09-01",
-    title: "The Pain and Poetry of Python", 
-    description: "A history of package management and virtualenvs in Python and why we migrated the Pinecone Python client to Poetry",
-    image: PPP,
-    slug: '/blog/pain-poetry-python'
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+export const metadata = createMetadata(rawMetadata);
 
 --- 
 
-<Image src={metadata.image} alt="The Pain and Poetry of Python"/>
+<Image src={metadata.image} alt="The Pain and Poetry of Python" width={800} height={600}/>
 
 This was the fourth article I published while working at Pinecone: 
 

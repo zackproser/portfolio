@@ -28,20 +28,22 @@ const getGlobalLogLevel = () => {
   // Default: verbose in dev, basic in prod/build
   return isDev ? LOG_LEVELS.VERBOSE : LOG_LEVELS.BASIC;
 };
+
+// Get the global log level
 const globalLogLevel = getGlobalLogLevel();
 
-// Define log categories and their corresponding debug environment variables
+// Category-specific debug flags (can be controlled via environment variables)
 const DEBUG_CATEGORIES = {
+  all: process.env.DEBUG_ALL === 'true',
   og: process.env.DEBUG_OG === 'true',
   metadata: process.env.DEBUG_METADATA === 'true',
   content: process.env.DEBUG_CONTENT === 'true',
-  purchases: process.env.DEBUG_PURCHASES === 'true',
-  stripe: process.env.DEBUG_STRIPE === 'true', // Example for Stripe webhooks
-  email: process.env.DEBUG_EMAIL === 'true', // Example for Postmark/email
-  db: process.env.DEBUG_DB === 'true',       // Example for database interactions
-  api: process.env.DEBUG_API === 'true',       // General API routes
-  general: process.env.DEBUG === 'true',     // General debug flag (fallback)
-  all: process.env.DEBUG_ALL === 'true'      // Overrides everything
+  purchase: process.env.DEBUG_PURCHASE === 'true',
+  stripe: process.env.DEBUG_STRIPE === 'true',
+  email: process.env.DEBUG_EMAIL === 'true',
+  db: process.env.DEBUG_DB === 'true',
+  api: process.env.DEBUG_API === 'true',
+  system: process.env.DEBUG_SYSTEM === 'true',
 };
 type LogCategory = keyof typeof DEBUG_CATEGORIES | 'system'; // Add 'system' for uncategorized logs
 
@@ -94,7 +96,7 @@ function shouldLog(level: LogLevel, category: LogCategory | null = null): boolea
      }
 
      // Allow all if global debug is on
-     if (DEBUG_CATEGORIES.all || DEBUG_CATEGORIES.general) {
+     if (DEBUG_CATEGORIES.all || DEBUG_CATEGORIES.system) {
         return true;
      }
 
@@ -182,7 +184,7 @@ export const logger = {
 export const ogLogger = logger.forCategory('og');
 export const metadataLogger = logger.forCategory('metadata');
 export const contentLogger = logger.forCategory('content');
-export const purchaseLogger = logger.forCategory('purchases');
+export const purchaseLogger = logger.forCategory('purchase');
 export const stripeLogger = logger.forCategory('stripe');
 export const emailLogger = logger.forCategory('email');
 export const dbLogger = logger.forCategory('db');

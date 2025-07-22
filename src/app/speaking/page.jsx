@@ -6,16 +6,16 @@ import { createMetadata } from '@/utils/createMetadata'
 import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap } from 'lucide-react'
 
 // Import speaking images from the a16z blog post
-import a16z1 from '@/images/a16z-1.webp'
-import a16z2 from '@/images/a16z-2.webp'
+const a16z1 = 'https://zackproser.b-cdn.net/images/a16z-1.webp'
+const a16z2 = 'https://zackproser.b-cdn.net/images/a16z-2.webp'
 // Import WorkOS internal training images
-import aiFundamentals from '@/images/ai-fundamentals.webp'
-import neuralNetworksLearn from '@/images/neural-networks-learn.webp'
+const aiFundamentals = 'https://zackproser.b-cdn.net/images/ai-fundamentals.webp'
+const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks-learn.webp'
 // Import AI Engineering World Fair workshop image
-import aieWorkshop from '@/images/aie-workshop-room.webp'
+const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
 // Import additional speaking and conference images
-import zackAndNick from '@/images/zack-and-nick.webp'
-import aieZackBadge from '@/images/aie-zack-badge.webp'
+const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
+const aieZackBadge = 'https://zackproser.b-cdn.net/images/aie-zack-badge.webp'
 
 export const metadata = createMetadata({
   title: 'Speaking Engagements - Zachary Proser',
@@ -169,12 +169,11 @@ function SpeakingCard({ engagement }) {
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
       <div className="relative h-48 bg-gradient-to-br from-blue-600 to-purple-700">
-        <Image
-          src={engagement.image}
+        <Image src={engagement.image}
           alt={engagement.title}
           fill
           className="object-cover"
-        />
+         />
         {/* Badge for internal vs public */}
         <div className="absolute top-4 left-4">
           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
@@ -282,28 +281,25 @@ export default function Speaking() {
         <section className="mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image
-                src={zackAndNick}
+              <Image src="https://zackproser.b-cdn.net/images/zack-and-nick.webp"
                 alt="Speaking at conferences and events"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
-              />
+               />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image
-                src={a16z2}
+              <Image src={a16z2}
                 alt="Speaking at a16z venue"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
-              />
+               />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image
-                src={aieZackBadge}
+              <Image src={aieZackBadge}
                 alt="AI Engineering World Fair badge"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
-              />
+               />
             </div>
           </div>
         </section>

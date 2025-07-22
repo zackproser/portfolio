@@ -14,14 +14,14 @@ import ConsultationForm from "@/components/ConsultationForm"
 import { sendGTMEvent } from '@next/third-parties/google'
 
 // Import company logos
-import logoCloudflare from '/public/images/logos/cloudflare.svg'
-import logoGruntwork from '/public/images/logos/terragrunt.svg'
-import logoPinecone from '@/images/logos/pinecone-logo.webp'
+const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
+const logoGruntwork = 'https://zackproser.b-cdn.net/images/logos/terragrunt.svg'
+const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.webp'
 
 // Import demo hero images
-import embeddingsDemoHero from '@/images/embeddings-demo-hero.webp'
-import tokenizationDemoHero from '@/images/tokenization-demo-hero.webp'
-import chatbotDemoHero from '@/images/chatbot-demo-hero.webp'
+const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-hero.webp'
+const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
+const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(

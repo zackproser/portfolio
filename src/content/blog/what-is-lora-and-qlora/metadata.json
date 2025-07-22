@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2024-09-22",
+  "title": "The Rich Don't Fine-tune Like You and Me: Intro to LoRA and QLoRA",
+  "description": "LoRA and QLoRA are two important innovations related to fine-tuning large language models like Llama and GPT.",
+  "image": "https://zackproser.b-cdn.net/images/rich-fine-tuning.webp"
+}

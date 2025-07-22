@@ -1,24 +1,18 @@
 import  Image  from 'next/image'
-
-import youGetToKeepTheNeuralConnections from '@/images/you-get-to-keep-the-neural-connections.webp'
-import shelvingMyFirstBigProject from '@/images/shelving-my-first-big-project.webp'
-import shelvingADistributedSystem from '@/images/shelving-a-distributed-system.webp'
-import puttingTheRefArchDown from '@/images/putting-the-ref-arch-down.webp'
-import yourExperienceComesWithYou from '@/images/your-experience-comes-with-you.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2023-10-14',
-  title: 'You get to keep the neural connections', 
-  description: 'Going the extra mile only to be unrewarded by your company feels like a personal slight and a waste of your time. It is not.',
-  image: puttingTheRefArchDown,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={puttingTheRefArchDown} alt="Today we live in a golden age of AI-assisted image generation" />
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/putting-the-ref-arch-down.webp" width={800} height={600} alt="Today we live in a golden age of AI-assisted image generation" />
 <figcaption>Going the extra mile only to be unrewarded by your company feels like a personal slight and a waste of your time. It is not.</figcaption>
 
 ## Fuck this, I've had enough, and I can do better
@@ -40,12 +34,12 @@ Mary a reality.
 
 (Spoiler alert: we did a great job on the project and delivered it on time somehow, as everyone agreed, but ultimately it was a flop and the company shelved it right before being acquired).
 
-<Image src={shelvingMyFirstBigProject} alt="Shelving my first big project" />
+<Image src="https://zackproser.b-cdn.net/images/shelving-my-first-big-project.webp" width={800} height={600} alt="Shelving my first big project" />
 
 This teammate happened to be a more seasoned and insanely talented developer and designer, by the name of [Kyle McGuire](https://www.linkedin.com/in/kyle-mcguire-ux/). He turned to me and said, "You get to keep the neural connections", 
 gesturing at his temple. 
 
-<Image src={youGetToKeepTheNeuralConnections} alt="You get to keep the neural connections" />
+<Image src="https://zackproser.b-cdn.net/images/you-get-to-keep-the-neural-connections.webp" width={800} height={600} alt="You get to keep the neural connections" />
 
 How true would I find his words to be - time and time again?
 
@@ -73,7 +67,7 @@ but ultimately I came to feel underappreciated and underpaid.
 Oh, also here, a project that I had worked on for about a year and half that was considered extremely critical at inception was shelved by a new executive in a meeeting I wasn't in. They didn't bother telling me about it, 
 so I found out after visiting the product manager I'd been working with it on for over a year and a half to give him the latest status update. 
 
-<Image src={shelvingADistributedSystem} alt="Shelving a distributed system" />
+<Image src="https://zackproser.b-cdn.net/images/shelving-a-distributed-system.webp" width={800} height={600} alt="Shelving a distributed system" />
 
 ## Fuck this, I've had enough, and I can do better
 
@@ -110,7 +104,7 @@ CLIs to try to lower the burden for newcomers and the long-term team members who
 Praise, shoutouts, words of thanks, effusive respect on Zoom calls and promotions were plentiful, but a meaningful raise remained elusive. Poetically, I learned on my last week that the company had decided to stop selling this product to customers, which 
 you might have thought felt perfectly Sisyphean. 
 
-<Image src={puttingTheRefArchDown} alt="Putting the Ref Arch down" />
+<Image src="https://zackproser.b-cdn.net/images/putting-the-ref-arch-down.webp" width={800} height={600} alt="Putting the Ref Arch down" />
 
 While I didn't love seeing this imperfect beast that I'd spent almost 4 years of my life trying to tame get put down right in front of me, I don't even resent working this hard or 
 the time I spent on evenings and weekends researching and practicing, because I love what I do and I love to make things. I love to practice my craft and I love to learn new things. And you get to keep the neural connections. 
@@ -124,6 +118,6 @@ to a site that needs serious diagnosis and backend fixes to speed it up, and the
 
 And it's honestly not very difficult for me to do. Because you get to keep the neural connections. 
 
-<Image src={yourExperienceComesWithYou} alt="Your experience comes with you" />
+<Image src="https://zackproser.b-cdn.net/images/your-experience-comes-with-you.webp" width={800} height={600} alt="Your experience comes with you" />
 
 <ConsultingCTA />

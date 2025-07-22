@@ -1,19 +1,16 @@
 import Image from 'next/image'
-import wisdomseekerHome from '@/images/wisdomseeker-screens/wisdomseeker-home.webp'
-import wisdomseekerSuccess from '@/images/wisdomseeker-screens/wisdomseeker-success.webp'
-import wisdomseekerLoop from '@/images/wisdomseeker-screens/wisdomseeker-loop.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2011-09-02', 
-  title: 'Wisdomseeker',
-  description: 'A wikipedia crawling application', 
-  image: wisdomseekerHome,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={wisdomseekerHome} alt="Wisdomseeker application homepage" />
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-home.webp" alt="Wisdomseeker application homepage" width={800} height={600} />
 
 Wikipedia is known to be structured in such a way that [many articles ultimately lead to Philosophy](http://www.xefer.com/2011/05/wikipedia) - if you click the first main body link of each article in succession.
 
@@ -27,9 +24,9 @@ It also knows when it is stuck in a loop - and will report loops as well as mean
 
 **_Easy one-step form accepts any Wikipedia link_**
 
-<Image src={wisdomseekerSuccess} alt="Wisdom Seeker Node App Succeeds in finding Philosophy Article" />
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-success.webp" alt="Wisdom Seeker Node App Succeeds in finding Philosophy Article" width={800} height={600} />
 
-<Image src={wisdomseekerLoop} alt="Wisdom Seeker Node App Gets Stuck in a Loop - And Reports it!" />
+<Image src="https://zackproser.b-cdn.net/images/wisdomseeker-screens/wisdomseeker-loop.webp" alt="Wisdom Seeker Node App Gets Stuck in a Loop - And Reports it!" width={800} height={600} />
 
 ## Key Features
 

@@ -3,18 +3,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Newsletter from '@/components/NewsletterWrapper'
 import CrossLinkCallout from '@/components/CrossLinkCallout';
-import vectorDatabasesCompared from '@/images/vector-databases-examined.webp'
 import Callout from '@/components/Callout'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2024-3-9",
-    title: "Vector Databases Compared: Pinecone, Milvus, Chroma, Weaviate, FAISS, and more", 
-    description: "How do the different vector databases compare?",
-    image: vectorDatabasesCompared,
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
 
 --- 
 

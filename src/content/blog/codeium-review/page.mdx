@@ -1,27 +1,16 @@
 import Newsletter from '@/components/NewsletterWrapper'
-import codeiumExample from '@/images/codeium-example.webp'
-import codeiumCompletions from '@/images/codeium-completions-breakdown.webp'
-
 import Image from 'next/image'
 import Link from 'next/link'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
-
 import { createMetadata } from '@/utils/createMetadata'
-
 import Callout from '@/components/Callout'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-05-29",
-  title: "Codeium with Neovim for A.I. powered code-completion: so far so good",
-  description: "Generally unimpressed with GitHub's Copilot (not Copilot X), I gave the alternative, Codeium a shot.",
-  image: codeiumExample,
-})
+export const metadata = createMetadata(rawMetadata);
 
 ## Codeium is a GitHub Copilot alternative that I'm trying out 
 
-<Image src={codeiumExample} alt="Codeium example" />
+<Image src="https://zackproser.b-cdn.net/images/codeium-example.webp" width={800} height={600} alt="Codeium example" />
 
 <Callout type={"GoDeeper"} title={"Updated analysis available"} body={"I've since written an updated and more in-depth analysis of Codeium, how it differs from its competitors and why it's still my favorite tool"} />
 
@@ -66,7 +55,7 @@ For example, the other day, I was writing up the README for my automations proje
 
 In addition, Codeium keeps tabs on the completions you accept and in which languages, and as their site explains, Codeium comes with a wider array of languages that it supports out of the box than GitHub Copilot. 
 
-<Image src={codeiumCompletions} alt="Codeium completions breakdown" />
+<Image src="https://zackproser.b-cdn.net/images/codeium-completions-breakdown.webp" width={800} height={600} alt="Codeium completions breakdown" />
 
 The bar chart is sort of fun to peak at, but, I thought, not very material, until I considered that in the span of a single hacking session, Codeium successfully assisted me with markdown, lua, go, shell  and Javascript. Not bad for a free service!
 

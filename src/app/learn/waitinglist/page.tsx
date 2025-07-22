@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Container } from '@/components/Container'
 import { Button } from '@/components/Button';
 
-import zpSchoolForHackers from '@/images/zp-school-for-hackers.webp'
+const zpSchoolForHackers = 'https://zackproser.b-cdn.net/images/zp-school-for-hackers.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "Join the Waiting List - School for Hackers",
@@ -37,7 +37,7 @@ export default async function LearningHome() {
       <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
         <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{session.user?.name}, you&apos;re in!</h1>
         <div className="p-6">
-          <Image src={zpSchoolForHackers} alt="Zachary Proser's School for Hackers" />
+          <Image src={zpSchoolForHackers} alt="Zachary Proser's School for Hackers"  width={800} height={600}/>
         </div>
         <p className="mt-6 text-lg leading-8 text-gray-300">
           <h2 className="text-2l font-bold tracking-tight text-white sm:text-4xl">Under construction</h2>

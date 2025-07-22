@@ -1,22 +1,18 @@
 import Newsletter from '@/components/NewsletterWrapper'
-
-import OfficeOracle from '@/images/michael-scott-oracle.webp'
-import OfficeOracle2 from '@/images/michael-scott-oracle-2.webp'
-import OfficeOracle3 from '@/images/office-oracle-3.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
-
 import Image from 'next/image'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-07-04",
-  title: "Office Oracle - a complete AI Chatbot leveraging langchain, Pinecone.io and OpenAI",
-  description: "I open sourced my next.js AI chatbot and the Jupyter notebooks I used to build it, plus created a video series walking through it all on YouTube",
-  image: OfficeOracle2,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={OfficeOracle} alt="Office Oracle AI chatbot project" />
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/office-oracle-3.webp" width={800} height={600} alt="Office Oracle AI chatbot project" />
 
 ## What is this?
 
@@ -28,7 +24,7 @@ for yourself, to produce an AI chatbot with any identity, who can answer factual
 For the purposes of demonstration, I used the popular Office television series, but this same stack and approach will work for AI chatbots who can answer for a company's documentation, or specific processes, products, 
 policies and more. 
 
-<Image src={OfficeOracle3} alt="Office Oracle AI chatbot project" />
+<Image src="https://zackproser.b-cdn.net/images/office-oracle-3.webp" width={800} height={600} alt="Office Oracle AI chatbot project" />
 
 ## Video series
 
@@ -39,15 +35,15 @@ I used and modified for this project:
 
 ### Intro video and demo 
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/I6ZcquRsfPU" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ### Jupyter notebooks deep-dive 
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/IAAIRg3gS1I" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ### Next.js vercel template ai-chatbot deep-dive
 
-<iframe width="315" height="315" src="https://www.youtube.com/embed/FiUaEi1q1pI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="315" height="315" src="https://www.youtube.com/embed/FiUaEi1q1pI" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ## Open source code 
 

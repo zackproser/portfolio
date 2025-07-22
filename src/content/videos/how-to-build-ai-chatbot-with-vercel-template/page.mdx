@@ -1,27 +1,9 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import Link from 'next/link'
-
-import aiChatbot from '@/images/ai-chatbot-vercel-template.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-07-03",
-  title: "How to build an AI chatbot using Vercel's ai-chatbot template",
-  description: "How to extend and modify Vercel's base ai-chatbot template for your own purposes",
-  image: aiChatbot
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 <iframe 
-  class="youtube-video"
+  className="youtube-video"
   src="https://www.youtube.com/embed/FiUaEi1q1pI" 
   title="YouTube video player" 
-  frameborder="0" 
-  allow="fullscreen;">
+  frameBorder="0" 
+  allow="fullscreen">
 </iframe>
 
 

@@ -6,7 +6,7 @@ import fs from 'fs'
 import { getAllContent } from '@/lib/content-handlers'
 
 // Default fallback image
-import wakka from '@/images/wakka.webp'
+const wakka = 'https://zackproser.b-cdn.net/images/wakka.webp'
 
 export interface Collection {
   title: string
@@ -23,7 +23,7 @@ const collectionsData = JSON.parse(fs.readFileSync(collectionsDataPath, 'utf8'))
 // Helper function to get correct image path - now we're using absolute URLs
 // which work better with Next.js Image component
 function getImagePath(imageName: string): string {
-  if (!imageName) return wakka.src;
+  if (!imageName) return wakka;
   
   // For Next.js Image component, this should be the full URL
   // We'll use the default import method in the ContentCard component
