@@ -50,8 +50,7 @@ export const appliedAiExperience: ExperienceData[] = [
       "Fixed and optimized Python and JavaScript programs for enterprise customers and community developers",
       "Architected sample applications showcasing vector database + LLM integrations for production use cases"
     ],
-    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"],
-    aiRelevance: "Leading vector database education and RAG system development for AI applications"
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"]
   },
   {
     company: "Gruntwork",
