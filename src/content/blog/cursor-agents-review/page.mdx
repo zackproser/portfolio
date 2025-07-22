@@ -1,0 +1,157 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-hero.webp" alt="I got hands-on with Cursor's new Agents feature. Here's what I thought..." width={1200} height={630} />
+
+**Table of contents**
+- [Cursor Agents: How it works](#cursor-agents-how-it-works)
+- [Things I like about Cursor Agents](#things-i-like-about-cursor-agents)
+- [Things I'm waiting on to improve](#things-im-waiting-on-to-improve)  
+- [Cursor Agents vs. OpenAI Codex](#cursor-agents-vs-openai-codex)
+- [Did it unlock insane productivity gains for me?](#did-it-unlock-insane-productivity-gains-for-me)
+
+## Cursor Agents: How it works
+
+Cursor just shipped their answer to OpenAI's Codex, and the similarities are striking—almost suspiciously so. Like <Link href="/blog/openai-codex-review">Codex</Link>, Cursor Agents is a GitHub-first experience that lets you fire off multiple coding tasks across your repositories from a minimal chat interface.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-ui-choose-codebase-and-branch.webp" alt="Cursor Agents interface for choosing codebase and branch" width={1200} height={800} />
+
+The setup process mirrors <Link href="/blog/openai-codex-review">Codex</Link> almost exactly: you authorize Cursor's GitHub app for your organizations, and it clones your repositories into sandboxed environments where it can run commands and create branches on your behalf.
+
+Where Cursor diverges from OpenAI's approach is in execution quality. While both platforms offer identical workflows—GitHub integration, containerized workers, parallel task execution—Cursor feels more polished out of the box.
+
+This makes sense: Cursor had the advantage of watching OpenAI's viral (and chaotic) <Link href="/blog/openai-codex-review">Codex</Link> launch, learning from the infrastructure mistakes and user experience pain points before shipping their own version.
+
+## Things I like about Cursor Agents
+
+### It just works from day one
+
+Unlike my early experience with <Link href="/blog/openai-codex-review">Codex</Link>, which was plagued by infrastructure issues and poor error handling, Cursor Agents feels surprisingly stable for a new product.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-new-containerized-agent-started.webp" alt="A new containerized agent getting started" width={1200} height={800} />
+
+I've been testing it for several days, and the "it just works" experience is refreshing. Tasks start reliably, branches get created without mysterious failures, and the underlying Claude Sonnet 4 model delivers consistent results for web development tasks.
+
+### The multi-threaded workflow I've been waiting for
+
+Like <Link href="/blog/openai-codex-review">Codex</Link>, Cursor Agents embraces the rapid-fire task delegation model that matches how I actually work. I can queue up a day's worth of maintenance tasks, feature requests, and bug fixes all from the same interface.
+
+The GitHub connection allows you to specify which repository and branch each task should target, turning the chat interface into a command center for orchestrating work across your entire development ecosystem.
+
+This is exactly what I wanted from agentic coding tools: a way to delegate the tedious maintenance work that accumulates in every codebase while I focus on higher-level architecture and product decisions.
+
+### Follow-up chat UX is ideal
+
+One of the standout features is how seamlessly you can continue working with tasks after they're created. You simply find the task you started, review its code changes, and can optionally chat with the specific task to request follow-ups or modifications.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-chat-while-coding.webp" alt="Chat interface while agent is actively coding" width={1200} height={800} />
+
+This task-specific chat context is much cleaner than having everything mixed together in one long conversation thread. Each task maintains its own context, making it easy to iterate on specific changes without losing track.
+
+### The killer UX: One click to open in Cursor
+
+This is where Cursor Agents really shines compared to web-only tools like <Link href="/blog/openai-codex-review">Codex</Link>. You're always just one click away from opening any task's changes directly in your Cursor editor to continue working.
+
+The bidirectional nature of working in Cursor and with background Agents is remarkably smooth. You can start a task in Agents, review the initial changes, then seamlessly transition to hands-on editing in Cursor when you need more control or want to build on top of the agent's work.
+
+This workflow lets you focus on high-priority feature work that requires human judgment while offloading lower-stakes maintenance tasks to background agents for much more expedient overall throughput.
+
+### Familiar agent UX patterns
+
+For users already accustomed to working with AI agents, Cursor Agents provides a familiar and intuitive experience. The interface patterns feel natural and don't require learning new interaction paradigms.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-familiar-agent-ux.webp" alt="Familiar agent UX patterns in Cursor Agents" width={1200} height={800} />
+
+### Claude Sonnet 4 brings reliability
+
+Having tested both <Link href="/blog/openai-codex-review">Codex's</Link> bespoke model and Cursor's Claude Sonnet 4 extensively, I can say that Claude feels more reliable for typical web development tasks.
+
+The code quality is consistently good, with fewer hallucinations and better understanding of modern framework patterns. For React, Next.js, and TypeScript work—which represents the bulk of my daily coding—Claude Sonnet 4 feels like the better choice.
+
+### Familiar territory for Cursor users
+
+If you're already using Cursor as your daily editor, Agents feels like a natural extension of the existing workflow. The integration is seamless, and you get the benefits of Cursor's existing codebase understanding and context.
+
+## Things I'm waiting on to improve
+
+### Documentation and best practices are sparse
+
+Cursor launched Agents with minimal documentation compared to OpenAI's comprehensive guides for <Link href="/blog/openai-codex-review">Codex</Link>. While the interface is intuitive enough to figure out, I'd love more guidance on optimal prompt patterns and workflow recommendations.
+
+### Asking for changes and iterations
+
+While the follow-up chat system works well, there's still room for improvement in how you request changes and iterate on agent work. Sometimes it's unclear whether a new request will modify the existing branch or create a new one.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-ask-for-change.webp" alt="Interface for asking agents to make changes" width={1200} height={800} />
+
+### Branch management could be smoother
+
+While more reliable than <Link href="/blog/openai-codex-review">Codex's</Link> branch handling, Cursor Agents still has room for improvement in multi-turn development workflows. I did encounter an error when attempting to have Cursor Agents create a new branch for my change when the branch didn't already exist. Updating existing branches and coordinating complex refactors across multiple files remains clunky.
+
+That said, it was smoother than my initial <Link href="/blog/openai-codex-review">Codex</Link> experience, and freer than my initial <Link href="/blog/google-jules-review">Jules</Link> experience, given that Jules is very stingy about the daily tasks you can run.
+
+## Cursor Agents vs. OpenAI Codex
+
+Having used both platforms extensively (I've reviewed <Link href="/blog/openai-codex-review">OpenAI's Codex</Link> and <Link href="/blog/google-jules-review">Google's Jules</Link>), the comparison is fascinating because they're solving the exact same problem with nearly identical approaches.
+
+### The UX is suspiciously similar
+
+Both products start at your GitHub organization. Both use minimal textarea interfaces for efficiency. Both fire tasks into containerized environments to prevent conflicts. The workflows are so similar it raises questions about whether there's simply one optimal pattern for this type of tool.
+
+### Where they diverge
+
+**Model Performance**: Claude Sonnet 4 vs Codex's bespoke model comes down to use case, but for web development, I consistently get better results from Cursor.
+
+**Reliability**: This is where Cursor really shines. While <Link href="/blog/openai-codex-review">Codex</Link> pioneered the category, it launched with significant infrastructure problems. Cursor learned from these mistakes and shipped a more stable product.
+
+**Pricing and Access**: <Link href="/blog/openai-codex-review">Codex</Link> requires a $200/month Pro subscription but offers unlimited parallel tasks. Cursor Agents is included with Cursor Pro at $20/month, making it much more accessible.
+
+### Task execution comparison
+
+In my testing, Cursor Agents succeeds at one-shot task completion about 70-80% of the time, compared to <Link href="/blog/openai-codex-review">Codex's</Link> 40-60%. This might be due to Claude Sonnet 4's training, infrastructure stability, or simply having more time to refine the product.
+
+## Did it unlock insane productivity gains for me?
+
+Yes, more so than <Link href="/blog/openai-codex-review">Codex</Link> initially did.
+
+The combination of reliability, model performance, and integration with my existing Cursor workflow means I actually delegate more tasks to Cursor Agents than I ever did with <Link href="/blog/openai-codex-review">Codex</Link>.
+
+My new routine: Start the day by queuing up 5-7 maintenance tasks, bug fixes, and small feature requests across my active projects. By the time I've finished my coffee and daily planning, most of them are done or ready for review.
+
+For larger refactoring and feature development, I still prefer working directly in the editor with AI assistance. But for the accumulation of small tasks that normally create cognitive overhead, Cursor Agents has become indispensable.
+
+### The mobile workflow works
+
+Like <Link href="/blog/openai-codex-review">Codex</Link> and <Link href="/blog/google-jules-review">Jules</Link>, Cursor Agents is perfectly usable from mobile. I can kick off tasks while away from my desk and review the results later.
+
+This enables exactly the kind of untethered workflow I wrote about in <Link href="/blog/walking-and-talking-with-ai">Walking and talking with AI in the woods</Link>. In that post, I described how my greatest AI unlock came from being able to work through problems while away from my screen—learning, clarifying, and planning during long walks with voice-based AI conversations.
+
+Cursor Agents takes this concept further by letting me not just think and plan away from my desk, but actually delegate concrete coding work too. I can start my morning by queuing up maintenance tasks and bug fixes while having coffee, then head out for a walk to think through architecture decisions. By the time I return, the tedious work is done and I can focus on the high-level implementation that requires my direct attention.
+
+### PR workflow integration
+
+One area where Cursor Agents shows its maturity is in how it handles pull request workflows. The integration feels natural and doesn't try to overly automate the review process.
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-pr-checks-running.webp" alt="PR checks running after agent completes work" width={1200} height={800} />
+
+This workflow represents the ideal balance: AI handles the routine implementation work while I maintain control over the review and decision-making process. It's exactly what I envisioned when I wrote about preferring to "do as much of their work as they can away from their desks."
+
+## The bigger picture
+
+Cursor Agents proves that being second to market can be an advantage. OpenAI created the category with <Link href="/blog/openai-codex-review">Codex</Link>, but Cursor may have perfected it by learning from OpenAI's early mistakes and infrastructure challenges.
+
+The fact that two different companies converged on almost identical UX patterns suggests they've both identified the optimal interface for agentic coding tools. The competition is now about execution quality, model performance, and ecosystem integration.
+
+But more importantly, Cursor Agents represents a step toward the future of work I described in <Link href="/blog/walking-and-talking-with-ai">Walking and talking with AI in the woods</Link>—where we can be productive and effective away from our desks. By enabling reliable task delegation through mobile interfaces, tools like Cursor Agents are making it possible to spend more time thinking, planning, and creating while the AI handles routine implementation work.
+
+For developers, this competition is fantastic news. We get better tools, more choices, and continued innovation as both platforms compete for mindshare.
+
+**My recommendation**: If you're already in the Cursor ecosystem and do primarily web development work, Cursor Agents is a no-brainer upgrade. If you're committed to the OpenAI ecosystem or work in domains where Codex's bespoke model excels, <Link href="/blog/openai-codex-review">Codex</Link> remains compelling despite its rough edges.
+
+Either way, the agentic coding space is no longer a monopoly—and that's exactly what we needed. 
