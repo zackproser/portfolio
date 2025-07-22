@@ -69,8 +69,7 @@ const RandomPortrait = ({ width, height }) => {
         src={selectedImage}
         alt="Zachary Proser - full stack developer"
         {...imageProps}
-        className={`${width && height ? '' : 'object-cover'} rounded-2xl bg-zinc-100 dark:bg-zinc-800`}
-      />
+        className={`${width && height ? '' : 'object-cover'} rounded-2xl bg-zinc-100 dark:bg-zinc-800`} />
     </div>
   );
 };
