@@ -1,20 +1,18 @@
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
-
-import llmsDemocratizeHero from '@/images/llms-democratize-hero.webp'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-    author: "Zachary Proser",
-    date: "2025-05-05",
-    title: "LLMs democratize specialist outputs. Not specialist understanding",
-    description: "It is easier than ever to learn development, but the folks getting the most leverage are still seasoned engineers. Why?",
-    image: llmsDemocratizeHero,
-});
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
 
 ## Now anyone can ask for software 
 
@@ -22,7 +20,7 @@ Ask for a minimal CRUD API or a shiny Next.js signup flow and an LLM will hand y
 
 What used to cost junior devs a weekend of Googling is now commodity scaffolding.
 
-<Image src={llmsDemocratizeHero} alt="Seasoned engineers are getting the most out of GenAI for building software" />
+<Image src="https://zackproser.b-cdn.net/images/llms-democratize-hero.webp" alt="Seasoned engineers are getting the most out of GenAI for building software" width={800} height={600} />
 
 But the folks that are still getting the most lift from these tools are seasoned engineers. Why?
 

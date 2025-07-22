@@ -1,27 +1,26 @@
 import { Button } from '@/components/LinkButton'
 import Image from 'next/image'
-
-import vectorDbsInProd from '@/images/rag-evaluation.webp'
-
 import ConsultingCTA from '@/components/ConsultingCTA'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
 export const href = "https://www.pinecone.io/learn/series/vector-databases-in-production-for-busy-engineers/rag-evaluation/"
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2024-05-07",
-    title: "Vector Databases in Production for Busy Engineers: RAG Evaluation",
-    description: "I wrote the RAG evaluation chapter for Pinecone's latest book",
-    image: vectorDbsInProd,
-});
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
+
 
 --- 
 
 ## Evaluating Retrieval Augmented Generation pipeline performance 
 
-<Image src={metadata.image} alt="I wrote the RAG evaluation chapter for Pinecone's latest book" />
+<Image src="https://zackproser.b-cdn.net/images/rag-evaluation.webp" alt="I wrote the RAG evaluation chapter for Pinecone's latest book" width={800} height={600}/>
 
 I wrote the RAG evaluation chapter for Pinecone's latest learn series: Vector Databases in Production for Busy Engineers.
 

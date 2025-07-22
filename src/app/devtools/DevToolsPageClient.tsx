@@ -9,7 +9,7 @@ import DevToolSearchFilter from '@/components/DevToolSearchFilter'
 import { Button } from "@/components/ui/button"
 import { DiffIcon, SearchIcon, CodeIcon } from "lucide-react"
 import { getLogoById } from '@/lib/logoImports'
-import heroImage from '@/images/ai-hacking.webp'
+const heroImage = 'https://zackproser.b-cdn.net/images/ai-hacking.webp'
 
 interface Tool {
   name: string
@@ -51,13 +51,12 @@ export default function DevToolsPageClient({ initialTools }: DevToolsPageClientP
       intro="Compare different AI-assisted developer tools to find the best fit for your needs"
     >
       <div className="relative w-full h-64 mb-8">
-        <Image
-          src={heroImage}
+        <Image src={heroImage}
           alt="AI Hacking"
           layout="fill"
           objectFit="cover"
           className="rounded-lg"
-        />
+         />
       </div>
       <DevToolSearchFilter 
         tools={initialTools} 

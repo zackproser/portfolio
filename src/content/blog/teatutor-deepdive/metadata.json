@@ -1,0 +1,8 @@
+{
+  "author": "Zachary Proser",
+  "date": "2022-10-21",
+  "title": "Teatutor Deep Dive",
+  "description": "Teatutor is a Golang CLI leveraging the Bubbletea Terminal User Interface (TUI) library from Charm.sh. It can be served over an SSH connection.",
+  "image": "https://zackproser.b-cdn.net/images/teatutor-logo.webp",
+  "slug": "/blog/teatutor-deepdive"
+}

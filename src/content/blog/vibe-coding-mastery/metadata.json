@@ -1,0 +1,18 @@
+{
+  "title": "Vibe Coding Mastery",
+  "description": "How to code safely and efficiently with Git, secrets, and Cursor setup.",
+  "date": "2025-07-18",
+  "author": "Zack Proser",
+  "image": "https://zackproser.b-cdn.net/images/vibe-coding-premium.webp",
+  "commerce": {
+    "isPaid": true,
+    "price": 49,
+    "previewLength": 450,
+    "previewElements": 32,
+    "paywallHeader": "Vibe Coding Survival Guide",
+    "paywallBody": "Get the complete vibe coding survival guide with step-by-step instructions for Git, secret protection, Cursor setup, and deployment. Perfect for developers who want to code safely and efficiently.",
+    "buttonText": "Get the survival guide ($49)",
+    "miniPaywallTitle": "Vibe Coding Survival Guide",
+    "miniPaywallDescription": "Complete guide to safe coding practices with Git, secrets, and Cursor setup."
+  }
+}

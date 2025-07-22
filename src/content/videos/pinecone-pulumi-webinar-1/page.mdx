@@ -1,24 +1,9 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-
-import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar1.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-12-14",
-  title: "Pinecone & Pulumi webinar: Taking AI apps to production",
-  description: "I co-hosted a webinar with Pulumi about productionizing AI applications",
-  image: pineconePulumiWebinar
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
 <iframe 
   className="youtube-video"
   src="https://www.youtube.com/embed/GIwt3P_5b9g"
   title="YouTube video player" 
-  allow="fullscreen;">
+  frameBorder="0"
+  allow="fullscreen">
 </iframe>
 
 I co-hosted a webinar with Pulumi's Scott Lowe about: 

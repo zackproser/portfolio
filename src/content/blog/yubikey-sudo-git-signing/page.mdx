@@ -1,28 +1,20 @@
 import Newsletter from '@/components/Newsletter'
-
 import Image from 'next/image'
-
-import githubVerifiedCommit from '@/images/github-verified-commit-example.webp'
-import yubikeySchematic from '@/images/yubikey-5-schematic.webp'
-import streamingScreenshot from '@/images/streaming-keyboard-hands.webp'
-import stressedTyping from '@/images/typing.gif'
-import keyboardCamera from '@/images/keyboard-camera.webp'
-import keyboardCameraCloseup from '@/images/keyboard-cam-closeup.webp'
-import gitCommitSigningSequence from '@/images/git-commit-signing-yubikey-sequence.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-05-07",
-  title: "Passwordless sudo and verified GitHub commit signing with Yubikey - a pair-coder's dream",
-  description: "If you're like me, you can't type your complex password correctly when your entire team is staring at you on a pair call. And now, you no longer have to.",
-  image: stressedTyping,
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
+
 
 If you're like me - you can't type your complex password correctly when your entire team is staring at you on a pair coding call.
 
-<Image src={stressedTyping} alt="Typing complex passwords on the command line perfectly while being watched is stressful!" />
+<Image src="https://zackproser.b-cdn.net/images/typing.gif" width={800} height={600} alt="Typing complex passwords on the command line perfectly while being watched is stressful!" />
 
 When you're done reading this post, you'll never need to again. Instead, you'll tap your Yubikey to execute a sudo command without ever touching a password prompt. 
 
@@ -32,7 +24,7 @@ With these two security and workflow enhancements in place, developing software 
 
 Not bad for one little device! Along the way, my hope is that you'll discover something or other about the Yubikey you didn't know before. 
 
-<Image src={yubikeySchematic} alt="The Yubikey NFC 5 can do a lot more than you might think" />
+<Image src="https://zackproser.b-cdn.net/images/yubikey-5-schematic.webp" width={800} height={600} alt="The Yubikey NFC 5 can do a lot more than you might think" />
 
 This guide will focus on the Yubikey 5 NFC model, and contemplate setting everything up on an Ubuntu machine, but this will also work for Mac OSX and Windows. I'll create follow-up guides for them, if there's sufficient interest.
 
@@ -40,7 +32,7 @@ This guide will focus on the Yubikey 5 NFC model, and contemplate setting everyt
 
 As ambitious software developers, technologists, and creators looking to share knowledge, we actively seek opportunities to stream our terminal, whether it's to our team when working through an issue together,  or to thousands of people in real-time on Twitch or YouTube.
 
-<Image src={streamingScreenshot} alt="How can you stream yourself developing software in real time without leaking your passwords?" />
+<Image src="https://zackproser.b-cdn.net/images/streaming-keyboard-hands.webp" width={800} height={600} alt="How can you stream yourself developing software in real time without leaking your passwords?" />
 
 How can we possibly hope to type sudo passwords and develop software in public securely? I had this question myself when I first started [streaming Golang development on Twitch](https://twitch.tv/zackproser).
 
@@ -48,11 +40,11 @@ How can we possibly hope to type sudo passwords and develop software in public s
 
 Just in case there were any questions about the stakes! I enjoy doing things the hard way, so I decided to set up a separate Linux cam on a post at the back of my desk to zoom in and focus on my hands on the keyboard while I develop. 
 
-<Image src={keyboardCamera} alt="Don't make a habit of typing your passwords out when a 4K zooming camera is pointed directly at your keyboard" />
+<Image src="https://zackproser.b-cdn.net/images/keyboard-camera.webp" width={800} height={600} alt="Don't make a habit of typing your passwords out when a 4K zooming camera is pointed directly at your keyboard" />
 
 I want folks to see how I use the keyboard and the weird patterns my fingers have gnarled into after many decades of typing in different contexts, because I think it makes the streaming content somewhat more interesting. Here's roughly what that looks like: 
 
-<Image src={keyboardCameraCloseup} alt="Keyboard camera closeup" />
+<Image src="https://zackproser.b-cdn.net/images/keyboard-cam-closeup.webp" width={800} height={600} alt="Keyboard camera closeup" />
 
 Many folks I've paired with over the years have commented that the way my hands and fingers move is strange, but when I'm properly caffeinated and focused, I can type around 112 WPM with high accuracy. 
 
@@ -151,7 +143,7 @@ Next up, we're going to ensure that nobody can author a verified commit as us on
 
 4. When we push up signed commits, GitHub automatically verifies them (if the signature matches that of our GPG pair) and adds the `verified` badge to our commits, which looks like this: 
 
-<Image src={githubVerifiedCommit} alt="An example of a verified commit on GitHub using GPG" />
+<Image src="https://zackproser.b-cdn.net/images/github-verified-commit-example.webp" width={800} height={600} alt="An example of a verified commit on GitHub using GPG" />
 
 If the Yubikey is plugged into my machine when I execute a `git commit` command, my commit is automatically signed by the private PGP key residing on my Yubikey. No more fat fingering my complex password and having to rewrite my git commit message. 
 
@@ -161,7 +153,7 @@ This is really powerful, and having used it now for several months, I love it an
 
 Let's look at a sequence diagram to understand how this flow works: 
 
-<Image src={gitCommitSigningSequence} alt="Git commit signing sequence diagram with Yubikey" />
+<Image src="https://zackproser.b-cdn.net/images/git-commit-signing-yubikey-sequence.webp" width={800} height={600} alt="Git commit signing sequence diagram with Yubikey" />
 
 Commit signing verification is an important step to take if you participate in open source development because it is trivially easy to [spoof someone's git commits](https://blog.gruntwork.io/how-to-spoof-any-user-on-github-and-what-to-do-to-prevent-it-e237e95b8deb) without this extra layer of verification protection in place. 
 

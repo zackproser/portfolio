@@ -1,26 +1,19 @@
 import  Image  from 'next/image'
-import initialRequestImg  from '@/images/chatgpt4-screens/ChatGPT4-pairing-code-initial-request.webp'
-import sizeofDemoGif from '@/images/chatgpt4-screens/sizeof-demo.gif'
-import readmeGenFirstRequest from '@/images/chatgpt4-screens/ChatGPT4-pairing-readme-gen-first-request.webp'
-import readmeRegenMarkdown from '@/images/chatgpt4-screens/ChatGPT4-pairing-readme-regen-markdown.webp'
-import pairingSocials from '@/images/chatgpt4-screens/ChatGPT4-pairing-socials.webp'
-import aiSupport from '@/images/ai-support.webp'
-import aiSupport2 from '@/images/ai-support-2.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2023-04-10',
-  title: 'Can ChatGPT-4 and GitHub Copilot help me produce a more complete side project more quickly?', 
-  description: 'As a Senior Software Engineer, I&apos;m always looking for ways to refine my skills and optimize my workflow. This weekend, I experimented with integrating ChatGPT-4 into my developer toolkit alongside GitHub Copilot, which I&apos;ve been using for several months. The goal? To see if these AI-powered tools could help me complete a side project more quickly. ',
-  image: aiSupport2,
-})
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={aiSupport2} alt="Requesting AI support!" />
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/ai-support-2.webp" alt="Requesting AI support!" width={800} height={600} />
 <figcaption>Chat GPT-4 pointing out one of my bugs while I work</figcaption>
 
-<Image src={initialRequestImg} alt="Initial request to ChatGPT-4 for the project" />
+<Image src="https://zackproser.b-cdn.net/images/chatgpt4-screens/ChatGPT4-pairing-code-initial-request.webp" alt="Initial request to ChatGPT-4 for the project" width={800} height={600} />
 
 Over the years, I have embarked on [countless weekend side projects](https://github.com/zackproser) to explore new technologies, [refine my skills](https://www.youtube.com/@zackproser), and simply enjoy the creative process. As a Golang developer with a penchant for keyboard-driven development, I have learned to combine command line tools, IDEs, and text editors to maximize productivity and deliver results efficiently. 
 
@@ -30,11 +23,11 @@ First off, I needed a simple project idea that could be tackled quickly. Enter [
 
 `sizeof` is really simple. Here's a quick demo gif that shows how it works: 
 
-<Image src={sizeofDemoGif} alt="Demo of the sizeof CLI tool in action" />
+<Image src="https://zackproser.b-cdn.net/images/chatgpt4-screens/sizeof-demo.gif" alt="Demo of the sizeof CLI tool in action" width={800} height={600} />
 
 One of the key strengths of large language models (LLMs) like ChatGPT-4 is their ability to generate reasonable starting points for various tasks. For instance, they excel at producing CircleCI configurations and READMEs, as they've essentially "seen" all possible variations. Leveraging this capability, I requested a starting point for the command line interface, which enabled me to dive into the development process quickly and start iterating on the initial code.
 
-<Image src={readmeGenFirstRequest} alt="ChatGPT-4 generating a README for the project" />
+<Image src="https://zackproser.b-cdn.net/images/chatgpt4-screens/ChatGPT4-pairing-readme-gen-first-request.webp" alt="ChatGPT-4 generating a README for the project" width={800} height={600} />
 
 Here I am asking ChatGPT for the initial README, and because I am pretty sure it's seen most of my writing already, I can ask it to do its best to write it the way I would. As you can see in its response, it is going so far to include the HTML badges I tend to include in my open source projects. It also reflects my tendency to include a Table of Contents in any document I create!
 
@@ -44,13 +37,13 @@ Likewise, I essentially described the blog post and asked ChatGPT-4 for the firs
 
 My impressions of the quality of its responses is generally favorable. I experience about zero friction in explaining myself to ChatGPT 4 - and getting it to do exactly what I want. Because it is aware of the previous context, I can ask it insanely useful things like this: 
 
-<Image src={readmeRegenMarkdown} alt="ChatGPT-4 regenerating the README in markdown format" />
+<Image src="https://zackproser.b-cdn.net/images/chatgpt4-screens/ChatGPT4-pairing-readme-regen-markdown.webp" alt="ChatGPT-4 regenerating the README in markdown format" width={800} height={600} />
 
 ### The sweet spot - generative, tedious tasks
 
 ChatGPT 4 really shines when asked to perform tedious tasks that you would normally do yourself or hand to your copywriter when preparing a post for publishing online. Here I am asking ChatGPT 4 to effectively save me a chunk of time. Its first response was excellent so getting the copy I needed for LinkedIn and Twitter took me as long as it would have taken to effective type or speak my description of the task into being. 
 
-<Image src={pairingSocials} alt="ChatGPT 4 writing my LinkedIn and Twitter copy"/>
+<Image src="https://zackproser.b-cdn.net/images/chatgpt4-screens/ChatGPT4-pairing-socials.webp" alt="ChatGPT 4 writing my LinkedIn and Twitter copy" width={800} height={600} />
 
 ChatGPT 4 generated: 
 * The initial CLI scaffold, and then immediately tweaked it to include `bubbletea` in order to implement a TUI at my request

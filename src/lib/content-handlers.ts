@@ -43,7 +43,7 @@ export const normalizeRouteOrFileSlug = (slug: string) => {
 
 /**
  * Internal: Dynamically imports MDX module and extracts content component and metadata.
- * Does basic existence check first.
+ * Now prefers metadata.json as the primary source of metadata. Falls back to MDX export if missing or malformed.
  * @param contentType The content type directory (e.g., 'blog', 'videos')
  * @param directorySlug The directory name for the specific content item
  * @returns Imported MDX module components and metadata, or null if not found/failed.
@@ -60,7 +60,21 @@ async function _loadMDXModule(contentType: string, directorySlug: string) {
     // Use template literal syntax for dynamic import path
     const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);
     const MdxContent = mdxModule.default;
-    const metadata = mdxModule.metadata as ExtendedMetadata;
+    let metadata = mdxModule.metadata as ExtendedMetadata;
+
+    // If no metadata in MDX file, try to load from separate metadata.json file
+    if (!metadata) {
+      const metadataPath = path.join(contentDirectory, contentType, directorySlug, 'metadata.json');
+      if (fs.existsSync(metadataPath)) {
+        try {
+          const metadataContent = fs.readFileSync(metadataPath, 'utf8');
+          metadata = JSON.parse(metadataContent) as ExtendedMetadata;
+          logger.debug(`Loaded metadata from separate file for ${contentType}/${directorySlug}`);
+        } catch (error) {
+          logger.error(`Error loading metadata.json for ${contentType}/${directorySlug}:`, error);
+        }
+      }
+    }
 
     // Debug log for raw metadata.description
     logger.debug(`[DEBUG] Loaded metadata.description for ${contentType}/${directorySlug}:`, metadata?.description);
@@ -456,7 +470,7 @@ export function renderPaywalledContent(
   // Note: This file is marked 'server-only', but ArticleContent likely exists client-side,
   // so dynamic import with `ssr: false` might be needed depending on ArticleContent's usage.
   // Assuming ArticleContent is a Server Component based on context, keeping simple dynamic import.
-  const ArticleContent = dynamic(() => import("@/components/ArticleContent") as Promise<{ default: React.ComponentType<any> }>);
+  const ArticleContent = dynamic(() => import("@/components/ArticleContent"));
 
   return React.createElement(
     ArticleContent,
@@ -464,10 +478,7 @@ export function renderPaywalledContent(
       // Pass MDX content as children prop to ArticleContent
       children: React.createElement(MdxContent),
       // Pass necessary data from processed content metadata
-      showFullContent: showFullContent,
-      price: content.commerce?.price || 0,
-      slug: content.directorySlug, // Use directorySlug here
-      title: content.title, // Use the processed title
+      showFullContent: showFullContent || false,
       previewLength: content.commerce?.previewLength,
       previewElements: content.commerce?.previewElements,
       paywallHeader: paywallHeader,

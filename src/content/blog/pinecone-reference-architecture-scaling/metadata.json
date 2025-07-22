@@ -1,0 +1,8 @@
+{
+  "author": "Zachary Proser",
+  "date": "2024-1-23",
+  "title": "Testing Pinecone Serverless at Scale with the AWS Reference Architecture",
+  "description": "A step-by-step walkthrough on how to generate arbitrary system load and flex Pinecone Serverless",
+  "image": "https://zackproser.b-cdn.net/images/pinecone-refarch-logo.webp",
+  "slug": "/blog/pinecone-reference-architecture-scaling"
+}

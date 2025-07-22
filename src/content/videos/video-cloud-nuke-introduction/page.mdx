@@ -1,26 +1,11 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
+<iframe
+  className="youtube-video"
+  src="https://www.youtube.com/embed/EMcqH495iGs"
+  title=""
+  frameBorder="0"
+  allow="fullscreen">
+  </iframe>
 
-import cloudNukeIntro from '@/images/cloud-nuke-intro.webp'
-
-import { createMetadata } from '@/utils/createMetadata'
-
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2022-01-01",
-  title: "Cloud-Nuke - A Handy Open-Source Tool for Managing AWS Resources ",
-  description: "cloud-nuke is a free, powerful open-source tool that efficiently scans for specific resources in your AWS account and can also optionally delete them efficiently for you as well. ",
-  image: cloudNukeIntro
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
-
-<iframe 
-  class="youtube-video"
-  src="https://www.youtube.com/embed/EMcqH495iGs" 
-  title="" 
-  frameborder="0" 
-  allow="fullscreen;">
-</iframe>
 
 In this video, we'll have a more casual conversation about cloud-nuke, an open-source tool created and maintained by Gruntwork.io. I discuss the benefits and features of cloud-nuke, giving you an idea of how it can help you manage AWS resources more efficiently.
 

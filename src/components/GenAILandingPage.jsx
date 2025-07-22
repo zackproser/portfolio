@@ -15,11 +15,11 @@ import Callout from '@/components/Callout'
 import CV from '@/components/CV'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 
-import genAIHero from '@/images/gen-ai-hero.webp'
-import genAIScreenshot1 from '@/images/generative-ai-screenshot-1.webp'
-import genAIScreenshot2 from '@/images/generative-ai-screenshot-2.webp'
-import zacharyProser from '@/images/zachary-proser.webp'
-import a16z2 from '@/images/a16z-2.webp'
+const genAIHero = 'https://zackproser.b-cdn.net/images/gen-ai-hero.webp'
+const genAIScreenshot1 = 'https://zackproser.b-cdn.net/images/generative-ai-screenshot-1.webp'
+const genAIScreenshot2 = 'https://zackproser.b-cdn.net/images/generative-ai-screenshot-2.webp'
+const zacharyProser = 'https://zackproser.b-cdn.net/images/zachary-proser.webp'
+const a16z2 = 'https://zackproser.b-cdn.net/images/a16z-2.webp'
 const learnings = [
   {
     name: 'Generative AI',
@@ -169,7 +169,7 @@ export default function GenAILandingPage() {
           </div>
         </div>
 
-        <Image src={genAIHero} alt="Gen AI" />
+        <Image src={genAIHero} alt="Gen AI"  width={800} height={600}/>
 
         {/* What you will learn */}
         <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
@@ -219,8 +219,8 @@ export default function GenAILandingPage() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
               {/* Screenshots container */}
               <div className="flex justify-center space-x-4">
-                <Image src={genAIScreenshot1} alt="Generative AI bootcamp" />
-                <Image src={genAIScreenshot2} alt="Generative AI bootcamp" />
+                <Image src={genAIScreenshot1} alt="Generative AI bootcamp"  width={800} height={600}/>
+                <Image src={genAIScreenshot2} alt="Generative AI bootcamp"  width={800} height={600}/>
               </div>
               <div className="relative" aria-hidden="true">
                 <div className="absolute -inset-x-20 bottom-0 bg-gradient-to-t from-gray-900 pt-[7%]" />
@@ -280,13 +280,13 @@ export default function GenAILandingPage() {
 
             {/* Profile photo */}
             <div className="flex-1 ml-20">
-              <Image src={zacharyProser} alt="Zachary Proser" />
+              <Image src={zacharyProser} alt="Zachary Proser"  width={800} height={600}/>
             </div>
           </div>
         </div>
 
         <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-56 lg:px-8">
-          <Image src={a16z2} alt="Zachary Proser" />
+          <Image src={a16z2} alt="Zachary Proser"  width={800} height={600}/>
           <figcaption className="mt-6">Me speaking at Andreesen Horowitz about the distributed semantic search system I built on AWS using Infrastructure as Code.</figcaption>
         </div>
 

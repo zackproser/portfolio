@@ -1,24 +1,11 @@
-import bestThingAboutBeingADeveloper from '/src/images/ideal-developer-workspace.webp'
-import buildingYourOwnTools from '/src/images/building-your-own-tools.webp'
+import { Newsletter } from '@/components/Newsletter';
+import { createMetadata } from '@/utils/createMetadata';
+import Image from 'next/image';
+import Link from 'next/link';
+import rawMetadata from './metadata.json';
 
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Newsletter } from '@/components/Newsletter'
-import { createMetadata } from '@/utils/createMetadata'
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-export const metadata = createMetadata({
- title: "The best thing about being a developer ",
- author: "Zachary Proser",
- date: "2024-4-11",
- description: "The best thing about being a developer is being able to build your own tools, to your exact specifications. ",
- image: bestThingAboutBeingADeveloper,
-})
-
-export default (props) => <ArticleLayout metadata={metadata} {...props} /> 
-
-<Image src={metadata.image} alt="The best thing about being a software developer" />
+export const metadata = createMetadata(rawMetadata);
 
 ## Table of contents 
 
@@ -48,7 +35,7 @@ I believe this helps you to have more compassion for the experience of end users
 
 ## It's fun
 
-<Image src={buildingYourOwnTools} alt="Building your own software tools" />
+<Image src="https://zackproser.b-cdn.net/images/building-your-own-tools.webp" alt="Building your own software tools" width={800} height={600}/>
 
 Especially as the functionality you originally desired begins to take shape.
 

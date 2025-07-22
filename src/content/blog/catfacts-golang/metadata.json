@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2019-10-20",
+  "title": "CatFacts rewrite in Golang",
+  "description": "A ridiculously over-engineered CatFacts prank written in Golang and deployed via Kubernetes",
+  "image": "https://zackproser.b-cdn.net/images/catfacts-screens/catfacts-blog.webp"
+}

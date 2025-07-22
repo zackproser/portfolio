@@ -2,7 +2,7 @@ import { Container } from '@/components/Container';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import wizard404 from '@/images/404-wizard.webp';
+const wizard404 = 'https://zackproser.b-cdn.net/images/404-wizard.webp';
 
 import { generateOgUrl } from '@/utils/ogUrl'
 
@@ -38,7 +38,7 @@ export default function Custom404() {
         Whoops - we couldn&apos;t find that page!
       </h2>
       <div className="w-full">
-        <Image src={wizard404} alt="404 wizard" />
+        <Image src={wizard404} alt="404 wizard" width={800} height={600} />
       </div>
       <Link href="/" className="block mt-8 mb-4 text-xl sm:text-2xl lg:text-3xl text-center leading-tight dark:text-zinc-400">
         Go Home?

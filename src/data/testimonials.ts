@@ -1,13 +1,13 @@
-import JimBrikman from '@/images/jim-brikman.webp'
-import JohnFunge from '@/images/john-funge.webp'
-import SachinFernandes from '@/images/sachin-fernandes.webp'
-import PhilinaFan from '@/images/philina.webp'
-import StevenFusco from '@/images/steven-fusco.webp'
-import ChristianPaulus from '@/images/christian-paulus.webp'
-import AnthonyDavanzo from '@/images/anthony-davanzo.webp'
-import TomLandesman from '@/images/tom-landesman.webp'
-import TomLuechtefeld from '@/images/tom-luechtefeld.webp'
-import JoeryVanDruten from '@/images/joery.webp'
+const JimBrikman = 'https://zackproser.b-cdn.net/images/jim-brikman.webp'
+const JohnFunge = 'https://zackproser.b-cdn.net/images/john-funge.webp'
+const SachinFernandes = 'https://zackproser.b-cdn.net/images/sachin-fernandes.webp'
+const PhilinaFan = 'https://zackproser.b-cdn.net/images/philina.webp'
+const StevenFusco = 'https://zackproser.b-cdn.net/images/steven-fusco.webp'
+const ChristianPaulus = 'https://zackproser.b-cdn.net/images/christian-paulus.webp'
+const AnthonyDavanzo = 'https://zackproser.b-cdn.net/images/anthony-davanzo.webp'
+const TomLandesman = 'https://zackproser.b-cdn.net/images/tom-landesman.webp'
+const TomLuechtefeld = 'https://zackproser.b-cdn.net/images/tom-luechtefeld.webp'
+const JoeryVanDruten = 'https://zackproser.b-cdn.net/images/joery.webp'
 
 /**
  * Structure for a testimonial author

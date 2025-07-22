@@ -1,21 +1,19 @@
-import dontPlayItSafe from '@/images/dont-play-it-safe.webp' 
-
 import { Newsletter } from '@/components/Newsletter'
-
 import Image from 'next/image'
 import Link from 'next/link'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
- title: "Hop on the pain train",
- author: "Zachary Proser",
- date: "2024-4-10",
- description: "Some junior engineers are so afraid of breaking something, they paradoxically stagnage themselves",
- image: dontPlayItSafe,
-});
+export const metadata = createMetadata(rawMetadata);
 
-<Image src={dontPlayItSafe} alt="Dont play it safe" />
+
+
+
+
+
+
+
+<Image src="https://zackproser.b-cdn.net/images/dont-play-it-safe.webp" width={800} height={600} alt="Dont play it safe" />
 <figcaption>Junior developers playing it real safe to avoid falling into traps</figcaption>
 
 I've noticed some junior engineers are so worried about playing it safe, not making a mistake, 

@@ -1,22 +1,12 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
-import { Button } from '@/components/Button'
-import wikka from '@/images/wikka.webp'
-
+import rawMetadata from './metadata.json';
 import { createMetadata } from '@/utils/createMetadata'
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2022-07-05",
-    title: "Writing code on Mac or Linux but testing on Windows with hot-reloading", 
-    description: "As a developer, I often want to test my code on Windows, but don&apos;t have a Windows box handy. This tutorial demonstrates how to use Infrastructure as Code (IaC) to make provisioning Windows test instances easier. In this post, I also provide a working Packer template and Terraform configuration to deploy your own Windows test instance, as well as instructions for mounting a local folder over RDP.",
-    href: "https://blog.gruntwork.io/how-to-write-code-on-mac-or-linux-but-test-on-windows-with-hot-reloading-b218de5383d1",
-    image: wikka,
-  slug: '/blog/testing-code-on-windows',
-})
+export const metadata = createMetadata(rawMetadata);
 
-export default (props) => <ArticleLayout metadata={metadata} {...props} />
+This article covers techniques for writing code on Mac or Linux but testing on Windows with hot reloading capabilities. It includes tools and configurations to make provisioning Windows test instances easier.
 
---- 
-<Button href={metadata.href}>Read article</Button>
+In this post, I also provide a working Packer template and Terraform configuration to deploy your own Windows test instance, as well as instructions for mounting a local folder over RDP.
+
+<a href="https://blog.gruntwork.io/how-to-write-code-on-mac-or-linux-but-test-on-windows-with-hot-reloading-b218de5383d1">Read the full article on Gruntwork's blog</a>
 
 

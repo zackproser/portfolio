@@ -1,7 +1,4 @@
 import { NextRequest } from 'next/server';
-import { readFile } from 'fs/promises';
-import fs from 'fs';
-import path from 'path';
 import { ogLogger } from '@/utils/logger';
 
 export const maxDuration = 300;
@@ -9,21 +6,21 @@ export const maxDuration = 300;
 // Set to be as fast as possible - only fetch static files
 export const dynamic = 'force-dynamic'; // Allow dynamic parameters
 
-// Only log in development or when explicitly enabled
-// const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
-
-// Helper function to conditionally log
-// const log = (message: string, ...args: any[]) => {
-//   if (shouldLog) {
-//     console.log(message, ...args);
-//   }
-// };
+// Bunny CDN configuration
+const CDN_BASE_URL = 'https://zackproser.b-cdn.net';
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('=== OG ROUTE START ===');
+    console.log('Request object type:', typeof request);
+    console.log('Request object keys:', Object.keys(request));
+    console.log('Request headers type:', typeof request.headers);
+    console.log('Request headers:', request.headers);
+    
     // Parse the URL directly from request.url and decode HTML entities more thoroughly
     const requestUrl = request.url;
     
+    console.log('Request URL:', requestUrl);
     ogLogger.info('OG Route - Processing request:', requestUrl);
     
     // More thorough HTML entity decoding - replace common patterns
@@ -41,6 +38,13 @@ export async function GET(request: NextRequest) {
         .replace(/&#x2F;/g, '/');
     }
     
+    // Additional URL decoding for double-encoded parameters
+    try {
+      decodedUrl = decodeURIComponent(decodedUrl);
+    } catch (e) {
+      ogLogger.warn('Failed to decode URL, using original:', e);
+    }
+    
     ogLogger.info('Decoded URL:', decodedUrl);
     
     const { searchParams } = new URL(decodedUrl);
@@ -49,50 +53,66 @@ export async function GET(request: NextRequest) {
     const slug = searchParams.get('slug');
     const title = searchParams.get('title') || 'Modern Coding';
     
+    ogLogger.info(`Raw slug from searchParams: "${slug}"`);
+    ogLogger.info(`Slug type: ${typeof slug}`);
+    ogLogger.info(`Slug length: ${slug?.length}`);
+    
     // Log all search parameters for debugging
     ogLogger.info('OG Route - Parameters:');
     for (const [key, value] of searchParams.entries()) {
       ogLogger.info(`- ${key}: ${value.substring(0, 100)}${value.length > 100 ? '...' : ''}`);
     }
     
-    // DIRECT STATIC FILE LOOKUP
+    // BUNNY CDN STATIC FILE LOOKUP
     // Check for a pre-generated OG image using slug (if provided)
-    if (slug) {
+    if (slug && slug !== '[slug]') {
       // Extract the final part of the slug (e.g., "walking-and-talking-with-ai" from "/blog/walking-and-talking-with-ai")
       const slugParts = slug.split('/');
       const lastSlugPart = slugParts[slugParts.length - 1];
       
-      // Absolute path to the OG image
-      const ogImagePath = path.join(process.cwd(), 'public', 'og-images', `${lastSlugPart}.png`);
-      ogLogger.info(`Looking for static OG image at path: ${ogImagePath}`);
+      // Construct Bunny CDN URL for the OG image
+      const cdnImageUrl = `${CDN_BASE_URL}/images/og-images/${lastSlugPart}.png`;
+      ogLogger.info(`Redirecting to CDN URL: ${cdnImageUrl}`);
       
-      // Check if the static file exists
-      if (fs.existsSync(ogImagePath)) {
-        ogLogger.info(`✅ Found static OG image for: ${lastSlugPart}`);
-        try {
-          const imageData = await readFile(ogImagePath);
-          ogLogger.info(`✅ Successfully read image file, size: ${imageData.length} bytes`);
-          
-          return new Response(imageData, {
-            headers: {
-              'Content-Type': 'image/png',
-              'Cache-Control': 'public, max-age=86400, immutable', // Cache for 24 hours
-            },
-          });
-        } catch (fileError: any) {
-          ogLogger.error(`Error reading static image file: ${fileError.message}`);
-          // Fall through to redirection
+          // Try to check if image exists on CDN, but handle errors gracefully
+    console.log('About to make CDN fetch request to:', cdnImageUrl);
+    try {
+      console.log('Making fetch request...');
+      const response = await fetch(cdnImageUrl, { 
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; OG-Image-Checker/1.0)'
         }
+      });
+      
+      console.log('Fetch response received, status:', response.status);
+      console.log('Fetch response headers:', response.headers);
+      
+      if (response.ok) {
+        console.log('✅ Found OG image on CDN, redirecting to:', cdnImageUrl);
+        ogLogger.info(`✅ Found OG image on CDN, redirecting to: ${cdnImageUrl}`);
+        return Response.redirect(cdnImageUrl, 302);
       } else {
-        ogLogger.info(`❌ No static image found for slug: ${lastSlugPart}`);
+        console.log('❌ Image not found on CDN (status:', response.status, '), proceeding to generator');
+        ogLogger.info(`❌ Image not found on CDN (status: ${response.status}), proceeding to generator`);
       }
+    } catch (error: any) {
+      console.log('CDN fetch error:', error);
+      console.log('CDN error message:', error.message);
+      console.log('CDN error stack:', error.stack);
+      ogLogger.warn(`CDN check failed, proceeding to generator: ${error.message}`);
+    }
     } else {
-      ogLogger.info('No slug parameter provided, skipping static image lookup');
+      if (slug === '[slug]') {
+        ogLogger.info('Invalid slug parameter [slug] provided, skipping CDN lookup');
+      } else {
+        ogLogger.info('No slug parameter provided, skipping CDN lookup');
+      }
     }
     
     
     // REDIRECT TO GENERATOR
-    // If we couldn't find a static image, redirect to the generator API
+    // If we couldn't find a static image on CDN, redirect to the generator API
     const redirectParams = new URLSearchParams();
     
     // Copy all parameters to the new params object
@@ -117,10 +137,30 @@ export async function GET(request: NextRequest) {
     
     const generateUrl = `/api/og/generate?${redirectParams.toString()}`;
     
+    console.log('Generate URL:', generateUrl);
     ogLogger.info(`Redirecting to generator: ${generateUrl}`);
     
-    return Response.redirect(new URL(generateUrl, request.url));
+    // Use the full URL for the redirect
+    console.log('About to create URL object with:', generateUrl, 'and base:', request.url);
+    const fullGenerateUrl = new URL(generateUrl, request.url).toString();
+    console.log('Full generate URL:', fullGenerateUrl);
+    console.log('About to redirect to:', fullGenerateUrl);
+    
+    const redirectResponse = Response.redirect(fullGenerateUrl, 302);
+    console.log('Redirect response created:', redirectResponse);
+    console.log('Redirect response status:', redirectResponse.status);
+    console.log('Redirect response headers:', redirectResponse.headers);
+    
+    return redirectResponse;
   } catch (error: any) {
+    console.log('=== OG ROUTE ERROR ===');
+    console.log('Error type:', typeof error);
+    console.log('Error message:', error.message);
+    console.log('Error stack:', error.stack);
+    console.log('Error name:', error.name);
+    console.log('Error constructor:', error.constructor.name);
+    console.log('Full error object:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    
     ogLogger.error(`OG route error:`, error);
     return new Response(`Error: ${error.message}`, {
       status: 500,

@@ -1,21 +1,19 @@
 import { Button } from '@/components/Button'
 import Image from 'next/image'
 import Link from 'next/link'
-import dimensionality from '@/images/dimensionality.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-    author: "Zachary Proser", 
-    date: "2024-4-04",
-    title: "Introduction to dimensionality in machine learning", 
-    description: "Dimensionality refers to the number of features a given embedding model extracts",
-    image: dimensionality,
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
 
 --- 
 
-<Image src={metadata.image} alt="Introduction to dimensionality"/>
+<Image src={metadata.image} alt="Introduction to dimensionality" width={800} height={600}/>
 
 ## Table of contents 
 
@@ -95,7 +93,6 @@ Python provides various libraries and tools for generating sample vectors of arb
 
 ```python
 
-import numpy as np
 
 # Generate a random vector of length 5
 vector = np.random.rand(5)

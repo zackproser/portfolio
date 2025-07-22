@@ -1,0 +1,8 @@
+{
+  "title": "Why I use Neovim's AstroNvim project as my daily driver IDE",
+  "author": "Zachary Proser",
+  "date": "2024-4-28",
+  "description": "Why do I use an open-source IDE-like Neovim experience glued together with Lua?",
+  "image": "https://zackproser.b-cdn.net/images/astronvim.webp",
+  "slug": "/blog/astronvim-overview"
+}

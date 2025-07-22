@@ -4,9 +4,9 @@ import { Demo, Content } from '@/types'
 import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
 
-import embeddingsDemoHero from '@/images/embeddings-demo-hero.webp'
-import tokenizationDemoHero from '@/images/tokenization-demo-hero.webp'
-import chatbotDemoHero from '@/images/chatbot-demo-hero.webp'
+const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-hero.webp'
+const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
+const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",

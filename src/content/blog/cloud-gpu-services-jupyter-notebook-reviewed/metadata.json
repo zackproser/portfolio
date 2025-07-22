@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2024-09-22",
+  "title": "Cloud GPU Services for Deep Learning and fine-tuning with Jupyter Notebooks Reviewed: Colab, Paperspace Gradient, Lightning.ai, and more",
+  "description": "I tried a handful of services when I last needed to fine-tune an LLM, and I was mostly disappointed...",
+  "image": "https://zackproser.b-cdn.net/images/cloud-gpu-services-reviewed.webp"
+}

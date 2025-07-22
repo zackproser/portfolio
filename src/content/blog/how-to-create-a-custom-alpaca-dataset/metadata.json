@@ -1,0 +1,7 @@
+{
+  "author": "Zachary Proser",
+  "date": "2024-09-22",
+  "title": "How to create a custom Alpaca instruction dataset for fine-tuning LLMs",
+  "description": "A step by step tutorial with companion notebook.",
+  "image": "https://zackproser.b-cdn.net/images/custom-alpaca-dataset.webp"
+}

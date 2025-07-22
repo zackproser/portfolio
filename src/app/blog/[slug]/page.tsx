@@ -26,9 +26,11 @@ interface PageProps {
 }
 
 // Generate static params for all blog posts
-export async function generateStaticParams() {
-  return generateContentStaticParams(CONTENT_TYPE)
-}
+// export async function generateStaticParams() {
+//   return generateContentStaticParams(CONTENT_TYPE)
+// }
+
+export const revalidate = 3600;
 
 // Generate metadata for the page
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

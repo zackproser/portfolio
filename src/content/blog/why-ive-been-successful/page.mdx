@@ -1,22 +1,20 @@
 import Image from 'next/image'
-import gruntworkPromotions from '@/images/gruntwork-promotions.webp'
-import layeredLearningPhases from '@/images/successful/layered-learning-phases.webp'
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser', 
-  date: '2023-03-20', 
-  title: "Why I've been successful lately, and what I'm planning to do about it", 
-  description: "In the past 3 years, I've been promoted 3 times. I reflect on the habits and activities that helped me improve the most. ",
-  image: gruntworkPromotions,
-})
+export const metadata = createMetadata(rawMetadata);
+
+
+
+
+
+
 
 For the past 3 years, I've been working at [Gruntwork](https://gruntwork.io), a DevOps startup that accelerates  your launch into AWS by giving you best-practice architectures defined in Terraform, and standing them up in your accounts in about a day.
 
 In those three years, I have been promoted three times.
 
-<Image src={gruntworkPromotions} alt="Gruntwork promotions" />
+<Image src="https://zackproser.b-cdn.net/images/gruntwork-promotions.webp" width={800} height={600} alt="Gruntwork promotions" />
 
 More importantly, my skill and confidence in writing Golang has improved significantly, and as a result I've experienced:
 
@@ -113,7 +111,7 @@ When I reflect on getting certified, I find that the real value for me was havin
 
 At a high level, I find myself roughly following this pattern with my own learning:
 
-<Image src={layeredLearningPhases} alt="Layered learning phases" />
+<Image src="https://zackproser.b-cdn.net/images/layered-learning-phases.webp" width={800} height={600} alt="Layered learning phases" />
 
 The primary source in this case could be a textbook or book on Go that I'm excited about, such as [The Power of Go Tools](https://bitfieldconsulting.com/books/tools) or [Concurrency in Go](https://www.oreilly.com/library/view/concurrency-in-go/9781491941294/). Or it could be a YouTube video or a tutorial on somebody's blog. It could be the powerpoint slides / videos of one of Adrian's Cantrill's AWS certification courses.
 

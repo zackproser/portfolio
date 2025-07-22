@@ -1,6 +1,7 @@
-import { ArticleWithSlug } from '@/types/content'
 import glob from 'fast-glob'
 import path from 'path'
+import fs from 'fs'
+import { ArticleWithSlug } from '@/types/content'
 
 export interface Newsletter {
   title: string
@@ -12,25 +13,57 @@ export interface Newsletter {
   content: string
 }
 
-export async function importNewsletter(
-  articleFilename: string,
-): Promise<ArticleWithSlug> {
-  let { metadata } = (await import(`@/app/newsletter/${articleFilename}`)) as {
-    default: React.ComponentType
-    metadata: {
-      title: string
-      description: string
-      author: string
-      date: string
-      image?: string
-      status?: 'draft' | 'published' | 'archived'
+async function importNewsletter(articleFilename: string): Promise<ArticleWithSlug | null> {
+  const dir = path.dirname(articleFilename);
+  const metadataJsonPath = path.join(process.cwd(), 'src/app/newsletter', dir, 'metadata.json');
+  let metadata: any = undefined;
+  let metadataJsonError: Error | undefined = undefined;
+
+  // 1. Try metadata.json first
+  if (fs.existsSync(metadataJsonPath)) {
+    try {
+      metadata = JSON.parse(fs.readFileSync(metadataJsonPath, 'utf-8'));
+      // Optionally log success
+    } catch (err: any) {
+      metadataJsonError = err;
+      console.warn(`Failed to parse metadata.json for newsletter/${dir}: ${err.message}`);
     }
+  }
+
+  let mdxModule: any = undefined;
+  // 2. Fallback to MDX export if metadata.json missing or malformed
+  if (!metadata) {
+    try {
+      mdxModule = await import(`@/app/newsletter/${articleFilename}`);
+      metadata = mdxModule.metadata;
+      if (!metadata) {
+        console.error(`No metadata found for newsletter/${dir} (neither metadata.json nor MDX export)`);
+        return null;
+      }
+    } catch (err: any) {
+      console.error(`Failed to import MDX for newsletter/${dir}: ${err.message}`);
+      return null;
+    }
+  }
+
+  // Always require a default export for the content component
+  if (!mdxModule) {
+    try {
+      mdxModule = await import(`@/app/newsletter/${articleFilename}`);
+    } catch (err: any) {
+      console.error(`Failed to import MDX for newsletter/${dir}: ${err.message}`);
+      return null;
+    }
+  }
+  if (!mdxModule.default) {
+    console.error(`No default export found in MDX for newsletter/${dir}`);
+    return null;
   }
 
   return {
     ...metadata,
-    type: 'blog',
-    slug: path.basename(articleFilename, '.mdx'),
+    type: 'newsletter',
+    slug: path.basename(dir),
     landing: {
       subtitle: metadata.description,
       features: [],
@@ -44,15 +77,16 @@ export async function importNewsletter(
 }
 
 export async function getAllNewsletters(): Promise<ArticleWithSlug[]> {
-  const files = await glob('**/page.mdx', {
+  const files: string[] = await glob('**/page.mdx', {
     cwd: path.join(process.cwd(), 'src/app/newsletter')
   })
 
   const newsletters = await Promise.all(
-    files.map(async (filename) => {
+    files.map(async (filename: string) => {
       return importNewsletter(filename)
     })
   )
 
-  return newsletters.sort((a, z) => +new Date(z.date) - +new Date(a.date))
+  // Filter out any nulls (failed loads) and cast to ArticleWithSlug[]
+  return (newsletters.filter(Boolean) as ArticleWithSlug[]).sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
