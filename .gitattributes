@@ -1,0 +1,8 @@
+src/images/**          merge=ours
+public/images/**       merge=ours
+public/og-images/**    merge=ours
+*.png                  merge=ours
+*.jpg                  merge=ours
+*.jpeg                 merge=ours
+*.gif                  merge=ours
+*.webp                 merge=ours
