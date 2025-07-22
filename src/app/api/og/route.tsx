@@ -1,7 +1,4 @@
 import { NextRequest } from 'next/server';
-import { readFile } from 'fs/promises';
-import fs from 'fs';
-import path from 'path';
 import { ogLogger } from '@/utils/logger';
 
 export const maxDuration = 300;
@@ -9,15 +6,8 @@ export const maxDuration = 300;
 // Set to be as fast as possible - only fetch static files
 export const dynamic = 'force-dynamic'; // Allow dynamic parameters
 
-// Only log in development or when explicitly enabled
-// const shouldLog = process.env.NODE_ENV === 'development' || process.env.DEBUG_OG === 'true';
-
-// Helper function to conditionally log
-// const log = (message: string, ...args: any[]) => {
-//   if (shouldLog) {
-//     console.log(message, ...args);
-//   }
-// };
+// Bunny CDN configuration
+const CDN_BASE_URL = 'https://zackproser.b-cdn.net';
 
 export async function GET(request: NextRequest) {
   try {
@@ -55,44 +45,40 @@ export async function GET(request: NextRequest) {
       ogLogger.info(`- ${key}: ${value.substring(0, 100)}${value.length > 100 ? '...' : ''}`);
     }
     
-    // DIRECT STATIC FILE LOOKUP
+    // BUNNY CDN STATIC FILE LOOKUP
     // Check for a pre-generated OG image using slug (if provided)
     if (slug) {
       // Extract the final part of the slug (e.g., "walking-and-talking-with-ai" from "/blog/walking-and-talking-with-ai")
       const slugParts = slug.split('/');
       const lastSlugPart = slugParts[slugParts.length - 1];
       
-      // Absolute path to the OG image
-      const ogImagePath = path.join(process.cwd(), 'public', 'og-images', `${lastSlugPart}.png`);
-      ogLogger.info(`Looking for static OG image at path: ${ogImagePath}`);
+      // Construct Bunny CDN URL for the OG image
+      const cdnImageUrl = `${CDN_BASE_URL}/images/og-images/${lastSlugPart}.png`;
+      ogLogger.info(`Looking for OG image on Bunny CDN: ${cdnImageUrl}`);
       
-      // Check if the static file exists
-      if (fs.existsSync(ogImagePath)) {
-        ogLogger.info(`✅ Found static OG image for: ${lastSlugPart}`);
-        try {
-          const imageData = await readFile(ogImagePath);
-          ogLogger.info(`✅ Successfully read image file, size: ${imageData.length} bytes`);
+      try {
+        // Check if the image exists on Bunny CDN by making a HEAD request
+        const response = await fetch(cdnImageUrl, { method: 'HEAD' });
+        
+        if (response.ok) {
+          ogLogger.info(`✅ Found OG image on Bunny CDN for: ${lastSlugPart}`);
           
-          return new Response(imageData, {
-            headers: {
-              'Content-Type': 'image/png',
-              'Cache-Control': 'public, max-age=86400, immutable', // Cache for 24 hours
-            },
-          });
-        } catch (fileError: any) {
-          ogLogger.error(`Error reading static image file: ${fileError.message}`);
-          // Fall through to redirection
+          // Redirect to the CDN URL for optimal performance
+          return Response.redirect(cdnImageUrl, 302);
+        } else {
+          ogLogger.info(`❌ No OG image found on Bunny CDN for slug: ${lastSlugPart}`);
         }
-      } else {
-        ogLogger.info(`❌ No static image found for slug: ${lastSlugPart}`);
+      } catch (cdnError: any) {
+        ogLogger.error(`Error checking Bunny CDN: ${cdnError.message}`);
+        // Fall through to dynamic generation
       }
     } else {
-      ogLogger.info('No slug parameter provided, skipping static image lookup');
+      ogLogger.info('No slug parameter provided, skipping CDN lookup');
     }
     
     
     // REDIRECT TO GENERATOR
-    // If we couldn't find a static image, redirect to the generator API
+    // If we couldn't find a static image on CDN, redirect to the generator API
     const redirectParams = new URLSearchParams();
     
     // Copy all parameters to the new params object

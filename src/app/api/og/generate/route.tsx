@@ -102,89 +102,114 @@ export async function GET(request: NextRequest) {
         
         console.log('Extracted base filename:', baseFilename);
         
-        // Only look in src/images directory as specified
-        const imageDir = join(process.cwd(), 'src', 'images');
-        console.log('Searching for images in:', imageDir);
-        
-        if (fs.existsSync(imageDir)) {
-          // Get all files recursively including in subdirectories
-          const getAllFiles = (dir: string, fileList: string[] = []): string[] => {
-            try {
-              const files = fs.readdirSync(dir);
-              
-              files.forEach(file => {
-                const filePath = path.join(dir, file);
-                if (fs.statSync(filePath).isDirectory()) {
-                  fileList = getAllFiles(filePath, fileList);
-                } else {
-                  // Only include .webp files as specified
-                  const ext = path.extname(file).toLowerCase();
-                  if (ext === '.webp') {
-                    // Store full path for easier access
-                    fileList.push(filePath);
-                  }
-                }
-              });
-            } catch (err) {
-              console.log(`Error reading directory ${dir}:`, err);
-            }
-            
-            return fileList;
-          };
-          
-          const allFiles = getAllFiles(imageDir);
-          console.log(`Found ${allFiles.length} webp files in src/images directory`);
-          
-          // First try exact match by basename
-          const exactMatches = allFiles.filter(file => 
-            path.basename(file, '.webp') === baseFilename
-          );
-          
-          if (exactMatches.length > 0) {
-            console.log(`Found ${exactMatches.length} exact matches:`, 
-              exactMatches.map(f => path.basename(f)).join(', '));
-            
-            // Use the first exact match
-            const matchFile = exactMatches[0];
-            console.log('Using exact match:', matchFile);
-            rawImageData = await readFile(matchFile);
-          } 
-          // If no exact match, try files containing the basename
-          else {
-            const containingMatches = allFiles.filter(file => 
-              path.basename(file).includes(baseFilename)
-            );
-            
-            if (containingMatches.length > 0) {
-              console.log(`Found ${containingMatches.length} containing matches:`, 
-                containingMatches.map(f => path.basename(f)).join(', '));
-              
-              // Use the first containing match
-              const matchFile = containingMatches[0];
-              console.log('Using containing match:', matchFile);
-              rawImageData = await readFile(matchFile);
+        // Check if this is a Bunny CDN URL
+        if (finalImageSrc && finalImageSrc.includes('zackproser.b-cdn.net')) {
+          console.log('Image source is a Bunny CDN URL, fetching directly');
+          try {
+            const response = await fetch(finalImageSrc);
+            if (response.ok) {
+              rawImageData = await response.arrayBuffer();
+              console.log('Successfully fetched image from Bunny CDN:', finalImageSrc);
             } else {
-              console.log('❌ No matching image found for base name:', baseFilename);
-              if (allFiles.length > 0) {
-                console.log('Sample files:', allFiles.slice(0, 5).map(f => path.basename(f)));
-              }
+              console.log('Failed to fetch image from Bunny CDN:', finalImageSrc);
             }
+          } catch (error) {
+            console.log('Error fetching image from Bunny CDN:', error);
           }
         } else {
-          console.log('Image directory does not exist:', imageDir);
+          // Fallback to local file system lookup
+          const imageDir = join(process.cwd(), 'src', 'images');
+          console.log('Searching for images in:', imageDir);
+          
+          if (fs.existsSync(imageDir)) {
+            // Get all files recursively including in subdirectories
+            const getAllFiles = (dir: string, fileList: string[] = []): string[] => {
+              try {
+                const files = fs.readdirSync(dir);
+                
+                files.forEach(file => {
+                  const filePath = path.join(dir, file);
+                  if (fs.statSync(filePath).isDirectory()) {
+                    fileList = getAllFiles(filePath, fileList);
+                  } else {
+                    // Only include .webp files as specified
+                    const ext = path.extname(file).toLowerCase();
+                    if (ext === '.webp') {
+                      // Store full path for easier access
+                      fileList.push(filePath);
+                    }
+                  }
+                });
+              } catch (err) {
+                console.log(`Error reading directory ${dir}:`, err);
+              }
+              
+              return fileList;
+            };
+            
+            const allFiles = getAllFiles(imageDir);
+            console.log(`Found ${allFiles.length} webp files in src/images directory`);
+            
+            // First try exact match by basename
+            const exactMatches = allFiles.filter(file => 
+              path.basename(file, '.webp') === baseFilename
+            );
+            
+            if (exactMatches.length > 0) {
+              console.log(`Found ${exactMatches.length} exact matches:`, 
+                exactMatches.map(f => path.basename(f)).join(', '));
+              
+              // Use the first exact match
+              const matchFile = exactMatches[0];
+              console.log('Using exact match:', matchFile);
+              rawImageData = await readFile(matchFile);
+            } 
+            // If no exact match, try files containing the basename
+            else {
+              const containingMatches = allFiles.filter(file => 
+                path.basename(file).includes(baseFilename)
+              );
+              
+              if (containingMatches.length > 0) {
+                console.log(`Found ${containingMatches.length} containing matches:`, 
+                  containingMatches.map(f => path.basename(f)).join(', '));
+                
+                // Use the first containing match
+                const matchFile = containingMatches[0];
+                console.log('Using containing match:', matchFile);
+                rawImageData = await readFile(matchFile);
+              } else {
+                console.log('❌ No matching image found for base name:', baseFilename);
+                if (allFiles.length > 0) {
+                  console.log('Sample files:', allFiles.slice(0, 5).map(f => path.basename(f)));
+                }
+              }
+            }
+          } else {
+            console.log('Image directory does not exist:', imageDir);
+          }
         }
       }
       
       // Fallback to default if no image was found
       if (!rawImageData) {
-        console.log('No image found, using default');
-        const defaultPath = join(process.cwd(), 'public', 'modern-coding-og-background.png');
-        if (fs.existsSync(defaultPath)) {
-          rawImageData = await readFile(defaultPath);
-          console.log('Using default image:', defaultPath);
-        } else {
-          console.error('Default image not found at path:', defaultPath);
-          return new Response('Default image not found', { status: 500 });
+        console.log('No image found, using default from Bunny CDN');
+        
+        // Try to fetch default image from Bunny CDN
+        let defaultImageUrl = 'https://zackproser.b-cdn.net/images/modern-coding-og-background.webp';
+        
+        try {
+          const response = await fetch(defaultImageUrl);
+          if (response.ok) {
+            rawImageData = await response.arrayBuffer();
+            console.log('Using default image from Bunny CDN:', defaultImageUrl);
+          } else {
+            console.error('Default image not found on Bunny CDN:', defaultImageUrl);
+            return new Response('Default image not found', { status: 500 });
+          }
+        } catch (error) {
+          console.error('Error fetching default image from Bunny CDN:', error);
+          return new Response('Failed to fetch default image', { status: 500 });
         }
       }
 
