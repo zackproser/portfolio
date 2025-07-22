@@ -46,6 +46,10 @@ export async function GET(request: NextRequest) {
     const slug = searchParams.get('slug');
     const title = searchParams.get('title') || 'Modern Coding';
     
+    ogLogger.info(`Raw slug from searchParams: "${slug}"`);
+    ogLogger.info(`Slug type: ${typeof slug}`);
+    ogLogger.info(`Slug length: ${slug?.length}`);
+    
     // Log all search parameters for debugging
     ogLogger.info('OG Route - Parameters:');
     for (const [key, value] of searchParams.entries()) {
@@ -61,23 +65,25 @@ export async function GET(request: NextRequest) {
       
       // Construct Bunny CDN URL for the OG image
       const cdnImageUrl = `${CDN_BASE_URL}/images/og-images/${lastSlugPart}.png`;
-      ogLogger.info(`Looking for OG image on Bunny CDN: ${cdnImageUrl}`);
+      ogLogger.info(`Redirecting to CDN URL: ${cdnImageUrl}`);
       
+      // Try to check if image exists on CDN, but handle errors gracefully
       try {
-        // Check if the image exists on Bunny CDN by making a HEAD request
-        const response = await fetch(cdnImageUrl, { method: 'HEAD' });
+        const response = await fetch(cdnImageUrl, { 
+          method: 'GET',
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; OG-Image-Checker/1.0)'
+          }
+        });
         
         if (response.ok) {
-          ogLogger.info(`✅ Found OG image on Bunny CDN for: ${lastSlugPart}`);
-          
-          // Redirect to the CDN URL for optimal performance
+          ogLogger.info(`✅ Found OG image on CDN, redirecting to: ${cdnImageUrl}`);
           return Response.redirect(cdnImageUrl, 302);
         } else {
-          ogLogger.info(`❌ No OG image found on Bunny CDN for slug: ${lastSlugPart}`);
+          ogLogger.info(`❌ Image not found on CDN (status: ${response.status}), proceeding to generator`);
         }
-      } catch (cdnError: any) {
-        ogLogger.error(`Error checking Bunny CDN: ${cdnError.message}`);
-        // Fall through to dynamic generation
+      } catch (error: any) {
+        ogLogger.warn(`CDN check failed, proceeding to generator: ${error.message}`);
       }
     } else {
       if (slug === '[slug]') {
@@ -116,7 +122,9 @@ export async function GET(request: NextRequest) {
     
     ogLogger.info(`Redirecting to generator: ${generateUrl}`);
     
-    return Response.redirect(new URL(generateUrl, request.url));
+    // Use the full URL for the redirect
+    const fullGenerateUrl = new URL(generateUrl, request.url).toString();
+    return Response.redirect(fullGenerateUrl, 302);
   } catch (error: any) {
     ogLogger.error(`OG route error:`, error);
     return new Response(`Error: ${error.message}`, {

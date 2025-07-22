@@ -249,18 +249,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Generate the OG image
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            width: '100%',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
+    try {
+      return new ImageResponse(
+        (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              width: '100%',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
           {/* Main background with blueprint effect */}
           <div style={{
             position: 'absolute',
@@ -486,6 +487,16 @@ export async function GET(request: NextRequest) {
         height: 630,
       }
     );
+    } catch (imageError: any) {
+      console.error(`ImageResponse error:`, imageError);
+      // Fallback to a simple text response
+      return new Response(`Failed to generate image: ${imageError.message}`, {
+        status: 500,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      });
+    }
   } catch (error: any) {
     console.error(`OG image generation error:`, error);
     return new Response(`Failed to generate image: ${error.message}`, {
