@@ -225,7 +225,8 @@ export async function GET(request: NextRequest) {
       
     } catch (error: any) {
       console.error('Error in image processing:', error);
-      return new Response(`Failed to load/convert image: ${error.message}`, { status: 500 });
+      // Set a fallback base64Image to prevent undefined errors
+      base64Image = null;
     }
 
     // Force number type for zIndex values - removing 'px' from values
@@ -241,6 +242,11 @@ export async function GET(request: NextRequest) {
     // Image dimensions 
     const imageWidth = 600;
     const imageHeight = 600;
+
+    // Ensure base64Image is defined
+    if (!base64Image) {
+      console.log('No image data available, proceeding with fallback');
+    }
 
     // Generate the OG image
     return new ImageResponse(
@@ -439,20 +445,36 @@ export async function GET(request: NextRequest) {
                   filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                   padding: '5px'
                 }}>
-                  <img 
-                    src={`data:image/png;base64,${base64Image}`}
-                    alt="Page hero image"
-                    width={imageWidth}
-                    height={imageHeight}
-                    style={{
-                      width: '110%',
-                      height: '110%',
-                      objectFit: 'contain',
-                      objectPosition: 'center',
-                      filter: 'brightness(1.2) contrast(1.1)',
-                      mixBlendMode: 'screen'
-                    }}
-                  />
+                  {base64Image ? (
+                    <img 
+                      src={`data:image/png;base64,${base64Image}`}
+                      alt="Page hero image"
+                      width={imageWidth}
+                      height={imageHeight}
+                      style={{
+                        width: '110%',
+                        height: '110%',
+                        objectFit: 'contain',
+                        objectPosition: 'center',
+                        filter: 'brightness(1.2) contrast(1.1)',
+                        mixBlendMode: 'screen'
+                      }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '24px',
+                      color: 'white',
+                      opacity: 0.7
+                    }}>
+                      Image
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

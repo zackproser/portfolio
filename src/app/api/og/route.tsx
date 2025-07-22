@@ -31,6 +31,13 @@ export async function GET(request: NextRequest) {
         .replace(/&#x2F;/g, '/');
     }
     
+    // Additional URL decoding for double-encoded parameters
+    try {
+      decodedUrl = decodeURIComponent(decodedUrl);
+    } catch (e) {
+      ogLogger.warn('Failed to decode URL, using original:', e);
+    }
+    
     ogLogger.info('Decoded URL:', decodedUrl);
     
     const { searchParams } = new URL(decodedUrl);
@@ -47,7 +54,7 @@ export async function GET(request: NextRequest) {
     
     // BUNNY CDN STATIC FILE LOOKUP
     // Check for a pre-generated OG image using slug (if provided)
-    if (slug) {
+    if (slug && slug !== '[slug]') {
       // Extract the final part of the slug (e.g., "walking-and-talking-with-ai" from "/blog/walking-and-talking-with-ai")
       const slugParts = slug.split('/');
       const lastSlugPart = slugParts[slugParts.length - 1];
@@ -73,7 +80,11 @@ export async function GET(request: NextRequest) {
         // Fall through to dynamic generation
       }
     } else {
-      ogLogger.info('No slug parameter provided, skipping CDN lookup');
+      if (slug === '[slug]') {
+        ogLogger.info('Invalid slug parameter [slug] provided, skipping CDN lookup');
+      } else {
+        ogLogger.info('No slug parameter provided, skipping CDN lookup');
+      }
     }
     
     
