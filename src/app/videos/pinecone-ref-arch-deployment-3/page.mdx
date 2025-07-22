@@ -1,15 +1,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-11-27",
-  title: "Deploying the Pinecone AWS Reference Architecture - Part 3",
-  description: "I deploy the Pinecone AWS Reference Architecture end to end in this three part video series",
-  image: 'https://zackproser.b-cdn.net/images/pinecone-ref-arch-deployment-part-3.webp'
-})
+export const metadata = createMetadata(rawMetadata)
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 

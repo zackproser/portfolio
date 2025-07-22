@@ -1,15 +1,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2023-06-30",
-  title: "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
-  description: "How I built an Office chatbot that can answer any question about the office",
-  image: 'https://zackproser.b-cdn.net/images/building-an-ai-chatbot.webp'
-})
+export const metadata = createMetadata(rawMetadata)
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 

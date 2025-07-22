@@ -1,15 +1,8 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-
-
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
-export const metadata = createMetadata({
-  author: "Zachary Proser",
-  date: "2024-05-29",
-  title: "How to use ChatGPT in your terminal",
-  description: "Did you know you can use ChatGPT in your terminal? No more copying and pasting...",
-  image: 'https://zackproser.b-cdn.net/images/chatgpt-in-your-terminal.webp'
-})
+export const metadata = createMetadata(rawMetadata)
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
 
