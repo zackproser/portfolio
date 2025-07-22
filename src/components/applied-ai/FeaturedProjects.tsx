@@ -41,22 +41,19 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
       initial={{ opacity: 0, y: 50, scale: 0.95 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.95 }}
       transition={{ 
-        duration: 0.8, 
-        delay: index * 0.1,
-        type: "spring",
-        stiffness: 100,
-        damping: 10
+        duration: 0.6, 
+        delay: index * 0.1
       }}
       className="group flex-shrink-0 w-full max-w-md mx-auto"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] group-hover:-translate-y-1 h-full">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
         {/* Project hero image */}
         <div className="relative h-64 overflow-hidden">
           <Image
             src={heroImage}
             alt={project.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
@@ -96,7 +93,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
                 href={project.links.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
               >
                 <ExternalLink className="w-4 h-4" />
                 Live Demo
@@ -107,7 +104,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
                 href={project.links.article}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
               >
                 <ExternalLink className="w-4 h-4" />
                 Read Article
@@ -118,7 +115,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
                 href={project.links.code}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
               >
                 <Code className="w-4 h-4" />
                 View Code

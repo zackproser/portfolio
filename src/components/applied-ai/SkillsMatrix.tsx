@@ -17,7 +17,7 @@ const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
     >
       {/* Skill Level Indicator - Signal Bars */}
@@ -32,7 +32,7 @@ const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
                 height: i < level ? [4, 12 + (i * 4), 12 + (i * 4)] : 4,
                 backgroundColor: i < level ? '#3B82F6' : '#374151'
               } : { height: 4 }}
-              transition={{ duration: 0.8, delay: index * 0.1 + i * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.05 + i * 0.05 }}
               className="w-2 bg-gray-600 rounded-sm"
             />
           ))}
@@ -103,24 +103,13 @@ const TechStack = () => {
             key={layer.name}
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.8, delay: index * 0.2 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
             className="relative"
           >
             <div className={`bg-gradient-to-r ${layer.color} p-4 rounded-lg bg-opacity-20 border border-white/10`}>
               <div className="flex items-center justify-between mb-2">
                 <h4 className="text-lg font-semibold text-white">{layer.name}</h4>
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    opacity: [0.5, 1, 0.5]
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: index * 0.3
-                  }}
-                  className="w-3 h-3 bg-green-400 rounded-full"
-                />
+                <div className="w-3 h-3 bg-green-400 rounded-full" />
               </div>
               <div className="flex flex-wrap gap-2">
                 {layer.tech.map((tech, techIndex) => (
@@ -128,7 +117,7 @@ const TechStack = () => {
                     key={tech}
                     initial={{ opacity: 0, y: 10 }}
                     animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                    transition={{ duration: 0.4, delay: index * 0.2 + techIndex * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 + techIndex * 0.05 }}
                     className="px-2 py-1 text-sm bg-white/10 text-white rounded border border-white/20"
                   >
                     {tech}
@@ -139,12 +128,7 @@ const TechStack = () => {
             
             {/* Connection lines */}
             {index < stackLayers.length - 1 && (
-              <motion.div
-                initial={{ height: 0 }}
-                animate={isInView ? { height: '1rem' } : { height: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 + 0.5 }}
-                className="w-px bg-gradient-to-b from-blue-400 to-transparent mx-auto"
-              />
+              <div className="w-px bg-gradient-to-b from-blue-400 to-transparent mx-auto h-4" />
             )}
           </motion.div>
         ))}
@@ -227,7 +211,7 @@ export default function SkillsMatrix() {
               <div className="text-white">Tech Companies</div>
             </div>
                           <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">1,700+</div>
+                <div className="text-3xl font-bold text-blue-400">1,800+</div>
                 <div className="text-white">Newsletter Readers</div>
               </div>
           </div>

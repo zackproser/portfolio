@@ -14,8 +14,8 @@ import PersonSchema from '@/components/applied-ai/PersonSchema'
 // All components now fetch their own data internally
 
 export const metadata: Metadata = createMetadata({
-  title: "Zack Proser - Applied AI Engineer | Enterprise LLM Solutions",
-  description: "Staff-level Applied AI Engineer with 13+ years experience building production LLM solutions. From fine-tuning models to enterprise RAG systems.",
+  title: "Zack Proser - Full-Stack AI Engineer | Enterprise LLM Solutions",
+  description: "Staff-level Full-Stack AI Engineer with 13+ years experience building production LLM solutions. From fine-tuning models to enterprise RAG systems.",
   author: "Zachary Proser",
   keywords: [
     "Staff AI Engineer",
@@ -51,7 +51,7 @@ export default function AppliedAiEngineerPage() {
       {/* Stats Bar */}
       <StatsBar stats={[
         { number: "50,000+", label: "Yearly Blog Readers" },
-        { number: "1,700+", label: "Newsletter Subscribers" },
+        { number: "1,800+", label: "Newsletter Subscribers" },
         { number: "3+ Years", label: "AI Infrastructure Experience" },
         { number: "13+ Years", label: "Total Engineering Experience" }
       ]} />

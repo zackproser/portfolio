@@ -68,7 +68,7 @@ const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
 
 const defaultStats: StatItem[] = [
   { number: "50,000+", label: "Monthly Blog Readers", icon: Users },
-  { number: "1,700+", label: "Newsletter Subscribers", icon: BookOpen },
+  { number: "1,800+", label: "Newsletter Subscribers", icon: BookOpen },
   { number: "3+ Years", label: "AI Infrastructure Experience", icon: Calendar },
   { number: "13+ Years", label: "Total Engineering Experience", icon: Wrench }
 ]
@@ -148,47 +148,19 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
                   {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
-                  {/* Floating particles effect */}
-                  <div className="absolute inset-0 overflow-hidden rounded-2xl">
-                    <motion.div
-                      animate={{ 
-                        x: [0, 10, 0],
-                        y: [0, -5, 0],
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ 
-                        duration: 4,
-                        repeat: Infinity,
-                        delay: index * 0.5
-                      }}
-                      className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full opacity-20"
-                    />
-                    <motion.div
-                      animate={{ 
-                        x: [0, -8, 0],
-                        y: [0, 8, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ 
-                        duration: 3,
-                        repeat: Infinity,
-                        delay: index * 0.3
-                      }}
-                      className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-indigo-400 rounded-full opacity-30"
-                    />
-                  </div>
+
                   
                   {Icon && (
                     <motion.div 
                       initial={{ scale: 0, rotate: -180 }}
                       animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
                       transition={{ duration: 0.8, delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
-                      className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-8 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110"
+                      className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-8 shadow-lg group-hover:shadow-xl transition-all duration-300"
                     >
                       <Icon className="w-10 h-10 text-white" />
                     </motion.div>
                   )}
-                  <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-4 group-hover:scale-105 transition-transform duration-300">
+                  <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-4">
                     <AnimatedNumber value={stat.number} duration={2.5} />
                   </div>
                   <div className="text-gray-700 dark:text-gray-300 font-semibold text-lg group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300">

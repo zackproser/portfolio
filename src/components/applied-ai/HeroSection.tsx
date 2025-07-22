@@ -40,10 +40,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
               >
-                Full-Stack AI Engineer &
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                  Technical Trainer
-                </span>
+                Full-Stack AI Engineer
               </motion.h1>
 
               <motion.p
@@ -53,7 +50,7 @@ export default function HeroSection() {
                 className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-4xl"
               >
                 13+ years building scalable systems, from real-time stream processing to enterprise AI applications.
-                I architect, code, and educate on everything from vector databases to infrastructure as code.
+                I architect, code, and educate on everything from vector databases, pipelines, AI apps, to infrastructure as code.
               </motion.p>
             </div>
 
@@ -67,10 +64,8 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="flex flex-wrap gap-8 text-blue-100">
                 <div>
-                  <div className="text-2xl font-bold text-white">1,700+</div>
+                  <div className="text-2xl font-bold text-white">1,800+</div>
                   <div className="text-sm">Newsletter Subscribers</div>
-                  <div className="text-2xl font-bold text-white">1,500+</div>
-                  <div className="text-sm">Engineers Reached</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">13+</div>

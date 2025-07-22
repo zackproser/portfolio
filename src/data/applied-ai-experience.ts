@@ -3,6 +3,8 @@ import logoWorkOS from '@/images/logos/workos.svg'
 import logoPinecone from '@/images/logos/pinecone-logo.png'
 import logoGrunty from '@/images/logos/grunty.png'
 import logoCloudflare from '@/images/logos/cloudflare.svg'
+import logoCloudmark from '@/images/logos/cloudmark.png'
+import logoBrightContext from '@/images/logos/brightcontext.png'
 
 export interface ExperienceData {
   company: string;
@@ -29,10 +31,6 @@ export const appliedAiExperience: ExperienceData[] = [
       "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
       "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
       "Developed internal AI tooling for content creation, social media automation, and content throughput optimization",
-      "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
-      "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
-      "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
-      "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
       "Reduced developer implementation time through hands-on code examples and working applications"
     ],
     technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS"]
@@ -63,7 +61,8 @@ export const appliedAiExperience: ExperienceData[] = [
       "Built deployments, tooling, infrastructure and automated testing for Reference Architecture product",
       "Open-sourced git-xargs: https://github.com/gruntwork-io/git-xargs",
       "Provided customer support for Infrastructure as Code library serving enterprise clients",
-      "Enhanced Reference Architecture with new features, bug fixes, automation and documentation"
+      "Enhanced Reference Architecture with new features, bug fixes, automation and documentation",
+      "Held record for total successful deployments of Reference Architecture product"
     ],
     technologies: ["Terraform", "Golang", "Bash", "AWS", "Docker", "Python", "Infrastructure as Code"]
   },
@@ -81,7 +80,8 @@ export const appliedAiExperience: ExperienceData[] = [
       "Built and open-sourced cf-terraforming tool for extracting Cloudflare setups into Terraform state",
       "Designed distributed error and schema-drift alerting system adopted by all product teams",
       "Wrote the first Cloudflare Workers deployed in front of api.cloudflare.com and www.cloudflare.com",
-      "Built first iteration of Project Jengo and handled weekly API releases"
+      "Built first iteration of Project Jengo and handled weekly API releases",
+      "Served as primary release engineer for the API stack"
     ],
     technologies: ["Golang", "PHP", "Node.js", "JavaScript", "Python", "Docker", "Kubernetes", "Terraform", "Bash"]
   },
@@ -90,7 +90,7 @@ export const appliedAiExperience: ExperienceData[] = [
     role: "Software Engineer", 
     duration: "Feb 2015 - Apr 2017",
     location: "San Francisco Bay Area",
-    logo: logoCloudflare, // Using cloudflare logo as placeholder since we don't have cloudmark
+    logo: logoCloudmark,
     description: "Full stack developer designing and implementing solutions across multiple teams and technologies.",
     achievements: [
       "Designed and implemented Golang messaging microservice",
@@ -106,7 +106,7 @@ export const appliedAiExperience: ExperienceData[] = [
     role: "Software Engineer",
     duration: "Apr 2012 - Apr 2014", 
     location: "Falls Church, VA",
-    logo: logoGrunty, // Using grunty logo as placeholder since we don't have brightcontext
+    logo: logoBrightContext,
     description: "Employee #9 at real-time stream processing engine startup, handling diverse responsibilities from engineering to marketing.",
     achievements: [
       "Built web applications in Node.js demonstrating use of JavaScript SDKs",
