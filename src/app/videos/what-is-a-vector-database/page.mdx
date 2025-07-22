@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-10-19",
   title: "What is a vector database?",
   description: "Vector databases explained, featuring clowns, embeddings, neural networks, feature extraction, semantic search and Retrieval Augmented Generation (RAG).",
-  image: whatIsAVectorDB
+  image: 'https://zackproser.b-cdn.net/images/what-is-a-vector-db-thumb.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import aiChatbot from '@/images/building-an-ai-chatbot.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-06-30",
   title: "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
   description: "How I built an Office chatbot that can answer any question about the office",
-  image: aiChatbot
+  image: 'https://zackproser.b-cdn.net/images/building-an-ai-chatbot.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

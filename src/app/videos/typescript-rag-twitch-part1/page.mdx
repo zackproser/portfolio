@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import ragPart1 from '@/images/typescript-rag-livestream-part1.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-08-10",
   title: "Live code review: Pinecone Vercel starter template and Retrieval Augmented Generation (RAG) Part #1",
   description: "Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
-  image: ragPart1
+  image: 'https://zackproser.b-cdn.net/images/typescript-rag-livestream-part1.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

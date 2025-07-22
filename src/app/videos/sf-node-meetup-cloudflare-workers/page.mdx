@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import workersTalk from '@/images/cloudflare-workers-talk.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2018-06-01",
   title: "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
   description: "How we dogfooded Cloudflare workers on the API team",
-  image: workersTalk
+  image: 'https://zackproser.b-cdn.net/images/cloudflare-workers-talk.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

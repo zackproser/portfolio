@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import chatWithYourData from '@/images/build-chat-with-your-data.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2024-05-29",
   title: "How to build chat with your data using Pinecone, LangChain and OpenAI",
   description: "I show step by step how to build a RAG chatbot to talk to your data in this easy to follow tutorial for beginners.",
-  image: chatWithYourData
+  image: 'https://zackproser.b-cdn.net/images/build-chat-with-your-data.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

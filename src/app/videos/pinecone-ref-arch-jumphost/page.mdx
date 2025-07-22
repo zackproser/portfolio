@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import pineconeRefArchJumphost from '@/images/pinecone-ref-arch-jumphost.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-11-27",
   title: "Deploying a jump host for the Pinecone AWS Reference Architecture",
   description: "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
-  image: pineconeRefArchJumphost
+  image: 'https://zackproser.b-cdn.net/images/pinecone-ref-arch-jumphost.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

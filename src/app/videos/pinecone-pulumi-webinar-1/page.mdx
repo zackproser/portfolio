@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar1.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-12-14",
   title: "Pinecone & Pulumi webinar: Taking AI apps to production",
   description: "I co-hosted a webinar with Pulumi about productionizing AI applications",
-  image: pineconePulumiWebinar
+  image: 'https://zackproser.b-cdn.net/images/pinecone-pulumi-webinar1.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import canyonRunnerTitle from '@/images/canyonrunner-title-screen.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2015-07-11",
   title: "A full play through of my HTML5 game, CanyonRunner",
   description: "I built a complete game using the Phaser.js game development framework",
-  image: canyonRunnerTitle 
+  image: 'https://zackproser.b-cdn.net/images/canyonrunner-title-screen.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

@@ -1,6 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 
-import pineconeRefArchDestruction from '@/images/pinecone-ref-arch-destruction.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -9,7 +8,7 @@ export const metadata = createMetadata({
   date: "2023-11-27",
   title: "Destroying the Pinecone AWS Reference Architecture",
   description: "I demonstrate how to destroy the Pinecone AWS Reference Architecture using Pulumi",
-  image: pineconeRefArchDestruction
+  image: 'https://zackproser.b-cdn.net/images/pinecone-ref-arch-destruction.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

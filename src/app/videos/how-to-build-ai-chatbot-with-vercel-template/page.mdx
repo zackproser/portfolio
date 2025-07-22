@@ -2,7 +2,6 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import Link from 'next/link'
 
-import aiChatbot from '@/images/ai-chatbot-vercel-template.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -11,7 +10,7 @@ export const metadata = createMetadata({
   date: "2023-07-03",
   title: "How to build an AI chatbot using Vercel's ai-chatbot template",
   description: "How to extend and modify Vercel's base ai-chatbot template for your own purposes",
-  image: aiChatbot
+  image: 'https://zackproser.b-cdn.net/images/ai-chatbot-vercel-template.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />

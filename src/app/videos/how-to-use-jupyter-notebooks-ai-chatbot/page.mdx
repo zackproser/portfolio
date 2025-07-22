@@ -2,7 +2,6 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 
 import Link from 'next/link'
 
-import aiChatbot from '@/images/ai-chatbot-jupyter-notebooks.webp'
 
 import { createMetadata } from '@/utils/createMetadata'
 
@@ -11,7 +10,7 @@ export const metadata = createMetadata({
   date: "2023-07-03",
   title: "How to use Jupyter notebooks, langchain and Kaggle.com to create an AI chatbot on any topic",
   description: "How you can shorten your iteration cycles with Jupyter notebooks when building data-rich apps",
-  image: aiChatbot
+  image: 'https://zackproser.b-cdn.net/images/ai-chatbot-jupyter-notebooks.webp'
 })
 
 export default (props) => <ArticleLayout metadata={metadata} {...props} />
