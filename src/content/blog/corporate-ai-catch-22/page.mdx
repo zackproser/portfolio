@@ -1,22 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
-import aiFundamentals from '@/images/ai-fundamentals.webp'
-import neuralNetworksLearn from '@/images/neural-networks-learn.webp'
-import aieWorkshop from '@/images/aie-workshop-room.webp'
-import mermaidv0Dev from '@/images/mermaid-v0-dev.webp'
-import githubFinder from '@/images/v0-github-finder.webp'
-import embeddings from '@/images/embeddings.webp'
+import rawMetadata from './metadata.json'
 
-export const metadata = createMetadata({
-  author: 'Zachary Proser',
-  date: '2025-07-14',
-  title: 'The Corporate AI Catch-22: Solving the Internal AI Training Problem',
-  description: 'How we compressed the AI learning curve for our entire company, built safe experimentation environments, and changed how teams approach new technology.',
-  image: aiFundamentals,
-  slug: '/blog/corporate-ai-catch-22',
-})
+export const metadata = createMetadata(rawMetadata)
 
-<Image src={aiFundamentals} alt="AI Fundamentals - WorkOS Internal Training" />
+<Image src="https://zackproser.b-cdn.net/images/ai-fundamentals.webp" alt="AI Fundamentals - WorkOS Internal Training" width={800} height={600} />
 
 ## Table of contents
 
@@ -44,7 +32,7 @@ A few weeks ago, I was in a meeting with my sales and GTM collague who needed a 
 
 So I loaded up v0.dev and started describing the system requirements. 10 minutes later, before the meeting had concluded, I had already developed and deployed a single page application (SPA) that handled by colleague's task automatically, saving her a ton of time going forward.
 
-<Image src={githubFinder} alt="A single page application to find developer emails that I created in under 10 minutes with Vercel's v0.dev" />
+<Image src="https://zackproser.b-cdn.net/images/v0-github-finder.webp" alt="A single page application to find developer emails that I created in under 10 minutes with Vercel's v0.dev" width={800} height={600} />
 
 *These kinds of internal tools are **not even tickets anymore***. They're a 10 minute conversation with an integrated LLM-enabled prototyping tool like Vercel's v0.dev.
 
@@ -53,7 +41,7 @@ So I loaded up v0.dev and started describing the system requirements. 10 minutes
 There's a critical warning embedded in here for product teams as well. The same rapid prototyping capability allows me to decide that I'm tired of 
 mermaid.live putting their Mermaid.js diagram viewing capabilility behind paywalls, accounts, credits and associated horseshit. 
 
-<Image src={mermaidv0Dev} alt="I got frustrated with other Mermaid tools so I just built my own and published it online immediately" />
+<Image src="https://zackproser.b-cdn.net/images/mermaid-v0-dev.webp" alt="I got frustrated with other Mermaid tools so I just built my own and published it online immediately" width={800} height={600} />
 
 So I'll just build an app that visualizes mermaid diagrams for free, ***in three minutes***, and then publish it on the public internet ***so that everyone else can continue to use it for free.***
 
@@ -75,7 +63,7 @@ We bought several pro and enterprise plans and provisioned seats for everyone in
 
 ### Teach the Basics, Then Go Hands On Immediately 
 
-<Image src={neuralNetworksLearn} alt="Neural Networks - Internal Training Visual" />
+<Image src="https://zackproser.b-cdn.net/images/neural-networks-learn.webp" alt="Neural Networks - Internal Training Visual" width={800} height={600} />
 
 I started with a 30-minute talk that covered the fundamentals everyone needs: 
 
@@ -87,7 +75,7 @@ I started with a 30-minute talk that covered the fundamentals everyone needs:
 
 Not theoretical nonsense—but [live demos](/demos) showing exactly how these systems work and where they break. 
 
-<Image src={embeddings} alt="Visualizing embeddings on a plot helps build an intuitive understanding for semantic meaning" />
+<Image src="https://zackproser.b-cdn.net/images/embeddings.webp" alt="Visualizing embeddings on a plot helps build an intuitive understanding for semantic meaning" width={800} height={600} />
 
 Visualizing embeddings across a 2D plot is usually one of the "Aha" moments when people intuitively begin to grasp semantic meaning and semantic search.
 

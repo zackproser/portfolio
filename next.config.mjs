@@ -16,7 +16,8 @@ const nextConfig = {
       "www.zackproser.com",
       "img.youtube.com", 
       "placehold.co",
-      "avatars.githubusercontent.com"
+      "avatars.githubusercontent.com",
+      "zackproser.b-cdn.net"
     ],
     formats: ['image/webp'], 
   },
