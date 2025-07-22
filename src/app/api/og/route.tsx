@@ -11,9 +11,16 @@ const CDN_BASE_URL = 'https://zackproser.b-cdn.net';
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('=== OG ROUTE START ===');
+    console.log('Request object type:', typeof request);
+    console.log('Request object keys:', Object.keys(request));
+    console.log('Request headers type:', typeof request.headers);
+    console.log('Request headers:', request.headers);
+    
     // Parse the URL directly from request.url and decode HTML entities more thoroughly
     const requestUrl = request.url;
     
+    console.log('Request URL:', requestUrl);
     ogLogger.info('OG Route - Processing request:', requestUrl);
     
     // More thorough HTML entity decoding - replace common patterns
@@ -67,24 +74,34 @@ export async function GET(request: NextRequest) {
       const cdnImageUrl = `${CDN_BASE_URL}/images/og-images/${lastSlugPart}.png`;
       ogLogger.info(`Redirecting to CDN URL: ${cdnImageUrl}`);
       
-      // Try to check if image exists on CDN, but handle errors gracefully
-      try {
-        const response = await fetch(cdnImageUrl, { 
-          method: 'GET',
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (compatible; OG-Image-Checker/1.0)'
-          }
-        });
-        
-        if (response.ok) {
-          ogLogger.info(`✅ Found OG image on CDN, redirecting to: ${cdnImageUrl}`);
-          return Response.redirect(cdnImageUrl, 302);
-        } else {
-          ogLogger.info(`❌ Image not found on CDN (status: ${response.status}), proceeding to generator`);
+          // Try to check if image exists on CDN, but handle errors gracefully
+    console.log('About to make CDN fetch request to:', cdnImageUrl);
+    try {
+      console.log('Making fetch request...');
+      const response = await fetch(cdnImageUrl, { 
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; OG-Image-Checker/1.0)'
         }
-      } catch (error: any) {
-        ogLogger.warn(`CDN check failed, proceeding to generator: ${error.message}`);
+      });
+      
+      console.log('Fetch response received, status:', response.status);
+      console.log('Fetch response headers:', response.headers);
+      
+      if (response.ok) {
+        console.log('✅ Found OG image on CDN, redirecting to:', cdnImageUrl);
+        ogLogger.info(`✅ Found OG image on CDN, redirecting to: ${cdnImageUrl}`);
+        return Response.redirect(cdnImageUrl, 302);
+      } else {
+        console.log('❌ Image not found on CDN (status:', response.status, '), proceeding to generator');
+        ogLogger.info(`❌ Image not found on CDN (status: ${response.status}), proceeding to generator`);
       }
+    } catch (error: any) {
+      console.log('CDN fetch error:', error);
+      console.log('CDN error message:', error.message);
+      console.log('CDN error stack:', error.stack);
+      ogLogger.warn(`CDN check failed, proceeding to generator: ${error.message}`);
+    }
     } else {
       if (slug === '[slug]') {
         ogLogger.info('Invalid slug parameter [slug] provided, skipping CDN lookup');
@@ -120,12 +137,30 @@ export async function GET(request: NextRequest) {
     
     const generateUrl = `/api/og/generate?${redirectParams.toString()}`;
     
+    console.log('Generate URL:', generateUrl);
     ogLogger.info(`Redirecting to generator: ${generateUrl}`);
     
     // Use the full URL for the redirect
+    console.log('About to create URL object with:', generateUrl, 'and base:', request.url);
     const fullGenerateUrl = new URL(generateUrl, request.url).toString();
-    return Response.redirect(fullGenerateUrl, 302);
+    console.log('Full generate URL:', fullGenerateUrl);
+    console.log('About to redirect to:', fullGenerateUrl);
+    
+    const redirectResponse = Response.redirect(fullGenerateUrl, 302);
+    console.log('Redirect response created:', redirectResponse);
+    console.log('Redirect response status:', redirectResponse.status);
+    console.log('Redirect response headers:', redirectResponse.headers);
+    
+    return redirectResponse;
   } catch (error: any) {
+    console.log('=== OG ROUTE ERROR ===');
+    console.log('Error type:', typeof error);
+    console.log('Error message:', error.message);
+    console.log('Error stack:', error.stack);
+    console.log('Error name:', error.name);
+    console.log('Error constructor:', error.constructor.name);
+    console.log('Full error object:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    
     ogLogger.error(`OG route error:`, error);
     return new Response(`Error: ${error.message}`, {
       status: 500,
