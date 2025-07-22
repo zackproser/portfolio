@@ -4,7 +4,7 @@ import * as fsPromises from 'fs/promises';
 import * as http from 'http';
 import * as https from 'https';
 import * as dotenv from 'dotenv';
-import { getContentMetadataByDirectorySlug } from '../src/lib/content-metadata-helpers';
+import { getContentMetadataByDirectorySlug } from '../../src/lib/content-metadata-helpers';
 
 dotenv.config();
 
