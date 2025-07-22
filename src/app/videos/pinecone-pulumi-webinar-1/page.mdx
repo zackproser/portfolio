@@ -1,0 +1,28 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconePulumiWebinar from '@/images/pinecone-pulumi-webinar1.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-12-14",
+  title: "Pinecone & Pulumi webinar: Taking AI apps to production",
+  description: "I co-hosted a webinar with Pulumi about productionizing AI applications",
+  image: pineconePulumiWebinar
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/GIwt3P_5b9g"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I co-hosted a webinar with Pulumi's Scott Lowe about: 
+
+* The delta between getting an AI or ML technique working in a Jupyter Notebook and prod
+* How to deploy AI applications to production using the Pinecone AWS Reference Architecture 
+* How Infrastructure as Code can simplif y productionizing AI applications

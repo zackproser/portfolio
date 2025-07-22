@@ -1,0 +1,25 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import semanticSearch from '@/images/semantic-search-typescript.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-08-23",
+  title: "Semantic Search with TypeScript and Pinecone",
+  description: "Join Roie Schwaber-Cohen and I as we first discuss and then review the code for doing semantic search with Pinecone's vector database",
+  image: semanticSearch
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  class="youtube-video"
+  src="https://www.youtube.com/embed/4Tt4LhJ6tD8" 
+  title="Semantic Search in TypeScript using Pinecone's vector database" 
+  frameborder="0" 
+  allow="fullscreen;">
+</iframe>
+
+Roie Schwaber-Cohen and I discuss semantic search and step through the code for performing semantic search with Pinecone's vector database.

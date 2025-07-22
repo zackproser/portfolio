@@ -1,0 +1,24 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconeRefArchDeploy3 from '@/images/pinecone-ref-arch-deployment-part-3.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-11-27",
+  title: "Deploying the Pinecone AWS Reference Architecture - Part 3",
+  description: "I deploy the Pinecone AWS Reference Architecture end to end in this three part video series",
+  image: pineconeRefArchDeploy3
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/ArH4H1cGfzk"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+In this three part video series, I deploy the Pinecone AWS Reference Architecture with Pulumi from start to finish.

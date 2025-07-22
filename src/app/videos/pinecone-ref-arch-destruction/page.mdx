@@ -1,0 +1,24 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import pineconeRefArchDestruction from '@/images/pinecone-ref-arch-destruction.webp'
+
+import { createMetadata } from '@/utils/createMetadata'
+
+export const metadata = createMetadata({
+  author: "Zachary Proser",
+  date: "2023-11-27",
+  title: "Destroying the Pinecone AWS Reference Architecture",
+  description: "I demonstrate how to destroy the Pinecone AWS Reference Architecture using Pulumi",
+  image: pineconeRefArchDestruction
+})
+
+export default (props) => <ArticleLayout metadata={metadata} {...props} />
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/bxWWxKUIa3s"
+  title="YouTube video player" 
+  allow="fullscreen;">
+</iframe>
+
+I demonstrate how to destroy a deployed Pinecone AWS Reference Architecture using Pulumi.
