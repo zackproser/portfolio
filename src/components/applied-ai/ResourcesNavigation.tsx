@@ -1,7 +1,5 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { 
@@ -79,23 +77,8 @@ const resourceCards: ResourceCard[] = [
 ]
 
 const ResourceCard = ({ resource, index }: { resource: ResourceCard; index: number }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.95 }}
-      transition={{ 
-        duration: 0.8, 
-        delay: index * 0.1,
-        type: "spring",
-        stiffness: 100,
-        damping: 10
-      }}
-      className="group"
-    >
+    <div className="group">
       <Link href={resource.href as any} target={resource.external ? '_blank' : '_self'} rel={resource.external ? 'noopener noreferrer' : undefined}>
         <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] group-hover:-translate-y-1">
           {/* Animated background gradient */}
@@ -103,44 +86,15 @@ const ResourceCard = ({ resource, index }: { resource: ResourceCard; index: numb
           
           {/* Sparkle animations on hover */}
           <div className="absolute inset-0 overflow-hidden rounded-2xl">
-            <motion.div
-              animate={{ 
-                x: [0, 10, 0],
-                y: [0, -5, 0],
-                opacity: [0, 1, 0]
-              }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                delay: index * 0.5
-              }}
-              className="absolute top-4 right-4 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100"
-            />
-            <motion.div
-              animate={{ 
-                x: [0, -8, 0],
-                y: [0, 8, 0],
-                opacity: [0, 1, 0]
-              }}
-              transition={{ 
-                duration: 4,
-                repeat: Infinity,
-                delay: index * 0.3
-              }}
-              className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100"
-            />
+            <div className="absolute top-4 right-4 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100" />
+            <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100" />
           </div>
           
           <div className="relative p-8">
             {/* Icon with enhanced animation */}
-            <motion.div 
-              initial={{ scale: 0, rotate: -90 }}
-              animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -90 }}
-              transition={{ duration: 0.8, delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
-              className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${resource.gradient} rounded-xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}
-            >
+            <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${resource.gradient} rounded-xl mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
               <resource.icon className="w-8 h-8 text-white" />
-            </motion.div>
+            </div>
             
             {/* Content */}
             <div className="space-y-4">
@@ -167,35 +121,24 @@ const ResourceCard = ({ resource, index }: { resource: ResourceCard; index: numb
               {/* Arrow indicator */}
               <div className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:gap-3 transition-all duration-300">
                 <span>Explore Resources</span>
-                <motion.div
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
+                <div>
                   <ArrowRight className="w-4 h-4" />
-                </motion.div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 
 export function ResourcesNavigation() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
-
   return (
-    <section ref={ref} className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-900 dark:via-blue-900/10 dark:to-indigo-900/10">
+    <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-900 dark:via-blue-900/10 dark:to-indigo-900/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-700 dark:text-blue-300 text-sm font-semibold mb-4">
             <Sparkles className="w-4 h-4" />
             Explore My Work
@@ -208,7 +151,7 @@ export function ResourcesNavigation() {
             Dive deep into my technical expertise, track record, and thought leadership across multiple channels. 
             Each resource provides unique insights into my capabilities and approach to solving complex technical challenges.
           </p>
-        </motion.div>
+        </div>
         
         {/* Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
@@ -216,8 +159,6 @@ export function ResourcesNavigation() {
             <ResourceCard key={resource.title} resource={resource} index={index} />
           ))}
         </div>
-        
-
       </div>
     </section>
   )

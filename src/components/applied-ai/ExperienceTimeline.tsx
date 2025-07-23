@@ -1,22 +1,11 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
 import { appliedAiExperience } from '@/data/applied-ai-experience'
 import Image from 'next/image'
 
 const ExperienceCard = ({ experience, index }: { experience: any; index: number }) => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="relative"
-    >
+    <div className="relative">
       {/* Timeline connector - only show connecting lines to card edges */}
       <div className="absolute left-1/2 transform -translate-x-1/2 w-px bg-blue-200 dark:bg-blue-800 h-8 -top-8" />
       <div className="absolute left-1/2 transform -translate-x-1/2 w-px bg-blue-200 dark:bg-blue-800 h-8 -bottom-8" />
@@ -98,31 +87,23 @@ const ExperienceCard = ({ experience, index }: { experience: any; index: number 
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
 export default function ExperienceTimeline() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
-
   return (
-    <section ref={ref} className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Professional Experience
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             A track record of delivering scalable AI infrastructure and developer tools at top-tier companies
           </p>
-        </motion.div>
+        </div>
         
         {/* Timeline */}
         <div className="relative">
