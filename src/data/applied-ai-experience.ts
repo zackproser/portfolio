@@ -26,14 +26,14 @@ export const appliedAiExperience: ExperienceData[] = [
     logo: logoWorkOS,
     description: "Drive developer education and adoption for enterprises building AI-powered applications with secure authentication and authorization.",
     achievements: [
+      "Created official Vercel MCP starter template demonstrating MCP server secured with WorkOS AuthKit",
+      "Built comprehensive tutorial and POC for securing RAG applications with fine-grained authorization",
+      "Developed AI applications and internal tools using Vercel AI SDK for content creation and automation",
       "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
-      "Architected and developed Vercel MCP WorkOS AuthKit template showcasing secure LLM integrations",
-      "Created comprehensive tutorial applications for securing RAG systems with fine-grained authorization",
       "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
-      "Developed internal AI tooling for content creation, social media automation, and content throughput optimization",
       "Reduced developer implementation time through hands-on code examples and working applications"
     ],
-    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS"]
+    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS", "MCP", "Vercel AI SDK", "Fine-Grained Auth"]
   },
   {
     company: "Pinecone",
@@ -42,13 +42,15 @@ export const appliedAiExperience: ExperienceData[] = [
     logo: logoPinecone,
     description: "Staff Developer Advocate leading enterprise adoption of vector database technology for production AI applications.",
     achievements: [
+      "Created leading vector database explainer video teaching neural networks, embeddings, vectors, and semantic search to 10,000+ developers globally",
+      "Built official Pinecone Legal Semantic Search example application featured in documentation",
+      "Developed official Pinecone Assistant example application showcasing chat interface integration",
+      "Authored key chapters in 'Vector Databases in Production for Busy Engineers' book series covering CI/CD and RAG evaluation",
       "Built Pinecone's first AWS Reference Architecture demonstrating semantic search at enterprise scale",
       "Created comprehensive RAG pipeline tutorials and examples reaching thousands of engineers globally",
-      "Developed and maintained open-source Machine Learning notebooks in Jupyter for vector database integrations",
-      "Fixed and optimized Python and JavaScript programs for enterprise customers and community developers",
-      "Architected sample applications showcasing vector database + LLM integrations for production use cases"
+      "Developed and maintained open-source Machine Learning notebooks in Jupyter for vector database integrations"
     ],
-    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings"]
+    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings", "Technical Writing", "Video Production"]
   },
   {
     company: "Gruntwork",

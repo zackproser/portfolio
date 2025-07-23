@@ -10,6 +10,7 @@ import a16z1 from '@/images/a16z-1.webp'
 import aieWorkshop from '@/images/aie-workshop-room.webp'
 import aiFundamentals from '@/images/ai-fundamentals.webp'
 import neuralNetworksLearn from '@/images/neural-networks-learn.webp'
+import whatIsAVectorDB from '@/images/what-is-a-vector-db-thumb.webp'
 
 interface SpeakingEvent {
   title: string
@@ -23,6 +24,16 @@ interface SpeakingEvent {
 }
 
 const speakingEvents: SpeakingEvent[] = [
+  {
+    title: "Pinecone Vector Database Explainer Video",
+    description: "One of the leading vector database explainer videos on YouTube, teaching neural networks, embeddings, vectors, and semantic search concepts.",
+    image: whatIsAVectorDB,
+    venue: "YouTube",
+    audience: "10,000+ developers globally",
+    date: "2023",
+    link: "/videos/what-is-a-vector-database",
+    linkType: 'external'
+  },
   {
     title: "Taking AI Apps to Production",
     description: "Keynote presentation on AI production architectures and vector database scaling strategies",
