@@ -27,7 +27,35 @@ function getArgValue(flag: string): string | undefined {
 
 const slugArg = getArgValue('--slug');
 
-// Example content types and slugs for testing
+// Function to discover all content directories
+async function discoverAllContent() {
+  const contentTypes = ['blog', 'videos'];
+  const allContent: { type: string; slug: string }[] = [];
+  
+  for (const contentType of contentTypes) {
+    const contentDir = path.join(process.cwd(), 'src', 'content', contentType);
+    if (fs.existsSync(contentDir)) {
+      try {
+        const items = fs.readdirSync(contentDir, { withFileTypes: true });
+        for (const item of items) {
+          if (item.isDirectory()) {
+            // Check if directory has a metadata.json file
+            const metadataPath = path.join(contentDir, item.name, 'metadata.json');
+            if (fs.existsSync(metadataPath)) {
+              allContent.push({ type: contentType, slug: item.name });
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`Error reading ${contentType} directory:`, err);
+      }
+    }
+  }
+  
+  return allContent;
+}
+
+// Example content types and slugs for testing (fallback)
 const testSlugs = [
   { type: 'blog', slug: 'open-sourced-article-optimizer' },
   { type: 'videos', slug: 'video-reviewing-github-prs-in-terminal' },
@@ -228,7 +256,10 @@ async function main() {
       targets = [{ type: 'blog', slug: slugArg }];
     }
   } else {
-    targets = testSlugs;
+    // Discover all content automatically
+    console.log('🔍 Discovering all content...');
+    targets = await discoverAllContent();
+    console.log(`📚 Found ${targets.length} content items to process`);
   }
 
   console.log('🚀 Starting OG image generation for Bunny CDN...');
