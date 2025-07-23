@@ -21,7 +21,7 @@ export default function PersonSchema() {
       "Developer Education Specialist",
       "AI Technical Trainer"
     ],
-    "description": "Staff-level Applied AI Engineer with 13+ years experience building production LLM solutions, RAG systems, and enterprise AI infrastructure. Specializes in vector databases, machine learning, and AI architecture.",
+    "description": "Staff-level Applied AI Engineer with 13+ years experience building scalable systems and 3+ years specializing in AI/LLM solutions, RAG systems, and enterprise AI infrastructure. Specializes in vector databases, machine learning, and AI architecture.",
     "url": "https://zackproser.com",
     "sameAs": [
       "https://linkedin.com/in/zackproser",

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { appliedAiProjects } from '@/data/applied-ai-projects'
 import Image from 'next/image'
@@ -32,18 +31,11 @@ const heroImageMap: Record<string, any> = {
 
 const ProjectCard = ({ project, index }: { project: any; index: number }) => {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
   const heroImage = heroImageMap[project.title] || fineTuneLlama
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.95 }}
-      transition={{ 
-        duration: 0.6, 
-        delay: index * 0.1
-      }}
       className="group flex-shrink-0 w-full max-w-md mx-auto"
     >
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
@@ -124,13 +116,12 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
 export default function FeaturedProjects() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
   
   const featuredProjects = appliedAiProjects.filter(project => project.featured)
   const itemsPerView = 3 // Show 3 cards at a time
@@ -154,12 +145,7 @@ export default function FeaturedProjects() {
     <section ref={ref} className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             Featured AI Projects
           </h2>
@@ -167,7 +153,7 @@ export default function FeaturedProjects() {
             Real-world implementations showcasing advanced AI techniques, from neural networks and fine-tuning 
             to production RAG systems and enterprise infrastructure.
           </p>
-        </motion.div>
+        </div>
 
         {/* Carousel Container */}
         <div className="relative">

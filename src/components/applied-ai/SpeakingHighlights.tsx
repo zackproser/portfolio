@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -68,25 +67,21 @@ const speakingEvents: SpeakingEvent[] = [
 
 const SpeakingEventCard = ({ event, index }: { event: SpeakingEvent; index: number }) => {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.8, delay: index * 0.1 }}
       className="group"
     >
       <Link href={event.link as any} className="block">
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 group-hover:scale-105">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700">
           {/* Image Section */}
           <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-600 to-purple-700">
             <Image
               src={event.image}
               alt={event.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-500"
             />
           </div>
           
@@ -128,24 +123,18 @@ const SpeakingEventCard = ({ event, index }: { event: SpeakingEvent; index: numb
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   )
 }
 
 export default function SpeakingHighlights() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
 
   return (
     <section ref={ref} className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             Speaking & Training Highlights
           </h2>
@@ -153,7 +142,7 @@ export default function SpeakingHighlights() {
             From conference keynotes to corporate workshops, I translate complex AI concepts into 
             actionable insights for engineering teams and technical leaders.
           </p>
-        </motion.div>
+        </div>
 
         {/* Speaking Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -163,21 +152,16 @@ export default function SpeakingHighlights() {
         </div>
 
         {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-16"
-        >
+        <div className="text-center mt-16">
           <Link
             href="/speaking"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-xl"
           >
             <Users className="w-5 h-5" />
             View All Speaking Engagements
             <ExternalLink className="w-5 h-5" />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
