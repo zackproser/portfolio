@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
       if (!rawImageData) {
         console.log('No image found, using default');
         // Use the default image from Bunny CDN
-        const defaultImageUrl = 'https://zackproser.b-cdn.net/modern-coding-og-background.png';
+        const defaultImageUrl = 'https://zackproser.b-cdn.net/images/modern-coding-og-background.png';
         try {
           const response = await fetch(defaultImageUrl);
           if (response.ok) {
@@ -376,7 +376,7 @@ export async function GET(request: NextRequest) {
         status: 200,
         headers: {
           'Content-Type': 'image/png',
-          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Cache-Control': 'public, max-age=3600, s-maxage=3600',
         },
       }
     );
