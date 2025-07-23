@@ -1,23 +1,18 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { appliedAiSkills, SkillData } from '@/data/applied-ai-skills'
 
 const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
 
   // Convert proficiency to numeric for signal bars
   const proficiencyLevels = { 'Intermediate': 3, 'Advanced': 4, 'Expert': 5 }
   const level = proficiencyLevels[skill.proficiency]
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
       className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
     >
       {/* Skill Level Indicator - Signal Bars */}
@@ -25,15 +20,9 @@ const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
         <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ height: 4 }}
-              animate={isInView ? { 
-                height: i < level ? [4, 12 + (i * 4), 12 + (i * 4)] : 4,
-                backgroundColor: i < level ? '#3B82F6' : '#374151'
-              } : { height: 4 }}
-              transition={{ duration: 0.6, delay: index * 0.05 + i * 0.05 }}
-              className="w-2 bg-gray-600 rounded-sm"
+              className={`w-2 rounded-sm ${i < level ? 'h-3 bg-blue-500' : 'h-1 bg-gray-600'}`}
             />
           ))}
         </div>
@@ -52,19 +41,18 @@ const SkillCard = ({ skill, index }: { skill: SkillData, index: number }) => {
       </div>
 
       {/* Hover Effect */}
-      <motion.div
+      <div
         className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
           background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)'
         }}
       />
-    </motion.div>
+    </div>
   )
 }
 
 const TechStack = () => {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
 
   const stackLayers = [
     {
@@ -99,11 +87,8 @@ const TechStack = () => {
       <h3 className="text-2xl font-bold text-white mb-8 text-center">Full-Stack AI Engineering</h3>
       <div className="space-y-4">
         {stackLayers.map((layer, index) => (
-          <motion.div
+          <div
             key={layer.name}
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
             className="relative"
           >
             <div className={`bg-gradient-to-r ${layer.color} p-4 rounded-lg bg-opacity-20 border border-white/10`}>
@@ -113,15 +98,12 @@ const TechStack = () => {
               </div>
               <div className="flex flex-wrap gap-2">
                 {layer.tech.map((tech, techIndex) => (
-                  <motion.span
+                  <span
                     key={tech}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 + techIndex * 0.05 }}
                     className="px-2 py-1 text-sm bg-white/10 text-white rounded border border-white/20"
                   >
                     {tech}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
             </div>
@@ -130,7 +112,7 @@ const TechStack = () => {
             {index < stackLayers.length - 1 && (
               <div className="w-px bg-gradient-to-b from-blue-400 to-transparent mx-auto h-4" />
             )}
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
@@ -144,13 +126,7 @@ export default function SkillsMatrix() {
   return (
     <section id="skills" className="py-20 bg-gradient-to-b from-gray-900 to-blue-900">
       <div className="container mx-auto px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Technical Expertise
           </h2>
@@ -158,7 +134,7 @@ export default function SkillsMatrix() {
             From frontend interfaces to backend systems, AI pipelines to cloud infrastructure - 
             delivering end-to-end solutions that scale.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left side - Tech Stack Visualization */}
@@ -167,12 +143,8 @@ export default function SkillsMatrix() {
           {/* Right side - Skill Categories */}
           <div className="space-y-8">
             {appliedAiSkills.map((category, categoryIndex) => (
-              <motion.div
+              <div
                 key={category.category}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                viewport={{ once: true }}
               >
                 <h3 className="text-xl font-bold text-white mb-4">{category.category}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -184,19 +156,13 @@ export default function SkillsMatrix() {
                     />
                   ))}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Bottom stats/certifications */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-16 text-center"
-        >
+        <div className="mt-16 text-center">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-400">13+</div>
@@ -210,12 +176,12 @@ export default function SkillsMatrix() {
               <div className="text-3xl font-bold text-blue-400">6</div>
               <div className="text-white">Tech Companies</div>
             </div>
-                          <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">1,800+</div>
-                <div className="text-white">Newsletter Readers</div>
-              </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400">1,800+</div>
+              <div className="text-white">Newsletter Readers</div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

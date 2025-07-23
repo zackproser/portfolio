@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, useInView } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
 import { Users, BookOpen, Calendar, Wrench } from 'lucide-react'
 
@@ -22,11 +21,8 @@ interface AnimatedNumberProps {
 const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
   const [displayValue, setDisplayValue] = useState('0')
   const ref = useRef<HTMLSpanElement>(null)
-  const isInView = useInView(ref, { once: true })
 
   useEffect(() => {
-    if (!isInView) return
-
     // Extract number from value (e.g., "35,000+" -> 35000)
     const numericValue = parseInt(value.replace(/[^\d]/g, ''), 10)
     if (isNaN(numericValue)) {
@@ -61,7 +57,7 @@ const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
     }
 
     requestAnimationFrame(animate)
-  }, [isInView, value, duration])
+  }, [value, duration])
 
   return <span ref={ref}>{displayValue}</span>
 }
@@ -75,7 +71,6 @@ const defaultStats: StatItem[] = [
 
 export function StatsBar({ stats = defaultStats }: StatsBarProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true })
 
   return (
     <section ref={ref} className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-indigo-900/20 border-t border-gray-200 dark:border-gray-700">
@@ -86,17 +81,8 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                  animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: index * 0.15,
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 10
-                  }}
                   className="flex-shrink-0 min-w-[220px] text-center"
                 >
                   <div className="relative bg-gradient-to-br from-white via-blue-50/80 to-indigo-100/60 dark:from-blue-900/30 dark:via-indigo-900/40 dark:to-purple-900/30 rounded-2xl p-8 border border-blue-200/50 dark:border-blue-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 group backdrop-blur-sm">
@@ -104,14 +90,11 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     {Icon && (
-                      <motion.div 
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
-                        transition={{ duration: 0.8, delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                      <div 
                         className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300"
                       >
                         <Icon className="w-8 h-8 text-white" />
-                      </motion.div>
+                      </div>
                     )}
                     <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-3">
                       <AnimatedNumber value={stat.number} duration={2.5} />
@@ -120,7 +103,7 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
                       {stat.label}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )
             })}
           </div>
@@ -131,34 +114,20 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 40, scale: 0.9 }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.15,
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 10
-                }}
                 className="text-center group"
               >
                 <div className="relative bg-gradient-to-br from-white via-blue-50/80 to-indigo-100/60 dark:from-blue-900/30 dark:via-indigo-900/40 dark:to-purple-900/30 rounded-2xl p-10 border border-blue-200/50 dark:border-blue-800/50 shadow-xl hover:shadow-2xl transition-all duration-500 backdrop-blur-sm">
                   {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
-
-                  
                   {Icon && (
-                    <motion.div 
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={isInView ? { scale: 1, rotate: 0 } : { scale: 0, rotate: -180 }}
-                      transition={{ duration: 0.8, delay: index * 0.15 + 0.3, type: "spring", stiffness: 200 }}
+                    <div 
                       className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 rounded-xl mb-8 shadow-lg group-hover:shadow-xl transition-all duration-300"
                     >
                       <Icon className="w-10 h-10 text-white" />
-                    </motion.div>
+                    </div>
                   )}
                   <div className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-4">
                     <AnimatedNumber value={stat.number} duration={2.5} />
@@ -167,7 +136,7 @@ export function StatsBar({ stats = defaultStats }: StatsBarProps) {
                     {stat.label}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )
           })}
         </div>
