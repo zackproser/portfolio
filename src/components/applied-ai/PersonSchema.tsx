@@ -34,12 +34,24 @@ export default function PersonSchema() {
     "hasOccupation": {
       "@type": "Occupation",
       "name": "Staff AI Engineer",
-      "occupationLocation": {
-        "@type": "Place",
-        "name": "Remote"
+      "description": "Senior-level AI engineering role focusing on enterprise AI system architecture, LLM integration, and production AI infrastructure",
+      "occupationLocation": "Remote",
+      "estimatedSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "USD",
+        "value": {
+          "@type": "QuantitativeValue",
+          "minValue": 180000,
+          "maxValue": 250000,
+          "unitText": "YEAR"
+        }
       },
       "skills": allSkills.join(", "),
-      "qualifications": "13+ years software engineering, 3+ years AI/ML infrastructure"
+      "qualifications": "13+ years software engineering, 3+ years AI/ML infrastructure",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://zackproser.com/applied-ai-engineer"
+      }
     },
     "worksFor": {
       "@type": "Organization",

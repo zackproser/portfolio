@@ -16,6 +16,11 @@ import mastraWorkshopHero from '@/images/mastra-workshop-hero.webp'
 import officeOracle2 from '@/images/michael-scott-oracle-2.webp'
 import cloudGpuServices from '@/images/cloud-gpu-services-reviewed.webp'
 import aiAssistedDevTools from '@/images/ai-assisted-dev-tools.webp'
+import toxIndexChat from '@/images/tox-index-chat.webp'
+import vectorDBBook from '@/images/vector-databases-in-production-for-busy-engineers.webp'
+import vectorDBCompared from '@/images/vector-databases-compared.webp'
+import vectorDBExamined from '@/images/vector-databases-examined.webp'
+import workosLogo from '@/images/logos/workos.svg'
 
 // Map project titles to their corresponding hero images
 const heroImageMap: Record<string, any> = {
@@ -23,10 +28,16 @@ const heroImageMap: Record<string, any> = {
   "RAG Pipeline with LangChain & Pinecone": customRagChat,
   "AI Pipelines & Agents Workshop with Mastra.ai": mastraWorkshopHero,
   "MNIST Neural Network & Digit Recognizer": mnistMindMapper,
+  "ToxIndex Chat Application": toxIndexChat,
   "Pinecone AWS Reference Architecture": pineconeRefArch,
   "Office Oracle AI Chatbot": officeOracle2,
   "Cloud GPU Services Comparison": cloudGpuServices,
-  "AI-Assisted Developer Tools Analysis": aiAssistedDevTools
+  "AI-Assisted Developer Tools Analysis": aiAssistedDevTools,
+  "Pinecone Legal Semantic Search Example App": vectorDBCompared,
+  "Pinecone Assistant Example Application": vectorDBExamined,
+  "Vector Databases in Production Book Chapters": vectorDBBook,
+  "WorkOS Vercel MCP Starter Template": workosLogo,
+  "Secure RAG with Fine-Grained Authorization": workosLogo
 }
 
 const ProjectCard = ({ project, index }: { project: any; index: number }) => {
@@ -111,6 +122,28 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
               >
                 <Code className="w-4 h-4" />
                 View Code
+              </Link>
+            )}
+            {project.links.cicd && (
+              <Link
+                href={project.links.cicd}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
+              >
+                <ExternalLink className="w-4 h-4" />
+                CI/CD Chapter
+              </Link>
+            )}
+            {project.links.ragEval && (
+              <Link
+                href={project.links.ragEval}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
+              >
+                <ExternalLink className="w-4 h-4" />
+                RAG Evaluation
               </Link>
             )}
           </div>
