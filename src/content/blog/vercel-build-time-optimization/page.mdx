@@ -1,0 +1,170 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image 
+    width={1200}
+    height={630}
+    src={`${process.env.NEXT_PUBLIC_SITE_URL}/api/og?slug=/blog/vercel-build-time-optimization`} 
+    alt="How I Cut My Vercel Build Time by 66%" 
+/>
+
+
+My site is my digital everything: portfolio, blog, research notes, full-stack experiments, machine learning demos, and reviews of my favorite developer tools. I've been maintaining it in some form or another for over 13 years now. 
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/modern-coding-home.webp" 
+    alt="An AI-native pipeline engineer homepage"
+    width={800}
+    height={600}
+/>
+
+During my time at Gruntwork doing DevOps and infrastructure work, I spent a lot of time configuring CI/CD pipelines and reading books like The Phoenix Project. One thing that stuck with me is the principle that developer feedback loops should be fast - ideally under a minute, but definitely no more than 5 minutes. Beyond that threshold, you start context switching, losing flow state, and your productivity tanks.
+
+It's not a coincidence that many orgs suffering from the IT death spiral saddle their developers with builds that anywhere from 10 to 60 minutes and are flaky.
+
+My build times had blown past that limit entirely. What used to be a reasonable 1-2 minute deployment had ballooned to 5.5 minutes, making every deployment painfully slow and eating into my development workflow.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/build-wall.webp"
+    alt="Vercel build times growing out of control"
+    width={800}
+    height={600}
+/>
+
+Let me put this in concrete terms. In a typical month, I might publish 4 blog posts and push 2 new demos or experiments. Each piece of content goes through multiple iterations - draft previews, content edits, styling tweaks, final reviews. Conservatively, that's about 20 deployments per month.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/slow-builds.webp" 
+    alt="A frustrated developer waiting on a slow build"
+    width={800}
+    height={600}
+/>
+
+
+
+**With 5.5-minute builds:** 20 deployments × 5.5 minutes = 110 minutes of waiting per month  
+**With 1 min 53 sec builds:** 20 deployments × 1.88 minutes = 37.6 minutes of waiting per month
+
+That's a difference of 72.4 minutes - over an hour of my life back every month, not counting the context switching cost of those longer waits.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/cdn-optimization.webp" 
+    alt="A side-by-side comparison showing two developers - one drumming fingers impatiently while staring at a slow progress bar, the other quickly moving between tasks with a fast-completed build notification"
+    width={800}
+    height={600}
+/>
+
+After months of incremental changes and optimizations, I finally got my builds down to 1 minute 53 seconds - a 66% reduction. Here's everything I did to fix it.
+
+## Understanding Vercel's Build Options
+
+Before diving into what I changed, it helps to understand the different ways Vercel can handle your pages. Each has its place depending on what you're building.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/vercel-rendering-methods.webp" 
+    alt="A flowchart diagram showing three paths: SSG (Build all pages at deploy time), SSR (Generate pages on each request), and ISR (Generate on-demand + cache), with icons showing clocks and server symbols"
+    width={800}
+    height={600}
+/>
+
+**Static Site Generation (SSG)** builds every page at deploy time. Your entire site gets pre-rendered into HTML files during the build process. This is ideal for content that rarely changes - marketing pages, documentation, or blogs that update infrequently. The downside? Every single page extends your build time.
+
+**Server-Side Rendering (SSR)** generates pages on each request. No build-time cost, but every visitor waits for the server to render their page. Good for highly dynamic content that changes per user, but slower for the end user.
+
+**Incremental Static Regeneration (ISR)** is the sweet spot for many use cases. Pages get generated on-demand and cached for a specified time. The first visitor might wait a bit longer, but subsequent visitors get the cached version instantly. You can also trigger regeneration when content updates.
+
+## Moving to ISR from Static Page Builds
+
+The biggest impact on my build times came from switching my blog posts, video pages, and comparison pages from SSG to ISR. Previously, every single piece of content was being built at deploy time. With hundreds of blog posts and video pages, this meant the build process had to churn through generating every single page before the deployment could complete.
+
+Moving these to ISR was straightforward - I added `revalidate: 3600` to the `getStaticProps` functions for these page types. Now my build only handles the core app structure and a few critical landing pages. The content pages generate when someone actually visits them and cache for an hour.
+
+## Migrating Images to Bunny CDN
+
+The next major bottleneck was image processing. All my images were being optimized and processed during the build step, which meant Vercel had to compress, resize, and generate multiple formats for every image before the deployment could complete.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/cdn-optimization.webp" 
+    alt="A split screen showing Before with dozens of images being processed through optimization gears and compressors during build time, and After with images flowing directly from a CDN cloud to users"
+    width={800}
+    height={600}
+/>
+
+Vercel's own documentation is clear about this: "Next.js provides an image component that helps ensure images are loaded as efficiently and fast as possible. When deploying to Vercel, images are automatically optimized on demand, keeping your build times fast." The key phrase there is "on demand" - but if you're serving images from your repo, they still need to be processed during the build.
+
+Moving all my images to Bunny CDN eliminated this bottleneck entirely. Now images are served directly from the CDN without any build-time processing. The Image component still works perfectly for responsive layouts and lazy loading, but Vercel doesn't have to do any heavy lifting during deployment.
+
+This change alone probably saved me about a minute of build time, especially since I have hundreds of screenshots, demo images, and hero images across all my blog posts and project pages.
+
+## OpenGraph Image Optimization
+
+The most complex fix involved completely reworking how I handle OpenGraph images. I had built a sophisticated system that generates unique social media preview images for every single URL on my site. Each image combines the post title with the hero image, creating professional-looking cards when shared on social media.
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/og-slow.webp" 
+    alt="A factory assembly line with social media preview cards being generated - showing title text being overlaid on hero images with gradients and effects, but with a big SLOW warning sign and clock"
+    width={800}
+    height={600}
+/>
+
+Originally, this entire process happened during the build. The system would generate hundreds of OpenGraph images upfront, each one requiring rendering text, compositing images, and applying gradients and effects. With my growing content library, this was becoming a major bottleneck.
+
+I restructured the entire workflow to generate these images on-demand with intelligent caching. Instead of pre-generating every possible OpenGraph image during build time, the system now:
+
+- Serves cached images immediately if they exist
+- Generates new images only when requested for the first time  
+- Saves generated images to static cache for future requests
+- Falls back to a default image if generation fails
+
+<Image 
+    src="https://zackproser.b-cdn.net/images/og-image-optimization.webp" 
+    alt="A smart caching system diagram showing social media crawlers making requests, cache hits serving instantly, and cache misses triggering on-demand generation with storage for future use"
+    width={800}
+    height={600}
+/>
+
+The build process no longer waits for OpenGraph image generation. Social media crawlers get their images when they actually request them, and subsequent shares of the same URL use the cached version. This moved what was probably 1-2 minutes of build time to an on-demand process that only runs when needed.
+
+If you want to dive deeper into how this OpenGraph system works, I wrote a [detailed breakdown of my dynamic social image implementation](/blog/opengraph-integration).
+
+## The Results
+
+After implementing all these changes, my build times dropped from 5.5 minutes to 1 minute 53 seconds - a 66% reduction. Here's what that means in practice:
+
+**Before optimization:**
+- Every deployment: 5.5 minutes of waiting
+- Monthly time cost: 110 minutes
+- Developer experience: Frustrating, context-switching heavy
+
+**After optimization:**
+- Every deployment: 1 minute 53 seconds
+- Monthly time cost: 37.6 minutes  
+- Developer experience: Smooth, maintains flow state
+
+The biggest wins came from:
+1. **ISR migration** - Eliminated the need to build hundreds of content pages at deploy time
+2. **CDN image hosting** - Removed build-time image processing entirely
+3. **On-demand OpenGraph generation** - Moved heavy image generation to runtime with smart caching
+
+## Lessons Learned
+
+The key insight here is that build-time optimization isn't just about making your builds faster - it's about moving work to where it makes the most sense. Static generation is great for content that rarely changes, but when you have hundreds of pages, the build-time cost becomes prohibitive.
+
+ISR gives you the best of both worlds: fast builds and fast page loads. Your core app structure builds quickly, and content pages generate on-demand with intelligent caching.
+
+For images and other assets, the principle is similar: serve them from where they're most efficiently delivered. A CDN is purpose-built for serving static assets, so let it do its job instead of making your build process handle it.
+
+The OpenGraph optimization was the most complex but also the most satisfying. It's a perfect example of moving from a "build everything upfront" mindset to a "generate when needed" approach. Social media crawlers don't need instant access to every possible OpenGraph image - they just need the ones for the URLs they're actually crawling.
+
+## What's Next
+
+With build times now under 2 minutes, I'm back in the sweet spot for developer productivity. The feedback loop is fast enough that I can iterate quickly without losing context, and deployments feel snappy rather than painful.
+
+I'm also seeing some unexpected benefits. The ISR setup means my content pages are actually faster for users now, since they're being served from Vercel's edge network rather than being generated on each request. The CDN migration has improved image loading performance across the board.
+
+The next frontier for optimization might be looking at bundle sizes and code splitting, but honestly, I'm pretty happy with where things are now. Sometimes the best optimization is knowing when to stop optimizing and just enjoy the improved workflow.
+
+If you're struggling with slow Vercel builds, start by identifying what's actually happening during your build process. Use Vercel's build logs to see where the time is being spent, then look for opportunities to move work from build time to runtime. The 66% improvement I achieved came from three main changes - you might find similar wins in your own setup.

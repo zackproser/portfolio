@@ -1,0 +1,9 @@
+{
+  "author": "Zachary Proser",
+  "date": "2025-07-26",
+  "title": "How I Cut My Vercel Build Time by 66% (5.5 Minutes to 1 Min 53 Seconds)",
+  "description": "A detailed breakdown of how I optimized my Next.js site's build process, moving from static generation to ISR, migrating images to CDN, and implementing on-demand OpenGraph image generation.",
+  "image": "https://zackproser.b-cdn.net/images/cdn-optimization.webp",
+  "slug": "/blog/vercel-build-time-optimization",
+  "type": "blog"
+} 

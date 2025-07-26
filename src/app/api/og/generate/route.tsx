@@ -50,8 +50,16 @@ export async function GET(request: NextRequest) {
     const encodedDescription = searchParams.get('description') || 'Modern development techniques, AI tools, projects, videos, tutorials and more';
     
     // Properly decode the URL-encoded parameters, handling special characters
-    const title = decodeURIComponent(encodedTitle);
+    let title = '';
     let description = '';
+    
+    try {
+      title = decodeURIComponent(encodedTitle);
+      console.log('Successfully decoded title');
+    } catch (e) {
+      console.error('Error decoding title:', e);
+      title = encodedTitle || 'AI Engineering Mastery for Teams That Ship';
+    }
     
     try {
       // Handle potential double-encoding or malformed encoding
