@@ -1,28 +1,51 @@
 import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
-import rawMetadata from './metadata.json'
 
+import rawMetadata from './metadata.json'
 export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/coming-out-of-your-shell.webp" alt="Stepping out of my shell to conquer live coding anxiety" width={800} height={600} />
 <figcaption>Stepping out of my shell to conquer live coding anxiety.</figcaption>
 
-For years, I carried a low-level dread of live coding interviews. Even after a decade of shipping production software, that old whiteboard-style pressure always triggered the same mental noise: *What if I freeze?* *What if I fumble the explanation?* *What if this is when I look like a fraud?*
+For years, I carried a low-level dread of live coding interviews. I know that I am not alone in this. 
 
-Recently, I stumbled on a practice routine that changed everything.
+Even after over decade of shipping production software, that old whiteboard-style pressure always triggered the same mental noise: *What if I freeze?* *What if I fumble the explanation?* *What if this is when I look like a fraud?*
+
+Recently, I figured out a couple of ways to leverage LLMs to be my personal mock interviewer. 
+
+## Why using LLMs for interview practice is ideal
+
+ChatGPT's advanced voice mode + livestream video can see your screen and the world and talk about it in realtime, while also 
+having encyclopedic knowledge of Python programming and even anxiety disorders...
+
+This means you can:
+* explain that you're systematically desensitizing yourself against interview anxiety
+* explain that sometimes you'll "step out" of the mock interview to ask the LLM questions when stuck on syntax, etc. 
+* ask for progressively harder problems that flex exactly what you're trying to practice
+* constantly practice speaking outloud to it and explaining your thought processes and asking clarifying questions
+
+Meanwhile, the LLM can't properly judge or sneer at you the way a human can. 
 
 ## The Setup: Lightweight, Instant, and Transformative
 <Image src="https://zackproser.b-cdn.net/images/chatgpt-voice-setup.webp" alt="ChatGPT voice mode mock interview" width={800} height={600} />
 <figcaption>Placeholder screenshot: the ChatGPT voice setup I started with.</figcaption>
 
-
 I pointed my Pixel 8 at my laptop running Google Colab, then fired up a ChatGPT voice session in advanced mode. No special gear. No interview partner. Suddenly I had a private, interactive mock interview rig I could use anytime with zero friction and zero stakes.
 
 ### ChatGPT Voice Limitations
 
-While convenient, ChatGPT's unlimited voice mode currently costs about $200 per month. Each call is capped at roughly 15 minutes and drains a daily quota that eventually locks you out until later in the day.
+While convenient, ChatGPT's unlimited voice mode currently costs $200 per month. So there's that...
 
-These limits pushed me to look for alternatives on macOS.
+Each call is capped at roughly 15 minutes and drains a daily quota that eventually locks you out until later in the day.
+
+I got $20 adjustable goose neck that I can clamp to anything and use to point my camera directly at my screen. Awkward, but it works!
+
+[Add image of the goose neck here]
+
+An exciting early breakthrough, but ultimately these time limits pushed me to look for alternatives on macOS. 
+
+That's when I discovered that Google AI Studio has screenshare capability that allows me to share a tab in Google Colab, 
+and gives Gemini 2.5 the ability to see my screen and talk to me in realtime. 
 
 ## What It Let Me Do
 
