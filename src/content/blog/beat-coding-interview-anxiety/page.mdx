@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
+import NewsletterWrapper from '@/components/NewsletterWrapper'
 
 import rawMetadata from './metadata.json'
 export const metadata = createMetadata(rawMetadata)
 
-<Image src="https://zackproser.b-cdn.net/images/live-coding-assist-hero.webp" alt="Stepping out of my shell to conquer live coding anxiety" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/live-coding-assist-hero.webp" alt="Hero image illustrating the journey of overcoming live coding interview anxiety through AI-assisted practice and systematic desensitization" width={800} height={600} />
 <figcaption>Stepping out of my shell to conquer live coding anxiety.</figcaption>
 
 Over a decade of shipping production software, distributed systems, reference architectures, complex cloud deployments and services at some great companies never stopped my stomach from knotting at the words: *live coding interview*. The second a whiteboard or shared editor lights up, my mind is arrested: What if I freeze? What if I blank on syntax? In that mental static I forget how English works, not to mention code.
@@ -24,7 +25,7 @@ ChatGPT's advanced voice mode is one of my favorite features. I am currently pay
 [I wrote about how I use that to sort through my thoughts, get clarity and 
 even do research and work while walking in the woods here](/blog/walking-and-talking-with-ai). 
 
-<Image src="https://zackproser.b-cdn.net/images/advanced-voice-video.webp" alt="Stepping out of my shell to conquer live coding anxiety" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/advanced-voice-video.webp" alt="ChatGPT advanced voice mode interface showing video feed capability with a smartphone displaying the conversation screen" width={800} height={600} />
 <figcaption>ChatGPT's Advanced Voice mode can also see. Showing it a YouTube video and chatting about it live.</figcaption>
 
 So I was a little miffed to realize I had either forgotten about, or never noticed, that advanced voice can also open a video feed from your camera and live-chat about what it sees with you in real-time. 
@@ -67,9 +68,17 @@ I have never been able to recover from a freeze like that in an actual interview
 
 I knew that I had found something powerful, and worthy of further investigation. 
 
+<NewsletterWrapper 
+  title="Want More AI-Powered Career Breakthroughs?"
+  body="Join 35,000+ developers getting my latest tutorials on using AI to level up your engineering skills and overcome technical challenges. No fluff, just actionable insights that actually work."
+  successMessage="Welcome to the community! You'll get my best AI engineering tips and real-world breakthroughs like this one."
+  tags={["coding-anxiety", "ai-assistance", "career-growth"]}
+  position="mid-article"
+/>
+
 ## The ChatGPT on your phone setup
 
-<Image src="https://zackproser.b-cdn.net/images/chatgpt-setup.webp" alt="ChatGPT voice mode mock interview" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/chatgpt-setup.webp" alt="Smartphone with ChatGPT app open positioned to view a computer screen showing a Jupyter notebook for live coding practice" width={800} height={600} />
 <figcaption>If you have a phone and ChatGPT advanced voice, you can kinda just do this...</figcaption>
 
 Confidence is borne of demonstrated ability. LLMs are just an interface onto my own brain that makes it easier to deal with myself. In doing stupid programmer tricks to ChatGPT, I'm demonstrating that I can do them *to myself*.
@@ -82,7 +91,7 @@ Each call is capped at roughly 15 minutes and drains a daily quota that eventual
 
 I got $20 adjustable goose neck that I can clamp to anything and use to point my camera directly at my screen. It works!
 
-<Image src="https://zackproser.b-cdn.net/images/goose-neck-clamp.webp" alt="Goose neck clamp" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/goose-neck-clamp.webp" alt="Flexible goose neck clamp holding a smartphone in position to view a computer monitor for hands-free video streaming" width={800} height={600} />
 <figcaption>Goose neck clamp.</figcaption>
 
 An exciting early breakthrough, but ultimately these time limits pushed me to look for alternatives on macOS. 
@@ -91,22 +100,22 @@ I started searching for other setups that would allow me to live chat with an LL
 
 ### Trying Google AI Studio Instead
 
-<Image src="https://zackproser.b-cdn.net/images/google-ai-studio-stream.webp" alt="Google AI Studio stream" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/google-ai-studio-stream.webp" alt="Google AI Studio interface showing the live stream feature with video call controls and chat interface" width={800} height={600} />
 <figcaption>Google AI Studio's stream interface</figcaption>
 
 That's when I discovered that [Google AI Studio](https://aistudio.google.com) has screenshare capability that allows me to share a tab in Google Colab, 
 and gives Gemini 2.5 the ability to see my screen and talk to me in realtime. 
 
-<Image src="https://zackproser.b-cdn.net/images/ai-studio-share-screen.webp" alt="AI Studio share screen" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/ai-studio-share-screen.webp" alt="Browser screen sharing dialog showing Google Colab tab being shared with Google AI Studio for live coding assistance" width={800} height={600} />
 <figcaption>Sharing only my Google Colab tab with AI Studio</figcaption>
 
-<Image src="https://zackproser.b-cdn.net/images/ai-studio-watching.webp" alt="AI Studio watching" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/ai-studio-watching.webp" alt="Google AI Studio interface showing live view of a shared Google Colab notebook with Python code visible on screen" width={800} height={600} />
 <figcaption>AI Studio watching my Chrome tab and seeing everything I see.</figcaption>
 
 At this point, it's exactly like being on a video call with someone while sharing your screen - you just talk back and forth effortlessly and 
 work through problems.
 
-<Image src="https://zackproser.b-cdn.net/images/dual-wield.webp" alt="Dual wield" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/dual-wield.webp" alt="Split screen view showing Google AI Studio video call interface alongside Google Colab notebook for simultaneous coding and AI conversation" width={800} height={600} />
 <figcaption>Google AI Studio is perhaps an even better UX</figcaption>
 
 Now, far be it from me to praise a Google UI, but in this case I am forced to say this tool is effective for this purpose:
@@ -123,7 +132,7 @@ and required kicking which was annoying but not a deal-breaker.
 
 The novelty isn't the tech—it's the emotional dynamic. Because this practice environment is lightweight and private, I don't feel self-conscious when I fumble or need to restart. 
 
-<Image src="https://zackproser.b-cdn.net/images/training-montage.webp" alt="Training montage" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/training-montage.webp" alt="Conceptual illustration of systematic desensitization therapy showing gradual exposure to coding interview scenarios with decreasing anxiety levels" width={800} height={600} />
 <figcaption>Performing systematic desensitization on yourself for fun and profit.</figcaption>
 
 There's no judgment and no ticking clock. It's systematic desensitization: controlled exposure that chips away at the fear of being judged while coding. 
@@ -142,7 +151,7 @@ Once this gets too easy, I'm going to ensure all my interviews are cruel psychop
 
 This isn't just about acing an interview—it's about reclaiming the mental real estate that fear was occupying. 
 
-<Image src="https://zackproser.b-cdn.net/images/reboot.webp" alt="Reboot" width={800} height={600} />
+<Image src="https://zackproser.b-cdn.net/images/reboot.webp" alt="Conceptual illustration of mental reset and renewal, symbolizing overcoming coding interview anxiety and reclaiming confidence" width={800} height={600} />
 <figcaption>Reboot.</figcaption>
 
 If live coding anxiety has been holding you back, this gentle, high-leverage approach might help you move through it. 
