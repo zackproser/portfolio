@@ -16,14 +16,14 @@
 
 /* Add blue headers throughout the site */
 h1, h2, h3, h4, h5, h6 {
-  @apply text-blue-700 dark:text-blue-300;
+  @apply text-blue-900 dark:text-blue-300;
 }
 
 /* Different blue shades for different heading levels */
-h1 { @apply text-blue-800 dark:text-blue-200; }
-h2 { @apply text-blue-700 dark:text-blue-300; }
-h3 { @apply text-blue-600 dark:text-blue-300; }
-h4, h5, h6 { @apply text-blue-600 dark:text-blue-400; }
+h1 { @apply text-blue-950 dark:text-blue-200; }
+h2 { @apply text-blue-900 dark:text-blue-300; }
+h3 { @apply text-blue-800 dark:text-blue-300; }
+h4, h5, h6 { @apply text-blue-800 dark:text-blue-400; }
 
 /* Exception for headers in colored backgrounds */
 .bg-blue-800 h1, .bg-blue-900 h1, 
