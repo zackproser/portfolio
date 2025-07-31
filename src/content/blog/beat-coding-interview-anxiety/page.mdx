@@ -1,0 +1,165 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import NewsletterWrapper from '@/components/NewsletterWrapper'
+
+import rawMetadata from './metadata.json'
+export const metadata = createMetadata(rawMetadata)
+
+<Image src="https://zackproser.b-cdn.net/images/live-coding-assist-hero.webp" alt="Hero image illustrating the journey of overcoming live coding interview anxiety through AI-assisted practice and systematic desensitization" width={800} height={600} />
+<figcaption>Stepping out of my shell to conquer live coding anxiety.</figcaption>
+
+Over a decade of shipping production software, distributed systems, reference architectures, complex cloud deployments and services at some great companies never stopped my stomach from knotting at the words: *live coding interview*. The second a whiteboard or shared editor lights up, my mind is arrested: What if I freeze? What if I blank on syntax? In that mental static I forget how English works, not to mention code.
+
+I decided the dread was the real bug—one I will no longer tolerate. 
+
+So, I turned the latest AI tools into a private, judgment‑free test rig and set out to desensitize my nervous system the same way therapists treat phobias: repeated, controlled exposure until the fear burns off. 
+
+If that means grinding through three thousand problems with ChatGPT and Gemini watching, so be it, because I simply fucking refuse to accept this!
+
+And in the very first session, I experienced a breakthrough...
+
+## Attempt number one: ChatGPT Advanced Voice Mode + Video - a smashing success
+
+ChatGPT's advanced voice mode is one of my favorite features. I am currently paying them $200 a month - mostly for unlimited advanced voice. 
+
+[I wrote about how I use that to sort through my thoughts, get clarity and 
+even do research and work while walking in the woods here](/blog/walking-and-talking-with-ai). 
+
+<Image src="https://zackproser.b-cdn.net/images/advanced-voice-video.webp" alt="ChatGPT advanced voice mode interface showing video feed capability with a smartphone displaying the conversation screen" width={800} height={600} />
+<figcaption>ChatGPT's Advanced Voice mode can also see. Showing it a YouTube video and chatting about it live.</figcaption>
+
+So I was a little miffed to realize I had either forgotten about, or never noticed, that advanced voice can also open a video feed from your camera and live-chat about what it sees with you in real-time. 
+
+Attempt #1 was a go: I started a new advanced voice chat in the ChatGPT app on my Pixel 8 phone, pointed the camera at my screen, rested it up against a book on my bed and started asking it to give me a mock technical interview 
+while I opened a new Jupyter Notebook in Colab.
+
+There are a couple of attributes that make ChatGPT incredible in this scenario: 
+* ChatGPT is not a human being, so it cannot subconsciously judge me 
+* ChatGPT has encyclopedic knowledge of Python programming and anxiety disorders
+* Unlike most human interviewers who are irritated with having had this stranger's 45 min block dropped on their lunchtime, ChatGPT has been intensively trained to serve me and be unfailingly polite
+
+This means you can:
+* explain that you're systematically desensitizing yourself against interview anxiety
+* explain that sometimes you'll "step out" of the mock interview to ask the LLM questions when stuck on syntax, etc. 
+* ask for progressively harder problems that flex exactly what you're trying to practice
+* constantly practice speaking outloud to it and explaining your thought processes and asking clarifying questions
+
+## I froze when ChatGPT started quizzing me
+
+In my first real session, I came to understand why these traits are so amazing, when I experienced a freeze 
+while trying to solve one of the problems sitting alone in my own office!
+
+Normally I would not have felt close enough to the interviewer to explain that I was experiencing panic and needed to recover, but ChatGPT and I go way back, so I told it:  
+
+> "Huh, I'm having a panic attack right now and I'm completely unable to remember this basic syntax". 
+
+Of course, ChatGPT was unfailingly polite and proper in a perfect British accent, even, and assured me this was all perfectly normal and nothing to stress about. To recall 
+my experience, take a deep breath, remember I know all of this. 
+
+The response did not immediately snap me out of the freeze, but, even more valuably, I was able to sit with the physical experience of the freeze and examine it. I was able to pause, take time and ask myself 
+questions about it: "How does it actually feel?" "Where does it feel to be in my abdomen and throat?" "What are the beliefs underlying this feeling?" "What is this?". 
+
+I sat in silence for a couple of minutes, but didn't feel too bad about letting ChatGPT just wait on the line for me. Eventually, I was able to breathe and take my time enough that I recovered 
+my composure, was able to start speaking again, and then started getting myself unstuck. 
+
+A minute later, I had typed everything in easily and had a working solution that passed the test cases.
+
+I have never been able to recover from a freeze like that in an actual interview. 
+
+I knew that I had found something powerful, and worthy of further investigation. 
+
+<NewsletterWrapper 
+  title="Want more breakthroughs?"
+  body="Join thousands of developers who get my battle-tested approaches to real engineering challenges."
+  tags={["coding-anxiety", "ai-assistance", "career-breakthroughs"]}
+  position="mid-article"
+/>
+
+## The ChatGPT on your phone setup
+
+<Image src="https://zackproser.b-cdn.net/images/chatgpt-setup.webp" alt="Smartphone with ChatGPT app open positioned to view a computer screen showing a Jupyter notebook for live coding practice" width={800} height={600} />
+<figcaption>If you have a phone and ChatGPT advanced voice, you can kinda just do this...</figcaption>
+
+Confidence is borne of demonstrated ability. LLMs are just an interface onto my own brain that makes it easier to deal with myself. In doing stupid programmer tricks to ChatGPT, I'm demonstrating that I can do them *to myself*.
+
+### ChatGPT Voice Limitations
+
+While convenient, ChatGPT's unlimited voice mode currently costs $200 per month. So there's that...
+
+Each call is capped at roughly 15 minutes and drains a daily quota that eventually locks you out until later in the day.
+
+I got $20 adjustable goose neck that I can clamp to anything and use to point my camera directly at my screen. It works!
+
+<Image src="https://zackproser.b-cdn.net/images/goose-neck-clamp.webp" alt="Flexible goose neck clamp holding a smartphone in position to view a computer monitor for hands-free video streaming" width={800} height={600} />
+<figcaption>Goose neck clamp.</figcaption>
+
+An exciting early breakthrough, but ultimately these time limits pushed me to look for alternatives on macOS. 
+
+I started searching for other setups that would allow me to live chat with an LLM who could see my screen, and found [Google AI Studio](https://aistudio.google.com).
+
+### Trying Google AI Studio Instead
+
+<Image src="https://zackproser.b-cdn.net/images/google-ai-studio-stream.webp" alt="Google AI Studio interface showing the live stream feature with video call controls and chat interface" width={800} height={600} />
+<figcaption>Google AI Studio's stream interface</figcaption>
+
+That's when I discovered that [Google AI Studio](https://aistudio.google.com) has screenshare capability that allows me to share a tab in Google Colab, 
+and gives Gemini 2.5 the ability to see my screen and talk to me in realtime. 
+
+<Image src="https://zackproser.b-cdn.net/images/ai-studio-share-screen.webp" alt="Browser screen sharing dialog showing Google Colab tab being shared with Google AI Studio for live coding assistance" width={800} height={600} />
+<figcaption>Sharing only my Google Colab tab with AI Studio</figcaption>
+
+<Image src="https://zackproser.b-cdn.net/images/ai-studio-watching.webp" alt="Google AI Studio interface showing live view of a shared Google Colab notebook with Python code visible on screen" width={800} height={600} />
+<figcaption>AI Studio watching my Chrome tab and seeing everything I see.</figcaption>
+
+At this point, it's exactly like being on a video call with someone while sharing your screen - you just talk back and forth effortlessly and 
+work through problems.
+
+<Image src="https://zackproser.b-cdn.net/images/dual-wield.webp" alt="Split screen view showing Google AI Studio video call interface alongside Google Colab notebook for simultaneous coding and AI conversation" width={800} height={600} />
+<figcaption>Google AI Studio is perhaps an even better UX</figcaption>
+
+Now, far be it from me to praise a Google UI, but in this case I am forced to say this tool is effective for this purpose:
+
+There are a couple benefits to this approach: 
+* You no longer need to physically charge, mount and position your phone. 
+* You can just use headphones and your computer, closer to real interview conditions
+* You don't get dinged by 15 minute video limits
+
+There were issues with Gemini's voice being cut off - but it was always only a few words. The stream also failed a few times 
+and required kicking which was annoying but not a deal-breaker.
+
+## Why it works: exposure without shame
+
+The novelty isn't the tech—it's the emotional dynamic. Because this practice environment is lightweight and private, I don't feel self-conscious when I fumble or need to restart. 
+
+<Image src="https://zackproser.b-cdn.net/images/training-montage.webp" alt="Conceptual illustration of systematic desensitization therapy showing gradual exposure to coding interview scenarios with decreasing anxiety levels" width={800} height={600} />
+<figcaption>Performing systematic desensitization on yourself for fun and profit.</figcaption>
+
+There's no judgment and no ticking clock. It's systematic desensitization: controlled exposure that chips away at the fear of being judged while coding. 
+
+I've gone from it being a real obstacle to having already banked several in-interview recoveries from freezes and being stuck. These will only compound with time.
+
+## The Outcome: More Confidence, Less Panic
+
+Each session leaves me a little calmer. I'm not memorizing answers; I'm getting comfortable with ambiguity, silence, and mid-solution pivots. It's a low-cost way to reinforce fundamentals, get quick feedback, and push into tougher problems without burning out.
+
+You can even ask ChatGPT to role-play different interviewer styles: skeptical, friendly, curious, or silent.
+
+Once this gets too easy, I'm going to ensure all my interviews are cruel psychopaths who are spending extra thinking tokens trying to hurt my feelings. 
+
+## Closing Thought
+
+This isn't just about acing an interview—it's about reclaiming the mental real estate that fear was occupying. 
+
+<Image src="https://zackproser.b-cdn.net/images/reboot.webp" alt="Conceptual illustration of mental reset and renewal, symbolizing overcoming coding interview anxiety and reclaiming confidence" width={800} height={600} />
+<figcaption>Reboot.</figcaption>
+
+If live coding anxiety has been holding you back, this gentle, high-leverage approach might help you move through it. 
+
+Remember that confidence is borne of demonstrated ability, and this is a low-stakes way to demonstrate your ability to yourself. 
+
+
+
+
+
+
+
