@@ -115,7 +115,7 @@ export function ConsultancyNav() {
   }, [])
 
   return (
-    <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-900 dark:to-gray-800 sticky top-0 shadow-md relative z-50">
+    <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-700 sticky top-0 shadow-md relative z-50">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link className="flex items-center justify-center shrink-0" href="/">
           <svg 
