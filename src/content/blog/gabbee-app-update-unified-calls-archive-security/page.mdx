@@ -1,0 +1,59 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image
+  src="https://zackproser.b-cdn.net/images/gabbee-hero.webp"
+  width={800}
+  height={600}
+  alt="Gabbee.io"
+/>
+
+We just shipped a big UX upgrade to <Link href="https://gabbee.io">Gabbee</Link>. It’s now faster to add tasks, easier to manage calls, clearer to review outcomes, and more secure by default.
+
+## What’s new
+
+- **Faster Task Composer**
+  - Cmd/Ctrl+Enter to submit instantly from anywhere in the app
+  - Input clears immediately for rapid consecutive entries
+  - Phone and voice selectors are inline to reduce extra clicks
+
+- **Unified Calls + Archive**
+  - One searchable list for active and archived calls
+  - Archive from the call detail and restore anytime
+  - Clear, color‑coded status badges at a glance
+
+- **Cleaner Review Panel**
+  - Plan steps, live statuses, and results in one place
+  - Summaries and transcripts wrap cleanly—no sideways scrolling
+
+- **Automatic Call Titles**
+  - Concise titles are generated after you create or schedule a call
+  - Keeps your call list tidy and scannable
+
+- **Privacy and Security**
+  - All task endpoints and detail pages verify ownership against the signed‑in user
+  - Safer by default; your data stays yours
+
+- **Readability Improvements**
+  - Long content wraps correctly and preserves line breaks
+  - Better at-a-glance readability across the app
+
+## Why it matters
+
+- **Less friction**: Compose and submit faster without context switching.
+- **More clarity**: See call status and results without digging.
+- **More trust**: Stronger safeguards protect your account and data.
+
+## Available today
+
+The update is live for all users. No migration needed—refresh your app to get the latest.
+
+## Get started
+
+- **Sign in**: <Link href="https://gabbee.io">gabbee.io</Link>
+- **New here?** Create an account and try the streamlined composer and unified calls today.
+- **Feedback**: Tell us what you think so we can keep making Gabbee better for you.
