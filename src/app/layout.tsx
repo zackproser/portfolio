@@ -8,6 +8,7 @@ import { ConsultancyNav } from '@/components/ConsultancyNav';
 import { Toaster } from '@/components/ui/toaster';
 import '@/styles/tailwind.css';
 import '@/styles/global.css';
+import PlausibleProvider from 'next-plausible';
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable}`} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-K9XTVH6V" />
       <head>
+        <PlausibleProvider domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? 'zackproser.com'} />
         <link
           rel="alternate"
           type="application/rss+xml"

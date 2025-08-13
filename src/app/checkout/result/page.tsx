@@ -9,6 +9,7 @@ import { Blog } from '@/types';
 import { useSession, signIn } from 'next-auth/react';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { getContentUrlFromObject } from '@/lib/content-url';
+import { usePlausible } from 'next-plausible';
 
 interface PurchasedContent {
   content: Blog;
@@ -30,6 +31,7 @@ function CheckoutResultContent() {
   const router = useRouter();
   const sessionId = searchParams.get('session_id');
   const { data: authSession, status: authStatus } = useSession();
+  const plausible = usePlausible();
 
   useEffect(() => {
     if (!sessionId) {
@@ -52,7 +54,7 @@ function CheckoutResultContent() {
         setContent(data);
 
         if (!conversionTracked && data.content.commerce?.price) {
-          // Send enhanced conversion with user data for Google Ads
+          // Google Ads purchase event
           sendGTMEvent({
             event: 'purchase',
             value: data.content.commerce.price,
@@ -63,16 +65,30 @@ function CheckoutResultContent() {
               item_id: data.content.slug,
               price: data.content.commerce.price
             }],
-            // Enhanced conversions user data
             user_data: {
               email: data.user.email,
-              // Add other user data if available
               ...(data.user.name && {
                 first_name: data.user.name.split(' ')[0],
                 last_name: data.user.name.split(' ').slice(1).join(' ')
               })
             }
           });
+
+          // Plausible purchase conversion with revenue
+          try {
+            plausible('Purchase', {
+              revenue: {
+                amount: data.content.commerce.price,
+                currency: 'USD'
+              },
+              props: {
+                productSlug: data.content.slug,
+                productTitle: data.content.title
+              }
+            });
+          } catch (e) {
+            // no-op
+          }
 
           setConversionTracked(true);
         }
@@ -87,7 +103,7 @@ function CheckoutResultContent() {
     };
 
     fetchCheckoutSession();
-  }, [sessionId, authStatus, router, conversionTracked]);
+  }, [sessionId, authStatus, router, conversionTracked, plausible]);
 
   const handleEmailSignIn = async (email: string, contentUrl: string) => {
     try {
