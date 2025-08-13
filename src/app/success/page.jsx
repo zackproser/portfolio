@@ -4,6 +4,7 @@ import { redirect, useSearchParams } from "next/navigation";
 
 import { Container } from "@/components/Container";
 import PurchaseSuccess from "@/components/PurchaseSuccess";
+import { usePlausible } from 'next-plausible';
 
 export default function SuccessPageWrapper() {
 	return (
@@ -20,6 +21,7 @@ function SuccessPage() {
 	const searchParams = useSearchParams();
 	const sessionId = searchParams.get("session_id");
 	const productSlug = searchParams.get("product");
+	const plausible = usePlausible();
 
 	useEffect(() => {
 		fetch(`/api/checkout-sessions?session_id=${sessionId}`, {
@@ -53,8 +55,12 @@ function SuccessPage() {
 					console.log("Error updating purchase");
 				}
 			});
+
+			try {
+				plausible('Purchase');
+			} catch (e) {}
 		}
-	}, [status, sessionId, customerEmail, productSlug]);
+	}, [status, sessionId, customerEmail, productSlug, plausible]);
 
 	if (status === "open") {
 		return redirect("/");

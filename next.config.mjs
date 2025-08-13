@@ -70,12 +70,12 @@ const nextConfig = {
         source: '/software/teatutor-deepdive',
         destination: '/blog/teatutor-deepdive',
         permanent: true,
-      },
+      }, 
       {
         source: '/blog/video-reviewing-github-prs-in-terminal',
         destination: '/videos/video-reviewing-github-prs-in-terminal',
         permanent: true,
-      },
+      }, 
       {
         source: '/blog/modern-deployment',
         destination: '/blog/api-cicd-pulumi-github',
