@@ -21,8 +21,15 @@ interface PreviewContentResult {
 	metadata: ExtendedMetadata;
 }
 
-// Initialize Postmark client
-const client = new ServerClient(process.env.POSTMARK_API_KEY || '')
+// Lazily initialize Postmark client to avoid build-time failures without secrets
+function getPostmarkClient(): ServerClient | null {
+	const apiKey = process.env.POSTMARK_API_KEY
+	if (!apiKey) {
+		logger.warn('POSTMARK_API_KEY is not set. Email delivery is disabled in this environment.')
+		return null
+	}
+	return new ServerClient(apiKey)
+}
 
 interface SendReceiptEmailInput {
 	From: string;
@@ -50,7 +57,7 @@ interface SendReceiptEmailInput {
 // And a link to get started with their course
 const sendReceiptEmail = async (
 	receipt: SendReceiptEmailInput,
-): Promise<MessageSendingResponse> => {
+): Promise<MessageSendingResponse | null> => {
 	logger.debug('Postmark API Key configured:', !!process.env.POSTMARK_API_KEY)
 	logger.info('Sending receipt email to:', receipt.To)
 	logger.debug('From address:', receipt.From)
@@ -82,6 +89,11 @@ const sendReceiptEmail = async (
 	logger.debug('Sending email with data:', JSON.stringify(emailData, null, 2))
 	
 	try {
+		const client = getPostmarkClient()
+		if (!client) {
+			logger.warn('Skipping receipt email send: Postmark not configured')
+			return null
+		}
 		const response = await client.sendEmailWithTemplate(emailData);
 		logger.info('Email sent successfully:', response)
 		return response;
@@ -260,6 +272,11 @@ You're receiving this email because you requested a preview from Zachary Proser.
   }); // Avoid logging full potentially large body
 
 	try {
+		const client = getPostmarkClient()
+		if (!client) {
+			logger.warn('Skipping free chapters email send: Postmark not configured')
+			return null
+		}
 		const response = await client.sendEmail(emailData);
 		logger.info(`[SUCCESS] Email sent successfully to ${input.To}:`, response);
 		return response;
@@ -304,6 +321,11 @@ const sendLeadNotificationEmail = async (
   };
 
   try {
+    const client = getPostmarkClient()
+    if (!client) {
+      logger.warn('Skipping lead notification: Postmark not configured')
+      return null
+    }
     const response = await client.sendEmail(emailData);
     logger.info('[SUCCESS] Lead notification sent:', response);
     return response;

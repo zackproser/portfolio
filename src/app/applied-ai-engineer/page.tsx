@@ -4,6 +4,7 @@ import HeroSection from '@/components/applied-ai/HeroSection'
 import { StatsBar } from '@/components/applied-ai/StatsBar'
 import SpeakingHighlights from '@/components/applied-ai/SpeakingHighlights'
 import FeaturedProjects from '@/components/applied-ai/FeaturedProjects'
+import PremierProject from '@/components/applied-ai/PremierProject'
 import ExperienceTimeline from '@/components/applied-ai/ExperienceTimeline'
 import SkillsMatrix from '@/components/applied-ai/SkillsMatrix'
 import TestimonialsSection from '@/components/applied-ai/TestimonialsSection'
@@ -62,6 +63,9 @@ export default function AppliedAiEngineerPage() {
       {/* Speaking Highlights */}
       <SpeakingHighlights />
       
+      {/* Premier Project */}
+      <PremierProject />
+
       {/* Featured Projects */}
       <FeaturedProjects />
       
