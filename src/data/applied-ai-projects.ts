@@ -12,9 +12,22 @@ export interface ProjectData {
   };
   image?: string;
   featured?: boolean;
+  premier?: boolean;
 }
 
 export const appliedAiProjects: ProjectData[] = [
+  {
+    title: "Gabbee.io – AI Phone Call Assistant",
+    description: "A fully self-built product: market research, UX, full-stack app, telephony/voice AI integration, deployment, analytics, and ongoing maintenance. Lets users schedule or trigger AI-driven calls, then get transcripts and summaries.",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Bland AI", "Vercel", "WorkOS Auth"],
+    links: {
+      demo: "https://gabbee.io",
+      article: "/blog/gabbee-ai-phone-call-app"
+    },
+    image: "https://zackproser.b-cdn.net/images/gabbee-hero.webp",
+    featured: true,
+    premier: true
+  },
   {
     title: "Llama 3.1 Fine-tuning with Torchtune",
     description: "Complete production workflow for fine-tuning Llama 3.1-8B-Instruct using Lightning.ai, LoRA, and Weights & Biases integration.",

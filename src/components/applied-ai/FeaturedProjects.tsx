@@ -42,7 +42,7 @@ const heroImageMap: Record<string, any> = {
 
 const ProjectCard = ({ project, index }: { project: any; index: number }) => {
   const ref = useRef(null)
-  const heroImage = heroImageMap[project.title] || fineTuneLlama
+  const heroImage = project.image || heroImageMap[project.title] || fineTuneLlama
 
   return (
     <div
@@ -59,6 +59,13 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          {project.premier && (
+            <div className="absolute top-4 left-4 z-10">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-gray-900 shadow-md">
+                Premier Project
+              </span>
+            </div>
+          )}
         </div>
         
         <div className="p-8">

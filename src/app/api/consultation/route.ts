@@ -3,8 +3,8 @@ import { ServerClient } from 'postmark';
 
 export const maxDuration = 300;
 
-// Initialize Postmark client
-const client = new ServerClient(process.env.POSTMARK_API_KEY || '');
+// Note: Avoid initializing the Postmark client at module scope so builds don't
+// fail in environments without secrets. Initialize lazily inside the handler.
 
 export async function POST(req: NextRequest) {
   // Get data submitted in the request's body.
@@ -26,6 +26,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const apiKey = process.env.POSTMARK_API_KEY;
+    if (!apiKey) {
+      console.warn('POSTMARK_API_KEY is not set. Consultation email sending is disabled.');
+      return new NextResponse(
+        JSON.stringify({ success: false, error: "Service unavailable" }),
+        { status: 503 }
+      );
+    }
+
+    const client = new ServerClient(apiKey);
     // Prepare the email data
     const emailData = {
       From: "notifications@zackproser.com",
