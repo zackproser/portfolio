@@ -42,7 +42,9 @@ const heroImageMap: Record<string, any> = {
 
 const ProjectCard = ({ project, index }: { project: any; index: number }) => {
   const ref = useRef(null)
-  const heroImage = heroImageMap[project.title] || fineTuneLlama
+  const heroImage = project.image || heroImageMap[project.title] || fineTuneLlama
+  const primaryHref: string | undefined = project.links?.demo || project.links?.article
+  const isExternal = primaryHref ? /^https?:\/\//.test(primaryHref) : false
 
   return (
     <div
@@ -52,20 +54,61 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 h-full">
         {/* Project hero image */}
         <div className="relative h-64 overflow-hidden">
-          <Image
-            src={heroImage}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {primaryHref ? (
+            isExternal ? (
+              <a href={primaryHref} target="_blank" rel="noopener noreferrer">
+                <Image
+                  src={heroImage}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </a>
+            ) : (
+              <Link href={primaryHref as any}>
+                <Image
+                  src={heroImage}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </Link>
+            )
+          ) : (
+            <Image
+              src={heroImage}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          {project.premier && (
+            <div className="absolute top-4 left-4 z-10">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-gray-900 shadow-md">
+                Premier Project
+              </span>
+            </div>
+          )}
         </div>
         
         <div className="p-8">
           {/* Project header */}
           <div className="mb-6">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-              {project.title}
+              {primaryHref ? (
+                isExternal ? (
+                  <a href={primaryHref} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    {project.title}
+                  </a>
+                ) : (
+                  <Link href={primaryHref as any} className="hover:underline">
+                    {project.title}
+                  </Link>
+                )
+              ) : (
+                project.title
+              )}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               {project.description}
@@ -147,6 +190,13 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
               </Link>
             )}
           </div>
+
+          {/* Impact line */}
+          {project.impact && (
+            <div className="mt-6 text-sm text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Impact:</span> {project.impact}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -244,6 +294,16 @@ export default function FeaturedProjects() {
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Showing {currentIndex * itemsPerView + 1}-{Math.min((currentIndex + 1) * itemsPerView, featuredProjects.length)} of {featuredProjects.length} projects
             </p>
+          </div>
+
+          {/* See all link */}
+          <div className="flex justify-center mt-8">
+            <a
+              href="/projects"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold"
+            >
+              See all projects
+            </a>
           </div>
         </div>
       </div>

@@ -33,14 +33,19 @@ export default function HeroSection() {
             {/* Main content */}
             <div className="space-y-6">
               {/* Main heading */}
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                Full-Stack AI Engineer
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                Building AI Systems That Ship Fast and Scale Safely
               </h1>
 
-              <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed max-w-4xl">
-                13+ years building scalable systems, from real-time stream processing to enterprise AI applications.
-                I architect, code, and educate on everything from vector databases, pipelines, AI apps, to infrastructure as code.
+              <p className="text-lg md:text-xl text-blue-100 leading-relaxed max-w-4xl">
+                Proven traction: 50,000+ readers • 2,100+ engineers trained • 13+ years shipping production systems • Founder of <a href="https://gabbee.io" target="_blank" rel="noopener noreferrer" className="underline decoration-blue-300 hover:text-white">Gabbee</a> (AI sales calling platform with live users)
               </p>
+
+              <div className="mt-4 max-w-4xl">
+                <blockquote className="border-l-4 border-blue-400 pl-4 text-blue-100/90 italic">
+                  I design applied AI with reliability, safety, and user trust in mind—balancing fast iteration with responsible deployment.
+                </blockquote>
+              </div>
             </div>
 
             {/* Stats */}
@@ -48,7 +53,7 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="flex flex-wrap gap-8 text-blue-100">
                 <div>
-                  <div className="text-2xl font-bold text-white">1,800+</div>
+                  <div className="text-2xl font-bold text-white">2,100+</div>
                   <div className="text-sm">Newsletter Subscribers</div>
                 </div>
                 <div>
@@ -76,15 +81,17 @@ export default function HeroSection() {
 
             {/* Avatar */}
             <div className="flex items-center gap-4 mt-8">
-              <div className="relative">
+              <Link href="/about" aria-label="About Zachary Proser" className="relative">
                 <div className="w-32 h-32 rounded-full border-4 border-white/20 overflow-hidden">
                   <RandomPortrait width={128} height={128} />
                 </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">Zachary Proser</h3>
-                <p className="text-blue-200">Staff AI Engineer</p>
-              </div>
+              </Link>
+              <Link href="/about" className="group">
+                <div>
+                  <h3 className="text-xl font-bold text-white group-hover:underline">Zachary Proser</h3>
+                  <p className="text-blue-200 group-hover:underline">Staff AI Engineer</p>
+                </div>
+              </Link>
             </div>
           </div>
 

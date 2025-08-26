@@ -12,9 +12,23 @@ export interface ProjectData {
   };
   image?: string;
   featured?: boolean;
+  premier?: boolean;
 }
 
 export const appliedAiProjects: ProjectData[] = [
+  {
+    title: "Gabbee.io – AI BDR & Lead Qualifier",
+    description: "A fully self-built product: market research, UX, full-stack app, telephony/voice AI integration, deployment, analytics, and ongoing maintenance. Connects to Zoho CRM via OAuth, auto-syncs leads, configures qualification campaigns in minutes, and programmatically qualifies leads.",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Bland AI", "Vercel", "WorkOS Auth"],
+    links: {
+      demo: "https://gabbee.io",
+      article: "/blog/gabbee-ai-phone-call-app"
+    },
+    image: "https://zackproser.b-cdn.net/images/gabbee-landing.webp",
+    featured: true,
+    premier: true,
+    impact: "Completed ~85% of qualification calls • Dozens of active demo users • Clear PMF pivot based on transcript analysis"
+  },
   {
     title: "Llama 3.1 Fine-tuning with Torchtune",
     description: "Complete production workflow for fine-tuning Llama 3.1-8B-Instruct using Lightning.ai, LoRA, and Weights & Biases integration.",
@@ -33,7 +47,8 @@ export const appliedAiProjects: ProjectData[] = [
       article: "/blog/langchain-pinecone-chat-with-my-blog",
       demo: "https://zackproser.com/chat"
     },
-    featured: true
+    featured: true,
+    impact: "2,100+ developers trained • Dozens of paid tutorial purchases"
   },
   {
     title: "AI Pipelines & Agents Workshop with Mastra.ai", 
@@ -73,7 +88,8 @@ export const appliedAiProjects: ProjectData[] = [
       demo: "https://docs.pinecone.io/examples/sample-apps/legal-semantic-search",
       code: "https://github.com/pinecone-io/sample-apps/tree/main/legal-semantic-search"
     },
-    featured: true
+    featured: true,
+    impact: "Spins up semantic search in <10 minutes • Starred/forked by hundreds • Used by at least one major city tech team in prototyping • Used in trainings"
   },
   {
     title: "Pinecone Assistant Example Application",
@@ -187,12 +203,14 @@ export const appliedAiProjects: ProjectData[] = [
     featured: true
   },
   {
-    title: "AI-Assisted Developer Tools Analysis",
-    description: "In-depth comparison and review framework for evaluating AI coding assistants and developer productivity tools.",
-    technologies: ["Developer Tools", "AI Analysis", "Productivity", "Code Review", "Evaluation"],
+    title: "Chat with WorkOS Docs",
+    description: "RAG-backed documentation assistant for WorkOS built with Next.js, Python/Jupyter, and Pinecone. Supports chat over guides, APIs, and announcements with cited sources.",
+    technologies: ["Next.js", "Python", "Jupyter", "RAG Pipeline", "Pinecone"],
     links: {
-      article: "/blog/ai-assisted-dev-tools-compared"
+      demo: "https://workos-rag-demo-one.vercel.app/"
     },
-    featured: true
+    image: "https://zackproser.b-cdn.net/images/workos-rag-mcp.webp",
+    featured: true,
+    impact: "Repos reused by multiple teams • Helped drive MCP ecosystem adoption • Presented to 400–500 engineers at MCP Night"
   }
 ]; 
