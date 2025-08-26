@@ -1,6 +1,7 @@
-import JimBrikman from '@/images/jim-brikman.webp'
+// Prefer CDN URLs for reliability in all environments
+const JimBrikman = 'https://zackproser.b-cdn.net/images/jim-brikman.webp'
 import JohnFunge from '@/images/john-funge.webp'
-import SachinFernandes from '@/images/sachin-fernandes.webp'
+const SachinFernandes = 'https://zackproser.b-cdn.net/images/sachin-fernandes.webp'
 import PhilinaFan from '@/images/philina.webp'
 import StevenFusco from '@/images/steven-fusco.webp'
 import ChristianPaulus from '@/images/christian-paulus.webp'

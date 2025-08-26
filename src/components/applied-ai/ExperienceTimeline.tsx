@@ -47,7 +47,13 @@ const ExperienceCard = ({ experience, index }: { experience: any; index: number 
                   {experience.role}
                 </h3>
                 <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                  {experience.company}
+                  {experience.url ? (
+                    <a href={experience.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                      {experience.company}
+                    </a>
+                  ) : (
+                    experience.company
+                  )}
                 </p>
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400 md:text-right">

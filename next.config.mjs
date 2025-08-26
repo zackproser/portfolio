@@ -10,14 +10,14 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 const nextConfig = {
   pageExtensions: ["js", "jsx", "ts", "tsx", "mdx"],
   images: {
-    domains: [
-      "localhost", 
-      "zackproser.com", 
-      "www.zackproser.com",
-      "img.youtube.com", 
-      "placehold.co",
-      "avatars.githubusercontent.com",
-      "zackproser.b-cdn.net"
+    remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: 'zackproser.com' },
+      { protocol: 'https', hostname: 'www.zackproser.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
+      { protocol: 'https', hostname: 'placehold.co' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: 'zackproser.b-cdn.net' },
     ],
     formats: ['image/webp'], 
   },

@@ -13,12 +13,12 @@ export default function PremierProject() {
               Premier Project
             </div>
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6">
-              Gabbee.io — AI Phone Call Assistant
+              <Link href="https://gabbee.io" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                Gabbee.io — AI BDR & Lead Qualifier
+              </Link>
             </h2>
             <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300 mb-6">
-              I conceived, researched, designed, built, deployed, and maintain Gabbee.io — an AI phone call app that
-              places calls on your behalf, then delivers transcripts and summaries. This is an end-to-end solo build,
-              from market research and positioning to full-stack development, telemetry, growth, and production ops.
+              Founded and built an AI calling platform that initially served multiple use cases. By analyzing 40+ user call transcripts with LLM assistance, I discovered most customers were using Gabbee for BDR lead qualification. Pivoted positioning, landing pages, and CRM integration accordingly. The system now successfully completes ~85% of qualification calls and syncs results automatically to Zoho CRM.
             </p>
             <ul className="space-y-3 text-gray-800 dark:text-gray-200 mb-8">
               <li className="flex gap-3"><span className="mt-1 h-2 w-2 rounded-full bg-yellow-500" /> Market research, ICP definition, and messaging</li>
@@ -35,14 +35,21 @@ export default function PremierProject() {
               </Link>
             </div>
           </div>
-          <div className="relative h-[360px] lg:h-[440px] rounded-2xl overflow-hidden border border-yellow-200/60 dark:border-yellow-900/40">
-            <Image
-              src={"https://zackproser.b-cdn.net/images/gabbee-hero.webp"}
-              alt="Gabbee.io Hero"
-              fill
-              className="object-cover"
-              priority
-            />
+          <div>
+            <Link href="https://gabbee.io" target="_blank" rel="noopener noreferrer" className="block group">
+              <div className="relative h-[360px] lg:h-[440px] rounded-2xl overflow-hidden border border-yellow-200/60 dark:border-yellow-900/40 shadow-sm group-hover:shadow-md transition-shadow">
+                <Image
+                  src={"https://zackproser.b-cdn.net/images/gabbee-landing.webp"}
+                  alt="Gabbee.io Hero"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </Link>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
+              Gabbee connects to Zoho CRM via OAuth, auto-syncs your leads, helps you configure world-class sales qualification campaigns in minutes, and then programmatically qualifies your leads for you.
+            </p>
           </div>
         </div>
       </div>

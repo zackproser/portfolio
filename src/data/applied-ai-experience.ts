@@ -15,109 +15,77 @@ export interface ExperienceData {
   description: string;
   achievements: string[];
   technologies: string[];
+  url?: string;
 }
 
 export const appliedAiExperience: ExperienceData[] = [
   {
     company: "WorkOS",
     role: "Developer Education",
-    duration: "Oct 2024 - Present",
+    duration: "2024–Present",
     location: "Remote",
     logo: logoWorkOS,
-    description: "Drive developer education and adoption for enterprises building AI-powered applications with secure authentication and authorization.",
-    achievements: [
-      "Created official Vercel MCP starter template demonstrating MCP server secured with WorkOS AuthKit",
-      "Built comprehensive tutorial and POC for securing RAG applications with fine-grained authorization",
-      "Developed AI applications and internal tools using Vercel AI SDK for content creation and automation",
-      "Built production-ready AI applications demonstrating enterprise authentication patterns and RAG security",
-      "Engineered MCP (Model Context Protocol) server implementations with enterprise-grade security controls",
-      "Reduced developer implementation time through hands-on code examples and working applications"
-    ],
-    technologies: ["Next.js", "React", "Python", "OpenAI API", "Anthropic Claude", "Vector Databases", "Enterprise Authentication", "AWS", "MCP", "Vercel AI SDK", "Fine-Grained Auth"]
+    description: "Built internal RAG pipelines and chatbots, shipped public-facing MCP servers secured with AuthKit, created starter kits, led developer tooling research, and taught internal AI workshops on neural networks, embeddings, semantic search, RAG, hallucinations, and how to learn and create content with AI.",
+    achievements: [],
+    technologies: []
   },
   {
     company: "Pinecone",
-    role: "Staff Developer Advocate",
-    duration: "Jul 2023 - Oct 2024",
+    role: "Senior Software Engineer",
+    duration: "2023–2024",
     logo: logoPinecone,
-    description: "Staff Developer Advocate leading enterprise adoption of vector database technology for production AI applications.",
-    achievements: [
-      "Created leading vector database explainer video teaching neural networks, embeddings, vectors, and semantic search to 10,000+ developers globally",
-      "Built official Pinecone Legal Semantic Search example application featured in documentation",
-      "Developed official Pinecone Assistant example application showcasing chat interface integration",
-      "Authored key chapters in 'Vector Databases in Production for Busy Engineers' book series covering CI/CD and RAG evaluation",
-      "Built Pinecone's first AWS Reference Architecture demonstrating semantic search at enterprise scale",
-      "Created comprehensive RAG pipeline tutorials and examples reaching thousands of engineers globally",
-      "Developed and maintained open-source Machine Learning notebooks in Jupyter for vector database integrations"
-    ],
-    technologies: ["Python", "JavaScript", "TypeScript", "LangChain", "LlamaIndex", "OpenAI", "Anthropic Claude", "AWS", "Kubernetes", "Pulumi", "Jupyter", "Semantic Search", "Vector Embeddings", "Technical Writing", "Video Production"]
+    description: "Shipped production vector database features, drove AI/ML developer adoption, and authored content reaching tens of thousands.",
+    achievements: [],
+    technologies: []
   },
   {
     company: "Gruntwork",
-    role: "Senior Software Engineer & Tech Lead",
-    duration: "Feb 2020 - Jun 2023",
+    role: "Senior Software Engineer",
+    duration: "2021–2023",
     logo: logoGrunty,
-    description: "Lead engineer on Reference Architecture product, building infrastructure-as-code solutions and managing technical teams.",
-    achievements: [
-      "Led team building including hiring, technical interviews, training, mentoring, and code reviews",
-      "Built deployments, tooling, infrastructure and automated testing for Reference Architecture product",
-      "Open-sourced git-xargs: https://github.com/gruntwork-io/git-xargs",
-      "Provided customer support for Infrastructure as Code library serving enterprise clients",
-      "Enhanced Reference Architecture with new features, bug fixes, automation and documentation",
-      "Held record for total successful deployments of Reference Architecture product"
-    ],
-    technologies: ["Terraform", "Golang", "Bash", "AWS", "Docker", "Python", "Infrastructure as Code"]
+    description: "Delivered cloud infrastructure automation, open-sourced tooling, and deep technical guides used across industry.",
+    achievements: [],
+    technologies: []
   },
   {
     company: "Cloudflare",
     role: "Software Engineer",
-    duration: "Apr 2017 - Feb 2020",
+    duration: "2019–2021",
     location: "San Francisco Bay Area",
     logo: logoCloudflare,
-    description: "Full stack developer on core API team designing and implementing systems, services and web applications at global scale.",
-    achievements: [
-      "Designed and implemented 2FA backup codes system for Cloudflare dashboard",
-      "Built high scale distributed web performance metrics testing system in AWS",
-      "Improved Cloudflare API developer stack and provided cross-team documentation and support",
-      "Built and open-sourced cf-terraforming tool for extracting Cloudflare setups into Terraform state",
-      "Designed distributed error and schema-drift alerting system adopted by all product teams",
-      "Wrote the first Cloudflare Workers deployed in front of api.cloudflare.com and www.cloudflare.com",
-      "Built first iteration of Project Jengo and handled weekly API releases",
-      "Served as primary release engineer for the API stack"
-    ],
-    technologies: ["Golang", "PHP", "Node.js", "JavaScript", "Python", "Docker", "Kubernetes", "Terraform", "Bash"]
+    description: "Developed distributed systems at scale, improved developer platform usability, and contributed to widely used docs.",
+    achievements: [],
+    technologies: []
   },
   {
     company: "Cloudmark",
     role: "Software Engineer", 
-    duration: "Feb 2015 - Apr 2017",
+    duration: "2015–2017",
     location: "San Francisco Bay Area",
     logo: logoCloudmark,
-    description: "Full stack developer designing and implementing solutions across multiple teams and technologies.",
-    achievements: [
-      "Designed and implemented Golang messaging microservice",
-      "Built custom authentication system for protected content integrating with Salesforce",
-      "Worked cross-team to implement and publish quarterly threat reports using d3.js",
-      "Handled LAMP stack feature development, legacy monolith maintenance and bug fixes",
-      "Designed custom build pipeline for Node.js project leveraging Docker"
-    ],
-    technologies: ["PHP", "Node.js", "JavaScript", "Golang", "CSS", "SASS", "Bash", "Docker", "d3.js"]
+    description: "Built cross-team systems across a mixed stack; shipped Golang services, Salesforce‑integrated auth, data visualizations, and Dockerized build pipelines.",
+    achievements: [],
+    technologies: []
   },
   {
     company: "BrightContext Corporation",
     role: "Software Engineer",
-    duration: "Apr 2012 - Apr 2014", 
+    duration: "2012–2014", 
     location: "Falls Church, VA",
     logo: logoBrightContext,
-    description: "Employee #9 at real-time stream processing engine startup, handling diverse responsibilities from engineering to marketing.",
-    achievements: [
-      "Built web applications in Node.js demonstrating use of JavaScript SDKs",
-      "Verified behavior of cloud stream-processing engine following each release",
-      "Built and maintained suite of Selenium tests for manager application",
-      "Served as primary QA for stream-processing engine and manager app functionality",
-      "Wrote and maintained documentation for JavaScript SDKs and cloud stream-processing engine",
-      "Created press releases, thought pieces and statements of work"
-    ],
-    technologies: ["Node.js", "JavaScript", "Selenium", "AWS"]
+    description: "Employee #9 at real‑time stream‑processing startup; delivered Node.js SDK demos, automated testing, release QA, and developer documentation.",
+    achievements: [],
+    technologies: []
+  },
+  {
+    company: "Mind on Fire",
+    role: "Independent",
+    duration: "Ongoing",
+    location: "Remote",
+    logo: "https://zackproser.b-cdn.net/images/mind-on-fire.webp" as any,
+    url: "https://mindonfire.net",
+    description: "Advised startups on AI integration, growth engineering, and developer content; generated six-figure revenue.",
+    achievements: [],
+    technologies: []
   }
 ]; 
