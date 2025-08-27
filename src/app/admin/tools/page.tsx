@@ -1,5 +1,6 @@
 // Remove client-side imports
 // import { useState } from "react"
+import type { Metadata } from 'next'
 import { Button } from "@/components/ui/button"
 // import { AddToolForm } from "@/components/admin/add-tool-form"
 // import { ToolsList } from "@/components/admin/tools-list"
@@ -8,6 +9,13 @@ import Link from "next/link"
 import { getAllTools } from "@/actions/tool-actions"
 import type { Tool } from "@prisma/client"
 import { ToolsAdminClient } from "@/components/admin/tools-admin-client" // Import the client component
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default async function ToolsAdminPage() {
   console.log("ADMIN TOOLS PAGE (Prod Test): Attempting to fetch tools..."); // Add log
