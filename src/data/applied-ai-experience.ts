@@ -84,7 +84,7 @@ export const appliedAiExperience: ExperienceData[] = [
     location: "Remote",
     logo: "https://zackproser.b-cdn.net/images/mind-on-fire.webp" as any,
     url: "https://mindonfire.net",
-    description: "Advised startups on AI integration, growth engineering, and developer content; generated six-figure revenue.",
+    description: "Advised startups on AI integration, growth engineering, and developer content.",
     achievements: [],
     technologies: []
   }
