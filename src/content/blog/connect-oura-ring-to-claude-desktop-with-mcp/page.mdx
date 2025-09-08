@@ -1,0 +1,129 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import GitHubRepoCard from '@/components/GitHubRepoCard'
+
+export const metadata = createMetadata(rawMetadata)
+
+*Turn your health data into actionable insights with AI-powered analysis*
+
+<Image src="https://zackproser.b-cdn.net/images/oura-and-claude.webp" alt="Oura Ring and Claude Desktop integration illustration" width={800} height={600} />
+
+Your Oura Ring collects incredibly detailed health metrics every day - sleep quality, heart rate variability, activity levels, recovery scores, and more. 
+
+But raw data isn't insight. By connecting your Oura Ring to Claude Desktop through the Model Context Protocol (MCP), you can transform this wealth of biometric data into personalized health insights, trend analysis, and actionable recommendations.
+
+<Image src="https://zackproser.b-cdn.net/images/oura-mcp.webp" alt="Oura Ring MCP integration workflow" width={800} height={600} />
+
+Instead of manually interpreting charts and numbers, you can simply ask Claude questions like "How did my stress levels correlate with my sleep quality last week?" or "What patterns do you see in my recovery scores?" The integration turns your passive health monitoring into active health optimization.
+
+This kind of AI-powered self-awareness becomes particularly powerful when you understand your own cognitive patterns. As I explored in [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself), AI can serve as an external mirror for understanding how your brain actually works - and your biometric data provides the objective foundation for that understanding.
+
+## What You'll Need
+
+Before diving in, ensure you have an Oura Ring with an active subscription, Claude Desktop installed on your machine, and basic familiarity with JSON and command line tools. You'll also need Node.js installed to run the MCP server that bridges your Oura data with Claude.
+
+The process involves getting API access from Oura, installing a specialized MCP server, and configuring Claude Desktop to recognize your new health data source. Once connected, you'll have real-time access to your biometric data through natural language conversations with Claude.
+
+## Step 1: Get Your Oura API Credentials
+
+First, you'll need to access the Oura API to pull your health data. Log into the Oura Cloud at [cloud.ouraring.com](https://cloud.ouraring.com) and sign in with your Oura account. Navigate to the "Personal Access Tokens" section in your account settings and create a new token.
+
+When creating your token, grant access to the data types you want Claude to analyze - sleep, activity, readiness, and other metrics. Copy and securely store your API token as you'll need it for the MCP configuration. This token acts as your key to accessing your personal health data programmatically.
+
+## Step 2: Install the Oura MCP Server
+
+The MCP server acts as a bridge between Claude Desktop and the Oura API. We'll use a tested and working implementation that handles all the complex API interactions for you.
+
+<GitHubRepoCard 
+  repo="elizabethtrykin/oura-mcp"
+  fallbackTitle="Oura MCP Server"
+  fallbackDescription="A Model Context Protocol server for accessing Oura Ring data, tested and working with Claude Desktop."
+/>
+
+Clone and set up the repository:
+
+```bash
+# Clone the tested Oura MCP server repository
+git clone https://github.com/elizabethtrykin/oura-mcp.git
+cd oura-mcp
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Configure your environment
+cp .env.example .env
+```
+
+Edit your `.env` file to include your Oura API token:
+
+```bash
+OURA_PERSONAL_ACCESS_TOKEN=your_token_here
+```
+
+Note that this implementation uses `OURA_PERSONAL_ACCESS_TOKEN` rather than just `OURA_API_TOKEN` - make sure to use the correct environment variable name.
+
+## Step 3: Configure Claude Desktop
+
+Now you need to tell Claude Desktop about your new MCP server. Locate your Claude Desktop configuration file - on macOS it's at `~/Library/Application Support/Claude/claude_desktop_config.json`, and on Windows it's at `%APPDATA%/Claude/claude_desktop_config.json`.
+
+Add the Oura MCP server to your configuration:
+
+```json
+{
+  "mcpServers": {
+    "oura": {
+      "command": "node",
+      "args": ["/absolute/path/to/oura-mcp/build/index.js"],
+      "env": {
+        "OURA_PERSONAL_ACCESS_TOKEN": "your_token_here"
+      }
+    }
+  }
+}
+```
+
+Make sure to use the absolute path to the built index.js file, and restart Claude Desktop for the changes to take effect. The server provides access to a comprehensive set of Oura data including personal info, daily activity summaries, readiness scores, sleep data, workout information, and stress metrics.
+
+## Step 4: Test the Integration
+
+Open Claude Desktop and try some basic queries to confirm everything is working. You can ask for your sleep data from the last 7 days, inquire about yesterday's readiness score and contributing factors, or request an analysis of your activity patterns over the last month.
+
+Claude should now be able to access and analyze your Oura Ring data in real-time, providing insights that would be difficult to discern from raw numbers alone. The integration supports date-based queries using YYYY-MM-DD format, making it easy to explore specific time periods or compare different phases of your health journey.
+
+## Powerful Use Cases
+
+Once you have this integration running, the possibilities for health optimization become extensive. For sleep optimization, you can ask Claude to identify environmental factors that correlate with your best sleep scores, track how your sleep quality changed after starting new evening routines, or get predictive insights about what to focus on based on recent sleep trends.
+
+The integration excels at recovery and performance analysis. You can get training load management advice based on your recovery metrics, understand how work stress levels impact your heart rate variability, or analyze long-term health trajectory changes over months of data. This kind of longitudinal analysis is particularly valuable for understanding the cumulative effects of lifestyle changes.
+
+For personalized health coaching, Claude can provide daily recommendations based on your readiness score, suggest lifestyle changes that would have the biggest impact on your recovery, and help track progress toward specific health goals. The AI becomes a knowledgeable health advisor that understands your unique patterns and responds to your individual health profile.
+
+This becomes especially valuable for neurodivergent individuals who might struggle with interoception - the ability to sense internal body signals. When your brain operates like a high-performance system that can hyperfocus for 14 hours straight, objective biometric feedback becomes crucial for maintaining sustainable patterns. Your Oura data can serve as an early warning system, helping Claude remind you to rest before you hit a wall.
+
+## Advanced Tips
+
+Your health data is sensitive, and the MCP connection keeps everything local. Your Oura data is only shared with Claude during your active sessions and isn't stored or transmitted beyond your local Claude Desktop instance. This privacy-first approach ensures your biometric information remains under your control.
+
+The real power emerges when combining multiple data sources. Consider integrating calendar data to correlate stress with schedule density, weather data to understand environmental impacts on your health, or nutrition tracking from apps like MyFitnessPal. You can also extend the MCP server to perform custom calculations or create specific reports that matter most to your health goals.
+
+This integration can become part of a larger AI-powered cognitive support system. In my own setup, I combine Oura biometrics with task management from Linear and voice-based context dumping during walks in the woods. Claude orchestrates between these data sources, catching patterns I might miss and providing the external executive function that helps prevent perfectionism spirals or burnout crashes. The key is creating a feedback loop where your objective health data informs your cognitive strategies.
+
+## Troubleshooting Common Issues
+
+If you encounter connection problems, double-check your API token and ensure Claude Desktop was restarted after configuration changes. The Oura API typically has a delay of a few hours for some metrics, so recent data might not be immediately available.
+
+Permission errors usually indicate that your Personal Access Token doesn't have the correct permissions for the data types you're trying to access. Return to the Oura Cloud console and verify your token has access to all the relevant data categories.
+
+## Conclusion
+
+Connecting your Oura Ring to Claude Desktop transforms passive health monitoring into active health optimization. Instead of wondering what your data means, you can have intelligent conversations about your health trends and get personalized recommendations based on your unique patterns.
+
+This integration represents the future of personal health technology - where AI doesn't just collect data, but helps you understand and act on it. As you continue using this setup, you'll discover insights about your health that would be impossible to spot manually.
+
+The combination of comprehensive biometric data and AI analysis gives you a powerful tool for optimizing sleep, managing stress, and improving overall wellness. Your Oura Ring becomes more than a tracker - it becomes your personal health advisor, ready to provide insights whenever you need them.
+
+For those who find themselves caught in perfectionism loops or struggle with recognizing their own physical limits, this integration offers something invaluable: an objective voice that can remind you when your body is asking for rest, even when your mind wants to keep pushing. It's external executive function for your health - the same way AI can help with cognitive patterns, it can help with physical ones too.
