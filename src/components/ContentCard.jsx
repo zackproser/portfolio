@@ -131,11 +131,12 @@ export function ContentCard({ article }) {
     }
   }
   
-  // Format the date
-  const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
+  // Format the date using the proper utility to avoid timezone issues
+  const formattedDate = date ? new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'UTC'
   }) : '';
 
   // Handle image object or string with improved fallback

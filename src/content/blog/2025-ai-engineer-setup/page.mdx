@@ -1,0 +1,121 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+I spent years preaching multi-monitor setups. Eighteen workspaces spread across dual monitors, tmux panes dancing like a symphony, every Docker container ID precisely where I needed it. 
+
+[My Terminal Velocity setup](/blog/terminal-velocity-overview) was a monument to DevOps efficiency—it made other engineers stop and ask "what the hell is happening on your screens?"
+
+<Image src="https://zackproser.b-cdn.net/images/my-custom-development-setup.webp" alt="My previous multi-monitor Terminal Velocity setup" width={800} height={600} />
+
+Then my neck started hurting, young kids made even a sound-proofed office occasionally untenable, and I started traveling more for work. 
+
+And AI tools got really fucking good. Today, I work from a single MacBook Pro with Sony WH-1000XM5 headphones, and I'm more productive than ever.
+
+<Image src="https://zackproser.b-cdn.net/images/ai-setup.webp" alt="MacBook Pro and Sony WH-1000XM5 setup" width={800} height={600} />
+
+This is my current setup, and it may be my favorite of all time: 
+
+- 14-inch MacBook Pro (M3 Pro, 36GB RAM)
+- Blue Sony WH-1000XM5 headphones
+- [Rectangle](https://rectangleapp.com/) for window management
+- [Wispr Flow](https://wisprflow.ai/r?ZACK75) for voice-driven everything
+- Official GUIs for AI tools like Claude + ChatGPT 
+
+That's it. The entire thing fits in a backpack, including all chargers plus a backup external battery. 
+
+I once needed a dedicated office with a standing desk that could support the weight of my monitor arms. Now I work from anywhere—my bed, hotel rooms, coffee shops—and my spine thanks me daily.
+
+## Why This Actually Works Better
+
+### The AI Tools Made Multi-Monitor Obsolete
+
+My primary stack has transformed around five core tools that work together seamlessly. Here's why each one is essential:
+
+### Wispr Flow - Voice-Driven Everything
+
+<a href="https://wisprflow.ai/r?ZACK75" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Wispr Flow voice-to-text interface" width={800} height={600} />
+</a>
+
+[Wispr Flow](https://wisprflow.ai/r?ZACK75) is the secret weapon that changed everything. I'm an above-average typist (90 WPM), but with voice through Wispr Flow, I hit 175 WPM consistently.
+
+This isn't just about speed. Voice input changes how you think. Instead of hunting for the perfect variable name or getting stuck on syntax, you just speak your intent. The AI handles the translation from natural language to code, from scattered thoughts to structured prose.
+
+The beauty of Wispr Flow is that it works with ANYTHING on macOS—whether that's Cursor's Agent composer window, a Chrome tab with Claude chat running, Slack messages, or any other text field. It's like having a universal voice-to-text interface for your entire system.
+
+### Cursor - Development Powerhouse
+
+<Image src="https://zackproser.b-cdn.net/images/cursor-ide.webp" alt="Cursor AI code editor interface" width={800} height={600} />
+
+[Cursor](https://cursor.sh) replaced my [beloved neovim setup](/blog/astronvim-overview) (sorry, old friend). The AI pair programmer means I don't need documentation open in another window. I describe what I want to build, and Cursor generates the scaffolding. I explain a bug, and it suggests fixes. The context awareness is so good it feels like having a senior developer looking over my shoulder.
+
+I do focused feature work directly in Cursor, and I send all the one-shot maintenance tasks and chores to [Cursor Agents](/blog/cursor-agents-review) running in the background. This workflow lets me stay focused on high-level architecture while the agents handle the routine implementation work.
+
+### Warp - The Terminal That Gets It
+
+<Image src="https://zackproser.b-cdn.net/images/warp.webp" alt="Warp terminal interface" width={800} height={600} />
+
+[Warp](https://warp.dev) isn't just another terminal—it's built for the AI age. I covered this extensively in my [Warp AI terminal review](/blog/warp-ai-terminal-review), but the key insight is that modern terminals should understand context, not just execute commands blindly.
+
+### Claude Desktop - Writing and Emotional Support
+
+<Image src="https://zackproser.b-cdn.net/images/claude.webp" alt="Claude Desktop interface" width={800} height={600} />
+
+Claude Desktop handles my writing, analysis, and emotional support during tough debugging sessions. The integration with my [Oura Ring MCP setup](/blog/connect-oura-ring-to-claude-desktop-with-mcp) means Claude understands when I'm stressed based on my biometrics and can suggest breaks before I burn out.
+
+### ChatGPT Desktop - Planning and Advanced Voice
+
+<Image src="https://zackproser.b-cdn.net/images/chatgpt.webp" alt="ChatGPT Desktop interface" width={800} height={600} />
+
+ChatGPT Desktop covers planning, image generation, and advanced voice conversations. The advanced voice mode is perfect for those [walking meetings with AI in the woods](/blog/walking-and-talking-with-ai) where I work through complex architectural problems while logging miles.
+
+These tools don't benefit from being spread across multiple monitors. They're designed to be focused, single-screen experiences. When everything is voice-driven and AI-assisted, you don't need the visual real estate—you need the mental clarity.
+
+### Voice Changed the Game
+
+I wrote about [walking and talking with AI](/blog/walking-and-talking-with-ai), but here's what I didn't emphasize enough: once you start using voice as a primary input, the whole keyboard-centric workflow starts to feel antiquated.
+
+These blue Sony headphones aren't just for music—they're my primary development tool. I can pace around my office, talking through a complex architecture problem with ChatGPT's advanced voice mode. The noise cancellation means I can work from a coffee shop without losing my mind. The Bluetooth reliability means I'm not tethered to my desk like some desk-peasant from 2015.
+
+### Rectangle Gives Me Everything tmux Did
+
+I know what you're thinking: "But how do you manage windows without multiple monitors?"
+
+[Rectangle](https://rectangleapp.com). It's a free window manager for macOS that gives me all the precision I had with tmux, but for GUI applications. Cmd+Option+Left snaps to the left half. Cmd+Option+Up for top half. I can slice and dice my single screen faster than I ever moved between monitors.
+
+The mental model is actually simpler. Everything is here, on this one screen. No hunting across monitors for that Slack notification. No forgetting which desktop has my terminal. Just one viewport, perfectly organized.
+
+## The Unexpected Benefits
+
+### My Focus Improved
+
+Without the visual noise of multiple monitors, I enter flow states easier. There's something about the constraint of a single screen that forces clarity. Slack isn't always visible, tempting me to check it—it's hidden in another desktop space, just friction-y enough that I only check it intentionally.
+
+### Portability Is a Superpower
+
+Last week, I debugged a production issue from a park bench. Try doing that with a multi-monitor setup.
+
+The entire productive environment travels with me. There's no "I'll fix that when I get back to my desk." If inspiration strikes at 11 PM or during a flight, I'm fully equipped. The psychological freedom can't be overstated.
+
+### Screenshot-Based Context Sharing
+
+When everything lives on one screen, sharing context with AI tools becomes trivial. Cmd+Shift+4, drag, paste into Claude. No worrying about which monitor has the relevant information. No stitching together multiple screenshots. Just instant, perfect context.
+
+## The Walking Meetings With Myself
+
+This is where it gets weird, but stay with me.
+
+<Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking and talking with AI in the woods" width={800} height={600} />
+
+The combination of the MacBook's portability and these headphones has enabled something I call "walking meetings with myself." I review PRs while walking. I architect systems while hiking. I debug thorny problems while doing yard work.
+
+The physical movement does something to your brain. Problems that felt impossible at my desk suddenly have obvious solutions at mile two of a walk. And with ChatGPT or Claude in my ear, I have a sparring partner who never gets tired of my questions.
+
+I wrote about this extensively in my [walking and talking with AI](/blog/walking-and-talking-with-ai) article, where I dive deep into how this practice has transformed my learning and problem-solving.
+
+## What I Learned
+
+The multi-monitor setup was solving the wrong problem. I thought I needed to see more information. What I actually needed was smarter tools and the freedom to think.
