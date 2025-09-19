@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, Search, ExternalLink } from "lucide-react"
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +31,7 @@ import { EditToolForm } from "./edit-tool-form"
 
 // Define props for ToolsList
 interface ToolsListProps {
-  initialTools: Tool[]
+  initialTools: ManifestTool[]
 }
 
 export function ToolsList({ initialTools }: ToolsListProps) {
@@ -41,7 +41,7 @@ export function ToolsList({ initialTools }: ToolsListProps) {
   const { toast } = useToast()
 
   // Use initialTools passed from props
-  const tools: Tool[] = initialTools
+  const tools: ManifestTool[] = initialTools
 
   // Find the tool being edited
   const toolToEdit = tools.find(tool => tool.id === editingToolId)
@@ -50,7 +50,7 @@ export function ToolsList({ initialTools }: ToolsListProps) {
   const filteredTools = tools.filter(
     (tool) =>
       tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (tool.description && tool.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
       tool.category.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 

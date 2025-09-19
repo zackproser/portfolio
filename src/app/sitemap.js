@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getAllContent, getAllProducts, getAppPageRoutesPaths } from '@/lib/content-handlers';
 import { getAllTools } from '@/actions/tool-actions';
+import { getValidComparisons } from '@/lib/comparison-categories';
 // import { siteConfig } from '@/config/site'; // Removed unused import
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
@@ -77,31 +78,30 @@ async function getRoutes() {
     }
   });
 
-  // Add all comparison routes
+  // Add all comparison routes (only meaningful comparisons)
   try {
     console.log('Generating comparison routes for sitemap...');
     const tools = await getAllTools();
     console.log(`Found ${tools.length} tools for comparison routes`);
     
-    // Generate combinations in canonical order only (alphabetical by slug) to avoid duplicates
-    for (let i = 0; i < tools.length; i++) {
-      for (let j = i + 1; j < tools.length; j++) {
-        const tool1 = tools[i];
-        const tool2 = tools[j];
-        
-        const tool1Slug = createSlug(tool1.name);
-        const tool2Slug = createSlug(tool2.name);
-        
-        // Only add the alphabetically first combination to avoid duplicates
-        if (tool1Slug < tool2Slug) {
-          routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
-        } else {
-          routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
-        }
-      }
-    }
+    // Get only valid comparisons based on categories
+    const validComparisons = getValidComparisons(tools);
+    console.log(`Found ${validComparisons.length} valid comparisons (down from ${(tools.length * (tools.length - 1)) / 2} total combinations)`);
     
-    console.log(`Added canonical comparison routes to sitemap`);
+    // Add routes for valid comparisons only
+    validComparisons.forEach(({ tool1, tool2 }) => {
+      const tool1Slug = createSlug(tool1.name);
+      const tool2Slug = createSlug(tool2.name);
+      
+      // Always use alphabetical order for canonical URLs
+      if (tool1Slug < tool2Slug) {
+        routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
+      } else {
+        routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
+      }
+    });
+    
+    console.log(`Added ${validComparisons.length} meaningful comparison routes to sitemap`);
   } catch (error) {
     console.error('Error generating comparison routes for sitemap:', error);
   }

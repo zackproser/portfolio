@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button'
 import { AddToolForm } from '@/components/admin/add-tool-form'
 import { ToolsList } from '@/components/admin/tools-list'
 import { Plus } from 'lucide-react'
-import type { Tool } from '@prisma/client'
+import type { ManifestTool } from "@/actions/tool-actions"
 
 interface ToolsAdminClientProps {
-  initialTools: Tool[]
+  initialTools: ManifestTool[]
 }
 
 export function ToolsAdminClient({ initialTools }: ToolsAdminClientProps) {

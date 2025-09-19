@@ -1,6 +1,7 @@
 import { Feed } from 'feed'
 import { getAllContent } from '@/lib/content-handlers'
 import { getAllTools } from '@/actions/tool-actions'
+import { getValidComparisons, getComparisonTitle, getComparisonDescription } from '@/lib/comparison-categories'
 
 // Helper function to create slug from tool name (same logic as in comparison page)
 function createSlug(name) {
@@ -92,43 +93,38 @@ export async function GET() {
       }
     }
 
-    // Add comparison routes to feed
+    // Add comparison routes to feed (only meaningful comparisons)
     try {
       console.log('Adding comparison routes to XML feed...');
       const tools = await getAllTools();
       
-      // Generate comparison entries (limit to avoid overwhelming the feed, canonical order only)
-      const comparisonEntries = [];
-      for (let i = 0; i < tools.length && comparisonEntries.length < 50; i++) {
-        for (let j = i + 1; j < tools.length && comparisonEntries.length < 50; j++) {
-          const tool1 = tools[i];
-          const tool2 = tools[j];
-          
-          const tool1Slug = createSlug(tool1.name);
-          const tool2Slug = createSlug(tool2.name);
-          
-          // Only add the alphabetically first combination to avoid duplicates
-          let comparisonUrl;
-          let title;
-          if (tool1Slug < tool2Slug) {
-            comparisonUrl = `${siteUrl}/comparisons/${tool1Slug}/vs/${tool2Slug}`;
-            title = `${tool1.name} vs ${tool2.name}`;
-          } else {
-            comparisonUrl = `${siteUrl}/comparisons/${tool2Slug}/vs/${tool1Slug}`;
-            title = `${tool2.name} vs ${tool1.name}`;
-          }
-          
-          comparisonEntries.push({
-            title: title,
-            id: comparisonUrl,
-            link: comparisonUrl,
-            author: [author],
-            contributor: [author],
-            date: new Date(), // Use current date for comparisons
-            description: `Compare ${tool1.name} and ${tool2.name} - features, pricing, pros and cons. Find the best tool for your development needs.`,
-          });
+      // Get only valid comparisons based on categories
+      const validComparisons = getValidComparisons(tools);
+      console.log(`Found ${validComparisons.length} valid comparisons for RSS feed`);
+      
+      // Generate comparison entries (limit to avoid overwhelming the feed)
+      const comparisonEntries = validComparisons.slice(0, 50).map(({ tool1, tool2 }) => {
+        const tool1Slug = createSlug(tool1.name);
+        const tool2Slug = createSlug(tool2.name);
+        
+        // Always use alphabetical order for canonical URLs
+        let comparisonUrl;
+        if (tool1Slug < tool2Slug) {
+          comparisonUrl = `${siteUrl}/comparisons/${tool1Slug}/vs/${tool2Slug}`;
+        } else {
+          comparisonUrl = `${siteUrl}/comparisons/${tool2Slug}/vs/${tool1Slug}`;
         }
-      }
+        
+        return {
+          title: getComparisonTitle(tool1.name, tool2.name, tool1.category, tool2.category),
+          id: comparisonUrl,
+          link: comparisonUrl,
+          author: [author],
+          contributor: [author],
+          date: new Date(), // Use current date for comparisons
+          description: getComparisonDescription(tool1.name, tool2.name, tool1.category, tool2.category),
+        };
+      });
       
       // Add comparison entries to feed
       comparisonEntries.forEach(entry => {
@@ -138,7 +134,7 @@ export async function GET() {
           console.error(`Error adding comparison item ${entry.title}:`, itemError);
         }
       });
-      console.log(`Added ${comparisonEntries.length} canonical comparison entries to XML feed`);
+      console.log(`Added ${comparisonEntries.length} meaningful comparison entries to XML feed`);
     } catch (error) {
       console.error('Error adding comparison routes to XML feed:', error);
     }

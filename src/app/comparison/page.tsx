@@ -7,13 +7,13 @@ import { ArrowLeft } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Check, X, Minus } from "lucide-react"
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 import { getAllTools } from "@/actions/tool-actions"
 
 export default function ComparisonPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [tools, setTools] = useState<Tool[]>([])
+  const [tools, setTools] = useState<ManifestTool[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

@@ -1,0 +1,46 @@
+name: Validate Tool Manifests
+
+on:
+  pull_request:
+    paths:
+      - 'manifests/**'
+      - 'src/lib/manifests/**'
+      - '.github/workflows/validate-manifests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'manifests/**'
+      - 'src/lib/manifests/**'
+      - '.github/workflows/validate-manifests.yml'
+
+jobs:
+  validate-manifests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Validate manifest schemas
+        run: |
+          echo "Validating manifest schemas..."
+          npx tsx scripts/validate-manifests.ts
+          
+      - name: Check for missing provenance
+        run: |
+          echo "Checking provenance coverage..."
+          npx tsx scripts/check-provenance.ts
+          
+      - name: Run policy checks
+        run: |
+          echo "Running policy checks..."
+          npx tsx scripts/policy-checks.ts

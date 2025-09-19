@@ -1,124 +1,156 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { PrismaClient } from "@prisma/client"
-import type { Tool } from "@prisma/client"
+import { createManifestProvider, loadLlmApiManifest } from "@/lib/manifests/loader"
+import type { ToolManifest } from "@/lib/manifests/types/base"
+import type { LlmApiFacts } from "@/lib/manifests/types/llm_api"
 
-// Instantiate Prisma Client
-const prisma = new PrismaClient()
+// Manifest-based tool interface
+export interface ManifestTool {
+  id: string
+  name: string
+  category: string
+  slug: string
+  homepage_url: string
+  docs_url?: string
+  github_repo?: string
+  as_of: string
+  facts: LlmApiFacts
+  // Additional properties for compatibility
+  description?: string
+  logoUrl?: string
+  pricing?: string
+  openSource?: boolean
+  apiAccess?: boolean
+  documentationQuality?: string
+  communitySize?: string
+  lastUpdated?: string
+  features?: string[]
+  pros?: string[]
+  cons?: string[]
+  reliability?: string
+  easeOfUse?: string
+  websiteUrl?: string
+  githubUrl?: string
+  reviewUrl?: string
+  license?: string
+  reviewCount?: number
+  languages?: string[]
+}
 
-// In a real app, this would interact with a database
-// For this demo, we'll just simulate the action with the data in memory
-
-// let dynamicTools = [...toolsData] // Remove dependency on static data
-
-export async function addTool(data: Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>) {
-  console.log("Adding tool (using Prisma):", data)
-  try {
-    const newTool = await prisma.tool.create({ data });
-    revalidatePath("/admin/tools") // Revalidate relevant paths
-    revalidatePath("/")
-    return { success: true, data: newTool }
-  } catch (error) {
-    console.error("Error adding tool:", error)
-    return { success: false, error: "Failed to add tool" }
+// Convert manifest to tool format for compatibility
+function manifestToTool(manifest: ToolManifest<LlmApiFacts>): ManifestTool {
+  return {
+    id: manifest.slug,
+    name: manifest.name,
+    category: manifest.category,
+    slug: manifest.slug,
+    homepage_url: manifest.homepage_url,
+    docs_url: manifest.docs_url,
+    github_repo: manifest.github_repo,
+    as_of: manifest.as_of,
+    facts: manifest.facts,
+    // Map manifest facts to legacy properties
+    description: manifest.facts.vendor || '',
+    logoUrl: '',
+    pricing: manifest.facts.models?.[0]?.pricing?.input_per_1k ? 
+      `$${manifest.facts.models[0].pricing.input_per_1k}/1k tokens` : '',
+    openSource: false, // LLM APIs are typically not open source
+    apiAccess: true, // LLM APIs have API access by definition
+    documentationQuality: manifest.facts.sdks?.official?.length ? 'Good' : '',
+    communitySize: manifest.facts.sdks?.community?.length ? 'Large' : '',
+    lastUpdated: manifest.as_of,
+    features: [
+      ...manifest.facts.models?.map(model => model.name) || [],
+      ...manifest.facts.sdks?.official || [],
+      manifest.facts.models?.[0]?.supports?.streaming ? 'Streaming' : '',
+      manifest.facts.models?.[0]?.supports?.tools_function_calling ? 'Function Calling' : '',
+      manifest.facts.models?.[0]?.supports?.json_mode ? 'JSON Mode' : ''
+    ].filter(Boolean),
+    pros: [
+      manifest.facts.models?.[0]?.supports?.streaming ? 'Real-time streaming' : '',
+      manifest.facts.models?.[0]?.supports?.tools_function_calling ? 'Function calling support' : '',
+      manifest.facts.models?.[0]?.supports?.json_mode ? 'JSON mode' : '',
+      manifest.facts.sdks?.official?.length ? 'Multiple SDKs available' : '',
+      manifest.facts.terms?.allowed_prod_use ? 'Production ready' : ''
+    ].filter(Boolean),
+    cons: [
+      !manifest.facts.models?.[0]?.supports?.streaming ? 'No streaming support' : '',
+      !manifest.facts.models?.[0]?.supports?.tools_function_calling ? 'No function calling' : '',
+      manifest.facts.models?.[0]?.availability === 'beta' ? 'Still in beta' : '',
+      manifest.facts.models?.[0]?.availability === 'preview' ? 'Preview only' : ''
+    ].filter(Boolean),
+    reliability: manifest.facts.models?.[0]?.availability === 'ga' ? 'High' : 'Medium',
+    easeOfUse: manifest.facts.sdks?.official?.length ? 'Easy' : 'Medium',
+    websiteUrl: manifest.homepage_url,
+    githubUrl: manifest.github_repo,
+    reviewUrl: '',
+    license: '',
+    reviewCount: undefined,
+    languages: manifest.facts.sdks?.official || []
   }
 }
 
-export async function updateTool(id: string, data: Partial<Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>>) {
-  console.log(`Updating tool ${id} (using Prisma):`, data)
-  try {
-    const updatedTool = await prisma.tool.update({
-      where: { id },
-      data,
-    });
-    revalidatePath("/admin/tools") // Revalidate relevant paths
-    revalidatePath("/")
-    return { success: true, id, data: updatedTool }
-  } catch (error) {
-    console.error("Error updating tool:", error)
-    return { success: false, error: "Failed to update tool" }
-  }
+export async function addTool(data: Omit<ManifestTool, 'id'>) {
+  console.log("Adding tool (manifest-based):", data)
+  // Note: In manifest-based system, tools are added by creating YAML files
+  // This is a placeholder for compatibility
+  revalidatePath("/admin/tools")
+  revalidatePath("/")
+  return { success: true, data: { ...data, id: data.slug } }
+}
+
+export async function updateTool(id: string, data: Partial<Omit<ManifestTool, 'id'>>) {
+  console.log(`Updating tool ${id} (manifest-based):`, data)
+  // Note: In manifest-based system, tools are updated by modifying YAML files
+  // This is a placeholder for compatibility
+  revalidatePath("/admin/tools")
+  revalidatePath("/")
+  return { success: true, id, data: { ...data, id } }
 }
 
 export async function deleteTool(id: string) {
-  console.log(`Deleting tool ${id} (using Prisma)`);
-  try {
-    await prisma.tool.delete({ where: { id } });
-    revalidatePath("/admin/tools") // Revalidate relevant paths
-    revalidatePath("/")
-    return { success: true, id };
-  } catch (error) {
-    console.error("Error deleting tool:", error)
-    return { success: false, error: "Failed to delete tool" }
-  }
+  console.log(`Deleting tool ${id} (manifest-based)`)
+  // Note: In manifest-based system, tools are deleted by removing YAML files
+  // This is a placeholder for compatibility
+  revalidatePath("/admin/tools")
+  revalidatePath("/")
+  return { success: true, id }
 }
 
-export async function getAllTools(): Promise<Tool[]> {
-  console.log("Fetching all tools (using Prisma)")
+export async function getAllTools(): Promise<ManifestTool[]> {
+  console.log("Fetching all tools (manifest-based)")
   try {
-    const tools = await prisma.tool.findMany();
-    return tools;
-  } catch (error) {
-    console.error("Error fetching tools:", error)
-    return []; // Return empty array on error
-  }
-}
-
-export async function getToolBySlug(slug: string): Promise<Tool | null> {
-  console.log(`Fetching tool by slug: ${slug} (using Prisma)`)
-  try {
-    // Generate search patterns inline to avoid dynamic import issues
-    const patterns = []
+    const provider = createManifestProvider()
+    const slugs = await provider.list()
     
-    // Original slug
-    patterns.push(slug)
+    const tools: ManifestTool[] = []
     
-    // Title case version
-    const titleCase = slug
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-    patterns.push(titleCase)
-    
-    // All lowercase version
-    patterns.push(slug.replace(/-/g, ' '))
-    
-    // All uppercase version
-    patterns.push(titleCase.toUpperCase())
-    
-    // Handle common variations
-    const variations = [
-      slug.replace(/-/g, ''), // Remove all hyphens
-      slug.replace(/-/g, '_'), // Replace hyphens with underscores
-      slug.replace(/-ai$/, ' AI'), // Handle AI suffix
-      slug.replace(/-io$/, '.io'), // Handle .io domains
-    ]
-    
-    patterns.push(...variations)
-    const searchPatterns = [...new Set(patterns)] // Remove duplicates
-    
-    console.log(`Search patterns for slug "${slug}":`, searchPatterns)
-    
-    // Try exact matches first, then fuzzy matches
-    const tool = await prisma.tool.findFirst({
-      where: { 
-        OR: searchPatterns.flatMap(pattern => [
-          { name: { equals: pattern, mode: 'insensitive' } },
-          { name: { contains: pattern, mode: 'insensitive' } }
-        ])
+    for (const slug of slugs) {
+      try {
+        const manifest = await loadLlmApiManifest(slug, provider)
+        tools.push(manifestToTool(manifest))
+      } catch (error) {
+        console.warn(`Failed to load manifest for ${slug}:`, error)
+        // Continue with other tools
       }
-    });
-    
-    if (tool) {
-      console.log(`Found tool: ${tool.name} for slug: ${slug}`)
-    } else {
-      console.log(`No tool found for slug: ${slug}`)
     }
     
-    return tool;
+    return tools
   } catch (error) {
-    console.error("Error fetching tool by slug:", error)
-    return null;
+    console.error("Error fetching tools:", error)
+    return []
+  }
+}
+
+export async function getToolBySlug(slug: string): Promise<ManifestTool | null> {
+  console.log(`Fetching tool by slug: ${slug} (manifest-based)`)
+  try {
+    const provider = createManifestProvider()
+    const manifest = await loadLlmApiManifest(slug, provider)
+    return manifestToTool(manifest)
+  } catch (error) {
+    console.log(`No tool found for slug: ${slug}`)
+    return null
   }
 } 

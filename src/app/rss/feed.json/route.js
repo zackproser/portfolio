@@ -1,6 +1,7 @@
 import { Feed } from 'feed'
 import { getAllContent } from '@/lib/content-handlers'
 import { getAllTools } from '@/actions/tool-actions'
+import { getValidComparisons, getComparisonTitle, getComparisonDescription } from '@/lib/comparison-categories'
 
 // Helper function to create slug from tool name (same logic as in comparison page)
 function createSlug(name) {

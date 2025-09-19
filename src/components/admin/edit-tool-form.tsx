@@ -14,7 +14,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { updateTool } from "@/actions/tool-actions" // We'll assume an updateTool action exists
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
-import type { Tool } from "@prisma/client" // Import from prisma client
+import type { ManifestTool } from "@/actions/tool-actions"
 
 // Define the form schema (similar to AddToolForm)
 const toolFormSchema = z.object({
@@ -48,11 +48,11 @@ const toolFormSchema = z.object({
 type ToolFormValues = z.infer<typeof toolFormSchema>
 
 // Define a type for the data expected by updateTool
-// (Assuming it's based on the Prisma Tool model, excluding id/timestamps)
-type ToolUpdateData = Partial<Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>>;
+// (Based on the ManifestTool model, excluding id)
+type ToolUpdateData = Partial<Omit<ManifestTool, 'id'>>;
 
 interface EditToolFormProps {
-  tool: Tool // Pass the tool data to pre-fill the form
+  tool: ManifestTool // Pass the tool data to pre-fill the form
   onSuccess?: () => void
 }
 
@@ -135,7 +135,7 @@ export function EditToolForm({ tool, onSuccess }: EditToolFormProps) {
         // Parse reviewCount string to number | null or use number directly
         reviewCount: typeof data.reviewCount === 'number' 
           ? data.reviewCount 
-          : (data.reviewCount && data.reviewCount.trim() !== "" ? Number.parseInt(data.reviewCount.trim(), 10) : null),
+          : (data.reviewCount && data.reviewCount.trim() !== "" ? Number.parseInt(data.reviewCount.trim(), 10) : undefined),
       }
       // console.log("Processed data:", processedData); // Remove log
 

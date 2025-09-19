@@ -1,12 +1,12 @@
 "use client"
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react"
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 import { getAllTools } from "@/actions/tool-actions"
 
 type ToolsContextType = {
-  tools: Tool[]
-  filteredTools: Tool[]
+  tools: ManifestTool[]
+  filteredTools: ManifestTool[]
   selectedTools: string[]
   selectedCategories: string[]
   searchTerm: string
@@ -17,17 +17,17 @@ type ToolsContextType = {
   clearComparison: () => void
   clearSelectedTools: () => void
   isInComparison: (toolId: string) => boolean
-  setFilteredTools: (tools: Tool[]) => void
+  setFilteredTools: (tools: ManifestTool[]) => void
   setSearchTerm: (term: string) => void
   setSelectedCategories: (categories: string[]) => void
-  getToolById: (id: string) => Tool | undefined
+  getToolById: (id: string) => ManifestTool | undefined
 }
 
 const ToolsContext = createContext<ToolsContextType | undefined>(undefined)
 
 export function ToolsProvider({ children }: { children: ReactNode }) {
-  const [tools, setTools] = useState<Tool[]>([])
-  const [filteredTools, setFilteredTools] = useState<Tool[]>([])
+  const [tools, setTools] = useState<ManifestTool[]>([])
+  const [filteredTools, setFilteredTools] = useState<ManifestTool[]>([])
   const [selectedTools, setSelectedTools] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -53,7 +53,7 @@ export function ToolsProvider({ children }: { children: ReactNode }) {
       filtered = filtered.filter(
         (tool) =>
           tool.name.toLowerCase().includes(term) ||
-          tool.description.toLowerCase().includes(term) ||
+          (tool.description && tool.description.toLowerCase().includes(term)) ||
           tool.category.toLowerCase().includes(term) ||
           tool.features?.some((feature) => feature.toLowerCase().includes(term)) ||
           tool.pros?.some((pro) => pro.toLowerCase().includes(term)) ||

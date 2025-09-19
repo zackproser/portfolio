@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { getAllTools } from "@/actions/tool-actions"
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 import { ToolsAdminClient } from "@/components/admin/tools-admin-client" // Import the client component
 
 export default async function ToolsAdminPage() {
   console.log("ADMIN TOOLS PAGE (Prod Test): Attempting to fetch tools..."); // Add log
-  let tools: Tool[] = [];
+  let tools: ManifestTool[] = [];
   let fetchError = null;
 
   // const [isAddingTool, setIsAddingTool] = useState(false) // Remove state

@@ -1,0 +1,368 @@
+schema_version: "1.0"
+slug: openai-api
+name: OpenAI API
+category: llm_api
+homepage_url: https://openai.com/api
+docs_url: https://platform.openai.com/docs
+github_repo: openai/openai-python
+as_of: 2024-01-15T00:00:00Z
+facts:
+  vendor: openai
+  auth:
+    scheme: bearer
+    header: Authorization
+    base_url: https://api.openai.com/v1
+  models:
+    - name: gpt-4o
+      modality:
+        - text
+        - image
+      context_tokens_max: 128000
+      supports:
+        streaming: true
+        tools_function_calling: true
+        json_mode: true
+        system_prompt: true
+        batch: true
+        parallel_tool_calls: true
+      pricing:
+        input_per_1k: 0.005
+        output_per_1k: 0.015
+        notes: As of January 2024
+      rate_limits:
+        rpm: 10000
+        tpm: 200000
+        notes: Varies by tier
+      availability: ga
+    - name: gpt-4o-mini
+      modality:
+        - text
+        - image
+      context_tokens_max: 128000
+      supports:
+        streaming: true
+        tools_function_calling: true
+        json_mode: true
+        system_prompt: true
+        batch: true
+        parallel_tool_calls: true
+      pricing:
+        input_per_1k: 0.00015
+        output_per_1k: 0.0006
+        notes: As of January 2024
+      rate_limits:
+        rpm: 10000
+        tpm: 200000
+        notes: Varies by tier
+      availability: ga
+    - name: text-embedding-3-large
+      modality:
+        - embeddings
+      context_tokens_max: 8191
+      supports:
+        streaming: false
+        tools_function_calling: false
+        json_mode: false
+        system_prompt: false
+      pricing:
+        embeddings_per_1k: 0.00013
+        notes: As of January 2024
+      rate_limits:
+        rpm: 3000
+        tpm: 1000000
+        notes: Varies by tier
+      availability: ga
+  sdks:
+    official:
+      - python
+      - javascript
+      - go
+      - java
+      - csharp
+      - ruby
+    community:
+      - php
+      - rust
+      - swift
+      - kotlin
+  terms:
+    allowed_prod_use: true
+    pii_restrictions: No PII in training data
+    data_retention_days: 30
+provenance:
+  - path: /facts/vendor
+    url: https://openai.com/api
+    quote: OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/scheme
+    url: https://platform.openai.com/docs/authentication
+    quote: Bearer token authentication
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/header
+    url: https://platform.openai.com/docs/authentication
+    quote: Authorization header
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/base_url
+    url: https://platform.openai.com/docs/api-reference
+    quote: https://api.openai.com/v1
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/name
+    url: https://platform.openai.com/docs/models/gpt-4o
+    quote: gpt-4o
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality
+    url: https://platform.openai.com/docs/guides/vision
+    quote: Vision capabilities
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/context_tokens_max
+    url: https://platform.openai.com/docs/models/gpt-4o
+    quote: 128,000 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/streaming
+    url: https://platform.openai.com/docs/api-reference/chat/create
+    quote: Streaming responses
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/tools_function_calling
+    url: https://platform.openai.com/docs/guides/function-calling
+    quote: Function calling support
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/json_mode
+    url: https://platform.openai.com/docs/guides/text-generation/json-mode
+    quote: JSON mode
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/system_prompt
+    url: https://platform.openai.com/docs/guides/prompt-engineering
+    quote: System prompts
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/batch
+    url: https://platform.openai.com/docs/guides/batch-processing
+    quote: Batch API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/parallel_tool_calls
+    url: https://platform.openai.com/docs/guides/function-calling
+    quote: Parallel tool calls
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/input_per_1k
+    url: https://openai.com/pricing
+    quote: $0.005 per 1K input tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/output_per_1k
+    url: https://openai.com/pricing
+    quote: $0.015 per 1K output tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/notes
+    url: https://openai.com/pricing
+    quote: As of January 2024
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/rpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 10,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/tpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 200,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/notes
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: Varies by tier
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/availability
+    url: https://platform.openai.com/docs/models/gpt-4o
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/name
+    url: https://platform.openai.com/docs/models/gpt-4o-mini
+    quote: gpt-4o-mini
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality
+    url: https://platform.openai.com/docs/guides/vision
+    quote: Vision capabilities
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/context_tokens_max
+    url: https://platform.openai.com/docs/models/gpt-4o-mini
+    quote: 128,000 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/streaming
+    url: https://platform.openai.com/docs/api-reference/chat/create
+    quote: Streaming responses
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/tools_function_calling
+    url: https://platform.openai.com/docs/guides/function-calling
+    quote: Function calling support
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/json_mode
+    url: https://platform.openai.com/docs/guides/text-generation/json-mode
+    quote: JSON mode
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/system_prompt
+    url: https://platform.openai.com/docs/guides/prompt-engineering
+    quote: System prompts
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/batch
+    url: https://platform.openai.com/docs/guides/batch-processing
+    quote: Batch API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/parallel_tool_calls
+    url: https://platform.openai.com/docs/guides/function-calling
+    quote: Parallel tool calls
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/input_per_1k
+    url: https://openai.com/pricing
+    quote: $0.00015 per 1K input tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/output_per_1k
+    url: https://openai.com/pricing
+    quote: $0.0006 per 1K output tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/rpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 10,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/tpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 200,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/availability
+    url: https://platform.openai.com/docs/models/gpt-4o-mini
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/name
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: text-embedding-3-large
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/modality
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: Text embeddings
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/context_tokens_max
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: 8,191 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/streaming
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: No streaming for embeddings
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/tools_function_calling
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: No function calling for embeddings
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/json_mode
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: No JSON mode for embeddings
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/system_prompt
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: No system prompts for embeddings
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/pricing/embeddings_per_1k
+    url: https://openai.com/pricing
+    quote: $0.00013 per 1K tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/rpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 3,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/tpm
+    url: https://platform.openai.com/docs/guides/rate-limits
+    quote: 1,000,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/availability
+    url: https://platform.openai.com/docs/guides/embeddings
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official
+    url: https://platform.openai.com/docs/libraries
+    quote: Official SDKs for Python, JavaScript, Go, Java, C#, Ruby
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community
+    url: https://github.com/openai/openai-python
+    quote: Community SDKs available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/allowed_prod_use
+    url: https://openai.com/policies/usage-policies
+    quote: Production use allowed
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/pii_restrictions
+    url: https://openai.com/policies/usage-policies
+    quote: No PII in training data
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/data_retention_days
+    url: https://openai.com/policies/usage-policies
+    quote: 30 days retention
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality/0
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality/1
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality/0
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality/1
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/notes
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/notes
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/modality/0
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/pricing/notes
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/notes
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/0
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/1
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/2
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/3
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/4
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/5
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/0
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/1
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/2
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/3
+    url: https://openai.com/api
+    quote: Value from OpenAI API
+    captured_at: 2024-01-15T00:00:00Z

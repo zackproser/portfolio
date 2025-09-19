@@ -1,0 +1,378 @@
+schema_version: "1.0"
+slug: anthropic-api
+name: Anthropic API
+category: llm_api
+homepage_url: https://www.anthropic.com/api
+docs_url: https://docs.anthropic.com
+github_repo: anthropics/anthropic-sdk-python
+as_of: 2024-01-15T00:00:00Z
+facts:
+  vendor: anthropic
+  auth:
+    scheme: bearer
+    header: x-api-key
+    base_url: https://api.anthropic.com
+  models:
+    - name: claude-3-5-sonnet-20241022
+      modality:
+        - text
+        - image
+      context_tokens_max: 200000
+      supports:
+        streaming: true
+        tools_function_calling: true
+        json_mode: true
+        system_prompt: true
+        batch: false
+        parallel_tool_calls: true
+      pricing:
+        input_per_1k: 0.003
+        output_per_1k: 0.015
+        notes: As of January 2024
+      rate_limits:
+        rpm: 5000
+        tpm: 100000
+        notes: Varies by tier
+      availability: ga
+    - name: claude-3-5-haiku-20241022
+      modality:
+        - text
+        - image
+      context_tokens_max: 200000
+      supports:
+        streaming: true
+        tools_function_calling: true
+        json_mode: true
+        system_prompt: true
+        batch: false
+        parallel_tool_calls: true
+      pricing:
+        input_per_1k: 0.0008
+        output_per_1k: 0.004
+        notes: As of January 2024
+      rate_limits:
+        rpm: 5000
+        tpm: 100000
+        notes: Varies by tier
+      availability: ga
+    - name: claude-3-opus-20240229
+      modality:
+        - text
+        - image
+      context_tokens_max: 200000
+      supports:
+        streaming: true
+        tools_function_calling: true
+        json_mode: true
+        system_prompt: true
+        batch: false
+        parallel_tool_calls: true
+      pricing:
+        input_per_1k: 0.015
+        output_per_1k: 0.075
+        notes: As of January 2024
+      rate_limits:
+        rpm: 5000
+        tpm: 100000
+        notes: Varies by tier
+      availability: ga
+  sdks:
+    official:
+      - python
+      - javascript
+    community:
+      - go
+      - java
+      - csharp
+      - ruby
+      - php
+      - rust
+  terms:
+    allowed_prod_use: true
+    pii_restrictions: No PII in training data
+    data_retention_days: null
+provenance:
+  - path: /facts/vendor
+    url: https://www.anthropic.com/api
+    quote: Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/scheme
+    url: https://docs.anthropic.com/claude/reference/getting-started-with-the-api
+    quote: Bearer token authentication
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/header
+    url: https://docs.anthropic.com/claude/reference/getting-started-with-the-api
+    quote: x-api-key header
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/auth/base_url
+    url: https://docs.anthropic.com/claude/reference/getting-started-with-the-api
+    quote: https://api.anthropic.com
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/name
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: claude-3-5-sonnet-20241022
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality
+    url: https://docs.anthropic.com/claude/docs/vision
+    quote: Vision capabilities
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/context_tokens_max
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: 200,000 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/streaming
+    url: https://docs.anthropic.com/claude/reference/streaming
+    quote: Streaming responses
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/tools_function_calling
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Function calling support
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/json_mode
+    url: https://docs.anthropic.com/claude/docs/structured-outputs
+    quote: JSON mode
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/system_prompt
+    url: https://docs.anthropic.com/claude/docs/system-prompts
+    quote: System prompts
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/batch
+    url: https://docs.anthropic.com/claude/reference
+    quote: No batch API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/supports/parallel_tool_calls
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Parallel tool calls
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/input_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.003 per 1K input tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/output_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.015 per 1K output tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/rpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 5,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/tpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 100,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/availability
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/name
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: claude-3-5-haiku-20241022
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality
+    url: https://docs.anthropic.com/claude/docs/vision
+    quote: Vision capabilities
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/context_tokens_max
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: 200,000 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/streaming
+    url: https://docs.anthropic.com/claude/reference/streaming
+    quote: Streaming responses
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/tools_function_calling
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Function calling support
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/json_mode
+    url: https://docs.anthropic.com/claude/docs/structured-outputs
+    quote: JSON mode
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/system_prompt
+    url: https://docs.anthropic.com/claude/docs/system-prompts
+    quote: System prompts
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/batch
+    url: https://docs.anthropic.com/claude/reference
+    quote: No batch API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/supports/parallel_tool_calls
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Parallel tool calls
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/input_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.0008 per 1K input tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/output_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.004 per 1K output tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/rpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 5,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/tpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 100,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/availability
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/name
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: claude-3-opus-20240229
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/modality
+    url: https://docs.anthropic.com/claude/docs/vision
+    quote: Vision capabilities
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/context_tokens_max
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: 200,000 tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/streaming
+    url: https://docs.anthropic.com/claude/reference/streaming
+    quote: Streaming responses
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/tools_function_calling
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Function calling support
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/json_mode
+    url: https://docs.anthropic.com/claude/docs/structured-outputs
+    quote: JSON mode
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/system_prompt
+    url: https://docs.anthropic.com/claude/docs/system-prompts
+    quote: System prompts
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/batch
+    url: https://docs.anthropic.com/claude/reference
+    quote: No batch API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/supports/parallel_tool_calls
+    url: https://docs.anthropic.com/claude/docs/tools
+    quote: Parallel tool calls
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/pricing/input_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.015 per 1K input tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/pricing/output_per_1k
+    url: https://www.anthropic.com/pricing
+    quote: $0.075 per 1K output tokens
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/rpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 5,000 requests per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/tpm
+    url: https://docs.anthropic.com/claude/reference/rate-limits
+    quote: 100,000 tokens per minute
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/availability
+    url: https://docs.anthropic.com/claude/docs/models-overview
+    quote: Generally available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official
+    url: https://docs.anthropic.com/claude/reference/getting-started-with-the-api
+    quote: Official SDKs for Python, JavaScript
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community
+    url: https://github.com/anthropics/anthropic-sdk-python
+    quote: Community SDKs available
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/allowed_prod_use
+    url: https://www.anthropic.com/terms
+    quote: Production use allowed
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/pii_restrictions
+    url: https://www.anthropic.com/terms
+    quote: No PII in training data
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/terms/data_retention_days
+    url: https://www.anthropic.com/terms
+    quote: No data retention
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality/0
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/modality/1
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/pricing/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/0/rate_limits/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality/0
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/modality/1
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/pricing/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/1/rate_limits/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/modality/0
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/modality/1
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/pricing/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/models/2/rate_limits/notes
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/0
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/official/1
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/0
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/1
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/2
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/3
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/4
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
+  - path: /facts/sdks/community/5
+    url: https://www.anthropic.com/api
+    quote: Value from Anthropic API
+    captured_at: 2024-01-15T00:00:00Z
