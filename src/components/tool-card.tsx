@@ -1,6 +1,6 @@
 "use client"
 
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { useTools } from "@/components/tools-provider"
 import Image from "next/image"
 
 interface ToolCardProps {
-  tool: Tool
+  tool: ManifestTool
   onViewDetails: () => void
 }
 

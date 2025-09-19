@@ -14,10 +14,10 @@ import { addTool } from "@/actions/tool-actions"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { toolFormSchema, type ToolFormValues } from "@/schemas/tool-schema"
-import type { Tool } from "@prisma/client"
+import type { ManifestTool } from "@/actions/tool-actions"
 
 // Type for action data
-type AddToolActionData = Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>;
+type AddToolActionData = Omit<ManifestTool, 'id'>;
 
 interface AddToolFormProps {
   onSuccess?: () => void
@@ -52,6 +52,8 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
       reviewCount: undefined,
       reviewUrl: "",
       license: "",
+      easeOfUse: "",
+      reliability: "",
     },
   })
 
@@ -65,20 +67,37 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
         name: data.name,
         description: data.description,
         category: data.category,
+        slug: data.name.toLowerCase().replace(/\s+/g, '-'),
+        homepage_url: data.websiteUrl,
+        as_of: new Date().toISOString().split('T')[0],
+        facts: {
+          vendor: 'other',
+          auth: {
+            scheme: 'api_key',
+            header: 'Authorization',
+            base_url: data.websiteUrl
+          },
+          models: [],
+          sdks: {
+            official: []
+          }
+        },
         websiteUrl: data.websiteUrl,
         openSource: data.openSource,
         apiAccess: data.apiAccess,
-        // Convert optional strings: empty string or undefined becomes null
-        pricing: data.pricing || null,
-        githubUrl: data.githubUrl || null,
-        logoUrl: data.logoUrl === "/placeholder.svg?height=40&width=40" || !data.logoUrl ? null : data.logoUrl,
-        reviewUrl: data.reviewUrl || null,
-        documentationQuality: data.documentationQuality || null,
-        communitySize: data.communitySize || null,
-        lastUpdated: data.lastUpdated || null,
-        license: data.license || null,
+        // Convert optional strings: empty string or undefined becomes undefined
+        pricing: data.pricing || undefined,
+        githubUrl: data.githubUrl || undefined,
+        logoUrl: data.logoUrl === "/placeholder.svg?height=40&width=40" || !data.logoUrl ? undefined : data.logoUrl,
+        reviewUrl: data.reviewUrl || undefined,
+        documentationQuality: data.documentationQuality || undefined,
+        communitySize: data.communitySize || undefined,
+        lastUpdated: data.lastUpdated || undefined,
+        license: data.license || undefined,
+        // easeOfUse: data.easeOfUse || null,
+        // reliability: data.reliability || null,
         // Convert optional number string: empty/undefined becomes null, otherwise parse
-        reviewCount: data.reviewCount && data.reviewCount.trim() !== "" ? Number.parseInt(data.reviewCount.trim(), 10) : null,
+        reviewCount: data.reviewCount && data.reviewCount.trim() !== "" ? Number.parseInt(data.reviewCount.trim(), 10) : undefined,
         // Convert comma-separated strings to arrays
         features: data.features ? data.features.split(",").map(s => s.trim()).filter(Boolean) : [],
         pros: data.pros ? data.pros.split(",").map(s => s.trim()).filter(Boolean) : [],
@@ -334,6 +353,58 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
                         <SelectItem value="Medium">Medium</SelectItem>
                         <SelectItem value="Small but growing">Small but growing</SelectItem>
                         <SelectItem value="Small">Small</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="easeOfUse"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ease of Use</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select ease level" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Very Easy">Very Easy</SelectItem>
+                        <SelectItem value="Easy">Easy</SelectItem>
+                        <SelectItem value="Moderate">Moderate</SelectItem>
+                        <SelectItem value="Difficult">Difficult</SelectItem>
+                        <SelectItem value="Very Difficult">Very Difficult</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="reliability"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reliability</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select reliability" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Very High">Very High</SelectItem>
+                        <SelectItem value="High">High</SelectItem>
+                        <SelectItem value="Moderate">Moderate</SelectItem>
+                        <SelectItem value="Low">Low</SelectItem>
+                        <SelectItem value="Very Low">Very Low</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

@@ -967,7 +967,7 @@ async function main() {
   console.log("Deleted records in tool table");
 
   for (const tool of toolsData) {
-    // Map the data to match the Prisma schema
+    // Map the data to match the actual database schema
     const toolData = {
       name: tool.name,
       description: tool.description,
