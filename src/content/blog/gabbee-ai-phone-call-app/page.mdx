@@ -12,64 +12,68 @@ export const metadata = createMetadata(rawMetadata);
 
 
 
-I'm excited to share one of my latest projects: [Gabbee.io, an AI phone call app](https://gabbee.io) that functions like a digital secretary. Gabbee can make single calls, scheduled calls, or even recurring calls, all based on your instructions. Afterward, it provides a transcript and a quick summary, so you always know exactly what happened on the phone.
+I'm excited to share one of my latest projects: [Gabbee.io, an AI BDR for Zoho](https://gabbee.io) that programmatically validates your leads via human-sounding phone calls. Gabbee automatically qualifies prospects using BANT (Budget, Authority, Need, Timeline) criteria, making outbound calls that sound genuinely human while capturing detailed qualification data for your Zoho CRM.
 
 <Image src="https://zackproser.b-cdn.net/images/gabbee-hero.webp" alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
 
-The idea behind Gabbee is straightforward: there are plenty of scenarios where you need someone (or something) to make a call for you—like reminding a friend you're running late, disputing a charge, confirming an appointment, or just checking in on someone regularly. 
+The idea behind Gabbee is straightforward: sales teams spend countless hours manually calling leads to qualify them, often with inconsistent results and poor conversion rates. Gabbee automates this entire process by making human-sounding calls that naturally qualify prospects using proven BANT methodology.
 
 <Image src="https://zackproser.b-cdn.net/images/gabbee-instructions.webp" alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
 
-Instead of trying to wedge that task into your already-packed day, you can queue it up in Gabbee, and the AI will handle it.
+Instead of your sales team spending hours on unqualified leads, Gabbee handles the initial qualification calls and only passes through prospects who meet your specific criteria.
 
-I built this in about 1.5 days (admittedly spread out) using my knowledge of Next.js and a code editor called Cursor. The design is powered by Tailwind CSS for quick, streamlined styling, while the voice-synthesis and call logic rely on Bland AI's API. Over time, I hope Gabbee will grow into the perfect sidekick for automating common phone tasks.
+I built this in about 1.5 days (admittedly spread out) using my knowledge of Next.js and a code editor called Cursor. The design is powered by Tailwind CSS for quick, streamlined styling, while the voice-synthesis and call logic rely on Bland AI's API. The system integrates directly with Zoho CRM to automatically update lead qualification status and capture detailed BANT data.
 
 ## Core Features
 
-### One-off Phone Calls 
-Give Gabbee a phone number and instructions, and it places the call on your behalf.
+### BANT Qualification Calls
+Gabbee automatically calls leads and qualifies them using proven BANT methodology - assessing Budget, Authority, Need, and Timeline through natural conversation.
 
 <Image src="https://zackproser.b-cdn.net/images/gabbee-call.webp" alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
 
-### Scheduled Calls
+### Zoho CRM Integration
 
 <Image src="https://zackproser.b-cdn.net/images/gabbee-scheduled.webp" alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
 
-Plan one-off calls in advance—maybe you need to confirm a reservation at 10 a.m. tomorrow or set yourself a wake-up call at 7 a.m.
+Automatically syncs qualified leads directly to your Zoho CRM with detailed qualification data, lead scores, and conversation notes.
 
-### Recurring calls
+### Human-Sounding Conversations
 
-If you have a weekly or monthly check-in to make, set it once, and let the AI do the rest. You can remind your tenants to pay rent, or your employees to check in. You could call your Grandma 
-once every Friday morning to ask if she remembered to take her medication. 
+Gabbee uses advanced AI voice technology to make calls that sound genuinely human. Prospects can't distinguish between Gabbee and a real sales representative, ensuring higher engagement and conversion rates.
 
-### Transcripts and summaries
+### Detailed Qualification Reports
 
 <Image src="https://zackproser.b-cdn.net/images/gabbee-transcripts.webp" alt="Gabbee.io" width={800} height={600} className="rounded-lg shadow-xl" />
 
-After each call, Gabbee logs everything that happened and distills it into a quick summary, so you don't have to listen to or read the entire transcript unless you want to.
+After each call, Gabbee provides comprehensive qualification reports including BANT scores, conversation transcripts, and next-step recommendations for your sales team.
 
-- Multiple AI Voices: You can choose different AI voices, each with its own style and tone.
+**Multiple AI Voices** - Choose from different AI voices, each optimized for different industries and conversation styles.
 
 ## Quick Background
 
-I built this to serve my own needs. I work remotely as a developer and writer. Focus time is my primary money maker. But on any given day, I might have 2-4 errand phone calls to make, which I usually end up putting off. My personal annoyance has always been having to call a customer service line to dispute something—nobody looks forward to that. Gabbee's entire purpose is to take over those tasks.
+I built this to solve a real problem I've seen in sales teams. Most BDRs spend 60-70% of their time on unqualified leads, making cold calls that rarely convert. The manual qualification process is inconsistent, time-consuming, and expensive. Gabbee's entire purpose is to automate this qualification process while maintaining the human touch that prospects expect.
 
-When I say I built Gabbee in 1.5 days, that's not hyperbole. It was a weekend project where I figured out the main structure in Next.js, set up the data models for tasks, integrated Bland AI's API for the phone/voice features, and styled it with Tailwind. Because Next.js is so efficient for building full-stack apps, and Tailwind lets me handle layout quickly, I got the MVP up and running in record time.
+When I say I built Gabbee in 1.5 days, that's not hyperbole. It was a weekend project where I figured out the main structure in Next.js, set up the data models for lead qualification, integrated Bland AI's API for the phone/voice features, and connected it to Zoho CRM. Because Next.js is so efficient for building full-stack apps, and Tailwind lets me handle layout quickly, I got the MVP up and running in record time.
 
 ## How It Works in Practice
 
-Let's say you need to call a friend or coworker—let's call him Steve—to tell him you're running late to a meeting. You log in to Gabbee, input Steve's phone number, write instructions like: "Tell Steve I'm running 10 minutes late. Apologize for the delay, and confirm if we can push the start time back." You can either have the call go out immediately or schedule it, then wait for Gabbee's system to connect.
-
-Once the call is complete, Gabbee puts together a detailed transcript, so you can see how the conversation went:
+Let's say you have a lead in your Zoho CRM who downloaded your whitepaper. Instead of having your BDR spend 15 minutes calling them manually, Gabbee automatically places the qualification call. The AI introduces itself naturally and begins the BANT qualification process:
 
 ```
-Gabbee: Hi, Steve. This is Gabbee calling on behalf of [Your Name]. They're running about 10 minutes late...
-Steve: Oh, thanks for letting me know. That's fine...
+Gabbee: Hi, this is Sarah from [Your Company]. I'm calling because I noticed you downloaded our whitepaper on [topic]. I'd love to learn more about your current challenges and see if we might be a good fit to help.
+
+Prospect: Sure, we're looking at solutions for [need].
+
+Gabbee: That's great. What's your timeline for implementing a solution like this?
+
+Prospect: We're hoping to have something in place by Q2.
+
+Gabbee: Perfect. And who would be involved in the decision-making process for this type of investment?
 ```
 
-At the end, you get a short summary of the key takeaways: "Steve acknowledged the delay and is fine with moving the start time by 10 minutes." That's it. No need for you to pick up the phone, no small talk you didn't have time for.
+At the end, Gabbee provides a comprehensive qualification report: "Lead qualified with BANT score 8/10. Budget confirmed, decision maker identified, need validated, timeline Q2. Recommended for immediate sales follow-up."
 
-This might not seem like a big deal for a one-off personal call, but if you run a small business, or you're juggling a bunch of tasks each day, this can be a huge time-saver.
+This automated qualification process saves your BDR team hours while ensuring consistent, thorough qualification of every lead.
 
 ## Building It with Next.js, Tailwind, and Bland AI's API
 
@@ -159,24 +163,28 @@ I'm not stopping with basic calls and transcripts. I want Gabbee to evolve into 
 
 ## Why It Matters
 
-In the grand scheme of productivity tools, an AI secretary that makes phone calls sits at an interesting intersection. Plenty of people rely on email automation or chatbots for text-based tasks. But for phone-based tasks, the options are more limited. Gabbee aims to fill that gap by handling everyday phone calls in a direct, no-hassle way.
+In the sales automation space, AI-powered lead qualification represents a massive opportunity. Traditional BDR teams spend 60-70% of their time on unqualified leads, with inconsistent results and high costs. Gabbee aims to transform this process by automating qualification while maintaining the human touch that prospects expect.
 
-- Time-Saving: Outsourcing manual calls means you can focus on more pressing tasks.
-- Stress Reduction: Not everyone loves picking up the phone. This is especially useful if you hate talking to certain customer service lines or you're just not great at "pitching" on a phone call.
-- Documentation: Having a transcript is invaluable for clarity and record-keeping.
+**Time-Saving** - Your BDR team can focus on high-value activities instead of cold calling unqualified leads.
+
+**Consistent Qualification** - Every lead gets the same thorough BANT qualification process, ensuring no qualified prospects slip through the cracks.
+
+**Cost Reduction** - Automate the most expensive part of your sales process while maintaining conversion rates.
+
+**Better Data** - Detailed qualification reports and CRM integration provide insights that improve your entire sales funnel.
 
 ## What's Next
 
-As I continue to refine Gabbee, I'm paying attention to feedback from early users. Are they comfortable with the AI's voice? Is the sign-up flow as simple as it can be? Are they actually letting Gabbee handle day-to-day phone tasks, or are they only using it sporadically? I want to identify the real-life friction points so I can address them.
+As I continue to refine Gabbee, I'm focused on improving the BANT qualification accuracy and expanding CRM integrations beyond Zoho. The goal is to make Gabbee the standard for AI-powered lead qualification across all major CRM platforms.
 
 ## Closing Thoughts
 
-In under two days, I put together Gabbee.io as a functional AI phone call app that can serve as a personal or business AI secretary. By leveraging Next.js for rapid development, Tailwind for styling, and Bland AI's robust call/voice API, I got a minimal product up and running almost overnight. The domain might take time to rank for relevant terms, but the core functionality is there, and I'm already seeing people use it to automate calls they'd rather not make themselves.
+In under two days, I put together Gabbee.io as a functional AI BDR that can automate lead qualification for sales teams. By leveraging Next.js for rapid development, Tailwind for styling, and Bland AI's robust call/voice API, I got a minimal product up and running almost overnight. The integration with Zoho CRM makes it immediately useful for sales teams looking to automate their qualification process.
 
-If you think an automated phone-calling tool could lighten your workload or help you skip some awkward calls, head over to [Gabbee.io](https://gabbee.io) and give it a spin. You'll get 50 free credits just for signing in with Google, and you can experience how it handles your first call.
+If you're looking to automate your lead qualification process and improve your BDR team's efficiency, head over to [Gabbee.io](https://gabbee.io) and give it a spin. You'll get 50 free qualification calls just for signing up, and you can experience how it handles your first automated BANT qualification.
 
-If you have suggestions or want to collaborate—maybe you see a cool integration angle—feel free to reach out. I'm eager to make Gabbee better through real user feedback, and I have a long list of feature ideas that could expand its capabilities even further.
+If you have suggestions or want to collaborate on sales automation features, feel free to reach out. I'm eager to make Gabbee better through real user feedback from sales teams, and I have a long list of CRM integrations and qualification features that could expand its capabilities even further.
 
-Thanks for reading, and let me know if Gabbee helps you skip any annoying phone calls this week. It's designed to be the digital assistant you never knew you needed, but can't live without once you try it out. If you have a specific feature request (like advanced web scraping or an embedded widget for your site), head over to [the feature request page](https://gabbee.io/feature-requests). I'd love to hear from you.
+Thanks for reading, and let me know if Gabbee helps improve your lead qualification process. It's designed to be the AI BDR you never knew you needed, but can't live without once you see the results. If you have a specific feature request for your CRM or qualification workflow, head over to [the feature request page](https://gabbee.io/feature-requests). I'd love to hear from you.
 
-Until then, happy calling—without actually calling. 
+Until then, happy qualifying—without actually calling. 
