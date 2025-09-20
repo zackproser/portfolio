@@ -1,7 +1,7 @@
 {
   "author": "Zachary Proser",
   "date": "2025-01-27",
-  "title": "Introducing Gabbee.io: Your AI Phone Call Assistant",
-  "description": "Meet Gabbee.io, an AI phone call app that acts as your digital secretary. Built with Next.js, Tailwind, and Bland AI's API, it handles your calls while providing transcripts and summaries.",
+  "title": "Introducing Gabbee.io: AI BDR for Zoho CRM",
+  "description": "Meet Gabbee.io, an AI BDR that programmatically validates leads via human-sounding phone calls. Automatically qualifies prospects using BANT methodology and syncs directly with Zoho CRM.",
   "image": "https://zackproser.b-cdn.net/images/gabbee-hero.webp"
 }

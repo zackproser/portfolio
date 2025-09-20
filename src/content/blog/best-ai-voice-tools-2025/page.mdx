@@ -1,0 +1,109 @@
+import Newsletter from '@/components/Newsletter';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+After testing dozens of AI voice tools over the past year, I've narrowed down the field to four that have fundamentally changed how I work. 
+
+## 1. WisprFlow - My Primary Voice Interface
+
+[WisprFlow](https://ref.wisprflow.ai/zack-proser) has become my primary interface for driving all my applications. This isn't hyperbole—I literally speak to my computer more than I type to it these days.
+
+<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Wispr Flow voice-to-text interface showing 4x faster than typing" width={800} height={600}/>
+</a>
+
+### Why WisprFlow Works So Well
+
+WisprFlow is a system-level voice interface that works everywhere on macOS. The universal compatibility means it works in Cursor's agent composer, Chrome tabs, Claude desktop, Slack DMs, Twitter clients—literally anywhere you can type.
+
+The always-on background recording feature is incredibly convenient. Hit the fn key twice to start dictating, fn again to stop and insert text wherever your cursor is focused. The AI-powered auto-edits transform rambled thoughts into polished, professional text without filler words or typos.
+
+The model is also exceptional at picking up filenames so you can easily describe `next.config.js` and continue using your `@<file` mentions in Cursor and elsewhere.
+
+The speed improvement is remarkable. I consistently hit ~160 WPM compared to my 90 WPM typing speed.
+
+### The Voice-First Workflow
+
+What makes WisprFlow special is how it changes the perceived activation energy for any given task, at least for me. To start speaking outloud the problem is to inevitably describe the 
+specific way I want it solved, and by the time I've done a bit of jawing, I've got a clear block of context and my next instruction set, auto-rendered wherever I'm working.
+
+I use it for writing code in Cursor, composing emails in Gmail, drafting Slack messages, writing blog posts, taking notes in Obsidian, and even filling out forms on websites.
+
+The voice-first workflow has unexpected benefits: better posture, the ability to pace around while thinking, and portability with headphones.
+
+[Read my full WisprFlow review](/blog/wisprflow-review) to see why it's become my primary interface for most creative tasks I do day to day. 
+
+## 2. Granola - Meeting Intelligence That Never Sleeps
+
+[Granola](https://granola.ai) runs during all my meetings—both personal and work—to keep tabs on what was discussed and track next steps. It's like having a perfect memory for every conversation.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola meeting intelligence interface" width={800} height={600} className="rounded-lg shadow-xl" />
+
+### Why Granola is Essential
+
+Granola automatically transcribes every meeting with high accuracy, extracts action items and next steps, identifies key decisions and important points, creates searchable archives of all your conversations, and integrates with your calendar to automatically join meetings.
+
+<Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting example showing transcription and action items" width={800} height={600} className="rounded-lg shadow-xl" />
+
+### The Meeting Intelligence Advantage
+
+This is one of those absolute "no brainer" use cases for AI: Let all the humans focus on speaking and connecting and allow all the transcription and summarization to be done by machine - in an always-on, don't worry about forgetting manner.
+
+I have calls for work, calls for my own business and social calls with friends. Being able to quickly jump back to any recent meeting is a major upgrade to my quality of life.
+
+### Privacy and Security
+
+Granola takes privacy and security seriously, with enterprise-grade encryption and comprehensive data protection measures. For detailed information about their security practices, data handling, and compliance, visit their [dedicated trust center](https://trust.granola.ai/).
+
+## 3. ElevenLabs - Professional Voice Generation
+
+[ElevenLabs](https://elevenlabs.io) is my go-to for quickly generating professional voice-overs. The quality is so good that most people can't tell the difference from human voices.
+
+<Image src="https://zackproser.b-cdn.net/images/elevenlabs-hero.webp" alt="ElevenLabs voice generation interface" width={800} height={600} className="rounded-lg shadow-xl" />
+
+### Why ElevenLabs Stands Out
+
+ElevenLabs delivers incredible voice quality with natural-sounding voices that have proper intonation and emotion. You can create professional voice-overs in minutes, not hours, choose from dozens of high-quality voices, create custom voice cloning for specific people (with permission), and easily integrate into applications through their API.
+
+### Real-World Application: Gabbee.io Demo
+
+I used ElevenLabs extensively for the [Gabbee.io demo video](https://gabbee.io). The entire voice-over was generated using ElevenLabs' voice synthesis.
+
+The [Gabbee.io demo](https://gabbee.io) showcases an AI phone call app that can make calls, schedule them, and provide transcripts—all powered by AI voice technology. The voice quality was so good that it helped demonstrate the professional nature of the AI phone calls themselves.
+
+## 4. Bland AI - LLM-Powered Telephony
+
+[Bland AI](https://bland.ai) combines the capabilities of large language models with telephony systems like Twilio to create human-sounding AI phone calls. It's one of the best AI tools for LLMs and telephony integration.
+
+<Image src="https://zackproser.b-cdn.net/images/bland-ai-hero.webp" alt="Bland AI telephony interface" width={800} height={600} className="rounded-lg shadow-xl" />
+
+### Why Bland AI is Powerful
+
+Bland AI excels at creating AI phone calls that sound genuinely human. It's the backing API for my product, [Gabbee, an AI BDR for Zoho CRM](https://gabbee.io).
+
+### Real-World Application: Gabbee.io
+
+I built [Gabbee](https://gabbee.io) as an AI BDR for Zoho that programmatically qualifies your leads via phone calls that sound human. The system uses Bland AI's capabilities to make outbound calls that can engage prospects naturally, qualify them based on specific criteria, and provide detailed transcripts of every conversation.
+
+The AI can handle complex conversations, ask qualifying questions, and respond appropriately to objections - all while maintaining a natural, human-like conversation flow that prospects can't distinguish from a real sales representative.
+
+## The Complete Voice-First Stack
+
+Together, these four tools create a comprehensive voice-first workflow:
+
+1. **WisprFlow** handles all text creation through voice
+2. **Granola** captures and organizes all spoken conversations  
+3. **ElevenLabs** generates professional voice content when needed
+4. **Bland AI** powers AI phone calls and telephony applications
+
+This stack has fundamentally changed how I work. I spend more time thinking and speaking than typing, which feels more natural and productive.
+
+## Getting Started
+
+Ready to transform your workflow? Start with [WisprFlow's free trial](https://ref.wisprflow.ai/zack-proser) to see how it transforms your text creation workflow. For meeting intelligence, [sign up for Granola](https://granola.ai) and let it start capturing your meetings automatically. When you need professional voice generation, [explore ElevenLabs](https://elevenlabs.io) for your next project. And for AI-powered telephony, [check out Bland AI](https://bland.ai) for phone call automation.
+
+The future of productivity is voice-first, and these four tools are leading the way. Each serves a distinct purpose in a comprehensive voice workflow that's more natural, efficient, and powerful than traditional keyboard-based productivity.
