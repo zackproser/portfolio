@@ -1,10 +1,9 @@
 import Image from 'next/image'
-import { StaticImageData } from 'next/image'
 
 interface WhatsIncludedItem {
   title: string
   description: string
-  image: string | StaticImageData
+  image: string | { src: string }
   imageAlt?: string
 }
 

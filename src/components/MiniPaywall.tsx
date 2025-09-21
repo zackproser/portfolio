@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import { Content } from '@/types'
 import { getContentCheckoutUrl } from '@/lib/checkoutUtils'
 

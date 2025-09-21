@@ -1,9 +1,10 @@
 'use client';
 import { use, useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "../../../../auth";
 import { MailOpen } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { emailSignIn } from "../actions";
 
 export default function SignInPage(
   props: {
@@ -22,17 +23,11 @@ export default function SignInPage(
   const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    
+    formData.set("callbackUrl", finalCallbackUrl);
     // Store email in session storage for the verify-request page
-    sessionStorage.setItem("signInEmail", email);
-    
-    // Pass email as query param to the verify-request page that Auth.js will redirect to
-    signIn("email", { 
-      email, 
-      callbackUrl: finalCallbackUrl,
-      redirect: true
-    });
+    const email = String(formData.get("email") || "");
+    if (email) sessionStorage.setItem("signInEmail", email);
+    await emailSignIn(formData);
   };
 
   return (

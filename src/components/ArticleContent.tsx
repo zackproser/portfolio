@@ -4,7 +4,6 @@ import React from 'react'
 import Paywall from './Paywall'
 import NewsletterWrapper from './NewsletterWrapper'
 import EmailSignupGate from './EmailSignupGate'
-import { StaticImageData } from 'next/image'
 import { Content } from '@/types'
 
 interface ArticleContentProps {

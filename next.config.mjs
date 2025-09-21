@@ -48,6 +48,18 @@ const nextConfig = {
   },
   // Skip certain pages on build failure
   distDir: process.env.SKIP_FAILING_PAGES === 'true' ? '.next-skip-errors' : '.next',
+  webpack: (config, { isServer }) => {
+    // Avoid bundling server-only modules into client by providing fallbacks
+    config.resolve = config.resolve || {}
+    config.resolve.fallback = config.resolve.fallback || {}
+    Object.assign(config.resolve.fallback, {
+      fs: false,
+      net: false,
+      tls: false,
+      dns: false,
+    })
+    return config
+  },
   async redirects() {
     return [
       {

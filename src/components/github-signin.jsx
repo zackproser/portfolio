@@ -2,13 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 const githubSignin = 'https://zackproser.b-cdn.net/images/github-signin.webp';
 
 export default function Component() {
-          const handleClick = (e) => {
+          const handleClick = async (e) => {
                     e.preventDefault();
-                    signIn();
+                    // This triggers server-side Auth.js email provider; avoids bundling nodemailer client-side
+                    if (typeof window !== 'undefined') {
+                              fetch('/api/auth/signin?provider=email', { method: 'POST' }).catch(()=>{})
+                    }
           };
 
           return (

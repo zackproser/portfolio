@@ -1,4 +1,4 @@
-import { StaticImageData } from 'next/image'
+type StaticImageData = { src: string }
 
 // Commerce-related types
 export interface CommerceConfig {

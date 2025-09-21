@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 
 export default function Component() {
   const { data: session } = useSession()
@@ -8,7 +8,7 @@ export default function Component() {
       <>
         <button
           className="bg-green-400 hover:bg-green-700 text-white font-bold py-2 px-12 rounded border-slate-300"
-          onClick={() => signOut()}
+          onClick={() => window.location.assign('/api/auth/signout')}
         >Sign out</button>
       </>
     )
@@ -22,7 +22,7 @@ export default function Component() {
           <div className="p-3">
             <button
               className="bg-green-400 hover:bg-green-700 text-white font-bold py-2 px-12 rounded border-slate-300"
-              onClick={() => signIn()}
+              onClick={() => window.location.assign('/login')}
             >
               Login to Zachary Proser&apos;s School for Hackers!
             </button>

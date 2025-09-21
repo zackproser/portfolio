@@ -1,6 +1,6 @@
 import { ArticleWithSlug } from '@/types/content';
 import { ProductContent } from '@/types';
-import { StaticImageData } from 'next/image';
+type StaticImageData = { src: string }
 
 function getImageUrl(image: string | StaticImageData | { src: string } | undefined): string | undefined {
   if (!image) return undefined;

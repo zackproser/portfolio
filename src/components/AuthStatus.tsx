@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession, signOut, signIn } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ export function AuthStatus() {
     return (
       <Button 
         variant="outline" 
-        onClick={() => signIn()}
+        onClick={() => window.location.assign('/login')}
         className="text-sm font-medium bg-blue-800 text-white border-blue-700 hover:bg-blue-700 hover:text-yellow-300 transition-colors"
       >
         Sign in
@@ -60,7 +60,7 @@ export function AuthStatus() {
         <DropdownMenuItem asChild>
           <Button 
             variant="ghost" 
-            onClick={() => signOut()}
+            onClick={() => window.location.assign('/api/auth/signout')}
             className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/10"
           >
             Sign out

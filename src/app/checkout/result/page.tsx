@@ -6,7 +6,8 @@ import { Container } from '@/components/Container';
 import Link from 'next/link';
 import { ContentCard } from '@/components/ContentCard';
 import { Blog } from '@/types';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { resendMagicEmail } from '@/app/auth/actions';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { getContentUrlFromObject } from '@/lib/content-url';
 import { usePlausible } from 'next-plausible';
@@ -125,7 +126,7 @@ function CheckoutResultContent() {
       urlObj.searchParams.set('email', email);
       const callbackUrlWithEmail = urlObj.toString();
       
-      await signIn("email", { email, callbackUrl: callbackUrlWithEmail });
+      await resendMagicEmail(email);
     } catch (error) {
       console.error('Error during sign-in process:', error);
       setIsLoggingIn(false);
