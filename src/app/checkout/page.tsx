@@ -6,7 +6,7 @@ import { CourseStatus } from "@/utils/productUtils";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
 import { redirect } from "next/navigation";
-import { signIn } from "next-auth/react"
+import { signIn } from "../../../auth"
 import {
 	EmbeddedCheckoutProvider,
 	EmbeddedCheckout

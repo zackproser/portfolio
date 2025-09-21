@@ -11,9 +11,26 @@ import { useSession } from 'next-auth/react'
 interface FreeChaptersProps {
   title: string
   productSlug: string
+  headline?: string
+  subheadline?: string
+  buttonText?: string
+  successHeadline?: string
+  successBodyNew?: string
+  successBodyExisting?: string
+  placeholder?: string
 }
 
-export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
+export function FreeChapters({ 
+  title, 
+  productSlug,
+  headline = 'Get a free chapter straight to your inbox',
+  subheadline,
+  buttonText = 'Get free chapters',
+  successHeadline = 'Thank you! 🎉',
+  successBodyNew = "We've sent the free chapter to your inbox. Check your email and get ready to dive in!",
+  successBodyExisting = "We've already sent the free chapter to your inbox. Please check your email (including spam folder).",
+  placeholder
+}: FreeChaptersProps) {
   const { data: session } = useSession()
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -131,24 +148,24 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
           <Pattern className="absolute -top-32 left-0 w-full sm:left-3/4 sm:top-0 sm:ml-8 sm:w-auto md:left-2/3 lg:left-auto lg:right-2 lg:ml-0 xl:right-auto xl:left-2/3" />
           <div>
             <h2 className="font-display text-5xl font-extrabold tracking-tight text-white sm:w-3/4 sm:text-6xl md:w-2/3 lg:w-auto">
-              Get a free chapter straight to your inbox
+              {headline}
             </h2>
             <p className="mt-4 text-lg tracking-tight text-blue-200">
-              Enter your email below and we&apos;ll send you a free chapter
-              of <span className="font-bold text-white">{title}</span>, showing you how to set up your development environment
-              and build your first RAG pipeline.
+              {subheadline ?? (
+                <>
+                  Enter your email below and we&apos;ll send you a free chapter of <span className="font-bold text-white">{title}</span>.
+                </>
+              )}
             </p>
           </div>
           {formSuccess ? (
             <div className="lg:pl-16">
               <div className="rounded-xl bg-white/10 p-8 backdrop-blur">
                 <h3 className="text-xl font-medium tracking-tight text-white">
-                  Thank you! 🎉
+                  {successHeadline}
                 </h3>
                 <p className="mt-2 text-blue-200">
-                  {hasRequested 
-                    ? "We've already sent the free chapter to your inbox. Please check your email (including spam folder)."
-                    : "We've sent the free chapter to your inbox. Check your email and get ready to dive in!"}
+                  {hasRequested ? successBodyExisting : successBodyNew}
                 </p>
               </div>
             </div>
@@ -165,7 +182,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
                     id="email-address"
                     required
                     aria-label="Email address"
-                    placeholder={session?.user?.email || "Email address"}
+                    placeholder={session?.user?.email || placeholder || "Email address"}
                     className="peer relative z-10 w-full appearance-none bg-transparent px-4 py-2 text-base text-white placeholder:text-blue-200 focus:outline-none sm:py-3"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -179,7 +196,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
                   className="mt-4 w-full sm:relative sm:z-10 sm:mt-0 sm:w-auto sm:flex-none"
                   disabled={isSubmitting || isChecking}
                 >
-                  {isSubmitting ? 'Sending...' : isChecking ? 'Checking...' : 'Get free chapters'}
+                  {isSubmitting ? 'Sending...' : isChecking ? 'Checking...' : buttonText}
                 </Button>
               </div>
               {error && (

@@ -2,7 +2,6 @@ import { Noto_Sans, Press_Start_2P } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { SessionProvider } from "next-auth/react";
 import { Providers } from '@/app/providers';
 import { ConsultancyNav } from '@/components/ConsultancyNav';
 import { Toaster } from '@/components/ui/toaster';
@@ -44,17 +43,15 @@ export default function RootLayout({
         />
       </head>
       <body className="flex h-full bg-neutral-50 dark:bg-gray-900 font-sans">
-        <SessionProvider>
-          <Providers>
-            <div className="flex w-full flex-col">
-              <ConsultancyNav />
-              <main className="flex-grow">{children}</main>
-              <Toaster />
-              <Analytics />
-              <SpeedInsights />
-            </div>
-          </Providers>
-        </SessionProvider>
+        <Providers>
+          <div className="flex w-full flex-col">
+            <ConsultancyNav />
+            <main className="flex-grow">{children}</main>
+            <Toaster />
+            <Analytics />
+            <SpeedInsights />
+          </div>
+        </Providers>
       </body>
     </html>
   );

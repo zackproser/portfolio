@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { signIn } from "next-auth/react"
+import { resendMagicEmail } from "../actions"
 
 export default function VerifyRequestPage() {
   const [email, setEmail] = useState<string>("")
@@ -34,17 +34,13 @@ export default function VerifyRequestPage() {
 
   const canResend = timeElapsed >= 60
 
-  const handleResendEmail = () => {
+  const handleResendEmail = async () => {
     // Reset timer
     setTimeElapsed(0)
     
     // Only proceed if we have an email
     if (email) {
-      // Call the sign in method again to trigger a new email
-      signIn("email", { 
-        email, 
-        redirect: false
-      })
+      await resendMagicEmail(email)
     }
   }
 

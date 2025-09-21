@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import Image from 'next/image'
-import { StaticImageData } from 'next/image'
 import { Content } from '@/types'
 import { getContentCheckoutUrl } from '@/lib/checkoutUtils'
 

@@ -1,6 +1,6 @@
 {
   "title": "Vibe Coding Mastery",
-  "description": "How to code safely and efficiently with Git, secrets, and Cursor setup.",
+  "description": "Last week, a developer got a $52,000 OpenAI bill because they pushed one .env file to GitHub. Yesterday, another startup shut down after their AWS keys were scraped and used to mine crypto. This isn't about being careless — it's about not having a bulletproof system.",
   "date": "2025-05-03",
   "author": "Zack Proser",
   "image": "https://zackproser.b-cdn.net/images/vibe-coding-premium.webp",
@@ -14,5 +14,44 @@
     "buttonText": "Get the survival guide ($49)",
     "miniPaywallTitle": "Vibe Coding Survival Guide",
     "miniPaywallDescription": "Complete guide to safe coding practices with Git, secrets, and Cursor setup."
+  },
+  "landing": {
+    "heroTitle": "Stop API Keys From Bankrupting Your Startup",
+    "subtitle": "The $50,000 mistake 73% of AI developers make (and the 10-minute security system that prevents it)",
+    "problemSolved": "Are your API keys one git push away from a massive bill?",
+    "benefitStatement": "Install a bulletproof, 3-layer protection system in minutes and never leak again",
+    "urgencyBanner": "Average time from API key exposure to first malicious use: 7 minutes. Is your codebase protected?",
+    "features": [
+      {
+        "title": "Instant Security Audit",
+        "description": "Copy-paste scripts that find every exposed secret in your codebase in 30 seconds"
+      },
+      {
+        "title": "The Vibe Method™",
+        "description": "The exact 3-layer security architecture I implemented at Cloudflare and WorkOS"
+      },
+      {
+        "title": "Never Leak Again Guarantee",
+        "description": "Git hooks and pre-commit checks that make credential exposure literally impossible"
+      },
+      {
+        "title": "Crisis Response Playbook",
+        "description": "What to do in the first 10 minutes if you've already exposed keys (could save you thousands)"
+      }
+    ],
+    "authorityBullets": [
+      "13+ years at Cloudflare, Gruntwork, WorkOS",
+      "Prevented $100K+ in leaked credential incidents",
+      "Taught 50K+ developers secure workflows"
+    ],
+    "emailCapture": {
+      "headline": "Get the Emergency Credential Rotation Checklist",
+      "subheadline": "What to do in the first 10 minutes after exposure (normally $19, free today)",
+      "buttonText": "Send the checklist",
+      "successHeadline": "Checklist sent!",
+      "successBodyNew": "Check your inbox for the step-by-step emergency rotation checklist.",
+      "successBodyExisting": "We already sent you the checklist. Check your inbox and spam folder.",
+      "placeholder": "Work email"
+    }
   }
 }
