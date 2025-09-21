@@ -13,7 +13,8 @@ import { Content } from '@/types'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
-import { Metadata, ResolvingMetadata } from 'next'
+type Metadata = any
+type ResolvingMetadata = any
 import { getProductByDirectorySlug } from '@/lib/content-handlers'
 import { getConversionTestimonials } from '@/data/testimonials'
 
@@ -112,8 +113,8 @@ export function ProductLanding({ content }: { content: Content }) {
     whatsIncluded: []
   };
 
-  // Use provided landing data or fallback to default
-  const landingData = landing || defaultLanding;
+  // Use provided landing data merged with defaults so optional fields always exist
+  const landingData: any = { ...defaultLanding, ...(landing || {}) };
 
   const bio = `I'm a software engineer with over ${RenderNumYearsExperience()} years of experience building production systems.`
 
@@ -128,6 +129,12 @@ export function ProductLanding({ content }: { content: Content }) {
   return (
     <>
       <div className="relative">
+        {/* Urgency banner */}
+        {landingData?.urgencyBanner && (
+          <div className="w-full bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200 py-2 px-4 text-center text-sm">
+            {landingData.urgencyBanner}
+          </div>
+        )}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <CanvasPattern 
             className="absolute inset-0 h-full w-full text-slate-900/[0.1] dark:text-white/[0.1]" 
@@ -149,6 +156,20 @@ export function ProductLanding({ content }: { content: Content }) {
           description={safeDescription}
           features={landingData.features}
         />
+
+        {/* Authority bullets */}
+        {landingData?.authorityBullets && landingData.authorityBullets.length > 0 && (
+          <div className="mx-auto max-w-5xl px-6 md:px-8 my-8">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Why listen to me</h3>
+              <ul className="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-300">
+                {landingData.authorityBullets.map((b: string, i: number) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
         
         {/* What's Included Section - only render if whatsIncluded data exists */}
         {landingData?.whatsIncluded && landingData.whatsIncluded.length > 0 && (
@@ -164,6 +185,13 @@ export function ProductLanding({ content }: { content: Content }) {
         <FreeChapters 
           title={safeDescription}
           productSlug={slug}
+          headline={landingData?.emailCapture?.headline}
+          subheadline={landingData?.emailCapture?.subheadline}
+          buttonText={landingData?.emailCapture?.buttonText}
+          successHeadline={landingData?.emailCapture?.successHeadline}
+          successBodyNew={landingData?.emailCapture?.successBodyNew}
+          successBodyExisting={landingData?.emailCapture?.successBodyExisting}
+          placeholder={landingData?.emailCapture?.placeholder}
         />
         
         {/* Add real testimonials section before pricing to enhance conversions */}

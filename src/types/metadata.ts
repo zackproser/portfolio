@@ -1,5 +1,6 @@
-import { StaticImageData } from 'next/image'
-import { Metadata } from 'next'
+// Local fallbacks to avoid type resolution issues when Next.js types aren't available
+type StaticImageData = any
+type Metadata = any
 import { CommerceConfig } from './commerce'
 
 // Interface for OpenGraph URL generator parameters
@@ -30,6 +31,7 @@ export interface ExtendedMetadata extends Metadata {
     subtitle?: string
     problemSolved?: string  // Clear statement of what problem this product solves
     benefitStatement?: string  // Clear statement of user benefit
+    urgencyBanner?: string // Short urgent note shown near the top
     features?: Array<{
       title: string
       description: string
@@ -58,5 +60,15 @@ export interface ExtendedMetadata extends Metadata {
       question: string
       answer: string
     }>
+    authorityBullets?: string[] // "Why listen to me" bullet points
+    emailCapture?: {
+      headline?: string
+      subheadline?: string
+      buttonText?: string
+      successHeadline?: string
+      successBodyNew?: string
+      successBodyExisting?: string
+      placeholder?: string
+    }
   }
 } 

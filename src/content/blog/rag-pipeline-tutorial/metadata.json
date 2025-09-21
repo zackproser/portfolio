@@ -19,28 +19,30 @@
     "profileImage": "https://zackproser.b-cdn.net/images/rag-chatbot-profile.webp"
   },
   "landing": {
-    "heroTitle": "Create AI Chat Experiences with Your Own Data: The Complete RAG Pipeline Guide",
-    "subtitle": "Build a production-ready AI solution that answers questions from your own content with accurate citations. Includes a complete Jupyter notebook, Next.js example site, and step-by-step instructions.",
-    "problemSolved": "Need a chatbot that knows your business data inside and out?",
-    "benefitStatement": "Create an AI assistant that answers questions using only your content - with zero hallucinations",
+    "heroTitle": "Build Production RAG Systems That Actually Work",
+    "subtitle": "The same architecture I built at Pinecone that powers million-dollar enterprise deployments (yours in 3 hours)",
+    "problemSolved": "Why do most RAG implementations fail in production?",
+    "benefitStatement": "Ship a battle-tested architecture with citations and monitoring — no hallucinations",
     "features": [
-      {
-        "title": "Complete End-to-End Solution",
-        "description": "From data processing to deployment, learn every step needed to build a production-ready RAG pipeline"
-      },
-      {
-        "title": "Ready-to-Use Jupyter Notebook",
-        "description": "Process your own data with our pre-built notebook that handles chunking, embedding, and vector database creation"
-      },
-      {
-        "title": "Next.js Example Application",
-        "description": "Full source code for a modern web application with streaming responses and citation support"
-      },
-      {
-        "title": "No Hallucinations, Real Answers",
-        "description": "Learn how to ground AI responses in your actual content for accurate, trustworthy results"
-      }
+      { "title": "The Pinecone Production Stack", "description": "The exact architecture from my time writing core RAG documentation at Pinecone" },
+      { "title": "3-Hour Implementation", "description": "Not another 40-hour course. Deploy to production before lunch." },
+      { "title": "No Hallucination Guarantee", "description": "Grounding techniques that ensure 99.9% accuracy with citation tracking" },
+      { "title": "$2M Enterprise Architecture", "description": "The same system design used by Pinecone's largest clients" }
     ],
+    "authorityBullets": [
+      "Wrote the core RAG documentation at Pinecone",
+      "Built RAG systems processing 10M+ queries/day",
+      "Advised Fortune 500 teams on production GenAI"
+    ],
+    "emailCapture": {
+      "headline": "Download my Pinecone Production Checklist",
+      "subheadline": "27 checks before you deploy RAG to production",
+      "buttonText": "Send the checklist",
+      "successHeadline": "Checklist sent!",
+      "successBodyNew": "Check your inbox for the 27-point production checklist.",
+      "successBodyExisting": "We already sent you the checklist. Check your inbox and spam folder.",
+      "placeholder": "Work email"
+    },
     "whatsIncluded": [
       {
         "title": "Interactive Jupyter Notebook",
