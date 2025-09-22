@@ -58,5 +58,10 @@ export interface ExtendedMetadata extends Metadata {
       question: string
       answer: string
     }>
+    credibilityBanner?: string
+    experiencedEngineersSection?: {
+      title: string
+      content: string
+    }
   }
 } 

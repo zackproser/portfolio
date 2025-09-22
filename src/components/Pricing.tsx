@@ -151,6 +151,9 @@ export function Pricing({
                   <span className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-900">${price}</span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600 dark:text-slate-600">USD</span>
                 </p>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
+                  The fundamental AI skill everyone&apos;s hiring for.
+                </p>
                 <Button
                   href={checkoutUrl as any}
                   color="blue"
