@@ -10,8 +10,8 @@
     "previewLength": 450,
     "previewElements": 32,
     "paywallHeader": "Master RAG Development: The Complete Package",
-    "paywallBody": "Get everything you need to build production-ready RAG applications: a step-by-step tutorial, ready-to-use Jupyter notebook for data processing, and a complete Next.js example site. Perfect for developers who want to add the most in-demand Gen AI skill to their toolkit.",
-    "buttonText": "Get the complete package ($149)",
+    "paywallBody": "After 2 years building and fixing RAG at Pinecone, I refined this complete pipeline. See your data transform in Jupyter, deploy with Next.js and Vercel AI SDK, ship to production in 3 hours. This is the fundamental AI engineering skill everyone's hiring for.",
+    "buttonText": "3 Hours to Production RAG - The Pipeline I Refined at Pinecone",
     "miniPaywallTitle": "Master RAG pipeline creation",
     "miniPaywallDescription": "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
     "paywallImage": "https://zackproser.b-cdn.net/images/rag-tutorial-elements.webp",
@@ -19,26 +19,22 @@
     "profileImage": "https://zackproser.b-cdn.net/images/rag-chatbot-profile.webp"
   },
   "landing": {
-    "heroTitle": "Create AI Chat Experiences with Your Own Data: The Complete RAG Pipeline Guide",
-    "subtitle": "Build a production-ready AI solution that answers questions from your own content with accurate citations. Includes a complete Jupyter notebook, Next.js example site, and step-by-step instructions.",
+    "heroTitle": "The Production RAG Pipeline Refined at Pinecone",
+    "subtitle": "LangChain + Next.js + Pinecone = Zero Hallucinations in 3 Hours",
     "problemSolved": "Need a chatbot that knows your business data inside and out?",
-    "benefitStatement": "Create an AI assistant that answers questions using only your content - with zero hallucinations",
+    "benefitStatement": "The complete pipeline experienced engineers actually need - not toy examples, not PhD theory. Real data processing, production deployment, zero hallucinations.",
     "features": [
       {
-        "title": "Complete End-to-End Solution",
-        "description": "From data processing to deployment, learn every step needed to build a production-ready RAG pipeline"
+        "title": "See Your Data Pipeline (Not a Black Box)",
+        "description": "The Jupyter notebook shows you exactly what LangChain does to your documents. Watch chunks form, see embeddings created, understand Pinecone indexing. When things break, you know why."
       },
       {
-        "title": "Ready-to-Use Jupyter Notebook",
-        "description": "Process your own data with our pre-built notebook that handles chunking, embedding, and vector database creation"
+        "title": "Production App That Actually Ships",
+        "description": "Real Next.js with Vercel AI SDK. Not a Streamlit demo. Streaming responses, citation tracking, error handling. The same patterns from the reference architecture I built at Pinecone."
       },
       {
-        "title": "Next.js Example Application",
-        "description": "Full source code for a modern web application with streaming responses and citation support"
-      },
-      {
-        "title": "No Hallucinations, Real Answers",
-        "description": "Learn how to ground AI responses in your actual content for accurate, trustworthy results"
+        "title": "Complete Pipeline (Both Sides Connected)",
+        "description": "Other tutorials show fragments - notebooks that never ship or apps with no data understanding. This gives you both, properly connected. From someone who wrote the book 'Vector Databases in Production.'"
       }
     ],
     "whatsIncluded": [
@@ -61,6 +57,11 @@
         "imageAlt": "RAG pipeline architecture diagram showing the complete system flow"
       }
     ],
+    "experiencedEngineersSection": {
+      "title": "For Experienced Engineers, By an Experienced Engineer",
+      "content": "Every RAG tutorial fails you the same way:\n- Toy examples with 5 documents that don't scale\n- PhD theory about transformers you don't need  \n- 40-hour courses when you have deadlines\n\nYou're already an engineer. You just need the patterns and working code.\n\nThis is what I built after 13 years at Cloudflare, Gruntwork, and Pinecone. Not on the AI hype train - just engineering that works."
+    },
+    "credibilityBanner": "Built by Zack Proser | First production reference architecture at Pinecone | Author: 'Vector Databases in Production for Busy Engineers'",
     "contentSections": [
       {
         "title": "Getting Started",

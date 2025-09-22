@@ -109,7 +109,9 @@ export function ProductLanding({ content }: { content: Content }) {
       }
     ],
     testimonials: [],
-    whatsIncluded: []
+    whatsIncluded: [],
+    credibilityBanner: undefined,
+    experiencedEngineersSection: undefined
   };
 
   // Use provided landing data or fallback to default
@@ -135,6 +137,13 @@ export function ProductLanding({ content }: { content: Content }) {
             height={40} 
           />
         </div>
+        {/* Credibility Banner */}
+        {landingData.credibilityBanner && (
+          <div className="bg-slate-900 text-white py-3 px-4 text-center text-sm">
+            {landingData.credibilityBanner}
+          </div>
+        )}
+        
         <Hero 
           title={title || safeDescription}
           heroTitle={landing?.heroTitle}
@@ -196,6 +205,18 @@ export function ProductLanding({ content }: { content: Content }) {
                   height={600}
                 />
               </div>
+            </div>
+          </div>
+        )}
+        
+        {/* For Experienced Engineers Section */}
+        {landingData.experiencedEngineersSection && (
+          <div className="py-16 mx-auto text-center max-w-4xl px-6">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl mb-8">
+              {landingData.experiencedEngineersSection.title}
+            </h2>
+            <div className="text-lg text-slate-600 dark:text-slate-300 whitespace-pre-line">
+              {landingData.experiencedEngineersSection.content}
             </div>
           </div>
         )}
