@@ -15,7 +15,7 @@ export default function SubscribePage() {
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 id="subscribe-hero-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
-                Join 2,100+ Engineers Shipping Real AI Systems
+                Join 2,500+ Engineers Shipping Real AI Systems
               </h1>
               <p className="mt-4 text-lg md:text-xl text-blue-100/90">
                 Get the free hands-on tutorial: Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK — plus weekly code-first AI engineering tips.
@@ -28,7 +28,7 @@ export default function SubscribePage() {
                   successMessage="Neural Network Activated! 🤖🧠❗ You're in — check your inbox."
                   position="subscribe-hero"
                   tags={['subscribe', 'hero']}
-                  className="backdrop-blur bg-white/95 dark:bg-zinc-900/90 border-white/20 dark:border-zinc-700/40"
+                  className="bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 shadow-lg ring-1 ring-zinc-900/10 dark:ring-white/10"
                 />
                 <p className="mt-3 text-xs text-white/80">
                   1–2 emails/week. No spam. Unsubscribe anytime.
