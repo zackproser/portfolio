@@ -18,7 +18,7 @@ export default function SubscribePage() {
                 Join 2,100+ Engineers Shipping Real AI Systems
               </h1>
               <p className="mt-4 text-lg md:text-xl text-blue-100/90">
-                Get the free hands-on tutorial: Build a "Chat with My Data" app with LangChain, Pinecone, OpenAI and the Vercel AI SDK — plus weekly code-first AI engineering tips.
+                Get the free hands-on tutorial: Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK — plus weekly code-first AI engineering tips.
               </p>
 
               <div className="mt-8 max-w-xl mx-auto">
