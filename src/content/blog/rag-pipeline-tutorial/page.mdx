@@ -25,6 +25,19 @@ See the complete working demo at [/chat](/chat). This tutorial walks you through
   allow="fullscreen;">
 </iframe>
 
+### Why Premium if the repos are public?
+
+The GitHub repos are a **reference**. Premium is a **production path**:
+- Comprehensive step by step walkthrough 
+- Patterns for OpenAI/Pinecone + index lifecycle
+- License + lifetime updates
+
+<div className="my-4">
+  <Link href="/checkout/rag-pipeline" className="inline-flex items-center px-6 py-3 font-semibold text-white bg-orange-500 hover:bg-orange-600 rounded-lg">
+    Unlock Premium Tutorial ($149) →
+  </Link>
+</div>
+
 ## Table of contents
 
 <details>
@@ -522,6 +535,27 @@ In an e-commerce application, this UI might be used to answer questions about pr
 ## Phase 3: Deployment 
 
 Coming soon! This section is still under construction. Check back shortly.
+
+## Troubleshooting Matrix
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| 400/401 from OpenAI | missing/invalid key; wrong org | verify env; rotate key |
+| Pinecone dimension mismatch | index not 3072 | recreate index with dimension: 3072 |
+| Empty matches | minScore too high; chunking too big | lower threshold (0.6–0.7); use 800–1200 char chunks |
+| Slow responses | large context; missing streaming | cap context to ~3k chars; ensure streaming path |
+| Rate limits | bursty CI/CD or chat | backoff; queue embeds; use topK 5–8 |
+
+## Production Checklist
+
+1. **Index = 3072 dims**, euclidean/cosine chosen intentionally.
+2. **Chunker tuned** (800–1200 chars, overlap 100–200 if needed).
+3. **Prompt budgeted** (cap context ~3k chars; test with long docs).
+4. **Streaming enabled** end-to-end; UI handles backpressure.
+5. **CI/CD only re-embeds** changed files; secrets scoped.
+6. **Logging for prompts**, retrieval stats, and latency; PII safe.
+7. **Fallbacks**: empty retrieval → graceful "don't know."
+8. **Evals**: a handful of golden questions checked in.
 
 ## Additional Resources
 
