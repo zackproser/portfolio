@@ -145,7 +145,7 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 				className
 			)}
 		>
-			<h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100 not-prose">
+			<h2 className="flex text-sm font-semibold !text-zinc-900 dark:!text-zinc-100 not-prose">
 				<MailIcon className="h-6 w-6 flex-none" />
 				<span className="ml-3">{title ?? 'Supercharge your development skills'} ⚡</span>
 			</h2>
