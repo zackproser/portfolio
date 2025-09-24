@@ -9,7 +9,7 @@ const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.we
 
 export default function SubscribePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-800 dark:to-blue-900">
       <main className="flex-1">
         <section className="w-full py-12 md:py-16 lg:py-20 relative overflow-hidden bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-800 dark:to-blue-900" aria-labelledby="subscribe-hero-title">
           <div className="container mx-auto px-4 md:px-6 relative z-10">
