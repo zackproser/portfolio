@@ -66,7 +66,7 @@ const RagTutorialAd = ({ compact = false }) => {
               })
             }}
           >
-            Get the $49 Tutorial →
+            Get the $149 Tutorial →
           </Link>
           <Link 
             href="/products/rag-pipeline-tutorial"
@@ -198,7 +198,7 @@ export default function ChatPageClient() {
                   })
                 }}
               >
-                Get the $49 Tutorial
+                Get the $149 Tutorial
               </Link>
               <p className="text-sm text-zinc-500 italic mt-2 sm:mt-3">
                 (or try the demo below first)

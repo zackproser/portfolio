@@ -155,6 +155,11 @@ const nextConfig = {
         source: '/learn',
         destination: '/products',
         permanent: false
+      },
+      {
+        source: '/blog/rag-pipeline-tutorial-free',
+        destination: '/blog/langchain-pinecone-chat-with-my-blog',
+        permanent: true
       }
     ]
   },

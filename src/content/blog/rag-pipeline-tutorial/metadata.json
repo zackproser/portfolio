@@ -47,7 +47,7 @@
       {
         "title": "Production-Ready Next.js Application",
         "description": "Full source code for a modern web application built with the Vercel AI SDK. Features streaming responses, citation support, related content suggestions, and a beautiful chat interface. Deploy it to Vercel with one click or run it locally for development.",
-        "image": "https://zackproser.b-cdn.net/images/rag-pipeline-ui.webp",
+        "image": "https://zackproser.b-cdn.net/images/rag-pipeline-hero.webp",
         "imageAlt": "Next.js chat application with streaming responses and citations"
       },
       {
