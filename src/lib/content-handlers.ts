@@ -50,9 +50,31 @@ export const normalizeRouteOrFileSlug = (slug: string) => {
  */
 async function _loadMDXModule(contentType: string, directorySlug: string) {
   const contentMdxPath = path.join(contentDirectory, contentType, directorySlug, 'page.mdx');
+  const metadataPath = path.join(contentDirectory, contentType, directorySlug, 'metadata.json');
 
-  if (!fs.existsSync(contentMdxPath)) {
-    logger.debug(`MDX file not found: ${contentType}/${directorySlug}`);
+  // Always try to read metadata.json first so list pages work even if MDX isn't bundled
+  let fileMetadata: ExtendedMetadata | undefined;
+  if (fs.existsSync(metadataPath)) {
+    try {
+      const metadataContent = fs.readFileSync(metadataPath, 'utf8');
+      fileMetadata = JSON.parse(metadataContent) as ExtendedMetadata;
+      logger.debug(`Loaded metadata.json for ${contentType}/${directorySlug}`);
+    } catch (error) {
+      logger.error(`Error parsing metadata.json for ${contentType}/${directorySlug}:`, error);
+    }
+  }
+
+  // Try to import the MDX module if the source file exists locally. In some deployments
+  // (serverless/prod), the MDX source may not be present or bundled for dynamic import.
+  // We still want to return metadata for listing even if import fails.
+  const mdxExists = fs.existsSync(contentMdxPath);
+  if (!mdxExists) {
+    // No MDX file on disk – return whatever metadata we could load
+    if (fileMetadata) {
+      logger.debug(`MDX not found; using metadata.json only for ${contentType}/${directorySlug}`);
+      return { MdxContent: undefined as any, metadata: fileMetadata };
+    }
+    logger.debug(`MDX and metadata.json not found for ${contentType}/${directorySlug}`);
     return null;
   }
 
@@ -60,39 +82,32 @@ async function _loadMDXModule(contentType: string, directorySlug: string) {
     // Use template literal syntax for dynamic import path
     const mdxModule = await import(`@/content/${contentType}/${directorySlug}/page.mdx`);
     const MdxContent = mdxModule.default;
-    let metadata = mdxModule.metadata as ExtendedMetadata;
-
-    // If no metadata in MDX file, try to load from separate metadata.json file
-    if (!metadata) {
-      const metadataPath = path.join(contentDirectory, contentType, directorySlug, 'metadata.json');
-      if (fs.existsSync(metadataPath)) {
-        try {
-          const metadataContent = fs.readFileSync(metadataPath, 'utf8');
-          metadata = JSON.parse(metadataContent) as ExtendedMetadata;
-          logger.debug(`Loaded metadata from separate file for ${contentType}/${directorySlug}`);
-        } catch (error) {
-          logger.error(`Error loading metadata.json for ${contentType}/${directorySlug}:`, error);
-        }
-      }
-    }
+    // Prefer metadata from MDX, but fall back to metadata.json when absent
+    let metadata = (mdxModule.metadata as ExtendedMetadata) || fileMetadata;
 
     // Debug log for raw metadata.description
     logger.debug(`[DEBUG] Loaded metadata.description for ${contentType}/${directorySlug}:`, metadata?.description);
 
     if (!MdxContent && !metadata) {
       logger.debug(`MDX module loaded but no default export or metadata found for: ${contentType}/${directorySlug}`);
-      return null; // Or return { MdxContent, metadata } if partial loads are possible/useful
+      return null;
     }
 
     logger.debug(`Successfully loaded MDX module: ${contentType}/${directorySlug}`);
     return { MdxContent, metadata };
   } catch (error: any) {
-    // Catch potential errors during import itself
-    if (error.code === 'MODULE_NOT_FOUND') {
-        logger.debug(`MDX module import failed (MODULE_NOT_FOUND): ${contentType}/${directorySlug}`);
-        // This case should ideally be caught by fs.existsSync, but keeping it for robustness
+    // If dynamic import fails in prod, still return metadata.json so index pages can render
+    if (error?.code === 'MODULE_NOT_FOUND') {
+      logger.debug(`MDX import MODULE_NOT_FOUND for ${contentType}/${directorySlug}; using metadata.json fallback`);
+      if (fileMetadata) {
+        return { MdxContent: undefined as any, metadata: fileMetadata };
+      }
     } else {
-        logger.error(`Error dynamically importing MDX module for ${contentType}/${directorySlug}:`, error);
+      logger.error(`Error dynamically importing MDX module for ${contentType}/${directorySlug}:`, error);
+      if (fileMetadata) {
+        logger.debug(`Returning metadata.json despite MDX import error for ${contentType}/${directorySlug}`);
+        return { MdxContent: undefined as any, metadata: fileMetadata };
+      }
     }
     return null;
   }
