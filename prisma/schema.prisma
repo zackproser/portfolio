@@ -16,13 +16,14 @@ model User {
   githubUsername      String?              @map("github_username")
   avatarUrl           String?              @map("avatar_url")
   followersCount      Int?                 @map("followers_count")
+  audience_segment    String?
   accounts            Account[]
+  chatSessions        ChatSession[]
   notifications       EmailNotification[]
   freeChapterRequests FreeChapterRequest[]
   leads               Lead[]
   purchases           Purchase[]
   sessions            Session[]
-  chatSessions        ChatSession[]
 
   @@map("users")
 }
@@ -167,53 +168,51 @@ model Lead {
 }
 
 model ChatSession {
-  id          String        @id @default(cuid())
-  userId      String?       @map("user_id")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  messages    ChatMessage[]
-
-  user        User?         @relation(fields: [userId], references: [id])
+  id        String        @id @default(cuid())
+  userId    String?       @map("user_id")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  messages  ChatMessage[]
+  user      User?         @relation(fields: [userId], references: [id])
 
   @@map("chat_sessions")
 }
 
 model ChatMessage {
-  id          String      @id @default(cuid())
-  sessionId   String      @map("session_id")
-  role        String
-  content     String
-  createdAt   DateTime    @default(now()) @map("created_at")
-
-  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id        String      @id @default(cuid())
+  sessionId String      @map("session_id")
+  role      String
+  content   String
+  createdAt DateTime    @default(now()) @map("created_at")
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
   @@map("chat_messages")
 }
 
 model Tool {
-  id                   String    @id @default(cuid())
+  id                   String   @id @default(cuid())
   name                 String
   description          String
-  logoUrl              String?   @map("logo_url")
+  logoUrl              String?  @map("logo_url")
   category             String
   pricing              String?
-  websiteUrl           String    @map("website_url")
-  githubUrl            String?   @map("github_url")
-  openSource           Boolean?  @map("open_source")
-  apiAccess            Boolean?  @map("api_access")
-  documentationQuality String?   @map("documentation_quality")
-  communitySize        String?   @map("community_size")
-  lastUpdated          String?   @map("last_updated")
+  websiteUrl           String   @map("website_url")
+  githubUrl            String?  @map("github_url")
+  openSource           Boolean? @map("open_source")
+  apiAccess            Boolean? @map("api_access")
+  documentationQuality String?  @map("documentation_quality")
+  communitySize        String?  @map("community_size")
+  lastUpdated          String?  @map("last_updated")
   features             String[]
   pros                 String[]
   cons                 String[]
   license              String?
   languages            String[]
-  reviewCount          Int?      @map("review_count")
-  reviewUrl            String?   @map("review_url")
-  createdAt            DateTime  @default(now()) @map("created_at")
-  updatedAt            DateTime  @updatedAt @map("updated_at")
+  reviewCount          Int?     @map("review_count")
+  reviewUrl            String?  @map("review_url")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@map("tools")
 }

@@ -19,6 +19,8 @@ export const toolFormSchema = z.object({
   communitySize: z.string().optional(),
   lastUpdated: z.string().optional(),
   license: z.string().optional(),
+  easeOfUse: z.string().optional(),
+  reliability: z.string().optional(),
   // Comma-separated strings for arrays (handled in onSubmit)
   features: z.string().optional(),
   pros: z.string().optional(),
