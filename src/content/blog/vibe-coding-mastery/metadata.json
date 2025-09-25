@@ -7,6 +7,7 @@
   "commerce": {
     "isPaid": true,
     "price": 49,
+    "teamPrice": 250,
     "previewLength": 450,
     "previewElements": 32,
     "paywallHeader": "Vibe Coding Survival Guide",
@@ -14,5 +15,13 @@
     "buttonText": "Get the survival guide ($49)",
     "miniPaywallTitle": "Vibe Coding Survival Guide",
     "miniPaywallDescription": "Complete guide to safe coding practices with Git, secrets, and Cursor setup."
+  }
+  ,
+  "landing": {
+    "layout": "simple",
+    "salesVideoUrl": "",
+    "heroTitle": "Ship safer, faster coding habits in hours",
+    "problemSolved": "Worried about leaking secrets or breaking Git history?",
+    "benefitStatement": "Concrete, copy-paste patterns for safe git, secrets discipline, and Cursor setup."
   }
 }

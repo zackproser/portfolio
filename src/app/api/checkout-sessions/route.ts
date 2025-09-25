@@ -20,10 +20,11 @@ export async function POST(req: NextRequest) {
   try {
     const session = await auth()
     const body = await req.json()
-    const { slug, type, email } = body as { 
+    const { slug, type, email, license } = body as { 
       slug: string; 
       type: Content['type']; 
-      email?: string 
+      email?: string,
+      license?: 'team' | 'individual'
     }
 
     // Get email from session if available, but don't require it
@@ -55,6 +56,10 @@ export async function POST(req: NextRequest) {
 
     const stripe = getStripeClient()
 
+    // Team license is a higher flat amount and will be annotated in metadata
+    const isTeam = license === 'team'
+    const unitAmount = (isTeam ? 450 : content.commerce.price) * 100
+
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
       ui_mode: 'embedded',
@@ -66,9 +71,9 @@ export async function POST(req: NextRequest) {
             currency: 'usd',
             product_data: {
               name: content.title ? String(content.title) : 'Premium Content',
-              description: content.description ? String(content.description) : 'Premium Content Access',
+              description: isTeam ? 'Team/Company License (unlimited seats for one email domain)' : (content.description ? String(content.description) : 'Premium Content Access'),
             },
-            unit_amount: content.commerce.price * 100,
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },
@@ -79,7 +84,8 @@ export async function POST(req: NextRequest) {
         // Include email if available
         ...(userEmail && { email: userEmail }),
         slug,
-        type: content.type
+        type: content.type,
+        license: isTeam ? 'team' : 'individual'
       },
       return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
     }

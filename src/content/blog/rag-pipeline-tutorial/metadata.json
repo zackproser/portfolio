@@ -7,10 +7,11 @@
   "commerce": {
     "isPaid": true,
     "price": 149,
+    "teamPrice": 450,
     "previewLength": 450,
     "previewElements": 32,
     "paywallHeader": "Master RAG Development: The Complete Package",
-    "paywallBody": "After 2 years building and fixing RAG at Pinecone, I refined this complete pipeline. See your data transform in Jupyter, deploy with Next.js and Vercel AI SDK, ship to production in 3 hours. This is the fundamental AI engineering skill everyone's hiring for.",
+    "paywallBody": "After 2 years building and fixing RAG at Pinecone, I refined this complete pipeline. See your data transform in Jupyter, deploy with Next.js and Vercel AI SDK, ship to production in 3 hours. Includes direct support from me — ask questions and I’ll help you implement. This is the fundamental AI engineering skill everyone's hiring for.",
     "buttonText": "3 Hours to Production RAG - The Pipeline I Refined at Pinecone",
     "miniPaywallTitle": "Master RAG pipeline creation",
     "miniPaywallDescription": "Includes a Jupyter Notebook, a Next.js example site, and a step-by-step tutorial.",
@@ -19,6 +20,8 @@
     "profileImage": "https://zackproser.b-cdn.net/images/rag-chatbot-profile.webp"
   },
   "landing": {
+    "layout": "simple",
+    "salesVideoUrl": "",
     "heroTitle": "The Production RAG Pipeline Refined at Pinecone",
     "subtitle": "LangChain + Next.js + Pinecone = Zero Hallucinations in 3 Hours",
     "problemSolved": "Need a chatbot that knows your business data inside and out?",
@@ -40,7 +43,7 @@
     "whatsIncluded": [
       {
         "title": "Interactive Jupyter Notebook",
-        "description": "A complete, ready-to-run notebook that walks you through data processing, embedding creation, and vector database setup. Simply add your API keys and run each cell to process your own content. Includes detailed explanations of chunking strategies, embedding techniques, and Pinecone integration.",
+        "description": "The data science half of RAG that most engineer-focused guides skip. This notebook teaches rigorous data prep: loading and cleaning sources, chunking strategies (with trade-offs), embedding creation, and Pinecone indexing — all step-by-step so you understand exactly what happens to your data and why it matters at query time.",
         "image": "https://zackproser.b-cdn.net/images/rag-pipeline-jupyter.webp",
         "imageAlt": "Jupyter Notebook interface showing data processing and vector database creation"
       },
@@ -55,6 +58,12 @@
         "description": "Detailed written guide that explains every concept, from RAG fundamentals to advanced implementation patterns. Learn not just how to build it, but why each piece works and how to customize it for your specific use case. Perfect for developers who want to truly understand the technology.",
         "image": "https://zackproser.b-cdn.net/images/rag-pipeline-tutorial.webp",
         "imageAlt": "RAG pipeline architecture diagram showing the complete system flow"
+      },
+      {
+        "title": "Direct Email Support",
+        "description": "Ask me your questions as you build. I’ll review issues, point you to the right patterns, and help you get to a working, production-ready RAG pipeline.",
+        "image": "https://zackproser.b-cdn.net/images/support-email.webp",
+        "imageAlt": "Email support illustration"
       }
     ],
     "experiencedEngineersSection": {

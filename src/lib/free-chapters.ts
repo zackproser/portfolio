@@ -15,8 +15,10 @@ export async function hasRequestedFreeChapters(
   }
 
   try {
-    // Log the available models to debug
-    console.log('Available Prisma models:', Object.keys(prisma));
+    // Avoid noisy logging in dev/production; keep a guarded debug hook if needed
+    // if (process.env.DEBUG?.includes('free-chapters')) {
+    //   console.debug('Available Prisma models:', Object.keys(prisma as any));
+    // }
     
     // Use findFirst instead of findUnique with the compound key
     const request = await prisma.freeChapterRequest.findFirst({
