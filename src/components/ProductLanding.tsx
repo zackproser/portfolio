@@ -18,6 +18,7 @@ import { getProductByDirectorySlug } from '@/lib/content-handlers'
 import { getConversionTestimonials } from '@/data/testimonials'
 import { DirectSupport } from '@/components/DirectSupport'
 import { Container } from '@/components/Container'
+import { Chapters } from '@/components/Chapters'
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -158,11 +159,30 @@ export function ProductLanding({ content }: { content: Content }) {
             secondaryCtaLabel="Get the free version"
             supportLine="Includes direct support — ask me and I’ll help you ship"
           />
+          {/* Chapters / major sections enumeration (above free version) */}
+          {Array.isArray((landingData as any)?.contentSections) && (landingData as any).contentSections.length > 0 && (
+            <Chapters sections={(landingData as any).contentSections} sectionTitle="Chapters & major sections" sectionSubtitle="A quick outline of what you'll learn and build" />
+          )}
+
+          {/* What you get (if applicable) — should follow chapters */}
+          {filteredIncluded && filteredIncluded.length > 0 && (
+            <WhatsIncluded 
+              items={filteredIncluded}
+              sectionTitle="What you get"
+              sectionSubtitle="Everything you need to ship a production-ready solution"
+              uniform
+            />
+          )}
+
+          {/* Direct support should appear directly under What you get (or under Chapters if none) */}
+          <DirectSupport />
+
           {/* Free version capture section for tagging and conversions */}
           <FreeChapters 
             title={title || safeDescription}
             productSlug={directorySlug}
           />
+
           {/* Optional sales video slot */}
           {Boolean((landingData as any)?.salesVideoUrl) && (
             <div className="mx-auto max-w-3xl px-6 -mt-6">
@@ -182,17 +202,7 @@ export function ProductLanding({ content }: { content: Content }) {
             title="What developers say"
             subtitle={`Built by someone with ${RenderNumYearsExperience()} years shipping production software`}
           />
-          {filteredIncluded && filteredIncluded.length > 0 && (
-            <WhatsIncluded 
-              items={filteredIncluded}
-              sectionTitle="What you get"
-              sectionSubtitle="Everything you need to ship a production-ready solution"
-              uniform
-            />
-          )}
 
-          {/* Dedicated Direct Support section */}
-          <DirectSupport />
           <Pricing 
             price={commerce.price}
             title={title || safeDescription}
