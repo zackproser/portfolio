@@ -9,6 +9,7 @@
   "commerce": {
     "isPaid": true,
     "price": 5,
+    "teamPrice": 25,
     "previewLength": 150,
     "paywallHeader": "Automate Your Git Profile Switching",
     "paywallBody": "Stop manually switching between Git profiles. Learn how to automatically use the right Git profile based on your current directory. Perfect for developers who work on both personal and work projects.",

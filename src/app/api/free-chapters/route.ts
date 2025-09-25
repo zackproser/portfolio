@@ -36,15 +36,15 @@ export async function POST(req: NextRequest) {
 	
 	console.log(`📬 [API] EmailOctopus configuration: API Key exists=${!!emailOctopusAPIKey}, List ID exists=${!!emailOctopusListId}`);
 
-	const subscriptionData = {
-		api_key: emailOctopusAPIKey,
-		email_address: email,
-		fields: {
-			Referrer: referrer || productSlug,
-		},
-		tags: [`free-chapters-${productSlug}`],
-		status: "SUBSCRIBED",
-	};
+    // Build payload with only supported fields to avoid INVALID_PARAMETERS
+    const subscriptionData: Record<string, any> = {
+        api_key: emailOctopusAPIKey,
+        email_address: email,
+        tags: [`free-chapters-${productSlug}`],
+        status: "SUBSCRIBED",
+    };
+    // Always write to the 'Referrer' field on EmailOctopus (list has this field)
+    subscriptionData.fields = { Referrer: referrer || `/products/${productSlug}` };
 
 	const requestOptions = {
 		crossDomain: true,

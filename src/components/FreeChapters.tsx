@@ -131,12 +131,10 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
           <Pattern className="absolute -top-32 left-0 w-full sm:left-3/4 sm:top-0 sm:ml-8 sm:w-auto md:left-2/3 lg:left-auto lg:right-2 lg:ml-0 xl:right-auto xl:left-2/3" />
           <div>
             <h2 className="font-display text-5xl font-extrabold tracking-tight text-white sm:w-3/4 sm:text-6xl md:w-2/3 lg:w-auto">
-              Get a free chapter straight to your inbox
+              Get the free version of this tutorial
             </h2>
             <p className="mt-4 text-lg tracking-tight text-blue-200">
-              Enter your email below and we&apos;ll send you a free chapter
-              of <span className="font-bold text-white">{title}</span>, showing you how to set up your development environment
-              and build your first RAG pipeline.
+              Enter your email and I&apos;ll send you the free version of <span className="font-bold text-white">{title}</span> — a working taste of the pipeline and approach. You&apos;ll also get occasional, practical updates. Unsubscribe anytime.
             </p>
           </div>
           {formSuccess ? (
@@ -154,10 +152,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full lg:pl-16">
-              <h3 className="text-base font-medium tracking-tight text-white">
-                Get a free chapter straight to your inbox{' '}
-                <span aria-hidden="true">&rarr;</span>
-              </h3>
+              <h3 className="text-base font-medium tracking-tight text-white">Get the free version via email</h3>
               <div className="mt-4 sm:relative sm:flex sm:items-center sm:py-0.5 sm:pr-2.5">
                 <div className="relative sm:static sm:flex-auto">
                   <input
@@ -169,7 +164,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
                     className="peer relative z-10 w-full appearance-none bg-transparent px-4 py-2 text-base text-white placeholder:text-blue-200 focus:outline-none sm:py-3"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    disabled={isSubmitting || isChecking || !!session?.user?.email}
+                    disabled={isSubmitting || isChecking}
                   />
                   <div className="absolute inset-0 rounded-md border border-white/20 peer-focus:border-blue-300 peer-focus:bg-blue-500 peer-focus:ring-1 peer-focus:ring-blue-300 sm:rounded-xl" />
                 </div>
@@ -179,7 +174,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
                   className="mt-4 w-full sm:relative sm:z-10 sm:mt-0 sm:w-auto sm:flex-none"
                   disabled={isSubmitting || isChecking}
                 >
-                  {isSubmitting ? 'Sending...' : isChecking ? 'Checking...' : 'Get free chapters'}
+                  {isSubmitting ? 'Sending...' : isChecking ? 'Checking...' : 'Send me the free version'}
                 </Button>
               </div>
               {error && (
@@ -187,7 +182,7 @@ export function FreeChapters({ title, productSlug }: FreeChaptersProps) {
               )}
               {session?.user && (
                 <p className="mt-2 text-sm text-blue-200">
-                  Using your account email: {session.user.email}
+                  Prefilled from your account — edit if you want a different address: {session.user.email}
                 </p>
               )}
             </form>

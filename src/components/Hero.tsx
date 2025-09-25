@@ -54,6 +54,13 @@ interface HeroProps {
     };
   };
   image?: string | any;
+  // Simple variant options
+  simple?: boolean;
+  ctaHref?: string;
+  ctaLabel?: string;
+  secondaryCtaHref?: string;
+  secondaryCtaLabel?: string;
+  supportLine?: string;
 }
 
 export function Hero({ 
@@ -63,8 +70,66 @@ export function Hero({
   benefitStatement,
   problemSolved,
   testimonial,
-  image
+  image,
+  simple = false,
+  ctaHref = '#pricing',
+  ctaLabel = 'Get instant access',
+  secondaryCtaHref,
+  secondaryCtaLabel,
+  supportLine,
 }: HeroProps) {
+  if (simple) {
+    return (
+      <header className="px-6 py-12 sm:py-16 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
+          {/* Removed extra top headline to reduce noise */}
+          <div className="lg:col-span-7">
+            <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
+              {heroTitle || title}
+            </h1>
+            {benefitStatement && (
+              <p className="mt-4 text-xl font-semibold text-blue-600 dark:text-blue-400">
+                {benefitStatement}
+              </p>
+            )}
+            <p className="mt-3 text-lg text-slate-600 dark:text-slate-300">
+              {description}
+            </p>
+            {supportLine && (
+              <p className="mt-4 text-sm italic text-slate-500 dark:text-slate-400">{supportLine}</p>
+            )}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Button href={ctaHref as any} color="blue" className="text-base py-3 px-6 font-bold">
+                {ctaLabel}
+              </Button>
+              {secondaryCtaHref && secondaryCtaLabel && (
+                <Button href={secondaryCtaHref as any} variant="outline" color="blue" className="text-base py-3 px-6">
+                  {secondaryCtaLabel}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {image && (
+            <div className="lg:col-span-5">
+              <div className="relative mx-auto w-full max-w-md rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 dark:bg-slate-900/70 dark:ring-white/10">
+                <div className="rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <Image
+                    src={image}
+                    alt="Product preview"
+                    className="h-auto w-full object-cover"
+                    width={640}
+                    height={400}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </header>
+    )
+  }
+
   return (
     <header className="overflow-hidden bg-slate-100 lg:bg-transparent lg:px-5 dark:bg-slate-900 lg:dark:bg-transparent">
       <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-10 pt-6 md:pt-8 lg:grid-cols-12 lg:gap-y-6 lg:px-3 lg:pt-3 lg:pb-12 xl:py-8">
@@ -102,9 +167,6 @@ export function Hero({
             </p>
             
             <div className="mt-6 flex flex-col sm:flex-row gap-6 mb-16">
-              <Button href="#free-chapters" color="blue" className="text-lg py-4 px-8 font-bold">
-                Get sample chapter
-              </Button>
               <Button href="#pricing" variant="solid" color="slate" className="text-lg py-4 px-8 font-bold">
                 Buy now
               </Button>

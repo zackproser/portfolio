@@ -9,6 +9,8 @@ export interface CommerceConfig {
    */
   requiresEmail?: boolean
   price: number
+  /** Optional team/company license price (one-time) */
+  teamPrice?: number
   stripe_price_id?: string
   previewLength?: number
   previewElements?: number

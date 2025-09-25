@@ -24,6 +24,7 @@ const CheckoutPage = () => {
 	console.log(`CheckoutPage: session:`, session);
 
 	const productSlug = searchParams.get("product");
+	const license = searchParams.get('license');
 
 	const [clientSecret, setClientSecret] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -74,7 +75,8 @@ const CheckoutPage = () => {
 			slug: productSlug,
 			type,
 			// Include email if available from session, but don't require it
-			...(session?.user?.email && { email: session.user.email })
+			...(session?.user?.email && { email: session.user.email }),
+			...(license && { license })
 		};
 
 		fetch("/api/checkout-sessions", {
@@ -101,7 +103,7 @@ const CheckoutPage = () => {
 				setError(err.message || "Failed to initialize checkout");
 				setLoading(false);
 			});
-	}, [productSlug, session, searchParams]);
+	}, [productSlug, session, searchParams, license]);
 
 	if (error) {
 		return (

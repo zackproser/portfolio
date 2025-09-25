@@ -53,17 +53,20 @@ function CheckoutResultContent() {
 
         setContent(data);
 
-        if (!conversionTracked && data.content.commerce?.price) {
+        if (!conversionTracked && ((data as any)?.content?.commerce?.price || (data as any)?.session?.amount_total)) {
+          const chargedAmount = (data as any)?.session?.amount_total
+            ? Math.round(((data as any).session.amount_total as number) / 100)
+            : (data as any).content.commerce.price as number;
           // Google Ads purchase event
           sendGTMEvent({
             event: 'purchase',
-            value: data.content.commerce.price,
+            value: chargedAmount,
             currency: 'USD',
             transaction_id: sessionId,
             items: [{
               item_name: data.content.title,
               item_id: data.content.slug,
-              price: data.content.commerce.price
+              price: chargedAmount
             }],
             user_data: {
               email: data.user.email,
@@ -78,7 +81,7 @@ function CheckoutResultContent() {
           try {
             plausible('Purchase', {
               revenue: {
-                amount: data.content.commerce.price,
+                amount: chargedAmount,
                 currency: 'USD'
               },
               props: {

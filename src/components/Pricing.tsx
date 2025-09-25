@@ -112,6 +112,9 @@ interface PricingProps {
   checkoutUrl: string
   productSlug?: string
   productType?: string
+  // Optional team/company license configuration
+  teamPrice?: number
+  teamCheckoutUrl?: string
 }
 
 export function Pricing({ 
@@ -120,7 +123,9 @@ export function Pricing({
   description = "Get instant access to the complete guide and start building today.",
   checkoutUrl,
   productSlug = '',
-  productType = ''
+  productType = '',
+  teamPrice,
+  teamCheckoutUrl
 }: PricingProps) {
   
   return (
@@ -152,7 +157,7 @@ export function Pricing({
                   <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600 dark:text-slate-600">USD</span>
                 </p>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
-                  The fundamental AI skill everyone&apos;s hiring for.
+                  The fundamental AI skill everyone&apos;s hiring for. Includes direct support — ask me your questions and I&apos;ll help you ship.
                 </p>
                 <Button
                   href={checkoutUrl as any}
@@ -167,6 +172,35 @@ export function Pricing({
               </div>
             </div>
           </div>
+          {/* Team / Company License */}
+          {teamPrice && teamCheckoutUrl && (
+            <div className="mx-auto -mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
+              <div className="rounded-2xl bg-white py-10 text-center ring-1 ring-inset ring-slate-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16 dark:bg-white">
+                <div className="mx-auto max-w-xs px-8">
+                  <p className="text-base font-semibold text-slate-600 dark:text-slate-600">Team / Company License</p>
+                  <p className="mt-6 flex items-baseline justify-center gap-x-2">
+                    <span className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-900">${teamPrice}</span>
+                    <span className="text-sm font-semibold leading-6 tracking-wide text-slate-600 dark:text-slate-600">USD</span>
+                  </p>
+                  <ul className="mt-4 text-left text-sm text-slate-600 dark:text-slate-600 space-y-2">
+                    <li>• Unlimited seats with one company email domain (TLD)</li>
+                    <li>• Direct email support: ask me questions about your implementation</li>
+                    <li>• Internal commercial use rights for your team</li>
+                  </ul>
+                  <Button
+                    href={teamCheckoutUrl as any}
+                    color="blue"
+                    className="mt-8 block w-full"
+                  >
+                    Get team license
+                  </Button>
+                  <p className="mt-6 text-xs leading-5 text-slate-600 dark:text-slate-600">
+                    One license per company domain. Forward to your team freely.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </Container>
     </section>

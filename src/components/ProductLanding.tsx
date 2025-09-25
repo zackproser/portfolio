@@ -16,6 +16,9 @@ import { createMetadata } from '@/utils/createMetadata'
 import { Metadata, ResolvingMetadata } from 'next'
 import { getProductByDirectorySlug } from '@/lib/content-handlers'
 import { getConversionTestimonials } from '@/data/testimonials'
+import { DirectSupport } from '@/components/DirectSupport'
+import { Container } from '@/components/Container'
+import { Chapters } from '@/components/Chapters'
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -116,16 +119,108 @@ export function ProductLanding({ content }: { content: Content }) {
 
   // Use provided landing data or fallback to default
   const landingData = landing || defaultLanding;
+  const isSimpleLayout = (landingData as any)?.layout === 'simple';
 
   const bio = `I'm a software engineer with over ${RenderNumYearsExperience()} years of experience building production systems.`
 
   // Generate the checkout URL using directorySlug
   const checkoutUrl = `/checkout?product=${directorySlug}&type=${type}`;
+  // Optional team/company license
+  const teamPrice: number | undefined = (commerce as any)?.teamPrice;
+  const teamCheckoutUrl = teamPrice ? `/checkout?product=${directorySlug}&type=${type}&license=team` : undefined;
 
   // Ensure all string values have defaults
   const safeDescription = String(description || '');
   const safeSubtitle = String(landingData.subtitle || description || '');
   const safePaywallBody = String(commerce.paywallBody || description || '');
+
+  if (isSimpleLayout) {
+    // Filter out any redundant items that are represented as dedicated sections
+    const filteredIncluded = (landingData?.whatsIncluded || []).filter((item: any) => {
+      const title = String(item?.title || '').toLowerCase();
+      return title !== 'direct email support';
+    });
+    return (
+      <>
+        <div className="relative">
+          {/* Simple, conversion-focused layout */}
+          <Hero 
+            title={title || safeDescription}
+            heroTitle={landing?.heroTitle}
+            description={safeDescription}
+            problemSolved={landingData.problemSolved}
+            benefitStatement={landingData.benefitStatement}
+            testimonial={landingData.testimonials?.[0]}
+            image={(landingData as any)?.showHeroImage === false ? undefined : content.image}
+            simple
+            ctaHref="#pricing"
+            ctaLabel="Get instant access"
+            secondaryCtaHref="#free-chapters"
+            secondaryCtaLabel="Get the free version"
+            supportLine="Includes direct support — ask me and I’ll help you ship"
+          />
+          {/* Chapters / major sections enumeration (above free version) */}
+          {Array.isArray((landingData as any)?.contentSections) && (landingData as any).contentSections.length > 0 && (
+            <Chapters sections={(landingData as any).contentSections} sectionTitle="Chapters & major sections" sectionSubtitle="A quick outline of what you'll learn and build" />
+          )}
+
+          {/* What you get (if applicable) — should follow chapters */}
+          {filteredIncluded && filteredIncluded.length > 0 && (
+            <WhatsIncluded 
+              items={filteredIncluded}
+              sectionTitle="What you get"
+              sectionSubtitle="Everything you need to ship a production-ready solution"
+              uniform
+            />
+          )}
+
+          {/* Direct support should appear directly under What you get (or under Chapters if none) */}
+          <DirectSupport />
+
+          {/* Free version capture section for tagging and conversions */}
+          <FreeChapters 
+            title={title || safeDescription}
+            productSlug={directorySlug}
+          />
+
+          {/* Optional sales video slot */}
+          {Boolean((landingData as any)?.salesVideoUrl) && (
+            <div className="mx-auto max-w-3xl px-6 -mt-6">
+              <div className="aspect-video w-full rounded-xl overflow-hidden bg-black/5 dark:bg-white/5">
+                <iframe
+                  src={(landingData as any).salesVideoUrl}
+                  title="Sales Video"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          )}
+          <RealTestimonials 
+            testimonials={getConversionTestimonials(3)}
+            title="What developers say"
+            subtitle={`Built by someone with ${RenderNumYearsExperience()} years shipping production software`}
+          />
+
+          <Pricing 
+            price={commerce.price}
+            title={title || safeDescription}
+            description={safePaywallBody}
+            checkoutUrl={checkoutUrl}
+            productSlug={directorySlug}
+            productType={type}
+            {...(teamPrice ? { teamPrice, teamCheckoutUrl } : {})}
+          />
+          <Author 
+            name={content.author}
+            bio={bio}
+          />
+          <Footer />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -172,7 +267,7 @@ export function ProductLanding({ content }: { content: Content }) {
         <TableOfContents content={content} />
         <FreeChapters 
           title={safeDescription}
-          productSlug={slug}
+          productSlug={directorySlug}
         />
         
         {/* Add real testimonials section before pricing to enhance conversions */}
@@ -234,6 +329,7 @@ export function ProductLanding({ content }: { content: Content }) {
           checkoutUrl={checkoutUrl}
           productSlug={directorySlug}
           productType={type}
+          {...(teamPrice ? { teamPrice, teamCheckoutUrl } : {})}
         />
         <Author 
           name={content.author}
