@@ -329,8 +329,7 @@ export function ProductLanding({ content }: { content: Content }) {
           checkoutUrl={checkoutUrl}
           productSlug={directorySlug}
           productType={type}
-          teamPrice={450}
-          teamCheckoutUrl={teamCheckoutUrl}
+          {...(teamPrice ? { teamPrice, teamCheckoutUrl } : {})}
         />
         <Author 
           name={content.author}

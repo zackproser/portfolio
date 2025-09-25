@@ -56,9 +56,12 @@ export async function POST(req: NextRequest) {
 
     const stripe = getStripeClient()
 
-    // Team license is a higher flat amount and will be annotated in metadata
+    // Team license uses configurable teamPrice when available
     const isTeam = license === 'team'
-    const unitAmount = (isTeam ? 450 : content.commerce.price) * 100
+    const basePrice = isTeam
+      ? (content.commerce?.teamPrice ?? content.commerce.price)
+      : content.commerce.price
+    const unitAmount = basePrice * 100
 
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
