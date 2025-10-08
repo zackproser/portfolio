@@ -106,6 +106,20 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 				
 			// Update the form UI to show the user their subscription was successful
 			setSuccess(true);
+
+			// Trigger magic link sign-in via email to complete authentication flow
+			try {
+				await fetch('/api/auto-login', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: data.email, sessionId: 'newsletter' })
+				});
+				// Redirect to built-in sign-in page with email prefilled
+				const params = new URLSearchParams({ email: data.email }).toString();
+				window.location.href = `/auth/login?${params}`;
+			} catch (e) {
+				console.error('Failed to trigger email sign-in after subscribe', e);
+			}
 		} catch (e) {
 			console.error("Newsletter submission error:", e);
 			setError(true);
