@@ -86,6 +86,7 @@ export default async function VideoSlugPage({ params }: PageProps) {
 
   // Always use ArticleLayout for consistency, even for purchased content
   const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
+  const isAuthenticated = !!session?.user?.email
 
   return (
     <>
@@ -99,7 +100,7 @@ export default async function VideoSlugPage({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed)
+        renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed, isAuthenticated)
       )}
     </ArticleLayout>
     </>
