@@ -219,8 +219,57 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   providers,
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      // Simply return true to allow sign in
+    async signIn({ user, account, profile, email: isNewUser }) {
+      // Auto-subscribe new users to newsletter on first sign-in
+      if (user.email && account?.provider === 'email') {
+        try {
+          // Check if they're already in our database
+          const existingSubscription = await prisma.newsletterSubscription.findUnique({
+            where: { email: user.email }
+          });
+
+          if (!existingSubscription) {
+            // Subscribe to EmailOctopus
+            const apiKey = process.env.EMAIL_OCTOPUS_API_KEY;
+            const listId = process.env.EMAIL_OCTOPUS_LIST_ID;
+
+            if (apiKey && listId) {
+              const response = await fetch(
+                `https://emailoctopus.com/api/1.6/lists/${listId}/contacts`,
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    api_key: apiKey,
+                    email_address: user.email,
+                    status: 'SUBSCRIBED'
+                  })
+                }
+              );
+
+              if (response.ok) {
+                const data = await response.json();
+                // Add to local database
+                await prisma.newsletterSubscription.create({
+                  data: {
+                    email: user.email,
+                    status: 'SUBSCRIBED',
+                    source: 'auto_signin',
+                    emailoctopusId: data.id,
+                    subscribedAt: new Date(),
+                    lastSyncedAt: new Date()
+                  }
+                });
+                console.log(`[Auth] Auto-subscribed new user to newsletter: ${user.email}`);
+              }
+            }
+          }
+        } catch (error) {
+          // Don't block sign-in if newsletter subscription fails
+          console.error('[Auth] Failed to auto-subscribe user to newsletter:', error);
+        }
+      }
+
       return true;
     },
     async session({ session, user, token }) {

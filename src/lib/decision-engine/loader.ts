@@ -3,11 +3,18 @@ import { loadLlmApiManifest, createManifestProvider } from '@/lib/manifests/load
 
 export class DecisionEngineLoader {
   private manifestProvider = createManifestProvider();
+  private cache: { tools?: { at: number; data: Tool[] } } = {};
 
   /**
    * Load all tools and convert to decision engine format
    */
   async loadAllTools(): Promise<Tool[]> {
+    const now = Date.now();
+    const ttlMs = 60 * 1000; // 60s in-memory cache per request scope
+    if (this.cache.tools && now - this.cache.tools.at < ttlMs) {
+      return this.cache.tools.data;
+    }
+
     const manifestSlugs = await this.manifestProvider.list();
     const tools: Tool[] = [];
 
@@ -15,14 +22,13 @@ export class DecisionEngineLoader {
       try {
         const manifest = await loadLlmApiManifest(slug, this.manifestProvider);
         const tool = this.convertManifestToTool(manifest);
-        if (tool) {
-          tools.push(tool);
-        }
+        if (tool) tools.push(tool);
       } catch (error) {
         console.error(`Failed to load manifest ${slug}:`, error);
       }
     }
 
+    this.cache.tools = { at: now, data: tools };
     return tools;
   }
 

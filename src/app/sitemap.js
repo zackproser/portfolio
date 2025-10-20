@@ -49,12 +49,15 @@ async function getRoutes() {
   };
   scanDir(appDir);
 
-  // Get all dynamic content routes (blog, videos, etc.)
+  // Get all dynamic content routes (blog, videos, newsletters, etc.)
   const blogContent = await getAllContent('blog');
   blogContent.forEach(item => routes.add(item.slug));
 
   const videoContent = await getAllContent('videos'); // Assuming 'videos' is a content type
   videoContent.forEach(item => routes.add(item.slug));
+
+  const newsletterContent = await getAllContent('newsletter');
+  newsletterContent.forEach(item => routes.add(item.slug));
 
   // Get all product routes
   const products = await getAllProducts();

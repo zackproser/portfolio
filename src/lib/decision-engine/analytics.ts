@@ -3,7 +3,7 @@
 import { Persona } from './types';
 
 export interface AnalyticsEvent {
-  type: 'index_filter' | 'tool_selection' | 'comparison_start' | 'verdict_view' | 'persona_change' | 'evidence_click' | 'outbound_click' | 'decision_made';
+  type: 'index_filter' | 'tool_selection' | 'comparison_start' | 'verdict_view' | 'persona_change' | 'evidence_click' | 'outbound_click' | 'decision_made' | 'verdict_disagreement';
   timestamp: number;
   sessionId: string;
   data: Record<string, any>;

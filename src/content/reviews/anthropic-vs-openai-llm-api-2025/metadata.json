@@ -1,0 +1,23 @@
+{
+  "title": "Anthropic vs OpenAI: Which LLM API for Your Startup in 2025",
+  "author": "Zachary Proser",
+  "date": "2025-10-20",
+  "description": "I've spent 18 months building production apps with both Anthropic and OpenAI APIs. Here's what actually matters when choosing between Claude and GPT-4.",
+  "image": "https://zackproser.b-cdn.net/images/anthropic-vs-openai.webp",
+  "slug": "/blog/anthropic-vs-openai-llm-api-2025",
+  "type": "blog",
+  "tools": ["anthropic-api", "openai-api"],
+  "reviewType": "comparison",
+  "affiliateLinks": {
+    "anthropic": "https://console.anthropic.com/signup?ref=zackproser",
+    "openai": "https://platform.openai.com/signup?ref=zackproser"
+  },
+  "commerce": {
+    "requiresAuth": true,
+    "isPaid": false,
+    "price": 0
+  },
+  "reviewStatus": "drafted",
+  "lastFactCheck": "2025-10-20",
+  "priority": 10
+}

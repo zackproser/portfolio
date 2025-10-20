@@ -88,57 +88,57 @@ const nextConfig = {
       }, 
       {
         source: '/blog/weaviate-vs-chroma',
-        destination: '/comparisons/weaviate-vs-chroma',
+        destination: '/comparisons/weaviate/vs/chroma',
         permanent: true,
       },
       {
         source: '/blog/pinecone-vs-chroma',
-        destination: '/comparisons/pinecone-vs-chroma',
+        destination: '/comparisons/pinecone/vs/chroma',
         permanent: true,
       },
       {
         source: '/blog/weaviate-vs-milvus',
-        destination: '/comparisons/weaviate-vs-milvus',
+        destination: '/comparisons/weaviate/vs/milvus',
         permanent: true,
       },
       {
         source: '/blog/chroma-vs-milvus',
-        destination: '/comparisons/chroma-vs-milvus',
+        destination: '/comparisons/chroma/vs/milvus',
         permanent: true
       },
       {
         source: '/blog/faiss-vs-chroma', 
-        destination: '/comparisons/faiss-vs-chroma',
+        destination: '/comparisons/faiss/vs/chroma',
         permanent: true
       },
       {
         source: '/blog/faiss-vs-milvus',
-        destination: '/comparisons/faiss-vs-milvus',
+        destination: '/comparisons/faiss/vs/milvus',
         permanent: true
       },
       {
         source: '/blog/pinecone-vs-faiss',
-        destination: '/comparisons/pinecone-vs-faiss',
+        destination: '/comparisons/pinecone/vs/faiss',
         permanent: true
       },
       {
         source: '/blog/pinecone-vs-milvus',
-        destination: '/comparisons/pinecone-vs-weaviate',
+        destination: '/comparisons/pinecone/vs/milvus',
         permanent: true
       },
       {
         source: '/blog/pinecone-vs-weaviate',
-        destination: '/comparisons/pinecone-vs-weaviate',
+        destination: '/comparisons/pinecone/vs/weaviate',
         permanent: true
       },
       {
         source: '/blog/weaviate-vs-faiss',
-        destination: '/comparisons/weaviate-vs-faiss',
+        destination: '/comparisons/weaviate/vs/faiss',
         permanent: true
       },
       {
         source: '/blog/weaviate-vs-milvus',
-        destination: '/comparisons/weaviate-vs-milvus',
+        destination: '/comparisons/weaviate/vs/milvus',
         permanent: true
       },
       {
@@ -148,8 +148,8 @@ const nextConfig = {
       },
       {
         source: '/comparisons/:db1(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)-vs-:db2(pinecone|milvus|chroma|weaviate|faiss|elasticsearch|qdrant|vald|lancedb|marqo|singlestoredb|pgvector|redis|vespa|deep-lake|docarray)',
-        destination: '/vectordatabases',
-        permanent: false
+        destination: '/comparisons/:db1/vs/:db2',
+        permanent: true
       },
       {
         source: '/learn',

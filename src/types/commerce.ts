@@ -3,11 +3,20 @@ import { StaticImageData } from 'next/image'
 // Commerce-related types
 export interface CommerceConfig {
   isPaid: boolean
+
   /**
-   * When true, the content is free but requires the user to submit
-   * their email and be subscribed to the newsletter.
+   * When true, user must be authenticated (signed in) to access content.
+   * This is Tier 2 - requires authentication. On first sign-in, users are auto-subscribed to newsletter.
+   * Content access only checks for valid session, not subscription status.
+   */
+  requiresAuth?: boolean
+
+  /**
+   * @deprecated Use requiresAuth instead. This field is kept for backward compatibility.
+   * When true, the content requires authentication (same as requiresAuth).
    */
   requiresEmail?: boolean
+
   price: number
   stripe_price_id?: string
   previewLength?: number

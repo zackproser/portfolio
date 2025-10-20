@@ -152,16 +152,16 @@ export default function Newsletter({ title, body, successMessage, onSubscribe = 
 			<p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
 				{body ?? 'I publish technical content for developers who want to skill up'}
 			</p>
-			<div className="mt-6 flex">
+			<div className="mt-6 flex flex-col gap-3">
 				<input
 					type="email"
 					name="email"
 					placeholder="Email address"
 					aria-label="Email address"
 					required
-					className="min-w-0 flex-auto appearance-none rounded-md border border-zinc-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-orange-400 dark:focus:ring-orange-400/10 sm:text-sm"
+					className="w-full appearance-none rounded-lg border-2 border-zinc-900/10 bg-white px-4 py-3 text-base shadow-md shadow-zinc-800/5 placeholder:text-zinc-400 focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10 dark:border-zinc-700 dark:bg-zinc-700/[0.15] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-orange-400 dark:focus:ring-orange-400/10"
 				/>
-				<Button variant="solid" color="orange" type="submit" className="ml-4 flex-none">
+				<Button variant="solid" color="orange" type="submit" className="w-full py-3 text-base font-bold">
 					Count me in
 				</Button>
 			</div>

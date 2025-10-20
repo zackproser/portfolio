@@ -46,128 +46,127 @@ export class EvidenceBasedScoringEngine {
     let confidence: 'low' | 'med' | 'high' = 'med';
     let reasoning = '';
 
-    // Find the most cost-effective model
-    const cheapestModel = tool.models.reduce((cheapest, model) => {
-      const totalCost = model.input_price_per_1k + model.output_price_per_1k;
-      const cheapestCost = cheapest.input_price_per_1k + cheapest.output_price_per_1k;
-      return totalCost < cheapestCost ? model : cheapest;
-    });
+    const publishedTotals = tool.models
+      .map(m => (isFinite(m.input_price_per_1k) && isFinite(m.output_price_per_1k))
+        ? (m.input_price_per_1k + m.output_price_per_1k)
+        : null)
+      .filter((v): v is number => v !== null && v >= 0);
 
-    const totalCost = cheapestModel.input_price_per_1k + cheapestModel.output_price_per_1k;
+    if (publishedTotals.length === 0) {
+      return {
+        value: 3,
+        confidence: 'low',
+        reasoning: 'Pricing not published for models',
+      };
+    }
 
-    // Score based on pricing tiers
-    if (totalCost < 0.001) {
+    const median = this.median(publishedTotals);
+
+    if (median < 0.001) {
       score = 9;
-      reasoning = 'Extremely low cost per token';
-    } else if (totalCost < 0.005) {
+      reasoning = `Extremely low median cost (~$${median.toFixed(4)}/1K in+out)`;
+    } else if (median < 0.005) {
       score = 8;
-      reasoning = 'Very competitive pricing';
-    } else if (totalCost < 0.01) {
+      reasoning = `Very competitive median cost (~$${median.toFixed(4)}/1K)`;
+    } else if (median < 0.01) {
       score = 7;
-      reasoning = 'Good value for money';
-    } else if (totalCost < 0.02) {
+      reasoning = `Good value median cost (~$${median.toFixed(4)}/1K)`;
+    } else if (median < 0.02) {
       score = 6;
-      reasoning = 'Moderate pricing';
-    } else if (totalCost < 0.05) {
+      reasoning = `Moderate median cost (~$${median.toFixed(4)}/1K)`;
+    } else if (median < 0.05) {
       score = 4;
-      reasoning = 'Higher cost than alternatives';
+      reasoning = `Higher-than-average median cost (~$${median.toFixed(4)}/1K)`;
     } else {
       score = 2;
-      reasoning = 'Premium pricing';
+      reasoning = `Premium median cost (~$${median.toFixed(4)}/1K)`;
     }
 
-    // Adjust confidence based on data freshness
-    const sources = cheapestModel.sources;
-    const daysSinceUpdate = this.getDaysSinceUpdate(sources);
-    if (daysSinceUpdate > 30) {
-      confidence = 'low';
-    } else if (daysSinceUpdate > 7) {
-      confidence = 'med';
-    } else {
-      confidence = 'high';
+    const pricedCount = publishedTotals.length;
+    if (pricedCount < Math.ceil(tool.models.length / 2)) {
+      score = Math.max(0, score - 1);
+      reasoning += ' · Limited published pricing';
     }
+
+    const daysSinceUpdate = this.getDaysSinceUpdateAcrossModels(tool);
+    confidence = daysSinceUpdate <= 7 ? 'high' : daysSinceUpdate <= 30 ? 'med' : 'low';
 
     return { value: score, confidence, reasoning };
   }
 
   private scoreLlmApiEase(tool: LlmApi): Score {
     let score = 5;
-    let confidence: 'low' | 'med' | 'high' = 'med';
     let reasoning = '';
 
-    // SDK availability
     const officialSdks = tool.sdks.official.length;
     const communitySdks = tool.sdks.community.length;
 
-    if (officialSdks >= 3) {
-      score += 2;
-      reasoning += 'Excellent SDK coverage. ';
-    } else if (officialSdks >= 2) {
-      score += 1;
-      reasoning += 'Good SDK coverage. ';
-    }
+    if (officialSdks >= 3) { score += 2; reasoning += 'Excellent SDK coverage. '; }
+    else if (officialSdks >= 2) { score += 1; reasoning += 'Good SDK coverage. '; }
+    if (communitySdks > 0) { score += 1; reasoning += 'Active community SDKs. '; }
 
-    // Community SDKs as bonus
-    if (communitySdks > 0) {
-      score += 1;
-      reasoning += 'Active community SDKs. ';
-    }
-
-    // Rate limits (higher limits = easier to use)
     const tpm = tool.rate_limits.tpm;
-    if (tpm >= 100000) {
-      score += 1;
-      reasoning += 'Generous rate limits. ';
-    } else if (tpm < 10000) {
-      score -= 1;
-      reasoning += 'Restrictive rate limits. ';
-    }
+    const rpm = tool.rate_limits.rpm;
+    if (tpm >= 1_000_000) { score += 2; reasoning += 'Very high TPM. '; }
+    else if (tpm >= 100_000) { score += 1; reasoning += 'High TPM. '; }
+    else if (tpm > 0 && tpm < 10_000) { score -= 1; reasoning += 'Low TPM. '; }
 
-    // Data retention (shorter = easier for privacy)
+    if (rpm >= 10_000) { score += 1; reasoning += 'High RPM. '; }
+    else if (rpm > 0 && rpm < 1_000) { score -= 1; reasoning += 'Low RPM. '; }
+
     if (tool.data_retention.window_days === null || tool.data_retention.window_days === 0) {
-      score += 1;
-      reasoning += 'No data retention. ';
+      score += 1; reasoning += 'No data retention. ';
+    } else if (tool.data_retention.window_days > 30) {
+      score -= 1; reasoning += 'Long data retention window. ';
     }
 
-    return { 
-      value: Math.min(10, Math.max(0, score)), 
-      confidence: 'high', 
+    const uniqueEndpoints = new Set<string>();
+    for (const m of tool.models) {
+      for (const ep of m.endpoints) uniqueEndpoints.add(ep);
+    }
+    if (uniqueEndpoints.has('streaming')) { score += 1; reasoning += 'Streaming supported. '; }
+
+    const confidence: 'low' | 'med' | 'high' = this.confidenceFromDays(
+      this.getDaysSince(tool.rate_limits.sources)
+    );
+
+    return {
+      value: Math.min(10, Math.max(0, score)),
+      confidence,
       reasoning: reasoning || 'Standard API access'
     };
   }
 
   private scoreLlmApiDocs(tool: LlmApi): Score {
-    // This would need to be enhanced with actual doc analysis
-    // For now, use a placeholder based on model count (more models = better docs)
     const modelCount = tool.models.length;
     let score = 5;
     let reasoning = '';
 
-    if (modelCount >= 5) {
-      score = 8;
-      reasoning = 'Comprehensive model documentation';
-    } else if (modelCount >= 3) {
-      score = 7;
-      reasoning = 'Good model coverage';
-    } else if (modelCount >= 2) {
-      score = 6;
-      reasoning = 'Basic model documentation';
-    } else {
-      score = 4;
-      reasoning = 'Limited model options';
-    }
+    if (modelCount >= 6) { score = 8; reasoning = 'Broad model coverage'; }
+    else if (modelCount >= 3) { score = 7; reasoning = 'Good model coverage'; }
+    else if (modelCount >= 2) { score = 6; reasoning = 'Basic coverage'; }
+    else { score = 4; reasoning = 'Limited options'; }
 
-    return { value: score, confidence: 'med', reasoning };
+    if (tool.sdks.official.length >= 3) { score += 1; reasoning += ' · Multiple official SDKs'; }
+
+    const days = this.getDaysSinceUpdateAcrossModels(tool);
+    const confidence = this.confidenceFromDays(days);
+    return { value: Math.min(10, score), confidence, reasoning };
   }
 
   private scoreLlmApiCommunity(tool: LlmApi): Score {
-    // Placeholder - would need GitHub stars, Discord members, etc.
-    return { value: 5, confidence: 'low', reasoning: 'Community data not available' };
+    return { value: 5, confidence: 'low', reasoning: 'No community metrics in manifest' };
   }
 
   private scoreLlmApiReliability(tool: LlmApi): Score {
-    // Placeholder - would need uptime data, incident history
-    return { value: 5, confidence: 'low', reasoning: 'Reliability data not available' };
+    let score = 5;
+    let reasoning = '';
+
+    if (tool.models.length >= 5) { score += 1; reasoning += 'Multiple GA-like model options. '; }
+    const hasStreaming = tool.models.some(m => m.endpoints.includes('streaming'));
+    if (hasStreaming) { score += 1; reasoning += 'Streaming available. '; }
+
+    return { value: Math.min(10, score), confidence: 'low', reasoning: reasoning || 'Limited reliability signals' };
   }
 
   /**
@@ -456,6 +455,32 @@ export class EvidenceBasedScoringEngine {
     const latestDate = new Date(Math.max(...sources.map(s => new Date(s.observed_at).getTime())));
     const now = new Date();
     return Math.floor((now.getTime() - latestDate.getTime()) / (1000 * 60 * 60 * 24));
+  }
+
+  private getDaysSince(sources: Array<{ observed_at: string }>): number {
+    return this.getDaysSinceUpdate(sources);
+  }
+
+  private getDaysSinceUpdateAcrossModels(tool: LlmApi): number {
+    const allSources: Array<{ observed_at: string }> = [];
+    for (const m of tool.models) {
+      if (m.sources?.length) allSources.push(...m.sources);
+    }
+    if (tool.rate_limits?.sources?.length) allSources.push(...tool.rate_limits.sources);
+    if (tool.data_retention?.sources?.length) allSources.push(...tool.data_retention.sources);
+    return this.getDaysSinceUpdate(allSources);
+  }
+
+  private confidenceFromDays(days: number): 'low' | 'med' | 'high' {
+    if (days <= 7) return 'high';
+    if (days <= 30) return 'med';
+    return 'low';
+  }
+
+  private median(values: number[]): number {
+    const a = [...values].sort((x, y) => x - y);
+    const mid = Math.floor(a.length / 2);
+    return a.length % 2 === 0 ? (a[mid - 1] + a[mid]) / 2 : a[mid];
   }
 }
 

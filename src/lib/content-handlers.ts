@@ -446,11 +446,22 @@ export function renderPaywalledContent(
   hasPurchased: boolean,
   isSubscribed: boolean
 ) {
-  // Determine if we should show the full content
+  // Backward compatibility: map old requiresEmail to requiresAuth
+  const requiresAuth = content.commerce?.requiresAuth ?? content.commerce?.requiresEmail ?? false;
+
+  // Determine if we should show the full content based on 3-tier system:
+  // Tier 1: Public (no commerce config or all flags false)
+  // Tier 2: Auth only (requiresAuth=true, isPaid=false) - checked at page level via session
+  // Tier 3: Paid (isPaid=true)
   const showFullContent =
-    (!content.commerce?.isPaid && !content.commerce?.requiresEmail) ||
-    hasPurchased ||
-    (content.commerce?.requiresEmail && isSubscribed);
+    // Tier 1: Public - no restrictions
+    (!content.commerce || (!requiresAuth && !content.commerce.isPaid)) ||
+    // Tier 3: Paid - user has purchased
+    (content.commerce?.isPaid && hasPurchased) ||
+    // Tier 2: Auth only - handled at page level (session check)
+    // The actual auth check happens in the page component with session
+    // This function just needs to not block it if requiresAuth is true
+    (requiresAuth && !content.commerce?.isPaid);
 
   // Get default paywall text based on content type
   const defaultText = getDefaultPaywallText(content.type);
@@ -458,9 +469,9 @@ export function renderPaywalledContent(
   let paywallHeader = defaultText.header;
   let paywallBody = defaultText.body;
 
-  if (content.commerce?.requiresEmail) {
-    paywallHeader = content.commerce.paywallHeader || 'Sign in & subscribe to read for free';
-    paywallBody = content.commerce.paywallBody || 'Sign in to zackproser.com and subscribe to unlock this content.';
+  if (requiresAuth && !content.commerce?.isPaid) {
+    paywallHeader = content.commerce?.paywallHeader || 'Sign in to continue';
+    paywallBody = content.commerce?.paywallBody || 'Create a free account to access this content. New users are automatically subscribed to our newsletter.';
   } else {
     paywallHeader = content.commerce?.paywallHeader || defaultText.header;
     paywallBody = content.commerce?.paywallBody || defaultText.body;
@@ -484,7 +495,7 @@ export function renderPaywalledContent(
       paywallHeader: paywallHeader,
       paywallBody: paywallBody,
       buttonText: content.commerce?.buttonText || defaultText.buttonText,
-      requiresEmail: content.commerce?.requiresEmail,
+      requiresEmail: requiresAuth, // Pass the resolved value (backward compatible)
       isSubscribed: isSubscribed,
       // Pass content object itself if ArticleContent needs more data
       content: content,

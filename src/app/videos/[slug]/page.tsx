@@ -77,15 +77,19 @@ export default async function VideoSlugPage({ params }: PageProps) {
     logger.debug(`Video content (${slug}) is not marked as paid.`);
   }
 
+  // For Tier 2 (requiresAuth), we only check if session exists, not subscription status
+  const requiresAuth = content?.commerce?.requiresAuth ?? content?.commerce?.requiresEmail ?? false;
+
+  // We still track subscription status for other purposes (analytics, newsletter display)
   let isSubscribed = false;
-  if (content?.commerce?.requiresEmail) {
-    isSubscribed = await isEmailSubscribed(session?.user?.email || null);
+  if (session?.user?.email) {
+    isSubscribed = await isEmailSubscribed(session.user.email);
   }
-  
-  logger.info(`Rendering video page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
+
+  logger.info(`Rendering video page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}, RequiresAuth: ${requiresAuth}, HasSession: ${!!session}, IsSubscribed: ${isSubscribed}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
-  const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
+  const hideNewsletter = false
 
   return (
     <>

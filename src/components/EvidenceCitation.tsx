@@ -90,13 +90,13 @@ export function EvidenceCitation({ sources, value, inferred, className = '' }: E
                   
                   {source.excerpt && (
                     <div className="bg-gray-50 p-2 rounded text-xs">
-                      "{source.excerpt}"
+                      &ldquo;{source.excerpt}&rdquo;
                     </div>
                   )}
                   
                   <div className="flex items-center gap-2">
                     <Link 
-                      href={source.url}
+                      href={source.url as any}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-800 text-xs flex items-center gap-1"
