@@ -217,3 +217,20 @@ model Tool {
 
   @@map("tools")
 }
+
+model NewsletterSubscription {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  status          String    @default("PENDING") // PENDING, SUBSCRIBED, UNSUBSCRIBED, BOUNCED
+  source          String?   @default("website") // website, emailoctopus_sync, manual, auto_signin
+  subscribedAt    DateTime? @map("subscribed_at")
+  unsubscribedAt  DateTime? @map("unsubscribed_at")
+  emailoctopusId  String?   @map("emailoctopus_id")
+  lastSyncedAt    DateTime? @map("last_synced_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@index([email, status])
+  @@index([status])
+  @@map("newsletter_subscriptions")
+}

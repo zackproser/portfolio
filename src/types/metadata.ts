@@ -20,7 +20,7 @@ export interface ExtendedMetadata extends Metadata {
     src: string;
     fullPath?: string; // Added for OG image generation to track original image location
   }
-  type: 'blog' | 'course' | 'video' | 'demo'
+  type: 'blog' | 'course' | 'video' | 'demo' | 'newsletter'
   slug: string
   tags?: string[]
   _id?: string  // Internal unique identifier to prevent duplicate key issues

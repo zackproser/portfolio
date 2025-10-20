@@ -37,7 +37,7 @@ function SubscribeWidgetInner() {
     formSuccess
       ?
       <h2 className="flex mt-6 text-sm font-semibold text-zinc-900 dark:text-zinc-100" >
-        <span className="ml-3 p-6"> 🔥 You are awesome! 🔥 Thank you for subscribing 🥳 </span>
+        <span className="ml-3 p-6"> 🤖 Neural Network Activated! Check your inbox for confirmation. </span>
       </h2>
       :
       <div className="py-16 sm:py-24">

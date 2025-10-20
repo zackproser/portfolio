@@ -6,9 +6,9 @@ export interface Content extends ExtendedMetadata {
   directorySlug?: string  // The original directory name, used for reliable matching
 }
 
-// For blog posts and courses
+// For blog posts, newsletters, and courses
 export interface Blog extends Content {
-  type: 'blog' | 'video' | 'demo'
+  type: 'blog' | 'video' | 'demo' | 'newsletter' | 'course'
 }
 
 // For demos and other non-purchasable content

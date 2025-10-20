@@ -95,22 +95,35 @@ const WithCodeBadge = () => {
   )
 }
 
+const ReviewBadge = () => {
+  return (
+    <span className={cn(
+      "inline-flex items-center gap-x-1 rounded-full px-3 py-1 text-xs font-semibold",
+      "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-sm",
+      "border border-purple-400/50"
+    )}>
+      <span className="mr-0.5">🔍</span> Tool Review
+    </span>
+  )
+}
+
 export function ContentCard({ article }) {
   if (!article) {
     console.warn('ContentCard received null or undefined article')
     return null;
   }
 
-  const { 
-    title = 'Untitled', 
-    date = '', 
-    description = '', 
-    image, 
-    status, 
-    commerce, 
+  const {
+    title = 'Untitled',
+    date = '',
+    description = '',
+    image,
+    status,
+    commerce,
     slug,
     type,
-    includesCode
+    includesCode,
+    reviewType
   } = article;
   
   // Simple check for external links
@@ -179,10 +192,10 @@ export function ContentCard({ article }) {
     )}>
       {isExternalLink ? (
         <a href={calculatedHref} target="_blank" rel="noopener noreferrer" className="group w-full">
-          <CardContent 
-            imageSource={imageSource} 
-            title={title} 
-            formattedDate={formattedDate} 
+          <CardContent
+            imageSource={imageSource}
+            title={title}
+            formattedDate={formattedDate}
             date={date}
             description={description}
             type={type}
@@ -190,14 +203,15 @@ export function ContentCard({ article }) {
             commerce={commerce}
             isPremium={isPremium}
             includesCode={includesCode}
+            reviewType={reviewType}
           />
         </a>
       ) : (
         <Link href={calculatedHref} className="group w-full">
-          <CardContent 
-            imageSource={imageSource} 
-            title={title} 
-            formattedDate={formattedDate} 
+          <CardContent
+            imageSource={imageSource}
+            title={title}
+            formattedDate={formattedDate}
             date={date}
             description={description}
             type={type}
@@ -205,6 +219,7 @@ export function ContentCard({ article }) {
             commerce={commerce}
             isPremium={isPremium}
             includesCode={includesCode}
+            reviewType={reviewType}
           />
         </Link>
       )}
@@ -212,17 +227,18 @@ export function ContentCard({ article }) {
   )
 }
 
-function CardContent({ 
-  imageSource, 
-  title, 
-  formattedDate, 
-  date, 
-  description, 
-  type, 
-  status, 
+function CardContent({
+  imageSource,
+  title,
+  formattedDate,
+  date,
+  description,
+  type,
+  status,
   commerce,
   isPremium,
-  includesCode
+  includesCode,
+  reviewType
 }) {
   return (
     <>
@@ -266,6 +282,9 @@ function CardContent({
           </p>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
+          {reviewType && <ReviewBadge />}
+          {type && type !== 'blog' && <ContentTypeBadge type={type} />}
+          {includesCode && <WithCodeBadge />}
           {isPremium && (
             <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mt-2 flex items-center">
               <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

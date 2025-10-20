@@ -12,7 +12,6 @@ import { ArticleLayout } from '@/components/ArticleLayout'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
 import { metadataLogger as logger } from '@/utils/logger'
-import { isEmailSubscribed } from '@/lib/newsletter'
 
 // Content type for this handler
 const CONTENT_TYPE = 'blog'
@@ -42,12 +41,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
-  const CONTENT_TYPE = 'blog';
 
   logger.debug(`Loading content for slug: ${slug}`);
-  const result = await getContentWithComponentByDirectorySlug(CONTENT_TYPE, slug);
+
+  // Try blog first, then fall back to reviews
+  let result = await getContentWithComponentByDirectorySlug('blog', slug);
+
+  if (!result) {
+    logger.debug(`Content not found in blog, trying reviews directory`);
+    result = await getContentWithComponentByDirectorySlug('reviews', slug);
+  }
+
   logger.debug(`Content load result: ${result ? 'Success' : 'Failed'}`);
-  
+
   if (!result) {
     logger.warn(`Content not found for slug ${slug}, returning 404`);
     return notFound();
@@ -83,15 +89,14 @@ export default async function Page({ params }: PageProps) {
     logger.debug(`Content (${slug}) is not marked as paid.`);
   }
 
-  let isSubscribed = false;
-  if (content?.commerce?.requiresEmail) {
-    isSubscribed = await isEmailSubscribed(session?.user?.email || null);
-  }
-  
-  logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
+  // For Tier 2 (requiresAuth), we only check if session exists
+  const requiresAuth = content?.commerce?.requiresAuth ?? content?.commerce?.requiresEmail ?? false;
+
+  logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}, RequiresAuth: ${requiresAuth}, HasSession: ${!!session}`);
 
   // Always use ArticleLayout for consistency, even for purchased content
-  const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
+  // Don't hide newsletter based on auth requirements - user can still access content if signed in
+  const hideNewsletter = false
 
   return (
     <>
@@ -105,7 +110,7 @@ export default async function Page({ params }: PageProps) {
           {React.createElement(MdxContent)}
         </div>
       ) : (
-        renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed)
+        renderPaywalledContent(MdxContent, content, hasPurchased, !!session)
       )}
     </ArticleLayout>
     </>

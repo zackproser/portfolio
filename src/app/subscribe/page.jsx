@@ -1,85 +1,197 @@
 'use client'
 
-import Image from 'next/image'
-import Newsletter from '@/components/Newsletter'
-
-const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
-const logoGruntwork = 'https://zackproser.b-cdn.net/images/logos/terragrunt.svg'
-const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.webp'
+import { Container } from '@/components/Container'
+import { Zap, TrendingUp, Code, Sparkles, ArrowRight } from 'lucide-react'
+import { NewsletterSignupInline } from '@/components/NewsletterSignupInline'
+import { Suspense } from 'react'
+import CV from '@/components/CV'
+import RandomPortrait from '@/components/RandomPortrait'
 
 export default function SubscribePage() {
-  return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-800 dark:to-blue-900">
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-16 lg:py-20 relative overflow-hidden bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-800 dark:to-blue-900" aria-labelledby="subscribe-hero-title">
-          <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 id="subscribe-hero-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
-                Join 2,500+ Engineers Shipping Real AI Systems
-              </h1>
-              <p className="mt-4 text-lg md:text-xl text-blue-100/90">
-                Get the free hands-on tutorial: Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK — plus weekly code-first AI engineering tips.
-              </p>
+  const subscriberCount = "2,700+"
 
-              <div className="mt-8 max-w-xl mx-auto">
-                <Newsletter
-                  title="Get the free tutorial + weekly tips"
-                  body="No fluff. Production-proven patterns for RAG, evals, infra, and delivery."
-                  successMessage="Neural Network Activated! 🤖🧠❗ You're in — check your inbox."
-                  position="subscribe-hero"
-                  tags={['subscribe', 'hero']}
-                  className="bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 shadow-lg ring-1 ring-zinc-900/10 dark:ring-white/10"
-                />
-                <p className="mt-3 text-xs text-white/80">
-                  1–2 emails/week. No spam. Unsubscribe anytime.
-                </p>
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section - Clean and Direct */}
+      <section className="relative min-h-[80vh] bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0.6))]" />
+
+        <Container>
+          <div className="relative grid lg:grid-cols-[0.8fr,1.4fr] gap-12 items-center py-24 min-h-[80vh]">
+            {/* Left side - Content */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 backdrop-blur-sm rounded-full text-sm font-medium text-blue-200 border border-blue-400/30">
+                <Sparkles className="w-4 h-4" />
+                <span>Join {subscriberCount} developers</span>
               </div>
 
-              <div className="mt-10">
-                <p className="text-sm text-white/80 uppercase font-medium mb-3">Trusted by industry leaders</p>
-                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-                  <div className="flex flex-col items-center">
-                    <div className="h-8 w-auto flex items-center justify-center">
-                      <Image
-                        src={logoCloudflare}
-                        alt="Cloudflare"
-                        height={20}
-                        width={80}
-                        className="brightness-0 invert"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-white mt-2">Cloudflare</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="h-8 w-auto flex items-center justify-center">
-                      <Image
-                        src={logoGruntwork}
-                        alt="Gruntwork"
-                        height={16}
-                        width={60}
-                        className="brightness-0 invert scale-75"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-white mt-2">Gruntwork</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="h-8 w-auto flex items-center justify-center">
-                      <Image
-                        src={logoPinecone}
-                        alt="Pinecone"
-                        height={20}
-                        width={80}
-                        className="brightness-0 invert"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-white mt-2">Pinecone</span>
-                  </div>
-                </div>
+              <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+                Master AI Development
+              </h1>
+
+              <p className="text-xl text-blue-100 leading-relaxed">
+                Real benchmarks, practical tutorials, and no-BS tool comparisons for developers, business owners, and investors navigating the AI landscape.
+              </p>
+            </div>
+
+            {/* Right side - Wide Newsletter Signup */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-2xl">
+                <NewsletterSignupInline variant="dark" />
               </div>
             </div>
           </div>
-        </section>
-      </main>
+        </Container>
+      </section>
+
+      {/* About Section - Using CV Component */}
+      <section className="py-24 bg-white dark:bg-gray-900">
+        <Container>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              {/* Left Column - Portrait + CV */}
+              <div className="space-y-8">
+                <div className="w-full max-w-[400px] mx-auto lg:mx-0">
+                  <Suspense fallback={<div className="w-full aspect-square bg-zinc-200 dark:bg-zinc-800 rounded-2xl animate-pulse" />}>
+                    <RandomPortrait width={400} height={400} />
+                  </Suspense>
+                </div>
+                <div>
+                  <CV showHeading={false} />
+                </div>
+              </div>
+
+              {/* Right Column - Text Content */}
+              <div className="space-y-6">
+                <h2 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100">
+                  Learn from Someone <span className="text-blue-600 dark:text-blue-400">Building This Stuff</span>
+                </h2>
+                <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  I&apos;m <strong>Zachary Proser</strong>, a Staff-level AI Engineer with 13+ years shipping production systems.
+                  I&apos;ve built RAG pipelines, vector database features, and AI developer tools at companies you know.
+                </p>
+                <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  I teach AI development through <strong>interactive machine learning examples</strong> that break down complex concepts from the ground up—no prerequisites needed.
+                </p>
+                <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  This newsletter shares what I&apos;m actually using and building—real benchmarks, honest tool comparisons, and technical deep dives that skip the marketing fluff.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* What You'll Get Section - Interesting Cards */}
+      <Container>
+        <div className="max-w-6xl mx-auto mt-20 mb-16">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+              What You&apos;ll Get
+            </h2>
+            <p className="text-xl text-zinc-600 dark:text-zinc-400">
+              Cut through the AI hype with practical, battle-tested insights
+            </p>
+          </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Tool Deep Dives - Gradient Card */}
+          <div className="group relative bg-gradient-to-br from-blue-500 to-cyan-600 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+            <div className="absolute inset-0 bg-black/10 rounded-2xl group-hover:bg-black/0 transition-colors"></div>
+            <div className="relative">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                <Code className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Tool Deep Dives
+              </h3>
+              <p className="text-blue-50 text-lg leading-relaxed">
+                Hands-on reviews of Cursor, Claude, GPT-4, WisprFlow, and other AI coding tools.
+                Real performance benchmarks and workflow integration tips.
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
+                <span>See examples</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* AI Implementation - Dark Card */}
+          <div className="group relative bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+            <div className="absolute inset-0 bg-black/10 rounded-2xl group-hover:bg-black/0 transition-colors"></div>
+            <div className="relative">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                AI Implementation Guides
+              </h3>
+              <p className="text-purple-50 text-lg leading-relaxed">
+                Step-by-step tutorials on building with LLMs, embeddings, vector databases, and RAG pipelines.
+                Code examples included.
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
+                <span>Start learning</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Industry Trends - Gradient Card */}
+          <div className="group relative bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+            <div className="absolute inset-0 bg-black/10 rounded-2xl group-hover:bg-black/0 transition-colors"></div>
+            <div className="relative">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                <TrendingUp className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Industry Trends
+              </h3>
+              <p className="text-emerald-50 text-lg leading-relaxed">
+                Analysis of the latest AI developments, new model releases, and emerging tools.
+                Cut through the hype with data-driven insights.
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
+                <span>Stay updated</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Productivity Hacks - Gradient Card */}
+          <div className="group relative bg-gradient-to-br from-amber-500 to-orange-600 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+            <div className="absolute inset-0 bg-black/10 rounded-2xl group-hover:bg-black/0 transition-colors"></div>
+            <div className="relative">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Productivity Hacks
+              </h3>
+              <p className="text-amber-50 text-lg leading-relaxed">
+                Voice-to-code workflows, AI agent orchestration, and automation strategies.
+                Learn how to 10x your development speed.
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
+                <span>Speed up now</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        {/* Final CTA */}
+        <div className="max-w-3xl mx-auto text-center py-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">
+            Ready to Master AI Development?
+          </h2>
+          <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
+            Join {subscriberCount} developers getting smarter about AI tools.
+          </p>
+          <NewsletterSignupInline />
+        </div>
+      </Container>
     </div>
   )
 }
