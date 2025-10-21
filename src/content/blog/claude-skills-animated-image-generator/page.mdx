@@ -1,0 +1,59 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Sharing Custom Claude Workflows with Skills: Lessons from Building an Animated Image Generator
+
+I recently had the opportunity to run an internal training at WorkOS on Claude skills, and I wanted to share what I learned about how they can transform the way teams codify and distribute custom AI workflows.
+
+## What Are Claude Skills?
+
+Claude skills are essentially packaged workflows that teach Claude how to accomplish specific tasks. Think of them as reusable recipes that combine prompts, code, and context into a single shareable unit. When you install a skill, Claude gains the ability to execute that workflow consistently, without you needing to remember the exact sequence of steps or prompts each time.
+
+What makes skills particularly powerful is that they live in your local file system as regular directories. This means you can version control them, share them through GitHub, and distribute them across your team just like any other piece of code.
+
+## The Use Case: From Static to Animated
+
+For the training, I built a skill that demonstrates a workflow I'd figured out for generating animated images using Google's latest models. The process involves two steps that need to happen in sequence.
+
+First, we use Google's Nano Banana model to generate a minimalist static image from a text prompt. This gives us a clean, simple composition that's ideal for animation. Then, we take that generated image and pass it as a source to Google's Veo model, asking it to animate the most obvious motion in the scene.
+
+The beauty of packaging this as a skill is that my colleagues don't need to understand the API intricacies or remember the exact prompts and parameters. They just ask Claude to use the animated-image skill, describe what they want, and the workflow executes automatically.
+
+## Following the 12 Factor App Pattern
+
+One of the reasons this approach works so well for team distribution is that it follows the twelve-factor app methodology, particularly around configuration management. Rather than hardcoding API keys or embedding credentials in the skill itself, the workflow expects each user to export their own `GOOGLE_API_KEY` in their shell environment.
+
+This means we can safely share the skill repository on GitHub without worrying about credential leakage. Each team member clones the repo, runs the installation script, and adds their personal API key to their local environment. The skill picks up the key at runtime, keeping security boundaries intact while maintaining full portability.
+
+The installation process is straightforward:
+
+```bash
+SKILL=animated-image 
+mkdir -p ~/.claude/skills 
+rsync -a skills/$SKILL ~/.claude/skills/$SKILL 
+cd ~/.claude/skills/$SKILL && npm i 
+cp -n .env.example .env
+```
+
+Then each person edits their `.env` file to add their Google API key, and restarts Claude Code to discover the new skill.
+
+## Why GitHub Distribution Makes Sense
+
+Distributing skills through GitHub repositories provides several advantages that make them ideal for team workflows. Version control means you can track changes to your prompts and logic over time, making it easy to iterate and improve. Pull requests let team members suggest enhancements or adaptations for their specific use cases. And because skills are just code, your existing CI/CD practices can apply - you could even run tests against skill outputs to ensure quality.
+
+The repository structure is simple and familiar to developers. Each skill lives in its own directory with a SKILL.md file that contains the instructions Claude follows, along with any supporting code or configuration files. This makes skills approachable and easy to understand, even for team members who aren't deeply familiar with Claude's internals.
+
+## Practical Impact
+
+After the training session, several colleagues immediately started using the animated-image skill for their own projects. Some used it for creating demo videos for product features. Others explored it for marketing materials and social content. The key insight was that codifying the workflow once meant everyone could benefit from it without needing to rediscover the same technique.
+
+This is the real promise of Claude skills for teams. When someone figures out a useful workflow - whether it's data analysis, content generation, code refactoring, or multimodal creation - they can package it up and share it. The entire team levels up together, building a shared library of capabilities that compounds over time.
+
+## Getting Started
+
+If you're interested in exploring skills for your own team, the [animated-image demo repository](https://github.com/zackproser/claude-custom-skills-demo) provides a complete working example. The code is straightforward, the setup is minimal, and it demonstrates the core patterns you'll need for building more complex skills.
+
+The barrier to entry is refreshingly low. If you can write a README and some basic code, you can create a skill. And once you do, you've got a distributable asset that makes your entire team more capable.
