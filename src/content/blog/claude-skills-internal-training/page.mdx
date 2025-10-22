@@ -1,0 +1,193 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import GitHubRepoCard from '@/components/GitHubRepoCard'
+
+export const metadata = createMetadata(rawMetadata)
+
+I recently had the opportunity to run an internal training at WorkOS on Claude skills, and I wanted to share what I learned about how they can transform the way teams codify and distribute custom AI workflows.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/workos-office.webp" 
+  alt="WorkOS office interior with collaborative spaces"
+  width={1200}
+  height={800}
+/>
+<figcaption>The WorkOS team space where we ran the internal Claude Skills training.</figcaption>
+
+## What Are Claude Skills?
+
+Claude skills are essentially packaged workflows that teach Claude how to accomplish specific tasks. Think of them as reusable recipes that combine prompts, code, and context into a single shareable unit. When you install a skill, Claude gains the ability to execute that workflow consistently, without you needing to remember the exact sequence of steps or prompts each time.
+
+What makes skills particularly powerful is that they live in your local file system as regular directories. This means you can version control them, share them through GitHub, and distribute them across your team just like any other piece of code.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/agent-skills-architecture.webp" 
+  alt="Anthropic agent skills architecture diagram"
+  width={1200}
+  height={800}
+/>
+
+## Both Human and Machine Readable
+What makes skills unique is their dual legibility. The SKILL.md file that Claude reads to understand the workflow? You can read it too. It's plain English instructions alongside the actual implementation code.
+This means:
+
+You can audit what Claude is doing - no black box automation
+Your team can understand and modify the workflow - it's just markdown and code
+The documentation is the executable specification - they can't drift apart because they're the same thing
+
+Traditional runbooks go stale because they're separate from the code. API integrations are opaque. Claude skills are both the documentation AND the implementation, readable by both humans and AI.
+
+## Why This Matters
+
+Most teams are quietly rediscovering the same AI workflows in parallel. A few people figure out workable prompt chains, parameter settings, and file-handling steps—but that tribal knowledge lives in DMs, personal notes, or one-off scripts. When those people move teams or leave, the know‑how evaporates and the rediscovery cycle starts again.
+
+Even when we try to document these flows, the “how” is scattered across docs, screenshots, and CLI snippets that drift away from the real implementation. Prompts evolve. API sequences change. Small but critical steps like image encoding, content types, or retry logic are easy to miss and hard to standardize.
+
+Claude skills fix this by making the runbook executable and version‑controlled. The same artifact that a human can read (SKILL.md) is the one Claude executes—reviewable in PRs, testable in CI, and distributable to the whole team. That stops knowledge from leaking, and it turns fragile, ad‑hoc workflows into shareable, repeatable capabilities.
+
+## The Use Case: From Static to Animated
+
+For the training, I built a skill that demonstrates a workflow I'd figured out for generating animated images using Google's latest models. The process involves two steps that need to happen in sequence.
+
+First, we use Google's Nano Banana model to generate a minimalist static image from a text prompt. This gives us a clean, simple composition that's ideal for animation. Then, we take that generated image and pass it as a source to Google's Veo model, asking it to animate the most obvious motion in the scene.
+
+The beauty of packaging this as a skill is that my colleagues don't need to understand the API intricacies or remember the exact prompts and parameters. They just ask Claude to use the animated-image skill, describe what they want, and the workflow executes automatically.
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/WohyfJ6529Y" 
+  title="Using Google AI Studio to generate and animate images"
+  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+></iframe>
+
+In this walkthrough, I first compose a clean static frame and then animate the obvious motion (think: a ball rolling down a hill). Separating composition from motion keeps outputs predictable and makes iteration fast.
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/br81_vMItXs" 
+  title="Animated image example clip"
+  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+></iframe>
+
+## Repository
+
+<GitHubRepoCard 
+  repo="zackproser/claude-custom-skills-demo"
+  fallbackTitle="Claude custom skills: Animated Image demo"
+  fallbackDescription="Packaged two-step workflow: generate static image with Nano Banana, animate with Veo."
+/>
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/animate-image-workflow.webp" 
+  alt="Two-step animated image workflow: prompt → Nano Banana (static image) → Veo (animated video)"
+  width={1200}
+  height={800}
+/>
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/zack-holding-mic.webp" 
+  alt="Zack presenting during an internal training, holding a mic"
+  width={1200}
+  height={800}
+/>
+<figcaption>Explaining why we separate generation (static) and animation (motion) into two explicit steps.</figcaption>
+
+## Prompts Used in the Training
+
+These are the exact text prompts I used to produce the assets in the demo.
+
+### 1) Static image prompt (Nano Banana)
+
+```
+Minimalist flat vector of a paper boat floating in a glass bowl on a wooden desk.
+3–5 color palette, high contrast, no gradients or texture, centered composition.
+Soft studio lighting; single subtle shadow; clean background; SVG‑like crispness.
+```
+
+### 2) Animation prompt (Veo)
+
+```
+Gently bob and drift the paper boat clockwise in a small seamless loop.
+Lock camera; keep motion subtle; preserve original palette and style; no new objects.
+Target duration: ~3–4 seconds.
+```
+
+## Following the 12 Factor App Pattern
+
+One of the reasons this approach works so well for team distribution is that it follows the twelve-factor app methodology, particularly around configuration management. Rather than hardcoding API keys or embedding credentials in the skill itself, the workflow expects each user to export their own `GOOGLE_API_KEY` in their shell environment.
+
+This means we can safely share the skill repository on GitHub without worrying about credential leakage. Each team member clones the repo, runs the installation script, and adds their personal API key to their local environment. The skill picks up the key at runtime, keeping security boundaries intact while maintaining full portability.
+
+## Prerequisites
+
+- A Google AI Studio API key exported as `GOOGLE_API_KEY`
+- Node.js installed (LTS is fine)
+- Claude Desktop or Claude Code to run and discover the skill
+
+## Install the Skill Locally
+
+The installation process is straightforward:
+
+```bash
+SKILL=animated-image 
+mkdir -p ~/.claude/skills 
+rsync -a skills/$SKILL ~/.claude/skills/$SKILL 
+cd ~/.claude/skills/$SKILL && npm i 
+cp -n .env.example .env
+```
+
+Then each person edits their `.env` file to add their Google API key, and restarts Claude Code to discover the new skill.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/install-flow.webp" 
+  alt="Install and discovery flow: clone repo → copy skill to ~/.claude/skills → set GOOGLE_API_KEY → Claude discovers skill"
+  width={1200}
+  height={800}
+/>
+
+## Skill Directory Structure
+
+```bash
+animated-image/
+├─ SKILL.md              # High-level instructions Claude follows
+├─ package.json          # Scripted install + dependencies
+├─ .env.example          # Document required environment variables
+├─ src/
+│  ├─ generate.ts        # Step 1: create static image
+│  └─ animate.ts         # Step 2: animate via Veo
+└─ README.md             # Team-facing usage notes
+```
+
+## Why GitHub Distribution Makes Sense
+
+Distributing skills through GitHub repositories provides several advantages that make them ideal for team workflows. Version control means you can track changes to your prompts and logic over time, making it easy to iterate and improve. Pull requests let team members suggest enhancements or adaptations for their specific use cases. And because skills are just code, your existing CI/CD practices can apply - you could even run tests against skill outputs to ensure quality.
+
+The repository structure is simple and familiar to developers. Each skill lives in its own directory with a SKILL.md file that contains the instructions Claude follows, along with any supporting code or configuration files. This makes skills approachable and easy to understand, even for team members who aren't deeply familiar with Claude's internals.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/flow-diagram.webp" 
+  alt="High-level distribution flow: Repo → PRs/Reviews → Team installs locally → Consistent outputs"
+  width={1200}
+  height={800}
+/>
+
+## Practical Impact
+
+After the training session, several colleagues immediately started using the animated-image skill for their own projects. Some used it for creating demo videos for product features. Others explored it for marketing materials and social content. The key insight was that codifying the workflow once meant everyone could benefit from it without needing to rediscover the same technique.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/nick-presenting.webp" 
+  alt="Nick presenting and discussing results from the animated image workflow"
+  width={1200}
+  height={800}
+/>
+<figcaption>Teammates quickly adopted the skill for demos and marketing experiments.</figcaption>
+
+This is the real promise of Claude skills for teams. When someone figures out a useful workflow - whether it's data analysis, content generation, code refactoring, or multimodal creation - they can package it up and share it. The entire team levels up together, building a shared library of capabilities that compounds over time.
+
+## Getting Started
+
+If you're interested in exploring skills for your own team, the [animated-image demo repository](https://github.com/zackproser/claude-custom-skills-demo) provides a complete working example. The code is straightforward, the setup is minimal, and it demonstrates the core patterns you'll need for building more complex skills.
+
+The barrier to entry is refreshingly low. If you can write a README and some basic code, you can create a skill. And once you do, you've got a distributable asset that makes your entire team more capable.
