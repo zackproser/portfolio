@@ -21,6 +21,13 @@ Claude skills are essentially packaged workflows that teach Claude how to accomp
 
 What makes skills particularly powerful is that they live in your local file system as regular directories. This means you can version control them, share them through GitHub, and distribute them across your team just like any other piece of code.
 
+<Image 
+  src="https://zackproser.b-cdn.net/images/agent-skills-architecture.webp" 
+  alt="Anthropic agent skills architecture diagram"
+  width={1200}
+  height={800}
+/>
+
 ## The Use Case: From Static to Animated
 
 For the training, I built a skill that demonstrates a workflow I'd figured out for generating animated images using Google's latest models. The process involves two steps that need to happen in sequence.
@@ -28,6 +35,21 @@ For the training, I built a skill that demonstrates a workflow I'd figured out f
 First, we use Google's Nano Banana model to generate a minimalist static image from a text prompt. This gives us a clean, simple composition that's ideal for animation. Then, we take that generated image and pass it as a source to Google's Veo model, asking it to animate the most obvious motion in the scene.
 
 The beauty of packaging this as a skill is that my colleagues don't need to understand the API intricacies or remember the exact prompts and parameters. They just ask Claude to use the animated-image skill, describe what they want, and the workflow executes automatically.
+
+## Repository
+
+<GitHubRepoCard 
+  repo="zackproser/claude-custom-skills-demo"
+  fallbackTitle="Claude custom skills: Animated Image demo"
+  fallbackDescription="Packaged two-step workflow: generate static image with Nano Banana, animate with Veo."
+/>
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/animate-image-workflow.webp" 
+  alt="Two-step animated image workflow: prompt → Nano Banana (static image) → Veo (animated video)"
+  width={1200}
+  height={800}
+/>
 
 ## Watch the Workflow Demo
 
@@ -53,22 +75,17 @@ These are the exact text prompts I used to produce the assets in the demo.
 ### 1) Static image prompt (Nano Banana)
 
 ```
-Minimalist, flat vector illustration with clean lines and generous negative space.
-Subject: a small paper boat floating in a shallow glass bowl of water on a wooden desk.
-Lighting: soft, even studio lighting with a single subtle shadow; high contrast, no gradients.
-Palette: 3–5 colors maximum; off-white background; muted blue water; natural wood tone; white paper boat.
-Framing: centered composition, no text, no logos, no background clutter.
-Style: professional product mock style; SVG-like crispness; no texture, no grain, no noise.
+Minimalist flat vector of a paper boat floating in a glass bowl on a wooden desk.
+3–5 color palette, high contrast, no gradients or texture, centered composition.
+Soft studio lighting; single subtle shadow; clean background; SVG‑like crispness.
 ```
 
 ### 2) Animation prompt (Veo)
 
 ```
-Animate the most obvious motion in the scene from the static source image of the paper boat in a bowl of water.
-Make the boat gently bob and drift clockwise in a small loop as if moved by a faint ripple.
-Maintain the minimalist style and color palette; do not introduce new objects or camera cuts.
-No zoom, no pans; lock the camera; keep motion smooth and subtle.
-Runtime target: ~3–4 seconds, seamless loop.
+Gently bob and drift the paper boat clockwise in a small seamless loop.
+Lock camera; keep motion subtle; preserve original palette and style; no new objects.
+Target duration: ~3–4 seconds.
 ```
 
 ## Following the 12 Factor App Pattern
@@ -96,6 +113,13 @@ cp -n .env.example .env
 ```
 
 Then each person edits their `.env` file to add their Google API key, and restarts Claude Code to discover the new skill.
+
+<Image 
+  src="https://zackproser.b-cdn.net/images/install-flow.webp" 
+  alt="Install and discovery flow: clone repo → copy skill to ~/.claude/skills → set GOOGLE_API_KEY → Claude discovers skill"
+  width={1200}
+  height={800}
+/>
 
 ## Live Walkthrough: Google AI Studio + Veo
 
@@ -125,12 +149,11 @@ Distributing skills through GitHub repositories provides several advantages that
 
 The repository structure is simple and familiar to developers. Each skill lives in its own directory with a SKILL.md file that contains the instructions Claude follows, along with any supporting code or configuration files. This makes skills approachable and easy to understand, even for team members who aren't deeply familiar with Claude's internals.
 
-## Repository
-
-<GitHubRepoCard 
-  repo="zackproser/claude-custom-skills-demo"
-  fallbackTitle="Claude custom skills: Animated Image demo"
-  fallbackDescription="Packaged two-step workflow: generate static image with Nano Banana, animate with Veo."
+<Image 
+  src="https://zackproser.b-cdn.net/images/flow-diagram.webp" 
+  alt="High-level distribution flow: Repo → PRs/Reviews → Team installs locally → Consistent outputs"
+  width={1200}
+  height={800}
 />
 
 ## Practical Impact
