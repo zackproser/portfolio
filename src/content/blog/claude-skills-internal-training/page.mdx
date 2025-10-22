@@ -28,6 +28,24 @@ What makes skills particularly powerful is that they live in your local file sys
   height={800}
 />
 
+## Both Human and Machine Readable
+What makes skills unique is their dual legibility. The SKILL.md file that Claude reads to understand the workflow? You can read it too. It's plain English instructions alongside the actual implementation code.
+This means:
+
+You can audit what Claude is doing - no black box automation
+Your team can understand and modify the workflow - it's just markdown and code
+The documentation is the executable specification - they can't drift apart because they're the same thing
+
+Traditional runbooks go stale because they're separate from the code. API integrations are opaque. Claude skills are both the documentation AND the implementation, readable by both humans and AI.
+
+## Why This Matters
+
+Most teams are quietly rediscovering the same AI workflows in parallel. A few people figure out workable prompt chains, parameter settings, and file-handling steps—but that tribal knowledge lives in DMs, personal notes, or one-off scripts. When those people move teams or leave, the know‑how evaporates and the rediscovery cycle starts again.
+
+Even when we try to document these flows, the “how” is scattered across docs, screenshots, and CLI snippets that drift away from the real implementation. Prompts evolve. API sequences change. Small but critical steps like image encoding, content types, or retry logic are easy to miss and hard to standardize.
+
+Claude skills fix this by making the runbook executable and version‑controlled. The same artifact that a human can read (SKILL.md) is the one Claude executes—reviewable in PRs, testable in CI, and distributable to the whole team. That stops knowledge from leaking, and it turns fragile, ad‑hoc workflows into shareable, repeatable capabilities.
+
 ## The Use Case: From Static to Animated
 
 For the training, I built a skill that demonstrates a workflow I'd figured out for generating animated images using Google's latest models. The process involves two steps that need to happen in sequence.
@@ -35,6 +53,22 @@ For the training, I built a skill that demonstrates a workflow I'd figured out f
 First, we use Google's Nano Banana model to generate a minimalist static image from a text prompt. This gives us a clean, simple composition that's ideal for animation. Then, we take that generated image and pass it as a source to Google's Veo model, asking it to animate the most obvious motion in the scene.
 
 The beauty of packaging this as a skill is that my colleagues don't need to understand the API intricacies or remember the exact prompts and parameters. They just ask Claude to use the animated-image skill, describe what they want, and the workflow executes automatically.
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/WohyfJ6529Y" 
+  title="Using Google AI Studio to generate and animate images"
+  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+></iframe>
+
+In this walkthrough, I first compose a clean static frame and then animate the obvious motion (think: a ball rolling down a hill). Separating composition from motion keeps outputs predictable and makes iteration fast.
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/br81_vMItXs" 
+  title="Animated image example clip"
+  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+></iframe>
 
 ## Repository
 
@@ -50,15 +84,6 @@ The beauty of packaging this as a skill is that my colleagues don't need to unde
   width={1200}
   height={800}
 />
-
-## Watch the Workflow Demo
-
-<iframe 
-  className="youtube-video"
-  src="https://www.youtube.com/embed/br81_vMItXs" 
-  title="Animated image example clip"
-  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-></iframe>
 
 <Image 
   src="https://zackproser.b-cdn.net/images/zack-holding-mic.webp" 
@@ -120,15 +145,6 @@ Then each person edits their `.env` file to add their Google API key, and restar
   width={1200}
   height={800}
 />
-
-## Live Walkthrough: Google AI Studio + Veo
-
-<iframe 
-  className="youtube-video"
-  src="https://www.youtube.com/embed/WohyfJ6529Y" 
-  title="Using Google AI Studio to generate and animate images"
-  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-></iframe>
 
 ## Skill Directory Structure
 

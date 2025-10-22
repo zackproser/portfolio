@@ -1,7 +1,8 @@
 {
   "author": "Zachary Proser",
   "date": "2025-10-21",
-  "title": "Sharing Custom Claude Workflows with Skills: Lessons from Building an Animated Image Generator",
-  "description": "How Claude skills package prompts, code, and config into shareable, version-controlled workflows—featuring a two-step animated image generator using Google's models.",
+  "title": "Claude Skills as Self-Documenting Runbooks/Processes You Share With Your Team",
+  "description": "This may indeed be a bigger deal than MCP",
+  "image": "https://zackproser.b-cdn.net/images/claude-skills.webp",
   "tags": ["claude", "skills", "workflows", "mcp", "ai", "images", "google"]
 }
