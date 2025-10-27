@@ -1,0 +1,128 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
+
+export const metadata = createMetadata(rawMetadata)
+
+
+## Walking and Talking in the Woods with AI: The Future of Untethered Software Development
+
+First, a heartfelt thank you to DevSecCon and Snyk.io for hosting me and giving me the chance to share this vision. The keynote was delivered as a 32‑minute short film—watch it below.
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote by Zachary Proser" />
+
+### The thesis
+**Speed requires safety.** Use AI to orchestrate both artificial and human intelligence so you can do deep thinking where you think best, while background agents safely push well‑scoped changes through a hardened CI/CD pipeline.
+
+### The story
+Six months ago, I stopped asking how to squeeze more out of new tools at the same desk and started asking how to use them to leave the desk. The experiment: keep shipping secure, tested, production code while spending half the day on mountain trails. The unlock was combining three things:
+- **High‑accuracy voice capture**
+- **Agentic coding in isolated, auditable sandboxes**
+- **A rigorously protected CI/CD lane**
+
+I now speak code at ~179 wpm, solve architecture around mile three, and let agents chew through maintenance while I walk, think, and learn.
+
+### Guiding principles
+- **Speed requires safety**: Harden the path (pre‑commit + CI secrets scanning, dependency checks, lint/test/build).
+- **Think where you think best**: Separate cognition from the keyboard with voice-driven workflows and mobile check‑ins.
+- **Orchestrate, don’t micromanage**: Machines handle well‑scoped chores; you handle goals, constraints, and judgment.
+
+## The voice stack: dictation, assistant, and tracker
+- **Dictation (WhisperFlow‑like)**: OS‑level, hands‑free capture that understands technical proper nouns, identifiers, and file paths.
+- **Voice‑first assistant (Claude/OpenAI in advanced voice mode)**: A context‑aware “second brain” connected to your work tracker (Linear/Jira) and personal telemetry; it reconciles what you said with what actually happened.
+- **Tracker integration**: Automatically creates/updates tickets from transcripts and decisions, preventing drift.
+
+## Agentic coding in isolated sandboxes
+- **Ephemeral VMs/containers per task** with branch isolation
+- **Transparent artifacts**: setup logs, file access history, diffs, and previews
+- **PR‑first outputs**: agents open pull requests with rationales and change lists
+- **Neutral platforms**: Cursor Agents, OpenAI code agents, GitHub Copilot‑powered flows, Google’s agents
+
+## The safety lane: “speed requires safety” in practice
+- **Defense‑in‑depth secrets controls**: pre‑commit secret scans, then the same detectors again in CI
+- **Supply‑chain hygiene**: dependency scans (e.g., Snyk) block vulnerable graphs and surface remediation
+- **Non‑negotiable gates**: lint/test/build run in parallel to keep throughput as PR volume rises
+- **Auditability**: every agent run produces logs, diffs, and previews; visual review becomes cheap
+
+## The daily loop
+- **Morning, at desk**
+  1. Identify machine‑friendly tasks (discrete, testable, low‑ambiguity).
+  2. Speak the brief: goals, constraints, file paths, acceptance criteria. Launch agents in parallel.
+  3. Queue refinements while agents work (e.g., “blue facelift with Tailwind—show exact shades”).
+- **Midday, on trail**
+  4. Learn and design by voice: study topics, debate trade‑offs, record decisions.
+  5. Remote steering: review live previews/diffs on mobile, request tweaks, choose versions.
+- **Afternoon, back at desk**
+  6. Review artifacts: logs, previews, diffs; accept/reject iterations.
+  7. Open PRs via agents: pre‑commit + CI gates enforce quality and protect secrets.
+  8. Capture outcomes: paste transcripts; auto‑generate/update tracker items for next steps.
+
+## What makes a task “agent‑friendly”
+- **Narrow scope, crisp boundaries**: “Change X in file Y,” “Update Z to ^A.B.C and fix breaking changes in foo.ts.”
+- **Deterministic validation**: build passes, tests green, preview matches the described outcome.
+- **Minimal global coupling**: feature branches, localized CSS/layout changes, chore‑class refactors.
+
+## Acceptance criteria templates
+- **Build and tests**: “Build must pass on Node X; unit tests Y/Z must be green.”
+- **Security**: “Zero secret findings; no high/critical vulnerabilities in dep scan.”
+- **Preview**: “Before→after behavior is clear; CSS changes confined to /demos/*.”
+- **PR hygiene**: “Description includes context, changed files list, testing notes, risk assessment.”
+
+## Anti‑patterns to avoid
+- Handing agents open‑ended rewrites without file‑level constraints or tests
+- Relying on manual review without pre‑commit and CI gates
+- Treating the voice assistant as a to‑do dump disconnected from the tracker
+- Piling heterogeneous tasks into a single branch/agent run
+
+## Human factors: focus vs. diffuse mode
+Work alternates between **focus mode** (deep, narrow) and **diffuse mode** (wide, associative). Voice + mobility lets you switch to diffuse mode (walks, sunlight, oxygen) for learning and architecture, then re‑enter focus mode for review and integration—without losing momentum because agents and CI keep the code moving.
+
+## Concrete use cases seeded by the keynote
+- **Maintenance at scale**: bump vulnerable dependencies across services with parallel agents
+- **UI copy/image iteration**: headline/copy experiments with diffed previews and style‑safe tweaks
+- **Access‑controlled feature flags**: add “signed‑in” and “paid” tiers with minimal auth surface changes
+- **Security hardening**: add pre‑commit and CI scanners; prove with contrived secrets and red/green runs
+- **Mobile steering**: choose among agent versions from the trail, then merge the best
+
+## Example prompts to reuse
+- “Add a tiered content system with three states (open, sign‑in required, paid) under `/demos`. Extend auth minimally. Provide preview and changed files with justification. Acceptance: build/tests green; visuals unchanged except the unauthenticated prompt.”
+- “Working backward from ‘make the ML demos page the best place to learn,’ propose four headline/description variants and hero tweaks. Show diffs and live previews for each. Keep typography/spacing aligned to tokens.”
+- “Version 2’s hero is closest. Reduce saturation 15%, increase contrast slightly, switch button to primary. Keep body copy from Version 3. Show combined result as Version 5.”
+
+## Conclusion
+The mindset shift is simple and powerful: **orchestrate, don’t micromanage**. Do your best thinking where you think best; let background agents turn spoken intent into production‑grade code; and let a hardened CI/CD path keep you honest and fast. Thanks again to DevSecCon and Snyk.io for the platform—and for championing a future where great software isn’t tethered to a chair.
+
+```yaml
+title: Orchestrating Intelligence: Voice, Agents, and CI for Safer Speed
+author: Zachary Proser
+thesis: Use AI to free yourself from the desk by pushing machine-friendly work through a hardened pipeline while you do deep thinking where you think best.
+core_principles:
+  - speed_requires_safety
+  - think_where_you_think_best
+  - orchestrate_dont_micromanage
+tools:
+  - dictation: WhisperFlow-like
+  - assistant: voice-first LLM linked to tracker/biometrics
+  - agents: cursor/openai/google/github-coded agents in VMs/containers
+  - cicd: GitHub Actions (lint/test/build, deps, secrets)
+workflows:
+  morning: queue parallel agent tasks with strict acceptance criteria
+  midday: mobile check-ins, previews, diffs, remote steering during walks
+  afternoon: code review, PRs, CI gates, ticket updates
+security:
+  - precommit_secret_scan
+  - ci_secret_scan
+  - dependency_scan
+  - tests_lint_build_required
+  - audit_logs_and_previews_required
+agent_friendly_examples:
+  - bump_vulnerable_deps
+  - localized_css_fix
+  - footer_copyright_update
+  - copy_hero_iteration
+acceptance_templates:
+  - build_and_tests_green
+  - zero_secret_findings
+  - no_high_crit_vulns
+  - preview_matches_spec
+```
