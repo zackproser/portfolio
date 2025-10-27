@@ -23,43 +23,67 @@ export const metadata = createMetadata(rawMetadata)
 
 I move fast because the path is hardened. Pre-commit hooks and CI/CD gates scan for secrets, vulnerable dependencies, and quality issues. That safety lane lets me work where I think best (often by voice, often while walking) while background agents do well‑scoped chores.
 
-- **Think where you think best**: voice-first capture and mobile check-ins.
-- **Orchestrate, don’t micromanage**: I set goals and constraints; agents do bounded work.
-- **Defense-in-depth**: secret scanning, dep checks, lint/test/build at every gate.
+### Think where you think best
+I separate cognition from the keyboard. Voice‑first capture and quick mobile check‑ins let me work through design and trade‑offs while moving, then re‑enter focus mode at the editor to integrate the decisions—without losing continuity.
+
+### Orchestrate, don’t micromanage
+I set goals, constraints, file paths, and acceptance criteria. Background agents handle the bounded chores and return diffs and previews. I review, steer, and decide—humans keep judgment; machines keep score.
+
+### Defense‑in‑depth
+Speed only works when the lane is safe. Pre‑commit secret scanning, dependency checks, and parallel lint/test/build gates run by default so velocity never erodes trust.
 
 ## Claude as external executive function
 
 For me, Claude is a programmable prosthetic for planning, prioritization, and compassionate pushback.
 
-- **State awareness**: Oura (via MCP) feeds sleep debt, HRV, recovery. Linear supplies my task graph. Claude reconciles “what I said” with “what actually happened.”
-- **Compassionate constraint**: I instruct Claude to curb perfectionism, prevent spirals, and keep me shipping.
-- **Unlimited patience**: I can ask the same anxious question 15 times at 3am without burdening my people.
+### State awareness
+Through MCP, Oura feeds sleep debt, HRV, and recovery data. Linear supplies my task graph. Claude reconciles “what I said” with “what actually happened,” so plans match reality instead of wishful thinking.
+
+### Compassionate constraint
+I program Claude to push back on perfectionism and analysis paralysis. It nudges me toward shipping, not endlessly polishing—especially when biomarkers say my energy is low.
+
+### Unlimited patience
+When anxious loops spike, I can ask the same question at 3am without burdening my people. The dialogue remains steady, kind, and structured—exactly the support my brain needs.
 
 ## The daily loop
 
-- **Morning (at desk)**: Dictate briefs for agent‑friendly tasks. Launch agents in parallel; each runs in an isolated VM/branch with strict acceptance criteria.
-- **Midday (on trail)**: Learn and design by voice. Check previews/diffs on mobile; nudge iterations without a keyboard.
-- **Afternoon (back at desk)**: Review artifacts, merge via PRs, let CI enforce quality. Capture outcomes to the tracker.
+### Morning (at desk)
+I dictate briefs for agent‑friendly tasks and launch them in parallel. Each runs in an isolated VM/branch with strict acceptance criteria so results are auditable and easy to review.
+
+### Midday (on trail)
+I learn and design by voice, then check live previews and diffs on mobile. Small nudges keep momentum without a keyboard.
+
+### Afternoon (back at desk)
+I review artifacts, accept or reject iterations, and open PRs. CI enforces quality gates automatically. I capture outcomes to the tracker so the plan and the record stay in sync.
 
 ## What makes a task agent‑friendly
 
-- Narrow scope with crisp boundaries.
-- Deterministic validation (build/test green; preview matches spec).
-- Minimal global coupling (localized CSS/layout; feature branches).
+### Narrow scope with crisp boundaries
+Changes like “update dependency Z to ^A.B.C and fix breaking changes in foo.ts” or “change X in file Y” keep work contained and reviewable.
+
+### Deterministic validation
+Acceptance is objective: build and tests are green, preview matches the described outcome, and the diff reflects the intended surface area only.
+
+### Minimal global coupling
+Localized CSS/layout changes and feature branches reduce blast radius and make it safe to run many tasks concurrently.
 
 ## Concrete workflows I run with Claude
 
-- **Voice-to-structure**: Using WhisperFlow to stream thoughts into Claude Desktop; Claude converts raw speech into tickets, briefs, or PR descriptions.
-- **Biometrics-aware planning**: If sleep score is low, Claude limits planned blocks and adds recovery notes.
-- **Mobile steering**: From the trail, I compare agent versions, request tweaks, or choose merges based on previews.
-- **Safety nets by default**: Every change passes pre‑commit secret scan, CI secret scan, dependency scanning, and lint/test/build gates.
+### Voice to structure
+With WhisperFlow, I stream thoughts into Claude Desktop. Claude turns raw speech into tickets, briefs, or PR descriptions that are ready for agents to execute.
+
+### Biometrics‑aware planning
+Low sleep or recovery scores automatically reduce planned focus blocks. Claude adds recovery notes so I don’t schedule myself into a crash.
+
+### Mobile steering
+On the trail, I compare versions, request tweaks, and choose merges based on previews. Work keeps moving while I’m away from the desk.
+
+### Safety nets by default
+Every change passes pre‑commit secret scanning, CI secret scanning, dependency scanning, and lint/test/build gates. The guardrails are part of the workflow, not an afterthought.
 
 ## Example acceptance criteria I reuse
 
-- Build must pass on the target Node version; unit tests Y/Z green.
-- Secret scanners report 0 findings; vulnerability scan shows no high/critical.
-- Preview demonstrates before→after behavior; CSS confined to the intended area.
-- PR description lists changed files, testing notes, and risk assessment.
+My acceptance language is deterministic: the build passes on the target Node version and key unit tests are green; secret scanners report zero findings and dependency scanning shows no high/critical vulnerabilities; a preview demonstrates the before→after behavior with CSS confined to the intended surface; and the PR description lists changed files, testing notes, and a short risk assessment.
 
 ## Human factors: why this works for my brain
 
@@ -67,9 +91,6 @@ My mind thinks in dependency graphs and can hyperfocus for long stretches, then 
 
 ## Related posts
 
-- [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself)
-- [Walking and talking with AI in the woods](/blog/walking-and-talking-with-ai)
-- [Cursor Agents review](/blog/cursor-agents-review)
-- [Connect Oura Ring to Claude Desktop with MCP](/blog/connect-oura-ring-to-claude-desktop-with-mcp)
+See also [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself), [Walking and talking with AI in the woods](/blog/walking-and-talking-with-ai), [Cursor Agents review](/blog/cursor-agents-review), and [Connect Oura Ring to Claude Desktop with MCP](/blog/connect-oura-ring-to-claude-desktop-with-mcp).
 
 If this resonated, the keynote above shows the full playbook—voice + agents + CI/CD—so you can adapt these patterns without sacrificing safety.
