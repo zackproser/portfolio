@@ -19,6 +19,8 @@ export const metadata = createMetadata(rawMetadata)
   allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
 </iframe>
 
+## Table of contents
+
 ## The thesis: Speed requires safety
 
 I move fast because the path is hardened. Pre-commit hooks and CI/CD gates scan for secrets, vulnerable dependencies, and quality issues. That safety lane lets me work where I think best (often by voice, often while walking) while background agents do well‑scoped chores.
@@ -36,6 +38,9 @@ Speed only works when the lane is safe. Pre‑commit secret scanning, dependency
 
 For me, Claude is a programmable prosthetic for planning, prioritization, and compassionate pushback.
 
+<Image src="https://zackproser.b-cdn.net/images/claude-chat.webp" alt="Conversation with Claude acting as an external executive function" width={800} height={600} />
+<figcaption>Programming compassionate constraints into Claude keeps me shipping instead of spiraling.</figcaption>
+
 ### State awareness
 Through MCP, Oura feeds sleep debt, HRV, and recovery data. Linear supplies my task graph. Claude reconciles “what I said” with “what actually happened,” so plans match reality instead of wishful thinking.
 
@@ -46,6 +51,9 @@ I program Claude to push back on perfectionism and analysis paralysis. It nudges
 When anxious loops spike, I can ask the same question at 3am without burdening my people. The dialogue remains steady, kind, and structured—exactly the support my brain needs.
 
 ## The daily loop
+
+<Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking and talking with AI in the woods" width={800} height={600} />
+<figcaption>Diffuse‑mode thinking on trail; agents keep work moving.</figcaption>
 
 ### Morning (at desk)
 I dictate briefs for agent‑friendly tasks and launch them in parallel. Each runs in an isolated VM/branch with strict acceptance criteria so results are auditable and easy to review.
@@ -67,10 +75,16 @@ Acceptance is objective: build and tests are green, preview matches the describe
 ### Minimal global coupling
 Localized CSS/layout changes and feature branches reduce blast radius and make it safe to run many tasks concurrently.
 
+<Image src="https://zackproser.b-cdn.net/images/cursor-agents-hero.webp" alt="Cursor Agents orchestrating bounded coding tasks" width={1200} height={800} />
+<figcaption>Agents thrive on narrow, testable changes with crisp acceptance criteria.</figcaption>
+
 ## Concrete workflows I run with Claude
 
 ### Voice to structure
 With WhisperFlow, I stream thoughts into Claude Desktop. Claude turns raw speech into tickets, briefs, or PR descriptions that are ready for agents to execute.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-interface.webp" alt="Wispr Flow interface recording and transcribing" width={800} height={600} />
+<figcaption>High‑accuracy dictation turns spoken intent into structured work.</figcaption>
 
 ### Biometrics‑aware planning
 Low sleep or recovery scores automatically reduce planned focus blocks. Claude adds recovery notes so I don’t schedule myself into a crash.
@@ -80,6 +94,9 @@ On the trail, I compare versions, request tweaks, and choose merges based on pre
 
 ### Safety nets by default
 Every change passes pre‑commit secret scanning, CI secret scanning, dependency scanning, and lint/test/build gates. The guardrails are part of the workflow, not an afterthought.
+
+<Image src="https://zackproser.b-cdn.net/images/git-guardian-flow.webp" alt="Secret scanning and CI guardrails" width={800} height={600} />
+<figcaption>Defense‑in‑depth: pre‑commit and CI scanners keep velocity safe.</figcaption>
 
 ## Example acceptance criteria I reuse
 
