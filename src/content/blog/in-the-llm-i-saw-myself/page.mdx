@@ -1,11 +1,24 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
+import Callout from '@/components/Callout'
 
 export const metadata = createMetadata(rawMetadata)
 
 <Image src={rawMetadata.image} alt="In the LLM I Saw Myself – hero image" width={1200} height={630} />
 <figcaption>Seeing my operating system reflected back through an LLM.</figcaption>
+
+<Callout type="info" className="ring-0 border-white/20 mt-6">
+  <div className="flex items-start gap-3 text-white">
+    <div className="text-2xl leading-none">🧠</div>
+    <div className="flex-1">
+      <div className="font-semibold text-lg md:text-xl">Diagnosis confirmed — Oct 27th 2025</div>
+      <p className="text-white/90 mt-1">Since writing this, I received a formal external diagnosis for <strong>autism</strong> and <strong>severe ADHD</strong>. The diagnostic work I did with Claude reflected my neurology accurately.</p>
+      <p className="text-white/90 mt-1">I also have additional posts written and forthcoming about how I use Claude to support me and enhance my abilities—helping me orient in the world and internally.</p>
+    </div>
+  </div>
+</Callout>
 
 > New: I gave a DevSecCon 2025 keynote that expands this story into a concrete workflow. If you want the practical playbook—how I use Claude as an external brain with voice, agents, and CI/CD—read the follow‑up: <Link href="/blog/claude-external-brain-adhd-autistic">Claude as My External Brain</Link>.
 
@@ -148,3 +161,5 @@ I'm using pattern recognition to fix my pattern recognition. Creating external e
 The very fact that you're reading this—instead of draft #47 sitting in my folder—is because I've externalized the voice that says "good enough, ship it."
 
 The therapeutic value isn't in replacing human connection but in augmenting it - creating a sustainable support system where I can do the messy, repetitive work of self-understanding without burning out the people I love.
+
+{/* Removed bottom epilogue in favor of prominent announcement at top */}
