@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { createMetadata } from '@/utils/createMetadata'
 import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap } from 'lucide-react'
@@ -16,6 +17,7 @@ const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
 // Import additional speaking and conference images
 const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
 const aieZackBadge = 'https://zackproser.b-cdn.net/images/aie-zack-badge.webp'
+const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const metadata = createMetadata({
   title: 'Speaking Engagements - Zachary Proser',
@@ -56,6 +58,25 @@ export const metadata = createMetadata({
 // Speaking engagements data
 const speakingEngagements = [
   {
+    id: 'devseccon-2025-keynote',
+    type: 'public',
+    title: 'Keynote Speaker: DevSecCon 2025',
+    event: 'DevSecCon 2025',
+    date: '2025',
+    location: 'Conference Keynote',
+    description: 'Delivered the keynote address at DevSecCon 2025 on modern AI and security.',
+    image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
+    audience: 'Conference attendees',
+    topics: ['DevSecOps', 'Security', 'AI Engineering'],
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4',
+        label: 'Watch Keynote on YouTube'
+      }
+    ]
+  },
+  {
     id: 'aie-world-fair-june-2025',
     type: 'public',
     title: 'AI Pipelines and Agents in Pure TypeScript with Mastra.ai',
@@ -88,6 +109,25 @@ const speakingEngagements = [
         type: 'twitter',
         url: 'https://twitter.com/zackproser/status/1732228822626619637',
         label: 'Twitter Thread'
+      }
+    ]
+  },
+  {
+    id: 'workos-claude-skills-2025-10-23',
+    type: 'internal',
+    title: 'Claude Skills as Self-Documenting Runbooks',
+    event: 'WorkOS Internal Training',
+    date: 'October 23, 2025',
+    location: 'WorkOS Office, San Francisco, CA',
+    description: 'In-person training on operationalizing Claude Skills as executable, version-controlled runbooks and shareable team workflows.',
+    image: claudeSkills,
+    audience: 'WorkOS team (internal)',
+    topics: ['Claude Skills', 'Runbooks', 'AI Workflows', 'Knowledge Sharing'],
+    links: [
+      {
+        type: 'blog',
+        url: '/blog/claude-skills-internal-training',
+        label: 'Read write-up'
       }
     ]
   },
@@ -262,6 +302,20 @@ export default function Speaking() {
         title="Speaking Engagements"
         intro="I speak at conferences, meetups, and corporate events about AI, infrastructure as code, vector databases, and developer tools. I also provide internal training for engineering and content teams."
       >
+
+        {/* Featured Keynote */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <Presentation className="h-6 w-6 text-red-600" />
+            DevSecCon 2025 Keynote
+          </h2>
+          <div className="">
+            <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote" />
+            <div className="mt-4">
+              <ExternalLinkButton link={{ type: 'youtube', url: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4', label: 'Watch on YouTube' }} />
+            </div>
+          </div>
+        </section>
 
 
         {/* Public Engagements */}
