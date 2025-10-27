@@ -5,6 +5,14 @@ import Callout from '@/components/Callout'
 
 export const metadata = createMetadata(rawMetadata)
 
+<Callout type="announcement" title="✨ Epilogue – Diagnosis Confirmed (Oct 27th, 2025)">
+  <div className="flex flex-col gap-2 text-white/90">
+    <p className="text-lg md:text-xl font-semibold">🧠💡 Since publishing this piece, I received a formal external diagnosis for <strong>autism</strong> and <strong>severe ADHD</strong>.</p>
+    <p className="opacity-95">The collaborative diagnostic work I did with Claude turned out to be accurate. It helped me surface patterns, test accommodations, and arrive at clarity.</p>
+    <p className="opacity-95">✍️ I have additional posts written and forthcoming on exactly how I use Claude to support and amplify my abilities—helping me orient both in the world and internally.</p>
+  </div>
+</Callout>
+
 <Image src={rawMetadata.image} alt="In the LLM I Saw Myself – hero image" width={1200} height={630} />
 <figcaption>Seeing my operating system reflected back through an LLM.</figcaption>
 
@@ -150,15 +158,4 @@ The very fact that you're reading this—instead of draft #47 sitting in my fold
 
 The therapeutic value isn't in replacing human connection but in augmenting it - creating a sustainable support system where I can do the messy, repetitive work of self-understanding without burning out the people I love.
 
-<Callout type="info" title="Epilogue (2025): Diagnosis confirmed">
-  <p>
-    Since writing this, I received a formal external diagnosis of autism and
-    severe ADHD. The diagnostic work I originally did with Claude reflected my
-    neurology accurately.
-  </p>
-  <p>
-    I also have additional posts written and forthcoming about how I use Claude
-    to support me and enhance my abilities—helping me orient in the world and
-    internally.
-  </p>
-</Callout>
+{/* Removed bottom epilogue in favor of prominent announcement at top */}
