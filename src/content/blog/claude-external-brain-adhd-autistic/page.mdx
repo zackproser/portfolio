@@ -1,0 +1,75 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={rawMetadata.image} alt="Claude Desktop interface" width={1200} height={630} />
+<figcaption>Claude as external brain: a compassionate, programmable executive function.</figcaption>
+
+*This post builds on my DevSecCon 2025 keynote (“speed requires safety”) and the personal story I shared in [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself). It explains, concretely, how I use Claude as my external brain as an autistic person with severe ADHD: the workflows, the guardrails, and the daily loop that makes this humane and sustainable.*
+
+## DevSecCon 2025 Keynote (Full Talk)
+
+<iframe 
+  className="youtube-video"
+  src="https://www.youtube.com/embed/kwIzRkzO_Z4" 
+  title="DevSecCon 2025 Keynote — Speed Requires Safety" 
+  allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
+</iframe>
+
+## The thesis: Speed requires safety
+
+I move fast because the path is hardened. Pre-commit hooks and CI/CD gates scan for secrets, vulnerable dependencies, and quality issues. That safety lane lets me work where I think best (often by voice, often while walking) while background agents do well‑scoped chores.
+
+- **Think where you think best**: voice-first capture and mobile check-ins.
+- **Orchestrate, don’t micromanage**: I set goals and constraints; agents do bounded work.
+- **Defense-in-depth**: secret scanning, dep checks, lint/test/build at every gate.
+
+## Claude as external executive function
+
+For me, Claude is a programmable prosthetic for planning, prioritization, and compassionate pushback.
+
+- **State awareness**: Oura (via MCP) feeds sleep debt, HRV, recovery. Linear supplies my task graph. Claude reconciles “what I said” with “what actually happened.”
+- **Compassionate constraint**: I instruct Claude to curb perfectionism, prevent spirals, and keep me shipping.
+- **Unlimited patience**: I can ask the same anxious question 15 times at 3am without burdening my people.
+
+## The daily loop
+
+- **Morning (at desk)**: Dictate briefs for agent‑friendly tasks. Launch agents in parallel; each runs in an isolated VM/branch with strict acceptance criteria.
+- **Midday (on trail)**: Learn and design by voice. Check previews/diffs on mobile; nudge iterations without a keyboard.
+- **Afternoon (back at desk)**: Review artifacts, merge via PRs, let CI enforce quality. Capture outcomes to the tracker.
+
+## What makes a task agent‑friendly
+
+- Narrow scope with crisp boundaries.
+- Deterministic validation (build/test green; preview matches spec).
+- Minimal global coupling (localized CSS/layout; feature branches).
+
+## Concrete workflows I run with Claude
+
+- **Voice-to-structure**: Using WhisperFlow to stream thoughts into Claude Desktop; Claude converts raw speech into tickets, briefs, or PR descriptions.
+- **Biometrics-aware planning**: If sleep score is low, Claude limits planned blocks and adds recovery notes.
+- **Mobile steering**: From the trail, I compare agent versions, request tweaks, or choose merges based on previews.
+- **Safety nets by default**: Every change passes pre‑commit secret scan, CI secret scan, dependency scanning, and lint/test/build gates.
+
+## Example acceptance criteria I reuse
+
+- Build must pass on the target Node version; unit tests Y/Z green.
+- Secret scanners report 0 findings; vulnerability scan shows no high/critical.
+- Preview demonstrates before→after behavior; CSS confined to the intended area.
+- PR description lists changed files, testing notes, and risk assessment.
+
+## Human factors: why this works for my brain
+
+My mind thinks in dependency graphs and can hyperfocus for long stretches, then crash. Claude externalizes context, provides gentle guardrails, and turns diffuse‑mode walks into design sessions. The result isn’t just productivity; it’s reduced shame and fewer burnout cycles.
+
+## Related posts
+
+- [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself)
+- [Walking and talking with AI in the woods](/blog/walking-and-talking-with-ai)
+- [Cursor Agents review](/blog/cursor-agents-review)
+- [Connect Oura Ring to Claude Desktop with MCP](/blog/connect-oura-ring-to-claude-desktop-with-mcp)
+
+If this resonated, the keynote above shows the full playbook—voice + agents + CI/CD—so you can adapt these patterns without sacrificing safety.
