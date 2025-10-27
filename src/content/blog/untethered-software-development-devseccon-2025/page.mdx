@@ -1,0 +1,148 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+
+## Walking and Talking in the Woods with AI: The Future of Untethered Software Development
+
+First, a heartfelt thank you to DevSecCon and Snyk.io for hosting me and giving me the chance to share this vision. The keynote was delivered as a 32‑minute short film—watch it below.
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote by Zachary Proser" />
+
+## Table of contents
+
+### The thesis
+Speed requires safety. Use AI to orchestrate both artificial and human intelligence so you can do deep thinking where you think best, while background agents safely push well‑scoped changes through a hardened CI/CD pipeline.
+
+### The story
+Six months ago, I stopped asking how to squeeze more out of new tools at the same desk and started asking how to use them to leave the desk. The experiment was simple to state and hard to execute: keep shipping secure, tested, production code while spending half the day on mountain trails. The unlock came from combining three things in a tight loop.
+
+### High‑accuracy voice capture
+Voice became my primary interface. With reliable dictation that understands technical language, filenames, and identifiers, I now speak code at roughly 179 words per minute. That speed matters only because it preserves the flow—ideas go straight from mind to artifact without the friction of a keyboard. I solve architecture problems around mile three, narrating constraints and trade‑offs while the trail clears my head.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="High‑accuracy dictation with WisprFlow" width={800} height={600} />
+
+### Agentic coding in isolated, auditable sandboxes
+Background agents pick up the briefs and work inside ephemeral, isolated environments. Each task happens in its own branch with logs, previews, and diffs. This separation lets machines chew through well‑scoped chores—maintenance, refactors, visual tweaks—while I stay focused on goals, constraints, and judgment. It’s orchestration, not micromanagement.
+
+<Image src="https://zackproser.b-cdn.net/images/ai-assisted-dev-tools.webp" alt="Agentic coding across modern AI developer tools" width={800} height={600} />
+
+### A rigorously protected CI/CD lane
+None of this works without safety. The pipeline is hardened end‑to‑end: pre‑commit hooks catch secrets early, dependency scans block vulnerable states, and lint/test/build gates enforce quality. Every change is auditable. That’s what makes this fast: the path is safe, so velocity doesn’t erode trust.
+
+<Image src="https://zackproser.b-cdn.net/images/cicd-automations.webp" alt="CI/CD automations and checks keep velocity safe" width={800} height={600} />
+
+### Guiding principles
+
+### Speed requires safety
+Hardening the lane—pre‑commit secret scanning, CI re‑scans, dependency checks, and non‑negotiable lint/test/build gates—creates a trusted path. When the rails are strong, you can move quickly without fear of silent regressions or accidental leaks.
+
+### Think where you think best
+Voice‑driven workflows and mobile check‑ins decouple cognition from the keyboard. Do diffuse‑mode thinking on walks—learn, design, decide—then return to the desk to review diffs and integrate. Momentum continues because agents keep the code moving while you’re away.
+
+### Orchestrate, don’t micromanage
+Machines excel at well‑scoped, testable work. Humans excel at setting targets, evaluating trade‑offs, and exercising judgment. Treat agents like capable teammates: give crisp briefs and firm acceptance criteria, then supervise via previews and diffs.
+
+## The voice stack: dictation, assistant, and tracker
+
+### Dictation (WhisperFlow‑like)
+Hands‑free, OS‑level dictation that understands technical proper nouns and file paths is the keystone. Accurate capture keeps you in flow and makes spoken intent a first‑class input to the system.
+
+### Voice‑first assistant
+A context‑aware assistant—connected to a tracker like Linear or Jira and to personal telemetry—acts as a second brain. It reconciles what you said with what actually happened, highlights drift, and keeps plans honest.
+
+### Tracker integration
+Transcripts and decisions flow into the work tracker automatically. Tickets are created or updated as you go, so you never return to a mess of unsorted notes. Progress stays visible and auditable.
+
+## Agentic coding in isolated sandboxes
+Ephemeral VMs or containers spin up per task, each working in its own branch. Agents produce setup logs, file access histories, diffs, and previews so review is cheap and decisions are reversible. The output is PR‑first: clear rationales, change lists, and artifacts you can accept or iterate on. This pattern works across platforms—Cursor Agents, OpenAI code agents, GitHub Copilot‑powered flows, or Google’s agents—because the contract is isolation, previews, and PR hygiene.
+
+## The safety lane: “speed requires safety” in practice
+
+### Defense‑in‑depth secrets controls
+Secret scanning runs at pre‑commit to stop bad changes early and again in CI as a backstop. If anything slips, the pipeline fails fast.
+
+<Image src="https://zackproser.b-cdn.net/images/ggshield-pre-commit-scan.webp" alt="Pre‑commit secret scanning with ggshield" width={800} height={600} />
+
+### Supply‑chain hygiene
+Dependency scanning blocks vulnerable graph states and surfaces remediation notes in PRs. You keep shipping without inheriting avoidable risk.
+
+### Non‑negotiable gates
+Lint, tests, and build checks run in parallel, keeping throughput high even as PR volume rises. The rules are consistent for humans and agents alike.
+
+### Auditability
+Every agent run emits logs, diffs, and previews. Visual review becomes an inexpensive, reliable way to enforce intent and quality.
+
+## The daily loop
+
+### Morning, at desk
+Start by selecting machine‑friendly work—discrete, testable tasks with low ambiguity. Speak the brief with goals, constraints, file paths, and acceptance criteria, then launch multiple agents in parallel. As they work, layer refinements without interrupting momentum—for example, request a Tailwind facelift with exact shades documented.
+
+### Midday, on trail
+Use voice to learn and to design. Debate trade‑offs with the assistant, record decisions, and review live previews and diffs on mobile. Steer versions, request tweaks, and keep progress moving without a keyboard.
+
+<Image src="https://zackproser.b-cdn.net/images/river-walking-ai.webp" alt="Learning and designing on a river trail with voice AI" width={800} height={600} />
+
+### Afternoon, back at desk
+Inspect logs, previews, and diffs carefully. Accept or reject iterations, open PRs via agents, and let the hardened CI/CD checks guard secrets and quality. Capture outcomes by pasting transcripts back into the assistant to generate or update tickets for the next steps.
+
+## What makes a task “agent‑friendly”
+
+### Narrow scope with crisp boundaries
+Changes like “edit X in file Y” or “upgrade Z to ^A.B.C and fix breaking changes in foo.ts” confine the blast radius and make success obvious.
+
+### Deterministic validation
+If the build passes, tests are green, and the preview matches the described outcome, both human and machine can agree that the task is done.
+
+### Minimal global coupling
+Work in feature branches and prefer localized changes—CSS, layout, or chore‑class refactors—so agents don’t need the whole system in their head.
+
+## Acceptance criteria templates
+
+### Build and tests
+Build must pass on the target Node version and designated unit tests must be green.
+
+### Security
+Secret scanners must report zero findings and the dependency scan must show no high or critical vulnerabilities.
+
+### Preview
+Review should clearly demonstrate before‑and‑after behavior, and CSS changes should remain confined to the intended surface (for example, /demos/*).
+
+### PR hygiene
+Each PR includes context, a list of changed files, testing notes, and a brief risk assessment so reviewers can move quickly with confidence.
+
+## Anti‑patterns to avoid
+Handing agents open‑ended rewrites without file‑level constraints or acceptance tests shifts ambiguity onto the machine and guarantees churn. Relying on manual review without pre‑commit hooks and CI gates invites regression and erodes quality as velocity rises. Mixing heterogeneous tasks into a single branch or agent run destroys isolation and audit clarity, making it harder to revert, compare, or attribute.
+
+## Human factors: focus vs. diffuse mode
+Work alternates between focus mode (deep, narrow) and diffuse mode (wide, associative). Voice plus mobility lets you switch to diffuse mode—walks, sunlight, oxygen—for learning and architecture, then re‑enter focus mode for review and integration. Momentum persists because agents and CI keep the code advancing while you think.
+
+## Concrete use cases seeded by the keynote
+
+### Maintenance at scale
+Parallel agents bump vulnerable dependencies across services, each in isolation with its own PR and remediation notes, turning a wide chore into a tractable set of small, safe changes.
+
+### UI copy and image iteration
+Headline and copy experiments run as previewed diffs with style‑safe tweaks, so you can evaluate variants quickly without risking design drift.
+
+### Access‑controlled feature flags
+Add signed‑in and paid tiers with minimal surface changes to existing auth, starting on a contained area like /demos to prove the pattern before expanding.
+
+### Security hardening stories
+Introduce pre‑commit and CI scanners, validate with contrived secret injections, and demonstrate red/green runs so the team trusts the guardrails.
+
+### Mobile steering case study
+From the trail, compare agent versions, request small adjustments, and merge the best result when you return. The work keeps moving even while you’re away from the desk.
+
+## Example prompts to reuse
+For a tiered‑content feature in Next.js 15: “Add a tiered content system with three states (open, sign‑in required, paid) under `/demos`. Extend auth minimally. Provide a preview and changed files with justification. Acceptance: build/tests green; visuals unchanged except the unauthenticated prompt.”
+
+For copy and hero iteration: “Working backward from ‘make the ML demos page the best place to learn,’ propose four headline/description variants and hero tweaks. Show diffs and live previews for each. Keep typography and spacing aligned to current design tokens.”
+
+For mobile steering on the trail: “Version 2’s hero is closest. Reduce saturation 15%, increase contrast slightly, switch the button to the primary style. Keep body copy from Version 3. Show the combined result as Version 5.”
+
+## Conclusion
+The mindset shift is simple and powerful: orchestrate, don’t micromanage. Do your best thinking where you think best; let background agents turn spoken intent into production‑grade code; and let a hardened CI/CD path keep you honest and fast. Thanks again to DevSecCon and Snyk.io for the platform—and for championing a future where great software isn’t tethered to a chair.
