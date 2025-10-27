@@ -225,7 +225,11 @@ export function getContentSlugs(contentType: string): string[] {
     .filter(item => {
       const itemPath = path.join(contentDir, item);
       const stat = fs.statSync(itemPath);
-      return stat.isDirectory() && fs.existsSync(path.join(itemPath, 'page.mdx'));
+      // Consider a directory a valid content item if it contains either a page.mdx or metadata.json
+      // This ensures index pages work in environments where MDX files may not be bundled
+      const hasMdx = fs.existsSync(path.join(itemPath, 'page.mdx'));
+      const hasMetadata = fs.existsSync(path.join(itemPath, 'metadata.json'));
+      return stat.isDirectory() && (hasMdx || hasMetadata);
     });
   logger.debug(`Found ${slugs.length} valid content directory slugs for type: ${contentType}`);
   return slugs;

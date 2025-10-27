@@ -18,7 +18,8 @@ export const metadata: Metadata = {
 
 
 export default async function ArticlesIndex() {
-  const articles = (await getAllContent('blog')).filter((a) => a.type === 'blog' || a.type === 'video' || a.type === 'demo') as Blog[];
+  // Load all content; tolerate items that may only have metadata.json in some environments
+  const articles = (await getAllContent('blog')).filter((a) => a?.type === 'blog' || a?.type === 'video' || a?.type === 'demo') as Blog[];
 
   const years = [...new Set(articles.map((a) => new Date(a.date).getFullYear().toString()))].sort((a, b) => parseInt(b) - parseInt(a));
 
