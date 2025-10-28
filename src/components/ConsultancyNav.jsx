@@ -9,6 +9,10 @@ import { AuthStatus } from './AuthStatus'
 
 // Export navigation items to be used in components
 export const navItems = [
+  { name: 'Blog', href: '/blog' },
+  { name: 'Videos', href: '/videos' },
+  { name: 'Learn', href: '/demos' },
+  { name: 'DevTools', href: '/devtools' },
   {
     name: 'Services',
     dropdown: [
@@ -18,30 +22,14 @@ export const navItems = [
     ],
   },
   {
-    name: 'Products',
+    name: 'About',
     dropdown: [
-      { name: 'All Products', href: '/products' },
-      { name: 'Tutorials', href: '/tutorials' },
-      { name: 'Case Studies', href: '/projects' },
-      { name: 'Demos', href: '/demos' },
-      { name: 'Collections', href: '/collections' },
+      { name: 'About Me', href: '/about' },
+      { name: 'Speaking', href: '/speaking' },
+      { name: 'Testimonials', href: '/testimonials' },
+      { name: 'Contact', href: '/contact' },
     ],
   },
-  {
-    name: 'Resources',
-    dropdown: [
-      { name: 'Blog', href: '/blog' },
-      { name: 'Research', href: '/publications' },
-      { name: 'Videos', href: '/videos' },
-      { name: 'Vector Databases', href: '/vectordatabases' },
-      { name: 'Comparisons', href: '/comparisons' },
-      { name: 'Chat', href: '/chat' },
-    ],
-  },
-  { name: 'About', href: '/about' },
-  { name: 'Speaking', href: '/speaking' },
-  { name: 'Testimonials', href: '/testimonials' },
-  { name: 'Contact', href: '/contact' },
 ];
 
 function DropdownMenu({ label, items }) {
