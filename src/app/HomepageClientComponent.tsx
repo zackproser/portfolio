@@ -135,7 +135,7 @@ export default function HomepageClientComponent({
                     </form>
                   )}
                   <p className="text-xs text-white flex items-center">
-                    Join 2,100+ engineers learning to build what actually works
+                    Join 2,750+ engineers learning to build what actually works
                   </p>
                   <div className="mt-4">
                     <Link 

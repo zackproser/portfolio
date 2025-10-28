@@ -15,7 +15,7 @@ export default function SubscribePage() {
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 id="subscribe-hero-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
-                Join 2,500+ Engineers Shipping Real AI Systems
+                Join 2,750+ Engineers Shipping Real AI Systems
               </h1>
               <p className="mt-4 text-lg md:text-xl text-blue-100/90">
                 Get the free hands-on tutorial: Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK — plus weekly code-first AI engineering tips.
