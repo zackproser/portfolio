@@ -20,7 +20,7 @@ export const revalidate = 3600;
 export default async function NewsletterPage() {
   const articles = await getAllContent('newsletter')
   // Hardcode subscriber count until API is configured
-  const subscriberCount = "2,700+"
+  const subscriberCount = "2,750+"
 
   return (
     <div className="min-h-screen">

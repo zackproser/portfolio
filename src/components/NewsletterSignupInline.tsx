@@ -23,7 +23,7 @@ export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupIn
         referrer: window.location.pathname,
       }
 
-      await fetch('/api/form', {
+      const response = await fetch('/api/form', {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
@@ -31,9 +31,14 @@ export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupIn
         method: 'POST',
       })
 
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+
       setSuccess(true)
     } catch (error) {
       console.error('Newsletter signup error:', error)
+      // TODO: Show user-friendly error message
     } finally {
       setIsLoading(false)
     }
