@@ -393,9 +393,6 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
-      ajv:
-        specifier: ^8.12.0
-        version: 8.17.1
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -441,9 +438,6 @@ importers:
       unimported:
         specifier: ^1.31.1
         version: 1.31.1(eslint@8.57.1)
-      yaml:
-        specifier: ^2.6.1
-        version: 2.8.0
       zod:
         specifier: ^4.0.5
         version: 4.0.5
