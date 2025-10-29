@@ -18,9 +18,9 @@ import RandomPortrait from '@/components/RandomPortrait'
 import { generateOgUrl } from "@/utils/ogUrl";
 
 const data = {
-	title: "About Zachary Proser",
-	description:
-		"Full-stack open-source hacker, technical writer and developer advocate.",
+    title: "About Zachary Proser",
+    description:
+        "Full-stack open-source hacker, technical writer, and Developer Experience Engineer.",
 };
 
 const ogUrl = generateOgUrl(data);
@@ -46,10 +46,10 @@ export default function About() {
 		<>
 			<Head>
 				<title>About - Zachary Proser</title>
-				<meta
-					name="description"
-					content="I&apos;m Zachary Proser, a staff developer advocate, open-source developer, and technical writer"
-				/>
+                <meta
+                    name="description"
+                    content="I&apos;m Zachary Proser, a Developer Experience Engineer at WorkOS, open-source developer, and technical writer"
+                />
 			</Head>
 			<Container className="mt-16 sm:mt-32">
 				<div className="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
@@ -75,16 +75,16 @@ export default function About() {
 							<p>
 								<Link className="text-blue-500 hover:text-blue-700" href="/testimonials">See what my colleagues say</Link> about working with me.
 							</p>
-							<p>
-								I work in Developer Education at{" "}
-								<Link
-									className="font-bold text-blue-500"
-									href="https://workos.com"
-								>
-									WorkOS
-								</Link>
-								, where we help companies add enterprise features to their apps in minutes, not months.
-							</p>
+                            <p>
+                                I&apos;m a Developer Experience Engineer at{" "}
+                                <Link
+                                    className="font-bold text-blue-500"
+                                    href="https://workos.com"
+                                >
+                                    WorkOS
+                                </Link>
+                                , where we help companies add enterprise features to their apps in minutes, not months.
+                            </p>
 							<p>
 								I offer <Link className="font-bold text-blue-500" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-blue-500" href="/services">services page</Link> to learn how I can help bring your AI project to life.
 							</p>

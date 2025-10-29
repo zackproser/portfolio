@@ -23,10 +23,17 @@ export function Author({ name, bio }: AuthorProps) {
   const experience = [
     {
       company: 'WorkOS',
+      title: 'Developer Experience Engineer',
+      logo: logoWorkOS,
+      start: '2025',
+      end: 'Present'
+    },
+    {
+      company: 'WorkOS',
       title: 'Developer Education',
       logo: logoWorkOS,
       start: '2024',
-      end: 'Present'
+      end: '2025'
     },
     {
       company: 'Pinecone.io',

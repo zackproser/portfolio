@@ -263,15 +263,10 @@ export default function GenAILandingPage() {
                 I eat, sleep and breathe code.
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
-
-                Hi, I&apos;m Zachary, a Staff Developer Advocate at Pinecone.io. Pinecone offers the most performant cloud-native vector database
-                that provides long-term memory for AI applications.
-
+                Hi, I&apos;m Zachary, a Developer Experience Engineer at WorkOS.
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
-
-                My full title at Pinecone is Staff Developer Advocate (open-source). I build AI applications and pipelines in public to demonstrate the power and flexibility of Pinecone&apos;s vector database.
-
+                My current title is Developer Experience Engineer at WorkOS. I build AI applications and developer tooling in public to demonstrate secure authentication patterns, MCP integrations, and production-grade workflows.
               </p>
               <p className="mt-6 text-lg leading-8 text-gray-300">
                 I also maintain our many open-source examples such as Jupyter Notebooks and TypeScript / Next.js applications, which demonstrate machine learning and AI techniques such as semantic search and Retrieval Augmented Generation (RAG).
