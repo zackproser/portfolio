@@ -34,13 +34,20 @@ export default function CV({ showHeading = true }) {
   let resume = [
     {
       company: 'WorkOS',
-      title: 'Developer Education',
+      title: 'Developer Experience Engineer',
       logo: logoWorkOS,
-      start: '2024',
+      start: { label: 'Oct 28, 2025', dateTime: '2025-10-28' },
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
       },
+    },
+    {
+      company: 'WorkOS',
+      title: 'Developer Education',
+      logo: logoWorkOS,
+      start: '2024',
+      end: { label: 'Oct 27, 2025', dateTime: '2025-10-27' },
     },
     {
       company: 'Pinecone.io',

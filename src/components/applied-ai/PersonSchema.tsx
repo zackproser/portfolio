@@ -16,6 +16,7 @@ export default function PersonSchema() {
     "name": "Zachary D Proser",
     "alternateName": ["Zack Proser", "Zachary Proser"],
     "jobTitle": [
+      "Developer Experience Engineer",
       "Staff AI Engineer",
       "Applied AI Engineer", 
       "Developer Education Specialist",
