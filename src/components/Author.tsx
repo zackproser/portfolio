@@ -25,7 +25,7 @@ export function Author({ name, bio }: AuthorProps) {
       company: 'WorkOS',
       title: 'Developer Experience Engineer',
       logo: logoWorkOS,
-      start: 'Oct 2025',
+      start: '2025',
       end: 'Present'
     },
     {

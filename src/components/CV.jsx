@@ -36,7 +36,7 @@ export default function CV({ showHeading = true }) {
       company: 'WorkOS',
       title: 'Developer Experience Engineer',
       logo: logoWorkOS,
-      start: { label: 'Oct 28, 2025', dateTime: '2025-10-28' },
+      start: '2025',
       end: {
         label: 'Present',
         dateTime: new Date().getFullYear(),
@@ -47,7 +47,7 @@ export default function CV({ showHeading = true }) {
       title: 'Developer Education',
       logo: logoWorkOS,
       start: '2024',
-      end: { label: 'Oct 27, 2025', dateTime: '2025-10-27' },
+      end: '2025',
     },
     {
       company: 'Pinecone.io',

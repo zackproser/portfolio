@@ -22,7 +22,7 @@ export const appliedAiExperience: ExperienceData[] = [
   {
     company: "WorkOS",
     role: "Developer Experience Engineer",
-    duration: "Oct 28, 2025–Present",
+    duration: "2025–Present",
     location: "Remote",
     logo: logoWorkOS,
     description: "Building developer experience across SDKs, templates, and AI integrations. Focused on AuthKit-secured MCP servers, high-quality examples, docs, and pragmatic developer tooling that accelerates adoption and success.",
@@ -32,7 +32,7 @@ export const appliedAiExperience: ExperienceData[] = [
   {
     company: "WorkOS",
     role: "Developer Education",
-    duration: "2024–Oct 27, 2025",
+    duration: "2024–2025",
     location: "Remote",
     logo: logoWorkOS,
     description: "Built internal RAG pipelines and chatbots, shipped public-facing MCP servers secured with AuthKit, created starter kits, led developer tooling research, and taught internal AI workshops on neural networks, embeddings, semantic search, RAG, hallucinations, and how to learn and create content with AI.",
