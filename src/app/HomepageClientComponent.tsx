@@ -335,7 +335,18 @@ export default function HomepageClientComponent({
           <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
             <div className="relative flex items-end lg:col-span-6 lg:row-span-2">
               <div className="relative z-10 mx-auto flex w-[90%] max-w-xl rounded-xl shadow-xl md:w-auto lg:w-auto">
-                <div className="relative aspect-[3.5/3] sm:aspect-[4/3] w-full max-w-[650px] rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 p-6 sm:p-8 shadow-2xl border-t-8 border-blue-500/20">
+                <Link 
+                  href="/chat"
+                  className="block w-full group"
+                  onClick={() => {
+                    track("featured_product_click", {
+                      location: "featured_banner",
+                      product: "rag_tutorial",
+                      action: "demo"
+                    })
+                  }}
+                >
+                <div className="relative aspect-[3.5/3] sm:aspect-[4/3] w-full max-w-[650px] rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 p-6 sm:p-8 shadow-2xl border-t-8 border-blue-500/20 transition-transform duration-200 group-hover:scale-[1.01]">
                   {/* Badge and price in separate container with flexbox */}
                   <div className="w-full flex flex-col gap-2 sm:block">
                     <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-blue-500/20 text-blue-200 text-xs sm:text-sm font-medium">
@@ -360,7 +371,7 @@ export default function HomepageClientComponent({
                     <h2 className="font-display text-2xl sm:text-4xl font-bold text-white leading-tight">
                       Build a Chatbot That <span className="italic">Actually Knows Your Shit</span>
                     </h2>
-                    <p className="mt-3 sm:mt-6 text-base sm:text-lg text-slate-200 leading-relaxed">
+                    <p className="mt-3 sm:mt-6 text-base sm:text-lg text-zinc-100 leading-relaxed">
                      Learn to create a chatbot that answers questions about your content.
                     </p>
                   </div>
@@ -371,22 +382,23 @@ export default function HomepageClientComponent({
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200"><strong>No hallucinations</strong> – Answers grounded in your docs</span>
+                      <span className="text-sm sm:text-base text-zinc-100"><strong>No hallucinations</strong> – Answers grounded in your docs</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200"><strong>State of the art tech</strong> – Vercel AI SDK, embeddings, vector retrieval</span>
+                      <span className="text-sm sm:text-base text-zinc-100"><strong>State of the art tech</strong> – Vercel AI SDK, embeddings, vector retrieval</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-sm sm:text-base text-slate-200"><strong>Battle-tested</strong> – I&apos;ve built production RAG pipelines for years</span>
+                      <span className="text-sm sm:text-base text-zinc-100"><strong>Battle-tested</strong> – I&apos;ve built production RAG pipelines for years</span>
                     </div>
                   </div>
                 </div>
+                </Link>
               </div>
             </div>
             <div className="relative px-4 sm:px-6 lg:col-span-6 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
@@ -416,7 +428,7 @@ export default function HomepageClientComponent({
                 </p>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 pt-16 lg:col-span-6 lg:pt-0 lg:pl-16 xl:pl-20 rounded-xl ring-1 ring-slate-900/10 dark:ring-white/10">
+            <div className="bg-white dark:bg-gray-800 pt-16 lg:col-span-6 lg:pt-0 lg:pl-16 xl:pl-20 rounded-xl">
               <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 

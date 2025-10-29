@@ -249,7 +249,7 @@ function CardContent({
       </div>
       <div className="flex-1 p-6 flex flex-col justify-between">
         <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-300 mb-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300 mb-3">
             {/* Only show content type badges for pages that specifically request it */}
             {formattedDate && <time dateTime={date} className="text-xs text-gray-500 dark:text-gray-400 ml-1">{formattedDate}</time>}
           </div>
@@ -261,7 +261,7 @@ function CardContent({
           )}>
             {title}
           </h3>
-          <p className="mt-3 text-sm leading-6 text-gray-800 dark:text-gray-200 line-clamp-3 font-medium">
+          <p className="mt-3 text-sm leading-6 text-zinc-700 dark:text-zinc-200 line-clamp-3 font-medium">
             {description}
           </p>
         </div>
