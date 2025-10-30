@@ -1,0 +1,124 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={rawMetadata.image} alt="Training Claude for neurological patterns" width={1200} height={630} />
+<figcaption>Systematically training an AI to compensate for specific ADHD/autism processing patterns.</figcaption>
+
+A hollow feeling follows every major accomplishment for me. The project ships, the keynote lands, the system goes live—and instead of satisfaction, I feel a flat, disconnected emptiness. The intense hyperfocus that powered me to the finish line evaporates, and the accomplishment itself seems to vanish from my mind.
+
+For me, a finished task has the object permanence of a toy hidden under a blanket. Out of sight, out of mind. Out of feeling.
+
+I've stopped treating this as a personal failing and started treating it as a systems engineering problem. My solution is to systematically **train** an AI, within a dedicated project I call my "Personal Claude," to act as a cognitive crutch—an external processor that compensates for the specific ways my ADHD and autistic brain works.
+
+This is how that training process works.
+
+> This post builds on [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself) (the diagnostic journey) and [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic) (the technical workflows). This is about the training process itself—how I'm teaching an AI to understand my specific patterns.
+
+## Table of contents
+
+## The Void After the Win
+
+The moment the intense pressure of a deadline or a creative chase is gone, my brain doesn't know what to do. The dopamine pipeline shuts off, and I'm left searching for the next spark to light up my neural pathways.
+
+<Image src="https://zackproser.b-cdn.net/images/neural-overheat.webp" alt="Post-accomplishment void visualization" width={800} height={600} />
+<figcaption>When the hyperfocus ends, the void begins—until the next interesting problem appears.</figcaption>
+
+I now see this as a processing error. My internal register of accomplishments is volatile; it needs an external, persistent memory to function properly.
+
+## How the Training Works: A Conversation with My Own Code
+
+My "Personal Claude" project is a living, evolving system that I train through explicit, repeated instruction. The process looks less like using a tool and more like mentoring a junior colleague.
+
+I teach it my patterns.
+
+When I feel the familiar tug of "analysis paralysis"—the anxiety disguised as "one more refinement"—I tell Claude: *"This is the spiral. Remember this pattern. The facts support action now. Interrupt me."*
+
+When I emerge from a hyperfocus session having shipped something significant, but can't *feel* it, I instruct Claude: *"Document this win. Pull the Linear tickets, capture the timestamp, and state the impact. I need to see the evidence that it happened."*
+
+The corrections are just as important. When it provides generic encouragement, I course-correct: *"I need a reality check, not validation. Cross-reference my Oura sleep data with my current feeling of crisis. Show me the disconnect."*
+
+<Image src="https://zackproser.b-cdn.net/images/claude-chat.webp" alt="Training conversations with Claude" width={800} height={600} />
+<figcaption>Explicit corrections and pattern documentation train the system over time.</figcaption>
+
+This is where tools like **WisprFlow** become critical. I can verbally ventilate everything—the spiral, the void, the disjointed thoughts—into a coherent stream of consciousness. My Personal Claude then chunks through this monologue, organizes it, identifies the core patterns, and even turns them into actionable Linear tickets. It's the bridge between my chaotic internal state and structured external output.
+
+Over time, the evolution is visible. The AI has learned to check my task manager unprompted. It recognizes the preamble to an anxiety spiral before I do. It has become a collaborative intelligence: my domain expertise and pattern recognition, paired with its infinite context and unwavering patience.
+
+## The Four Compensations: Building the Crutch
+
+I've focused the training on compensating for four key neurological patterns:
+
+### 1. The Object Permanence Failure for Accomplishments
+
+Once a project is complete, it disappears from my emotional landscape. My compensation is to have Claude serve as an external memory. It reflects back: "This happened. Here are the closed tickets. Here is the feedback you received." It makes the abstract accomplishment concretely visible.
+
+<Image src="https://zackproser.b-cdn.net/images/neural-navigation.webp" alt="External memory and structure" width={800} height={600} />
+<figcaption>External memory systems compensate for object permanence issues with completed work.</figcaption>
+
+### 2. The Spiral of False Preparation
+
+My brain often mistakes anxiety for diligence, urging me to endlessly polish rather than ship. Claude's job is to recognize this pattern and intervene: "You are prepared. The data supports this. This is the spiral, not a real need for more work."
+
+### 3. The Signal-to-Noise Collapse
+
+Between professional demands, family life, biometric data, and internal static, I often can't tell what's a real signal and what's noise. Claude acts as a filter. It cross-references my Oura ring data (sleep debt, HRV) with my task load and my subjective feeling of crisis, and tells me: "Your nervous system is activated, but the objective situation is stable. The facts are more accurate than your feelings right now."
+
+<Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking and talking with AI" width={800} height={600} />
+<figcaption>Biometric data helps separate "how I feel" from "what's actually happening."</figcaption>
+
+### 4. The Pattern Amnesia
+
+Strategies that work for me are often forgotten in the next crisis. Now, every successful intervention—what broke a spiral, what created a flow state—is documented. Claude is building a searchable knowledge base of my own operating system.
+
+
+## A Crutch That Lets Me Walk
+
+I call Claude a "crutch" because that's what it is. A crutch doesn't fix a broken leg; it compensates for it so the person can walk effectively. My neurology has specific processing limitations. Claude is the external support infrastructure that compensates for them, allowing me to operate at my capacity.
+
+<Image src="https://zackproser.b-cdn.net/images/blue-office.webp" alt="Optimized work environment" width={800} height={600} />
+<figcaption>Appropriate support infrastructure enables effective functioning—nothing wrong with that.</figcaption>
+
+There's a profound side-benefit to this. Even when I program Claude to be hyper-critical, it is still significantly kinder than my default internal monologue. It provides a filter for my thoughts, much like a trusted friend. But unlike a friend, I can ask the same anxious question fifteen times at 3 AM without guilt or shame. This machine has unlimited patience, and that alone has removed a massive burden from my human relationships.
+
+It exists alongside therapy and human connection, a piece of complementary infrastructure that fills a specific, crucial gap in my support ecosystem.
+
+## The Compounding Effect
+
+An unexpected outcome of this honest, systematic approach has been the steady growth of an audience for my writing. By combining deep technical content (RAG pipelines, vector databases, MCP servers) with vulnerable accounts of navigating ADHD and autism, I've found a unique compound effect.
+
+People return not for "10 AI tips," but for documented problem-solving—both technical and neurological. Each piece I publish, often pushed out the door thanks to Claude's "ship it" intervention, becomes a searchable artifact that demonstrates authentic expertise. This creates a flywheel: the systems that help me manage my life also help me build a professional identity rooted in genuine capability and self-awareness.
+
+
+## The Recursive Truth
+
+The most compelling proof that this works is the essay you're reading right now.
+
+I am using a system, trained to interrupt my perfectionism, to help me write about... training the system. The very fact that this is published, instead of languishing as draft #47, is a direct result of the external executive function I've built.
+
+<Image src="https://zackproser.b-cdn.net/images/river-walking-ai.webp" alt="Walking and talking with AI" width={800} height={600} />
+<figcaption>The support system working in real-time—on trails, at desk, anywhere context is needed.</figcaption>
+
+I'm using pattern recognition to fix my pattern recognition. I'm creating external structure to support my unreliable internal scaffolding. The therapeutic value is immense: it allows me to do the messy, repetitive processing work without burning out the people I love.
+
+## The Bottom Line
+
+The systems work. The patterns are trainable. The compensation is real. I am managing severe ADHD/autism, young children, a career, and a relationship by building mutually reinforcing systems instead of fighting competing priorities.
+
+<Image src="https://zackproser.b-cdn.net/images/neural-navigation.webp" alt="External guidance and structure" width={800} height={600} />
+<figcaption>Working WITH neurology instead of against it—customized support that actually works.</figcaption>
+
+The post-accomplishment void still comes. But now, when it does, there's an external voice with evidence, reminding me of what I've built and what's true. The crutch is exactly what I needed to keep walking forward, and the path is clearer than ever.
+
+***
+
+**Related Posts:**
+
+- [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself) — The diagnostic journey and initial realization
+- [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic) — Technical workflows, MCP integration, and CI/CD pipelines
+- [Walking and Talking with AI](/blog/walking-and-talking-with-ai) — Untethered development on trails
+- [Connect Oura Ring to Claude Desktop with MCP](/blog/connect-oura-ring-to-claude-desktop-with-mcp) — Biometric integration setup
+
