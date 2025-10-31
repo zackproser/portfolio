@@ -8,7 +8,7 @@ export const metadata = createMetadata(rawMetadata)
 
 ## Walking and Talking in the Woods with AI: The Future of Untethered Software Development
 
-First, a heartfelt thank you to DevSecCon and Snyk.io for hosting me and giving me the chance to share this vision. The keynote was delivered as a 32‑minute short film—watch it below.
+First, a heartfelt thank you to DevSecCon and Snyk.io for hosting me and giving me the chance to share this vision. The keynote was delivered as a 32‑minute short film that demonstrates everything discussed in this post—from voice-driven development on mountain trails to orchestrating AI agents in production. Watch the full film below to see the complete workflow in action.
 
 <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote by Zachary Proser" />
 
@@ -18,9 +18,13 @@ First, a heartfelt thank you to DevSecCon and Snyk.io for hosting me and giving 
 
 Six months ago, I made a decision that changed everything. I stopped asking how to squeeze more productivity out of new tools while sitting at the same desk, and started asking a different question entirely: what if these tools could help me leave the desk behind? The experiment was deceptively simple to articulate but surprisingly difficult to execute—I wanted to keep shipping secure, tested, production code while spending half my days on mountain trails. What I discovered was that speed requires safety, and that the real power of AI comes from orchestrating both artificial and human intelligence so you can do deep thinking wherever you think best, while background agents safely push well‑scoped changes through a hardened CI/CD pipeline.
 
+I first explored this concept in depth in my article [Walking and talking with AI in the woods](/blog/walking-and-talking-with-ai), which laid the groundwork for this approach.
+
 The unlock came from weaving three essential elements into a tight, continuous loop. First, I needed voice to become my primary interface. With reliable dictation that actually understands technical language, filenames, and identifiers, I found I could speak code at roughly 179 words per minute. That speed matters not because it's impressive on paper, but because it preserves something precious: flow. Ideas travel straight from mind to artifact without the friction of a keyboard acting as an intermediary. I've learned to solve architecture problems around mile three of a trail run, narrating constraints and trade‑offs out loud while the rhythm of movement and fresh air clear my head in ways that no amount of staring at a screen ever could.
 
-<Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="High‑accuracy dictation with WisprFlow" width={800} height={600} />
+<a href="/blog/wisprflow-review"><Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="High‑accuracy dictation with WisprFlow" width={800} height={600} /></a>
+
+*I use [WisprFlow](/blog/wisprflow-review) for high-accuracy voice dictation. Read my full review to learn how it enables 179 WPM development speed.*
 
 The second piece of the puzzle was letting background agents pick up those spoken briefs and do real work inside ephemeral, isolated environments. Each task gets its own branch, its own logs, its own previews and diffs. This separation is crucial—it lets machines methodically chew through well‑scoped chores like maintenance, refactors, and visual tweaks, while I stay focused on the things that actually require human judgment: defining goals, weighing constraints, and making strategic decisions. It's orchestration, not micromanagement, and the distinction matters enormously.
 
@@ -37,80 +41,6 @@ These three technical pieces rest on a foundation of principles that guide how I
 The second principle is to think where you think best. Voice‑driven workflows and mobile check‑ins fundamentally decouple cognition from the keyboard. You can do diffuse‑mode thinking on walks—learning, designing, deciding—then return to your desk to review diffs and integrate the results. The beautiful part is that momentum never stops, because agents keep the code moving forward while you're away. Your mind gets the space it needs to work through problems at a different level, and the implementation keeps pace.
 
 The third principle ties it all together: orchestrate, don't micromanage. Machines excel at well‑scoped, testable work with clear success criteria. Humans excel at setting targets, evaluating trade‑offs, and exercising judgment in ambiguous situations. The key is to treat agents like capable teammates—give them crisp briefs with firm acceptance criteria, then supervise through previews and diffs rather than watching over their shoulder at every keystroke.
-
-## Building the Voice Stack
-
-At the foundation of this entire system is what I call the voice stack—three layers that work together to turn spoken thoughts into production code. The keystone is hands‑free, OS‑level dictation that understands technical proper nouns and file paths. Accurate capture keeps you in flow and makes spoken intent a first‑class input to the system. Without this, everything else falls apart.
-
-On top of that sits a context‑aware voice assistant connected to your work tracker and personal telemetry, acting as a second brain. It reconciles what you said with what actually happened, highlights drift between plans and reality, and keeps your plans honest. This isn't just convenient—it's transformative. Instead of context‑switching between thinking, dictating, and tracking, all three happen in one continuous stream.
-
-The third layer ensures nothing gets lost. Transcripts and decisions flow into the work tracker automatically, creating or updating tickets as you go. This means you never return from a trail run to a chaotic mess of unsorted voice notes. Progress stays visible and auditable throughout, which is essential when you're juggling multiple agents working on different tasks.
-
-## How Agentic Coding Really Works
-
-The practical reality of agentic coding happens in isolated sandboxes—ephemeral VMs or containers that spin up per task, each working in its own branch. Agents produce setup logs, file access histories, diffs, and previews that make review cheap and decisions reversible. The output is always PR‑first: clear rationales, organized change lists, and artifacts you can accept or iterate on without having to reconstruct what happened.
-
-This pattern works consistently across platforms—whether you're using Cursor Agents, OpenAI code agents, GitHub Copilot‑powered flows, or Google's agents—because the fundamental contract is the same: isolation, previews, and PR hygiene. The specific tool matters less than adhering to these principles.
-
-## The Safety Lane in Practice
-
-The safety mechanisms that make high velocity sustainable are implemented through defense‑in‑depth at every level. Secret scanning runs at pre‑commit to stop bad changes early and again in CI as a backstop—if anything slips through, the pipeline fails fast before it can reach production.
-
-<Image src="https://zackproser.b-cdn.net/images/ggshield-pre-commit-scan.webp" alt="Pre‑commit secret scanning with ggshield" width={800} height={600} />
-
-Dependency scanning blocks vulnerable graph states proactively and surfaces remediation notes directly in PRs, so you keep shipping without inheriting avoidable risk. Meanwhile, lint checks, tests, and build verification run in parallel, keeping throughput high even as PR volume rises. The rules are consistent for humans and agents alike—no special cases, no shortcuts.
-
-What makes this truly powerful is the auditability. Every agent run emits complete logs, diffs, and previews. Visual review becomes an inexpensive, reliable way to enforce both intent and quality. You're not blindly trusting the machine; you're verifying its work through artifacts that make problems immediately visible.
-
-## A Day in the Untethered Life
-
-The daily rhythm has evolved into a natural pattern that maximizes both productivity and wellbeing. Mornings at my desk, I start by selecting machine‑friendly work—discrete, testable tasks with low ambiguity. I speak the brief with goals, constraints, file paths, and acceptance criteria, then launch multiple agents in parallel. As they work, I can layer refinements without interrupting their momentum. For example, while one agent handles a security update, I might request a Tailwind facelift from another, documenting exact color shades and spacing requirements.
-
-By midday, I'm on the trail. I use voice to learn and to design, debating trade‑offs with my assistant and recording decisions as they crystallize. I review live previews and diffs on my phone, steering agent versions and requesting tweaks without ever touching a keyboard. This is where the magic happens—walking, thinking, and building simultaneously. The movement and environment unlock a different quality of thinking that's impossible to replicate at a desk.
-
-<Image src="https://zackproser.b-cdn.net/images/river-walking-ai.webp" alt="Learning and designing on a river trail with voice AI" width={800} height={600} />
-
-Afternoons, back at my desk, I inspect logs, previews, and diffs carefully. This is where human judgment becomes critical—accepting or rejecting iterations, opening PRs via agents, and letting the hardened CI/CD checks guard secrets and quality. I capture outcomes by pasting relevant transcripts back into my assistant, which generates or updates tickets for the next day's work. The loop closes, and the cycle begins again.
-
-## Knowing What Makes a Good Agent Task
-
-Not all work is equally suited to agents, and learning to distinguish agent‑friendly tasks from those requiring human attention is essential. The best tasks have narrow scope with crisp boundaries. Changes like "edit X in file Y" or "upgrade Z to version A.B.C and fix breaking changes in foo.ts" confine the blast radius and make success obvious. Everyone—human and machine—knows exactly what done looks like.
-
-Deterministic validation is the second key characteristic. If the build passes, tests are green, and the preview matches the described outcome, both human and machine can agree that the task is complete. There's no room for ambiguity or endless iteration cycles. Finally, minimal global coupling is essential. Working in feature branches and preferring localized changes—CSS adjustments, layout tweaks, or chore‑class refactors—means agents don't need to hold the entire system architecture in context to make progress.
-
-## Setting Clear Acceptance Criteria
-
-Every agent task I assign includes explicit acceptance criteria that eliminate ambiguity. The build must pass on the target Node version, and designated unit tests must be green—no exceptions. Secret scanners must report zero findings, and dependency scans must show no high or critical vulnerabilities. The security bar is non‑negotiable.
-
-For visual changes, the preview should clearly demonstrate before‑and‑after behavior, and modifications should remain confined to the intended surface. If I'm updating the demos section, those changes shouldn't leak into the main application layout. Every PR includes context, a list of changed files, testing notes, and a brief risk assessment so reviewers—whether human or just me returning from a hike—can move quickly with confidence.
-
-## What Not to Do
-
-Through experimentation, I've learned that certain patterns guarantee failure. Handing agents open‑ended rewrites without file‑level constraints or acceptance tests shifts ambiguity onto the machine and guarantees churn. You'll spend more time correcting the output than you would have writing it yourself.
-
-Relying on manual review without pre‑commit hooks and CI gates invites regression and erodes quality as velocity rises. The faster you move, the more critical those automated guardrails become. Similarly, mixing heterogeneous tasks into a single branch or agent run destroys isolation and audit clarity, making it exponentially harder to revert changes, compare versions, or attribute decisions to their origins.
-
-## Understanding Focus and Diffuse Mode
-
-The psychological foundation of this entire approach rests on understanding how work alternates between focus mode and diffuse mode. Focus mode is deep and narrow—you're concentrating intensely on implementation details, debugging, or reviewing specific changes. Diffuse mode is wide and associative—you're learning, connecting disparate concepts, and working through architectural decisions at a higher level.
-
-Voice plus mobility lets you switch to diffuse mode effortlessly. Walks, sunlight, and oxygen create the optimal conditions for learning and architecture work, then you can re‑enter focus mode for review and integration whenever you're ready. The crucial insight is that momentum persists throughout because agents and CI keep the code advancing while you think. You're never truly blocked—the system keeps moving forward even when you step away.
-
-## Real Use Cases from the Field
-
-The keynote demonstrated several concrete patterns that have become staples of my workflow. For maintenance at scale, I deploy parallel agents to bump vulnerable dependencies across multiple services, each working in isolation with its own PR and remediation notes. What used to be a daunting, multi‑day chore becomes a tractable set of small, safe changes that can be reviewed and merged independently.
-
-UI copy and image iteration works beautifully in this model. Headline and copy experiments run as previewed diffs with style‑safe tweaks, allowing me to evaluate multiple variants quickly without risking design drift across the application. When I added access‑controlled feature flags with signed‑in and paid tiers, I started with minimal surface changes to existing auth in a contained area like the demos section. This let me prove the pattern worked before expanding it to the broader application.
-
-Security hardening stories have been particularly satisfying. I've introduced pre‑commit and CI scanners by validating them with contrived secret injections, demonstrating clear red and green runs so the entire team trusts the guardrails. The mobile steering case study exemplifies the power of this approach—from the trail, I compare agent versions, request small adjustments, and merge the best result when I return. The work genuinely keeps moving even while I'm miles away from any desk.
-
-## Example Prompts You Can Reuse
-
-Let me share a few prompts that have worked reliably across different scenarios. For a tiered‑content feature in Next.js 15, I used: "Add a tiered content system with three states (open, sign‑in required, paid) under `/demos`. Extend auth minimally. Provide a preview and changed files with justification. Acceptance: build/tests green; visuals unchanged except the unauthenticated prompt."
-
-For copy and hero iteration, this prompt structure works well: "Working backward from 'make the ML demos page the best place to learn,' propose four headline/description variants and hero tweaks. Show diffs and live previews for each. Keep typography and spacing aligned to current design tokens."
-
-Mobile steering from the trail requires more direct, comparative language: "Version 2's hero is closest. Reduce saturation 15%, increase contrast slightly, switch the button to the primary style. Keep body copy from Version 3. Show the combined result as Version 5." The specificity eliminates ambiguity and produces exactly what you're envisioning.
 
 ## Conclusion
 
