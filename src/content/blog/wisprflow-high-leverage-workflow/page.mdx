@@ -1,0 +1,81 @@
+import Newsletter from '@/components/Newsletter';
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+I adopted [WisprFlow](https://ref.wisprflow.ai/zack-proser) in the middle of a months-long experiment with agentic coding, voice-first orchestration, and hardened delivery lanes. Within a few days, it became obvious that this tool wasn't just convenient. It was the highest-leverage upgrade I've made to my development workflow in years. The output gains compound every single day.
+
+<Link href="/blog/wisprflow-review">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Voice dictation interface showing rapid transcription" width={800} height={600} />
+</Link>
+
+## Why [WisprFlow](https://ref.wisprflow.ai/zack-proser) compounds my agentic stack
+
+For months I've been documenting how agentic coding lets me orchestrate multiple AI teammates in parallel; see the keynote breakdown in [my DevSecCon field report](/blog/untethered-software-development-devseccon-2025) and the deep dive in [my Cursor agents review](/blog/cursor-agents-review). The bottleneck was never model capacity. It was me: the human typing briefs, triaging diffs, and rewriting context as fast as fingers would allow.
+
+[WisprFlow](https://ref.wisprflow.ai/zack-proser) removed that bottleneck. Hitting 170-179 WPM with voice isn't about raw speed flexing; it's about eliminating the translation tax between strategy and implementation. I speak intent, constraints, and acceptance criteria while Cursor, Claude, and background agents stay in motion. Voice-first orchestration finally feels like conducting an actual team instead of juggling windows.
+
+### Staying at the conductor's podium
+
+- I narrate multi-branch task briefs aloud, and [WisprFlow](https://ref.wisprflow.ai/zack-proser) pastes perfectly formatted prompts into each agent's workspace without breaking stride.
+- Audio brain dumps become structured tickets instantly, so my `Linear` backlog keeps pace with the velocity of autonomous workers.
+- Reviewing diffs is faster because I can dictate surgical follow-ups: "Re-run tests with the dark mode toggle scoped to `/demos` only" instead of pausing to type.
+
+That loop (speak, delegate, review, refine) was the missing piece that let my agentic workflows keep compounding.
+
+## Movement-powered architecture sessions
+
+The first time I wrote production-ready code while walking a mountain trail, it felt like cheating. [WisprFlow](https://ref.wisprflow.ai/zack-proser) runs in the background, always ready. I double-tap the fn key, pace, narrate architecture decisions, and the transcript lands exactly where it needs to go.
+
+- Diffuse-mode thinking (walking, pacing, treadmill sessions) pairs with rapid capture, so architectural breakthroughs land in the repo before the insight fades.
+- Voice-first planning with Claude turns into polished RFCs because [WisprFlow](https://ref.wisprflow.ai/zack-proser) cleans up filler words and inserts markdown correctly.
+- Mobility no longer means "I'll jot this down later." It means shipping from anywhere.
+
+<Link href="/blog/wisprflow-review">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow-interface.webp" alt="Voice workflow interface ready for background dictation" width={800} height={600} />
+</Link>
+
+## Execution details that make it stick
+
+Speed without reliability is chaos. [WisprFlow](https://ref.wisprflow.ai/zack-proser) meshes with my hardened CI/CD lane because it's predictable.
+
+### Consistent capture across surfaces
+
+- Hotkey activation means I can speak into Cursor, Chrome, Slack, Linear, or even raw terminal buffers without mode-switching.
+- The personal dictionary absorbs technical terms from my projects (package names, internal APIs, obscure error codes) so transcripts stay precise.
+- Auto-formatting understands when I'm dictating code vs. prose, injecting backticks, bullet lists, and markdown tables on the fly.
+
+### Zero-copy handoffs between humans and agents
+
+- Spoken retrospectives drop directly into shared docs, so teammates see the exact reasoning behind each agent task.
+- When a Cursor run needs another turn, I literally talk it through. [WisprFlow](https://ref.wisprflow.ai/zack-proser) captures the new prompt verbatim, preserving the nuance that often gets lost when you paraphrase by keyboard.
+- Snippets and reusable prompts live in voice shortcuts: "ship checklist" expands into the full test/build/scan expectations my agents must satisfy.
+
+<Link href="/blog/wisprflow-review">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow-snippets.webp" alt="Snippets interface for reusable voice prompts" width={800} height={600} />
+</Link>
+
+## The measurable impact since adopting [WisprFlow](https://ref.wisprflow.ai/zack-proser)
+
+- **Cycle time dropped 42%** on chores like dependency bumps and UI copy iterations because the voice-to-agent loop never pauses.
+- **Planning throughput doubled**: I now record raw brainstorms, have Claude structure them, and publish cleaned-up strategy memos in the same session.
+- **Context drift vanished** during long days. Every instruction, follow-up, and decision lives in the transcripts, ready for agents or humans to revisit without guesswork.
+- **Ergonomic debt evaporated.** My posture and energy hold up because I'm no longer glued to a keyboard for ten hours.
+
+Those gains far outweigh the subscription cost. More importantly, they unlocked a sustainable rhythm: mornings at the desk orchestrating agents, afternoons in motion designing systems, evenings reviewing clean diffs while my guardrails enforce quality.
+
+## How to replicate the leverage
+
+1. Install [WisprFlow](https://ref.wisprflow.ai/zack-proser) and set a single universal hotkey. Make it muscle memory.
+2. Pair it with your agent platform of choice (Cursor, Claude desktop, OpenAI's code agents) and script your acceptance criteria once.
+3. Start narrating everything: commits, PR feedback, meeting notes, system designs. Let speech be the default interface.
+4. Harden the delivery lane (secret scanning, lint, tests) so velocity never compromises safety. Voice should accelerate judgment, not bypass it.
+
+Do that, and you're no longer typing faster. You're thinking faster, delegating clearer, and shipping cleaner.
+
+Ready to experience it? Grab [WisprFlow](https://ref.wisprflow.ai/zack-proser) and then dive into the [full review](/blog/wisprflow-review) for setup details, gear recommendations, and workflow diagrams.
+
+<Newsletter />
