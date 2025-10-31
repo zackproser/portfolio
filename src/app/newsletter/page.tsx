@@ -162,10 +162,6 @@ export default async function NewsletterPage() {
                 Hands-on reviews of Cursor, Claude, GPT-4, WisprFlow, and other AI coding tools.
                 Real performance benchmarks and workflow integration tips.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>See examples</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -183,10 +179,6 @@ export default async function NewsletterPage() {
                 Step-by-step tutorials on building with LLMs, embeddings, vector databases, and RAG pipelines.
                 Code examples included.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Start learning</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -204,10 +196,6 @@ export default async function NewsletterPage() {
                 Analysis of the latest AI developments, new model releases, and emerging tools.
                 Cut through the hype with data-driven insights.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Stay updated</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -225,10 +213,6 @@ export default async function NewsletterPage() {
                 Voice-to-code workflows, AI agent orchestration, and automation strategies.
                 Learn how to 10x your development speed.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Speed up now</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
         </div>
