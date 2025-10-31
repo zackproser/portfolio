@@ -21,9 +21,11 @@ interface BlogClientProps {
   years: string[];
 }
 
+const ALL_YEARS_OPTION = "All Years";
+
 export default function BlogClient({ articles, years }: BlogClientProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedYear, setSelectedYear] = useState(ALL_YEARS_OPTION);
   const [filteredArticles, setFilteredArticles] = useState<ArticleWithSlug[]>(articles);
 
   const debouncedTrack = useMemo(
@@ -54,7 +56,7 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
       );
     }
 
-    if (selectedYear !== "all") {
+    if (selectedYear !== ALL_YEARS_OPTION) {
       filtered = filtered.filter(
         (article) => new Date(article.date).getFullYear().toString() === selectedYear
       );
@@ -72,85 +74,73 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setSelectedYear("all");
+    setSelectedYear(ALL_YEARS_OPTION);
     debouncedTrack.cancel();
   };
 
-  const hasActiveFilters = searchTerm.trim().length > 0 || selectedYear !== "all";
-
   return (
     <div className="w-full">
-      <div className="container mx-auto px-4 py-12 sm:py-16">
-        <div className="mx-auto flex max-w-3xl flex-col gap-10">
-          <header className="space-y-3 text-center">
-            <p className="text-xs font-medium uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Blog</p>
-            <h1 className="text-3xl font-semibold text-slate-900 dark:text-white sm:text-4xl">
-              Modern Coding research & notes
-            </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Filter the archive in seconds - no fluff, just the posts.
-            </p>
-          </header>
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-4">
+            I write to learn, and publish to share
+          </h1>
+          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+            All of my technical tutorials, musings and developer rants
+          </p>
+        </div>
 
-          <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:gap-4">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 mb-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
               <Input
-                placeholder="Search titles or descriptions"
-                className="h-10 w-full rounded-xl pl-9 text-sm"
+                placeholder="Search articles..."
+                className="pl-10"
                 value={searchTerm}
                 onChange={(e) => handleSearchChange(e.target.value)}
               />
             </div>
 
-            <div className="flex items-center gap-3">
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="h-10 w-32 rounded-xl border-slate-200 bg-white text-left text-sm font-medium dark:border-slate-700 dark:bg-slate-900">
-                  <SelectValue placeholder="All years" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-slate-900">
-                  <SelectItem value="all">All years</SelectItem>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {hasActiveFilters && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetFilters}
-                  className="h-10 rounded-xl px-3 text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
-                >
-                  Clear
-                </Button>
-              )}
-            </div>
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+                <SelectValue placeholder="Year">
+                  {selectedYear}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+                <SelectItem value={ALL_YEARS_OPTION}>{ALL_YEARS_OPTION}</SelectItem>
+                {years.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex items-center justify-between text-xs uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">
-            <span>Archive</span>
-            <span>
-              {filteredArticles.length} {filteredArticles.length === 1 ? "entry" : "entries"}
+          <div className="flex justify-between items-center mt-4">
+            <Button variant="outline" size="sm" onClick={resetFilters} className="text-slate-600 dark:text-slate-400">
+              Reset Filters
+            </Button>
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              {filteredArticles.length} {filteredArticles.length === 1 ? "article" : "articles"} found
             </span>
           </div>
+        </div>
 
-          {filteredArticles.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center dark:border-slate-700">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Nothing here yet. Try another search or show all years.
-              </p>
+        <div className="space-y-8">
+          <section>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-6 text-center">All Articles</h2>
+
+            <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
+              <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                {filteredArticles.map((article) => (
+                  <ContentCard key={article.slug} article={article} />
+                ))}
+              </div>
             </div>
-          ) : (
-            <div className="mx-auto grid w-full max-w-4xl grid-cols-1 gap-10 lg:grid-cols-3">
-              {filteredArticles.map((article) => (
-                <ContentCard key={article.slug} article={article} />
-              ))}
-            </div>
-          )}
+          </section>
         </div>
       </div>
     </div>
