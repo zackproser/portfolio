@@ -71,7 +71,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
           <NewsletterWrapper 
             className="max-w-md"
             theme="dark"
-            title="Join 2,750+ engineers learning to build what actually works"
+            title="Join 3,000+ engineers learning to build what actually works"
           />
         </div>
       </div>

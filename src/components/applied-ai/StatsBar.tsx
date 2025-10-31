@@ -64,7 +64,7 @@ const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
 
 const defaultStats: StatItem[] = [
   { number: "50,000+", label: "Monthly Blog Readers", icon: Users },
-  { number: "2,750+", label: "Newsletter Subscribers", icon: BookOpen },
+  { number: "3,000+", label: "Newsletter Subscribers", icon: BookOpen },
   { number: "3+ Years", label: "AI Infrastructure Experience", icon: Calendar },
   { number: "13+ Years", label: "Total Engineering Experience", icon: Wrench }
 ]

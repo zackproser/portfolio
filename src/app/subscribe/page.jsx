@@ -6,9 +6,10 @@ import { NewsletterSignupInline } from '@/components/NewsletterSignupInline'
 import { Suspense } from 'react'
 import CV from '@/components/CV'
 import RandomPortrait from '@/components/RandomPortrait'
+import { NewsletterSocialProof } from '@/components/NewsletterSocialProof'
 
 export default function SubscribePage() {
-  const subscriberCount = "2,750+"
+  const subscriberCount = "3,000+"
 
   return (
     <div className="min-h-screen">
@@ -22,7 +23,7 @@ export default function SubscribePage() {
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 backdrop-blur-sm rounded-full text-sm font-medium text-blue-200 border border-blue-400/30">
                 <Sparkles className="w-4 h-4" />
-                <span>Join {subscriberCount} developers</span>
+                <span>Join {subscriberCount} engineers reading every week</span>
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
@@ -43,6 +44,8 @@ export default function SubscribePage() {
           </div>
         </Container>
       </section>
+
+      <NewsletterSocialProof />
 
       {/* About Section - Using CV Component */}
       <section className="py-24 bg-white dark:bg-gray-900">
@@ -109,10 +112,6 @@ export default function SubscribePage() {
                 Hands-on reviews of Cursor, Claude, GPT-4, WisprFlow, and other AI coding tools.
                 Real performance benchmarks and workflow integration tips.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>See examples</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -130,10 +129,6 @@ export default function SubscribePage() {
                 Step-by-step tutorials on building with LLMs, embeddings, vector databases, and RAG pipelines.
                 Code examples included.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Start learning</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -151,10 +146,6 @@ export default function SubscribePage() {
                 Analysis of the latest AI developments, new model releases, and emerging tools.
                 Cut through the hype with data-driven insights.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Stay updated</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
 
@@ -172,10 +163,6 @@ export default function SubscribePage() {
                 Voice-to-code workflows, AI agent orchestration, and automation strategies.
                 Learn how to 10x your development speed.
               </p>
-              <div className="mt-6 flex items-center gap-2 text-white font-semibold">
-                <span>Speed up now</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </div>
             </div>
           </div>
         </div>
@@ -187,7 +174,7 @@ export default function SubscribePage() {
             Ready to Master AI Development?
           </h2>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
-            Join {subscriberCount} developers getting smarter about AI tools.
+            Join {subscriberCount} engineers getting smarter about AI tools.
           </p>
           <NewsletterSignupInline />
         </div>

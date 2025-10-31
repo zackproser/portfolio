@@ -52,7 +52,7 @@ export default function AppliedAiEngineerPage() {
       {/* Stats Bar */}
       <StatsBar stats={[
         { number: "50,000+", label: "Yearly Blog Readers" },
-        { number: "2,750+", label: "Newsletter Subscribers" },
+        { number: "3,000+", label: "Newsletter Subscribers" },
         { number: "3+ Years", label: "AI Infrastructure Experience" },
         { number: "13+ Years", label: "Total Engineering Experience" }
       ]} />
