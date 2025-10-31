@@ -133,7 +133,7 @@ export function ConsultancyNav() {
           </button>
         </div>
         <nav 
-          className={`absolute top-16 sm:top-18 left-0 w-full bg-blue-600 dark:bg-gray-800 lg:static lg:w-auto lg:bg-transparent 
+          className={`absolute top-16 sm:top-18 left-0 w-full bg-blue-600 dark:bg-gray-800 lg:static lg:w-auto lg:bg-transparent dark:lg:bg-transparent 
                       flex-col lg:flex-row lg:flex gap-4 items-center border-t lg:border-t-0 border-blue-500 dark:border-gray-700
                       ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}>
           <div className="flex flex-col lg:flex-row gap-2 items-center w-full lg:w-auto">
