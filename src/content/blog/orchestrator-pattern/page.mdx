@@ -5,26 +5,26 @@ import Link from 'next/link'
 
 export const metadata = createMetadata(rawMetadata)
 
-<Image src="https://zackproser.b-cdn.net/images/operator-pattern.webp" alt="The Operator Pattern: Orchestrating AI agents across multiple tasks" width={1200} height={630} />
+<Image src="https://zackproser.b-cdn.net/images/orchestrator-pattern.webp" alt="The Orchestrator Pattern: Orchestrating AI agents across multiple tasks" width={1200} height={630} />
 
-The paradigm has shifted. Instead of being a developer who writes code, you're now an operator who orchestrates intelligent agents?some human, most artificial?to execute against a product vision. This is the Operator Pattern, and it fundamentally changes how software gets built.
+The paradigm has shifted. Instead of being a developer who writes code, you're now an orchestrator who directs intelligent agents—some human, most artificial—to execute against a product vision. This is the Orchestrator Pattern, and it fundamentally changes how software gets built.
 
 **Table of contents**
-- [What is the Operator Pattern?](#what-is-the-operator-pattern)
-- [The operator's workstation](#the-operators-workstation)
+- [What is the Orchestrator Pattern?](#what-is-the-orchestrator-pattern)
+- [The orchestrator's workstation](#the-orchestrators-workstation)
 - [Voice as the primary interface](#voice-as-the-primary-interface)
 - [Dispatching agents across the maintenance surface](#dispatching-agents-across-the-maintenance-surface)
 - [Simultaneous feature development](#simultaneous-feature-development)
 - [The safety layer](#the-safety-layer)
-- [A day in the operator's seat](#a-day-in-the-operators-seat)
+- [A day in the orchestrator's seat](#a-day-in-the-orchestrators-seat)
 - [What makes a task agent-ready](#what-makes-a-task-agent-ready)
 - [Where humans stay in the loop](#where-humans-stay-in-the-loop)
 
-## What is the Operator Pattern?
+## What is the Orchestrator Pattern?
 
 Picture a mission control engineer at NASA. They don't climb into the rocket or manually adjust thrusters. They monitor dashboards, communicate with autonomous systems, make go/no-go decisions, and intervene only when human judgment is required.
 
-This is what software development looks like now. You sit at the operator's console?your development environment augmented with AI agents?and orchestrate work across a wide surface area:
+This is what software development looks like now. You sit at the orchestrator's console—your development environment augmented with AI agents—and orchestrate work across a wide surface area:
 
 - **Background agents** handle dependency upgrades, security patches, CSS fixes, and copy changes in isolated sandboxes
 - **Foreground focus** stays on feature development, architecture decisions, and product direction in tools like Cursor's composer panel
@@ -32,7 +32,7 @@ This is what software development looks like now. You sit at the operator's cons
 
 The critical insight: you're not choosing between agentic coding and hands-on development. You're doing both simultaneously, with your attention allocated based on comparative advantage.
 
-## The operator's workstation
+## The orchestrator's workstation
 
 The infrastructure for this pattern is surprisingly simple:
 
@@ -46,13 +46,13 @@ The infrastructure for this pattern is surprisingly simple:
 
 ## Voice as the primary interface
 
-Voice isn't just faster than typing?though at 179 WPM versus 90 WPM, it certainly is. Voice changes the *perceived activation energy* for starting tasks.
+Voice isn't just faster than typing—though at 179 WPM versus 90 WPM, it certainly is. Voice changes the *perceived activation energy* for starting tasks.
 
-When you can speak a task brief while pacing your office, the friction to delegate work drops to near zero. This matters because the bottleneck in the Operator Pattern isn't agent capacity?it's your ability to clearly articulate scoped work.
+When you can speak a task brief while pacing your office, the friction to delegate work drops to near zero. This matters because the bottleneck in the Orchestrator Pattern isn't agent capacity—it's your ability to clearly articulate scoped work.
 
-I use [WisprFlow](/blog/wisprflow-review) as my dictation layer. It runs system-level on macOS, understands technical vocabulary and filenames, and works in every text field?Cursor, Chrome, Claude Desktop, Slack, Linear. The setup is simple: hit a hotkey, speak your task, hit the hotkey again, and perfectly formatted text appears.
+I use [WisprFlow](/blog/wisprflow-review) as my dictation layer. It runs system-level on macOS, understands technical vocabulary and filenames, and works in every text field—Cursor, Chrome, Claude Desktop, Slack, Linear. The setup is simple: hit a hotkey, speak your task, hit the hotkey again, and perfectly formatted text appears.
 
-For agent dispatch, a typical brief sounds like: "Working in the portfolio repository, main branch. Bump all Tailwind packages to the latest stable version. Fix breaking changes in the components directory only?leave app routes untouched. Acceptance criteria: build passes, component tests green, visual regression check on the design system page."
+For agent dispatch, a typical brief sounds like: "Bump all Tailwind packages to the latest stable version. Fix breaking changes in the components directory only—leave app routes untouched. Acceptance criteria: build passes, component tests green, visual regression check on the design system page."
 
 The agent receives clear scope, explicit constraints, and deterministic success criteria. You've invested 30 seconds of voice input to delegate 2 hours of tedious upgrade work.
 
@@ -78,9 +78,9 @@ The key discipline is crisp scoping. Vague briefs like "improve performance" gen
 
 While agents chew through maintenance, you stay in Cursor working on features that require judgment, creativity, and system-level thinking.
 
-This is where the Operator Pattern shines: you're not blocked waiting for dependency upgrades to finish. You're building the next feature, making architecture decisions, and solving novel problems in parallel.
+This is where the Orchestrator Pattern shines: you're not blocked waiting for dependency upgrades to finish. You're building the next feature, making architecture decisions, and solving novel problems in parallel.
 
-Cursor's composer panel becomes your focused workspace. You can drive it with [voice via WisprFlow](/blog/wisprflow-review) or with typing?whatever maintains flow. The important part is that you're working on high-value problems: product direction, API design, complex state management, performance optimization that requires profiling and measurement.
+Cursor's composer panel becomes your focused workspace. You can drive it with [voice via WisprFlow](/blog/wisprflow-review) or with typing—whatever maintains flow. The important part is that you're working on high-value problems: product direction, API design, complex state management, performance optimization that requires profiling and measurement.
 
 Your attention allocation follows comparative advantage:
 
@@ -97,27 +97,27 @@ This pattern only works if the safety layer is bulletproof. Fast is dangerous wi
 
 **Supply chain hygiene**: Dependency scans block PRs with high or critical vulnerabilities. Agents and humans alike can't merge unsafe states.
 
-**Non-negotiable gates**: Lint, tests, and builds run in parallel on every PR. The rules are consistent regardless of who?or what?authored the change.
+**Non-negotiable gates**: Lint, tests, and builds run in parallel on every PR. The rules are consistent regardless of who—or what—authored the change.
 
 **Audit trails**: Every agent run produces logs, diffs, and previews. Visual review is cheap and reliable. If something looks wrong, you can trace exactly what happened and revert cleanly because the change is isolated to a single branch.
 
-The pipeline doesn't trust anyone. It validates everything. That's what makes the Operator Pattern safe at high velocity.
+The pipeline doesn't trust anyone. It validates everything. That's what makes the Orchestrator Pattern safe at high velocity.
 
-## A day in the operator's seat
+## A day in the orchestrator's seat
 
 Here's what the pattern looks like in practice:
 
-**Morning**: Review overnight agent runs. Three dependency PRs are ready?scans are green, tests pass, previews look clean. Merge all three in five minutes. Identify today's maintenance surface: a set of CSS fixes, two copy changes, and a security hardening task. Speak the briefs, dispatch agents, move on.
+**Morning**: Review overnight agent runs. Three dependency PRs are ready—scans are green, tests pass, previews look clean. Merge all three in five minutes. Identify today's maintenance surface: a set of CSS fixes, two copy changes, and a security hardening task. Speak the briefs, dispatch agents, move on.
 
-**Mid-morning**: Deep focus in Cursor building a new feature?access-controlled content tiers with sign-in and payment gates. Use voice to iterate rapidly on the auth flow, testing different approaches. Agents are still running in the background; you ignore them completely.
+**Mid-morning**: Deep focus in Cursor building a new feature—access-controlled content tiers with sign-in and payment gates. Use voice to iterate rapidly on the auth flow, testing different approaches. Agents are still running in the background; you ignore them completely.
 
-**Lunch walk**: On the trail, voice-review agent previews on mobile. One CSS fix is too broad?adjust the scope to target only the `/demos/*` routes. Another agent needs a style clarification?specify exact color values from the design tokens. Tasks keep moving even though you're away from the desk.
+**Lunch walk**: On the trail, voice-review agent previews on mobile. One CSS fix is too broad—adjust the scope to target only the `/demos/*` routes. Another agent needs a style clarification—specify exact color values from the design tokens. Tasks keep moving even though you're away from the desk.
 
-**Afternoon**: Back at desk, merge the successful agent PRs. The CSS fix and copy changes are done. Return to feature work in Cursor, now testing the access-control flow end-to-end. Find an edge case in the auth logic?fix it directly in Cursor, commit, push.
+**Afternoon**: Back at desk, merge the successful agent PRs. The CSS fix and copy changes are done. Return to feature work in Cursor, now testing the access-control flow end-to-end. Find an edge case in the auth logic—fix it directly in Cursor, commit, push.
 
 **End of day**: Queue tomorrow's maintenance tasks as agent briefs: an upgrade to Next.js 15, a security audit of API routes, and a visual refresh of the landing page hero. Agents will start overnight. You'll review results in the morning.
 
-The velocity isn't from working harder?it's from orchestrating more work surfaces in parallel.
+The velocity isn't from working harder—it's from orchestrating more work surfaces in parallel.
 
 ## What makes a task agent-ready
 
@@ -135,7 +135,7 @@ The heuristic: if you'd feel comfortable delegating the task to a competent juni
 
 ## Where humans stay in the loop
 
-The Operator Pattern isn't full autonomy?it's supervised delegation. Humans remain essential at every decision point:
+The Orchestrator Pattern isn't full autonomy—it's supervised delegation. Humans remain essential at every decision point:
 
 **Setting direction**: Agents don't know what to build or why. Product vision, prioritization, and roadmap planning remain deeply human.
 
@@ -151,6 +151,6 @@ The pattern treats agents as capable teammates, not magic. You delegate with con
 
 ---
 
-The Operator Pattern isn't about writing less code?it's about directing more work surfaces in parallel. Background agents handle the maintenance tax. You stay focused on product. Voice reduces the friction to orchestrate both. And a hardened CI/CD pipeline keeps everything safe at speed.
+The Orchestrator Pattern isn't about writing less code—it's about directing more work surfaces in parallel. Background agents handle the maintenance tax. You stay focused on product. Voice reduces the friction to orchestrate both. And a hardened CI/CD pipeline keeps everything safe at speed.
 
 This is how great software gets built now: orchestrate, don't micromanage. Do your best thinking where you think best. And let the machines handle the rest.
