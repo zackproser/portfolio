@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,26 +21,34 @@ interface BlogClientProps {
   years: string[];
 }
 
+const ALL_YEARS_OPTION = "All Years";
+
 export default function BlogClient({ articles, years }: BlogClientProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedYear, setSelectedYear] = useState(ALL_YEARS_OPTION);
   const [filteredArticles, setFilteredArticles] = useState<ArticleWithSlug[]>(articles);
 
-  // Debounced tracking function for search analytics
-  const debouncedTrack = debounce((query: string) => {
-    if (query.trim()) {
-      track('blog-search', { term: query });
-    }
-  }, 1200);
+  const debouncedTrack = useMemo(
+    () =>
+      debounce((query: string) => {
+        if (query.trim()) {
+          track("blog-search", { term: query });
+        }
+      }, 600),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedTrack.cancel();
+    };
+  }, [debouncedTrack]);
 
   useEffect(() => {
     let filtered = [...articles];
 
-    // Sort articles by date in chronological order (newest first)
-    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+    if (searchTerm.trim()) {
+      const term = searchTerm.trim().toLowerCase();
       filtered = filtered.filter(
         (article) =>
           article.title.toLowerCase().includes(term) ||
@@ -48,12 +56,16 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
       );
     }
 
-    if (selectedYear && selectedYear !== "All Years") {
-      filtered = filtered.filter((article) => article.date.startsWith(selectedYear));
+    if (selectedYear !== ALL_YEARS_OPTION) {
+      filtered = filtered.filter(
+        (article) => new Date(article.date).getFullYear().toString() === selectedYear
+      );
     }
 
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
     setFilteredArticles(filtered);
-  }, [searchTerm, selectedYear, articles]);
+  }, [articles, searchTerm, selectedYear]);
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
@@ -62,7 +74,8 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setSelectedYear("");
+    setSelectedYear(ALL_YEARS_OPTION);
+    debouncedTrack.cancel();
   };
 
   return (
@@ -91,10 +104,12 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
 
             <Select value={selectedYear} onValueChange={setSelectedYear}>
               <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
-                <SelectValue placeholder="Year" />
+                <SelectValue placeholder="Year">
+                  {selectedYear}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
-                <SelectItem value="All Years">All Years</SelectItem>
+                <SelectItem value={ALL_YEARS_OPTION}>{ALL_YEARS_OPTION}</SelectItem>
                 {years.map((year) => (
                   <SelectItem key={year} value={year}>
                     {year}
@@ -109,7 +124,7 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
               Reset Filters
             </Button>
             <span className="text-sm text-slate-500 dark:text-slate-400">
-              {filteredArticles.length} articles found
+              {filteredArticles.length} {filteredArticles.length === 1 ? "article" : "articles"} found
             </span>
           </div>
         </div>
@@ -117,7 +132,7 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
         <div className="space-y-8">
           <section>
             <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-6 text-center">All Articles</h2>
-            
+
             <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
               <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                 {filteredArticles.map((article) => (
