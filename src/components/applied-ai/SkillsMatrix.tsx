@@ -84,7 +84,7 @@ const evidence: EvidenceCategory[] = [
     title: 'Developer Education & Growth',
     items: [
       {
-        label: 'Technical writing (50,000+ readers) and newsletter (2,750+ subscribers)',
+        label: 'Technical writing (50,000+ readers) and newsletter (3,000+ subscribers)',
         links: [
           { label: 'Blog', href: '/blog' },
           { label: 'Publications', href: '/publications' }

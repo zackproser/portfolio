@@ -48,7 +48,7 @@ export const appliedAiProjects: ProjectData[] = [
       demo: "https://zackproser.com/chat"
     },
     featured: true,
-    impact: "2,750+ developers trained • Dozens of paid tutorial purchases"
+    impact: "3,000+ developers trained • Dozens of paid tutorial purchases"
   },
   {
     title: "AI Pipelines & Agents Workshop with Mastra.ai", 
