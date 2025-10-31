@@ -1,0 +1,169 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src="https://zackproser.b-cdn.net/images/orchestrator-pattern.webp" alt="The Orchestrator Pattern: Orchestrating AI agents across multiple tasks" width={1200} height={630} />
+
+The paradigm has shifted. Instead of being a developer who writes code, you're now an orchestrator who directs intelligent agents—some human, most artificial—to execute against a product vision. This is the Orchestrator Pattern, and it fundamentally changes how software gets built.
+
+This approach builds on the concepts I explored in my [DevSecCon 2025 keynote on untethered software development](/blog/untethered-software-development-devseccon-2025), where I demonstrated how voice-driven workflows and background agents enable deep thinking away from the desk while code keeps shipping.
+
+**Table of contents**
+- [What is the Orchestrator Pattern?](#what-is-the-orchestrator-pattern)
+- [The orchestrator's workstation](#the-orchestrators-workstation)
+- [Voice as the primary interface](#voice-as-the-primary-interface)
+- [Dispatching agents across the maintenance surface](#dispatching-agents-across-the-maintenance-surface)
+- [Simultaneous feature development](#simultaneous-feature-development)
+- [The safety layer](#the-safety-layer)
+- [A day in the orchestrator's seat](#a-day-in-the-orchestrators-seat)
+- [What makes a task agent-ready](#what-makes-a-task-agent-ready)
+- [Where humans stay in the loop](#where-humans-stay-in-the-loop)
+
+## What is the Orchestrator Pattern?
+
+Picture a mission control engineer at NASA. They don't climb into the rocket or manually adjust thrusters. They monitor dashboards, communicate with autonomous systems, make go/no-go decisions, and intervene only when human judgment is required.
+
+This is what software development looks like now. You sit at the orchestrator's console—your development environment augmented with AI agents—and orchestrate work across a wide surface area:
+
+- **Background agents** handle dependency upgrades, security patches, CSS fixes, and copy changes in isolated sandboxes
+- **Foreground focus** stays on feature development, architecture decisions, and product direction in tools like [Cursor](/blog/cursor-review)'s composer panel
+- **Voice input** via tools like [WisprFlow](/blog/wisprflow-review) lets you dispatch tasks and refine requirements at 179 WPM while pacing or walking
+
+The critical insight: you're not choosing between agentic coding and hands-on development. You're doing both simultaneously, with your attention allocated based on comparative advantage.
+
+## The orchestrator's workstation
+
+The infrastructure for this pattern is surprisingly simple:
+
+**Agentic coding platforms** like [Cursor Agents](/blog/cursor-agents-review), [OpenAI Codex](/blog/openai-codex-review), or [Google's Jules](/blog/google-jules-review) run in isolated containers or VMs. Each agent works in its own branch, produces logs and diffs, and outputs a pull request for review. They're perfect for well-scoped, testable work with clear acceptance criteria.
+
+**Local development environment** is where you maintain flow state. [Cursor](/blog/cursor-review)'s composer panel, driven by voice or typing, is ideal for feature work that requires context, judgment, and rapid iteration. This is where you solve novel problems and make trade-offs.
+
+**Voice input layer** bridges both modes. Using [WisprFlow](/blog/wisprflow-review), you can speak task briefs to background agents ("Upgrade Tailwind to the latest version, fix any breaking changes in the components directory, ensure tests pass"), then pivot immediately to feature work in [Cursor](/blog/cursor-review) without context switching.
+
+**CI/CD safety lane** validates everything. Pre-commit hooks catch secrets early, dependency scans block vulnerable states, and lint/test/build gates run in parallel. The path is hardened for both human and machine contributions.
+
+## Voice as the primary interface
+
+Voice isn't just faster than typing—though at 179 WPM versus 90 WPM, it certainly is. Voice changes the *perceived activation energy* for starting tasks.
+
+When you can speak a task brief while pacing your office, the friction to delegate work drops to near zero. This matters because the bottleneck in the Orchestrator Pattern isn't agent capacity—it's your ability to clearly articulate scoped work.
+
+I use [WisprFlow](/blog/wisprflow-review) as my dictation layer. It runs system-level on macOS, understands technical vocabulary and filenames, and works in every text field—Cursor, Chrome, Claude Desktop, Slack, Linear. The setup is simple: hit a hotkey, speak your task, hit the hotkey again, and perfectly formatted text appears.
+
+For agent dispatch, a typical brief sounds like: "Bump all Tailwind packages to the latest stable version. Fix breaking changes in the components directory only—leave app routes untouched. Acceptance criteria: build passes, component tests green, visual regression check on the design system page."
+
+The agent receives clear scope, explicit constraints, and deterministic success criteria. You've invested 30 seconds of voice input to delegate 2 hours of tedious upgrade work.
+
+## Dispatching agents across the maintenance surface
+
+Every codebase accumulates a backlog of maintenance tasks: dependency bumps, security patches, minor CSS fixes, copy updates, refactoring tech debt. These are necessary but don't require deep product thinking. They're perfect for agents.
+
+The pattern is to identify discrete, testable chunks and dispatch them to background agents in parallel:
+
+**Package upgrades**: "Upgrade React Query to v5. Fix breaking changes in the hooks directory. Ensure all data-fetching tests pass."
+
+**CSS scoping fixes**: "All CSS in the `/demos` directory is leaking to global scope. Add scoping so changes stay confined. Check the demos page to verify."
+
+**Copy iteration**: "The hero section on `/ml-tools` needs four headline variants focused on learning, not selling. Show diffs and previews for each. Keep existing typography tokens."
+
+**Security hardening**: "Add ggshield pre-commit hooks for secret scanning. Test with a fake AWS key in a test file. Show red/green runs."
+
+Each agent works in isolation: its own branch, its own containerized environment, its own PR. You monitor progress via previews and logs, provide steering as needed, and approve or iterate based on the output.
+
+The key discipline is crisp scoping. Vague briefs like "improve performance" generate churn. Specific briefs like "memoize the data table component and add React.memo to prevent re-renders on parent state changes" get clean results.
+
+## Simultaneous feature development
+
+While agents chew through maintenance, you stay in [Cursor](/blog/cursor-review) working on features that require judgment, creativity, and system-level thinking.
+
+This is where the Orchestrator Pattern shines: you're not blocked waiting for dependency upgrades to finish. You're building the next feature, making architecture decisions, and solving novel problems in parallel.
+
+[Cursor](/blog/cursor-review)'s composer panel becomes your focused workspace. You can drive it with [voice via WisprFlow](/blog/wisprflow-review) or with typing—whatever maintains flow. The important part is that you're working on high-value problems: product direction, API design, complex state management, performance optimization that requires profiling and measurement.
+
+Your attention allocation follows comparative advantage:
+
+- Agents handle **well-scoped, testable work** with clear acceptance criteria
+- You handle **ambiguous, creative work** requiring product sense and technical judgment
+
+The cognitive cost of switching between these modes is low because they're physically separated: agents work in their sandboxes producing PRs, you work in [Cursor](/blog/cursor-review) producing features. Review happens asynchronously when you choose to context-switch.
+
+## The safety layer
+
+This pattern only works if the safety layer is bulletproof. Fast is dangerous without guardrails. Here's what keeps velocity from turning into chaos:
+
+**Defense-in-depth secret scanning**: Pre-commit hooks catch leaked credentials before they reach the repo. CI rescans as a backstop. Anything that slips fails the build immediately.
+
+**Supply chain hygiene**: Dependency scans block PRs with high or critical vulnerabilities. Agents and humans alike can't merge unsafe states.
+
+**Non-negotiable gates**: Lint, tests, and builds run in parallel on every PR. The rules are consistent regardless of who—or what—authored the change.
+
+**Audit trails**: Every agent run produces logs, diffs, and previews. Visual review is cheap and reliable. If something looks wrong, you can trace exactly what happened and revert cleanly because the change is isolated to a single branch.
+
+The pipeline doesn't trust anyone. It validates everything. That's what makes the Orchestrator Pattern safe at high velocity.
+
+## A day in the orchestrator's seat
+
+Here's what the pattern looks like in practice:
+
+**Morning**: Review overnight agent runs. Three dependency PRs are ready—scans are green, tests pass, previews look clean. Merge all three in five minutes. Identify today's maintenance surface: a set of CSS fixes, two copy changes, and a security hardening task. Speak the briefs, dispatch agents, move on.
+
+**Mid-morning**: Deep focus in [Cursor](/blog/cursor-review) building a new feature—access-controlled content tiers with sign-in and payment gates. Use voice to iterate rapidly on the auth flow, testing different approaches. Agents are still running in the background; you ignore them completely.
+
+**Lunch walk**: On the trail, voice-review agent previews on mobile. One CSS fix is too broad—adjust the scope to target only the `/demos/*` routes. Another agent needs a style clarification—specify exact color values from the design tokens. Tasks keep moving even though you're away from the desk.
+
+**Afternoon**: Back at desk, merge the successful agent PRs. The CSS fix and copy changes are done. Return to feature work in [Cursor](/blog/cursor-review), now testing the access-control flow end-to-end. Find an edge case in the auth logic—fix it directly in [Cursor](/blog/cursor-review), commit, push.
+
+**End of day**: Queue tomorrow's maintenance tasks as agent briefs: an upgrade to Next.js 15, a security audit of API routes, and a visual refresh of the landing page hero. Agents will start overnight. You'll review results in the morning.
+
+The velocity isn't from working harder—it's from orchestrating more work surfaces in parallel.
+
+## What makes a task agent-ready
+
+Not every task should go to an agent. Here's the filter I use:
+
+**Narrow scope with crisp boundaries**: "Update the footer links to match the new sitemap" is perfect. "Improve the homepage" is not.
+
+**Deterministic validation**: If success can be verified by automated checks (build passes, tests green, visual regression clean), the task is agent-ready.
+
+**Minimal global coupling**: Tasks that touch localized surfaces (a single component, a specific route, a config file) work better than tasks requiring whole-system understanding.
+
+**Low ambiguity**: If you can write clear acceptance criteria, the agent can execute. If you're still figuring out what "good" looks like, keep it in [Cursor](/blog/cursor-review) where you can iterate fast.
+
+The heuristic: if you'd feel comfortable delegating the task to a competent junior engineer with a detailed brief, it's agent-ready.
+
+## Where humans stay in the loop
+
+The Orchestrator Pattern isn't full autonomy—it's supervised delegation. Humans remain essential at every decision point:
+
+**Setting direction**: Agents don't know what to build or why. Product vision, prioritization, and roadmap planning remain deeply human.
+
+**Reviewing output**: Every agent PR gets human review. You're checking diffs, verifying acceptance criteria were met, and catching edge cases the agent missed.
+
+**Making judgment calls**: When an agent surfaces multiple options ("here are four headline variants"), you decide which aligns with product strategy.
+
+**Handling exceptions**: Agents work best in the happy path. When they encounter ambiguity or conflicting requirements, they surface the issue and wait for guidance.
+
+**Maintaining quality**: You own the acceptance criteria. If standards slip, it's because you didn't specify them clearly, not because the agent failed.
+
+The pattern treats agents as capable teammates, not magic. You delegate with context, supervise via previews, and step in when judgment is required.
+
+---
+
+The Orchestrator Pattern isn't about writing less code—it's about directing more work surfaces in parallel. Background agents handle the maintenance tax. You stay focused on product. Voice reduces the friction to orchestrate both. And a hardened CI/CD pipeline keeps everything safe at speed.
+
+This is how great software gets built now: orchestrate, don't micromanage. Do your best thinking where you think best. And let the machines handle the rest.
+
+## Related Reading
+
+To dive deeper into the tools and concepts that enable the Orchestrator Pattern:
+
+- **[Untethered Software Development](/blog/untethered-software-development-devseccon-2025)** - My DevSecCon 2025 keynote exploring how voice, agents, and CI/CD enable development away from the desk
+- **[WisprFlow Review](/blog/wisprflow-review)** - Hands-on review of the voice-to-text tool that makes speaking at 179 WPM possible
+- **[Cursor Review](/blog/cursor-review)** - How Cursor changed the way I create software with AI-assisted development
+- **[Cursor Agents Review](/blog/cursor-agents-review)** - Deep dive into Cursor's background agent feature for parallel task execution
+- **[OpenAI Codex Review](/blog/openai-codex-review)** - My experience with OpenAI's agentic coding platform
+- **[Google Jules Review](/blog/google-jules-review)** - Hands-on with Google's research preview for AI-assisted development
