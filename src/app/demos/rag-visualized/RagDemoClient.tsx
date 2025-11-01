@@ -1,14 +1,11 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   AlertTriangle,
-  Clock,
-  Compass,
   Gauge,
   Layers,
-  Radar,
   ShieldCheck,
   Sparkles,
   Workflow,
@@ -19,36 +16,7 @@ import {
 } from 'lucide-react'
 
 import { SAMPLE_DATASETS, type RagDataset } from './data'
-import {
-  buildChunkIndex,
-  generateGroundedAnswer,
-  simulateRetrieval,
-  type RetrieverMode,
-  type RagRetrievalResult
-} from './utils'
-import RagPipelineSandbox from './RagPipelineSandbox'
 import RagPipelineVisualization from './RagPipelineVisualization'
-
-const modeLabels: Record<RetrieverMode, { title: string; subtitle: string }> = {
-  semantic: {
-    title: 'Semantic',
-    subtitle: 'Embeddings only'
-  },
-  keyword: {
-    title: 'Keyword',
-    subtitle: 'Filtering & BM25 vibes'
-  },
-  hybrid: {
-    title: 'Hybrid',
-    subtitle: 'Best of both worlds'
-  }
-}
-
-const modeIcons: Record<RetrieverMode, JSX.Element> = {
-  semantic: <Sparkles className="h-4 w-4" />,
-  keyword: <Layers className="h-4 w-4" />,
-  hybrid: <Radar className="h-4 w-4" />
-}
 
 function formatNumber(value: number): string {
   if (value >= 1000) {
@@ -78,30 +46,6 @@ const heroHighlights = [
     icon: Workflow
   }
 ] as const
-
-function highlightChunk(text: string, query: string) {
-  const tokens = new Set(
-    query
-      .toLowerCase()
-      .match(/[a-z0-9]{4,}/g)
-  )
-
-  if (!tokens || tokens.size === 0) {
-    return text
-  }
-
-  return text.split(/(\s+)/).map((segment, index) => {
-    const cleaned = segment.toLowerCase().replace(/[^a-z0-9]/g, '')
-    if (tokens.has(cleaned)) {
-      return (
-        <mark key={`${segment}-${index}`} className="rounded-sm bg-amber-200 px-1 py-0.5 text-zinc-800">
-          {segment}
-        </mark>
-      )
-    }
-    return <span key={`${segment}-${index}`}>{segment}</span>
-  })
-}
 
 function DatasetSummary({ dataset }: { dataset: RagDataset }) {
   const stats = useMemo(() => {
@@ -170,180 +114,10 @@ function DatasetSummary({ dataset }: { dataset: RagDataset }) {
   )
 }
 
-function RetrievalResultCard({
-  result,
-  query,
-  index,
-  mode
-}: {
-  result: RagRetrievalResult
-  query: string
-  index: number
-  mode: RetrieverMode
-}) {
-  const scoreLabel = mode === 'keyword' ? 'Keyword' : mode === 'semantic' ? 'Semantic' : 'Hybrid'
-  const scoreValue = mode === 'keyword' ? result.keywordScore : mode === 'semantic' ? result.semanticScore : result.hybridScore
-
-  return (
-    <div className="flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white/80 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900/70">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-            {index + 1}
-          </span>
-          <div>
-            <p className="font-medium text-zinc-900 dark:text-zinc-100">{result.chunk.docTitle}</p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Updated {result.chunk.lastUpdated}</p>
-          </div>
-        </div>
-        <div className="rounded-md bg-zinc-100 px-3 py-1 text-right text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-          {scoreLabel} score: {roundToTwo(scoreValue)}
-        </div>
-      </div>
-
-      <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-        {highlightChunk(result.chunk.text, query)}
-      </p>
-
-      <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-        <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-1 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-          <ShieldCheck className="h-3 w-3" /> {result.chunk.tags.join(', ')}
-        </span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-1 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-          <Clock className="h-3 w-3" /> ~{result.chunk.wordCount} words
-        </span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-1 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-          <Gauge className="h-3 w-3" /> {result.estimatedTokens} tokens
-        </span>
-      </div>
-
-      <div className="flex flex-wrap gap-2 text-xs">
-        {result.reasons.map((reason) => (
-          <span
-            key={reason}
-            className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
-          >
-            <Compass className="h-3 w-3" /> {reason}
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function PromptViewer({
-  prompt,
-  answer,
-  metadata
-}: {
-  prompt: string
-  answer: string
-  metadata: {
-    promptTokens: number
-    responseTokens: number
-    estimatedLatencyMs: number
-    estimatedCostUsd: number
-    citations: { label: string; title: string; snippet: string }[]
-  }
-}) {
-  const totalTokens = metadata.promptTokens + metadata.responseTokens
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-3 rounded-xl border border-zinc-200 bg-zinc-900 p-5 font-mono text-xs text-zinc-200 shadow-inner dark:border-zinc-700">
-        <div className="flex items-center justify-between text-zinc-400">
-          <span>Grounded prompt</span>
-          <span>{metadata.promptTokens} tokens</span>
-        </div>
-        <pre className="max-h-[340px] overflow-y-auto whitespace-pre-wrap text-[11px] leading-relaxed">
-          {prompt}
-        </pre>
-      </div>
-      <div className="flex flex-col gap-4">
-        <div className="space-y-3 rounded-xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm dark:border-emerald-800 dark:bg-emerald-900/30">
-          <div className="flex items-center justify-between text-emerald-700 dark:text-emerald-300">
-            <span>Model answer draft</span>
-            <span>{metadata.responseTokens} tokens</span>
-          </div>
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-emerald-900 dark:text-emerald-100">
-            {answer}
-          </p>
-        </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-700 dark:bg-zinc-900">
-          <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-              <Gauge className="h-3 w-3" /> Total tokens: {totalTokens}
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-2 py-1 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-              <Clock className="h-3 w-3" /> ~{Math.round(metadata.estimatedLatencyMs)}ms latency
-            </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-1 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200">
-              <Sparkles className="h-3 w-3" /> ${metadata.estimatedCostUsd.toFixed(4)}
-            </span>
-          </div>
-          <div className="mt-4 space-y-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">Citations</p>
-            <div className="space-y-2">
-              {metadata.citations.map((citation) => (
-                <div
-                  key={citation.label}
-                  className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-zinc-300"
-                >
-                  <p className="font-semibold text-zinc-700 dark:text-zinc-200">
-                    {citation.label}: {citation.title}
-                  </p>
-                  <p className="mt-1 leading-relaxed">
-                    {citation.snippet}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function RagDemoClient() {
   const [datasetId, setDatasetId] = useState<string>(SAMPLE_DATASETS[0].id)
-  const [query, setQuery] = useState<string>(SAMPLE_DATASETS[0].sampleQueries[0])
-  const [chunkSize, setChunkSize] = useState<number>(90)
-  const [retrieverMode, setRetrieverMode] = useState<RetrieverMode>('hybrid')
-  const [topK, setTopK] = useState<number>(3)
 
   const dataset = useMemo(() => SAMPLE_DATASETS.find((item) => item.id === datasetId) ?? SAMPLE_DATASETS[0], [datasetId])
-
-  useEffect(() => {
-    setQuery(dataset.sampleQueries[0])
-  }, [dataset])
-
-  const chunkIndex = useMemo(() => buildChunkIndex(dataset, chunkSize), [dataset, chunkSize])
-
-  const retrievalResults = useMemo(() => {
-    if (!query.trim()) {
-      return [] as RagRetrievalResult[]
-    }
-
-    return simulateRetrieval({
-      query,
-      chunks: chunkIndex,
-      topK,
-      mode: retrieverMode
-    })
-  }, [query, chunkIndex, topK, retrieverMode])
-
-  const groundedAnswer = useMemo(() => {
-    if (retrievalResults.length === 0) {
-      return null
-    }
-
-    return generateGroundedAnswer({
-      query,
-      selectedChunks: retrievalResults,
-      dataset
-    })
-  }, [retrievalResults, dataset, query])
 
   return (
     <div className="space-y-16">
@@ -386,13 +160,11 @@ export default function RagDemoClient() {
 
       <RagPipelineVisualization dataset={dataset} />
 
-      <RagPipelineSandbox dataset={dataset} chunks={chunkIndex} />
-
       <section className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Dataset workbench</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Choose the corpus that powers the sandbox above, inspect its docs, and experiment with how chunking depth and metadata shape downstream retrieval.</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Choose the corpus that fuels the visualization, inspect its docs, and understand the metadata the retriever leans on.</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
             <AlertTriangle className="h-4 w-4" /> No uploads in this demo; sample corpora only.
@@ -449,140 +221,6 @@ export default function RagDemoClient() {
             </tbody>
           </table>
         </div>
-      </section>
-
-      <section className="space-y-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Retrieval microscope</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Tune chunk size, context window, and retriever blend to see how the scoring math shuffles. Each card explains why a chunk survived the filters.</p>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-            <Radar className="h-4 w-4" />
-            <span>Scores simulate cosine similarity and BM25-style overlap</span>
-          </div>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
-          <div className="space-y-4 rounded-2xl border border-zinc-200 bg-white/80 p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/70">
-            <label className="flex flex-col gap-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Question to answer
-              <textarea
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                rows={3}
-                className="w-full rounded-lg border border-zinc-300 bg-white/90 p-3 text-sm text-zinc-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                placeholder="Ask something your runbooks can actually answer?"
-              />
-            </label>
-            <div className="flex flex-wrap gap-2 text-xs">
-              {dataset.sampleQueries.map((sample) => (
-                <button
-                  key={sample}
-                  className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-zinc-600 transition hover:border-blue-400 hover:text-blue-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-                  onClick={() => setQuery(sample)}
-                >
-                  {sample}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-700">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Chunk size</p>
-                <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{chunkSize} words</p>
-                <input
-                  type="range"
-                  min={60}
-                  max={160}
-                  step={10}
-                  value={chunkSize}
-                  onChange={(event) => setChunkSize(Number(event.target.value))}
-                  className="mt-3 w-full accent-blue-500"
-                />
-                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">Tight chunks improve precision; larger ones reduce LLM calls.</p>
-              </div>
-              <div className="rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-700">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Context window</p>
-                <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Top {topK} chunks</p>
-                <input
-                  type="range"
-                  min={2}
-                  max={5}
-                  step={1}
-                  value={topK}
-                  onChange={(event) => setTopK(Number(event.target.value))}
-                  className="mt-3 w-full accent-blue-500"
-                />
-                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">Balance coverage with prompt size.</p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {(Object.keys(modeLabels) as RetrieverMode[]).map((mode) => (
-                <button
-                  key={mode}
-                  onClick={() => setRetrieverMode(mode)}
-                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                    retrieverMode === mode
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-900/30 dark:text-blue-200'
-                      : 'border-zinc-200 bg-white text-zinc-600 hover:border-blue-300 hover:text-blue-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300'
-                  }`}
-                >
-                  {modeIcons[mode]} {modeLabels[mode].title}
-                  <span className="hidden text-[10px] font-normal text-zinc-400 md:inline">{modeLabels[mode].subtitle}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {retrievalResults.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/40 dark:text-zinc-400">
-                <Radar className="mb-3 h-8 w-8" />
-                Start with a question to see the retrieval pipeline light up.
-              </div>
-            ) : (
-              retrievalResults.map((result, index) => (
-                <RetrievalResultCard
-                  key={result.chunk.id}
-                  result={result}
-                  query={query}
-                  index={index}
-                  mode={retrieverMode}
-                />
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-6 rounded-3xl border border-emerald-200/60 bg-white/95 p-8 shadow-sm dark:border-emerald-900/50 dark:bg-zinc-900/80">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-2xl font-semibold text-emerald-900 dark:text-emerald-100">Answer formation theater</h2>
-            <p className="text-sm text-emerald-700/80 dark:text-emerald-200/80">See the exact prompt the model receives, the grounded draft it returns, and the token/latency footprint you should expect in production.</p>
-          </div>
-          <Sparkles className="h-6 w-6 text-emerald-700 dark:text-emerald-200" />
-        </div>
-
-        {groundedAnswer ? (
-          <PromptViewer
-            prompt={groundedAnswer.prompt}
-            answer={groundedAnswer.answer}
-            metadata={{
-              promptTokens: groundedAnswer.promptTokens,
-              responseTokens: groundedAnswer.responseTokens,
-              estimatedLatencyMs: groundedAnswer.estimatedLatencyMs,
-              estimatedCostUsd: groundedAnswer.estimatedCostUsd,
-              citations: groundedAnswer.citations
-            }}
-          />
-        ) : (
-          <div className="rounded-xl border border-emerald-200 border-dashed bg-emerald-50/40 p-8 text-center text-sm text-emerald-700/80 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200/80">
-            Feed the microscope with a question to generate a grounded answer draft.
-          </div>
-        )}
       </section>
 
       <section className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 p-8 shadow-lg dark:border-amber-400/40">
