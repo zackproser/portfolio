@@ -9,7 +9,6 @@ import {
   Search,
   Sparkles
 } from 'lucide-react'
-import { forceSimulation, forceRadial, forceCollide, forceManyBody } from 'd3-force'
 
 import type { RagDataset } from './data'
 
@@ -115,38 +114,31 @@ type RagPipelineVisualizationProps = {
 }
 
 export default function RagPipelineVisualization({ dataset }: RagPipelineVisualizationProps) {
-  const [docNodes, setDocNodes] = useState<DocNode[]>([])
   const [hoveredDocId, setHoveredDocId] = useState<string | null>(null)
   const [flowIndex, setFlowIndex] = useState<number>(-1)
   const [isPlaying, setIsPlaying] = useState(false)
 
   const vectorNode = mainNodes.find((node) => node.id === 'vector-store')!
 
-  useEffect(() => {
-    const docs = dataset.documents.slice(0, 4).map((doc, index) => ({
-      id: doc.id,
-      title: doc.title,
-      snippet: doc.content.slice(0, 180).trim(),
-      x: vectorNode.x + 60 + index * 15,
-      y: vectorNode.y
-    }))
+  const docNodes = useMemo(() => {
+    const docs = dataset.documents.slice(0, 4)
+    const count = docs.length
+    const radius = 100
 
-    if (docs.length === 0) {
-      setDocNodes([])
-      return
-    }
+    return docs.map((doc, index) => {
+      const normalizedIndex = count > 1 ? index / (count - 1) : 0.5
+      const angle = (normalizedIndex - 0.5) * Math.PI * 0.9
+      const x = vectorNode.x + radius * Math.cos(angle)
+      const y = vectorNode.y + radius * Math.sin(angle)
 
-    const simulation = forceSimulation(docs)
-      .force('radial', forceRadial(80, vectorNode.x, vectorNode.y).strength(0.8))
-      .force('collide', forceCollide(26))
-      .force('charge', forceManyBody().strength(5))
-      .stop()
-
-    for (let i = 0; i < 120; i += 1) {
-      simulation.tick()
-    }
-
-    setDocNodes(docs.map((doc) => ({ ...doc })))
+      return {
+        id: doc.id,
+        title: doc.title,
+        snippet: doc.content.slice(0, 220).trim(),
+        x,
+        y
+      }
+    })
   }, [dataset, vectorNode.x, vectorNode.y])
 
   const edges: PipelineEdge[] = useMemo(() => {
