@@ -8,10 +8,10 @@ import {
   Database,
   LifeBuoy,
   MousePointerClick,
+  Network,
   PlayCircle,
   RefreshCcw,
   Search,
-  Vector,
   Sparkles
 } from 'lucide-react'
 
@@ -36,7 +36,7 @@ const stepConfig = [
     id: 'embedding',
     title: 'Embedding generated',
     description: 'The same embedding model turns the query into a dense vector of numbers.',
-    icon: Vector
+    icon: Network
   },
   {
     id: 'vector-search',
