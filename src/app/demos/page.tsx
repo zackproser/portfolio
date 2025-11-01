@@ -7,6 +7,7 @@ import { createMetadata } from '@/utils/createMetadata'
 const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-hero.webp'
 const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
+const ragVisualizedHero = '/modern-coding-og-background.png'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
@@ -15,6 +16,15 @@ export const metadata: Metadata = createMetadata({
 
 // Hardcoded demo data since these are React components, not MDX files
 const demos: Content[] = [
+  {
+    slug: '/demos/rag-visualized',
+    title: 'RAG Visualized Experience',
+    description: 'Interactive RAG walkthrough that shows why retrieval reduces hallucinations, trims cost, and lets experienced engineers ship grounded copilots fast.',
+    author: 'Zachary Proser',
+    date: '2025-11-01',
+    type: 'demo',
+    image: ragVisualizedHero
+  },
   {
     slug: '/chat',
     title: 'AI Chatbot Experience',
