@@ -19,12 +19,7 @@ import {
   ArrowRight
 } from 'lucide-react'
 
-import {
-  SAMPLE_DATASETS,
-  RAG_VALUE_POINTS,
-  RAG_NARRATIVE_STEPS,
-  type RagDataset
-} from './data'
+import { SAMPLE_DATASETS, RAG_NARRATIVE_STEPS, type RagDataset } from './data'
 import {
   buildChunkIndex,
   generateGroundedAnswer,
@@ -32,6 +27,7 @@ import {
   type RetrieverMode,
   type RagRetrievalResult
 } from './utils'
+import RagPipelineSandbox from './RagPipelineSandbox'
 
 const modeLabels: Record<RetrieverMode, { title: string; subtitle: string }> = {
   semantic: {
@@ -54,6 +50,13 @@ const modeIcons: Record<RetrieverMode, JSX.Element> = {
   hybrid: <Radar className="h-4 w-4" />
 }
 
+const timelineIcons = {
+  ingest: NotebookPen,
+  embed: Gauge,
+  retrieve: Radar,
+  compose: Sparkles
+} as const
+
 function formatNumber(value: number): string {
   if (value >= 1000) {
     return `${(value / 1000).toFixed(1)}k`
@@ -64,6 +67,24 @@ function formatNumber(value: number): string {
 function roundToTwo(value: number): number {
   return Math.round(value * 100) / 100
 }
+
+const heroHighlights = [
+  {
+    title: 'Stay factual',
+    description: 'Verified retrieval keeps responses tethered to audited sources.',
+    icon: ShieldCheck
+  },
+  {
+    title: 'Control cost',
+    description: 'Semantic search over your corpus is leaner than repeated fine-tuning cycles.',
+    icon: Gauge
+  },
+  {
+    title: 'Ship fast',
+    description: 'Engineers can assemble a RAG stack in weeks using existing models and tooling.',
+    icon: Workflow
+  }
+] as const
 
 function highlightChunk(text: string, query: string) {
   const tokens = new Set(
@@ -291,6 +312,79 @@ function PromptViewer({
   )
 }
 
+function RagStepTimeline() {
+  const [activeId, setActiveId] = useState<typeof RAG_NARRATIVE_STEPS[number]['id']>(RAG_NARRATIVE_STEPS[0].id)
+  const activeIndex = RAG_NARRATIVE_STEPS.findIndex((step) => step.id === activeId)
+  const activeStep = RAG_NARRATIVE_STEPS[activeIndex] ?? RAG_NARRATIVE_STEPS[0]
+
+  return (
+    <section className="rounded-2xl border border-blue-200 bg-white/90 p-8 shadow-sm dark:border-blue-900/40 dark:bg-zinc-900/80">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
+            RAG in 90 seconds
+          </div>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-blue-900 dark:text-blue-100">
+            Snap through the lifecycle
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-blue-800/80 dark:text-blue-100/70">
+            Hover or tap each node to see how a user question travels from ingestion to a grounded response.
+          </p>
+        </div>
+      </div>
+
+      <div className="relative mt-8">
+        <div className="absolute left-10 right-10 top-1/2 h-[2px] -translate-y-1/2 bg-blue-200/60 dark:bg-blue-800/60" aria-hidden="true" />
+        <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {RAG_NARRATIVE_STEPS.map((step, index) => {
+            const Icon = timelineIcons[step.id as keyof typeof timelineIcons]
+            const isActive = step.id === activeId
+            const isComplete = index < activeIndex
+            return (
+              <button
+                type="button"
+                key={step.id}
+                onMouseEnter={() => setActiveId(step.id)}
+                onFocus={() => setActiveId(step.id)}
+                onClick={() => setActiveId(step.id)}
+                className={`group flex flex-col items-start gap-3 rounded-xl border bg-white/70 p-4 text-left transition dark:bg-zinc-900/60 ${
+                  isActive
+                    ? 'border-blue-500 shadow-lg shadow-blue-200/50 dark:border-blue-400/80'
+                    : isComplete
+                        ? 'border-blue-300 dark:border-blue-800/80'
+                        : 'border-blue-200 dark:border-blue-900/60'
+                }`}
+              >
+                <span
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full border-2 transition ${
+                    isActive
+                      ? 'border-blue-500 bg-blue-100 text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-200'
+                      : isComplete
+                          ? 'border-blue-300 bg-blue-50 text-blue-500 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-200/80'
+                          : 'border-blue-200 bg-white text-blue-400 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-200/60'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-blue-500/80 dark:text-blue-300/70">
+                  {step.label}
+                </span>
+                <span className="text-base font-semibold text-blue-900 dark:text-blue-100">{step.title}</span>
+                <span className="text-sm text-blue-800/80 dark:text-blue-100/70">{step.description}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50/80 p-4 text-sm text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-100">
+        <p className="font-semibold">You&apos;re viewing: {activeStep.title}</p>
+        <p className="mt-1 text-sm text-blue-800/80 dark:text-blue-100/80">{activeStep.description}</p>
+      </div>
+    </section>
+  )
+}
+
 export default function RagDemoClient() {
   const [datasetId, setDatasetId] = useState<string>(SAMPLE_DATASETS[0].id)
   const [query, setQuery] = useState<string>(SAMPLE_DATASETS[0].sampleQueries[0])
@@ -334,17 +428,33 @@ export default function RagDemoClient() {
   return (
     <div className="space-y-16">
       <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-8 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
-        <div className="mx-auto max-w-4xl space-y-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
-            Retrieval-Augmented Generation, demystified
+        <div className="mx-auto max-w-5xl space-y-8">
+          <div className="space-y-4 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
+              Why RAG matters right now
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
+              See a grounded RAG stack click into place
+            </h1>
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-base">
+              🧭 Keep answers tied to vetted knowledge. 💸 Control spend without spinning up bespoke fine-tuning cycles. 🚀 Ship a trustworthy copilot with the engineering muscle you already have.
+            </p>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
-            Visualize every step of a production-ready RAG system
-          </h1>
-          <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-            Retrieval-augmented generation shines when you need grounded answers fast. It dramatically reduces hallucinations by forcing the model to cite your audited sources. It keeps spend predictable because running semantic search on your own corpus is far cheaper than funding bespoke fine-tuning programs. And seasoned engineers can ship it in weeks using off-the-shelf models - long before most orgs can hire or budget for training a foundation model from scratch.
-          </p>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            {heroHighlights.map(({ title, description, icon: Icon }) => (
+              <div
+                key={title}
+                className="rounded-xl border border-blue-200 bg-white/90 p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-blue-900/60 dark:bg-zinc-900/70"
+              >
+                <Icon className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+                <h3 className="mt-3 text-base font-semibold text-blue-900 dark:text-blue-100">{title}</h3>
+                <p className="mt-2 text-sm text-blue-800/80 dark:text-blue-100/70">{description}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
             Crafted by Zachary Proser, senior AI/ML infrastructure engineer and Developer Experience Engineer at WorkOS. Looking for hands-on help?{' '}
             <Link href="/services" className="text-blue-600 underline decoration-blue-400 decoration-dotted underline-offset-4 dark:text-blue-300">
               Explore services
@@ -354,53 +464,15 @@ export default function RagDemoClient() {
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Why teams bet on RAG</h2>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          These are the pragmatic wins that make retrieval-augmented architectures the default starting point for AI copilots today.
-        </p>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {RAG_VALUE_POINTS.map((value, index) => (
-            <div
-              key={value.id}
-              className="rounded-xl border border-zinc-200 bg-white/80 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-900/70"
-            >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-200">
-                {index === 0 && <ShieldCheck className="h-5 w-5" />}
-                {index === 1 && <Gauge className="h-5 w-5" />}
-                {index === 2 && <Workflow className="h-5 w-5" />}
-              </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{value.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{value.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <RagPipelineSandbox dataset={dataset} chunks={chunkIndex} />
 
-      <section className="rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/70">
-        <div className="mb-6 flex items-center gap-3">
-          <Brain className="h-6 w-6 text-blue-600 dark:text-blue-300" />
-          <div>
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">RAG in 90 seconds</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Follow the flow from ingestion to grounded answer delivery.</p>
-          </div>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {RAG_NARRATIVE_STEPS.map((step) => (
-            <div key={step.id} className="rounded-xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-white p-5 dark:border-zinc-700 dark:from-zinc-900 dark:to-zinc-950">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-300">{step.label}</div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">{step.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <RagStepTimeline />
 
       <section className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Dataset workbench</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Pick a corpus, inspect the documents, and see how chunking changes the retrieval substrate.</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Choose the corpus that powers the sandbox above, inspect its docs, and experiment with how chunking depth and metadata shape downstream retrieval.</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
             <AlertTriangle className="h-4 w-4" /> No uploads in this demo; sample corpora only.
@@ -463,7 +535,7 @@ export default function RagDemoClient() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Retrieval microscope</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Adjust the knobs, see which chunks win, and learn why the system trusts them.</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Tune chunk size, context window, and retriever blend to see how the scoring math shuffles. Each card explains why a chunk survived the filters.</p>
           </div>
           <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
             <Radar className="h-4 w-4" />
@@ -569,7 +641,7 @@ export default function RagDemoClient() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-semibold text-emerald-900 dark:text-emerald-100">Answer formation theater</h2>
-            <p className="text-sm text-emerald-700/80 dark:text-emerald-200/80">Watch the prompt assemble, the LLM respond, and the cost profile update in real-time.</p>
+            <p className="text-sm text-emerald-700/80 dark:text-emerald-200/80">See the exact prompt the model receives, the grounded draft it returns, and the token/latency footprint you should expect in production.</p>
           </div>
           <Sparkles className="h-6 w-6 text-emerald-700 dark:text-emerald-200" />
         </div>
