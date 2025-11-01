@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   AlertTriangle,
-  Brain,
   Clock,
   Compass,
   Gauge,
@@ -19,7 +18,7 @@ import {
   ArrowRight
 } from 'lucide-react'
 
-import { SAMPLE_DATASETS, RAG_NARRATIVE_STEPS, type RagDataset } from './data'
+import { SAMPLE_DATASETS, type RagDataset } from './data'
 import {
   buildChunkIndex,
   generateGroundedAnswer,
@@ -28,6 +27,7 @@ import {
   type RagRetrievalResult
 } from './utils'
 import RagPipelineSandbox from './RagPipelineSandbox'
+import RagPipelineVisualization from './RagPipelineVisualization'
 
 const modeLabels: Record<RetrieverMode, { title: string; subtitle: string }> = {
   semantic: {
@@ -45,17 +45,10 @@ const modeLabels: Record<RetrieverMode, { title: string; subtitle: string }> = {
 }
 
 const modeIcons: Record<RetrieverMode, JSX.Element> = {
-  semantic: <Brain className="h-4 w-4" />,
+  semantic: <Sparkles className="h-4 w-4" />,
   keyword: <Layers className="h-4 w-4" />,
   hybrid: <Radar className="h-4 w-4" />
 }
-
-const timelineIcons = {
-  ingest: NotebookPen,
-  embed: Gauge,
-  retrieve: Radar,
-  compose: Sparkles
-} as const
 
 function formatNumber(value: number): string {
   if (value >= 1000) {
@@ -312,79 +305,6 @@ function PromptViewer({
   )
 }
 
-function RagStepTimeline() {
-  const [activeId, setActiveId] = useState<typeof RAG_NARRATIVE_STEPS[number]['id']>(RAG_NARRATIVE_STEPS[0].id)
-  const activeIndex = RAG_NARRATIVE_STEPS.findIndex((step) => step.id === activeId)
-  const activeStep = RAG_NARRATIVE_STEPS[activeIndex] ?? RAG_NARRATIVE_STEPS[0]
-
-  return (
-    <section className="rounded-2xl border border-blue-200 bg-white/90 p-8 shadow-sm dark:border-blue-900/40 dark:bg-zinc-900/80">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-            RAG in 90 seconds
-          </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-blue-900 dark:text-blue-100">
-            Snap through the lifecycle
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm text-blue-800/80 dark:text-blue-100/70">
-            Hover or tap each node to see how a user question travels from ingestion to a grounded response.
-          </p>
-        </div>
-      </div>
-
-      <div className="relative mt-8">
-        <div className="absolute left-10 right-10 top-1/2 h-[2px] -translate-y-1/2 bg-blue-200/60 dark:bg-blue-800/60" aria-hidden="true" />
-        <div className="relative z-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {RAG_NARRATIVE_STEPS.map((step, index) => {
-            const Icon = timelineIcons[step.id as keyof typeof timelineIcons]
-            const isActive = step.id === activeId
-            const isComplete = index < activeIndex
-            return (
-              <button
-                type="button"
-                key={step.id}
-                onMouseEnter={() => setActiveId(step.id)}
-                onFocus={() => setActiveId(step.id)}
-                onClick={() => setActiveId(step.id)}
-                className={`group flex flex-col items-start gap-3 rounded-xl border bg-white/70 p-4 text-left transition dark:bg-zinc-900/60 ${
-                  isActive
-                    ? 'border-blue-500 shadow-lg shadow-blue-200/50 dark:border-blue-400/80'
-                    : isComplete
-                        ? 'border-blue-300 dark:border-blue-800/80'
-                        : 'border-blue-200 dark:border-blue-900/60'
-                }`}
-              >
-                <span
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full border-2 transition ${
-                    isActive
-                      ? 'border-blue-500 bg-blue-100 text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-200'
-                      : isComplete
-                          ? 'border-blue-300 bg-blue-50 text-blue-500 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-200/80'
-                          : 'border-blue-200 bg-white text-blue-400 dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-200/60'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-wide text-blue-500/80 dark:text-blue-300/70">
-                  {step.label}
-                </span>
-                <span className="text-base font-semibold text-blue-900 dark:text-blue-100">{step.title}</span>
-                <span className="text-sm text-blue-800/80 dark:text-blue-100/70">{step.description}</span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50/80 p-4 text-sm text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-100">
-        <p className="font-semibold">You&apos;re viewing: {activeStep.title}</p>
-        <p className="mt-1 text-sm text-blue-800/80 dark:text-blue-100/80">{activeStep.description}</p>
-      </div>
-    </section>
-  )
-}
-
 export default function RagDemoClient() {
   const [datasetId, setDatasetId] = useState<string>(SAMPLE_DATASETS[0].id)
   const [query, setQuery] = useState<string>(SAMPLE_DATASETS[0].sampleQueries[0])
@@ -464,9 +384,9 @@ export default function RagDemoClient() {
         </div>
       </section>
 
-      <RagPipelineSandbox dataset={dataset} chunks={chunkIndex} />
+      <RagPipelineVisualization dataset={dataset} />
 
-      <RagStepTimeline />
+      <RagPipelineSandbox dataset={dataset} chunks={chunkIndex} />
 
       <section className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -637,7 +557,7 @@ export default function RagDemoClient() {
         </div>
       </section>
 
-      <section className="space-y-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-8 shadow-sm dark:border-emerald-800 dark:bg-emerald-900/20">
+      <section className="space-y-6 rounded-3xl border border-emerald-200/60 bg-white/95 p-8 shadow-sm dark:border-emerald-900/50 dark:bg-zinc-900/80">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-semibold text-emerald-900 dark:text-emerald-100">Answer formation theater</h2>
