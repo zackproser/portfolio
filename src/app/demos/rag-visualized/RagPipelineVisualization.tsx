@@ -198,29 +198,25 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
         id: 'edge-question-embedding',
         source: 'question',
         target: 'embedding',
-        stepIndex: 1,
-        curved: true
+        stepIndex: 1
       },
       {
         id: 'edge-embedding-vector',
         source: 'embedding',
         target: 'vector-store',
-        stepIndex: 2,
-        curved: true
+        stepIndex: 2
       },
       {
         id: 'edge-vector-reranker',
         source: 'vector-store',
         target: 'reranker',
-        stepIndex: 3,
-        curved: true
+        stepIndex: 3
       },
       {
         id: 'edge-reranker-answer',
         source: 'reranker',
         target: 'answer',
-        stepIndex: 4,
-        curved: true
+        stepIndex: 4
       }
     ]
 

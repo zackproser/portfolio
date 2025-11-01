@@ -121,17 +121,17 @@ export default function RagDemoClient() {
 
   return (
     <div className="space-y-16">
-      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-8 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
-        <div className="mx-auto max-w-5xl space-y-8">
-          <div className="space-y-4 text-center">
+      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 px-6 py-7 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
+        <div className="mx-auto max-w-6xl space-y-6">
+          <div className="space-y-3 text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
               Why RAG matters right now
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-[44px]">
               See a grounded RAG stack click into place
             </h1>
-            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-base">
-              🧭 Keep answers tied to vetted knowledge. 💸 Control spend without spinning up bespoke fine-tuning cycles. 🚀 Ship a trustworthy copilot with the engineering muscle you already have.
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-[15px]">
+              🧭 Stay grounded in vetted knowledge. 💸 Control spend without bespoke fine-tuning cycles. 🚀 Ship a trustworthy copilot with the engineers you already have.
             </p>
           </div>
 
@@ -148,7 +148,7 @@ export default function RagDemoClient() {
             ))}
           </div>
 
-          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-center text-xs text-zinc-500 dark:text-zinc-400 sm:text-sm">
             Crafted by Zachary Proser, senior AI/ML infrastructure engineer and Developer Experience Engineer at WorkOS. Looking for hands-on help?{' '}
             <Link href="/services" className="text-blue-600 underline decoration-blue-400 decoration-dotted underline-offset-4 dark:text-blue-300">
               Explore services
