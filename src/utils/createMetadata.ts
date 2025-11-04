@@ -238,9 +238,17 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     slug: finalSlug // Use the finalSlug instead of null
   });
 
+  // Generate canonical URL
+  const canonicalUrl = contentUrl 
+    ? new URL(contentUrl, 'https://zackproser.com').toString()
+    : `https://zackproser.com/${TYPE_PATHS[contentType] || 'blog'}/${finalSlug}`;
+
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
   const metadata: ExtendedMetadata = {
     ...defaultMetadata,
+    // Set metadataBase for resolving relative URLs
+    metadataBase: new URL('https://zackproser.com'),
+    
     // Required fields with default values
     title: title || 'Untitled',
     description: description !== undefined && description !== null ? String(description).trim() : '',
@@ -251,6 +259,15 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     
     // Optional fields
     ...(processedImage && { image: processedImage }),
+    ...(tags && { tags }),
+    
+    // SEO keywords - Next.js Metadata supports keywords as string array
+    ...(keywords && keywords.length > 0 && { keywords }),
+    
+    // Canonical URL for SEO
+    alternates: {
+      canonical: canonicalUrl,
+    },
     
     // Next.js metadata fields
     ...(author && { authors: [{ name: author }], creator: author, publisher: author }),
@@ -259,12 +276,14 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
       ...defaultMetadata.openGraph,
       title: title || 'Untitled',
       description: description !== undefined && description !== null ? String(description).trim() : '',
+      url: canonicalUrl,
       images: [
         {
           url: ogImageUrl,
           alt: title || 'Untitled',
         },
       ],
+      siteName: 'Zachary Proser',
     },
     twitter: {
       ...(defaultMetadata.twitter || {}),
