@@ -27,6 +27,11 @@ export type RagRetrievalResult = {
 
 export type GeneratedAnswer = {
   prompt: string;
+  promptParts?: {
+    systemPrompt: string;
+    contextSections: Array<{ text: string; docTitle: string; index: number }>;
+    userQuery: string;
+  };
   promptTokens: number;
   responseTokens: number;
   estimatedLatencyMs: number;
@@ -268,13 +273,21 @@ export function generateGroundedAnswer({
   selectedChunks: RagRetrievalResult[];
   dataset: RagDataset;
 }): GeneratedAnswer {
+  const systemPrompt = `You are an expert assistant helping a team understand their ${dataset.name}. Use only the provided context. Cite the source number in brackets when you reference information.`;
+
   const contextSections = selectedChunks
     .map((result, index) => {
       return `Source ${index + 1} - ${result.chunk.docTitle} (updated ${result.chunk.lastUpdated})\n${result.chunk.text}`;
     })
     .join('\n\n');
 
-  const prompt = `You are an expert assistant helping a team understand their ${dataset.name}. Use only the provided context. Cite the source number in brackets when you reference information.
+  const contextParts = selectedChunks.map((result, index) => ({
+    text: `Source ${index + 1} - ${result.chunk.docTitle} (updated ${result.chunk.lastUpdated})\n${result.chunk.text}`,
+    docTitle: result.chunk.docTitle,
+    index: index + 1
+  }));
+
+  const prompt = `${systemPrompt}
 
 Context:
 ${contextSections}
@@ -307,6 +320,11 @@ Next best step: combine these grounded snippets into your runbook or response, k
 
   return {
     prompt,
+    promptParts: {
+      systemPrompt,
+      contextSections: contextParts,
+      userQuery: query
+    },
     promptTokens,
     responseTokens,
     estimatedLatencyMs,

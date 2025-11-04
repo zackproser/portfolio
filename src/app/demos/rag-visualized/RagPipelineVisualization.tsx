@@ -1,578 +1,1086 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { MousePointerClick, Sparkles } from 'lucide-react'
-
-import type { RagDataset } from './data'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  buildChunkIndex,
-  generateGroundedAnswer,
-  simulateRetrieval,
-  type GeneratedAnswer,
-  type RagRetrievalResult,
-  type RetrieverMode
-} from './utils'
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  RotateCcw,
+  Cpu,
+  Database,
+  Search,
+  FileText,
+  Bot,
+  ArrowRight,
+  Code,
+  Layers,
+  Lightbulb,
+  AlertTriangle,
+  Info,
+  X,
+  Keyboard
+} from 'lucide-react'
 
-type PipelineNode = {
-  id: string
-  label: string
-  sublabel: string
-  x: number
-  y: number
-  emoji: string
-  stepIndex: number
-}
-
-type PipelineEdge = {
-  id: string
-  source: string
-  target: string
-  stepIndex: number
-  curved?: boolean
-}
-
-type DocNode = {
-  id: string
-  title: string
-  snippet: string
-  x: number
-  y: number
-  rank: number
-}
-
-const VIEWBOX_WIDTH = 980
-const VIEWBOX_HEIGHT = 360
-
-const mainNodes: PipelineNode[] = [
-  {
-    id: 'question',
-    label: 'User question',
-    sublabel: '?How do we rotate credentials safely??',
-    x: 90,
-    y: 190,
-    emoji: '??',
-    stepIndex: 0
-  },
-  {
-    id: 'embedding',
-    label: 'Embedding model',
-    sublabel: 'Text ? vector fingerprint',
-    x: 270,
-    y: 160,
-    emoji: '??',
-    stepIndex: 1
-  },
-  {
-    id: 'vector-store',
-    label: 'Vector database',
-    sublabel: 'Semantic nearest neighbours',
-    x: 470,
-    y: 190,
-    emoji: '???',
-    stepIndex: 2
-  },
-  {
-    id: 'reranker',
-    label: 'Hybrid reranker',
-    sublabel: 'Cosine + filters + metadata',
-    x: 690,
-    y: 160,
-    emoji: '??',
-    stepIndex: 3
-  },
-  {
-    id: 'answer',
-    label: 'Grounded answer',
-    sublabel: 'Citations + streaming tokens',
-    x: 890,
-    y: 190,
-    emoji: '??',
-    stepIndex: 4
-  }
-]
-
-const flowSequence = [
-  { nodeId: 'question', edges: [] as string[] },
-  { nodeId: 'embedding', edges: ['edge-question-embedding'] },
-  {
-    nodeId: 'vector-store',
-    edges: ['edge-embedding-vector', 'edge-vector-doc-0', 'edge-vector-doc-1', 'edge-vector-doc-2', 'edge-vector-doc-3']
-  },
-  { nodeId: 'reranker', edges: ['edge-vector-reranker'] },
-  { nodeId: 'answer', edges: ['edge-reranker-answer'] }
-]
-
-const STEP_DELAY = 950
-
-const RETRIEVER_OPTIONS: { mode: RetrieverMode; label: string; hint: string }[] = [
-  {
-    mode: 'hybrid',
-    label: 'Hybrid',
-    hint: 'Cosine + keyword boost'
-  },
-  {
-    mode: 'semantic',
-    label: 'Semantic',
-    hint: 'Embeddings only'
-  },
-  {
-    mode: 'keyword',
-    label: 'Keyword',
-    hint: 'Lexical filters'
-  }
-]
-
-const makeCurvedPath = (source: { x: number; y: number }, target: { x: number; y: number }) => {
-  const midX = (source.x + target.x) / 2
-  const controlY = source.y - 70
-  return `M ${source.x} ${source.y} C ${midX} ${controlY} ${midX} ${controlY} ${target.x} ${target.y}`
-}
-
-const makeStraightPath = (source: { x: number; y: number }, target: { x: number; y: number }) =>
-  `M ${source.x} ${source.y} L ${target.x} ${target.y}`
+import Link from 'next/link'
+import type { RagDataset } from './data'
+import { generateEmbedding, buildChunkIndex, simulateRetrieval, generateGroundedAnswer, type RagRetrievalResult } from './utils'
+import RagArchitectureDiagram from './RagArchitectureDiagram'
 
 type RagPipelineVisualizationProps = {
   dataset: RagDataset
 }
 
+const STEPS = [
+  {
+    id: 'query',
+    title: 'User Query',
+    description: 'The user enters a question in plaintext',
+    icon: FileText,
+    color: 'blue'
+  },
+  {
+    id: 'embed',
+    title: 'Embed Query',
+    description: 'Convert the query text into a dense vector representation',
+    icon: Cpu,
+    color: 'emerald'
+  },
+  {
+    id: 'search',
+    title: 'Vector Search',
+    description: 'Find similar chunks using cosine similarity',
+    icon: Search,
+    color: 'purple'
+  },
+  {
+    id: 'retrieve',
+    title: 'Retrieve Top Chunks',
+    description: 'Select the most relevant document chunks',
+    icon: Database,
+    color: 'amber'
+  },
+  {
+    id: 'compose',
+    title: 'Compose Prompt',
+    description: 'Assemble context and query into a grounded prompt',
+    icon: Code,
+    color: 'indigo'
+  },
+  {
+    id: 'generate',
+    title: 'Generate Answer',
+    description: 'LLM generates response with citations',
+    icon: Bot,
+    color: 'green'
+  }
+] as const
+
+// Step-specific titles and subheaders for the header section
+const STEP_HEADERS: Record<string, { title: string; subheader: string }> = {
+  query: {
+    title: 'Capture the user\'s question',
+    subheader: 'The query text is received and prepared for semantic processing. This plaintext input will be transformed into a numerical representation that enables meaning-based search.'
+  },
+  embed: {
+    title: 'Convert user\'s query to query embeddings',
+    subheader: 'The embedding model transforms the query text into a dense numerical vector. This vector captures semantic meaning, enabling similarity search where queries match documents by concept rather than exact keywords.'
+  },
+  search: {
+    title: 'Search the vector database for similar content',
+    subheader: 'The query embedding is compared against all stored document chunks using cosine similarity. This mathematical measure finds content that matches the query\'s meaning, even when wording differs.'
+  },
+  retrieve: {
+    title: 'Retrieve the most relevant document chunks',
+    subheader: 'The top-K chunks with highest similarity scores are selected. These chunks will ground the LLM\'s response, ensuring answers are tethered to actual source material rather than generated from memory alone.'
+  },
+  compose: {
+    title: 'Compose a grounded prompt with retrieved context',
+    subheader: 'The retrieved chunks are inserted into a prompt template alongside system instructions and the user\'s query. This "sandwiching" approach ensures the LLM only sees verified context, making responses citable and verifiable.'
+  },
+  generate: {
+    title: 'Generate an answer grounded in retrieved sources',
+    subheader: 'The LLM synthesizes the provided context into a coherent answer, citing specific sources. By only seeing retrieved chunks, the model produces accurate responses without hallucinating information not in the knowledge base.'
+  }
+}
+
+const EMBEDDING_MODEL = {
+  name: 'text-embedding-3-small',
+  provider: 'OpenAI',
+  dimensions: 1536,
+  maxTokens: 8191
+}
+
+const AUTO_ADVANCE_DELAYS = {
+  query: 0,
+  embed: 10000, // 10 seconds to show embedding model, then vectors
+  search: 11000, // 11 seconds to show search process
+  retrieve: 12000, // 12 seconds to show retrieved chunks with full details
+  compose: 11000, // 11 seconds to show prompt composition
+  generate: 12000 // 12 seconds to show final answer
+}
+
+// Educational content for each step
+const STEP_EDUCATION: Record<string, {
+  overview: string
+  whyItMatters: string
+  howItWorks: string
+  considerations?: string
+  nextStep?: string
+}> = {
+  query: {
+    overview: 'The user query is the starting point of every RAG pipeline. This plaintext question captures the user\'s intent and will be transformed through multiple stages to retrieve relevant information.',
+    whyItMatters: 'Well-formed queries lead to better retrieval. The same query processed through RAG will yield consistent, grounded answers—unlike pure LLM responses that can vary or hallucinate.',
+    howItWorks: 'The query text is normalized (trimmed, standardized) but otherwise kept as-is at this stage. It will be converted to a vector representation in the next step, enabling semantic search rather than keyword matching.',
+    nextStep: 'In the next step, this query will be passed to an embedding model that converts it into a dense vector—a mathematical representation of its semantic meaning.'
+  },
+  embed: {
+    overview: 'Embedding models convert text into dense numerical vectors that capture semantic meaning. These vectors enable similarity search: queries and documents with similar meanings will have similar vector representations.',
+    whyItMatters: 'Semantic search allows the system to find relevant content even when exact keywords don\'t match. For example, a query about "authentication failures" can match documents discussing "login errors" or "SSO issues" because their vectors are close in the embedding space.',
+    howItWorks: 'The embedding model (like OpenAI\'s text-embedding-3-small) uses a neural network trained on vast text corpora. It outputs a fixed-size vector (1536 dimensions here) where each dimension represents a learned semantic feature. Similar concepts cluster together in this high-dimensional space. To understand how text becomes tokens before embedding, see the <a href="/demos/tokenize" class="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid">tokenization demo</a>. For an interactive deep dive into embeddings, explore the <a href="/demos/embeddings" class="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid">embeddings demo</a>.',
+    considerations: 'Choosing the right embedding model matters: larger models may be more accurate but slower and more expensive. The same model must be used for both indexing (storing documents) and querying to ensure compatibility.',
+    nextStep: 'This query vector will now be compared against all stored document chunk vectors to find the most semantically similar content.'
+  },
+  search: {
+    overview: 'Vector similarity search compares the query embedding against all stored chunk embeddings using cosine similarity. This mathematical measure quantifies how "close" two vectors are in the embedding space.',
+    whyItMatters: 'Vector search enables finding relevant content by meaning, not just keywords. This is crucial for RAG because users often phrase questions differently than how information is stored in documents. Semantic similarity bridges this gap.',
+    howItWorks: 'Cosine similarity calculates the angle between two vectors, normalized by their magnitudes. The formula is: similarity = (A · B) / (||A|| × ||B||). Values range from -1 (opposite meaning) to 1 (identical meaning). The system computes this for every chunk and ranks them by score.',
+    considerations: 'Vector databases like Pinecone optimize this search for speed at scale using approximate nearest neighbor (ANN) algorithms. For production systems with millions of chunks, exact similarity would be too slow.',
+    nextStep: 'The top-ranked chunks will be retrieved and used to build context for the LLM, ensuring the answer is grounded in actual documents.'
+  },
+  retrieve: {
+    overview: 'Retrieval selects the top-K most similar chunks based on similarity scores. These chunks will become the "context" that grounds the LLM\'s response, preventing hallucinations and ensuring citations.',
+    whyItMatters: 'Quality retrieval is the foundation of trustworthy RAG. Poor chunks lead to irrelevant or misleading answers. The retrieved chunks are the only information the LLM will see, so precision matters more than recall here.',
+    howItWorks: 'After computing similarity scores, chunks are sorted by score (highest first). The top K chunks (typically 3-5) are selected. Hybrid retrieval can combine semantic similarity with keyword matching and metadata filters for better precision.',
+    considerations: 'The optimal K value balances context richness with prompt length limits. Too few chunks may miss important information; too many can dilute signal and exceed token budgets. Metadata filters (tags, dates, sources) can further refine results.',
+    nextStep: 'These retrieved chunks will be inserted (sandwiched) into an existing system prompt template. The system prompt defines the assistant\'s role, and the retrieved context is literally placed between the system instructions and the user query, creating a single grounded prompt.'
+  },
+  compose: {
+    overview: 'Prompt composition sandwiches the retrieved context chunks into an existing system prompt template. The system prompt defines the assistant\'s role and citation requirements, while the retrieved context from the previous step is literally inserted between the system instructions and the user query. This "sandwiching" approach ensures the LLM only sees the specific context retrieved, making responses verifiable and grounded.',
+    whyItMatters: 'Well-structured prompts dramatically improve answer quality. By explicitly providing context and asking for citations, we ensure the LLM stays grounded. The visual separation above shows how retrieved context (highlighted in amber) is inserted into the existing system prompt—this is the core mechanism that makes RAG more reliable than pure LLM responses.',
+    howItWorks: 'The prompt follows a template pattern: First, the system prompt (shown in indigo) defines the assistant\'s role and citation format—this exists independently of any query. Next, the retrieved context chunks (shown in amber, identical to what was retrieved in the previous step) are inserted into the middle. Finally, the user\'s question (shown in green) is appended. The entire prompt must fit within the model\'s context window, which constrains how much context can be included.',
+    considerations: 'Prompt engineering matters: clear instructions about citation format, handling uncertainty, and what to do when context is insufficient. Token limits require balancing chunk quantity, chunk size, and prompt overhead. The retrieved context must be identical to what was shown in the previous step—no modification occurs, just insertion into the template.',
+    nextStep: 'This complete prompt will be sent to the LLM, which will generate a response that synthesizes the provided context into a coherent answer with citations. The LLM only sees this single prompt containing the retrieved context sandwiched between the system instructions and query.'
+  },
+  generate: {
+    overview: 'The LLM generates a final answer based on the grounded prompt. By only seeing the retrieved context, it can produce accurate, citable responses without hallucinating information not in the knowledge base.',
+    whyItMatters: 'This final step demonstrates RAG\'s core value: combining the reasoning power of LLMs with the factual grounding of retrieval. Users get AI-powered answers they can verify by checking cited sources.',
+    howItWorks: 'The LLM processes the complete prompt (instructions + context + question) and generates a response token-by-token. The model is instructed to cite sources using markers like [1], [2] corresponding to the numbered context chunks. Streaming allows users to see answers appear in real-time.',
+    considerations: 'Production RAG systems monitor answer quality, citation accuracy, and user feedback. Guardrails can flag low-confidence answers or responses that cite sources incorrectly. Token usage and latency are key cost/performance metrics.',
+    nextStep: 'The complete answer with citations is returned to the user, completing the RAG pipeline. Each step worked together to transform a question into a grounded, verifiable response.'
+  }
+}
+
+// Helper function to render text with links
+function renderTextWithLinks(text: string, colorMuted: string) {
+  // Simple regex to find <a> tags and convert them to React Link components
+  const parts: (string | JSX.Element)[] = []
+  const linkRegex = /<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g
+  let lastIndex = 0
+  let match
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Add text before the link
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index))
+    }
+    // Add the Link component
+    parts.push(
+      <Link
+        key={match.index}
+        href={match[1] as any}
+        className="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid"
+      >
+        {match[2]}
+      </Link>
+    )
+    lastIndex = match.index + match[0].length
+  }
+  
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex))
+  }
+  
+  // If no links found, return original text
+  if (parts.length === 0) {
+    return text
+  }
+  
+  return <>{parts}</>
+}
+
+// Educational section component - always expanded and scrollable
+function EducationalSection({ 
+  stepId, 
+  color 
+}: { 
+  stepId: string
+  color: string 
+}) {
+  const content = STEP_EDUCATION[stepId]
+  
+  if (!content) return null
+
+  const colorClasses = {
+    blue: {
+      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      border: 'border-blue-200 dark:border-blue-800',
+      text: 'text-blue-900 dark:text-blue-100',
+      textMuted: 'text-blue-700 dark:text-blue-300',
+      icon: 'text-blue-600 dark:text-blue-400'
+    },
+    emerald: {
+      bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+      border: 'border-emerald-200 dark:border-emerald-800',
+      text: 'text-emerald-900 dark:text-emerald-100',
+      textMuted: 'text-emerald-700 dark:text-emerald-300',
+      icon: 'text-emerald-600 dark:text-emerald-400'
+    },
+    purple: {
+      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      border: 'border-purple-200 dark:border-purple-800',
+      text: 'text-purple-900 dark:text-purple-100',
+      textMuted: 'text-purple-700 dark:text-purple-300',
+      icon: 'text-purple-600 dark:text-purple-400'
+    },
+    amber: {
+      bg: 'bg-amber-50 dark:bg-amber-900/20',
+      border: 'border-amber-200 dark:border-amber-800',
+      text: 'text-amber-900 dark:text-amber-100',
+      textMuted: 'text-amber-700 dark:text-amber-300',
+      icon: 'text-amber-600 dark:text-amber-400'
+    },
+    indigo: {
+      bg: 'bg-indigo-50 dark:bg-indigo-900/20',
+      border: 'border-indigo-200 dark:border-indigo-800',
+      text: 'text-indigo-900 dark:text-indigo-100',
+      textMuted: 'text-indigo-700 dark:text-indigo-300',
+      icon: 'text-indigo-600 dark:text-indigo-400'
+    },
+    green: {
+      bg: 'bg-green-50 dark:bg-green-900/20',
+      border: 'border-green-200 dark:border-green-800',
+      text: 'text-green-900 dark:text-green-100',
+      textMuted: 'text-green-700 dark:text-green-300',
+      icon: 'text-green-600 dark:text-green-400'
+    }
+  }
+
+  const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue
+
+  // Get scrollbar color based on step color
+  const scrollbarColors: Record<string, string> = {
+    blue: '#3b82f640',
+    emerald: '#10b98140',
+    purple: '#a855f740',
+    amber: '#f59e0b40',
+    indigo: '#6366f140',
+    green: '#22c55e40'
+  }
+  const scrollbarColor = scrollbarColors[color] || scrollbarColors.blue
+
+  return (
+    <div className={`w-full space-y-4 ${colors.text} text-sm leading-relaxed`}>
+      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
+        <div className="flex items-center gap-2 mb-2">
+          <Lightbulb className={`h-4 w-4 ${colors.icon}`} />
+          <span className={`font-semibold ${colors.text} text-sm`}>Overview</span>
+        </div>
+        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.overview}</p>
+      </div>
+
+      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
+        <div className="flex items-center gap-2 mb-2">
+          <ArrowRight className={`h-4 w-4 ${colors.icon}`} />
+          <span className={`font-semibold ${colors.text} text-sm`}>Why this matters</span>
+        </div>
+        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.whyItMatters}</p>
+      </div>
+
+      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
+        <div className="flex items-center gap-2 mb-2">
+          <Cpu className={`h-4 w-4 ${colors.icon}`} />
+          <span className={`font-semibold ${colors.text} text-sm`}>How it works</span>
+        </div>
+        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{renderTextWithLinks(content.howItWorks, colors.textMuted)}</p>
+      </div>
+
+      {content.considerations && (
+        <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className={`h-4 w-4 ${colors.icon}`} />
+            <span className={`font-semibold ${colors.text} text-sm`}>Production considerations</span>
+          </div>
+          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.considerations}</p>
+        </div>
+      )}
+
+      {content.nextStep && (
+        <div className={`pt-3 border-t-2 ${colors.border} mt-4`}>
+          <div className="flex items-center gap-2 mb-2">
+            <ArrowRight className={`h-5 w-5 ${colors.icon}`} />
+            <span className={`font-semibold ${colors.text}`}>Next step</span>
+          </div>
+          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.nextStep}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function RagPipelineVisualization({ dataset }: RagPipelineVisualizationProps) {
-  const [query, setQuery] = useState<string>(dataset.sampleQueries[0] ?? '')
-  const [chunkSize, setChunkSize] = useState(90)
-  const [topK, setTopK] = useState(3)
-  const [retrieverMode, setRetrieverMode] = useState<RetrieverMode>('hybrid')
-  const [results, setResults] = useState<RagRetrievalResult[]>([])
-  const [answer, setAnswer] = useState<GeneratedAnswer | null>(null)
-  const [hoveredDocId, setHoveredDocId] = useState<string | null>(null)
-  const [flowIndex, setFlowIndex] = useState<number>(-1)
+  const [query] = useState<string>(dataset.sampleQueries[0] ?? 'How should we troubleshoot SSO provisioning failures?')
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [queryEmbedding, setQueryEmbedding] = useState<number[] | null>(null)
+  const [retrievalResults, setRetrievalResults] = useState<RagRetrievalResult[]>([])
+  const [composedPrompt, setComposedPrompt] = useState<string>('')
+  const [promptParts, setPromptParts] = useState<{ systemPrompt: string; contextSections: Array<{ text: string; docTitle: string; index: number }>; userQuery: string } | null>(null)
+  const [generatedAnswer, setGeneratedAnswer] = useState<string>('')
+  const [citations, setCitations] = useState<Array<{ title: string; chunkId: string }>>([])
+  const [showKeyboardHints, setShowKeyboardHints] = useState<boolean>(false)
+  const timeoutsRef = useRef<number[]>([])
 
-  const vectorNode = mainNodes.find((node) => node.id === 'vector-store')!
+  // Pre-compute chunks for the dataset
+  const chunks = useMemo(() => buildChunkIndex(dataset, 50), [dataset])
 
+  // Cleanup timeouts on unmount
   useEffect(() => {
-    setQuery(dataset.sampleQueries[0] ?? '')
-    setResults([])
-    setAnswer(null)
-    setFlowIndex(-1)
-    setIsPlaying(false)
-  }, [dataset])
+    return () => {
+      timeoutsRef.current.forEach((id) => clearTimeout(id))
+    }
+  }, [])
 
-  const chunkIndex = useMemo(() => buildChunkIndex(dataset, chunkSize), [dataset, chunkSize])
-
-  const docNodes = useMemo(() => {
-    const source = results.length > 0
-      ? results.map((result, index) => ({
-          id: result.chunk.id,
-          title: result.chunk.docTitle,
-          snippet: result.chunk.text.slice(0, 220).trim(),
-          rank: index
-        }))
-      : dataset.documents.slice(0, Math.min(4, dataset.documents.length)).map((doc, index) => ({
-          id: doc.id,
-          title: doc.title,
-          snippet: doc.content.slice(0, 220).trim(),
-          rank: index
-        }))
-
-    const count = source.length
-    const radius = 150
-
-    return source.map((doc, index) => {
-      const normalizedIndex = count > 1 ? index / (count - 1) : 0.5
-      const angle = (normalizedIndex - 0.5) * Math.PI * 0.85
-      const x = vectorNode.x + radius * Math.cos(angle)
-      const y = vectorNode.y + radius * Math.sin(angle)
-
-      return {
-        ...doc,
-        x,
-        y
+  const handleNext = useCallback(() => {
+    setCurrentStepIndex((prev) => {
+      if (prev < STEPS.length - 1) {
+        return prev + 1
       }
+      return prev
     })
-  }, [dataset, results, vectorNode.x, vectorNode.y])
+  }, [])
 
-  const activeDocIds = useMemo(() => new Set(results.map((result) => result.chunk.id)), [results])
-
-  const edges: PipelineEdge[] = useMemo(() => {
-    const baseEdges: PipelineEdge[] = [
-      {
-        id: 'edge-question-embedding',
-        source: 'question',
-        target: 'embedding',
-        stepIndex: 1
-      },
-      {
-        id: 'edge-embedding-vector',
-        source: 'embedding',
-        target: 'vector-store',
-        stepIndex: 2
-      },
-      {
-        id: 'edge-vector-reranker',
-        source: 'vector-store',
-        target: 'reranker',
-        stepIndex: 3
-      },
-      {
-        id: 'edge-reranker-answer',
-        source: 'reranker',
-        target: 'answer',
-        stepIndex: 4
-      }
-    ]
-
-    const docEdges: PipelineEdge[] = results.length > 0
-      ? docNodes.map((doc, index) => ({
-          id: `edge-vector-doc-${index}`,
-          source: 'vector-store',
-          target: doc.id,
-          stepIndex: 2
-        }))
-      : []
-
-    return [...baseEdges, ...docEdges]
-  }, [docNodes, results.length])
-
+  // Auto-advance logic
   useEffect(() => {
-    if (!isPlaying) {
+    if (!isPlaying || currentStepIndex >= STEPS.length - 1) {
+      setIsPlaying(false)
       return
     }
 
-    const timers: number[] = []
-    flowSequence.forEach((_step, index) => {
-      timers.push(
-        window.setTimeout(() => {
-          setFlowIndex(index)
-        }, index * STEP_DELAY)
-      )
-    })
+    const stepId = STEPS[currentStepIndex].id
+    const delay = AUTO_ADVANCE_DELAYS[stepId as keyof typeof AUTO_ADVANCE_DELAYS] || 3000
 
-    timers.push(
-      window.setTimeout(() => {
-        setIsPlaying(false)
-      }, flowSequence.length * STEP_DELAY + 350)
-    )
+    const timeout = window.setTimeout(() => {
+      handleNext()
+    }, delay)
+
+    timeoutsRef.current.push(timeout)
 
     return () => {
-      timers.forEach((id) => clearTimeout(id))
+      clearTimeout(timeout)
     }
-  }, [isPlaying])
+  }, [isPlaying, currentStepIndex, handleNext])
 
-  const handleRunPipeline = () => {
-    if (isPlaying || !query.trim()) return
 
-    const retrieved = simulateRetrieval({
-      query,
-      chunks: chunkIndex,
-      topK,
-      mode: retrieverMode
-    })
 
-    setResults(retrieved)
-    setAnswer(
-      retrieved.length
-        ? generateGroundedAnswer({
-            query,
-            selectedChunks: retrieved,
-            dataset
-          })
-        : null
-    )
-    setHoveredDocId(retrieved[0]?.chunk.id ?? null)
-    setFlowIndex(-1)
+  // Compute data for each step
+  useEffect(() => {
+    if (currentStepIndex >= 1) {
+      // Generate embedding
+      const embedding = generateEmbedding(query)
+      setQueryEmbedding(embedding)
+    }
+
+    if (currentStepIndex >= 2) {
+      // Perform retrieval (for Vector Search step and beyond)
+      const results = simulateRetrieval({
+        query,
+        chunks,
+        topK: 3,
+        mode: 'hybrid'
+      })
+      setRetrievalResults(results)
+    }
+
+    if (currentStepIndex >= 4) {
+      // Compose prompt
+      const results = simulateRetrieval({
+        query,
+        chunks,
+        topK: 3,
+        mode: 'hybrid'
+      })
+      const answer = generateGroundedAnswer({
+        query,
+        selectedChunks: results,
+        dataset
+      })
+      setComposedPrompt(answer.prompt)
+      setPromptParts(answer.promptParts || null)
+      setCitations(answer.citations)
+    }
+
+    if (currentStepIndex >= 5) {
+      // Generate answer
+      const results = simulateRetrieval({
+        query,
+        chunks,
+        topK: 3,
+        mode: 'hybrid'
+      })
+      const answer = generateGroundedAnswer({
+        query,
+        selectedChunks: results,
+        dataset
+      })
+      setGeneratedAnswer(answer.answer)
+    }
+  }, [currentStepIndex, query, chunks, dataset])
+
+  const handlePrevious = useCallback(() => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1)
+      setIsPlaying(false)
+    }
+  }, [currentStepIndex])
+
+  const handlePlayAll = useCallback(() => {
+    if (currentStepIndex === STEPS.length - 1) {
+      // Reset to beginning
+      setCurrentStepIndex(0)
+      setQueryEmbedding(null)
+      setRetrievalResults([])
+      setComposedPrompt('')
+      setPromptParts(null)
+      setGeneratedAnswer('')
+      setCitations([])
+    }
     setIsPlaying(true)
-  }
+  }, [currentStepIndex])
+
+  const handleReset = useCallback(() => {
+    setIsPlaying(false)
+    setCurrentStepIndex(0)
+    setQueryEmbedding(null)
+    setRetrievalResults([])
+    setComposedPrompt('')
+    setPromptParts(null)
+    setGeneratedAnswer('')
+    setCitations([])
+    timeoutsRef.current.forEach((id) => clearTimeout(id))
+    timeoutsRef.current = []
+  }, [])
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      const canGoNextLocal = currentStepIndex < STEPS.length - 1
+      const canGoPreviousLocal = currentStepIndex > 0
+
+      if (e.key === 'ArrowRight' && canGoNextLocal) {
+        handleNext()
+      } else if (e.key === 'ArrowLeft' && canGoPreviousLocal) {
+        handlePrevious()
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        handlePlayAll()
+      } else if (e.key === 'Escape') {
+        setShowKeyboardHints(false)
+      } else if (e.key === '?') {
+        setShowKeyboardHints((prev) => !prev)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [currentStepIndex, handleNext, handlePrevious, handlePlayAll])
+
+  const currentStep = STEPS[currentStepIndex]
+  const canGoNext = currentStepIndex < STEPS.length - 1
+  const canGoPrevious = currentStepIndex > 0
 
   return (
-    <div className="flex w-full flex-col gap-10">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-blue-700 dark:bg-blue-900/40 dark:text-blue-200">
-            Interactive pipeline explorer
-          </div>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-blue-900 dark:text-blue-100">
-            Follow a question as it becomes a grounded answer
-          </h2>
-          <p className="mt-2 text-sm text-blue-800/80 dark:text-blue-100/70">
-            Pick a prompt, tune the retrieval knobs, then step through each phase of the pipeline. Hover the documents in the graph to inspect the evidence powering the answer.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3 text-xs text-blue-600/80 dark:text-blue-200/70">
-          <button
-            type="button"
-            onClick={handleRunPipeline}
-            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
-            disabled={isPlaying}
+    <div className="space-y-8 rounded-2xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900 shadow-lg relative">
+      {/* Keyboard Hints */}
+      <AnimatePresence>
+        {showKeyboardHints && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-20 right-6 z-40 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-4 max-w-xs"
           >
-            <Sparkles className="h-4 w-4" />
-            {isPlaying ? 'Playing pipeline...' : 'Play pipeline'}
-          </button>
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 px-3 py-1 text-[11px] uppercase tracking-wide dark:border-blue-900/50">
-            Manual advance only
-          </span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 px-3 py-1 text-[11px] uppercase tracking-wide dark:border-blue-900/50">
-            Hover to inspect evidence
-          </span>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-6">
-        <div className="grid gap-4 md:grid-cols-3">
-          <label className="flex flex-col gap-2 border border-blue-200/70 bg-white/80 p-4 text-xs font-semibold uppercase tracking-wide text-blue-900 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-100">
-            Question to explore
-            <textarea
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              rows={2}
-              className="mt-1 h-[70px] w-full resize-none rounded-md border border-blue-200 bg-white/95 px-3 py-2 text-sm text-blue-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:border-blue-700 dark:bg-blue-950/40 dark:text-blue-100"
-              placeholder="How do we rotate credentials for our Pinecone clusters?"
-            />
-            <div className="flex flex-wrap gap-2 text-[11px] font-medium normal-case tracking-normal">
-              {dataset.sampleQueries.map((sample) => (
-                <button
-                  type="button"
-                  key={sample}
-                  onClick={() => setQuery(sample)}
-                  className="rounded-full border border-blue-200/70 bg-white px-3 py-1 text-blue-700 transition hover:border-blue-400 hover:text-blue-600 dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-100"
-                >
-                  {sample}
-                </button>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <Keyboard className="h-4 w-4" />
+                Keyboard Shortcuts
+              </h3>
+              <button
+                onClick={() => setShowKeyboardHints(false)}
+                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-          </label>
-
-          <div className="flex flex-col gap-2 border border-blue-200/70 bg-white/80 p-4 text-xs uppercase tracking-wide text-blue-900 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-100">
-            <span className="font-semibold">Chunk size</span>
-            <p className="text-lg font-semibold text-blue-900 dark:text-blue-100">{chunkSize} words</p>
-            <input
-              type="range"
-              min={60}
-              max={160}
-              step={10}
-              value={chunkSize}
-              onChange={(event) => setChunkSize(Number(event.target.value))}
-              className="mt-2 w-full accent-blue-500"
-            />
-            <span className="text-[11px] normal-case tracking-normal text-blue-700/70 dark:text-blue-200/70">Smaller chunks sharpen relevance; larger ones cut prompts.</span>
+            <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400">
+              <div className="flex justify-between">
+                <span>← →</span>
+                <span>Navigate steps</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Space/Enter</span>
+                <span>Play/Pause</span>
+              </div>
+              <div className="flex justify-between">
+                <span>?</span>
+                <span>Toggle hints</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Esc</span>
+                <span>Close overlays</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Top Navigation Bar - Compact horizontal layout */}
+      <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-2 dark:border-zinc-700 dark:bg-zinc-900/50">
+        {/* Left: Navigation + Step buttons */}
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={handlePrevious}
+              disabled={!canGoPrevious}
+              className="inline-flex items-center gap-0.5 rounded border border-blue-300 bg-white px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-200"
+            >
+              <ChevronLeft className="h-3 w-3" />
+              <span className="hidden sm:inline">Prev</span>
+            </button>
+            <div className="flex items-center rounded border border-blue-200 bg-blue-50 px-2 py-1 text-[10px] font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-200 shrink-0">
+              <span>{currentStepIndex + 1}/{STEPS.length}</span>
+            </div>
+            <button
+              onClick={handleNext}
+              disabled={!canGoNext}
+              className="inline-flex items-center gap-0.5 rounded border border-blue-300 bg-white px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-200"
+            >
+              <span className="hidden sm:inline">Next</span>
+              <ChevronRight className="h-3 w-3" />
+            </button>
           </div>
-
-          <div className="flex flex-col gap-2 border border-blue-200/70 bg-white/80 p-4 text-xs uppercase tracking-wide text-blue-900 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-100">
-            <span className="font-semibold">Context window</span>
-            <p className="text-lg font-semibold text-blue-900 dark:text-blue-100">Top {topK} chunks</p>
-            <input
-              type="range"
-              min={2}
-              max={5}
-              step={1}
-              value={topK}
-              onChange={(event) => setTopK(Number(event.target.value))}
-              className="mt-2 w-full accent-blue-500"
-            />
-            <span className="text-[11px] normal-case tracking-normal text-blue-700/70 dark:text-blue-200/70">Balance coverage with prompt size and latency.</span>
-          </div>
-
-          <div className="flex flex-col gap-3 border border-blue-200/70 bg-white/80 p-4 text-xs uppercase tracking-wide text-blue-900 shadow-sm dark:border-blue-900/60 dark:bg-blue-950/30 dark:text-blue-100">
-            <span className="font-semibold">Retriever blend</span>
-            <div className="flex flex-wrap gap-2 text-[11px] normal-case tracking-normal">
-              {RETRIEVER_OPTIONS.map((option) => (
+          <div className="h-4 w-px bg-blue-200 dark:bg-blue-800 shrink-0" />
+          <div className="flex items-center gap-1 overflow-x-auto min-w-0 flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {STEPS.map((step, index) => {
+              const Icon = step.icon
+              const isActive = index === currentStepIndex
+              const isComplete = index < currentStepIndex
+              return (
                 <button
-                  type="button"
-                  key={option.mode}
-                  onClick={() => setRetrieverMode(option.mode)}
-                  className={`rounded-full border px-3 py-1.5 font-semibold transition ${
-                    retrieverMode === option.mode
-                      ? 'border-blue-500 bg-blue-100 text-blue-700 dark:border-blue-300 dark:bg-blue-900/40 dark:text-blue-200'
-                      : 'border-blue-200 bg-white text-blue-600/70 hover:border-blue-400 dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-200/60'
+                  key={step.id}
+                  onClick={() => setCurrentStepIndex(index)}
+                  title={`${index + 1}. ${step.title}: ${step.description}`}
+                  className={`group flex items-center gap-1 rounded px-1.5 py-1 text-[10px] transition shrink-0 ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-900 shadow-sm dark:bg-blue-900/40 dark:text-blue-100'
+                      : isComplete
+                          ? 'text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20'
+                          : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  {option.label}
-                  <span className="ml-1 text-[10px] font-normal uppercase tracking-widest text-blue-500/80 dark:text-blue-300/70">
-                    {option.hint}
+                  <Icon className="h-3 w-3" />
+                  <span className="font-semibold">{index + 1}</span>
+                  {/* Step name - hidden on mobile, shown on larger screens */}
+                  <span className="hidden xl:inline-block ml-0.5 text-[9px] opacity-70 max-w-[60px] truncate">
+                    {step.title.split(' ')[0]}
                   </span>
                 </button>
-              ))}
+              )
+            })}
+          </div>
+        </div>
+        {/* Right: Action buttons */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setShowKeyboardHints(!showKeyboardHints)}
+            className="hidden sm:inline-flex items-center justify-center rounded border border-zinc-300 bg-white w-7 h-7 text-xs text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 transition"
+            title="Keyboard shortcuts"
+          >
+            <Keyboard className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={handlePlayAll}
+            className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md transition hover:shadow-lg"
+          >
+            {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+            <span className="hidden md:inline">{isPlaying ? 'Pause' : 'Play'}</span>
+          </button>
+          <button
+            onClick={handleReset}
+            className="inline-flex items-center gap-1 rounded border border-blue-500 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 dark:border-blue-700 dark:bg-zinc-900 dark:text-blue-200"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Reset</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Step Title and Subheader - Thin header section */}
+      <div className="border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3">
+        <motion.div
+          key={`step-header-${currentStepIndex}`}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="mx-auto max-w-6xl"
+        >
+          <h2 className={`text-lg font-semibold ${getStepColorClass(currentStepIndex)} mb-1`}>
+            {STEP_HEADERS[STEPS[currentStepIndex].id]?.title || STEPS[currentStepIndex].title}
+          </h2>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            {STEP_HEADERS[STEPS[currentStepIndex].id]?.subheader || STEPS[currentStepIndex].description}
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Unified Single-Flow Layout */}
+      <div className="relative w-full">
+        <div className="mx-auto px-4 py-4">
+          {/* Orientation headline above diagram */}
+          <div className="mb-6 text-center">
+            <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              Interact with the RAG pipeline step by step
+            </h3>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              See inputs, outputs, and understand the entire flow as data moves through each stage
+            </p>
+          </div>
+          
+          {/* Architecture Diagram - Large and prominent, clear spacing */}
+          <div className="mb-4">
+            <RagArchitectureDiagram 
+              currentStepIndex={currentStepIndex}
+              query={query}
+              queryEmbedding={queryEmbedding}
+              retrievalResults={retrievalResults}
+              composedPrompt={composedPrompt}
+              generatedAnswer={generatedAnswer}
+            />
+          </div>
+
+          {/* Data Inputs/Outputs - TOPMOST UNDER CANVAS */}
+          <AnimatePresence mode="wait">
+              {currentStepIndex === 0 && (
+                <motion.div
+                  key="step-0-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                >
+                  <div className="rounded-lg border-2 border-blue-300 dark:border-blue-700 bg-blue-50/80 dark:bg-blue-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">
+                        Input: User Query
+                      </div>
+                    </div>
+                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium leading-relaxed">{query}</div>
+                    <div className="mt-2 flex items-center gap-3 text-xs text-blue-600 dark:text-blue-400">
+                      <span>{query.split(/\s+/).length} words</span>
+                      <span>•</span>
+                      <span>{query.length} chars</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStepIndex === 1 && queryEmbedding && (
+                <motion.div
+                  key="step-1-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                >
+                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                        Input: Query Text
+                      </div>
+                    </div>
+                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium line-clamp-2">{query}</div>
+                  </div>
+                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Cpu className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                        Model: {EMBEDDING_MODEL.name}
+                      </div>
+                    </div>
+                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium">
+                      {EMBEDDING_MODEL.dimensions} dimensions • {EMBEDDING_MODEL.provider}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+                        Output: Embedding Vector
+                      </div>
+                    </div>
+                    <div className="text-sm font-mono text-zinc-900 dark:text-zinc-100 font-medium">
+                      [{EMBEDDING_MODEL.dimensions} dimensions]
+                    </div>
+                    <div className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+                      Sample: [{queryEmbedding.slice(0, 3).map(v => v.toFixed(3)).join(', ')}, ...]
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStepIndex === 2 && queryEmbedding && retrievalResults.length > 0 && (
+                <motion.div
+                  key="step-2-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4"
+                >
+                  <div className="rounded-lg border-2 border-purple-300 dark:border-purple-700 bg-purple-50/80 dark:bg-purple-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Database className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-purple-700 dark:text-purple-300">
+                        Vector DB Search Results: Top {retrievalResults.length} Retrieved Documents
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      {retrievalResults.map((r, i) => {
+                        const jsonPayload = {
+                          id: r.chunk.id,
+                          rank: i + 1,
+                          score: parseFloat((r.score * 100).toFixed(2)),
+                          similarity: parseFloat((r.similarity * 100).toFixed(2)),
+                          semanticScore: parseFloat((r.semanticScore * 100).toFixed(2)),
+                          keywordScore: parseFloat((r.keywordScore * 100).toFixed(2)),
+                          hybridScore: parseFloat((r.hybridScore * 100).toFixed(2)),
+                          document: {
+                            docId: r.chunk.docId,
+                            docTitle: r.chunk.docTitle,
+                            chunkId: r.chunk.id,
+                            content: r.chunk.text,
+                            metadata: {
+                              tags: r.chunk.tags,
+                              lastUpdated: r.chunk.lastUpdated,
+                              wordCount: r.chunk.wordCount,
+                              keywords: r.chunk.keywords.slice(0, 5)
+                            }
+                          },
+                          retrieval: {
+                            estimatedTokens: r.estimatedTokens,
+                            matchReasons: r.reasons,
+                            retrievedAt: new Date().toISOString()
+                          }
+                        }
+                        return (
+                          <div key={i} className="rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-zinc-900 p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                                Result #{i + 1} • Score: {(r.score * 100).toFixed(1)}%
+                              </span>
+                              <span className="text-xs text-purple-600 dark:text-purple-400 font-mono">
+                                {r.chunk.docTitle}
+                              </span>
+                            </div>
+                            <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-purple-100 dark:border-purple-900">
+                              {JSON.stringify(jsonPayload, null, 2)}
+                            </pre>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStepIndex === 3 && retrievalResults.length > 0 && (
+                <motion.div
+                  key="step-3-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                >
+                  <div className="rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-50/80 dark:bg-amber-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Database className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                        Retrieved: Top {retrievalResults.length} Chunks
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      {retrievalResults.map((r, i) => (
+                        <div key={i} className="flex items-center justify-between p-2 rounded bg-white/60 dark:bg-zinc-800/60">
+                          <span className="text-zinc-900 dark:text-zinc-100 font-semibold">#{i + 1}</span>
+                          <span className="text-amber-600 dark:text-amber-400 font-mono">{(r.score * 100).toFixed(1)}%</span>
+                          <span className="text-zinc-700 dark:text-zinc-300 text-[10px] truncate flex-1 ml-2">{r.chunk.docTitle}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {retrievalResults[0] && (
+                    <div className="md:col-span-2 rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-50/80 dark:bg-amber-900/30 p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FileText className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                        <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                          Top Match Preview
+                        </div>
+                      </div>
+                      <div className="text-sm text-zinc-900 dark:text-zinc-100 leading-relaxed line-clamp-4">
+                        {retrievalResults[0].chunk.text}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+              {currentStepIndex === 4 && composedPrompt && retrievalResults.length > 0 && (
+                <motion.div
+                  key="step-4-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="space-y-4"
+                >
+                  <div className="rounded-lg border-2 border-indigo-300 dark:border-indigo-700 bg-indigo-50/80 dark:bg-indigo-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Code className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
+                        App Server: Prompt Composition & Data Enrichment
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      {/* Input: Raw Retrieved Data */}
+                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
+                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+                          Input: Raw Retrieved Chunks ({retrievalResults.length} documents)
+                        </div>
+                        <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-indigo-100 dark:border-indigo-900 max-h-32 overflow-y-auto">
+                          {JSON.stringify({
+                            retrievedChunks: retrievalResults.map((r, i) => ({
+                              rank: i + 1,
+                              chunkId: r.chunk.id,
+                              docTitle: r.chunk.docTitle,
+                              content: r.chunk.text.substring(0, 80) + '...',
+                              metadata: {
+                                tags: r.chunk.tags,
+                                lastUpdated: r.chunk.lastUpdated
+                              },
+                              score: parseFloat((r.score * 100).toFixed(2))
+                            }))
+                          }, null, 2)}
+                        </pre>
+                      </div>
+
+                      {/* Application Enrichment */}
+                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
+                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+                          Application Processing: Context Enrichment
+                        </div>
+                        <div className="text-[10px] text-zinc-600 dark:text-zinc-400 space-y-1 mb-2">
+                          <div>✓ Adding source numbers and metadata</div>
+                          <div>✓ Formatting context sections with headers</div>
+                          <div>✓ Adding system instructions for citation format</div>
+                          <div>✓ Token estimation and validation</div>
+                          <div>✓ Preparing structured prompt template</div>
+                        </div>
+                        <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-indigo-100 dark:border-indigo-900 max-h-40 overflow-y-auto">
+                          {JSON.stringify({
+                            enrichedContext: {
+                              totalChunks: retrievalResults.length,
+                              totalTokens: retrievalResults.reduce((sum, r) => sum + r.estimatedTokens, 0),
+                              sources: retrievalResults.map((r, i) => ({
+                                sourceNumber: i + 1,
+                                title: r.chunk.docTitle,
+                                lastUpdated: r.chunk.lastUpdated,
+                                wordCount: r.chunk.wordCount,
+                                tags: r.chunk.tags
+                              })),
+                              systemInstructions: 'Cite source numbers in brackets when referencing information',
+                              citationFormat: '[1], [2], [3]'
+                            }
+                          }, null, 2)}
+                        </pre>
+                      </div>
+
+                      {/* Output: Composed Prompt with Highlighted Context */}
+                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
+                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
+                          Output: Grounded Prompt ({composedPrompt.split(/\s+/).length} tokens)
+                        </div>
+                        <div className="text-[9px] text-zinc-600 dark:text-zinc-400 mb-2 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-block w-3 h-3 rounded bg-indigo-200 dark:bg-indigo-800"></span>
+                            <span>System prompt (existing, always present)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-block w-3 h-3 rounded bg-amber-200 dark:bg-amber-800"></span>
+                            <span>Retrieved context (sandwiched from previous step)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="inline-block w-3 h-3 rounded bg-emerald-200 dark:bg-emerald-800"></span>
+                            <span>User query</span>
+                          </div>
+                        </div>
+                        <div className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-indigo-100 dark:border-indigo-900 max-h-64 overflow-y-auto leading-relaxed">
+                          {promptParts ? (
+                            <div className="space-y-2 whitespace-pre-wrap">
+                              {/* System Prompt */}
+                              <div>
+                                <span className="bg-indigo-100 dark:bg-indigo-900/60 px-1.5 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 text-indigo-900 dark:text-indigo-100 font-semibold">
+                                  {promptParts.systemPrompt}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Context:</span>
+                              </div>
+                              {/* Context Sections - Highlighted */}
+                              {promptParts.contextSections.map((section, idx) => (
+                                <div key={idx} className="pl-2 border-l-2 border-amber-300 dark:border-amber-700">
+                                  <span className="bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100">
+                                    {section.text}
+                                  </span>
+                                </div>
+                              ))}
+                              <div>
+                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Question: </span>
+                                <span className="bg-emerald-100 dark:bg-emerald-900/60 px-1.5 py-0.5 rounded border border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100 font-semibold">
+                                  {promptParts.userQuery}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Answer:</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <pre className="whitespace-pre-wrap">{composedPrompt}</pre>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStepIndex === 5 && generatedAnswer && (
+                <motion.div
+                  key="step-5-data"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
+                >
+                  <div className="rounded-lg border-2 border-green-300 dark:border-green-700 bg-green-50/80 dark:bg-green-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Code className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-300">
+                        Input: Grounded Prompt
+                      </div>
+                    </div>
+                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium">
+                      {composedPrompt.split(/\s+/).length} tokens sent to LLM
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 rounded-lg border-2 border-green-300 dark:border-green-700 bg-green-50/80 dark:bg-green-900/30 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bot className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                      <div className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-300">
+                        Output: Generated Answer
+                      </div>
+                    </div>
+                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium leading-relaxed line-clamp-4">
+                      {generatedAnswer}
+                    </div>
+                    {citations.length > 0 && (
+                      <div className="mt-3 pt-3 border-t-2 border-green-200 dark:border-green-800">
+                        <div className="flex items-center gap-2 text-xs text-green-700 dark:text-green-300">
+                          <FileText className="h-3 w-3" />
+                          <span className="font-semibold">{citations.length} citation{citations.length > 1 ? 's' : ''}:</span>
+                          <span className="text-green-600 dark:text-green-400">{citations.map(c => c.title).join(', ')}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+          {/* Progress Indicator */}
+          <div className="mt-6 mb-4">
+            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-2">
+              <span>Pipeline Progress</span>
+              <span>{Math.round(((currentStepIndex + 1) / STEPS.length) * 100)}%</span>
+            </div>
+            <div className="h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <motion.div
+                className={`h-full rounded-full ${getStepColorClass(currentStepIndex).replace('text-', 'bg-').replace('dark:text-', 'dark:bg-')}`}
+                initial={{ width: 0 }}
+                animate={{ width: `${((currentStepIndex + 1) / STEPS.length) * 100}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+          </div>
+
+          {/* Step Title and Description */}
+          <div className="mt-6 mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`flex items-center justify-center w-10 h-10 rounded-lg ${getStepColorClass(currentStepIndex).replace('text-', 'bg-').replace('dark:text-', 'dark:bg-')} bg-opacity-10 dark:bg-opacity-20`}>
+                {(() => {
+                  const Icon = currentStep.icon
+                  return <Icon className={`h-5 w-5 ${getStepColorClass(currentStepIndex)}`} />
+                })()}
+              </div>
+              <div>
+                <h3 className={`text-xl font-semibold ${getStepColorClass(currentStepIndex)}`}>
+                  Step {currentStepIndex + 1}: {currentStep.title}
+                </h3>
+                <p className={`text-sm text-zinc-600 dark:text-zinc-400`}>
+                  {currentStep.description}
+                </p>
+              </div>
+            </div>
+            
+            {/* Educational Content - Inline */}
+            <div className="mt-6">
+              <EducationalSection 
+                stepId={STEPS[currentStepIndex].id} 
+                color={getStepColorName(currentStepIndex)} 
+              />
             </div>
           </div>
         </div>
-
-        <div className="relative min-h-[340px]">
-          <svg viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`} className="h-full w-full">
-              <defs>
-                <linearGradient id="pipeline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#2563eb" />
-                  <stop offset="100%" stopColor="#10b981" />
-                </linearGradient>
-                <filter id="glow" filterUnits="userSpaceOnUse">
-                  <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              {edges.map((edge) => {
-                const source = mainNodes.find((node) => node.id === edge.source) || docNodes.find((doc) => doc.id === edge.source)
-                const target = mainNodes.find((node) => node.id === edge.target) || docNodes.find((doc) => doc.id === edge.target)
-                if (!source || !target) {
-                  return null
-                }
-
-                const stepReached = flowIndex >= edge.stepIndex
-                const isCurrent = flowIndex === edge.stepIndex
-                const path = makeStraightPath(source, target)
-
-                return (
-                  <path
-                    key={edge.id}
-                    d={path}
-                    className={`transition-all duration-500 ${
-                      stepReached
-                        ? 'stroke-[url(#pipeline-gradient)] opacity-100'
-                        : 'stroke-blue-200 dark:stroke-blue-900/60 opacity-60'
-                    } ${isCurrent ? 'stroke-[4]' : 'stroke-[2.2]'}`}
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeDasharray={stepReached ? (isCurrent ? '8 4' : '0') : '6 6'}
-                  />
-                )
-              })}
-
-            {[...mainNodes, ...docNodes].map((node) => {
-              const isDoc = !('stepIndex' in node)
-              const docNode = isDoc ? (node as DocNode) : null
-              const stepIndex = isDoc ? 2 : (node as PipelineNode).stepIndex
-              const visited = flowIndex >= stepIndex
-              const active = flowIndex === stepIndex
-              const isSelectedDoc = isDoc && docNode && activeDocIds.has(docNode.id)
-              const radius = isDoc ? (hoveredDocId === node.id ? 32 : isSelectedDoc ? 26 : 20) : 34
-
-              const circleClass = (() => {
-                if (!isDoc) {
-                  if (active) return 'fill-blue-600 stroke-blue-300'
-                  if (visited) return 'fill-blue-100 stroke-blue-400 dark:fill-blue-900/60 dark:stroke-blue-300'
-                  return 'fill-white stroke-blue-200 dark:fill-zinc-900 dark:stroke-blue-900/60'
-                }
-                if (hoveredDocId === node.id) return 'fill-blue-500 stroke-blue-200'
-                if (isSelectedDoc) return 'fill-blue-100 stroke-blue-400 dark:fill-blue-900/60 dark:stroke-blue-300'
-                return 'fill-white stroke-blue-200 dark:fill-zinc-900 dark:stroke-blue-900/60'
-              })()
-
-              const textClass = (() => {
-                if (!isDoc) {
-                  if (active) return 'fill-white'
-                  if (visited) return 'fill-blue-700 dark:fill-blue-100'
-                  return 'fill-blue-500/80 dark:fill-blue-200/70'
-                }
-                if (hoveredDocId === node.id) return 'fill-white'
-                if (isSelectedDoc) return 'fill-blue-700 dark:fill-blue-100'
-                return 'fill-blue-500/80 dark:fill-blue-200/70'
-              })()
-
-              const label = isDoc ? `#${(docNode?.rank ?? 0) + 1}` : (node as PipelineNode).emoji
-
-              return (
-                <g
-                  key={node.id}
-                  transform={`translate(${node.x}, ${node.y})`}
-                  className="cursor-pointer"
-                  onMouseEnter={() => {
-                    if (isDoc) setHoveredDocId(node.id)
-                  }}
-                  onMouseLeave={() => {
-                    if (isDoc) setHoveredDocId(null)
-                  }}
-                >
-                  <circle
-                    r={radius}
-                    className={`transition-all duration-300 ${circleClass}`}
-                    strokeWidth={isDoc ? 2 : 3}
-                    filter={active ? 'url(#glow)' : undefined}
-                  />
-                  <text className={`pointer-events-none select-none text-center text-xs font-semibold ${textClass}`} dy={isDoc ? 4 : -2}>
-                    {label}
-                  </text>
-                </g>
-              )
-            })}
-
-            {mainNodes.map((node) => {
-              const active = flowIndex === node.stepIndex
-              const visited = flowIndex >= node.stepIndex
-
-              return (
-                <g key={`${node.id}-labels`} transform={`translate(${node.x}, ${node.y})`} className="pointer-events-none select-none">
-                  <text
-                    textAnchor="middle"
-                    dy={52}
-                    className={`text-sm font-semibold ${visited ? 'fill-blue-900 dark:fill-blue-100' : 'fill-blue-700/70 dark:fill-blue-200/70'}`}
-                  >
-                    {node.label}
-                  </text>
-                  <text
-                    textAnchor="middle"
-                    dy={70}
-                    className={`text-[11px] ${active ? 'fill-blue-700 dark:fill-blue-200' : 'fill-blue-600/60 dark:fill-blue-200/60'}`}
-                  >
-                    {node.sublabel}
-                  </text>
-                </g>
-              )
-            })}
-
-            {docNodes.map((doc) => (
-              <g key={`${doc.id}-label`} transform={`translate(${doc.x}, ${doc.y})`} className="pointer-events-none select-none">
-                <text textAnchor="middle" dy={38} className="text-[11px] fill-blue-700/80 dark:fill-blue-200/70">
-                  {doc.title.length > 30 ? `${doc.title.slice(0, 30)}...` : doc.title}
-                </text>
-              </g>
-            ))}
-          </svg>
-        </div>
-
-      <div className="flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[280px] space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-900 dark:text-blue-100">Retrieved context</h3>
-          {results.length === 0 ? (
-            <p className="text-sm text-blue-700/70 dark:text-blue-200/70">Run the pipeline to highlight which chunks the retriever trusts for this question.</p>
-          ) : (
-            results.map((result, index) => (
-              <div
-                key={result.chunk.id}
-                className="rounded-xl border border-blue-100 bg-white/80 p-4 text-sm text-blue-900 transition hover:border-blue-300 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-100"
-              >
-                <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-blue-500/80 dark:text-blue-300/70">
-                  <span>Source {index + 1}</span>
-                  <span>{(result.hybridScore * 100).toFixed(0)}% match</span>
-                </div>
-                <p className="mt-2 font-semibold">{result.chunk.docTitle}</p>
-                <p className="mt-1 text-sm text-blue-800/80 dark:text-blue-100/70 line-clamp-3">{result.chunk.text}</p>
-              </div>
-            ))
-          )}
-        </div>
-        <div className="flex-1 min-w-[280px] space-y-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-900 dark:text-blue-100">Grounded answer snapshot</h3>
-          {answer ? (
-            <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/70 p-4 text-sm text-emerald-900 shadow-sm dark:border-emerald-800/60 dark:bg-emerald-900/30 dark:text-emerald-100">
-              <p className="whitespace-pre-wrap leading-relaxed">{answer.answer}</p>
-              <div className="mt-3 flex flex-wrap gap-3 text-xs text-emerald-700/80 dark:text-emerald-200/70">
-                <span>Prompt tokens: {answer.promptTokens}</span>
-                <span>Response tokens: {answer.responseTokens}</span>
-                <span>Latency ~ {Math.round(answer.estimatedLatencyMs)} ms</span>
-                <span>Cost ~ ${answer.estimatedCostUsd.toFixed(4)}</span>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-blue-700/70 dark:text-blue-200/70">After you play the pipeline, you will see the grounded response, token usage, and estimated runtime cost here.</p>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-5 flex items-center gap-3 text-xs text-blue-700/70 dark:text-blue-200/70">
-        <MousePointerClick className="h-3.5 w-3.5" />
-        <span>Tip: rerun the animation after switching datasets or retriever settings to compare how the flow changes.</span>
       </div>
     </div>
-  </div>
   )
+}
+
+// Helper function for step colors
+function getStepColorClass(stepIndex: number, muted = false): string {
+  const colors = [
+    muted ? 'text-blue-700 dark:text-blue-300' : 'text-blue-600 dark:text-blue-400',
+    muted ? 'text-emerald-700 dark:text-emerald-300' : 'text-emerald-600 dark:text-emerald-400',
+    muted ? 'text-purple-700 dark:text-purple-300' : 'text-purple-600 dark:text-purple-400',
+    muted ? 'text-amber-700 dark:text-amber-300' : 'text-amber-600 dark:text-amber-400',
+    muted ? 'text-indigo-700 dark:text-indigo-300' : 'text-indigo-600 dark:text-indigo-400',
+    muted ? 'text-green-700 dark:text-green-300' : 'text-green-600 dark:text-green-400'
+  ]
+  return colors[stepIndex] || colors[0]
+}
+
+// Helper function for step color names
+function getStepColorName(stepIndex: number): string {
+  const colors = ['blue', 'emerald', 'purple', 'amber', 'indigo', 'green']
+  return colors[stepIndex] || colors[0]
 }

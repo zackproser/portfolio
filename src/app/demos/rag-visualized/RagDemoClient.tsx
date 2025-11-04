@@ -1,33 +1,19 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
-  AlertTriangle,
-  Gauge,
-  Layers,
   ShieldCheck,
-  Sparkles,
   Workflow,
+  Gauge,
   NotebookPen,
   LayoutDashboard,
-  LifeBuoy,
-  ArrowRight
+  LifeBuoy
 } from 'lucide-react'
 
-import { SAMPLE_DATASETS, type RagDataset } from './data'
+import { SAMPLE_DATASETS } from './data'
 import RagPipelineVisualization from './RagPipelineVisualization'
-
-function formatNumber(value: number): string {
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(1)}k`
-  }
-  return value.toString()
-}
-
-function roundToTwo(value: number): number {
-  return Math.round(value * 100) / 100
-}
 
 const heroHighlights = [
   {
@@ -47,83 +33,15 @@ const heroHighlights = [
   }
 ] as const
 
-function DatasetSummary({ dataset }: { dataset: RagDataset }) {
-  const stats = useMemo(() => {
-    const wordCount = dataset.documents.reduce((total, doc) => {
-      return total + doc.content.split(/\s+/).filter(Boolean).length
-    }, 0)
-
-    const tags = dataset.documents.flatMap((doc) => doc.tags)
-    const tagCounts = tags.reduce<Record<string, number>>((acc, tag) => {
-      acc[tag] = (acc[tag] || 0) + 1
-      return acc
-    }, {})
-
-    const popularTags = Object.entries(tagCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4)
-
-    return {
-      wordCount,
-      documentCount: dataset.documents.length,
-      popularTags
-    }
-  }, [dataset])
-
-  return (
-    <div className="grid gap-4 sm:grid-cols-3">
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-800 dark:bg-blue-900/20">
-        <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
-          <Layers className="h-4 w-4" />
-          <span className="font-medium">Documents</span>
-        </div>
-        <p className="mt-2 text-2xl font-semibold text-blue-800 dark:text-blue-200">
-          {stats.documentCount}
-        </p>
-        <p className="text-xs text-blue-600 dark:text-blue-300/80">Unique sources ready for retrieval</p>
-      </div>
-      <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm dark:border-emerald-800 dark:bg-emerald-900/20">
-        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-          <Gauge className="h-4 w-4" />
-          <span className="font-medium">Word count</span>
-        </div>
-        <p className="mt-2 text-2xl font-semibold text-emerald-800 dark:text-emerald-200">
-          {formatNumber(stats.wordCount)}
-        </p>
-        <p className="text-xs text-emerald-600 dark:text-emerald-300/80">Fuel for rich semantic context</p>
-      </div>
-      <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 text-sm dark:border-purple-800 dark:bg-purple-900/20">
-        <div className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
-          <Sparkles className="h-4 w-4" />
-          <span className="font-medium">Top tags</span>
-        </div>
-        <div className="mt-2 flex flex-wrap gap-2 text-xs">
-          {stats.popularTags.map(([tag, count]) => (
-            <span
-              key={tag}
-              className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 text-purple-700 dark:bg-purple-800/60 dark:text-purple-200"
-            >
-              #{tag}
-              <span className="text-[10px] text-purple-500 dark:text-purple-300/80">{count}</span>
-            </span>
-          ))}
-        </div>
-        <p className="mt-2 text-xs text-purple-600 dark:text-purple-300/80">Instant filters for governance</p>
-      </div>
-    </div>
-  )
-}
 
 export default function RagDemoClient() {
-  const [datasetId, setDatasetId] = useState<string>(SAMPLE_DATASETS[0].id)
-
-  const dataset = useMemo(() => SAMPLE_DATASETS.find((item) => item.id === datasetId) ?? SAMPLE_DATASETS[0], [datasetId])
+  const dataset = useMemo(() => SAMPLE_DATASETS[0], [])
 
   return (
     <div className="space-y-16">
-      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 px-6 py-7 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
-        <div className="mx-auto max-w-6xl space-y-6">
-          <div className="space-y-3 text-center">
+      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 px-6 py-4 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
+        <div className="mx-auto max-w-6xl space-y-4">
+          <div className="space-y-2 text-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
               Why RAG matters right now
             </div>
@@ -135,15 +53,15 @@ export default function RagDemoClient() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             {heroHighlights.map(({ title, description, icon: Icon }) => (
               <div
                 key={title}
-                className="rounded-xl border border-blue-200 bg-white/90 p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-blue-900/60 dark:bg-zinc-900/70"
+                className="rounded-xl border border-blue-200 bg-white/90 p-4 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-blue-900/60 dark:bg-zinc-900/70"
               >
-                <Icon className="h-6 w-6 text-blue-600 dark:text-blue-300" />
-                <h3 className="mt-3 text-base font-semibold text-blue-900 dark:text-blue-100">{title}</h3>
-                <p className="mt-2 text-sm text-blue-800/80 dark:text-blue-100/70">{description}</p>
+                <Icon className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                <h3 className="mt-2 text-base font-semibold text-blue-900 dark:text-blue-100">{title}</h3>
+                <p className="mt-1.5 text-sm text-blue-800/80 dark:text-blue-100/70">{description}</p>
               </div>
             ))}
           </div>
@@ -160,158 +78,76 @@ export default function RagDemoClient() {
 
       <RagPipelineVisualization dataset={dataset} />
 
-      <section className="space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Dataset workbench</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Choose the corpus that fuels the visualization, inspect its docs, and understand the metadata the retriever leans on.</p>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-            <AlertTriangle className="h-4 w-4" /> No uploads in this demo; sample corpora only.
-          </div>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {SAMPLE_DATASETS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setDatasetId(item.id)}
-              className={`flex h-full flex-col gap-3 rounded-xl border p-5 text-left transition focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-zinc-700 ${
-                datasetId === item.id
-                  ? 'border-blue-500 bg-blue-50 shadow-sm dark:border-blue-400 dark:bg-blue-900/20'
-                  : 'border-zinc-200 bg-white/80 hover:-translate-y-0.5 hover:shadow-md dark:bg-zinc-900/70'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Corpus</p>
-                <span
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: item.color }}
+      <section className="relative overflow-hidden">
+        {/* Subtle background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-emerald-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-emerald-950/10" />
+        
+        <div className="relative mx-auto max-w-4xl px-6 py-16 md:py-20 lg:py-24">
+          <div className="space-y-8">
+            {/* Content */}
+            <div className="space-y-6 text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200">
+                Build production RAG
+              </div>
+              
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl lg:text-5xl">
+                Build the Production Pipeline This Demo is Inspired By
+              </h2>
+              
+              <p className="text-base leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-lg max-w-2xl mx-auto">
+                Follow the exact system I refined while leading RAG architecture at Pinecone. The premium tutorial includes the notebook that preprocesses your data, the Next.js app that ships to Vercel, and direct email support when you hit edge cases.
+              </p>
+
+              {/* Feature Grid - More refined */}
+              <div className="grid gap-3 sm:grid-cols-3 text-zinc-600 dark:text-zinc-300 max-w-3xl mx-auto">
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
+                  <NotebookPen className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm leading-relaxed">Step-by-step Jupyter notebook for chunking, embeddings, and Pinecone indexing.</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
+                  <LayoutDashboard className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm leading-relaxed">Production-ready Next.js + Vercel AI SDK interface with streaming, citations, and guardrails.</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
+                  <LifeBuoy className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm leading-relaxed">Direct email support from me while you adapt the pipeline to your stack.</span>
+                </div>
+              </div>
+
+              {/* CTA Buttons - More refined */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2 justify-center">
+                <Link
+                  href="/checkout?product=rag-pipeline-tutorial&type=blog"
+                  className="inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  Get the $149 Tutorial →
+                </Link>
+                <Link
+                  href="/products/rag-pipeline-tutorial"
+                  className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-blue-300/60 bg-white/80 text-blue-700 backdrop-blur-sm hover:bg-blue-50/80 hover:border-blue-400 transition-all dark:border-blue-700/60 dark:bg-zinc-900/80 dark:text-blue-200 dark:hover:bg-zinc-800/80 dark:hover:border-blue-600"
+                >
+                  Preview the Curriculum
+                </Link>
+              </div>
+            </div>
+
+            {/* RAG Pipeline Image - Centered below content */}
+            <div className="relative max-w-3xl mx-auto">
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 h-32 w-32 rounded-full bg-blue-200/20 blur-3xl dark:bg-blue-800/20" />
+              <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-emerald-200/20 blur-2xl dark:bg-emerald-800/20" />
+              
+              <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-2xl ring-1 ring-black/5 dark:bg-zinc-900/80 dark:ring-white/10">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-950/30" />
+                <Image
+                  src="https://zackproser.b-cdn.net/images/rag-demo.webp"
+                  alt="RAG pipeline production interface showing chat with citations and streaming responses"
+                  width={800}
+                  height={600}
+                  className="relative h-auto w-full object-cover"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">{item.name}</h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-300">{item.description}</p>
-              <div className="mt-auto flex flex-wrap gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-                {item.sampleQueries.map((sample) => (
-                  <span key={sample} className="rounded-full bg-zinc-100 px-2 py-1 dark:bg-zinc-800">{sample}</span>
-                ))}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <DatasetSummary dataset={dataset} />
-
-        <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white/80 dark:border-zinc-700 dark:bg-zinc-900/70">
-          <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-            <thead className="bg-zinc-50 text-left text-xs uppercase tracking-wide text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
-              <tr>
-                <th className="px-6 py-3">Title</th>
-                <th className="px-6 py-3">Tags</th>
-                <th className="px-6 py-3">Last updated</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-              {dataset.documents.map((doc) => (
-                <tr key={doc.id} className="hover:bg-blue-50/40 dark:hover:bg-blue-900/10">
-                  <td className="px-6 py-4 font-medium text-zinc-900 dark:text-zinc-100">{doc.title}</td>
-                  <td className="px-6 py-4 text-xs text-zinc-500 dark:text-zinc-400">{doc.tags.join(', ')}</td>
-                  <td className="px-6 py-4 text-xs text-zinc-500 dark:text-zinc-400">{doc.lastUpdated}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 p-8 shadow-lg dark:border-amber-400/40">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-4 text-white">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-              Premium RAG pipeline course
             </div>
-            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Build the production pipeline this demo is inspired by
-            </h2>
-            <p className="max-w-2xl text-sm sm:text-base text-white/90">
-              Follow the exact system I refined while leading RAG architecture at Pinecone. The premium tutorial includes the notebook that preprocesses your data, the Next.js app that ships to Vercel, and direct email support when you hit edge cases.
-            </p>
-            <div className="grid gap-3 text-sm text-white/90 sm:grid-cols-2">
-              <div className="flex items-start gap-2">
-                <NotebookPen className="mt-0.5 h-5 w-5 flex-shrink-0" />
-                <span>Step-by-step Jupyter notebook for chunking, embeddings, and Pinecone indexing.</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <LayoutDashboard className="mt-0.5 h-5 w-5 flex-shrink-0" />
-                <span>Production-ready Next.js + Vercel AI SDK interface with streaming, citations, and guardrails.</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <LifeBuoy className="mt-0.5 h-5 w-5 flex-shrink-0" />
-                <span>Direct email support from me while you adapt the pipeline to your stack.</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3 text-sm text-white/90">
-            <Link
-              href="/checkout?product=rag-pipeline-tutorial&type=blog"
-              className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-base font-semibold text-amber-600 shadow-lg transition hover:bg-white/90"
-            >
-              Get the $149 tutorial
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href="/products/rag-pipeline-tutorial"
-              className="inline-flex items-center justify-center rounded-md border border-white/40 px-5 py-2.5 text-sm font-medium text-white/90 transition hover:bg-white/10"
-            >
-              Preview the curriculum
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4 rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/70">
-        <div className="flex items-center gap-3">
-          <Workflow className="h-6 w-6 text-blue-600 dark:text-blue-300" />
-          <div>
-            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Production rollout checklist</h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Keep crews aligned as you graduate this prototype into a live copilot.</p>
-          </div>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-700 dark:bg-zinc-900">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Operational guardrails</h3>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
-              <li>- Monitor embedding drift and retrain on fresh docs quarterly.</li>
-              <li>- Gate answers above a risk score threshold for human review.</li>
-              <li>- Log every prompt/context pair for auditing and evals.</li>
-            </ul>
-          </div>
-          <div className="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50 p-5 dark:border-zinc-700 dark:bg-zinc-900">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Team enablement</h3>
-            <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-300">
-              <li>- Ship a self-serve evaluation dashboard for product owners.</li>
-              <li>- Document how to add new data sources and run regression tests.</li>
-              <li>- Pair this UI with simple KPI alerts (latency, cost, accuracy).</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-zinc-200 bg-gradient-to-br from-blue-600 via-blue-500 to-emerald-500 p-8 text-white shadow-sm dark:border-blue-400/50">
-        <div className="mx-auto flex max-w-3xl flex-col gap-4 text-center">
-          <h2 className="text-3xl font-semibold tracking-tight">Need this shipped for your org?</h2>
-          <p className="text-base text-blue-50/90">
-            I help teams stand up resilient RAG platforms - from data plumbing to developer experience - so they can deliver grounded copilots without burning headcount on custom model training.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-2 font-semibold text-blue-700 shadow-sm transition hover:bg-white"
-            >
-              Book a working session
-            </Link>
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/50 px-4 py-2 text-blue-50">
-              <ShieldCheck className="h-4 w-4" /> Senior AI/ML infrastructure & DX at WorkOS
-            </span>
           </div>
         </div>
       </section>
