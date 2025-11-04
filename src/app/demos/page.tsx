@@ -7,7 +7,7 @@ import { createMetadata } from '@/utils/createMetadata'
 const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-hero.webp'
 const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
-const ragVisualizedHero = '/modern-coding-og-background.png'
+const ragVisualizedHero = 'https://zackproser.b-cdn.net/images/rag-demo.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
