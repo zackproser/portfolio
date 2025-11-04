@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import {
   ShieldCheck,
   Workflow,
@@ -128,24 +127,6 @@ export default function RagDemoClient() {
                 >
                   Preview the Curriculum
                 </Link>
-              </div>
-            </div>
-
-            {/* RAG Pipeline Image - Centered below content */}
-            <div className="relative max-w-3xl mx-auto">
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 h-32 w-32 rounded-full bg-blue-200/20 blur-3xl dark:bg-blue-800/20" />
-              <div className="absolute -bottom-4 -left-4 h-24 w-24 rounded-full bg-emerald-200/20 blur-2xl dark:bg-emerald-800/20" />
-              
-              <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-2xl ring-1 ring-black/5 dark:bg-zinc-900/80 dark:ring-white/10">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-950/30" />
-                <Image
-                  src="https://zackproser.b-cdn.net/images/rag-demo.webp"
-                  alt="RAG pipeline production interface showing chat with citations and streaming responses"
-                  width={800}
-                  height={600}
-                  className="relative h-auto w-full object-cover"
-                />
               </div>
             </div>
           </div>
