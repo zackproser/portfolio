@@ -143,6 +143,12 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
     : (processedMetadata.title as any)?.default || 'Untitled';
 
 
+  // Normalize commerce.requiresEmail: allow string flag values like "sign in required"
+  if (processedMetadata.commerce && typeof (processedMetadata.commerce as any).requiresEmail === 'string') {
+    // Any non-empty string will be treated as true to enable the gate
+    (processedMetadata.commerce as any).requiresEmail = true as any;
+  }
+
   const content: Content = {
     _id: contentId,
     slug: finalContentSlug, // Full URL path slug
@@ -459,13 +465,14 @@ export function renderPaywalledContent(
   MdxContent: React.ComponentType,
   content: Content, // Use the processed Content type
   hasPurchased: boolean,
-  isSubscribed: boolean
+  isSubscribed: boolean,
+  isAuthenticated: boolean
 ) {
   // Determine if we should show the full content
   const showFullContent =
     (!content.commerce?.isPaid && !content.commerce?.requiresEmail) ||
     hasPurchased ||
-    (content.commerce?.requiresEmail && isSubscribed);
+    (content.commerce?.requiresEmail && isSubscribed && isAuthenticated);
 
   // Get default paywall text based on content type
   const defaultText = getDefaultPaywallText(content.type);
@@ -501,6 +508,7 @@ export function renderPaywalledContent(
       buttonText: content.commerce?.buttonText || defaultText.buttonText,
       requiresEmail: content.commerce?.requiresEmail,
       isSubscribed: isSubscribed,
+      isAuthenticated: isAuthenticated,
       // Pass content object itself if ArticleContent needs more data
       content: content,
     }
