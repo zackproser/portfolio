@@ -6,6 +6,7 @@ import { Globe, Server, Database, Cpu, ArrowRight, Zap, Layers } from 'lucide-re
 
 interface RagArchitectureDiagramProps {
   currentStepIndex: number
+  stepTitle?: string
   // Data for showing actual content in animations
   query?: string
   queryEmbedding?: number[] | null
@@ -412,88 +413,17 @@ function calculateSafeBoxPosition(params: PositionBoxParams): BoxPosition {
   }
 }
 
-// Get data snippet for display in animated packets - enhanced with actual data
+// Get data snippet for display in animated packets - simplified for architectural view
 function getDataSnippet(
   flow: DataFlow,
   stepIndex: number,
   props: RagArchitectureDiagramProps
 ): string {
-  const { query, queryEmbedding, retrievalResults, composedPrompt, generatedAnswer } = props
-  
-  switch (stepIndex) {
-    case 0:
-      if (flow.label === 'Query text' && query) {
-        // Show actual query text
-        return query.length > 35 ? query.substring(0, 32) + '...' : query
-      }
-      break
-    case 1:
-      if (flow.label === 'Embed request' && query) {
-        // Show actual query being embedded
-        return query.length > 28 ? `"${query.substring(0, 25)}..."` : `"${query}"`
-      }
-      if (flow.label === 'Embedding vector' && queryEmbedding) {
-        // Show actual vector values - first few dimensions
-        const sample = queryEmbedding.slice(0, 4).map(v => v.toFixed(2)).join(', ')
-        return `[${sample}, ...]`
-      }
-      break
-    case 2:
-      if (flow.label === 'Query vector' && queryEmbedding) {
-        // Show actual vector values - first few dimensions
-        const sample = queryEmbedding.slice(0, 4).map(v => v.toFixed(2)).join(', ')
-        return `[${sample}, ...]`
-      }
-      if (flow.label === 'Similarity scores' && retrievalResults) {
-        // Show actual top similarity scores
-        if (retrievalResults.length > 0) {
-          const topScore = (retrievalResults[0].score * 100).toFixed(0)
-          return `${retrievalResults.length} results • top: ${topScore}%`
-        }
-        return `${retrievalResults.length} results`
-      }
-      break
-    case 3:
-      if (flow.label === 'Top chunks' && retrievalResults) {
-        // Show actual chunk titles
-        if (retrievalResults.length > 0) {
-          const title = retrievalResults[0].chunk.docTitle
-          return `${retrievalResults.length} chunks • ${title.length > 20 ? title.substring(0, 17) + '...' : title}`
-        }
-        return `${retrievalResults.length} chunks`
-      }
-      break
-    case 4:
-      if (flow.label === 'Compose prompt' && composedPrompt) {
-        // Show actual token count and preview
-        const tokens = composedPrompt.split(/\s+/).length
-        const preview = composedPrompt.substring(0, 25).replace(/\n/g, ' ')
-        return `${tokens} tokens • "${preview}..."`
-      }
-      break
-    case 5:
-      if (flow.label === 'Grounded prompt' && composedPrompt) {
-        // Show token count
-        const tokens = composedPrompt.split(/\s+/).length
-        return `${tokens} tokens → LLM`
-      }
-      if (flow.label === 'Generated answer' && generatedAnswer) {
-        // Show actual answer preview
-        return generatedAnswer.length > 28 ? generatedAnswer.substring(0, 25) + '...' : generatedAnswer
-      }
-      if (flow.label === 'Response + citations' && generatedAnswer) {
-        // Show answer with citation count
-        const citations = props.retrievalResults?.length || 0
-        const preview = generatedAnswer.substring(0, 25)
-        return `${preview}... [${citations} cites]`
-      }
-      break
-  }
   return flow.label
 }
 
 export default function RagArchitectureDiagram(props: RagArchitectureDiagramProps) {
-  const { currentStepIndex } = props
+  const { currentStepIndex, stepTitle } = props
   const [animatingFlows, setAnimatingFlows] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -604,6 +534,22 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
               </stop>
             </linearGradient>
           </defs>
+
+          {/* Step Title on Canvas - Visible on all screens */}
+          {stepTitle && (
+            <text
+              x="115"
+              y="8"
+              textAnchor="middle"
+              fontSize="5"
+              fontWeight="bold"
+              fill="#374151"
+              className="dark:fill-zinc-300"
+              opacity="0.8"
+            >
+              {stepTitle}
+            </text>
+          )}
 
           {/* Draw ALL data flow paths - dim inactive, highlight active */}
           {COMPONENTS.flatMap(fromComp => 
@@ -961,341 +907,152 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
             )
           })}
 
-          {/* Input/Output Containers on Canvas - only for active components */}
+          {/* Input/Output Containers on Canvas - Restored and Styled Minimally */}
           {(() => {
-            // Collect all components for collision detection
-            const allComponents = COMPONENTS.map(c => ({ x: c.x, y: c.y, radius: 10 }))
-            const VIEWBOX_WIDTH = 230
-            const VIEWBOX_HEIGHT = 120
-            
-            // Helper to calculate box dimensions and position
-            const calculateBoxLayout = (data: string, label: string) => {
-              const maxWidth = 120
-              const words = data.split(' ')
-              const lines: string[] = []
-              let currentLine = ''
+            // Define data content for each component based on step
+            const getComponentData = (compId: string) => {
+              const data: { label: string; value: string; type: 'input' | 'output' }[] = []
               
-              words.forEach(word => {
-                const testLine = currentLine ? `${currentLine} ${word}` : word
-                if (testLine.length * 2 > maxWidth && currentLine) {
-                  lines.push(currentLine)
-                  currentLine = word
-                } else {
-                  currentLine = testLine
+              if (compId === 'user') {
+                if (currentStepIndex === 0 && props.query) {
+                  data.push({ label: 'Query', value: `"${props.query}"`, type: 'output' })
                 }
-              })
-              if (currentLine) lines.push(currentLine)
+                if (currentStepIndex === 5 && props.generatedAnswer) {
+                  data.push({ label: 'Answer', value: props.generatedAnswer.slice(0, 60) + '...', type: 'input' })
+                }
+              }
               
-              const lineHeight = 6
-              const boxWidth = 130
-              const boxHeight = Math.max(20, lines.length * lineHeight + 6)
-              
-              return { lines, boxWidth, boxHeight, lineHeight }
-            }
-            
-            // FIRST PASS: Collect all boxes from all components with their layouts
-            interface BoxInfo {
-              componentId: string
-              component: Component
-              layout: ReturnType<typeof calculateBoxLayout>
-              label: string
-              type: 'input' | 'output'
-              data: string
-            }
-            
-            const allBoxInfos: BoxInfo[] = []
-            
-            // Collect all box information first
-            COMPONENTS.filter(c => activeComponents.has(c.id)).forEach((component) => {
-              let inputData: string | null = null
-              let outputData: string | null = null
-              let inputLabel: string | null = null
-              let outputLabel: string | null = null
+              if (compId === 'server') {
+                if (currentStepIndex === 0 && props.query) {
+                  data.push({ label: 'Input', value: `"${props.query}"`, type: 'input' })
+                }
+                if (currentStepIndex === 1) {
+                  data.push({ label: 'To Embed', value: `"${props.query}"`, type: 'output' })
+                  if (props.queryEmbedding) {
+                    data.push({ label: 'Vector', value: `[${props.queryEmbedding.slice(0,3).join(',')},...]`, type: 'input' })
+                  }
+                }
+                if (currentStepIndex === 2) {
+                   data.push({ label: 'Query Vec', value: 'Float32[1536]', type: 'output' })
+                }
+                if (currentStepIndex === 3 && props.retrievalResults) {
+                   data.push({ label: 'Context', value: `${props.retrievalResults.length} chunks`, type: 'input' })
+                }
+                if (currentStepIndex === 4) {
+                   data.push({ label: 'Prompt', value: 'System + Context + Query', type: 'output' })
+                }
+                if (currentStepIndex === 5) {
+                   if (props.generatedAnswer) {
+                     data.push({ label: 'Response', value: props.generatedAnswer.slice(0, 40) + '...', type: 'output' })
+                   }
+                }
+              }
 
-              switch (component.id) {
-                case 'user':
-                  if (currentStepIndex === 0) {
-                    inputData = props.query || null
-                    inputLabel = 'Input'
-                  } else if (currentStepIndex === 5) {
-                    outputData = props.generatedAnswer ? props.generatedAnswer.substring(0, 50) + '...' : null
-                    outputLabel = 'Output'
-                  }
-                  break
-                case 'server':
-                  if (currentStepIndex === 0) {
-                    outputData = props.query || null
-                    outputLabel = 'Output'
-                  } else if (currentStepIndex === 4) {
-                    inputData = props.retrievalResults ? `${props.retrievalResults.length} chunks` : null
-                    inputLabel = 'Input'
-                    outputData = props.composedPrompt ? `${props.composedPrompt.split(/\s+/).length} tokens` : null
-                    outputLabel = 'Output'
-                  }
-                  break
-                case 'embedding':
-                  if (currentStepIndex === 1) {
-                    inputData = props.query || null
-                    inputLabel = 'Input'
-                    outputData = props.queryEmbedding 
-                      ? `[${props.queryEmbedding.slice(0, 8).map(v => v.toFixed(3)).join(', ')}, ...]`
-                      : null
-                    outputLabel = 'Output'
-                  }
-                  break
-                case 'vectorDb':
-                  if (currentStepIndex === 2) {
-                    inputData = props.queryEmbedding 
-                      ? `[${props.queryEmbedding.slice(0, 4).map(v => v.toFixed(2)).join(', ')}, ...]`
-                      : null
-                    inputLabel = 'Input'
-                    outputData = props.retrievalResults ? `${props.retrievalResults.length} results` : null
-                    outputLabel = 'Output'
-                  } else if (currentStepIndex === 3) {
-                    inputData = props.queryEmbedding 
-                      ? `[${props.queryEmbedding.slice(0, 4).map(v => v.toFixed(2)).join(', ')}, ...]`
-                      : null
-                    inputLabel = 'Input'
-                    outputData = props.retrievalResults && props.retrievalResults.length > 0 
-                      ? `${props.retrievalResults.length} chunks • ${props.retrievalResults[0].chunk.docTitle.substring(0, 20)}...`
-                      : null
-                    outputLabel = 'Output'
-                  }
-                  break
-                case 'llm':
-                  if (currentStepIndex === 5) {
-                    inputData = props.composedPrompt ? `${props.composedPrompt.split(/\s+/).length} tokens` : null
-                    inputLabel = 'Input'
-                    outputData = props.generatedAnswer ? props.generatedAnswer.substring(0, 50) + '...' : null
-                    outputLabel = 'Output'
-                  }
-                  break
+              if (compId === 'embedding' && currentStepIndex === 1) {
+                 data.push({ label: 'Input', value: `"${props.query}"`, type: 'input' })
+                 if (props.queryEmbedding) {
+                   data.push({ label: 'Output', value: `[${props.queryEmbedding.slice(0,3).join(',')},...]`, type: 'output' })
+                 }
               }
-              
-              if (inputData) {
-                allBoxInfos.push({
-                  componentId: component.id,
-                  component,
-                  layout: calculateBoxLayout(inputData, inputLabel!),
-                  label: inputLabel!,
-                  type: 'input',
-                  data: inputData
-                })
+
+              if (compId === 'vectorDb') {
+                if (currentStepIndex === 2) {
+                  data.push({ label: 'Search', value: 'Cosine Similarity', type: 'input' })
+                }
+                if (currentStepIndex === 3 && props.retrievalResults) {
+                  data.push({ label: 'Result', value: `Top ${props.retrievalResults.length} matches`, type: 'output' })
+                }
               }
-              
-              if (outputData) {
-                allBoxInfos.push({
-                  componentId: component.id,
-                  component,
-                  layout: calculateBoxLayout(outputData, outputLabel!),
-                  label: outputLabel!,
-                  type: 'output',
-                  data: outputData
-                })
+
+              if (compId === 'llm' && currentStepIndex === 5) {
+                 data.push({ label: 'Context', value: 'Grounded Prompt', type: 'input' })
+                 if (props.generatedAnswer) {
+                   data.push({ label: 'Gen', value: 'Streamed tokens...', type: 'output' })
+                 }
               }
-            })
-            
-            // SECOND PASS: Position all boxes, checking against ALL previously positioned boxes
-            interface PositionedBox {
-              boxInfo: BoxInfo
-              pos: BoxPosition
+
+              return data
             }
-            
-            const positionedBoxes: PositionedBox[] = []
-            const MIN_BOX_SPACING = 8 // Minimum gap between any two boxes
-            
-            // Helper: Check if box overlaps any positioned box
-            const overlapsAnyPositionedBox = (x: number, y: number, w: number, h: number): boolean => {
-              return positionedBoxes.some(pb => {
-                const pbBounds = {
-                  x: pb.pos.x,
-                  y: pb.pos.y,
-                  w: pb.boxInfo.layout.boxWidth,
-                  h: pb.boxInfo.layout.boxHeight
-                }
-                // Check overlap with spacing
-                return !(x + w + MIN_BOX_SPACING < pbBounds.x || 
-                        x - MIN_BOX_SPACING > pbBounds.x + pbBounds.w ||
-                        y + h + MIN_BOX_SPACING < pbBounds.y ||
-                        y - MIN_BOX_SPACING > pbBounds.y + pbBounds.h)
-              })
-            }
-            
-            // Helper: Check if box overlaps component (icon or label)
-            const overlapsComponent = (x: number, y: number, w: number, h: number, comp: Component): boolean => {
-              const iconBounds = { left: comp.x - 8, right: comp.x + 8, top: comp.y - 8, bottom: comp.y + 8 }
-              const labelBounds = { left: comp.x - 18, right: comp.x + 18, top: comp.y + 14, bottom: comp.y + 19 }
-              const boxRight = x + w
-              const boxBottom = y + h
-              
-              // Check icon overlap
-              if (!(boxRight < iconBounds.left || x > iconBounds.right || boxBottom < iconBounds.top || y > iconBounds.bottom)) {
-                return true
-              }
-              // Check label overlap
-              if (!(boxRight < labelBounds.left || x > labelBounds.right || boxBottom < labelBounds.top || y > labelBounds.bottom)) {
-                return true
-              }
-              return false
-            }
-            
-            // Position each box sequentially
-            allBoxInfos.forEach((boxInfo) => {
-              const { component, layout } = boxInfo
-              const safePadding = 25
-              const halfWidth = layout.boxWidth / 2
-              const halfHeight = layout.boxHeight / 2
-              
-              // Try positions in order of preference
-              const candidates: Array<{ x: number; y: number; placement: 'above' | 'below' | 'left' | 'right' }> = [
-                { x: component.x - 8 - safePadding - layout.boxWidth, y: component.y - halfHeight, placement: 'left' },
-                { x: component.x + 8 + safePadding, y: component.y - halfHeight, placement: 'right' },
-                { x: component.x - halfWidth, y: component.y - 8 - safePadding - layout.boxHeight, placement: 'above' },
-                { x: component.x - halfWidth, y: component.y + 19 + safePadding, placement: 'below' }
-              ]
-              
-              // Find first valid position that doesn't overlap anything
-              let validPos: BoxPosition | null = null
-              
-              for (const candidate of candidates) {
-                // Check bounds
-                if (candidate.x < 0 || candidate.y < 0 || 
-                    candidate.x + layout.boxWidth > VIEWBOX_WIDTH || 
-                    candidate.y + layout.boxHeight > VIEWBOX_HEIGHT) {
-                  continue
-                }
+
+            return COMPONENTS.flatMap(comp => {
+              const boxData = getComponentData(comp.id)
+              if (boxData.length === 0) return []
+
+              // Calculate positions for multiple boxes
+              return boxData.map((data, idx) => {
+                const isInput = data.type === 'input'
+                const boxHeight = 24
+                const boxWidth = 70
                 
-                // Check component overlap
-                if (overlapsComponent(candidate.x, candidate.y, layout.boxWidth, layout.boxHeight, component)) {
-                  continue
-                }
+                // Naive positioning - optimize with calculateSafeBoxPosition in a real scenario
+                // For now, inputs on left/top, outputs on right/bottom relative to component
+                let pos = { x: comp.x, y: comp.y }
                 
-                // Check overlap with all other positioned boxes
-                if (overlapsAnyPositionedBox(candidate.x, candidate.y, layout.boxWidth, layout.boxHeight)) {
-                  continue
+                // Offset logic to avoid overlap
+                if (comp.id === 'server') {
+                   pos = isInput ? { x: comp.x - 60, y: comp.y } : { x: comp.x + 60, y: comp.y }
+                } else if (comp.id === 'user') {
+                   pos = { x: comp.x + 50, y: comp.y }
+                } else if (comp.id === 'embedding') {
+                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y + 40 }
+                } else if (comp.id === 'vectorDb') {
+                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y - 40 }
+                } else if (comp.id === 'llm') {
+                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y + 40 }
                 }
-                
-                // This position is valid!
-                validPos = candidate
-                break
-              }
-              
-              // Fallback: Try offset positions if initial positions don't work
-              if (!validPos) {
-                // Try with various offsets
-                const offsets = [30, 40, 50, 60, 70, 80]
-                for (const offset of offsets) {
-                  for (const baseCandidate of candidates) {
-                    const offsetCandidates = [
-                      { ...baseCandidate, x: baseCandidate.x - offset, y: baseCandidate.y },
-                      { ...baseCandidate, x: baseCandidate.x + offset, y: baseCandidate.y },
-                      { ...baseCandidate, x: baseCandidate.x, y: baseCandidate.y - offset },
-                      { ...baseCandidate, x: baseCandidate.x, y: baseCandidate.y + offset }
-                    ]
-                    
-                    for (const candidate of offsetCandidates) {
-                      if (candidate.x < 0 || candidate.y < 0 || 
-                          candidate.x + layout.boxWidth > VIEWBOX_WIDTH || 
-                          candidate.y + layout.boxHeight > VIEWBOX_HEIGHT) {
-                        continue
-                      }
-                      
-                      if (overlapsComponent(candidate.x, candidate.y, layout.boxWidth, layout.boxHeight, component)) {
-                        continue
-                      }
-                      
-                      if (overlapsAnyPositionedBox(candidate.x, candidate.y, layout.boxWidth, layout.boxHeight)) {
-                        continue
-                      }
-                      
-                      validPos = candidate
-                      break
-                    }
-                    
-                    if (validPos) break
-                  }
-                  if (validPos) break
-                }
-              }
-              
-              // Final fallback: use calculateSafeBoxPosition with all positioned boxes as obstacles
-              if (!validPos) {
-                const obstacles = [
-                  ...allComponents.filter(c => c.x !== component.x || c.y !== component.y),
-                  ...positionedBoxes.map(pb => ({
-                    x: pb.pos.x + pb.boxInfo.layout.boxWidth / 2,
-                    y: pb.pos.y + pb.boxInfo.layout.boxHeight / 2,
-                    radius: Math.max(pb.boxInfo.layout.boxWidth, pb.boxInfo.layout.boxHeight) / 2 + MIN_BOX_SPACING
-                  }))
-                ]
-                
-                validPos = calculateSafeBoxPosition({
-                  componentX: component.x,
-                  componentY: component.y,
-                  boxWidth: layout.boxWidth,
-                  boxHeight: layout.boxHeight,
-                  viewBoxWidth: VIEWBOX_WIDTH,
-                  viewBoxHeight: VIEWBOX_HEIGHT,
-                  otherComponents: obstacles
+
+                const safePos = calculateSafeBoxPosition({
+                  componentX: comp.x,
+                  componentY: comp.y,
+                  boxWidth,
+                  boxHeight,
+                  viewBoxWidth: 230,
+                  viewBoxHeight: 120,
+                  otherComponents: COMPONENTS.filter(c => c.id !== comp.id).map(c => ({ x: c.x, y: c.y }))
                 })
-              }
-              
-              if (validPos) {
-                positionedBoxes.push({ boxInfo, pos: validPos })
-              }
-            })
-            
-            // Render all positioned boxes
-            return positionedBoxes.map((positionedBox) => {
-              const { boxInfo, pos } = positionedBox
-              const { component, layout, label, type, data } = boxInfo
-              const strokeColor = getStrokeColor(component.color)
-              
-              return (
-                <g key={`${component.id}-${type}`}>
+
+                return (
                   <motion.g
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    key={`${comp.id}-${idx}`}
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: type === 'input' ? 0.2 : 0.4, duration: 0.3 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <rect
-                      x={pos.x}
-                      y={pos.y}
-                      width={layout.boxWidth}
-                      height={layout.boxHeight}
-                      rx="6"
+                      x={safePos.x}
+                      y={safePos.y}
+                      width={boxWidth}
+                      height={boxHeight}
+                      rx="4"
                       fill="white"
-                      fillOpacity="0.98"
-                      stroke={strokeColor}
-                      strokeWidth="1"
-                      className="dark:fill-zinc-900 dark:stroke-zinc-700"
+                      fillOpacity="0.9"
+                      stroke={data.type === 'input' ? '#3b82f6' : '#10b981'}
+                      strokeWidth="0.5"
+                      className="dark:fill-zinc-900/90"
                     />
                     <text
-                      x={pos.x + 3}
-                      y={pos.y + 5}
+                      x={safePos.x + 4}
+                      y={safePos.y + 8}
+                      fontSize="4"
+                      fontWeight="bold"
+                      fill={data.type === 'input' ? '#1d4ed8' : '#047857'}
+                      className={data.type === 'input' ? 'dark:fill-blue-400' : 'dark:fill-emerald-400'}
+                    >
+                      {data.label}
+                    </text>
+                    <text
+                      x={safePos.x + 4}
+                      y={safePos.y + 16}
                       fontSize="3.5"
-                      fill="#6b7280"
-                      fontWeight="700"
+                      fill="#52525b"
                       className="dark:fill-zinc-400"
                     >
-                      {label}:
+                      {data.value.length > 25 ? data.value.slice(0,24) + '...' : data.value}
                     </text>
-                    {layout.lines.map((line, i) => (
-                      <text
-                        key={i}
-                        x={pos.x + 3}
-                        y={pos.y + 10 + (i * layout.lineHeight)}
-                        fontSize="4.5"
-                        fill={strokeColor}
-                        fontWeight="700"
-                        className="dark:fill-opacity-100"
-                      >
-                        {line}
-                      </text>
-                    ))}
                   </motion.g>
-                </g>
-              )
+                )
+              })
             })
           })()}
           

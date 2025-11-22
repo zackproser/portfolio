@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   ShieldCheck,
@@ -13,75 +13,126 @@ import {
 
 import { SAMPLE_DATASETS } from './data'
 import RagPipelineVisualization from './RagPipelineVisualization'
-
-const heroHighlights = [
-  {
-    title: 'Stay factual',
-    description: 'Verified retrieval keeps responses tethered to audited sources.',
-    icon: ShieldCheck
-  },
-  {
-    title: 'Control cost',
-    description: 'Semantic search over your corpus is leaner than repeated fine-tuning cycles.',
-    icon: Gauge
-  },
-  {
-    title: 'Ship fast',
-    description: 'Engineers can assemble a RAG stack in weeks using existing models and tooling.',
-    icon: Workflow
-  }
-] as const
-
+import RagStepInspector from './RagStepInspector'
+import { 
+  generateEmbedding, 
+  simulateRetrieval, 
+  generateGroundedAnswer,
+  buildChunkIndex,
+  type RetrieverMode,
+  type RagRetrievalResult,
+  type GeneratedAnswer
+} from './utils'
 
 export default function RagDemoClient() {
   const dataset = useMemo(() => SAMPLE_DATASETS[0], [])
+  
+  // Shared State
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
+  const [query, setQuery] = useState(dataset.sampleQueries[0] ?? '')
+  const [mode, setMode] = useState<RetrieverMode>('hybrid')
+  const [topK, setTopK] = useState<number>(3)
+  const [chunkSize, setChunkSize] = useState<number>(50)
+  
+  // Simulation State (Derived)
+  const [queryEmbedding, setQueryEmbedding] = useState<number[] | null>(null)
+  const [results, setResults] = useState<RagRetrievalResult[]>([])
+  const [answer, setAnswer] = useState<GeneratedAnswer | null>(null)
+  const [isSimulating, setIsSimulating] = useState(false)
+
+  // Re-run simulation when inputs change
+  useEffect(() => {
+    const runSimulation = async () => {
+      setIsSimulating(true)
+      
+      // 1. Embed
+      const embedding = generateEmbedding(query)
+      setQueryEmbedding(embedding)
+
+      // 2. Retrieve
+      const chunks = buildChunkIndex(dataset, chunkSize)
+      const retrieved = simulateRetrieval({
+        query,
+        chunks,
+        topK,
+        mode
+      })
+      setResults(retrieved)
+
+      // 3. Generate
+      const grounded = generateGroundedAnswer({
+        query,
+        selectedChunks: retrieved,
+        dataset
+      })
+      setAnswer(grounded)
+      
+      setIsSimulating(false)
+    }
+
+    const debounce = setTimeout(runSimulation, 500)
+    return () => clearTimeout(debounce)
+  }, [query, mode, topK, chunkSize, dataset])
 
   return (
-    <div className="space-y-16">
-      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 px-6 py-4 shadow-sm dark:border-blue-900/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20">
-        <div className="mx-auto max-w-6xl space-y-4">
-          <div className="space-y-2 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">
-              Why RAG matters right now
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-[44px]">
-              See a grounded RAG stack click into place
-            </h1>
-            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-[15px]">
-              🧭 Stay grounded in vetted knowledge. 💸 Control spend without bespoke fine-tuning cycles. 🚀 Ship a trustworthy copilot with the engineers you already have.
-            </p>
-          </div>
+    <div className="space-y-8">
+      <div className="text-center space-y-3 pt-4">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+          Interactive RAG Visualization
+        </h1>
+        <p className="text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+          A visual journey through the Retrieval-Augmented Generation pipeline, revealing how AI models ground their answers in your data.
+        </p>
+      </div>
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            {heroHighlights.map(({ title, description, icon: Icon }) => (
-              <div
-                key={title}
-                className="rounded-xl border border-blue-200 bg-white/90 p-4 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-blue-900/60 dark:bg-zinc-900/70"
-              >
-                <Icon className="h-5 w-5 text-blue-600 dark:text-blue-300" />
-                <h3 className="mt-2 text-base font-semibold text-blue-900 dark:text-blue-100">{title}</h3>
-                <p className="mt-1.5 text-sm text-blue-800/80 dark:text-blue-100/70">{description}</p>
-              </div>
-            ))}
-          </div>
+      {/* Top Visualization - Controlled Component */}
+      <RagPipelineVisualization 
+        dataset={dataset}
+        currentStepIndex={currentStepIndex}
+        onStepChange={setCurrentStepIndex}
+        simulationData={{
+          query,
+          queryEmbedding,
+          retrievalResults: results,
+          groundedAnswer: answer
+        }}
+      />
 
-          <p className="text-center text-xs text-zinc-500 dark:text-zinc-400 sm:text-sm">
-            Crafted by Zachary Proser, senior AI/ML infrastructure engineer and Developer Experience Engineer at WorkOS. Looking for hands-on help?{' '}
-            <Link href="/services" className="text-blue-600 underline decoration-blue-400 decoration-dotted underline-offset-4 dark:text-blue-300">
-              Explore services
-            </Link>
-            .
-          </p>
-        </div>
-      </section>
-
-      <RagPipelineVisualization dataset={dataset} />
+      {/* Deep Dive Inspector - Controlled by Active Step */}
+      <div id="inspector" className="w-full">
+        <RagStepInspector 
+          currentStepIndex={currentStepIndex}
+          simulationData={{
+            query,
+            queryEmbedding,
+            results,
+            answer,
+            metrics: answer ? {
+              latencyMs: answer.estimatedLatencyMs,
+              costUsd: answer.estimatedCostUsd,
+              promptTokens: answer.promptTokens,
+              completionTokens: answer.responseTokens
+            } : undefined
+          }}
+          config={{
+            query,
+            setQuery,
+            mode,
+            setMode,
+            topK,
+            setTopK,
+            chunkSize,
+            setChunkSize,
+            dataset
+          }}
+        />
+      </div>
 
       <section className="relative overflow-hidden">
         {/* Subtle background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-emerald-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-emerald-950/10" />
         
-        <div className="relative mx-auto max-w-4xl px-6 py-16 md:py-20 lg:py-24">
+        <div className="relative mx-auto max-w-4xl px-6 py-12 md:py-16">
           <div className="space-y-8">
             {/* Content */}
             <div className="space-y-6 text-center">

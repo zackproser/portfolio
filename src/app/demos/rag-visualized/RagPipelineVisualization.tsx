@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft,
@@ -15,21 +15,34 @@ import {
   Bot,
   ArrowRight,
   Code,
-  Layers,
   Lightbulb,
   AlertTriangle,
-  Info,
   X,
   Keyboard
 } from 'lucide-react'
 
 import Link from 'next/link'
 import type { RagDataset } from './data'
-import { generateEmbedding, buildChunkIndex, simulateRetrieval, generateGroundedAnswer, type RagRetrievalResult } from './utils'
 import RagArchitectureDiagram from './RagArchitectureDiagram'
+import {
+  buildChunkIndex,
+  generateEmbedding,
+  simulateRetrieval,
+  generateGroundedAnswer,
+  type RagRetrievalResult,
+  type GeneratedAnswer
+} from './utils'
 
 type RagPipelineVisualizationProps = {
   dataset: RagDataset
+  currentStepIndex: number
+  onStepChange: (index: number) => void
+  simulationData: {
+    query: string
+    queryEmbedding: number[] | null
+    retrievalResults: RagRetrievalResult[]
+    groundedAnswer: GeneratedAnswer | null
+  }
 }
 
 const STEPS = [
@@ -103,13 +116,6 @@ const STEP_HEADERS: Record<string, { title: string; subheader: string }> = {
     title: 'Generate an answer grounded in retrieved sources',
     subheader: 'The LLM synthesizes the provided context into a coherent answer, citing specific sources. By only seeing retrieved chunks, the model produces accurate responses without hallucinating information not in the knowledge base.'
   }
-}
-
-const EMBEDDING_MODEL = {
-  name: 'text-embedding-3-small',
-  provider: 'OpenAI',
-  dimensions: 1536,
-  maxTokens: 8191
 }
 
 const AUTO_ADVANCE_DELAYS = {
@@ -211,7 +217,7 @@ function renderTextWithLinks(text: string, colorMuted: string) {
   return <>{parts}</>
 }
 
-// Educational section component - always expanded and scrollable
+// Educational section component - cleaner, less boxy, collapsible
 function EducationalSection({ 
   stepId, 
   color 
@@ -220,6 +226,7 @@ function EducationalSection({
   color: string 
 }) {
   const content = STEP_EDUCATION[stepId]
+  const [isExpanded, setIsExpanded] = useState(false)
   
   if (!content) return null
 
@@ -270,81 +277,105 @@ function EducationalSection({
 
   const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue
 
-  // Get scrollbar color based on step color
-  const scrollbarColors: Record<string, string> = {
-    blue: '#3b82f640',
-    emerald: '#10b98140',
-    purple: '#a855f740',
-    amber: '#f59e0b40',
-    indigo: '#6366f140',
-    green: '#22c55e40'
-  }
-  const scrollbarColor = scrollbarColors[color] || scrollbarColors.blue
-
   return (
     <div className={`w-full space-y-4 ${colors.text} text-sm leading-relaxed`}>
-      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
-        <div className="flex items-center gap-2 mb-2">
-          <Lightbulb className={`h-4 w-4 ${colors.icon}`} />
-          <span className={`font-semibold ${colors.text} text-sm`}>Overview</span>
-        </div>
-        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.overview}</p>
-      </div>
-
-      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
-        <div className="flex items-center gap-2 mb-2">
-          <ArrowRight className={`h-4 w-4 ${colors.icon}`} />
-          <span className={`font-semibold ${colors.text} text-sm`}>Why this matters</span>
-        </div>
-        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.whyItMatters}</p>
-      </div>
-
-      <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
-        <div className="flex items-center gap-2 mb-2">
-          <Cpu className={`h-4 w-4 ${colors.icon}`} />
-          <span className={`font-semibold ${colors.text} text-sm`}>How it works</span>
-        </div>
-        <p className={`${colors.textMuted} text-sm leading-relaxed`}>{renderTextWithLinks(content.howItWorks, colors.textMuted)}</p>
-      </div>
-
-      {content.considerations && (
-        <div className={`rounded-lg ${colors.bg} ${colors.border} border p-4`}>
+      {/* Top level concepts - always visible, clean typography */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle className={`h-4 w-4 ${colors.icon}`} />
-            <span className={`font-semibold ${colors.text} text-sm`}>Production considerations</span>
+            <Lightbulb className={`h-4 w-4 ${colors.icon}`} />
+            <span className={`font-semibold ${colors.text} text-sm`}>Overview</span>
           </div>
-          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.considerations}</p>
+          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.overview}</p>
         </div>
-      )}
+
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <ArrowRight className={`h-4 w-4 ${colors.icon}`} />
+            <span className={`font-semibold ${colors.text} text-sm`}>Why this matters</span>
+          </div>
+          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.whyItMatters}</p>
+        </div>
+      </div>
+
+      {/* Collapsible deep dive */}
+      <div className="border-t border-zinc-100 dark:border-zinc-800 pt-2">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={`flex items-center gap-2 text-xs font-medium ${colors.text} hover:opacity-80 transition-opacity py-2`}
+        >
+          {isExpanded ? 'Show less' : 'Deep dive: How it works & considerations'}
+          <ChevronRight className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+        </button>
+
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-2 pb-2 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Cpu className={`h-4 w-4 ${colors.icon}`} />
+                    <span className={`font-semibold ${colors.text} text-sm`}>How it works</span>
+                  </div>
+                  <p className={`${colors.textMuted} text-sm leading-relaxed`}>
+                    {renderTextWithLinks(content.howItWorks, colors.textMuted)}
+                  </p>
+                </div>
+
+                {content.considerations && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className={`h-4 w-4 ${colors.icon}`} />
+                      <span className={`font-semibold ${colors.text} text-sm`}>Production considerations</span>
+                    </div>
+                    <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.considerations}</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {content.nextStep && (
-        <div className={`pt-3 border-t-2 ${colors.border} mt-4`}>
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowRight className={`h-5 w-5 ${colors.icon}`} />
-            <span className={`font-semibold ${colors.text}`}>Next step</span>
+        <div className={`pt-4 border-t ${colors.border} mt-2 bg-white/50 dark:bg-zinc-900/50 p-3 rounded-lg`}>
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`font-semibold ${colors.text} text-xs uppercase tracking-wide`}>Next Step</span>
           </div>
-          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.nextStep}</p>
+          <p className={`${colors.textMuted} text-sm`}>{content.nextStep}</p>
         </div>
       )}
     </div>
   )
 }
 
-export default function RagPipelineVisualization({ dataset }: RagPipelineVisualizationProps) {
-  const [query] = useState<string>(dataset.sampleQueries[0] ?? 'How should we troubleshoot SSO provisioning failures?')
-  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
+export default function RagPipelineVisualization({ 
+  dataset,
+  currentStepIndex,
+  onStepChange,
+  simulationData
+}: {
+  dataset: RagDataset
+  currentStepIndex: number
+  onStepChange: (index: number) => void
+  simulationData: any
+}) {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [queryEmbedding, setQueryEmbedding] = useState<number[] | null>(null)
-  const [retrievalResults, setRetrievalResults] = useState<RagRetrievalResult[]>([])
-  const [composedPrompt, setComposedPrompt] = useState<string>('')
-  const [promptParts, setPromptParts] = useState<{ systemPrompt: string; contextSections: Array<{ text: string; docTitle: string; index: number }>; userQuery: string } | null>(null)
-  const [generatedAnswer, setGeneratedAnswer] = useState<string>('')
-  const [citations, setCitations] = useState<Array<{ title: string; chunkId: string }>>([])
   const [showKeyboardHints, setShowKeyboardHints] = useState<boolean>(false)
   const timeoutsRef = useRef<number[]>([])
 
-  // Pre-compute chunks for the dataset
-  const chunks = useMemo(() => buildChunkIndex(dataset, 50), [dataset])
+  // Use passed simulation data or fallbacks
+  const { 
+    query: sampleQuery,
+    queryEmbedding,
+    retrievalResults,
+    groundedAnswer
+  } = simulationData
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -354,13 +385,10 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
   }, [])
 
   const handleNext = useCallback(() => {
-    setCurrentStepIndex((prev) => {
-      if (prev < STEPS.length - 1) {
-        return prev + 1
-      }
-      return prev
-    })
-  }, [])
+    if (currentStepIndex < STEPS.length - 1) {
+      onStepChange(currentStepIndex + 1)
+    }
+  }, [currentStepIndex, onStepChange])
 
   // Auto-advance logic
   useEffect(() => {
@@ -383,95 +411,27 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
     }
   }, [isPlaying, currentStepIndex, handleNext])
 
-
-
-  // Compute data for each step
-  useEffect(() => {
-    if (currentStepIndex >= 1) {
-      // Generate embedding
-      const embedding = generateEmbedding(query)
-      setQueryEmbedding(embedding)
-    }
-
-    if (currentStepIndex >= 2) {
-      // Perform retrieval (for Vector Search step and beyond)
-      const results = simulateRetrieval({
-        query,
-        chunks,
-        topK: 3,
-        mode: 'hybrid'
-      })
-      setRetrievalResults(results)
-    }
-
-    if (currentStepIndex >= 4) {
-      // Compose prompt
-      const results = simulateRetrieval({
-        query,
-        chunks,
-        topK: 3,
-        mode: 'hybrid'
-      })
-      const answer = generateGroundedAnswer({
-        query,
-        selectedChunks: results,
-        dataset
-      })
-      setComposedPrompt(answer.prompt)
-      setPromptParts(answer.promptParts || null)
-      setCitations(answer.citations)
-    }
-
-    if (currentStepIndex >= 5) {
-      // Generate answer
-      const results = simulateRetrieval({
-        query,
-        chunks,
-        topK: 3,
-        mode: 'hybrid'
-      })
-      const answer = generateGroundedAnswer({
-        query,
-        selectedChunks: results,
-        dataset
-      })
-      setGeneratedAnswer(answer.answer)
-    }
-  }, [currentStepIndex, query, chunks, dataset])
-
   const handlePrevious = useCallback(() => {
     if (currentStepIndex > 0) {
-      setCurrentStepIndex(currentStepIndex - 1)
+      onStepChange(currentStepIndex - 1)
       setIsPlaying(false)
     }
-  }, [currentStepIndex])
+  }, [currentStepIndex, onStepChange])
 
   const handlePlayAll = useCallback(() => {
     if (currentStepIndex === STEPS.length - 1) {
       // Reset to beginning
-      setCurrentStepIndex(0)
-      setQueryEmbedding(null)
-      setRetrievalResults([])
-      setComposedPrompt('')
-      setPromptParts(null)
-      setGeneratedAnswer('')
-      setCitations([])
+      onStepChange(0)
     }
     setIsPlaying(true)
-  }, [currentStepIndex])
+  }, [currentStepIndex, onStepChange])
 
   const handleReset = useCallback(() => {
     setIsPlaying(false)
-    setCurrentStepIndex(0)
-    setQueryEmbedding(null)
-    setRetrievalResults([])
-    setComposedPrompt('')
-    setPromptParts(null)
-    setGeneratedAnswer('')
-    setCitations([])
+    onStepChange(0)
     timeoutsRef.current.forEach((id) => clearTimeout(id))
     timeoutsRef.current = []
-  }, [])
+  }, [onStepChange])
 
   // Keyboard navigation
   useEffect(() => {
@@ -507,7 +467,7 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
   const canGoPrevious = currentStepIndex > 0
 
   return (
-    <div className="space-y-8 rounded-2xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900 shadow-lg relative">
+    <div className="space-y-4 rounded-xl border border-zinc-200/60 bg-white dark:border-zinc-800 dark:bg-zinc-900/50 shadow-sm relative ring-1 ring-black/5">
       {/* Keyboard Hints */}
       <AnimatePresence>
         {showKeyboardHints && (
@@ -515,7 +475,7 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-20 right-6 z-40 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-4 max-w-xs"
+            className="absolute top-16 right-6 z-40 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl p-4 max-w-xs ring-1 ring-black/5"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -550,32 +510,32 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
           </motion.div>
         )}
       </AnimatePresence>
-      {/* Top Navigation Bar - Compact horizontal layout */}
-      <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-2 dark:border-zinc-700 dark:bg-zinc-900/50">
+      {/* Top Navigation Bar - Clean & minimal */}
+      <div className="flex items-center justify-between gap-3 border-b border-zinc-100 bg-white/80 backdrop-blur-sm px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900/80 rounded-t-xl">
         {/* Left: Navigation + Step buttons */}
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={handlePrevious}
               disabled={!canGoPrevious}
-              className="inline-flex items-center gap-0.5 rounded border border-blue-300 bg-white px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-200"
+              className="inline-flex items-center gap-0.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
             >
-              <ChevronLeft className="h-3 w-3" />
+              <ChevronLeft className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Prev</span>
             </button>
-            <div className="flex items-center rounded border border-blue-200 bg-blue-50 px-2 py-1 text-[10px] font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/40 dark:text-blue-200 shrink-0">
-              <span>{currentStepIndex + 1}/{STEPS.length}</span>
+            <div className="flex items-center rounded-md bg-zinc-100 px-2.5 py-1.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 shrink-0">
+              <span>{currentStepIndex + 1} / {STEPS.length}</span>
             </div>
             <button
               onClick={handleNext}
               disabled={!canGoNext}
-              className="inline-flex items-center gap-0.5 rounded border border-blue-300 bg-white px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-blue-800 dark:bg-zinc-900 dark:text-blue-200"
+              className="inline-flex items-center gap-0.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
             >
               <span className="hidden sm:inline">Next</span>
-              <ChevronRight className="h-3 w-3" />
+              <ChevronRight className="h-3.5 w-3.5" />
             </button>
           </div>
-          <div className="h-4 w-px bg-blue-200 dark:bg-blue-800 shrink-0" />
+          <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800 shrink-0 mx-2" />
           <div className="flex items-center gap-1 overflow-x-auto min-w-0 flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {STEPS.map((step, index) => {
               const Icon = step.icon
@@ -584,20 +544,19 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
               return (
                 <button
                   key={step.id}
-                  onClick={() => setCurrentStepIndex(index)}
+                  onClick={() => onStepChange(index)}
                   title={`${index + 1}. ${step.title}: ${step.description}`}
-                  className={`group flex items-center gap-1 rounded px-1.5 py-1 text-[10px] transition shrink-0 ${
+                  className={`group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs transition shrink-0 ${
                     isActive
-                      ? 'bg-blue-100 text-blue-900 shadow-sm dark:bg-blue-900/40 dark:text-blue-100'
+                      ? 'bg-blue-50 text-blue-700 font-medium dark:bg-blue-900/30 dark:text-blue-300 ring-1 ring-blue-200 dark:ring-blue-800'
                       : isComplete
-                          ? 'text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20'
-                          : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                          ? 'text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                          : 'text-zinc-400 hover:bg-zinc-50 dark:text-zinc-500 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  <Icon className="h-3 w-3" />
-                  <span className="font-semibold">{index + 1}</span>
+                  <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`} />
                   {/* Step name - hidden on mobile, shown on larger screens */}
-                  <span className="hidden xl:inline-block ml-0.5 text-[9px] opacity-70 max-w-[60px] truncate">
+                  <span className={`hidden xl:inline-block whitespace-nowrap ${isActive ? 'text-blue-900 dark:text-blue-100' : ''}`}>
                     {step.title.split(' ')[0]}
                   </span>
                 </button>
@@ -631,399 +590,43 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
         </div>
       </div>
 
-      {/* Step Title and Subheader - Thin header section */}
-      <div className="border-b border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3">
-        <motion.div
-          key={`step-header-${currentStepIndex}`}
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="mx-auto max-w-6xl"
-        >
-          <h2 className={`text-lg font-semibold ${getStepColorClass(currentStepIndex)} mb-1`}>
-            {STEP_HEADERS[STEPS[currentStepIndex].id]?.title || STEPS[currentStepIndex].title}
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            {STEP_HEADERS[STEPS[currentStepIndex].id]?.subheader || STEPS[currentStepIndex].description}
-          </p>
-        </motion.div>
-      </div>
-
       {/* Unified Single-Flow Layout */}
       <div className="relative w-full">
-        <div className="mx-auto px-4 py-4">
-          {/* Orientation headline above diagram */}
-          <div className="mb-6 text-center">
-            <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-              Interact with the RAG pipeline step by step
-            </h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              See inputs, outputs, and understand the entire flow as data moves through each stage
-            </p>
-          </div>
+        <div className="mx-auto px-4 py-2">
           
           {/* Architecture Diagram - Large and prominent, clear spacing */}
           <div className="mb-4">
             <RagArchitectureDiagram 
               currentStepIndex={currentStepIndex}
-              query={query}
+              stepTitle={STEPS[currentStepIndex].title}
+              query={sampleQuery}
               queryEmbedding={queryEmbedding}
               retrievalResults={retrievalResults}
-              composedPrompt={composedPrompt}
-              generatedAnswer={generatedAnswer}
+              generatedAnswer={groundedAnswer?.answer}
             />
           </div>
 
-          {/* Data Inputs/Outputs - TOPMOST UNDER CANVAS */}
-          <AnimatePresence mode="wait">
-              {currentStepIndex === 0 && (
-                <motion.div
-                  key="step-0-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
-                >
-                  <div className="rounded-lg border-2 border-blue-300 dark:border-blue-700 bg-blue-50/80 dark:bg-blue-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">
-                        Input: User Query
-                      </div>
-                    </div>
-                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium leading-relaxed">{query}</div>
-                    <div className="mt-2 flex items-center gap-3 text-xs text-blue-600 dark:text-blue-400">
-                      <span>{query.split(/\s+/).length} words</span>
-                      <span>•</span>
-                      <span>{query.length} chars</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              {currentStepIndex === 1 && queryEmbedding && (
-                <motion.div
-                  key="step-1-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
-                >
-                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
-                        Input: Query Text
-                      </div>
-                    </div>
-                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium line-clamp-2">{query}</div>
-                  </div>
-                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Cpu className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
-                        Model: {EMBEDDING_MODEL.name}
-                      </div>
-                    </div>
-                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium">
-                      {EMBEDDING_MODEL.dimensions} dimensions • {EMBEDDING_MODEL.provider}
-                    </div>
-                  </div>
-                  <div className="rounded-lg border-2 border-emerald-300 dark:border-emerald-700 bg-emerald-50/80 dark:bg-emerald-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
-                        Output: Embedding Vector
-                      </div>
-                    </div>
-                    <div className="text-sm font-mono text-zinc-900 dark:text-zinc-100 font-medium">
-                      [{EMBEDDING_MODEL.dimensions} dimensions]
-                    </div>
-                    <div className="mt-2 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
-                      Sample: [{queryEmbedding.slice(0, 3).map(v => v.toFixed(3)).join(', ')}, ...]
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              {currentStepIndex === 2 && queryEmbedding && retrievalResults.length > 0 && (
-                <motion.div
-                  key="step-2-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-4"
-                >
-                  <div className="rounded-lg border-2 border-purple-300 dark:border-purple-700 bg-purple-50/80 dark:bg-purple-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Database className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-purple-700 dark:text-purple-300">
-                        Vector DB Search Results: Top {retrievalResults.length} Retrieved Documents
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {retrievalResults.map((r, i) => {
-                        const jsonPayload = {
-                          id: r.chunk.id,
-                          rank: i + 1,
-                          score: parseFloat((r.score * 100).toFixed(2)),
-                          similarity: parseFloat((r.similarity * 100).toFixed(2)),
-                          semanticScore: parseFloat((r.semanticScore * 100).toFixed(2)),
-                          keywordScore: parseFloat((r.keywordScore * 100).toFixed(2)),
-                          hybridScore: parseFloat((r.hybridScore * 100).toFixed(2)),
-                          document: {
-                            docId: r.chunk.docId,
-                            docTitle: r.chunk.docTitle,
-                            chunkId: r.chunk.id,
-                            content: r.chunk.text,
-                            metadata: {
-                              tags: r.chunk.tags,
-                              lastUpdated: r.chunk.lastUpdated,
-                              wordCount: r.chunk.wordCount,
-                              keywords: r.chunk.keywords.slice(0, 5)
-                            }
-                          },
-                          retrieval: {
-                            estimatedTokens: r.estimatedTokens,
-                            matchReasons: r.reasons,
-                            retrievedAt: new Date().toISOString()
-                          }
-                        }
-                        return (
-                          <div key={i} className="rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-zinc-900 p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-                                Result #{i + 1} • Score: {(r.score * 100).toFixed(1)}%
-                              </span>
-                              <span className="text-xs text-purple-600 dark:text-purple-400 font-mono">
-                                {r.chunk.docTitle}
-                              </span>
-                            </div>
-                            <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-purple-100 dark:border-purple-900">
-                              {JSON.stringify(jsonPayload, null, 2)}
-                            </pre>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              {currentStepIndex === 3 && retrievalResults.length > 0 && (
-                <motion.div
-                  key="step-3-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
-                >
-                  <div className="rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-50/80 dark:bg-amber-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Database className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
-                        Retrieved: Top {retrievalResults.length} Chunks
-                      </div>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      {retrievalResults.map((r, i) => (
-                        <div key={i} className="flex items-center justify-between p-2 rounded bg-white/60 dark:bg-zinc-800/60">
-                          <span className="text-zinc-900 dark:text-zinc-100 font-semibold">#{i + 1}</span>
-                          <span className="text-amber-600 dark:text-amber-400 font-mono">{(r.score * 100).toFixed(1)}%</span>
-                          <span className="text-zinc-700 dark:text-zinc-300 text-[10px] truncate flex-1 ml-2">{r.chunk.docTitle}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  {retrievalResults[0] && (
-                    <div className="md:col-span-2 rounded-lg border-2 border-amber-300 dark:border-amber-700 bg-amber-50/80 dark:bg-amber-900/30 p-4 shadow-sm">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-                        <div className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
-                          Top Match Preview
-                        </div>
-                      </div>
-                      <div className="text-sm text-zinc-900 dark:text-zinc-100 leading-relaxed line-clamp-4">
-                        {retrievalResults[0].chunk.text}
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-              {currentStepIndex === 4 && composedPrompt && retrievalResults.length > 0 && (
-                <motion.div
-                  key="step-4-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-4"
-                >
-                  <div className="rounded-lg border-2 border-indigo-300 dark:border-indigo-700 bg-indigo-50/80 dark:bg-indigo-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Code className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
-                        App Server: Prompt Composition & Data Enrichment
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {/* Input: Raw Retrieved Data */}
-                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
-                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
-                          Input: Raw Retrieved Chunks ({retrievalResults.length} documents)
-                        </div>
-                        <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-indigo-100 dark:border-indigo-900 max-h-32 overflow-y-auto">
-                          {JSON.stringify({
-                            retrievedChunks: retrievalResults.map((r, i) => ({
-                              rank: i + 1,
-                              chunkId: r.chunk.id,
-                              docTitle: r.chunk.docTitle,
-                              content: r.chunk.text.substring(0, 80) + '...',
-                              metadata: {
-                                tags: r.chunk.tags,
-                                lastUpdated: r.chunk.lastUpdated
-                              },
-                              score: parseFloat((r.score * 100).toFixed(2))
-                            }))
-                          }, null, 2)}
-                        </pre>
-                      </div>
-
-                      {/* Application Enrichment */}
-                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
-                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
-                          Application Processing: Context Enrichment
-                        </div>
-                        <div className="text-[10px] text-zinc-600 dark:text-zinc-400 space-y-1 mb-2">
-                          <div>✓ Adding source numbers and metadata</div>
-                          <div>✓ Formatting context sections with headers</div>
-                          <div>✓ Adding system instructions for citation format</div>
-                          <div>✓ Token estimation and validation</div>
-                          <div>✓ Preparing structured prompt template</div>
-                        </div>
-                        <pre className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-2 rounded border border-indigo-100 dark:border-indigo-900 max-h-40 overflow-y-auto">
-                          {JSON.stringify({
-                            enrichedContext: {
-                              totalChunks: retrievalResults.length,
-                              totalTokens: retrievalResults.reduce((sum, r) => sum + r.estimatedTokens, 0),
-                              sources: retrievalResults.map((r, i) => ({
-                                sourceNumber: i + 1,
-                                title: r.chunk.docTitle,
-                                lastUpdated: r.chunk.lastUpdated,
-                                wordCount: r.chunk.wordCount,
-                                tags: r.chunk.tags
-                              })),
-                              systemInstructions: 'Cite source numbers in brackets when referencing information',
-                              citationFormat: '[1], [2], [3]'
-                            }
-                          }, null, 2)}
-                        </pre>
-                      </div>
-
-                      {/* Output: Composed Prompt with Highlighted Context */}
-                      <div className="rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-zinc-900 p-3">
-                        <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-2">
-                          Output: Grounded Prompt ({composedPrompt.split(/\s+/).length} tokens)
-                        </div>
-                        <div className="text-[9px] text-zinc-600 dark:text-zinc-400 mb-2 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-3 h-3 rounded bg-indigo-200 dark:bg-indigo-800"></span>
-                            <span>System prompt (existing, always present)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-3 h-3 rounded bg-amber-200 dark:bg-amber-800"></span>
-                            <span>Retrieved context (sandwiched from previous step)</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="inline-block w-3 h-3 rounded bg-emerald-200 dark:bg-emerald-800"></span>
-                            <span>User query</span>
-                          </div>
-                        </div>
-                        <div className="text-[10px] font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-indigo-100 dark:border-indigo-900 max-h-64 overflow-y-auto leading-relaxed">
-                          {promptParts ? (
-                            <div className="space-y-2 whitespace-pre-wrap">
-                              {/* System Prompt */}
-                              <div>
-                                <span className="bg-indigo-100 dark:bg-indigo-900/60 px-1.5 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 text-indigo-900 dark:text-indigo-100 font-semibold">
-                                  {promptParts.systemPrompt}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Context:</span>
-                              </div>
-                              {/* Context Sections - Highlighted */}
-                              {promptParts.contextSections.map((section, idx) => (
-                                <div key={idx} className="pl-2 border-l-2 border-amber-300 dark:border-amber-700">
-                                  <span className="bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-100">
-                                    {section.text}
-                                  </span>
-                                </div>
-                              ))}
-                              <div>
-                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Question: </span>
-                                <span className="bg-emerald-100 dark:bg-emerald-900/60 px-1.5 py-0.5 rounded border border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100 font-semibold">
-                                  {promptParts.userQuery}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-zinc-500 dark:text-zinc-400 font-semibold">Answer:</span>
-                              </div>
-                            </div>
-                          ) : (
-                            <pre className="whitespace-pre-wrap">{composedPrompt}</pre>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              {currentStepIndex === 5 && generatedAnswer && (
-                <motion.div
-                  key="step-5-data"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 gap-4 md:grid-cols-3"
-                >
-                  <div className="rounded-lg border-2 border-green-300 dark:border-green-700 bg-green-50/80 dark:bg-green-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Code className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-300">
-                        Input: Grounded Prompt
-                      </div>
-                    </div>
-                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium">
-                      {composedPrompt.split(/\s+/).length} tokens sent to LLM
-                    </div>
-                  </div>
-                  <div className="md:col-span-2 rounded-lg border-2 border-green-300 dark:border-green-700 bg-green-50/80 dark:bg-green-900/30 p-4 shadow-sm">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Bot className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                      <div className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-300">
-                        Output: Generated Answer
-                      </div>
-                    </div>
-                    <div className="text-sm text-zinc-900 dark:text-zinc-100 font-medium leading-relaxed line-clamp-4">
-                      {generatedAnswer}
-                    </div>
-                    {citations.length > 0 && (
-                      <div className="mt-3 pt-3 border-t-2 border-green-200 dark:border-green-800">
-                        <div className="flex items-center gap-2 text-xs text-green-700 dark:text-green-300">
-                          <FileText className="h-3 w-3" />
-                          <span className="font-semibold">{citations.length} citation{citations.length > 1 ? 's' : ''}:</span>
-                          <span className="text-green-600 dark:text-green-400">{citations.map(c => c.title).join(', ')}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Step Title and Subheader - Consolidated below diagram */}
+          <div className="mt-2 mb-4">
+            <motion.div
+              key={`step-header-${currentStepIndex}`}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-center max-w-3xl mx-auto"
+            >
+              <h2 className={`text-lg font-semibold ${getStepColorClass(currentStepIndex)} mb-1`}>
+                {STEP_HEADERS[STEPS[currentStepIndex].id]?.title || STEPS[currentStepIndex].title}
+              </h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {STEP_HEADERS[STEPS[currentStepIndex].id]?.subheader || STEPS[currentStepIndex].description}
+              </p>
+            </motion.div>
+          </div>
 
           {/* Progress Indicator */}
-          <div className="mt-6 mb-4">
-            <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-2">
-              <span>Pipeline Progress</span>
-              <span>{Math.round(((currentStepIndex + 1) / STEPS.length) * 100)}%</span>
-            </div>
-            <div className="h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+          <div className="max-w-xl mx-auto mb-6">
+            <div className="h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 className={`h-full rounded-full ${getStepColorClass(currentStepIndex).replace('text-', 'bg-').replace('dark:text-', 'dark:bg-')}`}
                 initial={{ width: 0 }}
@@ -1032,33 +635,13 @@ export default function RagPipelineVisualization({ dataset }: RagPipelineVisuali
               />
             </div>
           </div>
-
-          {/* Step Title and Description */}
-          <div className="mt-6 mb-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`flex items-center justify-center w-10 h-10 rounded-lg ${getStepColorClass(currentStepIndex).replace('text-', 'bg-').replace('dark:text-', 'dark:bg-')} bg-opacity-10 dark:bg-opacity-20`}>
-                {(() => {
-                  const Icon = currentStep.icon
-                  return <Icon className={`h-5 w-5 ${getStepColorClass(currentStepIndex)}`} />
-                })()}
-              </div>
-              <div>
-                <h3 className={`text-xl font-semibold ${getStepColorClass(currentStepIndex)}`}>
-                  Step {currentStepIndex + 1}: {currentStep.title}
-                </h3>
-                <p className={`text-sm text-zinc-600 dark:text-zinc-400`}>
-                  {currentStep.description}
-                </p>
-              </div>
-            </div>
             
-            {/* Educational Content - Inline */}
-            <div className="mt-6">
-              <EducationalSection 
-                stepId={STEPS[currentStepIndex].id} 
-                color={getStepColorName(currentStepIndex)} 
-              />
-            </div>
+          {/* Educational Content - Inline */}
+          <div className="mt-4 max-w-4xl mx-auto">
+            <EducationalSection 
+              stepId={STEPS[currentStepIndex].id} 
+              color={getStepColorName(currentStepIndex)} 
+            />
           </div>
         </div>
       </div>
