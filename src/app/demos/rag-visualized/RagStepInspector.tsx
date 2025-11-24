@@ -85,17 +85,17 @@ export default function RagStepInspector({
   // Visualization Steps:
   // 0: query (User Query) -> Inspector: Question View
   // 1: embed (Embed Query) -> Inspector: Embedding View
-  // 2: search (Vector Search) -> Inspector: Search View (Top K candidates)
-  // 3: retrieve (Retrieve Top Chunks) -> Inspector: Search View (Selected chunks)
+  // 2: search (Vector Search) -> Inspector: Search View (Math & Vectors)
+  // 3: retrieve (Retrieve Top Chunks) -> Inspector: Retrieval View (Selected chunks text)
   // 4: compose (Compose Prompt) -> Inspector: Prompt View
   // 5: generate (Generate Answer) -> Inspector: Answer View
 
-  // We derive the "Active View" based on the current step index
+  // We derive the "Active View" based on the currentStepIndex
   const getViewType = (stepIndex: number) => {
     switch(stepIndex) {
       case 0: return 'question'
       case 1: return 'embedding'
-      case 2: // Intentional fallthrough - both show retrieval results
+      case 2: return 'search'
       case 3: return 'retrieval'
       case 4: return 'prompt'
       case 5: return 'answer'
@@ -269,13 +269,13 @@ export default function RagStepInspector({
 
         {/* RIGHT COLUMN: Active Step Inspection */}
         <div className="lg:col-span-8 p-6 bg-white dark:bg-zinc-900">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
                 <motion.div
                     key={activeView}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
                     className="h-full flex flex-col"
                 >
                     {/* View Header */}
@@ -286,13 +286,15 @@ export default function RagStepInspector({
                             </span>
                             {activeView === 'question' && <span className="text-xs font-medium text-blue-600">Input Processing</span>}
                             {activeView === 'embedding' && <span className="text-xs font-medium text-emerald-600">Vector Space</span>}
-                            {activeView === 'retrieval' && <span className="text-xs font-medium text-purple-600">Context Selection</span>}
-                            {activeView === 'prompt' && <span className="text-xs font-medium text-amber-600">Context Injection</span>}
+                            {activeView === 'search' && <span className="text-xs font-medium text-purple-600">Similarity Search</span>}
+                            {activeView === 'retrieval' && <span className="text-xs font-medium text-amber-600">Context Selection</span>}
+                            {activeView === 'prompt' && <span className="text-xs font-medium text-indigo-600">Context Injection</span>}
                             {activeView === 'answer' && <span className="text-xs font-medium text-green-600">Final Output</span>}
                          </div>
                          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
                             {activeView === 'question' && 'Review User Query'}
                             {activeView === 'embedding' && 'Inspect Query Embeddings'}
+                            {activeView === 'search' && 'Vector Similarity Search'}
                             {activeView === 'retrieval' && `Review ${topK} Retrieved Chunks`}
                             {activeView === 'prompt' && 'Analyze Composed Prompt'}
                             {activeView === 'answer' && 'Final Generated Answer'}
@@ -353,29 +355,74 @@ export default function RagStepInspector({
                             </div>
                         )}
 
-                        {/* 2 & 3. Retrieval View */}
+                        {/* 2. Search View (Vector Math) */}
+                        {activeView === 'search' && (
+                            <div className="space-y-6">
+                                {/* Math Explanation */}
+                                <div className="p-4 bg-purple-50/30 rounded-xl border border-purple-100 dark:bg-purple-900/10 dark:border-purple-900/30">
+                                   <h4 className="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
+                                     <Cpu className="h-4 w-4" />
+                                     Cosine Similarity
+                                   </h4>
+                                   <div className="font-mono text-xs bg-white/50 dark:bg-black/20 p-3 rounded border border-purple-100/50 dark:border-purple-800/30 text-purple-800 dark:text-purple-200 mb-2">
+                                     similarity = (A · B) / (||A|| × ||B||)
+                                   </div>
+                                   <p className="text-xs text-purple-700/80 dark:text-purple-300/80">
+                                      We calculate the angle between the <strong>Query Vector</strong> (A) and every <strong>Chunk Vector</strong> (B). 
+                                      Smaller angles mean higher similarity scores (closer to 1.0).
+                                   </p>
+                                </div>
+
+                                {simulationData.results.length > 0 ? (
+                                    <div className="space-y-3">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Top {topK} Candidate Matches</h4>
+                                        <div className="grid gap-2">
+                                            {simulationData.results.map((result, i) => (
+                                                <div key={result.chunk.id} className="flex items-center gap-4 p-3 rounded-lg border border-zinc-100 bg-zinc-50/50 dark:bg-zinc-800/30 dark:border-zinc-800">
+                                                    <div className="w-16 text-right font-mono text-sm font-bold text-purple-600 dark:text-purple-400">
+                                                        {(result.similarity).toFixed(4)}
+                                                    </div>
+                                                    <div className="flex-1 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                                                        <div 
+                                                          className="h-full bg-purple-500 rounded-full" 
+                                                          style={{ width: `${Math.max(0, result.similarity * 100)}%` }}
+                                                        />
+                                                    </div>
+                                                    <div className="w-32 text-xs text-zinc-500 text-right truncate">
+                                                        Chunk {result.chunk.id}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="py-8 text-center text-zinc-500">
+                                        Running vector search...
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* 3. Retrieval View (Content) */}
                         {activeView === 'retrieval' && (
                             <div className="space-y-6">
                                 {simulationData.results.length > 0 ? (
                                     <div className="grid gap-4">
                                         {simulationData.results.map((result, i) => (
-                                            <div key={result.chunk.id} className="group relative p-4 rounded-xl border border-zinc-200 hover:border-purple-300 bg-white hover:shadow-md transition-all dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-purple-700">
+                                            <div key={result.chunk.id} className="group relative p-4 rounded-xl border border-amber-200/60 hover:border-amber-300 bg-amber-50/30 hover:shadow-md transition-all dark:bg-amber-900/10 dark:border-amber-800 dark:hover:border-amber-700">
                                                 <div className="absolute top-3 right-3 flex items-center gap-2">
-                                                    <div className="px-2 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-mono font-bold border border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-900/30">
-                                                        {(result.similarity * 100).toFixed(1)}% Match
+                                                    <div className="px-2 py-1 rounded-md bg-amber-100 text-amber-800 text-xs font-mono font-bold border border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800">
+                                                        Rank #{i + 1}
                                                     </div>
                                                 </div>
-                                                <div className="flex items-start gap-3 pr-20">
-                                                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-purple-700 text-xs font-bold dark:bg-purple-900/30 dark:text-purple-300">
-                                                        {i + 1}
-                                                    </span>
-                                                    <div className="space-y-1">
-                                                        <h5 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                                                            {result.chunk.docTitle}
-                                                            <span className="text-[10px] font-normal text-zinc-400 border border-zinc-200 rounded px-1 dark:border-zinc-700">Chunk {result.chunk.id}</span>
-                                                        </h5>
-                                                        <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{result.chunk.text}</p>
-                                                    </div>
+                                                <div className="space-y-2">
+                                                    <h5 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                                                        <Database className="h-3.5 w-3.5 text-amber-600" />
+                                                        {result.chunk.docTitle}
+                                                    </h5>
+                                                    <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed p-3 bg-white rounded-lg border border-zinc-100 dark:bg-zinc-950 dark:border-zinc-800">
+                                                        &quot;{result.chunk.text}&quot;
+                                                    </p>
                                                 </div>
                                             </div>
                                         ))}
