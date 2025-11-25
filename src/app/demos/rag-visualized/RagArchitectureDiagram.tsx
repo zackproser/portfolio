@@ -34,14 +34,14 @@ interface DataFlow {
   direction: 'forward' | 'backward' | 'bidirectional'
 }
 
-// Full system layout - components positioned in corners for maximum breathing room
+// Full system layout - components positioned with more breathing room in larger viewBox
 const COMPONENTS: Component[] = [
   {
     id: 'user',
     label: 'User Browser',
     icon: Globe,
-    x: 20,
-    y: 15,
+    x: 50,
+    y: 30,
     color: 'blue',
     description: 'Client-side interface'
   },
@@ -49,8 +49,8 @@ const COMPONENTS: Component[] = [
     id: 'server',
     label: 'App Server',
     icon: Server,
-    x: 20,
-    y: 100,
+    x: 50,
+    y: 130,
     color: 'emerald',
     description: 'Next.js application'
   },
@@ -58,8 +58,8 @@ const COMPONENTS: Component[] = [
     id: 'embedding',
     label: 'Embedding Model',
     icon: Layers,
-    x: 210,
-    y: 15,
+    x: 270,
+    y: 30,
     color: 'cyan',
     description: 'text-embedding-3-small'
   },
@@ -67,8 +67,8 @@ const COMPONENTS: Component[] = [
     id: 'llm',
     label: 'LLM API',
     icon: Cpu,
-    x: 210,
-    y: 70,
+    x: 270,
+    y: 90,
     color: 'purple',
     description: 'OpenAI API'
   },
@@ -76,8 +76,8 @@ const COMPONENTS: Component[] = [
     id: 'vectorDb',
     label: 'Vector DB',
     icon: Database,
-    x: 210,
-    y: 100,
+    x: 270,
+    y: 130,
     color: 'amber',
     description: 'Pinecone'
   }
@@ -182,9 +182,9 @@ function getPath(from: Component, to: Component): string {
   const dx = to.x - from.x
   const dy = to.y - from.y
   
-  // Self-loop for same component (internal processing) - LARGER for step-specific view
+  // Self-loop for same component (internal processing)
   if (from.id === to.id) {
-    return `M ${from.x} ${from.y - 15} A 8 8 0 1 1 ${from.x} ${from.y + 15} A 8 8 0 1 1 ${from.x} ${from.y - 15}`
+    return `M ${from.x} ${from.y - 20} A 12 12 0 1 1 ${from.x} ${from.y + 20} A 12 12 0 1 1 ${from.x} ${from.y - 20}`
   }
   
   // Calculate control points for smooth bezier curves
@@ -454,7 +454,7 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
       <div className="relative w-full rounded-lg border border-zinc-200 bg-zinc-50/50 p-6 dark:border-zinc-700 dark:bg-zinc-900/50">
         <svg
           ref={svgRef}
-          viewBox="0 0 230 120"
+          viewBox="0 0 320 160"
           className="w-full"
           preserveAspectRatio="xMidYMid meet"
           style={{ height: '500px', maxHeight: '600px' }}
@@ -538,10 +538,10 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
           {/* Step Title on Canvas - Visible on all screens */}
           {stepTitle && (
             <text
-              x="115"
-              y="8"
+              x="160"
+              y="12"
               textAnchor="middle"
-              fontSize="5"
+              fontSize="9"
               fontWeight="bold"
               fill="#374151"
               className="dark:fill-zinc-300"
@@ -629,17 +629,17 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                           path={path}
                         >
                           <g>
-                            {/* Data packet background - MUCH LARGER for step-specific view */}
+                            {/* Data packet background - Large and readable */}
                             <rect
-                              x="-35"
-                              y="-6"
-                              width="70"
-                              height="12"
-                              rx="6"
+                              x="-50"
+                              y="-10"
+                              width="100"
+                              height="20"
+                              rx="10"
                               fill="white"
                               fillOpacity="0.98"
                               stroke={strokeColor}
-                              strokeWidth="0.7"
+                              strokeWidth="1"
                               className="dark:fill-zinc-900"
                             >
                               <animate
@@ -649,12 +649,12 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                                 repeatCount="indefinite"
                               />
                             </rect>
-                            {/* Data content - LARGER font showing actual input/output values */}
+                            {/* Data content - Large readable font */}
                             <text
                               x="0"
-                              y="3"
+                              y="5"
                               textAnchor="middle"
-                              fontSize="2.8"
+                              fontSize="7"
                               fill={strokeColor}
                               fillOpacity="1"
                               fontWeight="700"
@@ -667,11 +667,11 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                                 repeatCount="indefinite"
                               />
                             </text>
-                            {/* Trailing dots - LARGER */}
+                            {/* Trailing dots */}
                             <circle
-                              cx="-20"
+                              cx="-35"
                               cy="0"
-                              r="1"
+                              r="2"
                               fill={strokeColor}
                               fillOpacity="0.8"
                             >
@@ -684,9 +684,9 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                               />
                             </circle>
                             <circle
-                              cx="20"
+                              cx="35"
                               cy="0"
-                              r="1"
+                              r="2"
                               fill={strokeColor}
                               fillOpacity="0.8"
                             >
@@ -702,12 +702,12 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                         </animateMotion>
                       </g>
                     )}
-                    {/* Pulse effect for self-loops - LARGER */}
+                    {/* Pulse effect for self-loops */}
                     {fromComp.id === toComp.id && (
                       <motion.circle
                         cx={fromComp.x}
-                        cy={fromComp.y - 15}
-                        r="2"
+                        cy={fromComp.y - 20}
+                        r="3"
                         fill={strokeColor}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: [0, 1, 1, 0] }}
@@ -720,7 +720,7 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                     )}
                   </>
                 )}
-                {/* Label - more elegant */}
+                {/* Label - prominent and readable */}
                 {isAnimating && (
                   <motion.g
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -728,26 +728,26 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                     transition={{ delay: 0.3 }}
                   >
                     {fromComp.id === toComp.id ? (
-                      // Self-loop label (internal processing) - LARGER
+                      // Self-loop label (internal processing)
                       <>
                         <rect
-                          x={fromComp.x - 18}
-                          y={fromComp.y - 22}
-                          width="36"
-                          height="6"
-                          rx="3"
+                          x={fromComp.x - 35}
+                          y={fromComp.y - 32}
+                          width="70"
+                          height="14"
+                          rx="7"
                           fill="white"
                           fillOpacity="0.98"
                           stroke={strokeColor}
-                          strokeWidth="0.4"
-                          strokeOpacity="0.5"
+                          strokeWidth="0.8"
+                          strokeOpacity="0.6"
                           className="dark:fill-zinc-900"
                         />
                         <text
                           x={fromComp.x}
-                          y={fromComp.y - 17}
+                          y={fromComp.y - 22}
                           textAnchor="middle"
-                          fontSize="3"
+                          fontSize="7"
                           fill={strokeColor}
                           fillOpacity="1"
                           fontWeight="700"
@@ -757,26 +757,26 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                         </text>
                       </>
                     ) : (
-                      // Regular label - LARGER
+                      // Regular label
                       <>
                         <rect
-                          x={midX - 18}
-                          y={midY - 5}
-                          width="36"
-                          height="6"
-                          rx="3"
+                          x={midX - 40}
+                          y={midY - 10}
+                          width="80"
+                          height="14"
+                          rx="7"
                           fill="white"
                           fillOpacity="0.98"
                           stroke={strokeColor}
-                          strokeWidth="0.4"
-                          strokeOpacity="0.5"
+                          strokeWidth="0.8"
+                          strokeOpacity="0.6"
                           className="dark:fill-zinc-900"
                         />
                         <text
                           x={midX}
-                          y={midY - 1}
+                          y={midY + 2}
                           textAnchor="middle"
-                          fontSize="3"
+                          fontSize="7"
                           fill={strokeColor}
                           fillOpacity="1"
                           fontWeight="700"
@@ -808,13 +808,13 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                   <motion.circle
                     cx={component.x}
                     cy={component.y}
-                    r="14"
+                    r="18"
                     fill="none"
                     stroke={strokeColor}
-                    strokeWidth="1"
+                    strokeWidth="1.5"
                     strokeOpacity="0.5"
-                    initial={{ r: 14, opacity: 0.5 }}
-                    animate={{ r: 22, opacity: 0 }}
+                    initial={{ r: 18, opacity: 0.5 }}
+                    animate={{ r: 28, opacity: 0 }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
@@ -827,17 +827,17 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                 <motion.circle
                   cx={component.x}
                   cy={component.y + 0.5}
-                  r="10"
+                  r="14"
                   fill="rgba(0,0,0,0.1)"
                   opacity={isActive ? 0.3 : 0.1}
                 />
                 <motion.circle
                   cx={component.x}
                   cy={component.y}
-                  r="10"
+                  r="14"
                   fill={`url(#${gradientId})`}
                   stroke={isActive ? strokeColor : '#d1d5db'}
-                  strokeWidth={isActive ? '1.5' : '1'}
+                  strokeWidth={isActive ? '2' : '1.5'}
                   initial={{ scale: 1, opacity: 0.9 }}
                   animate={{
                     scale: isActive ? 1.1 : 1,
@@ -851,12 +851,12 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                   <motion.circle
                     cx={component.x}
                     cy={component.y}
-                    r="10"
+                    r="14"
                     fill="none"
                     stroke={strokeColor}
-                    strokeWidth="1.2"
-                    initial={{ r: 10, opacity: 0.6 }}
-                    animate={{ r: 18, opacity: 0 }}
+                    strokeWidth="1.5"
+                    initial={{ r: 14, opacity: 0.6 }}
+                    animate={{ r: 24, opacity: 0 }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
@@ -867,37 +867,37 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
 
                 {/* Icon */}
                 <foreignObject
-                  x={component.x - 8}
-                  y={component.y - 8}
-                  width="16"
-                  height="16"
+                  x={component.x - 10}
+                  y={component.y - 10}
+                  width="20"
+                  height="20"
                 >
                   <div className={`flex h-full w-full items-center justify-center ${colorClass}`}>
-                    <Icon className={`h-6 w-6 ${isActive ? 'drop-shadow-md' : ''}`} strokeWidth={isActive ? 3 : 2.5} />
+                    <Icon className={`h-5 w-5 ${isActive ? 'drop-shadow-md' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
                   </div>
                 </foreignObject>
 
                 {/* Component label with background */}
                 <g>
                   <rect
-                    x={component.x - 18}
-                    y={component.y + 14}
-                    width="36"
-                    height="5"
-                    rx="2.5"
+                    x={component.x - 30}
+                    y={component.y + 18}
+                    width="60"
+                    height="10"
+                    rx="5"
                     fill="white"
                     fillOpacity={isActive ? 0.98 : 0.7}
                     stroke={isActive ? strokeColor : '#d1d5db'}
-                    strokeWidth="0.5"
+                    strokeWidth="0.8"
                     className="dark:fill-zinc-900 dark:stroke-zinc-700"
                   />
                   <text
                     x={component.x}
-                    y={component.y + 17}
+                    y={component.y + 25}
                     textAnchor="middle"
-                    fontSize="2.5"
+                    fontSize="6"
                     fill={isActive ? '#1f2937' : '#6b7280'}
-                    fontWeight={isActive ? 'bold' : '700'}
+                    fontWeight={isActive ? 'bold' : '600'}
                     className="dark:fill-zinc-200"
                   >
                     {component.label}
@@ -915,59 +915,62 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
               
               if (compId === 'user') {
                 if (currentStepIndex === 0 && props.query) {
-                  data.push({ label: 'Query', value: `"${props.query}"`, type: 'output' })
+                  // Show just the first few words, not quotes
+                  const shortQuery = props.query.split(' ').slice(0, 5).join(' ')
+                  data.push({ label: 'Query', value: shortQuery + '...', type: 'output' })
                 }
                 if (currentStepIndex === 5 && props.generatedAnswer) {
-                  data.push({ label: 'Answer', value: props.generatedAnswer.slice(0, 60) + '...', type: 'input' })
+                  data.push({ label: 'Answer', value: 'Grounded response received', type: 'input' })
                 }
               }
               
               if (compId === 'server') {
                 if (currentStepIndex === 0 && props.query) {
-                  data.push({ label: 'Input', value: `"${props.query}"`, type: 'input' })
+                  const shortQuery = props.query.split(' ').slice(0, 4).join(' ')
+                  data.push({ label: 'Received', value: shortQuery + '...', type: 'input' })
                 }
                 if (currentStepIndex === 1) {
-                  data.push({ label: 'To Embed', value: `"${props.query}"`, type: 'output' })
+                  data.push({ label: 'Sending', value: 'Text for embedding', type: 'output' })
                   if (props.queryEmbedding) {
-                    data.push({ label: 'Vector', value: `[${props.queryEmbedding.slice(0,3).join(',')},...]`, type: 'input' })
+                    data.push({ label: 'Got', value: '1536-dim vector', type: 'input' })
                   }
                 }
                 if (currentStepIndex === 2) {
-                   data.push({ label: 'Query Vec', value: 'Float32[1536]', type: 'output' })
+                   data.push({ label: 'Searching', value: '1536-dim vector', type: 'output' })
                 }
                 if (currentStepIndex === 3 && props.retrievalResults) {
-                   data.push({ label: 'Context', value: `${props.retrievalResults.length} chunks`, type: 'input' })
+                   data.push({ label: 'Retrieved', value: `${props.retrievalResults.length} relevant chunks`, type: 'input' })
                 }
                 if (currentStepIndex === 4) {
-                   data.push({ label: 'Prompt', value: 'System + Context + Query', type: 'output' })
+                   data.push({ label: 'Building', value: 'System + Context + Query', type: 'output' })
                 }
                 if (currentStepIndex === 5) {
                    if (props.generatedAnswer) {
-                     data.push({ label: 'Response', value: props.generatedAnswer.slice(0, 40) + '...', type: 'output' })
+                     data.push({ label: 'Response', value: 'With citations', type: 'output' })
                    }
                 }
               }
 
               if (compId === 'embedding' && currentStepIndex === 1) {
-                 data.push({ label: 'Input', value: `"${props.query}"`, type: 'input' })
+                 data.push({ label: 'Input', value: 'Natural language text', type: 'input' })
                  if (props.queryEmbedding) {
-                   data.push({ label: 'Output', value: `[${props.queryEmbedding.slice(0,3).join(',')},...]`, type: 'output' })
+                   data.push({ label: 'Output', value: '1536-dim float vector', type: 'output' })
                  }
               }
 
               if (compId === 'vectorDb') {
                 if (currentStepIndex === 2) {
-                  data.push({ label: 'Search', value: 'Cosine Similarity', type: 'input' })
+                  data.push({ label: 'Method', value: 'Cosine Similarity', type: 'input' })
                 }
                 if (currentStepIndex === 3 && props.retrievalResults) {
-                  data.push({ label: 'Result', value: `Top ${props.retrievalResults.length} matches`, type: 'output' })
+                  data.push({ label: 'Found', value: `Top ${props.retrievalResults.length} matches`, type: 'output' })
                 }
               }
 
               if (compId === 'llm' && currentStepIndex === 5) {
-                 data.push({ label: 'Context', value: 'Grounded Prompt', type: 'input' })
+                 data.push({ label: 'Prompt', value: 'Grounded context', type: 'input' })
                  if (props.generatedAnswer) {
-                   data.push({ label: 'Gen', value: 'Streamed tokens...', type: 'output' })
+                   data.push({ label: 'Output', value: 'Streamed tokens', type: 'output' })
                  }
               }
 
@@ -981,24 +984,22 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
               // Calculate positions for multiple boxes
               return boxData.map((data, idx) => {
                 const isInput = data.type === 'input'
-                const boxHeight = 24
-                const boxWidth = 70
+                const boxHeight = 32
+                const boxWidth = 100
                 
-                // Naive positioning - optimize with calculateSafeBoxPosition in a real scenario
-                // For now, inputs on left/top, outputs on right/bottom relative to component
+                // Offset logic to avoid overlap - adjusted for larger viewBox
                 let pos = { x: comp.x, y: comp.y }
                 
-                // Offset logic to avoid overlap
                 if (comp.id === 'server') {
-                   pos = isInput ? { x: comp.x - 60, y: comp.y } : { x: comp.x + 60, y: comp.y }
+                   pos = isInput ? { x: comp.x - 80, y: comp.y } : { x: comp.x + 80, y: comp.y }
                 } else if (comp.id === 'user') {
-                   pos = { x: comp.x + 50, y: comp.y }
+                   pos = { x: comp.x + 70, y: comp.y }
                 } else if (comp.id === 'embedding') {
-                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y + 40 }
+                   pos = isInput ? { x: comp.x - 70, y: comp.y } : { x: comp.x, y: comp.y + 50 }
                 } else if (comp.id === 'vectorDb') {
-                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y - 40 }
+                   pos = isInput ? { x: comp.x - 70, y: comp.y } : { x: comp.x, y: comp.y - 50 }
                 } else if (comp.id === 'llm') {
-                   pos = isInput ? { x: comp.x - 50, y: comp.y } : { x: comp.x, y: comp.y + 40 }
+                   pos = isInput ? { x: comp.x - 70, y: comp.y } : { x: comp.x, y: comp.y + 50 }
                 }
 
                 const safePos = calculateSafeBoxPosition({
@@ -1006,8 +1007,8 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                   componentY: comp.y,
                   boxWidth,
                   boxHeight,
-                  viewBoxWidth: 230,
-                  viewBoxHeight: 120,
+                  viewBoxWidth: 320,
+                  viewBoxHeight: 160,
                   otherComponents: COMPONENTS.filter(c => c.id !== comp.id).map(c => ({ x: c.x, y: c.y }))
                 })
 
@@ -1024,17 +1025,17 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                       y={safePos.y}
                       width={boxWidth}
                       height={boxHeight}
-                      rx="4"
+                      rx="6"
                       fill="white"
-                      fillOpacity="0.9"
+                      fillOpacity="0.95"
                       stroke={data.type === 'input' ? '#3b82f6' : '#10b981'}
-                      strokeWidth="0.5"
+                      strokeWidth="1"
                       className="dark:fill-zinc-900/90"
                     />
                     <text
-                      x={safePos.x + 4}
-                      y={safePos.y + 8}
-                      fontSize="4"
+                      x={safePos.x + 6}
+                      y={safePos.y + 12}
+                      fontSize="7"
                       fontWeight="bold"
                       fill={data.type === 'input' ? '#1d4ed8' : '#047857'}
                       className={data.type === 'input' ? 'dark:fill-blue-400' : 'dark:fill-emerald-400'}
@@ -1042,13 +1043,13 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                       {data.label}
                     </text>
                     <text
-                      x={safePos.x + 4}
-                      y={safePos.y + 16}
-                      fontSize="3.5"
+                      x={safePos.x + 6}
+                      y={safePos.y + 24}
+                      fontSize="5.5"
                       fill="#52525b"
                       className="dark:fill-zinc-400"
                     >
-                      {data.value.length > 25 ? data.value.slice(0,24) + '...' : data.value}
+                      {data.value.length > 40 ? data.value.slice(0, 38) + '...' : data.value}
                     </text>
                   </motion.g>
                 )

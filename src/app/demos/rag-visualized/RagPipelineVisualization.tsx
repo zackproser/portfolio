@@ -18,10 +18,55 @@ import {
   Lightbulb,
   AlertTriangle,
   X,
-  Keyboard
+  Keyboard,
+  HelpCircle
 } from 'lucide-react'
 
 import Link from 'next/link'
+
+// Tooltip component for technical terms
+function Tooltip({ 
+  term, 
+  explanation, 
+  children 
+}: { 
+  term: string
+  explanation: string 
+  children: React.ReactNode
+}) {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  return (
+    <span className="relative inline-block">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        className="inline-flex items-center gap-1 border-b-2 border-dotted border-current cursor-help font-medium text-inherit hover:opacity-80 transition-opacity"
+      >
+        {children}
+        <HelpCircle className="h-4 w-4 opacity-60" />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 4, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-3 w-80 p-4 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 text-sm leading-relaxed shadow-2xl border border-zinc-700 dark:border-zinc-300"
+          >
+            <div className="font-bold text-base mb-2 text-white dark:text-zinc-900">{term}</div>
+            <div className="opacity-95 leading-relaxed">{explanation}</div>
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-6 border-transparent border-t-zinc-900 dark:border-t-zinc-100" style={{ borderWidth: '8px' }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </span>
+  )
+}
 import type { RagDataset } from './data'
 import RagArchitectureDiagram from './RagArchitectureDiagram'
 import {
@@ -49,175 +94,123 @@ const STEPS = [
   {
     id: 'query',
     title: 'User Query',
-    description: 'The user enters a question in plaintext',
+    description: 'User enters a question',
     icon: FileText,
     color: 'blue'
   },
   {
     id: 'embed',
     title: 'Embed Query',
-    description: 'Convert the query text into a dense vector representation',
+    description: 'Convert text to vector',
     icon: Cpu,
     color: 'emerald'
   },
   {
     id: 'search',
     title: 'Vector Search',
-    description: 'Find similar chunks using cosine similarity',
+    description: 'Find similar chunks',
     icon: Search,
     color: 'purple'
   },
   {
     id: 'retrieve',
-    title: 'Retrieve Top Chunks',
-    description: 'Select the most relevant document chunks',
+    title: 'Retrieve Chunks',
+    description: 'Select relevant context',
     icon: Database,
     color: 'amber'
   },
   {
     id: 'compose',
     title: 'Compose Prompt',
-    description: 'Assemble context and query into a grounded prompt',
+    description: 'Combine query & context',
     icon: Code,
     color: 'indigo'
   },
   {
     id: 'generate',
     title: 'Generate Answer',
-    description: 'LLM generates response with citations',
+    description: 'LLM answers with citations',
     icon: Bot,
     color: 'green'
   }
 ] as const
 
-// Step-specific titles and subheaders for the header section
-const STEP_HEADERS: Record<string, { title: string; subheader: string }> = {
+// Tooltip definitions for technical terms
+const TERM_TOOLTIPS = {
+  embedding: {
+    term: 'Embedding',
+    explanation: 'A numerical vector (array of numbers) that captures the semantic meaning of text. Similar concepts have similar embeddings, enabling semantic search.'
+  },
+  cosine_similarity: {
+    term: 'Cosine Similarity',
+    explanation: 'Measures the angle between two vectors. A score of 1.0 means identical direction (perfect match), 0 means perpendicular (unrelated), -1 means opposite.'
+  },
+  chunk: {
+    term: 'Chunk',
+    explanation: 'A smaller segment of a larger document. Documents are split into chunks (typically 100-500 words) to enable precise retrieval and fit within context limits.'
+  },
+  top_k: {
+    term: 'Top-K',
+    explanation: 'The number of most similar results to retrieve. Higher K provides more context but costs more tokens; lower K is faster but may miss relevant info.'
+  }
+}
+
+// Consolidated educational content with tooltip support
+const STEP_DETAILS: Record<string, {
+  overview: React.ReactNode
+  whyItMatters: React.ReactNode
+  howItWorks: React.ReactNode
+  considerations?: React.ReactNode
+}> = {
   query: {
-    title: 'Capture the user\'s question',
-    subheader: 'The query text is received and prepared for semantic processing. This plaintext input will be transformed into a numerical representation that enables meaning-based search.'
+    overview: 'The plaintext question capturing user intent.',
+    whyItMatters: 'Clear queries lead to better retrieval than vague keywords.',
+    howItWorks: 'Text is normalized but remains human-readable before vectorization.'
   },
   embed: {
-    title: 'Convert user\'s query to query embeddings',
-    subheader: 'The embedding model transforms the query text into a dense numerical vector. This vector captures semantic meaning, enabling similarity search where queries match documents by concept rather than exact keywords.'
+    overview: <>Converts text into a dense numerical vector (<Tooltip {...TERM_TOOLTIPS.embedding}>embedding</Tooltip>) representing semantic meaning.</>,
+    whyItMatters: 'Enables searching by concept (e.g., "login issues") rather than just keywords.',
+    howItWorks: 'A neural network maps text to a high-dimensional space where similar concepts cluster together.',
+    considerations: 'The same model must be used for both indexing documents and embedding queries.'
   },
   search: {
-    title: 'Search the vector database for similar content',
-    subheader: 'The query embedding is compared against all stored document chunks using cosine similarity. This mathematical measure finds content that matches the query\'s meaning, even when wording differs.'
+    overview: <>Compares the query vector against document vectors using <Tooltip {...TERM_TOOLTIPS.cosine_similarity}>cosine similarity</Tooltip>.</>,
+    whyItMatters: 'Finds relevant information even when phrasing differs from the source text.',
+    howItWorks: 'Calculates the angle between vectors; smaller angles mean higher semantic similarity.',
+    considerations: 'Production systems use approximate nearest neighbor (ANN) algorithms for speed at scale.'
   },
   retrieve: {
-    title: 'Retrieve the most relevant document chunks',
-    subheader: 'The top-K chunks with highest similarity scores are selected. These chunks will ground the LLM\'s response, ensuring answers are tethered to actual source material rather than generated from memory alone.'
+    overview: <>Selects the <Tooltip {...TERM_TOOLTIPS.top_k}>top-K</Tooltip> most similar <Tooltip {...TERM_TOOLTIPS.chunk}>chunks</Tooltip> to serve as context.</>,
+    whyItMatters: 'Provides the factual grounding that prevents LLM hallucinations.',
+    howItWorks: <>
+      <Tooltip {...TERM_TOOLTIPS.chunk}>Chunks</Tooltip> are ranked by similarity score; metadata filters can further refine results.
+    </>,
+    considerations: 'Balancing context quantity (K) with prompt window limits is key.'
   },
   compose: {
-    title: 'Compose a grounded prompt with retrieved context',
-    subheader: 'The retrieved chunks are inserted into a prompt template alongside system instructions and the user\'s query. This "sandwiching" approach ensures the LLM only sees verified context, making responses citable and verifiable.'
+    overview: <>Sandwiches retrieved <Tooltip {...TERM_TOOLTIPS.chunk}>chunks</Tooltip> into a system prompt template.</>,
+    whyItMatters: 'Ensures the LLM answers based ONLY on the provided verified data.',
+    howItWorks: 'Retrieved text is inserted between instructions and the user query in a strict format.',
+    considerations: 'Clear citation instructions in the prompt help the LLM reference sources accurately.'
   },
   generate: {
-    title: 'Generate an answer grounded in retrieved sources',
-    subheader: 'The LLM synthesizes the provided context into a coherent answer, citing specific sources. By only seeing retrieved chunks, the model produces accurate responses without hallucinating information not in the knowledge base.'
+    overview: 'LLM synthesizes an answer citing the provided sources.',
+    whyItMatters: 'Combines AI reasoning with your private data for trustworthy responses.',
+    howItWorks: 'The model generates tokens based on the grounded prompt, adding citations like [1].',
+    considerations: 'Monitoring latency and citation accuracy is crucial for production reliability.'
   }
 }
 
 const AUTO_ADVANCE_DELAYS = {
   query: 0,
-  embed: 10000, // 10 seconds to show embedding model, then vectors
-  search: 11000, // 11 seconds to show search process
-  retrieve: 12000, // 12 seconds to show retrieved chunks with full details
-  compose: 11000, // 11 seconds to show prompt composition
-  generate: 12000 // 12 seconds to show final answer
+  embed: 10000,
+  search: 11000,
+  retrieve: 12000,
+  compose: 11000,
+  generate: 12000
 }
 
-// Educational content for each step
-const STEP_EDUCATION: Record<string, {
-  overview: string
-  whyItMatters: string
-  howItWorks: string
-  considerations?: string
-  nextStep?: string
-}> = {
-  query: {
-    overview: 'The user query is the starting point of every RAG pipeline. This plaintext question captures the user\'s intent and will be transformed through multiple stages to retrieve relevant information.',
-    whyItMatters: 'Well-formed queries lead to better retrieval. The same query processed through RAG will yield consistent, grounded answers—unlike pure LLM responses that can vary or hallucinate.',
-    howItWorks: 'The query text is normalized (trimmed, standardized) but otherwise kept as-is at this stage. It will be converted to a vector representation in the next step, enabling semantic search rather than keyword matching.',
-    nextStep: 'In the next step, this query will be passed to an embedding model that converts it into a dense vector—a mathematical representation of its semantic meaning.'
-  },
-  embed: {
-    overview: 'Embedding models convert text into dense numerical vectors that capture semantic meaning. These vectors enable similarity search: queries and documents with similar meanings will have similar vector representations.',
-    whyItMatters: 'Semantic search allows the system to find relevant content even when exact keywords don\'t match. For example, a query about "authentication failures" can match documents discussing "login errors" or "SSO issues" because their vectors are close in the embedding space.',
-    howItWorks: 'The embedding model (like OpenAI\'s text-embedding-3-small) uses a neural network trained on vast text corpora. It outputs a fixed-size vector (1536 dimensions here) where each dimension represents a learned semantic feature. Similar concepts cluster together in this high-dimensional space. To understand how text becomes tokens before embedding, see the <a href="/demos/tokenize" class="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid">tokenization demo</a>. For an interactive deep dive into embeddings, explore the <a href="/demos/embeddings" class="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid">embeddings demo</a>.',
-    considerations: 'Choosing the right embedding model matters: larger models may be more accurate but slower and more expensive. The same model must be used for both indexing (storing documents) and querying to ensure compatibility.',
-    nextStep: 'This query vector will now be compared against all stored document chunk vectors to find the most semantically similar content.'
-  },
-  search: {
-    overview: 'Vector similarity search compares the query embedding against all stored chunk embeddings using cosine similarity. This mathematical measure quantifies how "close" two vectors are in the embedding space.',
-    whyItMatters: 'Vector search enables finding relevant content by meaning, not just keywords. This is crucial for RAG because users often phrase questions differently than how information is stored in documents. Semantic similarity bridges this gap.',
-    howItWorks: 'Cosine similarity calculates the angle between two vectors, normalized by their magnitudes. The formula is: similarity = (A · B) / (||A|| × ||B||). Values range from -1 (opposite meaning) to 1 (identical meaning). The system computes this for every chunk and ranks them by score.',
-    considerations: 'Vector databases like Pinecone optimize this search for speed at scale using approximate nearest neighbor (ANN) algorithms. For production systems with millions of chunks, exact similarity would be too slow.',
-    nextStep: 'The top-ranked chunks will be retrieved and used to build context for the LLM, ensuring the answer is grounded in actual documents.'
-  },
-  retrieve: {
-    overview: 'Retrieval selects the top-K most similar chunks based on similarity scores. These chunks will become the "context" that grounds the LLM\'s response, preventing hallucinations and ensuring citations.',
-    whyItMatters: 'Quality retrieval is the foundation of trustworthy RAG. Poor chunks lead to irrelevant or misleading answers. The retrieved chunks are the only information the LLM will see, so precision matters more than recall here.',
-    howItWorks: 'After computing similarity scores, chunks are sorted by score (highest first). The top K chunks (typically 3-5) are selected. Hybrid retrieval can combine semantic similarity with keyword matching and metadata filters for better precision.',
-    considerations: 'The optimal K value balances context richness with prompt length limits. Too few chunks may miss important information; too many can dilute signal and exceed token budgets. Metadata filters (tags, dates, sources) can further refine results.',
-    nextStep: 'These retrieved chunks will be inserted (sandwiched) into an existing system prompt template. The system prompt defines the assistant\'s role, and the retrieved context is literally placed between the system instructions and the user query, creating a single grounded prompt.'
-  },
-  compose: {
-    overview: 'Prompt composition sandwiches the retrieved context chunks into an existing system prompt template. The system prompt defines the assistant\'s role and citation requirements, while the retrieved context from the previous step is literally inserted between the system instructions and the user query. This "sandwiching" approach ensures the LLM only sees the specific context retrieved, making responses verifiable and grounded.',
-    whyItMatters: 'Well-structured prompts dramatically improve answer quality. By explicitly providing context and asking for citations, we ensure the LLM stays grounded. The visual separation above shows how retrieved context (highlighted in amber) is inserted into the existing system prompt—this is the core mechanism that makes RAG more reliable than pure LLM responses.',
-    howItWorks: 'The prompt follows a template pattern: First, the system prompt (shown in indigo) defines the assistant\'s role and citation format—this exists independently of any query. Next, the retrieved context chunks (shown in amber, identical to what was retrieved in the previous step) are inserted into the middle. Finally, the user\'s question (shown in green) is appended. The entire prompt must fit within the model\'s context window, which constrains how much context can be included.',
-    considerations: 'Prompt engineering matters: clear instructions about citation format, handling uncertainty, and what to do when context is insufficient. Token limits require balancing chunk quantity, chunk size, and prompt overhead. The retrieved context must be identical to what was shown in the previous step—no modification occurs, just insertion into the template.',
-    nextStep: 'This complete prompt will be sent to the LLM, which will generate a response that synthesizes the provided context into a coherent answer with citations. The LLM only sees this single prompt containing the retrieved context sandwiched between the system instructions and query.'
-  },
-  generate: {
-    overview: 'The LLM generates a final answer based on the grounded prompt. By only seeing the retrieved context, it can produce accurate, citable responses without hallucinating information not in the knowledge base.',
-    whyItMatters: 'This final step demonstrates RAG\'s core value: combining the reasoning power of LLMs with the factual grounding of retrieval. Users get AI-powered answers they can verify by checking cited sources.',
-    howItWorks: 'The LLM processes the complete prompt (instructions + context + question) and generates a response token-by-token. The model is instructed to cite sources using markers like [1], [2] corresponding to the numbered context chunks. Streaming allows users to see answers appear in real-time.',
-    considerations: 'Production RAG systems monitor answer quality, citation accuracy, and user feedback. Guardrails can flag low-confidence answers or responses that cite sources incorrectly. Token usage and latency are key cost/performance metrics.',
-    nextStep: 'The complete answer with citations is returned to the user, completing the RAG pipeline. Each step worked together to transform a question into a grounded, verifiable response.'
-  }
-}
-
-// Helper function to render text with links
-function renderTextWithLinks(text: string, colorMuted: string) {
-  // Simple regex to find <a> tags and convert them to React Link components
-  const parts: (string | JSX.Element)[] = []
-  const linkRegex = /<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g
-  let lastIndex = 0
-  let match
-
-  while ((match = linkRegex.exec(text)) !== null) {
-    // Add text before the link
-    if (match.index > lastIndex) {
-      parts.push(text.substring(lastIndex, match.index))
-    }
-    // Add the Link component
-    parts.push(
-      <Link
-        key={match.index}
-        href={match[1] as any}
-        className="text-blue-600 dark:text-blue-400 underline decoration-dotted hover:decoration-solid"
-      >
-        {match[2]}
-      </Link>
-    )
-    lastIndex = match.index + match[0].length
-  }
-  
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex))
-  }
-  
-  // If no links found, return original text
-  if (parts.length === 0) {
-    return text
-  }
-  
-  return <>{parts}</>
-}
-
-// Educational section component - cleaner, less boxy, collapsible
+// Educational section component
 function EducationalSection({ 
   stepId, 
   color 
@@ -225,7 +218,7 @@ function EducationalSection({
   stepId: string
   color: string 
 }) {
-  const content = STEP_EDUCATION[stepId]
+  const content = STEP_DETAILS[stepId]
   const [isExpanded, setIsExpanded] = useState(false)
   
   if (!content) return null
@@ -278,33 +271,31 @@ function EducationalSection({
   const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue
 
   return (
-    <div className={`w-full space-y-4 ${colors.text} text-sm leading-relaxed`}>
-      {/* Top level concepts - always visible, clean typography */}
-      <div className="grid gap-6 md:grid-cols-2">
+    <div className={`w-full space-y-3 ${colors.text} text-sm leading-relaxed`}>
+      <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1.5">
             <Lightbulb className={`h-4 w-4 ${colors.icon}`} />
             <span className={`font-semibold ${colors.text} text-sm`}>Overview</span>
           </div>
-          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.overview}</p>
+          <div className={`${colors.textMuted} text-sm leading-relaxed`}>{content.overview}</div>
         </div>
 
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-1.5">
             <ArrowRight className={`h-4 w-4 ${colors.icon}`} />
-            <span className={`font-semibold ${colors.text} text-sm`}>Why this matters</span>
+            <span className={`font-semibold ${colors.text} text-sm`}>Why it matters</span>
           </div>
-          <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.whyItMatters}</p>
+          <div className={`${colors.textMuted} text-sm leading-relaxed`}>{content.whyItMatters}</div>
         </div>
       </div>
 
-      {/* Collapsible deep dive */}
       <div className="border-t border-zinc-100 dark:border-zinc-800 pt-2">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className={`flex items-center gap-2 text-xs font-medium ${colors.text} hover:opacity-80 transition-opacity py-2`}
+          className={`flex items-center gap-2 text-xs font-medium ${colors.text} hover:opacity-80 transition-opacity py-1`}
         >
-          {isExpanded ? 'Show less' : 'Deep dive: How it works & considerations'}
+          {isExpanded ? 'Hide details' : 'Show technical details'}
           <ChevronRight className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
         </button>
 
@@ -316,24 +307,24 @@ function EducationalSection({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="pt-2 pb-2 space-y-4">
+              <div className="pt-2 pb-1 space-y-3">
                 <div>
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-1">
                     <Cpu className={`h-4 w-4 ${colors.icon}`} />
                     <span className={`font-semibold ${colors.text} text-sm`}>How it works</span>
                   </div>
-                  <p className={`${colors.textMuted} text-sm leading-relaxed`}>
-                    {renderTextWithLinks(content.howItWorks, colors.textMuted)}
-                  </p>
+                  <div className={`${colors.textMuted} text-sm leading-relaxed`}>
+                    {content.howItWorks}
+                  </div>
                 </div>
 
                 {content.considerations && (
                   <div>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-1">
                       <AlertTriangle className={`h-4 w-4 ${colors.icon}`} />
-                      <span className={`font-semibold ${colors.text} text-sm`}>Production considerations</span>
+                      <span className={`font-semibold ${colors.text} text-sm`}>Production note</span>
                     </div>
-                    <p className={`${colors.textMuted} text-sm leading-relaxed`}>{content.considerations}</p>
+                    <div className={`${colors.textMuted} text-sm leading-relaxed`}>{content.considerations}</div>
                   </div>
                 )}
               </div>
@@ -341,15 +332,6 @@ function EducationalSection({
           )}
         </AnimatePresence>
       </div>
-
-      {content.nextStep && (
-        <div className={`pt-4 border-t ${colors.border} mt-2 bg-white/50 dark:bg-zinc-900/50 p-3 rounded-lg`}>
-          <div className="flex items-center gap-2 mb-1">
-            <span className={`font-semibold ${colors.text} text-xs uppercase tracking-wide`}>Next Step</span>
-          </div>
-          <p className={`${colors.textMuted} text-sm`}>{content.nextStep}</p>
-        </div>
-      )}
     </div>
   )
 }
@@ -377,12 +359,15 @@ export default function RagPipelineVisualization({
     groundedAnswer
   } = simulationData
 
+  const clearAllTimeouts = useCallback(() => {
+    timeoutsRef.current.forEach((id) => window.clearTimeout(id))
+    timeoutsRef.current = []
+  }, [])
+
   // Cleanup timeouts on unmount
   useEffect(() => {
-    return () => {
-      timeoutsRef.current.forEach((id) => clearTimeout(id))
-    }
-  }, [])
+    return () => clearAllTimeouts()
+  }, [clearAllTimeouts])
 
   const handleNext = useCallback(() => {
     if (currentStepIndex < STEPS.length - 1) {
@@ -392,8 +377,13 @@ export default function RagPipelineVisualization({
 
   // Auto-advance logic
   useEffect(() => {
+    // Clear any existing timeouts when effect re-runs
+    clearAllTimeouts()
+
     if (!isPlaying || currentStepIndex >= STEPS.length - 1) {
-      setIsPlaying(false)
+      if (currentStepIndex >= STEPS.length - 1) {
+        setIsPlaying(false)
+      }
       return
     }
 
@@ -407,31 +397,35 @@ export default function RagPipelineVisualization({
     timeoutsRef.current.push(timeout)
 
     return () => {
-      clearTimeout(timeout)
+      window.clearTimeout(timeout)
     }
-  }, [isPlaying, currentStepIndex, handleNext])
+  }, [isPlaying, currentStepIndex, handleNext, clearAllTimeouts])
 
   const handlePrevious = useCallback(() => {
+    setIsPlaying(false) // Stop auto-play when manually navigating
     if (currentStepIndex > 0) {
       onStepChange(currentStepIndex - 1)
-      setIsPlaying(false)
     }
   }, [currentStepIndex, onStepChange])
 
   const handlePlayAll = useCallback(() => {
+    if (isPlaying) {
+      setIsPlaying(false)
+      return
+    }
+
     if (currentStepIndex === STEPS.length - 1) {
-      // Reset to beginning
+      // Reset to beginning if at end
       onStepChange(0)
     }
     setIsPlaying(true)
-  }, [currentStepIndex, onStepChange])
+  }, [currentStepIndex, onStepChange, isPlaying])
 
   const handleReset = useCallback(() => {
     setIsPlaying(false)
+    clearAllTimeouts()
     onStepChange(0)
-    timeoutsRef.current.forEach((id) => clearTimeout(id))
-    timeoutsRef.current = []
-  }, [onStepChange])
+  }, [onStepChange, clearAllTimeouts])
 
   // Keyboard navigation
   useEffect(() => {
@@ -445,6 +439,7 @@ export default function RagPipelineVisualization({
       const canGoPreviousLocal = currentStepIndex > 0
 
       if (e.key === 'ArrowRight' && canGoNextLocal) {
+        setIsPlaying(false)
         handleNext()
       } else if (e.key === 'ArrowLeft' && canGoPreviousLocal) {
         handlePrevious()
@@ -527,7 +522,10 @@ export default function RagPipelineVisualization({
               <span>{currentStepIndex + 1} / {STEPS.length}</span>
             </div>
             <button
-              onClick={handleNext}
+              onClick={() => {
+                setIsPlaying(false)
+                handleNext()
+              }}
               disabled={!canGoNext}
               className="inline-flex items-center gap-0.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
             >
@@ -544,7 +542,10 @@ export default function RagPipelineVisualization({
               return (
                 <button
                   key={step.id}
-                  onClick={() => onStepChange(index)}
+                  onClick={() => {
+                    setIsPlaying(false)
+                    onStepChange(index)
+                  }}
                   title={`${index + 1}. ${step.title}: ${step.description}`}
                   className={`group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs transition shrink-0 ${
                     isActive
@@ -616,10 +617,10 @@ export default function RagPipelineVisualization({
               className="text-center max-w-3xl mx-auto"
             >
               <h2 className={`text-lg font-semibold ${getStepColorClass(currentStepIndex)} mb-1`}>
-                {STEP_HEADERS[STEPS[currentStepIndex].id]?.title || STEPS[currentStepIndex].title}
+                {STEPS[currentStepIndex].title}
               </h2>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {STEP_HEADERS[STEPS[currentStepIndex].id]?.subheader || STEPS[currentStepIndex].description}
+                {STEPS[currentStepIndex].description}
               </p>
             </motion.div>
           </div>

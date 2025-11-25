@@ -2,13 +2,24 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShieldCheck,
   Workflow,
   Gauge,
   NotebookPen,
   LayoutDashboard,
-  LifeBuoy
+  LifeBuoy,
+  ChevronDown,
+  Sparkles,
+  AlertTriangle,
+  Zap,
+  Play,
+  MousePointerClick,
+  ArrowRight,
+  Database,
+  Brain,
+  FileSearch
 } from 'lucide-react'
 
 import { SAMPLE_DATASETS } from './data'
@@ -74,15 +85,117 @@ export default function RagDemoClient() {
     return () => clearTimeout(debounce)
   }, [query, mode, topK, chunkSize, dataset])
 
+  const [showIntroDetails, setShowIntroDetails] = useState(false)
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Hero Header */}
       <div className="text-center space-y-3 pt-4">
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
-          Interactive RAG Visualization
+          Learn RAG interactively
         </h1>
         <p className="text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
           A visual journey through the Retrieval-Augmented Generation pipeline, revealing how AI models ground their answers in your data.
         </p>
+      </div>
+
+      {/* Polished Intro Card with Instructions - Light/Dark mode aware */}
+      <div className="max-w-4xl mx-auto">
+        {/* Light mode: soft blue/indigo gradient, Dark mode: deep purple/slate */}
+        <div className="relative overflow-hidden rounded-2xl border border-blue-200/60 dark:border-transparent bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 dark:from-violet-600 dark:via-purple-600 dark:to-indigo-700 p-[1px] shadow-lg shadow-blue-500/10 dark:shadow-purple-500/20">
+          <div className="relative rounded-[15px] bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-purple-950/90 dark:to-slate-900 p-5 sm:p-6">
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 dark:from-purple-500/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-400/10 dark:from-blue-500/20 to-transparent rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+            
+            <div className="relative flex flex-col lg:flex-row gap-6 items-start">
+              {/* Left: What is RAG */}
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-purple-500 dark:to-indigo-600 shadow-lg shadow-blue-500/30 dark:shadow-purple-500/30">
+                    <Brain className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    What is RAG?
+                  </h3>
+                </div>
+                
+                <p className="text-sm text-zinc-700 dark:text-purple-100/90 leading-relaxed">
+                  <strong className="text-zinc-900 dark:text-white">Retrieval-Augmented Generation</strong> fetches relevant docs from your knowledge base and injects them into the LLM prompt—giving AI verified facts instead of stale training data.
+                </p>
+
+                {/* Expand for why it matters */}
+                <button
+                  onClick={() => setShowIntroDetails(!showIntroDetails)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-purple-300 hover:text-blue-800 dark:hover:text-white transition-colors group"
+                >
+                  <span className="border-b border-blue-400/50 dark:border-purple-400/50 group-hover:border-blue-600 dark:group-hover:border-white/50">{showIntroDetails ? 'Hide details' : 'Why it matters'}</span>
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showIntroDetails ? 'rotate-180' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {showIntroDetails && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="grid sm:grid-cols-2 gap-3 pt-2">
+                        <div className="flex items-start gap-2.5 p-3 rounded-lg bg-red-100/80 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20">
+                          <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-xs font-semibold text-red-700 dark:text-red-300">Without RAG</p>
+                            <p className="text-xs text-red-600/80 dark:text-red-200/70 mt-0.5">LLMs hallucinate plausible-sounding answers from stale training data.</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5 p-3 rounded-lg bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20">
+                          <Zap className="h-4 w-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">With RAG</p>
+                            <p className="text-xs text-emerald-600/80 dark:text-emerald-200/70 mt-0.5">Answers grounded in your documents with verifiable citations.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden lg:block w-px h-32 bg-gradient-to-b from-transparent via-blue-300/40 dark:via-purple-400/30 to-transparent self-center" />
+              <div className="lg:hidden w-full h-px bg-gradient-to-r from-transparent via-blue-300/40 dark:via-purple-400/30 to-transparent" />
+
+              {/* Right: How to Use */}
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 dark:from-blue-500 dark:to-cyan-600 shadow-lg shadow-indigo-500/30 dark:shadow-blue-500/30">
+                    <MousePointerClick className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                    How to Use This Demo
+                  </h3>
+                </div>
+                
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">1</div>
+                    <span>Click <strong className="text-zinc-900 dark:text-white">Play</strong> or step through manually with <strong className="text-zinc-900 dark:text-white">Next</strong></span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">2</div>
+                    <span>Watch data flow through each RAG stage in the diagram</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">3</div>
+                    <span>Explore the <strong className="text-zinc-900 dark:text-white">Inspector</strong> below to see step details</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Top Visualization - Controlled Component */}
