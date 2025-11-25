@@ -39,7 +39,8 @@ export const metadata: Metadata = createMetadata({
     'LLM',
     'Interactive Demo',
     'Tutorial'
-  ]
+  ],
+  image: 'https://zackproser.b-cdn.net/images/rag-demo-hero.webp'
 })
 
 export default function RagVisualizedPage() {
