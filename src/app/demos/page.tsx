@@ -8,6 +8,7 @@ const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-
 const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
 const ragVisualizedHero = 'https://zackproser.b-cdn.net/images/rag-demo-hero.webp'
+const voiceAIDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-demo-hero.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
@@ -16,6 +17,15 @@ export const metadata: Metadata = createMetadata({
 
 // Hardcoded demo data since these are React components, not MDX files
 const demos: Content[] = [
+  {
+    slug: '/demos/voice-ai',
+    title: 'Voice-First AI Experience',
+    description: 'Interactive demo of voice-driven development with WisprFlow and Granola. See how speaking at 170+ WPM enables multi-agent orchestration and transforms productivity.',
+    author: 'Zachary Proser',
+    date: '2025-11-25',
+    type: 'demo',
+    image: voiceAIDemoHero
+  },
   {
     slug: '/demos/rag-visualized',
     title: 'RAG Visualized Experience',
