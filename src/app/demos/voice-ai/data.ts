@@ -243,3 +243,92 @@ export const AFFILIATE_LINKS = {
   granola: 'https://go.granola.ai/zack-proser'
 } as const
 
+// Section value propositions and related posts
+export interface RelatedPost {
+  slug: string
+  title: string
+  description: string
+  image: string
+}
+
+export interface SectionContent {
+  valueProp: string
+  relatedPosts: RelatedPost[]
+}
+
+export const SECTION_CONTENT: Record<string, SectionContent> = {
+  pipeline: {
+    valueProp: "Speaking at 179 WPM versus typing at 90 WPM isn't just a 2x speed boost—it's a fundamentally different relationship with your tools. When output matches thought speed, you stop self-editing mid-sentence. Ideas flow unfiltered into the machine.",
+    relatedPosts: [
+      {
+        slug: 'wisprflow-review',
+        title: 'WisprFlow Review - 179WPM Voice-Driven Development',
+        description: 'Transform voice into text at 4x typing speed, the ultimate tool for developers who think faster than they type.',
+        image: 'https://zackproser.b-cdn.net/images/wisprflow.webp'
+      }
+    ]
+  },
+  orchestration: {
+    valueProp: "The real unlock isn't just speed—it's parallelism. At 179 WPM, I can dispatch instructions to three Cursor agent windows before a keyboard user finishes typing one prompt. The bottleneck shifts from my output speed to my mind's capacity to track multiple threads.",
+    relatedPosts: [
+      {
+        slug: 'cursor-agents-review',
+        title: 'Cursor Agents Hands-on Review',
+        description: "I got hands-on with Cursor's new Agents feature. Here's what I thought...",
+        image: 'https://zackproser.b-cdn.net/images/cursor-agents-hero.webp'
+      },
+      {
+        slug: 'wisprflow-high-leverage-workflow',
+        title: 'WisprFlow: Highest-Leverage Dev Upgrade',
+        description: 'How voice-first development transformed my agentic workflow and unlocked new velocity.',
+        image: 'https://zackproser.b-cdn.net/images/wisprflow-interface.webp'
+      }
+    ]
+  },
+  ventilation: {
+    valueProp: "For neurodivergent minds, the value isn't just speed—it's cognitive relief. Externalizing the chaos in your head to an AI that patiently organizes it removes the executive function tax of self-sorting. Speak the mess, receive the structure.",
+    relatedPosts: [
+      {
+        slug: 'claude-external-brain-adhd-autistic',
+        title: 'Claude as My External Brain: Autistic, ADHD, and Finally Supported',
+        description: 'How I use Claude as an external brain and assistant—combining voice, agents, and a hardened CI/CD lane—to support an autistic mind with severe ADHD.',
+        image: 'https://zackproser.b-cdn.net/images/claude.webp'
+      },
+      {
+        slug: 'training-claude-neurological-patterns',
+        title: 'Training Claude to Compensate for My Neurological Patterns',
+        description: "How I'm systematically teaching an AI system to compensate for specific ADHD/autism processing patterns.",
+        image: 'https://zackproser.b-cdn.net/images/claude-support.webp'
+      }
+    ]
+  },
+  scenarios: {
+    valueProp: "Context-aware formatting eliminates the cognitive overhead of switching modes. Speak naturally to Cursor, get code. Speak to Gmail, get professional prose. Your voice adapts automatically—no mental gear-shifting required.",
+    relatedPosts: [
+      {
+        slug: 'wisprflow-review',
+        title: 'WisprFlow Review - 179WPM Voice-Driven Development',
+        description: 'Deep dive into how WisprFlow detects context and formats output accordingly.',
+        image: 'https://zackproser.b-cdn.net/images/wisprflow.webp'
+      }
+    ]
+  },
+  meetings: {
+    valueProp: "The best meeting notes are the ones you don't have to take. Granola captures everything locally—no awkward bot joining your call—so you can be fully present. Make eye contact, ask follow-up questions, build relationships. The notes handle themselves.",
+    relatedPosts: [
+      {
+        slug: 'granola-ai-review',
+        title: 'Granola AI Review: No More Note-Taking Anxiety',
+        description: 'Honest review after months of daily use across meetings and calls. Why it\'s become indispensable.',
+        image: 'https://zackproser.b-cdn.net/images/granola-hero.webp'
+      },
+      {
+        slug: 'best-ai-voice-tools-2025',
+        title: 'Top 4 AI Voice Tools for 2025',
+        description: 'WisprFlow, Granola, ElevenLabs, and Bland AI—the best voice tools for productivity.',
+        image: 'https://zackproser.b-cdn.net/images/top-voice-tools-2025.webp'
+      }
+    ]
+  }
+}
+
