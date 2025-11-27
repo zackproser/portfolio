@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -185,6 +186,8 @@ The voice-first workflow has unexpected benefits:
 - Accessibility (great for users with typing difficulties)
 
 While it's not perfect—the macOS limitation and subscription model are real drawbacks—the productivity gains are substantial enough that I can't imagine going back to pure keyboard input.
+
+<VoiceAIDemoCard />
 
 If you're a developer, writer, or anyone who spends significant time creating text, [Wispr Flow](https://ref.wisprflow.ai/zack-proser) is worth trying. The free trial gives you a good sense of whether it fits your workflow.
 

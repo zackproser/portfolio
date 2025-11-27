@@ -254,11 +254,19 @@ export default function VoiceAIDemoClient() {
               </p>
             </div>
             
-            {/* Placeholder for future video/gif */}
-            <div className="mt-6 text-center">
-              <span className="inline-block px-3 py-1.5 rounded-full text-xs text-zinc-500 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800/50">
-                🎬 Video coming soon
-              </span>
+            {/* Hero video */}
+            <div className="mt-6 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-lg">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-auto block bg-zinc-900"
+                style={{ minHeight: '280px' }}
+              >
+                <source src="https://zackproser.b-cdn.net/images/drive-voice.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </motion.div>
