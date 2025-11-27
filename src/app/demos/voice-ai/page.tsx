@@ -44,7 +44,7 @@ export const metadata: Metadata = {
       'Interactive Demo',
       'AI Tools'
     ],
-    image: 'https://zackproser.b-cdn.net/images/voice-demo.webp'
+    image: 'https://zackproser.b-cdn.net/images/wisprflow.webp'
   }),
   // Additional SEO enhancements
   robots: {
