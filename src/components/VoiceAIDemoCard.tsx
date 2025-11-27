@@ -32,6 +32,28 @@ export default function VoiceAIDemoCard({ className = '' }: VoiceAIDemoCardProps
             <Waves className="w-full h-full text-violet-500 animate-pulse" strokeWidth={1} />
           </div>
 
+          {/* Video preview */}
+          <div className="relative overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-auto block bg-zinc-900 aspect-video object-cover"
+            >
+              <source src="https://zackproser.b-cdn.net/images/command-voice.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            
+            {/* Play overlay */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 group-hover:scale-110 transition-transform duration-300">
+                <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+              </div>
+            </div>
+          </div>
+
           <div className="relative p-6 md:p-8">
             <div className="flex items-start gap-4 md:gap-6">
               {/* Icon container with animated ring */}
