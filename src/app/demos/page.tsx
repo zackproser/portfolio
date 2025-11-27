@@ -8,7 +8,7 @@ const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-
 const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
 const ragVisualizedHero = 'https://zackproser.b-cdn.net/images/rag-demo-hero.webp'
-const voiceAIDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-demo-hero.webp'
+const voiceAIDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-hero.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
