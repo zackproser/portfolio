@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -100,3 +101,5 @@ now preferring to do as much of their work as they can away from their desks.
 <Image src="https://zackproser.b-cdn.net/images/parking-lot-walking-ai.webp"
   alt="The protagonist arriving back at the parking lot after a fruitful AI conversation in the woods." 
  width={800} height={600}/>
+
+<VoiceAIDemoCard />

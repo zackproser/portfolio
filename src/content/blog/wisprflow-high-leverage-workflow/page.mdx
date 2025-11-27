@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -71,5 +72,7 @@ Speed without reliability is chaos. [WisprFlow](https://ref.wisprflow.ai/zack-pr
 4. Harden the delivery lane (secret scanning, lint, tests) so velocity never compromises safety. Voice should accelerate judgment, not bypass it.
 
 Do that, and you're no longer typing faster. You're thinking faster, delegating clearer, and shipping cleaner.
+
+<VoiceAIDemoCard />
 
 Ready to experience it? Grab [WisprFlow](https://ref.wisprflow.ai/zack-proser) and then dive into the [full review](/blog/wisprflow-review) for setup details, gear recommendations, and workflow diagrams.
