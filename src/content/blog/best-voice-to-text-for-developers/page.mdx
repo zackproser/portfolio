@@ -1,0 +1,257 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { ComparisonSchema } from '@/components/ReviewSchema';
+import FAQSection from '@/components/FAQSection';
+
+export const metadata = createMetadata(rawMetadata);
+
+<ComparisonSchema
+  products={[
+    {
+      name: "WisprFlow",
+      description: "AI-powered voice-to-text that works system-wide on macOS with context-aware formatting, perfect for coding in Cursor and VS Code.",
+      image: "https://zackproser.b-cdn.net/images/wisprflow.webp",
+      url: "https://ref.wisprflow.ai/zack-proser"
+    },
+    {
+      name: "Granola AI",
+      description: "AI meeting notes without a bot joining your calls. Captures developer meetings, standups, and 1:1s.",
+      image: "https://zackproser.b-cdn.net/images/granola-hero.webp",
+      url: "https://go.granola.ai/zack-proser"
+    }
+  ]}
+  article={{
+    headline: "Best Voice-to-Text for Developers in 2025",
+    description: "Tested recommendations for voice-to-text tools specifically designed for developer workflows, coding, and technical documentation.",
+    datePublished: "2025-11-28",
+    author: "Zachary Proser"
+  }}
+/>
+
+I've tested every major voice-to-text tool as a working developer. Most are built for generic dictation—they don't understand code, they can't handle technical terms, and they require constant correction.
+
+Here's what actually works for developer workflows.
+
+## TL;DR: My Recommendations
+
+| Use Case | Best Tool | Why |
+|----------|-----------|-----|
+| **Daily Coding** | [WisprFlow](https://ref.wisprflow.ai/zack-proser) | System-wide, learns tech terms, context-aware |
+| **Meeting Notes** | [Granola](https://go.granola.ai/zack-proser) | No bot, captures standups, 1:1s, interviews |
+| **Building Voice Features** | Whisper API | Accurate, cheap, flexible |
+| **Multi-Language** | Whisper | 99 languages supported |
+
+## What Developers Actually Need
+
+Most voice-to-text reviews ignore what makes developer usage different:
+
+1. **Technical Vocabulary**: Package names, API terms, code syntax
+2. **Context Switching**: Code → email → Slack → docs in one session
+3. **IDE Integration**: Works in Cursor, VS Code, terminals
+4. **AI Agent Orchestration**: Dictating prompts to AI assistants
+5. **Speed**: Matching thought speed, not typing speed
+
+Let me walk you through each recommendation.
+
+---
+
+## #1: WisprFlow - Best for Daily Developer Work
+
+<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-to-text interface" width={800} height={600} className="rounded-lg shadow-xl" />
+</a>
+
+[WisprFlow](https://ref.wisprflow.ai/zack-proser) is my daily driver. I went from 90 WPM typing to **179 WPM with voice**. That's not a typo—voice is 2x faster than my already-above-average typing.
+
+### Why It's Best for Developers
+
+**System-Wide Integration**: WisprFlow works everywhere on macOS:
+- Cursor's agent composer window
+- VS Code
+- Chrome (Claude, ChatGPT, any web app)
+- Slack
+- Email
+- Terminal
+
+One hotkey, any app. No context switching.
+
+**Technical Vocabulary Learning**: Say "next.config.js" and it types `next.config.js`. Say "use effect hook" and it understands you mean `useEffect`. The personal dictionary learns your stack.
+
+**AI Enhancement**: Speak naturally with "um"s and false starts. WisprFlow outputs clean, formatted text:
+- Removes filler words
+- Adds punctuation
+- Formats appropriately for context (code vs email)
+
+**AI Agent Orchestration**: When you're driving multiple Cursor instances or Claude sessions, voice speed is a multiplier. I can dispatch three agent tasks in the time it takes to type one.
+
+### Real Developer Workflow
+
+```
+// Spoken:
+"create a react hook called use debounce that takes a value 
+and delay and returns the debounced value"
+
+// WisprFlow outputs:
+export function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+  // ... formatted code continues
+}
+```
+
+### Pricing
+
+Subscription model (~$10-20/month). Worth it if you spend hours daily creating text.
+
+[Try WisprFlow free →](https://ref.wisprflow.ai/zack-proser)
+
+**Read more**: [Full WisprFlow Review](/blog/wisprflow-review) | [High-Leverage Workflow Guide](/blog/wisprflow-high-leverage-workflow)
+
+---
+
+## #2: Granola - Best for Developer Meetings
+
+<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes" width={800} height={600} className="rounded-lg shadow-xl" />
+</a>
+
+[Granola](https://go.granola.ai/zack-proser) captures every meeting without the awkward "Recording Bot has joined" notification that makes everyone self-conscious.
+
+### Why It's Best for Developer Meetings
+
+**No Bot = Natural Conversations**: Sprint planning, code reviews, architecture discussions, 1:1s—all captured without changing the meeting dynamic.
+
+**Standups and Retrospectives**: Set up templates that extract action items, blockers, and decisions in consistent format.
+
+**Interview Capture**: Record candidate conversations without a third-party bot making everyone uncomfortable.
+
+**Mobile for In-Person**: Conference hallway conversations, coffee meetings, whiteboard sessions—tap to capture from your phone.
+
+### Developer-Specific Use Cases
+
+- **Sprint Planning**: Auto-extract tickets and owners
+- **Code Review Discussions**: Remember why decisions were made months later
+- **Architecture Meetings**: Capture trade-off discussions for ADRs
+- **Customer Calls**: Technical feedback organized automatically
+
+[Try Granola free →](https://go.granola.ai/zack-proser)
+
+**Read more**: [Full Granola Review](/blog/granola-ai-review) | [Granola vs Otter Comparison](/blog/granola-vs-otter)
+
+---
+
+## #3: OpenAI Whisper - Best for Building Voice Features
+
+If you're building an app that needs speech recognition (not using it for productivity), Whisper is the right choice.
+
+### Why Developers Choose Whisper
+
+- **Open Source**: Run locally, no API costs
+- **99 Languages**: International products
+- **High Accuracy**: State-of-the-art transcription
+- **Flexible Integration**: Build exactly what you need
+
+### When NOT to Use Whisper
+
+For daily productivity, Whisper is too raw. You'd need to build:
+- System-wide hotkey integration
+- Personal dictionary
+- AI enhancement for clean output
+- Context-aware formatting
+
+That's exactly what WisprFlow provides out of the box.
+
+**Read more**: [WisprFlow vs Whisper Comparison](/blog/wisprflow-vs-whisper)
+
+---
+
+## Why Voice-to-Text Matters for Developers
+
+### The Speed Multiplier
+
+At 90 WPM typing, a 500-word technical document takes ~5.5 minutes.
+At 179 WPM voice, the same document takes ~2.8 minutes.
+
+That's 50% time savings on every piece of text you create.
+
+### The Cognitive Shift
+
+Typing engages different brain circuits than speaking. When you type, you're:
+- Hunting for keys
+- Fixing typos
+- Losing train of thought
+
+When you speak, you're:
+- Articulating complete thoughts
+- Maintaining flow
+- Thinking at speech speed
+
+For complex problem descriptions, architecture explanations, and AI prompts, voice produces better output faster.
+
+### The Accessibility Factor
+
+RSI, carpal tunnel, or just tired hands? Voice-first development isn't just faster—it's more sustainable for your body.
+
+---
+
+## My Complete Voice-First Stack
+
+Here's exactly what I use daily:
+
+| Tool | Purpose | Link |
+|------|---------|------|
+| **WisprFlow** | All text creation | [Try free](https://ref.wisprflow.ai/zack-proser) |
+| **Granola** | Meeting capture | [Try free](https://go.granola.ai/zack-proser) |
+| **Cursor** | AI-assisted coding | [Cursor.sh](https://cursor.sh) |
+| **Claude** | AI assistant | [Claude.ai](https://claude.ai) |
+
+WisprFlow is the voice interface. Everything else receives my voice-generated prompts, code, and documentation.
+
+<FAQSection
+  faqs={[
+    {
+      question: "Can voice-to-text handle code syntax correctly?",
+      answer: "WisprFlow is the best I've found for code. It learns technical vocabulary and formats appropriately for code editors. You can dictate function signatures, variable names, and even describe code structure naturally."
+    },
+    {
+      question: "Is voice-to-text practical for a shared office?",
+      answer: "Yes, with headphones. I use Sony WH-1000XM5s with their microphone. You don't need to speak loudly—WisprFlow picks up normal speaking volume well."
+    },
+    {
+      question: "How do voice tools handle framework-specific terms?",
+      answer: "WisprFlow's personal dictionary learns your stack. Say 'useState' a few times and it gets it. Same for package names, API endpoints, and company-specific terms."
+    },
+    {
+      question: "What about developers with accents?",
+      answer: "Modern voice-to-text handles accents well. WisprFlow adapts to your speech patterns over time. The AI enhancement also cleans up any transcription inconsistencies."
+    },
+    {
+      question: "Can I use voice for commit messages and PR descriptions?",
+      answer: "Absolutely. This is one of my favorite uses. Speak your commit context naturally, and WisprFlow formats it appropriately. Much faster than typing thoughtful commit messages."
+    },
+    {
+      question: "Does voice work with vim/neovim?",
+      answer: "WisprFlow works with any text field on macOS, including terminal-based editors. You can dictate into insert mode in vim."
+    }
+  ]}
+/>
+
+<VoiceAIDemoCard />
+
+## Get Started Today
+
+1. **For coding productivity**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - 2 minutes to set up, immediate 2x speed boost
+2. **For meeting capture**: [Try Granola](https://go.granola.ai/zack-proser) - Never miss action items again
+3. **For building voice apps**: Start with Whisper API
+
+The best time to adopt voice-first development was a year ago. The second best time is now.
+
+## Related Reading
+
+- [WisprFlow Review](/blog/wisprflow-review) - Deep dive after months of use
+- [Granola Review](/blog/granola-ai-review) - Meeting notes transformation
+- [Top AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete stack overview
+- [WisprFlow vs Whisper](/blog/wisprflow-vs-whisper) - Detailed comparison
+
