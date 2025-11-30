@@ -1,0 +1,9 @@
+{
+  "author": "Zachary Proser",
+  "date": "2025-11-29",
+  "title": "Experiment: Using Native macOS Apps to Install AI Workflows for Teammates",
+  "description": "Why I built a native Swift installer instead of writing another setup guide",
+  "image": "https://zackproser.b-cdn.net/images/ai-installer.webp",
+  "tags": ["macos", "swift", "claude", "mcp", "ai", "workflows", "developer-experience"]
+}
+
