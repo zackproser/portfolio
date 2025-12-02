@@ -5,11 +5,27 @@ import { Button } from "@/components/ui/button"
 import { 
   LayoutDashboard, 
   Wrench, 
-  Tags
+  Tags,
+  Newspaper,
+  Link2
 } from "lucide-react"
 
 export default function AdminDashboard() {
   const adminModules = [
+    {
+      title: "Newsletter Episodes",
+      description: "Create, edit, and manage newsletter content with live preview",
+      icon: Newspaper,
+      href: "/admin/newsletter" as any,
+      color: "from-emerald-600 to-teal-600"
+    },
+    {
+      title: "Link Builder",
+      description: "Generate tracked URLs with EmailOctopus merge tags for campaigns",
+      icon: Link2,
+      href: "/admin/newsletter/link-builder" as any,
+      color: "from-orange-600 to-amber-600"
+    },
     {
       title: "Tools Management",
       description: "Add, edit, and remove developer tools from the database",

@@ -9,7 +9,9 @@ import {
   LayoutDashboard, 
   Wrench, 
   Tags, 
-  LogOut
+  LogOut,
+  Newspaper,
+  Link2
 } from "lucide-react"
 
 interface AdminLayoutProps {
@@ -45,6 +47,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: "Dashboard",
       href: "/admin" as any,
       icon: LayoutDashboard
+    },
+    {
+      title: "Newsletter",
+      href: "/admin/newsletter" as any,
+      icon: Newspaper
+    },
+    {
+      title: "Link Builder",
+      href: "/admin/newsletter/link-builder" as any,
+      icon: Link2
     },
     {
       title: "Tools",
