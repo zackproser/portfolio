@@ -42,15 +42,15 @@ export default function ArticleContent({
   }
 
   const preview = React.Children.toArray(children).slice(0, previewElements).map((child) => {
-    if (React.isValidElement(child)) {
+    if (React.isValidElement<{ children?: React.ReactNode }>(child)) {
       if (child.type === 'p') {
-        const text = React.Children.toArray(child.props.children)
-          .map(c => (typeof c === 'string' ? c : ''))
+        const text = React.Children.toArray(child.props.children ?? null)
+          .map((c) => (typeof c === 'string' ? c : ''))
           .join('')
-        
+
         if (text.length > previewLength) {
-          return React.cloneElement(child as React.ReactElement<{ children: React.ReactNode }>, {
-            children: text.slice(0, previewLength) + '...'
+          return React.cloneElement(child, {
+            children: text.slice(0, previewLength) + '...',
           })
         }
       }
