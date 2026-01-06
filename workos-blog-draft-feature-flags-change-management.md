@@ -66,20 +66,61 @@ Change management feature flag thinking:
 - "Roll out by customer segment based on their change tolerance and support tier"
 - "Let our biggest bank customer stay on the old flow until their quarterly review is complete"
 
-### Segmentation is the key
+### Why B2B needs organization-aware feature flags
 
-The power move is recognizing that "your customers" aren't monolithic. Your freemium users signing up today have completely different expectations than the Fortune 500 company that's been on your platform for three years.
+Most feature flag solutions were built for B2C—they think in terms of individual users or random percentage rollouts. But B2B doesn't work that way. You don't want to show a new feature to 3 random users at Acme Corp while their 47 colleagues see the old experience. You need to enable or disable features for *entire organizations*.
 
-Feature flags let you treat them differently:
+This is exactly what [WorkOS Feature Flags](https://workos.com/docs/feature-flags) is built for: organization-aware feature flags, purpose-built for B2B applications.
 
-| Segment | Release strategy |
-|---------|------------------|
-| New signups / PLG | Ship immediately, iterate fast |
-| Mid-market accounts | Fast-follow with in-app announcements |
-| Enterprise accounts | Coordinated release with CSM touchpoint |
-| Strategic accounts with custom SLAs | White-glove rollout on their timeline |
+The key difference: you can target organizations *or* individual users, giving you the flexibility to:
+
+- **Targeted rollouts**: Enable features for specific organizations before a general release
+- **Beta programs**: Allow early access to new features for select customers
+- **Premium features**: Restrict advanced functionality to organizations on higher-tier plans
+
+### How it works in practice
+
+WorkOS Feature Flags integrates directly with your authentication flow. When you create a flag in the dashboard, you set rules for each environment—choosing between **None**, **Some**, or **All** for which users and organizations should have access.
+
+The elegant part: flags are injected directly into the `feature_flags` claim in your JWT. No extra network calls. No database lookups. Every time a user authenticates, their entitled features are right there in the access token:
+
+```javascript
+app.get('/api/feature-flags', async (req, res) => {
+  const session = workos.userManagement.loadSealedSession({
+    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+    sessionData: req.cookies['wos-session'],
+  });
+
+  const { sealedSession, featureFlags } = await session.refresh();
+
+  res.cookie('wos-session', sealedSession, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: true,
+  });
+
+  res.json({ featureFlags });
+});
+```
+
+This means your feature gating is as fast as reading a JWT claim—no latency penalty for checking flags.
+
+### Segmentation becomes simple
+
+With organization-aware targeting, your release strategy maps cleanly to your customer segments:
+
+| Segment | Release strategy | Flag rule |
+|---------|------------------|-----------|
+| New signups / PLG | Ship immediately, iterate fast | All |
+| Beta program participants | Early access with feedback loop | Some (opted-in orgs) |
+| Enterprise accounts | Coordinated release with CSM touchpoint | Some (after enablement) |
+| Strategic accounts with custom SLAs | White-glove rollout on their timeline | Some (individual orgs) |
 
 This isn't about slowing down. It's about **shipping fast to the segments that can absorb change quickly** while giving yourself runway for the segments that need more support.
+
+### Test in sandbox, ship to production
+
+Feature flags are created across all environments, so you can test your flag behavior in a sandbox environment before enabling it in production. Same flag, same code paths, different targeting rules per environment. Your staging environment can have the flag enabled for everyone while production stays locked down to specific organizations.
 
 ### Mitigating the downsides of speed
 
@@ -90,7 +131,7 @@ Speed has real downsides. Features will ship with rough edges. Users will be sur
 - **Empowered account managers**: Your AMs on stability-craving large accounts can be the human buffer
 - **Social presence**: Being active where your users are means you can communicate changes in real-time
 
-Feature flags make all of these strategies more effective because you control *who* sees *what* and *when*.
+Feature flags make all of these strategies more effective because you control *who* sees *what* and *when*—at the organization level, not just the user level.
 
 ## The organizational unlock
 
@@ -122,4 +163,4 @@ Ship fast. Flag thoughtfully. Win.
 
 ---
 
-*Ready to implement feature flags that actually work for enterprise? [Check out WorkOS features / CTA here]*
+*Ready to ship faster without breaking enterprise trust? [Get started with WorkOS Feature Flags](https://workos.com/docs/feature-flags)—organization-aware feature management that integrates directly with your authentication flow.*
