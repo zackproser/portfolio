@@ -85,7 +85,7 @@
     "@vercel/og": "^0.5.11",
     "@vercel/postgres": "^0.5.1",
     "@vercel/speed-insights": "^1.0.7",
-    "ai": "^4.1.44",
+    "ai": "^5.0.52",
     "autoprefixer": "^10.4.17",
     "axios": "^1.12.0",
     "braces": "^3.0.3",
