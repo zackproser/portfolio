@@ -14,6 +14,28 @@ import Head from 'next/head'
 import { generateOgUrl } from '@/utils/ogUrl'
 import { useRouter } from 'next/navigation'
 import { metadataLogger as logger } from '@/utils/logger'
+import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
+
+// Voice-related slugs that should show the affiliate CTA
+const VOICE_AFFILIATE_SLUGS = [
+  'wisprflow',
+  'granola',
+  'voice-to-text',
+  'voice-tools',
+  'voice-ai',
+  'walking-and-talking',
+  'small-business',
+  'lawyers',
+  'record-meetings',
+  'ai-engineer-setup',
+  'doctors',
+  'real-estate',
+]
+
+function shouldShowVoiceAffiliateCTA(slug: string): boolean {
+  const lowerSlug = slug.toLowerCase()
+  return VOICE_AFFILIATE_SLUGS.some(keyword => lowerSlug.includes(keyword))
+}
 
 interface ArticleLayoutProps {
   children: React.ReactNode
@@ -205,6 +227,9 @@ export function ArticleLayout({
           </div>
         </div>
       </Container>
+      {shouldShowVoiceAffiliateCTA(safeSlug) && (
+        <StickyAffiliateCTA product="both" />
+      )}
     </>
   )
 }

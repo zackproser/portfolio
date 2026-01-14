@@ -5,6 +5,7 @@ import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 import { ComparisonSchema } from '@/components/ReviewSchema';
 import FAQSection from '@/components/FAQSection';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -241,6 +242,11 @@ WisprFlow is the voice interface. Everything else receives my voice-generated pr
 <VoiceAIDemoCard />
 
 ## Get Started Today
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
 
 1. **For coding productivity**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - 2 minutes to set up, immediate 2x speed boost
 2. **For meeting capture**: [Try Granola](https://go.granola.ai/zack-proser) - Never miss action items again

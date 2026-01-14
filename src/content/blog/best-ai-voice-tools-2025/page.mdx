@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -110,6 +111,11 @@ This stack has fundamentally changed how I work. I spend more time thinking and 
 <VoiceAIDemoCard />
 
 ## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
 
 Ready to transform your workflow? Start with [WisprFlow's free trial](https://ref.wisprflow.ai/zack-proser) to see how it transforms your text creation workflow. For meeting intelligence, [sign up for Granola](https://go.granola.ai/zack-proser) and let it start capturing your meetings automatically. When you need professional voice generation, [explore ElevenLabs](https://elevenlabs.io) for your next project. And for AI-powered telephony, [check out Bland AI](https://bland.ai) for phone call automation.
 

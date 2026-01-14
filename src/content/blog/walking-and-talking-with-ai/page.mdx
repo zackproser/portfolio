@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -95,11 +96,20 @@ The feedback loop of conversation with a model that has essentially read everyth
 
 By the time I return to the parking lot, I often already have solutions I've been chasing for days.
 
-I suspect that this habit will spread as more and more folks find it helpful, and as a result I expect we'll see additional roducts and services tailored to the untethered crowd: those
+I suspect that this habit will spread as more and more folks find it helpful, and as a result I expect we'll see additional products and services tailored to the untethered crowd: those
 now preferring to do as much of their work as they can away from their desks.
 
 <Image src="https://zackproser.b-cdn.net/images/parking-lot-walking-ai.webp"
-  alt="The protagonist arriving back at the parking lot after a fruitful AI conversation in the woods." 
+  alt="The protagonist arriving back at the parking lot after a fruitful AI conversation in the woods."
  width={800} height={600}/>
+
+### Tools I use for voice-first productivity
+
+For capturing voice while working at my desk, [WisprFlow](https://ref.wisprflow.ai/zack-proser) lets me speak at 179 WPM into any app on my Mac. For capturing meeting conversations (both virtual and in-person), [Granola](https://go.granola.ai/zack-proser) runs in the background and creates AI-enhanced notes without a bot joining my calls.
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
 
 <VoiceAIDemoCard />

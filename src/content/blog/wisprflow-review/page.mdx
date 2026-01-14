@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -31,6 +32,8 @@ In this review, I'll tell you the good, bad and still improving parts.
 </iframe>
 
 ## Table of contents
+
+<InlineAffiliateCTA product="wisprflow" />
 
 Unlike traditional voice dictation that requires you to speak slowly and clearly, Wispr Flow works very accurately *even for me*, a person who: 
 
@@ -188,6 +191,8 @@ The voice-first workflow has unexpected benefits:
 While it's not perfect—the macOS limitation and subscription model are real drawbacks—the productivity gains are substantial enough that I can't imagine going back to pure keyboard input.
 
 <VoiceAIDemoCard />
+
+<InlineAffiliateCTA product="wisprflow" />
 
 If you're a developer, writer, or anyone who spends significant time creating text, [Wispr Flow](https://ref.wisprflow.ai/zack-proser) is worth trying. The free trial gives you a good sense of whether it fits your workflow.
 

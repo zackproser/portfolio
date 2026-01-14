@@ -1,0 +1,168 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for medical professionals" width={800} height={600}/>
+</a>
+<figcaption>Modern AI voice tools are helping physicians reclaim hours spent on documentation</figcaption>
+
+Clinical documentation is one of the leading causes of physician burnout. Studies show doctors spend 2 hours on EHR documentation for every 1 hour of patient care. Voice AI tools are now accurate enough to meaningfully reduce this burden.
+
+This guide covers practical voice tools for clinical documentation, with attention to privacy concerns specific to healthcare.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+## WisprFlow for Clinical Dictation
+
+<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for medical dictation" width={800} height={600}/>
+</a>
+
+[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a voice-to-text application that works system-wide. Speak naturally, and polished text appears wherever your cursor is—Epic, Cerner, your EHR of choice.
+
+### Why Physicians Choose WisprFlow
+
+**Works with any EHR**: WisprFlow operates at the operating system level. It doesn't need special integration—if you can type there, you can dictate there.
+
+**Learns medical terminology**: The personal dictionary feature learns your specialty's vocabulary. After initial training, it recognizes drug names, procedures, and anatomical terms accurately.
+
+**Faster than typing**: Most physicians type 30-50 WPM. WisprFlow enables 150-180 WPM dictation. That's a 3-4x improvement on documentation speed.
+
+### Clinical Use Cases
+
+- **Progress notes**: Dictate assessments and plans during or immediately after patient encounters
+- **Discharge summaries**: Speak through complex discharge instructions faster than typing
+- **Referral letters**: Generate professional correspondence in minutes
+- **Chart review notes**: Document your review findings hands-free
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Granola for Patient Consultations
+
+<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for patient consultations" width={800} height={600} className="rounded-lg shadow-xl"/>
+</a>
+
+[Granola](https://go.granola.ai/zack-proser) captures conversations and creates structured notes without a visible recorder joining your meeting.
+
+### Applications in Healthcare
+
+**Telemedicine visits**: Granola runs in the background during video consultations, capturing the entire conversation. Focus on the patient instead of typing.
+
+**Team rounds**: Capture discussions during rounds automatically. Review later to ensure nothing was missed.
+
+**Family conferences**: Complex discussions about care plans are fully documented without manual note-taking.
+
+**Peer consultations**: Phone calls with specialists are captured and summarized.
+
+For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" />
+
+## Privacy Considerations
+
+### HIPAA and Voice AI
+
+Important caveats for healthcare settings:
+
+1. **Consult your compliance team** before using any AI tool with patient information
+2. **Review data handling policies** of any tool you consider
+3. **Consider BAA requirements** - does the vendor offer a Business Associate Agreement?
+
+Both WisprFlow and Granola process data with encryption, but healthcare facilities should conduct their own security reviews.
+
+### Local vs. Cloud Processing
+
+- **WisprFlow**: Processes locally where possible, with cloud backup for some features
+- **Granola**: Cloud-based processing with enterprise security options
+
+For detailed privacy policies, visit each vendor's trust center.
+
+## Workflow Integration
+
+### Before Patient Encounter
+- Review chart in EHR
+- Have WisprFlow ready (hotkey activation)
+
+### During Encounter
+- Focus on the patient
+- If telemedicine: Granola captures automatically
+- If in-person: Use WisprFlow to dictate key points immediately after
+
+### After Encounter
+- Dictate full note using WisprFlow
+- Review Granola transcript if applicable
+- Copy relevant portions to EHR
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| Progress note | 8 min | 3 min | 5 min |
+| Discharge summary | 15 min | 5 min | 10 min |
+| Referral letter | 10 min | 3 min | 7 min |
+
+At 20 patients per day, that's potentially 2+ hours saved daily.
+
+## Related Resources
+
+If you're interested in voice-first productivity beyond clinical work:
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General productivity techniques
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [Best Voice-to-Text for Developers](/blog/best-voice-to-text-for-developers) - Technical deep dive
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+1. **For clinical dictation**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - Install takes minutes
+2. **For consultation capture**: [Try Granola](https://go.granola.ai/zack-proser) - Syncs with your calendar
+
+Both offer free trials to evaluate before committing.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Is this HIPAA compliant?
+
+Tools themselves can be configured for compliance, but your organization must evaluate and approve any tool that handles PHI. Work with your compliance officer.
+
+### Does this replace medical transcriptionists?
+
+For routine documentation, yes, these tools can reduce or eliminate the need for transcription services. For complex or specialized documentation, human review remains valuable.
+
+### Can I use this in the exam room?
+
+WisprFlow works anywhere you can speak. Some physicians dictate notes immediately after leaving the room. Others review and dictate during documentation time.
+
+### What about ambient clinical documentation?
+
+Products like Nuance DAX offer ambient capture specifically for healthcare. WisprFlow and Granola are general-purpose tools that work across your entire workflow, not just clinical encounters.
+
+---
+
+*Every minute spent on documentation is a minute not spent with patients. These tools won't solve healthcare's systemic issues, but they can give individual physicians meaningful time back.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>

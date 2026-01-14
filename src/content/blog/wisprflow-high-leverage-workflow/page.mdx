@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
@@ -66,6 +67,8 @@ Speed without reliability is chaos. [WisprFlow](https://ref.wisprflow.ai/zack-pr
 
 ## How to replicate the leverage
 
+<InlineAffiliateCTA product="wisprflow" />
+
 1. Install [WisprFlow](https://ref.wisprflow.ai/zack-proser) and set a single universal hotkey. Make it muscle memory.
 2. Pair it with your agent platform of choice (Cursor, Claude desktop, OpenAI's code agents) and script your acceptance criteria once.
 3. Start narrating everything: commits, PR feedback, meeting notes, system designs. Let speech be the default interface.
@@ -74,5 +77,7 @@ Speed without reliability is chaos. [WisprFlow](https://ref.wisprflow.ai/zack-pr
 Do that, and you're no longer typing faster. You're thinking faster, delegating clearer, and shipping cleaner.
 
 <VoiceAIDemoCard />
+
+<InlineAffiliateCTA product="wisprflow" />
 
 Ready to experience it? Grab [WisprFlow](https://ref.wisprflow.ai/zack-proser) and then dive into the [full review](/blog/wisprflow-review) for setup details, gear recommendations, and workflow diagrams.
