@@ -6,6 +6,29 @@ import path from "path"
 const ADMIN_EMAIL = "zackproser@gmail.com"
 const NEWSLETTER_DIR = path.join(process.cwd(), "src/content/newsletter")
 
+// Sanitize slug to prevent path traversal attacks
+function sanitizeSlug(slug: string): string | null {
+  // Remove any path traversal sequences and normalize
+  const sanitized = slug
+    .replace(/\.\./g, "") // Remove .. sequences
+    .replace(/[\/\\]+/g, "-") // Replace slashes with dashes
+    .replace(/[^a-zA-Z0-9-_]/g, "") // Only allow alphanumeric, dashes, underscores
+
+  // Return null if sanitization resulted in empty string
+  if (!sanitized || sanitized.length === 0) {
+    return null
+  }
+
+  return sanitized
+}
+
+// Validate that a path is within the expected directory
+function isPathWithinDirectory(filePath: string, directory: string): boolean {
+  const resolvedPath = path.resolve(filePath)
+  const resolvedDir = path.resolve(directory)
+  return resolvedPath.startsWith(resolvedDir + path.sep)
+}
+
 // Helper to check if user is admin
 async function isAdmin(): Promise<boolean> {
   const session = await auth()
@@ -142,9 +165,24 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 })
     }
 
-    const episodeDir = path.join(NEWSLETTER_DIR, slug)
+    // Sanitize the slug to prevent path traversal
+    const sanitizedSlug = sanitizeSlug(slug)
+    if (!sanitizedSlug) {
+      return NextResponse.json({ error: "Invalid slug" }, { status: 400 })
+    }
+
+    const episodeDir = path.join(NEWSLETTER_DIR, sanitizedSlug)
     const metadataPath = path.join(episodeDir, "metadata.json")
     const contentPath = path.join(episodeDir, "page.mdx")
+
+    // Validate all paths are within the newsletter directory
+    if (
+      !isPathWithinDirectory(episodeDir, NEWSLETTER_DIR) ||
+      !isPathWithinDirectory(metadataPath, NEWSLETTER_DIR) ||
+      !isPathWithinDirectory(contentPath, NEWSLETTER_DIR)
+    ) {
+      return NextResponse.json({ error: "Invalid path" }, { status: 400 })
+    }
 
     if (!fs.existsSync(episodeDir)) {
       return NextResponse.json({ error: "Episode not found" }, { status: 404 })
@@ -152,13 +190,13 @@ export async function GET(req: NextRequest) {
 
     const metadata = fs.existsSync(metadataPath)
       ? JSON.parse(fs.readFileSync(metadataPath, "utf-8"))
-      : { title: "Untitled", date: slug }
+      : { title: "Untitled", date: sanitizedSlug }
 
     const content = fs.existsSync(contentPath)
       ? fs.readFileSync(contentPath, "utf-8")
       : ""
 
-    const bodyHtml = convertMarkdownToEmailHtml(content, slug, {
+    const bodyHtml = convertMarkdownToEmailHtml(content, sanitizedSlug, {
       includeTracking,
     })
 
@@ -230,7 +268,7 @@ export async function GET(req: NextRequest) {
                     <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #ffffff;">
                       Want to dive deeper into AI development?
                     </p>
-                    <a href="https://zackproser.com/api/click?e={{EmailAddress}}&tag=newsletter:${slug}&tag=clicked:cta&r=${encodeURIComponent("https://zackproser.com/products")}" style="display: inline-block; padding: 12px 24px; background-color: #ffffff; color: #059669; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 6px;">
+                    <a href="https://zackproser.com/api/click?e={{EmailAddress}}&tag=newsletter:${sanitizedSlug}&tag=clicked:cta&r=${encodeURIComponent("https://zackproser.com/products")}" style="display: inline-block; padding: 12px 24px; background-color: #ffffff; color: #059669; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 6px;">
                       Browse My Resources
                     </a>
                   </td>
@@ -261,7 +299,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse(fullHtml, {
       headers: {
         "Content-Type": "text/html",
-        "Content-Disposition": `inline; filename="newsletter-${slug}.html"`,
+        "Content-Disposition": `inline; filename="newsletter-${sanitizedSlug}.html"`,
       },
     })
   } catch (error) {
@@ -272,6 +310,9 @@ export async function GET(req: NextRequest) {
     )
   }
 }
+
+
+
 
 
 
