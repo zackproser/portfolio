@@ -1,0 +1,182 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for legal professionals" width={800} height={600} className="rounded-lg shadow-xl"/>
+</a>
+<figcaption>Modern AI voice tools are transforming how lawyers draft documents and capture meetings</figcaption>
+
+Legal work is word-intensive. Contracts, briefs, motions, client emails, meeting notes—the volume of text lawyers produce is staggering. Voice AI tools are now good enough to meaningfully reduce this burden while maintaining the precision legal work demands.
+
+This guide covers two tools I've found particularly effective for professional document work: one for dictation and one for meeting capture.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+## WisprFlow for Legal Dictation
+
+<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow dictation interface" width={800} height={600}/>
+</a>
+
+[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a voice-to-text application that works system-wide on Mac. Speak naturally, and polished text appears wherever your cursor is focused—Word, Outlook, your document management system, anywhere.
+
+### Legal-Specific Benefits
+
+**Draft correspondence faster**: Client emails, opposing counsel letters, and internal memos can be dictated rather than typed. The AI removes filler words and properly formats the output.
+
+**Works with legal terminology**: WisprFlow learns your vocabulary. After a few uses, it recognizes case names, legal phrases, and party names specific to your matters.
+
+**Dictate into any application**: Whether you're using Clio, MyCase, NetDocuments, or plain Word, WisprFlow works because it operates at the system level.
+
+### Practical Use Cases
+
+- **Email responses**: Dictate a 300-word response in 90 seconds instead of typing for 5 minutes
+- **First drafts**: Speak through the structure of a motion or memo before refining
+- **Time entries**: Dictate detailed time descriptions directly into your billing software
+- **Notes to file**: Document client calls and strategy sessions immediately after they happen
+
+### Speed Comparison
+
+Average typing speed: 40-60 WPM
+WisprFlow voice speed: 150-180 WPM
+**Effective improvement: 2-3x faster initial drafts**
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Granola for Client Meetings and Depositions
+
+<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes for legal" width={800} height={600} className="rounded-lg shadow-xl"/>
+</a>
+
+[Granola](https://go.granola.ai/zack-proser) captures meeting audio and generates structured notes without a bot joining your call. This distinction matters significantly in legal contexts.
+
+### Why "No Bot" Matters for Lawyers
+
+Other meeting transcription tools join calls as a visible participant, announcing their presence. This can:
+
+- Make clients uncomfortable discussing sensitive matters
+- Alert opposing counsel that the meeting is being recorded
+- Create awkward interruptions at the start of every call
+
+Granola captures audio from your device's microphone. The recording is invisible to other participants.
+
+### Legal Use Cases
+
+**Client intake calls**: Capture everything the client says without breaking eye contact to type notes. Review later to ensure you didn't miss critical facts.
+
+**Deposition preparation**: Use the mobile app to record witness preparation sessions. Granola extracts key points and potential issues.
+
+**Settlement negotiations**: Focus on negotiating, not note-taking. The transcript preserves exactly what was offered and discussed.
+
+**Team meetings**: Strategy sessions generate automatic action items. No more "who was supposed to do what?"
+
+### Privacy and Security
+
+- Enterprise-grade encryption
+- Audio processed securely
+- No data used to train AI models
+- See their [trust center](https://trust.granola.ai/) for compliance details
+
+<InlineAffiliateCTA product="granola" />
+
+## Addressing Common Concerns
+
+### Attorney-Client Privilege
+
+Both tools process data with encryption. However, firms should review their data handling policies and consider:
+
+- Where data is stored
+- Retention policies
+- Access controls
+
+Neither tool retains data longer than necessary for processing, but due diligence is always appropriate.
+
+### Court Reporter Replacement?
+
+These tools don't replace official court reporters or certified transcriptionists for record purposes. They're productivity tools for internal work product and informal meetings.
+
+### Accuracy for Legal Terminology
+
+WisprFlow's personal dictionary feature learns specialized vocabulary. After initial corrections, it reliably recognizes:
+
+- Case names (Smith v. Jones)
+- Legal phrases (voir dire, res judicata)
+- Client and party names
+- Court names and judge names
+
+## Recommended Workflow
+
+### For a typical client meeting:
+
+1. **Before**: Have Granola synced with your calendar (automatic meeting detection)
+2. **During**: Focus on the client. Take minimal notes if any.
+3. **After**: Review Granola's summary and action items. Use WisprFlow to dictate your notes-to-file.
+
+### For document drafting:
+
+1. Outline the document structure (can be dictated)
+2. Dictate the substance section by section
+3. Review and refine in your word processor
+4. Use voice for revisions: "Delete the second paragraph and replace with..."
+
+## Getting Started
+
+Both tools offer free trials:
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+**WisprFlow**: [Try free](https://ref.wisprflow.ai/zack-proser) - Install takes 2 minutes. Start with email dictation to build comfort.
+
+**Granola**: [Try free](https://go.granola.ai/zack-proser) - Syncs with your calendar automatically. First meeting generates notes without any configuration.
+
+<VoiceAIDemoCard />
+
+## Related Guides
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General business productivity
+- [AI Voice Tools for Doctors](/blog/ai-voice-tools-for-doctors) - Healthcare documentation
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [WisprFlow Review](/blog/wisprflow-review) - Full technical review
+- [Granola vs Otter.ai](/blog/granola-vs-otter) - Detailed comparison
+
+## Frequently Asked Questions
+
+### Is the recording admissible in court?
+
+These tools create internal work product, not official records. For evidentiary recordings, consult applicable rules and use appropriate certified services.
+
+### Can I use this at depositions I'm taking?
+
+For your own notes and reference, yes. This doesn't replace the official court reporter transcript.
+
+### What about consent requirements?
+
+Check your jurisdiction's recording consent laws. Many states are one-party consent, meaning you can record conversations you're part of. Granola's non-visible approach doesn't change this legal analysis.
+
+### Does my firm need to approve these tools?
+
+Recommended. IT and ethics committees should review any tool that processes client communications. Both tools have enterprise options with additional controls.
+
+---
+
+*The billable hour won't wait for you to type. Voice AI tools offer a meaningful way to reclaim time without sacrificing quality—time you can spend on substantive legal work or, occasionally, on something other than work.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>

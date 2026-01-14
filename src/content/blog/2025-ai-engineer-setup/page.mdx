@@ -1,6 +1,8 @@
 import rawMetadata from './metadata.json'
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -47,6 +49,8 @@ This isn't just about speed. Voice input changes how you think. Instead of hunti
 The beauty of Wispr Flow is that it works with ANYTHING on macOS—whether that's Cursor's Agent composer window, a Chrome tab with Claude chat running, Slack messages, or any other text field. It's like having a universal voice-to-text interface for your entire system.
 
 I've written a [comprehensive Wispr Flow review](/blog/wisprflow-review) covering the good, the painful, and real-world performance—including how it enables driving multiple Cursor instances and works seamlessly with background agents.
+
+<InlineAffiliateCTA product="wisprflow" />
 
 ### Cursor - Development Powerhouse
 
@@ -127,3 +131,14 @@ I wrote about this extensively in my [walking and talking with AI](/blog/walking
 ## What I Learned
 
 The multi-monitor setup was solving the wrong problem. I thought I needed to see more information. What I actually needed was smarter tools and the freedom to think.
+
+## Get Started with Voice-First Development
+
+Ready to try the voice-first approach? Here are the tools that made this setup possible:
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+<VoiceAIDemoCard />
