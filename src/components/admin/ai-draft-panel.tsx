@@ -124,9 +124,9 @@ export function AIDraftPanel({ isOpen, onClose, onContentGenerated }: AIDraftPan
 
   function parseGeneratedContent(raw: string): { title: string; description: string; content: string } | null {
     try {
-      const titleMatch = raw.match(/TITLE:\s*(.+?)(?=\n|DESCRIPTION:)/s)
-      const descMatch = raw.match(/DESCRIPTION:\s*(.+?)(?=\n|CONTENT:)/s)
-      const contentMatch = raw.match(/CONTENT:\s*([\s\S]+)$/s)
+      const titleMatch = raw.match(/TITLE:\s*([\s\S]+?)(?=\n|DESCRIPTION:)/)
+      const descMatch = raw.match(/DESCRIPTION:\s*([\s\S]+?)(?=\n|CONTENT:)/)
+      const contentMatch = raw.match(/CONTENT:\s*([\s\S]+)$/)
 
       return {
         title: titleMatch?.[1]?.trim() || "",
@@ -334,5 +334,8 @@ export function AIDraftPanel({ isOpen, onClose, onContentGenerated }: AIDraftPan
     </div>
   )
 }
+
+
+
 
 

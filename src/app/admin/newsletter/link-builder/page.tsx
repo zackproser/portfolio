@@ -176,7 +176,7 @@ export default function LinkBuilderPage() {
     setSelectedTags(prev => prev.filter(t => t !== tag))
   }
 
-  function useFromHistory(link: GeneratedLink) {
+  function applyFromHistory(link: GeneratedLink) {
     setDestinationUrl(link.destinationUrl)
     setSelectedTags(link.tags)
     setShowHistory(false)
@@ -485,7 +485,7 @@ export default function LinkBuilderPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => useFromHistory(link)}
+                            onClick={() => applyFromHistory(link)}
                             className="h-7 w-7 p-0"
                             title="Use this link"
                           >
