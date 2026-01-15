@@ -155,6 +155,7 @@ export default function AuthorityHero() {
                 Developer Experience Engineer at WorkOS on the Applied AI team.
                 Previously Staff DevRel at Pinecone building production AI systems.
                 Former Sr. Engineer at Cloudflare (one of ~100 engineers).
+                Open-source, infrastructure, and AWS systems engineer at Gruntwork.io.
               </p>
 
               {/* Newsletter Signup */}
