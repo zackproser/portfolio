@@ -40,7 +40,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-      className="fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-indigo-400"
+      className="fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-amber-400"
       aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
     >
       {resolvedTheme === 'dark' ? (
@@ -97,7 +97,7 @@ export default function AuthorityHero() {
       {/* Hero Section */}
       <section className={`relative overflow-hidden transition-all duration-500 ${
         isDark
-          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950'
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950'
           : 'bg-gradient-to-b from-white via-parchment-50 to-parchment-100'
       }`}>
         {/* Light mode: Subtle paper texture - clean and modern */}
@@ -121,8 +121,8 @@ export default function AuthorityHero() {
             className="absolute inset-0 opacity-20 pointer-events-none"
             style={{
               backgroundImage: `
-                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
+                linear-gradient(rgba(245, 158, 11, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245, 158, 11, 0.1) 1px, transparent 1px)
               `,
               backgroundSize: '50px 50px',
             }}
@@ -150,7 +150,7 @@ export default function AuthorityHero() {
               </h1>
               <h1
                 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}
                 style={{
                   textShadow: isDark
@@ -182,7 +182,7 @@ export default function AuthorityHero() {
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <img src="/images/logos/workos.svg" alt="WorkOS" className={`h-6 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
-                  <span className={`text-sm font-bold ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>WorkOS</span>
+                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>WorkOS</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>Applied AI</span>
                 </div>
                 <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
@@ -191,14 +191,14 @@ export default function AuthorityHero() {
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
                     <img src="/images/logos/pinecone.png" alt="Pinecone" className="h-full w-full object-contain" />
                   </div>
-                  <span className={`text-sm font-bold ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>Pinecone</span>
+                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Pinecone</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>RAG &amp; Vectors</span>
                 </div>
                 <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <img src="/images/logos/cloudflare.svg" alt="Cloudflare" className={`h-6 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
-                  <span className={`text-sm font-bold ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>Cloudflare</span>
+                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Cloudflare</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>APIs &amp; Systems</span>
                 </div>
                 <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
@@ -207,7 +207,7 @@ export default function AuthorityHero() {
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
                     <img src="/images/logos/gruntwork.png" alt="Gruntwork" className="h-full w-full object-contain" />
                   </div>
-                  <span className={`text-sm font-bold ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>Gruntwork</span>
+                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Gruntwork</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>AWS &amp; IaC</span>
                 </div>
               </div>
@@ -218,7 +218,7 @@ export default function AuthorityHero() {
                   href="/blog"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -228,7 +228,7 @@ export default function AuthorityHero() {
                   href="/videos"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -238,7 +238,7 @@ export default function AuthorityHero() {
                   href="/demos"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -248,7 +248,7 @@ export default function AuthorityHero() {
                   href="/learn"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -258,7 +258,7 @@ export default function AuthorityHero() {
                   href="/devtools"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -268,7 +268,7 @@ export default function AuthorityHero() {
                   href="/projects"
                   className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-indigo-500/50 hover:text-indigo-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
@@ -293,7 +293,7 @@ export default function AuthorityHero() {
               }}
               className={`w-full h-11 font-bold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
                 isDark
-                  ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                  ? 'bg-amber-500 hover:bg-amber-400 text-white'
                   : 'bg-burnt-400 hover:bg-burnt-500 text-white'
               }`}
             >
@@ -337,7 +337,7 @@ export default function AuthorityHero() {
                   type="submit"
                   className={`text-sm h-11 px-5 font-semibold ${
                     isDark
-                      ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                      ? 'bg-amber-500 hover:bg-amber-400 text-white'
                       : 'bg-burnt-400 hover:bg-burnt-500 text-white'
                   }`}
                 >
@@ -350,12 +350,12 @@ export default function AuthorityHero() {
           {/* Social proof + Tutorial link */}
           <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6">
             <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-              Join <span className={`font-bold ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>4,000+</span> engineers, small business owners and investors on the cutting edge
+              Join <span className={`font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>4,000+</span> engineers, small business owners and investors on the cutting edge
             </p>
             <Link
               href="/demos"
               className={`inline-flex items-center gap-1 text-sm font-medium ${
-                isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
+                isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
               }`}
             >
               Learn AI/ML hands-on with interactive demos
@@ -370,7 +370,7 @@ export default function AuthorityHero() {
       {/* Featured: Oura MCP Integration */}
       <section className={`py-16 md:py-20 transition-colors duration-500 ${
         isDark
-          ? 'bg-gradient-to-b from-indigo-950 to-slate-900'
+          ? 'bg-gradient-to-b from-slate-950 to-slate-900'
           : 'bg-parchment-200'
       }`}>
         <div className="container mx-auto px-4 md:px-6">
@@ -391,12 +391,12 @@ export default function AuthorityHero() {
 
             {/* Featured: Claude as External Brain */}
             <div className={`p-8 rounded-2xl mb-8 overflow-hidden ${
-              isDark ? 'bg-slate-800/60 border border-indigo-500/30' : 'bg-white border border-burnt-400/20'
+              isDark ? 'bg-slate-800/60 border border-amber-500/30' : 'bg-white border border-burnt-400/20'
             }`}>
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="flex-1">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 ${
-                    isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-burnt-400/10 text-burnt-500'
+                    isDark ? 'bg-amber-500/20 text-amber-400' : 'bg-burnt-400/10 text-burnt-500'
                   }`}>
                     Featured: Neurodivergent Engineering
                   </span>
@@ -412,7 +412,7 @@ export default function AuthorityHero() {
                   <Link
                     href="/blog/claude-external-brain-adhd-autistic"
                     className={`inline-flex items-center gap-2 font-semibold ${
-                      isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
+                      isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
                     }`}
                   >
                     Read the full guide
@@ -438,7 +438,7 @@ export default function AuthorityHero() {
               <Link
                 href="/blog/walking-and-talking-with-ai"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
-                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
                 <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
@@ -456,7 +456,7 @@ export default function AuthorityHero() {
                   Ship code at 179 WPM while hiking. Voice-first workflows with AI agents.
                 </p>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   Learn more
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,7 +469,7 @@ export default function AuthorityHero() {
               <Link
                 href="/blog/connect-oura-ring-to-claude-desktop-with-mcp"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
-                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
                 <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
@@ -487,7 +487,7 @@ export default function AuthorityHero() {
                   Oura Ring data feeds Claude to prevent burnout. External signals for internal blind spots.
                 </p>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   Learn more
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -500,7 +500,7 @@ export default function AuthorityHero() {
               <Link
                 href="/blog/in-the-llm-i-saw-myself"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
-                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
                 <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
@@ -518,7 +518,7 @@ export default function AuthorityHero() {
                   How LLMs mirror neurodivergent cognition. Diagnosis, patterns, and building with alignment.
                 </p>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   Learn more
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -560,7 +560,7 @@ export default function AuthorityHero() {
             {/* YouTube Video Embed */}
             <div className="max-w-3xl mx-auto mb-12">
               <div className={`rounded-xl overflow-hidden shadow-2xl ${
-                isDark ? 'ring-2 ring-indigo-500/30' : 'ring-1 ring-parchment-300'
+                isDark ? 'ring-2 ring-amber-500/30' : 'ring-1 ring-parchment-300'
               }`}>
                 <YoutubeEmbed
                   urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4"
@@ -576,7 +576,7 @@ export default function AuthorityHero() {
               <div className={`p-6 rounded-xl ${
                 isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
               }`}>
-                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>
                   Voice-Native Workflows
                 </h3>
                 <p className="text-sm">
@@ -586,7 +586,7 @@ export default function AuthorityHero() {
               <div className={`p-6 rounded-xl ${
                 isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
               }`}>
-                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>
                   Agent-Driven CI/CD
                 </h3>
                 <p className="text-sm">
@@ -596,7 +596,7 @@ export default function AuthorityHero() {
               <div className={`p-6 rounded-xl ${
                 isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
               }`}>
-                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>
                   Untethered Development
                 </h3>
                 <p className="text-sm">
@@ -611,7 +611,7 @@ export default function AuthorityHero() {
             }`}>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   4,000+
                 </span>
@@ -621,7 +621,7 @@ export default function AuthorityHero() {
               </div>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   14 Years
                 </span>
@@ -631,7 +631,7 @@ export default function AuthorityHero() {
               </div>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
-                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
                   Staff
                 </span>
@@ -647,7 +647,7 @@ export default function AuthorityHero() {
       {/* Neural Network Visualization Section */}
       <section className={`py-16 md:py-20 overflow-hidden transition-colors duration-500 ${
         isDark
-          ? 'bg-gradient-to-b from-slate-900 to-indigo-950'
+          ? 'bg-gradient-to-b from-slate-900 to-slate-950'
           : 'bg-parchment-100'
       }`}>
         <div className="container mx-auto px-4 md:px-6">
@@ -680,7 +680,7 @@ export default function AuthorityHero() {
               <Link
                 href="/demos"
                 className={`inline-flex items-center font-semibold ${
-                  isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
+                  isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
                 }`}
               >
                 Try Interactive AI Demos
@@ -727,12 +727,12 @@ export default function AuthorityHero() {
                   href={cat.href}
                   className={`p-4 rounded-xl text-center transition-all hover:-translate-y-1 ${
                     isDark
-                      ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50'
+                      ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50'
                       : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                   }`}
                 >
                   <span className={`block text-2xl font-bold font-mono ${
-                    isDark ? 'text-indigo-400' : 'text-burnt-400'
+                    isDark ? 'text-amber-400' : 'text-burnt-400'
                   }`}>
                     {cat.count}
                   </span>
@@ -750,7 +750,7 @@ export default function AuthorityHero() {
                 onClick={() => track('featured_writing_cta')}
                 className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all hover:-translate-y-0.5 ${
                   isDark
-                    ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                    ? 'bg-amber-500 hover:bg-amber-400 text-white'
                     : 'bg-burnt-400 hover:bg-burnt-500 text-white'
                 }`}
               >
