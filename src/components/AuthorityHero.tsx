@@ -11,6 +11,7 @@ import { useTheme } from 'next-themes'
 import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
+import HeroPortrait from '@/components/HeroPortrait'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -25,22 +26,12 @@ const NeuralNetworkPulse = dynamic(
   }
 )
 
-// Company logos from CDN
+// Company logos from CDN - with display names
 const companyLogos = [
   { name: 'WorkOS', logo: 'https://zackproser.b-cdn.net/images/logos/workos.svg' },
   { name: 'Pinecone', logo: 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png' },
   { name: 'Cloudflare', logo: 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg' },
   { name: 'Gruntwork', logo: 'https://zackproser.b-cdn.net/images/logos/grunty.png' },
-]
-
-// Avatar images from CDN
-const avatarImages = [
-  'https://zackproser.b-cdn.net/images/avatars/1.webp',
-  'https://zackproser.b-cdn.net/images/avatars/2.webp',
-  'https://zackproser.b-cdn.net/images/avatars/3.webp',
-  'https://zackproser.b-cdn.net/images/avatars/4.webp',
-  'https://zackproser.b-cdn.net/images/avatars/5.webp',
-  'https://zackproser.b-cdn.net/images/avatars/6.webp',
 ]
 
 function ThemeToggle() {
@@ -80,7 +71,6 @@ function ThemeToggle() {
 
 export default function AuthorityHero() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
-  const [currentImage, setCurrentImage] = useState(avatarImages[0])
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [email, setEmail] = useState('')
@@ -88,16 +78,7 @@ export default function AuthorityHero() {
 
   useEffect(() => {
     setMounted(true)
-    const randomIndex = Math.floor(Math.random() * avatarImages.length)
-    setCurrentImage(avatarImages[randomIndex])
   }, [])
-
-  const cycleImage = () => {
-    track('hero_portrait_click')
-    const currentIndex = avatarImages.indexOf(currentImage)
-    const nextIndex = (currentIndex + 1) % avatarImages.length
-    setCurrentImage(avatarImages[nextIndex])
-  }
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -239,30 +220,36 @@ export default function AuthorityHero() {
                 </Button>
               </div>
 
-              {/* Company Logos - Actual Images */}
-              <div className="flex flex-wrap items-center gap-4">
-                <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+              {/* Company Logos - Larger with names */}
+              <div className="mt-2">
+                <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
                   Built production systems at:
-                </span>
-                <div className="flex items-center gap-4">
+                </p>
+                <div className="flex flex-wrap items-start gap-6">
                   {companyLogos.map((company) => (
                     <div
                       key={company.name}
-                      className={`flex items-center justify-center h-8 w-auto px-2 rounded ${
-                        isDark
-                          ? 'bg-slate-800/50'
-                          : 'bg-white/80'
-                      }`}
-                      title={company.name}
+                      className="flex flex-col items-center gap-2"
                     >
-                      <Image
-                        src={company.logo}
-                        alt={company.name}
-                        width={80}
-                        height={24}
-                        className="h-5 w-auto object-contain"
-                        unoptimized
-                      />
+                      <div className={`flex items-center justify-center h-12 w-24 px-3 py-2 rounded-lg ${
+                        isDark
+                          ? 'bg-slate-800/70 border border-slate-700'
+                          : 'bg-white shadow-sm border border-parchment-300'
+                      }`}>
+                        <Image
+                          src={company.logo}
+                          alt={company.name}
+                          width={96}
+                          height={40}
+                          className="h-8 w-auto object-contain"
+                          unoptimized
+                        />
+                      </div>
+                      <span className={`text-xs font-medium ${
+                        isDark ? 'text-slate-400' : 'text-parchment-600'
+                      }`}>
+                        {company.name}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -270,106 +257,8 @@ export default function AuthorityHero() {
             </div>
 
             {/* Right Column: Portrait */}
-            <div className="flex flex-col items-center lg:items-end order-1 lg:order-2">
-              {/* SVG filter for realistic pencil sketch effect */}
-              <svg className="absolute w-0 h-0">
-                <defs>
-                  {/* Pencil texture pattern */}
-                  <filter id="pencil-sketch" colorInterpolationFilters="sRGB">
-                    {/* Edge detection for line work */}
-                    <feConvolveMatrix
-                      order="3"
-                      kernelMatrix="-1 -1 -1 -1 9 -1 -1 -1 -1"
-                      result="edges"
-                    />
-                    {/* Desaturate to grayscale */}
-                    <feColorMatrix type="saturate" values="0" in="edges" result="gray" />
-                    {/* Add pencil-like grain texture */}
-                    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" />
-                    <feDisplacementMap in="gray" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-                    {/* Increase contrast for sketch look */}
-                    <feComponentTransfer in="displaced" result="contrast">
-                      <feFuncR type="linear" slope="2" intercept="-0.3" />
-                      <feFuncG type="linear" slope="2" intercept="-0.3" />
-                      <feFuncB type="linear" slope="2" intercept="-0.3" />
-                    </feComponentTransfer>
-                    {/* Tint with warm sepia for pencil on paper */}
-                    <feColorMatrix
-                      type="matrix"
-                      in="contrast"
-                      values="1.1 0.1 0 0 0.1
-                              0.05 1.0 0.05 0 0.08
-                              0 0.05 0.9 0 0.05
-                              0 0 0 1 0"
-                    />
-                  </filter>
-                </defs>
-              </svg>
-
-              {/* Portrait with pencil-drawn effect */}
-              <div
-                className="relative cursor-pointer group"
-                onClick={cycleImage}
-                title="Click to see another portrait"
-              >
-                {/* Decorative frame */}
-                <div className={`absolute -inset-4 rounded-lg ${
-                  isDark
-                    ? 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-xl'
-                    : 'bg-parchment-200 shadow-inner'
-                }`} />
-
-                {/* Portrait container */}
-                <div className={`relative w-64 h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 overflow-hidden shadow-2xl transition-transform duration-300 group-hover:scale-[1.02] ${
-                  isDark
-                    ? 'rounded-2xl ring-2 ring-indigo-500/50'
-                    : 'rounded-lg ring-1 ring-parchment-400'
-                }`}>
-                  <Image
-                    src={currentImage}
-                    alt="Zachary Proser - AI Engineering Consultant"
-                    fill
-                    className="object-cover transition-all duration-500"
-                    style={{
-                      filter: isDark ? 'none' : 'url(#pencil-sketch)',
-                    }}
-                    priority
-                  />
-                  {/* Paper texture overlay for light mode */}
-                  {!isDark && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-parchment-100/30 to-parchment-300/40 pointer-events-none" />
-                  )}
-                  {/* Cool overlay for dark mode */}
-                  {isDark && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none" />
-                  )}
-                </div>
-
-                {/* Click hint */}
-                <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity ${
-                  isDark
-                    ? 'bg-slate-800 text-slate-300'
-                    : 'bg-parchment-200 text-parchment-600'
-                }`}>
-                  Click for another
-                </div>
-              </div>
-
-              {/* Credential tags below portrait */}
-              <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-6">
-                {['Staff Engineer', '14 Years', 'Voice Workflows Expert'].map((tag) => (
-                  <span
-                    key={tag}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                      isDark
-                        ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                        : 'bg-burnt-400/10 text-burnt-500 border border-burnt-400/20'
-                    }`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+            <div className="order-1 lg:order-2">
+              <HeroPortrait />
             </div>
           </div>
         </div>

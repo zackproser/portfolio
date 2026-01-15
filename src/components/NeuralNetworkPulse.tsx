@@ -116,13 +116,14 @@ export const NeuralNetworkPulse = () => {
     }
   }
 
+  // Graphite pencil colors for light mode, indigo for dark mode
   const svgContent = (
     <>
       {lines.map(({ i, j, x1, y1, x2, y2 }) => {
-        const isSpecialLine = specialLine && 
-          ((specialLine.from === i && specialLine.to === j) || 
+        const isSpecialLine = specialLine &&
+          ((specialLine.from === i && specialLine.to === j) ||
            (specialLine.from === j && specialLine.to === i));
-        
+
         return (
           <line
             key={`${i}-${j}`}
@@ -130,12 +131,14 @@ export const NeuralNetworkPulse = () => {
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke="#CBD5E0"
-            strokeWidth="1"
             className={`transition-all duration-300 ${
-              isSpecialLine ? 'stroke-blue-300 stroke-[3px]' : 
-              pulseNodes.includes(i) || pulseNodes.includes(j) ? 'stroke-blue-500 stroke-[2px]' : ''
+              isSpecialLine
+                ? 'stroke-zinc-600 dark:stroke-indigo-300 stroke-[3px]'
+                : pulseNodes.includes(i) || pulseNodes.includes(j)
+                  ? 'stroke-zinc-700 dark:stroke-indigo-500 stroke-[2px]'
+                  : 'stroke-zinc-300 dark:stroke-slate-600'
             }`}
+            strokeWidth="1"
           />
         );
       })}
@@ -152,10 +155,10 @@ export const NeuralNetworkPulse = () => {
             r={pulseNodes.includes(i) ? 12 : 8}
             className={`transition-all duration-300 ${
               specialLine && (specialLine.from === i || specialLine.to === i)
-                ? 'fill-blue-300'
-                : pulseNodes.includes(i) 
-                  ? 'fill-blue-600' 
-                  : 'fill-blue-400'
+                ? 'fill-zinc-500 dark:fill-indigo-300'
+                : pulseNodes.includes(i)
+                  ? 'fill-zinc-700 dark:fill-indigo-600'
+                  : 'fill-zinc-400 dark:fill-indigo-400'
             }`}
           />
         );
@@ -179,10 +182,10 @@ export const NeuralNetworkPulse = () => {
             className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
             style={{ left: x, top: y - 30 }}
           >
-            <div className="bg-blue-100 text-blue-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
+            <div className="bg-zinc-200 dark:bg-indigo-100 text-zinc-800 dark:text-indigo-900 px-1 rounded text-xs font-bold animate-pulse mb-1">
               {nodeInfo[i]?.weight}
             </div>
-            <div className="bg-blue-600 text-white px-1 rounded text-xs font-bold animate-pulse max-w-[140px] text-center">
+            <div className="bg-zinc-700 dark:bg-indigo-600 text-white px-1 rounded text-xs font-bold animate-pulse max-w-[140px] text-center">
               {nodeInfo[i]?.phrase}
             </div>
           </div>
