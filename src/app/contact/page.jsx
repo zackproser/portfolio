@@ -1,4 +1,3 @@
-import { Container } from '@/components/Container'
 import { generateOgUrl } from '@/utils/ogUrl'
 import { ContactContent } from './ContactContent'
 
@@ -27,9 +26,5 @@ export const metadata = {
 };
 
 export default function ContactPage() {
-  return (
-    <Container className="mt-16 sm:mt-32">
-      <ContactContent />
-    </Container>
-  )
+  return <ContactContent />
 }

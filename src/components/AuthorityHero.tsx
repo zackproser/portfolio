@@ -28,47 +28,6 @@ const NeuralNetworkPulse = dynamic(
   }
 )
 
-function ThemeToggle() {
-  const [mounted, setMounted] = useState(false)
-  const { resolvedTheme, setTheme } = useTheme()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
-  const isDarkMode = resolvedTheme === 'dark'
-
-  return (
-    <button
-      onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
-      className={`fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 ${
-        isDarkMode
-          ? 'bg-slate-800 text-slate-100 border-sky-400/50 hover:border-sky-400'
-          : 'bg-white text-charcoal-50 border-burnt-400/50 hover:border-burnt-400'
-      }`}
-      aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
-    >
-      {isDarkMode ? (
-        <>
-          <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-          </svg>
-          <span className="text-sm font-medium">Light Mode</span>
-        </>
-      ) : (
-        <>
-          <svg className="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-          </svg>
-          <span className="text-sm font-medium">Dark Mode</span>
-        </>
-      )}
-    </button>
-  )
-}
-
 export default function AuthorityHero() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
   const { resolvedTheme } = useTheme()
@@ -157,7 +116,7 @@ export default function AuthorityHero() {
               </h1>
               <h1
                 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 ${
-                  isDark ? 'text-sky-400' : 'text-burnt-400'
+                  isDark ? '!text-amber-400' : '!text-burnt-400'
                 }`}
                 style={{
                   textShadow: isDark
@@ -196,7 +155,7 @@ export default function AuthorityHero() {
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/pinecone-logo.png" alt="Pinecone" className="h-full w-full object-contain" />
+                    <img src="/images/logos/pinecone.png" alt="Pinecone" className="h-full w-full object-contain" />
                   </div>
                   <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Pinecone</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>RAG &amp; Vectors</span>
@@ -212,7 +171,7 @@ export default function AuthorityHero() {
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/grunty.png" alt="Gruntwork" className="h-full w-full object-contain" />
+                    <img src="/images/logos/gruntwork.png" alt="Gruntwork" className="h-full w-full object-contain" />
                   </div>
                   <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Gruntwork</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>AWS &amp; IaC</span>
@@ -777,8 +736,40 @@ export default function AuthorityHero() {
         </div>
       </section>
 
-      {/* Prominent Theme Toggle */}
-      <ThemeToggle />
+      {/* Contact Section */}
+      <section className={`py-16 md:py-20 transition-colors duration-500 ${
+        isDark
+          ? 'bg-gradient-to-b from-slate-900 to-slate-950'
+          : 'bg-parchment-100'
+      }`}>
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-4 ${
+              isDark ? '!text-amber-400' : '!text-burnt-400'
+            }`}>
+              Let&apos;s Work Together
+            </h2>
+            <p className={`text-lg mb-8 max-w-xl mx-auto ${
+              isDark ? 'text-slate-300' : 'text-parchment-600'
+            }`}>
+              Have a project in mind? I&apos;d love to hear about it. Reach out and let&apos;s discuss how I can help.
+            </p>
+            <Link
+              href="/contact"
+              className={`inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+                isDark
+                  ? 'bg-amber-500 hover:bg-amber-400 text-white'
+                  : 'bg-burnt-400 hover:bg-burnt-500 text-white'
+              }`}
+            >
+              Get in Touch
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <ConsultationForm
         isOpen={isConsultationOpen}
