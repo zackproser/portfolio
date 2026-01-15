@@ -189,7 +189,7 @@ export default function AuthorityHero() {
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/pinecone.png" alt="Pinecone" className="h-full w-full object-contain" />
+                    <img src="/images/logos/pinecone-logo.png" alt="Pinecone" className="h-full w-full object-contain" />
                   </div>
                   <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Pinecone</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>RAG &amp; Vectors</span>
@@ -205,7 +205,7 @@ export default function AuthorityHero() {
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
                   <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/gruntwork.png" alt="Gruntwork" className="h-full w-full object-contain" />
+                    <img src="/images/logos/grunty.png" alt="Gruntwork" className="h-full w-full object-contain" />
                   </div>
                   <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Gruntwork</span>
                   <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>AWS &amp; IaC</span>
