@@ -3,9 +3,11 @@
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
+import RandomPortrait from '@/components/RandomPortrait'
 
-// The specific cubist portrait for the hero section
-const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/avatars/5.webp'
+// Pencil sketch portrait for the hero section (light mode)
+const HERO_PORTRAIT_URL = '/images/zack-sketch.webp'
+const HERO_PORTRAIT_ANIMATED = '/images/zack-sketch-animated.gif'
 
 export default function HeroPortrait() {
   const { resolvedTheme } = useTheme()
@@ -17,93 +19,76 @@ export default function HeroPortrait() {
 
   const isDark = mounted && resolvedTheme === 'dark'
 
-  return (
-    <div className="flex flex-col items-center lg:items-start">
-      {/* SVG filter for hardcore pencil sketch effect */}
-      <svg className="absolute w-0 h-0">
-        <defs>
-          <filter id="pencil-sketch-portrait" colorInterpolationFilters="sRGB">
-            {/* Edge detection for line work */}
-            <feConvolveMatrix
-              order="3"
-              kernelMatrix="-1 -1 -1 -1 9 -1 -1 -1 -1"
-              result="edges"
-            />
-            {/* Desaturate to grayscale */}
-            <feColorMatrix type="saturate" values="0" in="edges" result="gray" />
-            {/* Add pencil-like grain texture */}
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" />
-            <feDisplacementMap in="gray" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-            {/* Increase contrast for sketch look */}
-            <feComponentTransfer in="displaced" result="contrast">
-              <feFuncR type="linear" slope="1.8" intercept="-0.2" />
-              <feFuncG type="linear" slope="1.8" intercept="-0.2" />
-              <feFuncB type="linear" slope="1.8" intercept="-0.2" />
-            </feComponentTransfer>
-            {/* Tint with warm sepia for pencil on paper */}
-            <feColorMatrix
-              type="matrix"
-              in="contrast"
-              values="1.2 0.1 0 0 0.08
-                      0.05 1.1 0.05 0 0.06
-                      0 0.05 0.95 0 0.03
-                      0 0 0 1 0"
-            />
-          </filter>
-        </defs>
-      </svg>
+  // Dark mode: Show RandomPortrait
+  if (isDark) {
+    return (
+      <div className="flex justify-center lg:justify-end">
+        <div className="relative">
+          {/* Soft glow behind */}
+          <div className="absolute -inset-6 rounded-2xl bg-gradient-to-br from-indigo-500/30 to-purple-500/30 blur-2xl" />
 
-      {/* Portrait container - LARGER size */}
-      <div className="relative">
-        {/* Decorative frame / glow */}
-        <div className={`absolute -inset-8 rounded-2xl ${
-          isDark
-            ? 'bg-gradient-to-br from-indigo-500/30 to-purple-500/30 blur-2xl'
-            : 'bg-parchment-300/60 shadow-inner blur-md'
-        }`} />
-
-        {/* Main portrait - large size, positioned higher */}
-        <div className={`relative w-96 h-96 md:w-[440px] md:h-[440px] lg:w-[500px] lg:h-[500px] overflow-hidden shadow-2xl ${
-          isDark
-            ? 'rounded-2xl ring-2 ring-indigo-500/50'
-            : 'rounded-xl ring-2 ring-parchment-400/50'
-        }`}>
-          <Image
-            src={HERO_PORTRAIT_URL}
-            alt="Zack Proser - AI Engineering Consultant"
-            fill
-            className="object-cover"
-            style={{
-              filter: isDark ? 'none' : 'url(#pencil-sketch-portrait)',
-            }}
-            priority
-            unoptimized
-          />
-          {/* Paper texture overlay for light mode */}
-          {!isDark && (
-            <div className="absolute inset-0 bg-gradient-to-br from-parchment-100/20 to-parchment-300/30 pointer-events-none" />
-          )}
-          {/* Subtle overlay for dark mode */}
-          {isDark && (
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent pointer-events-none" />
-          )}
+          {/* RandomPortrait container - larger size */}
+          <div className="relative rounded-2xl ring-1 ring-indigo-500/40 shadow-2xl overflow-hidden">
+            <RandomPortrait width={500} height={500} />
+          </div>
         </div>
       </div>
+    )
+  }
 
-      {/* Credential tags below portrait */}
-      <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-10">
-        {['Staff Engineer', '14 Years', 'Voice Workflows Expert'].map((tag) => (
-          <span
-            key={tag}
-            className={`px-4 py-2 rounded-full text-sm font-medium ${
-              isDark
-                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                : 'bg-burnt-400/10 text-burnt-500 border border-burnt-400/20'
-            }`}
-          >
-            {tag}
-          </span>
-        ))}
+  // Light mode: Show pencil sketch with intense charcoal effect
+  return (
+    <div className="flex justify-center lg:justify-end">
+      {/* Portrait container with sketch-on-parchment frame */}
+      <div className="relative">
+        {/* Soft, subtle glow behind */}
+        <div className="absolute -inset-6 rounded-lg bg-gradient-to-br from-burnt-400/10 to-parchment-400/15 blur-xl" />
+
+        {/* Main portrait - charcoal sketch aesthetic */}
+        <div
+          className="relative w-80 h-[400px] md:w-[420px] md:h-[520px] lg:w-[480px] lg:h-[580px] overflow-hidden rounded-sm"
+          style={{
+            border: '1px solid rgba(160, 140, 120, 0.4)',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05)',
+            background: 'linear-gradient(135deg, rgba(252, 250, 245, 1) 0%, rgba(248, 244, 236, 1) 100%)',
+          }}
+        >
+          <Image
+            src={HERO_PORTRAIT_URL}
+            alt="Zachary Proser - AI Engineer & Cognitive Interface Researcher"
+            fill
+            className="object-cover object-top"
+            style={{
+              filter: 'grayscale(100%) contrast(1.4) brightness(1.05)',
+              mixBlendMode: 'multiply',
+            }}
+            priority
+          />
+          {/* Charcoal grain texture overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              backgroundSize: '100px 100px',
+              mixBlendMode: 'overlay',
+            }}
+          />
+          {/* Warm paper tint overlay */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, rgba(245, 235, 220, 0.15) 0%, rgba(240, 230, 210, 0.2) 100%)',
+              mixBlendMode: 'color',
+            }}
+          />
+          {/* Vignette effect for depth */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 50%, rgba(180, 160, 140, 0.15) 100%)',
+            }}
+          />
+        </div>
       </div>
     </div>
   )

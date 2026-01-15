@@ -20,10 +20,10 @@ export function AuthStatus() {
 
   if (status === 'unauthenticated') {
     return (
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         onClick={() => signIn()}
-        className="text-sm font-medium bg-blue-800 text-white border-blue-700 hover:bg-blue-700 hover:text-yellow-300 transition-colors"
+        className="text-sm font-medium bg-burnt-400 text-white border-burnt-500 hover:bg-burnt-500 transition-colors"
       >
         Sign in
       </Button>

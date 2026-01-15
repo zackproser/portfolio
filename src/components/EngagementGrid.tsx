@@ -91,7 +91,7 @@ export default function EngagementGrid() {
       title: 'For Investors & Funds',
       subtitle: '$500-650/hr | Due Diligence Calls',
       description: 'I provide technical diligence on AI tools, stacks, and startups. Cut through the hype with hands-on analysis from a practicing engineer.',
-      icon: '&#128200;', // chart
+      icon: '📈',
       ctaText: 'Schedule a Call',
       ctaAction: 'consultation' as const,
     },
@@ -99,7 +99,7 @@ export default function EngagementGrid() {
       title: 'For Engineering Teams',
       subtitle: 'Fractional AI Leadership | Project Pricing',
       description: 'Architect and implement production RAG, fine-tuning, and scaling strategies. Interim staff AI engineer for your startup.',
-      icon: '&#9881;', // gear
+      icon: '⚙️',
       ctaText: 'Discuss a Project',
       ctaAction: 'consultation' as const,
     },
@@ -107,7 +107,7 @@ export default function EngagementGrid() {
       title: 'For Builders & Business Owners',
       subtitle: 'Tools Analysis & Guides',
       description: 'Unbiased, hands-on reviews and tutorials (like my Wispr Flow review with 4k+ views). Learn what works to ship faster.',
-      icon: '&#128218;', // book
+      icon: '📚',
       ctaText: 'Browse Articles',
       ctaAction: 'link' as const,
       ctaHref: '/blog' as Route,
