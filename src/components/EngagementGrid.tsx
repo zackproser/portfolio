@@ -35,30 +35,30 @@ function EngagementCard({
   }
 
   const cardContent = (
-    <div className="group h-full p-8 bg-parchment-50 dark:bg-charcoal-300 rounded-xl border-2 border-parchment-300 dark:border-charcoal-100/20 hover:border-burnt-400/50 dark:hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+    <div className="group h-full p-8 bg-parchment-50 dark:bg-slate-800 rounded-xl border-2 border-parchment-300 dark:border-slate-700 hover:border-burnt-400/50 dark:hover:border-indigo-400/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
       {/* Icon */}
-      <div className="w-14 h-14 mb-6 rounded-lg bg-burnt-400/10 dark:bg-amber-400/10 flex items-center justify-center text-3xl">
+      <div className="w-14 h-14 mb-6 rounded-lg bg-burnt-400/10 dark:bg-indigo-400/10 flex items-center justify-center text-3xl">
         {icon}
       </div>
 
       {/* Title */}
-      <h3 className="font-serif text-xl font-bold text-charcoal-50 dark:text-parchment-100 mb-2">
+      <h3 className="font-serif text-xl font-bold text-charcoal-50 dark:text-white mb-2">
         {title}
       </h3>
 
       {/* Subtitle / Pricing */}
-      <p className="text-burnt-400 dark:text-amber-400 font-semibold text-sm mb-4">
+      <p className="text-burnt-400 dark:text-indigo-400 font-semibold text-sm mb-4">
         {subtitle}
       </p>
 
       {/* Description */}
-      <p className="text-parchment-600 dark:text-parchment-400 leading-relaxed mb-6">
+      <p className="text-parchment-600 dark:text-slate-300 leading-relaxed mb-6">
         {description}
       </p>
 
       {/* CTA */}
       <div className="mt-auto">
-        <span className="inline-flex items-center text-burnt-400 dark:text-amber-400 font-semibold group-hover:translate-x-1 transition-transform duration-200">
+        <span className="inline-flex items-center text-burnt-400 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform duration-200">
           {ctaText}
           <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -116,14 +116,14 @@ export default function EngagementGrid() {
 
   return (
     <>
-      <section className="py-16 md:py-24 bg-parchment-200 dark:bg-charcoal-500">
+      <section className="py-16 md:py-24 bg-parchment-200 dark:bg-slate-800/50">
         <div className="container mx-auto px-4 md:px-6">
           {/* Section Header */}
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-charcoal-50 dark:text-parchment-100 mb-4">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-charcoal-50 dark:text-white mb-4">
               How I Engage
             </h2>
-            <p className="text-lg text-parchment-600 dark:text-parchment-400 max-w-2xl mx-auto">
+            <p className="text-lg text-parchment-600 dark:text-slate-300 max-w-2xl mx-auto">
               Whether you&apos;re vetting AI investments, building production systems, or trying to understand the landscape&mdash;I can help.
             </p>
           </div>

@@ -1,16 +1,10 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { useState, Suspense } from "react"
-import { usePathname } from "next/navigation"
+import { useState } from "react"
 import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import ConsultationForm from "@/components/ConsultationForm"
-import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from "@/components/YoutubeEmbed"
 import AuthorityHero from "@/components/AuthorityHero"
 import EngagementGrid from "@/components/EngagementGrid"
@@ -27,82 +21,30 @@ interface Article {
 }
 
 interface HomepageClientComponentProps {
-  deepMLTutorials: Article[]; 
+  deepMLTutorials: Article[];
   mlProjects: Article[];
   aiDev: Article[];
   refArchitectures: Article[];
   careerAdvice: Article[];
-  videos: Article[];  
+  videos: Article[];
   isMobile: boolean;
 }
 
-export default function HomepageClientComponent({ 
+export default function HomepageClientComponent({
   deepMLTutorials,
-  mlProjects, 
-  aiDev, 
+  mlProjects,
+  aiDev,
   refArchitectures,
   careerAdvice,
   videos,
-  isMobile: serverIsMobile
 }: HomepageClientComponentProps) {
-  const [email, setEmail] = useState("")
-  const [formSuccess, setFormSuccess] = useState(false)
-  const referrer = usePathname()
-  const [isMobile] = useState(serverIsMobile)
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
-
-  const sendFormSubmissionEvent = () => {
-            sendGTMEvent({
-          event: "newsletter-signup-conversion",
-      method: "newsletter"
-    });
-
-    track("newsletter-signup", {
-      method: "newsletter",
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const data = {
-      email,
-      referrer,
-    }
-
-    try {
-      await fetch("/api/form", {
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      })
-      sendFormSubmissionEvent()
-      setFormSuccess(true)
-      setEmail("")
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-parchment-100 dark:bg-charcoal-400 theme-transition">
       <main className="flex-1">
         {/* New Authority Hero */}
-        <AuthorityHero onNewsletterSubmit={async (email) => {
-          const data = { email, referrer }
-          try {
-            await fetch("/api/form", {
-              body: JSON.stringify(data),
-              headers: { "Content-Type": "application/json" },
-              method: "POST",
-            })
-            sendFormSubmissionEvent()
-          } catch (error) {
-            console.error(error)
-          }
-        }} />
+        <AuthorityHero />
 
         {/* How I Engage Grid - replaces the blueprint */}
         <EngagementGrid />
