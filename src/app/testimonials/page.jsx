@@ -219,13 +219,13 @@ export default function Example() {
           </div>
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-xl text-center">
-              <h2 className="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-2xl">
+              <h2 className="text-xl font-bold tracking-tight text-burnt-400 dark:text-sky-400 sm:text-2xl">
                 From colleagues, clients and collaborators
               </h2>
             </div>
-            <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 dark:text-gray-300 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
-              <figure className="col-span-2 hidden sm:block sm:rounded-2xl sm:bg-white sm:shadow-lg sm:ring-1 sm:ring-gray-900/5 dark:sm:bg-gray-800 dark:sm:ring-gray-700/5 xl:col-start-2 xl:row-end-1">
-                <blockquote className="p-12 text-xl font-semibold leading-8 tracking-tight text-gray-900 dark:text-gray-100">
+            <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-charcoal-50 dark:text-slate-300 sm:mt-20 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-flow-col xl:grid-cols-4">
+              <figure className="col-span-2 hidden sm:block sm:rounded-2xl sm:bg-parchment-50 sm:shadow-lg sm:ring-1 sm:ring-gray-900/5 dark:sm:bg-slate-800 dark:sm:ring-gray-700/5 xl:col-start-2 xl:row-end-1">
+                <blockquote className="p-12 text-xl font-semibold leading-8 tracking-tight text-charcoal-50 dark:text-slate-100">
                   <p>{`"${featuredTestimonial.body}"`}</p>
                 </blockquote>
                 <figcaption className="flex items-center gap-x-4 border-t border-gray-100 dark:border-gray-700 px-6 py-4">
@@ -237,8 +237,8 @@ export default function Example() {
                     height={40}
                   />
                   <div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">{featuredTestimonial.author.name}</div>
-                    <div className="text-gray-600 dark:text-gray-400">{`${featuredTestimonial.author.title}`}</div>
+                    <div className="font-semibold text-charcoal-50 dark:text-slate-100">{featuredTestimonial.author.name}</div>
+                    <div className="text-parchment-600 dark:text-slate-400">{`${featuredTestimonial.author.title}`}</div>
                   </div>
                 </figcaption>
               </figure>
@@ -259,9 +259,9 @@ export default function Example() {
                       {column.map((testimonial) => (
                         <figure
                           key={testimonial.author.name}
-                          className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-gray-700/5"
+                          className="rounded-2xl bg-parchment-50 p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-slate-800 dark:ring-gray-700/5"
                         >
-                          <blockquote className="text-gray-900 dark:text-gray-100">
+                          <blockquote className="text-charcoal-50 dark:text-slate-100">
                             <p>{`"${testimonial.body}"`}</p>
                           </blockquote>
                           <figcaption className="mt-6 flex items-center gap-x-4">
@@ -273,8 +273,8 @@ export default function Example() {
                               height={40}
                             />
                             <div>
-                              <div className="font-semibold text-blue-700 dark:text-blue-300">{testimonial.author.name}</div>
-                              <div className="text-gray-600 dark:text-gray-400">{`${testimonial.author.title}`}</div>
+                              <div className="font-semibold text-burnt-400 dark:text-sky-400">{testimonial.author.name}</div>
+                              <div className="text-parchment-600 dark:text-slate-400">{`${testimonial.author.title}`}</div>
                             </div>
                           </figcaption>
                         </figure>

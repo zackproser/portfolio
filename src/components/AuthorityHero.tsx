@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import HeroPortrait from '@/components/HeroPortrait'
+import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -37,22 +38,28 @@ function ThemeToggle() {
 
   if (!mounted) return null
 
+  const isDarkMode = resolvedTheme === 'dark'
+
   return (
     <button
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-      className="fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-amber-400"
-      aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+      onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+      className={`fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 ${
+        isDarkMode
+          ? 'bg-slate-800 text-slate-100 border-sky-400/50 hover:border-sky-400'
+          : 'bg-white text-charcoal-50 border-burnt-400/50 hover:border-burnt-400'
+      }`}
+      aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
     >
-      {resolvedTheme === 'dark' ? (
+      {isDarkMode ? (
         <>
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
           </svg>
           <span className="text-sm font-medium">Light Mode</span>
         </>
       ) : (
         <>
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
           </svg>
           <span className="text-sm font-medium">Dark Mode</span>
@@ -138,11 +145,11 @@ export default function AuthorityHero() {
               {/* Main Headlines - AI Engineer & Cognitive Interface Researcher */}
               <h1
                 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight ${
-                  isDark ? 'text-white' : 'text-charcoal-50'
+                  isDark ? 'text-slate-100' : 'text-charcoal-50'
                 }`}
                 style={{
                   textShadow: isDark
-                    ? '2px 2px 0 rgba(0,0,0,0.3), -1px -1px 0 rgba(255,255,255,0.05)'
+                    ? '2px 2px 0 rgba(0,0,0,0.5), -1px -1px 0 rgba(255,255,255,0.1)'
                     : '2px 2px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(0,0,0,0.08)',
                 }}
               >
@@ -150,11 +157,11 @@ export default function AuthorityHero() {
               </h1>
               <h1
                 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 ${
-                  isDark ? 'text-amber-400' : 'text-burnt-400'
+                  isDark ? 'text-sky-400' : 'text-burnt-400'
                 }`}
                 style={{
                   textShadow: isDark
-                    ? '2px 2px 0 rgba(0,0,0,0.4), -1px -1px 0 rgba(255,255,255,0.05)'
+                    ? '2px 2px 0 rgba(0,0,0,0.5), -1px -1px 0 rgba(255,255,255,0.1)'
                     : '2px 2px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(0,0,0,0.1)',
                 }}
               >
@@ -216,63 +223,69 @@ export default function AuthorityHero() {
               <div className="flex gap-2 overflow-x-auto pb-1">
                 <Link
                   href="/blog"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#9997; Writing
+                  <PenLine className="w-3.5 h-3.5" />
+                  Writing
                 </Link>
                 <Link
                   href="/videos"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#127909; Videos
+                  <Video className="w-3.5 h-3.5" />
+                  Videos
                 </Link>
                 <Link
                   href="/demos"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#128187; Demos
+                  <Monitor className="w-3.5 h-3.5" />
+                  Demos
                 </Link>
                 <Link
                   href="/learn"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#127891; Courses
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  Courses
                 </Link>
                 <Link
                   href="/devtools"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#128295; Tools
+                  <Wrench className="w-3.5 h-3.5" />
+                  Tools
                 </Link>
                 <Link
                   href="/projects"
-                  className={`group inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-amber-500/50 hover:text-amber-400'
+                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
                       : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
                   }`}
                 >
-                  &#128640; Projects
+                  <Rocket className="w-3.5 h-3.5" />
+                  Projects
                 </Link>
               </div>
             </div>
