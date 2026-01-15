@@ -116,6 +116,15 @@ export const NeuralNetworkPulse = () => {
     }
   }
 
+  // Pencil sketch effect: pseudo-random stroke widths and opacities
+  // Using a simple hash of indices for consistent but varied appearance
+  const getPencilStyle = (i: number, j: number) => {
+    const hash = (i * 17 + j * 31) % 100;
+    const strokeWidth = 0.5 + (hash % 30) / 30; // 0.5 to 1.5
+    const opacity = 0.3 + (hash % 50) / 100; // 0.3 to 0.8
+    return { strokeWidth, opacity };
+  };
+
   // Graphite pencil colors for light mode, indigo for dark mode
   const svgContent = (
     <>
@@ -123,6 +132,8 @@ export const NeuralNetworkPulse = () => {
         const isSpecialLine = specialLine &&
           ((specialLine.from === i && specialLine.to === j) ||
            (specialLine.from === j && specialLine.to === i));
+        const isPulsing = pulseNodes.includes(i) || pulseNodes.includes(j);
+        const pencil = getPencilStyle(i, j);
 
         return (
           <line
@@ -131,14 +142,35 @@ export const NeuralNetworkPulse = () => {
             y1={y1}
             x2={x2}
             y2={y2}
+            stroke={
+              isSpecialLine
+                ? 'currentColor'
+                : isPulsing
+                  ? 'currentColor'
+                  : 'currentColor'
+            }
+            strokeWidth={
+              isSpecialLine
+                ? 2.5
+                : isPulsing
+                  ? 1.5 + pencil.strokeWidth
+                  : pencil.strokeWidth
+            }
+            opacity={
+              isSpecialLine
+                ? 0.9
+                : isPulsing
+                  ? 0.7 + pencil.opacity * 0.3
+                  : pencil.opacity
+            }
             className={`transition-all duration-300 ${
               isSpecialLine
-                ? 'stroke-zinc-600 dark:stroke-indigo-300 stroke-[3px]'
-                : pulseNodes.includes(i) || pulseNodes.includes(j)
-                  ? 'stroke-zinc-700 dark:stroke-indigo-500 stroke-[2px]'
-                  : 'stroke-zinc-300 dark:stroke-slate-600'
+                ? 'text-zinc-600 dark:text-indigo-300'
+                : isPulsing
+                  ? 'text-zinc-700 dark:text-indigo-500'
+                  : 'text-zinc-400 dark:text-slate-500'
             }`}
-            strokeWidth="1"
+            strokeLinecap="round"
           />
         );
       })}
@@ -147,12 +179,20 @@ export const NeuralNetworkPulse = () => {
         const angle = (i / nodes) * 2 * Math.PI;
         const x = radius * Math.cos(angle) + radius;
         const y = radius * Math.sin(angle) + radius;
+        const nodeOpacity = 0.6 + ((i * 13) % 40) / 100; // Vary node opacity too
         return (
           <circle
             key={i}
             cx={x}
             cy={y}
-            r={pulseNodes.includes(i) ? 12 : 8}
+            r={pulseNodes.includes(i) ? 10 : 6 + (i % 3)}
+            opacity={
+              specialLine && (specialLine.from === i || specialLine.to === i)
+                ? 0.95
+                : pulseNodes.includes(i)
+                  ? 0.9
+                  : nodeOpacity
+            }
             className={`transition-all duration-300 ${
               specialLine && (specialLine.from === i || specialLine.to === i)
                 ? 'fill-zinc-500 dark:fill-indigo-300'
