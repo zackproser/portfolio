@@ -10,6 +10,7 @@ import ConsultationForm from '@/components/ConsultationForm'
 import { useTheme } from 'next-themes'
 import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -23,6 +24,14 @@ const NeuralNetworkPulse = dynamic(
     )
   }
 )
+
+// Company logos from CDN
+const companyLogos = [
+  { name: 'WorkOS', logo: 'https://zackproser.b-cdn.net/images/logos/workos.svg' },
+  { name: 'Pinecone', logo: 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png' },
+  { name: 'Cloudflare', logo: 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg' },
+  { name: 'Gruntwork', logo: 'https://zackproser.b-cdn.net/images/logos/grunty.png' },
+]
 
 // Avatar images from CDN
 const avatarImages = [
@@ -209,14 +218,14 @@ export default function AuthorityHero() {
                 )}
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              {/* CTA Button */}
+              <div className="mb-8">
                 <Button
                   onClick={() => {
                     track('authority_hero_cta', { action: 'book_consultation' })
                     setIsConsultationOpen(true)
                   }}
-                  className={`group font-semibold text-lg px-6 py-5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
                     isDark
                       ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
                       : 'bg-burnt-400 hover:bg-burnt-500 text-white'
@@ -225,62 +234,72 @@ export default function AuthorityHero() {
                   <span className="mr-2">&#9889;</span>
                   Book a Consultation
                   <span className="block text-sm font-normal opacity-90">
-                    $500-650/hr &bull; Due Diligence
+                    $500-650/hr &bull; Due Diligence & Technical Consulting
                   </span>
                 </Button>
-
-                <Link
-                  href="/blog"
-                  onClick={() => track('authority_hero_cta', { action: 'read_analysis' })}
-                  className={`group inline-flex flex-col items-center justify-center px-6 py-4 rounded-lg border-2 transition-all duration-300 hover:-translate-y-0.5 ${
-                    isDark
-                      ? 'border-indigo-400 text-indigo-400 hover:bg-indigo-400/10'
-                      : 'border-burnt-400 text-burnt-400 hover:bg-burnt-400/10'
-                  }`}
-                >
-                  <span className="flex items-center text-lg font-semibold">
-                    Read My Analysis
-                  </span>
-                  <span className="text-sm font-normal opacity-80">
-                    Tools & implementation guides
-                  </span>
-                </Link>
               </div>
 
-              {/* Company Logos */}
-              <div className="flex flex-wrap items-center gap-3">
-                {['WorkOS', 'Pinecone', 'Cloudflare', 'Gruntwork'].map((name) => (
-                  <div
-                    key={name}
-                    className={`px-3 py-1.5 rounded-full text-sm font-mono ${
-                      isDark
-                        ? 'bg-slate-800 border border-slate-700 text-slate-300'
-                        : 'bg-parchment-200 border border-parchment-300 text-charcoal-50'
-                    }`}
-                  >
-                    {name}
-                  </div>
-                ))}
+              {/* Company Logos - Actual Images */}
+              <div className="flex flex-wrap items-center gap-4">
+                <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+                  Built production systems at:
+                </span>
+                <div className="flex items-center gap-4">
+                  {companyLogos.map((company) => (
+                    <div
+                      key={company.name}
+                      className={`flex items-center justify-center h-8 w-auto px-2 rounded ${
+                        isDark
+                          ? 'bg-slate-800/50'
+                          : 'bg-white/80'
+                      }`}
+                      title={company.name}
+                    >
+                      <Image
+                        src={company.logo}
+                        alt={company.name}
+                        width={80}
+                        height={24}
+                        className="h-5 w-auto object-contain"
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Right Column: Portrait */}
             <div className="flex flex-col items-center lg:items-end order-1 lg:order-2">
-              {/* SVG filter for pencil sketch effect */}
+              {/* SVG filter for realistic pencil sketch effect */}
               <svg className="absolute w-0 h-0">
                 <defs>
+                  {/* Pencil texture pattern */}
                   <filter id="pencil-sketch" colorInterpolationFilters="sRGB">
-                    <feColorMatrix type="saturate" values="0.15" result="desat" />
-                    <feComponentTransfer in="desat" result="contrast">
-                      <feFuncR type="linear" slope="1.4" intercept="-0.1" />
-                      <feFuncG type="linear" slope="1.4" intercept="-0.1" />
-                      <feFuncB type="linear" slope="1.4" intercept="-0.1" />
+                    {/* Edge detection for line work */}
+                    <feConvolveMatrix
+                      order="3"
+                      kernelMatrix="-1 -1 -1 -1 9 -1 -1 -1 -1"
+                      result="edges"
+                    />
+                    {/* Desaturate to grayscale */}
+                    <feColorMatrix type="saturate" values="0" in="edges" result="gray" />
+                    {/* Add pencil-like grain texture */}
+                    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" />
+                    <feDisplacementMap in="gray" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+                    {/* Increase contrast for sketch look */}
+                    <feComponentTransfer in="displaced" result="contrast">
+                      <feFuncR type="linear" slope="2" intercept="-0.3" />
+                      <feFuncG type="linear" slope="2" intercept="-0.3" />
+                      <feFuncB type="linear" slope="2" intercept="-0.3" />
                     </feComponentTransfer>
+                    {/* Tint with warm sepia for pencil on paper */}
                     <feColorMatrix
                       type="matrix"
-                      values="1.1 0 0 0 0.05
-                              0 1.05 0 0 0.02
-                              0 0 0.95 0 0
+                      in="contrast"
+                      values="1.1 0.1 0 0 0.1
+                              0.05 1.0 0.05 0 0.08
+                              0 0.05 0.9 0 0.05
                               0 0 0 1 0"
                     />
                   </filter>
@@ -356,38 +375,82 @@ export default function AuthorityHero() {
         </div>
       </section>
 
-      {/* Bio Section */}
+      {/* Pioneer Voice-Driven Development Section */}
       <section className={`py-16 md:py-20 transition-colors duration-500 ${
         isDark
           ? 'bg-slate-900'
           : 'bg-parchment-200'
       }`}>
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto">
-            <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-8 text-center ${
-              isDark ? 'text-white' : 'text-charcoal-50'
-            }`}>
-              14 Years Shipping Production Systems
-            </h2>
-
-            <div className={`space-y-6 text-lg leading-relaxed ${
-              isDark ? 'text-slate-300' : 'text-parchment-600'
-            }`}>
-              <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I build AI systems at the frontier.</strong> As a Developer Experience Engineer at WorkOS on the Applied AI team, I ship production AI features and help developers integrate AI into their apps. Previously, I was Staff DevRel at Pinecone where I built real RAG systems, open-sourced my work, and explained vector search to thousands through talks and videos.
-              </p>
-
-              <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I&apos;ve scaled with the best.</strong> At Cloudflare, I was one of ~100 engineers building developer tools for millions of users. At Gruntwork, I led teams shipping infrastructure-as-code to Fortune 500s. I&apos;ve seen what works and what breaks at scale.
-              </p>
-
-              <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I pioneer voice-driven development.</strong> My DevSecCon keynote on &quot;Untethered Software Development&quot; shows how I orchestrate voice, AI agents, and hardened CI/CD to ship production code from anywhere. Investors and teams trust me to cut through the AI hype with hands-on expertise.
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-4 ${
+                isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-600'
+              }`}>
+                DevSecCon 2025 Keynote
+              </span>
+              <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-4 ${
+                isDark ? 'text-white' : 'text-charcoal-50'
+              }`}>
+                Pioneer Voice-Driven Development
+              </h2>
+              <p className={`text-lg max-w-2xl mx-auto ${
+                isDark ? 'text-slate-300' : 'text-parchment-600'
+              }`}>
+                Watch my DevSecCon 2025 keynote on orchestrating AI agents, voice-native workflows, and hardened CI/CD pipelines to ship secure production code from anywhere.
               </p>
             </div>
 
+            {/* YouTube Video Embed */}
+            <div className="max-w-3xl mx-auto mb-12">
+              <div className={`rounded-xl overflow-hidden shadow-2xl ${
+                isDark ? 'ring-2 ring-indigo-500/30' : 'ring-1 ring-parchment-300'
+              }`}>
+                <YoutubeEmbed
+                  urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4"
+                  title="Untethered Software Development - DevSecCon 2025 Keynote"
+                />
+              </div>
+            </div>
+
+            {/* Key Points */}
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 ${
+              isDark ? 'text-slate-300' : 'text-parchment-600'
+            }`}>
+              <div className={`p-6 rounded-xl ${
+                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
+              }`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                  Voice-Native Workflows
+                </h3>
+                <p className="text-sm">
+                  Ship production code at 179 WPM while hiking mountain trails. Voice-first development with AI transcription.
+                </p>
+              </div>
+              <div className={`p-6 rounded-xl ${
+                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
+              }`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                  Agent-Driven CI/CD
+                </h3>
+                <p className="text-sm">
+                  Orchestrate background AI agents with hardened pipelines. Speed requires safety.
+                </p>
+              </div>
+              <div className={`p-6 rounded-xl ${
+                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
+              }`}>
+                <h3 className={`font-semibold text-lg mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                  Untethered Development
+                </h3>
+                <p className="text-sm">
+                  Think where you think best. Orchestrate, don&apos;t micromanage. Ship from anywhere.
+                </p>
+              </div>
+            </div>
+
             {/* Stats */}
-            <div className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${
+            <div className={`grid grid-cols-3 gap-6 pt-8 border-t ${
               isDark ? 'border-slate-700' : 'border-parchment-300'
             }`}>
               <div className="text-center">
@@ -404,20 +467,20 @@ export default function AuthorityHero() {
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
                   isDark ? 'text-indigo-400' : 'text-burnt-400'
                 }`}>
-                  Staff
+                  14 Years
                 </span>
                 <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                  DevRel at Pinecone
+                  Shipping production systems
                 </span>
               </div>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
                   isDark ? 'text-indigo-400' : 'text-burnt-400'
                 }`}>
-                  ~100
+                  Staff
                 </span>
                 <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                  Engineer at early Cloudflare
+                  DevRel at Pinecone
                 </span>
               </div>
             </div>
