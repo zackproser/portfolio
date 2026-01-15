@@ -18,7 +18,7 @@ export default function HeroPortrait() {
   const isDark = mounted && resolvedTheme === 'dark'
 
   return (
-    <div className="flex flex-col items-center lg:items-end lg:-mt-8">
+    <div className="flex flex-col items-center lg:items-start">
       {/* SVG filter for hardcore pencil sketch effect */}
       <svg className="absolute w-0 h-0">
         <defs>
