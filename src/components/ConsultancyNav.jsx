@@ -106,21 +106,8 @@ export function ConsultancyNav() {
     <header className="w-full h-16 sm:h-18 flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link className="flex items-center justify-center shrink-0" href="/">
-          <svg
-            className="h-7 w-7 text-burnt-400 dark:text-indigo-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12" />
-            <circle cx="12" cy="12" r="10" />
-            <path d="M2 12h4M12 2v4M22 12h-4M12 22v-4" />
-          </svg>
-          <span className="ml-2 text-xl font-bold font-serif text-charcoal-50 dark:text-white hidden sm:inline whitespace-nowrap">Zack Proser</span>
-          <span className="ml-2 text-xl font-bold font-serif text-charcoal-50 dark:text-white sm:hidden">ZP</span>
+          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white hidden sm:inline whitespace-nowrap">Zachary Proser</span>
+          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white sm:hidden">ZP</span>
         </Link>
         <div className="lg:hidden">
           <button
