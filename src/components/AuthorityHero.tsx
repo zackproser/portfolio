@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Route } from 'next'
 import { track } from '@vercel/analytics'
 import { Button } from '@/components/ui/button'
@@ -39,7 +40,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-indigo-400"
+      className="fixed bottom-6 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-indigo-400"
       aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
     >
       {resolvedTheme === 'dark' ? (
@@ -388,8 +389,8 @@ export default function AuthorityHero() {
               </p>
             </div>
 
-            {/* Featured: Oura Ring MCP */}
-            <div className={`p-8 rounded-2xl mb-8 ${
+            {/* Featured: Claude as External Brain */}
+            <div className={`p-8 rounded-2xl mb-8 overflow-hidden ${
               isDark ? 'bg-slate-800/60 border border-indigo-500/30' : 'bg-white border border-burnt-400/20'
             }`}>
               <div className="flex flex-col md:flex-row gap-8 items-start">
@@ -397,84 +398,131 @@ export default function AuthorityHero() {
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 ${
                     isDark ? 'bg-indigo-500/20 text-indigo-400' : 'bg-burnt-400/10 text-burnt-500'
                   }`}>
-                    Featured Project
+                    Featured: Neurodivergent Engineering
                   </span>
                   <h3 className={`font-serif text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
-                    Oura Ring + Claude MCP Integration
+                    Claude as My External Brain
                   </h3>
                   <p className={`mb-4 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                    A closed-loop system that monitors biometric data to prevent overwork. When my Oura Ring detects elevated stress, poor sleep, or recovery issues, Claude automatically adjusts my workload recommendations.
+                    How I use Claude as external executive function&mdash;autistic, ADHD, and finally supported. Biometric-aware planning, voice-to-structure workflows, and agent orchestration from mountain trails.
                   </p>
                   <p className={`mb-6 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                    <strong className={isDark ? 'text-white' : 'text-charcoal-50'}>Why it works:</strong> ADHD brains often ignore internal signals until burnout. This system externalizes the feedback loop&mdash;turning invisible stress into actionable data that Claude can reason about.
+                    <strong className={isDark ? 'text-white' : 'text-charcoal-50'}>The insight:</strong> LLMs mirror how neurodivergent minds process&mdash;dependency graphs, verbal buffers, pattern matching. Building with this alignment unlocks sustainable productivity.
                   </p>
                   <Link
-                    href="/blog/oura-ring-claude-mcp"
+                    href="/blog/claude-external-brain-adhd-autistic"
                     className={`inline-flex items-center gap-2 font-semibold ${
                       isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
                     }`}
                   >
-                    Read the full breakdown
+                    Read the full guide
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
                 </div>
-                <div className={`flex-shrink-0 w-full md:w-48 h-48 rounded-xl flex items-center justify-center text-6xl ${
-                  isDark ? 'bg-slate-700/50' : 'bg-parchment-100'
-                }`}>
-                  💍
+                <div className="flex-shrink-0 w-full md:w-56 h-56 rounded-xl overflow-hidden relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/claude.webp"
+                    alt="Claude AI as external brain"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Other Research Areas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Research Areas Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Voice-Driven Development */}
-              <div className={`p-6 rounded-xl ${
-                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
-              }`}>
-                <h3 className={`font-serif text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+              <Link
+                href="/blog/walking-and-talking-with-ai"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp"
+                    alt="Walking and talking with AI"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
                   Voice-Driven Development
                 </h3>
-                <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  Ship production code at 179 WPM while hiking. Voice-first workflows with AI transcription and agent orchestration.
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  Ship code at 179 WPM while hiking. Voice-first workflows with AI agents.
                 </p>
-                <Link
-                  href="/blog/voice-driven-development"
-                  className={`inline-flex items-center gap-2 text-sm font-medium ${
-                    isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
-                  }`}
-                >
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                }`}>
                   Learn more
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </Link>
-              </div>
+                </span>
+              </Link>
 
-              {/* External Brain Systems */}
-              <div className={`p-6 rounded-xl ${
-                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-100 border border-parchment-300'
-              }`}>
-                <h3 className={`font-serif text-xl font-bold mb-3 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
-                  External Brain Systems
+              {/* Oura Ring MCP */}
+              <Link
+                href="/blog/oura-ring-claude-mcp"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className={`w-full h-32 rounded-lg overflow-hidden mb-4 flex items-center justify-center text-5xl ${
+                  isDark ? 'bg-slate-700/50' : 'bg-parchment-200'
+                }`}>
+                  💍
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  Biometric + AI Loop
                 </h3>
-                <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  Claude as memory extension for ADHD. Structured workflows that offload cognitive overhead to AI systems.
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  Oura Ring data feeds Claude to prevent burnout. External signals for internal blind spots.
                 </p>
-                <Link
-                  href="/blog/in-the-llm-i-saw-myself"
-                  className={`inline-flex items-center gap-2 text-sm font-medium ${
-                    isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
-                  }`}
-                >
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                }`}>
                   Learn more
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </Link>
-              </div>
+                </span>
+              </Link>
+
+              {/* In the LLM I Saw Myself */}
+              <Link
+                href="/blog/in-the-llm-i-saw-myself"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/llm-mirror.webp"
+                    alt="In the LLM I saw myself"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  In the LLM, I Saw Myself
+                </h3>
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  How LLMs mirror neurodivergent cognition. Diagnosis, patterns, and building with alignment.
+                </p>
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-indigo-400' : 'text-burnt-400'
+                }`}>
+                  Learn more
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </Link>
             </div>
           </div>
         </div>
