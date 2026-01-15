@@ -1,14 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { track } from '@vercel/analytics'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import ConsultationForm from '@/components/ConsultationForm'
 import { useTheme } from 'next-themes'
+import dynamic from 'next/dynamic'
+import { sendGTMEvent } from '@next/third-parties/google'
 
-// Avatar images from CDN - these show upper torso
+// Dynamically import the NeuralNetworkPulse with no SSR
+const NeuralNetworkPulse = dynamic(
+  () => import('@/components/NeuralNetworkPulse').then(mod => mod.NeuralNetworkPulse),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-[400px] h-[400px] flex items-center justify-center">
+        <div className="animate-pulse text-slate-400">Loading visualization...</div>
+      </div>
+    )
+  }
+)
+
+// Avatar images from CDN
 const avatarImages = [
   'https://zackproser.b-cdn.net/images/avatars/1.webp',
   'https://zackproser.b-cdn.net/images/avatars/2.webp',
@@ -17,12 +33,6 @@ const avatarImages = [
   'https://zackproser.b-cdn.net/images/avatars/5.webp',
   'https://zackproser.b-cdn.net/images/avatars/6.webp',
 ]
-
-// Company logos from CDN
-const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
-const logoGruntwork = 'https://zackproser.b-cdn.net/images/logos/terragrunt.svg'
-const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.webp'
-const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
 
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
@@ -37,7 +47,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-amber-400"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-full bg-charcoal-50 dark:bg-parchment-100 text-parchment-100 dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-burnt-400 dark:border-indigo-400"
       aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
     >
       {resolvedTheme === 'dark' ? (
@@ -64,10 +74,11 @@ export default function AuthorityHero() {
   const [currentImage, setCurrentImage] = useState(avatarImages[0])
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [email, setEmail] = useState('')
+  const [formSuccess, setFormSuccess] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Pick a random avatar on mount
     const randomIndex = Math.floor(Math.random() * avatarImages.length)
     setCurrentImage(avatarImages[randomIndex])
   }, [])
@@ -79,12 +90,29 @@ export default function AuthorityHero() {
     setCurrentImage(avatarImages[nextIndex])
   }
 
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await fetch('/api/form', {
+        body: JSON.stringify({ email, referrer: '/' }),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      })
+      sendGTMEvent({ event: 'newsletter-signup-conversion', method: 'newsletter' })
+      track('newsletter-signup', { method: 'newsletter' })
+      setFormSuccess(true)
+      setEmail('')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const isDark = mounted && resolvedTheme === 'dark'
 
   return (
     <>
       {/* Hero Section */}
-      <section className={`relative min-h-[85vh] flex items-center overflow-hidden transition-all duration-500 ${
+      <section className={`relative min-h-[90vh] flex items-center overflow-hidden transition-all duration-500 ${
         isDark
           ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950'
           : 'bg-parchment-100'
@@ -118,7 +146,7 @@ export default function AuthorityHero() {
         <div className="container mx-auto px-4 md:px-6 py-12 lg:py-16 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* Left Column: Value Proposition */}
+            {/* Left Column: Value Proposition + Newsletter */}
             <div className="flex flex-col order-2 lg:order-1">
               {/* Headline */}
               <h1 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 ${
@@ -131,20 +159,64 @@ export default function AuthorityHero() {
               </h1>
 
               {/* Subheadline */}
-              <p className={`text-lg md:text-xl leading-relaxed mb-8 max-w-xl ${
+              <p className={`text-lg md:text-xl leading-relaxed mb-6 max-w-xl ${
                 isDark ? 'text-slate-300' : 'text-parchment-600'
               }`}>
-                Developer Experience Engineer on the Applied AI team at WorkOS. I help investors vet AI tools ($500-650/hr due diligence) and teams ship production AI systems.
+                Developer Experience Engineer at WorkOS on the Applied AI team.
+                Previously Staff DevRel at Pinecone building production AI systems.
+                Former Sr. Engineer at Cloudflare (one of ~100 engineers).
               </p>
 
+              {/* Newsletter Signup */}
+              <div className={`mb-8 p-6 rounded-xl ${
+                isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-parchment-200/80 border border-parchment-300'
+              }`}>
+                <p className={`font-semibold mb-2 ${isDark ? 'text-indigo-400' : 'text-burnt-400'}`}>
+                  Join 4,000+ engineers, investors & founders
+                </p>
+                <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+                  Weekly insights on AI systems, voice-driven workflows, and what actually works in production.
+                </p>
+                {formSuccess ? (
+                  <p className={`font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                    Welcome aboard! Check your inbox.
+                  </p>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`flex-grow ${
+                        isDark
+                          ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
+                          : 'bg-white border-parchment-300 text-charcoal-50 placeholder:text-parchment-400'
+                      }`}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      className={`font-semibold ${
+                        isDark
+                          ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                          : 'bg-burnt-400 hover:bg-burnt-500 text-white'
+                      }`}
+                    >
+                      Subscribe
+                    </Button>
+                  </form>
+                )}
+              </div>
+
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button
                   onClick={() => {
                     track('authority_hero_cta', { action: 'book_consultation' })
                     setIsConsultationOpen(true)
                   }}
-                  className={`group font-semibold text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group font-semibold text-lg px-6 py-5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
                     isDark
                       ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
                       : 'bg-burnt-400 hover:bg-burnt-500 text-white'
@@ -152,51 +224,43 @@ export default function AuthorityHero() {
                 >
                   <span className="mr-2">&#9889;</span>
                   Book a Consultation
-                  <span className="block text-sm font-normal opacity-90 mt-0.5">
-                    $500-650/hr &bull; Investor Due Diligence
+                  <span className="block text-sm font-normal opacity-90">
+                    $500-650/hr &bull; Due Diligence
                   </span>
                 </Button>
 
                 <Link
                   href="/blog"
                   onClick={() => track('authority_hero_cta', { action: 'read_analysis' })}
-                  className={`group inline-flex flex-col items-center justify-center px-8 py-4 rounded-lg border-2 transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`group inline-flex flex-col items-center justify-center px-6 py-4 rounded-lg border-2 transition-all duration-300 hover:-translate-y-0.5 ${
                     isDark
                       ? 'border-indigo-400 text-indigo-400 hover:bg-indigo-400/10'
                       : 'border-burnt-400 text-burnt-400 hover:bg-burnt-400/10'
                   }`}
                 >
                   <span className="flex items-center text-lg font-semibold">
-                    <span className="mr-2">&#128196;</span>
                     Read My Analysis
                   </span>
-                  <span className="text-sm font-normal opacity-80 mt-0.5">
-                    Latest tools & implementation guides
+                  <span className="text-sm font-normal opacity-80">
+                    Tools & implementation guides
                   </span>
                 </Link>
               </div>
 
               {/* Company Logos */}
-              <div className="w-full">
-                <p className={`text-sm uppercase tracking-wider font-medium mb-4 ${
-                  isDark ? 'text-slate-400' : 'text-parchment-500'
-                }`}>
-                  Experience at
-                </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  {['Pinecone', 'Cloudflare', 'WorkOS', 'Gruntwork'].map((name) => (
-                    <div
-                      key={name}
-                      className={`px-3 py-2 rounded-full text-sm font-mono ${
-                        isDark
-                          ? 'bg-slate-800 border border-slate-700 text-slate-300'
-                          : 'bg-parchment-200 border border-parchment-300 text-charcoal-50'
-                      }`}
-                    >
-                      {name}
-                    </div>
-                  ))}
-                </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {['WorkOS', 'Pinecone', 'Cloudflare', 'Gruntwork'].map((name) => (
+                  <div
+                    key={name}
+                    className={`px-3 py-1.5 rounded-full text-sm font-mono ${
+                      isDark
+                        ? 'bg-slate-800 border border-slate-700 text-slate-300'
+                        : 'bg-parchment-200 border border-parchment-300 text-charcoal-50'
+                    }`}
+                  >
+                    {name}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -206,22 +270,18 @@ export default function AuthorityHero() {
               <svg className="absolute w-0 h-0">
                 <defs>
                   <filter id="pencil-sketch" colorInterpolationFilters="sRGB">
-                    {/* Desaturate */}
-                    <feColorMatrix type="saturate" values="0.1" result="desat" />
-                    {/* Increase contrast */}
+                    <feColorMatrix type="saturate" values="0.15" result="desat" />
                     <feComponentTransfer in="desat" result="contrast">
-                      <feFuncR type="linear" slope="1.5" intercept="-0.15" />
-                      <feFuncG type="linear" slope="1.5" intercept="-0.15" />
-                      <feFuncB type="linear" slope="1.5" intercept="-0.15" />
+                      <feFuncR type="linear" slope="1.4" intercept="-0.1" />
+                      <feFuncG type="linear" slope="1.4" intercept="-0.1" />
+                      <feFuncB type="linear" slope="1.4" intercept="-0.1" />
                     </feComponentTransfer>
-                    {/* Add slight warmth */}
                     <feColorMatrix
                       type="matrix"
                       values="1.1 0 0 0 0.05
                               0 1.05 0 0 0.02
                               0 0 0.95 0 0
                               0 0 0 1 0"
-                      result="warm"
                     />
                   </filter>
                 </defs>
@@ -233,23 +293,15 @@ export default function AuthorityHero() {
                 onClick={cycleImage}
                 title="Click to see another portrait"
               >
-                {/* Decorative frame - paper edge effect for light mode */}
+                {/* Decorative frame */}
                 <div className={`absolute -inset-4 rounded-lg ${
                   isDark
                     ? 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20 blur-xl'
                     : 'bg-parchment-200 shadow-inner'
                 }`} />
 
-                {/* Sketchy border for light mode */}
-                {!isDark && (
-                  <div className="absolute -inset-2 border-2 border-parchment-400/60 rounded-lg" style={{
-                    borderStyle: 'solid',
-                    borderImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'4\' height=\'4\'%3E%3Crect width=\'4\' height=\'4\' fill=\'%23d1c7b7\'/%3E%3C/svg%3E") 1',
-                  }} />
-                )}
-
                 {/* Portrait container */}
-                <div className={`relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 overflow-hidden shadow-2xl transition-transform duration-300 group-hover:scale-[1.02] ${
+                <div className={`relative w-64 h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 overflow-hidden shadow-2xl transition-transform duration-300 group-hover:scale-[1.02] ${
                   isDark
                     ? 'rounded-2xl ring-2 ring-indigo-500/50'
                     : 'rounded-lg ring-1 ring-parchment-400'
@@ -260,23 +312,13 @@ export default function AuthorityHero() {
                     fill
                     className="object-cover transition-all duration-500"
                     style={{
-                      filter: isDark
-                        ? 'none'
-                        : 'url(#pencil-sketch)',
+                      filter: isDark ? 'none' : 'url(#pencil-sketch)',
                     }}
                     priority
                   />
                   {/* Paper texture overlay for light mode */}
                   {!isDark && (
-                    <>
-                      <div
-                        className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-20"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-br from-parchment-100/30 to-parchment-300/40 pointer-events-none" />
-                    </>
+                    <div className="absolute inset-0 bg-gradient-to-br from-parchment-100/30 to-parchment-300/40 pointer-events-none" />
                   )}
                   {/* Cool overlay for dark mode */}
                   {isDark && (
@@ -296,7 +338,7 @@ export default function AuthorityHero() {
 
               {/* Credential tags below portrait */}
               <div className="flex flex-wrap justify-center lg:justify-end gap-2 mt-6">
-                {['Staff Engineer', '14 Years', 'Investor Advisor'].map((tag) => (
+                {['Staff Engineer', '14 Years', 'Voice Workflows Expert'].map((tag) => (
                   <span
                     key={tag}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium ${
@@ -312,17 +354,6 @@ export default function AuthorityHero() {
             </div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce hidden lg:block">
-          <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center ${
-            isDark ? 'border-slate-600' : 'border-parchment-400'
-          }`}>
-            <svg className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </div>
-        </div>
       </section>
 
       {/* Bio Section */}
@@ -336,26 +367,26 @@ export default function AuthorityHero() {
             <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-8 text-center ${
               isDark ? 'text-white' : 'text-charcoal-50'
             }`}>
-              14 Years Building What Matters
+              14 Years Shipping Production Systems
             </h2>
 
             <div className={`space-y-6 text-lg leading-relaxed ${
               isDark ? 'text-slate-300' : 'text-parchment-600'
             }`}>
               <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I build production AI systems daily.</strong> As a Developer Experience Engineer on WorkOS&apos;s Applied AI team, I ship real AI features, open-source my work, and help developers integrate AI into their apps. Previously built developer tools at Cloudflare and vector search infrastructure at Pinecone.
+                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I build AI systems at the frontier.</strong> As a Developer Experience Engineer at WorkOS on the Applied AI team, I ship production AI features and help developers integrate AI into their apps. Previously, I was Staff DevRel at Pinecone where I built real RAG systems, open-sourced my work, and explained vector search to thousands through talks and videos.
               </p>
 
               <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>Investors trust me to cut through the hype.</strong> I do technical due diligence on AI startups and tools, helping funds make informed decisions based on hands-on engineering experience&mdash;not marketing slides.
+                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I&apos;ve scaled with the best.</strong> At Cloudflare, I was one of ~100 engineers building developer tools for millions of users. At Gruntwork, I led teams shipping infrastructure-as-code to Fortune 500s. I&apos;ve seen what works and what breaks at scale.
               </p>
 
               <p>
-                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I teach and mentor engineers.</strong> Through my writing, YouTube videos, and open-source projects, I help developers understand modern AI patterns&mdash;RAG systems, embeddings, vector databases, and agentic workflows.
+                <strong className={isDark ? 'text-indigo-400' : 'text-burnt-400'}>I pioneer voice-driven development.</strong> My DevSecCon keynote on &quot;Untethered Software Development&quot; shows how I orchestrate voice, AI agents, and hardened CI/CD to ship production code from anywhere. Investors and teams trust me to cut through the AI hype with hands-on expertise.
               </p>
             </div>
 
-            {/* Social proof stats */}
+            {/* Stats */}
             <div className={`grid grid-cols-3 gap-6 mt-12 pt-8 border-t ${
               isDark ? 'border-slate-700' : 'border-parchment-300'
             }`}>
@@ -366,29 +397,78 @@ export default function AuthorityHero() {
                   4,000+
                 </span>
                 <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                  YouTube views on tool reviews
+                  Newsletter subscribers
                 </span>
               </div>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
                   isDark ? 'text-indigo-400' : 'text-burnt-400'
                 }`}>
-                  $120+
+                  Staff
                 </span>
                 <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                  Monthly affiliate earnings
+                  DevRel at Pinecone
                 </span>
               </div>
               <div className="text-center">
                 <span className={`block text-3xl md:text-4xl font-bold font-mono ${
                   isDark ? 'text-indigo-400' : 'text-burnt-400'
                 }`}>
-                  Growing
+                  ~100
                 </span>
                 <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                  Newsletter of business owners
+                  Engineer at early Cloudflare
                 </span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Neural Network Visualization Section */}
+      <section className={`py-16 md:py-20 overflow-hidden transition-colors duration-500 ${
+        isDark
+          ? 'bg-gradient-to-b from-slate-900 to-indigo-950'
+          : 'bg-parchment-100'
+      }`}>
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Neural Network Animation */}
+            <div className="flex-1 flex justify-center">
+              <Suspense fallback={
+                <div className="w-[400px] h-[400px] flex items-center justify-center">
+                  <div className="animate-pulse text-slate-400">Loading visualization...</div>
+                </div>
+              }>
+                <div className="scale-[0.8] origin-center">
+                  <NeuralNetworkPulse />
+                </div>
+              </Suspense>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 max-w-lg">
+              <h3 className={`font-serif text-2xl md:text-3xl font-bold mb-4 ${
+                isDark ? 'text-white' : 'text-charcoal-50'
+              }`}>
+                Deep AI Knowledge, Practical Delivery
+              </h3>
+              <p className={`text-lg leading-relaxed mb-6 ${
+                isDark ? 'text-slate-300' : 'text-parchment-600'
+              }`}>
+                From embeddings and vector search to RAG pipelines and fine-tuning&mdash;I don&apos;t just understand AI, I build and ship it. My tutorials, talks, and open-source projects help thousands of developers implement AI that actually works.
+              </p>
+              <Link
+                href="/demos"
+                className={`inline-flex items-center font-semibold ${
+                  isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-burnt-400 hover:text-burnt-500'
+                }`}
+              >
+                Try Interactive AI Demos
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
             </div>
           </div>
         </div>
