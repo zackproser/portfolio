@@ -31,7 +31,10 @@
     opacity: 0.35;
 }
 
-.hash-link:hover {
+/* Direct hover on anchor link - higher opacity */
+.prose h2:hover .hash-link:hover,
+.prose h3:hover .hash-link:hover,
+.prose h4:hover .hash-link:hover {
     opacity: 0.6;
 }
 
@@ -78,9 +81,10 @@ body {
   @apply bg-amber-100 dark:bg-sky-900/50;
 }
 
-/* Refined blockquote styling */
+/* Refined blockquote styling - uses theme colors from typography.ts */
 .prose blockquote {
-  @apply border-l-4 border-stone-300 dark:border-stone-600 pl-6 italic;
+  @apply border-l-4 pl-6 italic;
+  border-color: var(--tw-prose-quote-borders);
   quotes: '"' '"' ''' ''';
 }
 
