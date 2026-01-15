@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 
 // The specific cubist portrait for the hero section
 // Change this number to use a different avatar (1-16 available)
-const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/avatars/4.webp'
+const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/avatars/7.webp'
 
 export default function HeroPortrait() {
   const { resolvedTheme } = useTheme()

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Code2, ArrowUpRight } from "lucide-react"
+import { Search, Code2, ArrowUpRight, Github, BookOpen } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -194,12 +194,32 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                           )}
                         </div>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-xl font-bold hover:text-primary transition-colors">
-                            <Link href={project.link} className="flex items-center gap-1">
-                              {project.name}
-                              <ArrowUpRight size={16} className="inline-block opacity-70" />
-                            </Link>
+                          <CardTitle className="text-xl font-bold">
+                            {project.name}
                           </CardTitle>
+                          {/* Project Links */}
+                          <div className="flex items-center gap-2 mt-2">
+                            <Link
+                              href={project.link}
+                              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+                              target={project.link.startsWith('http') ? '_blank' : undefined}
+                              rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            >
+                              <Github size={14} />
+                              Project
+                              <ArrowUpRight size={12} className="opacity-70" />
+                            </Link>
+                            {project.blogLink && (
+                              <Link
+                                href={project.blogLink}
+                                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+                              >
+                                <BookOpen size={14} />
+                                Article
+                                <ArrowUpRight size={12} className="opacity-70" />
+                              </Link>
+                            )}
+                          </div>
                           <CardDescription className="text-sm mt-2 min-h-[60px]">
                             {project.description}
                           </CardDescription>
@@ -248,12 +268,32 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                           )}
                         </div>
                         <div className="flex-grow">
-                          <Link href={project.link}>
-                            <h3 className="text-lg font-semibold mb-2 hover:text-primary transition-colors flex items-center gap-1">
-                              {project.name}
-                              <ArrowUpRight size={16} className="inline-block opacity-70" />
-                            </h3>
-                          </Link>
+                          <h3 className="text-lg font-semibold mb-2">
+                            {project.name}
+                          </h3>
+                          {/* Project Links */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <Link
+                              href={project.link}
+                              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+                              target={project.link.startsWith('http') ? '_blank' : undefined}
+                              rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            >
+                              <Github size={14} />
+                              Project
+                              <ArrowUpRight size={12} className="opacity-70" />
+                            </Link>
+                            {project.blogLink && (
+                              <Link
+                                href={project.blogLink}
+                                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+                              >
+                                <BookOpen size={14} />
+                                Article
+                                <ArrowUpRight size={12} className="opacity-70" />
+                              </Link>
+                            )}
+                          </div>
                           <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                             {project.description}
                           </p>

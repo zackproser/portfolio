@@ -426,6 +426,77 @@ export default function AuthorityHero() {
         </div>
       </section>
 
+      {/* Featured Writing Section */}
+      <section className={`py-16 md:py-20 transition-colors duration-500 ${
+        isDark
+          ? 'bg-slate-900'
+          : 'bg-parchment-200'
+      }`}>
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-4 ${
+                isDark ? 'text-white' : 'text-charcoal-50'
+              }`}>
+                134+ Articles & Growing
+              </h2>
+              <p className={`text-lg max-w-2xl mx-auto ${
+                isDark ? 'text-slate-300' : 'text-parchment-600'
+              }`}>
+                Deep dives on AI tools, voice workflows, infrastructure, and developer productivity. Real experiences from building production systems.
+              </p>
+            </div>
+
+            {/* Writing Categories */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+              {[
+                { label: 'AI & ML', count: '40+', href: '/collections/ai' },
+                { label: 'DevTools', count: '25+', href: '/devtools' },
+                { label: 'Infrastructure', count: '20+', href: '/blog' },
+                { label: 'Projects', count: '25+', href: '/projects' },
+              ].map((cat) => (
+                <Link
+                  key={cat.label}
+                  href={cat.href}
+                  className={`p-4 rounded-xl text-center transition-all hover:-translate-y-1 ${
+                    isDark
+                      ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50'
+                      : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                  }`}
+                >
+                  <span className={`block text-2xl font-bold font-mono ${
+                    isDark ? 'text-indigo-400' : 'text-burnt-400'
+                  }`}>
+                    {cat.count}
+                  </span>
+                  <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-600'}`}>
+                    {cat.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            {/* CTA to Blog */}
+            <div className="text-center">
+              <Link
+                href="/blog"
+                onClick={() => track('featured_writing_cta')}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all hover:-translate-y-0.5 ${
+                  isDark
+                    ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                    : 'bg-burnt-400 hover:bg-burnt-500 text-white'
+                }`}
+              >
+                Browse All Articles
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Prominent Theme Toggle */}
       <ThemeToggle />
 
