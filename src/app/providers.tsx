@@ -15,24 +15,19 @@ function usePrevious<T>(value: T) {
 }
 
 function ThemeWatcher() {
-  let { resolvedTheme, setTheme } = useTheme();
+  let { setTheme } = useTheme();
 
   useEffect(() => {
     // Only run on client-side
     if (typeof window === 'undefined') return;
 
-    // Get system preference
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Check stored preference
+    // Check stored preference - only apply if user has explicitly chosen
     const storedTheme = window.localStorage.getItem('theme');
-    
+
     if (storedTheme) {
       setTheme(storedTheme);
-    } else {
-      // If no stored preference, use system preference
-      setTheme(systemPrefersDark ? 'dark' : 'light');
     }
+    // If no stored preference, let defaultTheme="light" take effect
   }, [setTheme]);
 
   return null;
@@ -46,9 +41,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{ previousPathname }}>
-      <ThemeProvider 
-        attribute="class" 
-        defaultTheme="system" 
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="light"
         enableSystem
         disableTransitionOnChange
       >

@@ -177,7 +177,7 @@ function ExternalLinkButton({ link }) {
       case 'youtube':
         return 'bg-red-600 hover:bg-red-700 text-white';
       case 'blog':
-        return 'bg-blue-600 hover:bg-blue-700 text-white';
+        return 'bg-burnt-400 hover:bg-burnt-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white';
       case 'twitter':
         return 'bg-sky-500 hover:bg-sky-600 text-white';
       default:
@@ -206,7 +206,7 @@ function ExternalLinkButton({ link }) {
 // Component for a single speaking engagement card
 function SpeakingCard({ engagement }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
       <div className="relative h-48 bg-gradient-to-br from-blue-600 to-purple-700">
         <Image src={engagement.image}
@@ -230,30 +230,30 @@ function SpeakingCard({ engagement }) {
 
       {/* Content */}
       <div className="p-6">
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <div className="flex items-center gap-2 text-sm text-parchment-500 dark:text-slate-400 mb-2">
           <Calendar className="h-4 w-4" />
           {engagement.date}
         </div>
         
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
           {engagement.title}
         </h3>
         
-        <p className="text-blue-600 dark:text-blue-400 font-medium mb-3">
+        <p className="text-burnt-400 dark:text-sky-400 font-medium mb-3">
           {engagement.event}
         </p>
         
-        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+        <p className="text-parchment-600 dark:text-slate-300 mb-4 line-clamp-3">
           {engagement.description}
         </p>
 
         {/* Details */}
         <div className="space-y-2 mb-4 text-sm">
-          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-parchment-500 dark:text-slate-400">
             <Users className="h-4 w-4" />
             <span>{engagement.audience}</span>
           </div>
-          <div className="text-gray-500 dark:text-gray-400">
+          <div className="text-parchment-500 dark:text-slate-400">
             📍 {engagement.location}
           </div>
         </div>
@@ -305,7 +305,7 @@ export default function Speaking() {
 
         {/* Featured Keynote */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-4 flex items-center gap-2">
             <Presentation className="h-6 w-6 text-red-600" />
             DevSecCon 2025 Keynote
           </h2>
@@ -320,7 +320,7 @@ export default function Speaking() {
 
         {/* Public Engagements */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6 flex items-center gap-2">
             <Mic className="h-6 w-6 text-blue-600" />
             Conference Talks & Public Workshops
           </h2>
@@ -360,7 +360,7 @@ export default function Speaking() {
 
         {/* Internal Training */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6 flex items-center gap-2">
             <GraduationCap className="h-6 w-6 text-amber-600" />
             Corporate Training & Team Development
           </h2>
@@ -372,9 +372,9 @@ export default function Speaking() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Looking for a Speaker?</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+        <section className="bg-parchment-50 dark:bg-slate-800 border border-parchment-200 dark:border-slate-700 rounded-xl p-8 text-center">
+          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-4">Looking for a Speaker?</h2>
+          <p className="text-parchment-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
             I&apos;m available for conference talks, meetups, corporate training, and workshops. 
             I speak about AI engineering, infrastructure as code, vector databases, developer tools, 
             and practical machine learning implementations.
@@ -382,13 +382,13 @@ export default function Speaking() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-burnt-400 hover:bg-burnt-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-semibold rounded-md transition-colors"
             >
               Book a Speaking Engagement
             </Link>
             <Link
               href="/ai-training"
-              className="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold rounded-md transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-parchment-100 hover:bg-parchment-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-charcoal-50 dark:text-slate-100 font-semibold rounded-md transition-colors"
             >
               View Training Services
             </Link>

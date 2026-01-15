@@ -61,24 +61,24 @@ export default function About() {
 						</div>
 					</div>
 					<div className="lg:order-first lg:row-span-2">
-						<h1 className="text-4xl font-bold tracking-tight text-stone-800 dark:text-stone-100 sm:text-5xl">
+						<h1 className="text-4xl font-bold tracking-tight text-charcoal-50 dark:text-slate-100 sm:text-5xl font-serif">
 							Hi, I&apos;m Zachary
 						</h1>
-						<div className="mt-6 space-y-7 text-base text-stone-600 dark:text-stone-300">
+						<div className="mt-6 space-y-7 text-base text-parchment-600 dark:text-slate-300">
 							<p>
 								I&apos;m a full-stack open source hacker with{" "}
-								<span className="text-amber-700 dark:text-sky-400 font-bold">
+								<span className="text-burnt-400 dark:text-sky-400 font-bold">
 									{RenderNumYearsExperience()} years
 								</span>{" "}
 								of software development experience at top startups and established enterprise companies.
 							</p>
 							<p>
-								<Link className="text-amber-700 dark:text-sky-400 hover:text-amber-900 dark:hover:text-sky-300" href="/testimonials">See what my colleagues say</Link> about working with me.
+								<Link className="text-burnt-400 dark:text-sky-400 hover:text-amber-900 dark:hover:text-sky-300" href="/testimonials">See what my colleagues say</Link> about working with me.
 							</p>
                             <p>
                                 I&apos;m a Developer Experience Engineer at{" "}
                                 <Link
-                                    className="font-bold text-amber-700 dark:text-sky-400"
+                                    className="font-bold text-burnt-400 dark:text-sky-400"
                                     href="https://workos.com"
                                 >
                                     WorkOS
@@ -86,10 +86,10 @@ export default function About() {
                                 , where we help companies add enterprise features to their apps in minutes, not months.
                             </p>
 							<p>
-								I offer <Link className="font-bold text-amber-700 dark:text-sky-400" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-amber-700 dark:text-sky-400" href="/services">services page</Link> to learn how I can help bring your AI project to life.
+								I offer <Link className="font-bold text-burnt-400 dark:text-sky-400" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-burnt-400 dark:text-sky-400" href="/services">services page</Link> to learn how I can help bring your AI project to life.
 							</p>
 							<Newsletter />
-							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-amber-700 dark:text-sky-400 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
+							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-burnt-400 dark:text-sky-400 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
 								<CV />
 							</div>
@@ -122,7 +122,7 @@ export default function About() {
 						<div className="mt-8">
 							<Link
 								href="/services"
-								className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-colors"
+								className="inline-flex items-center px-4 py-2 bg-burnt-400 hover:bg-burnt-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-medium rounded-md transition-colors"
 							>
 								View My Services
 								<svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
