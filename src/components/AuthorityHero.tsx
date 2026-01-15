@@ -467,15 +467,18 @@ export default function AuthorityHero() {
 
               {/* Oura Ring MCP */}
               <Link
-                href="/blog/oura-ring-claude-mcp"
+                href="/blog/connect-oura-ring-to-claude-desktop-with-mcp"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
                   isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
-                <div className={`w-full h-32 rounded-lg overflow-hidden mb-4 flex items-center justify-center text-5xl ${
-                  isDark ? 'bg-slate-700/50' : 'bg-parchment-200'
-                }`}>
-                  💍
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/oura-and-claude.webp"
+                    alt="Oura Ring and Claude integration"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
                 </div>
                 <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
                   Biometric + AI Loop
