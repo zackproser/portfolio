@@ -129,7 +129,7 @@ export default function AuthorityHero() {
         )}
 
         {/* Container */}
-        <div className="container mx-auto px-4 md:px-6 py-6 lg:py-8 relative z-10">
+        <div className="container mx-auto px-4 md:px-6 py-8 lg:py-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
 
             {/* Left Column: Value Proposition + Newsletter */}
@@ -148,7 +148,7 @@ export default function AuthorityHero() {
                 AI Engineer <span className={`${isDark ? 'text-slate-500' : 'text-parchment-400'}`}>&amp;</span>
               </h1>
               <h1
-                className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-3 ${
+                className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 ${
                   isDark ? 'text-indigo-400' : 'text-burnt-400'
                 }`}
                 style={{
@@ -160,18 +160,20 @@ export default function AuthorityHero() {
                 Cognitive Interface Researcher
               </h1>
 
-              {/* Intro Paragraphs */}
-              <div className={`space-y-2 mb-4 max-w-lg ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                <p className="text-base md:text-lg leading-relaxed">
-                  I build AI-powered cognitive infrastructure that helps neurodivergent engineers operate at elite levels.
-                </p>
-                <p className="text-base md:text-lg leading-relaxed">
-                  Currently Applied AI at <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>WorkOS</span>, previously Staff DevRel at <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>Pinecone</span>, Senior Engineer at <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>Cloudflare</span>, and Infrastructure Tech Lead at <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>Gruntwork.io</span>.
-                </p>
-                <p className="text-base md:text-lg leading-relaxed">
-                  I write about practical AI tools, voice-driven development, and building production systems.
-                </p>
-              </div>
+              {/* Tagline - Primary value proposition */}
+              <p className={`text-lg md:text-xl leading-relaxed mb-6 max-w-xl ${isDark ? 'text-slate-200' : 'text-charcoal-100'}`}>
+                I build AI-powered cognitive infrastructure that helps neurodivergent engineers operate at elite levels.
+              </p>
+
+              {/* Credentials - Slightly muted */}
+              <p className={`text-base leading-relaxed mb-4 max-w-lg ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+                Currently Applied AI at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>WorkOS</span>, previously Staff DevRel at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Pinecone</span>, Senior Engineer at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Cloudflare</span>, and Infrastructure Tech Lead at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Gruntwork.io</span>.
+              </p>
+
+              {/* Topics - Italic differentiation */}
+              <p className={`text-base italic leading-relaxed mb-6 max-w-lg ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+                I write about practical AI tools, voice-driven development, and building production systems.
+              </p>
 
               {/* Company Experience */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">

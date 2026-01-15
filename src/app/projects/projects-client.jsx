@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, Code2, ArrowUpRight, Github, BookOpen } from "lucide-react"
+import { Search, Code2, ArrowUpRight, Github, BookOpen, ExternalLink } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -205,7 +205,7 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                               target={project.link.startsWith('http') ? '_blank' : undefined}
                               rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                             >
-                              <Github size={14} />
+                              {project.link.includes('github.com') ? <Github size={14} /> : <ExternalLink size={14} />}
                               Project
                               <ArrowUpRight size={12} className="opacity-70" />
                             </Link>
@@ -279,7 +279,7 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                               target={project.link.startsWith('http') ? '_blank' : undefined}
                               rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                             >
-                              <Github size={14} />
+                              {project.link.includes('github.com') ? <Github size={14} /> : <ExternalLink size={14} />}
                               Project
                               <ArrowUpRight size={12} className="opacity-70" />
                             </Link>

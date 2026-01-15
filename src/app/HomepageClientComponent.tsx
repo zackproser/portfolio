@@ -48,52 +48,6 @@ export default function HomepageClientComponent({
 
         {/* How I Engage Grid - replaces the blueprint */}
         <EngagementGrid />
-        
-        {/* DevSecCon 2025 Keynote Promotion */}
-        <section className="w-full py-10 md:py-14 lg:py-20 bg-parchment-50 dark:bg-charcoal-300 border-t border-parchment-300 dark:border-charcoal-100/20">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              <div className="lg:col-span-6">
-                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-burnt-400/10 dark:bg-amber-400/10 text-burnt-500 dark:text-amber-400 text-xs font-semibold border border-burnt-400/20 dark:border-amber-400/20 mb-3">
-                  <span className="mr-2">&#127908;</span> Keynote &mdash; DevSecCon 2025
-                </div>
-                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-charcoal-50 dark:text-parchment-100">
-                  Untethered Software Development
-                </h2>
-                <p className="mt-3 text-parchment-600 dark:text-parchment-400">
-                  I was the keynote speaker at DevSecCon 2025. This 32-minute film shows how to orchestrate voice, background agents, and a hardened CI/CD lane so you can think where you think best&mdash;while agents safely ship production-grade code.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    href="/blog/untethered-software-development-devseccon-2025"
-                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
-                    onClick={() => {
-                      track("devseccon_keynote_cta_click", { destination: "blog_post" })
-                    }}
-                  >
-                    Read the summary &rarr;
-                  </Link>
-                  <Link
-                    href="https://www.youtube.com/watch?v=kwIzRkzO_Z4"
-                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-burnt-400 dark:text-amber-400 bg-burnt-400/10 dark:bg-amber-400/10 hover:bg-burnt-400/20 dark:hover:bg-amber-400/20 border border-burnt-400/30 dark:border-amber-400/30"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      track("devseccon_keynote_cta_click", { destination: "youtube" })
-                    }}
-                  >
-                    Watch on YouTube &#8599;
-                  </Link>
-                </div>
-              </div>
-              <div className="lg:col-span-6">
-                <div className="rounded-xl overflow-hidden ring-1 ring-parchment-400 dark:ring-charcoal-100/20 shadow-lg">
-                  <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote by Zachary Proser" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Premium Featured Project Title Section */}
         <section className="py-8 bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20">
