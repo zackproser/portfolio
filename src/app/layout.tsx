@@ -1,4 +1,4 @@
-import { Noto_Sans, Press_Start_2P } from 'next/font/google';
+import { Noto_Sans, Press_Start_2P, Source_Serif_4, Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -22,13 +22,28 @@ const pressStart2P = Press_Start_2P({
   variable: '--font-press-start-2p',
 });
 
+// Authority glow-up fonts
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-source-serif',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable} ${sourceSerif.variable} ${inter.variable}`} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-K9XTVH6V" />
       <head>
         <PlausibleProvider domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? 'zackproser.com'} />

@@ -34,18 +34,18 @@ export const navItems = [
 
 function DropdownMenu({ label, items }) {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // Toggle dropdown visibility
   const toggleDropdown = (e) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
-  
+
   // Close dropdown when clicking outside
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
   }, []);
-  
+
   // Add document click listener when dropdown is open
   React.useEffect(() => {
     if (isOpen) {
@@ -55,33 +55,33 @@ function DropdownMenu({ label, items }) {
       document.removeEventListener('click', closeDropdown);
     };
   }, [isOpen, closeDropdown]);
-  
+
   return (
     <div className="relative">
       {/* Dropdown trigger button */}
-      <button 
-        className="flex items-center gap-1 text-sm font-medium text-gray-50 dark:text-gray-50 hover:text-blue-200 dark:hover:text-gray-300 transition-colors"
+      <button
+        className="flex items-center gap-1 text-sm font-medium text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors"
         onClick={toggleDropdown}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         {label}
-        <ChevronDown 
-          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`} 
+        <ChevronDown
+          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
         />
       </button>
-      
+
       {/* Dropdown menu */}
       {isOpen && (
-        <div 
-          className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-blue-800 dark:bg-gray-800 backdrop-blur-sm ring-1 ring-black ring-opacity-5 z-50"
+        <div
+          className="absolute left-0 mt-2 w-48 rounded-lg shadow-lg bg-parchment-50 dark:bg-slate-800 backdrop-blur-sm ring-1 ring-parchment-300 dark:ring-slate-700 z-50"
         >
           <div className="py-1" role="menu" aria-orientation="vertical">
             {items.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="block px-4 py-2 text-sm text-gray-50 dark:text-gray-50 hover:bg-blue-700 dark:hover:bg-gray-700 hover:text-blue-200 dark:hover:text-gray-300 transition-colors"
+                className="block px-4 py-2 text-sm text-charcoal-50 dark:text-slate-200 hover:bg-parchment-200 dark:hover:bg-slate-700 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors"
                 role="menuitem"
                 onClick={closeDropdown}
               >
@@ -103,51 +103,38 @@ export function ConsultancyNav() {
   }, [])
 
   return (
-    <header className="w-full h-16 sm:h-18 flex bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-700 sticky top-0 shadow-md relative z-50">
+    <header className="w-full h-16 sm:h-18 flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link className="flex items-center justify-center shrink-0" href="/">
-          <svg 
-            className="h-7 w-7 text-gray-50 dark:text-gray-50" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12" />
-            <circle cx="12" cy="12" r="10" />
-            <path d="M2 12h4M12 2v4M22 12h-4M12 22v-4" />
-          </svg>
-          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-gray-50 hidden sm:inline whitespace-nowrap">Modern Coding</span>
-          <span className="ml-2 text-xl font-bold text-gray-50 dark:text-gray-50 sm:hidden">MC</span>
+          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white hidden sm:inline whitespace-nowrap">Zachary Proser</span>
+          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white sm:hidden">ZP</span>
         </Link>
         <div className="lg:hidden">
           <button
             type="button"
             aria-label="Toggle menu"
-            className="text-gray-50 dark:text-gray-50 p-2 rounded-md hover:bg-blue-500 dark:hover:bg-gray-700 transition-colors"
+            className="text-charcoal-50 dark:text-white p-2 rounded-md hover:bg-parchment-200 dark:hover:bg-slate-800 transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
-        <nav 
-          className={`absolute top-16 sm:top-18 left-0 w-full bg-blue-600 dark:bg-gray-800 lg:static lg:w-auto lg:bg-transparent dark:lg:bg-transparent 
-                      flex-col lg:flex-row lg:flex gap-4 items-center border-t lg:border-t-0 border-blue-500 dark:border-gray-700
+        <nav
+          className={`absolute top-16 sm:top-18 left-0 w-full bg-parchment-100 dark:bg-slate-900 lg:static lg:w-auto lg:bg-transparent dark:lg:bg-transparent
+                      flex-col lg:flex-row lg:flex gap-4 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
                       ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}>
           <div className="flex flex-col lg:flex-row gap-2 items-center w-full lg:w-auto">
             {navItems.map((item) => (
               item.dropdown ? (
-                <DropdownMenu 
+                <DropdownMenu
                   key={item.name}
-                  label={item.name} 
-                  items={item.dropdown} 
+                  label={item.name}
+                  items={item.dropdown}
                 />
               ) : (
                 <Link
                   key={item.name}
-                  className="text-sm font-medium text-gray-50 dark:text-gray-50 hover:text-blue-200 dark:hover:text-gray-300 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
+                  className="text-sm font-medium text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
                   href={item.href}
                 >
                   {item.name}

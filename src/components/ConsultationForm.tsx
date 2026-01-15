@@ -98,83 +98,83 @@ export default function ConsultationForm({ isOpen, onClose }: ConsultationFormPr
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
             <p className="text-blue-200 max-w-sm">
-              Your consultation request has been submitted. We&apos;ll get back to you as soon as possible.
+              I&apos;ll review your request and get back to you within 24-48 hours to schedule our call.
             </p>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-center mb-2 text-white">Schedule Your Transformation</DialogTitle>
+              <DialogTitle className="text-2xl font-bold text-center mb-2 text-white">Book a Consultation</DialogTitle>
               <DialogDescription className="text-center px-6 text-blue-200">
-                Fill out the form below to request an AI transformation consultation with our experts.
+                Whether you&apos;re an investor seeking due diligence on AI tools, or a team looking to ship production AI systems&mdash;let&apos;s talk. <span className="font-semibold text-amber-300">$500-650/hr</span>
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4 mt-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="font-medium text-blue-200">Full Name *</Label>
-                <Input 
-                  id="name" 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Your full name"
                   className="w-full rounded-lg bg-blue-900/50 border-blue-700 text-white placeholder:text-blue-300/70 focus:ring-blue-400"
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="font-medium text-blue-200">Email Address *</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
                   className="w-full rounded-lg bg-blue-900/50 border-blue-700 text-white placeholder:text-blue-300/70 focus:ring-blue-400"
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="company" className="font-medium text-blue-200">Company</Label>
-                <Input 
-                  id="company" 
-                  value={company} 
-                  onChange={(e) => setCompany(e.target.value)} 
-                  placeholder="Your company name (optional)"
+                <Label htmlFor="company" className="font-medium text-blue-200">Company / Fund</Label>
+                <Input
+                  id="company"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  placeholder="Your company or fund name"
                   className="w-full rounded-lg bg-blue-900/50 border-blue-700 text-white placeholder:text-blue-300/70 focus:ring-blue-400"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="phoneNumber" className="font-medium text-blue-200">Phone Number</Label>
-                <Input 
-                  id="phoneNumber" 
-                  value={phoneNumber} 
-                  onChange={(e) => setPhoneNumber(e.target.value)} 
-                  placeholder="Your phone number (optional)"
+                <Input
+                  id="phoneNumber"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="For scheduling (optional)"
                   className="w-full rounded-lg bg-blue-900/50 border-blue-700 text-white placeholder:text-blue-300/70 focus:ring-blue-400"
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="message" className="font-medium text-blue-200">Message</Label>
-                <Textarea 
-                  id="message" 
-                  value={message} 
-                  onChange={(e) => setMessage(e.target.value)} 
-                  placeholder="Tell us about your AI transformation needs (optional)"
+                <Label htmlFor="message" className="font-medium text-blue-200">What can I help with?</Label>
+                <Textarea
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Investor due diligence, technical consulting, RAG systems, AI strategy..."
                   rows={3}
                   className="w-full rounded-lg bg-blue-900/50 border-blue-700 text-white placeholder:text-blue-300/70 focus:ring-blue-400"
                 />
               </div>
-              
+
               {error && (
                 <div className="bg-red-900/30 border border-red-500/30 text-red-200 p-3 rounded-lg text-sm">
                   {error}
                 </div>
               )}
-              
+
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
@@ -187,9 +187,9 @@ export default function ConsultationForm({ isOpen, onClose }: ConsultationFormPr
                   </div>
                 ) : 'Request Consultation'}
               </Button>
-              
+
               <p className="text-xs text-center text-blue-200/70 mt-4">
-                By submitting this form, you agree to be contacted about our AI transformation services.
+                I&apos;ll respond within 24-48 hours to schedule our call.
               </p>
             </form>
           </>
