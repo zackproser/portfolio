@@ -1,5 +1,48 @@
+/* Heading anchor links - absolutely positioned to not affect layout */
+.prose h2,
+.prose h3,
+.prose h4 {
+    position: relative;
+}
+
+.hash-link {
+    position: absolute;
+    left: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 400;
+}
+
 .hash-link::before {
-    content: '# ';
+    content: '#';
+    font-size: 0.8em;
+    color: var(--tw-prose-bullets, currentColor);
+}
+
+/* Show anchor on heading hover */
+.prose h2:hover .hash-link,
+.prose h3:hover .hash-link,
+.prose h4:hover .hash-link,
+.hash-link:focus {
+    opacity: 0.35;
+}
+
+/* Direct hover on anchor link - higher opacity */
+.prose h2:hover .hash-link:hover,
+.prose h3:hover .hash-link:hover,
+.prose h4:hover .hash-link:hover {
+    opacity: 0.6;
+}
+
+/* Hide anchor on mobile - not useful without hover */
+@media (max-width: 768px) {
+    .hash-link {
+        display: none;
+    }
 }
 
 .youtube-video {
@@ -8,22 +51,61 @@
 }
 
 :root {
-  --glow-color: #FFD700; 
+  --glow-color: #FFD700;
   --premium-gold: #F59E0B;
   --premium-gold-light: #FCD34D;
   --premium-gold-dark: #B45309;
 }
 
-/* Add blue headers throughout the site */
-h1, h2, h3, h4, h5, h6 {
-  @apply text-blue-900 dark:text-blue-300;
+/* Premium typography rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Different blue shades for different heading levels */
-h1 { @apply text-blue-950 dark:text-blue-200; }
-h2 { @apply text-blue-900 dark:text-blue-300; }
-h3 { @apply text-blue-800 dark:text-blue-300; }
-h4, h5, h6 { @apply text-blue-800 dark:text-blue-400; }
+/* Prose content - refined like a premium publication */
+.prose {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  hanging-punctuation: first last;
+}
+
+/* First paragraph after heading - subtle drop cap effect could go here */
+.prose > h2 + p::first-letter,
+.prose > h3 + p::first-letter {
+  font-weight: 600;
+}
+
+/* Smooth selection highlighting - matches theme */
+.prose ::selection {
+  @apply bg-amber-100 dark:bg-sky-900/50;
+}
+
+/* Refined blockquote styling - uses theme colors from typography.ts */
+.prose blockquote {
+  @apply border-l-4 pl-6 italic;
+  border-color: var(--tw-prose-quote-borders);
+  quotes: '"' '"' ''' ''';
+}
+
+.prose blockquote p:first-of-type::before {
+  content: open-quote;
+}
+
+.prose blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+/* Refined heading hierarchy - warm paper-like light, clean dark */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-stone-800 dark:text-stone-100;
+}
+
+/* Subtle hierarchy through weight and size */
+h1 { @apply text-stone-800 dark:text-stone-50 font-bold; }
+h2 { @apply text-stone-700 dark:text-stone-100 font-semibold; }
+h3 { @apply text-stone-600 dark:text-stone-200 font-semibold; }
+h4, h5, h6 { @apply text-stone-600 dark:text-stone-300 font-medium; }
 
 /* Exception for headers in colored backgrounds */
 .bg-blue-800 h1, .bg-blue-900 h1, 

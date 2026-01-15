@@ -61,24 +61,24 @@ export default function About() {
 						</div>
 					</div>
 					<div className="lg:order-first lg:row-span-2">
-						<h1 className="text-4xl font-bold tracking-tight text-blue-600 dark:text-blue-400 sm:text-5xl">
+						<h1 className="text-4xl font-bold tracking-tight text-stone-800 dark:text-stone-100 sm:text-5xl">
 							Hi, I&apos;m Zachary
 						</h1>
-						<div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+						<div className="mt-6 space-y-7 text-base text-stone-600 dark:text-stone-300">
 							<p>
 								I&apos;m a full-stack open source hacker with{" "}
-								<span className="text-blue-500 font-bold">
+								<span className="text-amber-700 dark:text-sky-400 font-bold">
 									{RenderNumYearsExperience()} years
 								</span>{" "}
 								of software development experience at top startups and established enterprise companies.
 							</p>
 							<p>
-								<Link className="text-blue-500 hover:text-blue-700" href="/testimonials">See what my colleagues say</Link> about working with me.
+								<Link className="text-amber-700 dark:text-sky-400 hover:text-amber-900 dark:hover:text-sky-300" href="/testimonials">See what my colleagues say</Link> about working with me.
 							</p>
                             <p>
                                 I&apos;m a Developer Experience Engineer at{" "}
                                 <Link
-                                    className="font-bold text-blue-500"
+                                    className="font-bold text-amber-700 dark:text-sky-400"
                                     href="https://workos.com"
                                 >
                                     WorkOS
@@ -86,10 +86,10 @@ export default function About() {
                                 , where we help companies add enterprise features to their apps in minutes, not months.
                             </p>
 							<p>
-								I offer <Link className="font-bold text-blue-500" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-blue-500" href="/services">services page</Link> to learn how I can help bring your AI project to life.
+								I offer <Link className="font-bold text-amber-700 dark:text-sky-400" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-amber-700 dark:text-sky-400" href="/services">services page</Link> to learn how I can help bring your AI project to life.
 							</p>
 							<Newsletter />
-							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-blue-500 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
+							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-amber-700 dark:text-sky-400 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
 								<CV />
 							</div>
