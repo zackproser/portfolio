@@ -4,8 +4,8 @@ import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
 
-// Pencil sketch portrait for the hero section
-const HERO_PORTRAIT_URL = '/images/zack-sketch.webp'
+// Pencil sketch portrait for the hero section (hosted on Bunny CDN)
+const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
 
 export default function HeroPortrait() {
   const { resolvedTheme } = useTheme()
