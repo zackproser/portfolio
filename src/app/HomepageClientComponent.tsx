@@ -9,33 +9,16 @@ import { track } from "@vercel/analytics"
 import { ContentCard } from "@/components/ContentCard"
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import LearningGrid from "@/components/learning-grid"
 import ConsultationForm from "@/components/ConsultationForm"
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from "@/components/YoutubeEmbed"
-
-// Import company logos
-const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
-const logoGruntwork = 'https://zackproser.b-cdn.net/images/logos/terragrunt.svg'
-const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.webp'
+import AuthorityHero from "@/components/AuthorityHero"
+import EngagementGrid from "@/components/EngagementGrid"
 
 // Import demo hero images
 const embeddingsDemoHero = 'https://zackproser.b-cdn.net/images/embeddings-demo-hero.webp'
 const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-demo-hero.webp'
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
-
-// Dynamically import the NeuralNetworkPulse with no SSR
-const NeuralNetworkPulse = dynamic(
-  () => import('@/components/NeuralNetworkPulse').then(mod => mod.NeuralNetworkPulse),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="w-[500px] h-[500px] flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading visualization...</div>
-      </div>
-    )
-  }
-)
 
 // Add type definitions for the props
 interface Article {
@@ -104,225 +87,78 @@ export default function HomepageClientComponent({
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-parchment-100 dark:bg-charcoal-400 theme-transition">
       <main className="flex-1">
-        <section className="w-full py-8 md:py-12 lg:py-16 relative overflow-hidden bg-gradient-to-r from-blue-800 to-indigo-900 dark:from-gray-800 dark:to-blue-900">
-          <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
-              <div className="flex-1 space-y-4 max-w-2xl">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-50 dark:text-blue-100">
-                  AI Engineering Mastery for Teams That Ship
-                </h1>
-                <div className="mt-6">
-                  <p className="text-yellow-400 font-bold text-xl mb-4">🔥 <span className="text-white">Free Tutorial</span>: <span className="text-blue-200">Build a &quot;Chat with My Data&quot; app with LangChain, Pinecone, OpenAI and the Vercel AI SDK.</span></p>
-                </div>
-                <div className="w-full max-w-sm space-y-2">
-                  {formSuccess ? (
-                    <p className="text-green-400 font-semibold">Neural Network Activated! 🤖🧠❗ Thank you for joining our AI research community.</p>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="flex space-x-2">
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="input-email flex-grow text-white placeholder:text-white/70 bg-white/10 border-white/20"
-                        required
-                      />
-                      <Button type="submit" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold transition-colors">
-                        Start with Free Tutorial
-                      </Button>
-                    </form>
-                  )}
-                  <p className="text-xs text-white flex items-center">
-                    Join 3,000+ engineers learning to build what actually works
-                  </p>
-                  <div className="mt-4">
-                    <Link 
-                      href="/chat"
-                      className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600/80 hover:bg-blue-500/80 transition-colors border border-white/20"
-                      onClick={() => {
-                        track("hero_demo_click", {
-                          location: "hero_section",
-                          action: "try_demo"
-                        })
-                      }}
-                    >
-                      Try the live demo →
-                    </Link>
-                    <p className="text-xs text-white/70 mt-1">
-                      Experience the full RAG pipeline in action
-                    </p>
-                  </div>
-                  <div className="mt-8">
-                    <p className="text-sm text-white uppercase font-medium mb-3">Trusted by industry leaders</p>
-                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-                      <div className="flex flex-col items-center">
-                        <div className="h-8 w-auto flex items-center justify-center">
-                          <Image
-                            src={logoCloudflare}
-                            alt="Cloudflare"
-                            height={20} 
-                            width={80}
-                            className="brightness-0 invert"
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-white mt-2">Cloudflare</span>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="h-8 w-auto flex items-center justify-center">
-                          <Image
-                            src={logoGruntwork}
-                            alt="Gruntwork"
-                            height={16}
-                            width={60}
-                            className="brightness-0 invert scale-75"
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-white mt-2">Gruntwork</span>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="h-8 w-auto flex items-center justify-center">
-                          <Image
-                            src={logoPinecone}
-                            alt="Pinecone"
-                            height={20}
-                            width={80}
-                            className="brightness-0 invert"
-                          />
-                        </div>
-                        <span className="text-sm font-medium text-white mt-2">Pinecone</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {!isMobile && (
-                <div className="flex-1 md:w-1/2 flex justify-center">
-                  <Suspense fallback={
-                    <div className="w-[500px] h-[500px] flex items-center justify-center">
-                      <div className="animate-pulse text-gray-400">Loading visualization...</div>
-                    </div>
-                  }>
-                    <div 
-                      className="scale-[0.833] origin-center"
-                      style={{
-                        animation: 'spinIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both'
-                      }}
-                    >
-                      <NeuralNetworkPulse />
-                    </div>
-                  </Suspense>
-                </div>
-              )}
-            </div>
-            
-            {/* Scroll cue - hidden on mobile */}
-            {!isMobile && (
-              <div className="flex justify-center mt-6">
-                <div className="animate-bounce bg-white/10 p-2 w-10 h-10 ring-1 ring-white/20 shadow-lg rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                  </svg>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
+        {/* New Authority Hero */}
+        <AuthorityHero onNewsletterSubmit={async (email) => {
+          const data = { email, referrer }
+          try {
+            await fetch("/api/form", {
+              body: JSON.stringify(data),
+              headers: { "Content-Type": "application/json" },
+              method: "POST",
+            })
+            sendFormSubmissionEvent()
+          } catch (error) {
+            console.error(error)
+          }
+        }} />
+
+        {/* How I Engage Grid - replaces the blueprint */}
+        <EngagementGrid />
         
         {/* DevSecCon 2025 Keynote Promotion */}
-        <section className="w-full py-10 md:py-14 lg:py-20 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+        <section className="w-full py-10 md:py-14 lg:py-20 bg-parchment-50 dark:bg-charcoal-300 border-t border-parchment-300 dark:border-charcoal-100/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               <div className="lg:col-span-6">
-                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 text-xs font-semibold border border-blue-200/60 dark:border-blue-700/50 mb-3">
-                  <span className="mr-2">🎤</span> Keynote — DevSecCon 2025
+                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-burnt-400/10 dark:bg-amber-400/10 text-burnt-500 dark:text-amber-400 text-xs font-semibold border border-burnt-400/20 dark:border-amber-400/20 mb-3">
+                  <span className="mr-2">&#127908;</span> Keynote &mdash; DevSecCon 2025
                 </div>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-charcoal-50 dark:text-parchment-100">
                   Untethered Software Development
                 </h2>
-                <p className="mt-3 text-slate-700 dark:text-slate-300">
-                  I was the keynote speaker at DevSecCon 2025. This 32‑minute film shows how to orchestrate voice, background agents, and a hardened CI/CD lane so you can think where you think best—while agents safely ship production‑grade code.
+                <p className="mt-3 text-parchment-600 dark:text-parchment-400">
+                  I was the keynote speaker at DevSecCon 2025. This 32-minute film shows how to orchestrate voice, background agents, and a hardened CI/CD lane so you can think where you think best&mdash;while agents safely ship production-grade code.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <Link 
+                  <Link
                     href="/blog/untethered-software-development-devseccon-2025"
-                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors"
+                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
                     onClick={() => {
                       track("devseccon_keynote_cta_click", { destination: "blog_post" })
                     }}
                   >
-                    Read the summary →
+                    Read the summary &rarr;
                   </Link>
-                  <Link 
+                  <Link
                     href="https://www.youtube.com/watch?v=kwIzRkzO_Z4"
-                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 dark:text-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-700/50"
+                    className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium rounded-md text-burnt-400 dark:text-amber-400 bg-burnt-400/10 dark:bg-amber-400/10 hover:bg-burnt-400/20 dark:hover:bg-amber-400/20 border border-burnt-400/30 dark:border-amber-400/30"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {
                       track("devseccon_keynote_cta_click", { destination: "youtube" })
                     }}
                   >
-                    Watch on YouTube ↗
+                    Watch on YouTube &#8599;
                   </Link>
                 </div>
               </div>
               <div className="lg:col-span-6">
-                <div className="rounded-xl overflow-hidden ring-1 ring-slate-900/10 dark:ring-white/10 shadow">
+                <div className="rounded-xl overflow-hidden ring-1 ring-parchment-400 dark:ring-charcoal-100/20 shadow-lg">
                   <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote by Zachary Proser" />
                 </div>
               </div>
             </div>
           </div>
         </section>
-        
-        {/* AI Engineering Blueprint Section */}
-        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af] dark:from-gray-900 dark:to-blue-950">
-          {/* Blueprint overlay pattern - more prominent */}
-          <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
-          
-          {/* Engineering document appearance */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Blueprint document border */}
-            <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
-          </div>
-          
-          <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="mb-6 text-center">
-              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-sans uppercase">
-                  Your AI Engineering Blueprint
-                </h2>
-              </div>
-              <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
-                Transform your team and business with battle-tested architectures, RAG pipelines, and production-grade AI systems — honed at Cloudflare, Pinecone, and Fortune 500s, and distilled into code-first workshops.
-              </p>
-              
-              <div className="mt-6">
-                <Button 
-                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold text-base px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
-                  onClick={() => {
-                    track("blueprint_cta_click", { action: "schedule_call" });
-                    setIsConsultationOpen(true);
-                  }}
-                >
-                  Schedule Your Transformation →
-                </Button>
-              </div>
-            </div>
-            
-            <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
-              <LearningGrid />
-            </div>
-          </div>
-        </section>
 
         {/* Premium Featured Project Title Section */}
-        <section className="py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <section className="py-8 bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
-              <div className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
-                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-sans uppercase">
+              <div className="inline-block bg-burnt-400 dark:bg-amber-400/90 px-6 py-2 border border-burnt-500/20 dark:border-amber-500/20 rounded-lg shadow-lg">
+                <h2 className="font-serif text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white dark:text-charcoal-500">
                   Featured Premium Project
                 </h2>
               </div>
@@ -331,7 +167,7 @@ export default function HomepageClientComponent({
         </section>
 
         {/* Featured Product Content */}
-        <section className="overflow-hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-5 isolate">
+        <section className="overflow-hidden bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20 px-5 isolate">
           <div className="mx-auto grid max-w-6xl grid-cols-1 grid-rows-[auto_1fr] gap-y-16 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-y-20 lg:px-3 lg:pt-20 lg:pb-36 xl:py-32">
             <div className="relative flex items-end lg:col-span-6 lg:row-span-2">
               <div className="relative z-10 mx-auto flex w-[90%] max-w-xl rounded-xl shadow-xl md:w-auto lg:w-auto">
@@ -402,10 +238,10 @@ export default function HomepageClientComponent({
               </div>
             </div>
             <div className="relative px-4 sm:px-6 lg:col-span-6 lg:pr-0 lg:pb-14 lg:pl-16 xl:pl-20">
-              <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-slate-100" />
+              <div className="hidden lg:absolute lg:-top-32 lg:bottom-0 lg:left-[-100vw] lg:right-[-100vw] lg:block lg:bg-parchment-200 dark:bg-charcoal-300" />
               <div className="relative">
                 <div className="flex justify-start">
-                  <div className="flex items-center text-amber-600">
+                  <div className="flex items-center text-burnt-400 dark:text-amber-400">
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
@@ -415,20 +251,20 @@ export default function HomepageClientComponent({
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
-                  <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">5.0 rating</span>
+                  <span className="ml-2 text-sm text-parchment-600 dark:text-parchment-400">5.0 rating</span>
                   </div>
                 </div>
                 <blockquote className="mt-8">
-                  <p className="font-display text-xl font-medium text-slate-900 dark:text-slate-100">
+                  <p className="font-serif text-xl font-medium text-charcoal-50 dark:text-parchment-100">
                     &ldquo;Thanks for publishing the tutorial, very helpful.&rdquo;
                   </p>
                 </blockquote>
-                <p className="mt-4 text-base text-slate-600 dark:text-slate-300">
-                  <strong className="font-semibold text-blue-600">Scott McCallum</strong> • Full Stack Developer at Intermine
+                <p className="mt-4 text-base text-parchment-600 dark:text-parchment-400">
+                  <strong className="font-semibold text-burnt-400 dark:text-amber-400">Scott McCallum</strong> &bull; Full Stack Developer at Intermine
                 </p>
               </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 pt-16 lg:col-span-6 lg:pt-0 lg:pl-16 xl:pl-20 rounded-xl">
+            <div className="bg-parchment-50 dark:bg-charcoal-300 pt-16 lg:col-span-6 lg:pt-0 lg:pl-16 xl:pl-20 rounded-xl">
               <div className="mx-auto px-4 sm:px-6 md:max-w-2xl md:px-4 lg:px-0">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link 
@@ -464,28 +300,18 @@ export default function HomepageClientComponent({
         </section>
 
         {/* Interactive Demos Section */}
-        <section className="w-full py-8 md:py-10 lg:py-16 relative overflow-hidden bg-gradient-to-b from-[#1e3a8a] to-[#1e40af] dark:from-gray-900 dark:to-blue-950">
-          {/* Blueprint overlay pattern */}
-          <div className="absolute inset-0 bg-blueprint opacity-25 pointer-events-none"></div>
-          
-          {/* Engineering document appearance */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-x-4 inset-y-4 border-2 border-white/10 rounded-lg"></div>
-          </div>
-          
-          <div className="container mx-auto px-4 md:px-6 relative z-10">
-            <div className="mb-6 text-center">
-              <div className="inline-block bg-[#1e3a8a]/80 px-6 py-2 mb-3 border border-white/20 rounded-sm shadow-lg">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white font-sans uppercase">
-                  Interactive AI Laboratory
-                </h2>
-              </div>
-              <p className="mt-3 text-base text-white/80 max-w-3xl mx-auto backdrop-blur-sm bg-[#1e3a8a]/30 p-3 rounded-lg">
+        <section className="w-full py-12 md:py-16 lg:py-20 bg-parchment-200 dark:bg-charcoal-500">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="mb-10 text-center">
+              <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-charcoal-50 dark:text-parchment-100 mb-4">
+                Interactive AI Laboratory
+              </h2>
+              <p className="text-lg text-parchment-600 dark:text-parchment-400 max-w-3xl mx-auto">
                 Learn by doing! Explore how AI systems work under the hood through hands-on interactive experiences.
               </p>
             </div>
-            
-                         <div className="relative p-4 sm:p-6 rounded-lg bg-blue-900/40 border border-blue-400/20 backdrop-blur-md">
+
+            <div className="relative">
                <div className="mx-auto mt-8 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                  <ContentCard 
                    key="chatbot-demo"
@@ -526,16 +352,16 @@ export default function HomepageClientComponent({
                </div>
 
               <div className="text-center mt-8">
-                <Link 
+                <Link
                   href="/demos"
-                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold text-base px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-105"
+                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 text-white dark:text-charcoal-500 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
                   onClick={() => {
                     track("main_cta_click", {
                       destination: "all_demos"
                     })
                   }}
                 >
-                  View All Interactive Demos →
+                  View All Interactive Demos &rarr;
                 </Link>
               </div>
             </div>
@@ -543,61 +369,59 @@ export default function HomepageClientComponent({
         </section>
 
         {/* Content Collections Section Header */}
-        <section className="py-12 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <section className="py-12 bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-10">
-              <div className="inline-block bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-2 border border-blue-400/20 rounded-sm shadow-lg">
-                <h2 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl text-white font-sans uppercase">
-                  Knowledge Collections
-                </h2>
-              </div>
-              <p className="mt-3 text-base text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl text-charcoal-50 dark:text-parchment-100 mb-4">
+                Knowledge Collections
+              </h2>
+              <p className="text-lg text-parchment-600 dark:text-parchment-400 max-w-3xl mx-auto">
                 Explore my comprehensive library of AI engineering resources and implementation guides.
               </p>
             </div>
-            
+
             <div className="flex flex-wrap gap-4 justify-center mt-8">
-              <Link 
+              <Link
                 href="/projects"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors shadow-md"
                 onClick={() => {
                   track("main_cta_click", {
                     destination: "projects"
                   })
                 }}
               >
-                All Projects →
+                All Projects &rarr;
               </Link>
-              <Link 
+              <Link
                 href="/publications"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-burnt-400 dark:text-amber-400 bg-burnt-400/10 dark:bg-amber-400/10 hover:bg-burnt-400/20 dark:hover:bg-amber-400/20 border border-burnt-400/30 dark:border-amber-400/30 transition-colors shadow-md"
                 onClick={() => {
                   track("main_cta_click", {
                     destination: "publications"
                   })
                 }}
               >
-                All Publications →
+                All Publications &rarr;
               </Link>
-              <Link 
+              <Link
                 href="/testimonials"
-                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-md"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg text-burnt-400 dark:text-amber-400 bg-burnt-400/10 dark:bg-amber-400/10 hover:bg-burnt-400/20 dark:hover:bg-amber-400/20 border border-burnt-400/30 dark:border-amber-400/30 transition-colors shadow-md"
                 onClick={() => {
                   track("main_cta_click", {
                     destination: "testimonials"
                   })
                 }}
               >
-                Client Success Stories →
+                Client Success Stories &rarr;
               </Link>
             </div>
           </div>
         </section>
 
-        <section className="bg-white dark:bg-gray-900 py-12">
+        <section className="bg-parchment-50 dark:bg-charcoal-300 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">📚</span> Deep and Machine Learning Tutorials
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              Deep and Machine Learning Tutorials
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {deepMLTutorials.slice(0, 3).map((article, index) => (
@@ -607,10 +431,10 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-gray-100 dark:bg-gray-800 py-12">
+        <section className="bg-parchment-200 dark:bg-charcoal-500 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">⚙️</span> Open-source AI / ML / Pipelines Projects
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              Open-source AI / ML / Pipelines Projects
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mlProjects.slice(0, 3).map((article, index) => (
@@ -620,10 +444,10 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-white dark:bg-gray-900 py-12">
+        <section className="bg-parchment-50 dark:bg-charcoal-300 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">🤖</span> AI-assisted Development
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              AI-assisted Development
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {aiDev.slice(0, 3).map((article, index) => (
@@ -633,10 +457,10 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-gray-100 dark:bg-gray-800 py-12">
+        <section className="bg-parchment-200 dark:bg-charcoal-500 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">💼</span> Career Advice
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              Career Advice
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {careerAdvice.slice(0, 3).map((article, index) => (
@@ -646,10 +470,10 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
-        <section className="bg-white dark:bg-gray-900 py-12">
+        <section className="bg-parchment-50 dark:bg-charcoal-300 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">🎥</span> Videos
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              Videos
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.slice(0, 3).map((article, index) => (
@@ -657,25 +481,25 @@ export default function HomepageClientComponent({
               ))}
             </div>
             <div className="text-center mt-6">
-              <Link 
+              <Link
                 href="/videos"
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm"
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg text-burnt-400 dark:text-amber-400 bg-burnt-400/10 dark:bg-amber-400/10 hover:bg-burnt-400/20 dark:hover:bg-amber-400/20 border border-burnt-400/30 dark:border-amber-400/30 transition-colors"
                 onClick={() => {
                   track("see_all_click", {
                     contentType: "videos"
                   })
                 }}
               >
-                See all videos →
+                See all videos &rarr;
               </Link>
             </div>
           </div>
         </section>
 
-        <section className="bg-gray-100 dark:bg-gray-800 py-12">
+        <section className="bg-parchment-200 dark:bg-charcoal-500 py-12">
           <div className="container px-4 md:px-6 mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <span className="mr-2">🏗️</span> Reference Architectures and Demos
+            <h2 className="font-serif text-2xl font-bold mb-6 flex items-center text-charcoal-50 dark:text-parchment-100">
+              Reference Architectures and Demos
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {refArchitectures.slice(0, 3).map((article, index) => (
@@ -686,7 +510,7 @@ export default function HomepageClientComponent({
         </section>
 
       </main>
-      <footer className="w-full py-6 bg-gray-800 text-white">
+      <footer className="w-full py-6 bg-charcoal-400 dark:bg-charcoal-600 text-parchment-100">
       </footer>
       <ConsultationForm 
         isOpen={isConsultationOpen} 

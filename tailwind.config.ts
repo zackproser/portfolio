@@ -28,12 +28,52 @@ export default {
     },
     typography: typographyStyles,
     extend: {
+      fontFamily: {
+        serif: ['var(--font-source-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        // Light mode colors
+        // Parchment theme - Authority glow-up palette
+        parchment: {
+          50: '#fefdfb',
+          100: '#fbf7f0',  // Main light mode background
+          200: '#f5f0e6',  // Secondary light background
+          300: '#e8e0d0',  // Light borders
+          400: '#d1c7b7',  // Pencil gray / subtle borders
+          500: '#b8a88f',  // Muted text
+          600: '#8b7355',  // Darker accents
+        },
+        charcoal: {
+          50: '#2c3e50',   // Light text on dark
+          100: '#1f2d3d',
+          200: '#1a2533',
+          300: '#16213e',  // Secondary dark background
+          400: '#1a1a2e',  // Main dark mode background
+          500: '#141428',
+          600: '#0f0f1f',  // Deepest dark
+        },
+        burnt: {
+          50: '#fef3e2',
+          100: '#fde4c4',
+          200: '#fbd38d',
+          300: '#f6ad55',
+          400: '#e67e22',  // Primary accent - Anthropic-inspired
+          500: '#d35400',  // Hover state
+          600: '#b84a00',
+        },
+        amber: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#f39c12',  // Dark mode accent - glowing amber
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        // Keep existing colors for backwards compatibility
         neutral: {
           50: '#fafafa', // Main background
         },
-        // Dark mode colors added to support the new scheme
         gray: {
           900: '#171717', // Dark mode main background
           800: '#1f1f1f', // Dark mode panel background
