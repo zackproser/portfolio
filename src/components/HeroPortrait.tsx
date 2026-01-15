@@ -18,7 +18,7 @@ export default function HeroPortrait() {
   const isDark = mounted && resolvedTheme === 'dark'
 
   return (
-    <div className="flex flex-col items-center lg:items-end">
+    <div className="flex flex-col items-center lg:items-end lg:-mt-8">
       {/* SVG filter for hardcore pencil sketch effect */}
       <svg className="absolute w-0 h-0">
         <defs>
@@ -62,8 +62,8 @@ export default function HeroPortrait() {
             : 'bg-parchment-300/60 shadow-inner blur-md'
         }`} />
 
-        {/* Main portrait */}
-        <div className={`relative w-80 h-80 md:w-[380px] md:h-[380px] lg:w-[420px] lg:h-[420px] overflow-hidden shadow-2xl ${
+        {/* Main portrait - large size, positioned higher */}
+        <div className={`relative w-96 h-96 md:w-[440px] md:h-[440px] lg:w-[500px] lg:h-[500px] overflow-hidden shadow-2xl ${
           isDark
             ? 'rounded-2xl ring-2 ring-indigo-500/50'
             : 'rounded-xl ring-2 ring-parchment-400/50'
