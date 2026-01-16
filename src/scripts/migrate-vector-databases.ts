@@ -220,17 +220,28 @@ async function main() {
   console.log('Data sources created.\n');
 
   // Import the static databases
-  // In production, uncomment this:
-  // const { databases } = await import('../data/databases');
+  const { databases } = await import('../data/databases');
 
-  // For demonstration, we'll just log what would happen
-  console.log('To complete migration:');
-  console.log('1. Uncomment the import statement above');
-  console.log('2. Run: npx tsx src/scripts/migrate-vector-databases.ts');
-  console.log('3. The script will migrate all databases and mark estimates accordingly');
+  console.log(`Found ${databases.length} databases to migrate\n`);
 
-  console.log('\nMigration script ready. Data sources created:');
-  console.log(dataSources);
+  // Migrate each database
+  for (const db of databases) {
+    try {
+      await migrateDatabase(db as unknown as StaticDatabase, dataSources);
+      console.log(`  ✓ Migrated ${db.name}`);
+    } catch (error) {
+      console.error(`  ✗ Failed to migrate ${db.name}:`, error);
+    }
+  }
+
+  console.log('\nMigration complete!');
+
+  // Summary
+  const count = await prisma.vectorDatabase.count();
+  const metricsCount = await prisma.vectorDatabaseMetric.count();
+  console.log(`\nDatabase now contains:`);
+  console.log(`  - ${count} vector databases`);
+  console.log(`  - ${metricsCount} field metrics`);
 }
 
 // Export for use as module
