@@ -8,6 +8,9 @@ import { createMetadata } from '@/utils/createMetadata'
 import { getToolsDataQualitySummary } from '@/lib/tool-service'
 import DevToolsWrapper from './devtools-wrapper'
 
+// Use dynamic rendering to fetch fresh data from database
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = createMetadata({
   title: 'AI-Assisted Developer Tools Compared',
   description: 'Find and compare the best AI development tools for your next project',

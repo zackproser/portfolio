@@ -5,10 +5,11 @@ import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useEffect } from "react"
 import { cn } from "@/lib/utils"
-import { 
-  LayoutDashboard, 
-  Wrench, 
-  Tags, 
+import {
+  LayoutDashboard,
+  Wrench,
+  Tags,
+  Database,
   LogOut
 } from "lucide-react"
 
@@ -50,6 +51,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: "Tools",
       href: "/admin/tools" as any,
       icon: Wrench
+    },
+    {
+      title: "Vector DBs",
+      href: "/admin/vectordatabases" as any,
+      icon: Database
     },
     {
       title: "Categories",

@@ -4,6 +4,9 @@ import { DatabaseComparisonTool } from "@/app/vectordatabases/DatabaseComparison
 import { ChatInterface } from "@/components/chat-interface"
 import VectorDatabasesWrapper from "./vectordatabases-wrapper"
 
+// Use dynamic rendering to fetch fresh data from database
+export const dynamic = 'force-dynamic'
+
 export default async function Page() {
   // Try to fetch from database first, fall back to static data
   let databases;
