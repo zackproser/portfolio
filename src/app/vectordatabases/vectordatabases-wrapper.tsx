@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
-import Callout from "@/components/Callout"
+import { DataQualityBanner } from "@/components/data-quality-indicator"
 
 interface VectorDatabasesWrapperProps {
   children: React.ReactNode
@@ -25,9 +25,7 @@ export default function VectorDatabasesWrapper({ children }: VectorDatabasesWrap
         : 'bg-gradient-to-b from-parchment-50 via-parchment-100 to-parchment-200'
     }`}>
       <div className="container mx-auto py-8 px-4">
-        <Callout type="announcement" title="This experience is under construction" className="mb-6">
-          We&apos;re actively improving accuracy and coverage. Some metrics are estimates based on available documentation and may not reflect exact benchmarks.
-        </Callout>
+        <DataQualityBanner className="mb-6" />
         <h1 className={`font-serif text-4xl md:text-5xl font-bold text-center mb-2 ${
           isDark ? '!text-amber-400' : '!text-burnt-400'
         }`}>

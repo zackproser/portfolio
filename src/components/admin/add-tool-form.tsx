@@ -14,10 +14,10 @@ import { addTool } from "@/actions/tool-actions"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { toolFormSchema, type ToolFormValues } from "@/schemas/tool-schema"
-import type { Tool } from "@prisma/client"
+import type { Prisma } from "@prisma/client"
 
-// Type for action data
-type AddToolActionData = Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>;
+// Type for action data - use Prisma's input type for flexibility
+type AddToolActionData = Prisma.ToolCreateInput;
 
 interface AddToolFormProps {
   onSuccess?: () => void
@@ -61,8 +61,12 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
 
     try {
       // Prepare data for the server action, performing null conversions here
+      // Generate slug from name
+      const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
       const dataForAction: AddToolActionData = {
         name: data.name,
+        slug,
         description: data.description,
         category: data.category,
         websiteUrl: data.websiteUrl,
@@ -84,6 +88,7 @@ export function AddToolForm({ onSuccess }: AddToolFormProps) {
         pros: data.pros ? data.pros.split(",").map(s => s.trim()).filter(Boolean) : [],
         cons: data.cons ? data.cons.split(",").map(s => s.trim()).filter(Boolean) : [],
         languages: data.languages ? data.languages.split(",").map(s => s.trim()).filter(Boolean) : [],
+        // New metadata fields are optional and will default to null in the database
       };
 
       // Validate required fields that might have become null if Prisma doesn't allow null

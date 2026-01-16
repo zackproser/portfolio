@@ -16,13 +16,14 @@ model User {
   githubUsername      String?              @map("github_username")
   avatarUrl           String?              @map("avatar_url")
   followersCount      Int?                 @map("followers_count")
+  audience_segment    String?
   accounts            Account[]
+  chatSessions        ChatSession[]
   notifications       EmailNotification[]
   freeChapterRequests FreeChapterRequest[]
   leads               Lead[]
   purchases           Purchase[]
   sessions            Session[]
-  chatSessions        ChatSession[]
 
   @@map("users")
 }
@@ -111,39 +112,42 @@ model FreeChapterRequest {
 }
 
 model VectorDatabase {
-  id                     String   @id @default(cuid())
-  name                   String   @unique
+  id                     String                 @id @default(cuid())
+  name                   String                 @unique
+  slug                   String?                @unique
   logoId                 String
   description            String
-  createdAt              DateTime @default(now()) @map("created_at")
-  updatedAt              DateTime @updatedAt @map("updated_at")
-  companyName            String   @map("company_name")
-  companyFounded         Int      @map("company_founded")
-  companyFunding         String   @map("company_funding")
-  companyEmployees       Int      @map("company_employees")
-  businessInfo           Json?    @map("business_info")
-  performanceLatency     String   @map("performance_latency")
-  performanceThroughput  String   @map("performance_throughput")
-  performanceScalability String   @map("performance_scalability")
-  queryLatencyMs         Int      @map("query_latency_ms")
-  indexingSpeed          Int      @map("indexing_speed_vectors_per_sec")
-  memoryUsageMb          Int      @map("memory_usage_mb")
-  scalabilityScore       Int      @map("scalability_score")
-  accuracyScore          Int      @map("accuracy_score")
-  features               Json     @map("features")
-  security               Json     @map("security")
-  algorithms             Json     @map("algorithms")
-  searchCapabilities     Json     @map("search_capabilities")
-  aiCapabilities         Json     @map("ai_capabilities")
-  deployment             Json?    @map("deployment")
-  scalabilityInfo        Json?    @map("scalability_info")
-  dataManagement         Json?    @map("data_management")
-  vectorSimilaritySearch Json?    @map("vector_similarity_search")
-  integrationApi         Json?    @map("integration_api")
-  communityEcosystem     Json?    @map("community_ecosystem")
-  pricing                Json?    @map("pricing")
-  additionalFeatures     Json?    @map("additional_features")
-  specificDetails        Json?    @map("specific_details")
+  createdAt              DateTime               @default(now()) @map("created_at")
+  updatedAt              DateTime               @updatedAt @map("updated_at")
+  dataLastVerified       DateTime?              @map("data_last_verified")
+  companyName            String                 @map("company_name")
+  companyFounded         Int                    @map("company_founded")
+  companyFunding         String                 @map("company_funding")
+  companyEmployees       Int                    @map("company_employees")
+  businessInfo           Json?                  @map("business_info")
+  performanceLatency     String                 @map("performance_latency")
+  performanceThroughput  String                 @map("performance_throughput")
+  performanceScalability String                 @map("performance_scalability")
+  queryLatencyMs         Int                    @map("query_latency_ms")
+  indexingSpeed          Int                    @map("indexing_speed_vectors_per_sec")
+  memoryUsageMb          Int                    @map("memory_usage_mb")
+  scalabilityScore       Int                    @map("scalability_score")
+  accuracyScore          Int                    @map("accuracy_score")
+  features               Json                   @map("features")
+  security               Json                   @map("security")
+  algorithms             Json                   @map("algorithms")
+  searchCapabilities     Json                   @map("search_capabilities")
+  aiCapabilities         Json                   @map("ai_capabilities")
+  deployment             Json?                  @map("deployment")
+  scalabilityInfo        Json?                  @map("scalability_info")
+  dataManagement         Json?                  @map("data_management")
+  vectorSimilaritySearch Json?                  @map("vector_similarity_search")
+  integrationApi         Json?                  @map("integration_api")
+  communityEcosystem     Json?                  @map("community_ecosystem")
+  pricing                Json?                  @map("pricing")
+  additionalFeatures     Json?                  @map("additional_features")
+  specificDetails        Json?                  @map("specific_details")
+  metrics                VectorDatabaseMetric[]
 
   @@map("vector_databases")
 }
@@ -167,53 +171,163 @@ model Lead {
 }
 
 model ChatSession {
-  id          String        @id @default(cuid())
-  userId      String?       @map("user_id")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  messages    ChatMessage[]
-
-  user        User?         @relation(fields: [userId], references: [id])
+  id        String        @id @default(cuid())
+  userId    String?       @map("user_id")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  messages  ChatMessage[]
+  user      User?         @relation(fields: [userId], references: [id])
 
   @@map("chat_sessions")
 }
 
 model ChatMessage {
-  id          String      @id @default(cuid())
-  sessionId   String      @map("session_id")
-  role        String
-  content     String
-  createdAt   DateTime    @default(now()) @map("created_at")
-
-  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id        String      @id @default(cuid())
+  sessionId String      @map("session_id")
+  role      String
+  content   String
+  createdAt DateTime    @default(now()) @map("created_at")
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
   @@map("chat_messages")
 }
 
 model Tool {
-  id                   String    @id @default(cuid())
+  id                   String       @id @default(cuid())
   name                 String
+  slug                 String?      @unique
   description          String
-  logoUrl              String?   @map("logo_url")
+  logoUrl              String?      @map("logo_url")
   category             String
   pricing              String?
-  websiteUrl           String    @map("website_url")
-  githubUrl            String?   @map("github_url")
-  openSource           Boolean?  @map("open_source")
-  apiAccess            Boolean?  @map("api_access")
-  documentationQuality String?   @map("documentation_quality")
-  communitySize        String?   @map("community_size")
-  lastUpdated          String?   @map("last_updated")
+  websiteUrl           String       @map("website_url")
+  githubUrl            String?      @map("github_url")
+  openSource           Boolean?     @map("open_source")
+  apiAccess            Boolean?     @map("api_access")
+  documentationQuality String?      @map("documentation_quality")
+  communitySize        String?      @map("community_size")
+  lastUpdated          String?      @map("last_updated")
   features             String[]
   pros                 String[]
   cons                 String[]
   license              String?
   languages            String[]
-  reviewCount          Int?      @map("review_count")
-  reviewUrl            String?   @map("review_url")
-  createdAt            DateTime  @default(now()) @map("created_at")
-  updatedAt            DateTime  @updatedAt @map("updated_at")
+  reviewCount          Int?         @map("review_count")
+  reviewUrl            String?      @map("review_url")
+  dataLastVerified     DateTime?    @map("data_last_verified")
+  createdAt            DateTime     @default(now()) @map("created_at")
+  updatedAt            DateTime     @updatedAt @map("updated_at")
+  metrics              ToolMetric[]
 
   @@map("tools")
+}
+
+// Data provenance tracking
+model DataSource {
+  id          String   @id @default(cuid())
+  name        String   // e.g., "Official API", "GitHub Stars", "User Report"
+  url         String?  // Source URL if applicable
+  type        String   // "official", "api", "community", "estimate"
+  reliability Float    @default(0.5) // 0-1 score
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  vectorDatabaseMetrics VectorDatabaseMetric[]
+  toolMetrics           ToolMetric[]
+
+  @@map("data_sources")
+}
+
+// Per-field metadata for vector databases
+model VectorDatabaseMetric {
+  id         String    @id @default(cuid())
+  databaseId String    @map("database_id")
+  fieldName  String    @map("field_name")
+  isEstimate Boolean   @default(true) @map("is_estimate")
+  confidence Float?    // 0-1 confidence score
+  sourceId   String?   @map("source_id")
+  verifiedBy String?   @map("verified_by") // Who verified this data
+  verifiedAt DateTime? @map("verified_at")
+  notes      String?
+
+  database VectorDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+  source   DataSource?    @relation(fields: [sourceId], references: [id])
+
+  @@unique([databaseId, fieldName])
+  @@map("vector_database_metrics")
+}
+
+// Per-field metadata for tools
+model ToolMetric {
+  id         String    @id @default(cuid())
+  toolId     String    @map("tool_id")
+  fieldName  String    @map("field_name")
+  isEstimate Boolean   @default(true) @map("is_estimate")
+  confidence Float?
+  sourceId   String?   @map("source_id")
+  verifiedBy String?   @map("verified_by")
+  verifiedAt DateTime? @map("verified_at")
+  notes      String?
+
+  tool   Tool        @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  source DataSource? @relation(fields: [sourceId], references: [id])
+
+  @@unique([toolId, fieldName])
+  @@map("tool_metrics")
+}
+
+model newsletter_expansions {
+  id              String   @id
+  newsletter_id   String
+  bulletPoints    String[]
+  expandedContent String
+  model           String   @default("claude-sonnet-4")
+  tokens_used     Int?
+  created_at      DateTime @default(now())
+
+  @@index([newsletter_id])
+}
+
+model newsletter_subscriptions {
+  id                String    @id
+  email             String    @unique
+  first_name        String?
+  last_name         String?
+  status            String    @default("PENDING")
+  source            String?   @default("website")
+  resend_contact_id String?   @unique
+  subscribed_at     DateTime?
+  unsubscribed_at   DateTime?
+  last_synced_at    DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime
+
+  @@index([email, status])
+  @@index([status])
+}
+
+model newsletters {
+  id                  String    @id
+  slug                String    @unique
+  title               String
+  description         String?
+  status              String    @default("draft")
+  bulletPoints        String[]  @default([])
+  contentMdx          String?
+  contentHtml         String?
+  resend_broadcast_id String?   @unique
+  resend_audience_id  String?
+  scheduled_at        DateTime?
+  sent_at             DateTime?
+  published_at        DateTime?
+  emails_sent         Int       @default(0)
+  emails_delivered    Int       @default(0)
+  emails_opened       Int       @default(0)
+  emails_clicked      Int       @default(0)
+  emails_bounced      Int       @default(0)
+  created_at          DateTime  @default(now())
+  updated_at          DateTime
+
+  @@index([sent_at])
+  @@index([status, scheduled_at])
 }
