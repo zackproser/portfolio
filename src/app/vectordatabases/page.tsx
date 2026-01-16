@@ -1,13 +1,26 @@
+import { getVectorDatabasesFromDb, getDataQualitySummaryFromDb } from "@/lib/vector-database-service"
 import { getDatabases } from "@/lib/getDatabases"
 import { DatabaseComparisonTool } from "@/app/vectordatabases/DatabaseComparisonTool"
 import { ChatInterface } from "@/components/chat-interface"
 import VectorDatabasesWrapper from "./vectordatabases-wrapper"
 
-export default function Page() {
-  const databases = getDatabases();
+export default async function Page() {
+  // Try to fetch from database first, fall back to static data
+  let databases;
+  let dataQuality;
+
+  try {
+    databases = await getVectorDatabasesFromDb();
+    dataQuality = await getDataQualitySummaryFromDb();
+  } catch (error) {
+    // Fall back to static data if database is unavailable
+    console.warn('Database unavailable, using static data:', error);
+    databases = getDatabases();
+    dataQuality = null;
+  }
 
   return (
-    <VectorDatabasesWrapper>
+    <VectorDatabasesWrapper dataQuality={dataQuality}>
       <DatabaseComparisonTool databases={databases} />
       <ChatInterface />
     </VectorDatabasesWrapper>

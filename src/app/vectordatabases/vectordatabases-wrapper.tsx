@@ -4,11 +4,22 @@ import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
 import { DataQualityBanner } from "@/components/data-quality-indicator"
 
-interface VectorDatabasesWrapperProps {
-  children: React.ReactNode
+interface DataQualitySummary {
+  totalDatabases: number;
+  totalMetrics: number;
+  estimatedMetrics: number;
+  verifiedMetrics: number;
+  verifiedPercentage: number;
+  lastUpdate: Date | null;
+  canRemoveBetaBanner: boolean;
 }
 
-export default function VectorDatabasesWrapper({ children }: VectorDatabasesWrapperProps) {
+interface VectorDatabasesWrapperProps {
+  children: React.ReactNode;
+  dataQuality?: DataQualitySummary | null;
+}
+
+export default function VectorDatabasesWrapper({ children, dataQuality }: VectorDatabasesWrapperProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -18,6 +29,9 @@ export default function VectorDatabasesWrapper({ children }: VectorDatabasesWrap
 
   const isDark = mounted && resolvedTheme === 'dark'
 
+  // Show beta banner only if data quality doesn't meet threshold
+  const showBetaBanner = !dataQuality?.canRemoveBetaBanner
+
   return (
     <main className={`min-h-screen transition-colors duration-500 ${
       isDark
@@ -25,7 +39,13 @@ export default function VectorDatabasesWrapper({ children }: VectorDatabasesWrap
         : 'bg-gradient-to-b from-parchment-50 via-parchment-100 to-parchment-200'
     }`}>
       <div className="container mx-auto py-8 px-4">
-        <DataQualityBanner className="mb-6" />
+        {showBetaBanner && (
+          <DataQualityBanner
+            className="mb-6"
+            verifiedPercentage={dataQuality?.verifiedPercentage}
+            totalDatabases={dataQuality?.totalDatabases}
+          />
+        )}
         <h1 className={`font-serif text-4xl md:text-5xl font-bold text-center mb-2 ${
           isDark ? '!text-amber-400' : '!text-burnt-400'
         }`}>

@@ -4,11 +4,22 @@ import { useTheme } from 'next-themes'
 import { useState, useEffect } from 'react'
 import { DataQualityBanner } from '@/components/data-quality-indicator'
 
-interface DevToolsWrapperProps {
-  children: React.ReactNode
+interface DataQualitySummary {
+  totalTools: number;
+  totalMetrics: number;
+  estimatedMetrics: number;
+  verifiedMetrics: number;
+  verifiedPercentage: number;
+  lastUpdate: Date | null;
+  canRemoveBetaBanner: boolean;
 }
 
-export default function DevToolsWrapper({ children }: DevToolsWrapperProps) {
+interface DevToolsWrapperProps {
+  children: React.ReactNode;
+  dataQuality?: DataQualitySummary | null;
+}
+
+export default function DevToolsWrapper({ children, dataQuality }: DevToolsWrapperProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -17,6 +28,9 @@ export default function DevToolsWrapper({ children }: DevToolsWrapperProps) {
   }, [])
 
   const isDark = mounted && resolvedTheme === 'dark'
+
+  // Show beta banner only if data quality doesn't meet threshold
+  const showBetaBanner = !dataQuality?.canRemoveBetaBanner
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${
@@ -32,7 +46,13 @@ export default function DevToolsWrapper({ children }: DevToolsWrapperProps) {
             : 'bg-gradient-to-r from-burnt-400/10 to-burnt-600/10'
         }`} />
         <div className="container mx-auto px-4 pt-16 pb-8 relative">
-          <DataQualityBanner className="mb-6" />
+          {showBetaBanner && (
+            <DataQualityBanner
+              className="mb-6"
+              verifiedPercentage={dataQuality?.verifiedPercentage}
+              totalDatabases={dataQuality?.totalTools}
+            />
+          )}
           <header className="mb-12 text-center">
             <h1 className={`font-serif text-4xl md:text-5xl font-bold tracking-tight mb-4 ${
               isDark ? '!text-amber-400' : '!text-burnt-400'

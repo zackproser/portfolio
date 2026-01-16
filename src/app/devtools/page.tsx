@@ -5,6 +5,7 @@ import { ComparisonBar } from "@/components/comparison-bar"
 import { ToolsProvider } from "@/components/tools-provider"
 import { NaturalLanguageSearch } from "@/components/natural-language-search"
 import { createMetadata } from '@/utils/createMetadata'
+import { getToolsDataQualitySummary } from '@/lib/tool-service'
 import DevToolsWrapper from './devtools-wrapper'
 
 export const metadata: Metadata = createMetadata({
@@ -12,10 +13,19 @@ export const metadata: Metadata = createMetadata({
   description: 'Find and compare the best AI development tools for your next project',
 });
 
-export default function DevToolsPage() {
+export default async function DevToolsPage() {
+  let dataQuality;
+
+  try {
+    dataQuality = await getToolsDataQualitySummary();
+  } catch (error) {
+    console.warn('Failed to fetch tool data quality:', error);
+    dataQuality = null;
+  }
+
   return (
     <ToolsProvider>
-      <DevToolsWrapper>
+      <DevToolsWrapper dataQuality={dataQuality}>
         <NaturalLanguageSearch />
         <div className="mt-12">
           <SearchFilters />
