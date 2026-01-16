@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { trackSearchQuery } from "@/actions/query-tracking-actions";
 
 export default function SearchFilter({ databases, onFilter, onReset, searchTerm: externalSearchTerm }) {
   const [search, setSearch] = useState(externalSearchTerm || '');
@@ -12,15 +13,43 @@ export default function SearchFilter({ databases, onFilter, onReset, searchTerm:
     free_tier: false,
     open_source: false,
   });
+  const trackingTimeoutRef = useRef(null);
 
   useEffect(() => {
     setSearch(externalSearchTerm || '');
   }, [externalSearchTerm]);
 
+  // Debounced query tracking
+  const trackQuery = useCallback((query, resultCount) => {
+    if (trackingTimeoutRef.current) {
+      clearTimeout(trackingTimeoutRef.current);
+    }
+
+    if (query.trim().length >= 2) {
+      trackingTimeoutRef.current = setTimeout(() => {
+        trackSearchQuery({
+          query: query.trim(),
+          source: 'vectordatabases',
+          resultCount,
+        });
+      }, 1500); // Track after 1.5s of no typing
+    }
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (trackingTimeoutRef.current) {
+        clearTimeout(trackingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value;
     setSearch(newSearchTerm);
-    applyFilters(newSearchTerm, filters);
+    const filtered = applyFilters(newSearchTerm, filters);
+    trackQuery(newSearchTerm, filtered.length);
   };
 
   const handleFilterChange = (key) => {
@@ -51,6 +80,7 @@ export default function SearchFilter({ databases, onFilter, onReset, searchTerm:
       return matchesSearch && matchesFilters;
     });
     onFilter(filtered, searchTerm);
+    return filtered;
   };
 
   const handleReset = () => {

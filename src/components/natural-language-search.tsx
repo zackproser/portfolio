@@ -47,17 +47,17 @@ export function NaturalLanguageSearch() {
     <div className="max-w-3xl mx-auto">
       <form onSubmit={handleSearch} className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-300 h-5 w-5" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-parchment-500 dark:text-slate-400 h-5 w-5" />
           <input
             type="text"
             placeholder="Ask anything about AI development tools..."
-            className="w-full h-14 pl-12 pr-4 rounded-full border border-slate-200 dark:border-gray-600 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent text-lg bg-white dark:bg-gray-800 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400"
+            className="w-full h-14 pl-12 pr-4 rounded-full border border-parchment-300 dark:border-slate-600 shadow-lg focus:outline-none focus:ring-2 focus:ring-burnt-400 dark:focus:ring-amber-500 focus:border-transparent text-lg bg-white dark:bg-slate-800 text-charcoal-50 dark:text-parchment-100 placeholder:text-parchment-500 dark:placeholder:text-slate-400"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <Button
             type="submit"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-400 dark:to-blue-600 hover:from-blue-700 hover:to-blue-900 dark:hover:from-blue-500 dark:hover:to-blue-700 text-white"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Search
@@ -72,7 +72,7 @@ export function NaturalLanguageSearch() {
             onClick={() => {
               setQuery(example)
             }}
-            className="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-gray-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-gray-600 transition-colors"
+            className="text-xs px-3 py-1 rounded-full bg-parchment-100 dark:bg-slate-700 text-parchment-600 dark:text-slate-300 hover:bg-parchment-200 dark:hover:bg-slate-600 border border-parchment-200 dark:border-slate-600 transition-colors"
           >
             {example}
           </button>

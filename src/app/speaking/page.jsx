@@ -177,7 +177,7 @@ function ExternalLinkButton({ link }) {
       case 'youtube':
         return 'bg-red-600 hover:bg-red-700 text-white';
       case 'blog':
-        return 'bg-burnt-400 hover:bg-burnt-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white';
+        return 'bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white';
       case 'twitter':
         return 'bg-sky-500 hover:bg-sky-600 text-white';
       default:
@@ -208,7 +208,7 @@ function SpeakingCard({ engagement }) {
   return (
     <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
-      <div className="relative h-48 bg-gradient-to-br from-blue-600 to-purple-700">
+      <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
         <Image src={engagement.image}
           alt={engagement.title}
           fill
@@ -239,7 +239,7 @@ function SpeakingCard({ engagement }) {
           {engagement.title}
         </h3>
         
-        <p className="text-burnt-400 dark:text-sky-400 font-medium mb-3">
+        <p className="text-burnt-400 dark:text-amber-400 font-medium mb-3">
           {engagement.event}
         </p>
         
@@ -264,7 +264,7 @@ function SpeakingCard({ engagement }) {
             {engagement.topics.map((topic, index) => (
               <span
                 key={index}
-                className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 text-xs rounded-md"
+                className="inline-block px-2 py-1 bg-burnt-400/10 dark:bg-amber-500/20 text-burnt-500 dark:text-amber-400 text-xs rounded-md"
               >
                 {topic}
               </span>
@@ -321,7 +321,7 @@ export default function Speaking() {
         {/* Public Engagements */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6 flex items-center gap-2">
-            <Mic className="h-6 w-6 text-blue-600" />
+            <Mic className="h-6 w-6 text-burnt-400 dark:text-amber-400" />
             Conference Talks & Public Workshops
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -382,7 +382,7 @@ export default function Speaking() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 bg-burnt-400 hover:bg-burnt-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white font-semibold rounded-md transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-semibold rounded-md transition-colors"
             >
               Book a Speaking Engagement
             </Link>
