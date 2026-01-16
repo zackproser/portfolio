@@ -10,6 +10,7 @@ import {
   Wrench,
   Tags,
   Database,
+  BarChart3,
   LogOut
 } from "lucide-react"
 
@@ -61,6 +62,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: "Categories",
       href: "/admin/categories" as any,
       icon: Tags
+    },
+    {
+      title: "Insights",
+      href: "/admin/insights" as any,
+      icon: BarChart3
     }
   ]
 

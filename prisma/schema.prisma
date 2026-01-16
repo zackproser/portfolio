@@ -276,6 +276,49 @@ model ToolMetric {
   @@map("tool_metrics")
 }
 
+// Search query tracking for content insights
+model SearchQuery {
+  id          String   @id @default(cuid())
+  query       String   // The actual search query
+  normalized  String   // Lowercase, trimmed version for grouping
+  source      String   // "vectordatabases", "devtools", "chat"
+  category    String?  // Auto-categorized topic
+  intent      String?  // "comparison", "learning", "evaluation", "troubleshooting"
+  resultCount Int?     @map("result_count") // How many results were shown
+  clicked     Boolean  @default(false) // Did user click a result?
+  userId      String?  @map("user_id") // Optional user association
+  sessionId   String?  @map("session_id") // Browser session
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([normalized])
+  @@index([source])
+  @@index([category])
+  @@index([createdAt])
+  @@map("search_queries")
+}
+
+// Aggregated query insights (computed periodically)
+model QueryInsight {
+  id             String   @id @default(cuid())
+  normalizedQuery String  @unique @map("normalized_query")
+  totalCount     Int      @default(1) @map("total_count")
+  uniqueSessions Int      @default(1) @map("unique_sessions")
+  avgResultCount Float?   @map("avg_result_count")
+  clickRate      Float?   @map("click_rate")
+  category       String?
+  intent         String?
+  suggestedContent String? @map("suggested_content") // AI-suggested content to create
+  lastSeen       DateTime @map("last_seen")
+  firstSeen      DateTime @map("first_seen")
+  trending       Boolean  @default(false) // Spiking in frequency?
+  contentCreated Boolean  @default(false) @map("content_created") // Have we created content for this?
+
+  @@index([totalCount])
+  @@index([trending])
+  @@index([category])
+  @@map("query_insights")
+}
+
 model newsletter_expansions {
   id              String   @id
   newsletter_id   String
