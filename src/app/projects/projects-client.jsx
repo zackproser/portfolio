@@ -320,8 +320,8 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                         </div>
                       </div>
                       <CardHeader className="pb-2">
-                        <CardTitle className={`text-xl font-bold group-hover:${isDark ? 'text-amber-400' : 'text-burnt-400'} transition-colors ${
-                          isDark ? 'text-white' : 'text-charcoal-50'
+                        <CardTitle className={`text-xl font-bold transition-colors ${
+                          isDark ? 'text-white group-hover:text-amber-400' : 'text-charcoal-50 group-hover:text-burnt-400'
                         }`}>
                           {project.name}
                           <ArrowUpRight size={16} className={`inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity ${
