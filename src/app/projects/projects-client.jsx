@@ -356,11 +356,29 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                           )}
                         </div>
                       </CardContent>
-                      <CardFooter className={`pt-0 text-sm flex items-center ${
+                      <CardFooter className={`pt-0 text-sm flex items-center justify-between ${
                         isDark ? 'text-slate-400' : 'text-parchment-500'
                       }`}>
-                        <Code2 size={14} className="mr-1" />
-                        {project.category}
+                        <span className="flex items-center">
+                          <Code2 size={14} className="mr-1" />
+                          {project.category}
+                        </span>
+                        {project.blogLink && project.link && (
+                          <a
+                            href={project.link}
+                            target={isExternal(project.link) ? '_blank' : undefined}
+                            rel={isExternal(project.link) ? 'noopener noreferrer' : undefined}
+                            onClick={(e) => e.stopPropagation()}
+                            className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${
+                              isDark
+                                ? 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                                : 'bg-parchment-100 hover:bg-parchment-200 text-parchment-600'
+                            }`}
+                          >
+                            {project.link.includes('github.com') ? <Github size={12} /> : <ExternalLink size={12} />}
+                            {project.link.includes('github.com') ? 'Code' : 'Project'}
+                          </a>
+                        )}
                       </CardFooter>
                     </Card>
                   </Link>
@@ -452,12 +470,30 @@ export default function ProjectsClient({ projects, categories, allTags, companie
                               </Badge>
                             ))}
                           </div>
-                          <span className={`text-sm flex items-center ${
-                            isDark ? 'text-slate-400' : 'text-parchment-500'
-                          }`}>
-                            <Code2 size={14} className="mr-1" />
-                            {project.category}
-                          </span>
+                          <div className="flex items-center gap-3">
+                            {project.blogLink && project.link && (
+                              <a
+                                href={project.link}
+                                target={isExternal(project.link) ? '_blank' : undefined}
+                                rel={isExternal(project.link) ? 'noopener noreferrer' : undefined}
+                                onClick={(e) => e.stopPropagation()}
+                                className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${
+                                  isDark
+                                    ? 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                                    : 'bg-parchment-100 hover:bg-parchment-200 text-parchment-600'
+                                }`}
+                              >
+                                {project.link.includes('github.com') ? <Github size={12} /> : <ExternalLink size={12} />}
+                                {project.link.includes('github.com') ? 'Code' : 'Project'}
+                              </a>
+                            )}
+                            <span className={`text-sm flex items-center ${
+                              isDark ? 'text-slate-400' : 'text-parchment-500'
+                            }`}>
+                              <Code2 size={14} className="mr-1" />
+                              {project.category}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
