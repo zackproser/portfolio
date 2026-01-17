@@ -18,8 +18,8 @@ export default async function InsightsPage() {
 
   // Get source-specific data
   const [vectorDbQueries, devToolsQueries] = await Promise.all([
-    getTopQueries({ limit: 10, days: 30 }),
-    getTopQueries({ limit: 10, days: 30 }),
+    getTopQueries({ source: 'vector_databases', limit: 10, days: 30 }),
+    getTopQueries({ source: 'dev_tools', limit: 10, days: 30 }),
   ])
 
   return (

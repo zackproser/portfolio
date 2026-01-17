@@ -62,7 +62,7 @@ export default async function VectorDatabaseAdminPage() {
             {qualitySummary.verifiedPercentage}% / 80% to remove banner
           </span>
         </div>
-        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div className="relative h-4 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className={`h-full transition-all ${
               qualitySummary.verifiedPercentage >= 80

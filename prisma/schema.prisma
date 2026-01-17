@@ -343,7 +343,7 @@ model newsletter_subscriptions {
   unsubscribed_at   DateTime?
   last_synced_at    DateTime?
   created_at        DateTime  @default(now())
-  updated_at        DateTime
+  updated_at        DateTime  @updatedAt
 
   @@index([email, status])
   @@index([status])
@@ -369,7 +369,7 @@ model newsletters {
   emails_clicked      Int       @default(0)
   emails_bounced      Int       @default(0)
   created_at          DateTime  @default(now())
-  updated_at          DateTime
+  updated_at          DateTime  @updatedAt
 
   @@index([sent_at])
   @@index([status, scheduled_at])

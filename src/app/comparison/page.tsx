@@ -174,28 +174,30 @@ export default function ComparisonPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Doughnut
+              <Bar
                 data={{
-                  labels: ['Open Source', 'Closed Source', 'API Access', 'No API'],
-                  datasets: [{
-                    data: [
-                      tools.filter(t => t.openSource).length,
-                      tools.filter(t => !t.openSource).length,
-                      tools.filter(t => t.apiAccess).length,
-                      tools.filter(t => !t.apiAccess).length,
-                    ],
-                    backgroundColor: [
-                      'rgba(34, 197, 94, 0.7)',
-                      'rgba(107, 114, 128, 0.7)',
-                      'rgba(59, 130, 246, 0.7)',
-                      'rgba(156, 163, 175, 0.7)',
-                    ],
-                    borderWidth: 1,
-                  }]
+                  labels: tools.map(t => t.name),
+                  datasets: [
+                    {
+                      label: 'Open Source',
+                      data: tools.map(t => t.openSource ? 1 : 0),
+                      backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                      borderColor: 'rgba(34, 197, 94, 1)',
+                      borderWidth: 1,
+                    },
+                    {
+                      label: 'API Access',
+                      data: tools.map(t => t.apiAccess ? 1 : 0),
+                      backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                      borderColor: 'rgba(59, 130, 246, 1)',
+                      borderWidth: 1,
+                    }
+                  ]
                 }}
                 options={{
                   responsive: true,
-                  plugins: { legend: { position: 'bottom' as const } }
+                  plugins: { legend: { position: 'bottom' as const } },
+                  scales: { y: { beginAtZero: true, max: 1, ticks: { stepSize: 1, callback: (value) => value === 1 ? 'Yes' : 'No' } } }
                 }}
               />
             </CardContent>
