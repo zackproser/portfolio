@@ -65,6 +65,7 @@ interface DataQualityBannerProps {
   className?: string
   verifiedPercentage?: number
   totalDatabases?: number
+  itemType?: string  // "databases" or "tools" - defaults to "databases"
   onLearnMore?: () => void
 }
 
@@ -72,6 +73,7 @@ export function DataQualityBanner({
   className = '',
   verifiedPercentage,
   totalDatabases,
+  itemType = 'databases',
   onLearnMore
 }: DataQualityBannerProps) {
   const [expanded, setExpanded] = useState(false)
@@ -120,7 +122,7 @@ export function DataQualityBanner({
           <p className={`text-sm ${textStyle}`}>
             {verifiedPercentage !== undefined && verifiedPercentage >= 80 ? (
               <>
-                Data for {totalDatabases || 'these'} databases has been verified from official sources.
+                Data for {totalDatabases || 'these'} {itemType} has been verified from official sources.
               </>
             ) : (
               <>
@@ -156,7 +158,7 @@ export function DataQualityBanner({
                     <span className="text-xs font-medium">{verifiedPercentage}%</span>
                   </div>
                   <p className="text-xs opacity-75">
-                    {totalDatabases} databases tracked with field-level verification status
+                    {totalDatabases} {itemType} tracked with field-level verification status
                   </p>
                 </div>
               )}

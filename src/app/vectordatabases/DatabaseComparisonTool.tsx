@@ -140,6 +140,16 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
     });
   }, [databasesWithValidIds, selectedDatabases, filteredDatabases]);
 
+  // Sanitize string to prevent XSS when used in dangerouslySetInnerHTML
+  const escapeHtml = (str: string) => {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+  }
+
   // Generate decision summary based on selected databases
   const getDecisionSummary = () => {
     if (filteredDatabases.length === 0) return null
@@ -152,14 +162,14 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
       (db.aiCapabilities?.scores?.llmIntegration ?? 0) >= 8 &&
       db.aiCapabilities?.supportedModels?.langchain === true
     )
-    if (ragBest) summaries.push(`**${ragBest.name}** has strong LLM & LangChain integration for RAG`)
+    if (ragBest) summaries.push(`**${escapeHtml(ragBest.name)}** has strong LLM & LangChain integration for RAG`)
 
     // Find easiest to start (serverless or cloud-native)
     const easyStart = filteredDatabases.find(db =>
       db.features?.serverless === true || (db.features?.cloudNative === true && db.pricing?.free_tier === true)
     )
     if (easyStart && easyStart.name !== ragBest?.name) {
-      summaries.push(`**${easyStart.name}** offers serverless/cloud-native for quick starts`)
+      summaries.push(`**${escapeHtml(easyStart.name)}** offers serverless/cloud-native for quick starts`)
     }
 
     // Find most secure (encryption + access control + audit logging)
@@ -169,13 +179,13 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
       db.security?.audit_logging === true
     )
     if (secure && secure.name !== ragBest?.name && secure.name !== easyStart?.name) {
-      summaries.push(`**${secure.name}** has comprehensive security features for enterprise`)
+      summaries.push(`**${escapeHtml(secure.name)}** has comprehensive security features for enterprise`)
     }
 
     // Find open source option
     const openSource = filteredDatabases.find(db => db.community_ecosystem?.open_source === true)
     if (openSource && !summaries.some(s => s.includes(openSource.name))) {
-      summaries.push(`**${openSource.name}** is open source for full control`)
+      summaries.push(`**${escapeHtml(openSource.name)}** is open source for full control`)
     }
 
     // Find best performance
@@ -183,7 +193,7 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
       .filter(db => !summaries.some(s => s.includes(db.name)))
       .sort((a, b) => (a.performance?.queryLatencyMs ?? 999) - (b.performance?.queryLatencyMs ?? 999))[0]
     if (fastDb && summaries.length < 3) {
-      summaries.push(`**${fastDb.name}** has lowest query latency (${fastDb.performance?.queryLatencyMs}ms)`)
+      summaries.push(`**${escapeHtml(fastDb.name)}** has lowest query latency (${fastDb.performance?.queryLatencyMs}ms)`)
     }
 
     return summaries.slice(0, 3)

@@ -51,6 +51,7 @@ export default function DevToolsWrapper({ children, dataQuality }: DevToolsWrapp
               className="mb-6"
               verifiedPercentage={dataQuality?.verifiedPercentage}
               totalDatabases={dataQuality?.totalTools}
+              itemType="tools"
             />
           )}
           <header className="mb-12 text-center">
