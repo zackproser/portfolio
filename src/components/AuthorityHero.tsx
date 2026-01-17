@@ -404,33 +404,129 @@ export default function AuthorityHero() {
               </div>
             </div>
 
-            {/* Research Areas Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Voice-Driven Development */}
+            {/* Research Areas Grid - Row 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Training Claude for Neurological Patterns */}
               <Link
-                href="/blog/walking-and-talking-with-ai"
+                href="/blog/training-claude-neurological-patterns"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
                   isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
                 <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
                   <Image
-                    src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp"
-                    alt="Walking and talking with AI"
+                    src="https://zackproser.b-cdn.net/images/claude-support.webp"
+                    alt="Training Claude for neurological patterns"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
                 <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
-                  Voice-Driven Development
+                  Training Claude for My Brain
                 </h3>
                 <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  Ship code at 179 WPM while hiking. Voice-first workflows with AI agents.
+                  Systematically teaching AI to compensate for ADHD/autism patterns. Collaborative intelligence.
                 </p>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${
                   isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
-                  Learn more
+                  Read the research
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </Link>
+
+              {/* Native macOS AI Installer */}
+              <Link
+                href="/blog/native-osx-app-ai-workflow-installer"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/ai-installer-hero.webp"
+                    alt="Native macOS AI workflow installer"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  Native macOS AI Installer
+                </h3>
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  Building Swift apps to install AI workflows. Better DX than another setup guide.
+                </p>
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
+                }`}>
+                  See the experiment
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </Link>
+
+              {/* Claude Skills as Runbooks */}
+              <Link
+                href="/blog/claude-skills-internal-training"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/claude-skills.webp"
+                    alt="Claude Skills as self-documenting runbooks"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  Skills as Living Runbooks
+                </h3>
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  Self-documenting processes you share with your team. Maybe bigger than MCP.
+                </p>
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
+                }`}>
+                  Explore the pattern
+                  <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </Link>
+            </div>
+
+            {/* Research Areas Grid - Row 2 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* WisprFlow Review */}
+              <Link
+                href="/blog/wisprflow-review"
+                className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
+                  isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
+                }`}
+              >
+                <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
+                  <Image
+                    src="https://zackproser.b-cdn.net/images/wisprflow.webp"
+                    alt="WisprFlow voice-to-text review"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  WisprFlow: 179 WPM Dev
+                </h3>
+                <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  The voice-to-text tool that unlocked untethered development. Full hands-on review.
+                </p>
+                <span className={`inline-flex items-center gap-1 text-sm font-medium ${
+                  isDark ? 'text-amber-400' : 'text-burnt-400'
+                }`}>
+                  Read the review
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -515,17 +611,17 @@ export default function AuthorityHero() {
               <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-4 ${
                 isDark ? 'bg-red-500/20 text-red-400' : 'bg-red-100 text-red-600'
               }`}>
-                DevSecCon 2025 Keynote
+                DevSecCon 2025 Keynote &bull; 32 Minutes
               </span>
               <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-charcoal-50'
               }`}>
-                Pioneer Voice-Driven Development
+                Ship Production Code from Mountain Trails
               </h2>
               <p className={`text-lg max-w-2xl mx-auto ${
                 isDark ? 'text-slate-300' : 'text-parchment-600'
               }`}>
-                Watch my DevSecCon 2025 keynote on orchestrating AI agents, voice-native workflows, and hardened CI/CD pipelines to ship secure production code from anywhere.
+                I traded the desk for the trail and kept shipping. Voice at 179 WPM, background AI agents, and hardened CI/CD that makes speed safe. Watch the full workflow in action.
               </p>
             </div>
 

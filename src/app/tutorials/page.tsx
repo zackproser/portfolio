@@ -49,7 +49,7 @@ export default async function TutorialsPage() {
     return (
       <Container className="mt-16 sm:mt-32">
         <header className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-blue-700 dark:text-blue-300 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-burnt-400 dark:text-amber-400 sm:text-5xl">
             Tutorials & Learning Paths
           </h1>
           <p className="mt-6 text-base text-gray-700 dark:text-gray-300">
@@ -57,14 +57,14 @@ export default async function TutorialsPage() {
           </p>
           <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
             Looking for complete, project-based guides? Browse our{' '}
-            <Link href="/products" className="underline font-medium text-blue-700 dark:text-blue-300">digital products</Link>.
+            <Link href="/products" className="underline font-medium text-burnt-400 dark:text-amber-400">digital products</Link>.
           </p>
         </header>
         <div className="mt-16 sm:mt-20">
           {tutorials.length > 0 && (
             <div className="space-y-20">
               <section>
-                <h2 className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+                <h2 className="text-2xl font-bold tracking-tight text-burnt-400 dark:text-amber-400">
                   Featured Tutorials
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -82,7 +82,7 @@ export default async function TutorialsPage() {
           {courses.length > 0 && (
             <div className="mt-20 space-y-20">
               <section>
-                <h2 className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">
+                <h2 className="text-2xl font-bold tracking-tight text-burnt-400 dark:text-amber-400">
                   Featured Courses
                 </h2>
                 <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">

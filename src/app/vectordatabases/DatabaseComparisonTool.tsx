@@ -198,10 +198,10 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
 
     // Find best performance
     const fastDb = filteredDatabases
-      .filter(db => !addedNames.has(db.name))
+      .filter(db => !addedNames.has(db.name) && db.performance?.queryLatencyMs !== undefined)
       .sort((a, b) => (a.performance?.queryLatencyMs ?? 999) - (b.performance?.queryLatencyMs ?? 999))[0]
-    if (fastDb && summaries.length < 3) {
-      summaries.push(`**${escapeHtml(fastDb.name)}** has lowest query latency (${fastDb.performance?.queryLatencyMs}ms)`)
+    if (fastDb && summaries.length < 3 && fastDb.performance?.queryLatencyMs !== undefined) {
+      summaries.push(`**${escapeHtml(fastDb.name)}** has lowest query latency (${fastDb.performance.queryLatencyMs}ms)`)
     }
 
     return summaries.slice(0, 3)

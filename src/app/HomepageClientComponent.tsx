@@ -233,7 +233,7 @@ export default function HomepageClientComponent({
                      image: embeddingsDemoHero
                    }} 
                  />
-                 <ContentCard 
+                 <ContentCard
                    key="tokenization-demo"
                    article={{
                      slug: '/demos/tokenize',
@@ -243,7 +243,7 @@ export default function HomepageClientComponent({
                      date: '2024-01-01',
                      type: 'demo',
                      image: tokenizationDemoHero
-                   }} 
+                   }}
                  />
                </div>
 

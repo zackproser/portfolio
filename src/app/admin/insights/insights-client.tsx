@@ -211,6 +211,51 @@ export function InsightsClient({
               )}
             </div>
           </div>
+
+          {/* Source-specific queries */}
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-900 dark:text-white">Vector DB Queries</h3>
+            </div>
+            <div className="p-4">
+              {vectorDbQueries.length === 0 ? (
+                <p className="text-slate-500 dark:text-slate-400 text-center py-4 text-sm">
+                  No vector database queries yet.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {vectorDbQueries.slice(0, 5).map((q, i) => (
+                    <div key={q.id} className="flex items-center justify-between py-1">
+                      <span className="text-sm text-slate-900 dark:text-white truncate">{q.normalizedQuery}</span>
+                      <span className="text-slate-500 dark:text-slate-400 font-mono text-xs">{q.totalCount}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-900 dark:text-white">Dev Tools Queries</h3>
+            </div>
+            <div className="p-4">
+              {devToolsQueries.length === 0 ? (
+                <p className="text-slate-500 dark:text-slate-400 text-center py-4 text-sm">
+                  No dev tools queries yet.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {devToolsQueries.slice(0, 5).map((q, i) => (
+                    <div key={q.id} className="flex items-center justify-between py-1">
+                      <span className="text-sm text-slate-900 dark:text-white truncate">{q.normalizedQuery}</span>
+                      <span className="text-slate-500 dark:text-slate-400 font-mono text-xs">{q.totalCount}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
