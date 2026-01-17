@@ -124,12 +124,6 @@ body {
   hanging-punctuation: first last;
 }
 
-/* First paragraph after heading - subtle drop cap effect could go here */
-.prose > h2 + p::first-letter,
-.prose > h3 + p::first-letter {
-  font-weight: 600;
-}
-
 /* Smooth selection highlighting - matches theme */
 .prose ::selection {
   @apply bg-amber-100 dark:bg-sky-900/50;
