@@ -79,12 +79,12 @@ export default function AppliedAiEngineerPage() {
       <TestimonialsSection />
       
       {/* Bottom CTA */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30 dark:from-gray-900 dark:via-blue-900/10 dark:to-indigo-900/10 border-t border-gray-200/60 dark:border-gray-800/60">
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-amber-50/30 to-orange-50/30 dark:from-gray-900 dark:via-amber-900/10 dark:to-orange-900/10 border-t border-gray-200/60 dark:border-gray-800/60">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Let’s build applied AI that matters</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6">If you’re exploring roles in Growth Engineering, Developer Relations, or Applied AI product work, I’m ready to contribute.</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Let&apos;s build applied AI that matters</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-6">If you&apos;re exploring roles in Growth Engineering, Developer Relations, or Applied AI product work, I&apos;m ready to contribute.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="mailto:zackproser@gmail.com" className="px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold">Email me</a>
+            <a href="mailto:zackproser@gmail.com" className="px-5 py-3 rounded-lg bg-burnt-400 hover:bg-burnt-500 text-white font-semibold">Email me</a>
             <a href="https://github.com/zackproser" target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100 font-semibold">GitHub</a>
             <a href="https://linkedin.com/in/zackproser" target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100 font-semibold">LinkedIn</a>
           </div>

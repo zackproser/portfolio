@@ -508,7 +508,7 @@ export default function ServicesPage() {
             Let&apos;s discuss how my specialized expertise can help bring your vision to life.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="bg-white hover:bg-white/90 text-blue-700">
+            <Button asChild size="lg" className="bg-white hover:bg-white/90 text-burnt-500">
               <Link href="/calculator">
                 Start Your Project
                 <ArrowRight className="ml-2 h-4 w-4" />

@@ -82,7 +82,7 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
     <div className="w-full">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-4">
+          <h1 className="text-5xl font-bold text-burnt-400 dark:text-amber-400 mb-4">
             I write to learn, and publish to share
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">

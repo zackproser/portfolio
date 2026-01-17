@@ -29,7 +29,7 @@ export function Introduction({ title, description, features = [] }: Introduction
         <ul role="list" className="mt-8 space-y-3">
           {features.map((feature) => (
             <li key={feature.title} className="flex">
-              <CheckIcon className="h-8 w-8 flex-none fill-blue-500" />
+              <CheckIcon className="h-8 w-8 flex-none fill-amber-500" />
               <div className="ml-4">
                 <p className="font-medium text-slate-900 dark:text-white">{feature.title}</p>
                 <p className="mt-1 text-slate-600 dark:text-slate-400">{feature.description}</p>
@@ -40,7 +40,7 @@ export function Introduction({ title, description, features = [] }: Introduction
         <p className="mt-10">
           <Link
             href="#free-chapters"
-            className="text-base font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-base font-medium text-burnt-400 hover:text-burnt-500 dark:text-amber-400 dark:hover:text-amber-300"
           >
             Get a free chapter straight to your inbox{' '}
             <span aria-hidden="true">&rarr;</span>
