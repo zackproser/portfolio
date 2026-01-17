@@ -156,20 +156,26 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
     if (filteredDatabases.length > 10) return null // Too many to summarize
 
     const summaries: string[] = []
+    // Track added databases by raw name (not escaped) for deduplication
+    const addedNames = new Set<string>()
 
     // Find best for RAG (high LLM integration score + LangChain support)
     const ragBest = filteredDatabases.find(db =>
       (db.aiCapabilities?.scores?.llmIntegration ?? 0) >= 8 &&
       db.aiCapabilities?.supportedModels?.langchain === true
     )
-    if (ragBest) summaries.push(`**${escapeHtml(ragBest.name)}** has strong LLM & LangChain integration for RAG`)
+    if (ragBest) {
+      summaries.push(`**${escapeHtml(ragBest.name)}** has strong LLM & LangChain integration for RAG`)
+      addedNames.add(ragBest.name)
+    }
 
     // Find easiest to start (serverless or cloud-native)
     const easyStart = filteredDatabases.find(db =>
       db.features?.serverless === true || (db.features?.cloudNative === true && db.pricing?.free_tier === true)
     )
-    if (easyStart && easyStart.name !== ragBest?.name) {
+    if (easyStart && !addedNames.has(easyStart.name)) {
       summaries.push(`**${escapeHtml(easyStart.name)}** offers serverless/cloud-native for quick starts`)
+      addedNames.add(easyStart.name)
     }
 
     // Find most secure (encryption + access control + audit logging)
@@ -178,19 +184,21 @@ export function DatabaseComparisonTool({ databases }: DatabaseComparisonToolProp
       db.security?.access_control === true &&
       db.security?.audit_logging === true
     )
-    if (secure && secure.name !== ragBest?.name && secure.name !== easyStart?.name) {
+    if (secure && !addedNames.has(secure.name)) {
       summaries.push(`**${escapeHtml(secure.name)}** has comprehensive security features for enterprise`)
+      addedNames.add(secure.name)
     }
 
     // Find open source option
     const openSource = filteredDatabases.find(db => db.community_ecosystem?.open_source === true)
-    if (openSource && !summaries.some(s => s.includes(openSource.name))) {
+    if (openSource && !addedNames.has(openSource.name)) {
       summaries.push(`**${escapeHtml(openSource.name)}** is open source for full control`)
+      addedNames.add(openSource.name)
     }
 
     // Find best performance
     const fastDb = filteredDatabases
-      .filter(db => !summaries.some(s => s.includes(db.name)))
+      .filter(db => !addedNames.has(db.name))
       .sort((a, b) => (a.performance?.queryLatencyMs ?? 999) - (b.performance?.queryLatencyMs ?? 999))[0]
     if (fastDb && summaries.length < 3) {
       summaries.push(`**${escapeHtml(fastDb.name)}** has lowest query latency (${fastDb.performance?.queryLatencyMs}ms)`)
