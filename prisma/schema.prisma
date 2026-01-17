@@ -320,7 +320,7 @@ model QueryInsight {
 }
 
 model newsletter_expansions {
-  id              String   @id
+  id              String   @id @default(cuid())
   newsletter_id   String
   bulletPoints    String[]
   expandedContent String
@@ -332,7 +332,7 @@ model newsletter_expansions {
 }
 
 model newsletter_subscriptions {
-  id                String    @id
+  id                String    @id @default(cuid())
   email             String    @unique
   first_name        String?
   last_name         String?
@@ -350,7 +350,7 @@ model newsletter_subscriptions {
 }
 
 model newsletters {
-  id                  String    @id
+  id                  String    @id @default(cuid())
   slug                String    @unique
   title               String
   description         String?
