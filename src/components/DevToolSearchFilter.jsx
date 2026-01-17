@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { trackSearchQuery } from "@/actions/query-tracking-actions";
 
 export default function DevToolSearchFilter({ tools, onFilter, onReset, searchTerm }) {
   const [search, setSearch] = useState(searchTerm);
@@ -14,10 +15,39 @@ export default function DevToolSearchFilter({ tools, onFilter, onReset, searchTe
     free_tier: false,
     open_source: false,
   });
+  const trackingTimeoutRef = useRef(null);
+
+  // Debounced query tracking
+  const trackQuery = useCallback((query, resultCount) => {
+    if (trackingTimeoutRef.current) {
+      clearTimeout(trackingTimeoutRef.current);
+    }
+
+    if (query.trim().length >= 2) {
+      trackingTimeoutRef.current = setTimeout(() => {
+        trackSearchQuery({
+          query: query.trim(),
+          source: 'devtools',
+          resultCount,
+        });
+      }, 1500); // Track after 1.5s of no typing
+    }
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (trackingTimeoutRef.current) {
+        clearTimeout(trackingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    applyFilters(e.target.value, filters);
+    const newSearchTerm = e.target.value;
+    setSearch(newSearchTerm);
+    const filtered = applyFilters(newSearchTerm, filters);
+    trackQuery(newSearchTerm, filtered.length);
   };
 
   const handleFilterChange = (key) => {
@@ -48,6 +78,7 @@ export default function DevToolSearchFilter({ tools, onFilter, onReset, searchTe
       return matchesSearch && matchesFilters;
     });
     onFilter(filtered, searchTerm);
+    return filtered;
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTheme } from 'next-themes'
 import { Search, Code2, ArrowUpRight, Github, BookOpen, ExternalLink } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -30,12 +31,20 @@ const companyLogos = {
 }
 
 export default function ProjectsClient({ projects, categories, allTags, companies }) {
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [selectedCompany, setSelectedCompany] = useState("")
   const [selectedTag, setSelectedTag] = useState("")
   const [filteredProjects, setFilteredProjects] = useState(projects)
   const [view, setView] = useState("grid")
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const isDark = mounted && resolvedTheme === 'dark'
 
   useEffect(() => {
     let filtered = projects
@@ -74,12 +83,35 @@ export default function ProjectsClient({ projects, categories, allTags, companie
     setSelectedTag("")
   }
 
+  // Get primary link for a project (prefer blogLink if available, else link)
+  const getPrimaryLink = (project) => {
+    return project.blogLink || project.link
+  }
+
+  // Check if link is external
+  const isExternal = (url) => url.startsWith('http')
+
   return (
-    <div className="w-full">
-      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+    <div className={`min-h-screen transition-colors duration-500 ${
+      isDark
+        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950'
+        : 'bg-gradient-to-b from-parchment-50 via-parchment-100 to-parchment-200'
+    }`}>
+      {/* Hero Header */}
+      <header className={`border-b sticky top-16 z-10 transition-colors duration-500 ${
+        isDark
+          ? 'bg-slate-900/95 backdrop-blur-sm border-slate-700'
+          : 'bg-parchment-100/95 backdrop-blur-sm border-parchment-300'
+      }`}>
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Projects</h1>
-          <p className="text-slate-600 dark:text-slate-400 max-w-2xl">
+          <h1 className={`font-serif text-4xl font-bold mb-2 ${
+            isDark ? '!text-amber-400' : '!text-burnt-400'
+          }`}>
+            Projects
+          </h1>
+          <p className={`max-w-2xl ${
+            isDark ? 'text-slate-300' : 'text-parchment-600'
+          }`}>
             A collection of projects I&apos;ve built, contributed to, or maintained over the years.
           </p>
         </div>
@@ -87,23 +119,41 @@ export default function ProjectsClient({ projects, categories, allTags, companie
 
       <div className="container mx-auto px-4 py-8">
         {/* Search and filters */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 mb-8">
+        <div className={`rounded-xl shadow-sm p-4 mb-8 transition-colors duration-500 ${
+          isDark
+            ? 'bg-slate-800/60 border border-slate-700'
+            : 'bg-white border border-parchment-200'
+        }`}>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
+                isDark ? 'text-slate-400' : 'text-parchment-400'
+              }`} size={18} />
               <Input
                 placeholder="Search projects..."
-                className="pl-10"
+                className={`pl-10 ${
+                  isDark
+                    ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
+                    : 'bg-parchment-50 border-parchment-200 text-charcoal-50 placeholder:text-parchment-400'
+                }`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectTrigger className={
+                isDark
+                  ? 'bg-slate-700 border-slate-600 text-white'
+                  : 'bg-parchment-50 border-parchment-200 text-charcoal-50'
+              }>
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectContent className={
+                isDark
+                  ? 'bg-slate-800 border-slate-700'
+                  : 'bg-white border-parchment-200'
+              }>
                 <SelectItem value="All Categories">All Categories</SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category} value={category}>
@@ -114,10 +164,18 @@ export default function ProjectsClient({ projects, categories, allTags, companie
             </Select>
 
             <Select value={selectedCompany} onValueChange={setSelectedCompany}>
-              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectTrigger className={
+                isDark
+                  ? 'bg-slate-700 border-slate-600 text-white'
+                  : 'bg-parchment-50 border-parchment-200 text-charcoal-50'
+              }>
                 <SelectValue placeholder="Company" />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectContent className={
+                isDark
+                  ? 'bg-slate-800 border-slate-700'
+                  : 'bg-white border-parchment-200'
+              }>
                 <SelectItem value="All Companies">All Companies</SelectItem>
                 {companies.map((company) => (
                   <SelectItem key={company} value={company}>
@@ -128,10 +186,18 @@ export default function ProjectsClient({ projects, categories, allTags, companie
             </Select>
 
             <Select value={selectedTag} onValueChange={setSelectedTag}>
-              <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectTrigger className={
+                isDark
+                  ? 'bg-slate-700 border-slate-600 text-white'
+                  : 'bg-parchment-50 border-parchment-200 text-charcoal-50'
+              }>
                 <SelectValue placeholder="Technology" />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <SelectContent className={
+                isDark
+                  ? 'bg-slate-800 border-slate-700'
+                  : 'bg-white border-parchment-200'
+              }>
                 <SelectItem value="All Tags">All Technologies</SelectItem>
                 {allTags.map((tag) => (
                   <SelectItem key={tag} value={tag}>
@@ -143,10 +209,19 @@ export default function ProjectsClient({ projects, categories, allTags, companie
           </div>
 
           <div className="flex justify-between items-center mt-4">
-            <Button variant="outline" size="sm" onClick={resetFilters} className="text-slate-600 dark:text-slate-400">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetFilters}
+              className={
+                isDark
+                  ? 'border-slate-600 text-slate-300 hover:bg-slate-700'
+                  : 'border-parchment-300 text-parchment-600 hover:bg-parchment-100'
+              }
+            >
               Reset Filters
             </Button>
-            <span className="text-sm text-slate-500 dark:text-slate-400">
+            <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
               {filteredProjects.length} projects found
             </span>
           </div>
@@ -154,172 +229,245 @@ export default function ProjectsClient({ projects, categories, allTags, companie
 
         {/* View selection and projects display */}
         <div className="space-y-8">
-          {/* All projects */}
           <section>
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">All Projects</h2>
-
-            <div className="flex items-center justify-end gap-2 mb-4">
-              <span className="text-sm text-slate-500 dark:text-slate-400">View:</span>
-              <Tabs value={view} onValueChange={setView} className="w-full">
-                <div className="flex justify-end">
-                  <TabsList className="grid w-[160px] grid-cols-2">
-                    <TabsTrigger value="grid">Grid</TabsTrigger>
-                    <TabsTrigger value="list">List</TabsTrigger>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className={`text-2xl font-semibold ${
+                isDark ? 'text-white' : 'text-charcoal-50'
+              }`}>
+                All Projects
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>View:</span>
+                <Tabs value={view} onValueChange={setView}>
+                  <TabsList className={
+                    isDark
+                      ? 'bg-slate-800 border border-slate-700'
+                      : 'bg-parchment-100 border border-parchment-200'
+                  }>
+                    <TabsTrigger value="grid" className={
+                      isDark
+                        ? 'data-[state=active]:bg-amber-500 data-[state=active]:text-white'
+                        : 'data-[state=active]:bg-burnt-400 data-[state=active]:text-white'
+                    }>Grid</TabsTrigger>
+                    <TabsTrigger value="list" className={
+                      isDark
+                        ? 'data-[state=active]:bg-amber-500 data-[state=active]:text-white'
+                        : 'data-[state=active]:bg-burnt-400 data-[state=active]:text-white'
+                    }>List</TabsTrigger>
                   </TabsList>
-                </div>
+                </Tabs>
+              </div>
+            </div>
 
-                <TabsContent value="grid" className="mt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredProjects.map((project) => (
-                      <Card
-                        key={project.name}
-                        className="overflow-hidden hover:shadow-md transition-shadow duration-300 h-full flex flex-col bg-white dark:bg-slate-800"
-                      >
-                        <div className="relative h-48">
-                          <Image src={project.logo}
-                            alt={project.name}
-                            fill
-                            className="object-cover"
-                           />
-                          {project.company && companyLogos[project.company] && (
-                            <div className="absolute top-2 right-2">
-                              <div className="relative flex h-8 w-8 flex-none items-center justify-center shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                                <Image src={companyLogos[project.company]}
-                                  alt={project.company}
-                                  className="h-5 w-5"
-                                  unoptimized
-                                 width={800} height={600}/>
-                              </div>
+            {view === "grid" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProjects.map((project) => (
+                  <Link
+                    key={project.name}
+                    href={getPrimaryLink(project)}
+                    target={isExternal(getPrimaryLink(project)) ? '_blank' : undefined}
+                    rel={isExternal(getPrimaryLink(project)) ? 'noopener noreferrer' : undefined}
+                    className="group"
+                  >
+                    <Card className={`overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                      isDark
+                        ? 'bg-slate-800/60 border-slate-700 hover:border-amber-500/50'
+                        : 'bg-white border-parchment-200 hover:border-burnt-400/50'
+                    }`}>
+                      <div className="relative h-48">
+                        <Image
+                          src={project.logo}
+                          alt={project.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {project.company && companyLogos[project.company] && (
+                          <div className="absolute top-2 right-2">
+                            <div className={`relative flex h-8 w-8 items-center justify-center rounded-lg shadow-md ${
+                              isDark ? 'bg-slate-800 ring-1 ring-slate-700' : 'bg-white ring-1 ring-parchment-200'
+                            }`}>
+                              <Image
+                                src={companyLogos[project.company]}
+                                alt={project.company}
+                                className="h-5 w-5"
+                                unoptimized
+                                width={20}
+                                height={20}
+                              />
                             </div>
+                          </div>
+                        )}
+                        {/* Link type indicator */}
+                        <div className={`absolute top-2 left-2 px-2 py-1 rounded-md text-xs font-medium ${
+                          isDark ? 'bg-slate-800/90 text-slate-300' : 'bg-white/90 text-parchment-600'
+                        }`}>
+                          {project.blogLink ? (
+                            <span className="flex items-center gap-1">
+                              <BookOpen size={12} />
+                              Article
+                            </span>
+                          ) : project.link.includes('github.com') ? (
+                            <span className="flex items-center gap-1">
+                              <Github size={12} />
+                              GitHub
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1">
+                              <ExternalLink size={12} />
+                              Project
+                            </span>
                           )}
                         </div>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-xl font-bold">
-                            {project.name}
-                          </CardTitle>
-                          {/* Project Links */}
-                          <div className="flex items-center gap-2 mt-2">
-                            <Link
-                              href={project.link}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
-                              target={project.link.startsWith('http') ? '_blank' : undefined}
-                              rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                            >
-                              {project.link.includes('github.com') ? <Github size={14} /> : <ExternalLink size={14} />}
-                              Project
-                              <ArrowUpRight size={12} className="opacity-70" />
-                            </Link>
-                            {project.blogLink && (
-                              <Link
-                                href={project.blogLink}
-                                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
-                              >
-                                <BookOpen size={14} />
-                                Article
-                                <ArrowUpRight size={12} className="opacity-70" />
-                              </Link>
-                            )}
+                      </div>
+                      <CardHeader className="pb-2">
+                        <CardTitle className={`text-xl font-bold group-hover:${isDark ? 'text-amber-400' : 'text-burnt-400'} transition-colors ${
+                          isDark ? 'text-white' : 'text-charcoal-50'
+                        }`}>
+                          {project.name}
+                          <ArrowUpRight size={16} className={`inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity ${
+                            isDark ? 'text-amber-400' : 'text-burnt-400'
+                          }`} />
+                        </CardTitle>
+                        <CardDescription className={`text-sm mt-2 min-h-[60px] ${
+                          isDark ? 'text-slate-300' : 'text-parchment-600'
+                        }`}>
+                          {project.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="pb-2 flex-grow">
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {project.stacks.slice(0, 4).map((stack) => (
+                            <Badge key={stack} variant="secondary" className={`text-xs ${
+                              isDark
+                                ? 'bg-slate-700 text-slate-300 border-slate-600'
+                                : 'bg-parchment-100 text-parchment-600 border-parchment-200'
+                            }`}>
+                              {stack}
+                            </Badge>
+                          ))}
+                          {project.stacks.length > 4 && (
+                            <Badge variant="secondary" className={`text-xs ${
+                              isDark
+                                ? 'bg-slate-700 text-slate-300 border-slate-600'
+                                : 'bg-parchment-100 text-parchment-600 border-parchment-200'
+                            }`}>
+                              +{project.stacks.length - 4}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter className={`pt-0 text-sm flex items-center ${
+                        isDark ? 'text-slate-400' : 'text-parchment-500'
+                      }`}>
+                        <Code2 size={14} className="mr-1" />
+                        {project.category}
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredProjects.map((project) => (
+                  <Link
+                    key={project.name}
+                    href={getPrimaryLink(project)}
+                    target={isExternal(getPrimaryLink(project)) ? '_blank' : undefined}
+                    rel={isExternal(getPrimaryLink(project)) ? 'noopener noreferrer' : undefined}
+                    className="group block"
+                  >
+                    <div className={`flex flex-col md:flex-row gap-4 p-4 rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+                      isDark
+                        ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
+                        : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
+                    }`}>
+                      <div className="relative w-full md:w-48 h-48 flex-shrink-0">
+                        <Image
+                          src={project.logo}
+                          alt={project.name}
+                          fill
+                          className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {project.company && companyLogos[project.company] && (
+                          <div className="absolute top-2 right-2">
+                            <div className={`relative flex h-8 w-8 items-center justify-center rounded-lg shadow-md ${
+                              isDark ? 'bg-slate-800 ring-1 ring-slate-700' : 'bg-white ring-1 ring-parchment-200'
+                            }`}>
+                              <Image
+                                src={companyLogos[project.company]}
+                                alt={project.company}
+                                className="h-5 w-5"
+                                unoptimized
+                                width={20}
+                                height={20}
+                              />
+                            </div>
                           </div>
-                          <CardDescription className="text-sm mt-2 min-h-[60px]">
-                            {project.description}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pb-2 flex-grow">
-                          <div className="flex flex-wrap gap-1 mt-2">
+                        )}
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className={`text-lg font-semibold mb-2 ${
+                          isDark ? 'text-white group-hover:text-amber-400' : 'text-charcoal-50 group-hover:text-burnt-400'
+                        } transition-colors`}>
+                          {project.name}
+                          <ArrowUpRight size={16} className={`inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity ${
+                            isDark ? 'text-amber-400' : 'text-burnt-400'
+                          }`} />
+                        </h3>
+                        {/* Link type indicator */}
+                        <div className={`inline-flex items-center gap-1 text-xs font-medium mb-3 px-2 py-1 rounded ${
+                          isDark ? 'bg-slate-700 text-slate-300' : 'bg-parchment-100 text-parchment-600'
+                        }`}>
+                          {project.blogLink ? (
+                            <>
+                              <BookOpen size={12} />
+                              Read Article
+                            </>
+                          ) : project.link.includes('github.com') ? (
+                            <>
+                              <Github size={12} />
+                              View on GitHub
+                            </>
+                          ) : (
+                            <>
+                              <ExternalLink size={12} />
+                              View Project
+                            </>
+                          )}
+                        </div>
+                        <p className={`text-sm mb-4 leading-relaxed ${
+                          isDark ? 'text-slate-300' : 'text-parchment-600'
+                        }`}>
+                          {project.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-1">
                             {project.stacks.map((stack) => (
-                              <Badge key={stack} variant="secondary" className="text-xs">
+                              <Badge key={stack} variant="secondary" className={`text-xs ${
+                                isDark
+                                  ? 'bg-slate-700 text-slate-300 border-slate-600'
+                                  : 'bg-parchment-100 text-parchment-600 border-parchment-200'
+                              }`}>
                                 {stack}
                               </Badge>
                             ))}
                           </div>
-                        </CardContent>
-                        <CardFooter className="pt-0 text-sm text-slate-600 dark:text-slate-400 flex items-center">
-                          <Code2 size={14} className="mr-1" />
-                          {project.category}
-                        </CardFooter>
-                      </Card>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="list" className="mt-4">
-                  <div className="space-y-3">
-                    {filteredProjects.map((project) => (
-                      <div
-                        key={project.name}
-                        className="flex flex-col md:flex-row gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:shadow-sm transition-shadow"
-                      >
-                        <div className="relative w-full md:w-48 h-48 flex-shrink-0">
-                          <Image src={project.logo}
-                            alt={project.name}
-                            fill
-                            className="object-cover rounded-lg"
-                           />
-                          {project.company && companyLogos[project.company] && (
-                            <div className="absolute top-2 right-2">
-                              <div className="relative flex h-8 w-8 flex-none items-center justify-center shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0">
-                                <Image src={companyLogos[project.company]}
-                                  alt={project.company}
-                                  className="h-5 w-5"
-                                  unoptimized
-                                 width={800} height={600}/>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-grow">
-                          <h3 className="text-lg font-semibold mb-2">
-                            {project.name}
-                          </h3>
-                          {/* Project Links */}
-                          <div className="flex items-center gap-3 mb-3">
-                            <Link
-                              href={project.link}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
-                              target={project.link.startsWith('http') ? '_blank' : undefined}
-                              rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                            >
-                              {project.link.includes('github.com') ? <Github size={14} /> : <ExternalLink size={14} />}
-                              Project
-                              <ArrowUpRight size={12} className="opacity-70" />
-                            </Link>
-                            {project.blogLink && (
-                              <Link
-                                href={project.blogLink}
-                                className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
-                              >
-                                <BookOpen size={14} />
-                                Article
-                                <ArrowUpRight size={12} className="opacity-70" />
-                              </Link>
-                            )}
-                          </div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
-                            {project.description}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-wrap gap-1">
-                              {project.stacks.map((stack) => (
-                                <Badge key={stack} variant="secondary" className="text-xs">
-                                  {stack}
-                                </Badge>
-                              ))}
-                            </div>
-                            <span className="text-sm text-slate-500 dark:text-slate-400 flex items-center">
-                              <Code2 size={14} className="mr-1" />
-                              {project.category}
-                            </span>
-                          </div>
+                          <span className={`text-sm flex items-center ${
+                            isDark ? 'text-slate-400' : 'text-parchment-500'
+                          }`}>
+                            <Code2 size={14} className="mr-1" />
+                            {project.category}
+                          </span>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>
     </div>
   )
-} 
+}

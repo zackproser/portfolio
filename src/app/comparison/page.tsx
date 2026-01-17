@@ -3,12 +3,26 @@
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, BarChart3 } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Check, X, Minus } from "lucide-react"
 import type { Tool } from "@prisma/client"
 import { getAllTools } from "@/actions/tool-actions"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js'
+import { Bar, Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement)
 
 export default function ComparisonPage() {
   const searchParams = useSearchParams()
@@ -82,6 +96,152 @@ export default function ComparisonPage() {
           </h1>
         </div>
 
+        {/* Visual Comparison Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Features Count Chart */}
+          <Card className="bg-white shadow-md border border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-blue-600" />
+                Features Count
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Bar
+                data={{
+                  labels: tools.map(t => t.name),
+                  datasets: [{
+                    label: 'Features',
+                    data: tools.map(t => t.features?.length || 0),
+                    backgroundColor: tools.map((_, i) => `hsla(${210 + i * 30}, 70%, 50%, 0.8)`),
+                    borderColor: tools.map((_, i) => `hsla(${210 + i * 30}, 70%, 40%, 1)`),
+                    borderWidth: 1,
+                  }]
+                }}
+                options={{
+                  responsive: true,
+                  plugins: { legend: { display: false } },
+                  scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Pros vs Cons Chart */}
+          <Card className="bg-white shadow-md border border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-green-600" />
+                Pros vs Cons
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Bar
+                data={{
+                  labels: tools.map(t => t.name),
+                  datasets: [
+                    {
+                      label: 'Pros',
+                      data: tools.map(t => t.pros?.length || 0),
+                      backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                      borderColor: 'rgba(34, 197, 94, 1)',
+                      borderWidth: 1,
+                    },
+                    {
+                      label: 'Cons',
+                      data: tools.map(t => t.cons?.length || 0),
+                      backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                      borderColor: 'rgba(239, 68, 68, 1)',
+                      borderWidth: 1,
+                    }
+                  ]
+                }}
+                options={{
+                  responsive: true,
+                  plugins: { legend: { position: 'top' as const } },
+                  scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Open Source / API Access Breakdown */}
+          <Card className="bg-white shadow-md border border-slate-100">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-purple-600" />
+                Capabilities
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Bar
+                data={{
+                  labels: tools.map(t => t.name),
+                  datasets: [
+                    {
+                      label: 'Open Source',
+                      data: tools.map(t => t.openSource ? 1 : 0),
+                      backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                      borderColor: 'rgba(34, 197, 94, 1)',
+                      borderWidth: 1,
+                    },
+                    {
+                      label: 'API Access',
+                      data: tools.map(t => t.apiAccess ? 1 : 0),
+                      backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                      borderColor: 'rgba(59, 130, 246, 1)',
+                      borderWidth: 1,
+                    }
+                  ]
+                }}
+                options={{
+                  responsive: true,
+                  plugins: { legend: { position: 'bottom' as const } },
+                  scales: { y: { beginAtZero: true, max: 1, ticks: { stepSize: 1, callback: (value) => value === 1 ? 'Yes' : 'No' } } }
+                }}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Languages Support Chart - only show if any tool has languages */}
+          {tools.some(t => t.languages && t.languages.length > 0) && (
+            <Card className="bg-white shadow-md border border-slate-100 md:col-span-2 lg:col-span-3">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-orange-600" />
+                  Language Support
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Bar
+                  data={(() => {
+                    const allLanguages = [...new Set(tools.flatMap(t => t.languages || []))]
+                    return {
+                      labels: tools.map(t => t.name),
+                      datasets: allLanguages.slice(0, 8).map((lang, i) => ({
+                        label: lang,
+                        data: tools.map(t => (t.languages?.includes(lang) ? 1 : 0)),
+                        backgroundColor: `hsla(${i * 45}, 70%, 50%, 0.7)`,
+                        borderColor: `hsla(${i * 45}, 70%, 40%, 1)`,
+                        borderWidth: 1,
+                      }))
+                    }
+                  })()}
+                  options={{
+                    responsive: true,
+                    plugins: { legend: { position: 'top' as const } },
+                    scales: {
+                      x: { stacked: true },
+                      y: { stacked: true, ticks: { stepSize: 1 } }
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Detailed Comparison Table */}
         <div className="bg-white rounded-xl shadow-md border border-slate-100 p-6 overflow-x-auto">
           <Table>
             <TableHeader>

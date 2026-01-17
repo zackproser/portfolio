@@ -14,7 +14,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { updateTool } from "@/actions/tool-actions" // We'll assume an updateTool action exists
 import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
-import type { Tool } from "@prisma/client" // Import from prisma client
+import type { Tool, Prisma } from "@prisma/client" // Import from prisma client
+
+// Use Prisma's input type for updates
+type ToolUpdateData = Prisma.ToolUpdateInput;
 
 // Define the form schema (similar to AddToolForm)
 const toolFormSchema = z.object({
@@ -47,9 +50,7 @@ const toolFormSchema = z.object({
 
 type ToolFormValues = z.infer<typeof toolFormSchema>
 
-// Define a type for the data expected by updateTool
-// (Assuming it's based on the Prisma Tool model, excluding id/timestamps)
-type ToolUpdateData = Partial<Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>>;
+// ToolUpdateData is defined above using Prisma.ToolUpdateInput
 
 interface EditToolFormProps {
   tool: Tool // Pass the tool data to pre-fill the form

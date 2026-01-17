@@ -34,15 +34,15 @@ export const metadata = createMetadata({
 
 export default function ServicesPage() {
   return (
-    <main className="flex min-h-screen flex-col bg-blue-600 dark:bg-zinc-950">
+    <main className="flex min-h-screen flex-col bg-burnt-400 dark:bg-zinc-950">
       {/* Hero Section */}
-      <section className="relative w-full bg-blue-700 dark:bg-zinc-950 py-16 px-4 md:px-6 lg:px-8">
+      <section className="relative w-full bg-burnt-500 dark:bg-zinc-950 py-16 px-4 md:px-6 lg:px-8">
         <div className="absolute inset-0 bg-grid-white/[0.1] dark:bg-grid-white/[0.05] bg-[size:60px_60px]" />
 
         <div className="container mx-auto relative z-10">
           <div className="text-center space-y-6 max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white dark:text-zinc-50 leading-tight">
-              I build <span className="text-[#7cc2ff] font-extrabold relative">production-ready<span className="absolute -bottom-2 left-0 w-full h-1 bg-[#7cc2ff]/50 rounded-full"></span></span> AI apps. You launch faster.
+              I build <span className="text-amber-200 dark:text-amber-300 font-extrabold relative">production-ready<span className="absolute -bottom-2 left-0 w-full h-1 bg-amber-200/50 dark:bg-amber-300/50 rounded-full"></span></span> AI apps. You launch faster.
             </h1>
 
             {/* Animation directly under the header */}
@@ -56,16 +56,16 @@ export default function ServicesPage() {
 
             <p className="text-xl text-white dark:text-zinc-300 max-w-2xl mx-auto">
               <span className="inline-flex items-center">
-                <span className="text-[#7cc2ff] font-bold text-3xl mr-1">3+</span> 
+                <span className="text-amber-200 dark:text-amber-300 font-bold text-3xl mr-1">3+</span>
                 years building production AI solutions and vector database integrations.
               </span>
               <span className="block mt-2">
-                <span className="text-[#7cc2ff] font-bold text-3xl mr-1">13+</span> 
+                <span className="text-amber-200 dark:text-amber-300 font-bold text-3xl mr-1">13+</span>
                 years of professional engineering experience.
               </span>
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button asChild size="lg" className="bg-white hover:bg-white/90 text-blue-700">
+              <Button asChild size="lg" className="bg-white hover:bg-white/90 text-burnt-500">
                 <Link href="/calculator">
                   Calculate Your Project Cost
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -83,7 +83,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Company Logos */}
-      <section className="py-10 px-4 md:px-6 lg:px-8 bg-blue-800 dark:bg-zinc-950 border-t border-b border-blue-700 dark:border-zinc-800">
+      <section className="py-10 px-4 md:px-6 lg:px-8 bg-burnt-600 dark:bg-zinc-950 border-t border-b border-burnt-500 dark:border-zinc-800">
         <div className="container mx-auto">
           <p className="text-center text-sm text-white font-medium dark:text-zinc-400 mb-8">TRUSTED BY INDUSTRY LEADERS</p>
           <div className="flex flex-wrap justify-center items-center gap-16 md:gap-32">
@@ -140,7 +140,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Overview */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-burnt-400 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Specialized AI Engineering Services</h2>
@@ -172,7 +172,7 @@ export default function ServicesPage() {
             />
           </div>
 
-          <div className="mt-16 p-6 bg-blue-700 dark:bg-blue-800 rounded-lg backdrop-blur-sm border border-blue-500 dark:border-blue-700">
+          <div className="mt-16 p-6 bg-burnt-500 dark:bg-amber-900/30 rounded-lg backdrop-blur-sm border border-burnt-300 dark:border-amber-700">
             <h3 className="text-xl font-semibold mb-3 text-white dark:text-white">Trust & Experience</h3>
             <p className="text-white dark:text-white/80">
               As a former staff-level developer advocate at Pinecone, I built their first AWS-based production example
@@ -184,7 +184,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Portfolio/Experience Section */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-burnt-500 dark:bg-zinc-900">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Portfolio Highlights</h2>
           <p className="text-lg text-white dark:text-zinc-400 max-w-3xl mb-12">
@@ -192,17 +192,17 @@ export default function ServicesPage() {
           </p>
 
           <Tabs defaultValue="case-studies" className="w-full">
-            <TabsList className="mb-8 bg-blue-800/50 dark:bg-zinc-800">
-              <TabsTrigger value="case-studies" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
+            <TabsList className="mb-8 bg-burnt-600/50 dark:bg-zinc-800">
+              <TabsTrigger value="case-studies" className="data-[state=active]:bg-white data-[state=active]:text-burnt-500 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
                 Case Studies
               </TabsTrigger>
-              <TabsTrigger value="tech-stack" className="data-[state=active]:bg-white data-[state=active]:text-blue-700 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
+              <TabsTrigger value="tech-stack" className="data-[state=active]:bg-white data-[state=active]:text-burnt-500 dark:data-[state=active]:bg-zinc-800 dark:data-[state=active]:text-white text-white dark:text-zinc-400">
                 Technology Stack
               </TabsTrigger>
             </TabsList>
             <TabsContent value="case-studies">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
+                <Card className="bg-zinc-100 dark:bg-amber-900/30 border-zinc-200 dark:border-amber-700">
                   <CardHeader>
                     <CardTitle className="text-zinc-900 dark:text-zinc-50">Legal Semantic Search Application</CardTitle>
                     <CardDescription className="text-zinc-500 dark:text-zinc-400">Fortune 500 Client (NDA)</CardDescription>
@@ -224,7 +224,7 @@ export default function ServicesPage() {
                       <li>Deployed on Vercel with Next.js and Pinecone</li>
                     </ul>
                     <div className="mt-4">
-                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                      <Button asChild size="sm" className="bg-burnt-400 text-white hover:bg-burnt-500">
                         <Link href="https://docs.pinecone.io/examples/sample-apps/legal-semantic-search" target="_blank" rel="noopener noreferrer">
                           View Sample App
                           <ArrowRight className="ml-2 h-4 w-4" />
@@ -234,7 +234,7 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
+                <Card className="bg-zinc-100 dark:bg-amber-900/30 border-zinc-200 dark:border-amber-700">
                   <CardHeader>
                     <CardTitle className="text-zinc-900 dark:text-zinc-50">Pinecone AWS Reference Architecture</CardTitle>
                     <CardDescription className="text-zinc-500 dark:text-zinc-400">Official Reference Architecture</CardDescription>
@@ -256,7 +256,7 @@ export default function ServicesPage() {
                       <li>Created comprehensive documentation and tutorials</li>
                     </ul>
                     <div className="mt-4">
-                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                      <Button asChild size="sm" className="bg-burnt-400 text-white hover:bg-burnt-500">
                         <Link href="https://github.com/pinecone-io/aws-reference-architecture-pulumi" target="_blank" rel="noopener noreferrer">
                           <Github className="mr-2 h-4 w-4" />
                           View on GitHub
@@ -266,7 +266,7 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
+                <Card className="bg-zinc-100 dark:bg-amber-900/30 border-zinc-200 dark:border-amber-700">
                   <CardHeader>
                     <CardTitle className="text-zinc-900 dark:text-zinc-50">Pinecone Assistant Sample App</CardTitle>
                     <CardDescription className="text-zinc-500 dark:text-zinc-400">Technical Publication</CardDescription>
@@ -288,7 +288,7 @@ export default function ServicesPage() {
                       <li>Used by thousands of developers worldwide</li>
                     </ul>
                     <div className="mt-4">
-                      <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+                      <Button asChild size="sm" className="bg-burnt-400 text-white hover:bg-burnt-500">
                         <Link href="https://docs.pinecone.io/examples/sample-apps/pinecone-assistant" target="_blank" rel="noopener noreferrer">
                           View Sample App
                           <ArrowRight className="ml-2 h-4 w-4" />
@@ -298,7 +298,7 @@ export default function ServicesPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-zinc-100 dark:bg-blue-800 border-zinc-200 dark:border-blue-700">
+                <Card className="bg-zinc-100 dark:bg-amber-900/30 border-zinc-200 dark:border-amber-700">
                   <CardHeader>
                     <CardTitle className="text-zinc-900 dark:text-zinc-50">Office Oracle - RAG Chatbot</CardTitle>
                     <CardDescription className="text-zinc-500 dark:text-zinc-400">Personal Project</CardDescription>
@@ -323,7 +323,7 @@ export default function ServicesPage() {
                 </Card>
               </div>
               <div className="flex justify-center mt-8 gap-4">
-                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
+                <Button asChild size="lg" className="bg-white text-burnt-500 hover:bg-white/90">
                   <Link href="/projects">
                     See more of my projects
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -339,7 +339,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Work History and Profile */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-burnt-400 dark:bg-zinc-900">
         <div className="container mx-auto">
           {/* About Me Section - Now First */}
           <div className="mb-16">
@@ -361,7 +361,7 @@ export default function ServicesPage() {
                 various projects that improve developer workflows and system architectures.
               </p>
               <div className="mt-6">
-                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
+                <Button asChild size="lg" className="bg-white text-burnt-500 hover:bg-white/90">
                   <Link href="https://github.com/zackproser" target="_blank" rel="noopener noreferrer">
                     Check out my GitHub
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -374,16 +374,16 @@ export default function ServicesPage() {
           {/* Professional Experience Section - Now Second */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white dark:text-zinc-50">Professional Experience</h2>
-            <div className="max-w-3xl mx-auto bg-zinc-100 dark:bg-blue-800 rounded-xl p-6 md:p-8 shadow-lg">
+            <div className="max-w-3xl mx-auto bg-zinc-100 dark:bg-amber-900/30 rounded-xl p-6 md:p-8 shadow-lg">
               <CV />
               <div className="flex flex-wrap justify-center mt-8 gap-4">
-                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
+                <Button asChild size="lg" className="bg-white text-burnt-500 hover:bg-white/90">
                   <Link href="/publications">
                     Read my publications
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-white/90">
+                <Button asChild size="lg" className="bg-white text-burnt-500 hover:bg-white/90">
                   <Link href="/blog">
                     Read my research
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -396,7 +396,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Why Work With Me */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-burnt-500 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">Why Work With Me</h2>
@@ -450,13 +450,13 @@ export default function ServicesPage() {
 
             <div>
               <h3 className="text-2xl font-semibold mb-6 text-white dark:text-zinc-50">My Process</h3>
-              <div className="bg-zinc-100 dark:bg-blue-800 p-6 rounded-xl">
+              <div className="bg-zinc-100 dark:bg-amber-900/30 p-6 rounded-xl">
                 <ProcessTimeline />
               </div>
             </div>
           </div>
 
-          <div className="mt-16 p-8 bg-zinc-100 dark:bg-blue-800 rounded-lg backdrop-blur-sm border border-zinc-200 dark:border-blue-700">
+          <div className="mt-16 p-8 bg-zinc-100 dark:bg-amber-900/30 rounded-lg backdrop-blur-sm border border-zinc-200 dark:border-amber-700">
             <h3 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Project Minimums & Rates</h3>
             <p className="text-zinc-700 dark:text-white/80 mb-4">
               I exclusively take on high-impact projects with a minimum engagement of $20,000. I require 50% payment up front 
@@ -468,7 +468,7 @@ export default function ServicesPage() {
               strategy call.
             </p>
             <div className="mt-6">
-              <Button asChild size="lg" className="bg-blue-700 hover:bg-blue-800 text-white">
+              <Button asChild size="lg" className="bg-burnt-500 hover:bg-burnt-600 text-white">
                 <Link href="/calculator">
                   Calculate Your Project Cost
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -480,26 +480,26 @@ export default function ServicesPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 px-4 md:px-6 lg:px-8 bg-blue-600 dark:bg-zinc-900">
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-burnt-400 dark:bg-zinc-900">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white dark:text-zinc-50">What Others Say</h2>
             <p className="text-lg text-white dark:text-zinc-400 max-w-2xl mx-auto">
               Feedback from clients and colleagues on my work and expertise.
-              <Link href="/testimonials" className="text-[#7cc2ff] underline hover:opacity-90 ml-2">
+              <Link href="/testimonials" className="text-amber-200 dark:text-amber-300 underline hover:opacity-90 ml-2">
                 View all testimonials →
               </Link>
             </p>
           </div>
 
-          <div className="bg-zinc-100 dark:bg-blue-800 p-8 rounded-xl shadow-lg">
+          <div className="bg-zinc-100 dark:bg-amber-900/30 p-8 rounded-xl shadow-lg">
             <TestimonialCarousel />
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-4 md:px-6 lg:px-8 bg-blue-700 dark:bg-zinc-950 relative">
+      <section className="py-24 px-4 md:px-6 lg:px-8 bg-burnt-500 dark:bg-zinc-950 relative">
         <div className="absolute inset-0 bg-grid-white/[0.1] dark:bg-grid-white/[0.05] bg-[size:60px_60px]" />
 
         <div className="container mx-auto relative z-10 text-center">

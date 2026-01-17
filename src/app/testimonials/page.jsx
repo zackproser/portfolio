@@ -198,7 +198,7 @@ export default function Example() {
             aria-hidden="true"
           >
             <div
-              className="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-blue-600 to-blue-400"
+              className="ml-[max(50%,38rem)] aspect-[1313/771] w-[82.0625rem] bg-gradient-to-tr from-burnt-400 to-amber-400"
               style={{
                 clipPath:
                   'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
@@ -210,7 +210,7 @@ export default function Example() {
             aria-hidden="true"
           >
             <div
-              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-blue-600 to-blue-400 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+              className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-burnt-400 to-amber-400 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
               style={{
                 clipPath:
                   'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
@@ -219,7 +219,7 @@ export default function Example() {
           </div>
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-xl text-center">
-              <h2 className="text-xl font-bold tracking-tight text-burnt-400 dark:text-sky-400 sm:text-2xl">
+              <h2 className="text-xl font-bold tracking-tight text-burnt-400 dark:text-amber-400 sm:text-2xl">
                 From colleagues, clients and collaborators
               </h2>
             </div>
@@ -273,7 +273,7 @@ export default function Example() {
                               height={40}
                             />
                             <div>
-                              <div className="font-semibold text-burnt-400 dark:text-sky-400">{testimonial.author.name}</div>
+                              <div className="font-semibold text-burnt-400 dark:text-amber-400">{testimonial.author.name}</div>
                               <div className="text-parchment-600 dark:text-slate-400">{`${testimonial.author.title}`}</div>
                             </div>
                           </figcaption>

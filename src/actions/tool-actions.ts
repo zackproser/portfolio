@@ -1,18 +1,16 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Prisma } from "@prisma/client"
 import type { Tool } from "@prisma/client"
 
 // Instantiate Prisma Client
 const prisma = new PrismaClient()
 
-// In a real app, this would interact with a database
-// For this demo, we'll just simulate the action with the data in memory
+// Input type for creating tools (handles JSON fields properly)
+type ToolCreateInput = Prisma.ToolCreateInput
 
-// let dynamicTools = [...toolsData] // Remove dependency on static data
-
-export async function addTool(data: Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>) {
+export async function addTool(data: ToolCreateInput) {
   console.log("Adding tool (using Prisma):", data)
   try {
     const newTool = await prisma.tool.create({ data });
@@ -25,7 +23,7 @@ export async function addTool(data: Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>
   }
 }
 
-export async function updateTool(id: string, data: Partial<Omit<Tool, 'id' | 'createdAt' | 'updatedAt'>>) {
+export async function updateTool(id: string, data: Prisma.ToolUpdateInput) {
   console.log(`Updating tool ${id} (using Prisma):`, data)
   try {
     const updatedTool = await prisma.tool.update({

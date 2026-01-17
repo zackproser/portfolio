@@ -1,29 +1,31 @@
+import { getVectorDatabasesFromDb, getDataQualitySummaryFromDb } from "@/lib/vector-database-service"
 import { getDatabases } from "@/lib/getDatabases"
 import { DatabaseComparisonTool } from "@/app/vectordatabases/DatabaseComparisonTool"
 import { ChatInterface } from "@/components/chat-interface"
-import Callout from "@/components/Callout"
+import VectorDatabasesWrapper from "./vectordatabases-wrapper"
 
-export default function Page() {
-  const databases = getDatabases();
+// Use dynamic rendering to fetch fresh data from database
+export const dynamic = 'force-dynamic'
+
+export default async function Page() {
+  // Try to fetch from database first, fall back to static data
+  let databases;
+  let dataQuality;
+
+  try {
+    databases = await getVectorDatabasesFromDb();
+    dataQuality = await getDataQualitySummaryFromDb();
+  } catch (error) {
+    // Fall back to static data if database is unavailable
+    console.warn('Database unavailable, using static data:', error);
+    databases = getDatabases();
+    dataQuality = null;
+  }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto py-8 px-4">
-        <Callout type="announcement" title="This experience is under construction" className="mb-6">
-          We’re actively improving accuracy and coverage. Expect rough edges and occasional mistakes.
-        </Callout>
-        <h1 className="text-4xl font-bold text-center mb-2 text-slate-900 dark:text-white">
-          Vector Database Comparison
-        </h1>
-        <p className="text-center text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-          Compare leading vector databases across company metrics, features, performance, security, algorithms, and
-          capabilities
-        </p>
-
-        <DatabaseComparisonTool databases={databases} />
-      </div>
-      {/* Add the chat interface */}
+    <VectorDatabasesWrapper dataQuality={dataQuality}>
+      <DatabaseComparisonTool databases={databases} />
       <ChatInterface />
-    </main>
+    </VectorDatabasesWrapper>
   )
 }
