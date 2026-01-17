@@ -27,8 +27,8 @@ export default function typographyStyles({ theme }: PluginUtils) {
     },
     DEFAULT: {
       css: {
-        // Light mode - paper-like warmth, like fine book printing
-        '--tw-prose-body': theme('colors.stone.600'),
+        // Light mode - high contrast for readability
+        '--tw-prose-body': theme('colors.stone.800'),
         '--tw-prose-headings': theme('colors.stone.800'),
         '--tw-prose-links': theme('colors.amber.700'),
         '--tw-prose-links-hover': theme('colors.amber.900'),
@@ -48,8 +48,8 @@ export default function typographyStyles({ theme }: PluginUtils) {
         '--tw-prose-th-borders': theme('colors.stone.300'),
         '--tw-prose-td-borders': theme('colors.stone.200'),
 
-        // Dark mode - refined, high-contrast elegance
-        '--tw-prose-invert-body': theme('colors.stone.300'),
+        // Dark mode - high contrast for readability
+        '--tw-prose-invert-body': theme('colors.stone.200'),
         '--tw-prose-invert-headings': theme('colors.stone.100'),
         '--tw-prose-invert-links': theme('colors.sky.400'),
         '--tw-prose-invert-links-hover': theme('colors.sky.300'),
