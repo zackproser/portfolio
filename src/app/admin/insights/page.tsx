@@ -16,10 +16,10 @@ export default async function InsightsPage() {
     getContentSuggestions(10),
   ])
 
-  // Get source-specific data
+  // Get source-specific data (source values must match tracking code)
   const [vectorDbQueries, devToolsQueries] = await Promise.all([
-    getTopQueries({ source: 'vector_databases', limit: 10, days: 30 }),
-    getTopQueries({ source: 'dev_tools', limit: 10, days: 30 }),
+    getTopQueries({ source: 'vectordatabases', limit: 10, days: 30 }),
+    getTopQueries({ source: 'devtools', limit: 10, days: 30 }),
   ])
 
   return (
