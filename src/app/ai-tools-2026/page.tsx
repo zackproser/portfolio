@@ -114,9 +114,9 @@ export default function AITools2026Page() {
                   : '2px 2px 0 rgba(255,255,255,0.9), -1px -1px 0 rgba(0,0,0,0.08)',
               }}
             >
-              The AI Tools That Actually
+              Skip the AI Overwhelm.
               <span className={`block ${isDark ? '!text-amber-400' : '!text-burnt-400'}`}>
-                Move the Needle in 2026
+                Start Here.
               </span>
             </h1>
 
@@ -124,8 +124,10 @@ export default function AITools2026Page() {
             <p className={`text-lg md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto ${
               isDark ? 'text-slate-300' : 'text-parchment-600'
             }`}>
-              After months of daily use, these four tools have fundamentally changed how I work.
-              No hype, no fluff—just the stack that helps me ship faster while staying present.
+              If you&apos;re a small business owner wondering which AI tools actually matter right now,
+              you&apos;re not behind. You&apos;re just starting in 2026 instead of 2023—and that means
+              you get to skip the hype cycles and dead ends. These four tools are what I&apos;d install
+              on day one.
             </p>
 
             {/* Author credibility */}
@@ -231,9 +233,10 @@ export default function AITools2026Page() {
                   Claude Code & Claude Desktop
                 </h2>
                 <p className={`text-lg mb-6 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  Claude isn&apos;t just a chatbot—it&apos;s an external executive function. I use it as a programmable
-                  prosthetic for planning, prioritization, and compassionate pushback. When anxiety spikes at 3am,
-                  I can ask the same question without burdening my people.
+                  I run most of my thinking through Claude now. When I need to plan a project, draft a proposal,
+                  or work through a problem at 3am, Claude is there with unlimited patience. I dictate messy
+                  thoughts and get back structured plans. For coding, Claude Code works directly from my terminal
+                  to ship real changes.
                 </p>
 
                 <div className="space-y-3 mb-6">
@@ -310,9 +313,10 @@ export default function AITools2026Page() {
                   WisprFlow
                 </h2>
                 <p className={`text-lg mb-6 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  I went from 90 WPM typing to 179 WPM speaking. WisprFlow runs system-wide on macOS—hit fn twice,
-                  talk, and polished text appears wherever your cursor is. It removes filler words, fixes grammar,
-                  and even handles technical terms.
+                  I type at 90 words per minute. I speak at 179. WisprFlow runs in the background on macOS and
+                  turns my voice into polished text wherever my cursor is—emails, Slack, code editors, anywhere.
+                  It cleans up filler words and fixes grammar automatically. I pace around my office now instead
+                  of hunching over a keyboard.
                 </p>
 
                 <div className="space-y-3 mb-6">
@@ -377,9 +381,10 @@ export default function AITools2026Page() {
                   Granola
                 </h2>
                 <p className={`text-lg mb-6 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  The tool that ended my note-taking anxiety. Granola captures audio directly from your device—no
-                  awkward bot joining calls. I&apos;m more present in meetings now because I trust everything
-                  important will be there when I need it.
+                  I used to split my attention between listening and typing notes. Now Granola captures every
+                  meeting automatically—no bot joining the call, no awkward &quot;is it okay if I record this?&quot;
+                  It pulls audio directly from my device and gives me searchable transcripts with action items
+                  extracted. I show up to meetings fully present now.
                 </p>
 
                 <div className="space-y-3 mb-6">
@@ -470,9 +475,10 @@ export default function AITools2026Page() {
                   Claude Max Plan
                 </h2>
                 <p className={`text-lg mb-6 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  If you&apos;re a small business owner drowning in documents—contracts, proposals, reports,
-                  spreadsheets—the Max plan pays for itself. Extended context windows mean you can drop in
-                  entire documents and get real analysis, not truncated summaries.
+                  Most small business owners deal with long documents—contracts, proposals, financial reports.
+                  The Max plan gives you enough context to drop in a 50-page contract and ask questions about it.
+                  No more getting cut off mid-document. I use it to cross-reference multiple files at once and
+                  get real analysis instead of summaries.
                 </p>
 
                 <div className="space-y-3 mb-6">
@@ -625,9 +631,10 @@ export default function AITools2026Page() {
                 </div>
                 <div>
                   <p className={`text-lg mb-4 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                    &quot;These tools aren&apos;t about working harder. They&apos;re about removing friction
-                    so I can stay in flow state longer. As someone with ADHD, having an AI that provides
-                    unlimited patience at 3am without taxing human relationships has been transformative.&quot;
+                    &quot;I spent three years testing every AI tool that came out. Most were noise.
+                    These four stuck because they solve real problems I have every day—thinking through
+                    complex decisions, capturing ideas faster than I can type, remembering what happened
+                    in meetings, and processing the mountain of documents that comes with running a business.&quot;
                   </p>
                   <p className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
                     Zack Proser
@@ -653,11 +660,11 @@ export default function AITools2026Page() {
             <h2 className={`font-serif text-3xl md:text-4xl font-bold mb-4 ${
               isDark ? 'text-white' : 'text-charcoal-50'
             }`}>
-              Stay on the Cutting Edge
+              Get Updates When This Changes
             </h2>
             <p className={`text-lg mb-8 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-              I&apos;ll send you updates when new tools earn a spot—plus practical tips for
-              integrating AI into your workflow without the hype.
+              The AI landscape moves fast. I&apos;ll let you know when a tool earns or loses its spot,
+              and share what&apos;s actually working for small business owners.
             </p>
 
             <div className={`p-6 rounded-2xl ${
