@@ -13,7 +13,6 @@ import {
   Calendar,
   Brain,
   FileText,
-  Zap,
   CheckCircle2,
   ArrowRight,
   Sparkles,
@@ -21,6 +20,10 @@ import {
   Users,
   Shield
 } from 'lucide-react'
+import HeroPortrait from '@/components/HeroPortrait'
+
+// Hero portrait image URL (same as homepage)
+const HERO_PORTRAIT_URL = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
 
 export default function AITools2026Page() {
   const { resolvedTheme } = useTheme()
@@ -39,12 +42,12 @@ export default function AITools2026Page() {
     const emailValue = position === 'hero' ? email : bottomEmail
     try {
       await fetch('/api/form', {
-        body: JSON.stringify({ email: emailValue, referrer: '/ai-tools-2026', tags: ['ai-tools-lead-magnet'] }),
+        body: JSON.stringify({ email: emailValue, referrer: '/best-ai-tools', tags: ['ai-tools-lead-magnet'] }),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       })
-      sendGTMEvent({ event: 'newsletter-signup-conversion', method: 'newsletter', source: '/ai-tools-2026', position })
-      track('newsletter-signup', { method: 'newsletter', source: '/ai-tools-2026', position })
+      sendGTMEvent({ event: 'newsletter-signup-conversion', method: 'newsletter', source: '/best-ai-tools', position })
+      track('newsletter-signup', { method: 'newsletter', source: '/best-ai-tools', position })
       if (position === 'hero') {
         setFormSuccess(true)
         setEmail('')
@@ -620,13 +623,17 @@ export default function AITools2026Page() {
               isDark ? 'bg-slate-800/60 border border-amber-500/30' : 'bg-white border border-burnt-400/20 shadow-xl'
             }`}>
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 w-20 h-20 rounded-full overflow-hidden relative">
                   <Image
-                    src="https://zackproser.b-cdn.net/images/zack-proser-portrait.webp"
+                    src={HERO_PORTRAIT_URL}
                     alt="Zack Proser"
-                    width={80}
-                    height={80}
-                    className="rounded-full"
+                    fill
+                    className="object-cover object-top"
+                    style={{
+                      filter: isDark
+                        ? 'grayscale(100%) contrast(1.15) brightness(1.1)'
+                        : 'grayscale(100%) contrast(1.4) brightness(1.05)',
+                    }}
                   />
                 </div>
                 <div>
