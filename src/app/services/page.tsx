@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, Code, Database, Server, Zap, CheckCircle2, Github } from "lucide-react"
+import { ArrowRight, Code, Database, Server, Zap, CheckCircle2, Github, Sparkles } from "lucide-react"
 import TestimonialCarousel from "@/components/testimonial-carousel"
 import ProcessTimeline from "@/components/process-timeline"
 import TechStack from "@/components/tech-stack"
@@ -136,6 +136,33 @@ export default function ServicesPage() {
               <span className="text-base font-medium text-white dark:text-zinc-100 mt-2">Pinecone</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* AI Tools Recommendation Banner */}
+      <section className="py-8 px-4 md:px-6 lg:px-8 bg-amber-100 dark:bg-amber-900/40 border-y border-amber-300 dark:border-amber-700/50">
+        <div className="container mx-auto">
+          <Link href="/best-ai-tools" className="block group">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-amber-500/20 dark:bg-amber-500/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-6 h-6 text-amber-700 dark:text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-amber-900 dark:text-white">
+                    Not ready for custom development? Start with the essentials.
+                  </h3>
+                  <p className="text-amber-800 dark:text-amber-200/80">
+                    My curated AI toolkit for small business owners—the same tools I use daily
+                  </p>
+                </div>
+              </div>
+              <Button className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-semibold whitespace-nowrap group-hover:translate-x-1 transition-transform">
+                See the Stack
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </Link>
         </div>
       </section>
 

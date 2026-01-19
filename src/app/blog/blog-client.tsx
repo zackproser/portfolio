@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Sparkles, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,6 +90,29 @@ export default function BlogClient({ articles, years }: BlogClientProps) {
             All of my technical tutorials, musings and developer rants
           </p>
         </div>
+
+        {/* Featured: AI Tools for Small Business */}
+        <Link
+          href="/best-ai-tools"
+          className="block mb-8 max-w-4xl mx-auto group"
+        >
+          <div className="bg-gradient-to-r from-amber-500/10 via-burnt-400/15 to-amber-500/10 dark:from-amber-900/30 dark:via-amber-800/30 dark:to-amber-900/30 rounded-xl p-4 border border-amber-500/30 dark:border-amber-600/40 hover:border-amber-500/50 dark:hover:border-amber-500/60 transition-all hover:shadow-lg">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0 w-10 h-10 bg-amber-500/20 dark:bg-amber-500/30 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-charcoal-50 dark:text-white">
+                  Playing catch-up on AI?
+                </p>
+                <p className="text-sm text-parchment-600 dark:text-slate-400">
+                  Skip the research—here are the 4 AI tools I actually use to run my business
+                </p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </Link>
 
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 mb-8 max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

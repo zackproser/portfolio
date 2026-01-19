@@ -336,12 +336,23 @@ export default function AuthorityHero() {
               Join <span className={`font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>4,000+</span> engineers, small business owners and investors on the cutting edge
             </p>
             <Link
-              href="/demos"
+              href="/best-ai-tools"
               className={`inline-flex items-center gap-1 text-sm font-medium ${
                 isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
               }`}
             >
-              Learn AI/ML hands-on with interactive demos
+              Catch up on AI → My recommended tools
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link
+              href="/demos"
+              className={`inline-flex items-center gap-1 text-sm font-medium ${
+                isDark ? 'text-sky-400 hover:text-sky-300' : 'text-parchment-600 hover:text-parchment-700'
+              }`}
+            >
+              Learn AI/ML hands-on
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

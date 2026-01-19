@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { Route } from 'next'
 import Image from 'next/image'
 import { Content } from '@/types'
-import { ArrowRight, Play } from 'lucide-react'
+import { ArrowRight, Play, Sparkles } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -100,6 +100,32 @@ export default function DemosClient({ demos }: DemosClientProps) {
               </Suspense>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* AI Tools Quick Start */}
+      <section className={`py-6 ${
+        isDark ? 'bg-amber-900/20 border-y border-amber-700/30' : 'bg-amber-50 border-y border-amber-200'
+      }`}>
+        <div className="container mx-auto px-4">
+          <Link href="/best-ai-tools" className="block group">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
+              <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                isDark ? 'bg-amber-500/30' : 'bg-amber-500/20'
+              }`}>
+                <Sparkles className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+              </div>
+              <div>
+                <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
+                  Want to skip the theory?
+                </span>
+                <span className={`ml-2 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                  See the 4 AI tools I recommend for getting real work done →
+                </span>
+              </div>
+              <ArrowRight className={`w-5 h-5 group-hover:translate-x-1 transition-transform ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
+            </div>
+          </Link>
         </div>
       </section>
 

@@ -4,7 +4,8 @@ import { type BlogWithSlug } from '@/types'
 import { getAllContent } from '@/lib/content-handlers'
 import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
-import { Zap, TrendingUp, Code, Sparkles, Mail, BookOpen, Users, ArrowRight, CheckCircle } from 'lucide-react'
+import { Zap, TrendingUp, Code, Sparkles, Mail, BookOpen, Users, ArrowRight, CheckCircle, Rocket } from 'lucide-react'
+import Link from 'next/link'
 import { NewsletterSignupInline } from '@/components/NewsletterSignupInline'
 import { Suspense } from 'react'
 import CV from '@/components/CV'
@@ -55,6 +56,38 @@ export default async function NewsletterPage() {
             <div className="flex justify-center lg:justify-end">
               <div className="w-full max-w-2xl">
                 <NewsletterSignupInline variant="light" />
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Featured: AI Tools Guide */}
+      <section className="py-12 bg-gradient-to-r from-amber-500/10 via-burnt-400/10 to-amber-500/10 dark:from-amber-900/20 dark:via-amber-800/20 dark:to-amber-900/20 border-y border-amber-500/20 dark:border-amber-700/30">
+        <Container>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+              <div className="flex-shrink-0">
+                <div className="w-16 h-16 bg-amber-500/20 dark:bg-amber-500/30 rounded-2xl flex items-center justify-center">
+                  <Rocket className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                </div>
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-charcoal-50 dark:text-white mb-2">
+                  New to AI? Skip the Learning Curve
+                </h2>
+                <p className="text-lg text-parchment-600 dark:text-slate-300">
+                  I tested hundreds of AI tools so you don&apos;t have to. Here are the 4 that actually matter for running a business in 2026.
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <Link
+                  href="/best-ai-tools"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 dark:bg-amber-600 dark:hover:bg-amber-500 text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                >
+                  See the Stack
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
           </div>
