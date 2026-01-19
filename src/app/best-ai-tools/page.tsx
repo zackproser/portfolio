@@ -41,13 +41,16 @@ export default function AITools2026Page() {
     e.preventDefault()
     const emailValue = position === 'hero' ? email : bottomEmail
     try {
-      await fetch('/api/form', {
+      const response = await fetch('/api/form', {
         body: JSON.stringify({ email: emailValue, referrer: '/best-ai-tools', tags: ['ai-tools-lead-magnet'] }),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       })
-      sendGTMEvent({ event: 'newsletter-signup-conversion', method: 'newsletter', source: '/best-ai-tools', position })
-      track('newsletter-signup', { method: 'newsletter', source: '/best-ai-tools', position })
+      if (!response.ok) {
+        throw new Error('Newsletter signup failed')
+      }
+      sendGTMEvent({ event: 'newsletter-signup-conversion', method: 'newsletter', source: 'best-ai-tools', position })
+      track('newsletter-signup', { method: 'newsletter', source: 'best-ai-tools', position })
       if (position === 'hero') {
         setFormSuccess(true)
         setEmail('')
@@ -293,7 +296,12 @@ export default function AITools2026Page() {
               <div className={`relative rounded-2xl overflow-hidden order-2 md:order-1 ${
                 isDark ? 'ring-2 ring-amber-500/30' : 'ring-1 ring-parchment-300 shadow-xl'
               }`}>
-                <a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://ref.wisprflow.ai/zack-proser"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track('affiliate_click', { product: 'wisprflow', source: 'best-ai-tools', element: 'image' })}
+                >
                   <Image
                     src="https://zackproser.b-cdn.net/images/wisprflow.webp"
                     alt="WisprFlow voice-to-text interface"
@@ -341,7 +349,7 @@ export default function AITools2026Page() {
                     href="https://ref.wisprflow.ai/zack-proser"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => track('affiliate_click', { product: 'wisprflow', source: 'ai-tools-2026' })}
+                    onClick={() => track('affiliate_click', { product: 'wisprflow', source: 'best-ai-tools' })}
                     className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold transition-all hover:-translate-y-0.5 ${
                       isDark
                         ? 'bg-amber-500 hover:bg-amber-400 text-white'
@@ -409,7 +417,7 @@ export default function AITools2026Page() {
                     href="https://go.granola.ai/zack-proser"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => track('affiliate_click', { product: 'granola', source: 'ai-tools-2026' })}
+                    onClick={() => track('affiliate_click', { product: 'granola', source: 'best-ai-tools' })}
                     className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold transition-all hover:-translate-y-0.5 ${
                       isDark
                         ? 'bg-amber-500 hover:bg-amber-400 text-white'
@@ -434,7 +442,12 @@ export default function AITools2026Page() {
               <div className={`relative rounded-2xl overflow-hidden ${
                 isDark ? 'ring-2 ring-amber-500/30' : 'ring-1 ring-parchment-300 shadow-xl'
               }`}>
-                <a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://go.granola.ai/zack-proser"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track('affiliate_click', { product: 'granola', source: 'best-ai-tools', element: 'image' })}
+                >
                   <Image
                     src="https://zackproser.b-cdn.net/images/granola-hero.webp"
                     alt="Granola meeting notes interface"

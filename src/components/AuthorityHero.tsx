@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import HeroPortrait from '@/components/HeroPortrait'
-import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket } from 'lucide-react'
+import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket, Sparkles } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -180,6 +180,17 @@ export default function AuthorityHero() {
 
               {/* Content Pills - Single row */}
               <div className="flex gap-2 overflow-x-auto pb-1">
+                <Link
+                  href="/best-ai-tools"
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                    isDark
+                      ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:border-amber-400 hover:text-amber-300'
+                      : 'bg-burnt-400/10 border border-burnt-400/40 text-burnt-500 hover:border-burnt-400 hover:text-burnt-600'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI Tools
+                </Link>
                 <Link
                   href="/blog"
                   className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
