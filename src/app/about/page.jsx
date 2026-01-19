@@ -89,6 +89,9 @@ export default function About() {
 								I offer <Link className="font-bold text-burnt-400 dark:text-sky-400" href="/services">specialized AI engineering services</Link> focusing on production-ready Next.js applications with vector database integration. Check out my <Link className="font-bold text-burnt-400 dark:text-sky-400" href="/services">services page</Link> to learn how I can help bring your AI project to life.
 							</p>
 							<Newsletter />
+							<p>
+								Looking to level up your business with AI? Check out my guide to the <Link className="font-bold text-burnt-400 dark:text-sky-400" href="/best-ai-tools">best AI tools for small business owners</Link>—the exact stack I use daily.
+							</p>
 							<p>Want to know what it&apos;s like to work with me? Read <Link className="text-burnt-400 dark:text-sky-400 font-bold" href="/testimonials">testimonials from past colleagues and clients</Link> who share their experiences.</p>
 							<div className="mt-8">
 								<CV />
