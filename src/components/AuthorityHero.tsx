@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import HeroPortrait from '@/components/HeroPortrait'
-import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket } from 'lucide-react'
+import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket, Sparkles } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -181,6 +181,17 @@ export default function AuthorityHero() {
               {/* Content Pills - Single row */}
               <div className="flex gap-2 overflow-x-auto pb-1">
                 <Link
+                  href="/best-ai-tools"
+                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
+                    isDark
+                      ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:border-amber-400 hover:text-amber-300'
+                      : 'bg-burnt-400/10 border border-burnt-400/40 text-burnt-500 hover:border-burnt-400 hover:text-burnt-600'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AI Tools
+                </Link>
+                <Link
                   href="/blog"
                   className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
@@ -325,12 +336,23 @@ export default function AuthorityHero() {
               Join <span className={`font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>4,000+</span> engineers, small business owners and investors on the cutting edge
             </p>
             <Link
-              href="/demos"
+              href="/best-ai-tools"
               className={`inline-flex items-center gap-1 text-sm font-medium ${
                 isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
               }`}
             >
-              Learn AI/ML hands-on with interactive demos
+              Catch up on AI → My recommended tools
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+            <Link
+              href="/demos"
+              className={`inline-flex items-center gap-1 text-sm font-medium ${
+                isDark ? 'text-sky-400 hover:text-sky-300' : 'text-parchment-600 hover:text-parchment-700'
+              }`}
+            >
+              Learn AI/ML hands-on
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
