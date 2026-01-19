@@ -157,10 +157,10 @@ export default function ServicesPage() {
                   </p>
                 </div>
               </div>
-              <Button className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-semibold whitespace-nowrap group-hover:translate-x-1 transition-transform">
+              <span className="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-semibold whitespace-nowrap group-hover:translate-x-1 transition-transform rounded-md">
                 See the Stack
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              </span>
             </div>
           </Link>
         </div>
