@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { sendGTMEvent } from '@next/third-parties/google'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import HeroPortrait from '@/components/HeroPortrait'
-import { PenLine, Video, Monitor, GraduationCap, Wrench, Rocket, Sparkles } from 'lucide-react'
+import { PenLine, Video, Monitor, Rocket, Sparkles } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -96,12 +96,12 @@ export default function AuthorityHero() {
         )}
 
         {/* Container */}
-        <div className="container mx-auto px-4 md:px-6 py-8 lg:py-12 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
+        <div className="container mx-auto px-4 md:px-6 py-6 md:py-8 lg:py-12 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-8 lg:gap-12 items-start">
 
-            {/* Left Column: Value Proposition + Newsletter */}
+            {/* Left Column: Headline + Lead Capture + Credibility */}
             <div className="flex flex-col order-2 lg:order-1">
-              {/* Main Headlines - AI Engineer & Cognitive Interface Researcher */}
+              {/* Identity Headlines */}
               <h1
                 className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight ${
                   isDark ? 'text-slate-100' : 'text-charcoal-50'
@@ -115,7 +115,7 @@ export default function AuthorityHero() {
                 AI Engineer <span className={`${isDark ? 'text-slate-500' : 'text-parchment-400'}`}>&amp;</span>
               </h1>
               <h1
-                className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 ${
+                className={`font-serif text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-3 md:mb-4 ${
                   isDark ? '!text-amber-400' : '!text-burnt-400'
                 }`}
                 style={{
@@ -127,59 +127,125 @@ export default function AuthorityHero() {
                 Cognitive Interface Researcher
               </h1>
 
-              {/* Tagline - Primary value proposition */}
-              <p className={`text-lg md:text-xl leading-relaxed mb-6 max-w-xl ${isDark ? 'text-slate-200' : 'text-charcoal-100'}`}>
-                I build AI-powered cognitive infrastructure that helps neurodivergent engineers operate at elite levels.
+              {/* Value Proposition */}
+              <p className={`text-lg md:text-xl leading-relaxed mb-3 md:mb-5 max-w-xl ${isDark ? 'text-slate-200' : 'text-charcoal-100'}`}>
+                14 years shipping production systems. Now on the Applied AI team at WorkOS, testing and building AI workflows daily. Here&apos;s what actually works.
               </p>
 
-              {/* Credentials - Slightly muted */}
-              <p className={`text-base leading-relaxed mb-4 max-w-lg ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                Currently Applied AI at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>WorkOS</span>, previously Staff DevRel at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Pinecone</span>, Senior Engineer at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Cloudflare</span>, and Infrastructure Tech Lead at <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-charcoal-50'}`}>Gruntwork.io</span>.
-              </p>
-
-              {/* Topics - Italic differentiation */}
-              <p className={`text-base italic leading-relaxed mb-6 max-w-lg ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-                I write about practical AI tools, voice-driven development, and building production systems.
-              </p>
-
-              {/* Company Experience */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-                <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
-                  isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
-                }`}>
-                  <img src="/images/logos/workos.svg" alt="WorkOS" className={`h-6 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
-                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>WorkOS</span>
-                  <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>Applied AI</span>
-                </div>
-                <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
-                  isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
-                }`}>
-                  <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/pinecone.png" alt="Pinecone" className="h-full w-full object-contain" />
+              {/* Lead Capture Card */}
+              <div className={`px-[18px] py-5 md:px-6 md:py-6 lg:px-7 lg:py-7 rounded-xl mb-5 ${
+                isDark
+                  ? 'bg-slate-800/60 border border-amber-500/30'
+                  : 'bg-white border border-burnt-400/20 shadow-md'
+              }`}>
+                {formSuccess ? (
+                  <div className="text-center py-4">
+                    <p className={`text-base font-bold mb-1 ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                      You&apos;re in!
+                    </p>
+                    <p className={`text-sm ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                      Check your inbox for your free guides.
+                    </p>
                   </div>
-                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Pinecone</span>
-                  <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>RAG &amp; Vectors</span>
+                ) : (
+                  <>
+                    {/* Text content container with constrained measure */}
+                    <div className="max-w-[56ch]">
+                      <p className={`text-xs font-medium uppercase tracking-wide mb-2 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
+                        Practical AI patterns that survive contact with reality
+                      </p>
+                      <div className={`space-y-3 text-[15px] leading-[1.6] ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
+                        <p>
+                          If you&apos;re building with AI and want fewer surprises, I break down the exact RAG patterns, tools, and defaults I use in production&mdash;what scales, what doesn&apos;t, and why.
+                        </p>
+                        <p>
+                          This is for engineers shipping features, founders figuring out where AI actually pays off, and anyone trying to see past the demo layer.
+                        </p>
+                      </div>
+                    </div>
+                    <form onSubmit={handleNewsletterSubmit} className="flex gap-2 mt-5">
+                      {/* Mobile: short placeholder */}
+                      <Input
+                        type="email"
+                        placeholder="Email address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`flex-1 h-10 text-sm md:hidden ${
+                          isDark
+                            ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
+                            : 'bg-parchment-50 border-parchment-300 text-charcoal-50 placeholder:text-parchment-400'
+                        }`}
+                        required
+                      />
+                      {/* Desktop: longer placeholder */}
+                      <Input
+                        type="email"
+                        placeholder="Work or personal email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={`flex-1 h-10 text-sm hidden md:block ${
+                          isDark
+                            ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
+                            : 'bg-parchment-50 border-parchment-300 text-charcoal-50 placeholder:text-parchment-400'
+                        }`}
+                        required
+                      />
+                      <Button
+                        type="submit"
+                        className={`h-10 px-4 font-semibold text-sm whitespace-nowrap ${
+                          isDark
+                            ? 'bg-amber-500 hover:bg-amber-400 text-white'
+                            : 'bg-burnt-400 hover:bg-burnt-500 text-white'
+                        }`}
+                      >
+                        Show me what works
+                      </Button>
+                    </form>
+                    {/* Mobile only: extra helper text */}
+                    <p className={`text-[10px] mt-1.5 md:hidden ${isDark ? 'text-slate-500' : 'text-parchment-400'}`}>
+                      Work or personal is fine.
+                    </p>
+                    <p className={`text-[11px] mt-2 md:mt-3 ${isDark ? 'text-slate-500' : 'text-parchment-400'}`}>
+                      Read by 4,000+ builders. No hype. Unsub anytime.
+                    </p>
+                  </>
+                )}
+              </div>
+
+              {/* Company Experience with Labels */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
+                  isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
+                }`}>
+                  <img src="/images/logos/workos.svg" alt="WorkOS" className={`h-5 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
+                  <span className={`text-xs font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>WorkOS</span>
+                  <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>Applied AI</span>
                 </div>
                 <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
-                  <img src="/images/logos/cloudflare.svg" alt="Cloudflare" className={`h-6 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
-                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Cloudflare</span>
-                  <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>APIs &amp; Systems</span>
+                  <img src="/images/logos/pinecone.png" alt="Pinecone" className="h-5 mb-1" />
+                  <span className={`text-xs font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Pinecone</span>
+                  <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>RAG &amp; Vectors</span>
                 </div>
                 <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
                   isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
                 }`}>
-                  <div className={`h-6 w-6 mb-1 flex items-center justify-center ${isDark ? 'bg-white/10 rounded p-1' : ''}`}>
-                    <img src="/images/logos/gruntwork.png" alt="Gruntwork" className="h-full w-full object-contain" />
-                  </div>
-                  <span className={`text-sm font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Gruntwork</span>
-                  <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>AWS &amp; IaC</span>
+                  <img src="/images/logos/cloudflare.svg" alt="Cloudflare" className={`h-5 mb-1 ${isDark ? 'brightness-0 invert' : ''}`} />
+                  <span className={`text-xs font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Cloudflare</span>
+                  <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>APIs &amp; Edge</span>
+                </div>
+                <div className={`flex flex-col items-center text-center p-2 rounded-lg ${
+                  isDark ? 'bg-slate-800/40 border border-slate-700/50' : 'bg-white/70 border border-parchment-200'
+                }`}>
+                  <img src="/images/logos/gruntwork.png" alt="Gruntwork" className="h-5 mb-1" />
+                  <span className={`text-xs font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>Gruntwork</span>
+                  <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>AWS &amp; IaC</span>
                 </div>
               </div>
 
-              {/* Content Pills - Single row */}
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              {/* Content Pills */}
+              <div className="flex gap-2 flex-wrap">
                 <Link
                   href="/best-ai-tools"
                   className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
@@ -225,28 +291,6 @@ export default function AuthorityHero() {
                   Demos
                 </Link>
                 <Link
-                  href="/learn"
-                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
-                    isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
-                      : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
-                  }`}
-                >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  Courses
-                </Link>
-                <Link
-                  href="/devtools"
-                  className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
-                    isDark
-                      ? 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-sky-400/50 hover:text-sky-400'
-                      : 'bg-white border border-parchment-200 text-parchment-600 hover:border-burnt-400/50 hover:text-burnt-500'
-                  }`}
-                >
-                  <Wrench className="w-3.5 h-3.5" />
-                  Tools
-                </Link>
-                <Link
                   href="/projects"
                   className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105 ${
                     isDark
@@ -266,96 +310,30 @@ export default function AuthorityHero() {
             </div>
           </div>
 
-          {/* CTA Section: FULL WIDTH - Outside the 2-column grid */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
-            {/* Left: Consultation CTA */}
+          {/* Secondary CTAs below hero */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Button
               onClick={() => {
                 track('authority_hero_cta', { action: 'book_consultation' })
                 setIsConsultationOpen(true)
               }}
-              className={`w-full h-11 font-bold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${
+              className={`h-12 px-6 text-base font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 ${
                 isDark
                   ? 'bg-amber-500 hover:bg-amber-400 text-white'
                   : 'bg-burnt-400 hover:bg-burnt-500 text-white'
               }`}
             >
-              Book a Consultation <span className="text-xs opacity-90">$500/hr</span>
+              Book a Consultation
             </Button>
-
-            {/* Divider */}
-            <span
-              className={`hidden md:block text-sm font-medium italic px-4 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}
-              style={{
-                textShadow: isDark
-                  ? '1px 1px 0 rgba(0,0,0,0.5), -0.5px -0.5px 0 rgba(255,255,255,0.1)'
-                  : '1px 1px 0 rgba(255,255,255,0.8), -0.5px -0.5px 0 rgba(0,0,0,0.15)',
-              }}
-            >
-              Or keep in touch
-            </span>
-
-            {/* Right: Email Signup */}
-            {formSuccess ? (
-              <div className={`w-full h-11 flex items-center justify-center rounded-lg ${isDark ? 'bg-slate-800' : 'bg-white'}`}>
-                <p className={`text-sm font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
-                  ✓ You&apos;re in!
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleNewsletterSubmit} className="w-full flex gap-2 h-11">
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={`flex-1 text-sm h-11 ${
-                    isDark
-                      ? 'bg-slate-800 border-slate-700 text-white placeholder:text-slate-400'
-                      : 'bg-white border-parchment-300 text-charcoal-50 placeholder:text-parchment-400'
-                  }`}
-                  required
-                />
-                <Button
-                  type="submit"
-                  className={`text-sm h-11 px-5 font-semibold ${
-                    isDark
-                      ? 'bg-amber-500 hover:bg-amber-400 text-white'
-                      : 'bg-burnt-400 hover:bg-burnt-500 text-white'
-                  }`}
-                >
-                  ✉️ Count me in
-                </Button>
-              </form>
-            )}
-          </div>
-
-          {/* Social proof + Tutorial link */}
-          <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6">
-            <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
-              Join <span className={`font-bold ${isDark ? 'text-amber-400' : 'text-burnt-400'}`}>4,000+</span> engineers, small business owners and investors on the cutting edge
-            </p>
-            <Link
-              href="/best-ai-tools"
-              className={`inline-flex items-center gap-1 text-sm font-medium ${
-                isDark ? 'text-amber-400 hover:text-amber-300' : 'text-burnt-400 hover:text-burnt-500'
-              }`}
-            >
-              Catch up on AI → My recommended tools
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
             <Link
               href="/demos"
-              className={`inline-flex items-center gap-1 text-sm font-medium ${
-                isDark ? 'text-sky-400 hover:text-sky-300' : 'text-parchment-600 hover:text-parchment-700'
+              className={`inline-flex items-center justify-center h-12 px-6 text-base font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 ${
+                isDark
+                  ? 'bg-amber-500 hover:bg-amber-400 text-white'
+                  : 'bg-burnt-400 hover:bg-burnt-500 text-white'
               }`}
             >
-              Learn AI/ML hands-on
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              Try Interactive Demos
             </Link>
           </div>
         </div>
