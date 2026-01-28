@@ -36,12 +36,6 @@ export default async function Page() {
     'codeium-analysis-4-2024'
   ]
 
-  const neurodivergentResearchSlugs = [
-    'handwave',
-    'claude-external-brain-adhd-autistic',
-    'training-claude-neurological-patterns'
-  ]
-
   const refArchitectureSlugs = [
     'pinecone-reference-architecture-launch',
     'pinecone-reference-architecture-scaling',
@@ -68,7 +62,6 @@ export default async function Page() {
     const refArchitectures = await getContentsByDirectorySlugs('blog', refArchitectureSlugs)
     const careerAdvice = await getContentsByDirectorySlugs('blog', careerAdviceSlugs)
     const videos = await getContentsByDirectorySlugs('videos', videoSlugs)
-    const neurodivergentResearch = await getContentsByDirectorySlugs('blog', neurodivergentResearchSlugs)
 
     console.log(`Homepage: Loaded content directly with optimized performance`)
     console.log(`- Deep ML Tutorials: ${deepMLTutorials.length}/${deepMLTutorialSlugs.length}`)
@@ -77,7 +70,6 @@ export default async function Page() {
     console.log(`- Ref Architectures: ${refArchitectures.length}/${refArchitectureSlugs.length}`)
     console.log(`- Career Advice: ${careerAdvice.length}/${careerAdviceSlugs.length}`)
     console.log(`- Videos: ${videos.length}/${videoSlugs.length}`)
-    console.log(`- Neurodivergent Research: ${neurodivergentResearch.length}/${neurodivergentResearchSlugs.length}`)
 
     // Server-side mobile detection
     const headersList = await headers()
@@ -93,7 +85,6 @@ export default async function Page() {
         refArchitectures={refArchitectures}
         careerAdvice={careerAdvice}
         videos={videos}
-        neurodivergentResearch={neurodivergentResearch}
         isMobile={isMobile}
       />
     )
