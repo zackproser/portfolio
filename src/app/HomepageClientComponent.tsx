@@ -27,6 +27,7 @@ interface HomepageClientComponentProps {
   refArchitectures: Article[];
   careerAdvice: Article[];
   videos: Article[];
+  neurodivergentResearch: Article[];
   isMobile: boolean;
 }
 
@@ -37,6 +38,7 @@ export default function HomepageClientComponent({
   refArchitectures,
   careerAdvice,
   videos,
+  neurodivergentResearch,
 }: HomepageClientComponentProps) {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false)
 
@@ -264,8 +266,27 @@ export default function HomepageClientComponent({
           </div>
         </section>
 
+        {/* Neurodivergent Research Section */}
+        <section className="w-full py-12 md:py-16 lg:py-20 bg-parchment-100 dark:bg-charcoal-400">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="mb-10 text-center">
+              <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-charcoal-50 dark:text-parchment-100 mb-4">
+                AI + Neurodivergent Workflows
+              </h2>
+              <p className="text-lg text-parchment-600 dark:text-parchment-400 max-w-3xl mx-auto">
+                Research and tools for making AI work with neurodivergent brains—ADHD, autism, and beyond.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+              {neurodivergentResearch.slice(0, 3).map((article, index) => (
+                <ContentCard key={`neuro-research-${index}`} article={article} />
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Content Collections Section Header */}
-        <section className="py-12 bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20">
+        <section className="py-12 bg-parchment-200 dark:bg-charcoal-500 border-t border-parchment-300 dark:border-charcoal-100/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-10">
               <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl text-charcoal-50 dark:text-parchment-100 mb-4">
