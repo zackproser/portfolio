@@ -1,0 +1,164 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-take-notes-without-typing';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="How to take notes without typing" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Modern tools let you capture notes without ever touching a keyboard</figcaption>
+
+Whether you can't type (injury, disability, preference), don't want to type (meetings, interviews), or just want to be faster, there are excellent options for taking notes without a keyboard.
+
+Here's the complete guide.
+
+## The Options
+
+### 1. Automatic Meeting Capture
+
+For meetings, the best option is automatic transcription.
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures any meeting—Zoom, Teams, phone calls, in-person—and creates notes automatically. You don't type, speak, or do anything. Just attend the meeting.
+
+**Best for**: Video calls, phone calls, in-person meetings
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+### 2. Voice Dictation
+
+For your own thoughts and notes, speak them.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> turns your speech into text anywhere on your computer. Press a hotkey, speak, and text appears.
+
+**Best for**: Personal notes, quick captures, documentation
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+### 3. Combination Approach
+
+Use both:
+- **Granola** for meeting capture (passive)
+- **WisprFlow** for your own notes (active)
+
+This covers virtually all note-taking scenarios without typing.
+
+## Method 1: Automatic Meeting Notes
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola automatic meeting notes" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+### How It Works
+1. Connect Granola to your calendar
+2. Join meetings normally
+3. Granola captures audio and creates notes
+4. Review notes after meeting
+
+### What You Get
+- Full transcript
+- Summary of key points
+- Action items extracted
+- Searchable archive
+
+### No Typing Required
+- No manual note-taking during meeting
+- No transcription after meeting
+- No follow-up email drafting (use the summary)
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Method 2: Voice Dictation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice dictation" width={800} height={600}/>
+</AffiliateLink>
+
+### How It Works
+1. Press hotkey (anywhere)
+2. Speak your note
+3. Text appears where cursor is
+
+### Use Cases
+- Quick thoughts and ideas
+- To-do items
+- Responses to messages
+- Documentation
+- Journal entries
+
+### Advantages Over Typing
+- 3x faster than typing
+- Works while walking/moving
+- Hands-free operation
+- Lower cognitive load
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Comparison of Methods
+
+| Scenario | Best Method | Tool |
+|----------|-------------|------|
+| Video meetings | Auto capture | Granola |
+| Phone calls | Auto capture | Granola |
+| In-person meetings | Auto capture (mobile) | Granola |
+| Quick personal notes | Dictation | WisprFlow |
+| Long documents | Dictation | WisprFlow |
+| Email responses | Dictation | WisprFlow |
+| Ideas while walking | Dictation | WisprFlow |
+
+## Accessibility Considerations
+
+### For Mobility Limitations
+Voice dictation removes the need for fine motor control required by typing. WisprFlow works with any microphone—built-in, headset, or specialized.
+
+### For Visual Processing Differences
+Speaking is often easier than the visual-motor coordination of typing. The auditory-verbal path may be more natural.
+
+### For Temporary Injuries
+Broken arm? RSI flare-up? Voice tools let you keep working while healing.
+
+## Getting Started
+
+### For Meetings
+<AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - automatic capture, no action needed during meetings.
+
+### For Personal Notes
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - speak anywhere, text appears.
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+<VoiceAIDemoCard />
+
+## FAQ
+
+### Can I really never type?
+
+For most note-taking, yes. You might occasionally type for special characters or corrections, but 95%+ can be voice.
+
+### What about code or technical content?
+
+Prose works great. Code and math are harder to dictate. Consider voice for documentation and typing for code.
+
+### Is the quality good enough?
+
+Modern AI transcription is excellent. Both tools produce clean, usable text.
+
+### What about in quiet offices?
+
+Use a headset with a noise-canceling microphone. Your voice goes directly to the mic, not through the room.
+
+---
+
+*Typing is just one interface. Voice is often better.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
