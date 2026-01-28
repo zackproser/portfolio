@@ -4,16 +4,14 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Mic, Calendar, ArrowRight } from 'lucide-react'
 import { track } from '@vercel/analytics'
+import { getAffiliateLink, type AffiliateProduct, type AffiliateMedium, type AffiliatePlacement } from '@/lib/affiliate'
 
 interface StickyAffiliateCTAProps {
   product?: 'wisprflow' | 'granola' | 'both'
+  campaign?: string  // Page slug for UTM tracking (e.g., 'ai-tools-for-lawyers')
+  medium?: AffiliateMedium
   showAfterScroll?: number // pixels to scroll before showing
   className?: string
-}
-
-const AFFILIATE_LINKS = {
-  wisprflow: 'https://ref.wisprflow.ai/zack-proser',
-  granola: 'https://go.granola.ai/zack-proser'
 }
 
 const PRODUCT_DATA = {
@@ -33,13 +31,22 @@ const PRODUCT_DATA = {
   }
 }
 
-export default function StickyAffiliateCTA({ 
+export default function StickyAffiliateCTA({
   product = 'both',
+  campaign = 'unknown',
+  medium = 'blog',
   showAfterScroll = 800,
   className = ''
 }: StickyAffiliateCTAProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
+
+  const getLink = (p: AffiliateProduct) => getAffiliateLink({
+    product: p,
+    campaign,
+    medium,
+    placement: 'sticky-cta'
+  })
 
   useEffect(() => {
     // Check if already dismissed this session
@@ -109,7 +116,7 @@ export default function StickyAffiliateCTA({
                       return (
                         <a
                           key={p}
-                          href={AFFILIATE_LINKS[p]}
+                          href={getLink(p)}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => handleClick(p)}
@@ -148,17 +155,34 @@ export default function StickyAffiliateCTA({
 }
 
 // Simplified version for inline use in blog posts
-export function InlineAffiliateCTA({ product }: { product: 'wisprflow' | 'granola' }) {
+interface InlineAffiliateCTAProps {
+  product: 'wisprflow' | 'granola'
+  campaign?: string  // Page slug for UTM tracking
+  medium?: AffiliateMedium
+}
+
+export function InlineAffiliateCTA({
+  product,
+  campaign = 'unknown',
+  medium = 'blog'
+}: InlineAffiliateCTAProps) {
   const data = PRODUCT_DATA[product]
   const Icon = data.icon
 
+  const link = getAffiliateLink({
+    product,
+    campaign,
+    medium,
+    placement: 'inline-cta'
+  })
+
   const handleClick = () => {
-    track('inline_cta_click', { product })
+    track('inline_cta_click', { product, campaign })
   }
 
   return (
     <a
-      href={AFFILIATE_LINKS[product]}
+      href={link}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
@@ -173,6 +197,45 @@ export function InlineAffiliateCTA({ product }: { product: 'wisprflow' | 'granol
       <Icon className="h-4 w-4" />
       Try {data.name} Free
       <ArrowRight className="h-3.5 w-3.5" />
+    </a>
+  )
+}
+
+// Simple text link for inline use in MDX content
+interface AffiliateLinkProps {
+  product: 'wisprflow' | 'granola'
+  campaign?: string
+  medium?: AffiliateMedium
+  placement?: AffiliatePlacement
+  children: React.ReactNode
+}
+
+export function AffiliateLink({
+  product,
+  campaign = 'unknown',
+  medium = 'blog',
+  placement = 'text-link',
+  children
+}: AffiliateLinkProps) {
+  const link = getAffiliateLink({
+    product,
+    campaign,
+    medium,
+    placement
+  })
+
+  const handleClick = () => {
+    track('affiliate_text_link_click', { product, campaign, placement })
+  }
+
+  return (
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+    >
+      {children}
     </a>
   )
 }

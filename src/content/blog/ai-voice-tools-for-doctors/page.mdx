@@ -3,13 +3,15 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+export const campaign = 'ai-voice-tools-for-doctors';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for medical professionals" width={800} height={600}/>
-</a>
+</AffiliateLink>
 <figcaption>Modern AI voice tools are helping physicians reclaim hours spent on documentation</figcaption>
 
 Clinical documentation is one of the leading causes of physician burnout. Studies show doctors spend 2 hours on EHR documentation for every 1 hour of patient care. Voice AI tools are now accurate enough to meaningfully reduce this burden.
@@ -19,17 +21,17 @@ This guide covers practical voice tools for clinical documentation, with attenti
 ## The Tools
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
 ## WisprFlow for Clinical Dictation
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for medical dictation" width={800} height={600}/>
-</a>
+</AffiliateLink>
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a voice-to-text application that works system-wide. Speak naturally, and polished text appears wherever your cursor is—Epic, Cerner, your EHR of choice.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a voice-to-text application that works system-wide. Speak naturally, and polished text appears wherever your cursor is—Epic, Cerner, your EHR of choice.
 
 ### Why Physicians Choose WisprFlow
 
@@ -48,15 +50,15 @@ This guide covers practical voice tools for clinical documentation, with attenti
 
 I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Granola for Patient Consultations
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for patient consultations" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 
-[Granola](https://go.granola.ai/zack-proser) captures conversations and creates structured notes without a visible recorder joining your meeting.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes without a visible recorder joining your meeting.
 
 ### Applications in Healthcare
 
@@ -70,7 +72,7 @@ I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setu
 
 For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Privacy Considerations
 
@@ -129,12 +131,12 @@ If you're interested in voice-first productivity beyond clinical work:
 ## Getting Started
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
-1. **For clinical dictation**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - Install takes minutes
-2. **For consultation capture**: [Try Granola](https://go.granola.ai/zack-proser) - Syncs with your calendar
+1. **For clinical dictation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Install takes minutes
+2. **For consultation capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Syncs with your calendar
 
 Both offer free trials to evaluate before committing.
 
@@ -163,6 +165,6 @@ Products like Nuance DAX offer ambient capture specifically for healthcare. Wisp
 *Every minute spent on documentation is a minute not spent with patients. These tools won't solve healthcare's systemic issues, but they can give individual physicians meaningful time back.*
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>

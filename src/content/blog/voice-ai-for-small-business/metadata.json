@@ -5,6 +5,7 @@
   "description": "Practical guide to using AI voice tools like WisprFlow and Granola to save hours on emails, meetings, and documentation. No technical skills required.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
   "slug": "/blog/voice-ai-for-small-business",
+  "hiddenFromIndex": true,
   "keywords": [
     "ai tools for small business",
     "voice to text small business",

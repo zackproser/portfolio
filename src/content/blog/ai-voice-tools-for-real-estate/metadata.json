@@ -5,6 +5,7 @@
   "description": "How real estate agents are using AI voice tools for faster listing descriptions, client follow-ups, and showing notes. Save hours on documentation.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
   "slug": "/blog/ai-voice-tools-for-real-estate",
+  "hiddenFromIndex": true,
   "keywords": [
     "ai tools for real estate agents",
     "voice to text real estate",

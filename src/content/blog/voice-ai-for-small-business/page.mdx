@@ -3,13 +3,15 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+export const campaign = 'voice-ai-for-small-business';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Voice AI tools for small business productivity" width={800} height={600}/>
-</a>
+</AffiliateLink>
 <figcaption>Voice AI tools can save small business owners hours every week</figcaption>
 
 Running a small business means wearing too many hats. You're answering emails, taking client calls, managing your team, and somehow still trying to do the actual work your business exists for.
@@ -21,17 +23,17 @@ What if you could write emails 2x faster? What if every meeting automatically ca
 After testing dozens of AI tools, two have become indispensable for business productivity:
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
 ## WisprFlow: Speak Your Emails, Documents, and Messages
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface" width={800} height={600} />
-</a>
+</AffiliateLink>
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a voice-to-text app that works everywhere on your Mac. Press a button, speak naturally, and polished text appears wherever you're typing.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a voice-to-text app that works everywhere on your Mac. Press a button, speak naturally, and polished text appears wherever you're typing.
 
 ### Why It Works for Business Owners
 
@@ -49,15 +51,15 @@ I recently spoke this entire email response in 45 seconds:
 
 Typing that would have taken 3 minutes with editing. Speaking it took seconds.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Granola: Never Miss What Was Said in a Meeting
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
-[Granola](https://go.granola.ai/zack-proser) automatically captures your meetings and creates organized notes with action items. The key difference from other tools: **no bot joins your call**.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> automatically captures your meetings and creates organized notes with action items. The key difference from other tools: **no bot joins your call**.
 
 ### Why This Matters for Business
 
@@ -71,11 +73,11 @@ Typing that would have taken 3 minutes with editing. Speaking it took seconds.
 
 Other meeting tools join as a bot that announces "Recording has started." This makes clients self-conscious. Granola captures audio from your device—no one knows it's running.
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes example" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Time Savings Add Up
 
@@ -94,12 +96,12 @@ That's almost a full extra day every week. What would you do with an extra day?
 
 Both tools offer free trials, so you can test them with no risk:
 
-1. **For faster writing**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - takes 2 minutes to set up
-2. **For meeting capture**: [Try Granola](https://go.granola.ai/zack-proser) - automatically syncs with your calendar
+1. **For faster writing**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - takes 2 minutes to set up
+2. **For meeting capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - automatically syncs with your calendar
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
 ## Frequently Asked Questions
@@ -138,6 +140,6 @@ The best part? You can try both free and see results the same day you install th
 Ready to get started?
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
