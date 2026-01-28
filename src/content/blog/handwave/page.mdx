@@ -1,0 +1,108 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={rawMetadata.image} alt="Handwave app icon" width={1200} height={630} />
+<figcaption>Handwave: Every Claude Code session, on your wrist.</figcaption>
+
+Sometimes I can't sit still. I get flooded with ideas, or I hit a wall, or my brain just needs motion. I'll get up, sit down, walk outside, come back in, pace the room. The standard advice is to step away from the screen and take a break—but what if the screen could come with me?
+
+I built Handwave to scratch this itch: a watchOS app that discovers all my Claude Code sessions running on my Mac and lets me talk to any of them by voice, from anywhere. Multiplex between sessions. Ask one for a status update, tell another to start a refactor, check on a third. All from my wrist while I'm walking around the yard or pacing the kitchen.
+
+> This post extends my ongoing research into making technology work with neurodivergent brains rather than against them. See also [Training Claude to Understand My Neurological Patterns](/blog/training-claude-neurological-patterns) and [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic).
+
+## Table of contents
+
+## The itch
+
+My brain doesn't do "sit quietly and focus" for eight hours straight. It does intense hyperfocus bursts, then crashes, then needs to move. Traditional development workflows assume you're planted at a desk—but I do some of my best thinking while walking.
+
+The problem: Claude Code sessions live on my Mac. If I step away, I lose access. I could use my phone, but pulling out a phone, unlocking it, navigating to an app—that's friction. My watch is already on my wrist.
+
+The experiment: What if I could just raise my wrist and talk to whichever Claude session I need? Voice in, voice out. No phone. No laptop. Just me and my AI pair programmer, walking and talking.
+
+## What we built
+
+The architecture is simple:
+
+```
+Apple Watch  ──Bonjour──>  Bridge Server  ──Agent SDK──>  Claude Code
+  (SwiftUI)     (Wi-Fi)     (Node.js)       (resume)      (sessions)
+```
+
+Three pieces:
+
+1. **Bridge server** - A Node.js Express app running on your Mac that scans `~/.claude/projects/` to discover all your Claude Code sessions, then exposes them over HTTP with SSE streaming
+2. **Bonjour discovery** - The bridge advertises itself as `_handwave._tcp` via mDNS so the watch can find it automatically on your local network
+3. **watchOS app** - SwiftUI interface that discovers the bridge, lists your sessions, and provides voice input/output for talking to them
+
+The watch app uses the Claude Agent SDK's session resumption feature. When you select a session, it resumes with full conversation context—you're not starting fresh, you're picking up exactly where that session left off.
+
+## Voice-first interaction
+
+The core interaction loop:
+
+1. Tap the mic button on your watch
+2. Speak your question or instruction
+3. Watch the status as Claude thinks ("Sending...", "Thinking...", "Tool use...")
+4. Hear the response read aloud via text-to-speech, or read it on screen
+
+You can toggle between voice and text for both input and output. Four combinations for different contexts: voice/voice for hands-free, voice/text when you need to speak but read, text/voice for quiet input with spoken output, text/text for fully silent operation.
+
+The responses are automatically summarized for spoken playback. Claude's full responses can be long—you don't want three paragraphs read aloud on your watch. The bridge server runs each response through Haiku to produce a 1-3 sentence summary optimized for TTS.
+
+## The Xcode experience
+
+This was built with Xcode 26.2 beta on macOS Tahoe. Here's the irony: getting the development environment set up took longer than building the actual app.
+
+Installing Tahoe required creating a separate APFS partition. The watchOS 26 beta needed to be loaded onto my Apple Watch Ultra via Bluetooth tethering through my iPhone, which itself needed the iOS 26 beta. The Bluetooth transfer for watchOS is glacially slow—we're talking the better part of an hour watching a progress bar inch forward.
+
+Once all that was in place? I had a working prototype in a few hours. The Claude in Xcode experience is okay—sometimes it thinks it can't edit files directly and needs prompting to just do it—but I was productive despite not writing SwiftUI every day. The combination of Claude understanding Swift and me being able to describe what I wanted got us to a working app fast.
+
+## Current constraints and future ideas
+
+Right now you need to be on the same Wi-Fi network as your Mac. Bonjour discovery is local network only, and the HTTP connection between watch and bridge server travels over that network.
+
+But this could easily be extended:
+
+- **ngrok or Cloudflare Tunnel** - Expose the bridge server through a secure tunnel so you can reach it from anywhere
+- **Tailscale** - Put both your Mac and watch on the same Tailscale network for secure remote access without exposing anything to the public internet
+- **Always-on Mac** - Leave your Mac Mini running at home as a dedicated Claude Code multiplexer, accessible from your watch wherever you are
+
+The constraint isn't fundamental—it's just what I built for v1. The architecture already supports remote access; it just needs the networking layer to make it secure.
+
+## Why this matters for how I work
+
+I've written before about [using Claude as external executive function](/blog/claude-external-brain-adhd-autistic) and [training it to understand my specific patterns](/blog/training-claude-neurological-patterns). Handwave is another piece of that system.
+
+When I'm in hyperfocus mode, I don't want to break flow. But when I crash and need to move, I don't want to lose touch with my work entirely. Having every active Claude session available on my wrist means I can:
+
+- Check status on a long-running task while making coffee
+- Give quick instructions while walking the dog
+- Ask "what's next?" when I'm pacing and trying to figure out what to work on
+- Context-switch between projects without context-switching my physical location
+
+The watch becomes another node in the ambient computing mesh around my work, not a distraction from it.
+
+## Try it yourself
+
+Handwave is [open source on GitHub](https://github.com/zackproser/handwave). You'll need:
+
+- macOS 15+ with Node.js 20+
+- watchOS 26+ on an Apple Watch paired to your iPhone
+- Xcode 26+ for building the watch app
+- Claude Code installed and logged in
+- An Anthropic API key for the bridge server
+
+The README has the full setup instructions. Start the bridge server, build the watch app in Xcode, and you should see your Mac discovered automatically.
+
+***
+
+**Related Posts:**
+
+- [Training Claude to Understand My Neurological Patterns](/blog/training-claude-neurological-patterns) — How I systematically teach Claude to compensate for ADHD/autism processing patterns
+- [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic) — Technical workflows for using Claude as external executive function
+- [Walking and Talking with AI](/blog/walking-and-talking-with-ai) — Untethered development on trails

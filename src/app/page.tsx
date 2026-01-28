@@ -31,6 +31,7 @@ export default async function Page() {
   ]
 
   const aiDevSlugs = [
+    'handwave',
     'automations-project',
     'autocomplete-is-not-all-you-need',
     'codeium-analysis-4-2024'
