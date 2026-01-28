@@ -437,31 +437,31 @@ export default function AuthorityHero() {
                 </span>
               </Link>
 
-              {/* Native macOS AI Installer */}
+              {/* Handwave - Talk to Claude Code from Apple Watch */}
               <Link
-                href="/blog/native-osx-app-ai-workflow-installer"
+                href="/blog/handwave"
                 className={`group p-6 rounded-xl transition-all hover:-translate-y-1 ${
                   isDark ? 'bg-slate-800/50 border border-slate-700 hover:border-amber-500/50' : 'bg-parchment-100 border border-parchment-300 hover:border-burnt-400/50'
                 }`}
               >
                 <div className="w-full h-32 rounded-lg overflow-hidden mb-4 relative">
                   <Image
-                    src="https://zackproser.b-cdn.net/images/ai-installer-hero.webp"
-                    alt="Native macOS AI workflow installer"
+                    src="https://zackproser.b-cdn.net/images/handwave-blog-hero.webp"
+                    alt="Handwave - Talk to Claude Code from your Apple Watch"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
                 <h3 className={`font-serif text-lg font-bold mb-2 ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
-                  Native macOS AI Installer
+                  Handwave: Watch + Claude Code
                 </h3>
                 <p className={`text-sm mb-3 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  Building Swift apps to install AI workflows. Better DX than another setup guide.
+                  Voice control Claude Code sessions from your wrist. When you can&apos;t sit still, bring your AI with you.
                 </p>
                 <span className={`inline-flex items-center gap-1 text-sm font-medium ${
                   isDark ? 'text-amber-400' : 'text-burnt-400'
                 }`}>
-                  See the experiment
+                  See the project
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>

@@ -265,7 +265,7 @@ export default function HomepageClientComponent({
         </section>
 
         {/* Content Collections Section Header */}
-        <section className="py-12 bg-parchment-100 dark:bg-charcoal-400 border-t border-parchment-300 dark:border-charcoal-100/20">
+        <section className="py-12 bg-parchment-200 dark:bg-charcoal-500 border-t border-parchment-300 dark:border-charcoal-100/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-10">
               <h2 className="font-serif text-3xl font-bold tracking-tight sm:text-4xl text-charcoal-50 dark:text-parchment-100 mb-4">

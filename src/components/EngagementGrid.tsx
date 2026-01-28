@@ -89,7 +89,7 @@ export default function EngagementGrid() {
   const engagements = [
     {
       title: 'For Investors & Funds',
-      subtitle: '$500-650/hr | Due Diligence Calls',
+      subtitle: 'Technical Due Diligence',
       description: 'I provide technical diligence on AI tools, stacks, and startups. Cut through the hype with hands-on analysis from a practicing engineer.',
       icon: '📈',
       ctaText: 'Schedule a Call',
@@ -97,7 +97,7 @@ export default function EngagementGrid() {
     },
     {
       title: 'For Engineering Teams',
-      subtitle: 'Fractional AI Leadership | Project Pricing',
+      subtitle: 'Fractional AI Leadership',
       description: 'Architect and implement production RAG, fine-tuning, and scaling strategies. Interim staff AI engineer for your startup.',
       icon: '⚙️',
       ctaText: 'Discuss a Project',
