@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
+import GitHubRepoCard from '@/components/GitHubRepoCard'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -13,6 +14,8 @@ export const metadata = createMetadata(rawMetadata)
   title="Handwave Demo - Talk to Claude Code from your Apple Watch"
   allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
 </iframe>
+
+<GitHubRepoCard repo="zackproser/handwave" />
 
 Sometimes I can't sit still. I get flooded with ideas, or I hit a wall, or my brain just needs motion. I'll get up, sit down, walk outside, come back in, pace the room. The standard advice is to step away from the screen and take a break—but what if the screen could come with me?
 
