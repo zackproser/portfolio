@@ -46,17 +46,3 @@ export function getAffiliateLink(params: AffiliateParams): string {
   return `${BASE_LINKS[product]}?${utmParams.toString()}`
 }
 
-/**
- * Get base affiliate link without UTM parameters
- * Use this for backwards compatibility or when UTM tracking isn't needed
- */
-export function getBaseAffiliateLink(product: AffiliateProduct): string {
-  return BASE_LINKS[product]
-}
-
-/**
- * Convenience exports for use in components
- */
-export const AFFILIATE_PRODUCTS = ['wisprflow', 'granola'] as const
-export const AFFILIATE_MEDIUMS = ['blog', 'demo', 'homepage', 'newsletter', 'tools'] as const
-export const AFFILIATE_PLACEMENTS = ['sticky-cta', 'inline-cta', 'hero-card', 'compact-card', 'text-link', 'dual-card'] as const
