@@ -1,0 +1,175 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import FAQSection from '@/components/FAQSection';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+I type at 90 WPM. I dictate at 179 WPM.
+
+That's not a typo. Voice-to-text nearly doubled my output speed — and it works for code, not just prose.
+
+Here's how I integrated voice into my developer workflow.
+
+## The speed difference is real
+
+Most developers dismiss voice typing because they tried macOS Dictation or Google's voice input. Those tools transcribe exactly what you say, including every "um" and false start.
+
+Modern voice-to-text is different. [WisprFlow](https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=intro-link) uses AI to clean up your speech before inserting text. The output is ready to use.
+
+**Me speaking:** "um create a function that takes a user ID as a string and returns a promise that resolves to the user object or null if not found"
+
+**What gets inserted:** "Create a function that takes a user ID as a string and returns a Promise that resolves to the user object or null if not found."
+
+No editing required. That's the difference.
+
+<InlineAffiliateCTA 
+  product="WisprFlow"
+  url="https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=inline-cta-1"
+  ctaText="Try WisprFlow Free"
+  description="Voice-to-text that cleans up your speech automatically"
+/>
+
+## Where voice works in development
+
+Voice isn't for writing `for` loops. It's for everything around the code.
+
+### 1. Code comments and documentation
+
+This is the killer use case. Writing docs is slow because you're context-switching between coding brain and writing brain.
+
+With voice, I look at the code and describe what it does:
+
+> "This function validates the incoming webhook payload against our schema. It returns early if the signature doesn't match. The actual processing happens in processWebhook which this calls after validation."
+
+That becomes a perfect function comment in seconds.
+
+### 2. Git commits and PR descriptions
+
+Typing commit messages breaks flow. Dictating them doesn't:
+
+> "Fix race condition in user session handling. The previous implementation could create duplicate sessions if two requests hit the create endpoint simultaneously. Added mutex lock around session creation."
+
+Done. Pushed. Moving on.
+
+### 3. Slack and team communication
+
+Developer communication is 50% of the job. Explaining technical decisions, answering questions, providing context on PRs.
+
+Voice makes these faster:
+
+> "The reason I went with Redis here instead of the database is that we're doing approximately 10,000 lookups per second and the latency requirement is under 5 milliseconds. Postgres can't hit that without significant caching anyway, so Redis is the simpler solution."
+
+Try typing that at 179 WPM.
+
+### 4. Issue descriptions and tickets
+
+Creating well-written tickets is tedious. Voice makes it effortless:
+
+> "Users are reporting that the export function times out on large datasets. Reproduced with any dataset over 50,000 rows. The current implementation loads everything into memory before starting the export. We need to stream the results instead. Acceptance criteria: exports of up to 1 million rows complete within 60 seconds."
+
+### 5. Code reviews
+
+PR feedback that's actually helpful takes time to write. Voice removes the friction:
+
+> "This looks good overall but I have a concern about the error handling on line 47. If the API returns a 429 we should probably retry with exponential backoff rather than failing immediately. Also the variable name 'data' on line 23 could be more descriptive, maybe 'userPreferences' since that's what it actually contains."
+
+<InlineAffiliateCTA 
+  product="WisprFlow"
+  url="https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=inline-cta-2"
+  ctaText="Try WisprFlow Free"
+  description="Write PR reviews in seconds, not minutes"
+/>
+
+## My actual workflow
+
+**Tools:**
+- [WisprFlow](https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=tools-link) for voice-to-text ($8/month)
+- Cursor or VS Code for coding
+- A decent microphone (built-in MacBook mic works, external is better)
+
+**The setup:**
+1. WisprFlow runs in the menu bar
+2. I press a hotkey to start dictating
+3. Text appears wherever my cursor is
+4. Press the hotkey again to stop
+
+**When I use it:**
+- Any time I'm writing more than a sentence
+- Documentation sprints (I can document an entire module in 20 minutes)
+- Morning standup notes
+- Technical design discussions in Slack
+- Email responses
+
+**When I don't:**
+- Actual code syntax (typing is fine for short bursts)
+- When I'm in a meeting or open office (obvious reasons)
+- Complex formatting that needs visual editing
+
+## The productivity math
+
+Let's say you write 2 hours of non-code text per day (comments, docs, messages, tickets, PRs). That's conservative for most developers.
+
+**Typing at 90 WPM:** 10,800 words
+**Dictating at 179 WPM:** 21,480 words
+
+Same 2 hours, twice the output. Or finish in 1 hour and spend the other hour coding.
+
+At $8/month for WisprFlow, the ROI is absurd.
+
+<InlineAffiliateCTA 
+  product="WisprFlow"
+  url="https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=inline-cta-3"
+  ctaText="Try WisprFlow Free"
+  description="Double your writing speed for $8/month"
+/>
+
+## Getting started
+
+1. **Install WisprFlow** — [Free trial available](https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=getting-started)
+2. **Set a comfortable hotkey** — I use a double-tap of the fn key
+3. **Start with Slack** — Low stakes, quick feedback on quality
+4. **Graduate to docs** — Once comfortable, tackle documentation
+5. **Make it automatic** — After a week, you'll reach for voice without thinking
+
+The learning curve is about 3 days. After that, typing long text feels slow.
+
+## FAQ
+
+<FAQSection
+  items={[
+    {
+      question: "Does it work in VS Code / Cursor?",
+      answer: "Yes. WisprFlow works anywhere you can type — editors, terminals, browser, Slack, everything. It's not IDE-specific."
+    },
+    {
+      question: "What about code syntax?",
+      answer: "You can dictate code but it's awkward ('open paren user ID colon string close paren'). Better to type actual syntax and dictate everything else."
+    },
+    {
+      question: "Do I need a special microphone?",
+      answer: "No. Built-in laptop mics work fine. A USB microphone or headset improves accuracy in noisy environments but isn't required."
+    },
+    {
+      question: "What about accents?",
+      answer: "Modern voice-to-text handles accents well. WisprFlow uses the same underlying models as other transcription services. It adapts to your speech patterns over time."
+    },
+    {
+      question: "Is it weird dictating in an office?",
+      answer: "Yes, if you're loud about it. I dictate quietly or use it when working from home. AirPods work great for subtle dictation."
+    }
+  ]}
+/>
+
+---
+
+*The fastest developers aren't better typists. They remove typing from everything that isn't code.*
+
+<InlineAffiliateCTA 
+  product="WisprFlow"
+  url="https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=blog&utm_campaign=voice-developer-workflow&utm_content=footer-cta"
+  ctaText="Try WisprFlow Free"
+  description="Join thousands of developers who write faster than they type"
+/>
