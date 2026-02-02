@@ -122,12 +122,12 @@ function getTypeFromPath(filePath: string): 'blog' | 'course' | 'video' | 'demo'
  * @returns Complete ExtendedMetadata object
  */
 export function createMetadata(params: MetadataParams): ExtendedMetadata {
-  const { 
-    title, 
-    description, 
+  const {
+    title,
+    description,
     author,
     image,
-    filePath: explicitFilePath, 
+    filePath: explicitFilePath,
     type: providedType,
     slug: providedSlug,
     date,
@@ -135,6 +135,7 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     tags,
     commerce,
     landing,
+    hiddenFromIndex,
     ...rest
   } = params
 
@@ -294,7 +295,8 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
     
     // Additional optional fields
     ...(commerce && { commerce }),
-    ...(landing && { landing })
+    ...(landing && { landing }),
+    ...(hiddenFromIndex && { hiddenFromIndex })
   };
 
   // Log the created metadata for debugging
