@@ -1,0 +1,285 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+I have an AI assistant that never sleeps. It runs on a tiny computer under my desk, accessible from my phone, laptop, or a voice call from anywhere in the world.
+
+It reads my email, manages my calendar, tracks my health data, monitors my projects, and can even call me when something needs attention.
+
+This is how I built it.
+
+## The problem
+
+Claude, ChatGPT, and other AI assistants are stateless. Every conversation starts fresh. They can't check your email while you're asleep. They can't remind you about that meeting you forgot. They can't notice that your calendar is packed after a night of terrible sleep.
+
+I wanted something different: an AI assistant that's **always on**, has **persistent memory**, and can **reach me** through multiple channels.
+
+## The hardware: System76 Meerkat
+
+The [System76 Meerkat](https://system76.com/desktops/meerkat) is a tiny, silent, Linux-first mini PC. Mine has:
+
+- Intel Core i5
+- 32GB RAM
+- 500GB NVMe SSD
+- Ubuntu 24.04
+
+Total power draw: about 15 watts. It sits under my desk, always on, runs my entire AI infrastructure.
+
+Why not a cloud VM? Three reasons:
+
+1. **Latency** — Local is faster for anything touching my network
+2. **Cost** — $600 once vs $50/month forever
+3. **Control** — My data, my machine, my rules
+
+## The software: OpenClaw
+
+[OpenClaw](https://github.com/openclaw/openclaw) is an open-source AI gateway that turns Claude into an operational assistant. It provides:
+
+- **Persistent sessions** — Memory across conversations
+- **Multi-channel access** — Discord, Telegram, Slack, SMS, voice
+- **Tool integrations** — Email, calendar, browser, shell access
+- **Scheduled tasks** — Cron jobs, reminders, heartbeat checks
+- **Voice calls** — Twilio integration for phone conversations
+
+The gateway runs as a systemd service, survives reboots, and keeps my assistant available 24/7.
+
+```bash
+# Install OpenClaw
+npm install -g openclaw
+
+# Configure and start
+openclaw configure
+openclaw gateway start
+
+# Enable on boot
+openclaw gateway service install
+```
+
+## The network: Tailscale
+
+[Tailscale](https://tailscale.com) creates a private mesh network between all my devices. The Meerkat, my MacBook, my phone — all connected, all secure, no port forwarding needed.
+
+Key features I use:
+
+- **Tailscale Funnel** — Exposes specific ports to the internet (for Twilio webhooks)
+- **Magic DNS** — Access the Meerkat as `meerkat.tailnet` from any device
+- **SSH** — Secure shell access from anywhere
+
+```bash
+# Expose voice webhook to internet
+tailscale funnel 3334
+
+# Now https://meerkat.tailb6b796.ts.net routes to localhost:3334
+```
+
+This is how Twilio can call my local machine for voice webhooks without exposing anything else.
+
+## The integrations
+
+Here's everything I connected and why:
+
+### Communication
+
+| Integration | Purpose |
+|------------|---------|
+| **Discord** | Primary chat interface — always open, desktop + mobile |
+| **Gmail** | Read, search, draft, and send email as me |
+| **Google Calendar** | Check availability, create events, send invites |
+| **Slack** | Monitor work channels, respond to mentions |
+| **Twilio Voice** | Inbound/outbound phone calls with speech |
+
+### Productivity
+
+| Integration | Purpose |
+|------------|---------|
+| **GitHub** | PR reviews, issue management, repo operations |
+| **Linear** | Task tracking, project status |
+| **Notion** | Notes, documents, knowledge base |
+| **Browser** | Web automation, research, form filling |
+
+### Health & Context
+
+| Integration | Purpose |
+|------------|---------|
+| **Oura Ring** | Sleep quality, readiness scores, HRV data |
+
+### Why these matter
+
+The integrations aren't just "nice to have" — they compound:
+
+- **Oura + Calendar** → "Your readiness is 45. You have 6 meetings. Want me to reschedule the non-critical ones?"
+- **Email + Linear** → "Got an email from the Xata team about the article. Created a task in Linear."
+- **Voice + Everything** → "Hey Claw, what's on my calendar today?" (while driving)
+
+## Voice calls: The killer feature
+
+This is the part that feels like science fiction.
+
+I saved my Twilio number (+1-510-296-7947) as a contact named "Claw". Now I can:
+
+1. **"Hey Siri, call Claw"**
+2. Have a natural conversation
+3. Claw transcribes, understands, and acts
+
+The setup:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "voice-call": {
+        "enabled": true,
+        "config": {
+          "provider": "twilio",
+          "fromNumber": "+15102967947",
+          "publicUrl": "https://meerkat.tailb6b796.ts.net/voice/webhook",
+          "inboundPolicy": "allowlist",
+          "allowFrom": ["+18035551234"],
+          "inboundGreeting": "Hey Zack, what's up?",
+          "streaming": {
+            "enabled": true
+          },
+          "tts": {
+            "provider": "elevenlabs",
+            "elevenlabs": {
+              "voiceId": "pMsXgVXv3BLzUgSXRplE"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+This uses:
+- **Twilio** for telephony
+- **OpenAI Realtime API** for speech-to-text
+- **ElevenLabs** for natural-sounding text-to-speech
+- **Tailscale Funnel** to receive webhooks
+
+## The side channel: SSH + Claude Code
+
+Here's a workflow most people don't think about:
+
+My MacBook runs Claude Code sessions that need to persist even when my laptop sleeps. Solution: run them on the Meerkat over SSH.
+
+```bash
+# From MacBook
+ssh meerkat
+
+# Start a tmux session
+tmux new -s claude-dev
+
+# Run Claude Code
+cd ~/projects/my-app
+claude
+
+# Detach with Ctrl-B D
+# Laptop can sleep, session continues
+```
+
+When I wake up, the Claude Code session has been working. I can check in from my phone via Tailscale SSH if I'm away from my desk.
+
+## Memory and context
+
+OpenClaw maintains workspace files that persist across sessions:
+
+- **MEMORY.md** — Long-term curated knowledge
+- **memory/YYYY-MM-DD.md** — Daily notes and events
+- **USER.md** — Information about me (preferences, contacts, context)
+- **SOUL.md** — The assistant's personality and guidelines
+
+When a new session starts, Claw reads these files and has full context. No "let me start over" — it remembers the project we were working on, the email we discussed, the reminder we set.
+
+## Heartbeats and proactive behavior
+
+Every 30 minutes, Claw gets a "heartbeat" — a chance to check on things proactively:
+
+- New important emails?
+- Calendar events coming up?
+- Health data concerning?
+- Background tasks completed?
+
+If something needs attention, it pings me on Discord. If not, it stays quiet.
+
+```markdown
+# HEARTBEAT.md
+- Check for urgent emails from [list of VIPs]
+- Remind about any meetings in next 2 hours
+- If readiness < 50, suggest lighter schedule
+```
+
+## Security considerations
+
+This setup has significant access to my digital life. Security measures:
+
+1. **Allowlists** — Only specific Discord servers/channels can interact
+2. **Tailscale** — All network traffic is encrypted, no public exposure
+3. **Separate user** — OpenClaw runs as non-root user
+4. **Audit logs** — All actions are logged
+5. **Phone allowlist** — Only my number can call in
+
+The Meerkat itself sits on my home network, behind my router, with Tailscale as the only ingress.
+
+## Why this matters
+
+I'm autistic with ADHD. Executive function is a constant struggle. This system compensates for that:
+
+- **Memory issues?** Claw remembers everything.
+- **Time blindness?** Claw tracks the calendar and alerts me.
+- **Overwhelmed by email?** Claw filters and summarizes.
+- **Can't context-switch?** Claw handles interruptions while I focus.
+
+It's not replacing my brain — it's extending it. An external process that handles the operational drag so I can focus on actual work.
+
+## The cost
+
+| Component | Cost |
+|-----------|------|
+| System76 Meerkat | $600 (one-time) |
+| Anthropic API | ~$50-100/month |
+| Twilio | ~$5/month |
+| ElevenLabs | $5/month |
+| Tailscale | Free (personal) |
+| OpenClaw | Free (open source) |
+
+About $60-110/month ongoing, less than many SaaS tools, for a system that handles a significant chunk of my operational overhead.
+
+## Getting started
+
+If you want to build something similar:
+
+1. **Get hardware** — Any Linux box works (Raspberry Pi 5 is minimum viable)
+2. **Install Tailscale** — [tailscale.com/download](https://tailscale.com/download)
+3. **Install OpenClaw** — `npm install -g openclaw`
+4. **Configure basics** — API keys, Discord channel
+5. **Add integrations** — One at a time, as you need them
+
+Start small. Discord + Calendar is a great first milestone. Add voice later when you understand the system.
+
+## What's next
+
+I'm still building. Planned additions:
+
+- **Proactive health alerts** — "Your HRV dropped 20%. Take it easy today."
+- **Email drafts for approval** — Draft responses I can approve/edit via Discord
+- **Meeting prep** — Auto-pull context before calendar events
+- **Travel mode** — Adjust behavior when I'm flying or in different timezones
+
+The foundation is solid. Now it's about making the assistant smarter, more proactive, and more useful.
+
+---
+
+*The best AI assistant isn't the smartest one — it's the one that's actually there when you need it. Always on, always connected, always working.*
+
+---
+
+**Resources:**
+- [OpenClaw Documentation](https://docs.openclaw.ai)
+- [OpenClaw GitHub](https://github.com/openclaw/openclaw)
+- [System76 Meerkat](https://system76.com/desktops/meerkat)
+- [Tailscale](https://tailscale.com)
