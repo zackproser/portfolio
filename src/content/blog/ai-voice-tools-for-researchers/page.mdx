@@ -1,0 +1,130 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-researchers';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for researchers" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Voice AI tools help researchers capture interviews and write faster</figcaption>
+
+Research is about capturing insights—from interviews, literature, experiments, and your own thinking. But the mechanical work of transcription and documentation steals time from actual analysis.
+
+Voice AI tools handle the tedious capture so you can focus on what matters: understanding.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## Granola for Research Interviews
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola for research interviews" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures your interviews and creates searchable transcripts—essential for qualitative research.
+
+### For Qualitative Research
+
+**Participant interviews**: Focus on the conversation, not transcription. Capture nuances you'd miss while writing.
+
+**No visible recording**: Participants may speak more freely without obvious recording. Granola runs invisibly.
+
+**Searchable transcripts**: Find that quote you remember but can't locate. Search across all your interviews.
+
+### Research Use Cases
+
+- **Semi-structured interviews**: Follow the conversation naturally
+- **Focus groups**: Capture multiple voices
+- **Field observations**: Mobile app for in-person research
+- **Advisor meetings**: Record feedback for later review
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## WisprFlow for Writing and Notes
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for academic writing" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> lets you dictate literature notes, paper sections, and research documentation at speaking speed.
+
+### Academic Writing
+
+**Literature notes**: Dictate summaries and reactions while reading papers. Capture thoughts immediately.
+
+**First drafts**: Speak your arguments before committing to text. Many researchers find this clarifies thinking.
+
+**Grant writing**: Get words on paper faster. Edit later.
+
+**Email correspondence**: Quick responses to collaborators and advisors.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Researcher Workflow
+
+### During Data Collection
+- Granola captures participant interviews
+- Dictate field notes via WisprFlow
+- Voice memos for observations
+
+### During Analysis
+- Search interview transcripts for themes
+- Dictate coding notes and memos
+- Speak through emerging interpretations
+
+### During Writing
+- Dictate sections while ideas are fresh
+- Literature review summaries by voice
+- Quick revision passes
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| Interview transcription | 4 hrs/hr audio | 0 (auto) | 4 hrs |
+| Literature notes | 2 hrs/day | 45 min/day | 75 min |
+| First draft writing | 500 words/hr | 1500 words/hr | 3x faster |
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For interviews**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - automatic transcription
+2. **For writing**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - 3x faster drafts
+
+<VoiceAIDemoCard />
+
+## FAQ
+
+### Is this IRB compliant?
+
+Consult your IRB. Recording requirements vary by protocol. Many researchers use these tools with appropriate consent procedures.
+
+### What about confidential participant data?
+
+Both tools use encryption. Evaluate their security documentation against your data management plan requirements.
+
+### Does dictation work for technical writing?
+
+Yes, though equations and citations need manual entry. Prose sections benefit most.
+
+---
+
+*Research time is too valuable for transcription. Let AI handle the mechanical work.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

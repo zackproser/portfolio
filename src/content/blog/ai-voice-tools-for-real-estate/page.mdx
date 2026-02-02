@@ -3,13 +3,15 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+export const campaign = 'ai-voice-tools-for-real-estate';
+
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for real estate professionals" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 <figcaption>Voice AI tools help real estate agents capture client needs and create listings faster</figcaption>
 
 Real estate agents live on their phones. Between showings, client calls, and property visits, there's barely time to sit at a desk—let alone type out detailed notes and listing descriptions.
@@ -19,17 +21,17 @@ Voice AI tools solve this problem. Speak your notes after a showing, dictate lis
 ## The Tools
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
 ## WisprFlow for Listing Descriptions and Client Communication
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for real estate dictation" width={800} height={600}/>
-</a>
+</AffiliateLink>
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is voice-to-text that works everywhere on your Mac. Speak naturally, and polished text appears in your MLS, CRM, email—anywhere you're typing.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is voice-to-text that works everywhere on your Mac. Speak naturally, and polished text appears in your MLS, CRM, email—anywhere you're typing.
 
 ### Real Estate Use Cases
 
@@ -49,15 +51,15 @@ WisprFlow enables 150-180 WPM dictation.
 
 For a detailed review, see [WisprFlow Review: 179 WPM Voice-Driven Development](/blog/wisprflow-review).
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Granola for Client Meetings and Phone Calls
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola for real estate meeting notes" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 
-[Granola](https://go.granola.ai/zack-proser) captures your conversations and creates organized notes with action items—without anyone knowing it's running.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures your conversations and creates organized notes with action items—without anyone knowing it's running.
 
 ### Perfect for Real Estate
 
@@ -71,7 +73,7 @@ For a detailed review, see [WisprFlow Review: 179 WPM Voice-Driven Development](
 
 For a comparison with alternatives, see [Granola vs Otter.ai](/blog/granola-vs-otter).
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Daily Workflow Example
 
@@ -112,12 +114,12 @@ That's essentially a full extra day every week.
 ## Getting Started
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
-1. **For listings and emails**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - 2 minutes to install
-2. **For client calls and meetings**: [Try Granola](https://go.granola.ai/zack-proser) - Syncs with your calendar
+1. **For listings and emails**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - 2 minutes to install
+2. **For client calls and meetings**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Syncs with your calendar
 
 Both offer free trials. Test them on your next listing or client meeting.
 
@@ -150,6 +152,6 @@ If you save even 2 hours per week (conservative estimate), that's time you can s
 *Your time is better spent with clients than at a keyboard. These tools let you stay in the field while still documenting everything.*
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>

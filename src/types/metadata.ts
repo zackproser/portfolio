@@ -24,6 +24,7 @@ export interface ExtendedMetadata extends Metadata {
   slug: string
   tags?: string[]
   _id?: string  // Internal unique identifier to prevent duplicate key issues
+  hiddenFromIndex?: boolean  // Hide from /blog listing but keep accessible via direct link (for SEO/affiliate content)
   commerce?: CommerceConfig
   landing?: {
     heroTitle?: string  // Custom hero title

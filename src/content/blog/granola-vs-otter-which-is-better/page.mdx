@@ -1,0 +1,151 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-vs-otter-which-is-better';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola vs Otter.ai comparison" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Granola and Otter.ai take very different approaches to meeting transcription</figcaption>
+
+Looking for a meeting notes app but can't decide between Granola and Otter.ai? They solve the same problem in fundamentally different ways.
+
+Here's the real comparison.
+
+## Quick Answer
+
+**<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** is better for most users. It captures meetings without a bot joining your call, which means participants behave naturally. Otter's visible bot changes the meeting dynamic.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The Core Difference
+
+### Granola: Device Audio Capture
+- Captures audio from your device's microphone
+- No one knows it's running
+- Works on any platform (Zoom, Teams, Meet, phone calls)
+- Participants speak naturally
+
+### Otter.ai: Bot Joins Meeting
+- A visible "Otter.ai" bot joins your call
+- Announces recording to all participants
+- Can be blocked by meeting hosts
+- Changes how people speak
+
+## Head-to-Head Comparison
+
+| Feature | Granola | Otter.ai |
+|---------|---------|----------|
+| Visible to participants | No | Yes (bot joins) |
+| Works on any platform | Yes | Most, but can be blocked |
+| In-person meetings | Yes (mobile app) | No |
+| Free tier | Trial | Yes, limited |
+| Action item extraction | Automatic | Manual |
+| Participant comfort | High | Lower |
+| Enterprise compliance | Good | Good |
+
+## When Otter's Bot Is a Problem
+
+**Scenario 1: Client Call**
+You: "Hi Sarah, thanks for joining."
+Otter: "Otter.ai Bot has joined the meeting."
+Sarah: "Oh... are you recording this?"
+
+The conversation shifts. Sarah becomes more guarded. You spend 2 minutes explaining instead of building rapport.
+
+**Scenario 2: Sales Call**
+Prospect sees "Otter.ai is recording" and wonders what you'll do with it. Trust takes a hit.
+
+**Scenario 3: Sensitive Internal Discussion**
+Team members notice the bot. The frank conversation you needed becomes more political.
+
+## When Otter Makes Sense
+
+- **Internal team meetings** where recording is expected
+- **Organizations that require visible recording** for compliance
+- **Users who need a free tier** for occasional use
+- **Teams already using Otter** with established workflows
+
+## Granola Advantages
+
+### 1. Natural Conversation
+When participants don't see recording, they speak naturally. You get:
+- More honest feedback
+- Less guarded client conversations
+- Better meeting dynamics
+
+### 2. Universal Platform Support
+Works on Zoom, Teams, Meet, WebEx, phone calls—anything your device can hear. Otter bots can be blocked on some platforms.
+
+### 3. In-Person Meetings
+Granola's mobile app captures in-person meetings. Otter is video calls only.
+
+### 4. Cleaner Action Items
+Granola automatically extracts action items with owners. Otter requires manual highlighting.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Otter Advantages
+
+### 1. Free Tier
+Otter offers a limited free version. Granola requires subscription after trial.
+
+### 2. Established Brand
+Otter has been around longer and has more integrations.
+
+### 3. Visible Recording
+If you *want* participants to know they're recorded (compliance, consent), Otter makes it obvious.
+
+## Pricing Comparison
+
+| Plan | Granola | Otter.ai |
+|------|---------|----------|
+| Free | Trial only | 300 min/month |
+| Pro | ~$10-20/month | ~$17/month |
+| Business | Custom | ~$30/month |
+
+## My Recommendation
+
+For most professionals: **<AffiliateLink product="granola" campaign={campaign}>Start with Granola</AffiliateLink>**.
+
+The invisible capture changes everything. Meetings are better when people aren't thinking about the recording.
+
+Use Otter if:
+- You need free tier for light use
+- Your organization requires visible recording
+- You're already embedded in Otter workflows
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+<VoiceAIDemoCard />
+
+## FAQ
+
+### Is invisible recording ethical?
+
+You're still responsible for consent laws in your jurisdiction. "Invisible" means to other participants—you know it's running.
+
+### Can I switch from Otter to Granola?
+
+Yes. They're separate accounts. Try Granola on your next few meetings and compare.
+
+### What about transcript accuracy?
+
+Both are good. Modern AI transcription is quite accurate. Minor errors in both, similar quality.
+
+### Does Granola have an API?
+
+Check their docs for current integrations. Both tools have export options.
+
+---
+
+*The best meeting notes tool is one that doesn't change the meeting. Granola wins on this.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

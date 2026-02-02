@@ -237,12 +237,6 @@ export const MEETING_SAMPLE = {
   }
 }
 
-// Affiliate links
-export const AFFILIATE_LINKS = {
-  wisprflow: 'https://ref.wisprflow.ai/zack-proser',
-  granola: 'https://go.granola.ai/zack-proser'
-} as const
-
 // Section value propositions and related posts
 export interface RelatedPost {
   slug: string

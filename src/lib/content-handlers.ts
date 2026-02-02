@@ -157,7 +157,8 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
     // Include optional fields only if they exist in source metadata
     ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
     ...(processedMetadata.landing && { landing: processedMetadata.landing }),
-    ...(processedMetadata.tags && { tags: processedMetadata.tags })
+    ...(processedMetadata.tags && { tags: processedMetadata.tags }),
+    ...(typeof processedMetadata.hiddenFromIndex !== 'undefined' && { hiddenFromIndex: processedMetadata.hiddenFromIndex })
   };
 
   logger.debug(`Processed metadata for ${contentType}/${directorySlug}`, content);

@@ -3,13 +3,15 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+export const campaign = 'ai-tools-for-lawyers';
+
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for legal professionals" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 <figcaption>Modern AI voice tools are transforming how lawyers draft documents and capture meetings</figcaption>
 
 Legal work is word-intensive. Contracts, briefs, motions, client emails, meeting notes—the volume of text lawyers produce is staggering. Voice AI tools are now good enough to meaningfully reduce this burden while maintaining the precision legal work demands.
@@ -19,17 +21,17 @@ This guide covers two tools I've found particularly effective for professional d
 ## The Tools
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
 ## WisprFlow for Legal Dictation
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow dictation interface" width={800} height={600}/>
-</a>
+</AffiliateLink>
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a voice-to-text application that works system-wide on Mac. Speak naturally, and polished text appears wherever your cursor is focused—Word, Outlook, your document management system, anywhere.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a voice-to-text application that works system-wide on Mac. Speak naturally, and polished text appears wherever your cursor is focused—Word, Outlook, your document management system, anywhere.
 
 ### Legal-Specific Benefits
 
@@ -52,15 +54,15 @@ Average typing speed: 40-60 WPM
 WisprFlow voice speed: 150-180 WPM
 **Effective improvement: 2-3x faster initial drafts**
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Granola for Client Meetings and Depositions
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes for legal" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 
-[Granola](https://go.granola.ai/zack-proser) captures meeting audio and generates structured notes without a bot joining your call. This distinction matters significantly in legal contexts.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures meeting audio and generates structured notes without a bot joining your call. This distinction matters significantly in legal contexts.
 
 ### Why "No Bot" Matters for Lawyers
 
@@ -89,7 +91,7 @@ Granola captures audio from your device's microphone. The recording is invisible
 - No data used to train AI models
 - See their [trust center](https://trust.granola.ai/) for compliance details
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Addressing Common Concerns
 
@@ -136,13 +138,13 @@ WisprFlow's personal dictionary feature learns specialized vocabulary. After ini
 Both tools offer free trials:
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
-**WisprFlow**: [Try free](https://ref.wisprflow.ai/zack-proser) - Install takes 2 minutes. Start with email dictation to build comfort.
+**WisprFlow**: <AffiliateLink product="wisprflow" campaign={campaign}>Try free</AffiliateLink> - Install takes 2 minutes. Start with email dictation to build comfort.
 
-**Granola**: [Try free](https://go.granola.ai/zack-proser) - Syncs with your calendar automatically. First meeting generates notes without any configuration.
+**Granola**: <AffiliateLink product="granola" campaign={campaign}>Try free</AffiliateLink> - Syncs with your calendar automatically. First meeting generates notes without any configuration.
 
 <VoiceAIDemoCard />
 
@@ -177,6 +179,6 @@ Recommended. IT and ethics committees should review any tool that processes clie
 *The billable hour won't wait for you to type. Voice AI tools offer a meaningful way to reclaim time without sacrificing quality—time you can spend on substantive legal work or, occasionally, on something other than work.*
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>

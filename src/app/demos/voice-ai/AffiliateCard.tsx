@@ -3,12 +3,14 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Mic, Calendar, Sparkles } from 'lucide-react'
 import { track } from '@vercel/analytics'
-import { AFFILIATE_LINKS } from './data'
+import { getAffiliateLink, type AffiliateMedium, type AffiliatePlacement } from '@/lib/affiliate'
 
 interface AffiliateCardProps {
   product: 'wisprflow' | 'granola'
   variant?: 'default' | 'compact' | 'hero'
   context?: string // Where in the demo this appears
+  campaign?: string // Page slug for UTM tracking
+  medium?: AffiliateMedium
 }
 
 const PRODUCT_DATA = {
@@ -62,22 +64,37 @@ const PRODUCT_STYLES = {
   }
 }
 
-export default function AffiliateCard({ 
-  product, 
+export default function AffiliateCard({
+  product,
   variant = 'default',
-  context = 'demo'
+  context = 'demo',
+  campaign = 'voice-ai-demo',
+  medium = 'demo'
 }: AffiliateCardProps) {
   const data = PRODUCT_DATA[product]
   const styles = PRODUCT_STYLES[product]
-  const link = AFFILIATE_LINKS[product]
   const Icon = data.icon
+
+  // Map variant to placement for UTM tracking
+  const placementMap: Record<string, AffiliatePlacement> = {
+    default: 'compact-card',
+    compact: 'compact-card',
+    hero: 'hero-card'
+  }
+
+  const link = getAffiliateLink({
+    product,
+    campaign,
+    medium,
+    placement: placementMap[variant] || 'compact-card'
+  })
 
   const handleClick = () => {
     track('affiliate_click', {
       product,
       context,
       variant,
-      link
+      campaign
     })
   }
 
@@ -237,11 +254,21 @@ export default function AffiliateCard({
 }
 
 // Export a dual-card component for showing both products
-export function AffiliateDualCard({ context = 'demo' }: { context?: string }) {
+interface AffiliateDualCardProps {
+  context?: string
+  campaign?: string
+  medium?: AffiliateMedium
+}
+
+export function AffiliateDualCard({
+  context = 'demo',
+  campaign = 'voice-ai-demo',
+  medium = 'demo'
+}: AffiliateDualCardProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <AffiliateCard product="wisprflow" variant="hero" context={context} />
-      <AffiliateCard product="granola" variant="hero" context={context} />
+      <AffiliateCard product="wisprflow" variant="hero" context={context} campaign={campaign} medium={medium} />
+      <AffiliateCard product="granola" variant="hero" context={context} campaign={campaign} medium={medium} />
     </div>
   )
 }
