@@ -203,6 +203,7 @@ Every 30 minutes, Claw gets a "heartbeat" — a chance to check on things proact
 - Calendar events coming up?
 - Health data concerning?
 - Background tasks completed?
+- **Linear tasks tagged for attention?**
 
 If something needs attention, it pings me on Discord. If not, it stays quiet.
 
@@ -211,7 +212,45 @@ If something needs attention, it pings me on Discord. If not, it stays quiet.
 - Check for urgent emails from [list of VIPs]
 - Remind about any meetings in next 2 hours
 - If readiness < 50, suggest lighter schedule
+- Check Linear for tasks tagged "claw"
 ```
+
+## The Linear workflow: Async task delegation
+
+This is where it gets powerful. My goal is to **place work in Linear, tag it, and have Claw proactively pick it up**.
+
+Here's how it works:
+
+1. **I create a task in Linear** — "Research competitors for X feature"
+2. **I tag it with `claw`** — This signals it's delegated to my assistant
+3. **On the next heartbeat, Claw sees the tagged task**
+4. **Claw works on it autonomously** — Research, drafts, analysis
+5. **Claw updates the task with results** — Or pings me if blocked
+
+The magic: I don't have to context-switch to delegate. I just drop tasks into Linear during my normal workflow, tag them, and forget about them. Claw wakes up every 30 minutes, checks for new work, and handles it.
+
+```bash
+# Example heartbeat check
+curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -d '{"query": "{ issues(filter: { labels: { name: { eq: \"claw\" } }, state: { type: { nin: [\"completed\", \"canceled\"] } } }) { nodes { identifier title description } } }"}'
+```
+
+This inverts the traditional assistant model. Instead of me stopping to tell Claw what to do, I just tag work and keep moving. Claw catches up on its own schedule.
+
+**Tasks I delegate this way:**
+- Research and summarization
+- Draft writing (emails, docs, PRs)
+- Code review prep
+- Meeting context gathering
+- Data analysis
+
+**Tasks I don't delegate:**
+- Anything requiring real-time interaction
+- Decisions that need my judgment
+- Sensitive communications
+
+The key insight: **async delegation scales better than synchronous conversation.** I can tag 10 tasks in 2 minutes. Claw works through them over hours while I do deep work.
 
 ## Security considerations
 
