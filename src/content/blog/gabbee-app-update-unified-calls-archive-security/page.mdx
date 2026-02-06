@@ -1,0 +1,47 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image
+  src="https://zackproser.b-cdn.net/images/gabbee-hero.webp"
+  width={800}
+  height={600}
+  alt="Gabbee.io"
+/>
+
+We just shipped a big UX upgrade to <Link href="https://gabbee.io">Gabbee</Link>. The composer feels instantaneous, calls are easier to manage in one place, reviews are cleaner, and privacy is tighter throughout the app.
+
+### Faster task composer
+
+Submission is now as fast as your thoughts. Press Cmd/Ctrl+Enter from anywhere in the app to submit immediately. The input clears the moment you send so you can fire off the next task without touching the mouse. Phone and voice choices sit inline where you’re already looking, reducing friction and keeping you in flow.
+
+### Unified calls and archive
+
+Your active and archived calls now live together in a single searchable list. Archive calls directly from the detail view and restore them when you need to revisit a thread. Status badges are color-coded and easy to scan, so you can see what’s scheduled, in progress, completed, or archived at a glance without paging around.
+
+### A cleaner review panel
+
+The review experience brings plan steps, live statuses, and results into one place. Summaries and transcripts wrap as you would expect, eliminating sideways scrolling. It’s designed for quick comprehension: open a call, read the outcome, and move on.
+
+### Automatic call titles
+
+After you create or schedule a call, Gabbee generates a short, clear title that captures the gist. Your list stays neat and scannable even as it grows, and you can still rename anything as needed.
+
+### Privacy and security improvements
+
+Every task endpoint and detail page now verifies ownership against the signed‑in user. It’s a simple change with a big impact: your data stays yours, and access controls are enforced consistently across the app.
+
+### Readability everywhere
+
+Long content wraps correctly and preserves line breaks in all the places you’d expect. It’s a small but noticeable improvement that makes transcripts and summaries more pleasant to read.
+
+### Available today
+
+This update is live for all users—no migration required. Refresh your app to get the latest.
+
+If you want to see the components in action, the product announcement on the Gabbee blog includes live, interactive demos: <Link href="https://www.gabbee.io/blog/app-update-archive-badges-and-security">read it here</Link>.
+
+Ready to try it? Sign in at <Link href="https://gabbee.io">gabbee.io</Link> and experience the faster composer and unified call management firsthand.
