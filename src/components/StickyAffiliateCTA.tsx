@@ -118,7 +118,7 @@ export default function StickyAffiliateCTA({
                           key={p}
                           href={getLink(p)}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="noopener noreferrer sponsored"
                           onClick={() => handleClick(p)}
                           className={`
                             group flex items-center gap-2 rounded-xl px-4 py-2.5
@@ -184,7 +184,7 @@ export function InlineAffiliateCTA({
     <a
       href={link}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer sponsored"
       onClick={handleClick}
       className={`
         inline-flex items-center gap-2 rounded-lg px-4 py-2
@@ -232,11 +232,10 @@ export function AffiliateLink({
     <a
       href={link}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer sponsored"
       onClick={handleClick}
     >
       {children}
     </a>
   )
 }
-
