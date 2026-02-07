@@ -15,6 +15,7 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import { useRouter } from 'next/navigation'
 import { metadataLogger as logger } from '@/utils/logger'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
+import VoiceAffiliateHub from '@/components/VoiceAffiliateHub'
 
 // Voice-related slugs that should show the affiliate CTA
 const VOICE_AFFILIATE_SLUGS = [
@@ -159,13 +160,59 @@ export function ArticleLayout({
   // Use a more flexible approach to determine the root path
   if (safeType === 'video') {
     rootPath = '/videos/';
+  } else if (safeType === 'newsletter') {
+    rootPath = '/newsletter/';
   } else if (safeType === 'course') {
     rootPath = '/learn/courses/';
   } else if (typeof safeType === 'string' && safeType.includes('comparison') || safeSlug.includes('comparisons/')) {
     rootPath = '/comparisons/';
   }
   
-  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ''}${rootPath}${safeSlug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || ''
+  const fullUrl = safeSlug.startsWith('/')
+    ? `${siteUrl}${safeSlug}`
+    : `${siteUrl}${rootPath}${safeSlug}`;
+
+  const publishedTime = metadata?.date ? new Date(metadata.date).toISOString() : undefined;
+  const structuredArticle = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: safeTitle,
+    description: safeDescription,
+    datePublished: publishedTime,
+    dateModified: publishedTime,
+    author: {
+      '@type': 'Person',
+      name: metadata?.author || 'Zachary Proser',
+    },
+    mainEntityOfPage: fullUrl,
+    image: metadata?.image ? [typeof metadata.image === 'string' ? metadata.image : (metadata.image as any)?.src] : undefined,
+  };
+
+  const structuredBreadcrumbs = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl || '/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: safeType === 'newsletter' ? 'Newsletter' : 'Blog',
+        item: `${siteUrl}${rootPath}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: safeTitle,
+        item: fullUrl,
+      },
+    ],
+  };
 
   return (
     <>
@@ -186,6 +233,14 @@ export function ArticleLayout({
         <meta name="twitter:description" content={safeDescription} />
         <meta name="twitter:image" content={ogUrl} />
         <meta name="twitter:domain" content="zackproser.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredArticle) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredBreadcrumbs) }}
+        />
       </Head>
       
       <Container className="mt-16 lg:mt-32">
@@ -214,6 +269,9 @@ export function ArticleLayout({
                 {children}
               </Prose>
             </article>
+            {shouldShowVoiceAffiliateCTA(safeSlug) && (
+              <VoiceAffiliateHub campaign={baseSlug || safeSlug || 'unknown'} />
+            )}
             {!hideNewsletter && (
               <NewsletterWrapper
                 title={'If you made it this far, you can do anything!'}
@@ -228,7 +286,7 @@ export function ArticleLayout({
         </div>
       </Container>
       {shouldShowVoiceAffiliateCTA(safeSlug) && (
-        <StickyAffiliateCTA product="both" />
+        <StickyAffiliateCTA product="both" campaign={baseSlug || safeSlug || 'unknown'} />
       )}
     </>
   )

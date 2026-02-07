@@ -23,10 +23,14 @@ function createSlug(name) {
 }
 
 async function getRoutes() {
-  const routes = new Set();
+  const routes = new Map();
 
   // Add homepage
-  routes.add('/');
+  routes.set('/', {
+    lastModified: new Date().toISOString(),
+    changeFrequency: 'weekly',
+    priority: 1.0,
+  });
 
   // Add static pages by scanning src/app directory
   const appDir = path.join(process.cwd(), 'src/app');
@@ -42,26 +46,64 @@ async function getRoutes() {
         }
       } else if (item === 'page.tsx' || item === 'page.js') {
         // Add the route, removing 'page.tsx' or 'page.js'
-        routes.add(prefix ? `/${prefix}` : '/');
+        const route = prefix ? `/${prefix}` : '/';
+        if (!routes.has(route)) {
+          routes.set(route, {
+            lastModified: new Date().toISOString(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+          });
+        }
       }
     });
   };
   scanDir(appDir);
 
-  // Get all dynamic content routes (blog, videos, etc.)
-  const blogContent = await getAllContent('blog');
-  blogContent.forEach(item => routes.add(item.slug));
+  const addContentRoutes = async (contentType) => {
+    const items = await getAllContent(contentType);
+    items.forEach(item => {
+      if (item.hiddenFromIndex) {
+        return;
+      }
+      const lastModified = item.date ? new Date(item.date).toISOString() : new Date().toISOString();
+      if (!routes.has(item.slug)) {
+        routes.set(item.slug, {
+          lastModified,
+          changeFrequency: 'weekly',
+          priority: contentType === 'newsletter' ? 0.6 : 0.9,
+        });
+      }
+    });
+  };
 
-  const videoContent = await getAllContent('videos'); // Assuming 'videos' is a content type
-  videoContent.forEach(item => routes.add(item.slug));
+  // Get all dynamic content routes (blog, videos, newsletter, etc.)
+  await addContentRoutes('blog');
+  await addContentRoutes('videos');
+  await addContentRoutes('newsletter');
 
   // Get all product routes
   const products = await getAllProducts();
-  products.forEach(product => routes.add(product.slug));
+  products.forEach(product => {
+    if (!routes.has(product.slug)) {
+      routes.set(product.slug, {
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
+    }
+  });
 
   // Get all top-level pages dynamically using the replacement function
   const topLevelPages = await getAppPageRoutesPaths();
-  topLevelPages.forEach(page => routes.add(page));
+  topLevelPages.forEach(page => {
+    if (!routes.has(page)) {
+      routes.set(page, {
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      });
+    }
+  });
 
   // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
   dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {
@@ -72,7 +114,14 @@ async function getRoutes() {
 
       detailNames.forEach(name => {
         const encodedName = encodeURIComponent(name);
-        routes.add(`/${base}/${detail}/${encodedName}`);
+        const route = `/${base}/${detail}/${encodedName}`;
+        if (!routes.has(route)) {
+          routes.set(route, {
+            lastModified: new Date().toISOString(),
+            changeFrequency: 'monthly',
+            priority: 0.6,
+          });
+        }
       });
     }
   });
@@ -94,9 +143,23 @@ async function getRoutes() {
         
         // Only add the alphabetically first combination to avoid duplicates
         if (tool1Slug < tool2Slug) {
-          routes.add(`/comparisons/${tool1Slug}/vs/${tool2Slug}`);
+          const route = `/comparisons/${tool1Slug}/vs/${tool2Slug}`;
+          if (!routes.has(route)) {
+            routes.set(route, {
+              lastModified: new Date().toISOString(),
+              changeFrequency: 'weekly',
+              priority: 0.6,
+            });
+          }
         } else {
-          routes.add(`/comparisons/${tool2Slug}/vs/${tool1Slug}`);
+          const route = `/comparisons/${tool2Slug}/vs/${tool1Slug}`;
+          if (!routes.has(route)) {
+            routes.set(route, {
+              lastModified: new Date().toISOString(),
+              changeFrequency: 'weekly',
+              priority: 0.6,
+            });
+          }
         }
       }
     }
@@ -107,18 +170,26 @@ async function getRoutes() {
   }
 
   // Add RSS feed routes
-  routes.add('/rss/feed.json');
-  routes.add('/rss/feed.xml');
+  routes.set('/rss/feed.json', {
+    lastModified: new Date().toISOString(),
+    changeFrequency: 'daily',
+    priority: 0.3,
+  });
+  routes.set('/rss/feed.xml', {
+    lastModified: new Date().toISOString(),
+    changeFrequency: 'daily',
+    priority: 0.3,
+  });
 
   // Convert Set to Array and log the routes for debugging
-  const uniqueRoutes = Array.from(routes);
+  const uniqueRoutes = Array.from(routes.entries());
   console.log(`Generated ${uniqueRoutes.length} total routes for sitemap`);
 
-  return uniqueRoutes.map(route => ({
+  return uniqueRoutes.map(([route, data]) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: 'weekly',
-    priority: 1.0,
+    lastModified: data.lastModified || new Date().toISOString(),
+    changeFrequency: data.changeFrequency || 'weekly',
+    priority: typeof data.priority === 'number' ? data.priority : 0.7,
   }));
 }
 
