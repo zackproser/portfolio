@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Code, FileText, ExternalLink as ExternalIcon, PlayCircle, BookOpen, CheckCircle2 } from 'lucide-react'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 type EvidenceLink = { label: string; href: string }
 type EvidenceItem = { label: string; links: EvidenceLink[] }
@@ -84,7 +85,7 @@ const evidence: EvidenceCategory[] = [
     title: 'Developer Education & Growth',
     items: [
       {
-        label: 'Technical writing (50,000+ readers) and newsletter (3,000+ subscribers)',
+        label: `Technical writing (50,000+ readers) and newsletter (${getSubscriberCount()} subscribers)`,
         links: [
           { label: 'Blog', href: '/blog' },
           { label: 'Publications', href: '/publications' }

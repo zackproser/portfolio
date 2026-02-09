@@ -11,6 +11,7 @@ import TestimonialsSection from '@/components/applied-ai/TestimonialsSection'
 import { ContactSection } from '@/components/applied-ai/ContactSection'
 import { ResourcesNavigation } from '@/components/applied-ai/ResourcesNavigation'
 import PersonSchema from '@/components/applied-ai/PersonSchema'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 // All components now fetch their own data internally
 
@@ -52,7 +53,7 @@ export default function AppliedAiEngineerPage() {
       {/* Stats Bar */}
       <StatsBar stats={[
         { number: "50,000+", label: "Yearly Blog Readers" },
-        { number: "3,000+", label: "Newsletter Subscribers" },
+        { number: getSubscriberCount(), label: "Newsletter Subscribers" },
         { number: "3+ Years", label: "AI Infrastructure Experience" },
         { number: "13+ Years", label: "Total Engineering Experience" }
       ]} />

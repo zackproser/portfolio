@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { Users, BookOpen, Calendar, Wrench } from 'lucide-react'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 interface StatItem {
   number: string
@@ -64,7 +65,7 @@ const AnimatedNumber = ({ value, duration = 2.5 }: AnimatedNumberProps) => {
 
 const defaultStats: StatItem[] = [
   { number: "50,000+", label: "Monthly Blog Readers", icon: Users },
-  { number: "3,000+", label: "Newsletter Subscribers", icon: BookOpen },
+  { number: getSubscriberCount(), label: "Newsletter Subscribers", icon: BookOpen },
   { number: "3+ Years", label: "AI Infrastructure Experience", icon: Calendar },
   { number: "13+ Years", label: "Total Engineering Experience", icon: Wrench }
 ]

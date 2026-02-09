@@ -1,0 +1,149 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import LawyerDemoCard from '@/components/LawyerDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-paralegals';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for paralegals" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Paralegals handle the documentation backbone of legal practice — voice AI makes it manageable</figcaption>
+
+Paralegals are the documentation engine of every law firm. Research memoranda, case summaries, client intake forms, discovery indexes, deposition digests, correspondence logs — the volume of written work product is relentless. And unlike attorneys who can delegate, paralegals are often the last stop before a document is done.
+
+Voice AI tools offer paralegals a way to produce this work faster without sacrificing the accuracy and detail that attorneys depend on.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Paralegal Documentation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for paralegal work" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> operates at the system level on Mac, placing dictated text wherever your cursor is focused. For paralegals juggling multiple applications — case management systems, document platforms, email, and billing — this system-wide approach eliminates constant switching.
+
+### Paralegal-Specific Use Cases
+
+**Research summaries**: After hours of legal research, dictate your findings while they are fresh. Speak through the relevant cases, statutes, and analysis at 160+ WPM instead of typing at 50.
+
+**Case summaries and chronologies**: Dictate detailed case timelines directly into your preferred format. Speak dates, events, and source references in sequence — the AI cleans up filler and produces organized text.
+
+**Client intake documentation**: During or immediately after intake calls, dictate the client's information, facts of the case, relevant dates, and opposing party details into your intake system.
+
+**Deposition digests**: Summarize deposition testimony by dictating key excerpts and page-line references. Cover a 200-page transcript in a fraction of the time it takes to type the digest.
+
+**Discovery management**: Dictate privilege log entries, document descriptions, and production notes. These repetitive but precise tasks are significantly faster by voice.
+
+**Correspondence**: Draft letters to clients, courts, and third parties. Dictate cover letters for filings, requests for records, and scheduling correspondence.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Paralegal Meetings
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola for paralegal meetings" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures meetings invisibly — no bot joins, no participants are notified. For paralegals who attend client meetings, attorney strategy sessions, and vendor calls, this means complete records without manual note-taking.
+
+### Meeting Scenarios for Paralegals
+
+**Client intake interviews**: When you conduct initial intake, Granola captures every detail the client shares. Review afterward to ensure nothing was missed — names, dates, medical providers, insurance information, all preserved.
+
+**Attorney briefings**: When the supervising attorney explains a new assignment or discusses case strategy, Granola captures the instructions. No more "wait, what did she say the deadline was?"
+
+**Vendor and expert calls**: Calls with court reporters, expert witnesses, investigators, and process servers generate important details. Granola captures scheduling, cost estimates, and scope discussions.
+
+**Team meetings**: Case status meetings with multiple attorneys and staff generate assignments and updates. Granola produces action items attributed to each participant.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Daily Workflow: Paralegal Voice AI Integration
+
+### Morning (8:00 - 10:00 AM)
+Review Granola notes from yesterday's attorney meetings for new assignments. Use WisprFlow to dictate research plan outlines and update case management entries.
+
+### Midday (10:00 AM - 1:00 PM)
+Conduct client intake calls with Granola running. Between calls, use WisprFlow to dictate intake summaries into the case management system. Begin research tasks, dictating notes as you find relevant authorities.
+
+### Afternoon (1:00 - 4:00 PM)
+Deep documentation work. Dictate deposition digests, discovery indexes, and research memoranda with WisprFlow. Attend case strategy meetings with Granola capturing assignments.
+
+### End of Day (4:00 - 6:00 PM)
+Dictate time entries for the day. Review Granola summaries for any missed action items. Dictate status updates to supervising attorneys.
+
+## Time Savings for Paralegals
+
+| Task | Without Voice AI | With Voice AI | Time Saved |
+|------|-----------------|---------------|------------|
+| Research memo (5 pages) | 3 hours | 1 hour | 67% |
+| Client intake summary | 30 minutes | 10 minutes | 67% |
+| Deposition digest (per 100 pages) | 4 hours | 1.5 hours | 63% |
+| 15 privilege log entries | 45 minutes | 15 minutes | 67% |
+| Case chronology update | 20 minutes | 7 minutes | 65% |
+| **Weekly documentation total** | **~20 hours** | **~7 hours** | **~13 hours reclaimed** |
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## Getting Started
+
+Both tools offer free trials:
+
+**WisprFlow**: <AffiliateLink product="wisprflow" campaign={campaign}>Try free</AffiliateLink> — Start with dictating research notes and correspondence. The two-minute install works immediately with your existing applications. See the [full WisprFlow review](/blog/wisprflow-review).
+
+**Granola**: <AffiliateLink product="granola" campaign={campaign}>Try free</AffiliateLink> — Syncs with your calendar and captures meetings automatically. Ideal for intake calls and attorney briefings. Compare options in the [Granola vs Otter breakdown](/blog/granola-vs-otter).
+
+<LawyerDemoCard campaign={campaign} />
+
+## Related Guides
+
+- [Best Voice Tools for Lawyers 2026](/blog/best-voice-tools-for-lawyers-2026) — Complete guide for legal professionals
+- [AI Dictation for Legal Documents](/blog/ai-dictation-for-legal-documents) — Drafting briefs and motions with voice
+- [Voice Notes for Client Meetings](/blog/voice-notes-for-client-meetings-lawyers) — Meeting capture strategies
+- [Best Legal Dictation Software 2026](/blog/best-legal-dictation-software-2026) — Software comparison for legal
+- [AI Tools for Lawyers](/blog/ai-tools-for-lawyers) — General AI tools overview
+
+## Frequently Asked Questions
+
+### Do I need the attorney's permission to use these tools?
+
+Firm policies vary. Many firms already permit productivity tools. Present these to your supervising attorney and IT department for approval, emphasizing that neither tool stores client data for AI training.
+
+### Can WisprFlow handle the specialized terminology in my practice area?
+
+Yes. The personal dictionary learns your firm's case names, party names, practice-specific terms, and frequently used phrases. Accuracy improves rapidly with regular use.
+
+### Will Granola work for in-person meetings at the office?
+
+Yes. The mobile app captures in-person meetings through your phone's microphone. Place it on the conference table during meetings with attorneys or clients.
+
+### How does this affect my billable hours?
+
+Voice AI increases your throughput — you complete the same work in less time. This can mean handling more matters, taking on complex assignments that previously consumed too much time, or meeting tight deadlines more comfortably.
+
+### Is this secure enough for client-privileged information?
+
+Both tools use enterprise-grade encryption and do not use client data for model training. Review each tool's security documentation and consult your firm's IT department for approval.
+
+---
+
+*Paralegals who produce more, faster, become indispensable. Voice AI is the tool that makes that possible without working longer hours.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

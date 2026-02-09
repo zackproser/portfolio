@@ -12,6 +12,7 @@ import ToolRecommendation from './ToolRecommendation';
 import NewsletterWrapper from './NewsletterWrapper';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { getSubscriberCount } from '@/components/SubscriberCount';
 
 const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
   const tools = [tool1, tool2];
@@ -71,7 +72,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
           <NewsletterWrapper 
             className="max-w-md"
             theme="dark"
-            title="Join 3,000+ engineers learning to build what actually works"
+            title={`Join ${getSubscriberCount()} engineers learning to build what actually works`}
           />
         </div>
       </div>

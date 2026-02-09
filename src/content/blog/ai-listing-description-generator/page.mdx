@@ -1,0 +1,89 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import RealtorDemoCard from '@/components/RealtorDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-listing-description-generator';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI listing description generator using voice dictation" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Dictate MLS listings while walking the property</figcaption>
+
+You're standing in a gorgeous renovated kitchen with quartz countertops, a waterfall island, and custom cabinetry. You can see the backyard through the french doors.
+
+You could drive back to the office and spend 15 minutes typing this up. Or you could **speak it right now** and have a polished listing description before you leave the property.
+
+## The Workflow: Property Walk to MLS in 2 Minutes
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+### Step 1: Walk the Property With WisprFlow Running
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is system-level voice-to-text for Mac. Open your MLS listing form, click in the description field, and start talking.
+
+### Step 2: Describe What You See, Room by Room
+
+Walk through naturally. Describe the features, finishes, and feel of each space. WisprFlow captures your words and formats them into clean text.
+
+**Example dictation (60 seconds):**
+
+> "Stunning fully renovated colonial in sought-after Oak Hills. Step into the open-concept main level featuring wide-plank hardwood floors throughout. The chef's kitchen boasts quartz countertops, a waterfall island with seating for four, custom soft-close cabinetry, and high-end stainless appliances. French doors lead to a private backyard with mature landscaping and a flagstone patio perfect for entertaining. The primary suite includes a spa-inspired bath with dual vanities, a frameless glass shower, and heated tile floors. Three additional bedrooms, a finished basement with wet bar, and a two-car garage complete this exceptional home."
+
+That's 100+ words in 60 seconds. Typing it would take 5-7 minutes minimum.
+
+### Step 3: Quick Polish and Post
+
+The dictated text lands directly in your MLS field. Quick proofread, minor tweaks, and you're live.
+
+## Speed Comparison: Voice vs. Typing
+
+| Listing Length | Typing (45 WPM) | Voice (160 WPM) | Time Saved |
+|---|---|---|---|
+| Short (150 words) | 3.5 min | 1 min | **2.5 min** |
+| Standard (300 words) | 7 min | 2 min | **5 min** |
+| Luxury (500+ words) | 12 min | 3 min | **9 min** |
+
+If you list 3 properties per week, that's **15-27 minutes saved on descriptions alone**. Add in all the other text you dictate (emails, notes, offers) and you're saving hours.
+
+## Where WisprFlow Works for Listing Agents
+
+- **MLS systems**: Every MLS. If you can type in it, you can dictate in it.
+- **Zillow/Realtor.com**: Direct entry into listing syndication platforms
+- **CRM notes**: Update your pipeline while on the move
+- **Email**: Dictate agent-to-agent communications and client updates
+- **Transaction management**: Dotloop, SkySlope, or whatever your brokerage uses
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Pair It With Meeting Notes
+
+While WisprFlow handles your typed output, <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> handles your conversations. It captures client calls and meetings invisibly -- no bot, no notification.
+
+Together, they cover both sides of real estate documentation:
+- **WisprFlow**: Everything you type (listings, emails, offers, CRM notes)
+- **Granola**: Everything you say in meetings and calls (buyer consultations, pricing discussions, negotiations)
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Related Guides
+
+- [Best Voice Tools for Realtors 2026](/blog/best-voice-tools-for-realtors-2026) - Complete overview
+- [AI Voice Tools for Real Estate](/blog/ai-voice-tools-for-real-estate) - All use cases
+- [Voice CRM for Real Estate](/blog/voice-crm-for-real-estate) - CRM integration
+- [WisprFlow Review](/blog/wisprflow-review) - Full technical review
+
+## Get Started
+
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink> -- it takes 2 minutes to install. Dictate your next listing description and see the difference.
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+<RealtorDemoCard campaign={campaign} />

@@ -1,0 +1,153 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import RealtorDemoCard from '@/components/RealtorDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-insurance-agents';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for insurance agents" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Capture client interviews, policy details, and claims notes without losing focus on the conversation</figcaption>
+
+Insurance agents spend half their day in conversations and the other half documenting them. Client interviews, policy reviews, claims intake -- every interaction generates paperwork. Voice AI lets you capture everything during the conversation instead of after it.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Policy Documentation and Claims Notes
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for insurance agent dictation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is system-level voice-to-text for Mac. Dictate into your agency management system, email client, or any application with a text field.
+
+### Insurance Agent Use Cases
+
+**Claims intake notes**: Dictate claim details as the client describes them. "First notice of loss: insured reports water damage in the finished basement. Sump pump failure during heavy rain on February 3rd. Approximately 2 inches of standing water. Insured has already contacted a mitigation company."
+
+**Policy review documentation**: After reviewing a client's coverage, dictate your recommendations. "Reviewed the Henderson homeowners policy. Current dwelling coverage at 350k is likely under replacement cost given recent construction inflation. Recommend increasing to 425k. Also suggest adding water backup endorsement given the basement finish."
+
+**Client interview summaries**: Capture the details from a new client meeting. "New commercial client: operates a restaurant at 200 Main Street. 40 seats, 12 employees, annual revenue approximately 800k. Currently insured with Hartford, looking for competitive quote on BOP and workers comp."
+
+**Renewal preparation notes**: Dictate renewal notes while reviewing each file. "Martinez auto renewal: added teenage driver in October. No claims this term. Shop for better rate given the added driver surcharge."
+
+### Documentation Accuracy
+
+When you dictate immediately after a client interaction, you capture specific dollar amounts, dates, and details. Waiting until end of day means relying on memory for numbers that matter.
+
+For a detailed review, see [WisprFlow Review: 179 WPM Voice-Driven Development](/blog/wisprflow-review).
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Client Meetings and Phone Calls
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola for insurance client meeting notes" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and produces structured notes with action items. Focus on the client, not your notepad.
+
+### Perfect for Insurance Professionals
+
+**Annual policy reviews**: Clients mention life changes -- new cars, home renovations, kids leaving for college. Granola captures it all so you can update every relevant policy.
+
+**Claims phone calls**: The iOS app captures phone conversations. When a client calls to report a claim, every detail is recorded and summarized.
+
+**Carrier and underwriter calls**: Discussions with underwriters about coverage questions or binding instructions produce clear action items.
+
+**No recording bots**: Clients discussing sensitive financial and personal information won't see a bot joining the call. Granola runs invisibly.
+
+For a comparison with alternatives, see [Granola vs Otter.ai](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Daily Workflow Example
+
+### Morning: Renewals and Follow-Ups
+- Review upcoming renewals
+- Dictate file notes and coverage recommendations using WisprFlow
+- Speak through client emails about policy changes
+
+### Client Appointments
+- Granola captures policy review meetings automatically
+- Claims intake calls recorded with every detail
+- Dictate follow-up tasks between appointments
+
+### Afternoon: Documentation and Processing
+- Review Granola transcripts for coverage details discussed
+- Dictate submission narratives for new business quotes
+- Speak through loss runs and claims documentation
+
+### Time Savings
+
+| Task | Without Voice AI | With Voice AI | Weekly Savings |
+|------|-----------------|---------------|----------------|
+| Client meeting notes | 3 hrs | 0 hrs (auto) | 3 hrs |
+| Claims documentation | 2.5 hrs | 1 hr | 1.5 hrs |
+| Policy review summaries | 2 hrs | 0.5 hrs | 1.5 hrs |
+| Client emails and follow-ups | 2.5 hrs | 1 hr | 1.5 hrs |
+| **Total** | **10 hrs** | **2.5 hrs** | **7.5 hrs** |
+
+Nearly a full working day returned to client-facing activities every week.
+
+## Related Guides
+
+- [AI Voice Tools for Financial Advisors](/blog/ai-voice-tools-for-financial-advisors) - Financial services voice tools
+- [AI Voice Tools for Sales Professionals](/blog/ai-voice-tools-for-sales) - Sales call documentation
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General business productivity
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For policy notes and claims**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Works with any agency management system
+2. **For client call capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Never miss a coverage detail again
+
+Both offer free trials. Test them during your next client review.
+
+<RealtorDemoCard campaign={campaign} />
+
+## Frequently Asked Questions
+
+### Does WisprFlow work with Applied Epic, Hawksoft, and other AMS platforms?
+
+Yes. WisprFlow works at the operating system level. Any text field in any application is supported. Applied Epic, Hawksoft, EZLynx, AMS360 -- all work.
+
+### Can Granola capture sensitive client financial information securely?
+
+Granola processes audio locally and is designed for professional use. Review their privacy documentation for your specific E&O and compliance requirements.
+
+### Will clients know the call is being recorded?
+
+Granola runs invisibly with no bot or notification. Check your state's recording consent requirements, but there is no visible indicator.
+
+### How does this help with E&O documentation?
+
+Better documentation protects you. When you capture exact coverage recommendations and client responses in real time, you have a stronger record if a claim or complaint arises later.
+
+### Can I dictate into carrier quoting systems?
+
+Yes. WisprFlow works with any application that has text fields. If you can type in it, you can dictate into it.
+
+---
+
+*Your clients need your attention, not the top of your head while you scribble notes. Capture everything by voice and stay focused on the conversation.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

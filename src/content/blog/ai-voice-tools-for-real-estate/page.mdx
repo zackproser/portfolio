@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
-import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import RealtorDemoCard from '@/components/RealtorDemoCard';
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
@@ -123,7 +123,7 @@ That's essentially a full extra day every week.
 
 Both offer free trials. Test them on your next listing or client meeting.
 
-<VoiceAIDemoCard />
+<RealtorDemoCard campaign={campaign} />
 
 ## Frequently Asked Questions
 
