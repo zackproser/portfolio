@@ -178,8 +178,8 @@ function CrawlVisualization({ step, nodes }: { step: DemoStep; nodes: CrawlNode[
           i > 0 ? (
             <motion.line
               key={`edge-${i}`}
-              x1={nodes[Math.floor((i - 1) / 3)].x}
-              y1={nodes[Math.floor((i - 1) / 3)].y}
+              x1={nodes[NODE_PARENT_MAP[i]].x}
+              y1={nodes[NODE_PARENT_MAP[i]].y}
               x2={node.x}
               y2={node.y}
               stroke={node.status === 'done' ? '#22c55e' : node.status === 'crawling' ? '#f97316' : '#a1a1aa'}
@@ -363,6 +363,14 @@ const INITIAL_NODES: CrawlNode[] = [
     { url: '/pricing/enterprise', depth: 2, status: 'pending', x: 560, y: 190 },
 ]
 
+// Map of node index to parent index for correct tree structure
+const NODE_PARENT_MAP: Record<number, number> = {
+  1: 0, 2: 0, 3: 0,        // /blog, /docs, /pricing → acme.com
+  4: 1, 5: 1,              // /blog/* → /blog
+  6: 2, 7: 2,              // /docs/* → /docs
+  8: 3, 9: 3,              // /pricing/* → /pricing
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 export default function FirecrawlDemoClient() {
   const [demoStep, setDemoStep] = useState<DemoStep>('idle')
@@ -372,6 +380,7 @@ export default function FirecrawlDemoClient() {
   const [pipelineRef, pipelineVisible] = useIntersectionObserver(0.3)
   const [comparisonRef, comparisonVisible] = useIntersectionObserver(0.3)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const hasAutoStartedRef = useRef(false) // Track if demo has auto-started
 
   const startDemo = useCallback(() => {
     setDemoStep('crawling')
@@ -405,15 +414,17 @@ export default function FirecrawlDemoClient() {
     if (timerRef.current) clearInterval(timerRef.current)
     setDemoStep('idle')
     setNodes([])
+    hasAutoStartedRef.current = true // Prevent auto-restart after manual reset
   }, [])
 
   useEffect(() => {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [])
 
-  // Auto-start on scroll
+  // Auto-start on scroll (only once, not after manual reset)
   useEffect(() => {
-    if (pipelineVisible && demoStep === 'idle') {
+    if (pipelineVisible && demoStep === 'idle' && !hasAutoStartedRef.current) {
+      hasAutoStartedRef.current = true
       startDemo()
     }
   }, [pipelineVisible, demoStep, startDemo])

@@ -127,7 +127,10 @@ function Typewriter({ text, active, speed = 30 }: { text: string; active: boolea
   const [displayed, setDisplayed] = useState('')
 
   useEffect(() => {
-    if (!active) { setDisplayed(''); return }
+    // Only clear when starting fresh (text changed), not when active becomes false
+    if (!active) return
+    
+    setDisplayed('') // Clear for new text
     let i = 0
     const interval = setInterval(() => {
       if (i < text.length) {
@@ -138,9 +141,9 @@ function Typewriter({ text, active, speed = 30 }: { text: string; active: boolea
       }
     }, speed)
     return () => clearInterval(interval)
-  }, [active, text, speed])
+  }, [text, speed]) // Removed 'active' from deps - only react to text changes
 
-  return <>{displayed}<span className="animate-pulse">|</span></>
+  return <>{displayed}<span className={active ? "animate-pulse" : "opacity-0"}>|</span></>
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
