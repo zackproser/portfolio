@@ -173,7 +173,19 @@ export function ArticleLayout({
     ? `${siteUrl}${safeSlug}`
     : `${siteUrl}${rootPath}${safeSlug}`;
 
-  const publishedTime = metadata?.date ? new Date(metadata.date).toISOString() : undefined;
+  // Safe date parsing with fallback for invalid dates
+  let publishedTime = undefined;
+  if (metadata?.date) {
+    try {
+      const parsedDate = new Date(metadata.date);
+      if (!isNaN(parsedDate.getTime())) {
+        publishedTime = parsedDate.toISOString();
+      }
+    } catch (error) {
+      logger.warn(`Invalid date "${metadata.date}" for article ${safeSlug}`);
+    }
+  }
+  
   const structuredArticle = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -189,6 +201,18 @@ export function ArticleLayout({
     image: metadata?.image ? [typeof metadata.image === 'string' ? metadata.image : (metadata.image as any)?.src] : undefined,
   };
 
+  // Determine breadcrumb name based on content type to match rootPath
+  let breadcrumbName = 'Blog';
+  if (safeType === 'video') {
+    breadcrumbName = 'Videos';
+  } else if (safeType === 'newsletter') {
+    breadcrumbName = 'Newsletter';
+  } else if (safeType === 'course') {
+    breadcrumbName = 'Courses';
+  } else if (typeof safeType === 'string' && safeType.includes('comparison') || safeSlug.includes('comparisons/')) {
+    breadcrumbName = 'Comparisons';
+  }
+
   const structuredBreadcrumbs = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -202,7 +226,7 @@ export function ArticleLayout({
       {
         '@type': 'ListItem',
         position: 2,
-        name: safeType === 'newsletter' ? 'Newsletter' : 'Blog',
+        name: breadcrumbName,
         item: `${siteUrl}${rootPath}`,
       },
       {
@@ -270,7 +294,10 @@ export function ArticleLayout({
               </Prose>
             </article>
             {shouldShowVoiceAffiliateCTA(safeSlug) && (
-              <VoiceAffiliateHub campaign={baseSlug || safeSlug || 'unknown'} />
+              <VoiceAffiliateHub 
+                campaign={baseSlug || safeSlug || 'unknown'} 
+                currentSlug={safeSlug}
+              />
             )}
             {!hideNewsletter && (
               <NewsletterWrapper

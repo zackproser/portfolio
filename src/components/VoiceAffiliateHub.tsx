@@ -6,6 +6,7 @@ import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 interface VoiceAffiliateHubProps {
   campaign?: string
+  currentSlug?: string
 }
 
 const RESOURCE_LINKS = [
@@ -31,7 +32,15 @@ const RESOURCE_LINKS = [
   },
 ]
 
-export default function VoiceAffiliateHub({ campaign = 'unknown' }: VoiceAffiliateHubProps) {
+export default function VoiceAffiliateHub({ campaign = 'unknown', currentSlug }: VoiceAffiliateHubProps) {
+  // Filter out the current page from the resource links
+  const filteredLinks = RESOURCE_LINKS.filter(link => {
+    if (!currentSlug) return true;
+    // Normalize both paths for comparison
+    const normalizedLinkHref = link.href.replace(/^\/blog\//, '');
+    const normalizedCurrentSlug = currentSlug.replace(/^\/blog\//, '').replace(/^blog\//, '');
+    return normalizedLinkHref !== normalizedCurrentSlug;
+  });
   return (
     <section className="mt-12 rounded-3xl border border-amber-100 bg-amber-50/60 p-6 shadow-sm dark:border-amber-900/40 dark:bg-zinc-900/40">
       <div className="flex flex-col gap-6">
@@ -53,33 +62,35 @@ export default function VoiceAffiliateHub({ campaign = 'unknown' }: VoiceAffilia
           <InlineAffiliateCTA product="granola" campaign={campaign} />
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          {RESOURCE_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="group rounded-2xl border border-amber-200/70 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-amber-900/40 dark:bg-zinc-900"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
-                  {link.href.includes('wisprflow') ? <Mic className="h-5 w-5" /> : <Calendar className="h-5 w-5" />}
+        {filteredLinks.length > 0 && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {filteredLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="group rounded-2xl border border-amber-200/70 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-amber-900/40 dark:bg-zinc-900"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
+                    {link.href.includes('wisprflow') ? <Mic className="h-5 w-5" /> : <Calendar className="h-5 w-5" />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      {link.title}
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                      {link.description}
+                    </p>
+                    <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
+                      Read guide
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    {link.title}
-                  </p>
-                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                    {link.description}
-                  </p>
-                  <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
-                    Read guide
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

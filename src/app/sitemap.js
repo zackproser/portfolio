@@ -65,7 +65,18 @@ async function getRoutes() {
       if (item.hiddenFromIndex) {
         return;
       }
-      const lastModified = item.date ? new Date(item.date).toISOString() : new Date().toISOString();
+      // Safe date parsing with fallback for invalid dates
+      let lastModified = new Date().toISOString();
+      if (item.date) {
+        try {
+          const parsedDate = new Date(item.date);
+          if (!isNaN(parsedDate.getTime())) {
+            lastModified = parsedDate.toISOString();
+          }
+        } catch (error) {
+          console.warn(`Invalid date "${item.date}" for item ${item.slug}, using current date`);
+        }
+      }
       if (!routes.has(item.slug)) {
         routes.set(item.slug, {
           lastModified,
