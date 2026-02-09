@@ -9,7 +9,13 @@ interface VoiceAffiliateHubProps {
   currentSlug?: string
 }
 
-const RESOURCE_LINKS = [
+interface ResourceLink {
+  title: string
+  description: string
+  href: string
+}
+
+const RESOURCE_LINKS: ResourceLink[] = [
   {
     title: 'WisprFlow Review: 179 WPM Voice-Driven Development',
     description: 'Setup, workflows, and the exact hotkeys that make dictation feel native.',
@@ -67,7 +73,7 @@ export default function VoiceAffiliateHub({ campaign = 'unknown', currentSlug }:
             {filteredLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={link.href as any}
                 className="group rounded-2xl border border-amber-200/70 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md dark:border-amber-900/40 dark:bg-zinc-900"
               >
                 <div className="flex items-start gap-3">

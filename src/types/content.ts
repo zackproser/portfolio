@@ -8,7 +8,7 @@ export interface Content extends ExtendedMetadata {
 
 // For blog posts and courses
 export interface Blog extends Content {
-  type: 'blog' | 'video' | 'demo'
+  type: 'blog' | 'video' | 'demo' | 'newsletter' | 'comparison'
 }
 
 // For demos and other non-purchasable content
