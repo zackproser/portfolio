@@ -1,16 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Mic,
   Home,
   Mail,
   ClipboardList,
-  Phone,
   Calculator,
   ChevronDown,
-  ArrowRight,
   Play,
   RotateCcw,
   Clock,
@@ -21,7 +18,6 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import { track } from '@vercel/analytics'
-import { getAffiliateLink } from '@/lib/affiliate'
 
 import {
   LISTING_PIPELINE,
@@ -32,118 +28,18 @@ import {
   type RealtorScenario
 } from './data'
 
+import {
+  getLink,
+  trackClick,
+  AffiliateButton,
+  useInView,
+  Typewriter
+} from '../voice-ai-lawyers/shared-demo-utils'
+
 const CAMPAIGN = 'voice-ai-realtor-demo'
-
-function getLink(product: 'wisprflow' | 'granola', placement: string) {
-  return getAffiliateLink({
-    product,
-    campaign: CAMPAIGN,
-    medium: 'demo',
-    placement: placement as any
-  })
-}
-
-function trackClick(product: 'wisprflow' | 'granola', context: string) {
-  track('affiliate_click', { product, context, campaign: CAMPAIGN })
-}
 
 function trackSection(section: string) {
   track('realtor_demo_section_view', { section, campaign: CAMPAIGN })
-}
-
-// ─── Affiliate CTA Button ───────────────────────────────────────────────────
-function AffiliateButton({
-  product,
-  context,
-  size = 'default'
-}: {
-  product: 'wisprflow' | 'granola'
-  context: string
-  size?: 'default' | 'large'
-}) {
-  const config = {
-    wisprflow: {
-      name: 'WisprFlow',
-      icon: Mic,
-      gradient: 'from-purple-600 to-indigo-600',
-      hover: 'hover:from-purple-500 hover:to-indigo-500'
-    },
-    granola: {
-      name: 'Granola',
-      icon: Phone,
-      gradient: 'from-teal-600 to-cyan-600',
-      hover: 'hover:from-teal-500 hover:to-cyan-500'
-    }
-  }
-  const c = config[product]
-  const Icon = c.icon
-  const link = getLink(product, context)
-
-  return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => trackClick(product, context)}
-      className={`
-        inline-flex items-center gap-2 rounded-xl font-semibold text-white
-        bg-gradient-to-r ${c.gradient} ${c.hover}
-        shadow-md hover:shadow-lg transition-all
-        ${size === 'large' ? 'px-6 py-3 text-base' : 'px-4 py-2.5 text-sm'}
-      `}
-    >
-      <Icon className={size === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
-      Try {c.name} Free
-      <ArrowRight className={size === 'large' ? 'h-4 w-4' : 'h-3.5 w-3.5'} />
-    </a>
-  )
-}
-
-// ─── Section observer hook ──────────────────────────────────────────────────
-function useInView(threshold = 0.3): [React.RefCallback<HTMLElement>, boolean] {
-  const [visible, setVisible] = useState(false)
-  const observerRef = useRef<IntersectionObserver | null>(null)
-
-  const ref = useCallback((node: HTMLElement | null) => {
-    if (observerRef.current) observerRef.current.disconnect()
-    if (!node) return
-    observerRef.current = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observerRef.current?.disconnect()
-        }
-      },
-      { threshold }
-    )
-    observerRef.current.observe(node)
-  }, [threshold])
-
-  return [ref, visible]
-}
-
-// ─── Typewriter effect ──────────────────────────────────────────────────────
-function Typewriter({ text, active, speed = 30 }: { text: string; active: boolean; speed?: number }) {
-  const [displayed, setDisplayed] = useState('')
-
-  useEffect(() => {
-    // Only clear when starting fresh (text changed), not when active becomes false
-    if (!active) return
-    
-    setDisplayed('') // Clear for new text
-    let i = 0
-    const interval = setInterval(() => {
-      if (i < text.length) {
-        setDisplayed(text.slice(0, i + 1))
-        i++
-      } else {
-        clearInterval(interval)
-      }
-    }, speed)
-    return () => clearInterval(interval)
-  }, [text, speed]) // Removed 'active' from deps - only react to text changes
-
-  return <>{displayed}<span className={active ? "animate-pulse" : "opacity-0"}>|</span></>
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -240,14 +136,32 @@ function ListingPipelineSection() {
     if (visible) trackSection('listing-pipeline')
   }, [visible])
 
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([])
+
   const startDemo = () => {
+    // Clear any existing timeouts
+    timeoutsRef.current.forEach(clearTimeout)
+    timeoutsRef.current = []
+
     setStep('dictating')
     track('realtor_demo_listing_start', { campaign: CAMPAIGN })
-    setTimeout(() => setStep('enhancing'), 4000)
-    setTimeout(() => setStep('done'), 7000)
+    timeoutsRef.current.push(setTimeout(() => setStep('enhancing'), 4000))
+    timeoutsRef.current.push(setTimeout(() => setStep('done'), 7000))
   }
 
-  const reset = () => setStep('idle')
+  const reset = () => {
+    // Clear all timeouts before resetting
+    timeoutsRef.current.forEach(clearTimeout)
+    timeoutsRef.current = []
+    setStep('idle')
+  }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout)
+    }
+  }, [])
 
   const data = LISTING_PIPELINE.walkThrough
 
@@ -358,7 +272,7 @@ function ListingPipelineSection() {
         </AnimatePresence>
       </div>
 
-      <AffiliateButton product="wisprflow" context="listing-pipeline" />
+      <AffiliateButton product="wisprflow" context="listing-pipeline" campaign={CAMPAIGN} />
     </section>
   )
 }
@@ -455,7 +369,7 @@ function ScenarioGallerySection() {
         </motion.div>
       </AnimatePresence>
 
-      <AffiliateButton product="wisprflow" context="scenarios" />
+      <AffiliateButton product="wisprflow" context="scenarios" campaign={CAMPAIGN} />
     </section>
   )
 }
@@ -607,7 +521,7 @@ function ClientCallSection() {
         </AnimatePresence>
       </div>
 
-      <AffiliateButton product="granola" context="client-calls" />
+      <AffiliateButton product="granola" context="client-calls" campaign={CAMPAIGN} />
     </section>
   )
 }
