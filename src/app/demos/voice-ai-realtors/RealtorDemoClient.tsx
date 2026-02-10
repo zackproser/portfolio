@@ -3,11 +3,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  Mic,
   Home,
   Mail,
   ClipboardList,
+  Phone,
   Calculator,
   ChevronDown,
+  ArrowRight,
   Play,
   RotateCcw,
   Clock,
@@ -16,7 +19,6 @@ import {
   Sparkles
 } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { track } from '@vercel/analytics'
 
 import {
@@ -74,20 +76,20 @@ function HeroSection() {
       >
         See how top-producing agents use{' '}
         <a
-          href={getLink('wisprflow', 'hero-text')}
+          href={getLink('wisprflow', 'hero-text', CAMPAIGN)}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => trackClick('wisprflow', 'hero-text')}
+          onClick={() => trackClick('wisprflow', 'hero-text', CAMPAIGN)}
           className="font-semibold text-purple-600 dark:text-purple-400 hover:underline"
         >
           WisprFlow
         </a>
         {' '}and{' '}
         <a
-          href={getLink('granola', 'hero-text')}
+          href={getLink('granola', 'hero-text', CAMPAIGN)}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => trackClick('granola', 'hero-text')}
+          onClick={() => trackClick('granola', 'hero-text', CAMPAIGN)}
           className="font-semibold text-teal-600 dark:text-teal-400 hover:underline"
         >
           Granola
@@ -653,10 +655,10 @@ function FinalCTASection() {
         <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
           {/* WisprFlow card */}
           <a
-            href={getLink('wisprflow', 'final-cta')}
+            href={getLink('wisprflow', 'final-cta', CAMPAIGN)}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackClick('wisprflow', 'final-cta')}
+            onClick={() => trackClick('wisprflow', 'final-cta', CAMPAIGN)}
             className="group relative overflow-hidden rounded-2xl border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-600 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 p-6 shadow-lg transition-all hover:shadow-xl"
           >
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 opacity-20 blur-3xl" />
@@ -681,10 +683,10 @@ function FinalCTASection() {
 
           {/* Granola card */}
           <a
-            href={getLink('granola', 'final-cta')}
+            href={getLink('granola', 'final-cta', CAMPAIGN)}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackClick('granola', 'final-cta')}
+            onClick={() => trackClick('granola', 'final-cta', CAMPAIGN)}
             className="group relative overflow-hidden rounded-2xl border-2 border-transparent hover:border-teal-300 dark:hover:border-teal-600 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-zinc-800 dark:to-zinc-900 p-6 shadow-lg transition-all hover:shadow-xl"
           >
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 opacity-20 blur-3xl" />
