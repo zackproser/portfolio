@@ -70,5 +70,7 @@ prisma/.env
 public/og-images-optimized/
 .env.production
 
-# Internal business/marketing documents
+# Internal marketing/strategy docs
 EMAIL_MARKETING_PLAYBOOK.md
+EMAILOCTOPUS_SETUP_GUIDE.md
+EMAIL_DRIP_REDESIGN.md

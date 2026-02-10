@@ -106,10 +106,10 @@ export function Typewriter({ text, active, speed = 30 }: { text: string; active:
   const [displayed, setDisplayed] = useState('')
 
   useEffect(() => {
-    // Only clear when starting fresh (text changed), not when active becomes false
-    if (!active) return
-    
-    setDisplayed('') // Clear for new text
+    if (!active) {
+      setDisplayed(text)
+      return
+    }
     let i = 0
     const interval = setInterval(() => {
       if (i < text.length) {
@@ -120,7 +120,7 @@ export function Typewriter({ text, active, speed = 30 }: { text: string; active:
       }
     }, speed)
     return () => clearInterval(interval)
-  }, [text, speed]) // Removed 'active' from deps - only react to text changes
+  }, [active, text, speed])
 
-  return <>{displayed}<span className={active ? "animate-pulse" : "opacity-0"}>|</span></>
+  return <>{displayed}{active && <span className="animate-pulse">|</span>}</>
 }
