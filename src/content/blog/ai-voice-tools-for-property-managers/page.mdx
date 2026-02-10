@@ -1,0 +1,153 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import RealtorDemoCard from '@/components/RealtorDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-property-managers';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI voice tools for property managers" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Dictate inspection reports, tenant notes, and maintenance orders on-site instead of back at the office</figcaption>
+
+Property managers are rarely at their desks. Between unit inspections, tenant meetings, and coordinating maintenance, your day is spent on-site. But the documentation still has to happen. Voice AI lets you create reports, log tenant communications, and dispatch maintenance -- all by speaking.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Inspection Reports and Maintenance Orders
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for property management dictation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is system-level voice-to-text for Mac. Dictate directly into your property management software, email, or any application.
+
+### Property Manager Use Cases
+
+**Move-in and move-out inspections**: Dictate room-by-room condition reports. "Living room: walls in good condition, two small nail holes above the fireplace. Carpet shows normal wear, no stains. Blinds functional on all three windows. Smoke detector tested and working."
+
+**Maintenance work orders**: Create detailed work orders by voice. "Unit 204: tenant reports kitchen faucet dripping continuously. Also noted the garbage disposal is making a grinding noise. Priority level medium. Assign to Rodriguez Plumbing."
+
+**Tenant communication emails**: Dictate professional responses. "Dear Mr. Thompson, thank you for reporting the HVAC issue. We have scheduled a technician for Thursday between 9 AM and noon. Please ensure someone is available to provide access."
+
+**Violation notices and lease documentation**: Speak through formal notices. "Notice of lease violation for unit 312. Unauthorized pet observed during routine inspection on February 5th. Per lease section 8.3, pets require written approval and a 300 dollar deposit."
+
+### Field Documentation Speed
+
+Property managers who switch to voice dictation report cutting inspection documentation time in half. A 20-unit building inspection that used to take 3 hours of writing now takes 90 minutes of dictation.
+
+For a detailed review, see [WisprFlow Review: 179 WPM Voice-Driven Development](/blog/wisprflow-review).
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Tenant Meetings and Vendor Calls
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola for property management meetings" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes with action items. Use it for tenant meetings, vendor coordination, and owner calls.
+
+### Property Management Benefits
+
+**Tenant complaint meetings**: When a tenant comes in with issues, Granola captures the entire conversation. You have a documented record of what was reported and what you committed to.
+
+**Vendor and contractor calls**: Scope discussions, pricing negotiations, and scheduling calls produce clear action items automatically.
+
+**Owner update calls**: Monthly or quarterly calls with property owners involve financials, maintenance decisions, and capital improvement discussions. Granola captures every detail.
+
+**Lease negotiation meetings**: Renewal discussions and new lease terms are recorded so both parties' commitments are documented.
+
+For a comparison with alternatives, see [Granola vs Otter.ai](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Daily Workflow Example
+
+### Morning: Property Inspections
+- Walk units dictating condition reports using WisprFlow
+- Flag maintenance issues as you find them
+- Dictate work orders on the spot
+
+### Midday: Tenant and Vendor Coordination
+- Granola captures tenant meetings automatically
+- Vendor phone calls recorded with scope and pricing details
+- Dictate follow-up emails between appointments
+
+### Afternoon: Administrative and Owner Communication
+- Review Granola transcripts from the day's meetings
+- Dictate owner update reports
+- Speak through lease documents and violation notices
+
+### Time Savings
+
+| Task | Without Voice AI | With Voice AI | Weekly Savings |
+|------|-----------------|---------------|----------------|
+| Inspection reports | 4 hrs | 1.5 hrs | 2.5 hrs |
+| Maintenance work orders | 2 hrs | 0.5 hrs | 1.5 hrs |
+| Tenant communication | 3 hrs | 1 hr | 2 hrs |
+| Meeting and call documentation | 2 hrs | 0 hrs (auto) | 2 hrs |
+| **Total** | **11 hrs** | **3 hrs** | **8 hrs** |
+
+A full working day saved on documentation every week.
+
+## Related Guides
+
+- [AI Voice Tools for Real Estate Agents](/blog/ai-voice-tools-for-real-estate) - Real estate industry voice tools
+- [AI Voice Tools for Home Inspectors](/blog/ai-voice-tools-for-home-inspectors) - Inspection report dictation
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General business productivity
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For inspections and work orders**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Dictate into any property management software
+2. **For tenant and vendor calls**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Capture every conversation automatically
+
+Both offer free trials. Test them on your next building inspection.
+
+<RealtorDemoCard campaign={campaign} />
+
+## Frequently Asked Questions
+
+### Does WisprFlow work with AppFolio, Buildium, and other PM software?
+
+Yes. WisprFlow operates at the system level. Any application with text fields is supported. AppFolio, Buildium, Yardi, RentManager -- all work.
+
+### Can I dictate inspection reports on-site?
+
+WisprFlow runs on your Mac. Bring your laptop on inspections and dictate as you walk through units. Alternatively, dictate notes into your phone and polish them with WisprFlow back at the office.
+
+### How does Granola handle tenant meetings in noisy environments?
+
+Granola works best in conversational settings -- office meetings, phone calls, and video calls. For on-site dictation in noisy buildings, WisprFlow on your laptop is the better choice.
+
+### Will tenants know meetings are being recorded?
+
+Granola runs invisibly with no bot or notification. Check your local laws regarding recording consent, but there is no visible indicator to the other party.
+
+### Can I use this for documenting lease violations?
+
+Absolutely. Dictating violation notices and documenting the conversation where you discussed the violation creates a stronger paper trail for legal purposes.
+
+---
+
+*Stop hauling a clipboard from unit to unit. Speak your findings, dispatch repairs, and document everything faster than you ever could by typing.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

@@ -5,13 +5,14 @@
  * Check your affiliate dashboards (Granola, WisprFlow) to see if they report UTM data.
  */
 
-export type AffiliateProduct = 'wisprflow' | 'granola'
+export type AffiliateProduct = 'wisprflow' | 'granola' | 'firecrawl'
 export type AffiliateMedium = 'blog' | 'demo' | 'homepage' | 'newsletter' | 'tools'
 export type AffiliatePlacement = 'sticky-cta' | 'inline-cta' | 'hero-card' | 'compact-card' | 'text-link' | 'dual-card'
 
 const BASE_LINKS: Record<AffiliateProduct, string> = {
   wisprflow: 'https://ref.wisprflow.ai/zack-proser',
-  granola: 'https://go.granola.ai/zack-proser'
+  granola: 'https://go.granola.ai/zack-proser',
+  firecrawl: 'https://firecrawl.link/zack-proser' // TODO: Update with actual affiliate link once accepted
 }
 
 interface AffiliateParams {

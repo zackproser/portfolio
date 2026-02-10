@@ -8,6 +8,9 @@ const tokenizationDemoHero = 'https://zackproser.b-cdn.net/images/tokenization-d
 const chatbotDemoHero = 'https://zackproser.b-cdn.net/images/chatbot-demo-hero.webp'
 const ragVisualizedHero = 'https://zackproser.b-cdn.net/images/rag-demo-hero.webp'
 const voiceAIDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-hero.webp'
+const realtorDemoHero = 'https://zackproser.b-cdn.net/images/wisprflow.webp'
+const lawyerDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-hero.webp'
+const firecrawlDemoHero = 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
@@ -16,6 +19,33 @@ export const metadata: Metadata = createMetadata({
 
 // Hardcoded demo data since these are React components, not MDX files
 const demos: Content[] = [
+  {
+    slug: '/demos/firecrawl',
+    title: 'Web Scraping for AI',
+    description: 'See how Firecrawl turns any website into clean, structured data for AI agents, RAG pipelines, and LLM applications. Interactive crawling pipeline demo.',
+    author: 'Zachary Proser',
+    date: '2026-02-09',
+    type: 'demo',
+    image: firecrawlDemoHero
+  },
+  {
+    slug: '/demos/voice-ai-lawyers',
+    title: 'Voice AI for Legal Professionals',
+    description: 'See how attorneys dictate motions, capture client consultations, and draft documents faster with voice AI. Interactive demo with real legal scenarios.',
+    author: 'Zachary Proser',
+    date: '2026-02-09',
+    type: 'demo',
+    image: lawyerDemoHero
+  },
+  {
+    slug: '/demos/voice-ai-realtors',
+    title: 'Voice AI for Real Estate Agents',
+    description: 'See how top-producing agents dictate MLS listings in 2 minutes, capture buyer consultations automatically, and save 11+ hours per week with voice AI.',
+    author: 'Zachary Proser',
+    date: '2026-02-09',
+    type: 'demo',
+    image: realtorDemoHero
+  },
   {
     slug: '/demos/voice-ai',
     title: 'Voice-First AI Experience',

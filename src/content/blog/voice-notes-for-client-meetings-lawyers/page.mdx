@@ -1,0 +1,163 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import LawyerDemoCard from '@/components/LawyerDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'voice-notes-for-client-meetings-lawyers';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Voice notes for client meetings - lawyers" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Invisible meeting capture means full attention on your client, full notes after the call</figcaption>
+
+Every lawyer has experienced it: you're deep in a client consultation, the client shares a critical detail, and you miss the next thirty seconds because you're typing the first thing they said. Note-taking during legal meetings creates a fundamental tension between listening and documenting.
+
+AI meeting capture resolves this. Record the conversation, get structured notes afterward, and stay fully present during the meeting itself.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+</div>
+
+## Granola: Meeting Capture Without the Bot
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes interface" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> records audio from your device's microphone and generates structured meeting notes. No bot joins the call. No other participant sees a recording indicator. This distinction is essential for legal work.
+
+### Why Invisible Capture Matters in Legal Contexts
+
+**Client comfort**: Clients share sensitive, sometimes embarrassing information with their attorneys. A visible recording bot — announcing itself, appearing in the participant list — can make clients self-censor at exactly the moments you need them to be candid.
+
+**Opposing counsel dynamics**: In settlement calls, mediation sessions, and informal discovery conferences, a visible recorder changes behavior. Lawyers become more guarded. Concessions that might have been explored get withheld.
+
+**Professional presentation**: Starting every meeting with "My recording bot is going to join" is clumsy. Granola operates silently and lets you maintain the professional tone of the interaction.
+
+### Legal Meeting Types Where Granola Excels
+
+**Initial client consultations**: The first meeting establishes the factual foundation of representation. Granola captures every detail — names, dates, amounts, sequences of events — so you can focus on asking the right follow-up questions.
+
+**Deposition preparation**: Recording witness preparation sessions gives you a complete record of expected testimony, potential weaknesses, and areas needing further investigation. Granola extracts key themes and action items automatically.
+
+**Settlement and mediation**: Preserve the exact terms discussed, counteroffers made, and conditions attached. No more post-meeting disputes about what was offered.
+
+**Partner and associate strategy sessions**: Case strategy meetings generate action items and assignments. Granola captures who committed to what and by when.
+
+**Expert witness calls**: When experts explain complex opinions, every nuance matters. Review the full capture rather than relying on shorthand notes.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## WisprFlow: Post-Meeting Documentation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow for post-meeting notes" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> complements meeting capture with voice dictation that works system-wide. After Granola captures the meeting, WisprFlow handles the follow-up documentation.
+
+### Post-Meeting Workflows
+
+- **Notes to file**: Dictate your impressions, strategic observations, and credibility assessments immediately after client meetings
+- **Follow-up emails**: Dictate confirmation emails to clients summarizing next steps while the meeting is fresh
+- **Task creation**: Speak action items directly into your task management system
+- **Billing entries**: Dictate detailed time entries describing the meeting's substance and duration
+- **Internal memos**: Brief colleagues on meeting outcomes by dictating a summary memo
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Daily Workflow: Meeting-Intensive Practice Days
+
+### Morning (8:00 - 10:00 AM)
+Review Granola notes from prior-day meetings. Use WisprFlow to dictate follow-up emails and notes-to-file based on yesterday's summaries. Check today's calendar — Granola auto-detects scheduled meetings.
+
+### Midday (10:00 AM - 1:00 PM)
+Back-to-back client consultations and calls. Granola captures each one. Between meetings, spend two minutes reviewing each summary and dictating urgent follow-ups with WisprFlow.
+
+### Afternoon (1:00 - 4:00 PM)
+Deposition prep sessions and team strategy meetings, all captured by Granola. Use WisprFlow to dictate detailed notes-to-file and memo colleagues on key developments.
+
+### End of Day (4:00 - 6:00 PM)
+Review all Granola summaries from the day. Dictate time entries for every meeting. Flag action items for tomorrow. Total post-meeting documentation time: under 30 minutes for a full day of meetings.
+
+## Time Savings: Meeting Documentation
+
+| Task | Without Voice AI | With Voice AI | Time Saved |
+|------|-----------------|---------------|------------|
+| Client meeting notes | 25 min per meeting | 3 min review | 88% |
+| Notes to file | 15 minutes | 3 minutes dictated | 80% |
+| Follow-up email | 8 minutes typed | 2 minutes dictated | 75% |
+| Time entry per meeting | 3 minutes | 45 seconds | 75% |
+| Strategy session summary | 20 minutes | 2 min review + 3 min dictation | 75% |
+| **5-meeting day total** | **~3.5 hours documentation** | **~40 minutes** | **~3 hours reclaimed** |
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+</div>
+
+## Privacy and Ethical Considerations
+
+### Recording Consent
+
+Check your jurisdiction's recording laws. One-party consent states allow you to record conversations you participate in. Two-party consent states require all participants to consent. Granola's invisible nature does not change the legal requirements — comply with applicable law regardless.
+
+### Attorney-Client Privilege
+
+Granola uses enterprise-grade encryption. Audio is processed securely and not used for AI model training. Review Granola's [trust center](https://trust.granola.ai/) for detailed compliance information. Firms should evaluate the tool through IT and ethics committees before deployment.
+
+## Getting Started
+
+Both tools offer free trials:
+
+**Granola**: <AffiliateLink product="granola" campaign={campaign}>Try free</AffiliateLink> — Syncs with your calendar. The next meeting on your schedule is captured automatically. See the [Granola vs Otter comparison](/blog/granola-vs-otter) for how it stacks up.
+
+**WisprFlow**: <AffiliateLink product="wisprflow" campaign={campaign}>Try free</AffiliateLink> — Start by dictating post-meeting notes and emails. Two-minute install. Full details in the [WisprFlow review](/blog/wisprflow-review).
+
+<LawyerDemoCard campaign={campaign} />
+
+## Related Guides
+
+- [Best Voice Tools for Lawyers 2026](/blog/best-voice-tools-for-lawyers-2026) — Complete voice AI guide for attorneys
+- [AI Dictation for Legal Documents](/blog/ai-dictation-for-legal-documents) — Drafting briefs and motions with voice
+- [AI Voice Tools for Corporate Counsel](/blog/ai-voice-tools-for-corporate-counsel) — Board meetings and internal meetings
+- [AI Voice Tools for Personal Injury Lawyers](/blog/ai-voice-tools-for-personal-injury-lawyers) — Client call capture for PI practice
+- [AI Tools for Lawyers](/blog/ai-tools-for-lawyers) — General AI tools overview
+
+## Frequently Asked Questions
+
+### Can Granola capture in-person meetings, not just video calls?
+
+Yes. Granola's mobile app records in-person meetings through your phone's microphone. Place it on the table during a conference room meeting and it captures everything.
+
+### What if the client later disputes what was discussed?
+
+Granola provides a timestamped record of the conversation. While not an official transcript, it serves as a reliable reference for internal work product and can inform your formal documentation.
+
+### Does this replace taking any notes during the meeting?
+
+Most attorneys still jot down a few key points — questions to circle back to, critical dates, dollar figures. But the bulk of note-taking becomes unnecessary, freeing you to listen and think.
+
+### How do I handle multi-party calls with several clients or witnesses?
+
+Granola captures all audio from your device. For multi-party calls, the structured notes identify different speakers and attribute statements accordingly. Review the output to verify accuracy on speaker attribution.
+
+### What about my firm's data retention policies?
+
+Granola offers enterprise plans with configurable retention and deletion policies. Solo practitioners and small firms can manually manage recordings. Consult your firm's records management policies.
+
+---
+
+*The most important thing a lawyer does in a client meeting is listen. Voice AI tools finally make that possible without sacrificing the documentation that good practice demands.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+</div>

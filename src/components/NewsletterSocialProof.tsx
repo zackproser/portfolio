@@ -1,5 +1,6 @@
 import { Container } from '@/components/Container'
 import { Users, Sparkles, CheckCircle2 } from 'lucide-react'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 export function NewsletterSocialProof() {
   return (
@@ -19,7 +20,7 @@ export function NewsletterSocialProof() {
               </span>
 
               <h2 className="text-4xl font-extrabold leading-tight text-blue-900 sm:text-5xl dark:text-white">
-                Join 3,000+ Engineers Reading the Newsletter
+                Join {getSubscriberCount()} Engineers Reading the Newsletter
               </h2>
 
               <p className="max-w-3xl text-lg md:text-xl text-slate-600 dark:text-blue-100/80">

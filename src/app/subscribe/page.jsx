@@ -7,9 +7,10 @@ import { Suspense } from 'react'
 import CV from '@/components/CV'
 import RandomPortrait from '@/components/RandomPortrait'
 import { NewsletterSocialProof } from '@/components/NewsletterSocialProof'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 export default function SubscribePage() {
-  const subscriberCount = "3,000+"
+  const subscriberCount = getSubscriberCount()
 
   return (
     <div className="min-h-screen">

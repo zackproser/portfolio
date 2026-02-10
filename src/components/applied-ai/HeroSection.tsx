@@ -5,6 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import RandomPortrait from '@/components/RandomPortrait'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -38,7 +39,7 @@ export default function HeroSection() {
               </h1>
 
               <p className="text-lg md:text-xl text-blue-100 leading-relaxed max-w-4xl">
-                Proven traction: 50,000+ readers • 3,000+ engineers trained • 13+ years shipping production systems • Founder of <a href="https://gabbee.io" target="_blank" rel="noopener noreferrer" className="underline decoration-blue-300 hover:text-white">Gabbee</a> (AI sales calling platform with live users)
+                Proven traction: 50,000+ readers • {getSubscriberCount()} engineers trained • 13+ years shipping production systems • Founder of <a href="https://gabbee.io" target="_blank" rel="noopener noreferrer" className="underline decoration-blue-300 hover:text-white">Gabbee</a> (AI sales calling platform with live users)
               </p>
 
               <div className="mt-4 max-w-4xl">
@@ -53,7 +54,7 @@ export default function HeroSection() {
               {/* Stats */}
               <div className="flex flex-wrap gap-8 text-blue-100">
                 <div>
-                  <div className="text-2xl font-bold text-white">3,000+</div>
+                  <div className="text-2xl font-bold text-white">{getSubscriberCount()}</div>
                   <div className="text-sm">Newsletter Subscribers</div>
                 </div>
                 <div>

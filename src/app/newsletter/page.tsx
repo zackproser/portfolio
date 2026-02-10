@@ -11,18 +11,18 @@ import { Suspense } from 'react'
 import CV from '@/components/CV'
 import RandomPortrait from '@/components/RandomPortrait'
 import { NewsletterSocialProof } from '@/components/NewsletterSocialProof'
+import { getSubscriberCount } from '@/components/SubscriberCount'
 
 export const metadata: Metadata = createMetadata({
   title: "AI & Developer Tools Newsletter - Zachary Proser",
-  description: "Get weekly insights on AI coding tools, vector databases, and developer productivity. Join 3,000+ engineers staying ahead of the curve.",
+  description: `Get weekly insights on AI coding tools, vector databases, and developer productivity. Join ${getSubscriberCount()} engineers staying ahead of the curve.`,
 });
 
 export const revalidate = 3600;
 
 export default async function NewsletterPage() {
   const articles = await getAllContent('newsletter')
-  // Hardcode subscriber count until API is configured
-  const subscriberCount = "3,000+"
+  const subscriberCount = getSubscriberCount()
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-parchment-50 via-parchment-100 to-parchment-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-950">
