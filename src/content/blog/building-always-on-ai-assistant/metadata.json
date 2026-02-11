@@ -1,0 +1,31 @@
+{
+  "title": "Building an Always-On AI Assistant: OpenClaw on a System76 Meerkat",
+  "author": "Zachary Proser",
+  "date": "2026-02-02",
+  "description": "How I built a 24/7 AI assistant that handles email sweeps, voice calls, async task delegation, outbound AI interviews, and prompt shaping — all from a tiny System76 Meerkat. Complete setup guide with Tailscale, Discord, Twilio, Linear, and 10+ integrations.",
+  "image": "https://zackproser.b-cdn.net/images/ai-assistant.webp",
+  "slug": "/blog/building-always-on-ai-assistant",
+  "keywords": [
+    "openclaw",
+    "ai assistant",
+    "always on ai",
+    "system76 meerkat",
+    "tailscale",
+    "claude",
+    "automation",
+    "voice ai",
+    "twilio",
+    "personal ai",
+    "ai infrastructure",
+    "self-hosted ai",
+    "email automation",
+    "async delegation",
+    "linear workflow"
+  ],
+  "tags": [
+    "AI",
+    "Infrastructure",
+    "Automation",
+    "Tutorial"
+  ]
+}
