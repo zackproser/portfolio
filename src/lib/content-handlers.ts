@@ -353,21 +353,38 @@ export async function generateContentStaticParams(contentType: string) {
 export async function generateContentMetadata(contentType: string, directorySlug: string): Promise<Metadata> {
   // Only load the raw metadata, do not process it into the full Content object structure
   // as Next.js generateMetadata expects a Metadata type or undefined
+  // Build the correct canonical URL from the known contentType and directorySlug
+  // This is authoritative — don't rely on what createMetadata() guessed via stack traces
+  const canonicalPath = contentType === 'blog' ? `/blog/${directorySlug}`
+    : contentType === 'videos' ? `/videos/${directorySlug}`
+    : contentType === 'learn/courses' ? `/learn/courses/${directorySlug}`
+    : `/${contentType}/${directorySlug}`;
+  const canonicalUrl = `https://zackproser.com${canonicalPath}`;
+
   try {
     const mdxModule = await _loadMDXModule(contentType, directorySlug);
     // Return raw metadata if available, otherwise an empty object conforms to Metadata type
     const baseMetadata = mdxModule?.metadata || {};
-    // Inject metadataBase here
+    // Inject metadataBase and always override canonical with the correct URL
     return {
       ...baseMetadata,
       metadataBase: new URL('https://zackproser.com'),
+      alternates: {
+        ...(baseMetadata as any).alternates,
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        ...(baseMetadata as any).openGraph,
+        url: canonicalUrl,
+      },
     };
   } catch (error) {
     logger.error(`Error generating metadata for ${contentType}/${directorySlug}:`, error);
-    // Return empty object with metadataBase even on error?
-    // Or just empty object? Let's return empty with metadataBase for consistency.
     return {
       metadataBase: new URL('https://zackproser.com'),
+      alternates: {
+        canonical: canonicalUrl,
+      },
     };
   }
 }

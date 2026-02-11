@@ -51,7 +51,7 @@ export async function generateMetadata(
     type: content.type || 'course',
     commerce: content.commerce,
     landing: content.landing,
-    slug: content.slug || resolvedParams.slug || '/products'
+    slug: content.directorySlug || resolvedParams.slug || '/products'
   });
   
   // Return the metadata in Next.js expected format
