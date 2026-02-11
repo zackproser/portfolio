@@ -50,7 +50,7 @@ Why not a cloud VM? Three reasons:
 
 The gateway runs as a systemd service, survives reboots, and keeps my assistant available 24/7.
 
-A note on naming: OpenClaw's default identity has a crustacean theme. I changed it to something more like Jarvis — direct, competent, minimal personality friction. The identity files (SOUL.md, USER.md) make this trivial — you just tell it who it is. 🦀 → 🚀
+A note on naming: OpenClaw's default identity has a crustacean theme. Far be it from me to step on anyone's funk, but I don't get down with crustaceans. I changed it to something more like Jarvis — direct, competent, minimal personality friction. The identity files (SOUL.md, USER.md) make this trivial — you just tell it who it is. 🦀 → 🚀
 
 ```bash
 # Install OpenClaw (requires Node 22+)
@@ -377,15 +377,14 @@ Before this, important emails would sit unread for days because opening my inbox
 
 My goal is to **place work in Linear, tag it, and have Claw proactively pick it up**.
 
-Here's how it works:
+Here's how it works today:
 
-1. **I load up 10-15 tasks across multiple projects** — software improvements, bug fixes, feature work, content updates
+1. **I create tasks in Linear throughout my day** — software improvements, bug fixes, feature work, content updates
 2. **I tag them with `claude`** — This signals they're delegated to my assistant
-3. **On the next heartbeat, Claw sees the tagged tasks and starts chunking through them**
-4. **Claw works autonomously in loops** — opening PRs, fixing issues, writing content, moving tickets forward
-5. **Claw verifies its own work** — project-specific skills, build hooks, and test suites run automatically so it's always checking what it produces
+3. **On the next heartbeat, Claw sees the tagged tasks** and starts working through them
+4. **Claw updates tasks with results** — or pings me on Discord if it's blocked
 
-The vision is Codex-like overnight work sessions. I queue up real software tasks throughout the day — across multiple repos and work streams — and Claw works through them while I sleep. By morning there are PRs ready for review, builds passing, and tickets moved to done. The work might need a little more polishing or another round of prompting, but the heavy lifting is handled. Multiply that across several projects running in parallel and the throughput is significant.
+Where this is heading is Codex-like overnight work sessions. I'd load up 10-15 tasks across multiple repos and work streams, Claw would chunk through them while I sleep — opening PRs, fixing issues, writing content, verifying its own work via project-specific skills, build hooks, and test suites. By morning there'd be PRs ready for review, builds passing, and tickets moved to done. The work might need a little more polishing or another round of prompting, but the heavy lifting would be handled. Multiply that across several projects running in parallel and the throughput gets significant.
 
 I don't have to context-switch to delegate. I just drop tasks into Linear during my normal workflow, tag them, and forget about them. Claw wakes up every 30 minutes, checks for new work, and handles it.
 
