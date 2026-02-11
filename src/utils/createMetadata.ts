@@ -240,9 +240,12 @@ export function createMetadata(params: MetadataParams): ExtendedMetadata {
   });
 
   // Generate canonical URL
+  // If the slug already looks like a full path (starts with /), use it directly
   const canonicalUrl = contentUrl 
     ? new URL(contentUrl, 'https://zackproser.com').toString()
-    : `https://zackproser.com/${TYPE_PATHS[contentType] || 'blog'}/${finalSlug}`;
+    : finalSlug.startsWith('/')
+      ? `https://zackproser.com${finalSlug}`
+      : `https://zackproser.com/${TYPE_PATHS[contentType] || 'blog'}/${finalSlug}`;
 
   // Add type assertion to ensure we're returning a complete ExtendedMetadata
   const metadata: ExtendedMetadata = {

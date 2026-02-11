@@ -6,7 +6,7 @@ import { getAllTools } from '@/actions/tool-actions';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons', 'services', 'products'];
-const excludeDirs = ['api', 'rss'];
+const excludeDirs = ['api', 'rss', 'admin', 'auth', 'checkout', 'success'];
 const dynamicDetailDirs = [
   { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
   { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
@@ -36,8 +36,8 @@ async function getRoutes() {
       const fullPath = path.join(dir, item);
       const relativePath = prefix ? `${prefix}/${item}` : item;
       if (fs.statSync(fullPath).isDirectory()) {
-        // Exclude API routes and directories starting with '_'
-        if (item !== 'api' && !item.startsWith('_') && !item.startsWith('(')) {
+        // Exclude API routes, directories starting with '_' or '(', dynamic [param] dirs, and excluded dirs
+        if (item !== 'api' && !item.startsWith('_') && !item.startsWith('(') && !item.startsWith('[') && !excludeDirs.includes(item)) {
           scanDir(fullPath, relativePath);
         }
       } else if (item === 'page.tsx' || item === 'page.js') {
@@ -114,12 +114,33 @@ async function getRoutes() {
   const uniqueRoutes = Array.from(routes);
   console.log(`Generated ${uniqueRoutes.length} total routes for sitemap`);
 
-  return uniqueRoutes.map(route => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: 'weekly',
-    priority: 1.0,
-  }));
+  return uniqueRoutes.map(route => {
+    // Differentiate priority by route type
+    let priority = 0.5;
+    let changeFrequency = 'weekly';
+
+    if (route === '/') {
+      priority = 1.0;
+      changeFrequency = 'daily';
+    } else if (route === '/blog' || route === '/videos' || route === '/learn' || route === '/products' || route === '/comparisons' || route === '/devtools' || route === '/vectordatabases') {
+      priority = 0.8;
+      changeFrequency = 'daily';
+    } else if (route.startsWith('/blog/') || route.startsWith('/videos/') || route.startsWith('/newsletter/')) {
+      priority = 0.6;
+    } else if (route.startsWith('/comparisons/')) {
+      priority = 0.4;
+    } else if (route.startsWith('/rss/')) {
+      priority = 0.2;
+      changeFrequency = 'daily';
+    }
+
+    return {
+      url: `${baseUrl}${route}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency,
+      priority,
+    };
+  });
 }
 
 export default async function sitemap() {
