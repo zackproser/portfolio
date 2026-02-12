@@ -10,6 +10,9 @@ const data = {
 const ogUrl = generateOgUrl(data);
 
 export const metadata = {
+  title: data.title,
+  description: data.description,
+  alternates: { canonical: "https://zackproser.com/contact" },
   openGraph: {
     title: data.title,
     description: data.description,

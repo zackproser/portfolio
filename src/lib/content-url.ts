@@ -11,8 +11,14 @@ export function getContentUrlFromObject(content: Content, keepLeadingSlash = tru
   const { type, directorySlug } = content as any;
   if (!type) throw new Error('Content object missing type');
   if (!directorySlug) throw new Error('Content object missing directorySlug');
-  // Remove any leading slashes from the slug
-  const cleanSlug = directorySlug.replace(/^\/+/,'');
+  // Remove any leading slashes and type prefix from the slug to avoid doubled paths
+  // e.g., "/blog/my-post" → "my-post" when type is "blog"
+  let cleanSlug = directorySlug.replace(/^\/+/,'');
+  if (type === 'article' || type === 'blog') {
+    cleanSlug = cleanSlug.replace(/^blog\//, '');
+  } else {
+    cleanSlug = cleanSlug.replace(new RegExp(`^${type}\/`), '');
+  }
   let url = '';
   if (type === 'article' || type === 'blog') {
     url = `/blog/${cleanSlug}`;

@@ -2,11 +2,21 @@ import fs from 'fs';
 import path from 'path';
 import { getAllContent, getAllProducts, getAppPageRoutesPaths } from '@/lib/content-handlers';
 import { getAllTools } from '@/actions/tool-actions';
-// import { siteConfig } from '@/config/site'; // Removed unused import
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
 const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons', 'services', 'products'];
 const excludeDirs = ['api', 'rss'];
+
+// Routes that should not appear in the sitemap (private/internal pages)
+const excludeRoutePatterns = [
+  /^\/admin(\/|$)/,
+  /^\/auth(\/|$)/,
+  /^\/checkout(\/|$)/,
+  /^\/success(\/|$)/,
+  /^\/login(\/|$)/,
+  /\[.*\]/, // Exclude any literal dynamic route patterns like [slug]
+];
+
 const dynamicDetailDirs = [
   { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
   { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
@@ -20,6 +30,23 @@ function createSlug(name) {
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+}
+
+// Determine priority based on route type
+function getRoutePriority(route) {
+  if (route === '/') return 1.0;
+  // Section/index pages
+  const sectionPages = ['/blog', '/videos', '/newsletter', '/comparisons', '/devtools', '/vectordatabases', '/services', '/products', '/demos', '/learn', '/about', '/projects', '/publications', '/speaking', '/tutorials'];
+  if (sectionPages.includes(route)) return 0.8;
+  // Comparison pages (high value for SEO)
+  if (route.startsWith('/comparisons/')) return 0.7;
+  // Individual content pages
+  return 0.6;
+}
+
+// Check if a route should be excluded from the sitemap
+function shouldExcludeRoute(route) {
+  return excludeRoutePatterns.some(pattern => pattern.test(route));
 }
 
 async function getRoutes() {
@@ -36,13 +63,16 @@ async function getRoutes() {
       const fullPath = path.join(dir, item);
       const relativePath = prefix ? `${prefix}/${item}` : item;
       if (fs.statSync(fullPath).isDirectory()) {
-        // Exclude API routes and directories starting with '_'
-        if (item !== 'api' && !item.startsWith('_') && !item.startsWith('(')) {
+        // Exclude API routes, directories starting with '_' or '(', and dynamic route dirs like [slug]
+        if (item !== 'api' && !item.startsWith('_') && !item.startsWith('(') && !item.startsWith('[')) {
           scanDir(fullPath, relativePath);
         }
-      } else if (item === 'page.tsx' || item === 'page.js') {
+      } else if (item === 'page.tsx' || item === 'page.js' || item === 'page.jsx') {
         // Add the route, removing 'page.tsx' or 'page.js'
-        routes.add(prefix ? `/${prefix}` : '/');
+        const route = prefix ? `/${prefix}` : '/';
+        if (!shouldExcludeRoute(route)) {
+          routes.add(route);
+        }
       }
     });
   };
@@ -52,7 +82,7 @@ async function getRoutes() {
   const blogContent = await getAllContent('blog');
   blogContent.forEach(item => routes.add(item.slug));
 
-  const videoContent = await getAllContent('videos'); // Assuming 'videos' is a content type
+  const videoContent = await getAllContent('videos');
   videoContent.forEach(item => routes.add(item.slug));
 
   // Get all product routes
@@ -61,7 +91,11 @@ async function getRoutes() {
 
   // Get all top-level pages dynamically using the replacement function
   const topLevelPages = await getAppPageRoutesPaths();
-  topLevelPages.forEach(page => routes.add(page));
+  topLevelPages.forEach(page => {
+    if (!shouldExcludeRoute(page)) {
+      routes.add(page);
+    }
+  });
 
   // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
   dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {
@@ -110,18 +144,18 @@ async function getRoutes() {
   routes.add('/rss/feed.json');
   routes.add('/rss/feed.xml');
 
-  // Convert Set to Array and log the routes for debugging
-  const uniqueRoutes = Array.from(routes);
+  // Filter out any excluded routes that may have been added by dynamic content functions
+  const uniqueRoutes = Array.from(routes).filter(route => !shouldExcludeRoute(route));
   console.log(`Generated ${uniqueRoutes.length} total routes for sitemap`);
 
   return uniqueRoutes.map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: 'weekly',
-    priority: 1.0,
+    changeFrequency: route === '/' ? 'daily' : 'weekly',
+    priority: getRoutePriority(route),
   }));
 }
 
 export default async function sitemap() {
-  return getRoutes(); // Revert to original function call
+  return getRoutes();
 }
