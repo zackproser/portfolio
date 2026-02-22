@@ -17,17 +17,19 @@ export const metadata: Metadata = createMetadata({
   description: "Learn the latest techniques through interactive demos"
 });
 
-// Hardcoded demo data since these are React components, not MDX files
-const demos: Content[] = [
-  {
-    slug: '/demos/firecrawl',
-    title: 'Web Scraping for AI',
-    description: 'See how Firecrawl turns any website into clean, structured data for AI agents, RAG pipelines, and LLM applications. Interactive crawling pipeline demo.',
-    author: 'Zachary Proser',
-    date: '2026-02-09',
-    type: 'demo',
-    image: firecrawlDemoHero
-  },
+// Featured voice demo (generic)
+const featuredVoiceDemo: Content = {
+  slug: '/demos/voice-ai',
+  title: 'Voice-First AI Experience',
+  description: 'Interactive demo of voice-driven development with WisprFlow and Granola. See how speaking at 170+ WPM enables multi-agent orchestration and transforms productivity.',
+  author: 'Zachary Proser',
+  date: '2025-11-25',
+  type: 'demo',
+  image: voiceAIDemoHero
+};
+
+// Vertical-specific voice demos
+const verticalVoiceDemos: Content[] = [
   {
     slug: '/demos/voice-ai-lawyers',
     title: 'Voice AI for Legal Professionals',
@@ -46,14 +48,18 @@ const demos: Content[] = [
     type: 'demo',
     image: realtorDemoHero
   },
+];
+
+// All other demos
+const otherDemos: Content[] = [
   {
-    slug: '/demos/voice-ai',
-    title: 'Voice-First AI Experience',
-    description: 'Interactive demo of voice-driven development with WisprFlow and Granola. See how speaking at 170+ WPM enables multi-agent orchestration and transforms productivity.',
+    slug: '/demos/firecrawl',
+    title: 'Web Scraping for AI',
+    description: 'See how Firecrawl turns any website into clean, structured data for AI agents, RAG pipelines, and LLM applications. Interactive crawling pipeline demo.',
     author: 'Zachary Proser',
-    date: '2025-11-25',
+    date: '2026-02-09',
     type: 'demo',
-    image: voiceAIDemoHero
+    image: firecrawlDemoHero
   },
   {
     slug: '/demos/rag-visualized',
@@ -93,6 +99,9 @@ const demos: Content[] = [
   }
 ];
 
+// Combined for the client component
+const demos: Content[] = [featuredVoiceDemo, ...verticalVoiceDemos, ...otherDemos];
+
 export default function Demos() {
-  return <DemosClient demos={demos} />
+  return <DemosClient demos={demos} featuredVoiceDemo={featuredVoiceDemo} verticalVoiceDemos={verticalVoiceDemos} otherDemos={otherDemos} />
 }

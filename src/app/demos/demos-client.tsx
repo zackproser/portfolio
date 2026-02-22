@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { Route } from 'next'
 import Image from 'next/image'
 import { Content } from '@/types'
-import { ArrowRight, Play, Sparkles } from 'lucide-react'
+import { ArrowRight, Mic, Play, Sparkles } from 'lucide-react'
 
 // Dynamically import the NeuralNetworkPulse with no SSR
 const NeuralNetworkPulse = dynamic(
@@ -24,9 +24,12 @@ const NeuralNetworkPulse = dynamic(
 
 interface DemosClientProps {
   demos: Content[]
+  featuredVoiceDemo?: Content
+  verticalVoiceDemos?: Content[]
+  otherDemos?: Content[]
 }
 
-export default function DemosClient({ demos }: DemosClientProps) {
+export default function DemosClient({ demos, featuredVoiceDemo, verticalVoiceDemos, otherDemos }: DemosClientProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -129,13 +132,166 @@ export default function DemosClient({ demos }: DemosClientProps) {
         </div>
       </section>
 
-      {/* Demos Grid */}
-      <section id="demos" className={`py-12 ${
+      {/* Featured Voice AI Demo */}
+      {featuredVoiceDemo && (
+        <section id="demos" className={`py-12 ${
+          isDark ? 'bg-slate-900/50' : 'bg-parchment-100'
+        }`}>
+          <div className="container mx-auto px-4">
+            <Link
+              href={featuredVoiceDemo.slug as Route}
+              className="group block mb-8"
+            >
+              <div className={`rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                isDark
+                  ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
+                  : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
+              }`}>
+                <div className="flex flex-col md:flex-row">
+                  <div className="relative md:w-1/2 h-64 md:h-auto overflow-hidden">
+                    {featuredVoiceDemo.image && (
+                      <Image
+                        src={typeof featuredVoiceDemo.image === 'string' ? featuredVoiceDemo.image : featuredVoiceDemo.image.src}
+                        alt={featuredVoiceDemo.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
+                    <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
+                      isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
+                    }`}>
+                      <div className={`w-20 h-20 rounded-full flex items-center justify-center ${
+                        isDark ? 'bg-amber-500' : 'bg-burnt-400'
+                      }`}>
+                        <Play size={36} className="text-white ml-1" />
+                      </div>
+                    </div>
+                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
+                      isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
+                    }`}>
+                      Featured Demo
+                    </div>
+                  </div>
+                  <div className="md:w-1/2 p-8 flex flex-col justify-center">
+                    <h3 className={`font-serif text-2xl md:text-3xl font-bold mb-3 transition-colors ${
+                      isDark
+                        ? 'text-white group-hover:text-amber-400'
+                        : 'text-charcoal-50 group-hover:text-burnt-400'
+                    }`}>
+                      {featuredVoiceDemo.title}
+                    </h3>
+                    <p className={`text-base mb-4 ${
+                      isDark ? 'text-slate-300' : 'text-parchment-600'
+                    }`}>
+                      {featuredVoiceDemo.description}
+                    </p>
+                    <div className={`inline-flex items-center gap-2 text-base font-medium ${
+                      isDark ? 'text-amber-400' : 'text-burnt-400'
+                    }`}>
+                      Try it now
+                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Voice AI for Professionals */}
+      {verticalVoiceDemos && verticalVoiceDemos.length > 0 && (
+        <section className={`py-12 ${
+          isDark ? 'bg-slate-800/30' : 'bg-parchment-50'
+        }`}>
+          <div className="container mx-auto px-4">
+            <h2 className={`font-serif text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3 ${
+              isDark ? 'text-white' : 'text-charcoal-50'
+            }`}>
+              <Mic className={`w-7 h-7 ${isDark ? 'text-amber-400' : 'text-burnt-400'}`} />
+              Voice AI for Professionals
+            </h2>
+            <p className={`text-base mb-8 max-w-2xl ${
+              isDark ? 'text-slate-400' : 'text-parchment-500'
+            }`}>
+              See how voice AI transforms workflows across industries — from legal briefs to real estate listings.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {verticalVoiceDemos.map((demo) => (
+                <Link
+                  key={demo.slug}
+                  href={demo.slug as Route}
+                  className="group"
+                >
+                  <div className={`rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                    isDark
+                      ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
+                      : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
+                  }`}>
+                    <div className="relative h-48 overflow-hidden">
+                      {demo.image && (
+                        <Image
+                          src={typeof demo.image === 'string' ? demo.image : demo.image.src}
+                          alt={demo.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )}
+                      <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
+                        isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
+                      }`}>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                          isDark ? 'bg-amber-500' : 'bg-burnt-400'
+                        }`}>
+                          <Play size={28} className="text-white ml-1" />
+                        </div>
+                      </div>
+                      <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
+                        isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
+                      }`}>
+                        Industry Demo
+                      </div>
+                    </div>
+                    <div className="p-5 flex-grow flex flex-col">
+                      <h3 className={`font-serif text-xl font-bold mb-2 transition-colors ${
+                        isDark
+                          ? 'text-white group-hover:text-amber-400'
+                          : 'text-charcoal-50 group-hover:text-burnt-400'
+                      }`}>
+                        {demo.title}
+                      </h3>
+                      <p className={`text-sm flex-grow ${
+                        isDark ? 'text-slate-300' : 'text-parchment-600'
+                      }`}>
+                        {demo.description}
+                      </p>
+                      <div className={`mt-4 inline-flex items-center gap-1 text-sm font-medium ${
+                        isDark ? 'text-amber-400' : 'text-burnt-400'
+                      }`}>
+                        Try it now
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Other Demos */}
+      <section className={`py-12 ${
         isDark ? 'bg-slate-900/50' : 'bg-parchment-100'
       }`}>
         <div className="container mx-auto px-4">
+          <h2 className={`font-serif text-2xl md:text-3xl font-bold mb-8 ${
+            isDark ? 'text-white' : 'text-charcoal-50'
+          }`}>
+            AI & ML Demos
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {demos.map((demo) => (
+            {(otherDemos || demos).map((demo) => (
               <Link
                 key={demo.slug}
                 href={demo.slug as Route}
@@ -146,7 +302,6 @@ export default function DemosClient({ demos }: DemosClientProps) {
                     ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
                     : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
                 }`}>
-                  {/* Demo Image */}
                   <div className="relative h-48 overflow-hidden">
                     {demo.image && (
                       <Image
@@ -156,7 +311,6 @@ export default function DemosClient({ demos }: DemosClientProps) {
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     )}
-                    {/* Play overlay */}
                     <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
                       isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
                     }`}>
@@ -166,15 +320,12 @@ export default function DemosClient({ demos }: DemosClientProps) {
                         <Play size={28} className="text-white ml-1" />
                       </div>
                     </div>
-                    {/* Demo badge */}
                     <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
                       isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
                     }`}>
                       Interactive Demo
                     </div>
                   </div>
-
-                  {/* Demo Content */}
                   <div className="p-5 flex-grow flex flex-col">
                     <h3 className={`font-serif text-xl font-bold mb-2 transition-colors ${
                       isDark
