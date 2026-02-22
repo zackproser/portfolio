@@ -1,0 +1,192 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-credit-analysts';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for credit analysts" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>AI voice tools help credit analysts produce thorough memos faster without cutting analytical corners</figcaption>
+
+Credit analysts live and die by their memos. Whether you're in commercial lending, investment-grade credit research, leveraged finance, or municipal bonds, your analytical output is ultimately a written document: the credit memo, the recommendation, the risk assessment. The quality of your thinking is judged by the quality of your writing.
+
+The problem is that credit analysis is time-pressured. Deal pipelines don't pause while you polish your prose. Annual reviews stack up. Portfolio monitoring reports are due quarterly. And every memo needs to be thorough enough to withstand scrutiny from credit committees, regulators, and auditors.
+
+Voice AI tools can collapse the time between finishing your analysis and delivering a polished memo. This guide covers practical tools for credit analyst workflows, from due diligence through committee presentation.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Credit Memos and Analysis
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for credit analysis" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a system-wide voice-to-text tool. Speak naturally, and polished text appears wherever your cursor is—Word, your credit origination system, Bloomberg terminal notes, email, or any documentation platform.
+
+### Why Credit Analysts Choose WisprFlow
+
+**Works with any system**: WisprFlow operates at the OS level. Whether you're drafting in Word, entering comments in your bank's loan origination system (nCino, Finastra, etc.), or annotating in Bloomberg, you can dictate directly.
+
+**Learns financial terminology**: The personal dictionary recognizes credit-specific vocabulary after minimal training. Terms like "debt service coverage ratio," "leverage through the cycle," "intercreditor agreement," "springing lien," and borrower-specific names are handled accurately.
+
+**Captures analytical reasoning**: The strongest credit memos don't just state conclusions—they walk through the reasoning. Dictation naturally produces this kind of analytical narrative because you're explaining your thinking as if presenting to a colleague.
+
+**Speed for high-volume periods**: Credit analysts typically need to produce 2-5 memos per week during active deal flow. At 150-180 WPM dictation versus 40-60 WPM typing, you can draft a 10-page memo in a fraction of the time.
+
+### Credit Analysis Use Cases
+
+- **Credit memos**: Dictate the full narrative—company overview, industry analysis, financial analysis, risk factors, mitigants, and recommendation. Speaking through your analysis while reviewing the model produces more coherent narratives than trying to write cold.
+- **Annual and interim reviews**: For existing credits, dictate updates on financial performance, covenant compliance, industry trends, and risk rating rationale. You're reviewing the same data you'd type about—dictating is simply faster.
+- **Due diligence notes**: During management presentations, site visits, or document review, dictate your observations and questions in real time. Capture impressions while they're fresh rather than reconstructing them later.
+- **Risk rating justifications**: Examiners scrutinize risk rating rationale. Dictate thorough justifications by speaking through the rating criteria and how the borrower maps to each factor.
+- **Watch list and problem loan reports**: When credits deteriorate, documentation becomes even more critical. Dictate detailed assessments of developing situations, borrower communication, and recommended actions.
+- **Industry research summaries**: Synthesize what you've read from trade publications, rating agency reports, and industry data into concise research notes by speaking through your takeaways.
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Credit Meetings
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for credit meetings" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes without a visible recorder joining your meeting.
+
+### Applications in Credit Analysis
+
+**Management presentations**: When you're meeting with a borrower's management team—whether for a new deal or an annual review—the quality of your notes directly affects your memo quality. Granola captures the entire conversation, including management's exact characterizations of their business outlook, competitive position, and capital plans.
+
+**Credit committee meetings**: Committee discussions generate critical context. What concerns did the credit officer raise? What conditions were imposed? What was the vote rationale? Granola captures all of this, creating an audit trail that's invaluable when examiners review the file.
+
+**Relationship manager discussions**: RMs bring market intelligence and borrower context that doesn't always make it into the formal memo. Capture these conversations to enrich your analysis.
+
+**Syndication and participation calls**: For syndicated credits, agent bank calls and lender meetings contain information about borrower performance, waiver requests, and amendment proposals. Granola ensures you capture every detail.
+
+**Examiner and auditor meetings**: When regulators review your portfolio, accurate documentation of every conversation protects both you and your institution. Granola captures what was discussed, what was requested, and what commitments were made.
+
+**Workout and restructuring calls**: Problem credits involve frequent calls with borrowers, legal counsel, and workout specialists. These discussions move fast and decisions have significant financial consequences. Complete capture is essential.
+
+For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Privacy and Confidentiality Considerations
+
+### Data Sensitivity in Credit Analysis
+
+Credit analysts routinely handle material non-public information (MNPI) and confidential borrower data:
+
+1. **MNPI awareness**: If you work with publicly traded borrowers or issuers, information about credit decisions, financial projections, or covenant breaches may constitute MNPI. Evaluate how voice tool data handling intersects with your firm's information barriers.
+2. **Borrower confidentiality**: Loan agreements typically include confidentiality provisions. Ensure voice tool usage doesn't violate these obligations.
+3. **Institutional AI policy**: Most banks and asset managers now have AI usage policies. Get explicit approval before using voice tools with borrower information.
+4. **Regulatory expectations**: OCC, FDIC, and Federal Reserve guidance on AI and third-party risk management applies to tools that process confidential financial information.
+
+### Local vs. Cloud Processing
+
+- **WisprFlow**: Processes locally where possible, with cloud backup for some features. Important for institutions with strict data classification requirements.
+- **Granola**: Cloud-based processing with enterprise security options. Evaluate against your institution's vendor risk management standards.
+
+For detailed privacy policies, visit each vendor's trust center.
+
+## Workflow Integration
+
+### New Credit / Underwriting
+- Review financial statements and build/update the credit model
+- Dictate the credit memo narrative using WisprFlow while the analysis is fresh
+- Use Granola for management presentations and due diligence calls
+- Dictate committee presentation talking points
+- After committee, dictate approval conditions and follow-up items
+
+### Annual / Interim Reviews
+- Pull updated financials and covenant compliance data
+- Dictate the review narrative, focusing on material changes since last review
+- Use WisprFlow for risk rating justification updates
+- Granola captures any borrower update calls
+
+### Portfolio Monitoring
+- During quarterly reviews, dictate watch list commentary as you review each credit
+- Use WisprFlow for rapid documentation of emerging issues
+- Granola captures workout and restructuring discussions
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| Credit memo (10 pages) | 4 hours | 1.5 hours | 2.5 hours |
+| Annual review narrative | 90 min | 35 min | 55 min |
+| Due diligence summary | 60 min | 20 min | 40 min |
+| Risk rating justification | 20 min | 8 min | 12 min |
+
+For a credit analyst managing a portfolio of 40-60 names with annual reviews, plus new deal flow, the cumulative savings are measured in days per quarter.
+
+## Related Resources
+
+If you're interested in voice-first productivity beyond credit analysis:
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General productivity techniques
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [Best Voice-to-Text for Developers](/blog/best-voice-to-text-for-developers) - Technical deep dive
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For credit memos and documentation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Install takes minutes. Train the dictionary with your credit vocabulary—borrower names, industry terms, and financial acronyms.
+2. **For meeting capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Syncs with your calendar. Start with internal meetings before using it for borrower-facing calls.
+
+Both offer free trials to evaluate before committing.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Can I dictate credit memos that will pass credit committee review?
+
+Yes—with the same review process you'd apply to typed memos. Dictation produces first drafts faster, but you should still review for precision, ensure financial figures are accurate, and refine analytical language. Many analysts find that dictated first drafts actually read better because speaking naturally produces more fluid analytical narratives.
+
+### How do I handle confidential borrower information?
+
+Get institutional approval first. Most banks require that any tool processing borrower information go through vendor risk management review. Start with non-confidential content (industry research, methodology descriptions) while the approval process runs, then expand to borrower-specific content once approved.
+
+### Will examiners question voice-dictated documentation?
+
+Examiners evaluate the substance and completeness of credit documentation, not how it was produced. A thorough, well-reasoned credit memo is a thorough memo whether it was typed, dictated, or chiseled in stone. The real risk is inadequate documentation—and voice tools help prevent that by making thorough documentation faster.
+
+### Is this useful for buy-side credit analysts?
+
+Absolutely. Buy-side analysts at asset managers, hedge funds, and insurance companies face the same documentation pressures—investment committee memos, surveillance reports, and trade rationale documentation. Granola is particularly valuable for capturing earnings calls and management meetings.
+
+### Can voice tools help with financial modeling?
+
+Not directly—you'll still build models in Excel or Python. But voice tools dramatically accelerate the documentation that surrounds models: methodology descriptions, assumption narratives, sensitivity analysis commentary, and result interpretations. Since documentation often takes longer than the modeling itself, the time savings are significant.
+
+### What about compliance with Regulation O or conflict of interest documentation?
+
+Voice tools produce text. The compliance and accuracy of that text is your responsibility, same as with typing. Use voice tools to draft faster, then apply the same review rigor you always would for regulatory documentation.
+
+---
+
+*The best credit analysis in the world is worthless if it's stuck in your head instead of on paper. Voice AI tools won't improve your analytical judgment, but they'll ensure your judgment gets documented thoroughly and on time—every time.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

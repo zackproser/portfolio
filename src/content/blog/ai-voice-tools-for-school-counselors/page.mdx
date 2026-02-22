@@ -1,0 +1,202 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-school-counselors';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for school counselors" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>AI voice tools are helping school counselors spend less time on paperwork and more time with students</figcaption>
+
+School counselors are drowning in documentation. The American School Counselor Association recommends a 250:1 student-to-counselor ratio, but the national average is closer to 385:1. When you're responsible for hundreds of students, every minute spent typing session notes is a minute not spent in front of a student who needs you.
+
+Voice AI tools can meaningfully reduce the documentation burden. This guide covers practical options for school counselors who want to reclaim time for what actually matters—supporting students.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Session Documentation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for counselor documentation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a system-wide voice-to-text tool. Speak naturally after a student session, and polished notes appear in whatever application you're using—your student information system, Google Docs, email, anywhere your cursor is.
+
+### Why School Counselors Choose WisprFlow
+
+**Works with any SIS**: WisprFlow operates at the OS level. Whether your district uses Infinite Campus, PowerSchool, Naviance, or another system, if you can type in it, you can dictate into it.
+
+**Learns counseling vocabulary**: The personal dictionary picks up terms you use regularly—IEP, 504 Plan, SEL, MTSS, behavioral intervention, suicide risk assessment. After a short training period, accuracy is excellent.
+
+**Dictate between sessions**: The 5-minute gap between student appointments is often all you have. At 150+ WPM dictation speed versus 40 WPM typing, you can capture a complete session note in that window.
+
+### Counselor-Specific Use Cases
+
+- **Individual session notes**: Dictate observations, student concerns, interventions used, and follow-up plans immediately after each session
+- **Small group notes**: Document group counseling sessions including themes discussed, participation observations, and individual student responses
+- **Parent/guardian communications**: Draft emails to families about student progress, concerns, or referrals in seconds
+- **Referral documentation**: Create detailed referral letters to outside therapists, psychologists, or community resources
+- **Crisis documentation**: After a crisis intervention, dictate a thorough account while details are fresh—critical for both the student record and your own protection
+- **College recommendation letters**: Dictate personalized letters that capture your genuine knowledge of each student
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Meetings and Consultations
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for school counselors" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes without a visible recorder joining your meeting. It runs quietly in the background.
+
+### Applications for School Counselors
+
+**IEP and 504 meetings**: These meetings involve multiple stakeholders—parents, teachers, administrators, specialists. Granola captures everything so you can be fully present in the conversation instead of frantically taking minutes. Review the transcript afterward and pull exact quotes for documentation.
+
+**Parent-teacher conferences**: When you're mediating between families and teachers, having an accurate record of what was discussed and agreed upon prevents misunderstandings later.
+
+**SST (Student Study Team) meetings**: Complex multi-disciplinary discussions are fully captured. No more reconstructing what the school psychologist recommended from memory.
+
+**Consultation with outside providers**: Phone calls with therapists, social workers, or community organizations are documented automatically.
+
+**Staff professional development**: When you're leading SEL training or suicide prevention workshops, Granola captures your presentation for future reference or to share with absent staff.
+
+For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Privacy Considerations
+
+### FERPA and Student Data
+
+School counselors work with some of the most sensitive student information in a building. Before adopting any voice AI tool:
+
+1. **Consult your district's technology office** before using any AI tool with student information. Many districts have approved technology lists and vetting processes.
+2. **Review data retention policies** of any tool you consider. Where is audio processed? Is it stored? For how long?
+3. **Understand FERPA implications** — student education records have federal protection. Ensure any tool you use doesn't create unauthorized copies of protected information.
+4. **Consider state-specific regulations** — many states have student data privacy laws that go beyond FERPA (like California's SOPIPA or New York's Education Law 2-d).
+
+### Practical Privacy Strategies
+
+- **Dictate after the session, not during**: This avoids recording student voices entirely. Speak your notes into WisprFlow after the student leaves.
+- **Use initials or ID numbers** instead of full student names in dictated notes, then fill in identifying information manually.
+- **Avoid dictating in shared spaces** where other students or staff might overhear sensitive information.
+- **For virtual meetings with Granola**: Inform all participants that the meeting is being recorded, consistent with your district's recording policies.
+
+### Local vs. Cloud Processing
+
+- **WisprFlow**: Processes locally where possible, with cloud backup for some features
+- **Granola**: Cloud-based processing with enterprise security options
+
+For detailed privacy policies, visit each vendor's trust center.
+
+## Workflow Integration
+
+### Daily Counseling Workflow
+
+**Morning (before students arrive)**:
+- Review today's scheduled sessions
+- Have WisprFlow ready (hotkey activation)
+- Check Granola calendar sync for any virtual meetings
+
+**Between sessions (the critical 5-minute window)**:
+- Immediately dictate session notes using WisprFlow
+- Include: presenting concern, interventions used, student affect, follow-up needed
+- This is when details are freshest—don't wait until end of day
+
+**During meetings**:
+- IEPs, 504s, SSTs: Granola captures automatically
+- Focus on facilitation and student advocacy, not note-taking
+
+**End of day**:
+- Review Granola transcripts from any meetings
+- Finalize any incomplete documentation
+- Dictate follow-up emails to parents or referral sources
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| Individual session note | 8 min | 2 min | 6 min |
+| IEP meeting minutes | 30 min | 10 min | 20 min |
+| Parent email | 7 min | 2 min | 5 min |
+| Crisis documentation | 20 min | 7 min | 13 min |
+| Recommendation letter | 25 min | 10 min | 15 min |
+
+With 6-8 individual sessions per day plus meetings, counselors can save 1-2 hours daily. That's time for additional student contact, classroom guidance lessons, or—honestly—a lunch break.
+
+## Beyond Documentation: Creative Uses
+
+School counselors who've adopted voice tools often find unexpected benefits:
+
+- **Reflection journals**: Dictate your own reflections on challenging cases for professional growth and supervision
+- **Curriculum development**: Talk through lesson plans for classroom guidance instead of staring at a blank document
+- **Grant writing**: Dictate first drafts of grant applications for counseling programs
+- **Professional development logs**: Easily document hours and activities for licensure renewal
+
+## Related Resources
+
+If you're interested in voice-first productivity beyond counseling work:
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General productivity techniques
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [Best Voice-to-Text for Developers](/blog/best-voice-to-text-for-developers) - Technical deep dive
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For session documentation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Install takes minutes, start dictating immediately
+2. **For meeting capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Syncs with your calendar for automatic capture
+
+Both offer free trials. Start with WisprFlow for daily session notes—that's where most counselors see the biggest immediate impact.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Is this FERPA compliant?
+
+Tools themselves can be configured with appropriate security, but your district must evaluate and approve any technology that handles student data. Work with your technology coordinator and follow your district's software vetting process.
+
+### Can I use voice tools during student sessions?
+
+I'd recommend against recording during sessions. Instead, dictate your notes immediately after. This avoids privacy concerns about recording minors and keeps the therapeutic space free of technology distractions.
+
+### What about confidential information?
+
+Dictate in a private space. Use your office with the door closed. If you share an office, consider using WisprFlow only when you have privacy, or use initials instead of names.
+
+### Will my district pay for these tools?
+
+Many districts have professional development or technology budgets that cover productivity tools. Frame it in terms of time savings: if a tool saves you 1-2 hours per day, the $10-20/month cost is easily justified. Some counselors have successfully included these in ESSER fund requests.
+
+### How does this compare to Dragon NaturallySpeaking?
+
+Dragon has been the traditional dictation standard, but it's expensive and requires significant training. WisprFlow offers comparable accuracy at a fraction of the cost, with a much simpler setup process. It also learns your vocabulary faster.
+
+---
+
+*Every school counselor I know went into this profession to help students, not to write documentation. These tools won't fix staffing ratios or replace systemic support, but they can give you back meaningful time each day to do the work you actually signed up for.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

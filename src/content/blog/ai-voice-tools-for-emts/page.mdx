@@ -1,0 +1,204 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-emts';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for EMTs and paramedics" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>Voice AI tools help EMS providers complete documentation without sacrificing patient care time</figcaption>
+
+If you're an EMT or paramedic, documentation is the part of the job that follows you home. You ran three calls back to back, your patient care reports are due, and you're sitting in the ambulance bay trying to reconstruct vital sign trends and intervention timelines from memory. Every EMS provider knows the feeling.
+
+Patient care reports (PCRs) are critical—they're legal documents, they drive billing, they inform receiving facility care, and they matter for quality assurance. But the reality is that field conditions make real-time documentation nearly impossible. You're providing care, managing a scene, and coordinating transport. Writing comes last.
+
+Voice AI tools can close the gap between what happened and what gets documented. This guide covers practical tools for EMS documentation and how they fit into prehospital workflows.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Patient Care Reports
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for EMS documentation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a system-wide voice-to-text tool. You speak naturally and text appears wherever your cursor is—your ePCR software, a narrative field, an email to your supervisor.
+
+### Why EMS Providers Choose WisprFlow
+
+**Works with any ePCR system**: WisprFlow operates at the OS level. ESO, ImageTrend, ZOLL RescueNet, HealthEMS—if you can type into the narrative field, you can dictate into it. No integration needed.
+
+**Learns EMS terminology**: The personal dictionary quickly adapts to prehospital vocabulary. It learns to recognize drug names (epinephrine, amiodarone, ondansetron), procedures (RSI, IO access, needle decompression), and clinical terms (JVD, crepitus, tracheal deviation) with high accuracy.
+
+**Fast enough for between-call documentation**: Most EMTs type 20-35 WPM on a tablet. WisprFlow enables 150+ WPM dictation. A narrative that takes 15 minutes to type can be dictated in 4 minutes.
+
+**Works on laptops and tablets**: If your rig has a tablet-based ePCR, WisprFlow works on it. Dictate your narrative while your partner drives to the next post.
+
+### EMS Use Cases
+
+- **PCR narratives**: Dictate your clinical narrative immediately after patient handoff while details are fresh. "Dispatched priority 1 to a 67-year-old male, chief complaint chest pain. On arrival, patient found supine on couch, diaphoretic, clutching chest..."
+- **Intervention documentation**: Capture medication administrations, procedures, and reassessments. "IV established right AC, 18 gauge. 324mg aspirin administered PO. 0.4mg nitroglycerin sublingual administered at 14:32."
+- **Refusal documentation**: Detailed refusal narratives are your legal protection. Dictate the thorough assessment, risks explained, and patient's understanding quickly and completely.
+- **Transfer of care notes**: Dictate a quick summary for the receiving nurse while waiting in the ED hallway. Clean, professional, complete.
+- **Exposure reports and incident documentation**: When something goes wrong or you're exposed to a communicable disease, timely documentation matters. Voice dictation removes the friction.
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Continuing Education and Team Meetings
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for EMS" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes. While it's designed for meetings, EMS providers find it valuable for the administrative side of the job.
+
+### Applications in EMS
+
+**Continuing education sessions**: CE hours are a constant requirement. Granola captures online CE webinars and classes automatically, giving you searchable notes to reference later—especially helpful when studying for recertification.
+
+**Shift briefings and debriefs**: Morning briefings about rig assignments, system status, and operational changes can be captured and reviewed. Critical incident debriefs are documented accurately for follow-up.
+
+**Quality improvement reviews**: When QA/QI meetings review specific calls, Granola captures the discussion, feedback, and improvement plans. No more scribbling notes while someone reviews your 12-lead interpretation.
+
+**Protocol discussions**: When medical direction changes protocols or introduces new standing orders, capture the training session verbatim. Reference it when you're unsure about the new dosing or indications.
+
+**Virtual training and simulations**: Remote training scenarios and tabletop exercises are fully documented for review.
+
+For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Privacy and Compliance Considerations
+
+### HIPAA in Prehospital Care
+
+EMS providers handle PHI in challenging environments. Voice AI adds convenience, but you need to be thoughtful:
+
+1. **Agency policy first**: Check with your department or service before using personal voice AI tools for patient documentation. Some agencies have approved tool lists.
+2. **Don't dictate in public earshot**: If you're completing a PCR at the hospital, be aware of who can hear your dictation. Patient names, addresses, and clinical details are PHI.
+3. **Device security**: If you're using WisprFlow on a personal device, ensure it's password-protected and encrypted. Lost devices with patient data are reportable breaches.
+4. **Data retention**: Understand whether and how long the tool stores your dictated text. For EMS documentation, the final record lives in your ePCR system—the dictation tool shouldn't retain a copy.
+
+### Local vs. Cloud Processing
+
+- **WisprFlow**: Processes locally where possible, which is favorable for field use. Less data leaving the device means less exposure.
+- **Granola**: Cloud-based processing. Best used for administrative meetings and CE, not for dictating patient-specific information.
+
+### Practical Tips for the Field
+
+- **Dictate clinical observations, not patient identifiers, until you're in a private setting**
+- **Use initials or "the patient" while dictating in semi-public environments**, then add identifiers when completing the PCR at the station
+- **Log out of voice tools when handing off devices to other providers**
+
+## Workflow Integration for EMS Providers
+
+### On Scene
+- Focus entirely on patient care
+- Mentally note key times, interventions, and findings (or have your partner track them)
+
+### In the Ambulance (Transport)
+- If you're the attendant with a stable patient: dictate clinical findings and interventions into your ePCR narrative between reassessments
+- If care demands are high: wait until hospital
+
+### At the Hospital
+- After patient handoff, find a quiet spot
+- Dictate your full PCR narrative while details are fresh
+- Review for accuracy, then submit
+
+### Back at the Station
+- Complete any remaining documentation
+- Use Granola for any CE or administrative meetings during downtime
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| PCR narrative | 15 min | 4 min | 11 min |
+| Refusal documentation | 12 min | 4 min | 8 min |
+| Transfer summary | 5 min | 2 min | 3 min |
+| Exposure/incident report | 10 min | 3 min | 7 min |
+
+At 5-8 calls per shift, voice dictation can save over an hour. That's the difference between completing your reports on shift and taking them home.
+
+## Tips for Getting Started in EMS
+
+### Building Your EMS Dictionary
+
+In your first week with WisprFlow:
+
+- Dictate common medications with dosages and correct any recognition errors
+- Practice with anatomical terms, assessment findings, and procedure names
+- Add abbreviations and acronyms common to your system (ALS, BLS, RSI, IO, CPAP, BVM)
+- Train it on your local hospital names and street names—these are often the trickiest
+
+### Hardware Considerations
+
+- **Noise**: Ambulances are loud. Sirens, diesel engines, radios. A close-proximity microphone (wireless earbuds or a headset mic) is essential—your tablet's built-in mic won't cut it
+- **Gloves**: Voice activation means you don't need to remove gloves to start dictation
+- **Connectivity**: WisprFlow works offline for basic dictation. Important for rural EMS with spotty cell coverage
+- **Battery**: Voice dictation uses less battery than typing on a tablet keyboard, which is a real concern during long shifts
+
+## Related Resources
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General productivity techniques
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [Best Voice-to-Text for Developers](/blog/best-voice-to-text-for-developers) - Technical deep dive
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For PCR documentation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Install in minutes, start dictating your next narrative
+2. **For CE and admin meetings**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Capture training sessions automatically
+
+Both offer free trials. Test them on a shift before committing.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Will it work with my ePCR software?
+
+WisprFlow works at the operating system level, so it's compatible with ESO, ImageTrend, ZOLL RescueNet, HealthEMS, and any other ePCR system that accepts text input. No special integration or IT involvement required.
+
+### Can I dictate in a moving ambulance?
+
+Yes, with a good microphone. Road noise and sirens are challenges, but a directional headset or wireless earbuds with noise-canceling mics handle it well. Dictate during quiet moments—at red lights, during stable transports, or at the hospital.
+
+### What about patient privacy during dictation?
+
+Be conscious of your environment. Don't dictate patient names and addresses in the ED hallway. Use clinical descriptions first, then add identifiers when you're in a private setting. WisprFlow's local processing also means less data transmitted over potentially insecure networks.
+
+### Is this approved by my agency?
+
+That depends on your agency's policies. Many EMS services are beginning to adopt voice dictation tools. Present the tool to your supervisor and medical director—the time savings and documentation quality improvements are compelling arguments.
+
+### How accurate is it with medical terminology?
+
+Very accurate after a brief learning period. EMS-specific terms like "hemoptysis," "diaphoresis," and "subcutaneous emphysema" are recognized well. Medication names and dosages take a few corrections initially, then the dictionary adapts. Street addresses and unusual proper nouns require the most correction.
+
+---
+
+*Your job is to save lives, not to spend half your shift typing. Voice AI won't run the call for you, but it'll make sure the documentation doesn't eat the rest of your day.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
