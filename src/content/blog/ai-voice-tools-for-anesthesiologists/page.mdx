@@ -1,0 +1,187 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-anesthesiologists';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for anesthesiologists" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>AI voice tools help anesthesiologists maintain detailed records while focused on patient safety</figcaption>
+
+Operating room documentation competes with patient monitoring for anesthesiologists' attention. Between pre-op assessments, intraoperative records, and post-op notes, the documentation burden can compromise focus on critical patient care.
+
+Voice AI tools now enable anesthesiologists to maintain detailed records without taking attention away from monitors, patient vitals, or surgical events. This guide covers practical voice solutions for perioperative documentation.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for OR Documentation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for anesthesia documentation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> transforms perioperative documentation by allowing anesthesiologists to dictate detailed records while maintaining visual focus on patient monitoring equipment and surgical fields.
+
+### Why Anesthesiologists Choose WisprFlow
+
+**Hands-free operation**: Critical during induction, emergence, and any time manual dexterity is needed for patient care. Voice activation keeps hands available for urgent interventions.
+
+**OR-optimized vocabulary**: Learns anesthesiology terminology including drug names, dosages, monitoring equipment readings, and procedure-specific language. Recognizes "sevoflurane," "propofol bolus," and "end-tidal CO2" accurately.
+
+**Real-time documentation**: Document events as they occur rather than reconstructing timelines hours later. Capture exact timing of induction, intubation, positioning, and emergence.
+
+### Clinical Applications in Anesthesiology
+
+- **Pre-op assessments**: Dictate airway evaluation, ASA classification, and anesthetic plan while examining the patient
+- **Induction records**: Document drug dosages, timing, and patient response without looking away from monitors
+- **Intraoperative notes**: Record position changes, blood loss estimates, and hemodynamic events in real-time
+- **Emergence documentation**: Capture extubation timing, recovery scores, and post-op instructions
+- **Case complications**: Immediately document any critical events, drug reactions, or management decisions
+
+### OR Workflow Integration
+
+During a complex cardiac case, an anesthesiologist can dictate: "Induction with propofol 200mg, rocuronium 50mg, fentanyl 250mcg at 08:15. Intubation successful first pass with 8.0 ETT. TEE shows normal ventricular function. Starting sevoflurane 2% with 50% oxygen."
+
+This level of detail, captured without interrupting patient monitoring, ensures complete records for billing and quality review.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Surgical Team Communications
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI for surgical team meetings" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures team discussions and briefings without visible recording equipment, perfect for sterile environments and confidential case discussions.
+
+### Applications in Perioperative Care
+
+**Pre-op briefings**: Document safety checks, patient-specific concerns, and anesthetic plan discussions with the surgical team
+
+**Morning huddles**: Capture schedule changes, equipment needs, and case-specific alerts automatically
+
+**Morbidity and mortality conferences**: Record case presentations and learning points without manual note-taking
+
+**Difficult airway consultations**: Document phone consultations with ENT or oral surgery colleagues
+
+**Post-op handoffs**: Record detailed patient status and continuing care instructions for recovery staff
+
+### Sterile Environment Benefits
+
+Granola operates without requiring interaction with potentially contaminated devices. Set it running before scrubbing in, and review transcripts after the case without compromising sterile technique.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Safety and Compliance in the OR
+
+### Patient Safety Considerations
+
+**Maintain situational awareness**: These tools enhance rather than replace direct patient monitoring. Always prioritize visual and auditory patient assessment over documentation.
+
+**Emergency protocols**: Voice tools should integrate with, not interfere with, code blue and emergency response procedures.
+
+**HIPAA compliance**: Review facility policies on AI documentation tools. Many hospitals require IT approval for new software applications.
+
+### OR Environment Challenges
+
+- **Background noise**: Both tools filter ambient OR sounds but work best during quieter portions of cases
+- **Sterile technique**: WisprFlow's hotkey activation works with foot pedals or voice commands to maintain sterility
+- **Equipment interference**: No known conflicts with monitoring equipment or electrocautery devices
+
+## Integration with Anesthesia Information Systems
+
+### Epic Anesthesia
+WisprFlow integrates with Epic's anesthesia flowsheets. Dictate directly into procedure notes, pre-op assessments, and PACU transfer summaries.
+
+### MEDITECH Anesthesia
+Voice dictation works in any text field within MEDITECH's anesthesia modules, from pre-op history to post-op instructions.
+
+### Cerner Anesthesia
+Full compatibility with Cerner's perioperative documentation, including intraoperative records and recovery assessments.
+
+### Time Efficiency Analysis
+
+| Documentation Type | Manual Entry | With Voice AI | Time Saved |
+|-------------------|--------------|---------------|-------------|
+| Pre-op assessment | 8 min | 3 min | 5 min |
+| Anesthesia record | 15 min | 6 min | 9 min |
+| Post-op note | 5 min | 2 min | 3 min |
+| Complication documentation | 12 min | 4 min | 8 min |
+
+For anesthesiologists managing 6-8 cases daily, this represents 45-60 minutes of reclaimed time.
+
+## Advanced Use Cases
+
+### Research Documentation
+Capture research protocol compliance and data points during clinical trials without interfering with patient care.
+
+### Quality Improvement
+Document process improvements and safety initiatives as they're implemented in real-time.
+
+### Teaching Cases
+Residents and CRNAs can dictate learning points and case observations for later review and education.
+
+## Related Resources
+
+Explore related healthcare voice AI applications:
+
+- [AI Voice Tools for Doctors](/blog/ai-voice-tools-for-doctors) - General physician workflows
+- [Voice Tools for Surgeons](/blog/ai-voice-tools-for-surgeons) - Surgical documentation focus
+- [HIPAA Voice AI Guide](/blog/best-legal-dictation-software-2026) - Healthcare compliance considerations
+- [OR Productivity Tools](/blog/voice-ai-for-small-business) - Broader practice efficiency
+
+## Getting Started in Your OR
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For case documentation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Start with outpatient cases for initial training
+2. **For team communications**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Perfect for morning huddles and debriefs
+
+Both platforms offer free trials to evaluate effectiveness in your specific OR environment.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Does this work during loud procedures?
+
+Voice recognition works best during quieter portions of cases. Many anesthesiologists dictate during positioning, preparation, and stable maintenance phases rather than during drilling or cautery use.
+
+### What about emergency situations?
+
+These tools complement rather than replace standard documentation during emergencies. Focus remains on patient care, with voice notes captured when appropriate.
+
+### Can residents use these tools?
+
+Check your training program's policies. Many residencies encourage efficiency tools that don't compromise learning opportunities or direct supervision requirements.
+
+### How does this integrate with quality assurance?
+
+Voice documentation often provides more detailed records for QA review, including exact timing and decision-making rationale that might be omitted from standard checkbox documentation.
+
+### What about malpractice considerations?
+
+Detailed voice documentation often strengthens malpractice defense by providing comprehensive, contemporaneous records. Consult your malpractice carrier about AI documentation tools.
+
+---
+
+*Patient safety always comes first. These tools exist to reduce administrative burden so anesthesiologists can maintain their primary focus: keeping patients safe through the perioperative period.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>

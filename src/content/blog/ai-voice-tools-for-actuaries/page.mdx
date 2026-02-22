@@ -1,0 +1,185 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-actuaries';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="AI voice tools for actuaries" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>AI voice tools help actuaries spend more time on analysis and less on writing up results</figcaption>
+
+Actuaries are among the most analytically rigorous professionals in any industry. You build complex stochastic models, evaluate tail risks, price uncertainty, and translate mathematical findings into business decisions. But here's the irony: a significant portion of your week isn't spent doing actuarial science—it's spent writing about it.
+
+Model documentation, assumption memos, experience studies, reserve opinions, rate filing narratives, ORSA reports, board presentations—the documentation requirements for credentialed actuaries are substantial and growing. Regulatory expectations around model risk management (MRM) and actuarial standards of practice (ASOPs) mean that thorough documentation isn't optional.
+
+Voice AI tools can dramatically reduce the time between completing your analysis and having it documented. This guide covers practical tools for actuarial documentation workflows.
+
+## The Tools
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+## WisprFlow for Actuarial Report Writing
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="WisprFlow voice interface for actuarial documentation" width={800} height={600}/>
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a system-wide voice-to-text tool. Speak naturally, and polished text appears wherever your cursor is—Word, Excel comments, your reserving system, email, or any documentation platform.
+
+### Why Actuaries Choose WisprFlow
+
+**Works across all your tools**: WisprFlow operates at the OS level. Whether you're documenting in Word, annotating Excel models, writing in your company's GRC platform, or drafting emails to regulators, you can dictate directly.
+
+**Handles technical terminology**: The personal dictionary learns actuarial vocabulary. After initial training, terms like "incurred but not reported," "loss development factors," "stochastic on stochastic," "conditional tail expectation," and specific mortality table names are recognized accurately.
+
+**Captures your analytical reasoning**: The hardest part of actuarial documentation often isn't the conclusions—it's explaining the reasoning. Speaking through your logic while it's fresh produces better documentation than trying to reconstruct your thought process days later.
+
+**Speed where it counts**: Actuaries are hired for analytical judgment, not typing speed. WisprFlow enables 150-180 WPM dictation versus typical 40-60 WPM typing. When you have a 30-page model documentation package due, that multiplier matters.
+
+### Actuarial Use Cases
+
+- **Model documentation**: Dictate descriptions of model methodology, assumptions, limitations, and validation results. Speaking through model logic often reveals gaps that typing through boilerplate obscures.
+- **Assumption memos**: Document the basis for actuarial assumptions—mortality, morbidity, lapse, expense, and investment return assumptions each require narrative justification. Dictate the reasoning while you're reviewing the experience data.
+- **Reserve opinions and certifications**: Actuarial opinions require precise language. Dictate your initial draft while the analysis is fresh, then carefully review and refine the technical language.
+- **Rate filing narratives**: State insurance filings require detailed explanations of rating methodology, experience analysis, and projected loss ratios. Dictate these narratives while reviewing your rating exhibits.
+- **Experience study write-ups**: Document data sources, methodology, credibility adjustments, and results. Speaking through the analysis as you finalize it captures your reasoning at its most complete.
+- **Peer review documentation**: When reviewing another actuary's work, dictate your observations, questions, and conclusions in real time as you step through their model.
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) covering setup, accuracy, and real-world performance.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Granola for Actuarial Meetings
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes for actuarial meetings" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures conversations and creates structured notes without a visible recorder joining your meeting.
+
+### Applications in Actuarial Work
+
+**Assumption-setting meetings**: When the assumption committee meets to discuss mortality improvement scales, lapse rate adjustments, or economic scenario parameters, the decisions and their rationale need documentation. Granola captures the full discussion, including the reasoning behind choices—not just the final numbers.
+
+**Model validation discussions**: Conversations with model validators often surface important context about model limitations and intended use. Granola ensures these discussions are captured completely.
+
+**Regulatory and rating agency meetings**: When presenting reserve adequacy or capital model results to regulators or AM Best analysts, accurate notes of what was presented, questioned, and committed to are essential.
+
+**Cross-functional meetings**: Actuaries frequently meet with underwriting, claims, finance, and product teams. These meetings generate action items and decisions that affect your models. Granola captures them without you splitting attention between the discussion and note-taking.
+
+**Pricing committee meetings**: Capture the full discussion around pricing decisions, competitive intelligence, and risk appetite. When a regulator asks why a rate was set at a particular level two years from now, you have the full context.
+
+For a detailed comparison, see my [Granola vs Otter.ai review](/blog/granola-vs-otter).
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Privacy and Data Considerations
+
+### Sensitivity of Actuarial Data
+
+Actuarial work involves confidential financial projections, proprietary models, and sometimes protected health information:
+
+1. **Evaluate data classification**: Model parameters, reserve estimates prior to public disclosure, and pricing strategies are typically highly confidential. Assess what information flows through voice tools.
+2. **Check your company's AI policy**: Many insurance companies and consulting firms now have policies governing AI tool use. Get approval before using voice tools with proprietary model details.
+3. **PHI considerations**: If your work involves individual-level health data (group health pricing, disability claims analysis), ensure voice tool usage complies with HIPAA requirements where applicable.
+4. **SOX implications**: For publicly traded insurers, reserve estimates are material. Understand how voice tool data handling intersects with your SOX controls over the financial close process.
+
+### Local vs. Cloud Processing
+
+- **WisprFlow**: Processes locally where possible, with cloud backup for some features. Relevant for firms with strict data classification requirements.
+- **Granola**: Cloud-based processing with enterprise security options. Evaluate against your firm's vendor management standards.
+
+For detailed privacy policies, visit each vendor's trust center.
+
+## Workflow Integration
+
+### Model Development Cycle
+- Build and test the model (your core analytical work)
+- Immediately dictate methodology documentation using WisprFlow while the logic is fresh
+- Use Granola for peer review discussions
+- Dictate revisions and responses to reviewer comments
+
+### Valuation and Reserving Cycle
+- Complete your analysis in your reserving system
+- Dictate the reserve opinion or certification narrative
+- Use WisprFlow for assumption change memos
+- Granola captures assumption committee meetings automatically
+
+### Filing and Regulatory Cycle
+- Dictate rate filing narratives while reviewing exhibits
+- Use Granola for regulatory pre-filing meetings
+- Dictate responses to state objection letters
+
+### Time Savings
+
+| Task | Traditional | With Voice AI | Savings |
+|------|-------------|---------------|---------|
+| Model documentation section | 60 min | 20 min | 40 min |
+| Assumption memo | 30 min | 12 min | 18 min |
+| Rate filing narrative | 45 min | 18 min | 27 min |
+| Experience study write-up | 40 min | 15 min | 25 min |
+
+For a typical reserving actuary documenting 10+ models per year, each requiring 50-100 pages of documentation, the cumulative time savings are measured in weeks, not hours.
+
+## Related Resources
+
+If you're interested in voice-first productivity beyond actuarial work:
+
+- [Voice AI for Small Business Owners](/blog/voice-ai-for-small-business) - General productivity techniques
+- [How to Record Meetings in 2026](/blog/how-to-record-meetings-2026) - Meeting capture options
+- [Best Voice-to-Text for Developers](/blog/best-voice-to-text-for-developers) - Technical deep dive
+- [Top 4 AI Voice Tools for 2025](/blog/best-ai-voice-tools-2025) - Complete voice tool roundup
+
+## Getting Started
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+1. **For actuarial documentation**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - Install takes minutes. Train the dictionary with actuarial terminology in your first session.
+2. **For meeting capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Syncs with your calendar. Especially useful for assumption-setting and peer review discussions.
+
+Both offer free trials to evaluate before committing.
+
+<VoiceAIDemoCard />
+
+## Frequently Asked Questions
+
+### Can voice tools handle complex actuarial terminology?
+
+Yes, with training. WisprFlow's personal dictionary learns your vocabulary. Spend time in the first week correcting terms like "Bühlmann credibility," "Lee-Carter model," "Wang transform," and your company-specific model names. Accuracy improves significantly and quickly.
+
+### Is dictation practical for mathematical notation?
+
+For narrative documentation, absolutely. For formulas and mathematical expressions, you'll still want to type or use LaTeX. The optimal workflow is dictating the explanatory text around your formulas, then inserting the mathematical notation manually. Since narrative text is typically 80%+ of model documentation, voice tools still provide substantial time savings.
+
+### Will this meet ASOP documentation standards?
+
+The Actuarial Standards of Practice require adequate documentation of methods, assumptions, and reasoning—not a specific production method. Dictated text, once reviewed and refined, meets the same standards as typed text. Many actuaries find that speaking through their reasoning actually produces more thorough documentation because it captures the "why" more naturally.
+
+### How do I handle confidential reserve estimates?
+
+Review your company's data classification and AI usage policies. Many actuaries start by using voice tools for non-sensitive documentation (methodology descriptions, general assumption frameworks) and expand to more sensitive content after the tools have been approved through their firm's vendor management process.
+
+### Can this replace actuarial students doing documentation?
+
+Not entirely—documentation review and drafting is a valuable learning exercise for students pursuing credentials. But voice tools can reduce the volume of routine documentation that pulls experienced actuaries away from analysis, while students can focus on documentation tasks that build their technical knowledge.
+
+---
+
+*Actuarial science is about quantifying uncertainty. The only certainty in the profession is that documentation requirements will keep growing. Voice AI tools won't build your models, but they'll ensure that the documentation keeping pace with regulatory expectations doesn't consume the time you need for actual analysis.*
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
