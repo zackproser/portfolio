@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "walking-and-talking-with-ai";
 
 
 
@@ -105,7 +106,7 @@ now preferring to do as much of their work as they can away from their desks.
 
 ### Tools I use for voice-first productivity
 
-For capturing voice while working at my desk, [WisprFlow](https://ref.wisprflow.ai/zack-proser) lets me speak at 179 WPM into any app on my Mac. For capturing meeting conversations (both virtual and in-person), [Granola](https://go.granola.ai/zack-proser) runs in the background and creates AI-enhanced notes without a bot joining my calls.
+For capturing voice while working at my desk, <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> lets me speak at 179 WPM into any app on my Mac. For capturing meeting conversations (both virtual and in-person), <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> runs in the background and creates AI-enhanced notes without a bot joining my calls.
 
 <div className="flex flex-wrap gap-3 my-6">
   <InlineAffiliateCTA product="wisprflow" />

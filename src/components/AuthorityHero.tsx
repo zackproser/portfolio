@@ -43,7 +43,7 @@ export default function AuthorityHero() {
     e.preventDefault()
     try {
       await fetch('/api/form', {
-        body: JSON.stringify({ email, referrer: '/' }),
+        body: JSON.stringify({ email, referrer: typeof window !== 'undefined' ? window.location.pathname : '/' }),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       })

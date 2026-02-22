@@ -4,23 +4,24 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "wisprflow-review";
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Wispr Flow voice-to-text interface showing 4x faster than typing" width={800} height={600}/>
-</a>
+</AffiliateLink>
 <figcaption>Wispr Flow transforms speech into polished text at 4x typing speed</figcaption>
 
-[Wispr Flow](https://ref.wisprflow.ai/zack-proser) is a super voice-over app that you run on your Mac so that you can *speak naturally* into any interface:
+<AffiliateLink product="wisprflow" campaign={campaign}>Wispr Flow</AffiliateLink> is a super voice-over app that you run on your Mac so that you can *speak naturally* into any interface:
 - Cursor's agent composer
 - A chrome tab's random textarea or text input 
 - Claude desktop
 - Slack DMs
 - A Twitter client 
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) simply works everywhere. 
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> simply works everywhere.
 
 In this review, I'll tell you the good, bad and still improving parts. 
 
@@ -48,21 +49,21 @@ polished, professional text.
 
 ### It works very well, as advertised
 
-I'm an above-average typist at 90 WPM, but with [Wispr Flow](https://ref.wisprflow.ai/zack-proser), I consistently hit 175 WPM. The speed isn't just about words per minute—it's about how voice input changes your thinking process.
+I'm an above-average typist at 90 WPM, but with <AffiliateLink product="wisprflow" campaign={campaign}>Wispr Flow</AffiliateLink>, I consistently hit 175 WPM. The speed isn't just about words per minute—it's about how voice input changes your thinking process.
 
 Instead of hunting for the perfect variable name or getting stuck on syntax, you just speak your intent. The AI handles the translation from natural language to code, from scattered thoughts to structured prose.
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/flow.webp" alt="Wispr Flow interface showing real-time transcription" width={800} height={600} />
-</a>
+</AffiliateLink>
 
 ### Always-on background recording
 
 What makes Wispr Flow truly powerful is that it's always running in the background on your Mac, ready to capture your voice at any moment. I love hitting the fn key twice to start long talk/dictation mode. Once I finish speaking, I hit fn again, and Wispr Flow immediately converts the audio file to a transcript and inserts it wherever my cursor currently has focus.
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow-interface.webp" alt="Wispr Flow recording interface showing real-time transcription" width={800} height={600} />
-</a>
+</AffiliateLink>
 
 This seamless workflow means you can:
 - Start dictating in any app without switching contexts
@@ -96,17 +97,17 @@ Wispr Flow doesn't just transcribe—it edits. Rambled thoughts become clear, pe
 
 ### Personal dictionary and snippets
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow-dictionary.webp" alt="Wispr Flow dictionary interface showing custom vocabulary management" width={800} height={600} />
-</a>
+</AffiliateLink>
 
 The app learns your unique words and adds them to your personal dictionary automatically. You can also create voice shortcuts for things you say repeatedly—from scheduling links to FAQs, just speak a cue and get the full formatted text.
 
 What's particularly powerful is the team sharing feature—you can share your custom vocabulary with your team so everyone stays on the same page. Whether it's company jargon, client names, product names, or industry-specific terminology, Wispr Flow learns and applies these terms consistently across your entire team.
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow-snippets.webp" alt="Wispr Flow snippets interface for text expansion shortcuts" width={800} height={600} />
-</a>
+</AffiliateLink>
 
 ### Snippets for power users
 
@@ -194,6 +195,6 @@ While it's not perfect—the macOS limitation and subscription model are real dr
 
 <InlineAffiliateCTA product="wisprflow" />
 
-If you're a developer, writer, or anyone who spends significant time creating text, [Wispr Flow](https://ref.wisprflow.ai/zack-proser) is worth trying. The free trial gives you a good sense of whether it fits your workflow.
+If you're a developer, writer, or anyone who spends significant time creating text, <AffiliateLink product="wisprflow" campaign={campaign}>Wispr Flow</AffiliateLink> is worth trying. The free trial gives you a good sense of whether it fits your workflow.
 
 Check out my [detailed AI engineer setup](/blog/2025-ai-engineer-setup) to see how Wispr Flow fits into a complete productivity stack.

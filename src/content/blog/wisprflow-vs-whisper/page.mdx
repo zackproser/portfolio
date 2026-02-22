@@ -5,9 +5,10 @@ import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 import { ComparisonSchema } from '@/components/ReviewSchema';
 import FAQSection from '@/components/FAQSection';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "wisprflow-vs-whisper";
 
 <ComparisonSchema
   products={[
@@ -32,7 +33,7 @@ export const metadata = createMetadata(rawMetadata);
   }}
 />
 
-Choosing between [WisprFlow](https://ref.wisprflow.ai/zack-proser) and OpenAI's Whisper for voice-to-text comes down to one question: **Do you want a polished product or a building block?**
+Choosing between <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> and OpenAI's Whisper for voice-to-text comes down to one question: **Do you want a polished product or a building block?**
 
 After using both extensively, here's my honest comparison.
 
@@ -53,7 +54,7 @@ After using both extensively, here's my honest comparison.
 
 ### WisprFlow
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is a polished macOS application that provides system-wide voice-to-text. You press a hotkey, speak naturally, and WisprFlow inserts polished, formatted text wherever your cursor is focused—Cursor IDE, Chrome, Slack, anywhere.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is a polished macOS application that provides system-wide voice-to-text. You press a hotkey, speak naturally, and WisprFlow inserts polished, formatted text wherever your cursor is focused—Cursor IDE, Chrome, Slack, anywhere.
 
 The magic is in the AI enhancement: it removes filler words, fixes grammar, and formats output based on the context (code for IDEs, professional prose for email, casual for chat).
 
@@ -141,11 +142,11 @@ I can speak a code comment, a Slack message, and an AI prompt in the same sessio
 - You're on macOS
 - You want a product, not a project
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-to-text interface" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
-[Try WisprFlow free →](https://ref.wisprflow.ai/zack-proser)
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free →</AffiliateLink>
 
 ### Choose Whisper If:
 
@@ -159,7 +160,7 @@ I can speak a code comment, a Slack message, and an AI prompt in the same sessio
 
 <InlineAffiliateCTA product="wisprflow" />
 
-For **daily developer productivity**, [WisprFlow](https://ref.wisprflow.ai/zack-proser) is the clear winner. I went from 90 WPM typing to 179 WPM with voice. The AI enhancement means I speak naturally and get polished output. I don't have to think about formatting or clean up transcriptions.
+For **daily developer productivity**, <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is the clear winner. I went from 90 WPM typing to 179 WPM with voice. The AI enhancement means I speak naturally and get polished output. I don't have to think about formatting or clean up transcriptions.
 
 For **building voice features into products**, Whisper is the right choice. It's a powerful, accurate model that you can integrate however you need.
 

@@ -13,6 +13,7 @@ interface NewsletterWrapperProps {
   onSubscribe?: () => void;
   position?: string;
   className?: string;
+  tags?: string[];
 }
 
 // Global state to ensure only ONE sticky newsletter appears
@@ -22,13 +23,14 @@ let globalIsDismissed = false;
 let globalHandleScroll: (() => void) | null = null;
 const stickyUpdateCallbacks = new Map<string, (show: boolean, dismissed: boolean) => void>();
 
-const NewsletterWrapper = ({ 
-  title, 
-  body, 
+const NewsletterWrapper = ({
+  title,
+  body,
   successMessage,
   onSubscribe,
   position = "content",
-  className
+  className,
+  tags
 }: NewsletterWrapperProps) => {
   const [showSticky, setShowSticky] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -131,13 +133,14 @@ const NewsletterWrapper = ({
   return (
     <>
       {/* Original Newsletter at content end */}
-      <DynamicNewsletter 
-        title={title} 
-        body={body} 
+      <DynamicNewsletter
+        title={title}
+        body={body}
         successMessage={successMessage}
         onSubscribe={onSubscribe}
         position={position}
         className={className || "mb-6"}
+        tags={tags}
       />
       
       {/* Sticky Newsletter - only for master instance and after hydration */}
@@ -150,13 +153,14 @@ const NewsletterWrapper = ({
           >
             <X className="h-5 w-5" />
           </button>
-          <DynamicNewsletter 
+          <DynamicNewsletter
             title="Want More No-Fluff AI Tutorials?"
             body="Get my free RAG Pipeline Tutorial →"
             successMessage="Thanks! Tutorial link sent to your email."
             onSubscribe={onSubscribe}
             position="sticky-side"
             className="rounded-2xl bg-white dark:bg-zinc-900"
+            tags={tags}
           />
         </div>
       )}

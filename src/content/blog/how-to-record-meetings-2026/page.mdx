@@ -3,13 +3,14 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "how-to-record-meetings-2026"
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="AI meeting recording and transcription" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 <figcaption>Modern AI tools can record and transcribe meetings without a visible bot joining your call</figcaption>
 
 Meeting recordings have come a long way since screen recording and basic transcription. In 2026, AI-powered tools can capture, transcribe, and summarize your meetings—some without anyone knowing you're recording.
@@ -20,7 +21,7 @@ This guide covers the best options for recording Zoom, Google Meet, Teams, and i
 
 | Method | Bot Joins? | Works In-Person? | AI Summaries? | Cost |
 |--------|-----------|-----------------|--------------|------|
-| [Granola](https://go.granola.ai/zack-proser) | No | Yes | Yes | Free tier / Paid |
+| <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> | No | Yes | Yes | Free tier / Paid |
 | Otter.ai | Yes | Limited | Yes | Paid |
 | Zoom Built-in | N/A | No | Basic | With Zoom Pro |
 | Teams Built-in | N/A | No | Yes | With Teams |
@@ -30,11 +31,11 @@ This guide covers the best options for recording Zoom, Google Meet, Teams, and i
 
 <InlineAffiliateCTA product="granola" />
 
-After testing all the major options, [Granola](https://go.granola.ai/zack-proser) is my preferred choice because it captures meetings without a bot joining your call.
+After testing all the major options, <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is my preferred choice because it captures meetings without a bot joining your call.
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola meeting notes interface" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 
 ### Why "No Bot" Matters
 
@@ -61,9 +62,9 @@ That's it. No configuration per meeting. No remembering to start recording.
 
 ### What You Get After Each Meeting
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes example" width={800} height={600} className="rounded-lg shadow-xl"/>
-</a>
+</AffiliateLink>
 
 - **Full transcript** - Searchable text of everything said
 - **AI summary** - Key points distilled into a few paragraphs
@@ -166,7 +167,7 @@ Platform-native recording (Zoom, Teams, Meet) announces recording and often requ
   <InlineAffiliateCTA product="granola" />
 </div>
 
-1. **Download Granola**: [granola.ai](https://go.granola.ai/zack-proser)
+1. **Download Granola**: <AffiliateLink product="granola" campaign={campaign}>granola.ai</AffiliateLink>
 2. **Connect your calendar**: Google or Microsoft calendar syncs automatically
 3. **Join your next meeting**: Granola handles the rest
 
@@ -210,6 +211,6 @@ Yes, Granola has native apps for Mac, Windows, and iOS.
 
 In 2026, there's no reason to take manual meeting notes or rely on memory. AI tools capture everything accurately, extract action items, and generate useful summaries.
 
-[Granola](https://go.granola.ai/zack-proser) is my recommendation because it works invisibly across all meeting platforms—video calls and in-person—without changing how your meetings feel.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is my recommendation because it works invisibly across all meeting platforms—video calls and in-person—without changing how your meetings feel.
 
 <InlineAffiliateCTA product="granola" />

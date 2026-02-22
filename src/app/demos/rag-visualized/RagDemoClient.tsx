@@ -22,6 +22,8 @@ import {
   FileSearch
 } from 'lucide-react'
 
+import { track } from '@vercel/analytics'
+import Newsletter from '@/components/Newsletter'
 import { SAMPLE_DATASETS } from './data'
 import RagPipelineVisualization from './RagPipelineVisualization'
 import RagStepInspector from './RagStepInspector'
@@ -296,6 +298,17 @@ export default function RagDemoClient() {
           </div>
         </div>
       </section>
+
+      <div className="mt-8">
+        <Newsletter
+          title="Build Production RAG Systems"
+          body="Get weekly deep-dives on embeddings, vector search, and retrieval pipelines."
+          successMessage="You're in! RAG engineering content coming your way."
+          onSubscribe={() => track('rag_demo_newsletter_subscribe')}
+          position="rag-demo-footer"
+          tags={['interest:ai-engineering', 'source:demo']}
+        />
+      </div>
     </div>
   )
 }

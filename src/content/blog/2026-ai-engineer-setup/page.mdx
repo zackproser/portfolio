@@ -1,0 +1,120 @@
+import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = "2026-ai-engineer-setup"
+
+<Image src={rawMetadata.image} alt="MacBook Pro on a desk next to Sony WH-1000XM5 headphones" width={1200} height={630} />
+
+Last year I wrote about going from a multi-monitor battlestation to a single MacBook. That was the right call. This year the setup got quieter again.
+
+The short version: Claude Code replaced Cursor. Granola replaced manual meeting notes. WisprFlow still runs everything. The MacBook is still the launchpad — but more of the actual work happens while I'm away from it.
+
+---
+
+## The Hardware (unchanged, on purpose)
+
+- 14-inch MacBook Pro (M3 Pro, 36GB RAM)
+- Sony WH-1000XM5 headphones
+- iPhone
+
+That's the whole list. The headphones aren't an accessory — they're how I drive the setup. Voice input through WisprFlow at 175+ WPM into whatever's on screen. The iPhone is the remote control when I step away.
+
+---
+
+## What Actually Changed in 2026
+
+### Claude Code replaced Cursor
+
+<Image src="https://zackproser.b-cdn.net/images/claude-code.webp" alt="Claude Code terminal interface" width={800} height={600} />
+
+[Claude Code](/blog/claude-code-review) runs in the terminal and does what Cursor did, but with one difference that matters: I stay in the shell. No separate editor window, no context switching. I describe what I want, Claude Code does it, I review the diff.
+
+Background agents are where it gets useful. I'll spin up a task — refactor this module, add tests to this file, fix this failing build — and then I leave. The agents run. I check back in from my phone. This is the part that took some getting used to: work happening without me watching it happen.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+### WisprFlow runs everything I type
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-to-text running on macOS" width={800} height={600} />
+</AffiliateLink>
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is system-level voice-to-text for macOS. It works in every app — Claude Code's terminal, Slack, email, the browser. I hit a hotkey, speak, and it types. Clean, formatted, ready.
+
+My typing speed is 90 WPM on a good day. With WisprFlow I consistently hit 175+. But the speed is a side effect. The real change is that I stopped getting stuck on how to say something and started just saying it. First drafts come out better because spoken language is naturally more direct than typed language.
+
+[Detailed WisprFlow review here →](/blog/wisprflow-review)
+
+### Granola handles all meeting notes
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola.webp" alt="Granola AI meeting notes interface" width={800} height={600} />
+</AffiliateLink>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> records calls invisibly — no bot joins, no notification goes out, no one knows it's running. After the call ends, it produces structured notes with action items.
+
+I stopped taking meeting notes in 2025. The manual version was: join call, type while listening, miss things, clean up afterwards. The Granola version is: join call, be present, read the summary after.
+
+The summary is good. Not "good for AI" — actually good. I've been using it for client calls, internal standups, and 1:1s and I haven't needed to correct a summary in months.
+
+<InlineAffiliateCTA product="granola" />
+
+---
+
+## The Walking Part
+
+<Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking outside while working with AI tools" width={800} height={600} />
+
+I gave a keynote at DevSecCon 2025 about this. The talk was called "Walking and Talking in the Woods with AI." The premise was that with the right setup, you can do real engineering work while physically away from your desk — and I demonstrated it live.
+
+<div className="my-8">
+  <iframe
+    width="100%"
+    height="400"
+    src="https://www.youtube.com/embed/kwIzRkzO_Z4"
+    title="Walking and Talking in the Woods with AI — DevSecCon 2025 Keynote"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    className="rounded-lg"
+  />
+</div>
+
+The workflow is: launch Claude Code agents on a task before leaving my desk, step outside, check agent progress on my phone, redirect via voice note if something needs adjusting, come back to completed or near-completed work.
+
+The agents don't need me to watch them. I don't need to be at my desk for work to proceed. This took actual adjustment — the instinct is to sit there and watch the terminal. Once I stopped doing that, I started getting 2-hour hikes in on days I would have previously described as "too busy."
+
+I wrote more about the [walking and talking workflow here](/blog/walking-and-talking-with-ai).
+
+---
+
+## What I Dropped
+
+**Cursor** — Claude Code does everything I used it for, minus the GUI. If you like the editor interface, Cursor is still solid. I just stopped needing it.
+
+**Manual meeting notes** — Granola made them redundant.
+
+**Multiple terminal windows for context** — Claude Code agents handle parallel work. I don't need to manage multiple tmux sessions to feel like things are moving.
+
+---
+
+## The Setup in One Sentence
+
+MacBook + headphones + voice input to drive agents, phone to monitor them when I'm not at the desk.
+
+---
+
+## Get Started
+
+The two tools that make this possible:
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" />
+  <InlineAffiliateCTA product="granola" />
+</div>
+
+<VoiceAIDemoCard />

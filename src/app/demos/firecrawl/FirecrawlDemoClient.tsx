@@ -26,6 +26,7 @@ import {
 import Link from 'next/link'
 import { track } from '@vercel/analytics'
 import { getAffiliateLink } from '@/lib/affiliate'
+import Newsletter from '@/components/Newsletter'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type DemoStep = 'idle' | 'crawling' | 'extracting' | 'structuring' | 'done'
@@ -808,6 +809,17 @@ result.data.forEach(page => {
           </div>
         </div>
       </section>
+
+      <div className="mt-8">
+        <Newsletter
+          title="AI Data Pipeline Insights"
+          body="Web scraping, data extraction, and AI pipeline techniques. Weekly, no spam."
+          successMessage="Subscribed! Data pipeline content incoming."
+          onSubscribe={() => track('firecrawl_demo_newsletter_subscribe')}
+          position="firecrawl-demo-footer"
+          tags={['interest:web-scraping', 'source:demo']}
+        />
+      </div>
     </div>
   )
 }
