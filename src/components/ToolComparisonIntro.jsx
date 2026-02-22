@@ -22,11 +22,11 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
         
         <div className="flex flex-wrap gap-3 mt-6 justify-center">
           <Button
-            href={`/devtools/compare?tools=${encodeURIComponent(tool1)},${encodeURIComponent(tool2)}`}
+            href="/blog"
             variant="blue"
             className="bg-white text-blue-800 hover:bg-blue-50"
           >
-            Compare more tools
+            Browse all articles
           </Button>
         </div>
       </div>

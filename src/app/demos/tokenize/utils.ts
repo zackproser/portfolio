@@ -1,9 +1,8 @@
 import { encodingForModel } from "js-tiktoken";
 
-export const TOKEN_COLORS = [
-  '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff',
-  '#fffffc', '#ffd8be', '#ffeedd', '#ddffbb', '#bee9e8', '#caf0f8', '#d0d1ff'
-];
+import { TOKEN_HIGHLIGHT_COLORS } from '../theme-colors';
+
+export const TOKEN_COLORS = TOKEN_HIGHLIGHT_COLORS;
 
 export const getConsistentColor = (token: string, index: number) => {
   // Use hash function for consistent coloring based on token content

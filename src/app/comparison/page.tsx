@@ -36,7 +36,7 @@ export default function ComparisonPage() {
       const toolIds = searchParams.get("tools")?.split(",") || []
       
       if (toolIds.length < 2) {
-        router.push("/devtools")
+        router.push("/blog")
         return
       }
 
@@ -44,7 +44,7 @@ export default function ComparisonPage() {
       const selectedTools = allTools.filter((tool) => toolIds.includes(tool.id))
       
       if (selectedTools.length < 2) {
-        router.push("/devtools")
+        router.push("/blog")
         return
       }
       
@@ -85,11 +85,11 @@ export default function ComparisonPage() {
         <div className="flex items-center mb-8">
           <Button
             variant="outline"
-            onClick={() => router.push("/devtools")}
+            onClick={() => router.push("/blog")}
             className="mr-4 border-slate-200 text-slate-700 hover:bg-slate-50"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Tools
+            Back to Blog
           </Button>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-700 to-blue-600 text-transparent bg-clip-text">
             Comparing {tools.length} Tools

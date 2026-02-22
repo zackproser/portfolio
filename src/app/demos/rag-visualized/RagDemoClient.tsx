@@ -103,18 +103,18 @@ export default function RagDemoClient() {
 
       {/* Polished Intro Card with Instructions - Light/Dark mode aware */}
       <div className="max-w-4xl mx-auto">
-        {/* Light mode: soft blue/indigo gradient, Dark mode: deep purple/slate */}
-        <div className="relative overflow-hidden rounded-2xl border border-blue-200/60 dark:border-transparent bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 dark:from-violet-600 dark:via-purple-600 dark:to-indigo-700 p-[1px] shadow-lg shadow-blue-500/10 dark:shadow-purple-500/20">
-          <div className="relative rounded-[15px] bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-purple-950/90 dark:to-slate-900 p-5 sm:p-6">
+        {/* Light mode: warm burnt/amber gradient, Dark mode: deep amber/burnt */}
+        <div className="relative overflow-hidden rounded-2xl border border-burnt-200/60 dark:border-transparent bg-gradient-to-br from-burnt-50 via-amber-50 to-parchment-100 dark:from-amber-800 dark:via-burnt-700 dark:to-amber-900 p-[1px] shadow-lg shadow-burnt-500/10 dark:shadow-amber-500/20">
+          <div className="relative rounded-[15px] bg-gradient-to-br from-white via-burnt-50/50 to-amber-50/50 dark:from-slate-900 dark:via-amber-950/90 dark:to-slate-900 p-5 sm:p-6">
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 dark:from-purple-500/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-indigo-400/10 dark:from-blue-500/20 to-transparent rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-burnt-400/10 dark:from-amber-500/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-amber-400/10 dark:from-burnt-500/20 to-transparent rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
             
             <div className="relative flex flex-col lg:flex-row gap-6 items-start">
               {/* Left: What is RAG */}
               <div className="flex-1 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-purple-500 dark:to-indigo-600 shadow-lg shadow-blue-500/30 dark:shadow-purple-500/30">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-burnt-500 to-amber-600 dark:from-amber-500 dark:to-burnt-600 shadow-lg shadow-burnt-500/30 dark:shadow-amber-500/30">
                     <Brain className="h-5 w-5 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
@@ -122,16 +122,16 @@ export default function RagDemoClient() {
                   </h3>
                 </div>
                 
-                <p className="text-sm text-zinc-700 dark:text-purple-100/90 leading-relaxed">
+                <p className="text-sm text-zinc-700 dark:text-amber-100/90 leading-relaxed">
                   <strong className="text-zinc-900 dark:text-white">Retrieval-Augmented Generation</strong> fetches relevant docs from your knowledge base and injects them into the LLM prompt—giving AI verified facts instead of stale training data.
                 </p>
 
                 {/* Expand for why it matters */}
                 <button
                   onClick={() => setShowIntroDetails(!showIntroDetails)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-purple-300 hover:text-blue-800 dark:hover:text-white transition-colors group"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-burnt-600 dark:text-amber-300 hover:text-burnt-800 dark:hover:text-white transition-colors group"
                 >
-                  <span className="border-b border-blue-400/50 dark:border-purple-400/50 group-hover:border-blue-600 dark:group-hover:border-white/50">{showIntroDetails ? 'Hide details' : 'Why it matters'}</span>
+                  <span className="border-b border-burnt-400/50 dark:border-amber-400/50 group-hover:border-burnt-600 dark:group-hover:border-white/50">{showIntroDetails ? 'Hide details' : 'Why it matters'}</span>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showIntroDetails ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -166,13 +166,13 @@ export default function RagDemoClient() {
               </div>
 
               {/* Divider */}
-              <div className="hidden lg:block w-px h-32 bg-gradient-to-b from-transparent via-blue-300/40 dark:via-purple-400/30 to-transparent self-center" />
-              <div className="lg:hidden w-full h-px bg-gradient-to-r from-transparent via-blue-300/40 dark:via-purple-400/30 to-transparent" />
+              <div className="hidden lg:block w-px h-32 bg-gradient-to-b from-transparent via-burnt-300/40 dark:via-amber-400/30 to-transparent self-center" />
+              <div className="lg:hidden w-full h-px bg-gradient-to-r from-transparent via-burnt-300/40 dark:via-amber-400/30 to-transparent" />
 
               {/* Right: How to Use */}
               <div className="flex-1 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 dark:from-blue-500 dark:to-cyan-600 shadow-lg shadow-indigo-500/30 dark:shadow-blue-500/30">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 to-burnt-600 dark:from-burnt-500 dark:to-amber-600 shadow-lg shadow-amber-500/30 dark:shadow-burnt-500/30">
                     <MousePointerClick className="h-5 w-5 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
@@ -181,16 +181,16 @@ export default function RagDemoClient() {
                 </div>
                 
                 <div className="space-y-2.5">
-                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">1</div>
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-amber-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-burnt-100 dark:bg-amber-500/30 text-xs font-bold text-burnt-700 dark:text-amber-200">1</div>
                     <span>Click <strong className="text-zinc-900 dark:text-white">Play</strong> or step through manually with <strong className="text-zinc-900 dark:text-white">Next</strong></span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">2</div>
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-amber-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-burnt-100 dark:bg-amber-500/30 text-xs font-bold text-burnt-700 dark:text-amber-200">2</div>
                     <span>Watch data flow through each RAG stage in the diagram</span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-purple-100/90">
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-purple-500/30 text-xs font-bold text-blue-700 dark:text-purple-200">3</div>
+                  <div className="flex items-center gap-3 text-sm text-zinc-700 dark:text-amber-100/90">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-burnt-100 dark:bg-amber-500/30 text-xs font-bold text-burnt-700 dark:text-amber-200">3</div>
                     <span>Explore the <strong className="text-zinc-900 dark:text-white">Inspector</strong> below to see step details</span>
                   </div>
                 </div>
@@ -245,13 +245,13 @@ export default function RagDemoClient() {
 
       <section className="relative overflow-hidden">
         {/* Subtle background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-emerald-50/30 dark:from-blue-950/20 dark:via-transparent dark:to-emerald-950/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-burnt-50/50 via-transparent to-amber-50/30 dark:from-burnt-950/20 dark:via-transparent dark:to-amber-950/10" />
         
         <div className="relative mx-auto max-w-4xl px-6 py-12 md:py-16">
           <div className="space-y-8">
             {/* Content */}
             <div className="space-y-6 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700 backdrop-blur-sm dark:bg-blue-900/40 dark:text-blue-200">
+              <div className="inline-flex items-center gap-2 rounded-full bg-burnt-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-burnt-700 backdrop-blur-sm dark:bg-amber-900/40 dark:text-amber-200">
                 Build production RAG
               </div>
               
@@ -265,16 +265,16 @@ export default function RagDemoClient() {
 
               {/* Feature Grid - More refined */}
               <div className="grid gap-3 sm:grid-cols-3 text-zinc-600 dark:text-zinc-300 max-w-3xl mx-auto">
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <NotebookPen className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-burnt-50/50 dark:hover:bg-amber-950/20 text-center">
+                  <NotebookPen className="h-5 w-5 flex-shrink-0 text-burnt-500 dark:text-amber-400" />
                   <span className="text-sm leading-relaxed">Step-by-step Jupyter notebook for chunking, embeddings, and Pinecone indexing.</span>
                 </div>
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <LayoutDashboard className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-burnt-50/50 dark:hover:bg-amber-950/20 text-center">
+                  <LayoutDashboard className="h-5 w-5 flex-shrink-0 text-burnt-500 dark:text-amber-400" />
                   <span className="text-sm leading-relaxed">Production-ready Next.js + Vercel AI SDK interface with streaming, citations, and guardrails.</span>
                 </div>
-                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-blue-50/50 dark:hover:bg-blue-950/20 text-center">
-                  <LifeBuoy className="h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                <div className="flex flex-col items-center gap-2 rounded-lg p-4 transition-colors hover:bg-burnt-50/50 dark:hover:bg-amber-950/20 text-center">
+                  <LifeBuoy className="h-5 w-5 flex-shrink-0 text-burnt-500 dark:text-amber-400" />
                   <span className="text-sm leading-relaxed">Direct email support from me while you adapt the pipeline to your stack.</span>
                 </div>
               </div>
@@ -289,9 +289,23 @@ export default function RagDemoClient() {
                 </Link>
                 <Link
                   href="/products/rag-pipeline-tutorial"
-                  className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-blue-300/60 bg-white/80 text-blue-700 backdrop-blur-sm hover:bg-blue-50/80 hover:border-blue-400 transition-all dark:border-blue-700/60 dark:bg-zinc-900/80 dark:text-blue-200 dark:hover:bg-zinc-800/80 dark:hover:border-blue-600"
+                  className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg border border-burnt-300/60 bg-white/80 text-burnt-700 backdrop-blur-sm hover:bg-burnt-50/80 hover:border-burnt-400 transition-all dark:border-amber-700/60 dark:bg-zinc-900/80 dark:text-amber-200 dark:hover:bg-zinc-800/80 dark:hover:border-amber-600"
                 >
                   Preview the Curriculum
+                </Link>
+              </div>
+
+              {/* Cross-link to Voice AI demo */}
+              <div className="mt-6 pt-4 border-t border-burnt-200/40 dark:border-amber-800/30">
+                <Link
+                  href="/demos/voice-ai"
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-burnt-50/50 dark:hover:bg-amber-900/20 transition-colors group/voice"
+                >
+                  <Sparkles className="h-4 w-4 text-burnt-500 dark:text-amber-400 flex-shrink-0" />
+                  <span className="text-sm text-parchment-600 dark:text-slate-400">
+                    See how voice-first AI tools use these same patterns in production
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-burnt-400 dark:text-amber-500 group-hover/voice:translate-x-1 transition-transform flex-shrink-0" />
                 </Link>
               </div>
             </div>

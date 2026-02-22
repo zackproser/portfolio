@@ -16,10 +16,10 @@ export default function TokenizationDemoPage() {
     <Container className="mt-16 lg:mt-32">
       <div className="mx-auto max-w-4xl">
         <header className="max-w-2xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-blue-700 dark:text-blue-300 sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-burnt-500 dark:text-amber-400 sm:text-5xl">
             How do language models &quot;see&quot; text?
           </h1>
-          <p className="mt-6 text-base text-gray-700 dark:text-gray-300">
+          <p className="mt-6 text-base text-parchment-600 dark:text-slate-300">
             Understand how text becomes tokens in language models and how this affects your AI applications.
           </p>
         </header>

@@ -786,7 +786,7 @@ export default function AuthorityHero() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
               {[
                 { label: 'AI & ML', count: '40+', href: '/collections/ai' as Route },
-                { label: 'DevTools', count: '25+', href: '/devtools' as Route },
+                { label: 'Demos', count: '5+', href: '/demos' as Route },
                 { label: 'Infrastructure', count: '20+', href: '/blog' as Route },
                 { label: 'Projects', count: '25+', href: '/projects' as Route },
               ].map((cat) => (

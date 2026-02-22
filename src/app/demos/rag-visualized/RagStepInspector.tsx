@@ -125,8 +125,8 @@ export default function RagStepInspector({
   const metrics = [
     { label: 'Latency', value: simulationData.metrics ? `${Math.round(simulationData.metrics.latencyMs)}ms` : '-', icon: Cpu, color: 'text-orange-500' },
     { label: 'Cost', value: simulationData.metrics ? `$${simulationData.metrics.costUsd.toFixed(4)}` : '-', icon: LifeBuoy, color: 'text-green-500' },
-    { label: 'Prompt', value: simulationData.metrics ? simulationData.metrics.promptTokens : '-', icon: Layers, color: 'text-blue-500' },
-    { label: 'Completion', value: simulationData.metrics ? simulationData.metrics.completionTokens : '-', icon: Code, color: 'text-purple-500' },
+    { label: 'Prompt', value: simulationData.metrics ? simulationData.metrics.promptTokens : '-', icon: Layers, color: 'text-burnt-500' },
+    { label: 'Completion', value: simulationData.metrics ? simulationData.metrics.completionTokens : '-', icon: Code, color: 'text-amber-500' },
   ]
 
   return (
@@ -134,7 +134,7 @@ export default function RagStepInspector({
       {/* Inspector Header */}
       <div className="border-b border-zinc-100 dark:border-zinc-800 p-4 bg-zinc-50/50 dark:bg-zinc-900/50 flex justify-between items-center">
         <div className="flex items-center gap-3">
-           <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+           <div className="h-8 w-8 rounded-lg bg-burnt-500/10 flex items-center justify-center text-burnt-600 dark:text-amber-400">
              <Search className="h-4 w-4" />
            </div>
            <div>
@@ -173,14 +173,14 @@ export default function RagStepInspector({
                   <MousePointerClick className="h-3.5 w-3.5" />
                   Live Input Query
                </h3>
-               <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-medium">Live</span>
+               <span className="text-[10px] px-1.5 py-0.5 rounded bg-burnt-100 dark:bg-amber-900/50 text-burnt-700 dark:text-amber-300 font-medium">Live</span>
              </div>
              <div className="relative">
                 <textarea
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   rows={4}
-                  className="w-full resize-none rounded-xl border border-zinc-200 bg-white p-3 text-sm leading-relaxed text-zinc-900 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100"
+                  className="w-full resize-none rounded-xl border border-zinc-200 bg-white p-3 text-sm leading-relaxed text-zinc-900 shadow-sm focus:border-burnt-500 focus:ring-1 focus:ring-burnt-500 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100"
                   placeholder="Ask a question about the dataset..."
                 />
              </div>
@@ -214,7 +214,7 @@ export default function RagStepInspector({
                     onClick={() => setMode(option)}
                     className={`rounded-md px-2 py-1.5 text-[10px] font-medium transition-all ${
                       mode === option
-                        ? 'bg-white text-blue-600 shadow-sm dark:bg-zinc-700 dark:text-blue-400'
+                        ? 'bg-white text-burnt-600 shadow-sm dark:bg-zinc-700 dark:text-amber-400'
                         : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'
                     }`}
                   >
@@ -237,7 +237,7 @@ export default function RagStepInspector({
                 step={1}
                 value={topK}
                 onChange={(e) => setTopK(parseInt(e.target.value))}
-                className="w-full cursor-pointer appearance-none rounded-full bg-zinc-200 h-1.5 accent-blue-600 dark:bg-zinc-700"
+                className="w-full cursor-pointer appearance-none rounded-full bg-zinc-200 h-1.5 accent-burnt-600 dark:bg-zinc-700"
               />
             </div>
 
@@ -272,17 +272,17 @@ export default function RagStepInspector({
                           step={10}
                           value={chunkSize}
                           onChange={(e) => setChunkSize(parseInt(e.target.value))}
-                          className="w-full cursor-pointer appearance-none rounded-full bg-zinc-200 h-1.5 accent-blue-600 dark:bg-zinc-700"
+                          className="w-full cursor-pointer appearance-none rounded-full bg-zinc-200 h-1.5 accent-burnt-600 dark:bg-zinc-700"
                         />
                       </div>
                       
                       {/* Chunking Strategy Explanation */}
-                      <div className="p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 space-y-2">
-                        <h5 className="text-xs font-semibold text-blue-900 dark:text-blue-100 flex items-center gap-1.5">
+                      <div className="p-3 rounded-lg bg-burnt-50/50 dark:bg-amber-900/20 border border-burnt-100 dark:border-amber-800 space-y-2">
+                        <h5 className="text-xs font-semibold text-burnt-900 dark:text-amber-100 flex items-center gap-1.5">
                           <Layers className="h-3.5 w-3.5" />
                           Understanding Chunking
                         </h5>
-                        <div className="text-xs text-blue-700/80 dark:text-blue-300/80 space-y-2 leading-relaxed">
+                        <div className="text-xs text-burnt-700/80 dark:text-amber-300/80 space-y-2 leading-relaxed">
                           <p>
                             <strong>What is chunking?</strong> Breaking documents into smaller, searchable pieces that preserve context while enabling precise retrieval.
                           </p>
@@ -324,11 +324,11 @@ export default function RagStepInspector({
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
                                 Step {currentStepIndex + 1} Detail
                             </span>
-                            {activeView === 'question' && <span className="text-xs font-medium text-blue-600">Input Processing</span>}
+                            {activeView === 'question' && <span className="text-xs font-medium text-burnt-600">Input Processing</span>}
                             {activeView === 'embedding' && <span className="text-xs font-medium text-emerald-600">Vector Space</span>}
-                            {activeView === 'search' && <span className="text-xs font-medium text-purple-600">Similarity Search</span>}
+                            {activeView === 'search' && <span className="text-xs font-medium text-burnt-600">Similarity Search</span>}
                             {activeView === 'retrieval' && <span className="text-xs font-medium text-amber-600">Context Selection</span>}
-                            {activeView === 'prompt' && <span className="text-xs font-medium text-indigo-600">Context Injection</span>}
+                            {activeView === 'prompt' && <span className="text-xs font-medium text-amber-600">Context Injection</span>}
                             {activeView === 'answer' && <span className="text-xs font-medium text-green-600">Final Output</span>}
                          </div>
                          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -347,16 +347,16 @@ export default function RagStepInspector({
                         {/* 0. Question View */}
                         {activeView === 'question' && (
                             <div className="space-y-6">
-                                <div className="p-6 bg-blue-50/30 rounded-xl border border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/30">
-                                    <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">Raw Input Analysis</h4>
+                                <div className="p-6 bg-burnt-50/30 rounded-xl border border-burnt-100 dark:bg-amber-900/10 dark:border-amber-900/30">
+                                    <h4 className="text-sm font-medium text-burnt-900 dark:text-amber-100 mb-2">Raw Input Analysis</h4>
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div>
-                                            <span className="text-xs text-blue-700/60 dark:text-blue-300/60 uppercase font-bold">Character Count</span>
-                                            <p className="font-mono text-blue-900 dark:text-blue-100">{query.length} chars</p>
+                                            <span className="text-xs text-burnt-700/60 dark:text-amber-300/60 uppercase font-bold">Character Count</span>
+                                            <p className="font-mono text-burnt-900 dark:text-amber-100">{query.length} chars</p>
                                         </div>
                                         <div>
-                                            <span className="text-xs text-blue-700/60 dark:text-blue-300/60 uppercase font-bold">Est. Tokens</span>
-                                            <p className="font-mono text-blue-900 dark:text-blue-100">~{Math.ceil(query.length / 4)} tokens</p>
+                                            <span className="text-xs text-burnt-700/60 dark:text-amber-300/60 uppercase font-bold">Est. Tokens</span>
+                                            <p className="font-mono text-burnt-900 dark:text-amber-100">~{Math.ceil(query.length / 4)} tokens</p>
                                         </div>
                                     </div>
                                 </div>
@@ -459,15 +459,15 @@ export default function RagStepInspector({
                         {activeView === 'search' && (
                             <div className="space-y-6">
                                 {/* Math Explanation */}
-                                <div className="p-4 bg-purple-50/30 rounded-xl border border-purple-100 dark:bg-purple-900/10 dark:border-purple-900/30">
-                                   <h4 className="text-sm font-medium text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
+                                <div className="p-4 bg-burnt-50/30 rounded-xl border border-burnt-100 dark:bg-amber-900/10 dark:border-amber-900/30">
+                                   <h4 className="text-sm font-medium text-burnt-900 dark:text-amber-100 mb-2 flex items-center gap-2">
                                      <Cpu className="h-4 w-4" />
                                      Cosine Similarity
                                    </h4>
-                                   <div className="font-mono text-xs bg-white/50 dark:bg-black/20 p-3 rounded border border-purple-100/50 dark:border-purple-800/30 text-purple-800 dark:text-purple-200 mb-2">
+                                   <div className="font-mono text-xs bg-white/50 dark:bg-black/20 p-3 rounded border border-burnt-100/50 dark:border-amber-800/30 text-burnt-800 dark:text-amber-200 mb-2">
                                      similarity = (A · B) / (||A|| × ||B||)
                                    </div>
-                                   <p className="text-xs text-purple-700/80 dark:text-purple-300/80">
+                                   <p className="text-xs text-burnt-700/80 dark:text-amber-300/80">
                                       We calculate the angle between the <strong>Query Vector</strong> (A) and every <strong>Chunk Vector</strong> (B). 
                                       Smaller angles mean higher similarity scores (closer to 1.0).
                                    </p>
@@ -479,12 +479,12 @@ export default function RagStepInspector({
                                         <div className="grid gap-2">
                                             {simulationData.results.map((result, i) => (
                                                 <div key={result.chunk.id} className="flex items-center gap-4 p-3 rounded-lg border border-zinc-100 bg-zinc-50/50 dark:bg-zinc-800/30 dark:border-zinc-800">
-                                                    <div className="w-16 text-right font-mono text-sm font-bold text-purple-600 dark:text-purple-400">
+                                                    <div className="w-16 text-right font-mono text-sm font-bold text-burnt-600 dark:text-amber-400">
                                                         {(result.similarity).toFixed(4)}
                                                     </div>
                                                     <div className="flex-1 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                                                         <div 
-                                                          className="h-full bg-purple-500 rounded-full" 
+                                                          className="h-full bg-burnt-500 rounded-full" 
                                                           style={{ width: `${Math.max(0, result.similarity * 100)}%` }}
                                                         />
                                                     </div>
@@ -581,7 +581,7 @@ export default function RagStepInspector({
                         {/* 4. Prompt View */}
                         {activeView === 'prompt' && (
                              <div className="space-y-4">
-                                <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-900/30 text-sm text-indigo-900 dark:text-indigo-100">
+                                <div className="p-4 bg-burnt-50/50 rounded-xl border border-burnt-100 dark:bg-amber-900/10 dark:border-amber-900/30 text-sm text-burnt-900 dark:text-amber-100">
                                     <p className="font-medium mb-1">Visual Prompt Construction</p>
                                     <p className="text-xs">The LLM only sees this exact prompt—no other information. Retrieved context is &quot;sandwiched&quot; between system instructions and your query.</p>
                                 </div>
@@ -594,12 +594,12 @@ export default function RagStepInspector({
                                         <div className="space-y-3">
                                             {/* System Prompt - Top */}
                                             <div className="relative">
-                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-indigo-500 rounded-full"></div>
-                                                <div className="pl-4 p-4 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 border-2 border-indigo-200 dark:border-indigo-800">
+                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-burnt-500 rounded-full"></div>
+                                                <div className="pl-4 p-4 rounded-lg bg-burnt-50 dark:bg-amber-900/30 border-2 border-burnt-200 dark:border-amber-800">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase">System Prompt</div>
+                                                        <div className="px-2 py-0.5 rounded bg-burnt-100 dark:bg-amber-900 text-burnt-700 dark:text-amber-300 text-[10px] font-bold uppercase">System Prompt</div>
                                                     </div>
-                                                    <p className="text-xs text-indigo-900 dark:text-indigo-100 leading-relaxed">
+                                                    <p className="text-xs text-burnt-900 dark:text-amber-100 leading-relaxed">
                                                         {simulationData.answer.promptParts.systemPrompt}
                                                     </p>
                                                 </div>

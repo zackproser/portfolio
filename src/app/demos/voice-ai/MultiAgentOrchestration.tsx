@@ -211,10 +211,10 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
               key={panel.id}
               className={`
                 relative rounded-xl border-2 p-4 transition-colors
-                ${panel.status === 'speaking' 
-                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20' 
+                ${panel.status === 'speaking'
+                  ? 'border-burnt-500 bg-burnt-50 dark:bg-amber-900/20'
                   : panel.status === 'working'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
                     : panel.status === 'complete'
                       ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                       : 'border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800'
@@ -228,12 +228,12 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
                 <div className="flex items-center gap-2">
                   <div className={`
                     flex h-6 w-6 items-center justify-center rounded-md
-                    ${panel.status === 'complete' 
-                      ? 'bg-green-500' 
+                    ${panel.status === 'complete'
+                      ? 'bg-green-500'
                       : panel.status === 'working'
-                        ? 'bg-blue-500'
+                        ? 'bg-amber-500'
                         : panel.status === 'speaking'
-                          ? 'bg-purple-500'
+                          ? 'bg-burnt-500'
                           : 'bg-zinc-300 dark:bg-zinc-600'
                     }
                   `}>
@@ -250,8 +250,8 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Mic className="h-3 w-3 text-purple-500" />
-                  <span className="text-xs text-purple-600 dark:text-purple-400">Voice</span>
+                  <Mic className="h-3 w-3 text-burnt-500" />
+                  <span className="text-xs text-burnt-500 dark:text-amber-400">Voice</span>
                 </div>
               </div>
 
@@ -263,7 +263,7 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
                   <>
                     {getTypewriterText(panel.instruction, panel.speechProgress)}
                     {panel.status === 'speaking' && (
-                      <span className="inline-block w-0.5 h-3 bg-purple-500 animate-pulse ml-0.5" />
+                      <span className="inline-block w-0.5 h-3 bg-burnt-500 animate-pulse ml-0.5" />
                     )}
                   </>
                 )}
@@ -273,11 +273,11 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
               <div className="h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
                 <motion.div
                   className={`h-full rounded-full ${
-                    panel.status === 'complete' 
-                      ? 'bg-green-500' 
+                    panel.status === 'complete'
+                      ? 'bg-green-500'
                       : panel.status === 'working'
-                        ? 'bg-blue-500'
-                        : 'bg-purple-500'
+                        ? 'bg-amber-500'
+                        : 'bg-burnt-500'
                   }`}
                   initial={{ width: '0%' }}
                   animate={{ width: `${panel.progress}%` }}
@@ -289,13 +289,13 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
               <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
                 {panel.status === 'idle' && 'Idle'}
                 {panel.status === 'speaking' && (
-                  <span className="text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
+                  <span className="text-burnt-500 dark:text-amber-400 flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-burnt-500 animate-pulse" />
                     Receiving voice instruction...
                   </span>
                 )}
                 {panel.status === 'working' && (
-                  <span className="text-blue-600 dark:text-blue-400">
+                  <span className="text-amber-600 dark:text-amber-400">
                     Working... {Math.round(panel.progress)}%
                   </span>
                 )}
@@ -476,7 +476,7 @@ export default function MultiAgentOrchestration({ autoPlay = false }: MultiAgent
               text-sm font-semibold text-white shadow-md transition-all
               ${isPlaying
                 ? 'bg-zinc-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:shadow-lg hover:scale-105'
+                : 'bg-gradient-to-r from-burnt-500 to-amber-600 hover:shadow-lg hover:scale-105'
               }
             `}
           >

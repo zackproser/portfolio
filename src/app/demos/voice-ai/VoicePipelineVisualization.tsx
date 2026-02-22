@@ -204,7 +204,7 @@ export default function VoicePipelineVisualization({
           <source src="https://zackproser.b-cdn.net/images/drive-cursor.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-2 text-center">
+        <div className="bg-gradient-to-r from-burnt-500 to-amber-600 px-4 py-2 text-center">
           <p className="text-sm font-medium text-white">
             Speak naturally → WisprFlow transcribes → Polished text appears in Cursor
           </p>
@@ -234,9 +234,9 @@ export default function VoicePipelineVisualization({
                   <div className={`
                     flex h-12 w-12 items-center justify-center rounded-xl
                     transition-all duration-300
-                    ${isActive 
-                      ? 'bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/30' 
-                      : isComplete 
+                    ${isActive
+                      ? 'bg-gradient-to-br from-burnt-500 to-amber-600 shadow-lg shadow-burnt-500/30'
+                      : isComplete
                         ? 'bg-green-500 shadow-md shadow-green-500/20'
                         : 'bg-zinc-200 dark:bg-zinc-700'
                     }
@@ -255,7 +255,7 @@ export default function VoicePipelineVisualization({
                   </div>
                   <span className={`
                     mt-2 text-xs font-medium text-center
-                    ${isActive ? 'text-purple-600 dark:text-purple-400' : 'text-zinc-500 dark:text-zinc-400'}
+                    ${isActive ? 'text-burnt-500 dark:text-amber-400' : 'text-zinc-500 dark:text-zinc-400'}
                   `}>
                     {step.title}
                   </span>
@@ -265,7 +265,7 @@ export default function VoicePipelineVisualization({
                   <div className="flex-1 mx-2">
                     <div className="h-0.5 bg-zinc-200 dark:bg-zinc-700 relative overflow-hidden rounded-full">
                       <motion.div
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 to-indigo-600"
+                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-burnt-500 to-amber-600"
                         initial={{ width: '0%' }}
                         animate={{ width: currentStep > index ? '100%' : '0%' }}
                         transition={{ duration: 0.5 }}
@@ -294,7 +294,7 @@ export default function VoicePipelineVisualization({
                   {waveformData.map((amplitude, i) => (
                     <motion.div
                       key={i}
-                      className="w-1 bg-gradient-to-t from-purple-500 to-indigo-400 rounded-full"
+                      className="w-1 bg-gradient-to-t from-burnt-500 to-amber-400 rounded-full"
                       style={{ height: `${amplitude * 60}px` }}
                       animate={{ height: `${amplitude * 60}px` }}
                       transition={{ duration: 0.1 }}
@@ -304,7 +304,7 @@ export default function VoicePipelineVisualization({
                 <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400 italic">
                   &ldquo;{SAMPLE_DICTATION.raw.slice(0, 50)}...&rdquo;
                 </p>
-                <p className="mt-2 text-xs text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                <p className="mt-2 text-xs text-burnt-500 dark:text-amber-400 flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
                   Recording...
                 </p>
@@ -330,7 +330,7 @@ export default function VoicePipelineVisualization({
                     {getTypewriterText(SAMPLE_DICTATION.raw, rawTextProgress)}
                   </span>
                   {rawTextProgress < 100 && (
-                    <span className="inline-block w-0.5 h-4 bg-purple-500 animate-pulse ml-0.5" />
+                    <span className="inline-block w-0.5 h-4 bg-burnt-500 animate-pulse ml-0.5" />
                   )}
                 </div>
                 <p className="text-xs text-center text-zinc-500 dark:text-zinc-400">
@@ -375,7 +375,7 @@ export default function VoicePipelineVisualization({
                 </div>
                 <div className="flex justify-center">
                   <motion.div
-                    className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400"
+                    className="flex items-center gap-2 text-xs text-burnt-500 dark:text-amber-400"
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
@@ -433,8 +433,8 @@ export default function VoicePipelineVisualization({
                 <div className="text-center space-y-4">
                   <div className="flex justify-center">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full blur-xl opacity-30 animate-pulse" />
-                      <Mic className="relative h-16 w-16 text-purple-500" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-burnt-500 to-amber-600 rounded-full blur-xl opacity-30 animate-pulse" />
+                      <Mic className="relative h-16 w-16 text-burnt-500" />
                     </div>
                   </div>
                   <p className="text-zinc-600 dark:text-zinc-400">
@@ -454,8 +454,8 @@ export default function VoicePipelineVisualization({
             className={`
               inline-flex items-center gap-2 rounded-lg px-3 py-2.5
               text-sm font-medium transition-all border
-              ${audioEnabled 
-                ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300' 
+              ${audioEnabled
+                ? 'bg-burnt-50 dark:bg-amber-900/30 border-burnt-300 dark:border-amber-700 text-burnt-700 dark:text-amber-300'
                 : 'bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400'
               }
             `}
@@ -473,7 +473,7 @@ export default function VoicePipelineVisualization({
               </>
             )}
             {isSpeaking && (
-              <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-burnt-500 animate-pulse" />
             )}
           </button>
           
@@ -485,7 +485,7 @@ export default function VoicePipelineVisualization({
               text-sm font-semibold text-white shadow-md transition-all
               ${isPlaying && currentStep < VOICE_PIPELINE_STEPS.length - 1
                 ? 'bg-zinc-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:shadow-lg hover:scale-105'
+                : 'bg-gradient-to-r from-burnt-500 to-amber-600 hover:shadow-lg hover:scale-105'
               }
             `}
           >
