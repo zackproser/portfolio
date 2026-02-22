@@ -126,8 +126,8 @@ const speakingEngagements = [
     links: [
       {
         type: 'blog',
-        url: '/blog/ai-voice-tools-for-developers',
-        label: 'Voice AI tools guide'
+        url: '/demos/voice-ai',
+        label: 'Try the voice AI demo'
       }
     ]
   },
