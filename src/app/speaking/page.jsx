@@ -120,7 +120,7 @@ const speakingEngagements = [
     date: 'February 6, 2026',
     location: 'WorkOS Office, San Francisco, CA',
     description: 'Demonstrated how to use WisprFlow to code with your voice and ran live demos of Claude Code and Cowork enablement for GTM teams. Co-presented with Nick Nisi.',
-    image: '/images/workos-gtm-training.jpeg',
+    image: 'https://zackproser.b-cdn.net/images/workos-gtm-training.webp',
     audience: 'WorkOS GTM team (internal)',
     topics: ['WisprFlow', 'Voice Development', 'Claude Code', 'Cowork', 'GTM Enablement'],
     links: [
