@@ -133,8 +133,9 @@ export default function DemosClient({ demos, featuredVoiceDemo, verticalVoiceDem
       </section>
 
       {/* Featured Voice AI Demo */}
+      <div id="demos" />
       {featuredVoiceDemo && (
-        <section id="demos" className={`py-12 ${
+        <section className={`py-12 ${
           isDark ? 'bg-slate-900/50' : 'bg-parchment-100'
         }`}>
           <div className="container mx-auto px-4">
