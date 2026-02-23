@@ -292,7 +292,7 @@ export default function DemosClient({ demos, featuredVoiceDemo, verticalVoiceDem
             AI & ML Demos
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(otherDemos || demos).map((demo) => (
+            {(otherDemos || []).map((demo) => (
               <Link
                 key={demo.slug}
                 href={demo.slug as Route}
