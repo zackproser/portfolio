@@ -13,9 +13,20 @@ export const THEME_HEX = {
   charcoal: '#2a2a2a',
 } as const;
 
-// Token highlighting pastels (14 warm-family colors)
+// Token highlighting pastels (14 distinct-hue colors)
 export const TOKEN_HIGHLIGHT_COLORS = [
-  '#f5e6d3', '#fce8c8', '#e8d5c0', '#f0dcc8', '#ddd0c0',
-  '#e5d8c8', '#f8eed8', '#ebe0d0', '#d8cbb8', '#f0e4d0',
-  '#e0d4c4', '#f5ead8', '#ddd2c2', '#e8dcd0',
+  '#fce8c8', // warm peach
+  '#d4edda', // soft green
+  '#d6e9f8', // light blue
+  '#f0d0e0', // pink
+  '#fff3cd', // pale yellow
+  '#e0d4f5', // lavender
+  '#d4f0ed', // mint
+  '#fde2c8', // apricot
+  '#cce5ff', // sky blue
+  '#f5e6d3', // tan
+  '#e8d5f5', // lilac
+  '#d0f0d0', // pale green
+  '#ffe0e0', // blush
+  '#e0e8d0', // sage
 ] as const;
