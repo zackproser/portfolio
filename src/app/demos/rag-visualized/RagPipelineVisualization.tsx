@@ -124,7 +124,7 @@ const STEPS = [
     title: 'Compose Prompt',
     description: 'Combine query & context',
     icon: Code,
-    color: 'amber'
+    color: 'teal'
   },
   {
     id: 'generate',
@@ -643,7 +643,7 @@ function getStepColorClass(stepIndex: number, muted = false): string {
     muted ? 'text-emerald-700 dark:text-emerald-300' : 'text-emerald-600 dark:text-emerald-400',
     muted ? 'text-burnt-700 dark:text-amber-300' : 'text-burnt-500 dark:text-amber-400',
     muted ? 'text-amber-700 dark:text-amber-300' : 'text-amber-600 dark:text-amber-400',
-    muted ? 'text-amber-700 dark:text-amber-300' : 'text-amber-600 dark:text-amber-400',
+    muted ? 'text-teal-700 dark:text-teal-300' : 'text-teal-600 dark:text-teal-400',
     muted ? 'text-green-700 dark:text-green-300' : 'text-green-600 dark:text-green-400'
   ]
   return colors[stepIndex] || colors[0]
@@ -651,6 +651,6 @@ function getStepColorClass(stepIndex: number, muted = false): string {
 
 // Helper function for step color names
 function getStepColorName(stepIndex: number): string {
-  const colors = ['burnt', 'emerald', 'burnt', 'amber', 'amber', 'green']
+  const colors = ['burnt', 'emerald', 'burnt', 'amber', 'teal', 'green']
   return colors[stepIndex] || colors[0]
 }

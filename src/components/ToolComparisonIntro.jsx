@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button'
 import NewsletterWrapper from './NewsletterWrapper'
 
-const ToolComparisonIntro = ({ tool1, tool2 }) => {
+const ToolComparisonIntro = () => {
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-900 p-8 rounded-3xl shadow-2xl mb-12">
       <div className="flex flex-col items-center justify-center text-center mb-4">
