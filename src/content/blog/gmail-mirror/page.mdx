@@ -35,7 +35,7 @@ Then I SSH'd into the Meerkat from another terminal and critiqued the code with 
 5. **N+1 query problem** — checking `HasMessage` individually for each of 500 IDs per page instead of batch dedup
 6. **Fragile label search** — `LIKE "%INBOX%"` would match any label containing "INBOX" as a substring
 
-Sent the bug report back to Claw. Claw fixed all six, rebuilt, pushed. Then I had it run the full sync — 205,023 messages, back to 2008. It took about 20 minutes total across a few runs (Gmail rate-limits you at 15,000 requests per minute, so we added exponential backoff and reduced concurrency).
+Sent the bug report back to Claw. Claw fixed all six, rebuilt, and pushed to a private GitHub repo. Having it in a proper repo means Claw can continue making improvements, fixing bugs, and pushing updates across sessions — the code persists even when the assistant's context resets. Then I had it run the full sync — 205,023 messages, back to 2008. It took about 20 minutes total across a few runs (Gmail rate-limits you at 15,000 requests per minute, so we added exponential backoff and reduced concurrency).
 
 That's the workflow I keep coming back to: **AI builds the first draft, human critiques, AI fixes, repeat.** The whole tool went from "I need this" to "it works" in a single Sunday afternoon.
 
@@ -163,4 +163,4 @@ The tool itself is ~940 lines of Go. The real value isn't the code — it's havi
 
 ---
 
-*gmail-mirror is [on GitHub](https://github.com/zackproser/gmail-mirror) (private for now). The always-on assistant setup is documented in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). OpenClaw is [open source](https://github.com/openclaw/openclaw).*
+*gmail-mirror lives in a [private GitHub repo](https://github.com/zackproser/gmail-mirror) for now. I may open-source it in the future — for now it's a personal tool that my assistant actively maintains and improves. The always-on assistant setup is documented in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). OpenClaw is [open source](https://github.com/openclaw/openclaw).*
