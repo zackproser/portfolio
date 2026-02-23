@@ -6,7 +6,7 @@ import { Blog } from '@/types/content'
 
 // Base metadata using createMetadata
 const baseMetadata = createMetadata({
-  title: 'Modern Coding - Research',
+  title: 'Zack Proser Blog - AI Engineering, RAG & Developer Tools',
   description: 'Staff AI engineer - technical writing and development blog',
 })
 
