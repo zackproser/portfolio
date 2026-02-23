@@ -10,6 +10,9 @@ export const metadata = createMetadata(rawMetadata);
 
 > This post continues the series on building cognitive infrastructure with an always-on AI assistant. See also [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant), [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic), and [Handwave](/blog/handwave).
 
+<Image src="./2026-02-22-21-30-00-before-after.png" alt="Before and after: Gmail API showing 6 emails vs gmail-mirror with 205K emails" width={800} height={400} />
+<figcaption>The difference between peeking through a keyhole and having panoramic vision.</figcaption>
+
 ## The problem: my AI assistant was blind
 
 I run an always-on AI assistant ([OpenClaw](https://github.com/openclaw/openclaw)) on a System76 Meerkat under my desk. It does morning briefings, monitors my email for time-sensitive opportunities, tracks my Linear tasks, checks my bank accounts for anomalies during my divorce — the whole deal. I wrote about the full setup in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant).
@@ -23,6 +26,9 @@ I need my assistant to instantly query **all** my emails. Cross-reference thread
 `gog gmail search` wasn't going to cut it.
 
 ## So I had my assistant build the thing
+
+<Image src="./2026-02-22-21-30-00-build-workflow.png" alt="Human-AI collaboration loop: chat, code, critique, fix, push" width={800} height={400} />
+<figcaption>The build loop: human directs, AI codes, human critiques, AI fixes.</figcaption>
 
 Here's what actually happened: I told Claw (my assistant) what I needed over a couple of chat messages. Claw wrote the initial Go project — a CLI called `gmail-mirror` that syncs your Gmail inbox into a local SQLite database with [FTS5](https://www.sqlite.org/fts5.html) full-text search.
 
@@ -51,6 +57,9 @@ I get a lot of these. Or rather, I *got* a lot of these. I just never realized h
 ./gmail-mirror search "GLG OR Tegus OR AlphaSights OR Guidepoint OR Coleman" \
   --after "2025-01-01" --limit 200
 ```
+
+<Image src="./2026-02-22-21-30-00-30k-analysis.png" alt="Expert network analysis dashboard showing $30K in missed opportunities across 5 networks" width={800} height={400} />
+<figcaption>65 opportunities across 5 networks. Only 5 completed. The rest? Buried in 200K emails.</figcaption>
 
 That search returned in under a second. After deduplicating (these networks send follow-ups and reminders), here's what I found:
 
@@ -125,6 +134,9 @@ conditions = append(conditions,
     "EXISTS (SELECT 1 FROM json_each(m.labels) WHERE json_each.value = ?)")
 ```
 
+<Image src="./2026-02-22-21-30-00-daily-sweep.png" alt="Daily email sweep pipeline: sync, search, cross-reference, alert, notify" width={800} height={400} />
+<figcaption>The morning sweep: sync → search → cross-reference → flag → notify. All before I finish my coffee.</figcaption>
+
 ### The daily workflow
 
 Every morning at 8:30 AM, my assistant:
@@ -136,6 +148,9 @@ Every morning at 8:30 AM, my assistant:
 5. Summarizes everything in a morning briefing delivered to Discord
 
 The difference from before: instead of seeing 6 recent emails through a Gmail API keyhole, it's searching across 205,023 messages with full context. Thread history, sender patterns, date-based analysis — all in milliseconds.
+
+<Image src="./2026-02-22-21-30-00-performance.png" alt="Performance comparison: Gmail Web 2-5s, Gmail API 1-3s, gmail-mirror 20-50ms" width={800} height={400} />
+<figcaption>Not even close.</figcaption>
 
 ## Performance
 
