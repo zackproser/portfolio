@@ -1,0 +1,391 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+import Image from 'next/image'
+import Link from 'next/link'
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="./2026-02-22-20-57-00-gmail-mirror-architecture.png" alt="gmail-mirror architecture diagram showing Gmail API sync to SQLite with FTS5 search" width={800} height={600} />
+
+## The Problem: Gmail Search Sucks for Power Users
+
+You know that feeling when you *know* there's an important email buried somewhere in your inbox, but Gmail's search just... can't find it? Or when you want to do analysis across years of email history, but the Gmail web interface times out after scrolling through a few hundred messages?
+
+I've been using the same Gmail account since 2008. That's **17 years** and **205,023 messages** of digital archaeology just sitting there, mostly inaccessible. Gmail's search API is slow, limited in query power, and hopeless for bulk analysis.
+
+So I built **gmail-mirror** — a Go CLI tool that syncs your entire Gmail inbox into a local SQLite database with FTS5 full-text search. Queries that take Gmail 10+ seconds now return in milliseconds. Complex filters that are impossible in Gmail's web UI work perfectly.
+
+And then I pointed it at my inbox to see what I'd been missing.
+
+## The $30K Discovery: Expert Network Analysis
+
+After the initial sync completed, I decided to run a simple search across expert network platforms. You know — GLG, Tegus, AlphaSights, Guidepoint, Coleman Research — the companies that pay subject matter experts $500/hour for consultations.
+
+The search took **0.7 seconds** across all 205K messages:
+
+```bash
+./gmail-mirror search "expert network OR consultation OR GLG OR Tegus OR AlphaSights" --after "2025-01-01" --limit 100
+```
+
+What I found made me sick:
+
+- **65 distinct consultation opportunities** from January 2025 through February 2026
+- **Only 5 were completed** — I'd responded to and completed just 5 consultations  
+- **60 opportunities missed or expired** — emails buried in my inbox, response windows closed
+- **~$30,000 in potential earnings** left on the table (at $500/hour, 1-hour average per consultation)
+
+Topics ranged from AI coding tools and vector databases to cloud infrastructure and enterprise LLM APIs. All subjects where I'm qualified. All missed because I couldn't see the signal in 200K+ messages.
+
+Here's the brutal truth: **expert network invitations have 24-48 hour response windows**. Miss that window, the opportunity is gone forever. Gmail's search simply isn't fast or powerful enough to catch these systematically.
+
+This analysis took 30 seconds with gmail-mirror. It would have been **impossible** scrolling through Gmail's web UI.
+
+## Architecture: Built for Speed and Reliability
+
+<Image src="./2026-02-22-20-57-00-gmail-mirror-architecture.png" alt="gmail-mirror technical architecture" width={600} height={400} />
+
+The design is deliberately simple: Gmail API → local SQLite → instant search. But the devil's in the details.
+
+### Key Technical Decisions
+
+**1. Reuse gog CLI OAuth Tokens**
+Instead of implementing yet another OAuth flow, gmail-mirror piggybacks on the excellent [gog CLI](https://github.com/hduplooy/gog) for Google Workspace access:
+
+```go
+// internal/sync/auth.go - Token reuse from gog CLI
+func LoadTokenFromFile(tokenPath string) (*oauth2.Token, error) {
+    data, err := os.ReadFile(tokenPath)
+    if err != nil {
+        return nil, fmt.Errorf("read token file: %w", err)
+    }
+    
+    var token oauth2.Token
+    if err := json.Unmarshal(data, &token); err != nil {
+        return nil, fmt.Errorf("unmarshal token: %w", err)
+    }
+    
+    return &token, nil
+}
+```
+
+**2. FTS5 for Instant Full-Text Search**
+SQLite's FTS5 extension provides Google-quality search performance locally:
+
+```go
+// internal/store/store.go - FTS5 virtual table
+const createFTSTableSQL = `
+CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(
+    subject, 
+    from_addr, 
+    to_addr, 
+    body_text, 
+    content='messages', 
+    content_rowid='rowid'
+);`
+```
+
+Search queries compile to optimized FTS5 SQL:
+
+```go
+// internal/search/search.go - FTS5 query construction
+if opts.Query != "" {
+    conditions = append(conditions, "m.rowid IN (SELECT rowid FROM messages_fts WHERE messages_fts MATCH ?)")
+    args = append(args, opts.Query)
+}
+```
+
+**3. Resume Tokens for Interrupted Syncs**
+Full syncs can take hours. Resume tokens ensure you never lose progress:
+
+```go
+// internal/sync/sync.go - Resume token handling
+func (s *Syncer) FullSync(ctx context.Context) error {
+    // Check for resume point
+    resumeToken, _ := s.store.GetSyncState("resume_page_token")
+    syncedCount, _ := s.store.MessageCount()
+    if resumeToken != "" {
+        s.log.Info("resuming sync", "already_synced", syncedCount)
+    }
+    
+    // ... sync logic with periodic token saves
+    if resp.NextPageToken != "" {
+        s.store.SetSyncState("resume_page_token", resp.NextPageToken)
+    }
+}
+```
+
+**4. In-Memory Dedup for Performance**
+Loading all existing message IDs into memory avoids O(n) database queries during sync:
+
+```go
+// Load all existing message IDs for fast dedup (one query, not 500 per page)
+existingIDs, err := s.store.AllMessageIDs()
+if err != nil {
+    return fmt.Errorf("load existing IDs: %w", err)
+}
+
+// Skip if already in DB (checked via in-memory set, not per-message query)
+if _, exists := existingIDs[m.Id]; exists {
+    continue
+}
+```
+
+**5. Rate Limit Retry with Exponential Backoff**
+Gmail API has quotas. Handle them gracefully:
+
+```go
+// internal/sync/sync.go - Exponential backoff retry
+func (s *Syncer) fetchWithRetry(ctx context.Context, messageID string, attempt int) (*gmail.Message, error) {
+    if attempt > 5 {
+        return nil, fmt.Errorf("max retries exceeded for message %s", messageID)
+    }
+    
+    msg, err := s.svc.Users.Messages.Get("me", messageID).Do()
+    if err != nil && strings.Contains(err.Error(), "quotaExceeded") {
+        delay := time.Duration(1<<attempt) * time.Second
+        s.log.Warn("quota exceeded, retrying", "delay", delay, "attempt", attempt)
+        time.Sleep(delay)
+        return s.fetchWithRetry(ctx, messageID, attempt+1)
+    }
+    
+    return msg, err
+}
+```
+
+## Performance: 205K Messages, Millisecond Queries
+
+Current stats on my personal inbox:
+
+```bash
+$ ./gmail-mirror stats
+Total messages: 205,023
+Date range: 2008-04-12 to 2026-02-22 (17 years, 10 months)
+Database size: 2.1 GB
+FTS index size: 450 MB
+```
+
+Search performance comparison:
+
+| Query Type | Gmail Web UI | Gmail API | gmail-mirror |
+|------------|--------------|-----------|--------------|
+| Simple keyword | 2-5 seconds | 1-3 seconds | **20-50 ms** |
+| Complex boolean | Doesn't support | Limited | **30-80 ms** |
+| Date range + text | Unreliable | Slow pagination | **15-40 ms** |
+| Bulk analysis | Impossible | 10+ minutes | **< 1 second** |
+
+The expert network analysis that found $30K in missed opportunities? **0.7 seconds** to search 17 years of email history.
+
+## AI Assistant Integration: Cognitive Infrastructure
+
+gmail-mirror wasn't built in isolation. It's a key component of my AI assistant ([OpenClaw](https://openclaw.ai)) workflow:
+
+**Morning Briefings**: Instead of slow Gmail API calls, my assistant runs local searches for urgent keywords, expert network invitations, and important updates. Instant results enable real-time morning intelligence.
+
+**Email Pattern Classification**: With full-text search over 200K+ messages, the assistant learns what emails matter vs. noise. Pattern recognition across years of history, not just recent messages.
+
+**Legal Email Monitoring**: During my divorce proceedings, the assistant monitors for any communication from attorneys, process servers, or court systems. Millisecond alerts on high-priority legal mail.
+
+**Expert Network Detection**: The consultation analysis that found $30K in missed opportunities now runs automatically. Future invitations get flagged within minutes of arrival.
+
+Example assistant integration:
+
+```bash
+# Quick URGENT scan in morning briefing
+./gmail-mirror search "URGENT OR OPPORTUNITY OR EXPERT NETWORK" --after "$(date -d '24 hours ago' '+%Y-%m-%d')" --limit 50
+
+# Legal keyword monitoring
+./gmail-mirror search "subpoena OR court OR attorney OR legal" --after "$(date -d '7 days ago' '+%Y-%m-%d')" --limit 20
+
+# Expert network pattern detection
+./gmail-mirror search "(GLG OR Tegus OR AlphaSights OR Guidepoint OR Coleman) AND (consultation OR expert OR interview)" --after "$(date -d '3 days ago' '+%Y-%m-%d')"
+```
+
+Results feed directly into automated notification pipelines. High-value opportunities get immediate alerts. Noise stays buried.
+
+## Implementation Deep Dive
+
+### Database Schema
+
+The SQLite schema balances storage efficiency with search performance:
+
+```sql
+CREATE TABLE messages (
+    message_id TEXT PRIMARY KEY,
+    thread_id TEXT NOT NULL,
+    from_addr TEXT NOT NULL,
+    to_addr TEXT NOT NULL,
+    cc_addr TEXT,
+    bcc_addr TEXT,
+    subject TEXT NOT NULL,
+    date TEXT NOT NULL,
+    body_text TEXT,
+    body_html TEXT,
+    snippet TEXT,
+    labels TEXT, -- JSON array
+    is_read BOOLEAN DEFAULT 0,
+    is_important BOOLEAN DEFAULT 0
+);
+
+CREATE VIRTUAL TABLE messages_fts USING fts5(
+    subject, from_addr, to_addr, body_text,
+    content='messages', content_rowid='rowid'
+);
+```
+
+Labels are stored as JSON to enable flexible filtering:
+
+```go
+// Search by label using json_each()
+if opts.Label != "" {
+    conditions = append(conditions, "EXISTS (SELECT 1 FROM json_each(m.labels) WHERE json_each.value = ?)")
+    args = append(args, opts.Label)
+}
+```
+
+### Incremental Sync Strategy
+
+Full syncs take hours. Incremental syncs take seconds:
+
+```go
+func (s *Syncer) IncrementalSync(ctx context.Context) error {
+    lastHistoryID, _ := s.store.GetSyncState("last_history_id")
+    if lastHistoryID == "" {
+        return fmt.Errorf("no history ID found, run full sync first")
+    }
+    
+    historyCall := s.svc.Users.History.List("me").StartHistoryId(lastHistoryID)
+    resp, err := historyCall.Do()
+    if err != nil {
+        return fmt.Errorf("list history: %w", err)
+    }
+    
+    // Process only new/modified messages
+    for _, history := range resp.History {
+        for _, msg := range history.MessagesAdded {
+            // Fetch and store new message
+        }
+    }
+}
+```
+
+Gmail's History API tracks changes since your last sync. Perfect for keeping local mirrors fresh.
+
+### Concurrent Processing
+
+Batch fetching with controlled concurrency prevents API rate limits:
+
+```go
+func (s *Syncer) fetchAndStore(ctx context.Context, messageIDs []string) error {
+    const maxWorkers = 5
+    sem := make(chan struct{}, maxWorkers)
+    var wg sync.WaitGroup
+    
+    for _, id := range messageIDs {
+        sem <- struct{}{}
+        wg.Add(1)
+        
+        go func(messageID string) {
+            defer wg.Done()
+            defer func() { <-sem }()
+            
+            msg, err := s.fetchWithRetry(ctx, messageID, 0)
+            if err != nil {
+                s.log.Error("fetch message failed", "id", messageID, "error", err)
+                return
+            }
+            
+            if err := s.store.InsertMessage(msg); err != nil {
+                s.log.Error("store message failed", "id", messageID, "error", err)
+            }
+        }(id)
+    }
+    
+    wg.Wait()
+    return nil
+}
+```
+
+## Usage Examples
+
+**Basic full-text search:**
+```bash
+./gmail-mirror search "machine learning deployment"
+```
+
+**Complex filters:**
+```bash
+./gmail-mirror search --from "anthropic" --after "2025-01-01" --limit 50
+./gmail-mirror search "kubernetes" --from "platform-team" --before "2025-12-01"
+```
+
+**JSON output for scripting:**
+```bash
+./gmail-mirror search "URGENT" --json --limit 10 | jq '.[] | {from: .from_addr, subject: .subject}'
+```
+
+**Thread analysis:**
+```bash
+./gmail-mirror thread <thread-id>  # Get full conversation
+```
+
+**Statistics:**
+```bash
+./gmail-mirror stats  # Database size, message count, date range
+```
+
+## Why This Matters: Email as Data
+
+Email isn't just messages — it's structured data about your professional life. Contracts, opportunities, relationships, decisions. But only if you can search it effectively.
+
+Gmail's web interface treats email like an inbox. gmail-mirror treats it like a database. That difference unlocked $30K in missed consulting opportunities in a single afternoon.
+
+For anyone who gets business-critical emails — consultants, freelancers, executives, researchers — having instant, powerful search over your entire email history isn't just convenient. It's competitive advantage.
+
+The expert network analysis proved this tool's value in 30 seconds. Every serious professional should have something similar.
+
+## Installation & Setup
+
+1. **Install gog CLI** for Google Workspace access:
+```bash
+go install github.com/hduplooy/gog@latest
+gog auth  # Complete OAuth flow
+```
+
+2. **Clone and build gmail-mirror:**
+```bash
+git clone https://github.com/zackproser/gmail-mirror
+cd gmail-mirror
+make build
+```
+
+3. **Export gog token:**
+```bash
+gog token export > ~/.gmail-mirror/token.json
+```
+
+4. **Run initial sync:**
+```bash
+./gmail-mirror sync  # Can take several hours for large inboxes
+```
+
+5. **Search away:**
+```bash
+./gmail-mirror search "your query here"
+```
+
+## What's Next
+
+gmail-mirror is production-ready but still evolving. Future plans:
+
+- **Real-time sync** via Gmail push notifications
+- **Advanced analytics** (email volume trends, sender patterns)
+- **Export integrations** (Obsidian, Notion, Linear)
+- **Multi-account support** for people with multiple Gmail addresses
+
+The core insight remains: your email history is valuable data. Gmail's interface barely scratches the surface. Local storage + powerful search unlocks the full potential.
+
+That $30K discovery was just the beginning.
+
+---
+
+*gmail-mirror is open source but not yet public. If you're interested in early access, [reach out](mailto:zackproser@gmail.com).*

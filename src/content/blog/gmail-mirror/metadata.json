@@ -1,0 +1,7 @@
+{
+  "title": "gmail-mirror: Instant Search Across 205,000 Emails Finds $30K in Missed Opportunities",
+  "author": "Zachary Proser",
+  "date": "2026-2-22",
+  "description": "I built gmail-mirror, a Go CLI that syncs your entire Gmail inbox into a local SQLite database with FTS5 full-text search. First analysis: found 65 expert network consultations I'd missed, worth ~$30K. Here's how it works and why local email search beats Gmail's API every time.",
+  "image": "https://zackproser.com/blog/gmail-mirror/2026-02-22-20-58-00-gmail-mirror-og.png"
+}
