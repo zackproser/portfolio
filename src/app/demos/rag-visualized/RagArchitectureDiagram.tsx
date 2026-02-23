@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Globe, Server, Database, Cpu, ArrowRight, Zap, Layers } from 'lucide-react'
-import { THEME_HEX, PIPELINE_COLORS } from '../theme-colors'
+import { THEME_HEX } from '../theme-colors'
 
 interface RagArchitectureDiagramProps {
   currentStepIndex: number

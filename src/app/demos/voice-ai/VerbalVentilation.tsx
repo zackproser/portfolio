@@ -44,7 +44,7 @@ const CATEGORY_COLORS: Record<ThoughtFragment['category'], string> = {
   frustration: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
   idea: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
   task: 'bg-burnt-50 text-burnt-700 dark:bg-amber-900/40 dark:text-amber-300',
-  question: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  question: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
   blocker: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
   internal: 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300'
 }
@@ -58,7 +58,7 @@ const OUTPUT_ICONS: Record<OrganizedOutput['type'], typeof Ticket> = {
 
 const OUTPUT_COLORS: Record<OrganizedOutput['type'], string> = {
   ticket: 'border-burnt-500 bg-burnt-50 dark:bg-amber-900/20',
-  slack: 'border-amber-500 bg-amber-50 dark:bg-amber-900/20',
+  slack: 'border-violet-500 bg-violet-50 dark:bg-violet-900/20',
   calendar: 'border-green-500 bg-green-50 dark:bg-green-900/20',
   note: 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
 }

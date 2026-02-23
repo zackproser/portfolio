@@ -60,6 +60,10 @@ export default {
           400: '#e67e22',  // Primary accent - Anthropic-inspired
           500: '#d35400',  // Hover state
           600: '#b84a00',
+          700: '#8f3800',
+          800: '#6b2a00',
+          900: '#4a1d00',
+          950: '#2d1200',
         },
         amber: {
           50: '#fffbeb',
