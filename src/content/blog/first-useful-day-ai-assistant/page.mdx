@@ -11,31 +11,21 @@ export const metadata = createMetadata(rawMetadata);
 
 It started with a Linear ticket.
 
-ZAC-156: "Sunday Dig-Out." One task with a wall of subtasks — clear the backlog across open PRs, bug fixes, affiliate content, expert network applications, flight booking for an upcoming work trip, and new capabilities for the assistant itself. The kind of day where I'd normally context-switch myself into oblivion and end up finishing none of it.
+ZAC-156: "Sunday Dig-Out." One task with a wall of subtasks — clear the backlog across open PRs, bug fixes, affiliate content, expert network applications, flight booking for an upcoming work trip, and new capabilities for the assistant itself. The kind of day where you either get organized or drown in context-switching.
 
-Instead, I dropped the ticket into the conversation and said: here's the day. Figure it out.
+I dropped the ticket into the conversation with my always-on assistant and said: here's the day. Let's go.
 
-And for the first time, it actually worked.
+And for the first time, everything actually clicked.
 
-## What "useful" feels like
+## Flight planning as a conversation
 
-I've been building this AI assistant system for months. Always-on, running on a mini PC under my desk, connected to my email, calendar, Linear, bank accounts, GitHub. I've written about the [hardware setup](/blog/building-always-on-ai-assistant), the [cognitive patterns I've trained it on](/blog/training-claude-neurological-patterns), the [tools it has access to](/blog/claude-external-brain-adhd-autistic). On paper, it's impressive.
+I need to fly to San Francisco for a Claude co-work GTM workshop on Thursday. I'm an AAdvantage member and prefer American nonstops — but there are no early nonstop options from Charlotte, and a major nor'easter is bearing down on the northeast.
 
-In practice, until today, it mostly felt like a chatbot that could read my email. Useful, but not *useful* useful. Not "I couldn't have done this day without you" useful.
+I needed to think through this out loud. So I just started talking. "I want to arrive early Wednesday so I can decompress and practice." Then later: "Actually, maybe Tuesday night? I could drop the kids after dinner and catch a late flight." Then: "Wait, what about the storm? Is BWI safe to connect through?"
 
-Today was different. Here's what happened.
+The assistant kept up because it had the context and the tools. It had flight data from the Kiwi MCP server. It had weather data from the NWS, AccuWeather, and Open-Meteo. It knew my budget, my airline preference, my schedule constraints. When I worried about the nor'easter disrupting connections, it pulled the actual NWS hazardous weather outlook and showed me the storm was tracking the I-95 corridor — well north of Charlotte.
 
-## The flight planning thing
-
-I need to fly to San Francisco for a work event — a Claude co-work GTM workshop on Thursday. I'm an AAdvantage member and strongly prefer American nonstops (ADHD + layovers = executive function nightmare). But there are no early nonstop options from Charlotte, the only nonstops are evening departures, and there's a massive nor'easter bearing down on the northeast.
-
-I needed to think through this out loud. Normally that means texting a friend, or more likely, spiraling in my own head about options until I either panic-book or give up.
-
-Instead, I just... talked to Claw about it. Stream of consciousness. "I want to arrive early Wednesday so I can get a massage and decompress." Then five minutes later: "Actually, maybe Tuesday night? I could drop the kids after dinner and catch a late flight." Then: "Wait, what about the storm? Is BWI safe to connect through?"
-
-And Claw kept up. It had the AA.com flight results open in a browser. It had weather data from the NWS, AccuWeather, and Open-Meteo. It knew my budget ($1,800 RAMP card), my airline preference, my ADHD-related need for buffer time. When I worried about the nor'easter, it pulled up the actual NWS hazardous weather outlook for Charlotte and showed me the storm was tracking up the I-95 corridor — 500 miles north of me. When I asked about layover logistics (I genuinely couldn't remember if you have to deplane), it explained the options without making me feel stupid.
-
-The flight isn't booked yet as I write this. But I went from "paralyzed by too many options" to "clear plan, Tuesday evening nonstop, full Wednesday for prep" in about 30 minutes of conversation. That's the kind of thinking I usually can't do alone.
+I went from "paralyzed by too many options" to "clear plan, Tuesday evening nonstop, full Wednesday for prep in the actual office with the AV setup" in about 30 minutes of free-form conversation. That's the kind of thinking-out-loud that usually happens in my head and goes in circles. Having an assistant with the right API keys and data feeds means the conversation actually converges on a decision.
 
 ## Building tools in conversation
 
@@ -49,60 +39,54 @@ The assistant recognized it needed better capabilities, I agreed, we built them 
 
 ## The $30K discovery
 
-Right after the email mirror finished syncing, I pointed it at expert network platforms. GLG, Tegus, AlphaSights, Guidepoint, Coleman Research — companies that pay subject matter experts $500/hour for phone consultations about things they already know.
+Right after the email mirror finished syncing, I pointed it at expert network platforms. GLG, Tegus, AlphaSights, Guidepoint, Coleman Research — companies that pay subject matter experts for phone consultations about things they already know.
 
-Sixty seconds of searching. Result: 65 distinct consultation opportunities in the past year. I'd completed 5. The other 60 expired because the invitations got buried in my inbox. Approximately $30,000 in potential earnings, gone.
+I've been in a busy phase of life — divorce, solo parenting, job transition, building new systems. I deeply suspected I'd been missing consultation opportunities, but I didn't know the scale. I was genuinely curious.
 
-That search was only possible because of the tool we'd built *that same day*. And the reason I even thought to look was because expert network automation was one of the subtasks on ZAC-156. The Linear ticket held the context. The assistant held the thread.
+Sixty seconds of searching across 205K messages:
+
+- **65 distinct consultation opportunities** in the past year
+- **Only 5 completed**
+- **~$30,000 in potential earnings** sitting there
+
+The invitations weren't buried in some spam folder. I saw most of them. I just didn't have the bandwidth to act on them fast enough — these things have 24-48 hour response windows. When you're managing everything else in life, a $500/hr phone call that requires a 10-minute response somehow doesn't happen.
+
+That search was only possible because of the tool we'd built *that same day*. And that's the pattern that makes this system compound — every conversation potentially creates a new capability.
 
 ## The Linear ticket as shared state
 
-This is the part that surprised me most. Having a single Linear ticket as the "source of truth" for the day meant Claw could reference it when I context-switched (which I do constantly). I'd jump from flights to email infrastructure to blog posts to weather monitoring, and the thread held. Not because the AI has perfect memory — it doesn't, sessions reset — but because the task list was written down, in Linear, and it could always go back to it.
+This is the part that surprised me most. Having a single Linear ticket as the source of truth for the day meant the assistant could reference it whenever I changed direction. I'd jump from flights to email infrastructure to blog posts to weather monitoring, and the thread held.
 
-For someone with ADHD, this is huge. The biggest failure mode isn't inability to work — it's losing track of what you were doing. When the work itself is distributed across a Linear ticket, and the assistant can read that ticket, the state doesn't live in my head anymore. It lives in the system.
+For someone with ADHD, this is huge. I changed my mind about flights three times. I got curious about expert networks mid-flight-planning. I pivoted to blog writing because I was excited about what we'd built. Every time I shifted focus, the assistant had the full context — not just from the current conversation, but from the Linear ticket, from memory files it maintains across sessions, from the tools it had already used.
 
-I dropped things constantly today. Went for a cigarette. Got distracted by the weather. Changed my mind about flights three times. Every time I came back, the assistant knew where we were because it could check the ticket.
+This is actually one of the things that's better about an always-on assistant compared to a regular chatbot. The memory is persistent. It knows what happened this morning, what we decided last week, what's on the task board. When I come back after a break, it doesn't ask me to re-explain everything. The state lives in the system, not in my head.
 
-## What made today different
+## Every conversation makes it more capable
 
-Looking back, it wasn't one feature. It was the combination:
+Here's what I think is the most interesting thing about this setup. Every time I interact with my assistant and we hit a wall — bad email search, no flight data, missing analytics — that gap can become a permanent new capability.
 
-**Browser access.** Being able to say "pull up AA.com and search CLT to SFO" and have it actually do it — fill in the forms, read the results, compare options across tabs. Not perfect (the browser timed out a few times), but functional enough to be useful.
+Today alone:
+- **Email search was broken** → built gmail-mirror, a full Go CLI. Now it can search 205K emails in milliseconds, forever.
+- **Needed flight data** → built a flight search skill backed by the Kiwi MCP server. Now it can pull flight options from a reliable data feed without touching a browser.
+- **Wanted affiliate analytics** → wired up the Dub.co API with a new skill. Now it can track which blog articles drive actual conversions.
 
-**Real email search.** Going from "I can see your last 6 emails" to "I can search 205,000 messages in 20 milliseconds" is a qualitative change, not just quantitative. It enabled the expert network analysis, which enabled the realization that I'm hemorrhaging consulting income, which will drive the automation I build next week.
+Each of these is usually just a script or two and an API key. They get saved as skills — small, composable capabilities that persist across sessions. The assistant gets permanently more capable with every conversation.
 
-**Linear as shared state.** One ticket, ZAC-156, held the whole day together. Subtasks for flights, email infrastructure, blog posts, affiliate content, expert networks. The assistant could always orient itself by checking the ticket.
-
-**Free-form conversation.** I didn't have to format my requests. I voice-dictated most of them while walking around my apartment. "I'm thinking about flying Tuesday night instead." "Can you check if BWI is safe given the storm?" "Actually, generate five images for the blog post." The assistant handled the mode-switching because it had the context.
-
-**Subagent parallelism.** While I was talking about flights, the assistant spawned background workers to generate blog post images, build the Dub.co analytics skill, and run the full email sync. Work happened in parallel with conversation. That's the orchestrator pattern I've been building toward.
+That's the compounding effect. Six months ago, it could read my email (barely). Today it can search 17 years of email history, pull flight options, track affiliate commissions, query my bank accounts, manage Linear tickets, check my sleep data, and monitor the weather — all in a single conversation where I'm just thinking out loud.
 
 ## The gap between demo and daily driver
 
 I've been building AI assistant infrastructure for months, and people ask me: is it actually useful, or is it a cool demo?
 
-Until today, the honest answer was "mostly cool demo." The tools worked individually. The integrations were real. But the *experience* of using it felt fragile — one wrong turn and you're fighting the system instead of using it.
+Until today, the honest answer was somewhere in between. The tools worked individually. The integrations were real. But the *experience* of using it still felt like I was operating machinery rather than thinking with a partner.
 
-Today felt different. Not because the technology changed dramatically overnight, but because enough pieces reached minimum viability at the same time. Email search that actually works. Browser control that mostly works. A task management system (Linear) that the assistant can read and reference. Weather data, flight data, financial data, all queryable in the same conversation.
+Today felt different. Not because the technology changed dramatically overnight, but because enough pieces reached minimum viability at the same time. Email search that actually works across my full history. Flight data from a reliable API. A task management system the assistant can read and reference. Weather, financial, and analytics data, all queryable in the same conversation.
 
 The gap between "cool demo" and "daily driver" isn't features. It's reliability × breadth × context. You need enough tools working reliably enough, across enough of your life, with enough shared context, that the cognitive load of using the system drops below the cognitive load of doing things yourself.
 
-Today crossed that line. Not for everything — there's still a lot of manual intervention, a lot of browser timeouts, a lot of rough edges. But for the first time, the trajectory feels irreversible. I can see the path from here to an assistant that genuinely handles the operational drag of my life so I can focus on building.
+Today crossed that line. Not for everything — there are still rough edges, tools that need improvement, capabilities I haven't built yet. But the trajectory feels irreversible. Every conversation adds a new skill, fixes a bug, improves a data feed. The system gets better every time I use it.
 
-## What's next
-
-The immediate next steps from today's work:
-
-- **Expert network auto-detection** — gmail-mirror + pattern matching to flag new consultation invitations within minutes of arrival
-- **Flight booking skill** — formalize the AA.com browser flow into a repeatable skill with my preferences baked in
-- **Commission tracking** — Dub.co API integration to detect which affiliate articles drive actual conversions
-- **Remote presentation backup** — contingency plan to deliver the Thursday workshop via video if storms ground me
-
-Each of these was born from today's conversations, not a product roadmap. The system learns what I need by watching me need it.
-
-That's the whole point. I'm building cognitive infrastructure that compounds. Every day it gets a little more capable, a little more reliable, a little more "I couldn't do this day without you."
-
-Today was the first day that felt true.
+I can see the path from here to an assistant that genuinely handles the operational drag of my life so I can focus on building.
 
 ---
 
