@@ -220,7 +220,7 @@ const SemanticSpaceVisualizer = ({ currentText, currentEmbedding }: {
       "large animals": "#5a8a72", // sage
       "small animals": "#a8697a", // dusty-rose
       "past time": "#7a7a6a", // warm-stone
-      "future time": "#06b6d4", // parchment-600
+      "future time": "#8b7355", // parchment-600
     };
     return colors[category as keyof typeof colors] || "#7a7a6a";
   };
@@ -311,7 +311,7 @@ const SemanticSpaceVisualizer = ({ currentText, currentEmbedding }: {
              "large animals": "#5a8a72",
              "small animals": "#a8697a",
              "past time": "#7a7a6a",
-             "future time": "#06b6d4"
+             "future time": "#8b7355"
            }).map(([category, color]) => (
             <div key={category} className="flex items-center space-x-2">
               <div 

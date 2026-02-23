@@ -245,6 +245,13 @@ function EducationalSection({
       textMuted: 'text-amber-700 dark:text-amber-300',
       icon: 'text-amber-600 dark:text-amber-400'
     },
+    teal: {
+      bg: 'bg-teal-50 dark:bg-teal-900/20',
+      border: 'border-teal-200 dark:border-teal-800',
+      text: 'text-teal-900 dark:text-teal-100',
+      textMuted: 'text-teal-700 dark:text-teal-300',
+      icon: 'text-teal-600 dark:text-teal-400'
+    },
     green: {
       bg: 'bg-green-50 dark:bg-green-900/20',
       border: 'border-green-200 dark:border-green-800',
