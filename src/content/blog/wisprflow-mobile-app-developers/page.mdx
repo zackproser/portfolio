@@ -1,4 +1,7 @@
-import { AffiliateLink, InlineAffiliateCTA, VoiceAIDemoCard } from '@/components/StickyAffiliateCTA'
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+
+export const campaign = 'wisprflow-mobile-app-developers'
 
 # WisprFlow for Mobile App Developers: Voice-First Development Notes
 
@@ -6,7 +9,7 @@ Mobile app development requires constant context switching between devices, IDEs
 
 WisprFlow's new Android app (launched February 23rd, 2026) brings professional voice transcription directly to the mobile development workflow. Here's how mobile developers are using it to stay productive.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Device Testing Documentation
 
@@ -22,7 +25,7 @@ When working with new APIs or debugging integration issues, voice notes capture 
 
 **Voice note:** "Stripe payment intent creation fails with 400 error when amount includes cents in EUR currency. Need to multiply by 100 before sending to API. Document this in payment service class."
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Cross-Platform Testing Insights
 
@@ -36,7 +39,7 @@ During user testing sessions, voice notes capture behavioral insights without di
 
 **Voice note:** "User expected pull-to-refresh on profile screen but we only have it on timeline. Consider adding refresh gesture to profile view."
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Code Review Preparation
 
@@ -50,7 +53,7 @@ Mobile performance testing often reveals patterns that need documentation:
 
 **Voice note:** "App launch time increases significantly after 50 photos in gallery view. Implement lazy loading or pagination for image thumbnails. Affects older devices more than newer ones."
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Integration with Development Workflow
 
@@ -63,6 +66,6 @@ WisprFlow's offline capabilities make it ideal for mobile development scenarios:
 
 ## Getting Started
 
-<AffiliateLink product="wisprflow">Try WisprFlow free</AffiliateLink> for your next mobile development project. The Android app provides the voice capture capabilities you need without disrupting your development flow.
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink> for your next mobile development project. The Android app provides the voice capture capabilities you need without disrupting your development flow.
 
 For mobile developers juggling multiple devices, platforms, and testing scenarios, voice input removes friction from documentation while keeping you focused on building great apps.

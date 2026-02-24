@@ -1,4 +1,7 @@
-import { AffiliateLink, InlineAffiliateCTA, VoiceAIDemoCard } from '@/components/StickyAffiliateCTA'
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+
+export const campaign = 'wisprflow-technical-writers'
 
 # WisprFlow for Technical Writers: Voice-First Documentation Workflow
 
@@ -13,7 +16,7 @@ Subject Matter Expert interviews form the backbone of technical documentation. W
 **Traditional challenge:** Manual note-taking during interviews misses technical details
 **WisprFlow solution:** Accurate transcription of technical terms, API names, and process descriptions
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## First Draft Creation Through Dictation
 
@@ -31,7 +34,7 @@ Documenting APIs requires precise technical language that WisprFlow handles well
 
 **Transcription:** "GET endpoint /api/v2/users/{user_id} returns JSON object containing user profile data including username, email, created_timestamp, and nested preferences object with theme and notification settings"
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Research Note Organization
 
@@ -47,7 +50,7 @@ Explaining complex code examples works well with voice:
 
 **Voice explanation:** "This function handles user authentication by first checking if the session token exists, then validating the token signature against the secret key, and finally retrieving user permissions from the database before returning the authorized user object."
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Documentation Review and Editing Notes
 
@@ -64,7 +67,7 @@ Many technical writing scenarios benefit from offline capabilities:
 - **Field work** documenting on-site systems
 - **Interview recordings** in confidential settings
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Integration with Documentation Tools
 
@@ -86,6 +89,6 @@ WisprFlow's accuracy with technical terminology reduces post-transcription editi
 
 ## Getting Started for Technical Writers
 
-<AffiliateLink product="wisprflow">Start your WisprFlow free trial</AffiliateLink> and test it with your most challenging technical content. The offline capabilities and technical term accuracy will quickly prove valuable for documentation workflows.
+<AffiliateLink product="wisprflow" campaign={campaign}>Start your WisprFlow free trial</AffiliateLink> and test it with your most challenging technical content. The offline capabilities and technical term accuracy will quickly prove valuable for documentation workflows.
 
 For technical writers juggling complex subject matter, multiple sources, and tight deadlines, voice input removes friction from the research and drafting process while maintaining the precision technical documentation requires.

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
 import React from 'react';
 import sharp from 'sharp';
 
@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest): Promise<Response> {
+export async function GET(request: NextRequest) {
   try {
     // Parse the URL directly from request.url
     const requestUrl = request.url;

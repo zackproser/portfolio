@@ -5,5 +5,5 @@
   "description": "Complete review of WisprFlow's new Android app launched Feb 23, 2026. Features, performance, and real-world testing results.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow-android-review-hero.webp",
   "tags": ["android", "voice-to-text", "app-review", "mobile"],
-  "hiddenFromIndex": false
+  "hiddenFromIndex": true
 }
