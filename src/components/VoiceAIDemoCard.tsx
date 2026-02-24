@@ -41,7 +41,7 @@ export default function VoiceAIDemoCard({ className = '' }: VoiceAIDemoCardProps
               playsInline
               className="w-full h-auto block bg-zinc-900 aspect-video object-cover"
             >
-              <source src="https://zackproser.b-cdn.net/images/command-voice.mp4" type="video/mp4" />
+              <source src="https://zackproser.b-cdn.net/images/drive-voice.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
