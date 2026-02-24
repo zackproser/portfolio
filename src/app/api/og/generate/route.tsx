@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from '@vercel/og';
 import React from 'react';
 import sharp from 'sharp';
 
