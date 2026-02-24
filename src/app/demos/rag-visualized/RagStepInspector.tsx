@@ -328,7 +328,7 @@ export default function RagStepInspector({
                             {activeView === 'embedding' && <span className="text-xs font-medium text-emerald-600">Vector Space</span>}
                             {activeView === 'search' && <span className="text-xs font-medium text-burnt-600">Similarity Search</span>}
                             {activeView === 'retrieval' && <span className="text-xs font-medium text-amber-600">Context Selection</span>}
-                            {activeView === 'prompt' && <span className="text-xs font-medium text-amber-600">Context Injection</span>}
+                            {activeView === 'prompt' && <span className="text-xs font-medium text-teal-600">Context Injection</span>}
                             {activeView === 'answer' && <span className="text-xs font-medium text-green-600">Final Output</span>}
                          </div>
                          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -581,7 +581,7 @@ export default function RagStepInspector({
                         {/* 4. Prompt View */}
                         {activeView === 'prompt' && (
                              <div className="space-y-4">
-                                <div className="p-4 bg-burnt-50/50 rounded-xl border border-burnt-100 dark:bg-amber-900/10 dark:border-amber-900/30 text-sm text-burnt-900 dark:text-amber-100">
+                                <div className="p-4 bg-teal-50/50 rounded-xl border border-teal-100 dark:bg-teal-900/10 dark:border-teal-900/30 text-sm text-teal-900 dark:text-teal-100">
                                     <p className="font-medium mb-1">Visual Prompt Construction</p>
                                     <p className="text-xs">The LLM only sees this exact prompt—no other information. Retrieved context is &quot;sandwiched&quot; between system instructions and your query.</p>
                                 </div>
@@ -594,12 +594,12 @@ export default function RagStepInspector({
                                         <div className="space-y-3">
                                             {/* System Prompt - Top */}
                                             <div className="relative">
-                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-burnt-500 rounded-full"></div>
-                                                <div className="pl-4 p-4 rounded-lg bg-burnt-50 dark:bg-amber-900/30 border-2 border-burnt-200 dark:border-amber-800">
+                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-teal-500 rounded-full"></div>
+                                                <div className="pl-4 p-4 rounded-lg bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-200 dark:border-teal-800">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="px-2 py-0.5 rounded bg-burnt-100 dark:bg-amber-900 text-burnt-700 dark:text-amber-300 text-[10px] font-bold uppercase">System Prompt</div>
+                                                        <div className="px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300 text-[10px] font-bold uppercase">System Prompt</div>
                                                     </div>
-                                                    <p className="text-xs text-burnt-900 dark:text-amber-100 leading-relaxed">
+                                                    <p className="text-xs text-teal-900 dark:text-teal-100 leading-relaxed">
                                                         {simulationData.answer.promptParts.systemPrompt}
                                                     </p>
                                                 </div>
@@ -612,15 +612,15 @@ export default function RagStepInspector({
                                             
                                             {/* Retrieved Context - Middle */}
                                             <div className="relative">
-                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-amber-500 rounded-full"></div>
-                                                <div className="pl-4 p-4 rounded-lg bg-amber-50 dark:bg-amber-900/30 border-2 border-amber-200 dark:border-amber-800">
+                                                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-teal-500 rounded-full"></div>
+                                                <div className="pl-4 p-4 rounded-lg bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-200 dark:border-teal-800">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <div className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 text-[10px] font-bold uppercase">Retrieved Context</div>
-                                                        <span className="text-xs text-amber-600 dark:text-amber-400">({simulationData.answer.promptParts.contextSections.length} chunks)</span>
+                                                        <div className="px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300 text-[10px] font-bold uppercase">Retrieved Context</div>
+                                                        <span className="text-xs text-teal-600 dark:text-teal-400">({simulationData.answer.promptParts.contextSections.length} chunks)</span>
                                                     </div>
                                                     <div className="space-y-2">
                                                         {simulationData.answer.promptParts.contextSections.map((s, i) => (
-                                                            <div key={i} className="text-xs text-amber-900 dark:text-amber-100 leading-relaxed p-2 bg-white/50 dark:bg-zinc-900/50 rounded border border-amber-100 dark:border-amber-800">
+                                                            <div key={i} className="text-xs text-teal-900 dark:text-teal-100 leading-relaxed p-2 bg-white/50 dark:bg-zinc-900/50 rounded border border-teal-100 dark:border-teal-800">
                                                                 <span className="font-semibold">Source {i+1} - {s.docTitle}:</span> {s.text.substring(0, 150)}{s.text.length > 150 ? '...' : ''}
                                                             </div>
                                                         ))}

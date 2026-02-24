@@ -42,6 +42,9 @@ export default {
           400: '#d1c7b7',  // Pencil gray / subtle borders
           500: '#b8a88f',  // Muted text
           600: '#8b7355',  // Darker accents
+          700: '#6e5a44',
+          800: '#544433',
+          900: '#3a2f24',
         },
         charcoal: {
           50: '#2c3e50',   // Light text on dark
