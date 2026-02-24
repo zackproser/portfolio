@@ -7,7 +7,7 @@ import { getAllContent } from '@/lib/content-handlers'
 import { ExtendedMetadata } from '@/types'
 
 export const metadata: Metadata = createMetadata({
-  title: 'Zack Proser - Videos',
+  title: 'Zack Proser Videos - AI Tutorials, Streams & Coding Demos',
   description: 'All of my latest Twitch streams, YouTube videos, how-tos, talks, webinars, demos, and code walkthroughs'
 })
 

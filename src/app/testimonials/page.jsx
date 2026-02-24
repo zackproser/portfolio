@@ -235,7 +235,7 @@ export default function Example() {
                   <Image
                     className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
                     src={featuredTestimonial.author.imageUrl}
-                    alt=""
+                    alt={`Profile photo of ${featuredTestimonial.author.name}`}
                     width={40}
                     height={40}
                   />
@@ -271,7 +271,7 @@ export default function Example() {
                             <Image
                               className="h-10 w-10 rounded-full bg-gray-50 dark:bg-gray-700"
                               src={testimonial.author.imageUrl}
-                              alt=""
+                              alt={`Profile photo of ${testimonial.author.name}`}
                               width={40}
                               height={40}
                             />
