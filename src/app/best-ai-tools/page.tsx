@@ -7,6 +7,7 @@ import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { track } from '@vercel/analytics'
+import { getAffiliateLink } from '@/lib/affiliate'
 import { sendGTMEvent } from '@next/third-parties/google'
 import {
   Mic,
@@ -297,7 +298,7 @@ export default function AITools2026Page() {
                 isDark ? 'ring-2 ring-amber-500/30' : 'ring-1 ring-parchment-300 shadow-xl'
               }`}>
                 <a
-                  href="https://ref.wisprflow.ai/zack-proser"
+                  href={getAffiliateLink({ product: 'wisprflow', campaign: 'best-ai-tools', medium: 'tools', placement: 'hero-card' })}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track('affiliate_click', { product: 'wisprflow', source: 'best-ai-tools', element: 'image' })}
@@ -346,7 +347,7 @@ export default function AITools2026Page() {
 
                 <div className="flex flex-wrap gap-4">
                   <a
-                    href="https://ref.wisprflow.ai/zack-proser"
+                    href={getAffiliateLink({ product: 'wisprflow', campaign: 'best-ai-tools', medium: 'tools', placement: 'inline-cta' })}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => track('affiliate_click', { product: 'wisprflow', source: 'best-ai-tools' })}
@@ -414,7 +415,7 @@ export default function AITools2026Page() {
 
                 <div className="flex flex-wrap gap-4">
                   <a
-                    href="https://go.granola.ai/zack-proser"
+                    href={getAffiliateLink({ product: 'granola', campaign: 'best-ai-tools', medium: 'tools', placement: 'inline-cta' })}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => track('affiliate_click', { product: 'granola', source: 'best-ai-tools' })}
@@ -443,7 +444,7 @@ export default function AITools2026Page() {
                 isDark ? 'ring-2 ring-amber-500/30' : 'ring-1 ring-parchment-300 shadow-xl'
               }`}>
                 <a
-                  href="https://go.granola.ai/zack-proser"
+                  href={getAffiliateLink({ product: 'granola', campaign: 'best-ai-tools', medium: 'tools', placement: 'hero-card' })}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track('affiliate_click', { product: 'granola', source: 'best-ai-tools', element: 'image' })}

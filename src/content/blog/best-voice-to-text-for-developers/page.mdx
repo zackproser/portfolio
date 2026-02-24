@@ -5,9 +5,10 @@ import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 import { ComparisonSchema } from '@/components/ReviewSchema';
 import FAQSection from '@/components/FAQSection';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "best-voice-to-text-for-developers";
 
 <ComparisonSchema
   products={[
@@ -40,8 +41,8 @@ Here's what actually works for developer workflows.
 
 | Use Case | Best Tool | Why |
 |----------|-----------|-----|
-| **Daily Coding** | [WisprFlow](https://ref.wisprflow.ai/zack-proser) | System-wide, learns tech terms, context-aware |
-| **Meeting Notes** | [Granola](https://go.granola.ai/zack-proser) | No bot, captures standups, 1:1s, interviews |
+| **Daily Coding** | <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> | System-wide, learns tech terms, context-aware |
+| **Meeting Notes** | <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> | No bot, captures standups, 1:1s, interviews |
 | **Building Voice Features** | Whisper API | Accurate, cheap, flexible |
 | **Multi-Language** | Whisper | 99 languages supported |
 
@@ -61,11 +62,11 @@ Let me walk you through each recommendation.
 
 ## #1: WisprFlow - Best for Daily Developer Work
 
-<a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="wisprflow" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-to-text interface" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
-[WisprFlow](https://ref.wisprflow.ai/zack-proser) is my daily driver. I went from 90 WPM typing to **179 WPM with voice**. That's not a typo—voice is 2x faster than my already-above-average typing.
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is my daily driver. I went from 90 WPM typing to **179 WPM with voice**. That's not a typo—voice is 2x faster than my already-above-average typing.
 
 ### Why It's Best for Developers
 
@@ -106,7 +107,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 Subscription model (~$10-20/month). Worth it if you spend hours daily creating text.
 
-[Try WisprFlow free →](https://ref.wisprflow.ai/zack-proser)
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free →</AffiliateLink>
 
 **Read more**: [Full WisprFlow Review](/blog/wisprflow-review) | [High-Leverage Workflow Guide](/blog/wisprflow-high-leverage-workflow)
 
@@ -114,11 +115,11 @@ Subscription model (~$10-20/month). Worth it if you spend hours daily creating t
 
 ## #2: Granola - Best for Developer Meetings
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
-[Granola](https://go.granola.ai/zack-proser) captures every meeting without the awkward "Recording Bot has joined" notification that makes everyone self-conscious.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures every meeting without the awkward "Recording Bot has joined" notification that makes everyone self-conscious.
 
 ### Why It's Best for Developer Meetings
 
@@ -137,7 +138,7 @@ Subscription model (~$10-20/month). Worth it if you spend hours daily creating t
 - **Architecture Meetings**: Capture trade-off discussions for ADRs
 - **Customer Calls**: Technical feedback organized automatically
 
-[Try Granola free →](https://go.granola.ai/zack-proser)
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free →</AffiliateLink>
 
 **Read more**: [Full Granola Review](/blog/granola-ai-review) | [Granola vs Otter Comparison](/blog/granola-vs-otter)
 
@@ -203,8 +204,8 @@ Here's exactly what I use daily:
 
 | Tool | Purpose | Link |
 |------|---------|------|
-| **WisprFlow** | All text creation | [Try free](https://ref.wisprflow.ai/zack-proser) |
-| **Granola** | Meeting capture | [Try free](https://go.granola.ai/zack-proser) |
+| **WisprFlow** | All text creation | <AffiliateLink product="wisprflow" campaign={campaign}>Try free</AffiliateLink> |
+| **Granola** | Meeting capture | <AffiliateLink product="granola" campaign={campaign}>Try free</AffiliateLink> |
 | **Cursor** | AI-assisted coding | [Cursor.sh](https://cursor.sh) |
 | **Claude** | AI assistant | [Claude.ai](https://claude.ai) |
 
@@ -244,12 +245,12 @@ WisprFlow is the voice interface. Everything else receives my voice-generated pr
 ## Get Started Today
 
 <div className="flex flex-wrap gap-3 my-6">
-  <InlineAffiliateCTA product="wisprflow" />
-  <InlineAffiliateCTA product="granola" />
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
 </div>
 
-1. **For coding productivity**: [Try WisprFlow](https://ref.wisprflow.ai/zack-proser) - 2 minutes to set up, immediate 2x speed boost
-2. **For meeting capture**: [Try Granola](https://go.granola.ai/zack-proser) - Never miss action items again
+1. **For coding productivity**: <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow</AffiliateLink> - 2 minutes to set up, immediate 2x speed boost
+2. **For meeting capture**: <AffiliateLink product="granola" campaign={campaign}>Try Granola</AffiliateLink> - Never miss action items again
 3. **For building voice apps**: Start with Whisper API
 
 The best time to adopt voice-first development was a year ago. The second best time is now.

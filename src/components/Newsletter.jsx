@@ -30,7 +30,7 @@ function MailIcon(props) {
 	);
 }
 
-export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className, position = "content", tags = [] }) {
+export default function Newsletter({ title, body, successMessage, onSubscribe = () => {}, className = /** @type {string | undefined} */ (undefined), position = "content", tags = /** @type {string[]} */ ([]) }) {
 	const referrer = usePathname()
 	const [formSuccess, setSuccess] = useState(false);
 	const [formError, setError] = useState(false);

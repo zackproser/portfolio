@@ -228,7 +228,7 @@ export function ArticleLayout({
         </div>
       </Container>
       {shouldShowVoiceAffiliateCTA(safeSlug) && (
-        <StickyAffiliateCTA product="both" />
+        <StickyAffiliateCTA product="both" campaign={safeSlug} />
       )}
     </>
   )

@@ -13,6 +13,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { track } from '@vercel/analytics'
+import { getAffiliateLink } from '@/lib/affiliate'
+import Newsletter from '@/components/Newsletter'
 
 import VoicePipelineVisualization from './VoicePipelineVisualization'
 import MultiAgentOrchestration from './MultiAgentOrchestration'
@@ -192,18 +195,18 @@ export default function VoiceAIDemoClient() {
           className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto"
         >
           See how{' '}
-          <a 
-            href="https://ref.wisprflow.ai/zack-proser" 
-            target="_blank" 
+          <a
+            href={getAffiliateLink({ product: 'wisprflow', campaign: 'voice-ai-demo', medium: 'demo', placement: 'inline-cta' })}
+            target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-purple-600 dark:text-purple-400 hover:underline"
           >
             WisprFlow
           </a>
           {' '}and{' '}
-          <a 
-            href="https://go.granola.ai/zack-proser" 
-            target="_blank" 
+          <a
+            href={getAffiliateLink({ product: 'granola', campaign: 'voice-ai-demo', medium: 'demo', placement: 'inline-cta' })}
+            target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-amber-600 dark:text-amber-400 hover:underline"
           >
@@ -242,7 +245,7 @@ export default function VoiceAIDemoClient() {
               </p>
               <p className="text-sm sm:text-base leading-relaxed">
                 But here&apos;s the thing: with{' '}
-                <a href="https://ref.wisprflow.ai/zack-proser" target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300">
+                <a href={getAffiliateLink({ product: 'wisprflow', campaign: 'voice-ai-demo', medium: 'demo', placement: 'text-link' })} target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300">
                   WisprFlow
                 </a>, 
                 I&apos;m now hitting <span className="font-semibold text-green-600 dark:text-green-400">179 WPM</span>—essentially 
@@ -671,6 +674,17 @@ export default function VoiceAIDemoClient() {
           </div>
         </div>
       </section>
+
+      <div className="mt-8">
+        <Newsletter
+          title="Get Voice-First AI Tips Weekly"
+          body="Practical workflows for WisprFlow, Granola, and voice-driven development. No fluff."
+          successMessage="You're in! Check your inbox for voice-first tips."
+          onSubscribe={() => track('voice_ai_demo_newsletter_subscribe')}
+          position="voice-ai-demo-footer"
+          tags={['interest:voice-ai', 'source:demo']}
+        />
+      </div>
     </div>
   )
 }

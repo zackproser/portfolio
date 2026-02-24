@@ -3,37 +3,38 @@ import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "granola-ai-review";
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting intelligence interface" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 <figcaption>Granola transforms how you capture and organize meeting notes with AI-powered transcription</figcaption>
 
-I've been using [Granola](https://go.granola.ai/zack-proser) daily for months now, across every work meeting, personal call, and impromptu conversation worth capturing. After putting it through its paces, I can confidently say it's transformed how I handle meetings—and completely eliminated my note-taking anxiety.
+I've been using <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> daily for months now, across every work meeting, personal call, and impromptu conversation worth capturing. After putting it through its paces, I can confidently say it's transformed how I handle meetings—and completely eliminated my note-taking anxiety.
 
 ## What Is Granola?
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
-[Granola](https://go.granola.ai/zack-proser) is an AI-powered notepad that transcribes your meetings and enhances your notes without requiring a bot to join your calls. Unlike tools like Fireflies or Otter that announce themselves by joining as a participant, Granola captures audio directly from your device and works silently in the background.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is an AI-powered notepad that transcribes your meetings and enhances your notes without requiring a bot to join your calls. Unlike tools like Fireflies or Otter that announce themselves by joining as a participant, Granola captures audio directly from your device and works silently in the background.
 
 The key differentiator is the collaborative approach: you can take your own notes during the meeting, and Granola enhances them with context from the transcript. Or you can ignore it entirely and let it handle everything. Either way, you walk away with comprehensive, well-organized notes.
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting example showing transcription and action items" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 <figcaption>Granola automatically extracts action items, key decisions, and meeting highlights</figcaption>
 
 ## Getting Started with Granola
 
-One of the things I love about [Granola](https://go.granola.ai/zack-proser) is how effortless the setup is. Here's how to get it running in under 5 minutes:
+One of the things I love about <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is how effortless the setup is. Here's how to get it running in under 5 minutes:
 
 ### Installation & Setup
 
-1. **Download the app** from [granola.ai](https://go.granola.ai/zack-proser) for macOS, Windows, or iOS
+1. **Download the app** from <AffiliateLink product="granola" campaign={campaign}>granola.ai</AffiliateLink> for macOS, Windows, or iOS
 2. **Sign in with Google** — Granola uses Google single sign-on, so you'll need a Google Workspace or personal Gmail account
 3. **Grant permissions** — Allow microphone and system audio access so Granola can transcribe your meetings
 4. **Connect your calendar** — Your Google Calendar syncs automatically, showing upcoming meetings in the app
@@ -42,7 +43,7 @@ That's it. You're ready to go.
 
 ### Automatic Meeting Detection
 
-Here's where the magic happens. Once you've synced your calendar, [Granola](https://go.granola.ai/zack-proser) will:
+Here's where the magic happens. Once you've synced your calendar, <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> will:
 
 - **Send a notification one minute before scheduled meetings** with 2+ attendees
 - **Open both your video call AND start transcribing** with a single click on the notification
@@ -55,7 +56,7 @@ This "set it and forget it" approach means you never have to remember to start G
 
 ## My Daily Workflow
 
-I now use [Granola](https://go.granola.ai/zack-proser) for literally everything—work calls, personal conversations, impromptu discussions. Here's how it fits into my life:
+I now use <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> for literally everything—work calls, personal conversations, impromptu discussions. Here's how it fits into my life:
 
 ### Work Meetings
 
@@ -67,7 +68,7 @@ Phone calls with family, friends, and anyone else I want to remember clearly now
 
 ### On-the-Go Conversations
 
-This is where [Granola](https://go.granola.ai/zack-proser) really shines. The iOS app lets me capture coffee meetings, conference hallway conversations, and impromptu brainstorms with a single tap from the lock screen. Walking between sessions at a conference? One tap and you're capturing everything worth remembering.
+This is where <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> really shines. The iOS app lets me capture coffee meetings, conference hallway conversations, and impromptu brainstorms with a single tap from the lock screen. Walking between sessions at a conference? One tap and you're capturing everything worth remembering.
 
 <Image src="https://zackproser.b-cdn.net/images/busy.webp" alt="An overly occupied mind" width={800} height={600} className="rounded-lg shadow-xl" />
 <figcaption>Before Granola, my mind was cluttered with trying to remember everything from meetings</figcaption>
@@ -76,7 +77,7 @@ This is where [Granola](https://go.granola.ai/zack-proser) really shines. The iO
 
 Here's the transformation I didn't expect: my actual presence in meetings has improved dramatically.
 
-Before [Granola](https://go.granola.ai/zack-proser), I was always half-focused on capturing the right information. Should I write that down? Did I miss something important while typing? What if they mention a number I need later?
+Before <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>, I was always half-focused on capturing the right information. Should I write that down? Did I miss something important while typing? What if they mention a number I need later?
 
 Now I just talk. I engage fully with whoever I'm speaking with, knowing Granola is capturing everything. If a key decision gets made, I know I can verify the exact wording later. If someone commits to a deadline or deliverable, it's recorded.
 
@@ -87,7 +88,7 @@ This isn't just convenience—it's a fundamental shift in how I experience conve
 
 ## Templates for Standardized Outputs
 
-One feature that's proven invaluable for team workflows is [Granola's](https://go.granola.ai/zack-proser) template system. I've created templates for:
+One feature that's proven invaluable for team workflows is <AffiliateLink product="granola" campaign={campaign}>Granola's</AffiliateLink> template system. I've created templates for:
 
 - **Customer discovery calls**: Automatically extracts pain points, feature requests, and follow-up actions
 
@@ -101,7 +102,7 @@ When a meeting ends, I select the appropriate template and Granola formats the n
 
 ## Cross-Platform Availability
 
-[Granola](https://go.granola.ai/zack-proser) works across macOS, Windows, and iOS, which covers my entire device ecosystem:
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> works across macOS, Windows, and iOS, which covers my entire device ecosystem:
 
 - **Desktop (Mac/Windows)**: Perfect for scheduled video calls and screen-sharing sessions
 
@@ -116,7 +117,7 @@ The iOS app is particularly well-designed for quick capture. You can start recor
 
 ## What Makes It Different
 
-Unlike traditional meeting bots, [Granola](https://go.granola.ai/zack-proser) doesn't announce itself or make your meetings feel surveilled. There's no "Granola Bot has joined the meeting" moment that makes everyone self-conscious.
+Unlike traditional meeting bots, <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> doesn't announce itself or make your meetings feel surveilled. There's no "Granola Bot has joined the meeting" moment that makes everyone self-conscious.
 
 The hybrid approach—your notes enhanced by AI transcription—produces better results than either pure AI summarization or manual note-taking alone. The AI adds context and completeness; your notes provide emphasis and priority.
 
@@ -126,17 +127,17 @@ And the chat feature lets you query your notes later. Need to find what was said
 
 ## Part of My Voice-First Stack
 
-[Granola](https://go.granola.ai/zack-proser) has become an essential part of my broader [voice-first productivity stack](/blog/best-ai-voice-tools-2025). While [WisprFlow](/blog/wisprflow-review) handles my voice-to-text needs for writing and coding, Granola captures everything spoken in meetings.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> has become an essential part of my broader [voice-first productivity stack](/blog/best-ai-voice-tools-2025). While [WisprFlow](/blog/wisprflow-review) handles my voice-to-text needs for writing and coding, Granola captures everything spoken in meetings.
 
 Together, they've fundamentally changed how I work. I spend more time thinking and speaking than typing, which feels more natural and productive. The combination means I'm never worried about losing important information—whether I'm dictating code, writing a blog post, or sitting in a crucial client meeting.
 
 ## Privacy and Security
 
-[Granola](https://go.granola.ai/zack-proser) takes privacy and security seriously, with enterprise-grade encryption and comprehensive data protection measures. The fact that no bot joins your calls means your meetings feel more natural, and participants aren't put on notice that they're being recorded by a third party. For detailed information about their security practices, data handling, and compliance, visit their [dedicated trust center](https://trust.granola.ai/).
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> takes privacy and security seriously, with enterprise-grade encryption and comprehensive data protection measures. The fact that no bot joins your calls means your meetings feel more natural, and participants aren't put on notice that they're being recorded by a third party. For detailed information about their security practices, data handling, and compliance, visit their [dedicated trust center](https://trust.granola.ai/).
 
 ## Who Should Use Granola
 
-[Granola](https://go.granola.ai/zack-proser) is particularly valuable if you:
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is particularly valuable if you:
 
 - Spend significant time in back-to-back meetings
 
@@ -150,14 +151,14 @@ Together, they've fundamentally changed how I work. I spend more time thinking a
 
 ## The Bottom Line
 
-[Granola](https://go.granola.ai/zack-proser) has become one of those tools I can't imagine working without. The combination of reliable transcription, thoughtful organization features, and cross-platform availability means I'm never worried about losing important information from a conversation.
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> has become one of those tools I can't imagine working without. The combination of reliable transcription, thoughtful organization features, and cross-platform availability means I'm never worried about losing important information from a conversation.
 
 The note-taking anxiety is gone. I just show up, engage fully, and trust that everything important will be there when I need it.
 
-If you're drowning in meetings and struggling to keep track of what was said, decided, or committed to—give [Granola](https://go.granola.ai/zack-proser) a serious look. It's one of the highest-ROI productivity tools I've adopted this year.
+If you're drowning in meetings and struggling to keep track of what was said, decided, or committed to—give <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> a serious look. It's one of the highest-ROI productivity tools I've adopted this year.
 
 ---
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
-*Ready to transform your meeting workflow? [Get started with Granola here](https://go.granola.ai/zack-proser) and see how it changes your relationship with meetings.*
+*Ready to transform your meeting workflow? <AffiliateLink product="granola" campaign={campaign}>Get started with Granola here</AffiliateLink> and see how it changes your relationship with meetings.*

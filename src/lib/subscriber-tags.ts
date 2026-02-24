@@ -54,6 +54,8 @@ const TAG_RULES: TagRule[] = [
 
   // Product interest
   { match: 'demos/voice', tags: ['interest:voice-ai', 'source:demo'] },
+  { match: 'tokenize', tags: ['interest:ai-engineering'] },
+  { match: 'firecrawl', tags: ['interest:web-scraping', 'source:demo'] },
 
   // Comparison pages (high purchase intent)
   { match: 'vs-', tags: ['intent:comparison'] },

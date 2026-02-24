@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendFreeChaptersEmail } from "@/lib/postmark";
 import { getContentWithComponentByDirectorySlug, getAllPurchasableContent, getContentSlugs } from "@/lib/content-handlers";
 import { recordFreeChapterRequest, markFreeChapterRequestFulfilled } from "@/lib/free-chapters";
+import { getTagsFromReferrer } from "@/lib/subscriber-tags";
 import { auth } from "../../../../auth";
 
 export async function POST(req: NextRequest) {
@@ -37,10 +38,12 @@ export async function POST(req: NextRequest) {
 	console.log(`📬 [API] EmailOctopus configuration: API Key exists=${!!emailOctopusAPIKey}, List ID exists=${!!emailOctopusListId}`);
 
     // Build payload with only supported fields to avoid INVALID_PARAMETERS
+    const referrerTags = getTagsFromReferrer(referrer || '')
+    const allTags = [...new Set([`free-chapters-${productSlug}`, ...referrerTags])]
     const subscriptionData: Record<string, any> = {
         api_key: emailOctopusAPIKey,
         email_address: email,
-        tags: [`free-chapters-${productSlug}`],
+        tags: allTags,
         status: "SUBSCRIBED",
     };
     // Always write to the 'Referrer' field on EmailOctopus (list has this field)

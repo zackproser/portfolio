@@ -5,9 +5,10 @@ import rawMetadata from './metadata.json';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
 import { ComparisonSchema } from '@/components/ReviewSchema';
 import FAQSection from '@/components/FAQSection';
-import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "granola-vs-otter";
 
 <ComparisonSchema
   products={[
@@ -32,7 +33,7 @@ export const metadata = createMetadata(rawMetadata);
   }}
 />
 
-The fundamental difference between [Granola](https://go.granola.ai/zack-proser) and Otter.ai comes down to **how they capture your meetings**—and this seemingly technical detail changes everything about your meeting experience.
+The fundamental difference between <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> and Otter.ai comes down to **how they capture your meetings**—and this seemingly technical detail changes everything about your meeting experience.
 
 ## Quick Verdict
 
@@ -58,7 +59,7 @@ Here's what happens with Otter.ai:
 5. Someone asks "is this being recorded?"
 6. The natural conversation flow breaks
 
-With [Granola](https://go.granola.ai/zack-proser):
+With <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>:
 
 1. You join a call
 2. Granola captures audio from your device
@@ -78,9 +79,9 @@ With [Granola](https://go.granola.ai/zack-proser):
 
 **Winner: Granola** - The no-bot approach is a game-changer for meeting dynamics.
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="Granola AI meeting notes interface" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
 ### Meeting Types Supported
 
@@ -157,7 +158,7 @@ With [Granola](https://go.granola.ai/zack-proser):
 - You want to combine your notes with AI transcription
 - You use Mac, Windows, or iOS
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ### Choose Otter.ai If:
 
@@ -168,7 +169,7 @@ With [Granola](https://go.granola.ai/zack-proser):
 
 ## My Experience
 
-I switched from Otter to [Granola](https://go.granola.ai/zack-proser) six months ago, and I'm not going back. The difference in meeting quality is real:
+I switched from Otter to <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> six months ago, and I'm not going back. The difference in meeting quality is real:
 
 **With Otter**: I'd sometimes skip enabling it for sensitive 1:1s or client calls because the bot felt intrusive. Important conversations went uncaptured.
 
@@ -176,9 +177,9 @@ I switched from Otter to [Granola](https://go.granola.ai/zack-proser) six months
 
 The iOS app changed my conference experience. Walking between sessions, grabbing coffee with someone interesting, impromptu hallway conversations—all captured with a single tap from my lock screen.
 
-<a href="https://go.granola.ai/zack-proser" target="_blank" rel="noopener noreferrer">
+<AffiliateLink product="granola" campaign={campaign}>
   <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="Granola meeting notes example" width={800} height={600} className="rounded-lg shadow-xl" />
-</a>
+</AffiliateLink>
 
 <FAQSection
   faqs={[

@@ -113,6 +113,25 @@ const speakingEngagements = [
     ]
   },
   {
+    id: 'workos-gtm-cowork-2026-02-06',
+    type: 'internal',
+    title: 'Voice-First Development & Claude Code Cowork Enablement',
+    event: 'WorkOS GTM Training',
+    date: 'February 6, 2026',
+    location: 'WorkOS Office, San Francisco, CA',
+    description: 'Demonstrated how to use WisprFlow to code with your voice and ran live demos of Claude Code and Cowork enablement for GTM teams. Co-presented with Nick Nisi.',
+    image: 'https://zackproser.b-cdn.net/images/workos-gtm-training.webp',
+    audience: 'WorkOS GTM team (internal)',
+    topics: ['WisprFlow', 'Voice Development', 'Claude Code', 'Cowork', 'GTM Enablement'],
+    links: [
+      {
+        type: 'blog',
+        url: '/demos/voice-ai',
+        label: 'Try the voice AI demo'
+      }
+    ]
+  },
+  {
     id: 'workos-claude-skills-2025-10-23',
     type: 'internal',
     title: 'Claude Skills as Self-Documenting Runbooks',
