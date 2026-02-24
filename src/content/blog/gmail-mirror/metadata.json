@@ -3,5 +3,5 @@
   "author": "Zachary Proser",
   "date": "2026-2-22",
   "description": "My always-on AI assistant couldn't see past my last 6 emails. So I built gmail-mirror — a Go CLI that syncs 205K messages into local SQLite with FTS5 search. First thing it found: $30K in missed consulting opportunities.",
-  "image": "2026-02-22-20-58-00-gmail-mirror-og.png"
+  "image": "https://zackproser.b-cdn.net/images/2026-02-22-20-58-00-gmail-mirror-og.webp"
 }
