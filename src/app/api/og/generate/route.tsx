@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<Response> {
   try {
     // Parse the URL directly from request.url
     const requestUrl = request.url;
