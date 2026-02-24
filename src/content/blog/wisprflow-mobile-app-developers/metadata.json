@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Mobile App Developers: Voice-First Development Notes",
+  "author": "Zachary Proser", 
+  "date": "2026-02-24",
+  "description": "How mobile app developers use WisprFlow to document APIs, capture testing insights, and maintain development velocity.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow-mobile-developers-hero.webp",
+  "tags": ["mobile-development", "voice-to-text", "productivity", "android"],
+  "hiddenFromIndex": true
+}
