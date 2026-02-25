@@ -5,7 +5,7 @@
 
 set -e
 
-BRANCH="${1:-HEAD}"
+BRANCH="${1:-main}"
 ERRORS=0
 
 echo "🔍 Validating affiliate articles on $BRANCH..."

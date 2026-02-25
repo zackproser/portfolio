@@ -1,5 +1,8 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
-import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
 
 export const campaign = "granola-for-consultants"
 
