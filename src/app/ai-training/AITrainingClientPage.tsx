@@ -229,7 +229,7 @@ export default function AITrainingClientPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Cloud Internal Skills */}
+            {/* Claude Internal Skills */}
             <Card className="bg-blue-800/70 backdrop-blur-sm border-blue-600/50 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-500"></div>
               <CardHeader>
@@ -239,7 +239,7 @@ export default function AITrainingClientPage() {
                   </div>
                   <Badge className="bg-green-500/30 text-green-200">1 Day</Badge>
                 </div>
-                <CardTitle className="text-white text-xl">Cloud Internal Skills</CardTitle>
+                <CardTitle className="text-white text-xl">Claude Internal Skills</CardTitle>
                 <CardDescription className="text-white/70">
                   I come to your team and we build real AI workflows together — Claude skills, agent patterns, and internal tooling your team will actually use.
                 </CardDescription>
@@ -266,7 +266,7 @@ export default function AITrainingClientPage() {
               </CardContent>
             </Card>
 
-            {/* Cloud Co-Work */}
+            {/* Claude Cowork */}
             <Card className="bg-blue-800/70 backdrop-blur-sm border-blue-600/50 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500"></div>
               <CardHeader>
@@ -276,7 +276,7 @@ export default function AITrainingClientPage() {
                   </div>
                   <Badge className="bg-amber-500/30 text-amber-200">1 Day</Badge>
                 </div>
-                <CardTitle className="text-white text-xl">Cloud Co-Work</CardTitle>
+                <CardTitle className="text-white text-xl">Claude Cowork</CardTitle>
                 <CardDescription className="text-white/70">
                   A focused working session where I pair with your engineers on their actual AI challenges. We ship real code and solve real problems together.
                 </CardDescription>
