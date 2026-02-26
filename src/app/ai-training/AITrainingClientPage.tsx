@@ -319,7 +319,7 @@ export default function AITrainingClientPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Module 1 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -349,7 +349,7 @@ export default function AITrainingClientPage() {
             </Card>
 
             {/* Module 2 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-blue-500"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -379,7 +379,7 @@ export default function AITrainingClientPage() {
             </Card>
 
             {/* Module 3 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -409,7 +409,7 @@ export default function AITrainingClientPage() {
             </Card>
 
             {/* Module 4 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-pink-500"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -439,7 +439,7 @@ export default function AITrainingClientPage() {
             </Card>
 
             {/* Module 5 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-orange-500"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -469,7 +469,7 @@ export default function AITrainingClientPage() {
             </Card>
 
             {/* Module 6 */}
-            <Card className="bg-blue-700 border-blue-600 text-white overflow-hidden">
+            <Card className="bg-blue-700 border-blue-600 text-white relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
               <CardHeader>
                 <div className="flex items-center gap-3">
