@@ -12,6 +12,7 @@ export const navItems = [
   { name: 'Blog', href: '/blog' },
   { name: 'Videos', href: '/videos' },
   { name: 'Speaking', href: '/speaking' },
+  { name: 'DevTools', href: '/devtools' },
   { name: 'Learn', href: '/demos' },
   {
     name: 'Services',
