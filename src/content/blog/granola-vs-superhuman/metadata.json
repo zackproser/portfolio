@@ -1,10 +1,11 @@
 {
   "title": "Granola vs Superhuman: Meeting Notes vs Email Productivity in 2026",
   "author": "Zachary Proser",
-  "date": "2026-2-26",
+  "date": "2026-02-26",
   "description": "Compare Granola AI meeting notes vs Superhuman email productivity. Different tools for different productivity bottlenecks in professional workflows.",
   "image": "https://zackproser.b-cdn.net/images/granola-vs-superhuman.webp",
   "tags": ["comparison", "productivity", "meeting-notes", "email", "workflow"],
+  "hiddenFromIndex": true,
   "keywords": [
     "Granola vs Superhuman",
     "meeting notes vs email",

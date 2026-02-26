@@ -1,10 +1,11 @@
 {
   "title": "WisprFlow Android vs iOS: Which Platform is Better for Voice-to-Text?",
   "author": "Zachary Proser",
-  "date": "2026-2-26",
+  "date": "2026-02-26",
   "description": "Compare WisprFlow on Android vs iOS. Platform differences, features, and performance for professional voice-to-text workflows.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow-android-vs-ios.webp",
   "tags": ["android", "ios", "comparison", "voice-to-text", "mobile"],
+  "hiddenFromIndex": true,
   "keywords": [
     "WisprFlow Android vs iOS",
     "WisprFlow platform comparison",
