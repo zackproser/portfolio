@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Researchers: Voice-to-Text That Understands Academic Language",
+  "author": "Zachary Proser",
+  "date": "2026-02-25",
+  "description": "How WisprFlow helps researchers capture interviews, transcribe conference recordings, and turn voice notes into publishable academic content.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow-researchers-hero.webp",
+  "tags": ["wisprflow", "research", "academic", "voice-to-text", "interviews"],
+  "hiddenFromIndex": true
+}
