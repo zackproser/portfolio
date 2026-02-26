@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, Brain, Zap, BookOpen, GitBranch, Shield, CheckCircle2, Users, CalendarDays, Trophy, BarChart, Layers, Code } from "lucide-react"
+import { ArrowRight, Brain, Zap, BookOpen, GitBranch, Shield, CheckCircle2, Users, CalendarDays, Trophy, BarChart, Layers, Code, Monitor, Handshake } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Slider } from "@/components/ui/slider"
@@ -119,10 +119,10 @@ export default function AITrainingClientPage() {
                 </Badge>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                Turn Your Developers Into <span className="text-[#7cc2ff] font-extrabold relative">AI Engineers<span className="absolute -bottom-2 left-0 w-full h-1 bg-[#7cc2ff]/50 rounded-full"></span></span> in 90 Days
+                Turn Your Developers Into <span className="text-[#7cc2ff] font-extrabold relative">AI Engineers<span className="absolute -bottom-2 left-0 w-full h-1 bg-[#7cc2ff]/50 rounded-full"></span></span>
               </h1>
               <p className="text-xl text-white/90 max-w-2xl">
-                A structured training program that guarantees your development team will ship production-ready AI features in 90 days — or your money back.
+                From intensive 1-day workshops to full 90-day programs — hands-on AI training that gets your team shipping real features. Internal skills sessions, co-working days, and structured programs available.
               </p>
 
               <div className="flex flex-wrap gap-4 pt-4">
@@ -211,6 +211,145 @@ export default function AITrainingClientPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Training Formats Section */}
+      <section className="py-20 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-blue-700 to-blue-600 dark:from-zinc-900 dark:to-zinc-950">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-300/30 mb-4 px-4 py-1 text-sm font-semibold rounded-full">
+              Flexible Formats
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Choose Your Training Format</h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+              Whether you need a focused day of skill-building or a comprehensive multi-month program, I&apos;ll meet your team where they are.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Cloud Internal Skills */}
+            <Card className="bg-blue-800/70 backdrop-blur-sm border-blue-600/50 text-white relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <Monitor className="h-5 w-5 text-green-300" />
+                  </div>
+                  <Badge className="bg-green-500/30 text-green-200">1 Day</Badge>
+                </div>
+                <CardTitle className="text-white text-xl">Cloud Internal Skills</CardTitle>
+                <CardDescription className="text-white/70">
+                  I come to your team and we build real AI workflows together — Claude skills, agent patterns, and internal tooling your team will actually use.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Pick a real workflow your team needs automated</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Build it into a shareable, version-controlled skill</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Everyone leaves with working capabilities</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">In-person or remote</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Cloud Co-Work */}
+            <Card className="bg-blue-800/70 backdrop-blur-sm border-blue-600/50 text-white relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                    <Handshake className="h-5 w-5 text-amber-300" />
+                  </div>
+                  <Badge className="bg-amber-500/30 text-amber-200">1 Day</Badge>
+                </div>
+                <CardTitle className="text-white text-xl">Cloud Co-Work</CardTitle>
+                <CardDescription className="text-white/70">
+                  A focused working session where I pair with your engineers on their actual AI challenges. We ship real code and solve real problems together.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-amber-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Hands-on pairing on your codebase</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-amber-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Unblock AI integration challenges</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-amber-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Ship production code by end of day</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-amber-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Architecture review included</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Full Program */}
+            <Card className="bg-blue-800/70 backdrop-blur-sm border-blue-600/50 text-white relative overflow-hidden ring-2 ring-blue-400/50">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-500"></div>
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <Trophy className="h-5 w-5 text-blue-300" />
+                  </div>
+                  <Badge className="bg-blue-500/30 text-blue-200">90 Days</Badge>
+                </div>
+                <CardTitle className="text-white text-xl">Full AI Engineering Program</CardTitle>
+                <CardDescription className="text-white/70">
+                  The comprehensive program: foundations through production deployment. Your team ships a real AI feature or you get your money back.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">3-module structured curriculum</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Live workshops + async learning</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">Teams of 3-20 engineers</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-blue-300 mt-1 flex-shrink-0" />
+                    <span className="text-white/80">100% money-back guarantee</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-10 text-center">
+            <Button 
+              size="lg" 
+              className="bg-white hover:bg-white/90 text-blue-700"
+              onClick={handleOpenConsultation}
+            >
+              Book a Session
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
