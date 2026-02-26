@@ -11,13 +11,13 @@ import { AuthStatus } from './AuthStatus'
 export const navItems = [
   { name: 'Blog', href: '/blog' },
   { name: 'Videos', href: '/videos' },
+  { name: 'Speaking', href: '/speaking' },
   { name: 'Learn', href: '/demos' },
-  { name: 'DevTools', href: '/devtools' },
   {
     name: 'Services',
     dropdown: [
+      { name: 'AI Training & Cowork', href: '/ai-training' },
       { name: 'Custom Gen AI Solutions', href: '/services' },
-      { name: '90-Day AI Team Transformation', href: '/ai-training' },
       { name: 'Applied AI Engineer', href: '/applied-ai-engineer' },
     ],
   },
@@ -25,7 +25,6 @@ export const navItems = [
     name: 'About',
     dropdown: [
       { name: 'About Me', href: '/about' },
-      { name: 'Speaking', href: '/speaking' },
       { name: 'Testimonials', href: '/testimonials' },
       { name: 'Contact', href: '/contact' },
     ],
