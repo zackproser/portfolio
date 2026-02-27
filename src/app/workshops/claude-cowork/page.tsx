@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { SimpleLayout } from "@/components/SimpleLayout"
+import YoutubeEmbed from "@/components/YoutubeEmbed"
 import { Clock, Users, Zap, CheckCircle, ArrowRight, Star, Code, Brain, Target, Mail } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -97,6 +98,17 @@ export default function ClaudeCoworkWorkshop() {
           <div className="text-parchment-500 dark:text-slate-400">Team pricing available</div>
         </div>
       </div>
+
+      {/* Workshop Recording */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6">Watch the Workshop</h2>
+        <div className="rounded-xl overflow-hidden">
+          <YoutubeEmbed urls="https://www.youtube.com/watch?v=8bjcx5Hkj5w" title="Claude Cowork Workshop with Anthropic — February 2026" />
+        </div>
+        <p className="text-sm text-parchment-500 dark:text-slate-400 mt-3">
+          Recorded live at the WorkOS x Anthropic event in San Francisco, February 26, 2026.
+        </p>
+      </section>
 
       {/* The Pitch */}
       <section className="mb-16">

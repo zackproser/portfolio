@@ -1,0 +1,67 @@
+import Image from 'next/image';
+import YoutubeEmbed from '@/components/YoutubeEmbed';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+Last night I co-hosted a hands-on workshop with Anthropic at the WorkOS office in San Francisco. The goal: show engineers how far you can push Claude Code and Cowork by building something real — a complete go-to-market pipeline — in a single session.
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=8bjcx5Hkj5w" title="Claude Cowork Workshop with Anthropic" />
+
+## The Demo: What's Actually Possible
+
+I opened by showing real projects I've built with Claude Code to set the context for what's possible when you treat it as a daily development tool, not a novelty:
+
+- **Oura MCP integration** — connecting my sleep/readiness data to Claude via the Model Context Protocol
+- **Handwave** — a watchOS app that lets you control Claude Code sessions from your wrist
+- **Walking and talking in the woods** — shipping production code from mountain trails using voice-first development with WisprFlow
+
+The point wasn't to show off. It was to establish a baseline: Claude Code isn't just for generating boilerplate. It's a development environment that can handle complex, multi-step workflows if you know how to manage context and carry work forward.
+
+## The Hands-On Build: GTM Pipeline from Scratch
+
+Then we got hands-on. I walked everyone through building a complete go-to-market pipeline, step by step:
+
+### 1. ICP Identification
+Starting from a product description, we used Claude to research and identify ideal customer profiles — the specific personas, companies, and verticals most likely to convert.
+
+### 2. Data Scraping and Enrichment
+Once we had our ICPs, we scraped publicly available data and enriched it with context: company size, tech stack, recent funding, hiring patterns. All in Claude Code, all in real time.
+
+### 3. Competitive Analysis
+We built a competitive landscape analysis — identifying alternatives, their positioning, pricing, and weaknesses. This became the foundation for everything downstream.
+
+### 4. Battlecard Creation
+From the competitive analysis, we generated structured battlecards: the kind of side-by-side comparisons that sales teams actually use in calls.
+
+### 5. Pain Point Messaging
+Using the ICP research and competitive gaps, we crafted pain-point-specific messaging for each persona. Not generic marketing copy — targeted messages that reference specific problems each ICP faces.
+
+### 6. Cold Emails to ICPs
+We generated personalized cold email sequences for the identified prospects, incorporating the pain points and competitive positioning we'd already built.
+
+### 7. Blog Post and Content Schedule
+We drafted a blog post targeting the ICPs and built out a content calendar — the kind of thing that usually takes a content team days.
+
+### 8. Scheduled Cowork Task
+Here's where it gets interesting. We set up a **scheduled Cowork task** that would automatically produce the remaining blog posts from the content calendar — running autonomously while you do other work.
+
+## The Meta-Lesson: Context Management
+
+Throughout the workshop, I emphasized the patterns that make Claude Code sessions productive over extended periods:
+
+- **Carrying context forward** — how to structure your session so Claude maintains understanding across many interactions
+- **When to start fresh** vs. continue a thread
+- **Managing the context window** — what to keep in scope, what to offload to files
+- **Cowork scheduling** — setting up autonomous tasks that execute while you're offline
+
+These aren't features you learn from documentation. They're patterns you develop through daily use, and they're what separate "I tried Claude Code once" from "I ship with it every day."
+
+## What's Next
+
+This workshop format works. An hour of hands-on building with real output is worth more than any number of slide decks about AI capabilities. I'm taking an expanded two-hour version of this workshop on the road.
+
+If you want to bring this to your team — engineering, GTM, or both — [get in touch](/workshops/claude-cowork).
+
+The recording above is from the livestream. I'll update this post with the higher-quality office recording when it's available.

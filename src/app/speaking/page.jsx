@@ -70,14 +70,19 @@ const speakingEngagements = [
     topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
     links: [
       {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=8bjcx5Hkj5w',
+        label: 'Watch the workshop'
+      },
+      {
+        type: 'blog',
+        url: '/blog/claude-cowork-workshop-anthropic',
+        label: 'Read the write-up'
+      },
+      {
         type: 'blog',
         url: '/workshops/claude-cowork',
         label: 'Book this workshop'
-      },
-      {
-        type: 'twitter',
-        url: 'https://x.com/workos/status/2027200864591769835',
-        label: 'Watch livestream replay'
       }
     ]
   },
