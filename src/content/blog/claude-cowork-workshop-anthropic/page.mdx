@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import YoutubeEmbed from '@/components/YoutubeEmbed';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
@@ -9,59 +8,108 @@ Last night I co-hosted a hands-on workshop with Anthropic at the WorkOS office i
 
 <YoutubeEmbed urls="https://www.youtube.com/watch?v=8bjcx5Hkj5w" title="Claude Cowork Workshop with Anthropic" />
 
-## The Demo: What's Actually Possible
+## The Bright Line: If You Can Do It Today, Do It Today
 
-I opened by showing real projects I've built with Claude Code to set the context for what's possible when you treat it as a daily development tool, not a novelty:
+That was the theme running through the entire workshop. The tools are here. The capabilities are real. The only thing holding most people back is not having sat down and tried them.
 
-- **Oura MCP integration** — connecting my sleep/readiness data to Claude via the Model Context Protocol
-- **Handwave** — a watchOS app that lets you control Claude Code sessions from your wrist
-- **Walking and talking in the woods** — shipping production code from mountain trails using voice-first development with WisprFlow
+## The Demo: What's Actually Possible Right Now
 
-The point wasn't to show off. It was to establish a baseline: Claude Code isn't just for generating boilerplate. It's a development environment that can handle complex, multi-step workflows if you know how to manage context and carry work forward.
+I opened by showing real projects I've built with Claude Code to set the baseline for what's possible when you treat it as a daily development tool, not a novelty:
+
+- **Oura MCP integration** — I connected my sleep and readiness biometrics to Claude via the Model Context Protocol. Now when I'm planning my day, Claude pushes back if I slept three hours and suggests a nap in the afternoon instead of a marathon coding session.
+- **Walking and talking in the woods** — I've taken to doing architecture work, planning, and even coding on long walks with just headphones. From the woods where I get a cell signal, I can poke my agents, update PRs, and give them new directions. It's been one of the most liberating things about this era of development.
+- **Handwave** — A watchOS app I had Claude build me that lets me control my Claude Code sessions from my wrist via the Bonjour protocol. The hardest part was upgrading macOS to get the right Xcode version — once I had that, the app took about two and a half hours of iterating and sideloading directly to my watch.
+
+## Voice-First Development: Stop Touching the Keyboard
+
+Before diving into the hands-on build, I demoed [WisprFlow](https://wisprflow.com) — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
+
+The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, Gemini — you can run through multiple parallel work tracks throughout the day. Not 2x faster. *Significantly* faster.
+
+I also showed the brain dump workflow: when I'm overwhelmed with too much going on, I turn on dictation mode and just rant for six minutes. Everything I'm thinking about — what I'm working on, architecture problems, random errands, frustrations. Claude takes all of that chaos and organizes it, helps me prioritize, and in a couple more turns I'm happy with a plan for the rest of the day.
+
+## Speed Requires Safety: The Seatbelt Talk
+
+Cowork is a developer that lives inside your machine. It can read, write, browse code, and run things. I like to say there are two wolves inside your computer — one wants to constantly help you and make excellent changes, and one got slightly confused because you said something ambiguous and it went and deleted stuff that should have stayed.
+
+My recommendation: **reduce the blast radius**. Work in a specific folder, especially when you're starting out. Put only the source materials in there. Read them yourself first — verify there's no PII, no API keys hanging out. Then tell Cowork it can work in just that directory and go nuts.
+
+If something goes wrong, it's not Claude's fault. You're driving the agent. Be deliberate about what you hand it access to.
 
 ## The Hands-On Build: GTM Pipeline from Scratch
 
-Then we got hands-on. I walked everyone through building a complete go-to-market pipeline, step by step:
+Then we got hands-on. I walked everyone through building a complete go-to-market pipeline, step by step, all in a single Cowork chat — and that's critical. Keeping everything in one session means each step builds on the context from the previous ones.
 
-### 1. ICP Identification
-Starting from a product description, we used Claude to research and identify ideal customer profiles — the specific personas, companies, and verticals most likely to convert.
+### Module 1: ICP Identification and Data Scraping
 
-### 2. Data Scraping and Enrichment
-Once we had our ICPs, we scraped publicly available data and enriched it with context: company size, tech stack, recent funding, hiring patterns. All in Claude Code, all in real time.
+Using WisprFlow, I spoke a 15-second prompt: go to the AI Engineer Europe speakers page, grab every speaker's name, title, and company, put it in a spreadsheet, then enrich each one with industry, company size, and a key contact in sales or partnerships.
 
-### 3. Competitive Analysis
-We built a competitive landscape analysis — identifying alternatives, their positioning, pricing, and weaknesses. This became the foundation for everything downstream.
+Cowork used browser automation to navigate the site, extract all 33 speakers, then researched all 33 companies in parallel using web search. The whole thing took about eight or nine minutes — you could start it and make a coffee.
 
-### 4. Battlecard Creation
-From the competitive analysis, we generated structured battlecards: the kind of side-by-side comparisons that sales teams actually use in calls.
+The key point: it used to be that robustly extracting data from websites required writing custom scraping code. Now you describe what you want in natural language and the agent figures out whether it needs to render JavaScript, use a headless browser, or just download the HTML.
 
-### 5. Pain Point Messaging
-Using the ICP research and competitive gaps, we crafted pain-point-specific messaging for each persona. Not generic marketing copy — targeted messages that reference specific problems each ICP faces.
+### Module 2: Competitive Intelligence and Battlecards
 
-### 6. Cold Emails to ICPs
-We generated personalized cold email sequences for the identified prospects, incorporating the pain points and competitive positioning we'd already built.
+Still in the same chat (this is important — the context carries forward), I told Cowork to scour the internet for complaints against a competitor. It hit Reddit (failed because no credentials), pivoted to web searches instead, found complaints across Reddit, G2, Capterra, and developer forums, then built a comprehensive battlecard as an HTML page.
 
-### 7. Blog Post and Content Schedule
-We drafted a blog post targeting the ICPs and built out a content calendar — the kind of thing that usually takes a content team days.
+The battlecard categorized vulnerabilities by severity — critical, high, medium — with direct quotes from real users. It did a head-to-head comparison with pricing models and specific attack angles. Seven or eight minutes, and you have something you could clean up and hand to your sales team.
 
-### 8. Scheduled Cowork Task
-Here's where it gets interesting. We set up a **scheduled Cowork task** that would automatically produce the remaining blog posts from the content calendar — running autonomously while you do other work.
+### Module 3: Positioning Against Competitive Weaknesses
 
-## The Meta-Lesson: Context Management
+Next, I told Cowork to go read the WorkOS website — homepage, product docs, everything — and figure out how to position us against the vulnerabilities we just found. Again, same chat. It already had the competitive intel, now it was layering on our own positioning.
 
-Throughout the workshop, I emphasized the patterns that make Claude Code sessions productive over extended periods:
+When it came back with a summary, I confirmed it was solid. That confirmation became part of the context for the next step.
 
-- **Carrying context forward** — how to structure your session so Claude maintains understanding across many interactions
-- **When to start fresh** vs. continue a thread
-- **Managing the context window** — what to keep in scope, what to offload to files
-- **Cowork scheduling** — setting up autonomous tasks that execute while you're offline
+### Module 4: Personalized Cold Emails
 
-These aren't features you learn from documentation. They're patterns you develop through daily use, and they're what separate "I tried Claude Code once" from "I ship with it every day."
+This is where the single-chat approach really pays off. I said: take the AI Engineer speaker data, the competitive intel, and the WorkOS positioning you just gathered — write a cold email to each prospect, personalized to them, leading with their specific pain point, connecting to what we solve. Under 150 words, no buzzwords.
+
+It produced emails that looked like they were written by a person. Each one was personalized to the prospect's role, company, and likely pain points. Attached the person's email at the end in a spreadsheet.
+
+### Module 5: Blog Content for Organic Discovery
+
+Using the marketing plugin (installed earlier from the plugin marketplace), I had Cowork draft a blog post targeted at the pain points of our ICPs. The plugin helped produce output that didn't betray itself as LLM-generated. The content was SEO-aware, hitting long-tail keywords that our prospects would actually search for.
+
+### Module 6: Four-Week Content Calendar
+
+With all the context accumulated — ICPs, competitive intel, positioning, content strategy — I asked for a four-week content calendar. Cowork had everything it needed to plan which blog posts would actually rank and bring in the right organic traffic.
+
+### Module 7: Scheduled Cowork Tasks
+
+Here's where it gets wild. Once we had the content calendar and Cowork knew exactly how to write these posts, I set up a **scheduled task**: write the next blog post from the calendar every Monday at 9 AM. Automatically. Without me being there.
+
+Imagine 10 scheduled tasks running Sunday night — fetching data, compiling reports, generating content — so you walk into Monday morning with everything already done.
+
+## Plugins: Uniform Output Across Your Team
+
+Throughout the workshop, I showed Cowork's plugin system. Plugins give you pre-built commands for common workflows — call summaries, content drafting, competitive analysis. The real value is uniformity: if everyone on your team installs the same plugin, you get the same voice, the same format, the same quality. No more prompt sprawl where everyone does it their own way.
+
+I also demoed the call summary plugin with a Granola transcript from planning this event. One slash command, a few follow-up questions from Cowork, and you get structured notes with key discussion points, decisions, action items, and a draft follow-up email.
+
+## The Q&A: Lydia from Anthropic Joins
+
+After the workshop, Lydia from the Claude Code team joined for Q&A. Some highlights:
+
+**On Cowork vs. Claude Code:** Cowork is built on the same Agent SDK as Claude Code — it's essentially the same intelligence with a GUI wrapper and an ecosystem of plugins targeted at non-coding workflows. Claude Code is faster for raw coding. Cowork is better for complex multi-step workflows if you're not going to live in a terminal.
+
+**On how Cowork was built:** The team built Cowork in roughly a week using Claude Code itself. "We build Claude Code with Claude Code."
+
+**On what Lydia wants from the roadmap:** Multiplayer — the ability to share sessions, reference colleagues' artifacts safely, and collaborate in real time within Cowork.
+
+**On Lydia's daily use:** She starts every morning having Cowork go through her email and Slack to surface the most important things. She also uses it as a better Finder — describing files by content rather than name. "It took away a lot of the mental burden of feeling like I'm missing out or falling behind."
+
+**On the future of scheduled tasks:** Right now you need to keep your computer open for scheduled tasks. Running them in the cloud is the obvious next step, and it's coming.
+
+## Bonus: Custom Animation Skill
+
+I closed with some razzle-dazzle — a custom skill I built that chains two API calls: Nano Banana (Gemini's image API) to generate an image from a prompt, then V3 (Gemini's video API) to animate it. The result is an 8-second animated video from a text description. I used this to create transitional animations for a 32-minute film. Two API calls, open source.
+
+The point: these tools compose. Blog post + custom hero animation + scheduled production = content at a scale that wasn't possible six months ago.
 
 ## What's Next
 
-This workshop format works. An hour of hands-on building with real output is worth more than any number of slide decks about AI capabilities. I'm taking an expanded two-hour version of this workshop on the road.
+This workshop format works. An hour of hands-on building with real output is worth more than any number of slide decks about AI capabilities. I'm taking an expanded two-hour version on the road.
 
 If you want to bring this to your team — engineering, GTM, or both — [get in touch](/workshops/claude-cowork).
 
-The recording above is from the livestream. I'll update this post with the higher-quality office recording when it's available.
+The recording above is from the livestream. I'll update this post with a higher-quality recording when it's available.
