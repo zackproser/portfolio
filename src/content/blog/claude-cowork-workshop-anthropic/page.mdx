@@ -1,10 +1,16 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import YoutubeEmbed from '@/components/YoutubeEmbed';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-Last night I delivered a hands-on workshop at the WorkOS office in San Francisco, with Lydia from Anthropic's Claude Code team joining for Q&A afterward. I created, prepped, and ran the whole thing — one hour of live hands-on building, then thirty minutes of Q&A. The goal: show engineers how far you can push Claude Code and Cowork by building something real — a complete go-to-market pipeline — in a single session.
+Last night I delivered a hands-on workshop at the WorkOS office in San Francisco, with Lydia from Anthropic's Claude Code team joining for Q&A afterward. I created, prepped, and ran the whole thing — one hour of live hands-on building, then thirty minutes of Q&A.
+
+**800 people registered.** Our office holds 150. We unfortunately had to turn a lot of people away. The interest in hands-on agentic workflows is real and massive.
+
+The goal: show engineers how far you can push Claude Code and Cowork by building something real — a complete go-to-market pipeline — in a single session.
 
 <YoutubeEmbed urls="https://www.youtube.com/watch?v=8bjcx5Hkj5w" title="Claude Cowork Workshop with Anthropic" />
 
@@ -16,13 +22,21 @@ That was the theme running through the entire workshop. The tools are here. The 
 
 I opened by showing real projects I've built with Claude Code to set the baseline for what's possible when you treat it as a daily development tool, not a novelty:
 
-- **Oura MCP integration** — I connected my sleep and readiness biometrics to Claude via the Model Context Protocol. Now when I'm planning my day, Claude pushes back if I slept three hours and suggests a nap in the afternoon instead of a marathon coding session.
+- **<Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">Oura MCP integration</Link>** — I connected my sleep and readiness biometrics to Claude via the Model Context Protocol. Now when I'm planning my day, Claude pushes back if I slept three hours and suggests a nap in the afternoon instead of a marathon coding session.
+
+<Image src="https://zackproser.b-cdn.net/images/oura-and-claude.webp" alt="Oura Ring connected to Claude Desktop via MCP" width={800} height={450} />
+
 - **Walking and talking in the woods** — I've taken to doing architecture work, planning, and even coding on long walks with just headphones. From the woods where I get a cell signal, I can poke my agents, update PRs, and give them new directions. It's been one of the most liberating things about this era of development.
-- **Handwave** — A watchOS app I had Claude build me that lets me control my Claude Code sessions from my wrist via the Bonjour protocol. The hardest part was upgrading macOS to get the right Xcode version — once I had that, the app took about two and a half hours of iterating and sideloading directly to my watch.
+
+- **<Link href="/blog/handwave">Handwave</Link>** — A watchOS app I had Claude build me that lets me control my Claude Code sessions from my wrist via the Bonjour protocol. The hardest part was upgrading macOS to get the right Xcode version — once I had that, the app took about two and a half hours of iterating and sideloading directly to my watch.
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=EKwC20zsZq0" title="Handwave: Control Claude Code sessions from your Apple Watch" />
 
 ## Voice-First Development: Stop Touching the Keyboard
 
-Before diving into the hands-on build, I demoed [WisprFlow](https://wisprflow.com) — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
+Before diving into the hands-on build, I demoed <Link href="/blog/wisprflow-review">WisprFlow</Link> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-first development" width={800} height={450} />
 
 The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, Gemini — you can run through multiple parallel work tracks throughout the day. Not 2x faster. *Significantly* faster.
 
