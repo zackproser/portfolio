@@ -73,6 +73,11 @@ const speakingEngagements = [
         type: 'blog',
         url: '/workshops/claude-cowork',
         label: 'Book this workshop'
+      },
+      {
+        type: 'twitter',
+        url: 'https://x.com/workos/status/2027200864591769835',
+        label: 'Watch livestream replay'
       }
     ]
   },
