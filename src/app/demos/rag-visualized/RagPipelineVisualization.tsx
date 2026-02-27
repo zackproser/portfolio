@@ -96,7 +96,7 @@ const STEPS = [
     title: 'User Query',
     description: 'User enters a question',
     icon: FileText,
-    color: 'blue'
+    color: 'burnt'
   },
   {
     id: 'embed',
@@ -110,7 +110,7 @@ const STEPS = [
     title: 'Vector Search',
     description: 'Find similar chunks',
     icon: Search,
-    color: 'purple'
+    color: 'burnt'
   },
   {
     id: 'retrieve',
@@ -124,7 +124,7 @@ const STEPS = [
     title: 'Compose Prompt',
     description: 'Combine query & context',
     icon: Code,
-    color: 'indigo'
+    color: 'teal'
   },
   {
     id: 'generate',
@@ -224,12 +224,12 @@ function EducationalSection({
   if (!content) return null
 
   const colorClasses = {
-    blue: {
-      bg: 'bg-blue-50 dark:bg-blue-900/20',
-      border: 'border-blue-200 dark:border-blue-800',
-      text: 'text-blue-900 dark:text-blue-100',
-      textMuted: 'text-blue-700 dark:text-blue-300',
-      icon: 'text-blue-600 dark:text-blue-400'
+    burnt: {
+      bg: 'bg-burnt-50 dark:bg-amber-900/20',
+      border: 'border-burnt-200 dark:border-amber-800',
+      text: 'text-burnt-900 dark:text-amber-100',
+      textMuted: 'text-burnt-700 dark:text-amber-300',
+      icon: 'text-burnt-500 dark:text-amber-400'
     },
     emerald: {
       bg: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -238,13 +238,6 @@ function EducationalSection({
       textMuted: 'text-emerald-700 dark:text-emerald-300',
       icon: 'text-emerald-600 dark:text-emerald-400'
     },
-    purple: {
-      bg: 'bg-purple-50 dark:bg-purple-900/20',
-      border: 'border-purple-200 dark:border-purple-800',
-      text: 'text-purple-900 dark:text-purple-100',
-      textMuted: 'text-purple-700 dark:text-purple-300',
-      icon: 'text-purple-600 dark:text-purple-400'
-    },
     amber: {
       bg: 'bg-amber-50 dark:bg-amber-900/20',
       border: 'border-amber-200 dark:border-amber-800',
@@ -252,12 +245,12 @@ function EducationalSection({
       textMuted: 'text-amber-700 dark:text-amber-300',
       icon: 'text-amber-600 dark:text-amber-400'
     },
-    indigo: {
-      bg: 'bg-indigo-50 dark:bg-indigo-900/20',
-      border: 'border-indigo-200 dark:border-indigo-800',
-      text: 'text-indigo-900 dark:text-indigo-100',
-      textMuted: 'text-indigo-700 dark:text-indigo-300',
-      icon: 'text-indigo-600 dark:text-indigo-400'
+    teal: {
+      bg: 'bg-teal-50 dark:bg-teal-900/20',
+      border: 'border-teal-200 dark:border-teal-800',
+      text: 'text-teal-900 dark:text-teal-100',
+      textMuted: 'text-teal-700 dark:text-teal-300',
+      icon: 'text-teal-600 dark:text-teal-400'
     },
     green: {
       bg: 'bg-green-50 dark:bg-green-900/20',
@@ -268,7 +261,7 @@ function EducationalSection({
     }
   }
 
-  const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.blue
+  const colors = colorClasses[color as keyof typeof colorClasses] || colorClasses.burnt
 
   return (
     <div className={`w-full space-y-3 ${colors.text} text-sm leading-relaxed`}>
@@ -549,15 +542,15 @@ export default function RagPipelineVisualization({
                   title={`${index + 1}. ${step.title}: ${step.description}`}
                   className={`group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs transition shrink-0 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700 font-medium dark:bg-blue-900/30 dark:text-blue-300 ring-1 ring-blue-200 dark:ring-blue-800'
+                      ? 'bg-burnt-50 text-burnt-700 font-medium dark:bg-amber-900/30 dark:text-amber-300 ring-1 ring-burnt-200 dark:ring-amber-800'
                       : isComplete
                           ? 'text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800'
                           : 'text-zinc-400 hover:bg-zinc-50 dark:text-zinc-500 dark:hover:bg-zinc-800'
                   }`}
                 >
-                  <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`} />
+                  <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-burnt-500 dark:text-amber-400' : ''}`} />
                   {/* Step name - hidden on mobile, shown on larger screens */}
-                  <span className={`hidden xl:inline-block whitespace-nowrap ${isActive ? 'text-blue-900 dark:text-blue-100' : ''}`}>
+                  <span className={`hidden xl:inline-block whitespace-nowrap ${isActive ? 'text-burnt-900 dark:text-amber-100' : ''}`}>
                     {step.title.split(' ')[0]}
                   </span>
                 </button>
@@ -576,14 +569,14 @@ export default function RagPipelineVisualization({
           </button>
           <button
             onClick={handlePlayAll}
-            className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 px-3 py-1 text-xs font-semibold text-white shadow-md transition hover:shadow-lg"
+            className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-burnt-500 to-amber-600 px-3 py-1 text-xs font-semibold text-white shadow-md transition hover:shadow-lg"
           >
             {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
             <span className="hidden md:inline">{isPlaying ? 'Pause' : 'Play'}</span>
           </button>
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1 rounded border border-blue-500 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 dark:border-blue-700 dark:bg-zinc-900 dark:text-blue-200"
+            className="inline-flex items-center gap-1 rounded border border-burnt-400 bg-white px-2.5 py-1 text-xs font-semibold text-burnt-700 shadow-sm transition hover:bg-burnt-50 dark:border-amber-600 dark:bg-zinc-900 dark:text-amber-200"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Reset</span>
@@ -653,11 +646,11 @@ export default function RagPipelineVisualization({
 // Helper function for step colors
 function getStepColorClass(stepIndex: number, muted = false): string {
   const colors = [
-    muted ? 'text-blue-700 dark:text-blue-300' : 'text-blue-600 dark:text-blue-400',
+    muted ? 'text-burnt-700 dark:text-amber-300' : 'text-burnt-500 dark:text-amber-400',
     muted ? 'text-emerald-700 dark:text-emerald-300' : 'text-emerald-600 dark:text-emerald-400',
-    muted ? 'text-purple-700 dark:text-purple-300' : 'text-purple-600 dark:text-purple-400',
+    muted ? 'text-burnt-700 dark:text-amber-300' : 'text-burnt-500 dark:text-amber-400',
     muted ? 'text-amber-700 dark:text-amber-300' : 'text-amber-600 dark:text-amber-400',
-    muted ? 'text-indigo-700 dark:text-indigo-300' : 'text-indigo-600 dark:text-indigo-400',
+    muted ? 'text-teal-700 dark:text-teal-300' : 'text-teal-600 dark:text-teal-400',
     muted ? 'text-green-700 dark:text-green-300' : 'text-green-600 dark:text-green-400'
   ]
   return colors[stepIndex] || colors[0]
@@ -665,6 +658,6 @@ function getStepColorClass(stepIndex: number, muted = false): string {
 
 // Helper function for step color names
 function getStepColorName(stepIndex: number): string {
-  const colors = ['blue', 'emerald', 'purple', 'amber', 'indigo', 'green']
+  const colors = ['burnt', 'emerald', 'burnt', 'amber', 'teal', 'green']
   return colors[stepIndex] || colors[0]
 }

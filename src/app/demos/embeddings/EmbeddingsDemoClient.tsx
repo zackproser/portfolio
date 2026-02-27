@@ -213,16 +213,16 @@ const SemanticSpaceVisualizer = ({ currentText, currentEmbedding }: {
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      "positive animals": "#10b981", // green
-      "negative animals": "#ef4444", // red
-      "technology": "#3b82f6", // blue
-      "food": "#f59e0b", // amber
-      "large animals": "#8b5cf6", // purple
-      "small animals": "#ec4899", // pink
-      "past time": "#6b7280", // gray
-      "future time": "#06b6d4", // cyan
+      "positive animals": "#a67c52", // burnt
+      "negative animals": "#b85c5c", // clay
+      "technology": "#5a7a8a", // slate-blue
+      "food": "#d97706", // amber
+      "large animals": "#5a8a72", // sage
+      "small animals": "#a8697a", // dusty-rose
+      "past time": "#7a7a6a", // warm-stone
+      "future time": "#8b7355", // parchment-600
     };
-    return colors[category as keyof typeof colors] || "#6b7280";
+    return colors[category as keyof typeof colors] || "#7a7a6a";
   };
 
   return (
@@ -304,14 +304,14 @@ const SemanticSpaceVisualizer = ({ currentText, currentEmbedding }: {
                  {/* Legend */}
          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
            {Object.entries({
-             "positive animals": "#10b981",
-             "negative animals": "#ef4444", 
-             "technology": "#3b82f6",
-             "food": "#f59e0b",
-             "large animals": "#8b5cf6",
-             "small animals": "#ec4899",
-             "past time": "#6b7280",
-             "future time": "#06b6d4"
+             "positive animals": "#a67c52",
+             "negative animals": "#b85c5c",
+             "technology": "#5a7a8a",
+             "food": "#d97706",
+             "large animals": "#5a8a72",
+             "small animals": "#a8697a",
+             "past time": "#7a7a6a",
+             "future time": "#8b7355"
            }).map(([category, color]) => (
             <div key={category} className="flex items-center space-x-2">
               <div 
@@ -405,7 +405,7 @@ const SimilarityComparison = ({ text1, text2, embedding1, embedding2 }: {
   const description = getSimilarityDescription(similarity);
   
   return (
-    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+    <div className="bg-burnt-50 dark:bg-amber-900/20 p-4 rounded-lg border border-burnt-200 dark:border-amber-800">
       <h4 className="font-medium mb-3">Similarity Comparison</h4>
       <div className="space-y-2 mb-3">
         <div className="text-sm"><strong>Text 1:</strong> &quot;{text1}&quot;</div>
@@ -484,7 +484,7 @@ export default function EmbeddingsDemoClient() {
   const educationalSections = [
     {
       title: "What are Embeddings?",
-      icon: <FiInfo className="text-blue-500" size={24} />,
+      icon: <FiInfo className="text-burnt-500 dark:text-amber-400" size={24} />,
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
@@ -592,8 +592,8 @@ export default function EmbeddingsDemoClient() {
             key={index}
             onClick={() => toggleSection(index)}
             className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              expandedSections[index] 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+              expandedSections[index]
+                ? 'bg-burnt-100 text-burnt-700 dark:bg-amber-900 dark:text-amber-200'
                 : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
             }`}
           >
@@ -609,7 +609,7 @@ export default function EmbeddingsDemoClient() {
       {/* Educational Content Sections */}
       {educationalSections.map((section, index) => (
         expandedSections[index] && (
-          <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+          <div key={index} className="border-l-4 border-burnt-500 dark:border-amber-500 pl-4 py-2">
             <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
               {section.title}
             </h3>
@@ -621,8 +621,8 @@ export default function EmbeddingsDemoClient() {
       {/* Main Interactive Demo */}
       <div className="space-y-6">
         <div className="flex items-center">
-          <FiCode className="text-purple-500 mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+          <FiCode className="text-burnt-500 dark:text-amber-400 mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">
             See Text Become Numbers
           </h3>
         </div>
@@ -630,7 +630,7 @@ export default function EmbeddingsDemoClient() {
         <div className="space-y-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Type any text below to see how it gets converted into an embedding - a list of numbers that captures its meaning.
-            <strong className="text-blue-600 dark:text-blue-400"> Your text will appear as a red dot on the semantic map below!</strong>
+            <strong className="text-burnt-500 dark:text-amber-400"> Your text will appear as a red dot on the semantic map below!</strong>
           </p>
           
           {/* Model Status Indicator */}
@@ -658,7 +658,7 @@ export default function EmbeddingsDemoClient() {
             />
             {isLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-burnt-500 dark:border-amber-400"></div>
               </div>
             )}
           </div>
@@ -689,8 +689,8 @@ export default function EmbeddingsDemoClient() {
         {embedding1.length > 0 && (
           <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
             <div className="flex items-center mb-4">
-              <FiMap className="text-indigo-500 mr-2" size={20} />
-              <h4 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+              <FiMap className="text-burnt-500 dark:text-amber-400 mr-2" size={20} />
+              <h4 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">
                 Semantic Space Visualization
               </h4>
             </div>
@@ -709,14 +709,14 @@ export default function EmbeddingsDemoClient() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <FiTarget className="text-green-500 mr-2" size={20} />
-              <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
+              <FiTarget className="text-burnt-500 dark:text-amber-400 mr-2" size={20} />
+              <h3 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">
                 Compare Meanings
               </h3>
             </div>
             <button
               onClick={() => setShowComparison(!showComparison)}
-              className="text-sm text-blue-600 dark:text-blue-400 flex items-center"
+              className="text-sm text-burnt-500 dark:text-amber-400 flex items-center"
             >
               {showComparison ? 'Hide' : 'Show'} comparison
               {showComparison ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}

@@ -3,7 +3,7 @@
 import { Button } from '@/components/Button'
 import NewsletterWrapper from './NewsletterWrapper'
 
-const ToolComparisonIntro = ({ tool1, tool2 }) => {
+const ToolComparisonIntro = () => {
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-900 p-8 rounded-3xl shadow-2xl mb-12">
       <div className="flex flex-col items-center justify-center text-center mb-4">
@@ -22,11 +22,11 @@ const ToolComparisonIntro = ({ tool1, tool2 }) => {
         
         <div className="flex flex-wrap gap-3 mt-6 justify-center">
           <Button
-            href={`/devtools/compare?tools=${encodeURIComponent(tool1)},${encodeURIComponent(tool2)}`}
+            href="/blog"
             variant="blue"
             className="bg-white text-blue-800 hover:bg-blue-50"
           >
-            Compare more tools
+            Browse all articles
           </Button>
         </div>
       </div>

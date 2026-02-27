@@ -160,6 +160,26 @@ const nextConfig = {
         source: '/blog/rag-pipeline-tutorial-free',
         destination: '/blog/langchain-pinecone-chat-with-my-blog',
         permanent: true
+      },
+      {
+        source: '/devtools',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/devtools/compare',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/devtools/detail/:name*',
+        destination: '/blog',
+        permanent: true
+      },
+      {
+        source: '/devtools/descript',
+        destination: '/blog',
+        permanent: true
       }
     ]
   },

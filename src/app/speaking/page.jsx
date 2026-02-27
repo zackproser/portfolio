@@ -137,7 +137,7 @@ const speakingEngagements = [
     title: 'Claude Skills as Self-Documenting Runbooks',
     event: 'WorkOS Internal Training',
     date: 'October 23, 2025',
-    location: 'WorkOS Office, San Francisco, CA',
+    location: 'WorkOS Office, New York, NY',
     description: 'In-person training on operationalizing Claude Skills as executable, version-controlled runbooks and shareable team workflows.',
     image: claudeSkills,
     audience: 'WorkOS team (internal)',

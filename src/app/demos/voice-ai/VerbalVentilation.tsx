@@ -43,8 +43,8 @@ type DemoPhase = 'idle' | 'dumping' | 'processing' | 'organized'
 const CATEGORY_COLORS: Record<ThoughtFragment['category'], string> = {
   frustration: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
   idea: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
-  task: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-  question: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
+  task: 'bg-burnt-50 text-burnt-700 dark:bg-amber-900/40 dark:text-amber-300',
+  question: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
   blocker: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
   internal: 'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300'
 }
@@ -57,8 +57,8 @@ const OUTPUT_ICONS: Record<OrganizedOutput['type'], typeof Ticket> = {
 }
 
 const OUTPUT_COLORS: Record<OrganizedOutput['type'], string> = {
-  ticket: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20',
-  slack: 'border-purple-500 bg-purple-50 dark:bg-purple-900/20',
+  ticket: 'border-burnt-500 bg-burnt-50 dark:bg-amber-900/20',
+  slack: 'border-violet-500 bg-violet-50 dark:bg-violet-900/20',
   calendar: 'border-green-500 bg-green-50 dark:bg-green-900/20',
   note: 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
 }
@@ -231,7 +231,7 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
       </div>
 
       {/* Full-width hero image */}
-      <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden border border-purple-200 dark:border-purple-800 shadow-lg">
+      <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden border border-burnt-200 dark:border-amber-800 shadow-lg">
         <Image
           src="https://zackproser.b-cdn.net/images/claude-really-ventilate.webp"
           alt="Verbally ventilating to Claude - externalizing thoughts through voice"
@@ -245,10 +245,10 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
             Walking in the woods, speaking thoughts aloud to Claude, letting AI help organize the chaos
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Link href="/blog/walking-and-talking-with-ai" className="inline-flex items-center gap-1 text-xs text-purple-200 hover:text-white transition-colors">
+            <Link href="/blog/walking-and-talking-with-ai" className="inline-flex items-center gap-1 text-xs text-amber-200 hover:text-white transition-colors">
               Walking & Talking with AI <ExternalLink className="h-3 w-3" />
             </Link>
-            <Link href="/blog/claude-external-brain-adhd-autistic" className="inline-flex items-center gap-1 text-xs text-purple-200 hover:text-white transition-colors">
+            <Link href="/blog/claude-external-brain-adhd-autistic" className="inline-flex items-center gap-1 text-xs text-amber-200 hover:text-white transition-colors">
               Claude as External Brain <ExternalLink className="h-3 w-3" />
             </Link>
           </div>
@@ -278,7 +278,7 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
           
           <div className="relative min-h-[180px] rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-600 p-3 overflow-hidden">
             {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-amber-50/30 to-purple-50/50 dark:from-red-900/10 dark:via-amber-900/10 dark:to-purple-900/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-red-50/50 via-amber-50/30 to-burnt-50/50 dark:from-red-900/10 dark:via-amber-900/10 dark:to-burnt-900/10" />
             
             {/* Nervous typing background during dumping */}
             <NervousTyping active={phase === 'dumping'} />
@@ -340,17 +340,17 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
             )}
             {phase === 'dumping' && (
               <motion.div key="dumping" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
-                <Mic className="h-6 w-6 text-purple-500 animate-pulse" />
-                <span className="text-xs text-purple-600 dark:text-purple-400">Capturing everything...</span>
+                <Mic className="h-6 w-6 text-burnt-500 animate-pulse" />
+                <span className="text-xs text-burnt-500 dark:text-amber-400">Capturing everything...</span>
               </motion.div>
             )}
             {phase === 'processing' && (
               <motion.div key="processing" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex items-center gap-3">
-                <Loader2 className="h-6 w-6 text-indigo-500 animate-spin" />
+                <Loader2 className="h-6 w-6 text-amber-500 animate-spin" />
                 <div>
-                  <p className="text-xs text-indigo-600 dark:text-indigo-400">AI organizing your thoughts...</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400">AI organizing your thoughts...</p>
                   <div className="w-24 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mt-1 overflow-hidden">
-                    <motion.div className="h-full bg-indigo-500 rounded-full" style={{ width: `${processingProgress}%` }} />
+                    <motion.div className="h-full bg-amber-500 rounded-full" style={{ width: `${processingProgress}%` }} />
                   </div>
                 </div>
               </motion.div>
@@ -429,7 +429,7 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
               text-sm font-semibold text-white shadow-md transition-all
               ${phase !== 'idle' && phase !== 'organized'
                 ? 'bg-zinc-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:shadow-lg hover:scale-105'
+                : 'bg-gradient-to-r from-burnt-500 to-amber-600 hover:shadow-lg hover:scale-105'
               }
             `}
           >
@@ -447,12 +447,12 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
       </div>
 
       {/* Explanation */}
-      <div className="rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 p-4">
-        <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
+      <div className="rounded-xl bg-gradient-to-r from-burnt-50 to-amber-50 dark:from-burnt-900/20 dark:to-amber-900/20 border border-burnt-200 dark:border-amber-800 p-4">
+        <h3 className="font-semibold text-burnt-900 dark:text-amber-100 mb-2 flex items-center gap-2">
           <Brain className="h-4 w-4" />
           Why This Pattern Works (Especially for ADHD/Autistic Brains)
         </h3>
-        <p className="text-sm text-purple-800 dark:text-purple-200">
+        <p className="text-sm text-burnt-800 dark:text-amber-200">
           Many neurodivergent people benefit from externalizing their thoughts. Speaking everything 
           out loud—frustrations, ideas, blockers, random tangents—and having an AI reflect it back 
           organized creates the cognitive relief of &ldquo;getting it out of your head&rdquo; while also 

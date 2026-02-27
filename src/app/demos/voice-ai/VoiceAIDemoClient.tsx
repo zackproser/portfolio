@@ -35,16 +35,16 @@ interface RelatedPostCardProps {
 
 function RelatedPostCard({ slug, title, description, image, color }: RelatedPostCardProps) {
   const borderColors = {
-    purple: 'hover:border-purple-400 dark:hover:border-purple-500',
-    blue: 'hover:border-blue-400 dark:hover:border-blue-500',
+    purple: 'hover:border-burnt-400 dark:hover:border-amber-500',
+    blue: 'hover:border-burnt-400 dark:hover:border-amber-500',
     rose: 'hover:border-rose-400 dark:hover:border-rose-500',
     emerald: 'hover:border-emerald-400 dark:hover:border-emerald-500',
     teal: 'hover:border-teal-400 dark:hover:border-teal-500'
   }
-  
+
   const textColors = {
-    purple: 'group-hover:text-purple-600 dark:group-hover:text-purple-400',
-    blue: 'group-hover:text-blue-600 dark:group-hover:text-blue-400',
+    purple: 'group-hover:text-burnt-500 dark:group-hover:text-amber-400',
+    blue: 'group-hover:text-burnt-500 dark:group-hover:text-amber-400',
     rose: 'group-hover:text-rose-600 dark:group-hover:text-rose-400',
     emerald: 'group-hover:text-emerald-600 dark:group-hover:text-emerald-400',
     teal: 'group-hover:text-teal-600 dark:group-hover:text-teal-400'
@@ -126,21 +126,21 @@ const SECTIONS: Section[] = [
     title: 'Voice Pipeline',
     description: 'How voice becomes polished text',
     icon: Mic,
-    color: 'purple'
+    color: 'amber'
   },
   {
     id: 'orchestration',
     title: 'Multi-Agent Orchestration',
     description: 'Voice speed enables parallelism',
     icon: Zap,
-    color: 'blue'
+    color: 'amber'
   },
   {
     id: 'ventilation',
     title: 'Verbal Ventilation',
     description: 'Brain dump → organized output',
     icon: Brain,
-    color: 'indigo'
+    color: 'amber'
   },
   {
     id: 'scenarios',
@@ -199,7 +199,7 @@ export default function VoiceAIDemoClient() {
             href={getAffiliateLink({ product: 'wisprflow', campaign: 'voice-ai-demo', medium: 'demo', placement: 'inline-cta' })}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+            className="font-semibold text-burnt-500 dark:text-amber-400 hover:underline"
           >
             WisprFlow
           </a>
@@ -224,11 +224,11 @@ export default function VoiceAIDemoClient() {
         >
           {/* Theme-aware gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 via-zinc-50 to-zinc-100 dark:from-zinc-800 dark:via-zinc-900 dark:to-zinc-800" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 via-transparent to-indigo-500/10 dark:from-purple-900/20 dark:via-transparent dark:to-indigo-900/20" />
-          
+          <div className="absolute inset-0 bg-gradient-to-tr from-burnt-500/10 via-transparent to-amber-500/10 dark:from-burnt-900/20 dark:via-transparent dark:to-amber-900/20" />
+
           {/* Subtle corner accents */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-2xl" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-400/20 dark:bg-indigo-500/10 rounded-full blur-2xl" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-burnt-400/20 dark:bg-burnt-500/10 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-400/20 dark:bg-amber-500/10 rounded-full blur-2xl" />
           
           {/* Content */}
           <div className="relative p-6 sm:p-8 border border-zinc-200 dark:border-zinc-700/50 rounded-2xl">
@@ -237,7 +237,7 @@ export default function VoiceAIDemoClient() {
             
             <div className="space-y-4 text-zinc-700 dark:text-zinc-200 pl-6 sm:pl-8">
               <p className="text-sm sm:text-base leading-relaxed">
-                I taught myself to type <span className="font-semibold text-purple-600 dark:text-purple-400">90 WPM</span> playing 
+                I taught myself to type <span className="font-semibold text-burnt-500 dark:text-amber-400">90 WPM</span> playing 
                 EverQuest as a kid—communicating complex raid actions and timing to teammates while 
                 simultaneously casting spells and managing movement. Over the years my typing style 
                 evolved into something that looks <span className="italic text-zinc-500 dark:text-zinc-400">&ldquo;incredibly strange&rdquo;</span> 
@@ -245,7 +245,7 @@ export default function VoiceAIDemoClient() {
               </p>
               <p className="text-sm sm:text-base leading-relaxed">
                 But here&apos;s the thing: with{' '}
-                <a href={getAffiliateLink({ product: 'wisprflow', campaign: 'voice-ai-demo', medium: 'demo', placement: 'text-link' })} target="_blank" rel="noopener noreferrer" className="font-semibold text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300">
+                <a href={getAffiliateLink({ product: 'wisprflow', campaign: 'voice-ai-demo', medium: 'demo', placement: 'text-link' })} target="_blank" rel="noopener noreferrer" className="font-semibold text-burnt-500 dark:text-amber-400 hover:text-burnt-400 dark:hover:text-amber-300">
                   WisprFlow
                 </a>, 
                 I&apos;m now hitting <span className="font-semibold text-green-600 dark:text-green-400">179 WPM</span>—essentially 
@@ -288,9 +288,9 @@ export default function VoiceAIDemoClient() {
           <div className="flex items-center">
             <span className="text-2xl">→</span>
           </div>
-          <div className="text-center px-4 py-2 rounded-lg bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 border border-purple-200 dark:border-purple-700">
-            <div className="text-lg font-mono font-bold text-purple-600 dark:text-purple-400">179</div>
-            <div className="text-[10px] text-purple-600 dark:text-purple-400 uppercase tracking-wide">WPM Voice</div>
+          <div className="text-center px-4 py-2 rounded-lg bg-gradient-to-r from-burnt-50 to-amber-50 dark:from-burnt-900/30 dark:to-amber-900/30 border border-burnt-200 dark:border-amber-700">
+            <div className="text-lg font-mono font-bold text-burnt-500 dark:text-amber-400">179</div>
+            <div className="text-[10px] text-burnt-500 dark:text-amber-400 uppercase tracking-wide">WPM Voice</div>
           </div>
           <div className="flex items-center">
             <span className="text-2xl">=</span>
@@ -359,9 +359,9 @@ export default function VoiceAIDemoClient() {
         <VoicePipelineVisualization autoPlay={pipelineVisible} />
         
         {/* Value Proposition */}
-        <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800">
+        <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-burnt-50 to-amber-50 dark:from-burnt-900/20 dark:to-amber-900/20 border border-burnt-200 dark:border-amber-800">
           <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            <span className="font-semibold text-purple-700 dark:text-purple-400">The speed unlock is real.</span> At 179 WPM, 
+            <span className="font-semibold text-burnt-700 dark:text-amber-400">The speed unlock is real.</span> At 179 WPM, 
             I&apos;m no longer bottlenecked by my typing speed. The limiting factor has shifted from mechanical input 
             to <em>my mind&apos;s capacity to track multiple workstreams</em>—which is exactly where it should be for 
             orchestrating AI agents.
@@ -399,9 +399,9 @@ export default function VoiceAIDemoClient() {
         <MultiAgentOrchestration autoPlay={orchestrationVisible} />
         
         {/* Value Proposition */}
-        <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200 dark:border-blue-800">
+        <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-burnt-50 to-amber-50 dark:from-burnt-900/20 dark:to-amber-900/20 border border-burnt-200 dark:border-amber-800">
           <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-            <span className="font-semibold text-blue-700 dark:text-blue-400">This is the multiplexing advantage.</span> While 
+            <span className="font-semibold text-burnt-700 dark:text-amber-400">This is the multiplexing advantage.</span> While 
             a keyboard user is still composing their first task, I&apos;ve already dispatched three. The agents work 
             in parallel—refactoring auth, adding tests, updating docs—all while I&apos;m already thinking about the 
             <em> next</em> set of instructions.
@@ -556,7 +556,7 @@ export default function VoiceAIDemoClient() {
 
       {/* Final CTA Section */}
       <section className="pt-12 pb-8">
-        <div className="rounded-2xl bg-gradient-to-br from-purple-100 via-indigo-100 to-blue-100 dark:from-purple-900/30 dark:via-indigo-900/30 dark:to-blue-900/30 border border-purple-200 dark:border-purple-800 p-8">
+        <div className="rounded-2xl bg-gradient-to-br from-burnt-50 via-amber-50 to-parchment-100 dark:from-burnt-900/30 dark:via-amber-900/30 dark:to-parchment-900/30 border border-burnt-200 dark:border-amber-800 p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl">
               Ready to Go Voice-First?
@@ -570,7 +570,7 @@ export default function VoiceAIDemoClient() {
           <AffiliateDualCard context="final-cta" />
 
           {/* Related content cards */}
-          <div className="mt-8 pt-6 border-t border-purple-200 dark:border-purple-800">
+          <div className="mt-8 pt-6 border-t border-burnt-200 dark:border-amber-800">
             <p className="text-sm text-center text-zinc-500 dark:text-zinc-400 mb-6">
               Learn more about voice-first workflows
             </p>
@@ -578,7 +578,7 @@ export default function VoiceAIDemoClient() {
               {/* WisprFlow Review */}
               <Link
                 href="/blog/wisprflow-review"
-                className="group relative overflow-hidden rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-lg transition-all"
+                className="group relative overflow-hidden rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-burnt-400 dark:hover:border-amber-500 hover:shadow-lg transition-all"
               >
                 <div className="aspect-[16/9] relative overflow-hidden">
                   <Image
@@ -590,7 +590,7 @@ export default function VoiceAIDemoClient() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="p-3">
-                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">
+                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-burnt-500 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
                     WisprFlow Review - 179WPM Voice-Driven Development
                   </h4>
                   <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">
@@ -626,7 +626,7 @@ export default function VoiceAIDemoClient() {
               {/* Best Voice Tools 2025 */}
               <Link
                 href="/blog/best-ai-voice-tools-2025"
-                className="group relative overflow-hidden rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-lg transition-all"
+                className="group relative overflow-hidden rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:border-burnt-400 dark:hover:border-amber-500 hover:shadow-lg transition-all"
               >
                 <div className="aspect-[16/9] relative overflow-hidden">
                   <Image
@@ -638,7 +638,7 @@ export default function VoiceAIDemoClient() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="p-3">
-                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                  <h4 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-burnt-500 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
                     Top 4 AI Voice Tools for 2025
                   </h4>
                   <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2">

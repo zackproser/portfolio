@@ -58,7 +58,7 @@ export default function TokenizationDemoClient() {
   const educationalSections = [
     {
       title: "What is Tokenization?",
-      icon: <FiInfo className="text-blue-500" size={24} />,
+      icon: <FiInfo className="text-burnt-500 dark:text-amber-400" size={24} />,
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
@@ -115,7 +115,7 @@ export default function TokenizationDemoClient() {
     },
     {
       title: "Vocabulary & Token IDs",
-      icon: <FiBook className="text-purple-500" size={24} />,
+      icon: <FiBook className="text-burnt-400 dark:text-amber-300" size={24} />,
       content: (
         <div className="space-y-3">
           <p className="text-zinc-700 dark:text-zinc-300">
@@ -131,9 +131,9 @@ export default function TokenizationDemoClient() {
               <li>Each token maps to a vector in the model&apos;s embedding space</li>
             </ul>
           </div>
-          <div className="mt-3 p-3 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-            <h4 className="font-medium mb-1 text-blue-800 dark:text-blue-300">Developer Insight:</h4>
-            <p className="text-sm text-blue-700 dark:text-blue-400">
+          <div className="mt-3 p-3 border border-burnt-200 dark:border-amber-800 rounded-lg bg-burnt-50 dark:bg-amber-900/20">
+            <h4 className="font-medium mb-1 text-burnt-700 dark:text-amber-300">Developer Insight:</h4>
+            <p className="text-sm text-burnt-600 dark:text-amber-400">
               Models from the same family (e.g., GPT-3.5, GPT-4) typically share the same tokenizer but may have different 
               context window sizes, which limits how many tokens can be processed in one API call.
             </p>
@@ -152,8 +152,8 @@ export default function TokenizationDemoClient() {
             key={index}
             onClick={() => toggleSection(index)}
             className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-              expandedSections[index] 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+              expandedSections[index]
+                ? 'bg-burnt-100 text-burnt-700 dark:bg-amber-900 dark:text-amber-200'
                 : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
             }`}
           >
@@ -169,7 +169,7 @@ export default function TokenizationDemoClient() {
       {/* Educational Content Sections */}
       {educationalSections.map((section, index) => (
         expandedSections[index] && (
-          <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
+          <div key={index} className="border-l-4 border-burnt-500 dark:border-amber-500 pl-4 py-2">
             <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
               {section.title}
             </h3>
@@ -217,7 +217,7 @@ export default function TokenizationDemoClient() {
                           className="h-full rounded-full"
                           style={{ 
                             width: `${percentage}%`,
-                            backgroundColor: method === 'tiktoken' ? '#10b981' : '#3b82f6',
+                            backgroundColor: method === 'tiktoken' ? '#10b981' : '#a67c52',
                           }}
                         ></div>
                       </div>
@@ -278,7 +278,7 @@ export default function TokenizationDemoClient() {
       <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700 mb-4">
         <div className="flex items-center mb-2">
           <FiTool className="text-orange-500 mr-2" size={20} />
-          <h3 className="text-md font-semibold text-blue-700 dark:text-blue-300">Select Tokenization Method</h3>
+          <h3 className="text-md font-semibold text-burnt-500 dark:text-amber-400">Select Tokenization Method</h3>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
           Different tokenization methods have varying trade-offs in efficiency and accuracy.
@@ -289,7 +289,7 @@ export default function TokenizationDemoClient() {
               key={method}
               className={`px-3 py-2 text-sm font-medium rounded-md ${
                 tokenizationMethod === method 
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 border-2 border-purple-500' 
+                  ? 'bg-burnt-100 text-burnt-700 dark:bg-amber-900 dark:text-amber-200 border-2 border-burnt-500 dark:border-amber-500'
                   : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600'
               }`}
               onClick={() => handleTokenizationMethodChange(method)}
@@ -307,14 +307,14 @@ export default function TokenizationDemoClient() {
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
-            <FiCode className="text-purple-500 mr-2" size={20} />
-            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">How do language models &quot;see&quot; text?</h3>
+            <FiCode className="text-burnt-500 dark:text-amber-400 mr-2" size={20} />
+            <h3 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">How do language models &quot;see&quot; text?</h3>
           </div>
           <button
             onClick={() => {
               setShowVocabExplanation(!showVocabExplanation);
             }}
-            className="text-sm text-blue-600 dark:text-blue-400 flex items-center"
+            className="text-sm text-burnt-500 dark:text-amber-400 flex items-center"
           >
             Learn about token vocabularies {showVocabExplanation ? <FiChevronDown className="ml-1" /> : <FiChevronRight className="ml-1" />}
           </button>
@@ -326,9 +326,9 @@ export default function TokenizationDemoClient() {
         
         {/* Vocabulary Explanation Panel - Collapsed by default */}
         {showVocabExplanation && (
-          <div className="mb-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
-            <h4 className="font-medium mb-2 text-purple-800 dark:text-purple-300">Understanding Token Vocabularies</h4>
-            <div className="text-sm text-purple-700 dark:text-purple-400 space-y-2">
+          <div className="mb-4 p-4 bg-burnt-50 dark:bg-amber-900/20 rounded-lg border border-burnt-200 dark:border-amber-800">
+            <h4 className="font-medium mb-2 text-burnt-700 dark:text-amber-300">Understanding Token Vocabularies</h4>
+            <div className="text-sm text-burnt-600 dark:text-amber-400 space-y-2">
               <p>
                 <span className="font-semibold">Tiktoken (OpenAI):</span> Used by GPT models, with ~100K tokens optimized for English and code.
                 Efficiently handles common programming languages and common English patterns.
@@ -346,7 +346,7 @@ export default function TokenizationDemoClient() {
                 Starts with characters and merges frequent pairs to form a vocabulary of subword units.
               </p>
             </div>
-            <div className="mt-3 text-xs text-purple-600 dark:text-purple-400">
+            <div className="mt-3 text-xs text-burnt-500 dark:text-amber-400">
               <p>
                 <span className="font-semibold">Developer Note:</span> When developing applications with LLMs,
                 understanding tokenization helps you optimize prompts, estimate costs, and handle context window limitations more effectively.
@@ -366,7 +366,7 @@ export default function TokenizationDemoClient() {
         <div className="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-700">
           <div className="flex items-center mb-2">
             <FiDollarSign className="text-green-500 mr-2" size={20} />
-            <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Token Pricing Impact</h3>
+            <h3 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">Token Pricing Impact</h3>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
             Understand how tokens affect your API costs across different models.
@@ -376,10 +376,10 @@ export default function TokenizationDemoClient() {
       )}
       
       {/* Quiz section to test understanding */}
-      <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+      <div className="mt-8 p-4 bg-burnt-50 dark:bg-amber-900/30 rounded-lg border border-burnt-200 dark:border-amber-800">
         <div className="flex items-center mb-3">
-          <FiBook className="text-blue-500 mr-2" size={20} />
-          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">Test Your Understanding</h3>
+          <FiBook className="text-burnt-500 dark:text-amber-400 mr-2" size={20} />
+          <h3 className="text-lg font-semibold text-burnt-500 dark:text-amber-400">Test Your Understanding</h3>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           Apply what you&apos;ve learned with these interactive challenges.

@@ -4,7 +4,7 @@ import { getAllContent, getAllProducts, getAppPageRoutesPaths } from '@/lib/cont
 import { getAllTools } from '@/actions/tool-actions';
 
 const baseUrl = process.env.SITE_URL || 'https://zackproser.com';
-const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'devtools', 'comparisons', 'services', 'products'];
+const dynamicDirs = ['blog', 'videos', 'newsletter', 'demos', 'vectordatabases', 'comparisons', 'services', 'products'];
 const excludeDirs = ['api', 'rss'];
 
 // Routes that should not appear in the sitemap (private/internal pages)
@@ -18,7 +18,6 @@ const excludeRoutePatterns = [
 ];
 
 const dynamicDetailDirs = [
-  { base: 'devtools', detail: 'detail', jsonFile: 'ai-assisted-developer-tools.json', key: 'tools' },
   { base: 'vectordatabases', detail: 'detail', jsonFile: 'vectordatabases.json', key: 'databases' }
 ];
 
@@ -36,7 +35,7 @@ function createSlug(name) {
 function getRoutePriority(route) {
   if (route === '/') return 1.0;
   // Section/index pages
-  const sectionPages = ['/blog', '/videos', '/newsletter', '/comparisons', '/devtools', '/vectordatabases', '/services', '/products', '/demos', '/learn', '/about', '/projects', '/publications', '/speaking', '/tutorials'];
+  const sectionPages = ['/blog', '/videos', '/newsletter', '/comparisons', '/vectordatabases', '/services', '/products', '/demos', '/learn', '/about', '/projects', '/publications', '/speaking', '/tutorials'];
   if (sectionPages.includes(route)) return 0.8;
   // Comparison pages (high value for SEO)
   if (route.startsWith('/comparisons/')) return 0.7;
@@ -97,7 +96,7 @@ async function getRoutes() {
     }
   });
 
-  // Manually add dynamic routes for /devtools/detail and /vectordatabases/detail
+  // Manually add dynamic routes for /vectordatabases/detail
   dynamicDetailDirs.forEach(({ base, detail, jsonFile, key }) => {
     const jsonFilePath = path.join(process.cwd(), 'schema/data', jsonFile);
     if (fs.existsSync(jsonFilePath)) {

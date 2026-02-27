@@ -106,7 +106,7 @@ const ComparisonPageLayout = ({ tool1, tool2, proseParagraphs }) => {
       <ToolRecommendation tools={tools} />
       
       {/* Author info section - replaced with newsletter */}
-      <ToolComparisonIntro tool1={tool1.name} tool2={tool2.name} />
+      <ToolComparisonIntro />
       
       {/* Final call to action */}
       <div className="mt-12 p-8 max-w-6xl mx-auto rounded-xl bg-gradient-to-r from-blue-600 to-purple-700 border border-blue-200 dark:border-blue-800 shadow-2xl text-white">

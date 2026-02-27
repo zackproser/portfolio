@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Globe, Server, Database, Cpu, ArrowRight, Zap, Layers } from 'lucide-react'
+import { THEME_HEX } from '../theme-colors'
 
 interface RagArchitectureDiagramProps {
   currentStepIndex: number
@@ -42,7 +43,7 @@ const COMPONENTS: Component[] = [
     icon: Globe,
     x: 50,
     y: 30,
-    color: 'blue',
+    color: 'burnt',
     description: 'Client-side interface'
   },
   {
@@ -60,7 +61,7 @@ const COMPONENTS: Component[] = [
     icon: Layers,
     x: 270,
     y: 30,
-    color: 'cyan',
+    color: 'amber',
     description: 'text-embedding-3-small'
   },
   {
@@ -69,7 +70,7 @@ const COMPONENTS: Component[] = [
     icon: Cpu,
     x: 270,
     y: 90,
-    color: 'purple',
+    color: 'burnt',
     description: 'OpenAI API'
   },
   {
@@ -89,7 +90,7 @@ const STEP_FLOWS: Record<number, DataFlow[]> = {
       from: 'user',
       to: 'server',
       label: 'Query text',
-      color: 'blue',
+      color: 'burnt',
       animated: true,
       direction: 'forward'
     }
@@ -117,7 +118,7 @@ const STEP_FLOWS: Record<number, DataFlow[]> = {
       from: 'server',
       to: 'vectorDb',
       label: 'Query vector',
-      color: 'purple',
+      color: 'burnt',
       animated: true,
       direction: 'forward'
     },
@@ -125,7 +126,7 @@ const STEP_FLOWS: Record<number, DataFlow[]> = {
       from: 'vectorDb',
       to: 'server',
       label: 'Similarity scores',
-      color: 'purple',
+      color: 'burnt',
       animated: true,
       direction: 'backward'
     }
@@ -145,7 +146,7 @@ const STEP_FLOWS: Record<number, DataFlow[]> = {
       from: 'server',
       to: 'server',
       label: 'Compose prompt',
-      color: 'indigo',
+      color: 'amber',
       animated: true,
       direction: 'forward'
     }
@@ -155,7 +156,7 @@ const STEP_FLOWS: Record<number, DataFlow[]> = {
       from: 'server',
       to: 'llm',
       label: 'Grounded prompt',
-      color: 'indigo',
+      color: 'amber',
       animated: true,
       direction: 'forward'
     },
@@ -241,26 +242,20 @@ function getPath(from: Component, to: Component): string {
 
 function getColorClass(color: string): string {
   const colors: Record<string, string> = {
-    blue: 'text-blue-600 dark:text-blue-400',
+    burnt: 'text-burnt-500 dark:text-amber-400',
     emerald: 'text-emerald-600 dark:text-emerald-400',
-    purple: 'text-purple-600 dark:text-purple-400',
     amber: 'text-amber-600 dark:text-amber-400',
-    indigo: 'text-indigo-600 dark:text-indigo-400',
     green: 'text-green-600 dark:text-green-400',
-    cyan: 'text-cyan-600 dark:text-cyan-400'
   }
   return colors[color] || 'text-zinc-600 dark:text-zinc-400'
 }
 
 function getStrokeColor(color: string): string {
   const colors: Record<string, string> = {
-    blue: '#3b82f6',
+    burnt: THEME_HEX.burnt500,
     emerald: '#10b981',
-    purple: '#a855f7',
-    amber: '#f59e0b',
-    indigo: '#6366f1',
+    amber: THEME_HEX.amber400,
     green: '#22c55e',
-    cyan: '#06b6d4'
   }
   return colors[color] || '#71717a'
 }
@@ -462,24 +457,24 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
           <defs>
             {/* Gradients for components */}
             <linearGradient id="userGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.05" />
+              <stop offset="0%" stopColor={THEME_HEX.burnt500} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={THEME_HEX.burnt500} stopOpacity="0.05" />
             </linearGradient>
             <linearGradient id="serverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
               <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
             </linearGradient>
             <linearGradient id="llmGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#a855f7" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#a855f7" stopOpacity="0.05" />
+              <stop offset="0%" stopColor={THEME_HEX.burnt400} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={THEME_HEX.burnt400} stopOpacity="0.05" />
             </linearGradient>
             <linearGradient id="vectorDbGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+              <stop offset="0%" stopColor={THEME_HEX.amber400} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={THEME_HEX.amber400} stopOpacity="0.05" />
             </linearGradient>
             <linearGradient id="embeddingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.05" />
+              <stop offset="0%" stopColor={THEME_HEX.amber500} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={THEME_HEX.amber500} stopOpacity="0.05" />
             </linearGradient>
 
             {/* Arrow markers - LARGER for step-specific view */}
@@ -1028,7 +1023,7 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                       rx="6"
                       fill="white"
                       fillOpacity="0.95"
-                      stroke={data.type === 'input' ? '#3b82f6' : '#10b981'}
+                      stroke={data.type === 'input' ? THEME_HEX.burnt400 : '#10b981'}
                       strokeWidth="1"
                       className="dark:fill-zinc-900/90"
                     />
@@ -1037,8 +1032,8 @@ export default function RagArchitectureDiagram(props: RagArchitectureDiagramProp
                       y={safePos.y + 12}
                       fontSize="7"
                       fontWeight="bold"
-                      fill={data.type === 'input' ? '#1d4ed8' : '#047857'}
-                      className={data.type === 'input' ? 'dark:fill-blue-400' : 'dark:fill-emerald-400'}
+                      fill={data.type === 'input' ? THEME_HEX.burnt500 : '#047857'}
+                      className={data.type === 'input' ? 'dark:fill-amber-400' : 'dark:fill-emerald-400'}
                     >
                       {data.label}
                     </text>
