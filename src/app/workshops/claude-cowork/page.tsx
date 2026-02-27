@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
 import { SimpleLayout } from "@/components/SimpleLayout"
 import { Clock, Users, Zap, CheckCircle, ArrowRight, Star, Code, Brain, Target, Mail } from "lucide-react"
 
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
 const workshopPhases = [
   {
     phase: "Demo",
-    duration: "15 min",
+    duration: "30 min",
     icon: <Zap className="h-6 w-6" />,
     title: "What's possible with Claude Code",
     items: [
@@ -29,7 +28,7 @@ const workshopPhases = [
   },
   {
     phase: "Hands-On",
-    duration: "45 min",
+    duration: "90 min",
     icon: <Code className="h-6 w-6" />,
     title: "Build a complete GTM workflow",
     items: [
