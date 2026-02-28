@@ -585,7 +585,8 @@ export async function getProductByDirectorySlug(directorySlug: string): Promise<
  * @returns Array of valid page routes (string[]).
  */
 export async function getAppPageRoutesPaths(): Promise<string[]> {
-  const excludeDirs = ['api', 'rss', '[name]', '[slug]', '_lib']; // Added _lib, adjust excludeDirs as needed
+  // Exclude internal directories from sitemap generation
+  const excludeDirs = ['api', 'rss', '[name]', '[slug]', '_lib', 'admin'];
   const validPageFiles = ['page.tsx', 'page.jsx', 'page.js', 'page.mdx', 'page.md']; // Includes MDX/MD pages
   const routes = new Set<string>();
 
