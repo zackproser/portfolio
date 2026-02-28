@@ -64,6 +64,7 @@ const speakingEngagements = [
     location: 'San Francisco, CA',
     description: 'One-hour hands-on workshop I created and delivered at WorkOS, with Lydia from Anthropic\'s Claude Code team joining for Q&A. Demoed real-world Claude Code projects (Oura MCP, Handwave watchOS app, walking-and-talking development), then walked attendees through a complete GTM workflow: ICP identification, data scraping and enrichment, competitive analysis, battlecard creation, pain point messaging, cold email generation, blog content, and scheduled Cowork tasks for automated content production.',
     image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
+    imagePosition: 'top',
     audience: 'Engineers and technical leaders',
     topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
     links: [
