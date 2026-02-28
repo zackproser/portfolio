@@ -9,14 +9,13 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-After my <Link href="/blog/claude-cowork-workshop-anthropic">Claude Cowork GTM Workshop</Link>, the number one question I got was: **"How do I set up the voice amplification stack you were using?"**
+After my <Link href="/blog/claude-cowork-workshop-anthropic">Claude Cowork GTM Workshop</Link>, the number one question I got was: **"How do I set this up?"**
 
 This is the complete guide. By the end, you'll have:
 - **<AffiliateLink product="wisprflow">WisprFlow</AffiliateLink>** dictating at 179 WPM into any text field
 - **Claude Code** executing your spoken instructions as real code
-- **Phone access** so you can steer agents from anywhere — your couch, a walk, the airport
 
-Total setup time: about 15 minutes.
+Total setup time: about 10 minutes.
 
 ## The Stack at a Glance
 
@@ -24,12 +23,11 @@ Total setup time: about 15 minutes.
 |---|---|---|
 | **Voice Input** | <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> | Converts speech to polished text at 179 WPM |
 | **AI Execution** | Claude Code | Takes your spoken instructions, writes and runs code |
-| **Mobile Control** | Claude Code on phone / Handwave | Steer sessions from anywhere |
 | **Meeting Capture** | <AffiliateLink product="granola">Granola</AffiliateLink> | AI meeting notes without a bot joining |
 
-Each layer amplifies the others. Voice makes you faster at instructing Claude. Claude makes your voice input productive. Phone access makes the whole thing location-independent. Let me walk through setting up each one.
+Voice makes you faster at instructing Claude. Claude makes your voice input productive. Let me walk through setting up each one.
 
-## Layer 1: WisprFlow (Voice Input)
+## Step 1: WisprFlow (Voice Input)
 
 This is the foundation. Everything else builds on being able to speak instead of type.
 
@@ -55,7 +53,7 @@ This is the foundation. Everything else builds on being able to speak instead of
 
 <InlineAffiliateCTA product="wisprflow" />
 
-## Layer 2: Claude Code (AI Execution)
+## Step 2: Claude Code (AI Execution)
 
 With WisprFlow handling input, Claude Code becomes your hands. You speak what you want built; it builds it.
 
@@ -110,50 +108,7 @@ Claude Code takes this chaos and produces a structured plan. Usually within two 
 
 <VerbalVentilation hideExplanation />
 
-## Layer 3: Phone Access (Go Mobile)
-
-This is what makes the stack truly location-independent. You don't need to be at your desk.
-
-### Option A: Claude Code via SSH (Any Phone)
-
-If your dev machine is accessible via SSH (local network, Tailscale, or a VPS):
-
-1. **Install a terminal app** on your phone — Termius, Blink, or the built-in Terminal on iOS 18+
-2. **SSH into your dev machine:** `ssh you@your-machine`
-3. **Start or resume a Claude Code session:** `claude` or reattach to a tmux session
-4. **Use your phone's dictation** (hold the mic button on the keyboard) to speak prompts
-
-This works surprisingly well. Phone dictation isn't as good as WisprFlow, but it's good enough for steering agents and giving high-level directions.
-
-### Option B: Handwave (Apple Watch)
-
-I built <Link href="/blog/handwave">Handwave</Link> — a watchOS app that connects to Claude Code sessions via Bonjour protocol. From my Apple Watch, I can:
-
-- See all active Claude Code sessions
-- Listen to the latest response from any session
-- Speak a new direction and send it
-- Resume sessions from anywhere
-
-This is the setup I use on walks. AirPods for audio, Watch for control, phone in pocket as backup.
-
-### Option C: Cursor on iPad/Phone (Coming)
-
-Cursor's mobile app is in development. When it ships, you'll be able to run Cursor's AI features directly from a tablet or phone with voice input. Keep an eye on this.
-
-### The Walking Setup
-
-My actual gear for mobile development:
-
-- **AirPods Pro** — noise cancellation + microphone for voice input
-- **Apple Watch** with Handwave — checking and steering agents
-- **iPhone** in pocket — SSH terminal for when I need to see code
-- **WisprFlow on Mac at home** — sessions waiting for input via SSH
-
-I walk 3-5 miles while "coding." The movement triggers diffuse-mode thinking, and I can act on ideas immediately by speaking to an agent.
-
-<InlineAffiliateCTA product="wisprflow" />
-
-## Layer 4: Granola (Meeting Capture)
+## Step 3: Granola (Meeting Capture)
 
 If you're in meetings throughout the day, <AffiliateLink product="granola">Granola</AffiliateLink> completes the stack by handling the other half of your work life — meetings — with the same philosophy: be present, let AI handle the capture.
 
@@ -165,21 +120,19 @@ After the meeting, your notes include everything that was said, organized by top
 
 ## Putting It All Together
 
-Here's what a typical day looks like with the full stack:
+Here's what a typical morning looks like with the full stack:
 
-**8:30 AM** — Morning standup. Granola captures notes. I'm fully present, asking questions, not typing.
+**9:00 AM** — Standup. Granola captures notes. I'm fully present, asking questions, not typing.
 
-**8:45 AM** — Post-standup. I speak follow-up messages to my team via WisprFlow into Slack. 30 seconds.
+**9:15 AM** — Post-standup. I speak follow-up messages to my team via WisprFlow into Slack. 30 seconds.
 
-**9:00 AM** — Deep work. Three Claude Code sessions open. I speak architecture decisions into one, implementation details into another, test cases into a third. Rotating between them.
-
-**10:30 AM** — Walk break. I grab my AirPods and head outside. From my watch, I check on the three sessions. One needs a decision — I speak the answer. Another finished — I review the diff on my phone and approve.
+**9:30 AM** — Deep work. Three Claude Code sessions open. I speak architecture decisions into one, implementation details into another, test cases into a third. Rotating between them.
 
 **11:00 AM** — Client call. Granola captures everything. I'm fully present. After the call, I speak a summary email via WisprFlow. Sent in 45 seconds.
 
 **11:15 AM** — Back to deep work. I do a brain dump about the client's requirements (6-minute verbal ventilation), Claude Code organizes it into a task plan, and starts on the first item while I review the morning's completed work.
 
-**Total keystrokes for the day: maybe 200.** All for reviewing diffs and approving changes. Everything else was voice.
+**Total keystrokes for the morning: maybe 50.** All for reviewing diffs and approving changes. Everything else was voice.
 
 ## Quick Start Checklist
 
@@ -187,7 +140,6 @@ Here's what a typical day looks like with the full stack:
 - [ ] Practice hold-to-talk in Slack or email for one day
 - [ ] Install Claude Code (`npm install -g @anthropic-ai/claude-code`)
 - [ ] Try speaking your first prompt to Claude Code instead of typing it
-- [ ] Set up SSH access to your dev machine from your phone
 - [ ] Install <AffiliateLink product="granola">Granola</AffiliateLink> before your next meeting
 - [ ] Try the brain dump: double-tap WisprFlow, rant for 3 minutes about what you're working on, paste into Claude Code
 
