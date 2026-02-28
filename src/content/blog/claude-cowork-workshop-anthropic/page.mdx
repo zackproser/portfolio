@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import YoutubeEmbed from '@/components/YoutubeEmbed';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
@@ -24,9 +26,15 @@ I opened by showing real projects I've built with Claude Code to set the baselin
 
 - **<Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">Oura MCP integration</Link>** — I connected my sleep and readiness biometrics to Claude via the Model Context Protocol. Now when I'm planning my day, Claude pushes back if I slept three hours and suggests a nap in the afternoon instead of a marathon coding session.
 
-<Image src="https://zackproser.b-cdn.net/images/oura-and-claude.webp" alt="Oura Ring connected to Claude Desktop via MCP" width={800} height={450} />
+<Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">
+  <Image src="https://zackproser.b-cdn.net/images/oura-and-claude.webp" alt="Connect your Oura Ring to Claude Desktop with MCP — read more" width={800} height={450} />
+</Link>
 
-- **Walking and talking in the woods** — I've taken to doing architecture work, planning, and even coding on long walks with just headphones. From the woods where I get a cell signal, I can poke my agents, update PRs, and give them new directions. It's been one of the most liberating things about this era of development.
+- **<Link href="/blog/walking-and-talking-with-ai">Walking and talking in the woods</Link>** — I've taken to doing architecture work, planning, and even coding on long walks with just headphones. From the woods where I get a cell signal, I can poke my agents, update PRs, and give them new directions. It's been one of the most liberating things about this era of development.
+
+<Link href="/blog/walking-and-talking-with-ai">
+  <Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking and talking with AI — untethered development from the trails" width={800} height={450} />
+</Link>
 
 - **<Link href="/blog/handwave">Handwave</Link>** — A watchOS app I had Claude build me that lets me control my Claude Code sessions from my wrist via the Bonjour protocol. The hardest part was upgrading macOS to get the right Xcode version — once I had that, the app took about two and a half hours of iterating and sideloading directly to my watch.
 
@@ -34,13 +42,15 @@ I opened by showing real projects I've built with Claude Code to set the baselin
 
 ## Voice-First Development: Stop Touching the Keyboard
 
-Before diving into the hands-on build, I demoed <Link href="/blog/wisprflow-review">WisprFlow</Link> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
+Before diving into the hands-on build, I demoed <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
 
-<Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="WisprFlow voice-first development" width={800} height={450} />
+<VoiceAIDemoCard />
 
 The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, Gemini — you can run through multiple parallel work tracks throughout the day. Not 2x faster. *Significantly* faster.
 
 I also showed the brain dump workflow: when I'm overwhelmed with too much going on, I turn on dictation mode and just rant for six minutes. Everything I'm thinking about — what I'm working on, architecture problems, random errands, frustrations. Claude takes all of that chaos and organizes it, helps me prioritize, and in a couple more turns I'm happy with a plan for the rest of the day.
+
+<InlineAffiliateCTA product="wisprflow" />
 
 ## Speed Requires Safety: The Seatbelt Talk
 
@@ -98,7 +108,9 @@ Imagine 10 scheduled tasks running Sunday night — fetching data, compiling rep
 
 Throughout the workshop, I showed Cowork's plugin system. Plugins give you pre-built commands for common workflows — call summaries, content drafting, competitive analysis. The real value is uniformity: if everyone on your team installs the same plugin, you get the same voice, the same format, the same quality. No more prompt sprawl where everyone does it their own way.
 
-I also demoed the call summary plugin with a Granola transcript from planning this event. One slash command, a few follow-up questions from Cowork, and you get structured notes with key discussion points, decisions, action items, and a draft follow-up email.
+I also demoed the call summary plugin with a <AffiliateLink product="granola">Granola</AffiliateLink> transcript from planning this event. One slash command, a few follow-up questions from Cowork, and you get structured notes with key discussion points, decisions, action items, and a draft follow-up email.
+
+<InlineAffiliateCTA product="granola" />
 
 ## The Q&A: Thirty Minutes with Lydia from Anthropic
 
@@ -124,4 +136,13 @@ The point: these tools compose. Blog post + custom hero animation + scheduled pr
 
 This workshop format works. An hour of hands-on building with real output is worth more than any number of slide decks about AI capabilities.
 
-The recording above is from the livestream. I'll update this post with a higher-quality recording when it's available.
+## Tools Used in This Workshop
+
+Two tools made this workshop possible and I use them every day:
+
+- **<AffiliateLink product="wisprflow">WisprFlow</AffiliateLink>** — Voice dictation at 179 WPM. I spoke every prompt during the workshop instead of typing. It works in any text field — terminal, IDE, browser, Slack. If you're still typing everything, you're leaving speed on the table.
+- **<AffiliateLink product="granola">Granola</AffiliateLink>** — AI meeting notes that capture everything without a bot joining the call. I used a Granola transcript in the call summary demo. Being present is a power move — Granola makes it possible.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+<InlineAffiliateCTA product="granola" />
