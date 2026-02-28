@@ -1,0 +1,91 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-scrape-javascript-sites';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Scraping JavaScript-heavy websites" width={800} height={450} />
+</AffiliateLink>
+
+You `curl` a URL. You get back an HTML page with `<div id="root"></div>` and nothing else. The actual content is loaded by JavaScript after the page renders in a browser. Welcome to the hardest problem in web scraping.
+
+Most modern websites — React, Next.js, Vue, Angular, anything SPA — render content client-side. Traditional HTTP-based scrapers like Beautiful Soup or Cheerio see only the empty shell. To get the actual content, you need a browser.
+
+## The DIY Approach: Headless Browsers
+
+The standard solution is Puppeteer or Playwright. These launch a real Chromium browser, navigate to the page, wait for JavaScript to render, then extract the DOM.
+
+```javascript
+const puppeteer = require('puppeteer')
+
+const browser = await puppeteer.launch()
+const page = await browser.newPage()
+await page.goto('https://example-spa.com', { waitUntil: 'networkidle0' })
+
+// Now the JS has rendered
+const content = await page.evaluate(() => document.body.innerText)
+await browser.close()
+```
+
+Sounds simple. In practice, it's an infrastructure nightmare:
+
+**Memory leaks.** Each browser instance eats 200-500MB of RAM. Run 10 concurrent instances and you're burning through memory. Zombie processes accumulate. Your server OOM-kills at 3 AM.
+
+**Timing issues.** `networkidle0` doesn't always mean the content is ready. Some sites lazy-load content, use infinite scroll, or load data in response to user interactions. You end up writing site-specific wait logic.
+
+**Bot detection.** Sites fingerprint headless browsers through navigator properties, WebGL rendering, and behavioral analysis. Staying undetected is a cat-and-mouse game.
+
+**Scaling.** Running 100 concurrent browser instances requires serious infrastructure. Worker pools, job queues, health checks, auto-restart on crashes. I <Link href="/blog/evolving-web-scraping-pageripper-api">built all of this for Pageripper</Link> and it took months.
+
+## The Managed Approach
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles JavaScript rendering as part of its scraping pipeline. You send a URL, it renders the JavaScript, strips the boilerplate, and returns clean markdown.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+const result = await app.scrapeUrl('https://example-spa.com')
+console.log(result.markdown) // Full content, JS rendered, boilerplate stripped
+```
+
+No browser management. No memory leaks. No bot detection arms race. The rendering infrastructure is someone else's problem.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Common JavaScript Rendering Challenges
+
+**Single-page applications (SPAs):** Content is loaded dynamically based on the URL hash or path. The server returns the same HTML shell for every route. Firecrawl handles this — it navigates to the URL and waits for the content to render.
+
+**Infinite scroll:** Content loads as you scroll down. Social media feeds, product listings, search results. With Puppeteer, you write scroll-and-wait loops. With Firecrawl, the crawl mode handles pagination automatically.
+
+**Client-side hydration:** Server-rendered HTML gets "hydrated" by JavaScript, sometimes replacing or augmenting the initial content. Timing your extraction to happen after hydration is tricky with DIY tools.
+
+**Dynamic imports and code splitting:** Modern frameworks split JavaScript into chunks loaded on demand. The content you want might be in a chunk that hasn't loaded yet when you try to extract.
+
+## When to Use What
+
+**Use Puppeteer/Playwright when:**
+- You need to interact with the page (click buttons, fill forms, log in)
+- You're scraping a single site with very specific extraction needs
+- You need screenshots or PDF generation
+- You already have the infrastructure team to support it
+
+**Use <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> when:**
+- You need clean content from many different sites
+- You're building an AI application (RAG, agents, dataset building)
+- You don't want to manage browser infrastructure
+- You want markdown or structured JSON output, not raw HTML
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo — see the extraction pipeline</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
+- <Link href="/blog/evolving-web-scraping-pageripper-api">The evolution of web scraping for JS-heavy sites</Link>

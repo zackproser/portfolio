@@ -1,0 +1,23 @@
+{
+  "title": "How to Build an AI Agent That Researches the Web",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "Give your AI agents the ability to crawl and understand web pages. Structured data extraction for agentic workflows.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/build-ai-agent-web-research",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "ai agent web research",
+    "build ai web crawler",
+    "ai agent scraping",
+    "agentic web research",
+    "llm web browsing",
+    "ai agent data extraction"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

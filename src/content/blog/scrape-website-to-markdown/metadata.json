@@ -1,0 +1,23 @@
+{
+  "title": "How to Scrape Any Website to Clean Markdown for LLMs",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "Turn messy HTML into clean markdown that LLMs can reason with. No CSS selectors, no boilerplate \u2014 just content.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/scrape-website-to-markdown",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "scrape website to markdown",
+    "html to markdown scraping",
+    "clean web data for llm",
+    "website to markdown api",
+    "firecrawl markdown",
+    "web content extraction"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

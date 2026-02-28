@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Mic, Calendar, ArrowRight } from 'lucide-react'
+import { X, Mic, Calendar, Flame, ArrowRight } from 'lucide-react'
 import { track } from '@vercel/analytics'
 import { getAffiliateLink, type AffiliateProduct, type AffiliateMedium, type AffiliatePlacement } from '@/lib/affiliate'
 
 interface StickyAffiliateCTAProps {
-  product?: 'wisprflow' | 'granola' | 'both'
+  product?: 'wisprflow' | 'granola' | 'firecrawl' | 'both'
   campaign?: string  // Page slug for UTM tracking (e.g., 'ai-tools-for-lawyers')
   medium?: AffiliateMedium
   showAfterScroll?: number // pixels to scroll before showing
@@ -28,6 +28,13 @@ const PRODUCT_DATA = {
     icon: Calendar,
     gradient: 'from-teal-600 to-cyan-600',
     hoverGradient: 'hover:from-teal-500 hover:to-cyan-500'
+  },
+  firecrawl: {
+    name: 'Firecrawl',
+    tagline: 'Web scraping API for AI',
+    icon: Flame,
+    gradient: 'from-orange-500 to-red-600',
+    hoverGradient: 'hover:from-orange-400 hover:to-red-500'
   }
 }
 
@@ -71,7 +78,7 @@ export default function StickyAffiliateCTA({
     track('sticky_cta_dismissed', { product })
   }
 
-  const handleClick = (clickedProduct: 'wisprflow' | 'granola') => {
+  const handleClick = (clickedProduct: 'wisprflow' | 'granola' | 'firecrawl') => {
     track('sticky_cta_click', { product: clickedProduct })
   }
 
@@ -156,7 +163,7 @@ export default function StickyAffiliateCTA({
 
 // Simplified version for inline use in blog posts
 interface InlineAffiliateCTAProps {
-  product: 'wisprflow' | 'granola'
+  product: 'wisprflow' | 'granola' | 'firecrawl'
   campaign?: string  // Page slug for UTM tracking
   medium?: AffiliateMedium
 }
@@ -203,7 +210,7 @@ export function InlineAffiliateCTA({
 
 // Simple text link for inline use in MDX content
 interface AffiliateLinkProps {
-  product: 'wisprflow' | 'granola'
+  product: 'wisprflow' | 'granola' | 'firecrawl'
   campaign?: string
   medium?: AffiliateMedium
   placement?: AffiliatePlacement

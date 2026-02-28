@@ -1,0 +1,24 @@
+{
+  "title": "Web Scraping for RAG Pipelines: How to Feed Clean Data to Your LLMs",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "How to crawl websites and extract clean, structured data for retrieval-augmented generation pipelines. Skip the Puppeteer headaches.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/web-scraping-for-rag-pipelines",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "web scraping for rag",
+    "rag pipeline data extraction",
+    "crawl website for llm",
+    "web data for ai",
+    "firecrawl rag",
+    "scraping for vector database",
+    "web scraping ai pipeline 2026"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

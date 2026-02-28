@@ -1,0 +1,23 @@
+{
+  "title": "How to Scrape JavaScript-Heavy Websites in 2026",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "JavaScript rendering is the hardest part of web scraping. Here's how modern tools handle SPAs, dynamic content, and client-side rendering.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/how-to-scrape-javascript-sites",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "scrape javascript website",
+    "scrape spa site",
+    "javascript rendering scraping",
+    "headless browser scraping",
+    "dynamic content extraction",
+    "js site scraping 2026"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

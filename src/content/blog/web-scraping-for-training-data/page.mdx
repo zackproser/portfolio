@@ -1,0 +1,88 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'web-scraping-for-training-data';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Web scraping for AI training data" width={800} height={450} />
+</AffiliateLink>
+
+Building a fine-tuning dataset or evaluation set for your model? The web is the largest source of domain-specific text data available. But turning raw web content into clean training data is a data engineering challenge.
+
+The quality of your training data directly determines the quality of your fine-tuned model. HTML artifacts, navigation text, and boilerplate in your training data will degrade model performance.
+
+## The Dataset Building Pipeline
+
+1. **Identify sources** — find websites with high-quality content in your target domain
+2. **Crawl at scale** — extract content from thousands of pages
+3. **Clean and normalize** — remove boilerplate, fix encoding, standardize formatting
+4. **Filter and deduplicate** — remove low-quality pages and duplicates
+5. **Format** — convert to your training format (JSONL, CSV, etc.)
+
+Steps 2 and 3 are where the engineering time goes. And they're exactly what <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+import * as fs from 'fs'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Crawl a domain for training data
+const result = await app.crawlUrl('https://medical-journal.example.com', {
+  limit: 1000,
+  scrapeOptions: { formats: ['markdown'] }
+})
+
+// Convert to JSONL training format
+const lines = result.data
+  .filter(page => page.markdown.length > 500) // Filter thin pages
+  .map(page => JSON.stringify({
+    text: page.markdown,
+    source: page.metadata?.sourceURL,
+    title: page.metadata?.title,
+  }))
+
+fs.writeFileSync('training_data.jsonl', lines.join('\n'))
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Why Clean Extraction Matters for Training
+
+**Noise in, noise out.** If your training data includes navigation menus, "Subscribe to our newsletter" CTAs, and cookie consent text, your model learns to generate that noise. Clean markdown extraction removes all of it.
+
+**Structure preservation.** Headers, lists, and code blocks carry semantic meaning. A model trained on properly structured markdown produces better-structured output than one trained on flat text extracted from HTML.
+
+**Deduplication is easier.** Clean markdown from the same content is consistent, making deduplication straightforward. Raw HTML from the same content can vary wildly due to personalization, A/B tests, and dynamic elements.
+
+## Domain-Specific Dataset Examples
+
+**Legal corpus.** Crawl case law databases, legal commentary sites, and regulatory bodies. Clean extraction preserves legal citation formatting and document structure.
+
+**Medical literature.** Crawl open-access medical journals and clinical guidelines. The structured markdown preserves section headings, bullet-point findings, and reference lists.
+
+**Technical documentation.** Crawl API docs, developer guides, and Stack Overflow answers. Code blocks are preserved intact in the markdown output.
+
+**E-commerce.** Crawl product descriptions, reviews, and specifications across multiple retailers. Structured extraction gives you clean product data.
+
+## Scaling Considerations
+
+**Respect rate limits and terms of service.** Large-scale crawling for dataset building should be done responsibly. Firecrawl handles rate limiting automatically, but you should also check each site's ToS regarding data usage.
+
+**Deduplicate across sources.** The same content often appears on multiple sites (syndication, scraping, press releases). Use content hashing to identify and remove duplicates.
+
+**Quality filtering.** Not every page is worth training on. Filter by content length (remove thin pages), language (if you need monolingual data), and content quality (remove auto-generated or spammy content).
+
+**Version your datasets.** Web content changes. Tag your datasets with crawl dates and source URLs so you can reproduce or update them.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/scrape-website-to-markdown">Scraping websites to clean markdown</Link>
+- <Link href="/blog/web-scraping-for-rag-pipelines">Web scraping for RAG pipelines</Link>

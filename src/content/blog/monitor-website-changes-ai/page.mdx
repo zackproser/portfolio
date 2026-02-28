@@ -1,0 +1,102 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'monitor-website-changes-ai';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Monitor website changes with AI" width={800} height={450} />
+</AffiliateLink>
+
+You need to know when a competitor changes their pricing. When a regulatory body updates their guidelines. When a documentation site publishes new content. When a job board posts a relevant opening.
+
+Website change monitoring is one of the most practical applications of web scraping — and one of the hardest to do well with traditional tools.
+
+## The Basic Pattern
+
+1. **Crawl** — extract clean content from target pages
+2. **Store** — save the extracted content with timestamps
+3. **Diff** — compare current content against the previous version
+4. **Analyze** — use an LLM to summarize what changed
+5. **Alert** — notify relevant people about meaningful changes
+
+The key insight: you need to diff **content**, not HTML. Two pages can have identical content but completely different HTML due to A/B tests, personalization, dynamic ad placements, and CDN variations. If you diff raw HTML, you'll get false positives on every check.
+
+## Content-Based Diffing
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> makes this straightforward by extracting clean markdown. You diff the markdown, not the HTML:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+async function checkForChanges(url, previousContent) {
+  const result = await app.scrapeUrl(url)
+  const currentContent = result.markdown
+
+  if (currentContent !== previousContent) {
+    // Content changed — analyze the diff
+    const diff = generateDiff(previousContent, currentContent)
+    return { changed: true, diff, currentContent }
+  }
+
+  return { changed: false, currentContent }
+}
+```
+
+Because the markdown extraction strips boilerplate, layout changes, ad rotations, and A/B test variations don't trigger false positives. Only actual content changes get flagged.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Use Cases
+
+**Competitor pricing monitoring.** Crawl competitor pricing pages daily. When prices change, get an alert with a summary of what changed and by how much.
+
+**Regulatory compliance.** Monitor government and regulatory websites for policy updates. An LLM can summarize the changes and flag items relevant to your compliance requirements.
+
+**Documentation tracking.** Watch third-party API documentation for breaking changes. Know about deprecated endpoints before they break your integration.
+
+**SEO monitoring.** Track competitor content strategies — new blog posts, updated landing pages, changed meta descriptions. Feed this into your own content planning.
+
+**Job board monitoring.** Watch specific job boards for positions matching your criteria. Get notified within hours of posting instead of checking manually.
+
+## Scaling to Many Sites
+
+For monitoring a handful of pages, a simple cron job works. For monitoring hundreds or thousands of pages, you need to think about:
+
+**Crawl scheduling.** Not every page needs daily checks. Pricing pages might need daily monitoring. Blog indexes might need weekly checks. Legal pages might need monthly checks.
+
+**Storage.** Store historical versions so you can track trends over time. A simple database with URL, timestamp, and markdown content works.
+
+**Alert routing.** Different changes matter to different people. Pricing changes go to sales. Documentation changes go to engineering. Regulatory changes go to compliance.
+
+Firecrawl's crawl mode can handle hundreds of pages in a single API call, making it practical to monitor entire sites rather than individual pages.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## AI-Powered Change Summaries
+
+The real power comes from combining structured diffing with LLM analysis. Instead of sending raw diffs to humans, feed the diff to an LLM:
+
+```
+Previous content: [markdown]
+Current content: [markdown]
+
+Summarize what changed. Focus on:
+- Pricing or plan changes
+- New features or products announced
+- Removed features or deprecations
+- Policy or terms changes
+```
+
+This turns noisy diffs into actionable intelligence that busy people will actually read.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/scrape-competitor-websites">Scraping competitor websites for market intelligence</Link>
+- <Link href="/blog/build-ai-agent-web-research">Building AI agents that research the web</Link>

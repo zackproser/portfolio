@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping Without Getting Blocked: Rate Limiting and Best Practices",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "How to scrape websites at scale without getting IP-banned. Rate limiting, retry strategies, and respecting robots.txt.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/web-scraping-without-getting-blocked",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "web scraping without getting blocked",
+    "avoid ip ban scraping",
+    "rate limiting web scraping",
+    "robots.txt scraping",
+    "scraping best practices 2026",
+    "ethical web scraping"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

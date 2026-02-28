@@ -1,0 +1,84 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'web-scraping-without-getting-blocked';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Web scraping without getting blocked" width={800} height={450} />
+</AffiliateLink>
+
+You've built your scraper. It works beautifully on the first 50 pages. Then requests start returning 403s. Or CAPTCHAs. Or the site starts serving you different content. You've been detected and blocked.
+
+Rate limiting and anti-bot measures are the second-hardest problem in web scraping (after JavaScript rendering). Here's how to handle them properly.
+
+## Why Sites Block Scrapers
+
+From the site's perspective, an aggressive scraper looks like a DDoS attack. Hundreds of requests per second from a single IP, all following the same pattern, with no cookies or session state. Their infrastructure team has every reason to block you.
+
+The common signals they look for:
+
+- **Request rate** — too many requests too fast from one IP
+- **User-Agent** — missing or obviously automated
+- **Behavioral patterns** — no mouse movements, no cookie acceptance, hitting pages in a non-human order
+- **IP reputation** — datacenter IPs are flagged by default
+- **Browser fingerprinting** — headless browsers have detectable signatures
+
+## Best Practices for Ethical Scraping
+
+**1. Respect robots.txt.** It's not legally binding in most jurisdictions, but it's the website's stated preference. Check it first: `https://example.com/robots.txt`. If they ask you not to crawl certain paths, don't.
+
+**2. Rate limit your requests.** A good rule of thumb: no more than 1 request per second to the same domain. For large sites, 1 request every 2-3 seconds is safer. Add random jitter to avoid looking mechanical.
+
+**3. Use proper headers.** Set a real User-Agent string. Accept cookies. Send a Referer header. Make your requests look like they come from a browser.
+
+**4. Rotate IPs carefully.** If you're scraping at scale, residential proxies are less likely to be blocked than datacenter IPs. But proxy rotation adds cost and complexity.
+
+**5. Handle failures gracefully.** When you get a 429 (Too Many Requests), back off exponentially. Don't hammer the server. Wait, then retry with longer delays.
+
+## Or Let Someone Else Handle It
+
+All of the above is engineering work you have to build, test, and maintain. <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> has rate limiting, retry logic, and anti-detection baked into the platform. You make an API call. They handle the infrastructure.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Firecrawl handles rate limiting, retries, and rendering
+const result = await app.crawlUrl('https://example.com', {
+  limit: 100,
+  scrapeOptions: { formats: ['markdown'] }
+})
+```
+
+No proxy rotation. No retry logic. No robots.txt parsing. It's all handled.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Common Anti-Bot Measures and Countermeasures
+
+**Cloudflare / Bot Management:** These services analyze TLS fingerprints, JavaScript execution, and behavioral patterns. Beating them with a DIY scraper is an arms race. Managed scraping APIs invest in staying ahead of detection.
+
+**CAPTCHAs:** reCAPTCHA, hCaptcha, and custom challenges. Solving these programmatically requires third-party CAPTCHA-solving services (which add cost and latency) or headless browsers that can execute the JavaScript challenge.
+
+**IP-based rate limiting:** Simple but effective. If you exceed a threshold from a single IP, you're blocked for hours or permanently. The fix is proxy rotation, but good residential proxies cost $5-15 per GB.
+
+**JavaScript challenges:** The site serves a JavaScript snippet that must execute before the real content loads. This filters out HTTP-only scrapers but doesn't stop headless browsers.
+
+## The Real Cost of DIY
+
+When I ran <Link href="/blog/introducing-pageripper-api">Pageripper</Link>, anti-blocking measures consumed about 40% of our engineering time. Every month, some target site would update their bot detection, and we'd have to adapt. It's a never-ending maintenance burden.
+
+If scraping is your core product, that investment makes sense. If you need web data for your AI application, it doesn't. Use a managed API and spend your engineering time on what actually differentiates your product.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/how-to-scrape-javascript-sites">Scraping JavaScript-heavy sites</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
