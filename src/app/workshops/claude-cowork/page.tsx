@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { SimpleLayout } from "@/components/SimpleLayout"
 import YoutubeEmbed from "@/components/YoutubeEmbed"
@@ -107,6 +108,36 @@ export default function ClaudeCoworkWorkshop() {
         </div>
         <p className="text-sm text-parchment-500 dark:text-slate-400 mt-3">
           Recorded live at the WorkOS x Anthropic event in San Francisco, February 26, 2026.
+        </p>
+      </section>
+
+      {/* Workshop Photos */}
+      <section className="mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
+            <Image src="https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
+              alt="Zack presenting at the Claude Cowork Workshop"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
+            <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
+              alt="Workshop attendees building with Claude Cowork"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
+            <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
+              alt="Q&A with Lydia from Anthropic's Claude Code team"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+        <p className="text-sm text-parchment-500 dark:text-slate-400 mt-3 text-center">
+          From the WorkOS x Anthropic workshop, February 2026. Photos by Mark Robinson.
         </p>
       </section>
 
