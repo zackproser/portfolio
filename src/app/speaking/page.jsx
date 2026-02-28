@@ -8,7 +8,6 @@ import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mi
 
 // Import speaking images from the a16z blog post
 const a16z1 = 'https://zackproser.b-cdn.net/images/a16z-1.webp'
-const a16z2 = 'https://zackproser.b-cdn.net/images/a16z-2.webp'
 // Import WorkOS internal training images
 const aiFundamentals = 'https://zackproser.b-cdn.net/images/ai-fundamentals.webp'
 const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks-learn.webp'
@@ -16,7 +15,6 @@ const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks
 const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
 // Import additional speaking and conference images
 const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
-const aieZackBadge = 'https://zackproser.b-cdn.net/images/aie-zack-badge.webp'
 const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const metadata = createMetadata({
@@ -383,8 +381,8 @@ export default function Speaking() {
         <section className="mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/workshop-zack-presenting.webp"
-                alt="Zack presenting at the Claude Cowork Workshop"
+              <Image src={zackAndNick}
+                alt="Zack and Nick at a speaking event"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
                />
