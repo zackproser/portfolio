@@ -1,0 +1,98 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'voice-coding-vs-typing-speed'
+
+I've been coding with voice for over a year now. Before that, I typed everything like a normal person at about 90 WPM. I switched to <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> for voice dictation and never went back.
+
+Here's an honest comparison — not marketing claims, but what I actually experienced.
+
+## The Raw Numbers
+
+| Metric | Typing | Voice |
+|---|---|---|
+| Words per minute | ~90 WPM | ~179 WPM |
+| Prompt quality | Terse, minimal context | Detailed, natural language |
+| AI iterations needed | 3-5 per feature | 1-2 per feature |
+| Daily keystrokes | ~10,000+ | ~200 (review/edit only) |
+| Wrist pain | Chronic, managed | None |
+| Hours coding per day | 6-8 | 8-10 (less fatigue) |
+
+The WPM difference is real but it's not the most important number. The prompt quality difference is what changes everything.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Why Voice Produces Better Prompts
+
+When you type a prompt to Claude Code or Cursor, you unconsciously minimize. Every character costs effort, so you write:
+
+*"Make a function that dedupes users by email"*
+
+When you speak the same prompt, you naturally elaborate:
+
+*"I need a function that takes an array of user objects where each user has an email, name, and created_at timestamp. Deduplicate by email address but keep the most recently created entry for each email. Return the deduplicated array sorted by created_at descending. Also handle the edge case where email is null or undefined — skip those entries. TypeScript, and add a JSDoc comment."*
+
+Same intent. Dramatically different output from the AI. The spoken version produces correct, well-documented code on the first try. The typed version produces something that needs 3-4 rounds of correction.
+
+I've tracked this informally over months: **voice prompts reduce my iteration count by roughly 60%.** That's where the real speed advantage lives — not in the WPM, but in the first-try accuracy.
+
+## The Brain Dump Advantage
+
+My favorite voice pattern has no typing equivalent: the brain dump.
+
+When I'm starting a new feature or refactoring something complex, I double-tap WisprFlow and talk for 3-6 minutes. I describe everything: the current state, what I hate about it, what the end state should look like, edge cases I'm worried about, how it connects to other systems, what I definitely don't want the AI to touch.
+
+This produces a prompt that would take 15-20 minutes to type. It takes 3-6 minutes to speak. And because it captures my actual thinking (not a typed summary of my thinking), the AI gets a much richer picture of what I want.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## What Voice Is Worse At
+
+I'm not going to pretend it's universally better. Voice has real limitations:
+
+**Quick edits:** When I need to change one variable name or tweak a CSS value, I type. Voice is overkill for "change 16px to 20px."
+
+**Noisy environments:** Open offices, coffee shops, airports. I need either a quiet space or a directional mic.
+
+**Precise syntax:** When I'm writing a complex regex or a specific SQL query, sometimes I need to type it. Voice + AI handles most of this, but occasionally I need exact character-level control.
+
+**Code review:** Reading and commenting on PRs is still mostly a visual/typing activity. I'll sometimes dictate longer review comments, but navigating diffs is visual.
+
+My split is roughly 85% voice / 15% keyboard. The 15% keyboard is targeted — specific edits, navigation, code review.
+
+## The Physical Difference
+
+This deserves its own section because it's dramatic. After a year of voice-first development:
+
+- **Zero wrist pain.** I had chronic mild RSI for years. Gone.
+- **Less eye strain.** I spend less time staring at screens because I can work while walking.
+- **More energy at end of day.** Typing is physically tiring in a way you don't notice until you stop. Speaking is not.
+- **15,000+ daily steps.** I walk while I "code." My Apple Watch thinks I'm an athlete.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Pair Programming with Voice
+
+This was my biggest concern before switching. How does pair programming work when one person is talking to their computer?
+
+In practice: fine. In remote pair programming (most of tech), you're already talking to your partner. You alternate between talking to them and talking to the AI. It's slightly weird for the first 10 minutes and then it's just... how you work.
+
+Some pairs have both adopted voice. Two developers speaking to their respective AI agents, cross-talking with each other, is chaotic and incredibly productive. It's like a trading floor.
+
+## Getting Started
+
+If you want to try this:
+
+1. <AffiliateLink product="wisprflow" campaign={campaign}>Get WisprFlow</AffiliateLink> (or any high-quality voice dictation with AI cleanup)
+2. **Commit to one full day** of not typing prompts — speak everything
+3. **Day 3 is the turning point** — the awkwardness fades and the speed kicks in
+4. **By week 2** you'll physically resist the idea of going back to typing
+
+The transition isn't hard. Your voice already thinks faster than your fingers type. You just need to give it the mic.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+I spent 20 years typing code. I'll spend the rest of my career speaking it. The data is clear: voice is faster, produces better output, hurts less, and scales better with AI agents. The keyboard had a good run.

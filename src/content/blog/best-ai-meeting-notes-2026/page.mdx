@@ -1,0 +1,104 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'best-ai-meeting-notes-2026'
+
+Every six months I see the same article: "10 Best AI Meeting Note Tools in [Current Year]." They're all the same listicle with the same tools in a different order. Otter, Fireflies, Fathom, Avoma, Grain, Read AI. They all work roughly the same way: a bot joins your call, records everything, and gives you a transcript.
+
+I've tried most of them. I now use <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>. And the reason has nothing to do with transcript quality.
+
+## The Bot Problem
+
+Every bot-based meeting note tool shares the same fundamental flaw: **a bot joins your call.**
+
+This sounds minor until you experience it:
+
+- "Otter AI has joined the meeting" — and suddenly everyone gets self-conscious
+- "Is that recording us?" — now you're explaining AI tools instead of having your meeting
+- Client calls where the bot gets rejected — "We don't allow recording in our meetings"
+- Sensitive conversations where the bot's presence changes what people say
+- Zoom/Teams prompts about recording consent that derail the first two minutes
+
+The bot is the single biggest reason AI meeting notes haven't achieved universal adoption. People hate the bot. And the people who hate it most are the ones whose meetings matter most — executives, salespeople, lawyers, therapists, anyone in a trust-dependent conversation.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## How Granola Is Different
+
+Granola doesn't join your call. There's no bot. No recording notification. No "Granola AI is now participating" banner.
+
+It runs locally on your machine and captures the audio from your system output. To everyone else on the call, nothing is different. You're just in a normal meeting. There's no visible indication that notes are being taken.
+
+This isn't a minor UX difference — it's a fundamental shift in what conversations are possible. The meeting where someone confides they're struggling with burnout? That doesn't happen with a bot present. The client call where they share their real budget? Not with "AI Notetaker is recording."
+
+## Feature Comparison (Honest)
+
+Let me be straightforward about what Granola does and doesn't do compared to alternatives:
+
+**Granola wins:**
+- No bot — nobody knows notes are being taken
+- Works with any meeting platform (Zoom, Meet, Teams, in-person)
+- Local processing — your audio stays on your machine
+- Clean, structured notes, not just a raw transcript
+- Action items extracted automatically
+
+**Alternatives might win if:**
+- You need a shared team transcript database (Fireflies, Otter)
+- You want real-time live transcription during the meeting (Otter)
+- You need CRM integration and automatic deal tracking (Fathom, Avoma)
+- You're in a context where bots are totally fine (internal standups)
+
+For me, the no-bot advantage outweighs everything else. The meetings where notes matter most are exactly the meetings where a bot would change the dynamic.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## My Decision Matrix
+
+I use Granola for:
+- **All external meetings** — clients, partners, interviews, anyone outside my company
+- **1:1s** — both as a manager and as a report
+- **Sensitive internal meetings** — reorgs, performance conversations, strategy
+- **In-person meetings** — it works even when there's no video call
+
+I could see using a bot-based tool for:
+- **Internal all-hands** — everyone knows it's recorded anyway
+- **Large team meetings** — where a searchable transcript helps people who couldn't attend
+- **Sales calls where you have consent** — and the CRM integration matters
+
+## The Note Quality
+
+This is where I expected Granola to be weaker — how good can the notes be without a direct microphone feed from each participant?
+
+Surprisingly good. The structured notes consistently capture:
+- Key discussion points with attribution
+- Decisions made and rationale
+- Action items with owners
+- Follow-up topics that were deferred
+
+They're not a verbatim transcript. They're better than a verbatim transcript — they're organized, prioritized, and readable. I spend about 60 seconds reviewing and adding my own observations (body language, tone, things that won't show up in audio) and then they're filed.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## What Changed When I Switched
+
+The most noticeable change wasn't in my notes. It was in my meetings.
+
+When I stopped having a bot join every call, people started being more candid. I heard things I wasn't hearing before — not because I was recording secretly, but because the social dynamic of having a visible AI participant was gone. People relax when they think it's just a conversation.
+
+My meeting quality went up. My note quality went up. And I spend less time reviewing notes because they're structured instead of being a raw 45-minute transcript I have to scroll through.
+
+## The Stack
+
+For completeness, here's my full meeting productivity stack:
+- **<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** for meeting capture and notes
+- **<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** for dictating follow-up emails and Slack messages after meetings
+- **Claude** for synthesizing notes across multiple meetings when preparing for reviews or project retrospectives
+
+The combination of being fully present during meetings (Granola) and being absurdly fast at follow-ups after (WisprFlow) has probably saved me 5-7 hours per week.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+If you're still using a bot-based meeting tool and wondering why your conversations feel slightly off — try a week without the bot. You might be surprised what people say when they don't think they're being recorded.
