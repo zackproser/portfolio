@@ -1,0 +1,96 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'web-scraping-for-rag-pipelines';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Web scraping for RAG pipelines with Firecrawl" width={800} height={450} />
+</AffiliateLink>
+
+RAG pipelines are only as good as the data you feed them. Garbage in, garbage out — and most web content is wrapped in navigation bars, ads, cookie banners, and JavaScript bundles that have nothing to do with the actual information you want to embed.
+
+The challenge: how do you get clean, structured text from websites at scale, without spending weeks building and maintaining custom scrapers?
+
+## The RAG Data Problem
+
+A typical RAG pipeline looks like this:
+
+1. **Ingest** — collect documents from various sources
+2. **Chunk** — split content into passage-sized pieces
+3. **Embed** — convert chunks to vector representations
+4. **Store** — index vectors in a database
+5. **Retrieve** — find relevant passages for a query
+6. **Generate** — feed retrieved context to an LLM
+
+Steps 2-6 are well-understood. The tooling is mature. But step 1 — actually getting clean data from websites — is where most teams burn weeks of engineering time.
+
+If you scrape raw HTML and try to chunk it, your embeddings will be polluted with navigation text, footer links, ad copy, and script tags. Your retrieval quality drops. Your LLM gets confused by irrelevant context. The whole pipeline suffers.
+
+## What Clean Extraction Looks Like
+
+You need a scraping layer that:
+
+- **Renders JavaScript** before extracting content (most modern sites are SPAs)
+- **Strips boilerplate** — nav, footer, sidebar, ads, cookie banners
+- **Outputs clean markdown** that chunks well for embeddings
+- **Handles rate limiting** so you don't get blocked
+- **Scales** to thousands of pages without infrastructure headaches
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> does exactly this. One API call, and you get clean markdown from any URL — ready to chunk and embed.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Crawl an entire documentation site
+const result = await app.crawlUrl('https://docs.example.com', {
+  limit: 500,
+  scrapeOptions: {
+    formats: ['markdown']
+  }
+})
+
+// Each page comes back as clean markdown
+for (const page of result.data) {
+  // Ready to chunk and embed
+  const chunks = splitIntoChunks(page.markdown, 512)
+  await vectorDB.upsert(chunks)
+}
+```
+
+Compare this to the DIY approach: set up Puppeteer, manage browser instances, write CSS selectors for each site, handle JavaScript rendering, strip boilerplate with custom heuristics, manage a job queue, handle retries and rate limiting. That's weeks of work before you write a single line of RAG logic.
+
+## From My Experience Building Scrapers
+
+I built and maintained <Link href="/blog/introducing-pageripper-api">Pageripper</Link>, a commercial web scraping API. The infrastructure overhead was enormous — browser memory leaks, selector rot when sites updated their markup, proxy rotation, CAPTCHA handling. And that was before the AI era made clean text extraction a requirement rather than a nice-to-have.
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> solves the exact problems I spent years wrestling with, but as a managed service. You focus on your RAG pipeline. They handle the scraping infrastructure.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Practical Tips for RAG Ingestion
+
+**Chunk markdown, not HTML.** Markdown preserves document structure (headers, lists, code blocks) without the noise. Your chunking strategy can use headers as natural boundaries.
+
+**Crawl entire sites, not individual pages.** Documentation sites, knowledge bases, and blogs have internal linking that provides context. Firecrawl's crawl mode follows links automatically up to a configurable depth.
+
+**Re-crawl periodically.** Web content changes. Set up a weekly or daily crawl to keep your vector database fresh. Diff the output to only re-embed changed pages.
+
+**Include metadata.** Page titles, URLs, and publish dates make great metadata filters in your vector store. Firecrawl returns this alongside the content.
+
+## The Bottom Line
+
+Your RAG pipeline's retrieval quality is directly tied to the cleanliness of your ingested data. Don't waste engineering time building and maintaining scraping infrastructure. Use a tool built for this exact purpose.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/evolving-web-scraping-pageripper-api">Why scraping JS sites is hard</Link>
+- <Link href="/blog/introducing-pageripper-api">My history building scrapers</Link>

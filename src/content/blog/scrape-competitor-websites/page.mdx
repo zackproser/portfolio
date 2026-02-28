@@ -1,0 +1,95 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'scrape-competitor-websites';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Scrape competitor websites for market intelligence" width={800} height={450} />
+</AffiliateLink>
+
+Your competitor just changed their pricing page. They published a new case study targeting your customers. They added a feature comparison table that positions against you. You find out three weeks later when a prospect mentions it in a demo.
+
+Web scraping for competitive intelligence isn't about doing anything shady. It's about reading publicly available information systematically instead of manually.
+
+## What to Monitor
+
+**Pricing pages.** The most actionable competitive intelligence. Track pricing tiers, feature gates, and positioning changes. Most B2B companies update pricing 2-4 times per year.
+
+**Product pages and changelogs.** New features, deprecated features, messaging changes. This feeds directly into your battlecards and sales enablement.
+
+**Blog and content strategy.** What topics are they investing in? Which keywords are they targeting? What customer stories are they telling?
+
+**Job postings.** Hiring patterns reveal strategic direction. A burst of ML engineering hires means they're investing in AI. A new "Head of Enterprise Sales" posting means they're moving upmarket.
+
+**Review sites.** G2, Capterra, TrustRadius. Track their ratings over time and watch for recurring complaints you can address in your positioning.
+
+## Building a Competitive Intelligence Pipeline
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> makes it practical to crawl competitor sites at scale:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+const competitors = [
+  'https://competitor-a.com',
+  'https://competitor-b.com',
+  'https://competitor-c.com',
+]
+
+for (const url of competitors) {
+  const result = await app.crawlUrl(url, {
+    limit: 50, // Focus on key pages
+    scrapeOptions: { formats: ['markdown'] }
+  })
+
+  // Store for comparison and analysis
+  for (const page of result.data) {
+    await storeForDiffing({
+      competitor: url,
+      pageUrl: page.metadata?.sourceURL,
+      content: page.markdown,
+      crawledAt: new Date()
+    })
+  }
+}
+```
+
+Run this weekly, diff against previous versions, and feed the changes to an LLM for summarization. You'll know about competitor changes within days instead of weeks.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## From Scraping to Battlecards
+
+In my <Link href="/blog/claude-cowork-workshop-anthropic">Claude Cowork workshop</Link>, I demonstrated building competitive battlecards entirely with AI agents. The pipeline:
+
+1. **Crawl** competitor website and review sites with Firecrawl
+2. **Extract** complaints, feature gaps, and positioning weaknesses
+3. **Analyze** using an LLM to categorize by severity and opportunity
+4. **Position** against your own strengths
+5. **Generate** a structured battlecard with specific talk tracks
+
+The whole process took about 8 minutes — from raw web scraping to a finished battlecard a sales rep could use in their next demo.
+
+## Ethical Considerations
+
+All of this data is publicly available. You can read it in a browser. Scraping just makes it systematic.
+
+That said:
+
+- **Respect robots.txt.** If a competitor explicitly blocks crawling certain sections, respect that.
+- **Don't overload their servers.** Rate limit your requests. Firecrawl handles this automatically.
+- **Don't scrape behind logins.** Publicly available pages only. Accessing authenticated content you don't have permission to access crosses ethical and potentially legal lines.
+- **Don't represent scraped data as your own.** This is for internal intelligence, not for republishing.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>
+- <Link href="/blog/build-ai-agent-web-research">Building AI agents for web research</Link>
