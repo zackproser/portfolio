@@ -115,21 +115,21 @@ export default function ClaudeCoworkWorkshop() {
       <section className="mb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
-            <Image src="https://zackproser.b-cdn.net/images/workshop-zack-presenting.webp"
+            <Image src="https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
               alt="Zack presenting at the Claude Cowork Workshop"
               fill
               className="object-cover"
             />
           </div>
           <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
-            <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding.webp"
+            <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
               alt="Workshop attendees building with Claude Cowork"
               fill
               className="object-cover"
             />
           </div>
           <div className="relative h-72 rounded-xl overflow-hidden shadow-lg">
-            <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack.webp"
+            <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
               alt="Q&A with Lydia from Anthropic's Claude Code team"
               fill
               className="object-cover"

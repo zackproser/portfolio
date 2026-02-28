@@ -63,8 +63,7 @@ const speakingEngagements = [
     date: 'February 26, 2026',
     location: 'San Francisco, CA',
     description: 'One-hour hands-on workshop I created and delivered at WorkOS, with Lydia from Anthropic\'s Claude Code team joining for Q&A. Demoed real-world Claude Code projects (Oura MCP, Handwave watchOS app, walking-and-talking development), then walked attendees through a complete GTM workflow: ICP identification, data scraping and enrichment, competitive analysis, battlecard creation, pain point messaging, cold email generation, blog content, and scheduled Cowork tasks for automated content production.',
-    image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting.webp',
-    imagePosition: 'top',
+    image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
     audience: 'Engineers and technical leaders',
     topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
     links: [
@@ -391,14 +390,14 @@ export default function Speaking() {
                />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding.webp"
+              <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
                 alt="Workshop attendees building with Claude Cowork"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
                />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack.webp"
+              <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
                 alt="Lydia from Anthropic and Zack during Q&A"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
