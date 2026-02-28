@@ -258,7 +258,7 @@ function SpeakingCard({ engagement }) {
         <Image src={engagement.image}
           alt={engagement.title}
           fill
-          className="object-cover"
+          className="object-cover object-top"
          />
         {/* Badge for internal vs public */}
         <div className="absolute top-4 left-4">
