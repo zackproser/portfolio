@@ -2,6 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import YoutubeEmbed from '@/components/YoutubeEmbed';
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import VerbalVentilation from '@/app/demos/voice-ai/VerbalVentilation';
+import VoicePipelineVisualization from '@/app/demos/voice-ai/VoicePipelineVisualization';
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
@@ -44,11 +46,19 @@ I opened by showing real projects I've built with Claude Code to set the baselin
 
 Before diving into the hands-on build, I demoed <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
 
+The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. Watch the difference:
+
+<VoicePipelineVisualization />
+
+When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, Gemini — you can run through multiple parallel work tracks throughout the day. Not 2x faster. *Significantly* faster.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+I also showed the brain dump workflow — what I call **verbal ventilation**. When I'm overwhelmed with too much going on, I turn on dictation mode and just rant for six minutes. Everything I'm thinking about — what I'm working on, architecture problems, random errands, frustrations. Claude takes all of that chaos and organizes it, helps me prioritize, and in a couple more turns I'm happy with a plan for the rest of the day.
+
+<VerbalVentilation />
+
 <VoiceAIDemoCard />
-
-The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, Gemini — you can run through multiple parallel work tracks throughout the day. Not 2x faster. *Significantly* faster.
-
-I also showed the brain dump workflow: when I'm overwhelmed with too much going on, I turn on dictation mode and just rant for six minutes. Everything I'm thinking about — what I'm working on, architecture problems, random errands, frustrations. Claude takes all of that chaos and organizes it, helps me prioritize, and in a couple more turns I'm happy with a plan for the rest of the day.
 
 <InlineAffiliateCTA product="wisprflow" />
 
