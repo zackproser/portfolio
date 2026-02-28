@@ -115,9 +115,10 @@ function NervousTyping({ active }: { active: boolean }) {
 
 interface VerbalVentilationProps {
   autoPlay?: boolean
+  hideExplanation?: boolean
 }
 
-export default function VerbalVentilation({ autoPlay = false }: VerbalVentilationProps) {
+export default function VerbalVentilation({ autoPlay = false, hideExplanation = false }: VerbalVentilationProps) {
   const [phase, setPhase] = useState<DemoPhase>('idle')
   const [hasAutoPlayed, setHasAutoPlayed] = useState(false)
   const [visibleThoughts, setVisibleThoughts] = useState<number[]>([])
@@ -447,6 +448,7 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
       </div>
 
       {/* Explanation */}
+      {!hideExplanation && (
       <div className="rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 p-4">
         <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
           <Brain className="h-4 w-4" />
@@ -460,6 +462,7 @@ export default function VerbalVentilation({ autoPlay = false }: VerbalVentilatio
           the chaos, just helps structure it.
         </p>
       </div>
+      )}
     </div>
   )
 }

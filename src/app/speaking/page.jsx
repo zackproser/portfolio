@@ -58,6 +58,35 @@ export const metadata = createMetadata({
 // Speaking engagements data
 const speakingEngagements = [
   {
+    id: 'claude-cowork-workshop-2026-02',
+    type: 'public',
+    title: 'Claude Cowork Workshop with Anthropic',
+    event: 'WorkOS x Anthropic',
+    date: 'February 26, 2026',
+    location: 'San Francisco, CA',
+    description: 'One-hour hands-on workshop I created and delivered at WorkOS, with Lydia from Anthropic\'s Claude Code team joining for Q&A. Demoed real-world Claude Code projects (Oura MCP, Handwave watchOS app, walking-and-talking development), then walked attendees through a complete GTM workflow: ICP identification, data scraping and enrichment, competitive analysis, battlecard creation, pain point messaging, cold email generation, blog content, and scheduled Cowork tasks for automated content production.',
+    image: 'https://zackproser.b-cdn.net/images/claude-cowork-workshop.webp',
+    audience: 'Engineers and technical leaders',
+    topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=8bjcx5Hkj5w',
+        label: 'Watch the workshop'
+      },
+      {
+        type: 'blog',
+        url: '/blog/claude-cowork-workshop-anthropic',
+        label: 'Read the write-up'
+      },
+      {
+        type: 'blog',
+        url: '/workshops/claude-cowork',
+        label: 'Book this workshop'
+      }
+    ]
+  },
+  {
     id: 'devseccon-2025-keynote',
     type: 'public',
     title: 'Keynote Speaker: DevSecCon 2025',
