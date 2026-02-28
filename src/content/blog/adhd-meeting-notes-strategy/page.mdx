@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'adhd-meeting-notes-strategy';
 
 # ADHD Meeting Notes: Why Traditional Note-Taking Fails Us (And What Actually Works)
 
@@ -14,7 +20,7 @@ The research backs this up. ADHD affects our working memory and executive functi
 
 What happens? We capture fragments. Half-sentences. Random words that seemed important but make no sense when we review them later. Meanwhile, the actual substance of the meeting — the context, the decisions, the nuance — gets completely lost.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Why Traditional Methods Don't Work for ADHD
 
@@ -34,7 +40,7 @@ This hyperfocus feels productive, but it's a trap. We're focused on the wrong th
 
 I've been in meetings where I walked out with pages of beautiful, perfectly formatted notes that captured maybe 20% of what actually mattered. The rest was lost because my brain was busy making my bullet points consistent.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## What Actually Works: The Presence Strategy
 
@@ -57,7 +63,7 @@ This isn't about replacing human intelligence. It's about offloading the mechani
 
 When I use Granola, I can be fully present in meetings because I know nothing important will be lost. The AI captures everything, organizes it intelligently, and gives me clean, actionable notes afterwards. My job is to be present, engaged, and thinking — not frantically scribbling.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Redefining Productivity for ADHD
 
@@ -94,4 +100,4 @@ The solution isn't better note-taking techniques. It's recognizing that presence
 
 Your value in meetings isn't in the notes you take. It's in the insights you bring, the questions you ask, and the solutions you see. Focus on what you're uniquely good at, and let technology handle the rest.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />

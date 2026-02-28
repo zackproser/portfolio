@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'coding-with-carpal-tunnel';
 
 # Coding with Carpal Tunnel: How I Went Hands-Free and Got Faster
 
@@ -20,7 +26,7 @@ If you're a developer and you don't have wrist pain yet, you're either very youn
 
 We've normalized destroying our bodies for our careers. That's insane.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Accommodation Trap
 
@@ -46,7 +52,7 @@ Modern voice AI changed everything. 95%+ accuracy, context-aware corrections, te
 **Phase 4: Speed Revelation**  
 I wasn't just coding pain-free. I was coding *faster than before the injury.*
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Productivity Side Effects
 
@@ -80,7 +86,7 @@ My hands-free development setup:
 - Keyboard shortcuts for navigation and editing
 - Mouse for precise cursor positioning
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## What About Complex Code?
 
@@ -110,7 +116,7 @@ The hands-on typing is maybe 20% of the work. Voice handles the other 80%.
 
 The second approach is faster *and* painless.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Mental Health Factor
 
@@ -138,7 +144,7 @@ Using voice dictation felt like admitting weakness at first. Like I wasn't a "re
 
 That's toxic nonsense. The best developers are the ones who build great software efficiently, regardless of their tools or methods.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Prevention vs. Treatment
 
@@ -164,10 +170,10 @@ Experience that 179 WPM feeling. Feel the reduced cognitive load. Notice how AI 
 
 Your future self will thank you — whether that thanks you for preventing RSI, or for discovering a faster way to build software.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 The choice isn't between coding with pain and coding slowly. The choice is between limiting yourself to typing speed and unlocking speaking speed.
 
 Make the upgrade. Your wrists and your productivity will both benefit.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

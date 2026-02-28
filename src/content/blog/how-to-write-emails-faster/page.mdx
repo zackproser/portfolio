@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-write-emails-faster';
 
 Email is the tax on doing anything meaningful. Every collaboration, every project, every client relationship — they all route through your inbox eventually. And most of us are typing every single reply at 60-90 words per minute, carefully editing as we go, agonizing over phrasing, rewriting the same sentence three times.
 
@@ -10,7 +16,7 @@ Here's the calculation that broke my brain: the average professional sends 40 em
 
 When I switched to voice dictation with WisprFlow, those same emails take 30-60 seconds each. I speak naturally, the AI cleans up my ums and hesitations, and I get polished text that sounds like me — just faster.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## How It Actually Works
 
@@ -28,7 +34,7 @@ Email has a weird problem: we write them like documents but they should sound li
 
 Voice dictation naturally produces more conversational, human-sounding emails because you're literally having a conversation — just with yourself. The result reads better than what most people type.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## My Email Workflow Now
 
@@ -44,7 +50,7 @@ I'm formally diagnosed ADHD. Email is one of the worst tasks for the ADHD brain:
 
 Voice dictation transforms email from a *writing task* (hard, boring, requires focus) into a *talking task* (natural, easy, almost automatic). My brain doesn't resist it the same way. I can blast through my inbox while pacing around my office, and that movement actually helps me think more clearly.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## "But I Need to Think While I Write"
 
@@ -63,7 +69,7 @@ WisprFlow uses advanced models to clean up your speech. It handles:
 
 The result doesn't sound dictated. It sounds like you sat down and carefully composed it — except it took you 30 seconds.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Compound Effect
 

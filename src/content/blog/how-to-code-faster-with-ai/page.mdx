@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-code-faster-with-ai';
 
 # How to Code Faster with AI: Voice + Agents Changed Everything
 
@@ -20,7 +26,7 @@ That prompt is 35 words. At 60 WPM, that's 35 seconds of typing. At 179 WPM spea
 
 Multiply that across dozens of prompts per coding session, and you're talking about real time savings.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## My ADHD Brain on AI Coding
 
@@ -38,7 +44,7 @@ Where voice really shines is in iterative development with AI. You generate some
 
 Typing that takes forever. Speaking it takes 8 seconds.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Real Example: Building a Next.js App
 
@@ -75,7 +81,7 @@ The AI transcription knows "useState" is one word, "useEffect" is camelCase, "/a
 
 You can also train it on your codebase's vocabulary. Variable names, function names, internal APIs, framework-specific terms.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Context Advantage
 
@@ -110,7 +116,7 @@ My workflow:
 
 For real-time conversation with AI tools, some of the newer ones support voice input directly. But even copy-paste is 2x faster than typing.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Why This Matters Now
 
@@ -128,4 +134,4 @@ But the biggest speed improvement is simply removing the typing bottleneck betwe
 
 The future of programming is conversational. Start the conversation.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

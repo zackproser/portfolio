@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'too-many-meetings-cant-get-work-done';
 
 # Too Many Meetings? Here's How I Actually Get Work Done Now
 
@@ -18,7 +24,7 @@ Here's what happens when you have too many meetings:
 
 **Follow-up becomes impossible.** By the time you get out of your last meeting, you can barely remember what happened in the first one. Those action items you were supposed to send? Good luck figuring out what they were.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Traditional Solutions Don't Work
 
@@ -46,7 +52,7 @@ Here's how it works:
 
 **After the meeting:** I get a clean summary with action items, decisions, and key quotes. Everything's organized and searchable. Follow-ups take minutes instead of hours.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The ADHD/Autism Angle
 
@@ -70,7 +76,7 @@ Here's my current meeting workflow:
 
 **Searchability:** This is huge. When someone asks "what did we decide about the Q2 budget?" I can search across all my meeting transcripts instead of digging through messy handwritten notes.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Results Are Dramatic
 

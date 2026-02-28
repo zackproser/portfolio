@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-be-more-present-in-meetings';
 
 Being present is a power move. That's not a platitude — it's a competitive advantage that most professionals have accidentally given up.
 
@@ -12,7 +18,7 @@ It happened gradually. First came the expectation that every meeting produces no
 
 The irony: the notes we're frantically typing are usually garbage anyway. Half-sentences, misspelled names, context that only makes sense for 20 minutes after the meeting. We sacrificed presence for documentation that doesn't even work.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Impossible Choice (That's No Longer Impossible)
 
@@ -35,7 +41,7 @@ The effects are immediate and dramatic:
 
 **You build trust faster.** When someone is telling you something important and you're visibly typing, the message is: "I'm documenting you." When you're making eye contact and nodding, the message is: "I hear you." People share more with the second person.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Science of Presence
 
@@ -54,7 +60,7 @@ My setup is embarrassingly simple:
 
 The notes Granola produces are better than anything I ever typed live. They're structured, they capture things I would have missed, and they include the full context of discussions — not just the fragments I managed to type between trying to listen.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Presence in Different Meeting Types
 
@@ -74,7 +80,7 @@ The actual problem isn't a lack of willpower. It's a structural conflict: meetin
 
 The solution is structural too: remove the documentation burden from the human. Let AI handle capture. Let the human handle what humans are actually good at — reading rooms, building relationships, thinking in real time, having ideas.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Start Tomorrow
 

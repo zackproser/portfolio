@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'brain-dump-technique-productivity';
 
 # The Brain Dump Technique That Replaced My Entire Productivity System
 
@@ -16,7 +22,7 @@ Then I feed that audio to AI, which transforms my chaotic rambling into organize
 
 Six minutes in, clarity out. Every single time.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Why Voice Works for ADHD
 
@@ -60,7 +66,7 @@ No editing, no organizing, no making it sound good. Pure verbal stream-of-consci
 - Ideas worth pursuing
 - Context that was getting lost
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 **Step 4 - The Action** (10 minutes): Scan the organized output. Pick the one thing that will make the biggest difference right now. Do it immediately while the clarity is fresh.
 
@@ -96,7 +102,7 @@ What the AI gives me back (organized output):
 
 See the difference? The raw dump captures the emotional chaos and scattered thoughts. The AI output gives me clear priorities and actions.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Why This Works Better Than Traditional Lists
 
@@ -142,7 +148,7 @@ After a good brain dump, I feel physically lighter. The mental tabs are closed. 
 
 **Making it perfect**: This is a working tool, not a performance. Embrace the chaos.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The System Integration
 
@@ -175,4 +181,4 @@ The six-minute brain dump doesn't try to make your brain linear. It works with t
 
 Your brain can go back to doing what it does best: making connections, seeing patterns, and solving problems.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
