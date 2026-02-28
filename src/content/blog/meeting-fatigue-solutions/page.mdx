@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'meeting-fatigue-solutions';
 
 # Meeting Fatigue Is Real: Here's What Actually Helps
 
@@ -26,7 +32,7 @@ This triple-load destroys your mental resources. By the end of the day, you're n
 
 **The breakthrough insight:** If you remove just one of these cognitive loads, meeting fatigue drops dramatically.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Real Science of Meeting Exhaustion
 
@@ -54,7 +60,7 @@ But there's a fifth factor that researchers miss: **split attention**. You're tr
 
 The issue isn't meeting length or frequency—it's that **you're doing two jobs simultaneously**: participant and recorder.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Solution: Single-Task Your Meetings
 
@@ -98,7 +104,7 @@ Here's what changed for me:
 
 **Meeting participation:** This is huge. When you're not worried about missing something important, you can actually engage with the conversation. Ask better questions. Make better connections. Challenge assumptions instead of just documenting them.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Beyond Just Fatigue Reduction
 

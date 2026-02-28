@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-type-faster-without-practice';
 
 # How to Type Faster Without Practice (Just Stop Typing)
 
@@ -16,7 +22,7 @@ But think about it: even if you doubled your typing speed from 40 to 80 WPM, you
 
 As someone with ADHD, I've tried every productivity hack in the book. Typing faster was on that list for years. The breakthrough wasn't getting better at typing — it was realizing typing itself was the bottleneck.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Math Is Brutal
 
@@ -37,7 +43,7 @@ But AI-powered voice transcription changed everything. Modern tools don't just c
 
 The accuracy is now 95%+ for clear speech. Compare that to my typing accuracy when I'm in flow state (spoiler: it's not 95%).
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Real Benefits (Beyond Speed)
 
@@ -65,7 +71,7 @@ The workflow is simple:
 3. Edit the result with keyboard shortcuts
 4. Publish
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## What About Technical Writing?
 
@@ -97,4 +103,4 @@ You can spend months practicing typing to gain 20-30 WPM. Or you can start speak
 
 I know which one makes more sense.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

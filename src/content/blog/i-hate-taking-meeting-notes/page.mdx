@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'i-hate-taking-meeting-notes';
 
 # I Hate Taking Meeting Notes (So I Stopped)
 
@@ -20,7 +26,7 @@ Think about your last ten meetings. How many times did you actually reference th
 
 Meeting notes are procrastination disguised as productivity. They give us something to do with our hands while our brains disengage from the actual conversation.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Why Meeting Notes Don't Work
 
@@ -42,7 +48,7 @@ But what actually looks professional? Being the person who asks the clarifying q
 
 You can't do any of that when your brain is in note-taking mode.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## What Happens When You Stop
 
@@ -68,7 +74,7 @@ What you'll forget is the useless filler that makes up 80% of most meetings. And
 
 The stuff that survives your natural filtering process? That's the stuff worth remembering. That's where you should focus your follow-up energy.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## What I Do Instead
 
@@ -114,4 +120,4 @@ Your job in meetings isn't to be a court reporter. It's to think, contribute, an
 
 Stop taking meeting notes. Start being present. The difference will be immediately obvious to everyone in the room, especially you.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />

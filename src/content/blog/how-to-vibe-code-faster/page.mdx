@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-vibe-code-faster';
 
 # How to Vibe Code Faster: The Voice-First Approach
 
@@ -18,7 +24,7 @@ It's conversational programming. You're having a dialogue with your codebase, wi
 
 And conversations happen at 179 words per minute, not 60.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Flow State Problem
 
@@ -38,7 +44,7 @@ You think "import the React hooks I need for this component."
 
 Voice dictation lets you program in the language you're already thinking in. The AI bridges the gap between natural language and code syntax.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Iteration Loop
 
@@ -72,7 +78,7 @@ That's one coherent thought. Speaking it takes 15 seconds. Typing it takes a min
 
 The AI gets the full context in one shot, implements all the requirements together, maintains consistency across the whole feature.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Creative Process
 
@@ -102,7 +108,7 @@ Last week I was building a real-time collaboration feature. Instead of breaking 
 
 179 words per minute later, I had a complete implementation. No breaking flow to type import statements, no hunting for the right parameter names, no losing the big picture while focusing on semicolons.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Tools That Get It
 
@@ -136,10 +142,10 @@ While other developers are grinding Leetcode and memorizing API documentation, y
 
 Voice-first vibe coding lets you operate at the level where you have a true competitive advantage — understanding what needs to be built and why, not just how to type it.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 The future belongs to developers who can think fast and communicate clearly with AI systems. That communication happens at speaking speed.
 
 Get in the vibe. Stay in the vibe. Build at the speed of thought.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'fastest-way-to-write-documentation';
 
 # The Fastest Way to Write Documentation (Hint: Don't Type It)
 
@@ -30,7 +36,7 @@ The traditional documentation workflow is broken:
 
 The problem isn't that developers can't write. The problem is that typing forces you to think linearly, but good documentation needs to be structured around the reader's mental model, not the writer's.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Explanation Problem
 
@@ -56,7 +62,7 @@ Here's my new process:
 
 This workflow cuts documentation time from hours to minutes. More importantly, it produces better documentation because you're explaining naturally instead of writing artificially.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Why Speaking Produces Better Docs
 
@@ -88,7 +94,7 @@ When you speak explanations instead of typing them, several things happen:
 
 In each case, you're having a conversation with an imaginary colleague. The AI handles transcription and formatting.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Advanced Techniques
 

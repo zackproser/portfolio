@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-remember-everything-from-meetings';
 
 # How to Remember Everything from a Meeting Without Taking Notes
 
@@ -20,7 +26,7 @@ Usually, it's the listening that suffers. You're so focused on capturing what wa
 
 I've been in meetings where I walked out with five pages of detailed notes and absolutely no idea what we actually decided. The act of note-taking had consumed all my available attention, leaving nothing for comprehension.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## What Actually Helps Memory
 
@@ -56,7 +62,7 @@ When you're fully present, your brain does this filtering automatically. The imp
 
 But when you're taking notes, everything gets the same treatment. Random quotes get the same attention as critical decisions. The signal gets buried in noise.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The False Security of Notes
 
@@ -94,7 +100,7 @@ All of these work together to create rich, contextualized recall. But they only 
 
 Note-taking disrupts this natural process. You end up with fragmented semantic memory (random facts) and almost no episodic or emotional context.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Presence + Capture Formula
 
@@ -150,4 +156,4 @@ The key is understanding what your brain is actually good at: making connections
 
 Let AI handle the mechanical aspects of information capture. Your job is to be present, engaged, and thinking. Do that well, and you'll remember everything that actually matters.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />

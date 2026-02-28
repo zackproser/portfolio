@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'how-to-dictate-code';
 
 # How to Dictate Code: A Developer's Guide to Voice-First Programming
 
@@ -28,7 +34,7 @@ async function getUserById(userId: string): Promise<User | null> {
 
 The AI figures out the syntax. You focus on the logic.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Technical Setup That Actually Works
 
@@ -61,7 +67,7 @@ The setup I use handles all this automatically. Speak a function signature, it a
 
 **The hybrid approach works best.** Use voice for the structure and logic, keyboard for the fiddly bits.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Common Pitfalls and How to Avoid Them
 
@@ -105,7 +111,7 @@ Once you're comfortable with basics, these patterns multiply your effectiveness:
 
 **Documentation integration:** Speak your function's purpose while coding, automatically generates JSDoc comments.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Why This Matters for ADHD/Autism
 
