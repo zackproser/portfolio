@@ -1,7 +1,10 @@
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
 export const campaign = 'wisprflow-vs-dragon-naturallyspeaking'
+export const metadata = createMetadata(rawMetadata)
 
 # WisprFlow vs Dragon NaturallySpeaking: Modern Voice Input vs Legacy Dictation
 
@@ -23,7 +26,7 @@ Professional vocabularies require additional training. Medical Dragon includes 9
 
 **WisprFlow** works immediately. No training required, no vocabulary building, no accent adaptation period. You speak naturally from the first session.
 
-The difference reflects modern machine learning capabilities. Dragon was built when speech recognition required extensive user training. WisprFlow leverages contemporary AI that adapts to users rather than forcing users to adapt to technology.
+The difference reflects modern machine learning capabilities. Dragon was built when speech recognition required extensive user training. WisprFlow uses contemporary AI that adapts to users rather than forcing users to adapt to technology.
 
 ## Accuracy and Recognition
 
