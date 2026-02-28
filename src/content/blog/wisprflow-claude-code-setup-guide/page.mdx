@@ -8,11 +8,12 @@ import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "wisprflow-claude-code-setup-guide";
 
 After my <Link href="/blog/claude-cowork-workshop-anthropic">Claude Cowork GTM Workshop</Link>, the number one question I got was: **"How do I set this up?"**
 
 This is the complete guide. By the end, you'll have:
-- **<AffiliateLink product="wisprflow">WisprFlow</AffiliateLink>** dictating at 179 WPM into any text field
+- **<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** dictating at 179 WPM into any text field
 - **Claude Code** executing your spoken instructions as real code
 
 Total setup time: about 10 minutes.
@@ -21,9 +22,9 @@ Total setup time: about 10 minutes.
 
 | Layer | Tool | What It Does |
 |---|---|---|
-| **Voice Input** | <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> | Converts speech to polished text at 179 WPM |
+| **Voice Input** | <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> | Converts speech to polished text at 179 WPM |
 | **AI Execution** | Claude Code | Takes your spoken instructions, writes and runs code |
-| **Meeting Capture** | <AffiliateLink product="granola">Granola</AffiliateLink> | AI meeting notes without a bot joining |
+| **Meeting Capture** | <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> | AI meeting notes without a bot joining |
 
 Voice makes you faster at instructing Claude. Claude makes your voice input productive. Let me walk through setting up each one.
 
@@ -33,7 +34,7 @@ This is the foundation. Everything else builds on being able to speak instead of
 
 ### Installation
 
-1. Download <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> from [wisprflow.com](https://wisprflow.com)
+1. Download <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> from [wisprflow.com](https://wisprflow.com)
 2. Install the macOS app (Windows and mobile coming — currently Mac only)
 3. Grant microphone and accessibility permissions when prompted
 4. Set your activation hotkey (I use `Fn` — it's easy to hold with my left pinky)
@@ -51,7 +52,7 @@ This is the foundation. Everything else builds on being able to speak instead of
 - **Context-aware:** It knows whether you're in a terminal, IDE, browser, or chat app and adjusts formatting accordingly.
 - **Train yourself on Day 1-3.** It feels weird talking to your computer. By Day 3, it's natural. By Day 7, typing feels painfully slow.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Step 2: Claude Code (AI Execution)
 
@@ -96,7 +97,7 @@ Rotate between tabs, speaking instructions into each one. While Claude works on 
 
 <MultiAgentOrchestration />
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### The Brain Dump Pattern
 
@@ -110,13 +111,13 @@ Claude Code takes this chaos and produces a structured plan. Usually within two 
 
 ## Step 3: Granola (Meeting Capture)
 
-If you're in meetings throughout the day, <AffiliateLink product="granola">Granola</AffiliateLink> completes the stack by handling the other half of your work life — meetings — with the same philosophy: be present, let AI handle the capture.
+If you're in meetings throughout the day, <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> completes the stack by handling the other half of your work life — meetings — with the same philosophy: be present, let AI handle the capture.
 
 Granola runs locally, captures meeting audio from your system output, and produces structured notes with action items. No bot joins your call. Nobody knows notes are being taken. You just... participate.
 
 After the meeting, your notes include everything that was said, organized by topic with action items extracted. Combined with WisprFlow for rapid follow-up emails, you can go from meeting to follow-up in 60 seconds.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Putting It All Together
 
@@ -136,17 +137,17 @@ Here's what a typical morning looks like with the full stack:
 
 ## Quick Start Checklist
 
-- [ ] Install <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> and set your hotkey
+- [ ] Install <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> and set your hotkey
 - [ ] Practice hold-to-talk in Slack or email for one day
 - [ ] Install Claude Code (`npm install -g @anthropic-ai/claude-code`)
 - [ ] Try speaking your first prompt to Claude Code instead of typing it
-- [ ] Install <AffiliateLink product="granola">Granola</AffiliateLink> before your next meeting
+- [ ] Install <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> before your next meeting
 - [ ] Try the brain dump: double-tap WisprFlow, rant for 3 minutes about what you're working on, paste into Claude Code
 
 By Day 3, this will feel natural. By Week 2, you'll wonder how you ever typed everything. The keyboard had a good run — but your voice is faster, more natural, and produces better output.
 
 <VoiceAIDemoCard />
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
