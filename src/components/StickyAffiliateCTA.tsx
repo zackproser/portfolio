@@ -7,7 +7,7 @@ import { track } from '@vercel/analytics'
 import { getAffiliateLink, type AffiliateProduct, type AffiliateMedium, type AffiliatePlacement } from '@/lib/affiliate'
 
 interface StickyAffiliateCTAProps {
-  product?: 'wisprflow' | 'granola' | 'firecrawl' | 'both'
+  product?: 'wisprflow' | 'granola' | 'both'
   campaign?: string  // Page slug for UTM tracking (e.g., 'ai-tools-for-lawyers')
   medium?: AffiliateMedium
   showAfterScroll?: number // pixels to scroll before showing
@@ -78,7 +78,7 @@ export default function StickyAffiliateCTA({
     track('sticky_cta_dismissed', { product })
   }
 
-  const handleClick = (clickedProduct: 'wisprflow' | 'granola' | 'firecrawl') => {
+  const handleClick = (clickedProduct: 'wisprflow' | 'granola') => {
     track('sticky_cta_click', { product: clickedProduct })
   }
 
