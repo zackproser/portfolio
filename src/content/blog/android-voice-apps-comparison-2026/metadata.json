@@ -4,5 +4,12 @@
   "date": "2026-2-28",
   "description": "Comprehensive comparison of the top Android voice-to-text apps for business professionals. WisprFlow, Google Voice, Dragon Anywhere, and more tested for accuracy and features.",
   "image": "https://zackproser.b-cdn.net/images/android-voice-comparison-hero.webp",
-  "tags": ["android", "voice-to-text", "voice-apps", "mobile-productivity", "comparison"]
+  "tags": [
+    "android",
+    "voice-to-text",
+    "voice-apps",
+    "mobile-productivity",
+    "comparison"
+  ],
+  "hiddenFromIndex": true
 }

@@ -4,5 +4,12 @@
   "date": "2026-2-28",
   "description": "How WisprFlow's new Android app transforms mobile productivity for business professionals with accurate voice-to-text that works anywhere.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow-android-business-hero.webp",
-  "tags": ["wisprflow", "android", "mobile-productivity", "voice-to-text", "business"]
+  "tags": [
+    "wisprflow",
+    "android",
+    "mobile-productivity",
+    "voice-to-text",
+    "business"
+  ],
+  "hiddenFromIndex": true
 }
