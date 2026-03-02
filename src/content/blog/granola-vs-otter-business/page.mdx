@@ -1,5 +1,11 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-vs-otter-business'
 
 Team meetings consume hours of valuable time, but extracting actionable insights often requires even more effort. Two leading AI meeting assistants — Granola and Otter Business — promise to transform meeting transcription and analysis for teams.
 
@@ -11,7 +17,7 @@ This comprehensive comparison examines accuracy, collaboration features, integra
 
 **Otter Business wins for:** Larger team deployments, established enterprise integrations, and basic transcription needs with straightforward sharing features.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Feature Comparison Matrix
 
@@ -49,7 +55,7 @@ Otter's transcription relies on older technology:
 - Limited accent recognition capabilities
 - Requires significant manual editing for accuracy
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## AI-Powered Meeting Analysis
 
@@ -102,7 +108,7 @@ Otter Business offers standard sharing features:
 - Export to common productivity tools
 - Integration with major calendar platforms
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Enterprise Features and Administration
 
@@ -198,7 +204,7 @@ Otter Business offers standard sharing features:
 - Manual deal stage updates required
 - Limited sales-specific insights
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Implementation and Onboarding
 
@@ -246,4 +252,4 @@ For teams serious about meeting productivity, Granola's superior accuracy, autom
 
 Organizations choosing Granola typically see 40-60% reduction in post-meeting administrative work, faster project execution, and improved team alignment through better action item tracking.
 
-Ready to transform your team meetings from time sinks into productivity engines? <AffiliateLink product="granola">Try Granola free for 14 days</AffiliateLink> and experience intelligent meeting assistance that actually saves time.
+Ready to transform your team meetings from time sinks into productivity engines? <AffiliateLink product="granola" campaign={campaign}>Try Granola free for 14 days</AffiliateLink> and experience intelligent meeting assistance that actually saves time.

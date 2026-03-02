@@ -1,4 +1,10 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'best-android-transcription-app'
 
 Android transcription apps have evolved dramatically in 2026, with WisprFlow's February launch setting new professional standards alongside established options like Google Recorder and Otter.
 
@@ -12,7 +18,7 @@ This comprehensive comparison evaluates accuracy, features, and value across the
 4. **Rev Voice Recorder** - Best with human verification (99%+ with humans)
 5. **Speechify Transcription** - Best for accessibility (89% accuracy)
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Accuracy Testing Results
 
@@ -41,7 +47,7 @@ We tested each app with identical 10-minute audio samples across different scena
 - Intent integration with third-party apps
 - Accessibility API support
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### Google Recorder: Solid Free Choice
 **Core strengths:**
@@ -83,7 +89,7 @@ We tested each app with identical 10-minute audio samples across different scena
 ### For Content Creators
 **Choose WisprFlow** for professional accuracy and advanced editing capabilities essential for content production workflows.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Android Platform Advantages
 
@@ -112,4 +118,4 @@ WisprFlow sets the gold standard for Android transcription in 2026, delivering p
 
 The Android transcription landscape has matured significantly, offering viable options for every use case and budget. Choose based on your accuracy requirements, feature needs, and integration preferences.
 
-Ready for professional-grade Android transcription? <AffiliateLink product="wisprflow">Try WisprFlow free for 14 days</AffiliateLink> and experience the difference accurate, intelligent transcription makes in your mobile workflow.
+Ready for professional-grade Android transcription? <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free for 14 days</AffiliateLink> and experience the difference accurate, intelligent transcription makes in your mobile workflow.
