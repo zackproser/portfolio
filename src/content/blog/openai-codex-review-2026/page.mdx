@@ -1,0 +1,159 @@
+import { Button } from '@/components/Button'
+import Image from 'next/image'
+import Link from 'next/link'
+import ConsultingCTA from '@/components/ConsultingCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/codex-2026-hero.webp" alt="Codex in 2026 - significantly improved after nearly a year of daily use"  width={800} height={600}/>
+
+<figcaption>Nearly a year later, the promise is actually being delivered</figcaption>
+
+## Table of contents 
+
+It's been nearly a year since I wrote my <Link href="/blog/openai-codex-review">original Codex review</Link> after getting access to the research preview. Since then, I've been using Codex daily across multiple contexts: my personal projects, WorkOS infrastructure, and various side builds. 
+
+The landscape has changed dramatically. Here's what actually improved and what still needs work.
+
+## The real test: Daily production use
+
+When I wrote my initial review in May 2025, Codex felt promising but rough around the edges. The kinds of tasks it could handle reliably were limited, error handling was poor, and multi-turn conversations often derailed.
+
+Fast-forward to March 2026, and I'm using Codex as a core part of my development workflow both personally and at WorkOS. The difference isn't subtle—it's night and day.
+
+### WorkOS: Managing multiple projects simultaneously
+
+At WorkOS, I'm regularly juggling 4-6 different repositories: our main API, client SDKs, documentation sites, and various internal tools. This is where Codex's multi-threaded approach really shines.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-workos-workflow.webp" alt="Managing multiple WorkOS projects simultaneously with Codex"  width={800} height={600}/>
+
+A typical morning involves spinning up tasks across multiple repos:
+- "Add rate limiting to the webhook endpoints in workos-api"  
+- "Update the Node SDK documentation to reflect the new scopes parameter"
+- "Refactor the admin dashboard's user management component to use the new API"
+- "Add TypeScript types for the new audit log events"
+
+What's remarkable is that these tasks actually complete reliably now. The success rate has jumped from my original estimate of 40-60% to what feels like 85-90% for well-scoped tasks.
+
+### Personal projects: Feature development on established codebases
+
+This is where Codex has become genuinely transformative. When you have a mature codebase with established patterns, conventions, and architecture, Codex excels at extending those patterns consistently.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-personal-projects.webp" alt="Adding features to established personal projects"  width={800} height={600}/>
+
+For my portfolio site, I can now ask Codex to:
+- "Add a new blog post template for interview posts with structured metadata"
+- "Create a reading progress indicator component that matches the existing design system"
+- "Implement tag-based filtering for the blog index page"
+
+It understands the existing Next.js structure, follows my component patterns, respects the Tailwind classes I'm already using, and even maintains my preference for named exports over default exports.
+
+## What's actually improved
+
+### Error handling and stability
+
+Remember those mysterious failures from my original review? They're essentially gone. When a task fails now, Codex provides clear error messages and often suggests fixes:
+
+<Image src="https://zackproser.b-cdn.net/images/codex-improved-errors.webp" alt="Much better error handling in 2026"  width={800} height={600}/>
+
+The difference in stability is the most dramatic improvement. Tasks that would fail silently or with cryptic messages now either complete successfully or fail with actionable feedback.
+
+### Multi-turn conversations and branch updates
+
+The workflow for iterating on existing PRs has been completely overhauled. You can now:
+- Push follow-up commits to existing branches reliably
+- Have back-and-forth conversations about implementation details
+- Request specific changes without spinning up new tasks
+
+<Image src="https://zackproser.b-cdn.net/images/codex-multi-turn-2026.webp" alt="Multi-turn conversations are now smooth and reliable"  width={800} height={600}/>
+
+This makes larger refactors much more manageable. I recently used Codex to migrate a complex authentication system across multiple files, and the multi-turn refinement process actually worked.
+
+### Code quality and contextual awareness
+
+The generated code quality has improved significantly. Codex now:
+- Follows existing code style and patterns more consistently  
+- Handles edge cases I didn't explicitly mention
+- Suggests performance optimizations during implementation
+- Maintains better consistency with TypeScript types across files
+
+### The preview iteration system
+
+One of the most interesting new features is the preview system. When you submit a task, Codex now generates 2-4 different implementation approaches and lets you pick which one to execute.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-preview-iterations.webp" alt="Choose from 2-4 different implementation approaches"  width={800} height={600}/>
+
+This is genuinely useful. For a recent API endpoint, the variations included:
+- A minimal implementation focused on speed
+- A more robust version with comprehensive error handling  
+- An approach that prioritized backwards compatibility
+- A version optimized for future extensibility
+
+Being able to choose feels like having multiple senior developers propose solutions, then picking the best approach for your specific context.
+
+## What still frustrates me
+
+### Model selection opacity
+
+You still can't choose which model handles your task. Codex picks internally based on task complexity, repository size, and probably other factors I'm not privy to.
+
+As someone who understands the trade-offs between different model sizes and capabilities, this lack of control is annoying. Sometimes I want to throw GPT-4o at a complex architectural decision, and sometimes I just need Codex to generate a simple CRUD interface where a smaller, faster model would be fine.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-model-mystery.webp" alt="Still can't choose your model - it picks for you"  width={800} height={600}/>
+
+The system is clearly making intelligent decisions—complex tasks get more powerful models while simple ones get faster execution—but I'd prefer the option to override when I have specific requirements.
+
+### Network connectivity limitations
+
+This hasn't changed. Codex still can't reach the internet from its execution environment, which means:
+- No installing updated dependencies
+- No fetching external APIs during development  
+- No running integration tests that require network access
+
+I understand the security rationale, but it limits the tool's usefulness for many real-world development scenarios.
+
+## The meta-improvement: Codex training on Codex usage
+
+OpenAI claimed they were using Codex itself to improve Codex, and the evidence is now undeniable. The improvement curve has been steep and consistent in a way that suggests systematic, automated refinement rather than just periodic model updates.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-training-loop.webp" alt="Evidence of Codex improving itself is clear"  width={800} height={600}/>
+
+The kinds of tasks that failed reliably in mid-2025 now succeed routinely. More importantly, the failure modes have shifted from "mysterious crashes" to "this approach won't work, try this instead."
+
+## Has it actually changed my workflow?
+
+Yes, dramatically.
+
+**Morning routine:** I now start most coding sessions by queuing up 3-5 Codex tasks before diving into any manual work. By the time I've had coffee and checked messages, there are usually 2-3 completed PRs waiting for review.
+
+**Feature development:** For established codebases, I sketch out the architecture and let Codex handle the implementation details. This is particularly effective for CRUD operations, API endpoints, and UI components that follow existing patterns.
+
+**Maintenance tasks:** The dreaded backlog of small fixes and improvements that accumulate in any project? Codex handles most of these now. Dependency updates, documentation fixes, test coverage improvements—all fire-and-forget tasks.
+
+**WorkOS impact:** We've measurably increased our feature velocity. Not because Codex is replacing developers, but because it's handling the implementation grunt work that used to consume 30-40% of development time.
+
+## Looking ahead
+
+<Image src="https://zackproser.b-cdn.net/images/codex-future-2026.webp" alt="The trajectory is clear - this will keep improving"  width={800} height={600}/>
+
+The trajectory is clear. If Codex improves over the next year at the same rate it has over the past year, we're looking at a fundamentally different development experience.
+
+I'm particularly excited about:
+- **Better architectural reasoning:** Moving beyond implementation to system design
+- **Cross-repository awareness:** Understanding relationships between services
+- **Performance optimization:** Not just functional correctness but efficiency
+- **Production debugging:** Using context from logs and metrics to suggest fixes
+
+## Bottom line
+
+<Link href="/blog/openai-codex-review">My original review</Link> was cautiously optimistic but ultimately skeptical about Codex's readiness for serious development work. That skepticism has been thoroughly overturned by daily use.
+
+Codex in 2026 isn't just a research preview anymore—it's production-ready infrastructure that has meaningfully changed how I build software. The improvements have been substantial enough that I can't imagine going back to a pre-Codex workflow.
+
+Is it perfect? No. But it's crossed the threshold from "interesting experiment" to "indispensable tool."
+
+If you're still on the fence about trying Codex, stop waiting. The tool that exists today is fundamentally different from the one I reviewed a year ago, and the trajectory suggests it will only get better from here.
+
+<ConsultingCTA />
