@@ -6,7 +6,7 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src="https://zackproser.b-cdn.net/images/codex-2026-hero.webp" alt="Codex in 2026 - significantly improved after nearly a year of daily use"  width={800} height={600}/>
+<Image src="https://zackproser.b-cdn.net/images/codex-hero.webp" alt="Codex in 2026 - significantly improved after nearly a year of daily use"  width={968} height={545}/>
 
 <figcaption>Nearly a year later, the promise is actually being delivered</figcaption>
 
@@ -24,13 +24,13 @@ Fast-forward to March 2026, and I'm using Codex as a core part of my development
 
 ### WorkOS: Managing multiple projects simultaneously
 
-At WorkOS, I'm regularly juggling 4-6 different repositories: our main API, client SDKs, documentation sites, and various internal tools. This is where Codex's multi-threaded approach really shines.
+At WorkOS, I'm regularly juggling 4-6 different repositories: our main API, various Applied AI internal projects, customer-facing tooling, and content. This is where Codex's multi-threaded approach really shines.
 
-<Image src="https://zackproser.b-cdn.net/images/codex-workos-workflow.webp" alt="Managing multiple WorkOS projects simultaneously with Codex"  width={800} height={600}/>
+<Image src="https://zackproser.b-cdn.net/images/codex-main-chat-interface.webp" alt="Managing multiple WorkOS projects simultaneously with Codex"  width={800} height={600}/>
 
 A typical morning involves spinning up tasks across multiple repos:
 - "Add rate limiting to the webhook endpoints in workos-api"  
-- "Update the Node SDK documentation to reflect the new scopes parameter"
+- "Update internal project documentation to reflect the new scopes parameter"
 - "Refactor the admin dashboard's user management component to use the new API"
 - "Add TypeScript types for the new audit log events"
 
@@ -40,7 +40,7 @@ What's remarkable is that these tasks actually complete reliably now. The succes
 
 This is where Codex has become genuinely transformative. When you have a mature codebase with established patterns, conventions, and architecture, Codex excels at extending those patterns consistently.
 
-<Image src="https://zackproser.b-cdn.net/images/codex-personal-projects.webp" alt="Adding features to established personal projects"  width={800} height={600}/>
+<Image src="https://zackproser.b-cdn.net/images/codex-real-task.webp" alt="Adding features to established personal projects"  width={800} height={600}/>
 
 For my portfolio site, I can now ask Codex to:
 - "Add a new blog post template for interview posts with structured metadata"
@@ -55,7 +55,7 @@ It understands the existing Next.js structure, follows my component patterns, re
 
 Remember those mysterious failures from my original review? They're essentially gone. When a task fails now, Codex provides clear error messages and often suggests fixes:
 
-<Image src="https://zackproser.b-cdn.net/images/codex-improved-errors.webp" alt="Much better error handling in 2026"  width={800} height={600}/>
+<Image src="https://zackproser.b-cdn.net/images/codex-create-pr.webp" alt="Much better error handling in 2026"  width={800} height={600}/>
 
 The difference in stability is the most dramatic improvement. Tasks that would fail silently or with cryptic messages now either complete successfully or fail with actionable feedback.
 
@@ -66,7 +66,7 @@ The workflow for iterating on existing PRs has been completely overhauled. You c
 - Have back-and-forth conversations about implementation details
 - Request specific changes without spinning up new tasks
 
-<Image src="https://zackproser.b-cdn.net/images/codex-multi-turn-2026.webp" alt="Multi-turn conversations are now smooth and reliable"  width={800} height={600}/>
+<Image src="https://zackproser.b-cdn.net/images/chat-thread.webp" alt="Multi-turn conversations are now smooth and reliable"  width={800} height={600}/>
 
 This makes larger refactors much more manageable. I recently used Codex to migrate a complex authentication system across multiple files, and the multi-turn refinement process actually worked.
 
@@ -81,8 +81,6 @@ The generated code quality has improved significantly. Codex now:
 ### The preview iteration system
 
 One of the most interesting new features is the preview system. When you submit a task, Codex now generates 2-4 different implementation approaches and lets you pick which one to execute.
-
-<Image src="https://zackproser.b-cdn.net/images/codex-preview-iterations.webp" alt="Choose from 2-4 different implementation approaches"  width={800} height={600}/>
 
 This is genuinely useful. For a recent API endpoint, the variations included:
 - A minimal implementation focused on speed
@@ -100,8 +98,6 @@ You still can't choose which model handles your task. Codex picks internally bas
 
 As someone who understands the trade-offs between different model sizes and capabilities, this lack of control is annoying. Sometimes I want to throw GPT-4o at a complex architectural decision, and sometimes I just need Codex to generate a simple CRUD interface where a smaller, faster model would be fine.
 
-<Image src="https://zackproser.b-cdn.net/images/codex-model-mystery.webp" alt="Still can't choose your model - it picks for you"  width={800} height={600}/>
-
 The system is clearly making intelligent decisions—complex tasks get more powerful models while simple ones get faster execution—but I'd prefer the option to override when I have specific requirements.
 
 ### Network connectivity limitations
@@ -116,8 +112,6 @@ I understand the security rationale, but it limits the tool's usefulness for man
 ## The meta-improvement: Codex training on Codex usage
 
 OpenAI claimed they were using Codex itself to improve Codex, and the evidence is now undeniable. The improvement curve has been steep and consistent in a way that suggests systematic, automated refinement rather than just periodic model updates.
-
-<Image src="https://zackproser.b-cdn.net/images/codex-training-loop.webp" alt="Evidence of Codex improving itself is clear"  width={800} height={600}/>
 
 The kinds of tasks that failed reliably in mid-2025 now succeed routinely. More importantly, the failure modes have shifted from "mysterious crashes" to "this approach won't work, try this instead."
 
@@ -134,8 +128,6 @@ Yes, dramatically.
 **WorkOS impact:** We've measurably increased our feature velocity. Not because Codex is replacing developers, but because it's handling the implementation grunt work that used to consume 30-40% of development time.
 
 ## Looking ahead
-
-<Image src="https://zackproser.b-cdn.net/images/openai-codex-intro-2026.webp" alt="OpenAI's introduction to Codex shows the foundation for these improvements"  width={800} height={600}/>
 
 The trajectory is clear. If Codex improves over the next year at the same rate it has over the past year, we're looking at a fundamentally different development experience.
 
