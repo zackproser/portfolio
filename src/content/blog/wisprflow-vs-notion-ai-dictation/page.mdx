@@ -1,5 +1,11 @@
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-vs-notion-ai-dictation'
 
 Voice dictation has revolutionized how professionals capture ideas, draft documents, and manage workflows. Two popular options — WisprFlow and Notion AI dictation — take different approaches to voice-powered productivity.
 
@@ -11,7 +17,7 @@ This detailed comparison examines accuracy, features, integration capabilities, 
 
 **Notion AI wins for:** Users already embedded in Notion ecosystem, collaborative editing workflows, and basic voice-to-text within database structures.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Feature Comparison Overview
 
@@ -42,7 +48,7 @@ Notion's voice features offer basic functionality:
 - **Processing speed**: Slower transcription, especially for longer passages
 - **Error correction**: Basic auto-correction without learning capabilities
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Integration and Workflow
 
@@ -96,7 +102,7 @@ Notion AI dictation works only within Notion:
 - Requires internet connection (potential privacy concerns)
 - No EMR integration capabilities
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Pricing and Value
 
@@ -151,7 +157,7 @@ Notion AI dictation works only within Notion:
 - **Collaboration**: Voice notes in shared workspaces
 - **Database integration**: Voice input for database properties
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Making the Choice
 
@@ -177,4 +183,4 @@ Notion AI dictation provides basic functionality for users already committed to 
 
 For users serious about voice productivity, WisprFlow's superior accuracy, extensive integration capabilities, and professional features justify the higher cost through significant productivity gains.
 
-Ready to experience professional-grade voice control? <AffiliateLink product="wisprflow">Try WisprFlow free for 14 days</AffiliateLink> and see how universal voice dictation transforms your workflow.
+Ready to experience professional-grade voice control? <AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free for 14 days</AffiliateLink> and see how universal voice dictation transforms your workflow.
