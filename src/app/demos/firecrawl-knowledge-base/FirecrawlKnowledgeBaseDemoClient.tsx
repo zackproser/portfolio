@@ -172,17 +172,19 @@ export default function FirecrawlKnowledgeBaseDemoClient() {
       { step: 'building', duration: 1500, progress: 90 }
     ]
 
+    let currentProgress = 0
     for (const { step, duration, progress: stepProgress } of steps) {
       setCurrentStep(step as DemoStep)
       
       // Smooth progress animation
-      const startProgress = progress
-      const progressStep = (stepProgress - startProgress) / (duration / 100)
+      const progressStep = (stepProgress - currentProgress) / (duration / 100)
       
       for (let i = 0; i < duration / 100; i++) {
         await new Promise(resolve => setTimeout(resolve, 100))
         setProgress(prev => Math.min(stepProgress, prev + progressStep))
       }
+      
+      currentProgress = stepProgress
     }
 
     // Complete the demo
@@ -191,7 +193,7 @@ export default function FirecrawlKnowledgeBaseDemoClient() {
     setKnowledgeItems(mockKnowledgeItems)
     setCategories(mockCategories)
     setIsRunning(false)
-  }, [inputUrl, progress])
+  }, [inputUrl])
 
   const resetDemo = () => {
     setCurrentStep('input')
