@@ -18,23 +18,25 @@ The landscape has changed dramatically. Here's what actually improved and what s
 
 ## The real test: Daily production use
 
-When I wrote my initial review in May 2025, Codex felt promising but rough around the edges. The kinds of tasks it could handle reliably were limited, error handling was poor, and multi-turn conversations often derailed.
+When I wrote my <Link href="/blog/openai-codex-review">initial review</Link> in May 2025, Codex felt promising but rough around the edges. The kinds of tasks it could handle reliably were limited, error handling was poor, and multi-turn conversations often derailed.
 
 Fast-forward to March 2026, and I'm using Codex as a core part of my development workflow both personally and at WorkOS. The difference isn't subtle—it's night and day.
 
+<Image src="https://zackproser.b-cdn.net/images/codex-landing-2026.webp" alt="OpenAI's Codex interface in 2026 showing significant improvements"  width={800} height={600}/>
+
 ### WorkOS: Managing multiple projects simultaneously
 
-At WorkOS, I'm regularly juggling 4-6 different repositories: our main API, various Applied AI internal projects, customer-facing tooling, and content. This is where Codex's multi-threaded approach really shines.
+At WorkOS, I'm on the Applied AI team maintaining several full-stack JavaScript applications deployed across Cloudflare and Vercel. This is where Codex has become genuinely transformative for my workflow.
 
-<Image src="https://zackproser.b-cdn.net/images/codex-main-chat-interface.webp" alt="Managing multiple WorkOS projects simultaneously with Codex"  width={800} height={600}/>
+My morning routine now starts with batching disparate maintenance tasks across our codebases. I'll queue up 4-5 Codex tasks before diving into any manual work:
+- "Fix the TypeScript error in the user onboarding flow validation"  
+- "Update the webhooks endpoint to handle the new event schema"
+- "Add better error boundaries to the admin dashboard React components"
+- "Migrate the legacy auth middleware to use our new session management"
 
-A typical morning involves spinning up tasks across multiple repos:
-- "Add rate limiting to the webhook endpoints in workos-api"  
-- "Update internal project documentation to reflect the new scopes parameter"
-- "Refactor the admin dashboard's user management component to use the new API"
-- "Add TypeScript types for the new audit log events"
+These are the kinds of established codebase tasks that used to eat up 30-40% of my morning. Now Codex handles them while I grab coffee. The success rate has jumped from around 40-60% to what feels like 85-90% for well-scoped maintenance work.
 
-What's remarkable is that these tasks actually complete reliably now. The success rate has jumped from my original estimate of 40-60% to what feels like 85-90% for well-scoped tasks.
+Then I shift to deep focus work with Cursor or Claude Code for the harder architectural problems. This two-tier approach—Codex for SDLC grunt work, dedicated coding tools for complex features—has dramatically changed how I approach development.
 
 ### Personal projects: Feature development on established codebases
 
@@ -53,11 +55,13 @@ It understands the existing Next.js structure, follows my component patterns, re
 
 ### Error handling and stability
 
-Remember those mysterious failures from my original review? They're essentially gone. When a task fails now, Codex provides clear error messages and often suggests fixes:
+Remember those mysterious failures from my <Link href="/blog/openai-codex-review">original review</Link>? They're essentially gone. When a task fails now, Codex provides clear error messages and often suggests fixes:
 
 <Image src="https://zackproser.b-cdn.net/images/codex-create-pr.webp" alt="Much better error handling in 2026"  width={800} height={600}/>
 
 The difference in stability is the most dramatic improvement. Tasks that would fail silently or with cryptic messages now either complete successfully or fail with actionable feedback.
+
+<Image src="https://zackproser.b-cdn.net/images/codex-openai-intro-2026.webp" alt="OpenAI's comprehensive Codex documentation and features"  width={800} height={600}/>
 
 ### Multi-turn conversations and branch updates
 
@@ -82,13 +86,13 @@ The generated code quality has improved significantly. Codex now:
 
 One of the most interesting new features is the preview system. When you submit a task, Codex now generates 2-4 different implementation approaches and lets you pick which one to execute.
 
-This is genuinely useful. For a recent API endpoint, the variations included:
+This has been genuinely useful. For a recent API endpoint, the variations included:
 - A minimal implementation focused on speed
 - A more robust version with comprehensive error handling  
 - An approach that prioritized backwards compatibility
 - A version optimized for future extensibility
 
-Being able to choose feels like having multiple senior developers propose solutions, then picking the best approach for your specific context.
+It feels like having multiple senior developers propose solutions, then picking the best approach for your specific context.
 
 ## What still frustrates me
 
@@ -127,24 +131,36 @@ Yes, dramatically.
 
 **WorkOS impact:** We've measurably increased our feature velocity. Not because Codex is replacing developers, but because it's handling the implementation grunt work that used to consume 30-40% of development time.
 
+If you want to see how I use everything together in a complete workflow — including assigning lower-stakes maintenance and SDLC tasks to Codex at the start of the day, then doing deep focus work with an IDE like Cursor or Claude Code — check out my DevSecCon keynote:
+
+<iframe
+    width="100%"
+    height="400"
+    src="https://www.youtube.com/embed/kwIzRkzO_Z4"
+    title="Walking and Talking in the Woods with AI — DevSecCon 2025 Keynote"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+></iframe>
+
 ## Looking ahead
 
 The trajectory is clear. If Codex improves over the next year at the same rate it has over the past year, we're looking at a fundamentally different development experience.
 
 I'm particularly excited about:
 - **Better architectural reasoning:** Moving beyond implementation to system design
-- **Cross-repository awareness:** Understanding relationships between services
-- **Performance optimization:** Not just functional correctness but efficiency
+- **Cross-repository awareness:** Understanding relationships between services  
+- **Performance optimization:** Going beyond functional correctness to optimize for efficiency
 - **Production debugging:** Using context from logs and metrics to suggest fixes
 
 ## Bottom line
 
 <Link href="/blog/openai-codex-review">My original review</Link> was cautiously optimistic but ultimately skeptical about Codex's readiness for serious development work. That skepticism has been thoroughly overturned by daily use.
 
-Codex in 2026 isn't just a research preview anymore—it's production-ready infrastructure that has meaningfully changed how I build software. The improvements have been substantial enough that I can't imagine going back to a pre-Codex workflow.
+Codex in 2026 has become production-ready infrastructure that fundamentally changed how I build software. The improvements have been substantial enough that I can't imagine going back to a pre-Codex workflow.
 
-Is it perfect? No. But it's crossed the threshold from "interesting experiment" to "indispensable tool."
+It's crossed the threshold from interesting experiment to indispensable tool.
 
-If you're still on the fence about trying Codex, stop waiting. The tool that exists today is fundamentally different from the one I reviewed a year ago, and the trajectory suggests it will only get better from here.
+If you're still on the fence about trying Codex, stop waiting. The tool that exists today is fundamentally different from what I reviewed a year ago, and the trajectory suggests rapid improvement ahead.
 
 <ConsultingCTA />
