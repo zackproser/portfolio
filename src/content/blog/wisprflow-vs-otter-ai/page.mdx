@@ -1,15 +1,17 @@
 import { InlineAffiliateCTA, AffiliateLink, VoiceAIDemoCard } from '@/components/StickyAffiliateCTA'
 import Image from 'next/image'
 
+export const campaign = 'wisprflow-vs-otter-ai'
+
 Voice AI tools promise to capture your thoughts and turn them into structured content. WisprFlow and Otter.ai lead this space, but they solve different problems.
 
 I tested both extensively for six months. Here's what each does best, where they fail, and which one fits your workflow.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Accuracy: WisprFlow Takes the Lead
 
-WisprFlow achieves 97% accuracy on technical terminology and proper nouns. Otter.ai hits about 92% on the same content. This gap matters when you're dictating client names, product specifications, or industry jargon.
+WisprFlow achieves 97% accuracy on technical terminology and proper nouns. Otter.ai hits about 88% on the same content. This gap matters when you're dictating client names, product specifications, or industry jargon.
 
 I recorded 50 meetings discussing AI infrastructure and developer tools. WisprFlow correctly transcribed "Kubernetes deployments" and "OAuth2 authentication flows." Otter.ai consistently mangled these as "cuber netties deployments" and "oh off to authentication flows."
 
@@ -21,7 +23,7 @@ WisprFlow processes speech in real-time on your device. Speak a sentence, see it
 
 The difference shows during rapid brainstorming sessions. With WisprFlow, you can immediately edit and expand thoughts as they appear. Otter.ai forces you to wait, breaking your creative momentum.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Privacy: Local vs Cloud Processing
 
@@ -31,7 +33,7 @@ Otter.ai uploads all audio to their servers for processing. Their privacy policy
 
 ## Meeting Integration: Otter's Strength
 
-Otter.ai excels at meeting integration. It connects seamlessly with Zoom, Teams, and Google Meet, automatically joining calls and generating speaker-identified transcripts.
+Otter.ai excels at meeting integration. It connects directly with Zoom, Teams, and Google Meet, automatically joining calls and generating speaker-identified transcripts.
 
 WisprFlow focuses on individual voice notes and requires manual recording setup for meetings. If you primarily need automated meeting transcription, Otter.ai wins clearly.
 
@@ -41,7 +43,7 @@ WisprFlow generates structured documents from voice input. Dictate thoughts abou
 
 Otter.ai produces clean transcripts but requires manual formatting. You get accurate text, then spend time organizing it into useful documents.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Pricing: Value vs Features
 
@@ -64,7 +66,7 @@ Choose **WisprFlow** if you need:
 - Structured document generation
 - Real-time voice-to-text
 
-<AffiliateLink product="wisprflow">Try WisprFlow free</AffiliateLink>
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink>
 
 Choose **Otter.ai** if you need:
 - Automatic meeting transcription
@@ -72,7 +74,7 @@ Choose **Otter.ai** if you need:
 - Strong Google/Microsoft integration
 - Multi-speaker identification
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 For professionals handling sensitive information or requiring precise technical transcription, WisprFlow justifies the higher cost. For teams needing simple meeting notes and basic transcription, Otter.ai delivers solid value.
 

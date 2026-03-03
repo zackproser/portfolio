@@ -1,10 +1,36 @@
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
+import { ComparisonSchema } from '@/components/ReviewSchema'
+
+export const campaign = 'wisprflow-vs-whisper'
+
+<ComparisonSchema
+  products={[
+    {
+      name: "WisprFlow",
+      description: "Complete voice productivity platform with structured output and local AI processing for professionals.",
+      image: "https://zackproser.b-cdn.net/images/wisprflow-hero.webp",
+      url: "https://wisprflow.ai"
+    },
+    {
+      name: "OpenAI Whisper",
+      description: "Open-source voice transcription technology for developers building custom voice applications.",
+      image: "https://zackproser.b-cdn.net/images/openai-whisper.webp",
+      url: "https://openai.com/research/whisper"
+    }
+  ]}
+  article={{
+    headline: "WisprFlow vs OpenAI Whisper: Complete Platform vs Open Source Foundation",
+    description: "Comprehensive comparison of WisprFlow and OpenAI Whisper for voice AI transcription and productivity.",
+    datePublished: "2026-03-03",
+    author: "Zachary Proser"
+  }}
+/>
 
 WisprFlow and OpenAI Whisper represent different approaches to voice AI. Whisper provides open-source transcription technology, while WisprFlow builds a complete productivity platform around voice input.
 
 I tested both extensively for professional use cases. Here's how they compare.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Accuracy Comparison
 
@@ -18,7 +44,7 @@ Whisper requires technical setup - Python environments, model downloads, and API
 
 WisprFlow provides consumer-ready apps with professional features built-in. Installation takes minutes, not hours of technical configuration.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Privacy and Processing
 
@@ -38,7 +64,7 @@ Whisper is free but requires technical expertise or developer time for implement
 
 WisprFlow charges $19-39/month but includes everything needed for professional voice productivity. The time saved often justifies the subscription cost immediately.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Performance Requirements
 
@@ -54,13 +80,13 @@ Choose **Whisper** if you:
 - Require maximum customization and control
 - Build voice features into existing software
 
-Choose **<AffiliateLink product="wisprflow">WisprFlow</AffiliateLink>** if you:
+Choose **<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** if you:
 - Need immediate professional voice productivity
 - Want structured output and document generation
 - Prefer consumer-friendly apps over technical setup
 - Handle sensitive information requiring privacy
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Bottom Line
 
