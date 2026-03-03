@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping for E-Commerce: Price Monitoring and Market Intelligence",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "E-commerce businesses use web scraping for competitive pricing, inventory tracking, market research, and customer intelligence.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-ecommerce",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "ecommerce web scraping",
+    "price monitoring scraping",
+    "competitor price tracking",
+    "inventory monitoring scraping",
+    "ecommerce market intelligence"
+  ],
+  "tags": [
+    "Web Scraping",
+    "E-Commerce",
+    "AI Tools",
+    "Firecrawl"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "title": "How Recruiters Use Web Scraping to Source Candidates and Track Job Markets",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "Recruiting professionals leverage web scraping for candidate sourcing, job market analysis, competitor tracking, and talent pipeline development.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-recruiters",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "recruiter web scraping",
+    "candidate sourcing automation",
+    "job market analysis scraping",
+    "talent pipeline scraping",
+    "recruiting intelligence"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Recruiting",
+    "AI Tools",
+    "Firecrawl"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping for Real Estate: Market Data, Listings, and Competitive Analysis",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "Real estate professionals use web scraping for market analysis, listing intelligence, competitor tracking, and investment research.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-real-estate",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "real estate web scraping",
+    "property listing scraping",
+    "real estate market analysis",
+    "property investment research",
+    "competitor listing tracking"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Real Estate",
+    "AI Tools",
+    "Firecrawl"
+  ]
+}
