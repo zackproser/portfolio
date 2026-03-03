@@ -46,15 +46,15 @@ const result = await app.crawlUrl(opposingFirm, {
 })
 
 // Extract case victories and practice areas
-  const caseResults = result.data
-    .filter(page => page.metadata?.sourceURL.includes('/cases/') || 
-                    page.metadata?.sourceURL.includes('/news/'))
-    .map(page => ({
-      title: page.metadata.title,
-      content: page.markdown,
-      url: page.metadata.sourceURL,
-      crawledAt: new Date()
-    }))
+const caseResults = result.data
+  .filter(page => page.metadata?.sourceURL.includes('/cases/') || 
+                  page.metadata?.sourceURL.includes('/news/'))
+  .map(page => ({
+    title: page.metadata.title,
+    content: page.markdown,
+    url: page.metadata.sourceURL,
+    crawledAt: new Date()
+  }))
 ```
 
 Run this monthly to build comprehensive profiles of opposing counsel before they even file appearance.
@@ -81,10 +81,10 @@ for (const court of courtTargets) {
   })
 
   // Parse docket entries for relevant case numbers
-    const relevantCases = result.data
-      .filter(page => page.markdown.includes('patent') || 
-                     page.markdown.includes('trademark') ||
-                     page.markdown.includes('your-client-name'))
+  const relevantCases = result.data
+    .filter(page => page.markdown.includes('patent') || 
+                   page.markdown.includes('trademark') ||
+                   page.markdown.includes(clientCompanyName))
 }
 ```
 

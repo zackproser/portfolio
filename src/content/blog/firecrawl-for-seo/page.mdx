@@ -1,0 +1,190 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-seo';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Web scraping for SEO and competitor analysis" width={800} height={450} />
+</AffiliateLink>
+
+Your competitor just published 47 new blog posts targeting your primary keywords. They restructured their entire site architecture. They're running A/B tests on title tags and meta descriptions. You find out three weeks later when their rankings start climbing.
+
+SEO in 2026 requires real-time competitive intelligence. Manual site audits and quarterly competitor checks aren't enough when algorithm updates happen monthly and content publication cycles accelerate.
+
+## Competitor Content Analysis at Scale
+
+Traditional SEO competitor analysis stops at tool limitations. Ahrefs shows you ranking keywords, but not content depth, topical coverage, or content gaps you can exploit.
+
+**Content inventory and mapping.** Scrape competitor sites to build comprehensive content inventories. Map their topic clusters, internal linking patterns, and content update frequencies. Identify content gaps where you can compete effectively.
+
+**Keyword integration analysis.** Extract how competitors integrate target keywords in headers, body text, and meta tags. Track keyword density patterns, semantic keyword usage, and content structure optimization.
+
+**Technical SEO monitoring.** Monitor competitor site speed improvements, Core Web Vitals optimizations, and technical implementation changes. Track when they implement new schema markup, update robots.txt files, or change URL structures.
+
+**Content freshness patterns.** Identify which competitors prioritize content updates, how frequently they refresh existing content, and which content types they invest in most heavily.
+
+## Building an SEO Intelligence Pipeline
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> enables systematic competitive monitoring:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Monitor competitor content strategies
+const competitors = [
+  'https://competitor-a.com/blog',
+  'https://competitor-b.com/resources', 
+  'https://competitor-c.com/guides'
+]
+
+for (const competitor of competitors) {
+  const result = await app.crawlUrl(competitor, {
+    limit: 200,
+    scrapeOptions: { 
+      formats: ['markdown'],
+      includeHtml: true // For meta tag analysis
+    }
+  })
+
+  // Extract SEO elements
+  const seoAnalysis = result.data.map(page => ({
+    url: page.metadata?.sourceURL,
+    title: extractTitleTag(page.html),
+    metaDescription: extractMetaDescription(page.html),
+    headers: extractHeaders(page.markdown),
+    wordCount: page.markdown.split(' ').length,
+    internalLinks: extractInternalLinks(page.html),
+    publishDate: extractPublishDate(page.html),
+    lastModified: page.metadata?.lastModified
+  }))
+
+  await storeSEOData(competitor, seoAnalysis)
+}
+```
+
+Run this weekly to track content publication patterns, keyword targeting changes, and technical optimization improvements.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Keyword Gap Analysis and Opportunity Identification
+
+Traditional keyword research tools show search volume and difficulty. Scraping competitor content reveals actual keyword implementation strategies:
+
+**Topic cluster mapping.** Analyze how competitors organize content around topic clusters. Identify supporting content that targets long-tail variations of primary keywords.
+
+**Content depth analysis.** Compare your content depth against competitors for shared target keywords. Identify topics where competitors provide more comprehensive coverage.
+
+**Featured snippet optimization.** Extract how competitors format content for featured snippets. Analyze list structures, table formats, and question-answer patterns that earn snippet positions.
+
+```javascript
+// Analyze competitor content for keyword opportunities
+const keywordAnalysis = await analyzeCompetitorContent(crawledData)
+
+const contentGaps = keywordAnalysis.filter(keyword => 
+  keyword.competitorCoverage > 3 && // Multiple competitors targeting
+  keyword.yourCoverage === 0 && // You're not targeting
+  keyword.searchVolume > 1000 // Sufficient search volume
+)
+
+// Prioritize content opportunities
+const prioritizedGaps = contentGaps.sort((a, b) => 
+  (b.searchVolume / b.competitorStrength) - (a.searchVolume / a.competitorStrength)
+)
+```
+
+This reveals high-opportunity keywords where competitors are investing but you haven't entered the competition yet.
+
+## Technical SEO Monitoring
+
+Track competitor technical improvements that might affect their rankings:
+
+**Page speed optimizations.** Monitor when competitors implement Core Web Vitals improvements, image optimization, or performance enhancements that could affect rankings.
+
+**Schema markup adoption.** Track new structured data implementations, especially for product pages, articles, and local business information.
+
+**Internal linking changes.** Identify when competitors restructure internal linking, create new hub pages, or modify navigation hierarchies.
+
+**Mobile optimization updates.** Monitor mobile-specific optimizations, AMP implementations, or mobile-first design changes.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Content Strategy Intelligence
+
+Understanding competitor content strategies informs your own content planning:
+
+**Publishing frequency analysis.** Track how often competitors publish new content, update existing content, and retire outdated pages. Identify content types they prioritize and seasonal publication patterns.
+
+**Content format testing.** Monitor when competitors experiment with new content formats — interactive tools, video embedding, infographics, or long-form guides. Early identification lets you test similar formats.
+
+**Topic expansion patterns.** Analyze how competitors expand into adjacent topic areas. Track when they enter new content categories or target new audience segments.
+
+```javascript
+// Track competitor content strategy changes
+const contentStrategy = {
+  publishingFrequency: analyzePublishingPatterns(crawledData),
+  topicExpansion: identifyNewTopicAreas(crawledData, baselineData),
+  contentFormats: analyzeContentTypes(crawledData),
+  averageContentLength: calculateAverageWordCount(crawledData),
+  updateFrequency: trackContentRefreshPatterns(crawledData)
+}
+
+const strategicInsights = generateContentStrategyRecommendations(contentStrategy)
+```
+
+## Local SEO and Multi-Location Monitoring
+
+For businesses with multiple locations or local SEO focus, scraping enables comprehensive local competitor analysis:
+
+**Local landing page optimization.** Monitor how competitors optimize location-specific pages, local keyword integration, and local business information presentation.
+
+**Review and reputation management.** Track competitor responses to reviews, reputation management strategies, and local citation building approaches.
+
+**Local content strategies.** Analyze location-specific content creation, community involvement content, and local event coverage that supports local SEO efforts.
+
+## Automation and Alert Systems
+
+Build automated monitoring that alerts you to significant competitor changes:
+
+```javascript
+// Set up change detection alerts
+const significantChanges = await detectSEOChanges(currentCrawl, previousCrawl)
+
+const alertWorthy = significantChanges.filter(change => 
+  change.type === 'new_content_cluster' ||
+  change.type === 'major_site_restructure' ||
+  change.type === 'new_keyword_targeting' ||
+  (change.type === 'content_update' && change.scale > 10)
+)
+
+if (alertWorthy.length > 0) {
+  await sendSEOAlert(alertWorthy)
+}
+```
+
+Get notified within days of major competitor SEO moves instead of discovering them in quarterly reviews.
+
+## Ethical SEO Competitive Intelligence
+
+SEO scraping operates within well-established boundaries:
+
+**Public content only.** Scrape publicly accessible content that search engines can also access. Avoid password-protected or gated content.
+
+**Respect crawl budgets.** Use reasonable request delays to avoid overwhelming competitor servers. Firecrawl handles this automatically.
+
+**Focus on strategic intelligence, not copying.** Use scraped data to understand strategies and identify opportunities, not to duplicate content or approaches directly.
+
+**Comply with robots.txt and legal boundaries.** Respect crawling restrictions and ensure your analysis stays within fair use guidelines.
+
+The goal is strategic intelligence that improves your SEO approach, not shortcuts that violate competitive ethics or search engine guidelines.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/scrape-competitor-websites">Competitive intelligence scraping</Link>
+- <Link href="/blog/firecrawl-vs-apify">Firecrawl vs Apify comparison</Link>

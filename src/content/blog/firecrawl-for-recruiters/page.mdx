@@ -52,17 +52,18 @@ for (const company of competitors) {
   })
 
   // Extract job requirements and compensation
-    const jobPostings = result.data
-      .filter(page => page.metadata?.sourceURL.includes('/job') || 
-                     page.markdown.includes('$') ||
-                     page.markdown.includes('salary'))
-      .map(page => ({
-        company: company,
-        content: page.markdown,
-        url: page.metadata?.sourceURL,
-        scrapedAt: new Date()
-        // Parse title, requirements, compensation, location from markdown
-      }))
+  const jobPostings = result.data
+    .filter(page => page.metadata?.sourceURL.includes('/job') || 
+                   page.markdown.includes('$') ||
+                   page.markdown.includes('salary'))
+    .map(page => ({
+      company: company,
+      title: extractJobTitle(page.markdown),
+      requirements: extractRequirements(page.markdown),
+      compensation: extractSalary(page.markdown),
+      location: extractLocation(page.markdown),
+      postedDate: new Date()
+    }))
 }
 ```
 
@@ -101,16 +102,15 @@ for (const org of techCompanies) {
   })
 
   // Extract contributor profiles and activity
-    const contributors = result.data
-      .filter(page => page.metadata?.sourceURL.includes('/people') ||
-                     page.markdown.includes('contributors'))
-      .map(page => ({
-        githubUrl: page.metadata?.sourceURL,
-        content: page.markdown,
-        organization: org,
-        scrapedAt: new Date()
-        // Parse commit activity, languages, developer profiles from markdown
-      }))
+  const contributors = result.data
+    .filter(page => page.metadata?.sourceURL.includes('/people') ||
+                   page.markdown.includes('contributors'))
+    .map(page => ({
+      githubUrl: page.metadata?.sourceURL,
+      activity: extractCommitActivity(page.markdown),
+      languages: extractLanguages(page.markdown),
+      company: extractOrgName(org)
+    }))
 }
 ```
 
