@@ -1,0 +1,173 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-recruiters';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Recruiters using web scraping for candidate sourcing" width={800} height={450} />
+</AffiliateLink>
+
+A tech recruiter discovers that their biggest competitor just hired five new associates and opened an office in Austin. They learn this from a candidate who mentioned it during a phone screen. By then, the competitor had already poached three of their best prospects and cornered the local React developer market.
+
+Recruiting is intelligence work. The firms that gather information systematically beat those that rely on word-of-mouth and LinkedIn browsing.
+
+## Candidate Sourcing at Scale
+
+**Developer profiles.** GitHub profiles reveal actual coding skills, project history, and collaboration patterns. Scrape repositories, contribution graphs, and starred projects to identify candidates with specific technical expertise.
+
+**Professional networking.** Beyond LinkedIn, scrape industry forums, conference speaker lists, and open source maintainer lists. Find candidates where they're actually engaged, not just where they have profiles.
+
+**Company directory mining.** Scrape company websites, team pages, and employee directories to identify potential candidates before they start job searching. Build relationships early.
+
+**Conference and event tracking.** Monitor tech conference websites, meetup groups, and workshop attendees. These are engaged professionals often open to new opportunities.
+
+## Job Market Intelligence
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> systematizes recruiting intelligence gathering:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Monitor competitor job postings
+const competitors = [
+  'https://competitor-recruiting-firm.com/jobs',
+  'https://target-company.com/careers',
+  'https://bigtech-corp.com/jobs'
+]
+
+for (const company of competitors) {
+  const result = await app.crawlUrl(company, {
+    limit: 50,
+    scrapeOptions: {
+      formats: ['markdown'],
+      includeTags: ['h1', 'h2', 'p', 'li', 'div']
+    }
+  })
+
+  // Extract job requirements and compensation
+    const jobPostings = result.data
+      .filter(page => page.metadata?.sourceURL.includes('/job') || 
+                     page.markdown.includes('$') ||
+                     page.markdown.includes('salary'))
+      .map(page => ({
+        company: company,
+        content: page.markdown,
+        url: page.metadata?.sourceURL,
+        scrapedAt: new Date()
+        // Parse title, requirements, compensation, location from markdown
+      }))
+}
+```
+
+Track salary trends, required skills, and hiring velocity across your market segments.
+
+## Competitive Recruiting Analysis
+
+**Hiring patterns.** Monitor which companies are hiring aggressively, which roles they prioritize, and what they're offering. Anticipate candidate movement before it happens.
+
+**Recruiter tracking.** Identify top-performing recruiters at competing firms. Track their LinkedIn activity, client relationships, and candidate placements to understand their strategies.
+
+**Client company intelligence.** Research your clients' competitors to identify potential expansion opportunities. Companies in growth phases often need similar talent profiles.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Building Talent Pipelines
+
+**GitHub organization scraping.** Track engineering teams at target companies to identify potential candidates before they become active job seekers:
+
+```javascript
+// Monitor engineering talent at target companies
+const techCompanies = [
+  'https://github.com/stripe',
+  'https://github.com/airbnb', 
+  'https://github.com/uber',
+  'https://github.com/shopify'
+]
+
+for (const org of techCompanies) {
+  const result = await app.crawlUrl(org, {
+    limit: 200,
+    scrapeOptions: {
+      formats: ['markdown'],
+      includeTags: ['a', 'span', 'div']
+    }
+  })
+
+  // Extract contributor profiles and activity
+    const contributors = result.data
+      .filter(page => page.metadata?.sourceURL.includes('/people') ||
+                     page.markdown.includes('contributors'))
+      .map(page => ({
+        githubUrl: page.metadata?.sourceURL,
+        content: page.markdown,
+        organization: org,
+        scrapedAt: new Date()
+        // Parse commit activity, languages, developer profiles from markdown
+      }))
+}
+```
+
+**Conference speaker identification.** Technical conference speakers are often senior engineers open to new challenges. Scrape speaker directories and session abstracts to identify expertise areas.
+
+**Open source maintainer outreach.** Popular package maintainers are technical leaders in their communities. Track npm, PyPI, and gem package maintainers for specialized roles.
+
+## Salary and Compensation Intelligence
+
+**Market rate tracking.** Scrape job boards, company career pages, and salary transparency sites to build comprehensive compensation databases. Advise clients on competitive offer structures.
+
+**Benefits analysis.** Monitor company benefits pages, employee handbooks, and Glassdoor reviews to understand total compensation packages beyond base salary.
+
+**Equity and stock option tracking.** For startup recruiting, track funding rounds, valuations, and employee equity grants to position offers competitively.
+
+## Industry-Specific Sourcing
+
+**Healthcare recruiting.** Scrape medical association directories, hospital staff pages, and research publication author lists to identify qualified healthcare professionals.
+
+**Finance recruiting.** Monitor investment firm websites, SEC filings for key personnel, and financial industry conference attendee lists.
+
+**Legal recruiting.** Track law firm websites, court filings for attorney names, and state bar association directories for specialized practice areas.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Candidate Relationship Management
+
+**Social media monitoring.** Track candidates' professional updates, job changes, and career milestones across LinkedIn, Twitter, and industry forums. Maintain relationships through career transitions.
+
+**Company news alerts.** Monitor target companies for layoffs, acquisitions, and organizational changes. These events create candidate availability windows.
+
+**Professional development tracking.** Scrape conference attendance, certification completions, and course enrollments to identify candidates investing in new skills.
+
+## Ethical and Legal Considerations
+
+**Data privacy compliance.** Only scrape publicly available information. Respect platform terms of service and data protection regulations like GDPR and CCPA.
+
+**Candidate consent.** Be transparent about data collection and use. Provide opt-out mechanisms for candidates who don't want to be tracked.
+
+**Professional boundaries.** Maintain ethical standards in candidate outreach. Don't use scraped personal information inappropriately or violate platform usage policies.
+
+**Accuracy verification.** Cross-reference scraped data with direct candidate communication. Automated data collection can contain errors that damage relationships.
+
+## Implementation Strategy
+
+Start with high-value, low-risk applications:
+
+1. **Job market monitoring** for salary and requirements intelligence
+2. **Competitor analysis** to understand market positioning  
+3. **Candidate pipeline development** in your core specialties
+4. **Client company research** for business development
+
+Build data quality processes early. Implement deduplication, validation, and regular updates to maintain accurate candidate databases.
+
+The recruiting firms that systematize their intelligence gathering will identify candidates faster, provide better market insights to clients, and maintain competitive advantages in talent acquisition.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>
+- <Link href="/blog/scrape-competitor-websites">Competitive intelligence scraping</Link>

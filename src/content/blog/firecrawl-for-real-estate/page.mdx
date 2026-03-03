@@ -1,0 +1,156 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-real-estate';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Real estate professionals using web scraping for market analysis" width={800} height={450} />
+</AffiliateLink>
+
+A real estate investor discovers that their competitor just listed 15 properties in their target neighborhood at 20% below market rate. They find out three weeks later when a client mentions it. The entire market dynamic had shifted while they were manually checking listings one by one.
+
+Real estate moves fast. Manual market research can't keep pace with algorithmic intelligence gathering.
+
+## Market Intelligence That Moves at Market Speed
+
+**Comparable sales analysis.** Track recent sales across multiple MLS systems and public records. Instead of waiting for quarterly market reports, get daily updates on price trends, days on market, and sold-to-list ratios.
+
+**New listing alerts.** Monitor competitor listings, price changes, and status updates across all major platforms. Identify underpriced properties and market opportunities before they hit the mainstream feeds.
+
+**Investment property screening.** Scrape rental listing sites to calculate cap rates and cash flow potential. Cross-reference with property tax records and recent sales to identify motivated sellers.
+
+**Market trend analysis.** Track inventory levels, average price per square foot, and absorption rates across your target markets. Spot emerging trends months before they appear in industry reports.
+
+## Automating Property Research
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles the complexity of real estate website scraping:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Monitor multiple listing platforms
+const listingPlatforms = [
+  'https://www.realtor.com/realestateandhomes-search',
+  'https://www.zillow.com/homes/for_sale',
+  'https://www.redfin.com/city/for-sale'
+]
+
+for (const platform of listingPlatforms) {
+  const result = await app.crawlUrl(`${platform}/your-target-zip`, {
+    limit: 200,
+    scrapeOptions: {
+      formats: ['markdown'],
+      includeTags: ['div', 'span', 'a', 'p'],
+      waitFor: 3000 // Allow dynamic content to load
+    }
+  })
+
+  // Extract property details
+    const listings = result.data.map(page => ({
+      url: page.metadata?.sourceURL,
+      content: page.markdown,
+      scrapedAt: new Date()
+      // Parse price, sqft, bedrooms, days on market from markdown
+    }))
+}
+```
+
+Run this daily to build comprehensive market databases that update faster than any MLS.
+
+## Competitive Intelligence
+
+**Agent performance tracking.** Monitor competitor agents' listings, sales volume, and average days on market. Identify top performers to recruit or market segments to target.
+
+**Pricing strategy analysis.** Track how competitors price similar properties and adjust their strategies over time. Identify agents who consistently over-price or under-price relative to market conditions.
+
+**Marketing effectiveness.** Scrape property descriptions, photo quality, and listing presentation to understand what drives faster sales. Quantify the impact of professional photography, staging, and copywriting.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Investment Property Pipeline
+
+**Distressed property identification.** Scrape foreclosure databases, tax lien records, and probate court filings to identify motivated sellers before they list with agents.
+
+**Rental market analysis.** Monitor Airbnb, VRBO, and long-term rental platforms to calculate potential income streams. Cross-reference with local regulations and zoning restrictions.
+
+**Development opportunity tracking.** Scrape planning commission agendas, zoning applications, and building permits to identify neighborhoods undergoing gentrification or commercial development.
+
+```javascript
+// Monitor rental income potential
+const rentalPlatforms = [
+  'https://www.apartments.com',
+  'https://www.rent.com', 
+  'https://www.airbnb.com'
+]
+
+for (const platform of rentalPlatforms) {
+  const result = await app.crawlUrl(`${platform}/search/${targetZip}`, {
+    limit: 100,
+    scrapeOptions: {
+      formats: ['markdown'],
+      onlyMainContent: true
+    }
+  })
+
+  // Calculate rental yields
+    const rentals = result.data.map(page => ({
+      content: page.markdown,
+      platform: platform,
+      scrapedAt: new Date()
+      // Parse rent, sqft, location from markdown for yield calculations
+    }))
+}
+```
+
+## Commercial Real Estate Intelligence  
+
+**Lease rate tracking.** Monitor commercial brokers' listings across office, retail, and industrial properties. Track asking rents, tenant improvement allowances, and lease terms to advise clients on market timing.
+
+**Tenant analysis.** Scrape corporate websites and press releases to identify companies expanding, relocating, or downsizing. Position available spaces to match their timeline and requirements.
+
+**Development project monitoring.** Track planning applications, environmental impact studies, and construction permits to identify future supply that will impact current property values.
+
+## Lead Generation and Client Development
+
+**FSBO monitoring.** Scrape for-sale-by-owner websites and social media groups to identify potential listing opportunities. Many FSBO sellers convert to traditional listings after 30-60 days.
+
+**Expired listing tracking.** Monitor MLS feeds and broker websites to identify expired listings. These sellers are often motivated to switch agents or reduce prices.
+
+**Investor networking.** Scrape real estate investor forums, meetup groups, and LinkedIn profiles to identify active investors in your market. Build relationships before they need services.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Data Quality and Legal Considerations
+
+**MLS compliance.** Respect MLS terms of service and data use restrictions. Many MLS systems prohibit automated scraping. Focus on publicly available listing portals and broker websites.
+
+**Privacy protection.** Be cautious with homeowner personal information. Scrape publicly available listing data, not private contact details or financial information.
+
+**Rate limiting.** Don't overload real estate websites with requests. Firecrawl handles this automatically, but be respectful of site performance.
+
+**Data accuracy.** Real estate data changes rapidly. Implement validation checks and cross-reference multiple sources to ensure accuracy before making investment or pricing decisions.
+
+## Implementation Strategy
+
+Start with high-impact, low-complexity use cases:
+
+1. **Daily market monitoring** for your primary territories
+2. **Competitor listing analysis** for pricing intelligence  
+3. **New listing alerts** for investment opportunities
+4. **Market trend tracking** for client advisory services
+
+Build your data infrastructure gradually. Start with simple listing monitoring, then add market analysis and predictive modeling as your dataset grows.
+
+The real estate professionals who systematize their market intelligence will identify opportunities faster, price more accurately, and serve clients more effectively. Manual research can't compete with systematic data collection.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>
+- <Link href="/blog/scrape-competitor-websites">Competitive intelligence scraping</Link>

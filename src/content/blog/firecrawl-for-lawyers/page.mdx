@@ -1,0 +1,141 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-lawyers';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Law firms using web scraping for legal research" width={800} height={450} />
+</AffiliateLink>
+
+A major law firm's litigation team discovers that opposing counsel's firm just hired three new partners from their previous firm. They find this out by manually checking LinkedIn profiles after losing a critical motion. The intelligence could have changed their entire strategy if they'd known two months earlier.
+
+Legal research and due diligence generate mountains of manual work. Web scraping transforms this from tedious browsing into systematic intelligence gathering.
+
+## Legal Due Diligence at Scale
+
+**Corporate investigations.** When evaluating merger targets or conducting due diligence, law firms need comprehensive profiles of leadership teams, board members, and key employees. Manual LinkedIn research takes days. Automated scraping builds complete organizational charts in hours.
+
+**Regulatory monitoring.** Track changes to regulations, court rules, and agency guidance across multiple jurisdictions. Instead of manually checking dozens of government websites, scrape systematically and get alerts on relevant changes.
+
+**Opposing counsel analysis.** Research the track record, strategy patterns, and recent cases of opposing attorneys and firms. Understanding their approach informs your strategy from day one.
+
+**Case law research.** Beyond traditional legal databases, scrape court websites for recent filings, dockets, and procedural orders. Many courts publish documents online that don't appear in commercial databases for weeks.
+
+## Building Legal Intelligence Systems
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles the technical complexity of legal website crawling:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Monitor opposing counsel's recent cases
+const opposingFirm = 'https://biglaw-firm.com'
+const result = await app.crawlUrl(opposingFirm, {
+  limit: 100,
+  scrapeOptions: { 
+    formats: ['markdown'],
+    includeTags: ['h1', 'h2', 'h3', 'p', 'a']
+  }
+})
+
+// Extract case victories and practice areas
+  const caseResults = result.data
+    .filter(page => page.metadata?.sourceURL.includes('/cases/') || 
+                    page.metadata?.sourceURL.includes('/news/'))
+    .map(page => ({
+      title: page.metadata.title,
+      content: page.markdown,
+      url: page.metadata.sourceURL,
+      crawledAt: new Date()
+    }))
+```
+
+Run this monthly to build comprehensive profiles of opposing counsel before they even file appearance.
+
+## Court Docket Monitoring
+
+Many courts now publish dockets online, but checking them manually is inefficient. Systematic monitoring catches critical developments early:
+
+```javascript
+// Monitor federal district court dockets
+const courtTargets = [
+  'https://www.nysd.uscourts.gov/cases',
+  'https://www.dcd.uscourts.gov/cases',
+  'https://www.cacd.uscourts.gov/cases'
+]
+
+for (const court of courtTargets) {
+  const result = await app.crawlUrl(court, {
+    limit: 50,
+    scrapeOptions: {
+      formats: ['markdown'],
+      waitFor: 2000 // Allow dynamic content to load
+    }
+  })
+
+  // Parse docket entries for relevant case numbers
+    const relevantCases = result.data
+      .filter(page => page.markdown.includes('patent') || 
+                     page.markdown.includes('trademark') ||
+                     page.markdown.includes('your-client-name'))
+}
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Regulatory Change Detection
+
+Law firms serving regulated industries need early warning on regulatory changes. Manual monitoring across multiple agencies is time-intensive and error-prone.
+
+**FDA guidance updates.** For pharmaceutical and medical device clients, scrape FDA guidance documents, warning letters, and enforcement actions. Changes in agency interpretation often precede broader enforcement sweeps.
+
+**SEC filings and enforcement.** Beyond Edgar, scrape SEC press releases, enforcement actions, and staff guidance. Pattern recognition across enforcement actions reveals agency priorities before they become formal policy.
+
+**State regulatory bodies.** Professional licensing boards, state banking commissions, and public utility commissions frequently update rules with minimal notice. Systematic scraping ensures compliance teams don't miss critical changes.
+
+## Client Intelligence and Business Development
+
+**Prospect research.** Before pitches, scrape target companies' press releases, leadership changes, and recent legal challenges. Tailor your pitch to their specific situation rather than generic capabilities.
+
+**Client monitoring.** Track your existing clients' business developments, executive changes, and industry challenges. Proactive outreach based on scraped intelligence often generates new matters.
+
+**Industry trend analysis.** Scrape trade publications, industry associations, and regulatory bodies to identify emerging legal issues before they become widespread problems. Position your firm as the early expert.
+
+## Ethical and Professional Considerations
+
+All data scraped should be publicly available. Legal professionals have additional ethical obligations:
+
+**Client confidentiality.** Never scrape or store information that could compromise client confidentiality, even indirectly.
+
+**Professional responsibility rules.** Some jurisdictions have specific rules about competitive intelligence gathering. Review local bar guidance on permissible investigation methods.
+
+**Privilege concerns.** Be cautious about scraping attorney work product or privileged communications that may have been inadvertently disclosed.
+
+**Data retention policies.** Implement clear policies for how long scraped data is retained and who can access it. Consider attorney-client privilege implications for scraped materials used in client representation.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Implementation Strategy
+
+Start with high-value, low-risk use cases:
+
+1. **Regulatory monitoring** for your primary practice areas
+2. **Public records research** for due diligence workflows  
+3. **Opposing counsel analysis** for active litigation
+4. **Industry intelligence** for business development
+
+Build internal expertise gradually. Partner with legal technologists or consultants for initial implementation, then transition to internal maintenance.
+
+The firms that systematize their intelligence gathering will have significant advantages in case strategy, client development, and risk mitigation. The question isn't whether to adopt these tools—it's whether to lead or follow.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>
+- <Link href="/blog/scrape-competitor-websites">Competitive intelligence scraping</Link>
