@@ -53,14 +53,12 @@ for (const platform of listingPlatforms) {
   })
 
   // Extract property details
-  const listings = result.data.map(page => ({
-    url: page.metadata?.sourceURL,
-    price: extractPrice(page.markdown),
-    sqft: extractSquareFootage(page.markdown),
-    beds: extractBedrooms(page.markdown),
-    daysOnMarket: extractDOM(page.markdown),
-    scrapedAt: new Date()
-  }))
+    const listings = result.data.map(page => ({
+      url: page.metadata?.sourceURL,
+      content: page.markdown,
+      scrapedAt: new Date()
+      // Parse price, sqft, bedrooms, days on market from markdown
+    }))
 }
 ```
 
@@ -102,16 +100,12 @@ for (const platform of rentalPlatforms) {
   })
 
   // Calculate rental yields
-  const rentals = result.data.map(page => {
-    const rent = extractRent(page.markdown)
-    const sqft = extractSquareFootage(page.markdown)
-    return {
-      rentPerSqft: rent / sqft,
-      totalRent: rent,
+    const rentals = result.data.map(page => ({
+      content: page.markdown,
       platform: platform,
-      location: extractLocation(page.markdown)
-    }
-  })
+      scrapedAt: new Date()
+      // Parse rent, sqft, location from markdown for yield calculations
+    }))
 }
 ```
 

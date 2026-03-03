@@ -53,18 +53,15 @@ for (const site of competitors) {
   })
 
   // Extract price and stock data
-  const products = result.data
-    .filter(page => page.markdown.includes('$') || 
-                   page.markdown.includes('price'))
-    .map(page => ({
-      url: page.metadata?.sourceURL,
-      title: extractProductTitle(page.markdown),
-      price: extractPrice(page.markdown),
-      inStock: checkStockStatus(page.markdown),
-      rating: extractRating(page.markdown),
-      reviewCount: extractReviewCount(page.markdown),
-      scrapedAt: new Date()
-    }))
+    const products = result.data
+      .filter(page => page.markdown.includes('$') || 
+                     page.markdown.includes('price'))
+      .map(page => ({
+        url: page.metadata?.sourceURL,
+        content: page.markdown,
+        scrapedAt: new Date()
+        // Parse title, price, stock status, ratings from markdown
+      }))
 }
 ```
 
@@ -106,14 +103,13 @@ for (const platform of reviewPlatforms) {
   })
 
   // Extract review data
-  const reviews = result.data.map(page => ({
-    platform: platform,
-    rating: extractRating(page.markdown),
-    reviewText: extractReviewContent(page.markdown),
-    reviewerProfile: extractReviewerInfo(page.markdown),
-    helpful: extractHelpfulVotes(page.markdown),
-    date: extractReviewDate(page.markdown)
-  }))
+    const reviews = result.data.map(page => ({
+      platform: platform,
+      content: page.markdown,
+      url: page.metadata?.sourceURL,
+      scrapedAt: new Date()
+      // Parse rating, review text, reviewer info, helpful votes from markdown
+    }))
 }
 ```
 
