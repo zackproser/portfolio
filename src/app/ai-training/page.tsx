@@ -2,11 +2,11 @@ import type { Metadata } from "next"
 import AITrainingClientPage from "./AITrainingClientPage"
 
 export const metadata: Metadata = {
-  title: "AI Engineer Training Program | Ship AI Features in 90 Days",
-  description: "Comprehensive training program for development teams to build and deploy production-ready AI features in 90 days or your money back.",
+  title: "AI Training for Engineering Teams | Claude Cowork & Internal Skills Workshops",
+  description: "Hands-on AI training that turns strong engineers into faster ones. Claude Cowork sessions, Internal Skills workshops, and full 90-day programs. Your stack, your problems, real code.",
   openGraph: {
-    title: "AI Engineer Training Program | Ship AI Features in 90 Days",
-    description: "Comprehensive training program for development teams to build and deploy production-ready AI features in 90 days or your money back.",
+    title: "AI Training for Engineering Teams | Claude Cowork & Internal Skills Workshops",
+    description: "Hands-on AI training that turns strong engineers into faster ones. Claude Cowork sessions, Internal Skills workshops, and full 90-day programs. Your stack, your problems, real code.",
     images: [{ url: "/og-ai-training.png" }],
   },
 }

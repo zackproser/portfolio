@@ -28,7 +28,9 @@ export const navItems = [
   {
     name: 'Services',
     dropdown: [
+      { name: 'AI Training & Cowork', href: '/ai-training' },
       { name: 'Custom Gen AI Solutions', href: '/services' },
+      { name: 'Applied AI Engineer', href: '/applied-ai-engineer' },
       { name: '90-Day AI Team Transformation', href: '/ai-training' },
       { name: 'Workshops', href: '/workshops/claude-cowork' },
     ],
@@ -37,7 +39,6 @@ export const navItems = [
     name: 'About',
     dropdown: [
       { name: 'About Me', href: '/about' },
-      { name: 'Speaking', href: '/speaking' },
       { name: 'Testimonials', href: '/testimonials' },
       { name: 'Contact', href: '/contact' },
     ],
