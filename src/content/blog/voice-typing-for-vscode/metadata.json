@@ -1,0 +1,21 @@
+{
+  "title": "How to Use Voice to Code in VS Code and Cursor",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "Add voice typing to VS Code and Cursor for code comments, commit messages, documentation, and more. No extension required.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": [
+    "voice-typing",
+    "mac",
+    "wisprflow",
+    "productivity"
+  ],
+  "keywords": [
+    "voice typing vscode",
+    "dictate in vscode",
+    "voice coding mac",
+    "cursor voice typing",
+    "speak to code"
+  ],
+  "hiddenFromIndex": true
+}
