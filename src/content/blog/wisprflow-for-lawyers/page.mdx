@@ -1,7 +1,17 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 
+export const metadata = createMetadata(rawMetadata);
+
 export const campaign = 'wisprflow-for-lawyers'
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow-lawyers-hero.webp" alt="WisprFlow for lawyers voice documentation" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Voice-powered legal documentation with WisprFlow</figcaption>
 
 Legal documentation demands precision, speed, and professional formatting. Attorneys spend 3-4 hours daily on documentation that could be completed in half the time with proper voice tools.
 

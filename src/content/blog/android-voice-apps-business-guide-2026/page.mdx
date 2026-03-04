@@ -1,7 +1,17 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 
+export const metadata = createMetadata(rawMetadata);
+
 export const campaign = 'android-voice-apps-business-guide-2026'
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/android-business-voice-apps-2026.webp" alt="Android voice apps for business" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Professional Android voice apps for business workflows</figcaption>
 
 Android devices have become serious business tools, and voice applications now handle professional workflows that previously required desktop software. From AI-powered meeting notes to formatted documentation, Android voice apps enable mobile productivity that matches traditional office setups.
 

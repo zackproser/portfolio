@@ -1,7 +1,17 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 
+export const metadata = createMetadata(rawMetadata);
+
 export const campaign = 'voice-typing-vs-traditional-typing-2026'
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/voice-vs-keyboard-typing-2026.webp" alt="Voice typing vs traditional typing" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Voice typing vs keyboard typing: Speed and accuracy comparison</figcaption>
 
 Voice typing technology has evolved significantly in 2026. Modern voice typing now rivals keyboard accuracy while offering 4-5x speed improvements and eliminating repetitive strain injuries that plague keyboard users.
 

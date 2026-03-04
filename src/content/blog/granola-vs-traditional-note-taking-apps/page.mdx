@@ -1,7 +1,17 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 
+export const metadata = createMetadata(rawMetadata);
+
 export const campaign = 'granola-vs-traditional-note-taking-apps'
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-vs-traditional-notes-comparison.webp" alt="Granola vs traditional note-taking apps" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>AI-powered Granola notes vs traditional note-taking apps</figcaption>
 
 Meeting notes have evolved from scribbled observations to AI-generated summaries that capture every detail automatically. But when should you choose AI-powered tools like Granola over traditional note-taking apps like Notion, Obsidian, or OneNote?
 
