@@ -15,7 +15,7 @@ fi
 for f in $CHANGED; do
   if [ ! -f "$f" ]; then continue; fi
   hidden=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('hiddenFromIndex', 'MISSING'))")
-  if [ "$hidden" = "MISSING" ]; then
+  if [ "$hidden" != "True" ]; then
     dir=$(dirname "$f")
     if grep -ql "AffiliateLink\|InlineAffiliateCTA" "$dir/page.mdx" 2>/dev/null; then
       echo "❌ MISSING hiddenFromIndex: $f"
