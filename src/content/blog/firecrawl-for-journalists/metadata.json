@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping for Investigative Journalism: OSINT, Public Records, and Data Stories",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "How journalists use web scraping for OSINT investigations, public records analysis, and accountability reporting at scale.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-journalists",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "web scraping journalism",
+    "OSINT investigative reporting",
+    "public records scraping",
+    "journalism data collection",
+    "accountability reporting tools"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Journalism",
+    "OSINT",
+    "Firecrawl"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "title": "Firecrawl vs Apify: Which Web Scraping Platform is Better for AI Workflows?",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "Compare Firecrawl and Apify for AI applications: content quality, pricing, integration, and use case fit analysis.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-vs-apify",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "firecrawl vs apify",
+    "web scraping comparison",
+    "AI web scraping tools",
+    "LLM data collection",
+    "scraping platform comparison"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Comparison",
+    "Firecrawl",
+    "Apify"
+  ]
+}
