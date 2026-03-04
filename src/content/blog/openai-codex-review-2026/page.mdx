@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import ConsultingCTA from '@/components/ConsultingCTA'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
 
@@ -102,18 +103,19 @@ It feels like having multiple senior developers propose solutions, then picking 
 
 You still can't choose which model handles your task. Codex picks internally based on task complexity, repository size, and probably other factors I'm not privy to.
 
-As someone who understands the trade-offs between different model sizes and capabilities, this lack of control is annoying. Sometimes I want to throw GPT-4o at a complex architectural decision, and sometimes I just need Codex to generate a simple CRUD interface where a smaller, faster model would be fine.
+As someone who understands the trade-offs between different model sizes and capabilities, this lack of control is annoying. Sometimes I want to throw GPT-5.2 at a complex architectural decision—it's their heaviest thinking and reasoning model—and sometimes I just need Codex to generate a simple CRUD interface where a smaller, faster model would be fine.
 
 The system is clearly making intelligent decisions—complex tasks get more powerful models while simple ones get faster execution—but I'd prefer the option to override when I have specific requirements.
 
-### Network connectivity limitations
+### Network connectivity — much improved
 
-This hasn't changed. Codex still can't reach the internet from its execution environment, which means:
-- No installing updated dependencies
-- No fetching external APIs during development  
-- No running integration tests that require network access
+This was a major pain point in my original review, but OpenAI has largely fixed it. You can now configure Codex sandbox network access with granular controls:
+- **Package managers only** — allow outbound to npm, PyPI, and other known registries
+- **Full internet** — open outbound access for integration tests and API calls
+- **Specific domains** — allowlist particular sites your project needs
+- **No access** — fully sandboxed like before
 
-I understand the security rationale, but it limits the tool's usefulness for many real-world development scenarios.
+This is a huge improvement. Installing dependencies, running integration tests, fetching external APIs during development — all possible now depending on your security preferences.
 
 ## The meta-improvement: Codex training on Codex usage
 
@@ -145,16 +147,6 @@ If you want to see how I use everything together in a complete workflow — incl
     allowFullScreen
 ></iframe>
 
-## Looking ahead
-
-The trajectory is clear. If Codex improves over the next year at the same rate it has over the past year, we're looking at a fundamentally different development experience.
-
-I'm particularly excited about:
-- **Better architectural reasoning:** Moving beyond implementation to system design
-- **Cross-repository awareness:** Understanding relationships between services  
-- **Performance optimization:** Going beyond functional correctness to optimize for efficiency
-- **Production debugging:** Using context from logs and metrics to suggest fixes
-
 ## Bottom line
 
 <Link href="/blog/openai-codex-review">My original review</Link> was cautiously optimistic but ultimately skeptical about Codex's readiness for serious development work. That skepticism has been thoroughly overturned by daily use.
@@ -165,4 +157,16 @@ It's crossed the threshold from interesting experiment to indispensable tool.
 
 If you're still on the fence about trying Codex, stop waiting. The tool that exists today is fundamentally different from what I reviewed a year ago, and the trajectory suggests rapid improvement ahead.
 
-<ConsultingCTA />
+## Speed up Codex (and every other coding agent) with your voice
+
+Codex, like every agentic coding tool, is massively improved and even sped up by layering voice on top of it. Instead of typing out task descriptions, I dictate them at 170+ WPM and fire off Codex tasks in seconds. The combination of voice input and background agents is the real productivity unlock.
+
+<VoiceAIDemoCard />
+
+## Related reading
+
+- <Link href="/blog/openai-codex-review">My Original Codex Review (2025)</Link> — where it all started
+- <Link href="/blog/2026-ai-engineer-setup">My 2026 AI Engineer Setup</Link> — the full stack I use daily
+- <Link href="/blog/cursor-review">Cursor Review</Link> — the IDE I pair with Codex for deep focus work
+- <Link href="/blog/wisprflow-review">WisprFlow Review</Link> — the voice tool that makes Codex 3x faster
+- <Link href="/blog/claude-external-brain-adhd-autistic">Claude as My External Brain</Link> — how AI fits into my workflow as someone with ADHD + autism
