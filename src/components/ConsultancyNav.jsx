@@ -10,16 +10,29 @@ import { AuthStatus } from './AuthStatus'
 // Export navigation items to be used in components
 export const navItems = [
   { name: 'Blog', href: '/blog' },
-  { name: 'Videos', href: '/videos' },
-  { name: 'Speaking', href: '/speaking' },
-  { name: 'DevTools', href: '/devtools' },
-  { name: 'Learn', href: '/demos' },
+  {
+    name: 'Tools & Demos',
+    dropdown: [
+      { name: 'Interactive Demos', href: '/demos' },
+      { name: 'Best AI Tools', href: '/best-ai-tools' },
+    ],
+  },
+  {
+    name: 'Learn',
+    dropdown: [
+      { name: 'Courses', href: '/products' },
+      { name: 'Videos', href: '/videos' },
+      { name: 'Publications', href: '/publications' },
+    ],
+  },
   {
     name: 'Services',
     dropdown: [
       { name: 'AI Training & Cowork', href: '/ai-training' },
       { name: 'Custom Gen AI Solutions', href: '/services' },
       { name: 'Applied AI Engineer', href: '/applied-ai-engineer' },
+      { name: '90-Day AI Team Transformation', href: '/ai-training' },
+      { name: 'Workshops', href: '/workshops/claude-cowork' },
     ],
   },
   {

@@ -8,7 +8,6 @@ import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mi
 
 // Import speaking images from the a16z blog post
 const a16z1 = 'https://zackproser.b-cdn.net/images/a16z-1.webp'
-const a16z2 = 'https://zackproser.b-cdn.net/images/a16z-2.webp'
 // Import WorkOS internal training images
 const aiFundamentals = 'https://zackproser.b-cdn.net/images/ai-fundamentals.webp'
 const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks-learn.webp'
@@ -16,7 +15,6 @@ const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks
 const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
 // Import additional speaking and conference images
 const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
-const aieZackBadge = 'https://zackproser.b-cdn.net/images/aie-zack-badge.webp'
 const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const metadata = createMetadata({
@@ -57,6 +55,36 @@ export const metadata = createMetadata({
 
 // Speaking engagements data
 const speakingEngagements = [
+  {
+    id: 'claude-cowork-workshop-2026-02',
+    type: 'public',
+    title: 'Claude Cowork Workshop with Anthropic',
+    event: 'WorkOS x Anthropic',
+    date: 'February 26, 2026',
+    location: 'San Francisco, CA',
+    description: 'One-hour hands-on workshop I created and delivered at WorkOS, with Lydia from Anthropic\'s Claude Code team joining for Q&A. Demoed real-world Claude Code projects (Oura MCP, Handwave watchOS app, walking-and-talking development), then walked attendees through a complete GTM workflow: ICP identification, data scraping and enrichment, competitive analysis, battlecard creation, pain point messaging, cold email generation, blog content, and scheduled Cowork tasks for automated content production.',
+    image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
+    imagePosition: 'top',
+    audience: 'Engineers and technical leaders',
+    topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=8bjcx5Hkj5w',
+        label: 'Watch the workshop'
+      },
+      {
+        type: 'blog',
+        url: '/blog/claude-cowork-workshop-anthropic',
+        label: 'Read the write-up'
+      },
+      {
+        type: 'blog',
+        url: '/workshops/claude-cowork',
+        label: 'Book this workshop'
+      }
+    ]
+  },
   {
     id: 'devseccon-2025-keynote',
     type: 'public',
@@ -224,6 +252,8 @@ function ExternalLinkButton({ link }) {
 
 // Component for a single speaking engagement card
 function SpeakingCard({ engagement }) {
+  const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center';
+  
   return (
     <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
@@ -231,7 +261,7 @@ function SpeakingCard({ engagement }) {
         <Image src={engagement.image}
           alt={engagement.title}
           fill
-          className="object-cover"
+          className={`object-cover ${imagePositionClass}`}
          />
         {/* Badge for internal vs public */}
         <div className="absolute top-4 left-4">
@@ -354,22 +384,22 @@ export default function Speaking() {
         <section className="mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/zack-and-nick.webp"
-                alt="Speaking at conferences and events"
+              <Image src={zackAndNick}
+                alt="Zack and Nick at a speaking event"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
                />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src={a16z2}
-                alt="Speaking at a16z venue"
+              <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
+                alt="Workshop attendees building with Claude Cowork"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
                />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src={aieZackBadge}
-                alt="AI Engineering World Fair badge"
+              <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
+                alt="Lydia from Anthropic and Zack during Q&A"
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-300"
                />

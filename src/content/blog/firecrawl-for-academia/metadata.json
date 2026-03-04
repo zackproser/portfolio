@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping for Academic Research: Literature Review, Citation Analysis, and Data Collection",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "How researchers use web scraping for systematic literature reviews, citation analysis, and large-scale academic data collection.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-academia",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "academic web scraping",
+    "literature review automation",
+    "citation analysis tools",
+    "research data collection",
+    "scholarly research scraping"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Academic Research",
+    "Data Collection",
+    "Firecrawl"
+  ]
+}

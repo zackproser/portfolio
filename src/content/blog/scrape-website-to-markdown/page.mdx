@@ -1,0 +1,103 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'scrape-website-to-markdown';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Scrape any website to clean markdown" width={800} height={450} />
+</AffiliateLink>
+
+LLMs work best with clean text. Not HTML. Not raw DOM output with `<div class="sc-1f2ug0x">` scattered everywhere. Clean, structured markdown with headers, paragraphs, lists, and code blocks preserved.
+
+Getting from a website to clean markdown is harder than it sounds. Here's why, and how to do it properly.
+
+## Why Markdown?
+
+When you're building AI applications — RAG pipelines, AI agents, content analysis tools — markdown is the ideal intermediate format:
+
+- **Structure is preserved.** Headers (`## Section`) give you natural chunk boundaries. Lists stay as lists. Code blocks stay as code blocks.
+- **Noise is removed.** No CSS classes, no JavaScript, no navigation elements, no ad containers.
+- **LLMs understand it natively.** Every major LLM was trained on massive amounts of markdown. It's their native document format.
+- **It chunks well.** You can split on headers, paragraphs, or fixed token counts without breaking the document structure.
+
+## The DIY Approach
+
+You can convert HTML to markdown with libraries like Turndown (JavaScript) or html2text (Python). But raw HTML → markdown conversion doesn't solve the core problem: **which HTML is the actual content?**
+
+A typical webpage has hundreds of HTML elements. Maybe 20% of them contain the content you want. The rest is navigation, sidebars, footers, ads, related articles, cookie banners, and tracking pixels. Converting all of it to markdown gives you markdown full of junk.
+
+To get clean markdown, you need to:
+
+1. Render JavaScript (most content is dynamically loaded)
+2. Identify the main content area
+3. Strip boilerplate elements
+4. Convert the remaining HTML to markdown
+5. Clean up formatting artifacts
+
+Each step is its own engineering project.
+
+## The Clean Way
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> does all five steps in a single API call. Send it a URL, get back clean markdown.
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+const result = await app.scrapeUrl('https://example.com/blog/ai-pipelines')
+
+console.log(result.markdown)
+// # AI Pipelines: A Practical Guide
+//
+// Building production AI pipelines requires...
+//
+// ## Data Ingestion
+// ...
+```
+
+No selectors. No content identification heuristics. No boilerplate stripping rules. Firecrawl uses AI to identify the main content and strips everything else.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Crawling Entire Sites to Markdown
+
+Single pages are straightforward. But what if you need markdown from an entire documentation site, knowledge base, or blog? Firecrawl's crawl mode follows links automatically:
+
+```javascript
+const result = await app.crawlUrl('https://docs.example.com', {
+  limit: 500,
+  scrapeOptions: {
+    formats: ['markdown']
+  }
+})
+
+// 500 pages, each as clean markdown
+result.data.forEach(page => {
+  console.log(`${page.metadata.title}: ${page.markdown.length} chars`)
+})
+```
+
+This is particularly useful for building RAG pipelines over documentation sites. Crawl the docs, chunk the markdown, embed the chunks, and your AI can answer questions about the documentation.
+
+## Tips for Working with Scraped Markdown
+
+**Use headers as chunk boundaries.** When splitting markdown for embeddings, prefer splitting at `##` or `###` headers rather than arbitrary character counts. This preserves topical coherence in each chunk.
+
+**Preserve metadata.** Firecrawl returns page titles, descriptions, and URLs alongside the markdown. Store these as metadata in your vector database for better retrieval filtering.
+
+**Handle code blocks carefully.** Code blocks in markdown should be kept intact during chunking — splitting a code example in half produces two useless chunks.
+
+**Watch for extraction quality.** Some pages have unusual layouts that challenge any extraction tool. Spot-check your output, especially for pages with complex multi-column layouts or heavy interactive elements.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Related:**
+- <Link href="/demos/firecrawl">See the HTML → markdown extraction visualized</Link>
+- <Link href="/blog/web-scraping-for-rag-pipelines">Web scraping for RAG pipelines</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API comparison</Link>

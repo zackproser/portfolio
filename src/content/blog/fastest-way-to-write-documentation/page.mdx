@@ -1,0 +1,155 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'fastest-way-to-write-documentation';
+
+Let's be honest: **every developer hates writing documentation**.
+
+We know it's important. We know future-us will thank current-us for documenting that complex API integration. We know our teammates need context on the authentication flow we built last month.
+
+But we still don't do it.
+
+Why? Because writing documentation feels like punishment. You just spent hours solving a complex problem, and now you have to spend more hours explaining how you solved it. To make it worse, writing good docs requires a different mental mode than writing code. Code is precise and logical. Documentation is explanatory and narrative.
+
+Context-switching between these modes is exhausting.
+
+I found a way to make documentation 4x faster and actually enjoyable. The secret: **stop typing it**.
+
+## Why Documentation Is So Painful
+
+The traditional documentation workflow is broken:
+
+1. **Stare at blank page.** Cursor blinks mockingly while you try to figure out where to start.
+
+2. **Write terrible first draft.** Stream-of-consciousness technical rambling that makes no sense.
+
+3. **Rewrite everything.** Because the first draft assumed too much knowledge and skipped crucial steps.
+
+4. **Format and polish.** Add headers, code blocks, examples. Make it look professional.
+
+5. **Realize it's outdated.** By the time you publish, the API changed and half the examples are wrong.
+
+The problem isn't that developers can't write. The problem is that typing forces you to think linearly, but good documentation needs to be structured around the reader's mental model, not the writer's.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The Explanation Problem
+
+Here's what I discovered: **developers are great at explaining things verbally**. 
+
+Put a junior dev in front of my code, and I can walk them through it perfectly. I naturally start with the big picture, explain the why before the how, give context for weird design decisions. I use analogies, adjust my explanation based on their facial expressions, loop back to clarify confusing parts.
+
+But ask me to write that same explanation? Suddenly I'm paralyzed. The blank page offers no feedback. I don't know what the reader already knows. I second-guess every sentence.
+
+**The insight:** Don't write documentation. Explain it out loud, then edit the transcript.
+
+## The Voice-First Documentation Workflow
+
+Here's my new process:
+
+**Step 1: Record yourself explaining the code** as if you're onboarding a new teammate. Start with "This component handles user authentication. Here's why we built it this way..." and just talk through it naturally.
+
+**Step 2: Get a clean transcript** with proper formatting, code blocks, and structure. Not just raw speech-to-text—something that understands you're explaining technical concepts.
+
+**Step 3: Light editing.** Fix any transcription errors, add missing code examples, adjust structure. But the hard part—the actual explanation—is already done.
+
+**Step 4: Publish immediately.** Don't let perfect be the enemy of good. Published documentation that's 80% complete beats unpublished documentation that's 100% perfect.
+
+This workflow cuts documentation time from hours to minutes. More importantly, it produces better documentation because you're explaining naturally instead of writing artificially.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Why Speaking Produces Better Docs
+
+When you speak explanations instead of typing them, several things happen:
+
+**You explain from the reader's perspective.** Speaking forces you to imagine someone listening. You naturally provide context and background information.
+
+**You catch knowledge gaps in real-time.** When you say something out loud and it sounds confusing, you immediately rephrase it. When typing, those confusing parts make it to the final draft.
+
+**You use natural language patterns.** Spoken explanations flow better than written ones. They're more conversational and less intimidating to readers.
+
+**You include the 'why' automatically.** In conversation, you naturally explain reasoning and context. In writing, you often skip to implementation details.
+
+**You're faster.** Speaking is 3-4x faster than typing for most people. Even accounting for editing time, voice-first documentation is dramatically faster.
+
+## Practical Patterns That Work
+
+**API Documentation:**
+"This endpoint accepts a user ID and returns their profile data. Here's what a typical request looks like... The response includes these fields... Here are the common error cases you'll encounter..."
+
+**Code Architecture:**
+"This module handles payment processing. We split it into three main parts: validation, payment provider integration, and result handling. Let me walk through each piece..."
+
+**Setup Guides:**
+"To get this running locally, you'll need Node 18 and Docker. First, clone the repo... Next, copy the env file... Here's what each environment variable controls..."
+
+**Troubleshooting:**
+"The most common issue is authentication failing. This usually happens because... Here's how to debug it... If that doesn't work, try..."
+
+In each case, you're having a conversation with an imaginary colleague. The AI handles transcription and formatting.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Advanced Techniques
+
+Once you're comfortable with basic voice documentation, these patterns multiply your effectiveness:
+
+**Code walkthroughs:** Open the code in your editor and literally narrate what you're looking at. "Starting at line 15, this function validates the input... Moving down to line 23, here's where we call the API..." The AI can sync your narration with code references.
+
+**Decision logs:** Instead of writing architectural decision records (ADRs) after the fact, record your reasoning as you're making decisions. "I'm choosing Redis over Postgres for this because..."
+
+**Onboarding videos with transcripts:** Record your screen while explaining the codebase. Generate transcripts for searchable documentation plus video walkthroughs for visual learners.
+
+**Meeting-driven docs:** Use team meetings as documentation opportunities. "Let me explain how this system works..." gets automatically transcribed into shareable docs.
+
+## The ADHD/Autism Documentation Advantage
+
+Voice documentation is especially powerful for neurodivergent developers:
+
+**Hypernarrative tendency becomes an asset.** ADHD brains often provide more context than necessary. In conversations, this can be annoying. In documentation, extra context is valuable.
+
+**Special interests drive thoroughness.** When you're explaining something you care deeply about, you naturally cover edge cases and nuanced details that typed docs often miss.
+
+**Reduced executive function load.** Typing documentation requires planning, structuring, and formatting simultaneously. Voice separates ideation from execution.
+
+**Better working memory utilization.** Instead of holding document structure in your head while typing, you speak naturally and let editing handle organization.
+
+## The Compound Effect
+
+The best part about voice documentation isn't the immediate time savings—it's the compound effect.
+
+When documentation is fast and painless, **you actually do it**. Instead of accumulating technical debt in the form of undocumented systems, you build up a searchable knowledge base.
+
+New team members onboard faster. Bugs get fixed quicker because the problem-solving process is documented. Code reviews include more context because explaining architectural decisions is effortless.
+
+Over time, your documentation becomes a competitive advantage instead of a chore you avoid.
+
+## Getting Started Is Simple
+
+Start with one undocumented part of your codebase. Something that's been nagging at you but felt too big to tackle.
+
+Open your voice recording app. Pretend you're explaining it to a smart colleague who's new to the project. Just talk through it naturally for 5-10 minutes.
+
+Use a voice-to-text tool that understands technical content. Get a transcript with proper formatting and code block handling.
+
+Do light editing to clean up any transcription errors or add missing examples.
+
+Publish it immediately in your team's documentation system.
+
+The whole process takes 15-20 minutes instead of 2-3 hours. And the result is usually better than what you would have typed.
+
+## Documentation That Doesn't Suck
+
+Good documentation serves readers, not writers. It answers questions before they're asked. It provides context and reasoning, not just implementation details.
+
+Voice-first documentation naturally produces reader-focused content because **speaking is inherently audience-aware**. When you explain something out loud, you automatically adjust for your listener's needs.
+
+Stop fighting your natural communication patterns. You already know how to explain complex technical concepts clearly—you do it in meetings and code reviews every day.
+
+Just record those explanations instead of starting from scratch every time you need to write docs.
+
+Your future self (and your teammates) will thank you.

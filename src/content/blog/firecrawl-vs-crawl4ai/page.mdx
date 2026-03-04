@@ -1,0 +1,104 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-vs-crawl4ai';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Firecrawl vs Crawl4AI comparison" width={800} height={450} />
+</AffiliateLink>
+
+Two popular tools for AI-focused web scraping: <AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> (managed API) and Crawl4AI (open-source Python library). Both aim to turn websites into clean data for LLMs. Different approaches, different trade-offs.
+
+## Crawl4AI
+
+**What it is:** An open-source Python library that wraps Playwright for JavaScript rendering and uses LLMs or rule-based extraction for content cleaning.
+
+**Strengths:**
+- Free and open-source
+- Runs locally — your data never leaves your machine
+- Customizable extraction strategies
+- Active community and frequent updates
+
+**Limitations:**
+- You manage the browser infrastructure (Playwright, Chromium)
+- Scaling requires your own infrastructure (job queues, worker pools)
+- Browser instances are memory-heavy
+- You handle rate limiting and anti-bot measures yourself
+
+## Firecrawl
+
+**What it is:** A managed web scraping API. Send a URL, get back clean markdown and structured data.
+
+**Strengths:**
+- No infrastructure to manage
+- Handles JavaScript rendering, rate limiting, and anti-bot measures
+- Scales from 1 page to 100,000 pages with the same API call
+- Built-in crawl mode that follows links automatically
+- Returns clean markdown optimized for LLMs
+
+**Limitations:**
+- Paid service (free tier available)
+- Data goes through Firecrawl's servers
+- Less customizable than a library you control entirely
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Head-to-Head
+
+**Setup time:**
+- Crawl4AI: 15-30 minutes (install Playwright, Chromium, configure)
+- Firecrawl: 2 minutes (get API key, install SDK)
+
+**JavaScript rendering:**
+- Both handle JavaScript rendering via headless browsers
+- Crawl4AI: you manage browser lifecycle and memory
+- Firecrawl: managed for you
+
+**Content extraction quality:**
+- Both produce clean markdown from web pages
+- Crawl4AI offers more extraction strategies (LLM-based, CSS-based, custom)
+- Firecrawl's extraction is consistent across all sites without configuration
+
+**Scaling:**
+- Crawl4AI: limited by your hardware (each browser instance uses 200-500MB RAM)
+- Firecrawl: scales to millions of pages, infrastructure is handled
+
+**Cost:**
+- Crawl4AI: free (but you pay for compute, especially at scale)
+- Firecrawl: free tier + paid plans based on usage
+
+**Privacy:**
+- Crawl4AI: data stays local
+- Firecrawl: data passes through their API
+
+## When to Use Crawl4AI
+
+- You need full control over the extraction pipeline
+- Data privacy is paramount (sensitive or regulated data)
+- You're scraping a small number of pages regularly
+- You have the infrastructure team to support browser automation at scale
+- You want to customize extraction strategies per-site
+
+## When to Use Firecrawl
+
+- You need to scrape many different sites without per-site configuration
+- You don't want to manage browser infrastructure
+- You're building an AI application and scraping isn't your core product
+- You need to scale quickly without provisioning infrastructure
+- You want a consistent API across all your scraping needs
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## My Take
+
+Having <Link href="/blog/introducing-pageripper-api">built and maintained scraping infrastructure</Link> professionally, I know what it costs to keep browser-based scraping running at scale. If scraping is your product, invest in owning the stack. If scraping is a means to an end — and for most AI applications, it is — use a managed API and focus your engineering time on what makes your product unique.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/best-web-scraping-api-2026">Best web scraping API in 2026</Link>
+- <Link href="/blog/how-to-scrape-javascript-sites">Scraping JavaScript-heavy sites</Link>

@@ -1,0 +1,119 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-journalists';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Web scraping for investigative journalism" width={800} height={450} />
+</AffiliateLink>
+
+The documents were scattered across dozens of government websites. The evidence was buried in archived pages, deleted social media posts, and inconsistent filing systems. A manual search would take months. The story would go cold.
+
+Modern investigative journalism requires modern tools. Web scraping isn't just a technical convenience — it's essential infrastructure for accountability reporting in the digital age.
+
+## OSINT at Scale
+
+Open Source Intelligence (OSINT) used to mean manually combing through public records, social media profiles, and government databases. That approach doesn't scale when you're tracking patterns across hundreds of sources.
+
+**Government transparency sites.** Municipal governments publish everything from zoning decisions to police reports online, but rarely in searchable formats. Scrape city council minutes, planning documents, and public meeting agendas to track development patterns, lobbying activity, and policy changes.
+
+**Corporate filings.** SEC filings, patent applications, and trademark registrations reveal business relationships, strategic pivots, and ownership structures that companies don't advertise. Track executive movements, investment patterns, and subsidiary formations across regulatory databases.
+
+**Social media archaeology.** People delete posts, but they rarely delete them fast enough. Systematic crawling of public social media profiles can capture statements, locations, and associations before they disappear from public view.
+
+**Court records and legal databases.** Many jurisdictions publish case filings, judgments, and legal correspondence online. Scraping these databases reveals patterns in civil litigation, criminal cases, and regulatory enforcement that individual searches miss.
+
+## Building a Data Story Pipeline
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles the technical complexity so you can focus on the journalism:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Track city council voting patterns
+const councilSites = [
+  'https://city.gov/council/meetings',
+  'https://city.gov/council/votes',
+  'https://city.gov/planning/agendas'
+]
+
+for (const site of councilSites) {
+  const result = await app.crawlUrl(site, {
+    limit: 200,
+    scrapeOptions: { formats: ['markdown'] }
+  })
+
+  // Extract voting records, meeting minutes, agenda items
+  const votingData = result.data.filter(page => 
+    page.markdown?.includes('Motion') || 
+    page.markdown?.includes('Vote')
+  )
+  
+  await processVotingRecords(votingData)
+}
+```
+
+Run this monthly to track how council members vote on development projects, budget allocations, and zoning changes. Pattern matching reveals conflicts of interest that aren't obvious from individual meetings.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Public Records Deep Dives
+
+The best investigative stories combine broad pattern analysis with deep document review. Use scraping to identify the documents worth reading:
+
+**Property records and development patterns.** Scrape county assessor databases to track property ownership changes, development permits, and zoning variances. Cross-reference with campaign contribution databases to identify potential pay-to-play relationships.
+
+**Environmental and safety violations.** EPA, OSHA, and state environmental agencies publish violation records online. Scraping these databases reveals repeat offenders, enforcement patterns, and geographic clusters of violations that indicate systemic problems.
+
+**Professional licensing and disciplinary actions.** Medical boards, legal bar associations, and professional licensing bodies publish disciplinary actions and license status changes. Track patterns of misconduct, license suspensions, and regulatory capture.
+
+**Financial disclosures and lobbying records.** Ethics agencies publish financial disclosure forms, lobbying registrations, and gift reports. Scraping these databases reveals undisclosed relationships between public officials and private interests.
+
+## Verification and Cross-Reference
+
+Scraped data is only as good as your verification process. Build systematic cross-referencing into your workflow:
+
+```javascript
+// Cross-reference property ownership with campaign contributions
+const propertyOwners = await scrapePropertyRecords(targetArea)
+const campaignDonors = await scrapeCampaignFinance(candidateId)
+
+const potentialConflicts = propertyOwners.filter(owner => 
+  campaignDonors.some(donor => 
+    owner.name.includes(donor.name) || 
+    owner.businessAddress === donor.address
+  )
+)
+```
+
+Always verify scraped data against primary sources before publication. Use scraping to identify leads and patterns, then confirm details through traditional reporting methods.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Ethics and Legal Considerations
+
+Investigative scraping operates in a complex legal and ethical environment:
+
+**Public records are public.** If information is legally available to the public, scraping it is generally permissible. But check jurisdictional differences — some states restrict bulk downloads even of public records.
+
+**Respect rate limits and server capacity.** Government websites often run on limited infrastructure. Aggressive scraping can cause outages that prevent public access to information. Use reasonable delays and respect robots.txt files.
+
+**Don't circumvent paywalls or authentication.** Scraping should focus on truly public information, not information behind subscriber walls or login screens.
+
+**Verify before you publish.** Automated data collection introduces opportunities for errors. Always verify key facts through traditional reporting before publication.
+
+**Protect sources and subjects.** Scraped data can reveal patterns that identify confidential sources or expose subjects to harassment. Apply the same editorial judgment you would use with traditionally gathered information.
+
+The goal is accountability reporting that serves the public interest, not technical demonstration of scraping capabilities.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/scrape-competitor-websites">Scraping for competitive intelligence</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>

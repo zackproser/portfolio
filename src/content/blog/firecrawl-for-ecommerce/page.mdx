@@ -1,0 +1,178 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-for-ecommerce';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="E-commerce businesses using web scraping for competitive intelligence" width={800} height={450} />
+</AffiliateLink>
+
+An e-commerce retailer discovers that their biggest competitor dropped prices by 15% across 200 SKUs while they were manually checking a handful of products weekly. They lost $50K in margin before realizing they'd been undercut across their entire catalog.
+
+E-commerce moves at algorithm speed. Manual competitive intelligence can't keep pace with dynamic pricing and inventory changes.
+
+## Dynamic Price Intelligence
+
+**Competitor price monitoring.** Track pricing changes across all major competitors in real-time. Most e-commerce businesses adjust prices multiple times per day based on inventory, demand, and competitive position.
+
+**Market price analysis.** Monitor pricing across Amazon, eBay, Walmart, and niche marketplaces to understand true market rates. Identify pricing opportunities and avoid being undercut.
+
+**Promotion and discount tracking.** Capture competitor sales, coupon codes, and promotional strategies. Time your own promotions to maximize impact and avoid price wars.
+
+**Dynamic pricing optimization.** Feed real-time competitive data into automated pricing algorithms. Maintain optimal profit margins while staying competitive on price-sensitive items.
+
+## Inventory and Stock Intelligence
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles the complexity of e-commerce site scraping:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+// Monitor competitor pricing and inventory
+const competitors = [
+  'https://competitor-store.com/category/electronics',
+  'https://amazon.com/s?k=wireless+headphones',
+  'https://bestbuy.com/site/headphones/wireless-headphones'
+]
+
+for (const site of competitors) {
+  const result = await app.crawlUrl(site, {
+    limit: 100,
+    scrapeOptions: {
+      formats: ['markdown'],
+      includeTags: ['span', 'div', 'p', 'h3', 'h4'],
+      waitFor: 2000 // Allow dynamic pricing to load
+    }
+  })
+
+  // Extract price and stock data
+    const products = result.data
+      .filter(page => page.markdown.includes('$') || 
+                     page.markdown.includes('price'))
+      .map(page => ({
+        url: page.metadata?.sourceURL,
+        content: page.markdown,
+        scrapedAt: new Date()
+        // Parse title, price, stock status, ratings from markdown
+      }))
+}
+```
+
+Run this multiple times daily to catch price drops, stock-outs, and new product launches.
+
+## Product Research and Sourcing
+
+**Trending product identification.** Scrape social media, trend sites, and marketplace bestseller lists to identify emerging product opportunities before they become saturated.
+
+**Supplier research.** Monitor Alibaba, Global Sources, and trade platforms to identify new suppliers, compare MOQs, and track pricing trends for sourcing decisions.
+
+**Patent and trademark monitoring.** Track patent databases and trademark filings to identify potential IP issues before launching similar products.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Customer and Review Intelligence
+
+**Review sentiment analysis.** Scrape customer reviews across platforms to identify product issues, feature requests, and improvement opportunities. Use negative competitor reviews to position your products.
+
+**Q&A mining.** Monitor product Q&A sections to understand customer concerns and use insights for better product descriptions and FAQ development.
+
+**Influencer and affiliate tracking.** Identify which influencers promote competitor products and their engagement rates. Find collaboration opportunities and track affiliate commission structures.
+
+```javascript
+// Monitor product reviews across platforms
+const reviewPlatforms = [
+  'https://amazon.com/product-reviews/',
+  'https://trustpilot.com/review/',
+  'https://yelp.com/biz/'
+]
+
+for (const platform of reviewPlatforms) {
+  const result = await app.crawlUrl(`${platform}${productId}`, {
+    limit: 50,
+    scrapeOptions: {
+      formats: ['markdown'],
+      onlyMainContent: true
+    }
+  })
+
+  // Extract review data
+    const reviews = result.data.map(page => ({
+      platform: platform,
+      content: page.markdown,
+      url: page.metadata?.sourceURL,
+      scrapedAt: new Date()
+      // Parse rating, review text, reviewer info, helpful votes from markdown
+    }))
+}
+```
+
+## Market Expansion Intelligence
+
+**Geographic market analysis.** Research international marketplaces, pricing strategies, and popular products in new markets before expansion. Understand local competition and customer preferences.
+
+**Platform opportunity assessment.** Monitor emerging e-commerce platforms, social commerce features, and new marketplace launches to identify early expansion opportunities.
+
+**Regulatory and compliance tracking.** Scrape government websites and industry publications for changing regulations, import/export restrictions, and certification requirements.
+
+## Brand Protection and Monitoring
+
+**Unauthorized seller detection.** Monitor marketplaces for unauthorized resellers, counterfeit products, and MAP (Minimum Advertised Price) violations across your distribution network.
+
+**Brand mention tracking.** Scrape forums, social media, and review sites for brand mentions to manage reputation and identify customer service issues.
+
+**Trademark and copyright monitoring.** Track potential trademark infringement, unauthorized product listings, and copyright violations across e-commerce platforms.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Supply Chain Intelligence
+
+**Supplier performance monitoring.** Track supplier websites, news, and financial filings to assess stability and identify potential supply chain risks before they impact your business.
+
+**Logistics and shipping analysis.** Monitor competitor shipping options, delivery times, and fulfillment strategies to optimize your own logistics operations.
+
+**Raw material price tracking.** Scrape commodity exchanges, trade publications, and supplier price lists to forecast input cost changes and adjust pricing proactively.
+
+## Implementation Strategy for E-Commerce
+
+**Start with core competitive intelligence:**
+
+1. **Price monitoring** for your top 50 SKUs across 3-5 major competitors
+2. **Inventory tracking** to identify stock-out opportunities  
+3. **New product monitoring** in your category
+4. **Review analysis** for product development insights
+
+**Scale systematically:**
+- Begin with manual analysis of scraped data
+- Implement automated alerts for significant price changes
+- Build dynamic pricing rules based on competitive intelligence
+- Integrate scraped data with your ERP and pricing systems
+
+**Data quality controls:**
+- Validate scraped prices against known values
+- Implement deduplication for products across multiple sites
+- Set up monitoring for scraping failures or blocked requests
+- Regular audits of competitor URL changes and site structure updates
+
+## Legal and Ethical Considerations
+
+**Terms of service compliance.** Respect website terms of service and robots.txt files. Focus on publicly available product information rather than internal data.
+
+**Fair competition practices.** Use pricing intelligence for competitive positioning, not predatory pricing or market manipulation.
+
+**Data protection.** Be cautious with customer data that might be scraped incidentally. Don't store or use personal information from reviews or customer profiles.
+
+**Platform policies.** Each marketplace has specific policies about automated access. Review Amazon, eBay, and other platform terms carefully.
+
+The e-commerce businesses that systematize their competitive intelligence will respond faster to market changes, optimize pricing more effectively, and identify opportunities before competitors. Manual monitoring can't compete with algorithmic market intelligence.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo</Link>
+- <Link href="/blog/monitor-website-changes-ai">Monitoring website changes with AI</Link>
+- <Link href="/blog/scrape-competitor-websites">Competitive intelligence scraping</Link>

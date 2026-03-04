@@ -1,0 +1,23 @@
+{
+  "title": "How to Extract Structured Data from Any Website with AI",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "Go beyond HTML parsing. Use AI-powered extraction to get clean JSON from any webpage \u2014 no custom selectors required.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/extract-structured-data-websites",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "extract structured data website",
+    "ai data extraction",
+    "website to json",
+    "structured web scraping",
+    "intelligent data extraction",
+    "schema extraction web"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

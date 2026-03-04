@@ -12,7 +12,7 @@ export type AffiliatePlacement = 'sticky-cta' | 'inline-cta' | 'hero-card' | 'co
 const BASE_LINKS: Record<AffiliateProduct, string> = {
   wisprflow: 'https://ref.wisprflow.ai/zack-proser',
   granola: 'https://go.granola.ai/zack-proser',
-  firecrawl: 'https://firecrawl.link/zack-proser' // TODO: Update with actual affiliate link once accepted
+  firecrawl: 'https://firecrawl.link/zack-proser'
 }
 
 interface AffiliateParams {

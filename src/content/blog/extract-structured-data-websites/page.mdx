@@ -1,0 +1,101 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'extract-structured-data-websites';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Extract structured data from any website with AI" width={800} height={450} />
+</AffiliateLink>
+
+You need product names and prices from an e-commerce site. Job titles and companies from a conference speakers page. Research paper titles, authors, and abstracts from a journal. Contact information from a directory.
+
+Traditional web scraping gives you HTML or text. You still need to write parsers to extract the specific fields you want. With AI-powered extraction, you describe the data you want and the tool figures out how to extract it.
+
+## The Old Way: CSS Selectors
+
+```javascript
+// Site-specific, breaks when markup changes
+const title = document.querySelector('.product-card h2.title')?.textContent
+const price = document.querySelector('.product-card .price-current')?.textContent
+const rating = document.querySelector('.product-card .stars')?.getAttribute('data-rating')
+```
+
+This works until the site redesigns. Then your selectors break. For each new site, you write new selectors. You maintain a growing library of site-specific extraction code.
+
+## The New Way: Schema-Based Extraction
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> supports structured extraction — you define a schema for the data you want, and it extracts matching data from any page:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: 'fc-...' })
+
+const result = await app.scrapeUrl('https://example.com/speakers', {
+  formats: ['extract'],
+  extract: {
+    schema: {
+      speakers: [{
+        name: 'string',
+        title: 'string',
+        company: 'string',
+        topic: 'string'
+      }]
+    }
+  }
+})
+
+console.log(result.extract.speakers)
+// [
+//   { name: "Jane Smith", title: "CTO", company: "Acme AI", topic: "RAG at Scale" },
+//   { name: "Bob Lee", title: "Staff Eng", company: "DataCo", topic: "Vector Search" },
+//   ...
+// ]
+```
+
+No CSS selectors. No site-specific code. The same extraction schema works across different conference websites, job boards, product listings — any site with similar data.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Practical Applications
+
+**Lead generation.** Extract company names, contact info, and descriptions from directories and conference pages. Feed directly into your CRM.
+
+**Price monitoring.** Define a schema for product name, price, availability, and shipping cost. Apply it across multiple e-commerce sites.
+
+**Research aggregation.** Extract paper titles, authors, abstracts, and publication dates from academic databases. Build a structured research database.
+
+**Job market analysis.** Extract job titles, companies, requirements, and salary ranges from job boards. Track hiring trends in your industry.
+
+**Content aggregation.** Extract article titles, authors, dates, and summaries from news sites and blogs. Build topical feeds without RSS.
+
+## Why This Matters for AI Applications
+
+Structured data is more useful than markdown for certain AI workflows:
+
+**Function calling.** If your AI agent needs to compare products, route leads, or make decisions based on specific fields, structured data is directly usable. Markdown requires an additional extraction step.
+
+**Database ingestion.** Structured data maps directly to database rows. No parsing needed.
+
+**Analytics.** You can run queries, aggregations, and trend analysis on structured data. "Show me all speakers from AI companies" is a simple filter on structured data. It's an LLM call on markdown.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Combining Approaches
+
+The most powerful pattern combines markdown extraction with structured extraction:
+
+- **Markdown** for full content — feed to RAG pipelines, summarizers, and content analysis
+- **Structured extraction** for specific fields — feed to databases, CRMs, and analytics tools
+
+Firecrawl supports both in a single API call, letting you get clean content and structured data from the same page.
+
+**Related:**
+- <Link href="/demos/firecrawl">Interactive Firecrawl demo — see extraction in action</Link>
+- <Link href="/blog/build-ai-agent-web-research">Building AI agents that research the web</Link>
+- <Link href="/blog/scrape-website-to-markdown">Scraping websites to clean markdown</Link>

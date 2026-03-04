@@ -1,0 +1,23 @@
+{
+  "title": "Web Scraping for AI Training Data and Fine-Tuning Datasets",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "Build high-quality training datasets from web content. Clean extraction means less time on data cleaning, more time on model improvement.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/web-scraping-for-training-data",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "web scraping training data",
+    "ai dataset building",
+    "fine tuning dataset web",
+    "scraping for machine learning",
+    "web data for model training",
+    "build ai dataset"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}

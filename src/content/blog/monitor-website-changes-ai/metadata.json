@@ -1,0 +1,23 @@
+{
+  "title": "How to Monitor Website Changes with AI in 2026",
+  "author": "Zachary Proser",
+  "date": "2026-02-28",
+  "description": "Track changes across websites at scale. Crawl periodically, diff structured output, and get AI-powered summaries of what changed.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/monitor-website-changes-ai",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "monitor website changes",
+    "website change detection",
+    "web monitoring ai",
+    "track website updates",
+    "competitive intelligence scraping",
+    "website diff tool"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}
