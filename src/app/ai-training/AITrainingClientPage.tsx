@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Brain, Shield, CheckCircle2, Users, CalendarDays, Trophy, Code, Monitor, Handshake, Zap, GitBranch, MessageSquare, BarChart } from "lucide-react"
+import { ArrowRight, Brain, Shield, CheckCircle2, Users, Trophy, Code, Monitor, Handshake, Zap, GitBranch, MessageSquare, BarChart } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Slider } from "@/components/ui/slider"
