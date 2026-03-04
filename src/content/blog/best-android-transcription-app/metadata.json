@@ -4,5 +4,14 @@
   "date": "2026-3-2",
   "description": "Complete comparison of the best Android transcription apps in 2026, featuring accuracy tests, offline capabilities, and professional features.",
   "image": "https://zackproser.b-cdn.net/images/best-android-transcription-hero.webp",
-  "tags": ["android", "transcription", "apps", "wisprflow", "google", "otter", "accuracy"]
+  "tags": [
+    "android",
+    "transcription",
+    "apps",
+    "wisprflow",
+    "google",
+    "otter",
+    "accuracy"
+  ],
+  "hiddenFromIndex": true
 }
