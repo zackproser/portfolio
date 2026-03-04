@@ -1,29 +1,15 @@
 {
-  "title": "WisprFlow vs Whisper (OpenAI): Which Voice-to-Text is Better for Developers?",
+  "title": "WisprFlow vs OpenAI Whisper: Voice AI Showdown 2026",
   "author": "Zachary Proser",
-  "date": "2025-11-28",
-  "description": "Detailed comparison of WisprFlow vs OpenAI Whisper for developers. Compare accuracy, speed, integration, pricing, and real-world performance for voice-to-text coding.",
-  "image": "https://zackproser.b-cdn.net/images/polished-voice.webp",
-  "slug": "/blog/wisprflow-vs-whisper",
-  "keywords": [
-    "WisprFlow vs Whisper",
-    "WisprFlow vs OpenAI Whisper",
-    "best voice to text for developers",
-    "Whisper alternatives",
-    "WisprFlow comparison",
-    "voice to text comparison",
-    "voice coding tools comparison",
-    "AI transcription comparison",
-    "WisprFlow or Whisper",
-    "developer voice tools",
-    "speech to text for coding"
-  ],
+  "date": "2026-03-03",
+  "description": "Detailed comparison of WisprFlow and OpenAI Whisper for transcription accuracy and features.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow-vs-whisper-hero.webp",
   "tags": [
-    "Voice AI",
-    "Comparison",
-    "WisprFlow",
-    "Whisper",
-    "Developer Tools"
-  ]
+    "wisprflow",
+    "whisper",
+    "openai",
+    "comparison",
+    "voice-ai"
+  ],
+  "hiddenFromIndex": true
 }
-

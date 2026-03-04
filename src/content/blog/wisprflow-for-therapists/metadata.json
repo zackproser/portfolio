@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Therapists: Secure Session Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "HIPAA-compliant voice notes for therapy sessions, treatment plans, and client progress tracking.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow-therapists-hero.webp",
+  "tags": ["wisprflow", "therapy", "mental-health", "hipaa"],
+  "hiddenFromIndex": true
+}
