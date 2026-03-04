@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
@@ -52,7 +53,11 @@ Mac's built-in dictation technically works in most apps, but:
 - Can't handle code-related symbols well
 - Stops working randomly and needs to be restarted
 
-WisprFlow solves all of these. I regularly dictate at 170+ WPM with accuracy that requires almost no correction.
+WisprFlow solves all of these. I regularly dictate at 184 WPM — top 1% of all Flow users — with accuracy that requires almost no correction.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-stats-184wpm.webp" alt="WisprFlow stats: 184 WPM average speed, top 1% of all users, 182,718 words across 36 apps" width={1180} height={730} />
+
+<figcaption>My actual WisprFlow stats — 184 WPM across 36 different apps. That's double my 90 WPM typing speed.</figcaption>
 
 <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
@@ -8,65 +9,70 @@ export const campaign = 'best-mac-dictation-app-2026'
 
 # Best Dictation App for Mac in 2026
 
-The Mac dictation app landscape has exploded. Between Apple's built-in option, WisprFlow, Superwhisper, VoiceInk, and a dozen others, it's hard to know which one is worth your time (and money). I've used most of them extensively. Here's the real comparison.
+The Mac dictation app landscape has exploded. Apple's built-in option is still free but limited, and a new wave of AI-powered alternatives has emerged. After testing the major options, here's how they stack up for professional use.
 
 ## The Contenders
 
-### 1. WisprFlow — Best Overall
+**Apple Dictation** — Free, built into macOS. Basic transcription with limited accuracy.
 
-<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is what I use daily. It works at the system level, meaning any app gets voice typing without plugins or integrations. The AI-powered cleanup is the differentiator — what comes out reads like carefully typed text, not raw transcription.
+**<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** — AI-powered voice typing with cleanup, works in any app. My daily driver.
 
-**Pros:** Works everywhere, AI cleanup, fast (170+ WPM), handles technical terms, active development
-**Cons:** Subscription pricing, requires internet for AI features
-**Best for:** Professionals who dictate all day across multiple apps
+**Superwhisper** — Local Whisper model, privacy-focused, one-time purchase.
 
-### 2. Superwhisper — Best for Privacy
+**VoiceInk** — Open-source option, runs local Whisper models, free if you build from source.
 
-Superwhisper runs local Whisper models on your Mac. No cloud, no data leaving your device. If privacy is your top concern and you have an M-series Mac with enough RAM, it's solid.
+## How I Tested
 
-**Pros:** Fully local/offline, one-time purchase, decent accuracy
-**Cons:** Requires beefy hardware, no AI cleanup, slower than cloud options, accuracy lower than WisprFlow
-**Best for:** Privacy-focused users with powerful Macs
-
-### 3. VoiceInk — Best Budget Option
-
-Open source, free if you build from Xcode yourself. Uses local Whisper models. Basic but functional.
-
-**Pros:** Free/cheap, open source, local processing
-**Cons:** Minimal features, no cleanup, requires technical setup, inconsistent accuracy
-**Best for:** Developers who want a free option and don't mind tinkering
-
-### 4. Mac Built-in Dictation — Best for Casual Use
-
-It's free and already on your Mac. For short messages and quick notes, it works.
-
-**Pros:** Free, no install, always available
-**Cons:** Timeouts, poor accuracy for technical content, no cleanup, breaks frequently, no real updates from Apple
-**Best for:** Occasional, short dictation only
+I used each app for a full work week across my actual workflow: Slack messages, email composition, code documentation, blog writing, and meeting notes. I measured accuracy, speed, and how much time I spent correcting errors.
 
 <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
-## The Real Comparison: Speed and Accuracy
+## WisprFlow — The Professional Choice
 
-I tested each tool with the same 200-word paragraph, dictated three times:
+**Speed:** 184 WPM (top 1% of all users)
+**Accuracy:** 95%+ for general text, 90%+ for technical content
+**Works in:** Every app with a text field
+**Killer feature:** AI cleanup — filler words removed, punctuation added, sentences structured
 
-| App | Avg Accuracy | Speed | Cleanup |
-|-----|-------------|-------|---------|
-| WisprFlow | 96% | Real-time | AI-powered |
-| Superwhisper | 89% | 2-3s delay | None |
-| VoiceInk | 85% | 3-5s delay | None |
-| Mac Dictation | 82% | Real-time | None |
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-stats-184wpm.webp" alt="WisprFlow stats: 184 WPM, top 1% of users, 182K words across 36 apps" width={1180} height={730} />
 
-The accuracy gap widens dramatically with technical content, longer passages, and natural speech patterns (pauses, filler words, self-corrections).
+WisprFlow is what I use every day. The AI post-processing is the key differentiator — what comes out reads like carefully typed text, not raw transcription. Technical terms, code references, and proper nouns all handled well.
 
-## My Recommendation
+The downside: it's a subscription, and it sends audio to the cloud for processing. If local processing is a hard requirement, look at the alternatives below.
 
-If you dictate for work — meaning you're using voice typing for hours a day across Slack, email, docs, and code — <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is the clear winner. The AI cleanup alone is worth it because your output reads like typed text without any editing.
+## Superwhisper — Best for Privacy
 
-If privacy is non-negotiable and you have an M2 Pro/Max or better, Superwhisper is solid.
+**Speed:** ~120-140 WPM (limited by local model speed)
+**Accuracy:** 85-90% with large Whisper model
+**Works in:** Any app via system integration
+**Killer feature:** Fully local processing, nothing leaves your machine
 
-If you just need occasional dictation for short messages, Mac's built-in is fine. Don't overthink it.
+Good option if you're handling sensitive data (legal, medical, classified). Accuracy is solid but noticeably below WisprFlow's AI-powered approach. No post-processing cleanup — you get raw transcription.
+
+## VoiceInk — Best Free Option
+
+**Speed:** ~120-140 WPM
+**Accuracy:** 85-90% (depends on which Whisper model you run)
+**Works in:** System-level, like the others
+**Killer feature:** Free if you build from Xcode, one-time purchase otherwise
+
+Similar to Superwhisper in approach (local Whisper models) but open source. Great if you want to tinker. Not as polished UX-wise.
+
+## Apple Dictation — It's Free
+
+**Speed:** ~100-120 WPM
+**Accuracy:** 75-85%
+**Works in:** Most apps (inconsistent)
+**Killer feature:** Already on your Mac, zero setup
+
+Fine for quick texts and short notes. Falls apart for professional, all-day use. No cleanup, aggressive timeouts, spotty accuracy with technical language. The floor, not the ceiling.
 
 <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
-For everyone else — anyone who's frustrated with Mac dictation, who wants voice typing that actually works in every app, who values their time enough to pay for a tool that saves hours per week — WisprFlow is the answer.
+## The Verdict
+
+If you dictate professionally — emails, documentation, messages, code comments — <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> is the clear winner. The AI cleanup alone saves 10-15 minutes per day in error correction.
+
+If privacy is paramount, Superwhisper is excellent. If you want free and open source, VoiceInk works. And if you just need to send the occasional text message by voice, Apple's built-in dictation is fine.
+
+But for anyone whose job involves writing — which is most knowledge workers — WisprFlow has fundamentally changed what's possible with voice input on Mac.

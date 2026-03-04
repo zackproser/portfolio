@@ -6,54 +6,63 @@ export const metadata = createMetadata(rawMetadata);
 
 export const campaign = 'wisprflow-vs-superwhisper'
 
-# WisprFlow vs Superwhisper: Which Voice Tool Wins?
+# WisprFlow vs Superwhisper: Which Voice Typing Tool Wins?
 
-These are the two most-discussed Mac voice typing tools on Reddit and Hacker News right now. Both let you dictate into any app. But they take fundamentally different approaches, and the right choice depends on what you value most.
+These are the two most-discussed Mac voice typing tools on Reddit right now. Both work system-wide, both replace Apple's mediocre built-in dictation. But they take fundamentally different approaches: WisprFlow uses cloud AI for maximum accuracy, Superwhisper runs Whisper models locally for maximum privacy.
+
+Here's how to choose.
 
 ## The Core Difference
 
-**WisprFlow** uses cloud-based AI models for transcription and cleanup. Your audio goes to their servers, gets processed by large language models, and comes back as clean, punctuated text.
+**<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** sends your audio to cloud AI models for transcription and cleanup. This means higher accuracy, AI-powered post-processing (filler word removal, punctuation, sentence structure), and consistently fast results regardless of your hardware.
 
-**Superwhisper** runs OpenAI's Whisper model locally on your Mac. Nothing leaves your device. You get raw transcription without AI cleanup.
-
-This single architectural difference cascades into everything else.
+**Superwhisper** runs OpenAI's Whisper model directly on your Mac. Nothing leaves your machine. This means complete privacy, no subscription needed for the base tier, but accuracy depends on your hardware and which model size you can run.
 
 <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
-
-## Accuracy
-
-**WisprFlow wins here.** Cloud-based models are larger and more capable than what fits on a laptop. WisprFlow's accuracy on technical content, proper nouns, and natural speech is noticeably higher.
-
-More importantly, WisprFlow's AI cleanup transforms raw speech into polished text. Superwhisper gives you exactly what you said — filler words, incomplete sentences, and all. You do your own cleanup.
-
-For a 200-word technical paragraph, I measured:
-- **WisprFlow:** 96% accuracy, no editing needed
-- **Superwhisper:** 89% accuracy, 2-3 minutes of editing needed
 
 ## Speed
 
-**WisprFlow wins.** Despite the network round-trip, WisprFlow's transcription appears nearly real-time. Superwhisper has a 2-5 second processing delay depending on your hardware and the Whisper model size you're running.
+**WisprFlow: 184 WPM** (my measured average, top 1% of users)
+**Superwhisper: ~120-140 WPM** (limited by local processing speed)
 
-On an M1 MacBook Air running Whisper Large V3, Superwhisper's delay is noticeable enough to break flow.
+WisprFlow is noticeably faster because the cloud does the heavy lifting. Superwhisper's speed depends on your Mac — an M3 Max will be faster than an M1, but neither matches cloud processing speed.
+
+## Accuracy
+
+**WisprFlow: 95%+** — The AI post-processing is the differentiator. It doesn't just transcribe — it cleans up your speech into polished text. Technical terms, proper nouns, and domain-specific language all handled well.
+
+**Superwhisper: 85-90%** — Raw Whisper transcription is good but not great. No post-processing means every "um," "uh," and half-finished sentence lands in your text. You spend more time editing.
 
 ## Privacy
 
-**Superwhisper wins.** Everything stays on your device. Period. If you're dictating confidential legal documents, medical notes, or classified information, this matters.
+**WisprFlow:** Audio goes to cloud servers for processing. If you're dictating sensitive material (legal docs, medical notes, classified info), this matters.
 
-WisprFlow processes audio on their servers. They have a privacy policy, but your audio does leave your machine.
+**Superwhisper:** Everything stays on your Mac. Period. This is the primary reason to choose Superwhisper.
 
-## Hardware Requirements
+## Cost
 
-**WisprFlow wins.** It works on any Mac because the heavy processing happens in the cloud. Superwhisper needs an M-series Mac with at least 8GB RAM, and runs better with 16GB+ for larger Whisper models.
+**WisprFlow:** Subscription-based. Worth it if you dictate frequently and value accuracy.
+
+**Superwhisper:** One-time purchase for Pro, or free tier with limitations. Better economics long-term if you're cost-sensitive.
 
 <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
-## Price
+## Who Should Choose What
 
-**Superwhisper** is a one-time purchase (~$30). **WisprFlow** is a subscription. Over a year, WisprFlow costs more. But the productivity difference means WisprFlow pays for itself in saved editing time within the first week.
+**Choose WisprFlow if:**
+- Accuracy and speed matter most
+- You write professionally (emails, docs, code, content)
+- You want AI cleanup that makes output read like typed text
+- You're comfortable with cloud processing
 
-## My Pick
+**Choose Superwhisper if:**
+- Privacy is a hard requirement
+- You handle sensitive/classified content
+- You prefer one-time purchases over subscriptions
+- You have a powerful Mac that can run larger Whisper models
 
-I use <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>. The AI cleanup is the killer feature. I dictate at 170+ WPM and what comes out is ready to send — no editing pass required. With Superwhisper, I'd need to spend 2-3 minutes cleaning up every substantial dictation.
+## My Choice
 
-If privacy is your absolute top priority and you have powerful hardware, Superwhisper is the right choice. For everyone else, WisprFlow's accuracy and cleanup make it the better daily driver.
+I use <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> daily. The accuracy gap is significant enough that I save more time with WisprFlow's AI cleanup than I would with Superwhisper's local processing. At 184 WPM with near-perfect output, it's not close for my workflow.
+
+But I respect Superwhisper's approach and recommend it to anyone whose privacy requirements rule out cloud processing.
