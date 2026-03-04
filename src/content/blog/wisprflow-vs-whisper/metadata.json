@@ -4,5 +4,12 @@
   "date": "2026-03-03",
   "description": "Detailed comparison of WisprFlow and OpenAI Whisper for transcription accuracy and features.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow-vs-whisper-hero.webp",
-  "tags": ["wisprflow", "whisper", "openai", "comparison", "voice-ai"]
+  "tags": [
+    "wisprflow",
+    "whisper",
+    "openai",
+    "comparison",
+    "voice-ai"
+  ],
+  "hiddenFromIndex": true
 }

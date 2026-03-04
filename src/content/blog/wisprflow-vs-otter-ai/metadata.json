@@ -4,5 +4,12 @@
   "date": "2026-03-03",
   "description": "Detailed comparison of WisprFlow and Otter.ai for voice transcription, meeting notes, and productivity.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow-vs-otter-hero.webp",
-  "tags": ["wisprflow", "otter-ai", "comparison", "voice-ai", "productivity"]
+  "tags": [
+    "wisprflow",
+    "otter-ai",
+    "comparison",
+    "voice-ai",
+    "productivity"
+  ],
+  "hiddenFromIndex": true
 }
