@@ -12,11 +12,13 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import ConsultationForm from "@/components/ConsultationForm"
 
+type PricingFormat = "internal-skills" | "cowork" | "full"
+
 function TrainingCalculator({ onConsultationClick }: { onConsultationClick: () => void }) {
   const [engineers, setEngineers] = useState(5)
-  const [format, setFormat] = useState("cowork")
+  const [format, setFormat] = useState<PricingFormat>("cowork")
   
-  const pricing: Record<string, { perEngineer: number; base: number; label: string }> = {
+  const pricing: Record<PricingFormat, { perEngineer: number; base: number; label: string }> = {
     "internal-skills": { perEngineer: 500, base: 5000, label: "Claude Internal Skills (1 day)" },
     "cowork": { perEngineer: 600, base: 5000, label: "Claude Cowork (1 day)" },
     "full": { perEngineer: 2000, base: 5000, label: "Full 90-Day Program" },
@@ -34,7 +36,7 @@ function TrainingCalculator({ onConsultationClick }: { onConsultationClick: () =
           <Label className="text-white text-lg mb-3 block">Training Format</Label>
           <RadioGroup 
             defaultValue="cowork" 
-            onValueChange={(value: string) => setFormat(value)}
+            onValueChange={(value) => setFormat(value as PricingFormat)}
             className="space-y-3"
           >
             {Object.entries(pricing).map(([key, val]) => (
@@ -241,7 +243,7 @@ export default function AITrainingClientPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-4">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-amber-300 mt-1 flex-shrink-0" />
                     <span className="text-white/80">Hands-on pairing on your actual codebase</span>
@@ -259,6 +261,11 @@ export default function AITrainingClientPage() {
                     <span className="text-white/80">Architecture review included</span>
                   </li>
                 </ul>
+                <Button asChild variant="outline" size="sm" className="w-full border-amber-300/30 text-amber-200 hover:bg-amber-500/20">
+                  <Link href="/workshops/claude-cowork">
+                    Learn More <ArrowRight className="ml-2 h-3 w-3" />
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
 
