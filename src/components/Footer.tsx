@@ -15,9 +15,9 @@ const footerLinks = [
     title: 'Resources',
     links: [
       { title: 'Best AI Tools', href: '/best-ai-tools' as any },
-      { title: 'Technical Guides', href: '/tutorials' as any },
-      { title: 'Dev Tools', href: '/devtools' as any },
-      { title: 'API Reference', href: '/docs' as any }
+      { title: 'Interactive Demos', href: '/demos' as any },
+      { title: 'Courses', href: '/products' as any },
+      { title: 'Videos', href: '/videos' as any }
     ]
   },
   {
