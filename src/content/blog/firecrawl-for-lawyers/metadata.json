@@ -1,0 +1,23 @@
+{
+  "title": "How Law Firms Use Web Scraping for Legal Research and Due Diligence",
+  "author": "Zachary Proser",
+  "date": "2026-03-03",
+  "description": "Legal professionals leverage web scraping for case research, regulatory monitoring, opposing counsel analysis, and litigation intelligence.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-for-lawyers",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "legal research web scraping",
+    "law firm due diligence",
+    "litigation intelligence scraping",
+    "legal case research automation",
+    "regulatory monitoring scraping"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Legal Tech",
+    "AI Tools",
+    "Firecrawl"
+  ]
+}
