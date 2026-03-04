@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src="https://zackproser.b-cdn.net/images/gmail-mirror-hero.webp" alt="gmail-mirror architecture: Gmail API syncing to local SQLite with FTS5 search, powering an AI assistant" width={1200} height={630} />
+<Image src={rawMetadata.image} alt="gmail-mirror architecture: Gmail API syncing to local SQLite with FTS5 search, powering an AI assistant" width={1200} height={630} />
 <figcaption>205,023 emails. Millisecond search. Built in a Sunday afternoon chat session.</figcaption>
 
 > This post continues the series on building cognitive infrastructure with an always-on AI assistant. See also [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant), [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic), and [Handwave](/blog/handwave).
