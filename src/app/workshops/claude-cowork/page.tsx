@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { SimpleLayout } from "@/components/SimpleLayout"
 import YoutubeEmbed from "@/components/YoutubeEmbed"
-import { Clock, Users, Zap, CheckCircle, ArrowRight, Star, Code, Brain, Target, Mail } from "lucide-react"
+import { Clock, Users, Zap, CheckCircle, ArrowRight, Star, Code, Brain, Target, Mail, Mic, Building2, GraduationCap } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Claude Cowork Workshop | Hands-On AI-Assisted Development | Zachary Proser",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Claude Cowork Workshop | Hands-On AI-Assisted Development",
     description: "A hands-on workshop where your team builds real workflows with Claude Code and Cowork.",
-    images: [{ url: "https://zackproser.b-cdn.net/images/claude-cowork-workshop.webp" }],
+    images: [{ url: "https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp" }],
   },
 }
 
@@ -75,12 +75,102 @@ const audiences = [
   },
 ]
 
+const speakingHistory = [
+  {
+    title: "Claude Cowork Workshop with Anthropic",
+    event: "WorkOS x Anthropic",
+    date: "February 2026",
+    location: "San Francisco, CA",
+    type: "workshop",
+    highlight: "800 registrations, co-hosted with Anthropic's Claude Code team",
+  },
+  {
+    title: "Keynote: DevSecCon 2025",
+    event: "DevSecCon 2025",
+    date: "2025",
+    location: "Conference",
+    type: "keynote",
+    highlight: "Keynote address on AI-assisted development and security",
+  },
+  {
+    title: "AI Pipelines and Agents in Pure TypeScript",
+    event: "Mastra.ai Workshop",
+    date: "2025",
+    location: "Virtual",
+    type: "workshop",
+    highlight: "Live-coded agentic pipelines with the Mastra.ai framework",
+  },
+  {
+    title: "Navigating from Jupyter Notebooks to Production",
+    event: "Conference Talk",
+    date: "2025",
+    location: "Conference",
+    type: "talk",
+    highlight: "Shipping ML models from prototype to production infrastructure",
+  },
+  {
+    title: "Voice-First Development & Claude Code Cowork",
+    event: "WorkOS Internal",
+    date: "2025–2026",
+    location: "WorkOS",
+    type: "training",
+    highlight: "Enabled engineering team on voice-first agentic development patterns",
+  },
+  {
+    title: "Claude Skills as Self-Documenting Runbooks",
+    event: "WorkOS Internal",
+    date: "2025",
+    location: "WorkOS",
+    type: "training",
+    highlight: "Designed and delivered internal training on Claude Code skill patterns",
+  },
+  {
+    title: "AI Fundamentals for Engineering Teams",
+    event: "WorkOS Internal",
+    date: "2025",
+    location: "WorkOS",
+    type: "training",
+    highlight: "Multi-session training: embeddings, RAG, vector databases, deployment",
+  },
+  {
+    title: "AI-Enabled Content Creation Workshop",
+    event: "AI Engineering World Fair",
+    date: "2024",
+    location: "San Francisco, CA",
+    type: "workshop",
+    highlight: "70+ engineers, hands-on AI content pipeline building",
+  },
+]
+
+const typeIcons: Record<string, React.ReactNode> = {
+  keynote: <Mic className="h-4 w-4" />,
+  workshop: <GraduationCap className="h-4 w-4" />,
+  talk: <Mic className="h-4 w-4" />,
+  training: <Building2 className="h-4 w-4" />,
+}
+
 export default function ClaudeCoworkWorkshop() {
   return (
     <SimpleLayout
       title="Claude Cowork Workshop"
       intro="A hands-on session where you don't just watch — you build. Real workflows, real output, real skills you'll use Monday morning."
     >
+      {/* Hero Photo from the Anthropic Workshop */}
+      <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl mb-16">
+        <Image
+          src="https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
+          alt="Zack Proser presenting at the Claude Cowork Workshop at WorkOS, co-hosted with Anthropic"
+          fill
+          className="object-cover object-top"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute bottom-6 left-6 right-6 text-white">
+          <p className="text-lg font-semibold">WorkOS x Anthropic — San Francisco, February 2026</p>
+          <p className="text-sm opacity-80">800 registrations. 150 seats. One hour of live building with Lydia from Anthropic&apos;s Claude Code team on Q&amp;A.</p>
+        </div>
+      </div>
+
       {/* Hero Details */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
         <div className="bg-parchment-50 dark:bg-slate-800 rounded-xl p-6 text-center">
@@ -149,7 +239,7 @@ export default function ClaudeCoworkWorkshop() {
           </h2>
           <p className="text-lg text-parchment-600 dark:text-slate-300 mb-4">
             I&apos;ve been shipping production code with Claude Code daily for over a year — from watchOS apps to MCP integrations
-            to full-stack features. This workshop compresses months of hard-won patterns into a single hands-on session.
+            to full-stack features at WorkOS. This workshop compresses months of hard-won patterns into a single hands-on session.
           </p>
           <p className="text-lg text-parchment-600 dark:text-slate-300">
             You&apos;ll walk in knowing Claude exists. You&apos;ll walk out knowing how to make it do real work — and how to
@@ -202,42 +292,107 @@ export default function ClaudeCoworkWorkshop() {
         </div>
       </section>
 
-      {/* Credentials */}
+      {/* WHY ME — Instructor + CV */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6">Your Instructor</h2>
+        <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6">Why Me</h2>
         <div className="bg-parchment-50 dark:bg-slate-800 rounded-xl p-8">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div>
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="md:w-1/3">
+              <div className="relative h-80 rounded-xl overflow-hidden shadow-lg">
+                <Image
+                  src="https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
+                  alt="Zachary Proser presenting"
+                  fill
+                  className="object-cover object-top"
+                />
+              </div>
+            </div>
+            <div className="md:w-2/3">
               <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">Zachary Proser</h3>
               <p className="text-burnt-400 dark:text-amber-400 font-medium mb-4">Applied AI Engineer · WorkOS</p>
-              <ul className="space-y-2 text-parchment-600 dark:text-slate-300">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  14 years shipping production systems
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  Previously Staff DevRel at Pinecone, Cloudflare, Gruntwork
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  DevSecCon 2025 keynote speaker
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  AI Engineering World Fair workshop instructor (70+ engineers)
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  Workshop co-hosted with Anthropic, February 2026
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  35,000+ readers on zackproser.com
-                </li>
-              </ul>
+              <p className="text-parchment-600 dark:text-slate-300 mb-6">
+                I eat, sleep, and breathe this stuff. I&apos;ve been building production AI systems for over three years — not writing blog posts about the future,
+                but actually shipping code that runs in production, training teams, and delivering workshops. Very few engineers have been doing agentic AI development
+                this long, and even fewer have been teaching it simultaneously.
+              </p>
+
+              <h4 className="font-bold text-charcoal-50 dark:text-slate-100 mb-3">Career</h4>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-burnt-400 dark:bg-amber-400 mt-2 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium text-charcoal-50 dark:text-slate-100">Applied AI Engineer — WorkOS</span>
+                    <span className="text-parchment-500 dark:text-slate-400 text-sm ml-2">(current)</span>
+                    <p className="text-sm text-parchment-500 dark:text-slate-400">Building and maintaining production AI applications. Full-stack JS/TS deployed on Cloudflare and Vercel. Led the Hilltop review process for AI features.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-burnt-400 dark:bg-amber-400 mt-2 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium text-charcoal-50 dark:text-slate-100">Staff Developer Relations Engineer — Pinecone</span>
+                    <p className="text-sm text-parchment-500 dark:text-slate-400">RAG pipelines, embedding models, vector databases. Built and documented end-to-end AI search and retrieval systems. Open-sourced reference architectures.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-burnt-400 dark:bg-amber-400 mt-2 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium text-charcoal-50 dark:text-slate-100">Staff Developer Relations Engineer — Cloudflare</span>
+                    <p className="text-sm text-parchment-500 dark:text-slate-400">Infrastructure as Code, Terraform provider development. Built cf-terraforming (open source).</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-burnt-400 dark:bg-amber-400 mt-2 flex-shrink-0" />
+                  <div>
+                    <span className="font-medium text-charcoal-50 dark:text-slate-100">Senior Software Engineer — Gruntwork</span>
+                    <p className="text-sm text-parchment-500 dark:text-slate-400">End-to-end AWS deployments, Infrastructure as Code at scale. Built git-xargs (run commands across many GitHub repos) and cloud-nuke (AWS resource cleanup). Popularized the Bubbletea state machine pattern.</p>
+                  </div>
+                </div>
+              </div>
+
+              <h4 className="font-bold text-charcoal-50 dark:text-slate-100 mb-3">By the Numbers</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white dark:bg-slate-700 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-burnt-400 dark:text-amber-400">14 years</div>
+                  <div className="text-xs text-parchment-500 dark:text-slate-400">shipping production systems</div>
+                </div>
+                <div className="bg-white dark:bg-slate-700 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-burnt-400 dark:text-amber-400">3+ years</div>
+                  <div className="text-xs text-parchment-500 dark:text-slate-400">building with AI daily</div>
+                </div>
+                <div className="bg-white dark:bg-slate-700 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-burnt-400 dark:text-amber-400">35,000+</div>
+                  <div className="text-xs text-parchment-500 dark:text-slate-400">readers on zackproser.com</div>
+                </div>
+                <div className="bg-white dark:bg-slate-700 rounded-lg p-3 text-center">
+                  <div className="text-xl font-bold text-burnt-400 dark:text-amber-400">4,300+</div>
+                  <div className="text-xs text-parchment-500 dark:text-slate-400">newsletter subscribers</div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Speaking History — Overwhelming Credibility */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-4">Talks, Workshops &amp; Training</h2>
+        <p className="text-parchment-500 dark:text-slate-400 mb-8">
+          Video, in-person, and corporate training. Keynotes, conferences, internal enablement. This is what I do.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {speakingHistory.map((talk, index) => (
+            <div key={index} className="bg-parchment-50 dark:bg-slate-800 rounded-lg p-4 border border-parchment-200 dark:border-slate-700">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="text-burnt-400 dark:text-amber-400">
+                  {typeIcons[talk.type]}
+                </div>
+                <span className="text-xs font-medium uppercase tracking-wide text-burnt-400 dark:text-amber-400">{talk.type}</span>
+              </div>
+              <h3 className="font-bold text-sm text-charcoal-50 dark:text-slate-100 mb-1 leading-tight">{talk.title}</h3>
+              <p className="text-xs text-parchment-500 dark:text-slate-400 mb-2">{talk.event} · {talk.date}</p>
+              <p className="text-xs text-parchment-600 dark:text-slate-300">{talk.highlight}</p>
+            </div>
+          ))}
         </div>
       </section>
 
