@@ -11,6 +11,7 @@ const voiceAIDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-hero.webp'
 const realtorDemoHero = 'https://zackproser.b-cdn.net/images/wisprflow.webp'
 const lawyerDemoHero = 'https://zackproser.b-cdn.net/images/voice-ai-hero.webp'
 const firecrawlDemoHero = 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp'
+const firecrawlKBDemoHero = 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp'
 
 export const metadata: Metadata = createMetadata({
   title: "NLP, ML and AI interactive Demos",
@@ -60,6 +61,15 @@ const otherDemos: Content[] = [
     date: '2026-02-09',
     type: 'demo',
     image: firecrawlDemoHero
+  },
+  {
+    slug: '/demos/firecrawl-knowledge-base',
+    title: 'Website to Knowledge Base',
+    description: 'Build a structured knowledge base from any website. Watch Firecrawl crawl, extract, and organize content into categories, entities, and a searchable index.',
+    author: 'Zachary Proser',
+    date: '2026-03-03',
+    type: 'demo',
+    image: firecrawlKBDemoHero
   },
   {
     slug: '/demos/rag-visualized',
