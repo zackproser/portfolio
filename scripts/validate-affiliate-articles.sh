@@ -5,7 +5,7 @@
 ERRORS=0
 
 # Get files changed vs main
-CHANGED=$(git diff --name-only origin/main -- 'src/content/blog/*/metadata.json' 2>/dev/null)
+CHANGED=$(git diff --name-only --diff-filter=A origin/main -- 'src/content/blog/*/metadata.json' 2>/dev/null)
 
 if [ -z "$CHANGED" ]; then
   echo "No new metadata.json files vs origin/main. Nothing to check."
@@ -17,7 +17,7 @@ for f in $CHANGED; do
   hidden=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('hiddenFromIndex', 'MISSING'))")
   if [ "$hidden" != "True" ]; then
     dir=$(dirname "$f")
-    if grep -ql "AffiliateLink\|InlineAffiliateCTA" "$dir/page.mdx" 2>/dev/null; then
+    if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$dir/page.mdx" 2>/dev/null; then
       echo "❌ MISSING hiddenFromIndex: $f"
       ERRORS=$((ERRORS + 1))
     fi
