@@ -1,29 +1,9 @@
 {
-  "title": "Best AI Voice Tools for Project Managers in 2026: Meetings and Status Updates",
+  "title": "AI Voice Tools for Project Managers: WisprFlow and Granola for Team Coordination",
   "author": "Zachary Proser",
-  "date": "2026-01-28",
-  "description": "How project managers are using voice AI tools for meeting notes, status updates, and stakeholder communication. Capture action items automatically.",
-  "image": "https://zackproser.b-cdn.net/images/granola-example.webp",
-  "slug": "/blog/ai-voice-tools-for-project-managers",
-  "hiddenFromIndex": true,
-  "keywords": [
-    "ai voice tools for project managers",
-    "project management meeting notes",
-    "pm productivity tools",
-    "voice to text project management",
-    "standup meeting transcription",
-    "status update dictation",
-    "wisprflow for pms",
-    "granola for project managers",
-    "agile meeting notes",
-    "stakeholder communication ai",
-    "project documentation voice",
-    "pm efficiency tools 2026"
-  ],
-  "tags": [
-    "Voice AI",
-    "Project Management",
-    "Productivity",
-    "Guide"
-  ]
+  "date": "2026-03-05",
+  "description": "How project managers use WisprFlow and Granola for standup notes, status updates, stakeholder communication, and cross-functional coordination.",
+  "image": "https://zackproser.b-cdn.net/images/ai-voice-tools-project-managers-hero.webp",
+  "tags": ["project-management", "wisprflow", "granola", "team-coordination"],
+  "hiddenFromIndex": true
 }

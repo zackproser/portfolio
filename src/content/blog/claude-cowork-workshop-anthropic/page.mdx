@@ -12,6 +12,8 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
+export const campaign = 'claude-cowork-workshop-anthropic';
+
 Last night I delivered a hands-on workshop at the WorkOS office in San Francisco, with Lydia from Anthropic's Claude Code team joining for Q&A afterward. I created, prepped, and ran the whole thing — one hour of live hands-on building, then thirty minutes of Q&A.
 
 <Image src="https://zackproser.b-cdn.net/images/claude-cowork-gtm-luma-header.webp" alt="Claude Cowork GTM Workshop — Thursday, February 26, 2026 — Presented by Claude Community, Will Reese, and WorkOS" width={968} height={500} />
@@ -56,7 +58,7 @@ I opened by showing real projects I've built with Claude Code to set the baselin
 
 ## Voice-First Development: Stop Touching the Keyboard
 
-Before diving into the hands-on build, I demoed <AffiliateLink product="wisprflow">WisprFlow</AffiliateLink> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
+Before diving into the hands-on build, I demoed <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> — the voice dictation tool that's fundamentally changed how I work. For the last year, I barely type. I'm hitting 179 words per minute compared to 90 WPM typing.
 
 The real insight isn't just speed. Imagine two developers side by side. One is speaking and already has three different agents working in the background on their tasks. The other is still typing their first prompt. Watch the difference:
 
@@ -66,13 +68,13 @@ When you layer voice on top of agentic systems — Cowork, Claude Code, Codex, G
 
 <MultiAgentOrchestration />
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 I also showed the brain dump workflow — what I call **verbal ventilation**. When I'm overwhelmed with too much going on, I turn on dictation mode and just rant for six minutes. Everything I'm thinking about — what I'm working on, architecture problems, random errands, frustrations. Claude takes all of that chaos and organizes it, helps me prioritize, and in a couple more turns I'm happy with a plan for the rest of the day.
 
 <VerbalVentilation hideExplanation />
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Speed Requires Safety: The Seatbelt Talk
 
@@ -138,9 +140,9 @@ Imagine 10 scheduled tasks running Sunday night — fetching data, compiling rep
 
 Throughout the workshop, I showed Cowork's plugin system. Plugins give you pre-built commands for common workflows — call summaries, content drafting, competitive analysis. The real value is uniformity: if everyone on your team installs the same plugin, you get the same voice, the same format, the same quality. No more prompt sprawl where everyone does it their own way.
 
-I also demoed the call summary plugin with a <AffiliateLink product="granola">Granola</AffiliateLink> transcript from planning this event. One slash command, a few follow-up questions from Cowork, and you get structured notes with key discussion points, decisions, action items, and a draft follow-up email.
+I also demoed the call summary plugin with a <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> transcript from planning this event. One slash command, a few follow-up questions from Cowork, and you get structured notes with key discussion points, decisions, action items, and a draft follow-up email.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## The Q&A: Thirty Minutes with Lydia from Anthropic
 
@@ -184,9 +186,9 @@ This workshop format works. An hour of hands-on building with real output is wor
 
 Two tools made this workshop possible and I use them every day:
 
-- **<AffiliateLink product="wisprflow">WisprFlow</AffiliateLink>** — Voice dictation at 179 WPM. I spoke every prompt during the workshop instead of typing. It works in any text field — terminal, IDE, browser, Slack. If you're still typing everything, you're leaving speed on the table.
-- **<AffiliateLink product="granola">Granola</AffiliateLink>** — AI meeting notes that capture everything without a bot joining the call. I used a Granola transcript in the call summary demo. Being present is a power move — Granola makes it possible.
+- **<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>** — Voice dictation at 179 WPM. I spoke every prompt during the workshop instead of typing. It works in any text field — terminal, IDE, browser, Slack. If you're still typing everything, you're leaving speed on the table.
+- **<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>** — AI meeting notes that capture everything without a bot joining the call. I used a Granola transcript in the call summary demo. Being present is a power move — Granola makes it possible.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
