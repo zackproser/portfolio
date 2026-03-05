@@ -1,4 +1,8 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+export const metadata = createMetadata(rawMetadata);
 
 Google's voice typing comes free with every Android device. WisprFlow costs $10/month. Is the paid upgrade worth it for serious voice-to-text users?
 
@@ -24,11 +28,11 @@ After testing both across 200+ hours of real-world usage, the answer depends on 
 **WisprFlow** maintains accuracy across challenging conditions. Coffee shops, open offices, conference calls, and technical discussions don't break the transcription quality.
 
 **Real example**: Dictating this sentence in a busy coffee shop:
-- Google: "The quarterly financials show a significant uptick in user acquisition costs."
+- Google: "The quarterly financials show a significant uptick in user costs."
 - WisprFlow: "The quarterly financials show a significant uptick in user acquisition costs."
 - Actual: "The quarterly financials show a significant uptick in user acquisition costs."
 
-Google missed "quarterly" and "acquisition." WisprFlow captured everything correctly.
+Google missed "acquisition." WisprFlow captured everything correctly.
 
 ## App Integration: Where It Matters
 

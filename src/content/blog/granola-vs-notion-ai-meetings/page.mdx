@@ -1,4 +1,8 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+export const metadata = createMetadata(rawMetadata);
 
 Notion AI and Granola both promise to transform how you handle meeting documentation, but they approach the problem differently. Notion AI enhances existing notes after meetings; Granola enhances your note-taking during meetings.
 
