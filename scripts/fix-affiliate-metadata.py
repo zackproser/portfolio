@@ -7,10 +7,20 @@ Run AFTER generating content, BEFORE committing.
 """
 import json, os, glob, sys
 
+EDITORIAL_EXCLUSIONS = {
+    'claude-cowork-workshop-anthropic',
+    '2025-ai-engineer-setup',
+    '2026-ai-engineer-setup',
+}
+
 fixed = 0
 for mdx_path in sorted(glob.glob('src/content/blog/*/page.mdx')):
     meta_path = os.path.join(os.path.dirname(mdx_path), 'metadata.json')
     if not os.path.exists(meta_path):
+        continue
+
+    article_slug = os.path.basename(os.path.dirname(mdx_path))
+    if article_slug in EDITORIAL_EXCLUSIONS:
         continue
 
     with open(mdx_path) as f:
