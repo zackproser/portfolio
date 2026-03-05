@@ -21,7 +21,6 @@ for mdx in src/content/blog/*/page.mdx; do
   [ -f "$meta" ] || continue
 
   if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$mdx" 2>/dev/null; then
-    CHECKED=$((CHECKED + 1))
     slug=$(basename "$dir")
     
     # Skip editorial exclusions
@@ -33,6 +32,7 @@ for mdx in src/content/blog/*/page.mdx; do
       fi
     done
     [ $skip -eq 1 ] && continue
+    CHECKED=$((CHECKED + 1))
     hidden=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('hiddenFromIndex', 'MISSING'))")
     image=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('image', ''))")
 
