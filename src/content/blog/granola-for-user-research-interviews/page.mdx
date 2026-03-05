@@ -1,0 +1,89 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-user-research-interviews';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-hero.webp" alt="AI note taking for UX research interviews" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Granola captures user research interviews without changing participant behavior</figcaption>
+
+User research interviews have a fundamental tension: the better your notes, the worse your presence. When you're scribbling observations, you miss the participant's facial expression when they hit that confusing flow. When you're fully present, you walk out with vague impressions instead of actionable quotes.
+
+Recording tools solve this — but they introduce a different problem. The moment a participant sees "Otter.ai Bot has joined" or "This meeting is being recorded by [tool]," their behavior shifts. They self-censor. They perform. The naturalistic data you need gets contaminated by observation effects.
+
+## Why Granola Works for Research
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures meeting audio locally on your machine. No bot joins the call. No recording indicator appears for other participants. The participant sees a normal Zoom/Meet/Teams call with one person — you — giving them your full attention.
+
+After the session, Granola produces structured notes with timestamps, key quotes, and thematic groupings. You get the data without sacrificing the naturalism.
+
+### Preserving Ecological Validity
+
+If you've taken any research methods course, you know the Hawthorne effect: people change behavior when they know they're being observed. In user research, this manifests as:
+
+- Participants trying harder to "succeed" at tasks
+- Softening criticism of your product
+- Giving socially desirable answers instead of honest ones
+- Performing confidence they don't feel
+
+Every visible recording tool amplifies this. Granola eliminates it. Your participant thinks they're in a regular conversation, and they act accordingly.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+### Structured Output for Synthesis
+
+Raw transcripts are almost useless for research synthesis. You need quotes tagged by theme, observations organized by research question, and key moments timestamped for your highlight reel.
+
+Granola's AI processing handles the first pass of this organization. It identifies key quotes, groups observations thematically, and produces notes you can actually work with — not a 90-minute wall of text.
+
+### The Interview Flow
+
+1. Start Granola before your Zoom/Meet session
+2. Run your interview protocol — fully present, maintaining eye contact, following up on interesting threads
+3. Jot minimal notes in Granola's notepad (optional — just keywords to anchor timestamps)
+4. End the session
+5. Granola processes and delivers structured notes within minutes
+6. Pull quotes, tag themes, add to your research repository
+
+### Research Team Workflows
+
+For teams running multiple parallel interview tracks, Granola scales well:
+
+- **Each researcher** captures their own sessions independently
+- **Synthesis meetings** — use Granola again to capture your team's debrief and affinity mapping sessions
+- **Stakeholder readouts** — when you present findings, Granola captures questions and pushback from product and engineering
+
+The notes from your synthesis meeting often surface connections between participants that nobody caught in real time.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Compared to Dedicated Research Tools
+
+Tools like Dovetail and Condens are purpose-built for research repositories. Granola doesn't replace them — it feeds them. Use Granola to capture the raw session, then import the structured notes and key quotes into your research repository of choice.
+
+The advantage: Granola handles the capture with zero participant friction. Your repository tool handles the long-term analysis and pattern-finding.
+
+## For Usability Testing
+
+Moderated usability tests benefit enormously from hands-free note-taking. When you're facilitating a think-aloud protocol, splitting attention between the participant's screen, their verbal commentary, and your notes is cognitively brutal.
+
+With Granola running, you focus entirely on facilitation: probing questions, comfortable silence when they're struggling (resist the urge to help), and catching the moments that matter. The notes build themselves.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Getting Started
+
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free</AffiliateLink> for your next interview session. One session is usually enough to see the difference — both in your note quality and in how much more present you are with your participant.
+
+I've written a [detailed Granola review](/blog/granola-ai-review) covering the full feature set and how it compares to other meeting note tools.
