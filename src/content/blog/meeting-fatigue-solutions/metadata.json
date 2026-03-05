@@ -2,8 +2,12 @@
   "title": "Meeting Fatigue Is Real: Here's What Actually Helps",
   "author": "Zachary Proser",
   "date": "2026-02-27",
-  "description": "Zoom fatigue isn't just about video calls—it's cognitive overload from listening, capturing, and responding simultaneously. Here's the fix.",
-  "image": "https://zackproser.b-cdn.net/images/granola-ai-notepad.webp",
-  "tags": ["granola", "meetings", "productivity"],
+  "description": "Zoom fatigue isn't just about video calls\u2014it's cognitive overload from listening, capturing, and responding simultaneously. Here's the fix.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "meetings",
+    "productivity"
+  ],
   "hiddenFromIndex": true
 }

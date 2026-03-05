@@ -3,7 +3,12 @@
   "author": "Zachary Proser",
   "date": "2026-02-28",
   "description": "After trying Otter, Fireflies, and Fathom, I switched to Granola. No bot joining calls, no awkward notifications, just perfect notes. Here's why.",
-  "image": "https://zackproser.b-cdn.net/images/granola-ai-notepad.webp",
-  "tags": ["granola", "meetings", "ai-tools", "comparison"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "meetings",
+    "ai-tools",
+    "comparison"
+  ],
   "hiddenFromIndex": true
 }
