@@ -26,7 +26,7 @@ for mdx_path in sorted(glob.glob('src/content/blog/*/page.mdx')):
     if meta.get('hiddenFromIndex') is not True:
         meta['hiddenFromIndex'] = True
         with open(meta_path, 'w') as f:
-            json.dump(meta, f, indent=2)
+            json.dump(meta, f, indent=2, ensure_ascii=False)
             f.write('\n')
         print(f'Fixed: {os.path.dirname(mdx_path)}')
         fixed += 1
