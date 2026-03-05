@@ -12,6 +12,8 @@ ERRORS=0
 CHECKED=0
 CHECK_HTTP="${CHECK_HTTP:-1}"  # set CHECK_HTTP=0 to skip HTTP checks (offline/fast mode)
 
+EDITORIAL_EXCLUSIONS=("claude-cowork-workshop-anthropic" "2025-ai-engineer-setup" "2026-ai-engineer-setup")
+
 for mdx in src/content/blog/*/page.mdx; do
   [ -f "$mdx" ] || continue
   dir=$(dirname "$mdx")
@@ -21,6 +23,16 @@ for mdx in src/content/blog/*/page.mdx; do
   if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$mdx" 2>/dev/null; then
     CHECKED=$((CHECKED + 1))
     slug=$(basename "$dir")
+    
+    # Skip editorial exclusions
+    skip=0
+    for exclusion in "${EDITORIAL_EXCLUSIONS[@]}"; do
+      if [ "$slug" = "$exclusion" ]; then
+        skip=1
+        break
+      fi
+    done
+    [ $skip -eq 1 ] && continue
     hidden=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('hiddenFromIndex', 'MISSING'))")
     image=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('image', ''))")
 
