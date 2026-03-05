@@ -1,8 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-vs-otter-ai-2026';
 
 Choosing between Granola and Otter.ai for meeting intelligence comes down to your priorities: seamless note-taking during meetings (Granola) or comprehensive post-meeting analysis (Otter.ai).
 
@@ -18,7 +20,7 @@ After testing both tools across 100+ meetings, here's what matters.
 | **Pricing** | $10/month | $16.99/month (Pro) |
 | **Best for** | Active note-takers | Post-meeting analysis |
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Meeting Experience
 
@@ -33,7 +35,7 @@ Both tools deliver 90%+ transcription accuracy in ideal conditions. The differen
 - **Granola**: Focuses on making your meeting notes more complete and useful
 - **Otter.ai**: Provides detailed transcripts with speaker identification and keyword extraction
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Privacy and Security
 
@@ -53,7 +55,7 @@ Both tools deliver 90%+ transcription accuracy in ideal conditions. The differen
 
 **Otter.ai**: Free tier (600 minutes/month), Basic ($8.33/month), Pro ($16.99/month). Most teams need Pro for reasonable meeting limits and advanced features.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Real-World Use Cases
 
@@ -75,6 +77,6 @@ Granola excels at enhancing your active meeting participation. Otter.ai provides
 
 For most professionals who take notes during meetings, Granola's focused approach delivers more immediate value at a lower cost. Try the free trial—it'll become obvious within your first few enhanced meetings whether this fits your workflow.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 If you're purely looking for meeting transcription and analysis without active note-taking, Otter.ai's broader feature set may justify the higher price.

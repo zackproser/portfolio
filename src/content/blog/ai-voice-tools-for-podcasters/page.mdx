@@ -1,8 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-podcasters';
 
 Podcasters juggle content creation, guest coordination, show note writing, and audience engagement—all while maintaining consistent publishing schedules. AI voice tools like WisprFlow and Granola streamline these workflows without sacrificing creativity.
 
@@ -16,7 +18,7 @@ Traditional podcasting workflows involve significant manual work:
 
 AI voice tools eliminate the transcription bottleneck and accelerate content creation across the entire podcast production pipeline.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## WisprFlow for Podcast Content Creation
 
@@ -28,7 +30,7 @@ AI voice tools eliminate the transcription bottleneck and accelerate content cre
 
 **Sponsor Reads**: Practice and refine sponsor scripts using voice-to-text. Perfect your delivery timing while creating written versions for backup or different ad placements.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Granola for Interview Enhancement
 
@@ -44,7 +46,7 @@ AI voice tools eliminate the transcription bottleneck and accelerate content cre
 
 **Interview Preparation**: Voice-record guest research and question preparation while reviewing their previous work. WisprFlow creates organized interview guides from natural speech patterns.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 **Show Note Creation**: After recording, use Granola-enhanced notes and WisprFlow dictation to rapidly create detailed show notes, timestamps, and episode descriptions. What used to take hours becomes a 20-minute task.
 
@@ -58,7 +60,7 @@ Both tools integrate with popular podcasting software:
 - **Notion/Airtable**: Create episode databases and content calendars via voice
 - **Social Media**: Draft platform-specific content variations quickly
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## ROI for Podcast Creators
 

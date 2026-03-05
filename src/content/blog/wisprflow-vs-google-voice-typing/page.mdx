@@ -1,8 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'wisprflow-vs-google-voice-typing';
 
 Google's voice typing comes free with every Android device. WisprFlow costs $10/month. Is the paid upgrade worth it for serious voice-to-text users?
 
@@ -19,7 +21,7 @@ After testing both across 200+ hours of real-world usage, the answer depends on 
 | **Custom vocabulary** | None | Extensive |
 | **Cost** | Free | $10/month |
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Accuracy: The Real-World Test
 
@@ -40,7 +42,7 @@ Google missed "acquisition." WisprFlow captured everything correctly.
 
 **WisprFlow** provides consistent voice input across any Android app. Slack, Linear, Notion, WhatsApp, email clients—everything gets the same professional-grade voice experience.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Privacy and Data Handling
 
@@ -56,7 +58,7 @@ Google missed "acquisition." WisprFlow captured everything correctly.
 
 **Editing Commands**: "Replace previous word," "capitalize that," "new paragraph"—WisprFlow supports natural editing commands. Google requires manual touch editing.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Performance in Different Scenarios
 
@@ -87,7 +89,7 @@ Google missed "acquisition." WisprFlow captured everything correctly.
 - Handle confidential information requiring privacy
 - Depend on voice input for significant portions of your work
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Migration Reality
 

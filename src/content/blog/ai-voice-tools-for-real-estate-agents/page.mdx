@@ -1,8 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'ai-voice-tools-for-real-estate-agents';
 
 Real estate agents spend 60-70% of their time away from desks—showing properties, meeting clients, driving between locations. AI voice tools like WisprFlow and Granola eliminate the administrative backlog that builds up during field work.
 
@@ -12,7 +14,7 @@ Traditional CRM systems and client communication tools assume desk-based work. R
 
 Voice-to-text tools transform every car ride, property walk-through, and client meeting into productive administrative time without compromising client focus.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Property Showing Documentation
 
@@ -24,7 +26,7 @@ Voice-to-text tools transform every car ride, property walk-through, and client 
 
 **Follow-up Task Creation**: Voice-record necessary follow-up actions—schedule second showings, request seller disclosures, coordinate inspections—while driving to the next appointment.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Client Meeting Enhancement with Granola
 
@@ -42,7 +44,7 @@ Voice-to-text tools transform every car ride, property walk-through, and client 
 
 **Contact Relationship Building**: Document personal details, family situations, and preferences for each client using voice notes. Build stronger relationships through personalized service.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 **Transaction Status Updates**: Update deal pipelines, coordinate with lenders, and communicate with transaction coordinators using voice while driving between appointments.
 
@@ -62,7 +64,7 @@ Voice-to-text tools transform every car ride, property walk-through, and client 
 
 **Social Media Content**: Create Facebook posts, Instagram captions, and LinkedIn updates about new listings, market insights, and client successes using voice input.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 **Blog Content**: Draft neighborhood guides, market analysis posts, and first-time buyer advice using voice while exploring local areas and researching market data.
 
@@ -84,7 +86,7 @@ Voice-to-text tools transform every car ride, property walk-through, and client 
 
 **Calendar Management**: Schedule showings, inspections, and client meetings using voice commands integrated with Google Calendar or Outlook.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## ROI for Real Estate Professionals
 
