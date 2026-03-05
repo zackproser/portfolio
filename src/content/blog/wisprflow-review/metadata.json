@@ -27,5 +27,6 @@
     "Productivity",
     "Developer Tools",
     "Review"
-  ]
+  ],
+  "hiddenFromIndex": true
 }

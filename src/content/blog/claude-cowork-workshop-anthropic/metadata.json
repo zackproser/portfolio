@@ -2,7 +2,7 @@
   "title": "Claude Cowork Workshop with Anthropic: Building a Complete GTM Pipeline in One Session",
   "author": "Zachary Proser",
   "date": "2026-02-27",
-  "description": "I created and delivered a hands-on workshop at WorkOS in San Francisco, walking engineers through building a complete go-to-market pipeline using Claude Code and Cowork — from ICP research to automated content production. Lydia from Anthropic's Claude Code team joined for Q&A.",
+  "description": "I created and delivered a hands-on workshop at WorkOS in San Francisco, walking engineers through building a complete go-to-market pipeline using Claude Code and Cowork \u2014 from ICP research to automated content production. Lydia from Anthropic's Claude Code team joined for Q&A.",
   "image": "https://zackproser.b-cdn.net/images/claude-cowork-workshop.webp",
   "slug": "/blog/claude-cowork-workshop-anthropic",
   "keywords": [
@@ -23,5 +23,6 @@
     "Workshops",
     "AI Engineering",
     "Cowork"
-  ]
+  ],
+  "hiddenFromIndex": true
 }
