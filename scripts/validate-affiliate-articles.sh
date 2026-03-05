@@ -18,7 +18,7 @@ for mdx in src/content/blog/*/page.mdx; do
   meta="$dir/metadata.json"
   [ -f "$meta" ] || continue
 
-  if grep -Eql "AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard" "$mdx" 2>/dev/null; then
+  if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$mdx" 2>/dev/null; then
     CHECKED=$((CHECKED + 1))
     slug=$(basename "$dir")
     hidden=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('hiddenFromIndex', 'MISSING'))")

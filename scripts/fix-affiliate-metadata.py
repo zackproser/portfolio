@@ -16,7 +16,7 @@ for mdx_path in sorted(glob.glob('src/content/blog/*/page.mdx')):
     with open(mdx_path) as f:
         content = f.read()
 
-    is_affiliate = any(k in content for k in ('AffiliateLink', 'InlineAffiliateCTA', 'VoiceAIDemoCard'))
+    is_affiliate = any(k in content for k in ('AffiliateLink', 'InlineAffiliateCTA'))
     if not is_affiliate:
         continue
 
