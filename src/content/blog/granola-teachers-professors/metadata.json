@@ -3,7 +3,13 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Teachers and professors use Granola AI to stay present during parent conferences, IEP meetings, and advising sessions while capturing important details.",
-  "image": "https://zackproser.b-cdn.net/images/granola-teachers-professors.webp",
-  "tags": ["granola", "education", "teachers", "meeting-notes", "ai"],
+  "image": "https://zackproser.b-cdn.net/images/granola-example.webp",
+  "tags": [
+    "granola",
+    "education",
+    "teachers",
+    "meeting-notes",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }

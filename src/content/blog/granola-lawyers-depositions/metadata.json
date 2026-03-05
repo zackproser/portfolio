@@ -3,7 +3,13 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Lawyers use Granola AI to stay fully present during depositions, client meetings, and negotiations while capturing every critical detail automatically.",
-  "image": "https://zackproser.b-cdn.net/images/granola-lawyers-depositions.webp",
-  "tags": ["granola", "lawyers", "legal", "meeting-notes", "ai"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "lawyers",
+    "legal",
+    "meeting-notes",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }

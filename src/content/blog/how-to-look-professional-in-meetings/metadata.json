@@ -3,7 +3,12 @@
   "author": "Zachary Proser",
   "date": "2026-02-28",
   "description": "The most professional thing you can do in a meeting is be fully present. AI note-taking makes that possible without losing a single detail.",
-  "image": "https://zackproser.b-cdn.net/images/granola-ai-notepad.webp",
-  "tags": ["granola", "meetings", "productivity", "career"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "meetings",
+    "productivity",
+    "career"
+  ],
   "hiddenFromIndex": true
 }
