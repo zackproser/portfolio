@@ -154,10 +154,7 @@ export default function AuthorityHero() {
                       <p className={`text-xs font-medium uppercase tracking-wide mb-2 ${isDark ? 'text-slate-400' : 'text-parchment-500'}`}>
                         Practical AI patterns that survive contact with reality
                       </p>
-                      <div className={`space-y-3 text-[15px] leading-[1.6] ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                        <p>
-                          If you&apos;re building with AI and want fewer surprises, I break down the exact RAG patterns, tools, and defaults I use in production&mdash;what scales, what doesn&apos;t, and why.
-                        </p>
+                      <div className={`text-[15px] leading-[1.6] ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
                         <p>
                           This is for engineers shipping features, founders figuring out where AI actually pays off, and anyone trying to see past the demo layer.
                         </p>
