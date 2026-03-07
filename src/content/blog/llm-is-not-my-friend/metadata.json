@@ -5,6 +5,5 @@
   "description": "I talk to my AI assistant like a person. I give it access to everything. And no, I don't think it's sentient. Here's why that's the point.",
   "image": "https://zackproser.b-cdn.net/images/llm-not-my-friend-hero.webp",
   "type": "blog",
-  "hiddenFromIndex": true,
   "tags": ["ai", "personal", "cognitive-infrastructure", "adhd", "autism"]
 }
