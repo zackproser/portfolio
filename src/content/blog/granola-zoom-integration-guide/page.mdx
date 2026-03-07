@@ -1,0 +1,343 @@
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
+
+# Granola Zoom Integration Guide: Complete Setup and Configuration
+
+Zoom meetings are central to modern business communication, but turning hours of discussion into actionable insights requires more than basic recording. Granola's Zoom integration transforms your meetings into searchable, analyzable knowledge assets with AI-powered transcription and intelligent analysis. This comprehensive guide covers everything from initial setup to advanced optimization.
+
+<InlineAffiliateCTA product="granola" />
+
+## Integration Overview
+
+### What Granola's Zoom Integration Provides
+
+**Automatic meeting detection**:
+- **Calendar sync**: Granola automatically detects Zoom meetings in your calendar
+- **Meeting joining**: Joins meetings automatically as a participant or bot
+- **Real-time transcription**: Live transcription visible during the meeting
+- **Speaker identification**: Distinguishes between different participants
+- **AI analysis**: Intelligent extraction of key points, decisions, and action items
+
+**Post-meeting processing**:
+- **Instant summaries**: AI-generated meeting summaries immediately after conclusion
+- **Action item extraction**: Automatic identification of tasks and assignments
+- **Searchable transcripts**: Full-text search across all meeting content
+- **Export options**: Multiple formats for sharing and archiving
+- **Integration workflows**: Automatic posting to Slack, email, or project management tools
+
+### Integration Methods
+
+**Granola Bot (Recommended)**:
+- **Automatic joining**: Bot joins meetings based on calendar integration
+- **No software installation**: Works with any device or platform
+- **Universal compatibility**: Works with Zoom desktop, web, and mobile apps
+- **Enterprise features**: Advanced security and administration controls
+
+**Desktop app integration**:
+- **Native integration**: Deep integration with Zoom desktop client
+- **Local processing**: Enhanced privacy with local transcription option
+- **Offline capability**: Continue recording even if internet connection drops
+- **Advanced controls**: More granular control over recording and transcription
+
+<InlineAffiliateCTA product="granola" />
+
+## Initial Setup Process
+
+### Prerequisites
+
+**Zoom account requirements**:
+- **Zoom Pro, Business, or Enterprise**: Basic Zoom accounts have limited functionality
+- **Host permissions**: Must be meeting host or have recording permissions
+- **Cloud recording enabled**: Required for automatic meeting detection
+- **API access**: May need Zoom API permissions for advanced features
+
+**Granola account setup**:
+- **Active subscription**: Pro or Enterprise Granola account required
+- **Calendar integration**: Connect Google Calendar, Outlook, or other calendar platforms
+- **Zoom authorization**: Grant Granola permission to access Zoom meetings
+- **Notification preferences**: Configure how you want to receive meeting summaries
+
+### Step 1: Calendar Integration
+
+**Google Calendar setup**:
+1. **Log into Granola** and go to Settings → Integrations
+2. **Click "Connect Google Calendar"** and authorize access
+3. **Select calendars** to monitor for Zoom meetings
+4. **Configure meeting detection** settings (personal, work, or all meetings)
+5. **Test integration** by creating a test Zoom meeting
+
+**Outlook/Office 365 setup**:
+1. **Navigate to Integrations** in Granola settings
+2. **Select "Microsoft Office 365"** integration option
+3. **Authenticate** with your Microsoft credentials
+4. **Choose calendar permissions** (read-only recommended)
+5. **Configure meeting filters** to specify which meetings to transcribe
+
+**Advanced calendar options**:
+- **Multiple calendar support**: Connect personal and work calendars
+- **Meeting filtering**: Only transcribe meetings with specific keywords
+- **Time-based rules**: Automatically transcribe meetings during work hours
+- **Participant filtering**: Only transcribe meetings with external participants
+
+<InlineAffiliateCTA product="granola" />
+
+### Step 2: Zoom Authorization
+
+**OAuth authorization process**:
+1. **Go to Granola Settings** → Integrations → Zoom
+2. **Click "Connect to Zoom"** to begin authorization
+3. **Sign in to Zoom** when redirected to Zoom's authorization page
+4. **Review permissions** that Granola is requesting:
+   - Read meeting information
+   - Join meetings as participant
+   - Access meeting recordings (if enabled)
+   - View participant information
+5. **Grant authorization** by clicking "Authorize"
+6. **Verify connection** back in Granola settings
+
+**Enterprise Zoom setup**:
+- **Admin approval**: May require Zoom administrator approval for organization
+- **Security review**: IT security review of Granola's data handling practices
+- **Custom permissions**: Configure specific permissions for different user groups
+- **Policy compliance**: Ensure integration meets organizational security policies
+
+### Step 3: Bot Configuration
+
+**Meeting joining preferences**:
+- **Automatic joining**: Bot joins all detected Zoom meetings
+- **Manual approval**: Review and approve each meeting before bot joins
+- **Participant notification**: Configure how meeting participants are notified about bot
+- **Host-only mode**: Only join meetings where you are the host
+
+**Bot appearance settings**:
+- **Display name**: How the bot appears in participant list ("Granola Transcription Bot")
+- **Profile picture**: Custom profile image for the bot
+- **Join notifications**: Customize message shown when bot joins meeting
+- **Participant consent**: Configure consent collection for recording/transcription
+
+<InlineAffiliateCTA product="granola" />
+
+## Advanced Configuration
+
+### Meeting Detection Rules
+
+**Smart filtering**:
+Create rules to automatically identify which meetings should be transcribed:
+
+- **Keyword matching**: Meetings with "standup", "review", "client", "interview" in title
+- **Participant count**: Only meetings with 3+ participants
+- **Duration filtering**: Skip meetings shorter than 15 minutes
+- **External participant detection**: Transcribe meetings with non-company email addresses
+- **Meeting series**: Always transcribe recurring meetings
+
+**Time-based rules**:
+- **Business hours**: Only transcribe meetings during specified work hours
+- **Time zone handling**: Proper handling of meetings across different time zones
+- **Weekend exclusions**: Skip personal meetings on weekends
+- **Holiday handling**: Respect organizational calendar for holiday exclusions
+
+### Audio and Transcription Settings
+
+**Quality optimization**:
+- **Audio quality**: Configure optimal audio processing settings
+- **Speaker separation**: Enhanced algorithms for distinguishing speakers
+- **Background noise filtering**: Advanced noise cancellation for better transcription
+- **Language detection**: Automatic detection of meeting language
+- **Accent adaptation**: Improved recognition for diverse accents and speaking styles
+
+**Real-time features**:
+- **Live transcription display**: Show transcription in real-time during meeting
+- **Confidence scoring**: Display transcription confidence levels
+- **Speaker identification**: Real-time speaker labeling and tracking
+- **Keyword highlighting**: Highlight important terms and phrases as they're spoken
+
+<InlineAffiliateCTA product="granola" />
+
+### Privacy and Security Configuration
+
+**Data protection settings**:
+- **End-to-end encryption**: Ensure all meeting data is encrypted in transit and at rest
+- **Data retention**: Configure how long meeting transcripts are stored
+- **Access controls**: Define who can access meeting transcriptions
+- **GDPR compliance**: Configure settings for European privacy requirements
+- **Data residency**: Choose geographic regions for data storage
+
+**Consent management**:
+- **Automatic consent collection**: Bot collects explicit consent from all participants
+- **Consent recording**: Maintain records of who consented to transcription
+- **Opt-out procedures**: Easy process for participants to decline transcription
+- **Legal compliance**: Ensure compliance with local recording laws
+
+### Integration Workflows
+
+**Automatic actions after meetings**:
+- **Slack posting**: Automatically post meeting summaries to relevant Slack channels
+- **Email distribution**: Send summaries to meeting participants or stakeholders
+- **CRM updates**: Add meeting notes to customer records in Salesforce or HubSpot
+- **Project management**: Create tasks in Asana, Monday.com, or Jira based on action items
+- **Calendar follow-ups**: Automatically schedule follow-up meetings based on discussion
+
+**Custom webhook integration**:
+- **API endpoints**: Send meeting data to custom applications
+- **Real-time notifications**: Immediate alerts when meetings conclude
+- **Data transformation**: Custom formatting of meeting data for specific systems
+- **Error handling**: Robust error handling and retry mechanisms
+
+## Troubleshooting Common Issues
+
+### Bot Not Joining Meetings
+
+**Calendar sync issues**:
+1. **Verify calendar connection**: Check that calendar integration is active
+2. **Check meeting detection rules**: Ensure rules aren't filtering out intended meetings
+3. **Time zone settings**: Verify time zone configuration in both Granola and calendar
+4. **Permission verification**: Confirm Granola has necessary calendar permissions
+5. **Test with manual meeting**: Try manually adding a meeting to verify detection
+
+**Zoom authorization problems**:
+1. **Re-authorize Zoom connection**: Disconnect and reconnect Zoom integration
+2. **Check Zoom permissions**: Verify all required permissions are granted
+3. **Enterprise restrictions**: Check with IT about organizational Zoom restrictions
+4. **Account compatibility**: Ensure Zoom account type supports required features
+5. **API rate limits**: Verify not hitting Zoom API rate limits
+
+<InlineAffiliateCTA product="granola" />
+
+### Poor Transcription Quality
+
+**Audio quality optimization**:
+- **Microphone settings**: Encourage participants to use quality microphones
+- **Background noise**: Minimize background noise in meeting environment
+- **Internet connection**: Ensure stable internet connection for all participants
+- **Zoom audio settings**: Configure Zoom for optimal audio quality
+- **Speaker positioning**: Position speakers appropriately relative to microphones
+
+**Transcription accuracy improvements**:
+- **Custom vocabulary**: Train Granola on company-specific terminology
+- **Speaker identification**: Provide speaker names to improve identification
+- **Language settings**: Ensure correct language is selected for transcription
+- **Speaking patterns**: Educate participants on clear speaking for better results
+- **Meeting structure**: Use structured agenda for more organized transcription
+
+### Integration Performance Issues
+
+**Lag and delays**:
+- **Network optimization**: Ensure sufficient bandwidth for real-time processing
+- **Server load**: Check Granola system status for performance issues
+- **Zoom performance**: Verify Zoom meeting is running smoothly
+- **Browser optimization**: Use supported browsers with latest updates
+- **Device resources**: Ensure sufficient CPU and memory on host device
+
+**Sync failures**:
+- **Retry mechanisms**: Understanding automatic retry behavior
+- **Manual sync**: How to manually trigger sync for failed meetings
+- **Error logging**: Access logs to diagnose sync failures
+- **Support escalation**: When to contact Granola support for technical issues
+
+## Best Practices for Team Adoption
+
+### Getting Teams Started
+
+**Pilot program approach**:
+1. **Select early adopters**: Choose team members comfortable with new technology
+2. **Start with small meetings**: Begin with team meetings rather than client calls
+3. **Provide training**: Ensure users understand how to use integration features
+4. **Collect feedback**: Regular feedback sessions to address concerns and improvements
+5. **Gradually expand**: Add more users and meeting types based on success
+
+**Change management**:
+- **Communicate benefits**: Clearly explain how integration improves productivity
+- **Address concerns**: Proactively address privacy and technology concerns
+- **Provide support**: Ongoing support during transition period
+- **Measure success**: Track adoption metrics and productivity improvements
+
+<InlineAffiliateCTA product="granola" />
+
+### Meeting Best Practices
+
+**Optimizing meetings for transcription**:
+- **Clear introductions**: Start meetings with participant introductions
+- **Structured agenda**: Use clear agenda items for better organization
+- **Speaking guidelines**: Encourage clear, paced speaking
+- **Action item clarity**: Clearly state action items and assignments
+- **Meeting conclusions**: Summarize key decisions and next steps
+
+**Participant engagement**:
+- **Bot introduction**: Briefly explain Granola bot at meeting start
+- **Consent confirmation**: Ensure all participants understand recording/transcription
+- **Technical support**: Have support resources available for participants
+- **Feedback collection**: Regular collection of participant feedback on experience
+
+### Data Management
+
+**Organizing transcriptions**:
+- **Naming conventions**: Consistent naming for easy searching and organization
+- **Tagging system**: Use tags to categorize different types of meetings
+- **Folder structure**: Organize transcriptions by project, client, or team
+- **Archive procedures**: Regular archiving of old transcriptions
+- **Search optimization**: Best practices for finding specific meeting content
+
+**Quality control**:
+- **Regular review**: Periodic review of transcription quality and accuracy
+- **Correction procedures**: Process for correcting important transcription errors
+- **Feedback loops**: Systematic collection of user feedback on transcription quality
+- **Continuous improvement**: Regular updates to improve transcription accuracy
+
+## Advanced Features and Customization
+
+### AI Analysis Customization
+
+**Custom summary templates**:
+- **Meeting types**: Different summary formats for different meeting types
+- **Stakeholder focus**: Summaries tailored for different audiences
+- **Action item formatting**: Custom formatting for task assignments
+- **Decision tracking**: Enhanced tracking of decisions made during meetings
+- **Follow-up automation**: Automated creation of follow-up tasks and reminders
+
+**Intelligent insights**:
+- **Sentiment analysis**: Understanding meeting tone and participant engagement
+- **Speaking time analysis**: Insights into participation levels and speaking distribution
+- **Topic tracking**: Automatic identification of main discussion topics
+- **Trend analysis**: Patterns across multiple meetings over time
+- **Performance metrics**: Meeting efficiency and productivity metrics
+
+<InlineAffiliateCTA product="granola" />
+
+### Enterprise Features
+
+**Multi-tenant management**:
+- **Department segregation**: Separate meeting data by department or team
+- **Access controls**: Granular permissions for different user groups
+- **Billing management**: Usage tracking and billing allocation
+- **Compliance reporting**: Regular compliance reports for enterprise requirements
+- **Audit trails**: Comprehensive logging of all system access and changes
+
+**Advanced security**:
+- **Single sign-on**: Integration with enterprise identity management systems
+- **Multi-factor authentication**: Additional security layers for sensitive meetings
+- **Data loss prevention**: Advanced DLP integration for sensitive content
+- **Encryption standards**: Enterprise-grade encryption for all meeting data
+- **Compliance frameworks**: Support for SOC 2, HIPAA, and other compliance requirements
+
+### API and Custom Integrations
+
+**API access**:
+- **RESTful API**: Programmatic access to meeting transcriptions and analysis
+- **Webhook notifications**: Real-time notifications for meeting events
+- **Custom applications**: Build custom applications using Granola meeting data
+- **Data export**: Automated export of meeting data for analysis
+- **System integration**: Integration with proprietary business systems
+
+**Development resources**:
+- **API documentation**: Comprehensive documentation for developers
+- **SDKs**: Software development kits for common programming languages
+- **Code examples**: Sample code for common integration scenarios
+- **Developer support**: Technical support for custom integration projects
+- **Testing environments**: Sandbox environments for development and testing
+
+## Conclusion
+
+<AffiliateLink product="granola">Granola's Zoom integration</AffiliateLink> transforms routine meetings into valuable knowledge assets through intelligent transcription and analysis. Proper setup and configuration ensure maximum value from your meeting time while maintaining security and compliance requirements.
+
+The key to successful integration lies in thoughtful configuration based on your organization's specific needs, comprehensive team training, and ongoing optimization based on usage patterns and feedback. Whether you're a small team looking to improve meeting productivity or a large enterprise requiring comprehensive meeting documentation, Granola's Zoom integration provides the flexibility and power to meet your specific requirements.
+
+By following this guide's setup procedures, best practices, and optimization techniques, your organization can maximize the return on investment from meeting time while creating a searchable knowledge base that improves decision-making and organizational efficiency over time.
