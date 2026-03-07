@@ -4,6 +4,16 @@ import { createMetadata } from '@/utils/createMetadata'
 
 export const metadata = createMetadata(rawMetadata)
 
+<style>{`
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .cursor-blink {
+    animation: blink 1s step-end infinite;
+  }
+`}</style>
+
 Sometimes artists need to make things for themselves. And that can be incredibly ugly. Yet we still need to create space for it, because "a society is only as free as it allows its artists to be."
 
 I believe deeply in publishing and sharing knowledge — it's one of the key things we're supposed to do as a species. Someone might find this artifact useful, or not. Either way, it's a running tally I keep for myself.
@@ -82,22 +92,11 @@ I've lived through some truly unspeakable shit. Unspeakable in that it can't be 
 
 <Image src="https://zackproser.b-cdn.net/images/doom-h-broken-glasses.webp" alt="Broken but unbreakable" width={1024} height={1536} />
 
-<figure>
 <Image src="https://zackproser.b-cdn.net/images/doom-6-beckoning.webp" alt="Bring your noise, little one." width={1024} height={1536} />
-<figcaption className="text-center text-lg italic mt-2">Bring your noise, little one.</figcaption>
-</figure>
+
+*Bring your noise, little one.*
 
 To the universe and its constant enfilade of disasters, I say: Your boys are dead. They died badly. Next time, send men.
-
-<style>{`
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-  .cursor-blink {
-    animation: blink 1s step-end infinite;
-  }
-`}</style>
 
 <div className="mt-12 text-2xl font-mono text-zinc-400">
   $ Awaiting next entry<span className="cursor-blink">█</span>
