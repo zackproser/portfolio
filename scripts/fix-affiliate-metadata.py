@@ -41,7 +41,7 @@ def fix_metadata(metadata_file):
     
     if changed:
         with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=2)
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
     
     return changed
 
