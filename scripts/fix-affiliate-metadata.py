@@ -33,6 +33,11 @@ def fix_metadata(metadata_file):
     with open(metadata_file, 'r', encoding='utf-8') as f:
         metadata = json.load(f)
     
+    # Skip articles with keywords array - these are editorial content
+    # Only hide batch-generated affiliate articles that lack detailed metadata
+    if 'keywords' in metadata and isinstance(metadata['keywords'], list) and len(metadata['keywords']) > 0:
+        return False
+    
     changed = False
     if metadata.get('hiddenFromIndex') != True:
         metadata['hiddenFromIndex'] = True
