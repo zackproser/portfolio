@@ -3,7 +3,12 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Real estate agents use Granola AI to stay present during showings and negotiations, catch buyer signals, and close deals without scrambling for notes.",
-  "image": "https://zackproser.b-cdn.net/images/granola-real-estate-agents.webp",
-  "tags": ["granola", "real-estate", "meeting-notes", "ai"],
+  "image": "https://zackproser.b-cdn.net/images/granola-example.webp",
+  "tags": [
+    "granola",
+    "real-estate",
+    "meeting-notes",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }

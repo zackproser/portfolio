@@ -1,34 +1,66 @@
 #!/bin/bash
-# Validates affiliate articles that should be hidden have hiddenFromIndex: true
-# Only checks NEW files (not in main) to avoid flagging intentionally visible articles
+# Validates ALL affiliate articles:
+# 1. hiddenFromIndex: true in metadata.json
+# 2. Hero image URL is valid HTTPS
+# 3. Hero image URL actually resolves (HTTP 200)
+#
+# Scans the ENTIRE repo, not just new files.
+
+set -euo pipefail
 
 ERRORS=0
+CHECKED=0
+CHECK_HTTP="${CHECK_HTTP:-1}"  # set CHECK_HTTP=0 to skip HTTP checks (offline/fast mode)
 
-# Get files changed vs main
-CHANGED=$(git diff --name-only --diff-filter=A origin/main -- 'src/content/blog/*/metadata.json' 2>/dev/null)
+EDITORIAL_EXCLUSIONS=("claude-cowork-workshop-anthropic" "2025-ai-engineer-setup" "2026-ai-engineer-setup")
 
-if [ -z "$CHANGED" ]; then
-  echo "No new metadata.json files vs origin/main. Nothing to check."
-  exit 0
-fi
+for mdx in src/content/blog/*/page.mdx; do
+  [ -f "$mdx" ] || continue
+  dir=$(dirname "$mdx")
+  meta="$dir/metadata.json"
+  [ -f "$meta" ] || continue
 
-for f in $CHANGED; do
-  if [ ! -f "$f" ]; then continue; fi
-  hidden=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('hiddenFromIndex', 'MISSING'))")
-  if [ "$hidden" != "True" ]; then
-    dir=$(dirname "$f")
-    if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$dir/page.mdx" 2>/dev/null; then
-      echo "❌ MISSING hiddenFromIndex: $f"
+  if grep -Eql "AffiliateLink|InlineAffiliateCTA" "$mdx" 2>/dev/null; then
+    slug=$(basename "$dir")
+    
+    # Skip editorial exclusions
+    skip=0
+    for exclusion in "${EDITORIAL_EXCLUSIONS[@]}"; do
+      if [ "$slug" = "$exclusion" ]; then
+        skip=1
+        break
+      fi
+    done
+    [ $skip -eq 1 ] && continue
+    CHECKED=$((CHECKED + 1))
+    hidden=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('hiddenFromIndex', 'MISSING'))")
+    image=$(python3 -c "import json; d=json.load(open('$meta')); print(d.get('image', ''))")
+
+    if [ "$hidden" != "True" ]; then
+      echo "❌ MISSING hiddenFromIndex: $slug (got: $hidden)"
       ERRORS=$((ERRORS + 1))
+    fi
+
+    if [ -z "$image" ] || ! echo "$image" | grep -q '^https://'; then
+      echo "❌ BAD hero image URL: $slug (got: '$image')"
+      ERRORS=$((ERRORS + 1))
+    elif [ "$CHECK_HTTP" = "1" ]; then
+      code=$(curl -sI -o /dev/null -w "%{http_code}" --max-time 5 "$image" 2>/dev/null || echo "000")
+      if [ "$code" != "200" ]; then
+        echo "❌ BROKEN hero image (HTTP $code): $slug -> $image"
+        ERRORS=$((ERRORS + 1))
+      fi
     fi
   fi
 done
 
+echo ""
+echo "Checked $CHECKED affiliate articles."
+
 if [ $ERRORS -gt 0 ]; then
-  echo ""
-  echo "⚠️  $ERRORS NEW affiliate articles missing hiddenFromIndex: true"
-  echo "Add hiddenFromIndex: true to metadata.json or these will show in the blog index."
+  echo "⚠️  $ERRORS errors found. Fix before pushing."
   exit 1
 else
-  echo "✅ All new affiliate articles have hiddenFromIndex set"
+  echo "✅ All affiliate articles valid (hiddenFromIndex + hero images resolve)"
+  exit 0
 fi

@@ -1,0 +1,71 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'wisprflow-for-podcast-show-notes';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Dictate podcast show notes with WisprFlow" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>WisprFlow lets podcasters dictate show notes while the episode is still fresh</figcaption>
+
+You just finished recording a great episode. The conversation is still buzzing in your head — the key insights, the funny moments, the one quote your guest dropped that will make a perfect audiogram. Now you need to write show notes.
+
+If you're like most podcasters, this is where the momentum dies. You sit down, open a doc, stare at it, and spend 45 minutes producing a mediocre summary that doesn't capture any of the energy from the actual conversation.
+
+Voice dictation fixes the timing problem. Dictate your show notes immediately after recording, while the episode is still alive in your memory.
+
+## The Post-Recording Window
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+</div>
+
+There's a window — maybe 30 minutes after you stop recording — where you can recall the arc of the conversation in vivid detail. Key moments, turning points, the context behind why something was funny or insightful. After that window closes, you're reconstructing from memory, and the result reads like it was reconstructed from memory.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> lets you capture during that window. Hit the hotkey, start talking through what happened in the episode, and polished text appears in whatever app you're working in — your CMS, WordPress, a Google Doc, Notion, whatever.
+
+### What to Dictate
+
+**Episode description (2-3 paragraphs):** Talk through what you covered, why it matters, and who should listen. This takes about 2 minutes of dictation and produces better copy than 20 minutes of typing, because you're speaking with the same energy you just had in the episode.
+
+**Timestamps and highlights:** "At 12 minutes we talked about X, at 25 minutes the guest shared their framework for Y, at 40 minutes we got into the controversial take on Z." Dictate these while scanning your recording timeline.
+
+**Social media posts:** Dictate 3-4 social posts highlighting different moments from the episode. Speaking produces more natural social copy than typing — it sounds like something a human would actually say.
+
+**Guest bio and links:** If your guest mentioned resources, tools, or their own projects during the episode, dictate them while you still remember. "Sarah mentioned her new book on distributed systems, it's on O'Reilly, and she also recommended the Jepsen blog for testing databases."
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Why Not Just Transcribe the Episode?
+
+Transcription gives you everything that was said. Show notes require editorial judgment about what matters, what order to present it in, and how to frame it for someone who hasn't listened yet. That's a writing task, not a transcription task.
+
+Your voice dictation of the show notes includes the editorial layer: you're naturally selecting highlights, adding context, and framing the conversation — because that's what humans do when they tell someone about a conversation they just had.
+
+## The Numbers
+
+- Average show notes: 400-800 words
+- Typing at 50 WPM: 8-16 minutes of pure typing, plus thinking time → usually 30-45 minutes total
+- Dictating at 150 WPM: 3-5 minutes of speaking, plus 5-10 minutes of cleanup → 8-15 minutes total
+
+For weekly podcasters, that's 2+ hours saved per month on show notes alone. Add social posts and newsletter blurbs, and you're saving a full working day per month.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Batch Production Days
+
+If you record multiple episodes in a batch (many podcasters record 2-4 per session), dictating show notes between episodes keeps your recall fresh and prevents the "I need to write notes for 4 episodes" backlog that kills podcasts.
+
+Record episode 1 → dictate notes → 5 minute break → record episode 2 → dictate notes. Each set of notes takes 5-10 minutes while everything is fresh, versus a painful multi-hour writing session days later.
+
+## Getting Started
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) with accuracy testing and setup guidance.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink> and dictate your next episode's show notes while the conversation is still buzzing. You'll be surprised how much better the result is compared to writing from memory.

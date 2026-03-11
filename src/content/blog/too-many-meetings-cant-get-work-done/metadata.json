@@ -3,7 +3,11 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Struggling with meeting overload? I found a way to stay present in back-to-back meetings while never losing track of action items and decisions.",
-  "image": "https://zackproser.b-cdn.net/images/granola-ai-notepad.webp",
-  "tags": ["granola", "meetings", "productivity"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "meetings",
+    "productivity"
+  ],
   "hiddenFromIndex": true
 }

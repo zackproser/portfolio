@@ -1,0 +1,77 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-client-discovery-calls';
+
+<AffiliateLink product="granola" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/granola-example.webp" alt="AI meeting notes for sales discovery calls" width={800} height={600} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+<figcaption>Granola captures discovery calls without the awkward "I'm recording you" moment</figcaption>
+
+Discovery calls are where deals are won or lost. The prospect is telling you their pain points, their budget constraints, their decision-making process, and who else they're evaluating. Every word matters. And you're supposed to be simultaneously listening deeply, building rapport, asking smart follow-up questions, AND taking detailed notes?
+
+Something has to give. Usually it's the notes. You walk out of the call with a vague sense of what was said, update your CRM with bullet points that capture maybe 30% of what actually happened, and lose the nuance that would have closed the deal.
+
+## The Bot Problem in Sales
+
+<div className="flex flex-wrap gap-3 my-6">
+  <InlineAffiliateCTA product="granola" campaign={campaign} />
+</div>
+
+Most AI meeting note tools solve this by joining your call as a visible bot. In internal meetings, nobody cares. In a discovery call with a nervous prospect who's still deciding whether to trust you? "Fireflies.ai Bot has joined the meeting" is the conversational equivalent of pulling out a tape recorder.
+
+Some prospects flat-out refuse to continue with a bot present. Others stay on the call but clam up — you get surface-level answers instead of the honest pain points you need.
+
+<AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> captures audio locally on your machine. No bot joins. No recording indicator appears for the prospect. They experience a normal conversation with a sales rep who seems remarkably attentive and present.
+
+### What You Capture
+
+After the call, Granola delivers structured notes including:
+
+- **Pain points articulated by the prospect** — their exact words, not your summary
+- **Budget and timeline signals** — the offhand comments about "needing to move before Q3" that you'd normally forget
+- **Competitive mentions** — when they name other vendors they're evaluating
+- **Decision-making dynamics** — who else needs to sign off, what the approval process looks like
+- **Objections and concerns** — the specific hesitations they voiced
+
+This is the intel that wins deals. And it's captured verbatim, not filtered through your post-call memory.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Discovery Framework Capture
+
+If you run MEDDIC, BANT, SPIN, or any structured discovery framework, Granola captures the raw material for every field. Instead of trying to mentally map prospect answers to framework categories in real time, you focus on the conversation and do the categorization afterward — with perfect recall of what was actually said.
+
+**MEDDIC example:**
+- **Metrics:** Prospect mentioned "saving 15 hours per week per analyst" and "reducing onboarding from 6 weeks to 2"
+- **Economic Buyer:** "Our CTO makes the final call, but the VP of Engineering has budget authority for tools under $50k"
+- **Decision Process:** "We'd need a security review, then a pilot with the platform team, then budget approval"
+- **Identified Pain:** "Our analysts spend more time building dashboards than doing actual analysis"
+
+All captured from the conversation. All in the prospect's own words. All available to paste into your CRM immediately after the call.
+
+### Team Coaching
+
+Sales managers: imagine being able to review the actual substance of every discovery call your team runs. Not the rep's interpretation, but what the prospect actually said. Where the rep missed a buying signal. Where they asked a great follow-up question.
+
+Granola makes call reviews about coaching on substance, not guessing at what happened.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The Follow-Up Advantage
+
+The best follow-up emails reference specific things the prospect said. "You mentioned that onboarding takes 6 weeks and your CTO wants that cut in half by Q3 — here's how we've done exactly that for [similar company]."
+
+With Granola's notes, writing these emails takes 5 minutes instead of 20, and they're dramatically more effective because they demonstrate you actually listened.
+
+## Getting Started
+
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free</AffiliateLink> on your next discovery call. You'll notice the difference in two ways: how much more present you are during the conversation, and how much better your notes are afterward.
+
+I've written a [detailed Granola review](/blog/granola-ai-review) covering the full feature set.

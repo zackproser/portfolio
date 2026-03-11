@@ -1,0 +1,91 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'voice-typing-for-google-docs';
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow.webp" alt="Voice typing for Google Docs" width={800} height={600}/>
+</AffiliateLink>
+<figcaption>WisprFlow works in Google Docs and every other app on your machine</figcaption>
+
+Google Docs has built-in voice typing. It's free, it's accessible from the Tools menu, and if you've never tried dictating a document before, it seems like it should be enough. For short bursts of simple text, it is. For anything resembling real work, it falls apart fast.
+
+Here's the honest comparison.
+
+## Google Docs Voice Typing: What You Get
+
+Open any Google Doc, go to Tools → Voice typing, and a microphone icon appears. Click it, talk, and words show up. It handles basic English well enough and supports voice commands like "period," "new line," and "select all."
+
+**The problems:**
+
+- **Chrome only.** If you use any other browser, no voice typing. If you want to dictate in a desktop app, no voice typing.
+- **Session timeouts.** Stop talking for a few seconds and it disconnects. Long pauses to think — which happen constantly when writing — kill your session.
+- **No personal dictionary.** Technical terms, proper nouns, and industry jargon get mangled consistently. There's no way to teach it your vocabulary.
+- **Requires internet.** All processing happens on Google's servers. No connection, no dictation.
+- **Limited voice commands.** You can say "period" but you can't say "capitalize that" or navigate complex formatting.
+
+For writing a quick email or jotting notes, it's fine. For writing a 3,000-word report or a technical document, it's a frustration machine.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## WisprFlow: System-Level Dictation
+
+<AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> takes a fundamentally different approach. Instead of being locked to one browser tab, it operates at the operating system level. Wherever your cursor is — Google Docs, Notion, Slack, Terminal, email, any app — you can dictate.
+
+**What's different:**
+
+- **Works everywhere.** Google Docs, but also every other application on your machine. One tool, one hotkey, universal coverage.
+- **No timeouts.** Pause to think for 30 seconds. It waits. Your session doesn't die.
+- **Personal dictionary.** It learns your terminology. After a few corrections, your technical vocabulary and proper nouns stick.
+- **Continuous dictation.** Speak for 5 minutes straight — it handles it. No arbitrary session limits.
+- **150-180 WPM.** Compared to typical 40-60 WPM typing, that's a 3x speed increase on raw text generation.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Side-by-Side: Real-World Tasks
+
+### Writing a Project Proposal (2,000 words)
+
+**Google Voice Typing:** Constant restarts as sessions time out during thinking pauses. Technical terms misspelled throughout. Need to go back and manually fix terminology. Total time including corrections: ~50 minutes.
+
+**WisprFlow:** Continuous dictation with natural pauses. Technical terms recognized after initial training. Raw draft done in ~15 minutes. Cleanup time: ~10 minutes. Total: ~25 minutes.
+
+### Documenting Meeting Notes
+
+**Google Voice Typing:** Must be in a Chrome tab with Google Docs open. Can't dictate into your project management tool, Slack, or email simultaneously. Names consistently wrong.
+
+**WisprFlow:** Dictate notes directly into whatever tool you actually use — Notion, Linear, Jira, email. People's names learned and recognized.
+
+### Writing Code Documentation
+
+**Google Voice Typing:** Function names, variable names, and technical terminology butchered. Constant manual correction. Painful enough that most people give up and just type.
+
+**WisprFlow:** Technical vocabulary trained in. Handles camelCase, API names, and framework-specific terminology after a learning period. Actually usable for technical writing.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## When Google Voice Typing Is Enough
+
+Be honest about this: if you occasionally dictate a short paragraph in a Google Doc and you're not picky about accuracy, the built-in tool works. It's free and requires no installation.
+
+But if writing is a significant part of your work — and if you've landed on this article, it probably is — the limitations will cost you more time than the tool saves.
+
+## Getting Started with WisprFlow in Google Docs
+
+1. Install WisprFlow (works on macOS, expanding to other platforms)
+2. Open your Google Doc
+3. Place your cursor where you want text
+4. Hit the WisprFlow hotkey and start talking
+5. Text appears in your doc as you speak
+
+That's it. No browser requirements, no session management, no microphone icon to click. Just talk and write.
+
+I've written a [detailed WisprFlow review](/blog/wisprflow-review) with accuracy benchmarks and setup instructions.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink>
