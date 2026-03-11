@@ -1,0 +1,10 @@
+{
+  "title": "Claude Code on Your Phone: How Remote Control Connects Your Terminal to iOS and Android",
+  "author": "Zachary Proser",
+  "date": "2026-03-07",
+  "description": "Claude Code's Remote Control feature lets you continue local terminal sessions from your phone. Here's how it works, what it can and can't do, and how it compares to Claude Code on the web.",
+  "image": "https://zackproser.b-cdn.net/images/claude-code-remote-control-hero.webp",
+  "type": "blog",
+  "tags": ["claude-code", "anthropic", "ai-tools", "mobile-development", "remote-development"],
+  "status": "published"
+}

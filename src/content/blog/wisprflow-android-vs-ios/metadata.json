@@ -1,9 +1,9 @@
 {
-  "title": "WisprFlow Android vs iOS: Which Voice Platform Wins?", 
+  "title": "WisprFlow Android vs iOS: Feature Comparison and Performance",
   "author": "Zachary Proser",
-  "date": "2026-02-27",
-  "description": "Comparing WisprFlow's Android and iOS voice features, accuracy, and integration capabilities after the February 2026 Android launch.",
-  "image": "https://zackproser.b-cdn.net/images/wisprflow-android-vs-ios-comparison.webp",
-  "tags": ["wisprflow", "android", "ios", "comparison", "voice-notes"],
+  "date": "2026-3-11",
+  "description": "Comparing WisprFlow's Android and iOS apps. Feature differences, performance benchmarks, and platform-specific advantages for voice transcription users.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["ai", "voice", "android", "ios", "comparison", "mobile"],
   "hiddenFromIndex": true
 }
