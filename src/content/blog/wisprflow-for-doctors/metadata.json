@@ -1,9 +1,9 @@
 {
-  "title": "WisprFlow for Doctors: Transforming Medical Documentation with Voice AI",
+  "title": "WisprFlow for Doctors: Voice Notes That Actually Work in Clinical Settings",
   "author": "Zachary Proser",
-  "date": "2026-3-6",
-  "description": "How doctors are using WisprFlow's voice AI to streamline patient notes, reduce documentation time, and improve care quality.",
+  "date": "2026-3-11",
+  "description": "How doctors are using WisprFlow's AI voice transcription to streamline patient documentation, chart notes, and clinical workflows without compromising accuracy.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["ai", "voice", "healthcare", "productivity"],
+  "tags": ["ai", "voice", "healthcare", "productivity", "medical"],
   "hiddenFromIndex": true
 }
