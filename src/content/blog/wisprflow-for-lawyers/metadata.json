@@ -1,9 +1,9 @@
 {
-  "title": "WisprFlow for Lawyers: Transform Your Legal Practice with Voice-to-Text",
+  "title": "WisprFlow for Lawyers: Voice Notes That Handle Legal Terminology",
   "author": "Zachary Proser",
-  "date": "2026-3-8",
-  "description": "How lawyers are using WisprFlow's AI-powered voice transcription to draft contracts, record client notes, and increase billable efficiency by 40%.",
+  "date": "2026-3-11",
+  "description": "How lawyers are using WisprFlow's AI transcription for case notes, client interviews, and legal research documentation with accurate legal terminology recognition.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["ai", "voice", "legal", "productivity"],
+  "tags": ["ai", "voice", "legal", "productivity", "law"],
   "hiddenFromIndex": true
 }
