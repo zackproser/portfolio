@@ -24,5 +24,6 @@
     "WisprFlow",
     "Whisper",
     "Developer Tools"
-  ]
+  ],
+  "hiddenFromIndex": true
 }

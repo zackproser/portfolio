@@ -3,7 +3,12 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Product managers use Granola AI to stay present in stakeholder meetings, catch hidden requirements, and capture decisions without missing context.",
-  "image": "https://zackproser.b-cdn.net/images/granola-product-managers.webp",
-  "tags": ["granola", "product-management", "meeting-notes", "ai"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "product-management",
+    "meeting-notes",
+    "ai"
+  ],
   "hiddenFromIndex": true
 }

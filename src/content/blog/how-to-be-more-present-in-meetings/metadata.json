@@ -3,7 +3,12 @@
   "author": "Zachary Proser",
   "date": "2026-02-27",
   "description": "Presence in meetings is a competitive advantage. Here's how AI note-taking lets you actually be there instead of scrambling to capture everything.",
-  "image": "https://zackproser.b-cdn.net/images/granola-ai-notepad.webp",
-  "tags": ["granola", "meetings", "productivity", "presence"],
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": [
+    "granola",
+    "meetings",
+    "productivity",
+    "presence"
+  ],
   "hiddenFromIndex": true
 }
