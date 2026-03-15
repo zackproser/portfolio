@@ -1,0 +1,24 @@
+{
+  "title": "Scraping Angular Applications with Firecrawl",
+  "author": "Zachary Proser",
+  "date": "2026-03-15",
+  "description": "Angular apps render their UI in the browser via TypeScript components. Here is how to extract data from Angular applications reliably using Firecrawl.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-scrape-angular-sites",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "scrape Angular",
+    "Angular web scraping",
+    "Angular SPA data extraction",
+    "Firecrawl Angular",
+    "scrape TypeScript apps"
+  ],
+  "tags": [
+    "Web Scraping",
+    "Angular",
+    "Firecrawl",
+    "JavaScript",
+    "TypeScript"
+  ]
+}

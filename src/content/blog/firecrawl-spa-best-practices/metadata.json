@@ -1,0 +1,24 @@
+{
+  "title": "Best Practices for Scraping Single-Page Applications",
+  "author": "Zachary Proser",
+  "date": "2026-03-15",
+  "description": "SPAs break traditional scrapers. A guide to the patterns, pitfalls, and practical techniques for reliably extracting data from any single-page application.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-spa-best-practices",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "SPA scraping best practices",
+    "single-page application scraping",
+    "scrape SPA JavaScript",
+    "Firecrawl SPA",
+    "web scraping patterns"
+  ],
+  "tags": [
+    "Web Scraping",
+    "SPA",
+    "Best Practices",
+    "Firecrawl",
+    "JavaScript"
+  ]
+}

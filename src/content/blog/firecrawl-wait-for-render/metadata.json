@@ -1,0 +1,23 @@
+{
+  "title": "Waiting for JavaScript to Render Before Scraping with Firecrawl",
+  "author": "Zachary Proser",
+  "date": "2026-03-15",
+  "description": "JavaScript-heavy sites are empty shells until the browser runs their code. Learn how Firecrawl waits for full render before extracting content so you never scrape a blank page.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-wait-for-render",
+  "type": "blog",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "wait for JavaScript render scraping",
+    "scrape after JS render",
+    "Firecrawl waitFor",
+    "JavaScript hydration scraping",
+    "dynamic page scraping"
+  ],
+  "tags": [
+    "Web Scraping",
+    "JavaScript Rendering",
+    "Firecrawl",
+    "Headless Browser"
+  ]
+}
