@@ -1,7 +1,12 @@
----
-title: Advanced JavaScript Scraping with Firecrawl in 2026
-description: Go beyond the basics — handle authentication, proxies, rate limiting, anti-bot detection, and large-scale JavaScript rendering at scale.
----
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-advanced-javascript-2026';
 
 JavaScript-powered websites are the norm now, not the exception. If you're scraping at scale, you'll hit walls: rate limits, anti-bot systems, authentication gates, and performance bottlenecks. This guide takes you past "it works on my machine" into production-grade JavaScript scraping.
 
@@ -244,8 +249,4 @@ The $200+ commission from your JavaScript scraping content proves there's seriou
 
 Ready to build your scraping infrastructure? Firecrawl handles the hard stuff so you can focus on data extraction logic.
 
-import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
-
-<StickyAffiliateCTA product="firecrawl" />
-
-<a href="https://go.firecrawl.ai/zack-proser" class="button">Get Started with Firecrawl</a>
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
