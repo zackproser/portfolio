@@ -71,7 +71,9 @@ function SeriesCard({
 }: {
   series: { name: string; slug: string; posts: Blog[] }
 }) {
-  const latest = series.posts[series.posts.length - 1]
+  const latest = series.posts.reduce((mostRecent, post) => {
+    return new Date(post.date).getTime() > new Date(mostRecent.date).getTime() ? post : mostRecent
+  }, series.posts[0])
   const latestDate = new Date(`${latest.date}T00:00:00Z`).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',

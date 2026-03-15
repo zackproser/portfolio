@@ -192,6 +192,7 @@ export function ContentCard({ article }) {
             commerce={commerce}
             isPremium={isPremium}
             includesCode={includesCode}
+            series={series}
           />
         </a>
       ) : (
@@ -270,7 +271,7 @@ function CardContent({
           </p>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          {series && <SeriesBadge series={series} variant="compact" />}
+          {series && <SeriesBadge series={series} variant="compact" asLink={false} />}
           {isPremium && (
             <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mt-2 flex items-center">
               <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -11,21 +11,16 @@ interface SeriesBadgeProps {
   }
   /** compact = small inline pill (for ContentCard); full = banner (for ArticleLayout) */
   variant?: 'compact' | 'full'
+  /** Whether to render as a link (default: true) */
+  asLink?: boolean
 }
 
-export function SeriesBadge({ series, variant = 'compact' }: SeriesBadgeProps) {
+export function SeriesBadge({ series, variant = 'compact', asLink = true }: SeriesBadgeProps) {
   const href = `/series/${series.slug}` as const
 
   if (variant === 'compact') {
-    return (
-      <Link
-        href={href}
-        onClick={(e) => e.stopPropagation()}
-        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium
-          bg-violet-100 text-violet-800 dark:bg-violet-900/60 dark:text-violet-200
-          border border-violet-200 dark:border-violet-700/50
-          hover:bg-violet-200 dark:hover:bg-violet-800/70 transition-colors"
-      >
+    const content = (
+      <>
         <BookOpen className="w-3 h-3 flex-shrink-0" />
         <span>{series.name}</span>
         {series.order != null && (
@@ -33,6 +28,26 @@ export function SeriesBadge({ series, variant = 'compact' }: SeriesBadgeProps) {
             #{series.order}
           </span>
         )}
+      </>
+    )
+
+    const className = "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium bg-violet-100 text-violet-800 dark:bg-violet-900/60 dark:text-violet-200 border border-violet-200 dark:border-violet-700/50 hover:bg-violet-200 dark:hover:bg-violet-800/70 transition-colors"
+
+    if (!asLink) {
+      return (
+        <span className={className}>
+          {content}
+        </span>
+      )
+    }
+
+    return (
+      <Link
+        href={href}
+        onClick={(e) => e.stopPropagation()}
+        className={className}
+      >
+        {content}
       </Link>
     )
   }
