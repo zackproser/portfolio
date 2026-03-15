@@ -1,24 +1,28 @@
----
-title: "OpenClaw Status: Gmail Mirror for Local Full-Text Search"
-author: "Zachary Proser"
-date: "2026-02-15"
-description: "How I built gmail-mirror — a local Go CLI that syncs Gmail to SQLite with FTS5 for instant email search. 29,250+ messages indexed, sub-100ms queries."
-image: "https://zackproser.b-cdn.net/images/gmail-mirror.webp"
-slug: "openclaw-gmail-mirror"
-hiddenFromIndex: false
-keywords:
-  - "gmail-mirror"
-  - "email search"
-  - "sqlite fts5"
-  - "full-text search"
-  - "go cli"
-  - "local email"
-tags:
-  - "OpenClaw"
-  - "Go"
-  - "Email"
-  - "Search"
-series:
-  name: "OpenClaw Status"
-  slug: "openclaw-status"
-  order: 2
+{
+  "title": "OpenClaw Status: Gmail Mirror for Local Full-Text Search",
+  "author": "Zachary Proser",
+  "date": "2026-02-15",
+  "description": "How I built gmail-mirror — a local Go CLI that syncs Gmail to SQLite with FTS5 for instant email search. 29,250+ messages indexed, sub-100ms queries.",
+  "image": "https://zackproser.b-cdn.net/images/gmail-mirror.webp",
+  "slug": "openclaw-gmail-mirror",
+  "hiddenFromIndex": false,
+  "keywords": [
+    "gmail-mirror",
+    "email search",
+    "sqlite fts5",
+    "full-text search",
+    "go cli",
+    "local email"
+  ],
+  "tags": [
+    "OpenClaw",
+    "Go",
+    "Email",
+    "Search"
+  ],
+  "series": {
+    "name": "OpenClaw Status",
+    "slug": "openclaw-status",
+    "order": 2
+  }
+}
