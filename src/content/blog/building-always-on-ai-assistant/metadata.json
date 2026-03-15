@@ -27,5 +27,10 @@
     "Infrastructure",
     "Automation",
     "Tutorial"
-  ]
+  ],
+  "series": {
+    "name": "OpenClaw Status",
+    "slug": "openclaw-status",
+    "order": 1
+  }
 }
