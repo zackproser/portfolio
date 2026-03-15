@@ -1,7 +1,9 @@
----
-title: Gmail Mirror for Local Full-Text Search
-description: How I built gmail-mirror — a local Go CLI that syncs Gmail to SQLite with FTS5 for instant email search. 29,250+ messages indexed, sub-100ms queries.
----
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
 
 Searching email shouldn't require a server. Here's how I built gmail-mirror, a local Go CLI that syncs your Gmail to SQLite with FTS5 for instant, sub-100ms full-text search.
 
