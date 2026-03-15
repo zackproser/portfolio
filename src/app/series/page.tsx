@@ -109,7 +109,7 @@ function SeriesCard({
         {series.posts.map((post, i) => (
           <li key={post.slug}>
             <Link
-              href={`/blog/${post.slug}`}
+              href={post.slug as any}
               className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
             >
               <span className="flex-shrink-0 w-7 h-7 rounded-full bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300 text-xs font-bold flex items-center justify-center">

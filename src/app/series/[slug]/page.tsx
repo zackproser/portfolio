@@ -108,7 +108,7 @@ function SeriesPostCard({ post, index }: { post: Blog; index: number }) {
         {order}
       </span>
 
-      <Link href={`/blog/${post.slug}`} className="group w-full">
+      <Link href={post.slug as any} className="group w-full">
         <div className="relative w-full">
           <Image
             src={imgSrc}
