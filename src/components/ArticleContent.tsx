@@ -18,6 +18,7 @@ interface ArticleContentProps {
   content: Content
   requiresEmail?: boolean
   isSubscribed?: boolean
+  isAuthenticated?: boolean
 }
 
 export default function ArticleContent({ 
@@ -30,14 +31,15 @@ export default function ArticleContent({
   buttonText,
   content,
   requiresEmail = false,
-  isSubscribed = false
+  isSubscribed = false,
+  isAuthenticated = false
 }: ArticleContentProps) {
   if (!content.slug) {
     console.warn('ArticleContent: content.slug is missing, rendering full content')
     return <>{children}</>
   }
 
-  if (showFullContent || (requiresEmail && isSubscribed)) {
+  if (showFullContent || (requiresEmail && isSubscribed && isAuthenticated)) {
     return <>{children}</>
   }
 
