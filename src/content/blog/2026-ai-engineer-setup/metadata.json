@@ -21,5 +21,10 @@
     "Developer Setup",
     "Voice AI"
   ],
-  "hiddenFromIndex": true
+  "hiddenFromIndex": false,
+  "series": {
+    "name": "AI Engineer Setup",
+    "slug": "ai-engineer-setup",
+    "order": 2
+  }
 }
