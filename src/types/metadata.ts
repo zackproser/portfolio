@@ -25,6 +25,11 @@ export interface ExtendedMetadata extends Metadata {
   tags?: string[]
   _id?: string  // Internal unique identifier to prevent duplicate key issues
   hiddenFromIndex?: boolean  // Hide from /blog listing but keep accessible via direct link (for SEO/affiliate content)
+  series?: {
+    name: string          // e.g. "OpenClaw Status", "AI Engineer Setup"
+    slug: string          // URL-safe identifier, e.g. "openclaw-status"
+    order?: number        // Optional position in series (1-indexed)
+  }
   commerce?: CommerceConfig
   landing?: {
     heroTitle?: string  // Custom hero title
