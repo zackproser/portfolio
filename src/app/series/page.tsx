@@ -25,14 +25,10 @@ export default async function SeriesIndex() {
     seriesMap.get(slug)!.posts.push(post)
   }
 
-  // Sort posts within each series by order then date
   for (const series of seriesMap.values()) {
-    series.posts.sort((a, b) => {
-      if (a.series?.order != null && b.series?.order != null) {
-        return a.series.order - b.series.order
-      }
-      return new Date(a.date).getTime() - new Date(b.date).getTime()
-    })
+    const ordered = series.posts.filter(p => p.series?.order != null).sort((a, b) => a.series!.order! - b.series!.order!)
+    const unordered = series.posts.filter(p => p.series?.order == null).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    series.posts = [...ordered, ...unordered]
   }
 
   const allSeries = [...seriesMap.values()].sort((a, b) => a.name.localeCompare(b.name))

@@ -37,12 +37,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SeriesPage({ params }: PageProps) {
   const { slug } = await params
   const all = (await getAllContent('blog')) as Blog[]
-  const posts = all
-    .filter((p) => p.series?.slug === slug)
-    .sort((a, b) => {
-      if (a.series?.order != null && b.series?.order != null) return a.series.order - b.series.order
-      return new Date(a.date).getTime() - new Date(b.date).getTime()
-    })
+  const filtered = all.filter((p) => p.series?.slug === slug)
+  
+  const ordered = filtered.filter(p => p.series?.order != null).sort((a, b) => a.series!.order! - b.series!.order!)
+  const unordered = filtered.filter(p => p.series?.order == null).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  const posts = [...ordered, ...unordered]
 
   if (!posts.length) notFound()
 
@@ -93,7 +92,7 @@ export default async function SeriesPage({ params }: PageProps) {
 
 function SeriesPostCard({ post, index }: { post: Blog; index: number }) {
   const order = post.series?.order ?? index + 1
-  const imgSrc = typeof post.image === 'string' ? post.image : (post.image as any)?.src ?? FALLBACK_IMG
+  const imgSrc = (typeof post.image === 'string' && post.image) ? post.image : (post.image as any)?.src ?? FALLBACK_IMG
   const formattedDate = new Date(`${post.date}T00:00:00Z`).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
