@@ -1,0 +1,217 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import StickyAffiliateCTA, { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-spa-best-practices';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Best practices for scraping single-page applications" width={800} height={450} />
+</AffiliateLink>
+
+<StickyAffiliateCTA product="wisprflow" campaign={campaign} />
+
+Single-page applications present a different contract than traditional websites. In a classic multi-page site, each URL corresponds to a server-generated HTML document with the full page content. In an SPA, a single HTML document hosts the entire application. URLs are virtual — managed by JavaScript routing — and content appears only after the framework has mounted, fetched data, and rendered components.
+
+A scraper designed for static pages approaches SPAs with the wrong mental model. Getting SPA scraping right requires rethinking the problem from first principles.
+
+## Start with the Right Tool
+
+The most common SPA scraping mistake is using a static HTTP library (requests, curl, fetch) directly against a JavaScript-rendered URL. These tools are fast and simple for HTML content, but they cannot execute JavaScript. They will return the SPA's empty HTML shell every time.
+
+For SPAs, you need a browser-based scraping tool that:
+- Executes JavaScript in a real or headless browser environment
+- Waits for the framework's render lifecycle to complete
+- Returns the fully-rendered DOM, not the initial server response
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> handles this natively. Pass it a URL, configure a wait time, and receive rendered content:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+// Correct: uses headless browser to execute JavaScript
+const result = await app.scrapeUrl('https://my-spa.com/products', {
+  formats: ['markdown'],
+  waitFor: 2000,
+})
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Understand the SPA's Rendering Pattern Before You Scrape
+
+Not all SPAs are equal. Before you write scraping code, spend 5 minutes in browser DevTools:
+
+**Check the Network tab on page load.** Do you see HTML content in the initial document response? If yes, the app uses SSR. If the initial document is an empty shell with only JavaScript bundles, it's a pure CSR app.
+
+**Watch for XHR/Fetch requests.** What APIs does the page call to load data? How many calls? How long do they take? These numbers directly inform your `waitFor` configuration.
+
+**Look at the Sources tab.** What JavaScript framework is in use? Angular apps often have `ng-version` in the HTML, React apps have distinctive bundle naming, Vue apps show reactive component trees in the Vue DevTools extension.
+
+**Time the page load manually.** Open DevTools, hard reload, and check how long it takes until the page looks "done." Add 500-1000ms buffer to that time as your starting `waitFor` value.
+
+## Configure `waitFor` Conservatively
+
+The single biggest source of intermittent SPA scraping failures is inadequate `waitFor` time. Err on the side of waiting longer than you think you need:
+
+```javascript
+// Conservative defaults by framework type
+const waitForDefaults = {
+  react_csr: 2500,    // React client-side rendering
+  react_ssr: 1000,    // Next.js/Remix SSR
+  vue_csr: 2500,      // Vue client-side rendering
+  nuxt_ssr: 1000,     // Nuxt SSR
+  angular: 3500,      // Angular (Zone.js adds overhead)
+  angular_universal: 1500, // Angular Universal SSR
+}
+
+// Use these as starting points and tune down once you confirm reliability
+const result = await app.scrapeUrl(url, {
+  formats: ['markdown'],
+  waitFor: waitForDefaults.angular,
+})
+```
+
+## Use Selector-Based Waiting When Possible
+
+Fixed time delays are fragile — a slow API call can cause failures even with generous wait times. Selector-based waiting adapts to actual page behavior:
+
+```javascript
+// Wait for the specific element that confirms the page is ready
+const result = await app.scrapeUrl('https://spa.com/dashboard', {
+  formats: ['markdown'],
+  actions: [
+    // Wait up to 15 seconds for main content container
+    { type: 'waitForSelector', selector: '[data-testid="main-content"]', timeout: 15000 },
+    { type: 'wait', milliseconds: 300 }, // Brief stability buffer
+  ],
+  waitFor: 1000,
+})
+```
+
+Look for selectors that are:
+- Rendered by data, not present in the initial HTML
+- Stable (not animated in/out repeatedly)
+- Specific to the content you need (not a generic layout element)
+
+## Handle Authentication Properly
+
+Most enterprise SPAs require authentication. Three approaches work with Firecrawl:
+
+**Bearer token headers** for API-style auth:
+```javascript
+const result = await app.scrapeUrl('https://app.com/dashboard', {
+  formats: ['markdown'],
+  headers: { 'Authorization': `Bearer ${token}` },
+  waitFor: 3000,
+})
+```
+
+**Cookie injection** for session-based auth:
+```javascript
+const result = await app.scrapeUrl('https://app.com/dashboard', {
+  formats: ['markdown'],
+  cookies: [
+    { name: 'session_id', value: sessionId, domain: 'app.com' },
+    { name: 'csrf_token', value: csrfToken, domain: 'app.com' },
+  ],
+  waitFor: 3000,
+})
+```
+
+**Pre-login actions** for form-based auth:
+```javascript
+const result = await app.scrapeUrl('https://app.com/login', {
+  formats: ['markdown'],
+  actions: [
+    { type: 'fill', selector: '#email', value: process.env.APP_EMAIL },
+    { type: 'fill', selector: '#password', value: process.env.APP_PASSWORD },
+    { type: 'click', selector: '[type="submit"]' },
+    { type: 'wait', milliseconds: 2000 }, // Wait for login redirect
+    { type: 'navigate', url: 'https://app.com/dashboard' },
+    { type: 'waitForSelector', selector: '.dashboard-content', timeout: 10000 },
+  ],
+  waitFor: 2000,
+})
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Scope Crawls with `includePaths`
+
+SPAs often have admin panels, auth flows, and internal routes that you shouldn't scrape. Use `includePaths` and `excludePaths` to stay within scope:
+
+```javascript
+const crawlResult = await app.crawlUrl('https://spa-platform.com', {
+  limit: 200,
+  scrapeOptions: {
+    formats: ['markdown'],
+    waitFor: 2500,
+  },
+  includePaths: ['/products/*', '/categories/*', '/blog/*'],
+  excludePaths: ['/admin/*', '/auth/*', '/checkout/*', '/account/*'],
+})
+```
+
+## Extract Structured Data in One Pass
+
+LLM-based extraction turns scraped markdown into structured JSON without a separate parsing layer. For SPAs where DOM structure varies between renders, this is more robust than CSS selectors:
+
+```javascript
+import { z } from 'zod'
+
+const PageDataSchema = z.object({
+  title: z.string(),
+  mainContent: z.string(),
+  keyPoints: z.array(z.string()).optional(),
+  publishedDate: z.string().optional(),
+  author: z.string().optional(),
+})
+
+const result = await app.scrapeUrl('https://content-spa.com/articles/deep-work', {
+  formats: ['extract'],
+  extract: {
+    schema: PageDataSchema,
+    prompt: 'Extract the article title, main content, key points, publish date, and author'
+  },
+  waitFor: 2000,
+})
+```
+
+## Rate Limiting and Respectful Crawling
+
+SPA backends often rate-limit by IP. Aggressive crawling triggers 429 responses or temporary blocks:
+
+```javascript
+// Build in delays between requests
+async function crawlWithRateLimit(urls, delayMs = 1000) {
+  const results = []
+
+  for (const url of urls) {
+    const result = await app.scrapeUrl(url, {
+      formats: ['markdown'],
+      waitFor: 2000,
+    })
+    results.push(result)
+
+    // Respectful delay between requests
+    await new Promise(resolve => setTimeout(resolve, delayMs))
+  }
+
+  return results
+}
+```
+
+Firecrawl's crawl API handles rate limiting automatically when you use `crawlUrl` instead of individual `scrapeUrl` calls. For large-scale scraping, this is the preferred approach.
+
+The pattern for reliable SPA scraping is consistent: understand the rendering lifecycle, configure timing conservatively, use selector-based waits when possible, and extract structured data in one pass. Firecrawl handles the browser mechanics; your job is configuration and data modeling.
+
+**Related:**
+- <Link href="/blog/firecrawl-scrape-react-sites">Scraping React sites</Link>
+- <Link href="/blog/firecrawl-wait-for-render">Waiting for JavaScript to render</Link>
+- <Link href="/blog/firecrawl-headless-vs-api">Headless browser vs API scraping</Link>
