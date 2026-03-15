@@ -1,0 +1,196 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import StickyAffiliateCTA, { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-infinite-scroll';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Handling infinite scroll and lazy-loaded content with Firecrawl" width={800} height={450} />
+</AffiliateLink>
+
+<StickyAffiliateCTA product="wisprflow" campaign={campaign} />
+
+Standard pagination gave scrapers a clean problem: fetch page 1, parse results, fetch page 2, repeat. Infinite scroll threw that out. Modern social feeds, product catalogs, and content platforms load more items as the user scrolls down. There's no "page 2" URL to hit — more content appears in response to user behavior.
+
+If your scraper doesn't simulate that scroll behavior, it sees only the first viewport's worth of content and misses everything below the fold.
+
+## How Infinite Scroll Works
+
+Infinite scroll implementations generally follow one of two patterns:
+
+**Intersection Observer.** The page places a sentinel element near the bottom of the content. When a browser's Intersection Observer API detects that sentinel entering the viewport (because the user scrolled to it), the page fires an API request for the next batch of content and appends it to the DOM.
+
+**Scroll event listeners.** An older approach where JavaScript listens to scroll events, calculates position relative to the document bottom, and triggers data fetches when the user gets close enough to the end.
+
+Both patterns require a real browser to activate. A scraper that doesn't simulate scrolling never triggers the Intersection Observer or scroll events, so the sentinel never enters the viewport and the API calls never fire.
+
+## Scrolling to Load Content with Firecrawl
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink>'s `actions` API lets you simulate user scroll behavior before extracting content:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+// Scrape a page with infinite scroll — scroll down multiple times to load more content
+const result = await app.scrapeUrl('https://social-platform.com/feed', {
+  formats: ['markdown'],
+  actions: [
+    { type: 'scroll', direction: 'down', amount: 2000 },
+    { type: 'wait', milliseconds: 1500 }, // Wait for new batch to load
+    { type: 'scroll', direction: 'down', amount: 2000 },
+    { type: 'wait', milliseconds: 1500 },
+    { type: 'scroll', direction: 'down', amount: 2000 },
+    { type: 'wait', milliseconds: 1500 },
+    { type: 'scroll', direction: 'down', amount: 2000 },
+    { type: 'wait', milliseconds: 2000 }, // Final wait for last batch
+  ],
+  waitFor: 2000,
+})
+
+console.log(result.markdown)
+// Contains content from multiple scroll loads, not just the initial viewport
+```
+
+The scroll-wait-scroll-wait pattern is important. Scrolling too fast doesn't give the network requests time to complete and the DOM time to update.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Calibrating Scroll Depth and Timing
+
+How much to scroll and how long to wait depends on the site:
+
+**Items per batch.** Most infinite scroll implementations load 10-25 items per batch. If you need 100 items, expect 4-10 scroll cycles.
+
+**Network latency.** Wait times need to account for the API call round trip. A site with a slow API needs 2-3 seconds per scroll; a fast internal API might only need 800ms.
+
+**Content rendering time.** Complex items (images, videos, interactive components) take longer to render than text. Budget extra time for media-heavy feeds.
+
+```javascript
+// More aggressive infinite scroll collection
+async function scrapeFullFeed(url, scrollCycles = 10) {
+  const actions = []
+
+  // Build scroll sequence
+  for (let i = 0; i < scrollCycles; i++) {
+    actions.push({ type: 'scroll', direction: 'down', amount: 3000 })
+    actions.push({ type: 'wait', milliseconds: 2000 })
+  }
+
+  // Final scroll to absolute bottom
+  actions.push({ type: 'scroll', direction: 'down', amount: 99999 })
+  actions.push({ type: 'wait', milliseconds: 3000 })
+
+  const result = await app.scrapeUrl(url, {
+    formats: ['markdown'],
+    actions,
+    waitFor: 2000,
+  })
+
+  return result.markdown
+}
+
+const fullFeed = await scrapeFullFeed('https://content-platform.com/articles', 15)
+```
+
+## Handling Lazy-Loaded Images and Media
+
+Lazy loading is related but distinct from infinite scroll. Images and videos often have `loading="lazy"` or use Intersection Observers to defer loading until they enter the viewport. This affects:
+
+- **Thumbnail grids** where each image loads as it scrolls into view
+- **Media feeds** where video previews activate on scroll
+- **Data visualizations** where charts render lazily to improve page load time
+
+For image-heavy pages, Firecrawl's scroll actions trigger lazy image loads. The rendered markdown will include the actual image URLs once they load:
+
+```javascript
+// Scrape a product grid with lazy-loaded images
+const result = await app.scrapeUrl('https://photo-gallery.com/collection/2025', {
+  formats: ['markdown', 'html'],
+  actions: [
+    { type: 'scroll', direction: 'down', amount: 1500 },
+    { type: 'wait', milliseconds: 1000 },
+    { type: 'scroll', direction: 'down', amount: 1500 },
+    { type: 'wait', milliseconds: 1000 },
+    { type: 'scroll', direction: 'down', amount: 1500 },
+    { type: 'wait', milliseconds: 1500 },
+  ],
+  waitFor: 2000,
+})
+
+// Extract image URLs from fully-loaded gallery
+const imageUrls = extractImageUrls(result.html)
+console.log(`Found ${imageUrls.length} loaded images`)
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Working with API-Backed Pagination
+
+Some "infinite scroll" implementations are actually paginated APIs wrapped in scroll UI. The page hits `/api/posts?page=1&limit=20`, appends results, then hits `page=2` on next scroll. If you can identify this pattern, direct API scraping is faster and more reliable than browser simulation.
+
+Look for the pattern in browser DevTools (Network tab while scrolling). If you see sequential API calls with page/offset parameters, target the API directly:
+
+```javascript
+// If the underlying API is accessible, use it directly
+async function scrapeAllPages(baseUrl, pageSize = 20) {
+  const allItems = []
+  let page = 1
+  let hasMore = true
+
+  while (hasMore) {
+    const result = await app.scrapeUrl(`${baseUrl}?page=${page}&limit=${pageSize}`, {
+      formats: ['extract'],
+      extract: {
+        prompt: 'Extract all items from this page and whether there are more pages'
+      }
+    })
+
+    allItems.push(...(result.extract.items || []))
+    hasMore = result.extract.hasMore && page < 50 // Safety limit
+    page++
+
+    // Respectful rate limiting
+    await new Promise(resolve => setTimeout(resolve, 500))
+  }
+
+  return allItems
+}
+```
+
+## Detecting End-of-Content
+
+Infinite scroll scraping needs a stopping condition. Approaches:
+
+- **Fixed scroll count.** Scroll N times and stop. Simple but might miss content or scroll past the end.
+- **Content length delta.** Compare content length before and after each scroll. If it stops growing, you've reached the end.
+- **End-of-feed indicator.** Many sites show "You're all caught up" or similar messages. Check for these in the extracted markdown.
+
+```javascript
+// Scroll until content stops growing
+async function scrapeUntilStable(url, maxScrolls = 20) {
+  let previousLength = 0
+  let stableCount = 0
+  const actions = []
+
+  for (let i = 0; i < maxScrolls; i++) {
+    actions.push({ type: 'scroll', direction: 'down', amount: 2500 })
+    actions.push({ type: 'wait', milliseconds: 2000 })
+  }
+
+  const result = await app.scrapeUrl(url, { formats: ['markdown'], actions, waitFor: 2000 })
+  return result.markdown
+}
+```
+
+Infinite scroll is an engineering decision to hide pagination from users. Your scraper just needs to simulate what a scrolling user would do, at a pace that lets the page keep up.
+
+**Related:**
+- <Link href="/blog/firecrawl-wait-for-render">Waiting for JavaScript to render</Link>
+- <Link href="/blog/firecrawl-dynamic-content">Extracting dynamically generated content</Link>
+- <Link href="/blog/firecrawl-spa-best-practices">SPA scraping best practices</Link>

@@ -1,0 +1,181 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import StickyAffiliateCTA, { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-scrape-angular-sites';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Scraping Angular applications with Firecrawl" width={800} height={450} />
+</AffiliateLink>
+
+<StickyAffiliateCTA product="wisprflow" campaign={campaign} />
+
+Angular is the framework of choice for many enterprise applications — internal dashboards, customer portals, B2B SaaS products. These apps are often data-dense and exactly the kind of thing developers need to scrape for reporting, migration, or integration purposes.
+
+The challenge: Angular renders entirely in the browser. Its change detection system, dependency injection, and routing architecture mean the content you see in a browser tab doesn't exist in the raw HTTP response a basic scraper receives. You need to run Angular's code to get Angular's output.
+
+## Angular's Rendering Architecture
+
+Understanding why Angular is hard to scrape helps you configure your tooling correctly.
+
+**Zone.js and change detection.** Angular uses Zone.js to detect when asynchronous operations complete, then runs change detection to update the DOM. When an Angular component fetches data from a service, Zone.js patches the fetch/XHR call, waits for it to complete, and triggers a render cycle. A scraper needs to wait for this entire cycle to finish.
+
+**RxJS observables.** Angular's standard pattern for data fetching uses RxJS — observable streams that emit values asynchronously. Components subscribe to observables and render data when it arrives. The DOM doesn't update until the observable emits, which happens after the HTTP call completes.
+
+**Angular Universal (SSR).** Angular Universal pre-renders pages on the server, similar to Next.js SSR. Universal pages contain real content in the initial HTML response, but client-side components still need hydration time.
+
+**Lazy-loaded modules.** Angular splits code into feature modules that load on demand. Navigating to a feature-module route triggers a new JavaScript bundle download before the route component renders.
+
+## Scraping Angular with Firecrawl
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Firecrawl</AffiliateLink> runs Angular's full JavaScript stack in a headless browser, waits for the rendering lifecycle to complete, and returns the final DOM:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+// Scrape an Angular application
+const result = await app.scrapeUrl('https://angular-crm.com/contacts', {
+  formats: ['markdown'],
+  waitFor: 3000, // Angular apps often need more time — services, Zone.js, observables
+})
+
+console.log(result.markdown)
+// Full contact list rendered by Angular, not the empty app-root element
+```
+
+Angular enterprise apps frequently need longer `waitFor` values than React or Vue apps because the Zone.js/observable pattern adds async layers. Start at 3000ms and increase if you're getting incomplete renders.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Navigating Angular Router
+
+Angular Router is a first-class framework feature that controls all navigation. It supports:
+
+- Path-based routes: `/dashboard/reports`
+- Hash routes: `/#/dashboard/reports`
+- Lazy-loaded routes that download code bundles on demand
+
+Firecrawl's crawler treats Angular Router links like standard anchor tags and follows them correctly. The key is ensuring each page gets adequate render time for its specific module to load and execute:
+
+```javascript
+// Crawl an Angular application's main sections
+const crawlResult = await app.crawlUrl('https://angular-portal.com', {
+  limit: 75,
+  scrapeOptions: {
+    formats: ['markdown'],
+    waitFor: 3500, // Accounts for lazy module loading on route changes
+  },
+  includePaths: [
+    '/dashboard/*',
+    '/reports/*',
+    '/customers/*',
+  ],
+  excludePaths: [
+    '/admin/*',
+    '/settings/*',
+  ]
+})
+
+console.log(`Scraped ${crawlResult.data.length} Angular pages`)
+```
+
+## Extracting Data Tables from Angular
+
+Enterprise Angular apps frequently render data in `<mat-table>` (Angular Material) or similar component libraries. The underlying data is real DOM content once rendered — Firecrawl's extraction handles it:
+
+```javascript
+import { z } from 'zod'
+
+const ReportSchema = z.object({
+  rows: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    status: z.string(),
+    date: z.string(),
+    amount: z.string().optional(),
+  }))
+})
+
+// Extract tabular data from an Angular Material data table
+const result = await app.scrapeUrl('https://angular-app.com/reports/q4-2025', {
+  formats: ['extract'],
+  extract: {
+    schema: ReportSchema,
+    prompt: 'Extract all rows from the data table including ID, name, status, date, and amount'
+  },
+  waitFor: 4000,
+})
+
+console.log(`Extracted ${result.extract.rows.length} report rows`)
+result.extract.rows.forEach(row => {
+  console.log(`${row.id}: ${row.name} — ${row.status}`)
+})
+```
+
+## Handling Angular Loading Indicators
+
+Angular apps commonly show spinners or skeleton screens while data loads. Scraping during this state returns placeholder content instead of real data. Use Firecrawl's actions to wait for loading indicators to disappear:
+
+```javascript
+const result = await app.scrapeUrl('https://angular-dashboard.com/analytics', {
+  formats: ['markdown'],
+  actions: [
+    // Wait for loading spinner to disappear
+    { type: 'waitForSelector', selector: '.loading-spinner', state: 'hidden', timeout: 10000 },
+    // Wait additional time for chart rendering (common in Angular dashboards)
+    { type: 'wait', milliseconds: 1000 },
+  ],
+  waitFor: 2000,
+})
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Angular Universal SSR Pages
+
+Angular Universal pages benefit from shorter wait times because the content arrives in the initial HTML:
+
+```javascript
+// Detect if a page uses Angular Universal by checking for 'ng-version' in HTML
+// Angular Universal pages have this attribute on the <html> element
+
+// For Universal pages — shorter wait for hydration only
+const universalPage = await app.scrapeUrl('https://angular-universal-shop.com/products/widget', {
+  formats: ['markdown', 'html'],
+  waitFor: 1500,
+})
+
+// Check for Universal rendering
+const isUniversal = universalPage.html?.includes('ng-version')
+console.log(`Angular Universal: ${isUniversal}`)
+```
+
+## Dealing with Angular Forms and Navigation Guards
+
+Some Angular routes are protected by navigation guards that redirect unauthenticated users. Others show login forms. For these cases, authenticated scraping with session cookies works the same way it does for other frameworks:
+
+```javascript
+// Scrape behind Angular authentication
+const result = await app.scrapeUrl('https://angular-portal.com/dashboard', {
+  formats: ['markdown'],
+  waitFor: 4000,
+  headers: {
+    'Authorization': `Bearer ${process.env.ANGULAR_APP_TOKEN}`,
+  },
+  // Angular apps often use cookie-based auth for SSR compatibility
+  // cookies: [{ name: 'AUTH_TOKEN', value: 'your-auth-token', domain: 'angular-portal.com' }]
+})
+```
+
+Angular's architecture is more complex than React or Vue for scraping purposes — Zone.js, observables, lazy loading, and module boundaries all add timing considerations. The pattern is consistent once you understand it: run the JavaScript, wait for the observable streams to settle, extract the rendered DOM. Firecrawl handles the browser mechanics; you configure the timing.
+
+**Related:**
+- <Link href="/blog/firecrawl-scrape-react-sites">Scraping React and Next.js sites</Link>
+- <Link href="/blog/firecrawl-wait-for-render">Waiting for JavaScript to render</Link>
+- <Link href="/blog/firecrawl-headless-vs-api">Headless browser vs API scraping</Link>

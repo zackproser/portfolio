@@ -1,0 +1,250 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import StickyAffiliateCTA, { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-dynamic-content';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Extracting dynamically generated content with Firecrawl" width={800} height={450} />
+</AffiliateLink>
+
+<StickyAffiliateCTA product="wisprflow" campaign={campaign} />
+
+Dynamic content is content that doesn't exist in the page source — it's generated after the page loads, in response to events, API calls, timers, or user actions. A standard scraper captures a snapshot of the DOM at request time. Dynamic content appears later, often much later, and a scraper that doesn't account for this returns stale or empty data.
+
+The challenge scales with how dynamic the page is. A page that fetches a list of articles from one API is mildly dynamic. A real-time dashboard that polls multiple data sources, applies calculations, and updates charts every few seconds is severely dynamic. The scraping approach is fundamentally different for each.
+
+## Categories of Dynamic Content
+
+Understanding what kind of dynamic content you're dealing with shapes the extraction strategy:
+
+**API-fetched data on load.** The most common case. A component fires API requests when it mounts and renders data when responses arrive. Content is dynamic in the sense that it loads after the initial HTML, but it's stable once loaded.
+
+**User-interaction-driven content.** Content that appears only when a user clicks, hovers, types, or scrolls. A dropdown menu, an expandable accordion, a search autocomplete — these don't exist in the DOM until the triggering interaction happens.
+
+**Polling and real-time updates.** Dashboards, price tickers, live feeds. Content changes continuously based on external data. Scraping gives you a snapshot; tracking requires repeated scraping or streaming APIs.
+
+**Timer-delayed content.** Elements that appear after a delay — cookie consent modals, exit-intent popups, timed promotional banners. These clutter scraped output if not handled.
+
+**Computed and aggregated content.** Values calculated from other data — totals, percentages, scores. These require the underlying data to load before the computed value renders.
+
+## Scraping API-Fetched Dynamic Content
+
+This is the default case for modern SPAs. Wait for the data to arrive, then scrape:
+
+```javascript
+import Firecrawl from '@mendable/firecrawl-js'
+
+const app = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY })
+
+// Basic: wait for API-fetched content to render
+const result = await app.scrapeUrl('https://dashboard.com/metrics', {
+  formats: ['markdown'],
+  waitFor: 3000, // Give API calls time to complete and DOM to update
+})
+
+console.log(result.markdown) // Contains rendered metrics, not loading states
+```
+
+For pages with multiple independent API calls, waiting for a specific element that's rendered last works better than a fixed delay:
+
+```javascript
+// Wait for the last element to render (confirms all API calls completed)
+const result = await app.scrapeUrl('https://analytics-app.com/report', {
+  formats: ['markdown'],
+  actions: [
+    // The summary section renders last because it aggregates all data
+    { type: 'waitForSelector', selector: '.report-summary', timeout: 15000 },
+  ],
+  waitFor: 1000,
+})
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Triggering User-Interaction-Driven Content
+
+Content that requires user interaction needs simulated interaction before scraping. Firecrawl's `actions` API supports clicks, hovers, form fills, and keyboard input:
+
+```javascript
+// Expand an accordion to reveal hidden content
+const result = await app.scrapeUrl('https://faq-site.com/questions', {
+  formats: ['markdown'],
+  actions: [
+    // Click all accordion items to expand them
+    { type: 'click', selector: '.accordion-header:nth-child(1)' },
+    { type: 'wait', milliseconds: 300 },
+    { type: 'click', selector: '.accordion-header:nth-child(2)' },
+    { type: 'wait', milliseconds: 300 },
+    { type: 'click', selector: '.accordion-header:nth-child(3)' },
+    { type: 'wait', milliseconds: 500 },
+  ],
+  waitFor: 1000,
+})
+// Now contains expanded accordion content
+```
+
+For dropdown menus and hover-triggered content:
+
+```javascript
+// Trigger a hover menu to capture navigation items
+const result = await app.scrapeUrl('https://ecommerce-site.com', {
+  formats: ['html'],
+  actions: [
+    { type: 'hover', selector: '.nav-menu > li:first-child' },
+    { type: 'wait', milliseconds: 500 }, // Wait for dropdown animation
+  ],
+  waitFor: 1000,
+})
+```
+
+## Extracting Search and Filter Results
+
+Many product catalogs and content platforms show dynamic results based on search inputs or filter selections. Scraping requires simulating the search before extracting results:
+
+```javascript
+// Search for a specific term and scrape results
+const result = await app.scrapeUrl('https://product-catalog.com/search', {
+  formats: ['markdown'],
+  actions: [
+    // Focus search input
+    { type: 'click', selector: '#search-input' },
+    // Type search query
+    { type: 'type', selector: '#search-input', text: 'wireless headphones' },
+    // Submit search
+    { type: 'press', key: 'Enter' },
+    // Wait for results to load
+    { type: 'waitForSelector', selector: '.search-results .product-card', timeout: 10000 },
+  ],
+  waitFor: 2000,
+})
+```
+
+For filter-based dynamic content:
+
+```javascript
+// Apply filters and scrape filtered results
+const result = await app.scrapeUrl('https://job-board.com/listings', {
+  formats: ['extract'],
+  extract: {
+    prompt: 'Extract all job listings with title, company, location, and salary if shown'
+  },
+  actions: [
+    // Select "Remote" filter
+    { type: 'click', selector: '[data-filter="remote"]' },
+    // Select "Engineering" category
+    { type: 'click', selector: '[data-category="engineering"]' },
+    // Wait for filtered results
+    { type: 'waitForSelector', selector: '.job-listing', timeout: 8000 },
+    { type: 'wait', milliseconds: 500 },
+  ],
+  waitFor: 2000,
+})
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Handling Modals and Overlays
+
+Dynamic modals — cookie banners, paywalls, age gates, newsletter popups — render over the content you want to scrape. They need to be dismissed:
+
+```javascript
+// Dismiss a cookie consent modal before scraping
+const result = await app.scrapeUrl('https://news-site.com/article', {
+  formats: ['markdown'],
+  actions: [
+    // Accept cookies if modal appears
+    { type: 'click', selector: '.cookie-consent-accept', optional: true },
+    { type: 'wait', milliseconds: 500 },
+    // Close newsletter popup if it appears
+    { type: 'click', selector: '.modal-close', optional: true },
+    { type: 'wait', milliseconds: 300 },
+  ],
+  waitFor: 2000,
+})
+```
+
+## Scraping Computed and Aggregated Values
+
+Dashboard-style pages render aggregate values (totals, averages, percentages) that depend on multiple underlying data loads. These values might render last, after all underlying data has arrived:
+
+```javascript
+import { z } from 'zod'
+
+const DashboardSchema = z.object({
+  totalRevenue: z.string(),
+  activeUsers: z.string(),
+  conversionRate: z.string(),
+  recentTransactions: z.array(z.object({
+    id: z.string(),
+    amount: z.string(),
+    status: z.string(),
+  }))
+})
+
+// Extract computed dashboard values
+const result = await app.scrapeUrl('https://saas-dashboard.com/overview', {
+  formats: ['extract'],
+  extract: {
+    schema: DashboardSchema,
+    prompt: 'Extract the key metrics: total revenue, active users, conversion rate, and recent transactions'
+  },
+  actions: [
+    // Wait for all dashboard cards to render
+    { type: 'waitForSelector', selector: '[data-metric="revenue"]', timeout: 12000 },
+    { type: 'waitForSelector', selector: '[data-metric="users"]', timeout: 12000 },
+    { type: 'wait', milliseconds: 1000 },
+  ],
+  waitFor: 3000,
+})
+```
+
+## Tracking Content That Changes Over Time
+
+For pages with continuous updates (price tickers, live sports scores, real-time feeds), periodic scraping with change detection is the practical approach:
+
+```javascript
+async function trackDynamicContent(url, intervalMs = 60000) {
+  const snapshots = []
+  let previousContent = null
+
+  const scrapeOnce = async () => {
+    const result = await app.scrapeUrl(url, {
+      formats: ['extract'],
+      extract: { prompt: 'Extract current values of all metrics, prices, or scores shown' },
+      waitFor: 2000,
+    })
+
+    const currentContent = JSON.stringify(result.extract)
+
+    if (currentContent !== previousContent) {
+      const snapshot = {
+        timestamp: new Date().toISOString(),
+        data: result.extract,
+      }
+      snapshots.push(snapshot)
+      console.log('Content changed:', snapshot)
+      previousContent = currentContent
+    }
+  }
+
+  // Initial scrape
+  await scrapeOnce()
+
+  // Periodic re-scrape
+  setInterval(scrapeOnce, intervalMs)
+
+  return snapshots
+}
+```
+
+Dynamic content is the norm, not the exception, for modern web applications. The extraction toolkit — wait times, selector waits, simulated interactions, and LLM-based extraction — covers virtually every case. The key is matching the extraction strategy to the specific type of dynamism on the page you're targeting.
+
+**Related:**
+- <Link href="/blog/firecrawl-wait-for-render">Waiting for JavaScript to render</Link>
+- <Link href="/blog/firecrawl-infinite-scroll">Handling infinite scroll</Link>
+- <Link href="/blog/firecrawl-spa-best-practices">SPA scraping best practices</Link>
