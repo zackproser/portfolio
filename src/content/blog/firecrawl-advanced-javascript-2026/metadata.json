@@ -3,9 +3,9 @@
   "date": "2026-03-15",
   "title": "Advanced JavaScript Scraping with Firecrawl in 2026",
   "description": "Go beyond the basics — handle authentication, proxies, rate limiting, anti-bot detection, and large-scale JavaScript rendering at scale.",
-  "image": "https://zackproser.b-cdn.net/images/firecrawl-advanced-js-2026.webp",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
   "slug": "firecrawl-advanced-javascript-2026",
-  "hiddenFromIndex": false,
+  "hiddenFromIndex": true,
   "keywords": [
     "firecrawl advanced scraping",
     "firecrawl authentication",
