@@ -1,9 +1,10 @@
 {
-  "title": "Granola for Lawyers: AI Meeting Intelligence That Transforms Legal Practice",
+  "title": "Granola for Lawyers: AI Meeting Assistant for Legal Professionals 2026",
   "author": "Zachary Proser",
-  "date": "2026-3-6",
-  "description": "How law firms are using Granola's AI meeting intelligence to improve client communication, case documentation, and billable hour accuracy.",
+  "date": "2026-3-16",
+  "description": "How Granola's AI meeting assistant transforms legal practice with automatic transcription, action item tracking, and client meeting documentation. Designed for law firms and solo practitioners.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "legal", "meetings", "productivity"],
-  "hiddenFromIndex": true
+  "tags": ["ai", "meeting-notes", "legal", "lawyers", "productivity"],
+  "hiddenFromIndex": true,
+  "product": "granola"
 }
