@@ -1,0 +1,9 @@
+{
+  "title": "Android Enterprise Voice AI Security: WisprFlow MDM and Corporate Compliance",
+  "author": "Zachary Proser",
+  "date": "2026-3-16",
+  "description": "Enterprise Android deployment of WisprFlow with mobile device management, security policies, and corporate compliance.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["android", "enterprise", "security", "mdm"],
+  "hiddenFromIndex": true
+}
