@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Software Engineers: Voice-Driven Coding and Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-3-18",
+  "description": "Software engineers are using WisprFlow to dictate code comments, technical documentation, pull request descriptions, and Slack messages faster than they can type.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["ai", "voice", "engineering", "productivity", "software-development"],
+  "hiddenFromIndex": true
+}

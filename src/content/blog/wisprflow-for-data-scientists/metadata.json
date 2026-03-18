@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Data Scientists: Voice Notes for Analysis, Findings, and Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-3-18",
+  "description": "Data scientists use WisprFlow to capture analytical observations, dictate findings while notebooks are running, and document model decisions faster than they can type.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["ai", "voice", "data-science", "machine-learning", "productivity"],
+  "hiddenFromIndex": true
+}

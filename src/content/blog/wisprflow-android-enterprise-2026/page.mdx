@@ -1,0 +1,95 @@
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
+
+WisprFlow's Android launch in 2026 opened a use case that the Mac-only version couldn't touch: enterprise field workers, sales teams, and healthcare professionals who live on Android devices and need voice input that's faster and more accurate than anything built into the OS.
+
+This guide covers what you need to know to evaluate and deploy WisprFlow across an Android enterprise environment.
+
+## Why Android for Enterprise Voice AI
+
+Enterprise Android deployments span industries where voice input has compelling ROI:
+
+- **Field service technicians** completing work orders verbally instead of typing on small screens
+- **Healthcare workers** dictating patient notes between rooms
+- **Sales reps** updating CRM via voice between client calls
+- **Warehouse and logistics workers** on rugged Android devices in noisy environments
+
+WisprFlow's system-wide injection model — where voice input flows into any focused text field — maps directly onto these use cases. It's not a standalone recording app; it augments every other app on the device.
+
+<InlineAffiliateCTA product="wisprflow" campaign="wisprflow-android-enterprise" />
+
+## Security Model
+
+Enterprise IT teams typically want answers to three questions before approving a voice AI tool:
+
+**Where does audio go?**
+WisprFlow processes audio on-device for the initial transcription. The text result is what gets transmitted, not raw audio recordings. This is meaningfully different from tools that send audio files to cloud servers.
+
+**What data is retained?**
+WisprFlow's business plan includes controls over data retention. The default behavior does not store transcription history in the cloud. Admins can configure what gets logged for business plans.
+
+**How is authentication handled?**
+WisprFlow supports SSO for business accounts, which means you can integrate it into your existing identity provider (Okta, Azure AD, Google Workspace) and manage access from your standard MDM.
+
+## MDM Deployment
+
+WisprFlow can be deployed via standard Android MDM platforms including:
+- **Microsoft Intune** — push the APK and configure managed app policies
+- **Jamf** — available for Android devices enrolled in Jamf's Android management
+- **VMware Workspace ONE** — deploy as managed app with policy controls
+
+The setup mirrors any other enterprise Android app deployment. Configure through your MDM console, push to device groups, and set licensing to the team plan.
+
+<InlineAffiliateCTA product="wisprflow" campaign="wisprflow-android-enterprise" />
+
+## Productivity Benchmarks
+
+WisprFlow's own data and independent testing put dictation at 120–180 WPM compared to 40–60 WPM for mobile touchscreen typing. For workers who spend meaningful time entering text on mobile devices, this compounds across a workday.
+
+Concrete examples from enterprise deployments:
+
+**Field service:** Technicians completing job completion notes in 45 seconds via dictation vs 3–4 minutes of typing on a 5-inch screen.
+
+**Healthcare:** Nurses completing post-visit documentation between patient rooms without stopping to type.
+
+**Sales:** CRM updates captured immediately post-call via voice while driving, rather than batched and forgotten.
+
+The accuracy for these specialized contexts requires some tuning — adding domain-specific vocabulary (medical terms, product names, client names) to WisprFlow's custom vocabulary list produces the biggest gains.
+
+## Custom Vocabulary Setup
+
+For enterprise deployments, front-load the custom vocabulary setup before rolling out to users:
+
+1. Identify the 50–100 most common specialized terms your team uses
+2. Add them to a shared WisprFlow vocabulary list (Business plan supports team vocabulary)
+3. Include proper nouns: client names, product names, internal project names
+4. Test with representative audio samples before full rollout
+
+This alone closes most of the accuracy gap for specialized industries.
+
+<InlineAffiliateCTA product="wisprflow" campaign="wisprflow-android-enterprise" />
+
+## Hardware Considerations
+
+WisprFlow runs well on modern mid-range Android devices (Snapdragon 7xx and above). For enterprise deployments with older or budget hardware:
+
+- Devices below Snapdragon 6xx may experience higher latency (400ms+)
+- Battery impact is low during dictation (mic-only, no camera)
+- Rugged devices (Zebra, Honeywell) work with WisprFlow but may need accessibility permissions enabled manually
+- Samsung Knox-enrolled devices require IT to whitelist WisprFlow before accessibility services activate
+
+## Licensing Structure
+
+**WisprFlow Business plan:**
+- Priced per seat per month (contact WisprFlow for enterprise volume pricing)
+- Centralized team vocabulary management
+- SSO integration
+- Usage analytics for team admins
+- Priority support
+
+For deployments over 25 seats, WisprFlow's enterprise sales team can structure volume agreements. The ROI math typically closes quickly for field worker use cases where the alternative is 3–4 minutes of frustrated touchscreen typing.
+
+## Bottom Line
+
+<AffiliateLink product="wisprflow" campaign="wisprflow-android-enterprise">WisprFlow on Android</AffiliateLink> is a genuine enterprise productivity tool for organizations where mobile workers spend significant time entering text. The system-wide injection model, on-device audio processing, and MDM compatibility make it deployable without heroic effort.
+
+The evaluation path for enterprise buyers: identify 5–10 power users in your target department, run a 30-day trial with proper custom vocabulary setup, and measure time-on-documentation before and after. The numbers make the business case.

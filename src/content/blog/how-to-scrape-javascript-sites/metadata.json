@@ -5,7 +5,7 @@
   "description": "JavaScript rendering is the hardest part of web scraping. Here's how modern tools handle SPAs, dynamic content, and client-side rendering.",
   "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
   "slug": "/blog/how-to-scrape-javascript-sites",
-  "hiddenFromIndex": false,
+  "hiddenFromIndex": true,
   "keywords": [
     "scrape javascript website",
     "scrape spa site",
