@@ -1,9 +1,10 @@
 {
-  "title": "Granola for Consultants: AI Meeting Intelligence That Wins More Business",
+  "title": "Granola for Consultants: AI Meeting Assistant for Consulting Professionals 2026",
   "author": "Zachary Proser",
-  "date": "2026-3-6",
-  "description": "How management consultants use Granola's AI meeting intelligence to improve client relationships, capture insights, and deliver superior project outcomes.",
+  "date": "2026-3-16",
+  "description": "How Granola's AI meeting assistant transforms consulting practice with client meeting transcription, project documentation, and billable hour tracking for consultants and consulting firms.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "consulting", "meetings", "productivity"],
-  "hiddenFromIndex": true
+  "tags": ["ai", "meeting-notes", "consulting", "consultants", "productivity"],
+  "hiddenFromIndex": true,
+  "product": "granola"
 }
