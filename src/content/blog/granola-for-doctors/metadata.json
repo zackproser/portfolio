@@ -1,9 +1,10 @@
 {
-  "title": "Granola for Doctors: AI Meeting Notes That Transform Patient Consultations",
+  "title": "Granola for Doctors: AI Meeting Assistant for Medical Professionals 2026",
   "author": "Zachary Proser",
-  "date": "2026-3-8",
-  "description": "How physicians use Granola's AI meeting notes to document patient consultations, reduce administrative burden, and spend more time on actual patient care.",
+  "date": "2026-3-16",
+  "description": "How Granola's AI meeting assistant transforms medical practice with automatic patient consultation transcription, care plan documentation, and HIPAA-compliant meeting management.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "healthcare", "productivity", "meetings"],
-  "hiddenFromIndex": true
+  "tags": ["ai", "meeting-notes", "medical", "doctors", "healthcare"],
+  "hiddenFromIndex": true,
+  "product": "granola"
 }
