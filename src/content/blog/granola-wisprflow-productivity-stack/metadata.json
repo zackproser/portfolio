@@ -1,0 +1,9 @@
+{
+  "title": "The Granola + WisprFlow Productivity Stack: Voice In, Meetings Out",
+  "author": "Zachary Proser",
+  "date": "2026-3-14",
+  "description": "WisprFlow handles voice input at 179 WPM. Granola captures and structures your meetings. Together they form a complete voice-native knowledge work stack.",
+  "image": "https://zackproser.b-cdn.net/images/granola-example.webp",
+  "tags": ["ai", "productivity", "voice", "meetings", "granola", "wisprflow"],
+  "hiddenFromIndex": true
+}
