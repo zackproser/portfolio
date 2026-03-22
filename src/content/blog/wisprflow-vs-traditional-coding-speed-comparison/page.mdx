@@ -1,12 +1,14 @@
 import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA'
 
+export const campaign = 'wisprflow-vs-traditional-coding-speed-comparison';
+
 # WisprFlow vs Traditional Typing: Real Speed Comparison for Developers
 
 After six months using WisprFlow for voice coding, I ran controlled tests comparing typing speed versus voice input across different programming tasks. The results show significant advantages for voice coding, but not in every scenario.
 
 Here's what 50 hours of testing revealed.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Test Methodology
 
@@ -49,7 +51,7 @@ const UserProfile = ({ user, onEdit }) => {
 
 That component came from voice input without corrections.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### API Endpoint Implementation
 
@@ -77,7 +79,7 @@ CREATE TABLE users (
 
 Speaking database schemas feels more natural than typing them.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### Documentation Writing
 
@@ -104,7 +106,7 @@ Code review comments benefit from voice input because you're explaining problems
 
 Voice input produced fewer total errors, but the error types differed. Keyboard errors were mostly typos that syntax highlighting catches immediately. Voice errors were usually transcription misunderstandings that required more context to identify.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Fatigue Factor
 
@@ -147,4 +149,4 @@ This benefit becomes more pronounced with complex nested data structures, config
 
 The optimal workflow combines both approaches. Voice for structure and documentation, keyboard for detailed logic and debugging.
 
-<AffiliateLink product="wisprflow">Try WisprFlow free</AffiliateLink> and run your own speed comparisons to see which tasks benefit most from voice coding in your development workflow.
+<AffiliateLink product="wisprflow" campaign={campaign}>Try WisprFlow free</AffiliateLink> and run your own speed comparisons to see which tasks benefit most from voice coding in your development workflow.
