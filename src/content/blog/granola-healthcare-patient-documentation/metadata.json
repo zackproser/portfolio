@@ -1,0 +1,9 @@
+{
+  "title": "Granola AI for Healthcare: Automated Patient Visit Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-3-22",
+  "description": "Healthcare professionals use Granola AI to automate patient visit transcription and generate HIPAA-compliant documentation.",
+  "image": "https://zackproser.b-cdn.net/images/granola-example.webp",
+  "tags": ["ai", "healthcare", "hipaa", "documentation"],
+  "hiddenFromIndex": true
+}
