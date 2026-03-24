@@ -1,9 +1,9 @@
 {
-  "title": "WisprFlow Android for Nurses: Voice Notes on Samsung and Pixel Devices",
+  "title": "WisprFlow Android for Nurses: Voice Documentation That Keeps Up",
   "author": "Zachary Proser",
-  "date": "2026-03-19",
-  "description": "WisprFlow now runs on Android. Nurses using Samsung Galaxy, Google Pixel, and other Android phones can now use AI voice dictation for patient notes, shift documentation, and care records.",
+  "date": "2026-3-18",
+  "description": "How nurses use WisprFlow on Android to complete patient documentation between rooms without slowing down. Setup guide and real-world accuracy tips.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["ai", "voice", "android", "nursing", "healthcare", "samsung", "productivity"],
+  "tags": ["ai", "voice", "android", "healthcare", "nursing", "productivity"],
   "hiddenFromIndex": true
 }
