@@ -1,9 +1,9 @@
 {
-  "title": "Voice Coding on Android: WisprFlow Mobile Development Workflow",
+  "title": "WisprFlow Android App: Voice Coding on Mobile Devices",
   "author": "Zachary Proser",
-  "date": "2026-3-16",
-  "description": "How WisprFlow's Android app enables mobile voice coding, remote development, and on-the-go productivity at 179 WPM.",
+  "date": "2026-3-22",
+  "description": "WisprFlow's Android app brings 179 WPM voice coding to mobile development workflows.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "tags": ["android", "mobile", "voice", "coding"],
+  "tags": ["ai", "voice", "android", "mobile"],
   "hiddenFromIndex": true
 }
