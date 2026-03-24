@@ -1,0 +1,33 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-vs-deepgram'
+
+Deepgram is a transcription API used by developers to build voice features. Granola is an end-user meeting notes app. They're not direct competitors, but they both handle speech-to-text. Here's the comparison.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The Key Distinction
+
+**Deepgram** is infrastructure. Developers use their API to add transcription to their own products. If you're building an app that needs speech-to-text, Deepgram is a great choice.
+
+**Granola** is a finished product. You install it, it captures your meetings, and gives you summaries. You never touch the transcription layer.
+
+## If You're Building Something
+
+Use Deepgram. Their API is fast, accurate, and affordable. You'll need to build the UI, storage, and summarization yourself.
+
+## If You Want Meeting Notes
+
+Use Granola. It's a complete solution that handles everything from capture to summary. No building required.
+
+## The Point
+
+Comparing Granola to Deepgram is like comparing a car to an engine. One gets you somewhere; one powers the vehicle that gets you somewhere.
+
+If you need meeting notes, Granola. If you're building meeting notes into your product, Deepgram.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
