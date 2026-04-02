@@ -1,128 +1,117 @@
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
-import { createMetadata } from '@/utils/createMetadata'
-import rawMetadata from './metadata.json'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
-export const metadata = createMetadata(rawMetadata)
+export const metadata = createMetadata(rawMetadata);
 
-export const campaign = 'granola-for-ux-researchers'
+# Granola for UX Researchers: Meeting Intelligence That Doesn't Get in the Way
 
-# Granola for UX Researchers: AI-Powered User Interview Notes
+UX research is a discipline built on paying attention. You run a user interview and the participant tells you something unexpected—a detail about how they actually use a feature that contradicts your hypothesis, a pain point that nobody on the product team had surfaced, a workflow that makes sense to them but would never occur to you. The insight is in the room, but only if you're actually listening.
 
-User research is only as valuable as the insights you can extract and share. Most UX researchers spend more time transcribing and organizing interview notes than doing actual synthesis — Granola changes that equation.
+The problem is that you're also trying to take notes. You're watching for micro-expressions while simultaneously writing down what they're saying, you're probing with follow-up questions while also capturing verbatim quotes, you're managing the interview flow while also documenting the session so you can synthesize it later. The documentation burden pulls you out of the moment exactly when the moment matters most.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+Granola solves this for UX researchers the same way it solves it for anyone in a meeting-intensive role—but the specific ways it shows up in research workflows are worth spelling out, because they're substantial.
 
-## The UX Research Note-Taking Problem
+## The UX Research Documentation Stack
 
-A typical user interview lasts 45–60 minutes. An experienced researcher tries to simultaneously:
+Before getting into how Granola helps, it's worth being specific about the actual documentation burden in a research practice.
 
-- Ask follow-up questions based on what they're hearing
-- Take timestamped notes on key observations
-- Watch for emotional reactions and body language
-- Probe unexpected threads that emerge mid-conversation
-- Track themes across multiple participants
+A typical user interview runs 45-60 minutes. In that hour, you're conducting the interview—probing, observing, following threads—and also trying to capture enough of what's being said to be useful in synthesis. If you're also running a usability test, you're additionally observing behavior and trying to document what happens at each step. After the session, you need to write up findings, extract themes, pull out notable quotes for stakeholder presentations, and update your research repository.
 
-Something has to give. Usually it's the depth of note-taking. Researchers either slow down their questioning to take notes, or they take sparse notes and spend hours reconstructing the interview afterward.
+A research cycle for a single study might involve 8-12 interviews, plus synthesis sessions, plus stakeholder readouts, plus cross-functional design critique meetings. The documentation across all of that is enormous. And unlike meeting notes for project management, research documentation has to capture nuance—the exact phrasing a user used, the emotional valence of their reaction, the specific context that made a workflow painful for them but intuitive for someone else.
 
-The alternative — audio recording and manual transcription — adds another 2–3 hours per interview. For a study with 8 participants, that's 16–24 hours of transcription before synthesis even begins.
+Traditional approaches to this problem include: recordings with transcription (expensive, slow, compliance issues in some contexts), note-takers or co-observers (resource-intensive, sometimes changes participant behavior), typed notes that sacrifice either speed or depth (you're always choosing between capturing quantity and capturing quality). None of these fully solve the problem of being present in the moment while also capturing what's happening.
 
-## How Granola Transforms UX Research Workflows
+<InlineAffiliateCTA product="granola" campaign="granola-ux-researchers" />
 
-### Automatic Interview Transcription
+## Capturing User Interviews Without Getting in the Way
 
-Granola captures the full audio of every user interview and produces a clean, speaker-separated transcript. You focus entirely on the participant while Granola handles the documentation.
+Granola runs on your Mac in the background during interviews. When you join a Zoom call with a research participant, Granola is listening. It captures the full conversation, transcribes it, and generates structured notes.
 
-The transcription accuracy is especially important for UX research, where exact wording often reveals insight. When a participant says "I sort of maybe expect it to do X," the hedging language matters. Granola preserves it; a manual notetaker might simplify it to "expects X."
+What makes this useful for research specifically is that it captures verbatim. When a participant says "I always end up just going back to the search bar because I can't figure out where anything is," Granola has that exact quote. When they demonstrate a workaround they developed and explain why they built it that way, Granola has the recording and transcript.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+This matters for synthesis in ways that summary notes don't fully capture. The specific language participants use often encodes their mental model in ways that summary notes miss. When you're building an affinity map and you have access to exact quotes, you can often extract themes from participants' own phrasing rather than imposing your team's vocabulary on their experiences. The synthesis is richer when you have the raw material.
 
-### Structured Research Summaries
+For moderated usability tests, Granola's value compounds. You're watching what users do while they're doing it, and Granola captures what they say about it. The combination of behavioral observation and verbal protocol is the gold standard in usability research, and having both captured automatically means you can focus on the observation while the verbal data is being preserved.
 
-Granola's AI summaries can be configured with custom templates. For user interviews, a useful template might include:
+## Synthesis Session Documentation
 
-- **Key frustrations mentioned** (verbatim quotes)
-- **Mental models expressed**
-- **Unexpected findings**
-- **Feature requests or suggestions**
-- **Emotional moments** (frustration, delight, confusion)
-- **Action items for the research team**
+Synthesis is where research insights become actionable. Affinity mapping, journey mapping, theme extraction, pattern identification—the work that turns raw interview data into something the product team can use.
 
-Configure this template once and every interview produces a consistent, structured output that's ready for synthesis the moment the call ends.
+The synthesis session itself is a meeting, and Granola captures it. If you're doing collaborative synthesis with a research partner—sorting through notes together, debating interpretations, building out an affinity diagram—Granola captures that conversation. When you say "I think this cluster of feedback is really about trust, not usability," that's captured. When you disagree about how to interpret a participant's response and you work through it, that reasoning is preserved.
 
-### Cross-Interview Pattern Recognition
+This documentation has value for the synthesis itself. Research partners can review Granola notes from the synthesis session to refresh context before continuing. The notes serve as a record of how themes emerged and why certain interpretations were chosen over others—which is useful when you're presenting findings and stakeholders push back on your conclusions.
 
-With clean transcripts for every interview in your study, pattern recognition becomes dramatically faster. Rather than scanning through 8 sets of handwritten notes, you're working with searchable, structured text.
+For research teams that run multiple studies in parallel, synthesis session documentation prevents context loss between studies. When you're three weeks into Study B and someone asks about a methodological decision you made in Study A's synthesis, you can pull up the Granola notes from that synthesis session and explain the reasoning, rather than reconstructing it from memory.
 
-Many researchers export Granola transcripts to tools like Notion, Dovetail, or Airtable, where they can tag quotes, track frequency, and build affinity maps — all from clean source material.
+<InlineAffiliateCTA product="granola" campaign="granola-ux-researchers" />
 
-## Practical Workflow for User Research Teams
+## Building the Research Repository
 
-**Before the interview:**
-- Set Granola to your "User Interview" template
-- Open your discussion guide alongside Granola's interface
-- Brief the participant on audio recording (always get consent)
+Every research team should have a living research repository—a searchable body of past findings that informs current product decisions and prevents redundant research. In practice, these repositories are often under-maintained because documentation is time-consuming and always seems lower-priority than the next study.
 
-**During the interview:**
-- Let Granola capture everything
-- Take sparse notes only on things you want to highlight: "great quote," "explore further," "unexpected reaction"
-- Stay fully present in the conversation
+Granola makes the documentation step lower-friction. After each interview, you have a full transcript and structured notes. Converting those into research repository entries becomes a 10-minute review and tagging task rather than a 45-minute reconstruction from shorthand notes. The barrier to keeping the repository current drops significantly.
 
-**After the interview:**
-- Granola's summary is ready within minutes
-- Review and annotate the AI-generated notes
-- Export the transcript to your research repository
-- Tag quotes for synthesis
+A well-maintained research repository also enables meta-analysis—what patterns show up across multiple studies? If you've run three rounds of research on the onboarding flow and participants in each round have mentioned the same friction point, that's a stronger signal than any single study. Having Granola transcripts across all three rounds makes this kind of cross-study synthesis practical.
 
-This workflow reduces post-interview processing from 2–3 hours to 20–30 minutes.
+For research ops and methodology documentation, Granola notes from team retrospectives and methodology discussions also feed the repository. When you refine your interview guide based on lessons learned, documenting that evolution in the repository helps future team members understand why the current guide looks the way it does.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+## Stakeholder Presentation Prep from Meeting Notes
 
-## Privacy Considerations for User Research
+Research findings presentations are a specific genre of meeting with their own challenges. You're trying to convey the richness of user experiences to stakeholders who weren't in the room, using slides that inevitably flatten that richness into bullet points.
 
-User research participants often share personal frustrations, health concerns, financial details, and other sensitive information. Before using any recording tool:
+Granola gives you more to work with. When you're preparing for a stakeholder readout, you have full transcripts and verbatim quotes from every session. The presentation doesn't have to rely on your summary of what participants said—you can show them the actual language participants used. The verbatim quote that made you pause during the interview can make the same impact on the stakeholders.
 
-- **Always get informed consent** — explain what's being recorded and how it will be used
-- **Anonymize transcripts** before sharing with stakeholders
-- **Review your organization's data retention policies**
-- **For healthcare or financial UX research**, check whether HIPAA or other regulations apply
+A practical workflow: pull your most impactful quotes from Granola transcripts before the presentation. Identify the 3-5 moments where participants' reactions were strongest—surprise, frustration, delight, confusion. Those moments, with exact quotes, are the hooks that make research findings memorable. With Granola, finding them is a matter of searching your transcripts rather than reconstructing them from notes.
 
-Granola's local-first processing is an advantage here — participant audio stays on your machine by default, rather than being uploaded to a third-party cloud.
+For stakeholders who want the full picture rather than summaries, Granola notes from each session can be shared directly (with participant consent and appropriate anonymization). This is useful for stakeholders who want to go deeper and for creating a culture of research consumption rather than just research output.
 
-## Granola for Design Team Meetings
+## Cross-Functional Design Critique Meetings
 
-Beyond user research, Granola adds value throughout the design process:
+Design critiques involving research often surface tensions between what users have told you and what designers or product managers believe users want. These conversations can be productive or frustrating, and the difference often comes down to whether the discussion is grounded in evidence.
 
-**Design critiques:** Capture feedback on designs with timestamped context. Never lose the nuance of "I like the layout but the hierarchy feels off" in a post-it note summary.
+Granola captures design critique meetings with enough fidelity that you can reference specific findings when questions arise. When a designer says "users probably just need better microcopy," you can pull up the Granola transcript from your last round of research and show them what users actually said about the current microcopy—not your summary of it, but the raw participant language.
 
-**Cross-functional alignment meetings:** When design, product, and engineering discuss requirements, Granola captures the rationale behind decisions — information that's critical when someone questions a design choice three months later.
+This also helps with the documentation of design decisions. When a design choice is made in a critique meeting based on a research finding, having that connection captured means the research repository can link findings to design decisions. Over time, this creates a record of how research influenced the product—which is useful for demonstrating research impact and for understanding why the product looks the way it does.
 
-**Stakeholder presentations:** Capture the questions and concerns stakeholders raise during design reviews, so you have a clear record of what needs to be addressed.
+For design critiques that involve multiple stakeholders who weren't present for the original research, Granola notes give the research team a complete record of what was discussed, what concerns were raised, and how decisions were made. This prevents the "but why was this chosen?" conversation six months later when someone is confused about a design choice.
 
-**Research readouts:** Record your own synthesis presentations so team members who couldn't attend have access to your reasoning, not just your conclusions.
+<InlineAffiliateCTA product="granola" campaign="granola-ux-researchers" />
 
-## Research Teams Using Granola
+## The ROI for Research Practices
 
-UX researchers at companies like Figma, Notion, and Linear have publicly discussed using AI tools for research synthesis. The teams seeing the biggest gains share a common approach: they use AI for transcription and initial structure, then apply human judgment for interpretation and insight.
+The return on investment for AI meeting notes in a research context shows up in a few different ways.
 
-Granola fits this model well — it handles the mechanical work (capturing and structuring) so researchers can focus on the cognitive work (meaning-making and decision support).
+**Time recaptured from documentation.** If your current workflow involves 20-30 minutes of post-interview note-writing per session, and Granola reduces that to 5-10 minutes of review and tagging, the math is straightforward. For an 8-interview study, that's 2-3 hours of recaptured time. Across a quarter of research work, it can easily be 15-20 hours. That time goes to more research, better synthesis, or simply not working evenings to keep up.
 
-## Getting Started with Research Templates
+**Richer research data.** When you're not split between listening and note-taking, you catch more. Your follow-up questions are sharper because you're not thinking about what you just missed. Your observations are more complete because you're watching rather than typing. The quality of your research improves because you're fully present in the sessions that produce your data.
 
-The fastest way to get value from Granola as a UX researcher is to build a custom interview template immediately. In Granola's settings, create a meeting type called "User Interview" with these sections:
+**Faster synthesis.** Having full transcripts and structured notes from sessions makes synthesis faster and more thorough. You can extract themes from actual quotes rather than reconstructed summaries. Your affinity diagrams are built from real language rather than your interpretation of it. The synthesis step that typically takes days compresses because the raw material is already organized.
 
-1. Participant context (role, background)
-2. Key frustrations (direct quotes preferred)
-3. Behavioral observations
-4. Mental models revealed
-5. Unexpected insights
-6. Follow-up research questions
+**Better stakeholder communication.** When you can show stakeholders verbatim quotes and exact participant language, your presentations land differently. You're not asking them to trust your summary of user feedback—you're showing them the feedback directly. This builds confidence in research findings and increases the odds that insights actually influence product decisions.
 
-Use this for every interview in a study, and by your fifth participant, you'll have a structured dataset that practically synthesizes itself.
+## Practical Setup for UX Research Teams
 
-## The Competitive Advantage of Better Research Documentation
+Getting started with Granola in a research context takes about 15 minutes and a few decisions.
 
-Research insights lose power when they're buried in messy notes or half-remembered after a long week. Teams that maintain clean, comprehensive research documentation make better product decisions — and move faster because they don't have to rediscover insights they already uncovered.
+**Set up consent protocols for recording.** Granola captures audio and generates transcripts. If you're working with participants who have signed consent forms, make sure those forms explicitly cover recording for research documentation purposes. Most IRB-approved research consent forms do cover this, but it's worth verifying.
 
-<AffiliateLink product="granola" campaign={campaign}>Granola transforms raw conversations into structured research assets</AffiliateLink>, giving UX teams a meaningful competitive advantage in understanding their users.
+**Create session templates for different research types.** Granola lets you set context for meetings, and a brief template for user interviews versus usability tests versus stakeholder meetings will produce more useful output. A template that reminds the AI to extract quotes, pain points, and unexpected moments will surface the most useful research content.
 
-Start your free trial and run your next user interview with Granola capturing every word. The first transcript will show you exactly what you've been missing.
+**Tag and organize notes by study.** Using a consistent naming convention for Granola notes—Study name, participant ID or session number, date—makes the research repository organization straightforward. Searchable, organized notes are a research repository waiting to be built.
+
+**Review and annotate rather than starting from scratch.** The workflow with Granola isn't "dictate and forget"—it's "capture and refine." After each session, review the Granola notes, correct anything that needs correction, and tag key moments. This 5-10 minute review step is where the notes become research-grade documentation.
+
+<InlineAffiliateCTA product="granola" campaign="granola-ux-researchers" />
+
+## What This Changes About Research Workflows
+
+The deeper value of Granola for UX research isn't the time savings, though that's real. It's the shift in what you bring to the interview.
+
+When you're fully present—watching, listening, following threads without the constant interruption of "what did they just say, let me type that before I forget"—the quality of the research changes. You notice things you wouldn't have noticed. You probe things you wouldn't have probed. You catch the unexpected moment that makes a study worth running.
+
+The documentation still happens. It happens automatically, in the background, while you do the actual work of research. And when synthesis comes, you have richer material to work with because you captured more of what actually happened in each session.
+
+For research teams that have been stretched thin—running more studies than they have bandwidth for, constantly behind on write-ups, synthesis always rushed—the documentation automation is a relief. For teams that want to do higher-quality research but can't find the time—this is how you find the time.
+
+The best research happens when researchers are fully present with participants. Granola handles the note-taking so you can be.

@@ -1,0 +1,133 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+# Granola for Mobile App Developers: Meeting Notes for Sprint Planning
+
+Mobile app development is a meeting-heavy discipline. You're coordinating with designers on UI flows, syncing with backend teams on API contracts, presenting to stakeholders during sprint reviews, planning with product managers, and running retrospectives—all while trying to actually ship features.
+
+Granola's AI meeting assistant captures, transcribes, and structures all of it automatically. So when the sprint planning meeting ends, your action items are already organized. When the design review wraps up, the UI decisions are documented. When the app store strategy call finishes, the launch plan is captured.
+
+<InlineAffiliateCTA product="granola" campaign="granola-mobile-developers" />
+
+## The Meeting Overhead of Mobile Development
+
+Mobile developers sit at the intersection of multiple stakeholder groups. A typical sprint week might include:
+
+- **Sprint planning**: Estimating stories, clarifying acceptance criteria, committing to sprint goals
+- **Daily standups**: Blockers, progress updates, dependency coordination
+- **Design reviews**: UX feedback sessions, prototype walkthroughs, accessibility reviews
+- **Backend sync**: API contract discussions, auth flow alignment, data model decisions
+- **App store strategy**: ASO planning, feature flag decisions, release timing
+- **Stakeholder demos**: Sprint reviews with product, leadership, or clients
+- **Retrospectives**: What's working, what isn't, process improvements
+
+Each meeting produces decisions and action items that affect the sprint. Capturing them accurately is the difference between a well-executed sprint and one that drifts because assumptions weren't documented.
+
+## Sprint Planning: Where Precision Matters
+
+Sprint planning is the most consequential meeting in any Agile workflow. Stories get sized, accepted, and committed to. Dependencies get flagged. Sprint goals get articulated. Edge cases get discussed and resolved.
+
+The problem: a lot happens in sprint planning. By the end of a 90-minute session, it's hard to remember which edge case resolution applied to which ticket, or exactly what "done" means for a particular story.
+
+Granola captures the full conversation and automatically extracts:
+- Story-by-story discussion and decisions
+- Acceptance criteria clarifications
+- Sprint goal as articulated (not just the Jira summary)
+- Flagged dependencies and blockers
+- Action items and who owns them
+
+Your sprint planning notes become a decision log. When a developer has a question about acceptance criteria mid-sprint, the answer is already documented.
+
+## Design Review Documentation
+
+Mobile design reviews are decision-dense. The designer presents flows, the developer identifies constraints, the PM weighs in on priorities, and the result is a set of decisions that affect implementation. Half of those decisions won't make it into Figma annotations.
+
+With Granola:
+- The decision to use a bottom sheet instead of a modal is documented
+- The rationale for the particular gesture interaction is captured
+- The accessibility requirements discussed verbally are in the notes
+- The "we'll revisit the onboarding flow in sprint 8" decision doesn't get forgotten
+
+Developers implementing from a Figma spec plus Granola notes have dramatically fewer ambiguities. Design-to-dev handoff quality improves when the conversation around the design is as documented as the design itself.
+
+<InlineAffiliateCTA product="granola" campaign="granola-mobile-developers" />
+
+## Backend API Coordination
+
+Mobile apps are only as good as their backend integration. API contract meetings—where frontend and backend teams align on endpoints, data shapes, error handling, and auth flows—are where critical implementation decisions get made.
+
+These decisions have long tails. Six weeks later, when a developer is debugging an unexpected 422 response, the question is: "Did we agree on the error format in that meeting?" With Granola, you can look it up.
+
+Meeting notes from API coordination sessions become:
+- Reference documentation for the agreed-upon contract
+- Audit trail for why certain decisions were made
+- Onboarding material for new team members joining mid-project
+
+## App Store Strategy and Release Planning
+
+App store optimization, feature flagging, phased rollouts, review strategy—these discussions happen in meetings but the decisions live in scattered docs and Slack threads that are impossible to find later.
+
+Granola centralizes these discussions. When the release manager asks "why did we decide to go with a 10% phased rollout instead of full release?", the answer is in the meeting notes from three weeks ago.
+
+Specific documentation that benefits:
+- ASO keyword and screenshot strategy discussions
+- Feature flag configuration decisions and rollout percentages
+- App review timing strategy for new OS versions
+- In-app event and promotional timing decisions
+
+## Sprint Retrospectives
+
+Retrospectives are the mechanism by which teams improve. But improvement only happens if the retrospective produces changes that get implemented—and that requires documentation.
+
+With Granola:
+- The specific process change agreed upon is captured, not just "improve communication"
+- The person who volunteered to own each action item is documented
+- The team's assessment of what went well is preserved for team morale and culture
+- Retrospective themes across multiple sprints become visible
+
+Retrospectives often produce insights that seem obvious in the room but get forgotten by the next sprint. Granola ensures the insight survives.
+
+<InlineAffiliateCTA product="granola" campaign="granola-mobile-developers" />
+
+## Technical Architecture and Performance Reviews
+
+Mobile apps face unique technical constraints: battery life, memory limits, network variability, OS-specific behaviors, device fragmentation. Architecture and performance review meetings cover trade-offs that need to be remembered.
+
+When you decide to use background fetch instead of push notifications for a particular use case, or choose a specific caching strategy for offline support—those decisions have rationale that future developers need to understand. Granola captures the architectural reasoning, not just the outcome.
+
+Performance review meetings—analyzing crash rates, ANR/hang metrics, battery impact—produce action items and hypotheses. Having those discussions documented means follow-up can be precise rather than reconstructed from memory.
+
+## Stakeholder Demos and Sprint Reviews
+
+Sprint reviews involve demonstrating completed work to stakeholders who may have questions, provide feedback, or make decisions that affect the roadmap. These conversations are valuable but ephemeral.
+
+Granola captures stakeholder feedback from sprint reviews:
+- Feature feedback that should inform future iterations
+- Prioritization decisions made by product leadership
+- Scope changes requested and their rationale
+- Commitments made to external stakeholders about timelines
+
+This is especially valuable when stakeholders contradict earlier decisions ("I thought we agreed the share sheet would work differently"). With meeting notes, you have the record.
+
+## The ROI for Mobile Dev Teams
+
+Mobile development teams that document meetings well ship faster. The mechanism is straightforward: ambiguities get resolved once (in the meeting) rather than repeatedly (as developers hit questions mid-implementation).
+
+For a team of 5 developers, if each person spends 30 minutes per day seeking clarification on undocumented decisions, that's 2.5 person-hours per day of friction. Over a two-week sprint, that's 25 hours of unnecessary interruption.
+
+Granola doesn't eliminate all ambiguity—but it eliminates the "I don't remember what we decided" category entirely. That alone recovers meaningful velocity.
+
+<InlineAffiliateCTA product="granola" campaign="granola-mobile-developers" />
+
+## Getting Started
+
+Granola integrates with Google Calendar and Outlook, automatically joining scheduled meetings. For mobile dev teams, the highest-impact starting point is sprint planning—the most decision-dense meeting in the sprint cycle.
+
+After one sprint with Granola, you'll have a documented decision log for the entire sprint. Developers can reference it, ambiguities resolve faster, and the sprint review becomes a chance to discuss outcomes rather than argue about what was originally agreed.
+
+From sprint planning, expand to design reviews and backend syncs. Within a sprint cycle, you'll wonder how you shipped without it.
+
+Mobile apps are complex. The meetings that shape them should generate documentation as rigorous as the code they produce.
