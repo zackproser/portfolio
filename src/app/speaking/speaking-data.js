@@ -11,6 +11,20 @@ const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
   {
+    id: 'aie-london-skills-at-scale',
+    slug: 'aie-london-skills-at-scale',
+    type: 'public',
+    title: 'Skills at Scale: Leveraging Skills Across Workflows, Agents, and Teams',
+    event: 'AI Engineering London',
+    date: 'April 2026',
+    location: 'London, UK',
+    description: 'An 80-minute workshop with Nick Nisi on how to best use Claude Code skills, leverage them across workflows and agent types, and share them with your team. Covered skill design patterns, cross-agent portability, team skill libraries, and practical hands-on exercises building production-grade skills.',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp',
+    audience: 'AI engineers and developers',
+    topics: ['Claude Code', 'Skills', 'Agent Workflows', 'Team Productivity', 'Developer Tools'],
+    links: []
+  },
+  {
     id: 'aie-london-untethered-productivity',
     slug: 'untethered-productivity',
     type: 'public',
@@ -20,10 +34,24 @@ export const speakingEngagements = [
     isoDate: '2026-04-01',
     location: 'London, UK',
     description: 'A talk about the balance between leveraging AI coding agents for massive productivity gains while maintaining your health, creativity, and sanity. Covers signal management, context switching, developer balance, and building sustainable workflows with tools like Claude Code.',
-    image: 'https://zackproser.b-cdn.net/talks/untethered-productivity/images/2026-04-05-hero-trail.png',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
     audience: 'AI engineers and developers',
     topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Productivity', 'Signal Management'],
     slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/',
+    links: []
+  },
+  {
+    id: 'aie-london-scaling-devtools-podcast',
+    slug: 'aie-london-scaling-devtools',
+    type: 'public',
+    title: 'Scaling Devtools Podcast with Jack Bridger',
+    event: 'AI Engineering London',
+    date: 'April 2026',
+    location: 'London, UK',
+    description: 'Live podcast recording with Jack Bridger of Scaling Devtools at the AI Engineering London conference floor. Discussed our workshop and talks, how we\'re leveraging AI coding agents at WorkOS, patterns we\'re seeing in agent adoption, and the future of developer tooling.',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp',
+    audience: 'Podcast listeners and conference attendees',
+    topics: ['AI Agents', 'Developer Tools', 'Claude Code', 'Podcast', 'Agent Adoption'],
     links: []
   },
   {
@@ -193,15 +221,27 @@ export const speakingEngagements = [
 
 export const galleryImages = [
   {
+    src: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    alt: 'Zack presenting "The agents aren\'t the bottleneck. We are." at AI Engineering London'
+  },
+  {
+    src: 'https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp',
+    alt: 'Audience at the AI Engineering London workshop'
+  },
+  {
+    src: 'https://zackproser.b-cdn.net/images/aie-london-podcast-wide.webp',
+    alt: 'Recording the Scaling Devtools podcast at AI Engineering London'
+  },
+  {
+    src: 'https://zackproser.b-cdn.net/images/aie-london-untethered-balance.webp',
+    alt: 'Zack presenting on Developer Balance at AI Engineering London'
+  },
+  {
     src: zackAndNick,
     alt: 'Zack and Nick at a speaking event'
   },
   {
     src: 'https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp',
     alt: 'Workshop attendees building with Claude Cowork'
-  },
-  {
-    src: 'https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp',
-    alt: 'Lydia from Anthropic and Zack during Q&A'
   }
 ]
