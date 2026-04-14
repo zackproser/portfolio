@@ -6,7 +6,6 @@ const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks
 // Import AI Engineering World Fair workshop image
 const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
 // Import additional speaking and conference images
-const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
 const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
