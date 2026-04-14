@@ -1,0 +1,27 @@
+{
+  "title": "Live on the Scaling Devtools Podcast at AI Engineering London",
+  "author": "Zachary Proser",
+  "date": "2026-04-14",
+  "description": "I sat down with Jack Bridger on the Scaling Devtools podcast at AI Engineering London to talk about how WorkOS builds with AI coding agents, the patterns behind portable skills, and where developer tooling is heading.",
+  "image": "https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp",
+  "slug": "/blog/aie-london-scaling-devtools-podcast",
+  "keywords": [
+    "Scaling Devtools podcast",
+    "Jack Bridger",
+    "AI Engineering London",
+    "Claude Code",
+    "AI coding agents",
+    "WorkOS",
+    "developer tools",
+    "skills",
+    "agent adoption",
+    "voice-first development"
+  ],
+  "tags": [
+    "Speaking",
+    "AI Engineering",
+    "Claude Code",
+    "Podcasts",
+    "WorkOS"
+  ]
+}

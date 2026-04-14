@@ -1,0 +1,27 @@
+{
+  "title": "Skills at Scale: Our Workshop at AI Engineering London",
+  "author": "Zachary Proser",
+  "date": "2026-04-14",
+  "description": "Nick Nisi and I ran an 80-minute hands-on workshop at AI Engineering London on building Claude Code skills that are portable, executable, and composable. We taught constraints over instructions, evidence over guesses, and measurement over vibes.",
+  "image": "https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp",
+  "slug": "/blog/aie-london-skills-at-scale",
+  "keywords": [
+    "AI Engineering London",
+    "Claude Code skills",
+    "skills at scale",
+    "AI coding workshop",
+    "Claude Code workshop",
+    "WorkOS",
+    "Nick Nisi",
+    "repo roast",
+    "AI developer tools",
+    "skills portability"
+  ],
+  "tags": [
+    "Speaking",
+    "AI Engineering",
+    "Claude Code",
+    "Workshops",
+    "Skills"
+  ]
+}

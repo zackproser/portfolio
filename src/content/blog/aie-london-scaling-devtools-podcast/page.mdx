@@ -1,0 +1,46 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+At AI Engineering London, Jack Bridger pulled me aside for a live recording of the [Scaling Devtools](https://www.scalingdevtools.com/) podcast. We set up on the conference floor between sessions — me fresh off delivering the <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> and co-running an 80-minute <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link> with Nick Nisi.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp" alt="Zack Proser during the live Scaling Devtools podcast recording at AI Engineering London" width={800} height={600} />
+
+## How to make talks and workshops that work
+
+Jack and I spent a good stretch talking about what makes technical talks and workshops land. Nick and I have done a bunch of these now — the Claude Cowork workshop in SF, internal training sessions at WorkOS, conference talks — and the patterns are getting clearer each time.
+
+The biggest lesson: hands-on time wins. An 80-minute workshop where people build a real artifact teaches more than any slide deck. For the Skills at Scale workshop, we had attendees building their own skills from a starter template, iterating on them in real time, and sharing their output at the end. People walked out with something they could install and use the next day.
+
+The talk format is different. For Untethered Productivity, I optimized for moments that land — the show of hands ("who's rubber-stamped a PR because you were managing too many agents?"), the Simon Willison quote, the live demos. Talks need beats that the audience can feel. Workshops need scaffolding that the audience can build on.
+
+## An attendee completed the workshop autonomously with Hermes bot
+
+One of the wildest things that happened at the conference: an attendee used Hermes bot to scan the QR code from our Skills at Scale workshop, and the bot autonomously worked through the entire workshop — cloning the repo, running setup, building the skill through all checkpoints, and reaching the goal state correctly.
+
+We designed the workshop with clear checkpoints (`./setup.sh --checkpoint 1`, `--checkpoint 2`, etc.) so people who fell behind could catch up. The bot used those same checkpoints as verification gates for its own progress. It treated our workshop materials as a spec and executed against them.
+
+Jack loved this because it's a signal of where workshops are heading. If your materials are well-structured enough for an agent to complete autonomously, they're probably well-structured enough for humans too. The constraints and scaffolding that make a good skill also make a good workshop.
+
+## Biometrics in the agent loop
+
+We talked about the <Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">Oura Ring MCP integration</Link> I built and how it feeds my physical state into the agentic workflow. I wear an Oura Ring that tracks sleep, heart rate variability, and recovery score. An MCP server exposes that data to Claude Code.
+
+When I'm planning my day, Claude has access to how I slept. If I got four hours and my HRV is in the basement, it pushes back: "You're running on fumes — let's do two tickets max today, push the rest to tomorrow." On days when I'm sick or underslept, the system protects me from my own ambition.
+
+This matters because your judgment about how much you can handle is worst on exactly the days when you most need to pull back. A bad sleep night degrades your ability to recognize that you slept badly. Having the agent integrate that signal and adjust the plan is a real safety net.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-wide.webp" alt="Wide shot of the live Scaling Devtools podcast setup at AI Engineering London" width={800} height={600} />
+
+## Conference context
+
+This was one of three things I did at AIE London. The <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> covered developer balance — the intentional path versus the burnout path when working with AI agents. The <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link> with Nick Nisi was a hands-on 80-minute session on designing portable skills. The podcast tied these threads together in a conversational format.
+
+You can find the full details on the <Link href="/speaking/aie-london-scaling-devtools">speaking page</Link>.
+
+## When the episode drops
+
+I'll update this post with a link once Jack publishes the episode. Subscribe to the [Scaling Devtools podcast](https://www.scalingdevtools.com/) — Jack does good work profiling the people building developer tools.
