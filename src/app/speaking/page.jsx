@@ -4,6 +4,7 @@ import Link from 'next/link'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { createMetadata } from '@/utils/createMetadata'
+import { ExternalLinkButton } from '@/components/ExternalLinkButton'
 import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap, Play } from 'lucide-react'
 import { speakingEngagements, galleryImages } from './speaking-data'
 
@@ -44,84 +45,40 @@ export const metadata = createMetadata({
 });
 
 
-// Component for rendering external links with icons
-function ExternalLinkButton({ link }) {
-  const getIcon = () => {
-    switch (link.type) {
-      case 'youtube':
-        return <Youtube className="h-4 w-4" />;
-      case 'blog':
-        return <LinkIcon className="h-4 w-4" />;
-      case 'twitter':
-        return <ExternalLink className="h-4 w-4" />;
-      default:
-        return <ExternalLink className="h-4 w-4" />;
-    }
-  };
-
-  const getButtonStyle = () => {
-    switch (link.type) {
-      case 'youtube':
-        return 'bg-red-600 hover:bg-red-700 text-white';
-      case 'blog':
-        return 'bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white';
-      case 'twitter':
-        return 'bg-sky-500 hover:bg-sky-600 text-white';
-      default:
-        return 'bg-gray-600 hover:bg-gray-700 text-white';
-    }
-  };
-
-  const isExternal = link.url.startsWith('http');
-  const LinkComponent = isExternal ? 'a' : Link;
-  
-  const linkProps = isExternal 
-    ? { href: link.url, target: '_blank', rel: 'noopener noreferrer' }
-    : { href: link.url };
-
-  return (
-    <LinkComponent
-      {...linkProps}
-      className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${getButtonStyle()}`}
-    >
-      {getIcon()}
-      {link.label}
-    </LinkComponent>
-  );
-}
-
 // Component for a single speaking engagement card
 function SpeakingCard({ engagement }) {
   const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center';
 
-  const cardContent = (
+  return (
     <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
-      <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
-        <Image src={engagement.image}
-          alt={engagement.title}
-          fill
-          className={`object-cover ${imagePositionClass}`}
-         />
-        {/* Badge for internal vs public */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-            engagement.type === 'internal'
-              ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400'
-              : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-          }`}>
-            {engagement.type === 'internal' ? <Building2 className="h-3 w-3" /> : <Users className="h-3 w-3" />}
-            {engagement.type === 'internal' ? 'Internal' : 'Public'}
-          </span>
-          {engagement.slidevUrl && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
-              <Play className="h-3 w-3" />
-              Interactive Deck
+      <Link href={engagement.slug ? `/speaking/${engagement.slug}` : '#'} className={engagement.slug ? '' : 'pointer-events-none'}>
+        <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
+          <Image src={engagement.image}
+            alt={engagement.title}
+            fill
+            className={`object-cover ${imagePositionClass}`}
+           />
+          {/* Badge for internal vs public */}
+          <div className="absolute top-4 left-4 flex gap-2">
+            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+              engagement.type === 'internal'
+                ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400'
+                : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+            }`}>
+              {engagement.type === 'internal' ? <Building2 className="h-3 w-3" /> : <Users className="h-3 w-3" />}
+              {engagement.type === 'internal' ? 'Internal' : 'Public'}
             </span>
-          )}
-        </div>
+            {engagement.slidevUrl && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
+                <Play className="h-3 w-3" />
+                Interactive Deck
+              </span>
+            )}
+          </div>
 
-      </div>
+        </div>
+      </Link>
 
       {/* Content */}
       <div className="p-6">
@@ -130,9 +87,17 @@ function SpeakingCard({ engagement }) {
           {engagement.date}
         </div>
         
-        <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
-          {engagement.title}
-        </h3>
+        {engagement.slug ? (
+          <Link href={`/speaking/${engagement.slug}`}>
+            <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors">
+              {engagement.title}
+            </h3>
+          </Link>
+        ) : (
+          <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
+            {engagement.title}
+          </h3>
+        )}
         
         <p className="text-burnt-400 dark:text-amber-400 font-medium mb-3">
           {engagement.event}
@@ -178,11 +143,6 @@ function SpeakingCard({ engagement }) {
       </div>
     </div>
   );
-
-  if (engagement.slug) {
-    return <Link href={`/speaking/${engagement.slug}`}>{cardContent}</Link>;
-  }
-  return cardContent;
 }
 
 export default function Speaking() {
