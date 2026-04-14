@@ -36,7 +36,8 @@ const TYPE_PATHS: Record<string, string> = {
   'demo': 'demos',
   'newsletter': 'newsletter',
   'comparison': 'comparisons',
-  'tool': 'tools'
+  'tool': 'tools',
+  'speaking': 'speaking'
 };
 
 // Only log in development or when explicitly enabled

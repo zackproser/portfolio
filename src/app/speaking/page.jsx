@@ -1,21 +1,11 @@
-import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import { createMetadata } from '@/utils/createMetadata'
-import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap } from 'lucide-react'
-
-// Import speaking images from the a16z blog post
-const a16z1 = 'https://zackproser.b-cdn.net/images/a16z-1.webp'
-// Import WorkOS internal training images
-const aiFundamentals = 'https://zackproser.b-cdn.net/images/ai-fundamentals.webp'
-const neuralNetworksLearn = 'https://zackproser.b-cdn.net/images/neural-networks-learn.webp'
-// Import AI Engineering World Fair workshop image
-const aieWorkshop = 'https://zackproser.b-cdn.net/images/aie-workshop-room.webp'
-// Import additional speaking and conference images
-const zackAndNick = 'https://zackproser.b-cdn.net/images/zack-and-nick.webp'
-const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
+import { ExternalLinkButton } from '@/components/ExternalLinkButton'
+import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap, Play } from 'lucide-react'
+import { speakingEngagements, galleryImages } from './speaking-data'
 
 export const metadata = createMetadata({
   title: 'Speaking Engagements - Zachary Proser',
@@ -23,7 +13,7 @@ export const metadata = createMetadata({
   author: 'Zachary Proser',
   date: '2025-6-02',
   slug: 'speaking',
-  image: a16z1,
+  image: 'https://zackproser.b-cdn.net/images/a16z-1.webp',
   keywords: [
     'Zachary Proser speaking',
     'AI engineer speaker',
@@ -53,229 +43,41 @@ export const metadata = createMetadata({
   ]
 });
 
-// Speaking engagements data
-const speakingEngagements = [
-  {
-    id: 'claude-cowork-workshop-2026-02',
-    type: 'public',
-    title: 'Claude Cowork Workshop with Anthropic',
-    event: 'WorkOS x Anthropic',
-    date: 'February 26, 2026',
-    location: 'San Francisco, CA',
-    description: 'One-hour hands-on workshop I created and delivered at WorkOS, with Lydia from Anthropic\'s Claude Code team joining for Q&A. Demoed real-world Claude Code projects (Oura MCP, Handwave watchOS app, walking-and-talking development), then walked attendees through a complete GTM workflow: ICP identification, data scraping and enrichment, competitive analysis, battlecard creation, pain point messaging, cold email generation, blog content, and scheduled Cowork tasks for automated content production.',
-    image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
-    imagePosition: 'top',
-    audience: 'Engineers and technical leaders',
-    topics: ['Claude Code', 'Cowork', 'AI-Assisted Development', 'ICP Research', 'GTM Automation', 'Context Management'],
-    links: [
-      {
-        type: 'youtube',
-        url: 'https://www.youtube.com/watch?v=8bjcx5Hkj5w',
-        label: 'Watch the workshop'
-      },
-      {
-        type: 'blog',
-        url: '/blog/claude-cowork-workshop-anthropic',
-        label: 'Read the write-up'
-      },
-      {
-        type: 'blog',
-        url: '/workshops/claude-cowork',
-        label: 'Book this workshop'
-      }
-    ]
-  },
-  {
-    id: 'devseccon-2025-keynote',
-    type: 'public',
-    title: 'Keynote Speaker: DevSecCon 2025',
-    event: 'DevSecCon 2025',
-    date: '2025',
-    location: 'Conference Keynote',
-    description: 'Delivered the keynote address at DevSecCon 2025 on modern AI and security.',
-    image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
-    audience: 'Conference attendees',
-    topics: ['DevSecOps', 'Security', 'AI Engineering'],
-    links: [
-      {
-        type: 'youtube',
-        url: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4',
-        label: 'Watch Keynote on YouTube'
-      }
-    ]
-  },
-  {
-    id: 'aie-world-fair-june-2025',
-    type: 'public',
-    title: 'AI Pipelines and Agents in Pure TypeScript with Mastra.ai',
-    event: 'AI Engineering World Fair',
-    date: 'June 3, 2025',
-    location: 'Workshop Session',
-    description: 'We taught over 70 engineers over the course of a live 2 hour workshop how to build workflows to accomplish discrete tasks and how to grant access to those workflows to agents - which are the ideal human interface for accomplishing tasks with natural language.',
-    image: aieWorkshop,
-    audience: '70+ engineers',
-    topics: ['AI Pipelines', 'Agents', 'TypeScript', 'Mastra.ai', 'Workflow Automation', 'Natural Language Interfaces']
-  },
-  {
-    id: 'a16z-dec-2023',
-    type: 'public',
-    title: 'Navigating from Jupyter Notebooks to Production',
-    event: 'Pinecone & Cohere Meetup at a16z',
-    date: 'December 6, 2023',
-    location: 'Andreesen Horowitz, San Francisco, CA',
-    description: 'I introduced the new Pinecone AWS Reference Architecture with Pulumi and explained infrastructure as code, using a mountaineering metaphor to compare getting from prototype to production.',
-    image: a16z1,
-    audience: '~125 attendees',
-    topics: ['Infrastructure as Code', 'Pinecone', 'AWS', 'Pulumi', 'Production Deployment'],
-    links: [
-      {
-        type: 'blog',
-        url: '/blog/a16z-sf-dec-2023-ai-apps-production',
-        label: 'Read Full Blog Post'
-      },
-      {
-        type: 'twitter',
-        url: 'https://twitter.com/zackproser/status/1732228822626619637',
-        label: 'Twitter Thread'
-      }
-    ]
-  },
-  {
-    id: 'workos-gtm-cowork-2026-02-06',
-    type: 'internal',
-    title: 'Voice-First Development & Claude Code Cowork Enablement',
-    event: 'WorkOS GTM Training',
-    date: 'February 6, 2026',
-    location: 'WorkOS Office, San Francisco, CA',
-    description: 'Demonstrated how to use WisprFlow to code with your voice and ran live demos of Claude Code and Cowork enablement for GTM teams. Co-presented with Nick Nisi.',
-    image: 'https://zackproser.b-cdn.net/images/workos-gtm-training.webp',
-    audience: 'WorkOS GTM team (internal)',
-    topics: ['WisprFlow', 'Voice Development', 'Claude Code', 'Cowork', 'GTM Enablement'],
-    links: [
-      {
-        type: 'blog',
-        url: '/demos/voice-ai',
-        label: 'Try the voice AI demo'
-      }
-    ]
-  },
-  {
-    id: 'workos-claude-skills-2025-10-23',
-    type: 'internal',
-    title: 'Claude Skills as Self-Documenting Runbooks',
-    event: 'WorkOS Internal Training',
-    date: 'October 23, 2025',
-    location: 'WorkOS Office, San Francisco, CA',
-    description: 'In-person training on operationalizing Claude Skills as executable, version-controlled runbooks and shareable team workflows.',
-    image: claudeSkills,
-    audience: 'WorkOS team (internal)',
-    topics: ['Claude Skills', 'Runbooks', 'AI Workflows', 'Knowledge Sharing'],
-    links: [
-      {
-        type: 'blog',
-        url: '/blog/claude-skills-internal-training',
-        label: 'Read write-up'
-      }
-    ]
-  },
-  {
-    id: 'ai-fundamentals-internal',
-    type: 'internal',
-    title: 'AI Fundamentals for Engineering Teams',
-    event: 'WorkOS Internal Training',
-    date: 'May 2025',
-    location: 'In-person',
-    description: 'Comprehensive introduction to AI concepts, machine learning fundamentals, and practical applications for software engineering teams. Covered LLMs, vector databases, RAG, and hands-on implementation strategies.',
-    image: aiFundamentals,
-    audience: 'Engineering Team (40 developers)',
-    topics: ['Machine Learning', 'Large Language Models', 'Vector Databases', 'RAG', 'AI Engineering']
-  },
-  {
-    id: 'ai-content-creation-internal',
-    type: 'internal', 
-    title: 'AI-Enabled Content Creation Workshop',
-    event: 'WorkOS Internal Training',
-    date: 'May 2025',
-    location: 'In-person',
-    description: 'Interactive workshop teaching content teams how to leverage AI tools for writing, editing, ideation, and content optimization. Practical hands-on session with real-world use cases and workflow optimization.',
-    image: neuralNetworksLearn,
-    audience: 'Marketing & Content Team (25 members)',
-    topics: ['AI Writing Tools', 'Content Strategy', 'Workflow Optimization', 'Prompt Engineering', 'Content Marketing']
-  }
-];
-
-// Component for rendering external links with icons
-function ExternalLinkButton({ link }) {
-  const getIcon = () => {
-    switch (link.type) {
-      case 'youtube':
-        return <Youtube className="h-4 w-4" />;
-      case 'blog':
-        return <LinkIcon className="h-4 w-4" />;
-      case 'twitter':
-        return <ExternalLink className="h-4 w-4" />;
-      default:
-        return <ExternalLink className="h-4 w-4" />;
-    }
-  };
-
-  const getButtonStyle = () => {
-    switch (link.type) {
-      case 'youtube':
-        return 'bg-red-600 hover:bg-red-700 text-white';
-      case 'blog':
-        return 'bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white';
-      case 'twitter':
-        return 'bg-sky-500 hover:bg-sky-600 text-white';
-      default:
-        return 'bg-gray-600 hover:bg-gray-700 text-white';
-    }
-  };
-
-  const isExternal = link.url.startsWith('http');
-  const LinkComponent = isExternal ? 'a' : Link;
-  
-  const linkProps = isExternal 
-    ? { href: link.url, target: '_blank', rel: 'noopener noreferrer' }
-    : { href: link.url };
-
-  return (
-    <LinkComponent
-      {...linkProps}
-      className={`inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${getButtonStyle()}`}
-    >
-      {getIcon()}
-      {link.label}
-    </LinkComponent>
-  );
-}
 
 // Component for a single speaking engagement card
 function SpeakingCard({ engagement }) {
   const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center';
-  
+
   return (
     <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* Image */}
-      <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
-        <Image src={engagement.image}
-          alt={engagement.title}
-          fill
-          className={`object-cover ${imagePositionClass}`}
-         />
-        {/* Badge for internal vs public */}
-        <div className="absolute top-4 left-4">
-          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-            engagement.type === 'internal' 
-              ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400'
-              : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-          }`}>
-            {engagement.type === 'internal' ? <Building2 className="h-3 w-3" /> : <Users className="h-3 w-3" />}
-            {engagement.type === 'internal' ? 'Internal' : 'Public'}
-          </span>
-        </div>
+      <Link href={engagement.slug ? `/speaking/${engagement.slug}` : '#'} className={engagement.slug ? '' : 'pointer-events-none'}>
+        <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
+          <Image src={engagement.image}
+            alt={engagement.title}
+            fill
+            className={`object-cover ${imagePositionClass}`}
+           />
+          {/* Badge for internal vs public */}
+          <div className="absolute top-4 left-4 flex gap-2">
+            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+              engagement.type === 'internal'
+                ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400'
+                : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+            }`}>
+              {engagement.type === 'internal' ? <Building2 className="h-3 w-3" /> : <Users className="h-3 w-3" />}
+              {engagement.type === 'internal' ? 'Internal' : 'Public'}
+            </span>
+            {engagement.slidevUrl && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
+                <Play className="h-3 w-3" />
+                Interactive Deck
+              </span>
+            )}
+          </div>
 
-      </div>
+        </div>
+      </Link>
 
       {/* Content */}
       <div className="p-6">
@@ -284,9 +86,17 @@ function SpeakingCard({ engagement }) {
           {engagement.date}
         </div>
         
-        <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
-          {engagement.title}
-        </h3>
+        {engagement.slug ? (
+          <Link href={`/speaking/${engagement.slug}`}>
+            <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors">
+              {engagement.title}
+            </h3>
+          </Link>
+        ) : (
+          <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
+            {engagement.title}
+          </h3>
+        )}
         
         <p className="text-burnt-400 dark:text-amber-400 font-medium mb-3">
           {engagement.event}
@@ -339,15 +149,7 @@ export default function Speaking() {
   const internalEngagements = speakingEngagements.filter(e => e.type === 'internal');
 
   return (
-    <>
-      <Head>
-        <title>Speaking - Zachary Proser</title>
-        <meta
-          name="description"
-          content="Public talks, internal training sessions, and conference presentations on AI, infrastructure, and developer tools."
-        />
-      </Head>
-      <SimpleLayout
+    <SimpleLayout
         title="Speaking Engagements"
         intro="I speak at conferences, meetups, and corporate events about AI, infrastructure as code, vector databases, and developer tools. I also provide internal training for engineering and content teams."
       >
@@ -383,27 +185,15 @@ export default function Speaking() {
         {/* Speaking Gallery */}
         <section className="mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src={zackAndNick}
-                alt="Zack and Nick at a speaking event"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-               />
-            </div>
-            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
-                alt="Workshop attendees building with Claude Cowork"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-               />
-            </div>
-            <div className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-              <Image src="https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
-                alt="Lydia from Anthropic and Zack during Q&A"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-               />
-            </div>
+            {galleryImages.map((img, index) => (
+              <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-lg">
+                <Image src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover hover:scale-105 transition-transform duration-300"
+                 />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -444,6 +234,5 @@ export default function Speaking() {
           </div>
         </section>
       </SimpleLayout>
-    </>
   );
 } 
