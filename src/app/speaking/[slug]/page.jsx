@@ -21,7 +21,7 @@ export async function generateMetadata({ params }) {
     description: engagement.description,
     author: 'Zachary Proser',
     date: engagement.date,
-    slug: `speaking/${slug}`,
+    slug: slug,
     type: 'speaking',
     image: engagement.image,
     keywords: engagement.topics,
