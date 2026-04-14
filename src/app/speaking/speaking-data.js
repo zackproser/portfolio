@@ -20,7 +20,7 @@ export const speakingEngagements = [
     isoDate: '2026-04-01',
     location: 'London, UK',
     description: 'An 80-minute workshop with Nick Nisi on how to best use Claude Code skills, leverage them across workflows and agent types, and share them with your team. Covered skill design patterns, cross-agent portability, team skill libraries, and practical hands-on exercises building production-grade skills.',
-    image: 'https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp',
+    image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
     audience: 'AI engineers and developers',
     topics: ['Claude Code', 'Skills', 'Agent Workflows', 'Team Productivity', 'Developer Tools'],
     links: []
@@ -38,7 +38,7 @@ export const speakingEngagements = [
     image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
     audience: 'AI engineers and developers',
     topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Productivity', 'Signal Management'],
-    slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/',
+    slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/index.html',
     links: []
   },
   {
@@ -223,27 +223,27 @@ export const speakingEngagements = [
 
 export const galleryImages = [
   {
-    src: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
-    alt: 'Zack presenting "The agents aren\'t the bottleneck. We are." at AI Engineering London'
+    src: 'https://zackproser.b-cdn.net/images/aie-london-workshop-workos-room.webp',
+    alt: 'Zack and Nick presenting Skills at Scale workshop with WorkOS logo, packed room at AI Engineering London'
   },
   {
-    src: 'https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp',
-    alt: 'Audience at the AI Engineering London workshop'
+    src: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    alt: 'Zack presenting "The agents aren\'t the bottleneck. We are." at AI Engineering London'
   },
   {
     src: 'https://zackproser.b-cdn.net/images/aie-london-podcast-wide.webp',
     alt: 'Recording the Scaling Devtools podcast at AI Engineering London'
   },
   {
-    src: 'https://zackproser.b-cdn.net/images/aie-london-untethered-balance.webp',
-    alt: 'Zack presenting on Developer Balance at AI Engineering London'
+    src: 'https://zackproser.b-cdn.net/images/aie-london-zack-podium-solo.webp',
+    alt: 'Zack at the AI Engineer Europe 2026 podium'
   },
   {
-    src: zackAndNick,
-    alt: 'Zack and Nick at a speaking event'
+    src: 'https://zackproser.b-cdn.net/images/aie-london-workshop-evidence.webp',
+    alt: 'Zack teaching backtick evidence patterns at the Skills at Scale workshop'
   },
   {
-    src: 'https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp',
-    alt: 'Workshop attendees building with Claude Cowork'
+    src: 'https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp',
+    alt: 'Audience at the AI Engineering London talk'
   }
 ]
