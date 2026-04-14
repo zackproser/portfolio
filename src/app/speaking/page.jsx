@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
@@ -150,15 +149,7 @@ export default function Speaking() {
   const internalEngagements = speakingEngagements.filter(e => e.type === 'internal');
 
   return (
-    <>
-      <Head>
-        <title>Speaking - Zachary Proser</title>
-        <meta
-          name="description"
-          content="Public talks, internal training sessions, and conference presentations on AI, infrastructure, and developer tools."
-        />
-      </Head>
-      <SimpleLayout
+    <SimpleLayout
         title="Speaking Engagements"
         intro="I speak at conferences, meetups, and corporate events about AI, infrastructure as code, vector databases, and developer tools. I also provide internal training for engineering and content teams."
       >
@@ -243,6 +234,5 @@ export default function Speaking() {
           </div>
         </section>
       </SimpleLayout>
-    </>
   );
 } 
