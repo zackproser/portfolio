@@ -1,0 +1,93 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+I gave a talk at AI Engineering London this month called "Untethered Productivity: Staying Healthy, Creative, and Shipping in the AI Coding Era." The core thesis: the tools are nuclear, but your nervous system is relatively ancient. If you don't design your workflows around that mismatch, you'll burn out.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-zack-podium-solo.webp" alt="Zack Proser presenting Untethered Productivity at AI Engineering London" width={800} height={450} />
+
+You can [view the interactive slide deck here](https://zackproser.b-cdn.net/talks/untethered-productivity/index.html), or check out the <Link href="/speaking/untethered-productivity">full speaking detail page</Link> for more context.
+
+## The opening demo
+
+I opened with a story about a Slack bot I built at WorkOS that generates blog drafts. It had a bug — acronyms like SCIM and SSO were getting mangled in the output. The old version of me would have context-switched out of what I was doing, cloned the repo, reproduced the issue, fixed it, deployed, tested, verified. Instead, I gave Claude Code direct access to the Slack workspace. It found the bug, fixed the code, deployed to Cloudflare, posted a test message, read its own output, and confirmed the fix — all without me touching anything.
+
+That felt incredible. It also scared me. If the agent can do all of that autonomously, what exactly is my job? That question framed the rest of the talk.
+
+## The agents scale. You don't.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp" alt="Slide: The agents aren't the bottleneck. We are." width={968} height={500} />
+
+The central argument: agents scale infinitely. They don't get tired. They don't context-switch. Verification can be automated — lint, test, screenshot, review gates. But your attention is fixed and finite, and it degrades under load. You are the constraint, not the tooling.
+
+Simon Willison put it well on Lenny's Podcast (April 2, 2026): "I fire up 4 parallel agents and I'm wiped out by 11 AM. Finding our new limits is a personal skill we need to learn."
+
+I've felt this firsthand. The temptation is to stack more loops, run more agents, stay at 120% all day. The default path leads to burnout inside of 18 months. The intentional path — designing workflows that protect you — lets you ship more, move more, sleep more, and sustain it for years.
+
+## The enabling stack
+
+I walked through four capabilities that make this work in practice.
+
+### Signal layers
+
+I plugged Slack MCP and Linear MCP into Claude Code. Messages flow in, Claude classifies them — action needed, noise, duplicate of an existing ticket — and auto-creates Linear tickets for the real work. I never open Slack. I only see the delta.
+
+In one demo, 16 incoming Slack messages got distilled to 2 new tickets and 1 dedup. Two minor connectors reduced my perceived context-switching cost by about 90%.
+
+### Voice-first flows
+
+I've been using <Link href="/blog/walking-and-talking-with-ai">WisprFlow for voice-first development</Link> for over a year now, hitting 179 WPM compared to 90 WPM typing. For this talk I showed the dispatch advantage: speak 3 instructions to 3 agents simultaneously. Total dispatch time is about 9 seconds. A keyboard-only developer is still typing the first task.
+
+### Remote control
+
+This ties into what I wrote about in <Link href="/blog/walking-and-talking-with-ai">walking and talking with AI</Link>. I use focused mode at the desk and diffuse mode on walks. With the `--remote-control` flag, agents work on local files while I'm on the trail. I check progress on my phone and redirect them with new insights as they come. The desk is optional.
+
+I also showed <Link href="/blog/handwave">Handwave</Link>, the watchOS app I had Claude Code build me. It lets me control sessions from my wrist via the Bonjour protocol. Between voice dispatch, phone check-ins, and wrist control, I can run a full development day from a hiking trail.
+
+### The system improves itself
+
+Every Monday, a scheduled task scans all my Claude Code JSONL session logs from the previous week. It extracts patterns — tasks done more than once, repeated instructions, workflows that could be automated. The output is a list of new skills to build and inefficiencies I missed.
+
+One week it flagged that I'd reformatted blog images for CDN upload four separate times without noticing. It recommended building a skill to automate it. That kind of self-reflection loop means the system gets tighter every week without me actively optimizing it.
+
+## Verification gates
+
+Speed without safety is recklessness. I laid out three tiers of verification gates that I run before trusting agent output:
+
+1. **Lint and build** — TypeScript compilation, ESLint. The basics.
+2. **Browser use** — The agent launches the app, takes screenshots, visually confirms the output matches expectations.
+3. **Rules and review gates** — CLAUDE.md files, custom linting rules, project-specific constraints that catch subtle errors automated tests can't.
+
+These gates are what let me scale the number of parallel agents without scaling my anxiety.
+
+## Choreography of a day
+
+I showed my actual daily schedule to make this concrete:
+
+- **7-9:30 AM**: Desk time. Focused mode — architect, plan, define intent, set verification gates.
+- **9:30 AM**: Dispatch and leave. Spin up worktree agents, voice-dispatch tasks.
+- **9:45-11 AM**: Trail time. Agents are running. I check in on my phone occasionally.
+- **11 AM-Noon**: Mobile review. Check diffs, voice-dictate follow-up tasks.
+- **Noon**: Lunch. Agents keep running. I approve merges if anything's ready.
+- **1 PM**: Back at desk, refreshed. Review what shipped while I was gone.
+
+## The Oura Ring integration
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp" alt="Audience at AI Engineering London watching the Untethered Productivity talk" width={968} height={500} />
+
+I demoed the <Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">Oura Ring MCP integration</Link> I built, which exposes my sleep and HRV data to Claude Code. When I'm planning my day, Claude has access to my physical state. If I slept poorly, it adjusts — "You're running on fumes, let's do 2 tickets max today." Developer balance requires feedback from your body as much as your backlog.
+
+## Two paths, three takeaways
+
+I closed with a choice. The default path: stack more loops, run at 120% constantly, burn out in 18 months. The intentional path: design workflows that protect your attention, ship more while moving more and sleeping more, sustain it for years.
+
+Three things to try this week:
+
+1. **Build one signal layer.** Automate your noisiest input channel — Slack, email, whatever generates the most context-switching for you.
+2. **Add verification gates before scaling agent count.** Speed without safety is how you end up debugging agent-generated chaos at 2 AM.
+3. **Reclaim one hour of margin.** Use the speed gains for a walk, not more work.
+
+The tools are nuclear. Your nervous system is ancient. Find your developer balance.

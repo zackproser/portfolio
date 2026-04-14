@@ -1,0 +1,59 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+At AI Engineering London, Jack Bridger pulled me aside for a live recording of the [Scaling Devtools](https://www.scalingdevtools.com/) podcast. We set up on the conference floor between sessions — me fresh off delivering the <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> and co-running an 80-minute <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link> with Nick Nisi.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp" alt="Zack Proser gesturing during the live Scaling Devtools podcast recording at AI Engineering London" width={800} height={600} />
+
+The conversation ranged across how WorkOS uses AI coding agents daily, the patterns we've found that make agent adoption stick, and where I think developer tooling is heading. Here's the rundown.
+
+## How WorkOS builds with AI coding agents
+
+Jack asked about what the Applied AI team at WorkOS actually ships. Our team — me, Nick Nisi, and others — builds with Claude Code every day. I walked through the projects:
+
+- **A Slack bot that generates blog post drafts in 90 seconds.** A teammate drops a topic, the bot produces a complete draft, and the author edits from there instead of staring at a blank page.
+- **The WorkOS CLI.** It supports 15 frameworks and is built as a skill-driven agent using the Claude Agent SDK. Small skills compose into larger workflows — one skill calls another, which calls another.
+- **A RAG agentic pipeline** for internal knowledge retrieval.
+- **Internal tooling and integrations** that automate repetitive work across the team.
+
+The pattern across all of these: skills that compose. We write small, focused skills and chain them together. The unit of reuse is a markdown file that works in Claude Code, Codex, Cursor, and the Agent SDK without modification.
+
+## Patterns in agent adoption
+
+We spent a good chunk of time on the patterns that separate teams getting real value from agents versus teams that tried it once and bounced off.
+
+**Constraints beat instructions.** I told Jack that every unconstrained dimension is where the AI drifts. If you don't specify the output format, the tone, the file structure, or the verification step, the agent will improvise — and improvisation at scale produces inconsistent results. The teams that succeed constrain heavily and leave creativity only where they want it.
+
+**Evidence-based skills.** We talked about the backtick-bang pattern — skills that execute scripts inline and use the output as evidence for the next step. The agent runs a command, reads the result, and branches based on what actually happened rather than what it assumed would happen.
+
+**Verification gates.** Every skill we write at WorkOS ends with the agent proving its own work. Run the tests. Check the build. Confirm the output matches the spec. If the agent can't verify, it flags the problem instead of shipping garbage.
+
+**Portability.** The same skill markdown works across Claude Code, OpenAI's Codex, Cursor, and the Claude Agent SDK. We write once and share across tools. Jack was interested in this because it means teams aren't locked into one agent platform.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-wide.webp" alt="Wide shot of the live Scaling Devtools podcast setup at AI Engineering London" width={800} height={600} />
+
+## Where developer tooling is heading
+
+The back half of the conversation shifted to what's next. A few threads:
+
+**Voice-first development.** I use WisprFlow for almost everything — 179 words per minute versus 90 typing. I described how I dispatch multiple agents by voice, working through tasks faster because speaking is faster than typing and I'm not waiting on a single agent to finish before starting the next one.
+
+**Remote control of agents.** I've been using Claude Code's `--remote-control` flag to direct agents from my phone while on walks. The bottleneck in my day is rarely the tools — it's my own attention. Being able to poke agents, check on their progress, and redirect them while I'm away from the desk changes the shape of a workday.
+
+**Agents that learn from their own sessions.** I described a pattern where agents analyze their own session logs and recommend what to automate next. The agent sees that you've done the same five-step deployment process twelve times and suggests writing a skill for it.
+
+**The attention bottleneck.** Jack asked about burnout — relevant given my "Untethered Productivity" talk earlier that day. The agents scale. Your nervous system doesn't. The teams that will get the most out of this era are the ones that treat human attention as the scarce resource and design their workflows around protecting it. Signal management — using MCP connectors to reduce context switching, batching notifications, being intentional about when you check in on agents — matters more than which model you're running.
+
+## Conference context
+
+This was one of three things I did at AIE London. The <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> covered the developer balance angle — the intentional path versus the burnout path when working with AI agents. The <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link> with Nick Nisi was a hands-on 80-minute session on designing portable skills. The podcast tied all of it together in a conversational format.
+
+You can find the full details on the <Link href="/speaking/aie-london-scaling-devtools">speaking page</Link>.
+
+## When the episode drops
+
+I'll update this post with the link once Jack publishes the episode. In the meantime, subscribe to the [Scaling Devtools podcast](https://www.scalingdevtools.com/) — Jack does good work profiling the people building developer tools.
