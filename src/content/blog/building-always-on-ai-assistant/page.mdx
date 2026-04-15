@@ -1,13 +1,7 @@
-import { ArticleLayout } from '@/components/ArticleLayout'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
-export const metadata = {
-  title: "I Built an Always-On AI Assistant in a Day, Mostly While Doing Other Things",
-  author: "Zachary Proser",
-  date: "2026-4-15",
-  description: "How I moved my personal AI assistant from a home NUC to AWS with OpenTofu, Tailscale, and Discord — in the margins of a normal workday.",
-}
-
-export default (props) => <ArticleLayout article={metadata} {...props} />
+export const metadata = createMetadata(rawMetadata);
 
 For the past year I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, Tailscale overlay so I can reach it from anywhere. Most of the time it works great.
 
