@@ -104,15 +104,15 @@ export default async function SpeakingDetail({ params }) {
               <ExternalLink className="h-4 w-4" />
             </a>
           </div>
-          <div className="rounded-lg overflow-hidden border border-parchment-200 dark:border-slate-700">
+          <div className="rounded-lg border border-parchment-200 dark:border-slate-700">
             <iframe
               src={engagement.slidevUrl}
               title={`${engagement.title} - Interactive Slides`}
-              className="w-full border-0"
-              style={{ aspectRatio: '16/9' }}
+              className="w-full border-0 rounded-lg"
+              style={{ aspectRatio: '16/9', touchAction: 'auto' }}
               allow="fullscreen"
               loading="lazy"
-            />
+            ></iframe>
           </div>
           <p className="mt-2 text-sm text-parchment-500 dark:text-slate-400">
             Use arrow keys or click to navigate slides. Press F for fullscreen.
