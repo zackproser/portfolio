@@ -6,6 +6,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import { ExternalLinkButton } from '@/components/ExternalLinkButton'
 import { speakingEngagements } from '../speaking-data'
 import { ArrowLeft, Calendar, Users, ExternalLink, Youtube, Link as LinkIcon, Play } from 'lucide-react'
+import { SlidevEmbed } from '@/components/SlidevEmbed'
 
 function getEngagementBySlug(slug) {
   return speakingEngagements.find(e => e.slug === slug)
@@ -89,34 +90,14 @@ export default async function SpeakingDetail({ params }) {
       {/* Interactive Slidev deck */}
       {engagement.slidevUrl && (
         <section className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 flex items-center gap-2">
-              <Play className="h-5 w-5 text-indigo-500" />
-              Interactive Slide Deck
-            </h2>
-            <a
-              href={engagement.slidevUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-burnt-400 dark:text-amber-400 hover:text-burnt-500 dark:hover:text-amber-300 transition-colors"
-            >
-              Open full screen
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </div>
-          <div className="rounded-lg border border-parchment-200 dark:border-slate-700">
-            <iframe
-              src={engagement.slidevUrl}
-              title={`${engagement.title} - Interactive Slides`}
-              className="w-full border-0 rounded-lg"
-              style={{ aspectRatio: '16/9', touchAction: 'auto' }}
-              allow="fullscreen"
-              loading="lazy"
-            ></iframe>
-          </div>
-          <p className="mt-2 text-sm text-parchment-500 dark:text-slate-400">
-            Use arrow keys or click to navigate slides. Press F for fullscreen.
-          </p>
+          <h2 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <Play className="h-5 w-5 text-indigo-500" />
+            Interactive Slide Deck
+          </h2>
+          <SlidevEmbed
+            src={engagement.slidevUrl}
+            title={`${engagement.title} - Interactive Slides`}
+          />
         </section>
       )}
 
