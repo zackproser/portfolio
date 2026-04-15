@@ -37,7 +37,7 @@ export const speakingEngagements = [
     image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
     audience: 'AI engineers and developers',
     topics: ['AI Coding Agents', 'Developer Wellness', 'Claude Code', 'Productivity', 'Signal Management'],
-    slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/index-v2.html',
+    slidevUrl: 'https://zackproser.b-cdn.net/talks/untethered-productivity/index-v3.html',
     links: []
   },
   {
