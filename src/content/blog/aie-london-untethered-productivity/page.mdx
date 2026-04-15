@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { SlidevEmbed } from '@/components/SlidevEmbed';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
@@ -7,22 +8,11 @@ export const metadata = createMetadata(rawMetadata);
 
 I gave a talk at AI Engineering London this month called "Untethered Productivity: Staying Healthy, Creative, and Shipping in the AI Coding Era." The core thesis: the tools are nuclear, but your nervous system is relatively ancient. If you don't design your workflows around that mismatch, you'll burn out.
 
-<Image src="https://zackproser.b-cdn.net/images/aie-london-zack-podium-solo.webp" alt="Zack Proser presenting Untethered Productivity at AI Engineering London" width={800} height={450} />
+<Image src="https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp" alt="Audience at AI Engineering London watching the Untethered Productivity talk" width={968} height={500} />
 
 Check out the <Link href="/speaking/untethered-productivity">speaking detail page</Link> for more context, or browse the full interactive deck right here:
 
-<div className="rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 my-6">
-  <iframe
-    src="https://zackproser.b-cdn.net/talks/untethered-productivity/index.html"
-    title="Untethered Productivity - Interactive Slides"
-    className="w-full border-0"
-    style={{ aspectRatio: '16/9' }}
-    allow="fullscreen"
-    loading="lazy"
-  />
-</div>
-
-<span className="text-sm text-zinc-400 dark:text-zinc-500">Use arrow keys or click to navigate. Press F for fullscreen.</span>
+<SlidevEmbed src="https://zackproser.b-cdn.net/talks/untethered-productivity/index.html" title="Untethered Productivity - Interactive Slides" />
 
 ## The opening demo
 
@@ -31,8 +21,6 @@ I opened with a story about a Slack bot I built at WorkOS that generates blog dr
 That felt incredible. It also scared me. If the agent can do all of that autonomously, what exactly is my job? That question framed the rest of the talk.
 
 ## The agents scale. You don't.
-
-<Image src="https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp" alt="Slide: The agents aren't the bottleneck. We are." width={968} height={500} />
 
 The central argument: agents scale infinitely. They don't get tired. They don't context-switch. Verification can be automated — lint, test, screenshot, review gates. But your attention is fixed and finite, and it degrades under load. You are the constraint, not the tooling.
 
@@ -88,8 +76,6 @@ I showed my actual daily schedule to make this concrete:
 - **1 PM**: Back at desk, refreshed. Review what shipped while I was gone.
 
 ## The Oura Ring integration
-
-<Image src="https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp" alt="Audience at AI Engineering London watching the Untethered Productivity talk" width={968} height={500} />
 
 I demoed the <Link href="/blog/connect-oura-ring-to-claude-desktop-with-mcp">Oura Ring MCP integration</Link> I built, which exposes my sleep and HRV data to Claude Code. When I'm planning my day, Claude has access to my physical state. If I slept poorly, it adjusts — "You're running on fumes, let's do 2 tickets max today." Developer balance requires feedback from your body as much as your backlog.
 

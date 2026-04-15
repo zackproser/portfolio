@@ -5,7 +5,7 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-At AI Engineering London, Jack Bridger pulled me aside for a live recording of the [Scaling Devtools](https://www.scalingdevtools.com/) podcast. We set up on the conference floor between sessions — me fresh off delivering the <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> and co-running an 80-minute <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link> with Nick Nisi.
+At AI Engineering London, my colleague Nick Nisi and I sat down with Jack Bridger for a live recording of the [Scaling Devtools](https://www.scalingdevtools.com/) podcast. We set up on the conference floor between sessions — fresh off delivering the <Link href="/blog/aie-london-untethered-productivity">"Untethered Productivity" talk</Link> and co-running an 80-minute <Link href="/blog/aie-london-skills-at-scale">"Skills at Scale" workshop</Link>.
 
 <Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp" alt="Zack Proser during the live Scaling Devtools podcast recording at AI Engineering London" width={800} height={600} />
 
@@ -15,7 +15,9 @@ Jack and I spent a good stretch talking about what makes technical talks and wor
 
 The biggest lesson: hands-on time wins. An 80-minute workshop where people build a real artifact teaches more than any slide deck. For the Skills at Scale workshop, we had attendees building their own skills from a starter template, iterating on them in real time, and sharing their output at the end. People walked out with something they could install and use the next day.
 
-The talk format is different. For Untethered Productivity, I optimized for moments that land — the show of hands ("who's rubber-stamped a PR because you were managing too many agents?"), the Simon Willison quote, the live demos. Talks need beats that the audience can feel. Workshops need scaffolding that the audience can build on.
+The talk format is different. For Untethered Productivity, I built custom animated components for every major concept — a context chaos visualization that showed your attention draining as you switch between Slack, IDE, terminal, and GitHub; a live Slack bot loop where Claude fixes a bug, deploys to Cloudflare, posts a test message, reads its own output, and confirms the fix without human intervention; a voice race animation showing three agents dispatched by voice in 9 seconds while a keyboard user is still typing. Every concept had a visual that moved on stage.
+
+The emotional structure mattered too. I opened with "That felt incredible. It also scared me" after showing the autonomous Slack bot loop. Then built to "The agents aren't the bottleneck. We are" — three columns showing agents (infinite), verification (automatable), and your attention (fixed, finite, degrades under load). The Oura Ring demo where Claude tells you to ease up because you slept four hours got an audible reaction. People felt that one.
 
 ## An attendee completed the workshop autonomously with Hermes bot
 
