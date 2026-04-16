@@ -6,6 +6,8 @@ export const metadata = createMetadata(rawMetadata);
 
 Since early February I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, Tailscale overlay so I can reach it from anywhere. Most of the time it works great.
 
+<img src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a System76 Meerkat NUC on a desk with a glowing terminal, cozy home office vibes" />
+
 Twice in the past few months it didn't, and both times I was out of the country. I'd open my laptop in a hotel, reach for the assistant I'd quietly started depending on, and get silence. First time was a power blip. Second time I'd recently installed a HackRF One in the same room and my best guess is a transient power fault that took the NUC down with it.
 
 The cognitive infrastructure I'd come to rely on was tied to a single box I couldn't power-cycle from 5,000 miles away. Time to fix that.
@@ -23,6 +25,8 @@ Six requirements, written before touching any code:
 
 Number 6 turned out to be the most interesting constraint. This could have been a green-field build. Instead it was a selective port: take everything from OpenClaw that had proven out, drop it onto new bones designed for reliability.
 
+<img src="https://zackproser.b-cdn.net/images/hermes-pixel-cloud.webp" alt="Pixel art of a cloud server floating in space with data streams connecting to a laptop and phone below" />
+
 ## Choosing primitives (and the ones I rejected)
 
 Before writing any code, I spent about an hour in an adversarial architecture conversation with Claude. I pushed back, Claude pushed back, and we ruled out options with enough reasoning that the final choices felt solid.
@@ -38,6 +42,8 @@ OpenRouter was a deliberate choice for the model backend. One API key gives you 
 The agent framework mattered as much as the infrastructure. I spent time reading through several options — LangChain, CrewAI, various "agent-as-a-service" platforms — but landed on Hermes Agent from Nous Research.
 
 <GitHubRepoCard repo="NousResearch/hermes-agent" />
+
+<img src="https://zackproser.b-cdn.net/images/hermes-pixel-bot.webp" alt="Pixel art of a friendly AI robot wearing a winged Hermes helmet, surrounded by floating tool icons" />
 
 What drew me in was the feature surface. Hermes ships with persistent memory across sessions, a skills system for teaching it reusable workflows, a full terminal backend, browser automation, file management, cron scheduling, sub-agent delegation, and platform gateways for Discord, Telegram, Slack, and more. It also has a `SOUL.md` file — a personality contract that persists on disk and survives instance replacement — and a `USER.md` for storing context about the human it's working with.
 
