@@ -1,0 +1,101 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+export const metadata = createMetadata(rawMetadata)
+
+Last year I gave a [DevSecCon keynote](/blog/untethered-software-development-devseccon-2025) called "Walking and Talking in the Woods with AI." The thesis: you can ship production code while hiking through the forest, using voice dictation and background AI agents, as long as you have hardened CI/CD pipelines keeping everything safe.
+
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote: Walking and Talking in the Woods with AI" />
+
+I only took my phone on those walks. No laptop. The phone was enough to poke at PRs that agents had started, leave review comments, redirect Cursor Bug Bot by commenting on its work. That was real — I was still moving work forward from the trail. But the interactions were limited. I could steer. I couldn't drive.
+
+This post is about what changed: Claude Code remote control. Claude Code is Anthropic's CLI coding agent — it runs in a terminal on your machine with full access to your filesystem, shell, and credentials. Remote control lets you drive that session from the Claude mobile app on your phone. The agent is doing the work on your laptop; you're just steering it from anywhere. Now when I take my phone into the woods, I'm driving a real computer at home. My Mac laptop is sitting on my desk with Claude Code running, and I'm piloting it from the Claude app on my iPhone. That single connection gives me multiple simultaneous sessions — one doing AWS infrastructure work, another running an AI agent, another implementing code directly on a project, another brainstorming and writing in Notion. From the same phone, on the same walk.
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-woods.webp" alt="Pixel art of a developer on a forest trail talking to their phone while AI agents work on floating holographic screens" width={1200} height={675} />
+
+## From steering to driving
+
+In the keynote, I described a workflow with three elements: [WisprFlow](https://zackproser.com/blog/wisprflow-review) for voice dictation at 179 WPM, background AI agents handling scoped tasks, and hardened CI/CD as the safety net. That was powerful — agents would start PRs and I could review, comment, and redirect from my phone. I was the orchestrator, nudging work forward through GitHub comments and quick approvals. Real output, real velocity, but I was limited to the interfaces those tools exposed on mobile.
+
+Claude Code remote control changed the equation completely. Now my phone isn't poking at the edges of what agents produce — it's plugged directly into a real development machine. The session runs on my Mac laptop at home, but I interact with it from the Claude app on my iPhone. And it's not one session. I can have Claude Code running multiple workstreams:
+
+- **One session doing AWS infrastructure** — OpenTofu plans, applies, secret rotation
+- **Another session running an agent** — standing up Hermes, configuring its skills, debugging its behavior
+- **Another session writing code** — direct implementation on any project in my repos
+- **Another session brainstorming** — writing specs in Notion, drafting architecture docs
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-sessions.webp" alt="Pixel art of a phone with multiple glowing session windows fanning out — AWS console, code editor, agent terminal, and writing app" width={1200} height={675} />
+
+On top of that, I have [Hermes](/blog/building-always-on-ai-assistant) running on an EC2 instance as a Discord bot. I talk to that one through the Discord app. So I'm running Claude Code sessions for heavy lifting *and* directing Hermes for [content pipelines](/blog/how-my-ai-assistant-ships-blog-posts) — all from two apps on the same phone, simultaneously, while walking through the forest.
+
+## What I actually do on these walks now
+
+I walk into the woods and start talking to my phone. Not recording voice memos for later — having real conversations with AI agents that execute while I walk.
+
+A typical session looks like this: I open the Claude app and tell Claude Code to update an OpenTofu variable, plan the change, and apply it. While that's running, I switch to Discord and tell Hermes to draft a blog post, generate pixel art for the header, upload it to CDN, and open a PR. I check back on Claude Code — the apply finished, service is healthy. I check Hermes — the PR is open, preview link is ready. I review the Vercel preview on my phone, approve, merge.
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-control-plane.webp" alt="Pixel art of a phone screen split in two — one half showing a terminal with infra commands, the other showing a Discord chat with a content bot" width={1200} height={675} />
+
+I shipped three blog posts and an EC2 instance upgrade this way last week. Real production work. Real infrastructure changes. Real content going live on a site with 12,000 monthly readers. All from my phone, all while walking.
+
+## My body has been telling me to stop for years
+
+Here's the part that doesn't get talked about enough in engineering: the physical cost of this job.
+
+I've been a software engineer for 14 years. Fourteen years of sitting in chairs, hunched over keyboards, staring at monitors. The list of damage accumulates quietly until it doesn't.
+
+**RSI.** Repetitive strain injury from typing thousands of words a day. The ache in my wrists that I used to ignore and now can't. Every engineer I know who's been at this more than a decade has some version of this story. The ergonomic keyboards and standing desks help, but they're band-aids on a fundamental problem: the human body was not designed to make the same small finger movements for eight hours a day.
+
+**Crane neck.** The forward-head posture that comes from leaning toward a monitor. Physical therapists call it "tech neck" and it's an epidemic in our industry. Constant tension in the upper back and shoulders. Headaches. The kind of chronic pain that becomes your new normal until you forget what not being in pain feels like.
+
+**The chair problem.** Sitting is the baseline assumption of software engineering. You sit to code. You sit to review PRs. You sit in meetings. You sit to debug. The research on prolonged sitting and cardiovascular disease, metabolic disorders, and shortened lifespan is clear and damning, and we all know it, and we all keep sitting.
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-freedom.webp" alt="Pixel art contrasting a hunched developer at a desk in pain versus the same developer walking freely on a trail with phone in hand" width={1200} height={675} />
+
+I'm done accepting this as the cost of doing business. The tools exist now to do real engineering work without sitting at a desk, without a keyboard, without a monitor. Not all of it — I still sit down at my laptop for deep debugging sessions and thorny architecture work. But a huge percentage of daily engineering work is "decide what should happen and tell something capable to do it." That works from a trail as well as it works from a desk.
+
+And honestly? Sometimes I can't focus at the desk. My ADHD brain stalls when I'm sitting still staring at a screen. Walking activates [diffuse-mode thinking](https://en.wikipedia.org/wiki/Dual_process_theory) — the background processing that happens when you're not forcing concentration. Problems that felt stuck at the desk start resolving themselves on the trail. Walking is a focus strategy as much as a health one. I start moving and my brain starts working.
+
+## WisprFlow: voice is the other half of the equation
+
+The phone as a control plane only works because I'm not typing on a tiny screen. [WisprFlow](/blog/wisprflow-review) is what makes the input side viable. It's a voice-to-text tool that runs on both my Mac and my iPhone, and it handles technical language — function names, file paths, CLI flags — at [179 words per minute](/blog/voice-coding-vs-typing-speed). I'm not tapping out messages with my thumbs. I'm talking naturally and WisprFlow transcribes in real time, directly into whatever app has focus.
+
+When I'm on the trail directing Claude Code, I'm dictating the instructions. "Update the instance type in the OpenTofu config from t4g.medium to t4g.large and run tofu plan." WisprFlow catches all of that. When I'm telling Hermes to write a post, same thing — I speak the brief and WisprFlow turns it into text in the Discord message box.
+
+This is the combination that makes phone-first engineering actually work: Claude Code remote control for driving the computer, WisprFlow for fast voice input, and multiple agent sessions for parallel execution. Without any one of these pieces, the phone is still limited to poking at PRs. With all three, it's a genuine control plane.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+If you want to see voice-to-text in action — what it looks like to dictate at 179 WPM and have technical terms come through correctly — try the interactive demo:
+
+<VoiceAIDemoCard />
+
+## The phone is the new terminal
+
+The terminal was the interface to one machine. You typed commands. The machine executed. That model lasted for decades because there was no alternative — you needed your hands on a keyboard to instruct a computer.
+
+AI agents break that constraint. Natural language is the interface now. A text message works on every screen size. I don't need a 27-inch monitor to type "upgrade the instance type and update the OpenTofu config." That instruction works the same whether I'm at a desk or walking through the forest.
+
+The phone is the control plane for a fleet of autonomous agents. I'm not SSH-ing into a box. I'm not reading scrolling terminal output. I'm directing systems that have context about my codebase, access to my credentials, and the ability to reason about what needs to happen next. I describe what I want in plain English and the agents figure out the steps.
+
+This is the evolution of what I talked about at DevSecCon. The keynote was about untethering from the desk using voice and agents — steering work from the trail through comments and reviews. Claude Code remote control completed the picture. The phone went from steering wheel to cockpit. I'm not just nudging PRs anymore — I'm plugged into a real machine running multiple sessions, any one of which can do full-stack engineering work. The CI/CD pipeline — the hardened safety net from the keynote — is still there, still catching mistakes, still making speed safe. That part hasn't changed. What changed is that the phone became a genuine control plane for everything.
+
+## What this actually buys me
+
+I'm walking 5-8 miles on days when I would have been sitting. My neck doesn't hurt. My wrists get a break from typing — [WisprFlow handles the input](/blog/wisprflow-claude-code-setup-guide) whether I'm on my Mac or my iPhone. I'm thinking more clearly because physical movement genuinely helps with focus and cognition — not in some vague wellness way, but in the specific sense that my ADHD brain produces better output when my legs are moving.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+And the work output hasn't dropped. If anything, it's higher. The [two-agent setup](/blog/two-agents-one-phone) means I'm running parallel workstreams that would have been sequential at a desk. While I'm reviewing one agent's output, the other is already working on the next task. The phone UX — switching between Discord and the Claude app — is natural. It's the same muscle memory as switching between Slack and email.
+
+The trajectory is obvious. Agent capabilities improve every few months. The tasks I can delegate from my phone today are more complex than six months ago. Six months from now, I expect to be directing multi-step infrastructure migrations and full feature implementations from the same two apps.
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-trajectory.webp" alt="Pixel art timeline showing evolution from desktop terminal to laptop to phone controlling a constellation of AI agents" width={1200} height={675} />
+
+The terminal connected you to one machine. The phone connects you to a fleet of agents. My body doesn't have to pay the price for my career anymore. That's the shift, and it's already here.
+
+If you want the technical details on the two-agent architecture, read [Two Agents, One Phone](/blog/two-agents-one-phone). For the infrastructure underneath, start with [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). And watch the [DevSecCon keynote](https://www.youtube.com/watch?v=kwIzRkzO_Z4) for where this story started.
