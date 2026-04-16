@@ -1,65 +1,72 @@
-import Image from 'next/image'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
+import Image from 'next/image'
+import YoutubeEmbed from '@/components/YoutubeEmbed'
 
 export const metadata = createMetadata(rawMetadata)
 
-Last Tuesday I shipped three blog posts and upgraded an EC2 instance while walking my dog. I was on my phone the whole time. Two AI agents — Claude Code and Hermes — did the actual work. I just told them what to do.
+Last year I gave a [DevSecCon keynote](/blog/untethered-software-development-devseccon-2025) called "Walking and Talking in the Woods with AI." The thesis: you can ship production code while hiking through the forest, using voice dictation and background AI agents, as long as you have hardened CI/CD pipelines keeping everything safe.
 
-This is real production work from a phone. Not reading Slack. Not triaging PagerDuty alerts. Writing code, modifying infrastructure, publishing content to a live site.
+<YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote: Walking and Talking in the Woods with AI" />
 
-## What happened on that walk
+That talk was about voice-to-text and orchestrating agents from a laptop. This post is about what happened next: I stopped needing the laptop entirely. Now when I walk into the woods, I'm talking directly to the agents from my phone. Not dictating text for later — actually driving infrastructure changes in AWS and content pipelines in real time, from the trail.
 
-I opened Discord on my Pixel and messaged Hermes: draft a post about the webhook bridge pattern, generate a hero image, push a PR. While Hermes worked on that, I switched to Claude Code in the terminal and asked it to resize my EC2 instance from t3.medium to t3.large and update the OpenTofu config to match.
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-woods.webp" alt="Pixel art of a developer on a forest trail talking to their phone while AI agents work on floating holographic screens" width={1200} height={675} />
 
-By the time I got home, the EC2 resize was done, the blog post PR was open with a generated hero image uploaded to Bunny CDN, and two more draft posts were in progress. I reviewed the diffs on my phone, approved the PRs, and merged.
+## From voice dictation to agent control
 
-I wrote about the two-agent setup in detail in [Two Agents, One Phone](/blog/two-agents-one-phone). The infrastructure that makes this possible — a persistent EC2 instance running Hermes with Discord as the interface — is covered in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant).
+In the keynote, I described a workflow with three elements: [WisprFlow](https://zackproser.com/blog/wisprflow-review) for voice dictation at 179 WPM, background AI agents handling scoped tasks, and hardened CI/CD as the safety net. That was powerful — I could think through problems on a walk and capture the output as text, then hand off work to agents when I got back to the laptop.
 
-## The terminal was the interface to one machine
+The evolution is that the laptop is gone from the loop. [Claude Code's remote control feature](https://docs.anthropic.com/en/docs/claude-code/remote) means I can drive a full Claude Code session from the Claude app on my iPhone. The session runs on my Mac laptop at home — it has the AWS credentials, the SSH keys, the OpenTofu state — but I interact with it from my phone. I have a second agent, [Hermes](/blog/building-always-on-ai-assistant), running on an EC2 instance as a Discord bot. I talk to that one through the Discord app.
 
-For decades, the terminal was how engineers got things done. SSH into a box, run commands, watch output scroll. The terminal gave you direct control over a single system. You typed; the machine executed.
+Two apps on my phone. Two agents. One handles [infrastructure changes in AWS](/blog/two-agents-one-phone). The other handles [content pipelines](/blog/how-my-ai-assistant-ships-blog-posts). Both are working simultaneously while I'm on the trail.
 
-That model scaled with tools like tmux, SSH multiplexing, and eventually infrastructure-as-code. But the fundamental relationship stayed the same: one human, one terminal session, one machine at a time. Your hands had to be on a keyboard. Your eyes had to be on scrolling output.
+## What I actually do on these walks now
 
-The phone breaks that model.
+I walk into the woods and start talking to my phone. Not recording voice memos for later — having real conversations with AI agents that execute while I walk.
 
-## The phone is the control plane
+A typical session looks like this: I open the Claude app and tell Claude Code to update an OpenTofu variable, plan the change, and apply it. While that's running, I switch to Discord and tell Hermes to draft a blog post, generate pixel art for the header, upload it to CDN, and open a PR. I check back on Claude Code — the apply finished, service is healthy. I check Hermes — the PR is open, preview link is ready. I review the Vercel preview on my phone, approve, merge.
 
-When I message an AI agent from my phone, I'm not operating a machine. I'm directing an autonomous system. The agent has context about my codebase, access to my git repos, credentials for my infrastructure, and the ability to make decisions within the boundaries I've set.
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-control-plane.webp" alt="Pixel art of a phone screen split in two — one half showing a terminal with infra commands, the other showing a Discord chat with a content bot" width={1200} height={675} />
 
-The interaction pattern is closer to managing a team than running commands. I say "draft a blog post about X with these key points" or "upgrade the instance type and update the Terraform config." The agent figures out the steps, executes them, and reports back. If something goes wrong, it tells me and I course-correct — still from my phone.
+I shipped three blog posts and an EC2 instance upgrade this way last week. Real production work. Real infrastructure changes. Real content going live on a site with 35,000 monthly readers. All from my phone, all while walking.
 
-This changes what "work" looks like. I don't need to be at a desk. I don't need a laptop. I don't even need both hands free. One thumb and a clear instruction is enough to set real work in motion.
+## My body has been telling me to stop for years
 
-## Why this is different from mobile apps
+Here's the part that doesn't get talked about enough in engineering: the physical cost of this job.
 
-Engineers have had phone apps for years. GitHub Mobile, AWS Console, various monitoring dashboards. But those are read-mostly interfaces. You can check a build status or approve a PR. You can't architect a solution or debug a complex issue through a mobile app's tiny UI.
+I've been a software engineer for 14 years. Fourteen years of sitting in chairs, hunched over keyboards, staring at monitors. The list of damage accumulates quietly until it doesn't.
 
-AI agents change the equation because natural language is the interface. A text message works on every screen size. I don't need a 27-inch monitor to type "Hermes, write a comparison post about Cursor vs Windsurf, include pricing tables, generate an OG image, and open a PR." That instruction works the same whether I type it on my laptop or thumb it into Discord while standing in line at the grocery store.
+**RSI.** Repetitive strain injury from typing thousands of words a day. The ache in my wrists that I used to ignore and now can't. Every engineer I know who's been at this more than a decade has some version of this story. The ergonomic keyboards and standing desks help, but they're band-aids on a fundamental problem: the human body was not designed to make the same small finger movements for eight hours a day.
 
-The bottleneck shifts from "can my fingers reach all the right buttons" to "can I clearly articulate what I want done." That second skill doesn't require a keyboard.
+**Crane neck.** The forward-head posture that comes from leaning toward a monitor. Physical therapists call it "tech neck" and it's an epidemic in our industry. Constant tension in the upper back and shoulders. Headaches. The kind of chronic pain that becomes your new normal until you forget what not being in pain feels like.
 
-## Two agents, one phone
+**The chair problem.** Sitting is the baseline assumption of software engineering. You sit to code. You sit to review PRs. You sit in meetings. You sit to debug. The research on prolonged sitting and cardiovascular disease, metabolic disorders, and shortened lifespan is clear and damning, and we all know it, and we all keep sitting.
 
-The most productive setup I've found is running two agents simultaneously. Hermes handles content operations — writing MDX, generating images, managing git workflows, uploading assets to CDN. Claude Code handles infrastructure and code changes — modifying Terraform configs, writing application code, debugging issues.
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-freedom.webp" alt="Pixel art contrasting a hunched developer at a desk in pain versus the same developer walking freely on a trail with phone in hand" width={1200} height={675} />
 
-I can have both working on separate tasks at the same time. While Hermes drafts a blog post, Claude Code can be refactoring a module or updating dependencies. I check in on each one when they ping me, review what they've produced, and either approve or redirect.
+I'm done accepting this as the cost of doing business. The tools exist now to do real engineering work without sitting at a desk, without a keyboard, without a monitor. Not all of it — I still sit down for deep architecture sessions and thorny debugging. But a huge percentage of daily engineering work is "decide what should happen and tell something capable to do it." That works from a trail as well as it works from a desk. Better, actually, because my brain works better when I'm moving.
 
-This is parallel execution directed from a device that fits in my pocket. Three years ago, this workflow didn't exist. Two years ago, the models weren't good enough to trust with real code changes. Now it's how I get a significant chunk of my work done.
+## The phone is the new terminal
 
-## What this means for engineering culture
+The terminal was the interface to one machine. You typed commands. The machine executed. That model lasted for decades because there was no alternative — you needed your hands on a keyboard to instruct a computer.
 
-The "I need to be at my desk to be productive" assumption is dying. If an engineer can ship meaningful work from their phone while walking a dog, the value of butts-in-seats drops to zero. What matters is the quality of the instructions and the review of the output.
+AI agents break that constraint. Natural language is the interface now. A text message works on every screen size. I don't need a 27-inch monitor to type "upgrade the instance type and update the OpenTofu config." That instruction works the same whether I'm at a desk or walking through the forest.
 
-This also changes on-call culture. Instead of opening a laptop at 2 AM, groggy and half-awake, you can tell an agent to investigate the alert, propose a fix, and stage it for your review. The agent can do the tedious diagnostic work while you gather yourself.
+The phone is the control plane for a fleet of autonomous agents. I'm not SSH-ing into a box. I'm not reading scrolling terminal output. I'm directing systems that have context about my codebase, access to my credentials, and the ability to reason about what needs to happen next. I describe what I want in plain English and the agents figure out the steps.
 
-I don't think phones will replace laptops for all engineering work. Deep architecture sessions, complex debugging, code review that requires reading hundreds of lines — those still benefit from a large screen and a keyboard. But a surprising amount of daily engineering work turns out to be "decide what should happen and tell something to do it." Phones are perfectly good at that.
+This is the evolution of what I talked about at DevSecCon. The keynote was about untethering from the desk using voice and agents. The reality now is that the untethering is complete. The phone replaced the laptop. The agents replaced the manual execution. The CI/CD pipeline — the hardened safety net from the keynote — is still there, still catching mistakes, still making speed safe. That part hasn't changed. What changed is that the human in the loop needs nothing more than a phone and a clear thought.
 
-## The trajectory
+## What this actually buys me
 
-Agent capabilities are improving every few months. The tasks I can delegate from my phone today are more complex than what was possible six months ago. Six months from now, I expect to be directing multi-step infrastructure migrations and feature implementations from the same Discord interface.
+I'm walking 5-8 miles on days when I would have been sitting. My neck doesn't hurt. My wrists get a break from typing. I'm thinking more clearly because physical movement is genuinely good for cognition — this is well-studied, not handwaving.
 
-The phone is becoming what the terminal was in the 1990s — the default interface through which engineers interact with the systems they build. Except this time, the systems on the other end aren't waiting for keystroke-by-keystroke instructions. They're autonomous agents that take high-level intent and execute.
+And the work output hasn't dropped. If anything, it's higher. The [two-agent setup](/blog/two-agents-one-phone) means I'm running parallel workstreams that would have been sequential at a desk. While I'm reviewing one agent's output, the other is already working on the next task. The phone UX — switching between Discord and the Claude app — is natural. It's the same muscle memory as switching between Slack and email.
 
-The terminal connected you to one machine. The phone connects you to a fleet of agents. That's the shift.
+The trajectory is obvious. Agent capabilities improve every few months. The tasks I can delegate from my phone today are more complex than six months ago. Six months from now, I expect to be directing multi-step infrastructure migrations and full feature implementations from the same two apps.
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-trajectory.webp" alt="Pixel art timeline showing evolution from desktop terminal to laptop to phone controlling a constellation of AI agents" width={1200} height={675} />
+
+The terminal connected you to one machine. The phone connects you to a fleet of agents. My body doesn't have to pay the price for my career anymore. That's the shift, and it's already here.
+
+If you want the technical details on the two-agent architecture, read [Two Agents, One Phone](/blog/two-agents-one-phone). For the infrastructure underneath, start with [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). And watch the [DevSecCon keynote](https://www.youtube.com/watch?v=kwIzRkzO_Z4) for where this story started.
