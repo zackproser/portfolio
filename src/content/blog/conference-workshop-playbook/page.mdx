@@ -1,0 +1,101 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+Over the past year, [Nick Nisi](/blog/nick-nisi-is-one-talented-motherfucker) and I have run hands-on technical workshops for 200+ engineers across three cities. [AI Engineer World Fair in San Francisco](/blog/ai-pipelines-and-agents-mastra). [AI Engineering in London](/blog/aie-london-skills-at-scale). And before that, New York.
+
+Each one was different — different topics, different formats, different audiences. But the pattern that makes them work is the same every time, and it's not complicated. Here's what we learned.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-workshop-fisheye.webp" alt="Packed room at AI Engineer World Fair SF workshop" width={1200} height={675} />
+
+## The workshops
+
+In **San Francisco** (June 2025), we ran *AI Pipelines & Agents in TypeScript with Mastra.ai* at AI Engineer World Fair. Seventy-plus engineers, two hours, and by the end everyone had built an agentic meme generator. The room was standing-room only.
+
+In **London** (April 2026), we ran *Skills at Scale* at AI Engineering London. Eighty minutes on Claude Code skills — how to make them portable, executable, and composable. The vehicle was Repo Roast: attendees built skills that roast any GitHub repo, then shared them with each other.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-workshop-workos-room.webp" alt="Workshop room at AI Engineering London" width={1200} height={675} />
+
+Different topics, different cities, same underlying approach. Here's what actually matters.
+
+## Teach what you use daily
+
+This is the single most important thing. We taught Mastra in SF because Nick and I had been building with it for months — shipping real features, hitting real edge cases, forming real opinions. We taught Claude Code skills in London because we write them constantly. They're part of how we work every single day.
+
+The audience can feel the difference. When you teach something you actually use, you have answers to the weird questions. You know the gotchas. You have stories about the time it broke in production at 2am. You have *taste* about which patterns work and which ones are traps.
+
+The worst workshops I've ever attended were product demos dressed up as education. Some PM walks you through a happy-path tutorial that was clearly written by a developer advocate who used the product for a week. Nobody learns anything. Don't be that workshop.
+
+## Build the thing live
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp" alt="Nick Nisi and Zack Proser presenting at AI Engineering London" width={1200} height={675} />
+
+Attendees can tell the difference between a canned demo and someone coding live who knows the tool cold. The canned demo is safe. It's also boring and forgettable.
+
+When you build live, things go wrong — and that's actually the point. When the API returns an unexpected error and you debug it in real time, people learn more from watching you troubleshoot than from any slide deck. They see your instincts. They see how you think about the problem. They see that the tool is real enough to have rough edges and that you know it well enough to navigate them.
+
+In SF, we live-coded the entire meme generator pipeline. In London, we built skills from scratch in front of the room. Both times, the energy in the room shifted the moment we opened a terminal and started typing real code.
+
+## Prep under pressure is the norm
+
+Here's the unglamorous truth: Nick and I were prepping in hotel lobbies the night before both workshops. Not because we procrastinated — because regular work hours were completely full with, you know, regular work. We're practitioners first, speakers second.
+
+The trick that makes this work is having the material deeply internalized. When you teach what you use daily (see lesson one), last-minute prep is refinement, not creation. You're tightening transitions, not learning the content. You're deciding which section to cut for time, not figuring out what to say.
+
+If you need two weeks of dedicated prep time to deliver a workshop, you probably don't know the material well enough to teach it. That sounds harsh but it's true. The best workshops come from people who could teach the content extemporaneously because it's just... how they work.
+
+## The 'backtick bang' pattern and other concrete takeaways
+
+Give people specific, memorable patterns they can use Monday morning. Not abstract principles — concrete, copy-pasteable techniques.
+
+In London, one of the patterns that landed hardest was what we called "backtick bang" — a specific way to structure Claude Code skill invocations that makes them composable. People could immediately see how to apply it to their own workflows. It had a name. It was easy to remember. It was useful the next day.
+
+Every workshop needs a handful of these. If attendees walk out and can't name three specific things they're going to try at work, you've given a talk, not a workshop.
+
+## Let attendees share with each other
+
+<Image src="https://zackproser.b-cdn.net/images/zack-and-nick.webp" alt="Zack and Nick ready to teach" width={1200} height={675} />
+
+At *Skills at Scale* in London, we built a `./share.sh` script into the workshop repo. When someone wrote a skill they were proud of, they could run the script and share it with every other attendee in the room.
+
+This was the single highest-energy moment of the workshop. People started riffing on each other's skills. Someone would share a skill, and three other people would immediately fork it and add their own twist. The room went from "following along with instructors" to "building things together" — and that second mode is where real learning happens.
+
+Peer learning beats lecture every time. Your job as a workshop leader isn't to be the smartest person in the room for 90 minutes. It's to set up the conditions where 80 smart engineers can learn from each other. Build the infrastructure for sharing into your workshop from the start.
+
+## Feedback is the proof
+
+I'm not going to be coy about this. The feedback from both workshops was exceptional. Developers told us it was the most useful workshop at the conference. Their words, not ours.
+
+<Image src="https://zackproser.b-cdn.net/images/mastra-workshop-feedback-1.webp" alt="Workshop feedback from attendees" width={1200} height={675} />
+
+<Image src="https://zackproser.b-cdn.net/images/mastra-workshop-feedback-2.webp" alt="More workshop feedback from attendees" width={1200} height={675} />
+
+That's not because we're uniquely talented presenters. It's because the bar for conference workshops is shockingly low and the formula isn't secret. Teach real things. Build live. Let people get their hands dirty. Most workshop leaders don't do any of these things, so doing all three makes you stand out immediately.
+
+## Don't shill
+
+The worst workshops at any conference are thinly-veiled product demos. You know the ones. The title promises you'll "learn to build X" but the actual content is "here's why you should buy our enterprise plan." The instructor works at the company, has used the product for a month, and reads from a script.
+
+The best workshops are taught by practitioners who happen to work at a company. The distinction matters. Nick and I work at companies that make tools. But we teach because we're genuinely obsessed with the craft of building software with AI. The workshops are about the *skills and patterns*, not the product SKU.
+
+People can smell a sales pitch from the back row of a 200-person workshop. Respect your audience enough to actually teach them something.
+
+## The pattern
+
+After three cities and 200+ engineers, the pattern is clear:
+
+1. **Teach what you actually use.** Your daily experience is your curriculum.
+2. **Build it live.** Mistakes are features, not bugs.
+3. **Give concrete takeaways.** Named patterns > abstract advice.
+4. **Let people share.** The room is smarter than you.
+5. **Don't shill.** Teach the craft, not the product.
+
+The bar for conference workshops is low enough that genuine effort stands out. That's simultaneously depressing and encouraging. If you know something well enough to teach it and you're willing to get on stage and build it live, you'll deliver a better workshop than 90% of what's out there.
+
+Nick and I are already planning the next one. If you want the full details on any of the workshops mentioned here, check out the individual writeups:
+
+- [AI Pipelines & Agents in TypeScript with Mastra.ai](/blog/ai-pipelines-and-agents-mastra) — the SF workshop
+- [Skills at Scale at AI Engineering London](/blog/aie-london-skills-at-scale) — the London workshop
+- [Nick Nisi Is One Talented Motherfucker](/blog/nick-nisi-is-one-talented-motherfucker) — on finding the right co-presenter
