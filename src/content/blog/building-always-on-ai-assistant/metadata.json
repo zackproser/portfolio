@@ -1,8 +1,8 @@
 {
-  "title": "I Built an Always-On AI Assistant in a Day, Mostly While Doing Other Things",
+  "title": "I Built an Always-On Hermes Agent on AWS in a Day, Mostly Async",
   "author": "Zachary Proser",
   "date": "2026-04-15",
-  "description": "How I moved my personal AI assistant from a home NUC to AWS with OpenTofu, Tailscale, and Discord — in the margins of a normal workday.",
+  "description": "How I moved my personal AI assistant to AWS with OpenTofu, Tailscale, and Discord — self-hosting Hermes Agent in the margins of a normal workday.",
   "image": "https://zackproser.b-cdn.net/images/hermes-architecture.webp",
-  "tags": ["ai", "infrastructure", "aws", "tailscale", "opentofu"]
+  "tags": ["ai", "infrastructure", "aws", "tailscale", "opentofu", "hermes-agent"]
 }
