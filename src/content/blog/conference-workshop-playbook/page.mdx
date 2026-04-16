@@ -6,7 +6,7 @@ export const metadata = createMetadata(rawMetadata)
 
 Over the past year, Nick Nisi and I have run hands-on technical workshops for 200+ engineers across three cities. [AI Engineer World Fair in San Francisco](/blog/ai-pipelines-and-agents-mastra). [AI Engineering in London](/blog/aie-london-skills-at-scale). And before that, New York.
 
-Each one was different — different topics, different formats, different audiences. But the pattern that makes them work is the same every time, and it's not complicated. Here's what we learned.
+Each one was different — different topics, different formats, different audiences. But the pattern that makes them work is the same every time, and it's not complicated. Here's what we learned. (I gave a separate talk at AIE London about [staying productive while working with AI agents](/blog/aie-london-untethered-productivity) and sat down with Jack Bridger on the [Scaling Devtools podcast](/blog/aie-london-scaling-devtools-podcast) — those cover the broader philosophy. This post is specifically about the workshops.)
 
 <Image src="https://zackproser.b-cdn.net/images/aie-workshop-fisheye.webp" alt="Packed room at AI Engineer World Fair SF workshop" width={1200} height={675} />
 
@@ -46,6 +46,8 @@ The trick that makes this work is having the material deeply internalized. When 
 
 If you need two weeks of dedicated prep time to deliver a workshop, you probably don't know the material well enough to teach it. That sounds harsh but it's true. The best workshops come from people who could teach the content extemporaneously because it's just... how they work.
 
+Having an [always-on AI assistant](/blog/building-always-on-ai-assistant) helps here too. Hermes can draft outlines, generate supporting materials, and [ship the writeups afterward](/blog/how-my-ai-assistant-ships-blog-posts) while Nick and I focus on the actual teaching. The tooling handles the publishing pipeline so we can put our energy where it matters — in the room with the attendees.
+
 ## The 'backtick bang' pattern and other concrete takeaways
 
 Give people specific, memorable patterns they can use Monday morning. Not abstract principles — concrete, copy-pasteable techniques.
@@ -62,7 +64,7 @@ At *Skills at Scale* in London, we built a `./share.sh` script into the workshop
 
 This was the single highest-energy moment of the workshop. People started riffing on each other's skills. Someone would share a skill, and three other people would immediately fork it and add their own twist. The room went from "following along with instructors" to "building things together" — and that second mode is where real learning happens.
 
-Peer learning beats lecture every time. Your job as a workshop leader isn't to be the smartest person in the room for 90 minutes. It's to set up the conditions where 80 smart engineers can learn from each other. Build the infrastructure for sharing into your workshop from the start.
+Peer learning beats lecture every time. Your job as a workshop leader isn't to be the smartest person in the room for 90 minutes. It's to set up the conditions where 80 smart engineers can learn from each other. Build the infrastructure for sharing into your workshop from the start. (The same principle applies to how my AI agents coordinate — the [webhook bridge pattern](/blog/webhook-bridge-pattern) is essentially a `share.sh` between two systems.)
 
 ## Feedback is the proof
 
