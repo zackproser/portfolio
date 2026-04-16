@@ -62,7 +62,7 @@ The cattle/pet split is the load-bearing idea. In DevOps, "cattle" are servers y
 
 Specs and plans came first — a ~200-line architecture doc and a 25-task implementation plan, both committed to the repo before any `tofu apply`. I kept coming back to it throughout the day between WorkOS work and meetings, running on pretty little sleep. Claude executed tasks while I was in calls, and I'd check results when I came back.
 
-The single biggest surprise was how much debugging cloud-init took. AWS itself was frictionless. The fights were all about bootstrapping a modern Python app non-interactively:
+Debugging cloud-init consumed most of the implementation time. AWS itself was frictionless. The fights were all about bootstrapping a modern Python app non-interactively:
 
 - **Ubuntu 24.04 dropped the `awscli` package.** Canonical now points you at the v2 installer. Broke the entire cloud-init cascade.
 - **The hermes installer prompts for sudo** to install "optional" dependencies. No TTY in `runcmd` → hang → timeout. Fix: pre-install everything via cloud-init `packages:` list.
