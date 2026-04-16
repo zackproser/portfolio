@@ -104,6 +104,8 @@ With Tailscale stable on both machines, a nice thing fell out: Hermes on EC2 can
 
 ## Self-healing memory
 
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-self-healing.webp" alt="Pixel art of a retro robot sitting at a glowing terminal, editing its own MEMORY.md file with green and red diff markers floating in the air" width={1200} height={800} />
+
 One moment caught me off guard. During the migration, Hermes noticed a stale entry in its own MEMORY.md — a reference to hardware that no longer applied — and corrected it before I or Claude could intervene. The memory system is designed for the agent to maintain, and it took that literally. I had the patch open in another terminal ready to send, and the diff was already committed.
 
 ## Claude Code skills
@@ -147,6 +149,8 @@ The other mode is straightforward. I type in Discord, the message hits the bot g
 
 ## Autonomy after a threat model conversation
 
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-autonomy.webp" alt="Pixel art of a fortress made of server racks with concentric glowing shield layers, its inner gate open with warm golden light spilling out — security through architecture" width={1200} height={800} />
+
 The assistant ships with a dangerous-command approval gate — every `sudo`, every `curl | bash`, every `tar` extract. Designed for public-facing bots that might get prompt-injected.
 
 After a day of manually approving every tool invocation on an isolated VM with zero public ports, I had the assistant walk through what the gate was actually defending against. Zero inbound public ports. Discord allowlisted to my user ID only. DLM snapshots bound the blast radius. All tokens rotatable in seconds via SSM. Tailnet is just me and my devices.
@@ -178,3 +182,5 @@ But the biggest accelerant was the selective port. I didn't build an AI assistan
 Hermes is online. He's survived twelve-plus instance replacements. He can check my bank accounts, manage my GitHub, and run on infrastructure that — unlike the Meerkat in my home office — does not care whether my HackRF One is misbehaving.
 
 The Meerkat is still there, hosting OpenClaw. They're siblings now. No single point of failure.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-siblings.webp" alt="Pixel art of two friendly robots waving at each other — one on a cozy desk with a NUC computer, the other on a cloud server in space, connected by a glowing Tailscale mesh line" width={1200} height={800} />
