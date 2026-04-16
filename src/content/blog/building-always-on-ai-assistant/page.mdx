@@ -7,13 +7,11 @@ export const metadata = createMetadata(rawMetadata);
 
 # I Built an Always-On Hermes Agent on AWS in a Day, Mostly Async
 
-Since early February I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, [Tailscale](https://tailscale.com/) overlay so I can reach it from anywhere. Most of the time it works great.
+Since early February I've run a personal AI assistant on a small Linux box in my home office — [Tailscale](https://tailscale.com/) overlay so I can reach it from anywhere. Most of the time it works great.
 
-<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a System76 Meerkat NUC on a desk with a glowing terminal, cozy home office vibes" width={1200} height={800} />
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a small Linux server on a desk with a glowing terminal, cozy home office vibes" width={1200} height={800} />
 
-Twice in the past few months it didn't, and both times I was out of the country. I'd open my laptop in a hotel, reach for the assistant I'd quietly started depending on, and get silence. First time was a power blip. Second time I'd recently installed a [HackRF One](https://greatscottgadgets.com/hackrf/one/) (software-defined radio for RF research) in the same room and my best guess is a transient power fault that took the NUC down with it.
-
-The cognitive infrastructure I'd come to rely on was tied to a single box I couldn't power-cycle from 5,000 miles away. Time to fix that.
+Twice in the past few months it went offline while I was out of the country. I haven't fully debugged why — could be power, could be a hardware fault, doesn't matter. What matters is that those outages proved two things: first, that I'd come to genuinely depend on having an always-on AI assistant. And second, that I needed it running on infrastructure that could survive a destroyed instance, a power failure, or me being 5,000 miles away with no physical access. Time to fix that.
 
 ## The constraints
 
