@@ -43,7 +43,7 @@ The agent framework mattered as much as the infrastructure. I spent time reading
 
 <GitHubRepoCard repo="NousResearch/hermes-agent" />
 
-<img src="https://zackproser.b-cdn.net/images/hermes-pixel-bot.webp" alt="Pixel art of a friendly AI robot wearing a winged Hermes helmet, surrounded by floating tool icons" />
+<img src="https://zackproser.b-cdn.net/images/hermes-pixel-voice.webp" alt="Pixel art of someone talking into their phone, voice flowing through Discord to a Tailscale-connected server cluster" />
 
 What drew me in was the feature surface. Hermes ships with persistent memory across sessions, a skills system for teaching it reusable workflows, a full terminal backend, browser automation, file management, cron scheduling, sub-agent delegation, and platform gateways for Discord, Telegram, Slack, and more. It also has a `SOUL.md` file — a personality contract that persists on disk and survives instance replacement — and a `USER.md` for storing context about the human it's working with.
 
@@ -53,7 +53,7 @@ The key insight at every decision point was that OpenClaw had already solved mos
 
 ## The architecture
 
-<img src="https://zackproser.b-cdn.net/images/hermes-architecture.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" />
+<img src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" />
 
 The cattle/pet split is the load-bearing idea. In DevOps, "cattle" are servers you can destroy and replace without thinking about it — they're interchangeable. "Pets" are servers with identity and state you care about — you nurse them back to health when they get sick. The trick here is splitting one system into both: the EC2 instance is cattle — cloud-init bootstrapped, replaceable in under two minutes. The EBS data volume is the pet — `prevent_destroy=true`, daily DLM snapshots at 04:00 UTC with 7-day retention. SOUL.md, USER.md, memories, skills, conversation history, and even the Tailscale node identity all live on the pet volume. Eight instance replacements so far. The volume never moved.
 
