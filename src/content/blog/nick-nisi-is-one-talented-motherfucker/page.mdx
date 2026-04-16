@@ -1,0 +1,79 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import Image from 'next/image';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src="https://zackproser.b-cdn.net/images/nick-nisi-presenting.webp" alt="Nick Nisi presenting 'Building AI Systems that Ship' on stage at AI Engineering London" width={1200} height={800} />
+
+I want to talk about my colleague and friend [Nick Nisi](https://nicknisi.com).
+
+We're both Developer Experience Engineers at [WorkOS](https://workos.com). Over the past year we've co-taught live technical workshops to hundreds of engineers in New York, San Francisco, and London — two-hour sessions where people actually build things, not death-by-slides affairs. Every single one shipped under the wire, worked on stage, and ended with developers coming up afterward to tell us it was the most useful workshop they'd attended at the conference.
+
+Nick is the reason most of that happened.
+
+## The résumé stuff
+
+You might know Nick from co-hosting JS Party on the Changelog network. Or from organizing [NebraskaJS](https://nebraskajs.com/), [NEJS Conf](https://nejsconf.com/), and [TypeScript Conf](https://archive.tsconf.io/2021/). He's given 50+ conference talks. He's officiated eleven weddings, which tells you something about the kind of person people trust with their important moments.
+
+But the résumé stuff is the least interesting part.
+
+## What it's actually like to work with Nick
+
+Here's the pattern: we get a workshop slot at a major conference. The topic is ambitious — building AI agents, writing portable Claude Code skills, whatever we're currently deep in at work. We have limited prep time because we're also doing our actual jobs. And Nick just... makes it happen.
+
+<Image src="https://zackproser.b-cdn.net/images/zack-and-nick.webp" alt="Zack and Nick ready to teach at the AI Engineer World Fair in San Francisco" width={800} height={600} />
+
+For the [Mastra workshop at AI Engineer World Fair](/blog/ai-pipelines-and-agents-mastra) in San Francisco, we taught 70+ engineers how to build an agentic meme generator with [Mastra.ai](https://mastra.ai) — a four-step workflow that extracts developer frustrations, finds a matching base meme, generates captions, and produces the final image. Two hours, hands-on, everyone building from scratch. The workshop assets, the lesson plan, the pacing — Nick built the bones of that while we were both juggling our regular workload.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-workshop-fisheye.webp" alt="Fisheye view of the packed workshop room at the AI Engineer World Fair" width={800} height={600} />
+
+For [Skills at Scale at AI Engineering London](/blog/aie-london-skills-at-scale), we ran an 80-minute session teaching engineers to build Claude Code skills that are portable, executable, and composable. The vehicle was "Repo Roast" — you point the tool at any codebase and it generates a brutal but constructive code review. We built it live, taught people the patterns, and had them sharing their own skills with each other by the end.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp" alt="Nick Nisi and Zack Proser presenting the Skills at Scale workshop at AI Engineering London" width={968} height={500} />
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-workshop-workos-room.webp" alt="Packed workshop room at AI Engineering London with WorkOS branding" width={968} height={500} />
+
+Both times, we were prepping in hotel lobbies the night before because there literally wasn't enough time during normal hours. Both times, it worked. Both times, people told us afterward it was worth showing up for.
+
+<Image src="https://zackproser.b-cdn.net/images/mastra-workshop-feedback-1.webp" alt="Workshop feedback highlighting practical learning" width={800} height={600} className="rounded-lg shadow-lg" />
+
+<Image src="https://zackproser.b-cdn.net/images/mastra-workshop-feedback-2.webp" alt="Workshop feedback praising hands-on approach" width={800} height={600} className="rounded-lg shadow-lg" />
+
+## The connective tissue
+
+Nick has this ability to see the social opportunities hiding inside a conference schedule. At AI Engineering London, he's the one who connected me with the [Scaling Devtools podcast](/blog/aie-london-scaling-devtools-podcast) — I sat down with Jack Bridger for a live recording and talked about how we build with AI agents at WorkOS, the patterns behind portable skills, and where developer tooling is heading. That doesn't happen without Nick knowing the right people and making the introduction.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-podcast-gesturing.webp" alt="Zack Proser gesturing during the live Scaling Devtools podcast recording at AI Engineering London, with Nick Nisi and Jack Bridger" width={800} height={600} />
+
+He does this constantly. Not in a "networking" way — in a "hey, you should talk to this person, you'd have a great conversation" way. The kind of connecting that comes from genuinely paying attention to what people care about.
+
+## Why the workshops actually work
+
+We figured out early that the workshops that land are the ones where we're teaching something we use every day. Not product demos dressed up as education. Not "here's our company's SDK" with a thin wrapper of pedagogy. We teach tools and patterns we're genuinely excited about as developers — [Mastra](https://mastra.ai) because we'd been building with it for months, Claude Code skills because we write them constantly for our own workflows.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-workshop-evidence.webp" alt="Zack Proser teaching the backtick evidence pattern at AI Engineering London" width={968} height={500} />
+
+The authenticity shows. Engineers can tell the difference between someone presenting a product and someone teaching a craft they practice. Nick understands this instinctively. He'd rather spend an extra hour making the workshop actually good than take a shortcut that makes it feel like a sales pitch.
+
+The [Mastra blog post on their site](https://mastra.ai/blog/workos-teaching-mastra) captures it well — we went from evaluating their framework to teaching it at a major conference, which only works if you actually know the tool deeply enough to field live questions from 70 people building with it in real time.
+
+## The KCDC talk
+
+Nick recently gave a talk called ["About My Coworkers"](https://www.youtube.com/watch?v=MPZOnSLJg4Y) at KCDC about what happens when AI joins your development team. I love that he took that angle — not "AI is replacing developers" or "AI is a fad," but the honest, practical reality of working alongside AI tools every day and what it does to how you think about your own craft.
+
+## The person
+
+Here's what I keep coming back to: Nick is reliable in the way that matters most. Not "responds to Slack in under a minute" reliable — "will absolutely deliver a polished, thoughtful workshop with you under insane time pressure and make it look easy" reliable. The kind of reliable that only comes from someone who genuinely gives a shit about the work and the people they're doing it with.
+
+And somehow, in between co-teaching workshops across three cities and three time zones, he's also constantly shipping SDK improvements and docs fixes across every language WorkOS supports, building AI-powered installers and the WorkOS CLI, and helping the rest of our team level up on AI tooling. The man does not stop.
+
+He makes the people around him better. I'm a more effective speaker, writer, and engineer because of working with him. The workshops we've built together are better than anything either of us would've built alone. In other words, Nick Nisi is a fucking animal — the highest compliment I give to a technical colleague.
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-team-dinner-wide.webp" alt="The full WorkOS crew at dinner in London during AI Engineering London" width={1200} height={800} />
+
+<Image src="https://zackproser.b-cdn.net/images/aie-london-team-dinner-close.webp" alt="Nick Nisi, Zack Proser, and teammates at dinner in London" width={1200} height={800} />
+
+So: [Nick Nisi](https://nicknisi.com). JS Party host. [NebraskaJS](https://nebraskajs.com/) organizer. TypeScript enthusiast. Wedding officiant. Conference veteran. Fucking animal.
+
+Follow him on [Bluesky](https://bsky.app/profile/nicknisi.com), check out his [GitHub](https://github.com/nicknisi), or connect on [LinkedIn](https://linkedin.com/in/nicknisi).
