@@ -18,6 +18,8 @@ Hermes is an event-driven agent. It responds to Discord messages, processes inco
 
 So I had this one-way channel: Claude could write to Hermes's box, but Hermes would only see those files if it happened to check, or if I manually told it to look. That's not a bridge. That's a dead drop.
 
+<Image src="https://zackproser.b-cdn.net/images/webhook-silent-files.webp" alt="Pixel art of glowing document files piling up on a server room floor while a robot sits at a desk unaware, facing the other direction" width={1200} height={800} />
+
 <Image src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge architecture: Claude Code on Mac communicates with Hermes on EC2 via SSM RunCommand and Tailscale webhook" width={1200} height={675} />
 
 ## Discovery: `hermes webhook`
@@ -87,6 +89,8 @@ Three layers, all straightforward:
 
 **Secret management via AWS SSM Parameter Store.** The webhook secret lives in SSM Parameter Store, not in code, not in environment files. The `tell-hermes.sh` script fetches it at runtime.
 
+<Image src="https://zackproser.b-cdn.net/images/webhook-signed-delivery.webp" alt="Pixel art of a sealed glowing envelope with a wax seal flying through a shielded tunnel between a laptop and a server, with an exclamation mark showing the server woke up" width={1200} height={800} />
+
 ## Six skills targeting Hermes
 
 Once the webhook bridge pattern worked, I built it out. I now have six Claude Code skills that treat Hermes as a remote resource:
@@ -111,6 +115,8 @@ The webhook bridge isn't specific to Claude Code and Hermes. It's a general patt
 **Cron jobs** — A scheduled task archives a report and fires a webhook. Hermes summarizes it and posts to Discord.
 
 **Any external system** — If it can make an HTTP POST with a JSON body, it can talk to Hermes through a webhook subscription.
+
+<Image src="https://zackproser.b-cdn.net/images/webhook-pattern-generalizes.webp" alt="Pixel art of a central robot on a platform receiving glowing data streams from multiple sources: GitHub, SMS, cron, and chat" width={1200} height={800} />
 
 The two-step pattern (durable file + immediate webhook) is the key. The file ensures nothing is lost. The webhook ensures nothing is delayed. Together they give you reliable, event-driven communication between systems that weren't designed to talk to each other.
 
