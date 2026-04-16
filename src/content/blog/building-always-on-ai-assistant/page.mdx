@@ -1,12 +1,13 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 import GitHubRepoCard from '@/components/GitHubRepoCard';
+import Image from 'next/image';
 
 export const metadata = createMetadata(rawMetadata);
 
 Since early February I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, Tailscale overlay so I can reach it from anywhere. Most of the time it works great.
 
-<img src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a System76 Meerkat NUC on a desk with a glowing terminal, cozy home office vibes" />
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a System76 Meerkat NUC on a desk with a glowing terminal, cozy home office vibes" width={1200} height={800} />
 
 Twice in the past few months it didn't, and both times I was out of the country. I'd open my laptop in a hotel, reach for the assistant I'd quietly started depending on, and get silence. First time was a power blip. Second time I'd recently installed a HackRF One in the same room and my best guess is a transient power fault that took the NUC down with it.
 
@@ -25,7 +26,7 @@ Six requirements, written before touching any code:
 
 Number 6 turned out to be the most interesting constraint. This could have been a green-field build. Instead it was a selective port: take everything from OpenClaw that had proven out, drop it onto new bones designed for reliability.
 
-<img src="https://zackproser.b-cdn.net/images/hermes-pixel-cloud.webp" alt="Pixel art of a cloud server floating in space with data streams connecting to a laptop and phone below" />
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-cloud.webp" alt="Pixel art of a cloud server floating in space with data streams connecting to a laptop and phone below" width={1200} height={800} />
 
 ## Choosing primitives (and the ones I rejected)
 
@@ -43,7 +44,7 @@ The agent framework mattered as much as the infrastructure. I spent time reading
 
 <GitHubRepoCard repo="NousResearch/hermes-agent" />
 
-<img src="https://zackproser.b-cdn.net/images/tailscale-mesh-devices.webp" alt="Pixel art of an iPhone, MacBook, AWS EC2 server, and System76 Meerkat mini PC all connected in a glowing Tailscale mesh network" />
+<Image src="https://zackproser.b-cdn.net/images/tailscale-mesh-devices.webp" alt="Pixel art of an iPhone, MacBook, AWS EC2 server, and System76 Meerkat mini PC all connected in a glowing Tailscale mesh network" width={1200} height={800} />
 
 What drew me in was the feature surface. Hermes ships with persistent memory across sessions, a skills system for teaching it reusable workflows, a full terminal backend, browser automation, file management, cron scheduling, sub-agent delegation, and platform gateways for Discord, Telegram, Slack, and more. It also has a `SOUL.md` file — a personality contract that persists on disk and survives instance replacement — and a `USER.md` for storing context about the human it's working with.
 
@@ -53,7 +54,7 @@ The key insight at every decision point was that OpenClaw had already solved mos
 
 ## The architecture
 
-<img src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" />
+<Image src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" width={1200} height={800} />
 
 The cattle/pet split is the load-bearing idea. In DevOps, "cattle" are servers you can destroy and replace without thinking about it — they're interchangeable. "Pets" are servers with identity and state you care about — you nurse them back to health when they get sick. The trick here is splitting one system into both: the EC2 instance is cattle — cloud-init bootstrapped, replaceable in under two minutes. The EBS data volume is the pet — `prevent_destroy=true`, daily DLM snapshots at 04:00 UTC with 7-day retention. SOUL.md, USER.md, memories, skills, conversation history, and even the Tailscale node identity all live on the pet volume. Eight instance replacements so far. The volume never moved.
 
@@ -85,7 +86,7 @@ Each fix was a single commit. Each instance replacement took ~90 seconds. Becaus
 
 ## The webhook bridge
 
-<img src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge data flow: Claude Code on Mac sends HMAC-signed payload over Tailscale to Hermes, which activates and delivers to Discord" />
+<Image src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge data flow: Claude Code on Mac sends HMAC-signed payload over Tailscale to Hermes, which activates and delivers to Discord" width={1200} height={800} />
 
 Once the assistant was alive on Discord with its ported persona, I realized I had a silent-files problem. My Claude Code sessions on my Mac could write context files to the assistant's filesystem via SSM — but the assistant didn't know they were there until it explicitly checked.
 
@@ -95,7 +96,7 @@ That became the second load-bearing primitive. A shell script now archives conte
 
 ## Interactive chat
 
-<img src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow: Zack types in Discord, message routes through gateway to Hermes agent with full tool access, streams response back" />
+<Image src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow: Zack types in Discord, message routes through gateway to Hermes agent with full tool access, streams response back" width={1200} height={800} />
 
 The other mode is straightforward. I type in Discord, the message hits the bot gateway over WebSocket, routes to the agent with full session memory, and the agent has access to everything — terminal, GitHub, bank APIs, browser, web search, files. Responses stream back to Discord in real time. The agent maintains conversation context across turns within a session, and persistent memory across sessions via the data volume.
 
