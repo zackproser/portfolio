@@ -1,0 +1,63 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+# WisprFlow for UX Researchers: Voice-Driven Prototyping and Interview Analysis
+
+The gap between insight and prototype is where UX research dies. You finish eight user interviews with clear patterns—users consistently struggle with the navigation hierarchy, they want a way to compare items side by side, the error messages don't explain what went wrong in actionable terms. You write up the findings, present them to the product team, and then wait. And wait. The engineering sprint is full. The designer is on another project. Three months later, you're running usability tests on a prototype that only partially reflects your recommendations because it was built without you in the room.
+
+The bottleneck isn't that product teams don't care about UX research. Most do. The bottleneck is that there's a translation layer between research insights and working prototypes, and that layer is slow. Researchers who can build prototypes—even rough, functional ones—collapse that gap. They can test a hypothesis within days of forming it. They can show stakeholders a working demo instead of a slide deck.
+
+Voice coding with WisprFlow makes that capability practical for researchers who code occasionally but aren't full-time developers. At 179 WPM accuracy, you can build a React prototype, write a Python analysis script, or scaffold a simple web app in a fraction of the time it takes to type it out.
+
+## Building clickable prototypes with voice
+
+A React prototype for a navigation redesign might be 150-300 lines of code. Typed, that's 30-60 minutes of focused coding for someone who isn't a daily developer. Voice coded, it's 10-15 minutes—fast enough to do it between interviews.
+
+The key is dictating intent, not syntax. "Create a React component called NavigationMenu that renders a two-level navigation structure. The top-level items are an array of objects with label and children properties. The second level appears as a dropdown when the parent is hovered. Use Tailwind CSS for styling and include a state variable for which menu is currently open." WisprFlow captures that cleanly and hands it to your AI coding assistant. The component appears. You dictate corrections—"change the hover behavior to click instead"—and iterate.
+
+For researchers who use Figma, WisprFlow integrates with browser-based tools through standard dictation. You can narrate component names, describe interactions in Figma's plugin ecosystem, and dictate comments on your prototype frames. The workflow isn't limited to code editors.
+
+The prototype-to-test pipeline compresses dramatically. Instead of scheduling a development sprint to build a prototype, you can test the concept you're investigating. That means your research findings are tested against real prototypes rather than theoretical wireframes, which produces more actionable data.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Writing analysis scripts via voice
+
+Interview analysis is pattern recognition at scale. You have eight hours of interview recordings, and you need to identify recurring themes, code observations against your research questions, and quantify how often specific issues appear. Manual analysis works but takes time—especially the repetitive parts: reformatting exports from interview software, building frequency tables, generating visualizations.
+
+Python analysis scripts automate the repetitive parts. With voice coding, you can build them while reviewing your interview notes. "Write a Python script that reads a CSV file of tagged observations, groups them by tag, counts occurrences, and outputs a bar chart using matplotlib sorted by frequency." That script exists in five minutes. You run it against your tagged data and have a frequency visualization before your next meeting.
+
+Affinity mapping automation is a bigger opportunity. Taking 80 individual observations and grouping them into themes is valuable intellectual work, but the mechanics of moving digital sticky notes around are tedious. Voice-coded scripts can assist: semantic clustering using embeddings, automatic grouping suggestions, de-duplication of very similar observations. You're still making the judgment calls about what goes in which cluster, but the script does the mechanical sorting.
+
+Transcript analysis is another high-value script category. Searching for specific phrases across all your interview transcripts, extracting moments where participants expressed frustration, calculating sentiment scores across different user segments—these are all 50-100 line Python scripts that a voice coder can build in under an hour.
+
+## Documenting research findings
+
+Research documentation is writing-heavy: participant summaries, findings reports, journey maps, recommendation briefs. Voice dictation—distinct from voice coding—is the other place where WisprFlow delivers immediate value for researchers.
+
+Dictating a participant summary after an interview, while the session is still fresh, produces better notes than writing them two days later from memory. "Participant 3, 34-year-old product manager, small software company. Primary struggle: distinguishing between the dashboard and reports sections—used both terms interchangeably throughout the session. Key moment at timestamp 23:15 where she tried to filter by date range in the dashboard and got confused when the filter persisted to the reports view. Suggested a clearer visual separation between the two contexts." Dictated in 30 seconds; typed, it's two minutes.
+
+Findings reports benefit from voice dictation because the first draft captures your actual analysis rather than a cleaned-up version. You know what the patterns are before you start writing; the challenge is getting them onto the page without over-editing in real time. Speaking it first and cleaning the text afterward is faster than typing a polished draft.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## WisprFlow's accuracy with research terminology
+
+UX research spans a wide vocabulary: Likert scales, think-aloud protocols, cognitive walkthroughs, heuristic evaluation, desirability studies, card sorting, tree testing. These aren't terms that general-purpose dictation handles consistently. WisprFlow's accuracy at 179 WPM means it captures research terminology correctly without constant correction, which is important when you're dictating analysis notes that need to be precise.
+
+For researchers who work in specific domains—healthcare UX, financial services, enterprise software—the vocabulary extends further. WisprFlow handles domain-specific terminology in context, using surrounding words to resolve ambiguity. When you say "the task completion rate for the onboarding flow dropped when we moved the verification step," it understands the context and transcribes accurately rather than mangling the technical terms.
+
+The practical comparison is to OS-native dictation (macOS Dictation, Windows Speech Recognition) and Whisper-based tools. Native dictation has lower accuracy and requires more correction passes. Whisper-based tools are accurate but can be slower and require workflow integration work. WisprFlow integrates directly into whatever application you're using—your code editor, Google Docs, your research documentation tool—without requiring you to leave the application to dictate.
+
+## Getting started as a researcher
+
+The entry point that produces immediate results is analysis script building. Pick the most tedious part of your current research analysis workflow—probably data reformatting, frequency counting, or chart generation—and build a voice-coded script for it. You'll have a working script in under an hour, and you'll save that hour every time you run the next analysis.
+
+From there, prototype building is the next step if your role involves testing concepts. Start with a simple component that represents a key interaction you want to test. Build it via voice coding over 20 minutes. You now have a prototype you can show users in days rather than weeks.
+
+The researchers who get the most value from WisprFlow are the ones who stop thinking of coding as a separate activity that requires a separate context switch. When you can build tools and prototypes at speaking speed, they become part of your research workflow rather than a bottleneck you're waiting on.
+
+<InlineAffiliateCTA product="wisprflow" />

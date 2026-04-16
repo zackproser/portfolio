@@ -1,0 +1,65 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+# WisprFlow for Supply Chain: Voice Coding Logistics and Inventory Systems
+
+Supply chain operations run on custom tooling. Not the enterprise ERP that cost seven figures and takes six months to customize. The actual tooling: the Excel spreadsheet that tracks carrier performance because the TMS doesn't have that report, the Python script that reconciles purchase orders against receiving records because the system doesn't catch the discrepancies, the Slack bot that pings the warehouse manager when inventory drops below safety stock because nobody configured the ERP alert correctly.
+
+This tooling exists in every supply chain operation above a certain complexity. It's built by whoever has the skills—usually an analyst who learned Python in their spare time or a logistics coordinator who figures out macros because they had to. It's poorly documented, barely maintained, and critical to operations. When that person leaves, the knowledge walks out with them.
+
+The teams that operate best in supply chain are the ones who can build and maintain this tooling faster than the environment changes. Voice coding with WisprFlow makes that faster. At 179 WPM accuracy, you can build a Python inventory dashboard in the time it takes to walk the warehouse floor, dictating code during the 15 minutes between carrier calls.
+
+## Building inventory dashboards via voice
+
+A useful inventory dashboard pulls from three sources: your ERP (usually accessible via SQL or API), your warehouse management system, and your carrier tracking data. It surfaces current stock levels, days of supply by SKU, inbound shipments and their ETA, and flagged items that are below safety stock or above maximum inventory.
+
+Building this traditionally means blocking a half-day to sit down and write it. Voice coding means you build it in segments—dictate the database connection and query logic in the morning, the aggregation logic after lunch, the Streamlit interface during a slow afternoon. Each segment is 20-40 lines of code, takes 5-10 minutes to dictate, and you're iterating toward a working dashboard without a dedicated coding session.
+
+"Write a Python function that connects to the PostgreSQL database using credentials from environment variables, queries the inventory table for all SKUs where quantity on hand divided by average daily demand is less than seven, and returns a pandas dataframe with columns for SKU, description, quantity on hand, days of supply, and reorder point." WisprFlow captures that precisely. Your AI coding assistant generates the function. You review, dictate corrections, move to the next component.
+
+The business impact is direct: visibility you didn't have before, stockout prevention, reduction in emergency replenishment orders that cost 30% more than planned orders.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Writing demand forecasting scripts via voice
+
+Demand forecasting in supply chain is applied data science—time series analysis, seasonality adjustment, external factor correlation (weather, promotions, economic indicators). Operations teams that can build their own forecasting tools have a significant advantage over teams waiting on IT to configure the ERP forecasting module.
+
+Python has mature libraries for this: statsmodels for classical ARIMA models, Prophet for seasonality-aware forecasting, scikit-learn for machine learning approaches. The challenge is that building a forecasting pipeline—data prep, model training, validation, output formatting—is 300-500 lines of code. It's a full afternoon of typing. Voice coded, it's 45-60 minutes, meaning you can realistically build it during a period when you'd otherwise be in meetings.
+
+"Create a Python script that loads historical weekly sales data from a CSV file, fits a Facebook Prophet model with US holidays, generates a 12-week forecast, and outputs a CSV with the forecast values and 80% confidence intervals." That's the core script in one dictated sentence. You'll iterate from there—adding data validation, handling SKUs with sparse history, building a comparison of the forecast against actuals from the last quarter. Each iteration is another dictated instruction.
+
+The output—a working forecasting tool your team can run weekly—replaces the manual judgment calls that currently substitute for systematic forecasting in most mid-size operations.
+
+## Logistics automation and carrier integrations
+
+Carrier APIs are increasingly standardized. FedEx, UPS, DHL, and most regional carriers offer REST APIs for shipment tracking, rate shopping, and label generation. Building integrations to these APIs is repetitive scripting work: authenticate, make requests, parse responses, handle errors, store results. An analyst who does this manually every day (copy-pasting tracking numbers into carrier websites) is spending 30-60 minutes on something a script can do in 30 seconds.
+
+Voice coding makes these integration scripts buildable in the pockets of time that exist in a logistics operation. You're waiting for a carrier rep to call back; you dictate the authentication wrapper for their API. You're waiting for a shipment exception to resolve; you dictate the tracking polling logic. You're commuting; you dictate the rate shopping comparison function on your phone.
+
+The compounding effect matters. Once you have a carrier integration library, adding a new carrier is 20 minutes of voice coding. Once you have a rate shopping tool, adding a new lane is a parameter change. The initial investment in building the tooling pays back every time you extend it.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## WisprFlow's advantage for technical domains with specialized terminology
+
+Supply chain vocabulary is specific. SKU, MOQ, EOQ, VMI, 3PL, TMS, WMS, DDP, DAP, FOB, INCOTERMS. These abbreviations appear constantly in supply chain code comments, variable names, and documentation. Dictation tools that don't recognize them produce output requiring constant correction—"SKU" becomes "skew," "VMI" becomes "VME," "EOQ" becomes "EOQ" or something stranger.
+
+WisprFlow's context-aware accuracy handles these abbreviations correctly. When you're dictating a function comment that says "calculate EOQ using annual demand, ordering cost, and holding cost," it transcribes accurately. When you're naming variables (annual_demand, order_cost, holding_cost), the names come out clean.
+
+For supply chain analysts who work in international contexts—sourcing from Asia, managing European distribution, coordinating US imports—the accuracy with international terms and proper nouns is also important. Port names, carrier names, customs terminology, trade regulation references all need to be captured correctly for the code and comments to be useful documentation.
+
+The comparison to typing matters here. Supply chain analysts typically type less than developers—they spend more time in spreadsheets, ERP interfaces, and email than in code editors. When they do code, their typing accuracy tends to be lower, meaning more correction passes. Voice coding at WisprFlow's accuracy level often produces fewer errors than their typed code, not more.
+
+## Getting started: pick the one tool you need most
+
+The entry point is the tool that causes the most pain today. For most supply chain operations, that's one of three things: a stockout alert that actually works, a carrier performance scorecard that updates automatically, or a PO reconciliation tool that catches mismatches before they become AP disputes.
+
+Pick one. Describe it out loud: what data does it need, what calculation does it perform, what does the output look like. That description is the architecture. Feed it to your AI coding assistant via voice. Build from there.
+
+You'll have a working prototype in under two hours. After a week of using it, you'll build the second tool. After a month, you'll have a suite of tooling that makes your operation measurably more efficient than operations that are still running on manual processes and hope.
+
+<InlineAffiliateCTA product="wisprflow" />

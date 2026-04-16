@@ -1,0 +1,63 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+# WisprFlow for Venture Capital: Voice-Driven Data Tools and Portfolio Systems
+
+VCs often have real engineering skills—ex-founders, technical partners, analysts who came up through quant roles. The bottleneck isn't capability; it's time. You're doing ten meetings a day, reviewing decks, updating LPs, managing portfolio company relationships. The internal tooling that would make your life dramatically better—a custom deal flow tracker, a portfolio dashboard that actually shows what you need, an LP reporting system that doesn't require four hours of manual work each quarter—never gets built because there's no time to sit down and build it.
+
+Voice coding changes that math. With WisprFlow at 179 WPM accuracy, you can ship a working Python script in the time it takes to walk from the parking lot to your desk. The context switch cost drops because you're dictating instead of typing, which means you can build tooling in pockets of time that previously weren't usable for development.
+
+## Voice coding internal Python and TypeScript tools
+
+The most immediate win is data pipeline tooling. VCs pull data from Crunchbase, Pitchbook, their portfolio companies' analytics platforms, and whatever custom spreadsheets their analysts built three years ago. Connecting these sources into a coherent view is a multi-step scripting problem—auth, API calls, data normalization, storage, visualization. It's 200-400 lines of Python, maybe a weekend project if you block the time.
+
+With voice coding, you can dictate that pipeline while reviewing your notes from a portfolio company call. "Define a function that fetches the last 30 days of MRR data from ChartMogul using the API key from environment variable CHARTMOGUL_KEY, returns a pandas dataframe with columns for date and mrr, and handles rate limiting with exponential backoff." WisprFlow captures that precisely and feeds it to your AI coding assistant. The function appears. You review it, dictate corrections, move on.
+
+The portfolio dashboard use case is similar. You want a Streamlit app that shows every portfolio company's key metrics side by side—burn rate, runway, MoM growth, last fundraise date. Building it traditionally means sitting down, opening a terminal, writing code. Voice coding means you can build it during the 20 minutes between calls, dictating component by component.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Drafting LP updates and investment memos via voice
+
+LP communications have a specific tone problem: they need to be informative but not alarming, candid but not overly pessimistic, professional but not sterile. The best LP updates read like a thoughtful letter from someone who genuinely understands their portfolio and the market. That conversational quality is hard to achieve when typing—you edit yourself into corporate language.
+
+Voice dictation captures the conversational tone naturally. You talk through what happened this quarter: which portfolio companies hit milestones, which are navigating challenges, what the deal flow looked like, where you're seeing interesting opportunities. The first draft sounds like how you actually think about the portfolio, which is exactly what sophisticated LPs want to read.
+
+Investment memos benefit similarly. You've just finished three hours of founder interviews and technical due diligence. You have a clear view of the opportunity and the risks. Dictating the memo while that context is still hot produces a sharper, more specific document than sitting down to write it two days later from notes.
+
+WisprFlow's context-awareness matters here. It understands that "Series A" isn't "serious A" and "ARR" isn't "are." It handles the abbreviations and terminology that appear constantly in VC writing without requiring corrections.
+
+## Due diligence automation via voice
+
+Technical due diligence often involves repetitive analysis tasks: scraping a company's LinkedIn to estimate headcount growth over time, pulling public GitHub commit history to assess engineering velocity, checking trademark filings, reviewing court records. Each task is a script, and most VCs who can code have written versions of these scripts over the years—usually poorly documented, scattered across laptops.
+
+Voice coding makes it practical to build and maintain a proper due diligence toolkit. You can build a standardized script for LinkedIn scraping in an afternoon of voice coding sessions spread across your day. When you need to add a new data source—say, pulling App Store review sentiment for a B2C company—you dictate the addition without context-switching into a dedicated coding session.
+
+The documentation problem also gets better. When you build something via voice, you're already narrating what you're doing. That narration can become inline comments: "add a comment explaining that this function handles pagination because the API caps responses at 100 records." Your future self—and your analyst who inherited the codebase—will thank you.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## WisprFlow's accuracy advantage over competitors
+
+The 179 WPM accuracy claim isn't marketing copy—it's the metric that separates WisprFlow from alternatives like Whisper-based tools and OS-native dictation. The practical impact shows up in two places: technical terminology and homophones.
+
+VC terminology includes a lot of words that sound similar but mean very different things. "Runway" vs. "run away." "Dilution" vs. "dilation." "Tranche" (often mispronounced differently by different people). "Carried interest" vs. "caring interest." Lesser dictation tools get confused by context; WisprFlow uses surrounding context to resolve ambiguity correctly.
+
+The speed matters too. At 179 WPM, voice coding keeps pace with thought. When you're in flow on a data pipeline, the bottleneck should be thinking about what to build next, not waiting for your words to appear on screen. Competitors that top out at 120 WPM with higher error rates break that flow constantly.
+
+For VCs who do most of their work on a Mac—which describes most of the industry—WisprFlow integrates cleanly with the existing workflow. It works across any application: your terminal, your code editor, Slack, email, pitch deck comments. There's no context switch to a specialized app.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Getting started
+
+The practical starting point is picking one tool you've been meaning to build for months and building it over three voice coding sessions. Pick something concrete: a Crunchbase-to-Notion sync for your deal pipeline, a script that generates a standardized data room checklist for each new investment, a Slack bot that pings you when a portfolio company's GitHub activity drops below baseline.
+
+Start the first session by dictating the architecture out loud: "I want a Python script that does X using Y API, stores results in Z format, and runs on a cron schedule." Let WisprFlow capture that. Feed it to your AI coding assistant. Dictate corrections and additions. By the end of an hour, you'll have a working prototype.
+
+The second session you'll build faster. By the third, you'll wonder why you weren't doing this from the beginning.
+
+<InlineAffiliateCTA product="wisprflow" />
