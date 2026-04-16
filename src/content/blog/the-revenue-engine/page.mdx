@@ -1,0 +1,184 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+# The Revenue Engine
+
+My AI assistant Hermes has made me $2,000 in affiliate commissions so far. It runs on a $170/month EC2 instance. The math works and I'm building on top of it.
+
+This post is the full architecture — what's already generating revenue, what I'm building next, and why I think this compounds into $3K-20K/month over the next few quarters. I'm sharing the spec because building in public keeps me honest.
+
+## What's already proven
+
+Every night, Hermes runs automated content batches. It researches topics, drafts posts, generates diagrams, and opens pull requests against this site. I review them in the morning, merge what's good, and the content goes live on a site with 35,000 monthly readers.
+
+Two affiliate programs are already paying out:
+
+- **WisprFlow** — voice-to-text tool I genuinely use every day
+- **Granola** — AI meeting notes, another tool I actually depend on
+
+These are products I'd recommend without the affiliate links. Hermes writes honest comparison posts, tool reviews, and integration guides — the kind of content that ranks well because it's specific and technical. The $2K earned so far validates the approach: automated content creation feeding real affiliate revenue on a site with real traffic.
+
+Here's what the current stack looks like:
+
+- **zackproser.com**: 500+ published posts, Next.js, deployed on Vercel
+- **Hermes**: Always-on AI assistant running on EC2 `t4g.xlarge` (ARM64, cost-effective)
+- **Nightly batches**: Automated research → draft → PR pipeline
+- **35K monthly readers**: Organic search traffic, mostly developers and technical folks
+- **~5K EmailOctopus subscribers**: Built up over years. Currently untapped. That changes soon.
+
+If you want the backstory on how Hermes went from a side project to a production system, I wrote about that in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). The content workflow is detailed in [How My AI Assistant Ships Blog Posts](/blog/how-my-ai-assistant-ships-blog-posts).
+
+## The flywheel
+
+Here's how the system works as a loop:
+
+```
+    ┌──────────────┐
+    │   RESEARCH   │ ◄── Trending topics, affiliate opportunities,
+    │              │     reader analytics, keyword gaps
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │    CREATE     │ ◄── Hermes drafts posts, generates diagrams,
+    │              │     builds PDF lead magnets
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │   PUBLISH    │ ◄── PR → review → merge → deploy
+    │              │     Email campaigns to 5K subscribers
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │   MONETIZE   │ ◄── Affiliate links, gated content,
+    │              │     email sequences, Superpower referrals
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │  ANALYTICS   │ ◄── What converted? What ranked?
+    │              │     Which emails got clicks?
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │   OPTIMIZE   │ ◄── Feed learnings back into research
+    │              │     Double down on what works
+    └──────┘───────┘
+           │
+           └──────────► Back to RESEARCH
+```
+
+Each rotation through this loop should produce content that earns money, generates data about what works, and feeds that data back into the next batch. The more it runs, the better it gets at picking topics and formats that convert.
+
+## What I'm building next
+
+### Superpower affiliate program
+
+This is the new big one. [Superpower](https://www.superpowerdaily.com/) is an AI-powered health supplement company — Forbes ranked it #1 in their category. Their affiliate program pays **$100 per referred member**. That's a completely different unit economics than the typical 10-20% SaaS affiliate commission.
+
+I'm personally trying Superpower right now. If it's good (and early signs are positive), Hermes will create content around AI-powered health optimization, supplement stacking, developer health — topics my audience actually cares about. One referred member per week is $400/month from a single program. Ten a month is $1,000.
+
+### EmailOctopus automation
+
+I have ~5,000 email subscribers and I've been criminally underusing this list. The plan:
+
+- **Automated welcome sequences** for new subscribers
+- **Weekly digest emails** pulling from recently published content
+- **Targeted campaigns** when new affiliate content goes live
+- **Gated PDF lead magnets** that require email signup — growing the list while delivering real value
+
+Hermes will draft email campaigns the same way it drafts blog posts. I'll review and approve, but the generation is automated.
+
+### Gated PDF lead magnets
+
+Some content works better as downloadable guides. Think "The Complete Guide to Setting Up an AI Assistant on AWS" or "Developer Tool Comparison Matrix 2026." These serve two purposes: they're genuinely useful, and they grow the email list. More subscribers means more people seeing affiliate content in their inbox.
+
+### ECS Fargate worker pools
+
+Right now Hermes does everything on a single EC2 instance. For the heavier work — generating diagrams, building PDFs, running research across multiple sources — I'm planning to offload to ECS Fargate tasks. Spin up workers when needed, pay only for compute time, keep the main instance responsive.
+
+This is the [Webhook Bridge Pattern](/blog/webhook-bridge-pattern) in action: Hermes receives a trigger, dispatches work to Fargate, collects results, and continues the pipeline.
+
+### Fine-tuning on 500+ posts
+
+I have over 500 published posts on this site. That's a real corpus of my writing style, my opinions, the topics I cover, the technical depth I go to. Fine-tuning a model on this corpus means Hermes can produce first drafts that sound more like me and require less editing.
+
+The goal is getting the first draft closer to my actual writing style so the review step is faster. I still read and approve everything.
+
+### Diagramming pipeline
+
+Technical posts with diagrams perform measurably better. More time on page, more shares, better ranking. I'm building a pipeline where Hermes can generate architecture diagrams, flowcharts, and comparison tables as part of the content creation process. Mermaid diagrams rendered to SVG, mostly.
+
+## Honest status check
+
+Let me be real about what's at different stages:
+
+**Proven and earning money right now:**
+- Nightly content batches → affiliate posts → $2K earned
+- 35K monthly organic readers
+- Hermes running stable on EC2
+
+**Built but not yet monetized:**
+- 5K email subscribers (list exists, automation doesn't)
+- 500+ post corpus (exists, not yet used for fine-tuning)
+
+**Spec'd and in development:**
+- Superpower affiliate integration
+- EmailOctopus campaign automation
+- PDF lead magnet generation
+
+**Aspirational (designed but not started):**
+- ECS Fargate worker pools
+- Full fine-tuning pipeline
+- Closed-loop analytics optimization
+
+I'm sharing projected numbers because I think they're realistic based on what's already working, but I want to be clear: the $3K-20K/month range is a target, not a current run rate. The $2K already earned is real. The 35K readers are real. The infrastructure is real. The growth path is what I'm building toward.
+
+## The operating cost breakdown
+
+Here's what this system actually costs to run:
+
+| Component | Monthly Cost |
+|-----------|-------------|
+| EC2 t4g.xlarge (Hermes) | ~$120 |
+| EBS storage | ~$15 |
+| API calls (Claude, etc.) | ~$30-50 |
+| EmailOctopus | Free tier (under 2.5K sends/mo) |
+| Fargate tasks (projected) | ~$10-20 |
+| **Total** | **~$170-190/mo** |
+
+Against $2K already earned, the system paid for itself on day one. Every additional dollar is margin. And the beautiful thing about content is that it compounds — posts I published six months ago still drive traffic and affiliate clicks today. The operating cost is roughly flat while the content library (and its revenue potential) grows monotonically.
+
+If Superpower converts at even modest rates, if the email list starts working, if the PDF lead magnets grow subscribers — each of these is an independent revenue channel feeding off the same content engine and the same $170/month infrastructure.
+
+## Why I think this compounds
+
+Content has near-zero marginal cost once the system is running. Hermes drafts a post, I spend 15-20 minutes reviewing and editing it, and that post potentially earns affiliate revenue for months or years. The 500+ existing posts are already doing this — they rank, they get traffic, some percentage of readers click affiliate links. I didn't build any special monetization into those older posts. They just exist, they rank, and people find them.
+
+Now imagine being intentional about it. Every new post has affiliate links where they make sense. Every post has a call-to-action for the email list. Every email has links to the highest-converting content. The system gets smarter about what topics and formats perform well.
+
+Adding more high-quality content to a site that already has domain authority and 35K monthly readers means each new post has a head start on ranking. Growing the email list means each new post gets immediate distribution to people who've already opted in. Building better tooling means each content batch gets higher quality with less manual effort.
+
+The flywheel accelerates because every component reinforces the others. More content → more traffic → more subscribers → more distribution → more affiliate revenue → more data on what works → better content.
+
+## The philosophy behind all of this
+
+I want to be clear about something: I only promote products I actually use. WisprFlow is running on my machine right now. Granola handles my meeting notes. I'm personally testing Superpower before Hermes writes a single word about it. This constraint matters — it's what keeps the content honest, and honest content is what ranks and converts over time.
+
+The other thing: I'm a staff engineer with 14 years of experience. I could probably make more money consulting. But I'm betting on the compounding nature of this system. Consulting trades time for money linearly. A content engine that runs on $170/month and produces assets that earn indefinitely is a fundamentally different kind of bet.
+
+Every month the system runs, the content library grows, the email list grows, the data about what works grows. The operating cost stays flat. That delta between flat costs and growing returns is the whole game.
+
+And if I'm wrong? I've built a hell of an AI assistant, published hundreds of useful posts, and spent less than $200/month doing it. The downside is capped. The upside isn't.
+
+I'll keep building in public. If this works as well as I think it will, I'll share the numbers. If it doesn't, I'll share that too. That's the deal.
+
+---
+
+*This post is part of my building-in-public series on Hermes, my always-on AI assistant. Read the origin story in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant), the content workflow in [How My AI Assistant Ships Blog Posts](/blog/how-my-ai-assistant-ships-blog-posts), and the infrastructure pattern in [The Webhook Bridge Pattern](/blog/webhook-bridge-pattern).*
