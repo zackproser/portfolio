@@ -1,9 +1,11 @@
 import Image from 'next/image'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 
 export const metadata = createMetadata(rawMetadata)
+export const campaign = "claude-external-brain-adhd-autistic"
 
 <Image src={rawMetadata.image} alt="Claude Desktop interface" width={1200} height={630} />
 <figcaption>Claude as external brain: a compassionate, programmable executive function.</figcaption>
@@ -20,6 +22,8 @@ export const metadata = createMetadata(rawMetadata)
 </iframe>
 
 ## Table of contents
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The thesis: Speed requires safety
 
@@ -50,6 +54,8 @@ I program Claude to push back on perfectionism and analysis paralysis. It nudges
 ### Unlimited patience
 When anxious loops spike, I can ask the same question at 3am without burdening my people. The dialogue remains steady, kind, and structured—exactly the support my brain needs.
 
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
 ## The daily loop
 
 <Image src="https://zackproser.b-cdn.net/images/walking-talking-ai.webp" alt="Walking and talking with AI in the woods" width={800} height={600} />
@@ -78,6 +84,8 @@ Localized CSS/layout changes and feature branches reduce blast radius and make i
 <Image src="https://zackproser.b-cdn.net/images/cursor-agents-hero.webp" alt="Cursor Agents orchestrating bounded coding tasks" width={1200} height={800} />
 <figcaption>Agents thrive on narrow, testable changes with crisp acceptance criteria.</figcaption>
 
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
 ## Concrete workflows I run with Claude
 
 ### Voice to structure
@@ -101,6 +109,8 @@ Every change passes pre‑commit secret scanning, CI secret scanning, dependency
 ## Example acceptance criteria I reuse
 
 My acceptance language is deterministic: the build passes on the target Node version and key unit tests are green; secret scanners report zero findings and dependency scanning shows no high/critical vulnerabilities; a preview demonstrates the before→after behavior with CSS confined to the intended surface; and the PR description lists changed files, testing notes, and a short risk assessment.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Human factors: why this works for my brain
 

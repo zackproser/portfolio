@@ -1,9 +1,11 @@
 import rawMetadata from './metadata.json'
 import { createMetadata } from '@/utils/createMetadata'
 import Image from 'next/image'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import GitHubRepoCard from '@/components/GitHubRepoCard'
 
 export const metadata = createMetadata(rawMetadata)
+export const campaign = "claude-skills-internal-training"
 
 I recently had the opportunity to run an internal training at WorkOS on Claude skills, and I wanted to share what I learned about how they can transform the way teams codify and distribute custom AI workflows.
 
@@ -49,6 +51,8 @@ Most teams are quietly rediscovering the same AI workflows in parallel. A few pe
 Even when we try to document these flows, the “how” is scattered across docs, screenshots, and CLI snippets that drift away from the real implementation. Prompts evolve. API sequences change. Small but critical steps like image encoding, content types, or retry logic are easy to miss and hard to standardize.
 
 Claude skills fix this by making the runbook executable and version‑controlled. The same artifact that a human can read (SKILL.md) is the one Claude executes—reviewable in PRs, testable in CI, and distributable to the whole team. That stops knowledge from leaking, and it turns fragile, ad‑hoc workflows into shareable, repeatable capabilities.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The Use Case: From Static to Animated
 
@@ -117,6 +121,8 @@ Lock camera; keep motion subtle; preserve original palette and style; no new obj
 Target duration: ~3–4 seconds.
 ```
 
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
 ## Following the 12 Factor App Pattern
 
 One of the reasons this approach works so well for team distribution is that it follows the twelve-factor app methodology, particularly around configuration management. Rather than hardcoding API keys or embedding credentials in the skill itself, the workflow expects each user to export their own `GOOGLE_API_KEY` in their shell environment.
@@ -149,6 +155,8 @@ Then each person edits their `.env` file to add their Google API key, and restar
   width={1200}
   height={800}
 />
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Skill Directory Structure
 
