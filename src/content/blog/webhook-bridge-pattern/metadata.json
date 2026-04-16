@@ -1,0 +1,8 @@
+{
+  "title": "The Webhook Bridge Pattern: How Claude Code Talks to a Remote AI Agent",
+  "author": "Zachary Proser",
+  "date": "2026-04-16",
+  "description": "Solving the 'silent files' problem: how I built an event-driven bridge between Claude Code on my Mac and the Hermes agent running on EC2, using SSM RunCommand, Tailscale, and HMAC-signed webhooks.",
+  "image": "https://zackproser.b-cdn.net/images/webhook-bridge-hero.webp",
+  "tags": ["AI", "Infrastructure", "Webhooks", "Tailscale", "Claude Code"]
+}
