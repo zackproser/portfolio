@@ -56,6 +56,20 @@ I read through the docs, looked at what was on the menu, and then tailored it to
 
 The key insight at every decision point was that OpenClaw had already solved most of these problems. Personality contract? Port `SOUL.md` wholesale. User profile? Port `USER.md` — months of accumulated context in one `scp`. Teller bank integration? Port the mTLS certs and access tokens. Skills? Copy the directory. Every integration I'd refined over the past few months came along for the ride, and I got the compounding value of all that iteration without rebuilding any of it.
 
+## The persistent session
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-persistent-session.png" alt="Pixel art scene showing a developer workspace at night: MacBook with Claude Code terminal, smartphone with remote session view, and AWS cloud server connected by glowing data lines" width={2048} height={1024} />
+
+The entire build ran out of a single Claude Code terminal session on my MacBook that stayed open for the full day. One session, accumulating every scrap of context as it went: architecture decisions, OpenTofu state, debugging history, SSM parameter names, cloud-init iterations, the lot. Nothing got re-explained between turns. By hour six, Claude had internalized the entire deployment topology and could reason about interactions between cloud-init, Tailscale, and the hermes installer without me spelling out the dependencies.
+
+Claude Code has remote control — I can monitor and interact with the session from my phone via the Claude Code mobile interface. Between meetings, at a red light, on a walk with the dog, I'd pull up the session, see where things stood, send "approved" or "try the xlarge instead", and go back to whatever I was doing. The AI operator kept working. This is the actual workflow pattern that makes "built in a day while doing other things" honest rather than hyperbolic. The session was running `tofu apply`, polling cloud-init status via SSM, diagnosing failures, committing fixes — all autonomously. I checked in periodically to provide credentials, make judgment calls ("just upsize the instance"), and approve destructive operations. The rest was handled.
+
+By the end of the day, the session had produced six Claude Code skills that encode the operational playbook for future sessions: `/tell-hermes` (pipe context to hermes via webhook), `/hermes-status` (health dashboard), `/hermes-deploy` (safer tofu apply), `/hermes-skill-port` (port OpenClaw skills), `/hermes-debug` (triage bundle), `/hermes-memory-query` (search hermes's memories). Any future Claude Code session opened in the repo picks these up immediately — the operational knowledge persists even if I never touch the project again for months.
+
+The mental model that emerged is a three-actor system. Claude Code is the infrastructure brain: AWS, IaC, debugging, git, skill authoring. Hermes is the user-facing agent: Discord, bank APIs, content management, persistent memory. I'm the director, often mobile, steering both from my phone. Each actor operates in its domain without needing to understand the internals of the others. Claude Code has never spoken to a Discord user. Hermes has never run `tofu plan`. I don't have to hold the full cloud-init template in my head. The separation of concerns is what makes the pattern reproducible — swap any actor for something better and the others don't notice.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-operator-triangle-v2.png" alt="Pixel art operator triangle: Claude Code MacBook, Hermes Discord window, and Zack with phone as director, connected by labeled data beams showing IaC, webhooks, and review flows" width={2048} height={1024} />
+
 ## The architecture
 
 <Image src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" width={1200} height={800} />
