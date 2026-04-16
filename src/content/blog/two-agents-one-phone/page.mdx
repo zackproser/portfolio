@@ -1,0 +1,124 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+# Two Agents, One Phone
+
+I run two AI agents. One handles infrastructure. The other handles content. I control both from my phone.
+
+Claude Code runs on my Mac laptop. I drive it from my iPhone using the official Claude app's [remote control](https://docs.anthropic.com/en/docs/claude-code/remote) feature — the session runs on the laptop, but I interact with it from my phone anywhere. When I tell it to upgrade my EC2 instance type, rotate secrets, or apply OpenTofu changes, it opens a terminal, reads the relevant config, writes the code, and applies it. It has full access to my project files and my shell. Remote control is what makes this whole architecture possible — without it, Claude Code would be tethered to the laptop. With it, I have a mobile control plane for AWS infrastructure.
+
+Hermes — my Discord bot — runs on an EC2 `t4g.large` instance on Ubuntu 24.04 arm64. When I message it in Discord, it writes blog posts, generates pixel art, converts images, uploads them to CDN, opens GitHub PRs, and kicks off Vercel preview deploys. It's always on, always reachable, and purpose-built for content work.
+
+Both agents are on my Tailscale mesh. My phone, the laptop, and the EC2 instance all see each other. I can be anywhere — couch, coffee shop, waiting room — and ship infrastructure changes through Claude Code while simultaneously telling Hermes to write and publish a post. Two apps, two agents, one phone, zero context switching at a laptop.
+
+<Image src="https://zackproser.b-cdn.net/images/two-agents-one-phone-hero.webp" alt="Pixel art of a phone controlling two AI brains — one for infrastructure, one for content" width={1200} height={675} />
+
+This is the architecture that runs [zackproser.com](https://zackproser.com) now. Let me explain how it works and why I split it this way.
+
+## The split-brain model
+
+Think of it like two hemispheres. One brain hemisphere handles spatial reasoning and motor control. The other handles language and symbolic thinking. They share a body but they do different work.
+
+Claude Code is the infrastructure hemisphere. It's phenomenal at file editing, maintaining deep project context across multiple files, running terminal commands, and reasoning about system state. When I need to modify OpenTofu configs, debug a deployment, or upgrade a service, Claude Code is the right tool. It reads my specs and runbooks, writes the HCL, runs `tofu plan`, shows me the diff, and applies on my approval. And because I built the entire Hermes system with Claude Code — every line of OpenTofu, every cloud-init script, every SSM parameter — it has the full context of how the system works from the ground up.
+
+<Image src="https://zackproser.b-cdn.net/images/two-agents-split-brain.webp" alt="Pixel art split brain — blue infrastructure side with server racks, orange content side with documents and art" width={1200} height={675} />
+
+Hermes is the content hemisphere. It's built for creative work, multi-step publishing pipelines, and long-running asynchronous tasks. It generates images through Gemini 3 Pro, handles the WebP conversion, pushes assets to Bunny CDN, writes the MDX with proper frontmatter and imports, and opens the PR. The entire pipeline runs in minutes without me touching a keyboard.
+
+The key insight: these are fundamentally different workloads with different requirements. Infrastructure changes need careful, stateful terminal sessions with full filesystem access. Content creation needs image generation APIs, CDN upload credentials, GitHub tokens, and a pipeline that can run independently. Cramming both into one agent would be like running your database and your frontend on the same server — it works until it really doesn't.
+
+## Claude Code remote control: the key that makes it work
+
+I want to be explicit about this because it's the lynchpin of the whole setup. [Claude Code's remote control feature](https://docs.anthropic.com/en/docs/claude-code/remote) means the session runs on my Mac laptop, but I interact with it from the Claude app on my iPhone. The laptop has the AWS credentials, the SSH keys, the OpenTofu state, the git repos. My phone is just the screen.
+
+This matters because infrastructure work requires real credentials and local filesystem access. You can't run `tofu apply` from a web UI. But with remote control, I get the full power of Claude Code's terminal and file editing capabilities, driven from my phone over a secure connection. I'm not SSH-ing into anything manually. I'm having a conversation in the Claude app and Claude Code does the terminal work on my behalf.
+
+The other posts in this series — [how Hermes was built](/blog/building-always-on-ai-assistant) and [how the webhook bridge works](/blog/webhook-bridge-pattern) — all describe systems that were stood up via Claude Code sessions I drove from my phone. The phone is genuinely the control plane for the entire operation.
+
+## Claude Code as the side channel into Hermes
+
+Here's the part that makes the two-agent setup more powerful than either agent alone: Claude Code is the side channel into Hermes whenever the agent is misbehaving.
+
+I built the entire Hermes system with Claude Code. It wrote the OpenTofu, the cloud-init scripts, the systemd service files. It knows the directory layout, the config schema, the memory files, the SOUL.md personality file, all of it. So when Hermes starts acting weird — generating bad images, ignoring instructions, producing low-quality responses — I don't have to debug Hermes from the inside. I open Claude Code and tell it to SSH into the EC2 instance, read Hermes's system files, and figure out what's wrong.
+
+<Image src="https://zackproser.b-cdn.net/images/two-agents-side-channel.webp" alt="Pixel art of Claude Code SSHing into a server to inspect and repair Hermes" width={1200} height={675} />
+
+Claude Code can read Hermes's memory files, inspect its config, look at its conversation logs, check its skill definitions, and directly edit whatever needs fixing. Then it restarts the gateway service and the changes take effect immediately. Hermes doesn't know it happened. From Hermes's perspective, it just woke up slightly improved.
+
+This is the operational pattern I keep coming back to: **Hermes is the product. Claude Code is the mechanic.**
+
+### The context window fix
+
+A concrete example: I was getting frustrated with Hermes's response quality. Answers felt thin, lacking depth, like it wasn't thinking hard enough about complex requests. I'd give it a detailed content brief and get back surface-level output.
+
+I opened Claude Code from my phone and told it to figure out why. Claude Code SSH'd into the Hermes instance, pulled up the hermes-agent open source repo, read through the configuration system, and found the issue: the context window being passed to the model was artificially constrained by a conservative default in the gateway config. The setting was throttling how much conversation history and system context reached the model on each turn.
+
+Claude Code updated the config, bumped the context allocation, and restarted the gateway service. The whole fix took about three minutes. Hermes immediately started producing better responses — longer, more detailed, more contextually aware. Same model, same prompts, same skills. The only difference was how much context it could actually see.
+
+I didn't have to read source code. I didn't have to open a laptop. I described the symptom in plain English from my phone, and Claude Code traced it to a config value and fixed it. That's the power of having an infrastructure agent that built the system in the first place — it knows where to look.
+
+## A real example: shipping a post while upgrading the instance
+
+Here's what parallel execution looks like in practice.
+
+**In Discord (Hermes):** I opened the Discord app and told Hermes to write a post about [the webhook bridge pattern](/blog/webhook-bridge-pattern). Hermes started working — drafting the MDX, generating a pixel art header image, processing it to WebP, uploading to Bunny CDN, and scaffolding the metadata.
+
+**In the Claude app (Claude Code):** While Hermes was churning through the content pipeline, I switched to the Claude app and told Claude Code to upgrade the EC2 instance from `t4g.medium` to `t4g.large`. Claude Code opened the OpenTofu config on my laptop, found the instance type variable, updated it, ran `tofu plan` to show me the change set, and waited for my go-ahead. I typed "apply" and it ran `tofu apply`.
+
+<Image src="https://zackproser.b-cdn.net/images/two-agents-parallel.webp" alt="Pixel art showing two phones side by side — one with Discord chat, one with terminal commands" width={1200} height={675} />
+
+Within the hour, Hermes had opened a PR with the new blog post — complete with pixel art and CDN-hosted images — and Claude Code had finished the instance upgrade and verified the service was healthy.
+
+Two agents. Two different jobs. Both directed from my phone. No laptop required.
+
+## The webhook bridge: connective tissue
+
+The agents can also talk to each other. When Claude Code needs to hand something off to Hermes — say, after updating infrastructure it wants to trigger a content update — it sends an HMAC-signed HTTP POST over the Tailscale network to Hermes's webhook endpoint.
+
+The flow looks like this:
+
+```
+Claude Code (Mac laptop)
+  → constructs payload + HMAC-SHA256 signature
+  → POST to Hermes webhook over Tailscale (private network, no public exposure)
+  → Hermes validates signature
+  → Hermes activates the appropriate model/pipeline
+  → Result posted back to Discord
+```
+
+The HMAC signing is important. Even though the traffic flows over Tailscale (which is already encrypted and authenticated at the network level), the webhook signature ensures that only Claude Code — with access to the shared secret from AWS SSM Parameter Store — can trigger Hermes actions programmatically. Defense in depth, not paranoia.
+
+This bridge is what turns two independent agents into a coordinated system. Claude Code can finish an infra change and say "hey Hermes, the new instance is up, write a post about the migration." Or it can update the deployment config and trigger Hermes to verify the content pipeline still works against the new setup.
+
+I wrote a whole post about this pattern: [The Webhook Bridge Pattern](/blog/webhook-bridge-pattern).
+
+## Why separation of concerns matters for agents
+
+Software engineers have known for decades that separation of concerns produces better systems. Microservices exist because monoliths become unmaintainable. Unix philosophy says each tool should do one thing well. The same principles apply to AI agents.
+
+When I had one agent trying to do everything — infra and content — things got messy fast. The agent's context window would fill up with OpenTofu state while trying to write prose. A failed `tofu apply` would derail a blog post draft. The tools and permissions needed for infrastructure (shell access, AWS credentials, filesystem writes) are different from the tools needed for content (image generation APIs, CDN uploads, GitHub PR creation).
+
+Splitting into two agents gave me:
+
+**Blast radius containment.** If Hermes has a bad day and generates garbage images, my infrastructure is untouched. If Claude Code botches an OpenTofu apply, my content pipeline keeps running. Failures are isolated.
+
+**Right-sized context.** Claude Code maintains context about my project structure, infrastructure state, and deployment configs. Hermes maintains context about my blog's content style, image generation preferences, and publishing pipeline. Neither agent wastes context tokens on the other's domain.
+
+**Parallel execution.** Both agents can work simultaneously. I don't have to wait for an infra change to finish before starting a content task, or vice versa. The phone UX makes this natural — I switch between Discord and the Claude app the same way I switch between Slack and my email.
+
+**The mechanic pattern.** Claude Code built the system, so it can fix the system. When Hermes misbehaves, I don't have to debug from the inside — I have an external agent with full context that can SSH in, diagnose, and repair. This is operationally powerful in a way that a single-agent setup can't match.
+
+## Where this is going
+
+Right now the webhook bridge is one-directional in practice — Claude Code triggers Hermes more often than the reverse. I want bidirectional coordination where Hermes can request infrastructure changes through Claude Code. "Hey, I need more disk space for image processing" or "The CDN upload is failing, can you check the security group rules?"
+
+I'm also thinking about a shared memory layer. Right now the agents are stateless with respect to each other — the webhook bridge passes a payload, but neither agent knows what the other has been doing unless explicitly told. A shared context store (probably in S3 or DynamoDB) would let them build on each other's work without me manually relaying information.
+
+The phone-first control plane — enabled entirely by Claude Code's remote control feature — is the part I care about most. I've spent 14 years as an engineer sitting at desks staring at monitors. The fact that I can now direct two specialized AI agents from my phone while doing literally anything else feels like a genuine shift in how I work. Not in some abstract "future of work" way — in the concrete sense that I shipped three blog posts and fixed a context window bug last week without opening a laptop.
+
+If you want the full story on how I built Hermes, start with [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant). For the content pipeline specifics, read [How My AI Assistant Ships Blog Posts](/blog/how-my-ai-assistant-ships-blog-posts). And for the technical details on how the agents communicate, check out [The Webhook Bridge Pattern](/blog/webhook-bridge-pattern).
+
+Two brains, one phone, zero laptops required.
