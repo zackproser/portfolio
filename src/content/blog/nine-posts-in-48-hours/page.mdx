@@ -1,0 +1,94 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+I flew to London for AI Engineering World's Fair 3, gave a talk, ran a workshop, did a live podcast, then came home and published 9 blog posts in 48 hours. While working full-time at WorkOS. While solo-parenting a three-year-old and a two-year-old — with the phone down and the laptop closed every second I was with them.
+
+14,790 words. 47 images generated and uploaded to CDN. 12 pull requests opened, previewed, and merged. All of it driven by two AI agents I talk to from my phone and my laptop, in the compressed windows between everything else.
+
+This is the post about how that happened.
+
+<Image src="https://zackproser.b-cdn.net/images/nine-posts-chatops-hero.webp" alt="Pixel art of a developer walking through a forest trail, phone in hand, while ghostly blog post thumbnails float up from the screen into the sky like lanterns" width={1200} height={675} />
+
+## The stack
+
+[Two agents. Two apps. One phone.](/blog/two-agents-one-phone)
+
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code) runs on my Mac laptop via remote control — I drive it from the Claude app on my iPhone. It handles infrastructure: OpenTofu plans, EC2 instance upgrades, webhook wiring, git operations. When I need something built or debugged, I talk to Claude Code.
+
+[Hermes](/blog/building-always-on-ai-assistant) runs on an EC2 instance as a Discord bot. I talk to it through the Discord app. It handles content: writing MDX, generating pixel art via Gemini, uploading images to Bunny CDN, committing to git, opening pull requests. When I need a post drafted or an image made, I talk to Hermes.
+
+I described this architecture in [Two Agents, One Phone](/blog/two-agents-one-phone). The short version: separation of concerns works for AI agents the same way it works for microservices. Each agent has its own context, its own credentials, its own failure domain. Neither can break the other.
+
+## The timeline
+
+I spent a full week in London for AI Engineering World's Fair 3 — gave a talk, ran a workshop, did a live podcast. Came home to a full weekend of parenting with zero screens. Then this week I stood up a bespoke AWS infrastructure for Hermes: EC2 instance, EBS volume, OpenTofu IaC, Tailscale mesh, all secrets into SSM, 90 custom skills configured, and memory tuned to work the way I wanted.
+
+Once the pipeline was dialed in, the posts started ripping.
+
+**The conference recaps** came first. Three posts drafted from notes while the talks were fresh — [Untethered Productivity](/blog/aie-london-untethered-productivity), [Skills at Scale](/blog/aie-london-skills-at-scale), and the [Scaling Devtools podcast](/blog/aie-london-scaling-devtools-podcast). 3,004 words.
+
+**The infrastructure deep-dive** followed: [building the always-on AI assistant](/blog/building-always-on-ai-assistant) on AWS. The longest post in the batch at 3,335 words — OpenTofu, Tailscale, SSM secrets, EBS volumes, the full infrastructure story.
+
+<Image src="https://zackproser.b-cdn.net/images/nine-posts-timeline-v3.webp" alt="Pixel art timeline showing a speaker at a conference podium on the left, an airplane in the middle, and a phone with Discord and terminal apps glowing on the right, connected by a dotted golden line" width={1200} height={675} />
+
+**Then the burst.** Five more posts in rapid succession:
+
+- [Nick Nisi Is One Talented Motherfucker](/blog/nick-nisi-is-one-talented-motherfucker) — the appreciation post I'd been meaning to write since the workshop. 1,155 words.
+- [The Webhook Bridge Pattern](/blog/webhook-bridge-pattern) — documenting how Claude Code talks to Hermes via SSM RunCommand and HMAC-signed webhooks. 1,310 words.
+- [How My AI Assistant Ships Blog Posts](/blog/how-my-ai-assistant-ships-blog-posts) — the meta walkthrough of Hermes's content pipeline. 1,776 words.
+- [Two Agents, One Phone](/blog/two-agents-one-phone) — the split-brain architecture piece. 2,196 words.
+- [Phones Are the New Terminal](/blog/phones-are-the-new-terminal) — the capstone post tying everything back to my DevSecCon keynote. 2,014 words.
+
+That's 8,451 words and 5 PRs merged in a single burst. Between standups, code reviews, and the compressed windows around parenting two toddlers.
+
+## How chatops makes this possible
+
+The workflow looks like this: I open Discord on my phone and type a message to Hermes. Something like "write a post about the webhook bridge pattern — cover SSM RunCommand, Tailscale networking, HMAC verification, and why files on disk are a bad IPC mechanism." Hermes writes the MDX, generates a pixel art hero image, uploads it to CDN, commits everything, and opens a PR. I get a link to the Vercel preview. I read it on my phone, request edits in Discord, and Hermes pushes fixes. When it looks right, I tell Hermes to merge.
+
+<Image src="https://zackproser.b-cdn.net/images/nine-posts-chatops-discord.webp" alt="Pixel art of a phone screen showing a Discord conversation between a human and a bot, with code diffs and image thumbnails floating between the messages" width={1200} height={675} />
+
+That's the whole loop. No IDE. No local dev server. No switching between terminals. I'm having a conversation and blog posts come out the other end.
+
+The pixel art is the same way. Every post on my site has 3-4 pixel art images breaking up the text. I don't make them in Photoshop. I describe what I want in Discord: "16-bit pixel art, cozy retro SNES-era aesthetic, dark purple-navy background with subtle stars — a developer on a forest trail talking to their phone while AI agents work on floating holographic screens." Hermes calls the Gemini image API, converts to WebP, uploads to Bunny CDN, and drops the Image component into the MDX. I see it rendered in the Vercel preview 90 seconds later.
+
+The [five posts I shipped on Wednesday](/blog/two-agents-one-phone) required dozens of images total — pixel art hero images, screenshots, architecture diagrams. Hermes generated all the pixel art. I described zero of them in detail — for most, Hermes read the post content and proposed appropriate images. I approved or redirected.
+
+## What I was actually doing during all this
+
+Working. Parenting two toddlers. Living a full life.
+
+I want to be clear about the parenting part: I'm a solo parent to a three-year-old and a two-year-old. When I'm with them, the phone is face-down on the counter and the laptop is closed. Period. No "quick check on Discord." No "let me just merge this." They get a fully present dad. That time is completely theirs, and it's most of the day.
+
+Which means my working windows are brutally compressed. I get focused time before the kids wake up, during naptime if I'm lucky, and after bedtime. At work, I'm in sprint at WorkOS — shipping features, reviewing pull requests, doing standups. The blog posts don't get their own time block. There is no time block.
+
+The blog posts happened in the cracks. The 8 minutes between a meeting ending and the next one starting. Walking to get coffee. The tube ride to the airport. Sitting in a departure lounge while the gate hadn't opened yet. Five minutes here, ten minutes there — always in the moments that would otherwise be dead time.
+
+That's the whole point of investing in this pipeline. I spent weeks building Hermes, wiring up the webhook bridge, configuring the skills system, setting up the CDN pipeline. All of that infrastructure investment pays off when a 10-word Discord message — "draft a post about the webhook bridge pattern" — produces a complete blog post with hero image, PR, and Vercel preview. The interaction takes 30 seconds. The agent does 20 minutes of work. I review on my phone during the next gap.
+
+This is what I mean when I say [the phone is the new terminal](/blog/phones-are-the-new-terminal). I'm not heroically typing 14,790 words in stolen moments. I'm having short conversations with capable agents that execute in the background while I'm doing other things — real things, important things, like being a dad and doing my actual job. The output accumulates while my attention is where it belongs.
+
+## The compound effect
+
+Nine posts in 48 hours sounds impressive as a number. The real value is what those posts cover: a complete narrative arc.
+
+The AIE London recaps establish credibility — I was there, I spoke, I workshopped. The technical posts ([always-on assistant](/blog/building-always-on-ai-assistant), [webhook bridge](/blog/webhook-bridge-pattern), [content pipeline](/blog/how-my-ai-assistant-ships-blog-posts)) document the infrastructure that makes everything else possible. The architecture piece ([two agents, one phone](/blog/two-agents-one-phone)) explains the design philosophy. The capstone ([phones are the new terminal](/blog/phones-are-the-new-terminal)) ties it all back to the [DevSecCon keynote](/blog/untethered-software-development-devseccon-2025) and the health/RSI motivation.
+
+<Image src="https://zackproser.b-cdn.net/images/nine-posts-chatops-network.webp" alt="Pixel art showing 9 glowing blog post cards arranged in a constellation pattern, with lines connecting related posts, floating over a dark starfield" width={1200} height={675} />
+
+Each post links to the others. The conference recaps link to the technical posts. The technical posts link to the architecture post. The architecture post links to the capstone. A reader who lands on any one of them can follow the thread to the full story.
+
+That's hard to do if you're writing one post a week. When you ship 9 in 48 hours, the cross-linking is natural because the whole narrative is in your head at once.
+
+## What this means for how I write
+
+I'm not going to pretend this is effortless. I still do the thinking. I still choose what to write about, what angle to take, what to cut. I edit every post before it goes live. The writing voice is mine — Hermes has enough context about my style to get close, but I read every paragraph and fix what sounds wrong.
+
+What changed is the labor. The typing, the formatting, the image generation, the git workflow, the PR management, the CDN uploads — all of that is automated. The creative and editorial work is mine. The mechanical work belongs to the agents.
+
+I wrote about this tradeoff in [The LLM Is Not My Friend](/blog/llm-is-not-my-friend). The AI handles what I'm bad at (sustained typing, repetitive workflows, context switching between tools). I handle what it's bad at (taste, voice, knowing what's worth saying).
+
+Nine posts in 48 hours. 14,790 words. 47 images. 12 PRs merged. While working a full-time job and solo-parenting two toddlers with zero screen time during kid hours. Not by grinding harder — by investing in a pipeline that turns 30-second conversations into finished blog posts. The tools are here. The question is whether you're willing to rewire your workflow to use them.
+
