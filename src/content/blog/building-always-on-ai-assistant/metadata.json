@@ -3,6 +3,6 @@
   "author": "Zachary Proser",
   "date": "2026-04-15",
   "description": "How I moved my personal AI assistant to AWS with OpenTofu, Tailscale, and Discord — self-hosting Hermes Agent in the margins of a normal workday.",
-  "image": "https://zackproser.b-cdn.net/images/hermes-architecture.webp",
+  "image": "https://zackproser.b-cdn.net/images/hermes-pixel-cloud.webp",
   "tags": ["ai", "infrastructure", "aws", "tailscale", "opentofu", "hermes-agent"]
 }
