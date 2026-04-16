@@ -88,7 +88,7 @@ runcmd:
 
 The nested YAML inside the heredoc confused the cloud-init YAML parser, which tried to parse the *entire* `runcmd` block as YAML before executing it. Fix: base64-encode the payload and decode it at runtime.
 
-Each fix was a single commit. Each instance replacement took ~90 seconds. Because we'd chosen the right primitives — OpenTofu and AWS — the workflow was a proven loop: change the config, `tofu apply`, watch the instance rebuild, see if it comes up clean. If not, fix, commit, repeat.
+Each fix was a single commit. Each instance replacement took ~90 seconds. Claude Code on my MacBook was the one running this loop — `tofu apply`, poll cloud-init status via SSM RunCommand, diagnose the failure, commit the fix, repeat. Eight of those instance replacements happened while I was in calls or napping. I'd come back to a terminal full of committed diffs and a working instance. Because we'd chosen the right primitives — OpenTofu and AWS — the workflow was tight: change the config, apply, watch the rebuild, see if it comes up clean.
 
 ## Tailscale surgery
 
@@ -139,7 +139,7 @@ hermes webhook subscribe claude-context \
 
 When a payload arrives, Hermes replaces `{body}` with the POST content and `{topic}` with the topic field from the JSON — then activates with the fully rendered prompt. HMAC-SHA256 signed, Tailscale-only, no public endpoint.
 
-That became the second load-bearing primitive. A shell script now archives context to the assistant's filesystem (persistent storage) and hits the webhook (immediate activation). The full loop: Claude on Mac → SSM + Tailscale → assistant on EC2 → Discord → my phone. Same pattern generalizes to GitHub webhooks, Twilio, cron, whatever.
+That became the second load-bearing primitive. Claude Code built the bridge script — `ops/tell-hermes.sh` — which archives context, HMAC-signs the payload, and POSTs it over Tailscale. The bridge exists so Claude Code (the infra brain on my Mac) can pipe context directly to Hermes (the user-facing agent on EC2) without me re-speaking it. A shell script now archives context to the assistant's filesystem (persistent storage) and hits the webhook (immediate activation). The full loop: Claude on Mac → SSM + Tailscale → assistant on EC2 → Discord → my phone. Same pattern generalizes to GitHub webhooks, Twilio, cron, whatever.
 
 ## Interactive chat
 
@@ -173,7 +173,11 @@ The operational invariant I care most about: any Claude session, on any machine,
 
 A year ago this build would have been a week of focused engineering. Today it fit in the margins of a normal workday, done mostly while something else had my attention.
 
-The primitives are mature and well-understood, so none of the individual pieces required learning anything new. What changed is the loop between "describe what I want" and "observe the result on real infrastructure." I can manage AWS the way I previously managed a git repo: say what I want, watch it happen, check in when it matters.
+The primitives are mature and well-understood, so none of the individual pieces required learning anything new. What made async work possible was the separation of concerns: Claude Code handles the AWS/IaC/debugging complexity — cloud-init YAML, systemd units, Tailscale ACLs, DLM snapshots. Hermes handles conversational and task complexity — bank monitoring, blog publishing, accumulated personality. I direct both. Three actors: human, infrastructure agent, user-facing agent. That's the actual pattern, and it's what made the build fit in the margins of a workday.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-operator-triangle.webp" alt="Pixel art operator triangle showing three actors: Zack directing both Claude Code (infrastructure agent on MacBook) and Hermes (user-facing agent on AWS EC2), connected by arrows" width={1200} height={800} />
+
+What changed is the loop between "describe what I want" and "observe the result on real infrastructure." I can manage AWS the way I previously managed a git repo: say what I want, watch it happen, check in when it matters.
 
 The spec-then-plan-then-execute pattern helped. Having the architecture written down in a document that Claude and I both re-read kept things coherent through 30+ commits. The plan with exact commands meant I could be genuinely async — "execute task 11" without re-explaining context.
 
