@@ -6,6 +6,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "openai-codex-review-2026";
 
 <Image src="https://zackproser.b-cdn.net/images/codex-hero.webp" alt="Codex in 2026 - significantly improved after nearly a year of daily use"  width={968} height={545}/>
 
@@ -17,7 +18,7 @@ It's been nearly a year since I wrote my <Link href="/blog/openai-codex-review">
 
 The landscape has changed dramatically. Here's what actually improved and what still needs work.
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The real test: Daily production use
 
@@ -54,7 +55,7 @@ For my portfolio site, I can now ask Codex to:
 
 It understands the existing Next.js structure, follows my component patterns, respects the Tailwind classes I'm already using, and even maintains my preference for named exports over default exports.
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## What's actually improved
 
@@ -101,7 +102,7 @@ This has been genuinely useful. For a recent API endpoint, the variations includ
 
 It feels like having multiple senior developers propose solutions, then picking the best approach for your specific context.
 
-<InlineAffiliateCTA product=granola />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## What still frustrates me
 
@@ -123,7 +124,7 @@ This was a major pain point in my original review, but OpenAI has largely fixed 
 
 This is a huge improvement. Installing dependencies, running integration tests, fetching external APIs during development — all possible now depending on your security preferences.
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## The meta-improvement: Codex training on Codex usage
 

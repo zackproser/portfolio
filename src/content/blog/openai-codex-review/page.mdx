@@ -8,6 +8,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
+export const campaign = "openai-codex-review";
 
 <UpdatedReviewBanner href="/blog/openai-codex-review-2026" text="Read the 2026 Codex review — updated from daily use" />
 
@@ -22,7 +23,7 @@ the next few days using it to ship improvements and bug fixes to my site and som
 
 Here are my current thoughts...
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Codex: How it works 
 
@@ -38,7 +39,7 @@ If you maintain dozens of public and private repositories, this setup is fantast
 
 If you only keep a single repo or two, the overhead may feel heavier than just asking an LLM for help or working in an AI-powered editor like Cursor.
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Things I like about Codex 
 
@@ -106,7 +107,7 @@ in order to make changes.
 
 <Image src="https://zackproser.b-cdn.net/images/codex-launch-new-environment.webp" alt="Launching a new environment via Codex"  width={800} height={600}/>
 
-<InlineAffiliateCTA product=granola />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Things I'm waiting on to improve 
 
@@ -148,7 +149,7 @@ Codex can't reach the internet right now, but it does have your repo freshly clo
 This means it can't `pnpm add @tar-fs@latest` even if you ask it to. So, for now, I'll still be pulling down these branches and fixing them locally or 
 commenting `@dependabot rebase` on PRs that support it.
 
-<InlineAffiliateCTA product=wisprflow />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Did it unlock insane productivity gains for me? 
 
