@@ -107,6 +107,10 @@ The time from "I want to write about X" to a live post on production is about 30
 
 I don't open my laptop for any of this. The entire authoring and publishing pipeline runs through Discord messages on my phone. Hermes handles every mechanical step — writing files, running commands, managing git state, uploading assets.
 
+The other half of the picture is [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview), which I run via `--remote-control` from my phone. Claude Code handles all the infrastructure work — upgrading Hermes itself, managing OpenTofu deployments, rotating secrets in SSM, debugging cloud-init issues, porting skills from my old assistant. It talks to Hermes through a [webhook bridge](/blog/webhook-bridge-pattern) I built, so the two agents coordinate without me having to relay messages between them.
+
+So the split is: **Discord for directing Hermes on content work. Claude Code remote control for infrastructure and system upgrades.** Both from my phone. Between the two, I can manage the entire stack — blog posts, images, deployments, agent configuration — without sitting down at a desk.
+
 This setup also means I can ship posts from anywhere. Waiting in line. On a walk. The barrier to publishing went from "sit down at my desk, open VS Code, write, generate images, commit, push, check the preview, fix things, push again, merge" to "tell Hermes what I want in Discord."
 
 ## Why this works
