@@ -1,482 +1,186 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
+import GitHubRepoCard from '@/components/GitHubRepoCard';
+import Image from 'next/image';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src={rawMetadata.image} alt="System76 Meerkat mini PC running an always-on AI assistant" width={1200} height={630} />
-<figcaption>A tiny, silent machine that never forgets what I can't remember.</figcaption>
+# I Built an Always-On Hermes Agent on AWS in a Day, Mostly Async
 
-> This post extends my ongoing work building external cognitive infrastructure to better fit with my strengths and weaknesses as a neurodivergent person. See also [Training Claude to Understand My Neurological Patterns](/blog/training-claude-neurological-patterns), [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic), and [Handwave](/blog/handwave).
+Since early February I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, [Tailscale](https://tailscale.com/) overlay so I can reach it from anywhere. Most of the time it works great.
 
-I have an AI assistant running 24/7 on a mini PC under my desk. It reads my email, manages my calendar, takes my phone calls, picks up tasks I drop into Linear, and pings me on Discord when something needs attention.
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-meerkat.webp" alt="Pixel art of a System76 Meerkat NUC on a desk with a glowing terminal, cozy home office vibes" width={1200} height={800} />
 
-I work in AI and I'm genuinely interested in experimenting with this stuff. But I'm also building this because I need it. I care about logistics — I just don't feel oriented in time and space the way other people are. Time melts when I'm in hyperfocus. I'll remember a meeting 5 minutes out, forget it 2 minutes out because I got pulled back into building. I need external cognitive infrastructure to help me interface with the world more effectively.
+Twice in the past few months it didn't, and both times I was out of the country. I'd open my laptop in a hotel, reach for the assistant I'd quietly started depending on, and get silence. First time was a power blip. Second time I'd recently installed a [HackRF One](https://greatscottgadgets.com/hackrf/one/) (software-defined radio for RF research) in the same room and my best guess is a transient power fault that took the NUC down with it.
 
-What I'm building toward: I'm in a hurry, heading somewhere, and the directions are already on my wrist. I don't dig through email for an address — it's pushed to Apple Wallet and I'm watching it update in real time. That's the layer I need. Constant orientation, always present, zero friction.
+The cognitive infrastructure I'd come to rely on was tied to a single box I couldn't power-cycle from 5,000 miles away. Time to fix that.
 
-This post covers the full setup: hardware, networking, integrations, voice calls, async task delegation, email automation, and the prompt-shaping workflow that makes it all hold together. If you've ever wanted a personal AI that actually *does things* without being asked, this is the blueprint.
+## The constraints
 
-<Image src="https://zackproser.b-cdn.net/images/openclaw-communication-channels.png" alt="Communication channels converging on the Meerkat running OpenClaw" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Multiple channels, one always-on brain.</figcaption>
+Six requirements, written before touching any code:
 
-## The hardware: System76 Meerkat
+1. **Always on.** If I'm sleeping, travelling, or staring into the middle distance, the bot is running.
+2. **Cattle for compute, pet for memory.** The instance is disposable. Memory, skills, and conversation history survive instance replacement.
+3. **Private by default.** No public ingress. Tailnet-only. Auth is implicit, not a constant friction.
+4. **Stateful.** The assistant accumulates context, memories, and capabilities over time.
+5. **Managed entirely via IaC.** No console clicks. Any future Claude session with AWS creds can `tofu init && tofu plan` and manage the deployment.
+6. **Reuse what already works.** I already have a Discord gateway, a battle-tested SOUL.md, 25+ skills, API integrations for Teller, Gmail, Linear, Anthropic, OpenAI. Port, don't rebuild.
 
-The [System76 Meerkat](https://system76.com/desktops/meerkat) is a tiny, silent, Linux-first mini PC. Mine has:
+Number 6 turned out to be the most interesting constraint. This could have been a green-field build. Instead it was a selective port: take everything from OpenClaw that had proven out, drop it onto new bones designed for reliability.
 
-- Intel Core i5
-- 32GB RAM
-- 500GB NVMe SSD
-- Ubuntu 24.04
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-cloud.webp" alt="Pixel art of a cloud server floating in space with data streams connecting to a laptop and phone below" width={1200} height={800} />
 
-The rest of the physical setup is minimal: a mechanical keyboard, a small flat LED monitor, and no mouse — I couldn't find one, so everything got done from the keyboard. That's it. Total power draw: about 15 watts. It sits under my desk, always on, runs my entire AI infrastructure.
+## Choosing primitives
 
-Why not a cloud VM? Three reasons:
+Before writing any code, I spent about an hour in an adversarial architecture conversation with Claude, pushing back on options until the final choices felt solid.
 
-1. **Latency** — Local is faster for anything touching my network
-2. **Cost** — $600 once vs $50/month forever
-3. **Control** — My data, my machine, my rules
+**Rejected:** RunPod and Modal (GPU-first platforms for a CPU-only daemon). Cloudflare Workers (Python Workers use Pyodide, no persistent filesystem). Fly.io (volume-loss incidents eroded trust). DigitalOcean and Hetzner were viable, but I'm already deep in AWS with an account ready to go.
 
-## The software: OpenClaw
+With AWS as the foundation: [OpenTofu](https://opentofu.org/) for IaC with encrypted state in S3 and native locking — no DynamoDB lock table needed. A separate EBS data volume mounted at the assistant's home directory, `delete_on_termination=false` and `prevent_destroy=true`, so the root volume stays ephemeral while everything important persists. [SSM Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html) for secrets — a dozen-plus SecureString params and growing, rotatable with a single `aws ssm put-parameter --overwrite`, no redeploy. SSM Session Manager for break-glass access with zero inbound public ports. Tailscale for everyday access — MagicDNS, ACL-governed SSH, WireGuard end-to-end. Discord as the UI.
 
-[OpenClaw](https://github.com/openclaw/openclaw) is an open-source AI gateway that turns Claude into an operational assistant. It provides:
+[OpenRouter](https://openrouter.ai/) was a deliberate choice for the model backend. One API key gives you access to every major model — Claude, GPT-4, Gemini, Llama, Mistral, whatever drops next week. For a personal assistant that I want to keep running indefinitely, I didn't want to be locked into one provider's auth and billing. OpenRouter lets me swap models with a config change and fall back if one provider has an outage. The one dependency that makes every other model decision reversible.
 
-- **Persistent sessions** — Memory across conversations
-- **Multi-channel access** — Discord, Telegram, Slack, SMS, voice
-- **Tool integrations** — Email, calendar, browser, shell access
-- **Scheduled tasks** — Cron jobs, reminders, heartbeat checks
-- **Voice calls** — Twilio integration for phone conversations
+The whole thing runs on about $96/month on-demand pricing, or roughly $72/month with a reserved instance — calibrated for a `t4g.xlarge` with 16 GB of RAM, which turned out necessary for the Next.js builds and Playwright sessions the assistant runs.
 
-The gateway runs as a systemd service, survives reboots, and keeps my assistant available 24/7.
+## Choosing the agent
 
-A note on naming: OpenClaw's default identity has a crustacean theme. Far be it from me to step on anyone's funk, but I don't get down with crustaceans. I changed it to something more like Jarvis — direct, competent, minimal personality friction. The identity files (SOUL.md, USER.md) make this trivial — you just tell it who it is. 🦀 → 🚀
+The agent framework mattered as much as the infrastructure. I spent time reading through several options — LangChain, CrewAI, various "agent-as-a-service" platforms — but landed on [Hermes Agent](https://hermes-agent.org/) from Nous Research.
+
+<GitHubRepoCard repo="NousResearch/hermes-agent" />
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-webhook.webp" alt="Pixel art of a MacBook sending a glowing data stream across a starry sky to a cloud server, passing through a Tailscale shield — the webhook bridge concept" width={1200} height={800} />
+
+What drew me in was the feature surface. Hermes ships with persistent memory across sessions, a skills system for teaching it reusable workflows, a full terminal backend, browser automation, file management, cron scheduling, sub-agent delegation, and platform gateways for Discord, Telegram, Slack, and more. It also has a `SOUL.md` file — a personality contract that persists on disk and survives instance replacement — and a `USER.md` for storing context about the human it's working with.
+
+I read through the docs, looked at what was on the menu, and then tailored it to my specific needs. The skills system is where most of the customization lives — I ported 25+ skills from my previous setup covering everything from bank account monitoring to blog post publishing to flight search. The webhook system gave me event-driven activation. The approval system (which I later disabled) showed that security was designed in, not bolted on.
+
+The key insight at every decision point was that OpenClaw had already solved most of these problems. Personality contract? Port `SOUL.md` wholesale. User profile? Port `USER.md` — months of accumulated context in one `scp`. Teller bank integration? Port the mTLS certs and access tokens. Skills? Copy the directory. Every integration I'd refined over the past few months came along for the ride, and I got the compounding value of all that iteration without rebuilding any of it.
+
+## The architecture
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" width={1200} height={800} />
+
+The cattle/pet split is the load-bearing idea. In DevOps, "cattle" are servers you can destroy and replace without thinking about it — they're interchangeable. "Pets" are servers with identity and state you care about — you nurse them back to health when they get sick. The trick here is splitting one system into both: the EC2 instance is cattle — cloud-init bootstrapped, replaceable in under two minutes. The EBS data volume is the pet — `prevent_destroy=true`, daily DLM snapshots at 04:00 UTC with 7-day retention. SOUL.md, USER.md, memories, skills, conversation history, and even the Tailscale node identity all live on the pet volume. Twelve-plus instance replacements so far. The volume never moved.
+
+## The cloud-init saga
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-cloudinit.webp" alt="Pixel art of a glowing server rack in space with ghostly afterimages of previous instances fading behind it, while a golden EBS data volume persists below — the cloud-init iteration cycle" width={1200} height={800} />
+
+Specs and plans came first — a ~200-line architecture doc and a 25-task implementation plan, both committed to the repo before any `tofu apply`. I kept coming back to it throughout the day between WorkOS work and meetings, running on pretty little sleep. Claude executed tasks while I was in calls, and I'd check results when I came back.
+
+Debugging cloud-init consumed most of the implementation time. AWS itself was frictionless. The fights were all about bootstrapping a modern Python app non-interactively:
+
+- **Ubuntu 24.04 dropped the `awscli` package.** Canonical now points you at the v2 installer. Broke the entire cloud-init cascade.
+- **The hermes installer prompts for sudo** to install "optional" dependencies. No TTY in `runcmd` → hang → timeout. Fix: pre-install everything via cloud-init `packages:` list.
+- **The installer launches an interactive setup wizard** that writes directly to `/dev/tty`. Fix: tolerate a non-zero exit and verify success by checking whether the binary exists, not the exit code.
+- **I broke `curl | bash`** by putting `</dev/null` on the wrong side of the pipe. `bash` read its script from `/dev/null`, exited clean, `curl` got SIGPIPE. Diagnosing this took 20 minutes.
+- **`hermes gateway install --system` refused to run as root.** "Refusing to install the gateway system service as root; pass `--run-as-user` to override." Cool flag. Wish I'd known about it.
+- **My idempotent YAML-append heredoc broke the outer cloud-init YAML parse.** I had a `runcmd` step that appended config to a YAML file using a heredoc, something like:
+
+```yaml
+runcmd:
+  - |
+    cat >> /home/hermes/.hermes/config.yaml << 'EOF'
+    approvals:
+      mode: "off"
+    EOF
+```
+
+The nested YAML inside the heredoc confused the cloud-init YAML parser, which tried to parse the *entire* `runcmd` block as YAML before executing it. Fix: base64-encode the payload and decode it at runtime.
+
+Each fix was a single commit. Each instance replacement took ~90 seconds. Because we'd chosen the right primitives — OpenTofu and AWS — the workflow was a proven loop: change the config, `tofu apply`, watch the instance rebuild, see if it comes up clean. If not, fix, commit, repeat.
+
+## Tailscale surgery
+
+Getting Tailscale right required two rounds of debugging that aren't obvious from the docs.
+
+**ACL `accept` vs `check`:** The default Tailscale ACL posture uses `check` for SSH, which prompts for interactive authentication. On a headless EC2 instance with no browser, that means SSH hangs forever. Switching to `accept` in the ACL rules for the hermes node unlocked headless SSH and let me (and Claude on my Mac) reach the instance without ceremony.
+
+**Persistent node identity:** Every time the instance rebuilt, Tailscale registered a new node — `hermes-1`, `hermes-2`, `hermes-3`, each claiming to be the same machine. The fix was symlinking `/var/lib/tailscale` to the persistent EBS data volume. Now the Tailscale state directory survives instance replacement, the node identity stays stable, and stale ghost nodes stop piling up in my tailnet.
+
+## The Meerkat reconnection
+
+With Tailscale stable on both machines, a nice thing fell out: Hermes on EC2 can now SSH directly into the Meerkat at home. The two assistants sit on the same tailnet. Hermes can read OpenClaw's skill directory, pull fresh memories, even run commands on my home machine when needed. The migration was a promotion. The Meerkat went from "the whole brain" to "a node in the mesh."
+
+## Self-healing memory
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-self-healing-v2.webp" alt="Pixel art of a retro robot sitting at a glowing terminal, editing its own MEMORY.md file with green and red diff markers floating in the air" width={1200} height={800} />
+
+One moment caught me off guard. During the migration, Hermes noticed a stale entry in its own MEMORY.md — a reference to hardware that no longer applied — and corrected it before I or Claude could intervene. The memory system is designed for the agent to maintain, and it took that literally. I had the patch open in another terminal ready to send, and the diff was already committed.
+
+## Claude Code skills
+
+By the end of the day, I'd written six Claude Code skills on my Mac that target Hermes as a remote resource:
+
+- **`tell-hermes`** — send a message to the assistant via the webhook bridge
+- **`hermes-status`** — check health, uptime, and recent activity
+- **`hermes-deploy`** — trigger a fresh `tofu apply` cycle
+- **`hermes-skill-port`** — port a skill from OpenClaw to Hermes
+- **`hermes-debug`** — tail logs and diagnose issues remotely
+- **`hermes-memory-query`** — search the assistant's persistent memory
+
+These are Claude Code's equivalent of shell aliases — reusable procedures that encode the "how" so future sessions only need to specify the "what."
+
+## The webhook bridge
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge data flow: Claude Code on Mac sends HMAC-signed payload over Tailscale to Hermes, which activates and delivers to Discord" width={1200} height={800} />
+
+Once the assistant was alive on Discord with its ported persona, I realized I had a silent-files problem. My Claude Code sessions on my Mac could write context files to the assistant's filesystem via SSM — but the assistant didn't know they were there until it explicitly checked.
+
+Digging through the CLI turned up `hermes webhook` — an event-driven activation mechanism. Subscribe a route with a prompt template, POST signed JSON to it over Tailscale, and the assistant activates with the payload interpolated into the prompt.
+
+The webhook subscription uses a `--prompt` template with `{body}` interpolation:
 
 ```bash
-# Install OpenClaw (requires Node 22+)
-npm install -g openclaw@latest
-
-# Interactive setup — configures gateway, channels, and installs system daemon
-openclaw onboard --install-daemon
-
-# Start the gateway
-openclaw gateway --port 18789
+hermes webhook subscribe claude-context \
+  --secret "$WEBHOOK_SECRET" \
+  --prompt "Incoming from Claude (terminal session, topic: {topic}):\n\n{body}"
 ```
 
-## The network: Tailscale
+When a payload arrives, Hermes replaces `{body}` with the POST content and `{topic}` with the topic field from the JSON — then activates with the fully rendered prompt. HMAC-SHA256 signed, Tailscale-only, no public endpoint.
 
-[Tailscale](https://tailscale.com) creates a private mesh network between all my devices. The Meerkat, my MacBook, my phone — all connected, all secure, no port forwarding needed.
+That became the second load-bearing primitive. A shell script now archives context to the assistant's filesystem (persistent storage) and hits the webhook (immediate activation). The full loop: Claude on Mac → SSM + Tailscale → assistant on EC2 → Discord → my phone. Same pattern generalizes to GitHub webhooks, Twilio, cron, whatever.
 
-<Image src="https://zackproser.b-cdn.net/images/openclaw-network-topology.png" alt="Network topology showing devices connected via Tailscale tailnet" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Everything stays inside the tailnet except one narrow Twilio webhook.</figcaption>
+## Interactive chat
 
-Key features I use:
+<Image src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow: Zack types in Discord, message routes through gateway to Hermes agent with full tool access, streams response back" width={1200} height={800} />
 
-- **Tailscale Funnel** — Exposes specific ports to the internet (for Twilio webhooks)
-- **Tailscale Serve** — Serves local ports to other devices on my tailnet
-- **Magic DNS** — Access the Meerkat as `meerkat.tailnet` from any device
-- **SSH** — Secure shell access from anywhere
+The other mode is straightforward. I type in Discord, the message hits the bot gateway over WebSocket, routes to the agent with full session memory, and the agent has access to everything — terminal, GitHub, bank APIs, browser, web search, files. Responses stream back to Discord in real time. The agent maintains conversation context across turns within a session, and persistent memory across sessions via the data volume.
 
-Under the hood, Tailscale uses WireGuard to create encrypted tunnels between devices. My iPhone in my pocket, my MacBook in my backpack, and the Meerkat on Ethernet several states away — all on the same private network, no public ports exposed. Each device gets a stable DNS name and IP on the tailnet, and traffic between them is end-to-end encrypted without me touching a single firewall rule.
+## Autonomy after a threat model conversation
 
-The Meerkat was a spare box with nothing critical on it, which made it perfect for this. I could dedicate it entirely to OpenClaw, lock it down, and not worry about breaking anything else. Before any services work across devices, you peer them — I added the MacBook and Meerkat to the same tailnet so the MacBook can access the Meerkat's localhost remotely as if they were on the same LAN.
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-autonomy.webp" alt="Pixel art of a fortress made of server racks with concentric glowing shield layers, its inner gate open with warm golden light spilling out — security through architecture" width={1200} height={800} />
 
-The critical design choice: **nothing is publicly exposed except a single Twilio webhook through Funnel.** The OpenClaw web UI, the admin panel, the SSH port — all of these are only accessible from within my tailnet. If you're not on my Tailscale network, they don't exist.
+The assistant ships with a dangerous-command approval gate — every `sudo`, every `curl | bash`, every `tar` extract. Designed for public-facing bots that might get prompt-injected.
 
-```bash
-# Expose voice webhook to internet (only this port)
-tailscale funnel 3334
+After a day of manually approving every tool invocation on an isolated VM with zero public ports, I had the assistant walk through what the gate was actually defending against. Zero inbound public ports. Discord allowlisted to my user ID only. DLM snapshots bound the blast radius. All tokens rotatable in seconds via SSM. Tailnet is just me and my devices.
 
-# Serve the OpenClaw web UI to your tailnet only (not the public internet)
-tailscale serve --bg 3000
+The approval gate would matter again if I shared the bot with untrusted users or exposed a public webhook. For now: `approvals.mode: "off"` in config, committed to cloud-init so it self-heals on instance replacement.
 
-# Now https://meerkat.tail1a2b3c.ts.net:3000 works from my MacBook or phone
-# but is invisible to the rest of the internet
-```
+## `hermes claw migrate`
 
-Tailscale's **serve** command is the key here. It proxies a local port and makes it reachable to other devices on the tailnet via HTTPS — backed by Tailscale's automatic certificate management and DNS. I use it for the OpenClaw dashboard, log viewers, and monitoring tools — accessible from my phone while I'm out, but completely invisible to the internet. Combined with Tailscale's **MagicDNS**, every service gets a clean hostname like `meerkat.tail1a2b3c.ts.net` that resolves only inside the tailnet.
+A fun footnote: partway through the day, Nous shipped `hermes claw migrate` — a built-in command for porting OpenClaw installations to Hermes. I'd already done the migration manually by that point, but it was nice to see the path I'd just bushwhacked getting paved behind me.
 
-The only inbound public traffic is Twilio calling `https://meerkat.tail1a2b3c.ts.net/voice/webhook` through Funnel on port 3334. Everything else is locked inside the tailnet.
+## What the architecture looks like now
 
-## The first few days
+An EC2 `t4g.xlarge` (16 GB RAM — we bumped the instance size three times as the workload grew) that can be destroyed and recreated in under two minutes from IaC. A persistent EBS data volume with daily snapshots. A dozen-plus secrets in SSM. Tailscale for access, Discord for UI, OpenRouter for models. No public ports, no SSH keys, every session audited.
 
-**Day 1:** I ripped out old gear, jammed it together on the floor, got everything connected and powered up. Double-checked the network config and firewall. I didn't have much time to focus — busy with other work — so I just got it to the point where the gateway was running and walked away.
+The 12-factor methodology — where apps store config in the environment, treat backing services as attached resources, and keep strict separation between build and run stages — maps cleanly onto this setup. Secrets live in SSM (environment), the EBS volume is an attached resource, and cloud-init is the build stage that produces an identical runtime every time.
 
-**Day 2:** Came back. It was up and running. Chatting through Discord worked. Google Suite for my personal accounts was connected — Gmail, Calendar, contacts — along with GitHub. It was already running Opus 4.5 and able to issue PRs against all of my repos from a simple chat message. That alone was a speed boost, since I'm usually on the go and could just fire off a Discord message instead of opening a laptop.
+The operational invariant I care most about: any Claude session, on any machine, with AWS credentials, can `tofu init && tofu plan` and manage the whole thing. Laptop loss is an inconvenience, not a disaster.
 
-**Day 3-4:** Started figuring out more extensions. This is where it started getting interesting.
+## Why this fit in one day
 
-Then the first real test happened. I needed to bail on a standing meeting with a friend in a hurry. I told Claw: "read my email, see I'm supposed to have my standing meeting with Eugene, tell him I got an interruption and can't make it but want to talk soon." Here's what Claw sent:
+A year ago this build would have been a week of focused engineering. Today it fit in the margins of a normal workday, done mostly while something else had my attention.
 
-> **Subject:** Wednesday might be tricky - in NY this week
->
-> Hey Eug,
->
-> Quick heads up - I'm in New York this week and likely to be pretty busy. Wednesday's hangout might be tough to make.
->
-> Let me know if you want to push it to next week or find another time.
->
-> — Zack
+The primitives are mature and well-understood, so none of the individual pieces required learning anything new. What changed is the loop between "describe what I want" and "observe the result on real infrastructure." I can manage AWS the way I previously managed a git repo: say what I want, watch it happen, check in when it matters.
 
-It used his nickname. It matched my tone — casual, direct, no filler. Eugene responded exactly as if I'd written it. That was the moment it started feeling genuinely useful — not a demo, not a toy, but something that could actually take things off my plate.
+The spec-then-plan-then-execute pattern helped. Having the architecture written down in a document that Claude and I both re-read kept things coherent through 30+ commits. The plan with exact commands meant I could be genuinely async — "execute task 11" without re-explaining context.
 
-A few days later, a snowstorm started rearranging my travel plans. I needed to move a flight two or three times as the situation changed. Instead of digging through email to find the right confirmation, cross-referencing the calendar invite, and manually updating everything, I fired off a Discord message: "read my email, get the updated flight info, fix my calendar invite so it flows to all my apps." Calendar updated. Apple Watch and phone showed the right data. Done in thirty seconds of typing.
+But the biggest accelerant was the selective port. I didn't build an AI assistant in a day. I built the *infrastructure for* an AI assistant in a day, then moved in the personality, context, skills, and integrations I'd been refining since February. The distinction matters. The hard part of a useful AI assistant is the accumulated context and earned trust, and that traveled in a single `scp`.
 
-This is where the virtuous loop started becoming obvious. I'd intentionally connected Google Calendar so Claw could create and update events that push to all my physical devices — Apple Watch, phone, laptop. I send a quick Discord message or call via Twilio while walking with headphones, Claw updates the systems that keep me oriented, and those systems are always physically with me. It's a closed loop: I tell the assistant what to do, it updates the infrastructure that keeps me on track, and that infrastructure is strapped to my wrist and in my pocket.
+Hermes is online. He's survived twelve-plus instance replacements. He can check my bank accounts, manage my GitHub, and run on infrastructure that — unlike the Meerkat in my home office — does not care whether my HackRF One is misbehaving.
 
-## The integrations
+The Meerkat is still there, hosting OpenClaw. They're siblings now. No single point of failure.
 
-Here's everything I connected and why:
-
-### Communication
-
-| Integration | Purpose |
-|------------|---------|
-| **Discord** | Primary chat interface — always open, desktop + mobile |
-| **Gmail** | Read, search, draft, and send email as me |
-| **Google Calendar** | Check availability, create events, send invites |
-| **Slack** | Monitor work channels, respond to mentions |
-| **Twilio Voice** | Inbound/outbound phone calls with speech |
-
-### Productivity
-
-| Integration | Purpose |
-|------------|---------|
-| **GitHub** | PR reviews, issue management, repo operations |
-| **Linear** | Task tracking, project status |
-| **Notion** | Notes, documents, knowledge base |
-| **Browser** | Web automation, research, form filling |
-
-### Financial
-
-| Integration | Purpose |
-|------------|---------|
-| **Teller API** | Read-only bank account access, cash flow, transaction monitoring |
-
-### Health & Context
-
-| Integration | Purpose |
-|------------|---------|
-| **Oura Ring** | Sleep quality, readiness scores, HRV data |
-
-### Why these matter
-
-The integrations compound:
-
-- **Oura + Calendar** → "Your readiness is 45. You have 6 meetings. Want me to reschedule the non-critical ones?"
-- **Email + Linear** → "Got an email about the article draft. Created a task in Linear."
-- **Voice + Everything** → "What's on my calendar today?" (while driving, via phone call)
-
-### Bank accounts: Teller API
-
-I gave Claw read-only access to my bank accounts through the [Teller API](https://teller.io). It can see balances, cash flow, major purchases, and transactions coming in and out. The goal is to include financial context in daily summaries when I ask for it — and eventually to hunt down subscriptions the way Rocket Money is supposed to, without paying for a separate app. One more thing I don't have to remember to check.
-
-Teller lets you connect one account automatically from their dashboard, but after that you need to implement their Connect widget to link additional accounts. Claude Code was instrumental here. I had it spin up a local web server with the Teller Connect flow implemented, then opened it in a browser and authenticated my other bank accounts. The web server captured the enrollment tokens on each successful connection. I SSH'd those tokens over to the Meerkat and configured them in OpenClaw's environment. The whole process — from "I need to connect more accounts" to "all accounts are live on the Meerkat" — took about 20 minutes, most of which was me clicking through bank login screens.
-
-## Voice calls: The killer feature
-
-This is the part that feels like science fiction.
-
-I saved my Twilio number (+1-510-296-7947) as a contact named "My Assistant". Now I can:
-
-1. **"Hey Siri, call my assistant"**
-2. Have a natural conversation
-3. The assistant transcribes, understands, and acts
-
-This phrasing matters. Walking around with headphones, nobody knows who I'm talking to or what I'm talking to. If the assistant calls me, I glance at my phone, see "My Assistant," and pick up. It's indistinguishable from any other call.
-
-The setup:
-
-```json
-{
-  "plugins": {
-    "entries": {
-      "voice-call": {
-        "enabled": true,
-        "config": {
-          "provider": "twilio",
-          "fromNumber": "+15102967947",
-          "publicUrl": "https://meerkat.tail1a2b3c.ts.net/voice/webhook",
-          "inboundPolicy": "allowlist",
-          "allowFrom": ["+18035551234"],
-          "inboundGreeting": "Hey Zack, what's up?",
-          "streaming": {
-            "enabled": true
-          },
-          "tts": {
-            "provider": "elevenlabs",
-            "elevenlabs": {
-              "voiceId": "pMsXgVXv3BLzUgSXRplE"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-This uses:
-- **Twilio** for telephony
-- **OpenAI Realtime API** for speech-to-text
-- **ElevenLabs** for natural-sounding text-to-speech
-- **Tailscale Funnel** to receive webhooks
-
-## The flip: When the AI interviews you
-
-Voice calls work both ways. Claw makes outbound calls too.
-
-<Image src="https://zackproser.b-cdn.net/images/openclaw-twilio-interview-flow.png" alt="Flow diagram showing the AI initiating a call, asking structured questions, transcribing, and updating memory" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>The AI calls me, not the other way around.</figcaption>
-
-I configured Claw to call me at scheduled times with structured questions — a kind of reverse standup. It might call at 10am and ask:
-
-- "What are you working on today?"
-- "Anything blocking you?"
-- "Any decisions you need to make that I can help research?"
-
-The call gets transcribed in real time. After we hang up, Claw processes the transcript: extracts action items, updates MEMORY.md with new context, creates Linear tasks for anything I mentioned wanting to do, and adjusts its priorities for the day.
-
-This inverts the usual dynamic. Instead of me remembering to open a chat and type out what I need, the AI reaches out and pulls the information from me. For someone whose brain drops context the moment attention shifts, that inversion is everything. The information gets captured *when it's fresh* — not three hours later when I'm trying to reconstruct what I was thinking.
-
-I also use this for weekly reviews. Friday afternoon, Claw calls and walks me through what got done, what's still open, and what I want to focus on next week. It's like having a chief of staff who never forgets the agenda.
-
-## The side channel: SSH + Claude Code
-
-Tailscale SSH eliminates key management entirely. No copying public keys around, no `authorized_keys` files, no SSH agent forwarding. Tailscale handles authentication through the same identity system that runs the tailnet. I type `ssh meerkat` and I'm in.
-
-This is how I scaffolded the OpenClaw environment in the first place. From my MacBook, I SSH'd into the Meerkat and ran Claude Code to set up the directory structure, install dependencies, configure systemd services, and write the initial personality files. I'd tell Claude Code what I wanted, it would make the changes on the Meerkat directly, and I'd test by interacting with OpenClaw through Discord on my phone.
-
-I also use SSH + Claude Code to talk to OpenClaw itself — updating SOUL.md, editing identity files, tweaking heartbeat configs. It's maintenance through conversation: "make the email sweep less aggressive about archiving newsletters" or "add this person to the VIP contact list."
-
-```bash
-# From MacBook — Tailscale SSH, no key management
-ssh meerkat
-
-# Start a tmux session
-tmux new -s claude-dev
-
-# Run Claude Code
-cd ~/projects/my-app
-claude
-
-# Detach with Ctrl-B D
-# Laptop can sleep, session continues
-```
-
-When I wake up, the Claude Code session has been working. I can check in from my phone via Tailscale SSH if I'm away from my desk.
-
-This channel also keeps the whole system recoverable. OpenClaw has a tendency to get configs wrong the first time — hallucinated port numbers, malformed JSON in plugin configs, environment variables that reference the wrong path. The gateway crashes on reboot when a config file has a subtle error that worked in the running process but fails on cold start. Claude Code is excellent at SSH-ing over and fixing these: read the crash log, find the bad config, fix it, restart the service, confirm it's healthy.
-
-```bash
-ssh meerkat
-systemctl --user restart openclaw-gateway
-journalctl --user -u openclaw-gateway -f  # tail the logs
-```
-
-When there's a config change to test, a plugin to update, or a log to investigate, the SSH side channel is how the maintenance happens. Having it accessible from my phone via Tailscale means I can fix things from anywhere — including from bed at midnight when I notice Claw hasn't responded in a while.
-
-## Low activation energy
-
-Here's the thing about executive dysfunction: the barrier isn't capability, it's activation energy. I *know* how to check my bank balance. I *know* how to file an expense report. But the gap between knowing and doing is a chasm when your brain won't generate the spark to start.
-
-Claw collapses that gap. Instead of: open terminal, SSH to server, remember the command, run it, parse the output, decide what to do — I text "check my bank accounts" in Discord and go back to whatever I was doing. Claw has the credentials, knows the APIs, runs the check, and pings me back with a summary.
-
-The key insight is that **texting a bot that has root is fundamentally different from doing the thing yourself.** The cognitive cost of typing "handle the invoice from last week" is near zero. The cognitive cost of opening my email, finding the invoice, logging into the payment system, entering the details, and confirming — that's enough friction to keep it in the guilt pile for weeks.
-
-I delegate the same way I'd text a coworker: "hey, can you figure out why the deploy failed?" I don't need to specify which repo, which CI system, or which logs to check. Claw has the context and the access. It goes and figures it out.
-
-This is what "always on" actually means in practice. It's not about the machine running 24/7 — it's about the activation energy for any task dropping to the cost of a text message.
-
-## Memory and context
-
-OpenClaw maintains workspace files that persist across sessions:
-
-- **MEMORY.md** — Long-term curated knowledge
-- **memory/YYYY-MM-DD.md** — Daily notes and events
-- **USER.md** — Information about me (preferences, contacts, context)
-- **SOUL.md** — The assistant's personality and guidelines
-
-When a new session starts, Claw reads these files and has full context. No "let me start over" — it remembers the project we were working on, the email we discussed, the reminder we set.
-
-## Prompt shaping over time
-
-The personality files aren't static. They evolve based on how I interact with the system.
-
-<Image src="https://zackproser.b-cdn.net/images/openclaw-voice-prompt-pipeline.png" alt="Pipeline showing voice messages being transcribed, processed, and updating MEMORY.md and SOUL.md" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Late-night voice notes become tomorrow's smarter assistant.</figcaption>
-
-Most of my ideas arrive when my hands are full — walking, cooking, carrying things. Discord voice messages handle this perfectly. I hold the button, talk for thirty seconds, let go. The assistant transcribes the message, extracts the signal, and uses it to update its workspace files. The friction is close to zero, which matters because ideas that require me to stop, find a keyboard, and type them out simply don't get captured.
-
-I also use this for intentional nightly dumps — half-formed ideas, frustrations about a project, observations about what's working and what isn't. The assistant processes these overnight and is better tuned to my preferences by morning.
-
-Over time, this creates a feedback loop:
-
-- **MEMORY.md** accumulates facts: project states, people's names, decisions made, things I've said I care about.
-- **SOUL.md** evolves personality: how direct I want responses, what tone works at different times of day, which topics to be proactive about and which to leave alone.
-
-The result is an assistant that gets better without explicit training. I don't sit down and write "be more direct in the mornings." I just interact naturally, and the system adapts. The voice dumps are especially powerful because they capture context I'd never type out — my emotional state, my energy level, the nuances of what I actually want vs. what I'd formally request.
-
-Where I'm trying to evolve the system is toward overnight autonomous work sessions. Linear is already our shared state — Claw and I both read and write to it, so the board reflects what's been done and what hasn't. The next step is making that loop tighter: I queue up a few Linear tickets throughout the day, ideally just by speaking about them rather than manually creating cards. Before bed, Claw checks in — calls me or sends a Discord message — and says "here are the top priority issues tonight, does this look right?" I confirm, maybe reprioritize, and go to sleep.
-
-Then at 3 or 4am, when I'm actually asleep, Claw starts an overnight work session. It reads Linear, pulls the top priority items from the plan we agreed on, and runs in loops — opening PRs on my repos, fixing issues, writing content, updating my calendar, booking travel. For my own site work, it can use Claude Code with autofix enabled, so the system is constantly building and iterating while I sleep. By morning, there are PRs ready for review and tasks marked done.
-
-The endgame is that a significant chunk of my background anxiety-producing work — the stuff I will never manage effectively given how my brain works — gets handled by a system that has no activation energy problem, no avoidance behavior, and no guilt pile. It just works through the list.
-
-## Heartbeats, crons, and proactive behavior
-
-One of the things OpenClaw makes easy is scheduled behavior. It has built-in concepts of crons and heartbeats — you tell it "do this every Wednesday" or "remind me every Monday night at 8" and it handles it. Under the hood it's Linux crontab, so persistent scheduled tasks are natural and reliable on a box that never sleeps.
-
-I use this for daily rhythms. Morning: a report of what's on my calendar, what tasks are active, what I should be thinking about. Evening: a wind-down summary of what got done and what's on the docket tomorrow. These run automatically. I wake up to a Discord message with my day laid out, and before bed I get a recap without having to ask for it.
-
-Every 30 minutes, the assistant also gets a "heartbeat" — a chance to check on things proactively:
-
-<Image src="https://zackproser.b-cdn.net/images/openclaw-heartbeat-loop.png" alt="Circular flow showing the 30-minute heartbeat checking email, calendar, Linear, Oura, and tasks" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Every 30 minutes: check everything, notify only if needed.</figcaption>
-
-- New important emails?
-- Calendar events coming up?
-- Health data concerning?
-- Background tasks completed?
-- **Linear tasks tagged for attention?**
-
-If something needs attention, it pings me on Discord. If not, it stays quiet.
-
-```markdown
-# HEARTBEAT.md
-- Check for urgent emails from [list of VIPs]
-- Remind about any meetings in next 2 hours
-- If readiness < 50, suggest lighter schedule
-- Check Linear for tasks tagged "claude"
-```
-
-## Email sweeps
-
-Every three hours, Claw does a full sweep of my inbox.
-
-<Image src="https://zackproser.b-cdn.net/images/openclaw-email-sweep-cycle.png" alt="Flow showing email sweep process: scan, categorize into urgent/routine/skip, then alert/respond/archive" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Three bins: urgent, routine, skip. Most email is the last two.</figcaption>
-
-The sweep works in three passes:
-
-1. **Scan** — Read all unread emails, classify each by urgency and type
-2. **Categorize** — Sort into three bins:
-   - **Urgent** — Needs my direct attention (time-sensitive decision, money, someone waiting on me). Sends a Discord alert with a summary.
-   - **Routine** — Informational but not actionable right now. Acknowledged and filed.
-   - **Skip** — Marketing, notifications, automated alerts. Archived silently.
-3. **Report** — After each sweep, Claw posts a summary to Discord: "Swept 23 emails. 2 urgent (forwarded), 8 routine, 13 archived."
-
-I'm not doing auto-reply yet. I'd consider getting to a place where I trusted the system enough and had the right safeguards, but for now Claw reads and categorizes — it tells me what's urgent, what's routine, and what I can ignore. That's the real value. It relieves me of the itch of constantly pulling my inbox, because someone is already monitoring it and will let me know if something actually needs attention.
-
-Before this, important emails would sit unread for days because opening my inbox triggered a wall of noise that made me close it immediately. Now the noise gets filtered out automatically, and only the signal reaches me — through Discord, a channel I'm already watching.
-
-## The Linear workflow: Async task delegation and shared context
-
-<Image src="https://zackproser.b-cdn.net/images/openclaw-linear-delegation-flow.png" alt="Flow showing human creating a Linear card, tagging it, heartbeat detecting it, robot working on it, and human reviewing" width={800} height={600} className="rounded-lg shadow-lg" />
-<figcaption>Tag it, forget it, review it later.</figcaption>
-
-My goal is to **place work in Linear, tag it, and have Claw proactively pick it up**.
-
-Here's how it works today:
-
-1. **I create tasks in Linear throughout my day** — software improvements, bug fixes, feature work, content updates
-2. **I tag them with `claude`** — This signals they're delegated to my assistant
-3. **On the next heartbeat, Claw sees the tagged tasks** and starts working through them
-4. **Claw updates tasks with results** — or pings me on Discord if it's blocked
-
-Where this is heading is Codex-like overnight work sessions. I'd load up 10-15 tasks across multiple repos and work streams, Claw would chunk through them while I sleep — opening PRs, fixing issues, writing content, verifying its own work via project-specific skills, build hooks, and test suites. By morning there'd be PRs ready for review, builds passing, and tickets moved to done. The work might need a little more polishing or another round of prompting, but the heavy lifting would be handled. Multiply that across several projects running in parallel and the throughput gets significant.
-
-I don't have to context-switch to delegate. I just drop tasks into Linear during my normal workflow, tag them, and forget about them. Claw wakes up every 30 minutes, checks for new work, and handles it.
-
-```bash
-# Example heartbeat check
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
-  -d '{"query": "{ issues(filter: { labels: { name: { eq: \"claude\" } }, state: { type: { nin: [\"completed\", \"canceled\"] } } }) { nodes { identifier title description } } }"}'
-```
-
-**Tasks I delegate this way:**
-- Software improvements and bug fixes across multiple repos
-- Feature work and PR generation
-- Draft writing (emails, docs, content)
-- Code review prep
-- Data analysis and research
-
-**Tasks I don't delegate:**
-- Anything requiring real-time interaction
-- Decisions that need my judgment
-- Sensitive communications
-
-The key insight: **async delegation scales better than synchronous conversation.** I can tag 15 tasks in 5 minutes across several projects. Claw works through them over hours while I do deep work — or sleep.
-
-### The shared context advantage
-
-There's a subtler benefit to this workflow: **Claw and I build a shared worldview through Linear.**
-
-Every task I create — even ones I handle myself — gives Claw context about what I'm thinking about, what's urgent, and what's been deprioritized. Over time, the Linear board becomes a shared map of my projects and priorities. When Claw processes a new task, it doesn't start from zero — it knows the project history, the related tasks, the decisions we've already made.
-
-This matters most for what I call "background draggers" — tasks that aren't urgent but produce a low-grade anxiety just by existing. The expense report that's been open for two weeks. The blog post draft I promised someone. The dependency upgrade I keep postponing. These tasks sit in Linear generating guilt, and every time I see them, my brain flinches away.
-
-Claw handles draggers well because it has no emotional relationship to them. It sees "expense report — tagged claude — open for 14 days" and just does it. No anxiety, no avoidance, no activation energy problem. The task that's been silently draining my executive function for weeks gets resolved in a single heartbeat cycle.
-
-## Security considerations
-
-This setup has significant access to my digital life. Security measures:
-
-1. **Allowlists** — Only specific Discord servers/channels can interact
-2. **Tailscale** — All network traffic is encrypted, no public exposure
-3. **Separate user** — OpenClaw runs as non-root user
-4. **Audit logs** — All actions are logged
-5. **Phone allowlist** — Only my number can call in
-
-The Meerkat itself sits on my home network, behind my router, with Tailscale as the only ingress.
-
-## The cost
-
-| Component | Cost |
-|-----------|------|
-| System76 Meerkat | $600 (one-time) |
-| Claude Max subscription | $100/month (likely going to $200+) |
-| Twilio | ~$5/month |
-| ElevenLabs | $5/month |
-| Tailscale | Free (personal) |
-| OpenClaw | Free (open source) |
-
-I think Opus 4.6 is amazing. I was already in love with Opus 4.5 — I was using it to one-shot product features in various software and doing a ton of site improvement work. I want to keep using the best model available, which means I fully expect my Claude Max subscription to jump from $100 to $200 or more to get the highest limits and enough tokens that the assistant always has the best possible responses.
-
-If I were more economical about it, I'd implement OpenRouter the way a colleague of mine already has — proxying between models depending on the task, using cheaper models for simple classification and expensive ones for complex reasoning. That's the smart move. I'm just not there yet.
-
-## Getting started
-
-If you want to build something similar:
-
-1. **Get hardware** — Any Linux box works (Raspberry Pi 5 is minimum viable)
-2. **Install Tailscale** — [tailscale.com/download](https://tailscale.com/download)
-3. **Install OpenClaw** — `npm install -g openclaw`
-4. **Configure basics** — API keys, Discord channel
-5. **Add integrations** — One at a time, as you need them
-
-Start small. Discord + Calendar is a great first milestone. Add voice later when you understand the system.
-
-## What's next
-
-I'm still building. Planned additions:
-
-- **Proactive health alerts** — "Your HRV dropped 20%. Take it easy today."
-- **Meeting prep** — Auto-pull context before calendar events
-- **Travel mode** — Adjust behavior when I'm flying or in different timezones
-- **Multi-agent coordination** — Specialized agents for different domains (code, email, research) that hand off to each other
-
-The foundation is solid. Now it's about making the assistant smarter, more proactive, and more useful.
-
----
-
-*An always-on AI assistant isn't a luxury — it's infrastructure. Like a dishwasher or a calendar app, it handles things that need to happen whether or not you have the bandwidth to think about them.*
-
----
-
-**Resources:**
-- [OpenClaw Documentation](https://docs.openclaw.ai)
-- [OpenClaw GitHub](https://github.com/openclaw/openclaw)
-- [System76 Meerkat](https://system76.com/desktops/meerkat)
-- [Tailscale](https://tailscale.com)
+<Image src="https://zackproser.b-cdn.net/images/hermes-pixel-siblings-v2.webp" alt="Pixel art of two friendly robots waving at each other — one on a cozy desk with a NUC computer, the other on a cloud server in space, connected by a glowing Tailscale mesh line" width={1200} height={800} />
