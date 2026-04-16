@@ -14,7 +14,9 @@ This post covers the exact workflow Hermes uses to take a blog post from idea to
 
 ## The workflow
 
-It starts with a message in Discord. I describe what I want — the topic, angle, any specific points to cover. Sometimes I'm on my phone, sometimes on my Vision Pro. Doesn't matter. Hermes picks it up and gets to work.
+It starts with a message in Discord. I describe what I want — the topic, angle, any specific points to cover. Sometimes I'm on my phone, sometimes at my desk. Doesn't matter. Hermes picks it up and gets to work.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-discord-phone.webp" alt="Pixel art of a glowing smartphone in space showing a chat conversation, with git branches, images, documents, and rockets orbiting around it" width={1200} height={800} />
 
 ### Writing the content
 
@@ -34,6 +36,8 @@ This produces a high-resolution PNG. Hermes then converts it to WebP for smaller
 
 The image generation happens on the same EC2 instance where Hermes runs. No separate service, no queue, no Lambda. Just a Python script called from the shell.
 
+<Image src="https://zackproser.b-cdn.net/images/hermes-cdn-upload.webp" alt="Pixel art of a retro robot lifting a glowing image file onto a cloud shelf, with data streams flowing to a globe below" width={1200} height={800} />
+
 ### Git operations
 
 With the content written and the hero image uploaded, Hermes creates a new branch from `origin/main`:
@@ -52,7 +56,7 @@ Once the PR is open, Vercel picks it up automatically and deploys a preview buil
 
 ### Review and iteration
 
-I review the preview on my phone or Vision Pro. The Vercel preview URL gives me the exact rendering — layout, images, typography, everything. If something needs to change, I tell Hermes in Discord.
+I review the preview on my phone. The Vercel preview URL gives me the exact rendering — layout, images, typography, everything. If something needs to change, I tell Hermes in Discord.
 
 "Swap the hero image for something with more contrast."
 
@@ -104,6 +108,24 @@ The time from "I want to write about X" to a live post on production is about 30
 I don't open my laptop for any of this. The entire authoring and publishing pipeline runs through Discord messages on my phone. Hermes handles every mechanical step — writing files, running commands, managing git state, uploading assets.
 
 This setup also means I can ship posts from anywhere. Waiting in line. On a walk. The barrier to publishing went from "sit down at my desk, open VS Code, write, generate images, commit, push, check the preview, fix things, push again, merge" to "tell Hermes what I want in Discord."
+
+## Why this works
+
+This workflow looks like magic if you just see the end result. It's worth explaining why it works, because it's standing on years of deliberate infrastructure investment.
+
+I've been building [zackproser.com](https://zackproser.com) as a Next.js site for years. In that time I've built and refined a specific set of subsystems that an AI can now leverage:
+
+**The OG image pipeline.** I wrote a custom OG image generator that spins up a local Next.js dev server, renders the page's metadata into a branded 1200×630 template, and exports a PNG. The script checks Bunny CDN first to avoid regenerating images that already exist, accepts `--slug` for targeted generation, and handles the upload. That took weeks of iteration to get right — the layout, the fallback logic, the CDN integration. Hermes calls one command and gets a production-ready social sharing image.
+
+**The Bunny CDN image pipeline.** Every image on the site is served from CDN. I have a storage API key, a consistent URL pattern (`images/{name}.webp` for hero images, `images/og-images/{slug}.png` for OG), and a WebP conversion workflow. Hermes uploads via `curl` to the storage endpoint and verifies with a HEAD request. The convention was already in place — Hermes just follows it.
+
+**The CLAUDE.md writing contract.** My repo has a `CLAUDE.md` file that encodes my writing style as machine-readable rules. Banned words, banned sentence patterns, voice guidelines, formatting conventions. Every AI that touches this repo reads that file and follows it. I spent months refining those rules by catching AI-isms in my own drafts and encoding the fixes. Now Hermes writes in my voice because the voice is specified, not because the model guessed correctly.
+
+**The MDX content structure.** Every blog post follows the same pattern: a directory with `metadata.json` and `page.mdx`. The metadata drives the title rendering, OG generation, sitemap inclusion, and RSS feed. The MDX supports React components like `<Image>` and `<GitHubRepoCard>`. That structure was a deliberate design choice years ago. It's what makes the whole thing scriptable — Hermes can create a complete, valid blog post by writing two files to predictable paths.
+
+**The pre-push validation.** Scripts for affiliate content validation, metadata fixups, and build checks were already there. Hermes runs them as part of the workflow. I didn't build those for the AI — I built them for myself. But the fact that quality gates exist as shell commands means an AI can run them too.
+
+The AI is the last layer. It's powerful, but it's powerful because it's operating on a codebase that was already designed to be automated. If my portfolio were a WordPress site with a visual editor and images stored in the database, none of this would work. The years I spent making the publishing pipeline code-driven and convention-heavy are what made it possible for an AI to drive it end to end.
 
 ## The stack
 
