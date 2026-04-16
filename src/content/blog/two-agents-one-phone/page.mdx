@@ -8,11 +8,11 @@ export const metadata = createMetadata(rawMetadata)
 
 I run two AI agents. One handles infrastructure. The other handles content. I control both from my phone.
 
-Claude Code runs on my Mac mini at home. I talk to it through the Claude iOS app using [remote control](https://docs.anthropic.com/en/docs/claude-code/remote) — the session is actually running on my laptop, but I can drive it from my phone anywhere. When I tell it to upgrade my EC2 instance type, rotate secrets, or apply OpenTofu changes, it opens a terminal, reads the relevant config, writes the code, and applies it. It has full access to my project files and my shell. The remote control feature is what makes this whole architecture possible — without it, Claude Code would be tethered to whatever machine it's running on. With it, I have a mobile control plane for AWS infrastructure.
+Claude Code runs on my Mac laptop. I drive it from my iPhone using the official Claude app's [remote control](https://docs.anthropic.com/en/docs/claude-code/remote) feature — the session runs on the laptop, but I interact with it from my phone anywhere. When I tell it to upgrade my EC2 instance type, rotate secrets, or apply OpenTofu changes, it opens a terminal, reads the relevant config, writes the code, and applies it. It has full access to my project files and my shell. Remote control is what makes this whole architecture possible — without it, Claude Code would be tethered to the laptop. With it, I have a mobile control plane for AWS infrastructure.
 
 Hermes — my Discord bot — runs on an EC2 `t4g.large` instance on Ubuntu 24.04 arm64. When I message it in Discord, it writes blog posts, generates pixel art, converts images, uploads them to CDN, opens GitHub PRs, and kicks off Vercel preview deploys. It's always on, always reachable, and purpose-built for content work.
 
-Both agents are on my Tailscale mesh. My phone, the Mac mini, and the EC2 instance all see each other. I can be anywhere — couch, coffee shop, waiting room — and ship infrastructure changes through Claude Code while simultaneously telling Hermes to write and publish a post. Two apps, two agents, one phone, zero context switching at a laptop.
+Both agents are on my Tailscale mesh. My phone, the laptop, and the EC2 instance all see each other. I can be anywhere — couch, coffee shop, waiting room — and ship infrastructure changes through Claude Code while simultaneously telling Hermes to write and publish a post. Two apps, two agents, one phone, zero context switching at a laptop.
 
 <Image src="https://zackproser.b-cdn.net/images/two-agents-one-phone-hero.webp" alt="Pixel art of a phone controlling two AI brains — one for infrastructure, one for content" width={1200} height={675} />
 
@@ -32,7 +32,7 @@ The key insight: these are fundamentally different workloads with different requ
 
 ## Claude Code remote control: the key that makes it work
 
-I want to be explicit about this because it's the lynchpin of the whole setup. [Claude Code's remote control feature](https://docs.anthropic.com/en/docs/claude-code/remote) means the session runs on my Mac mini (or laptop), but I interact with it from the Claude iOS app on my phone. The Mac mini has the AWS credentials, the SSH keys, the OpenTofu state, the git repos. My phone is just the screen.
+I want to be explicit about this because it's the lynchpin of the whole setup. [Claude Code's remote control feature](https://docs.anthropic.com/en/docs/claude-code/remote) means the session runs on my Mac laptop, but I interact with it from the Claude app on my iPhone. The laptop has the AWS credentials, the SSH keys, the OpenTofu state, the git repos. My phone is just the screen.
 
 This matters because infrastructure work requires real credentials and local filesystem access. You can't run `tofu apply` from a web UI. But with remote control, I get the full power of Claude Code's terminal and file editing capabilities, driven from my phone over a secure connection. I'm not SSH-ing into anything manually. I'm having a conversation in the Claude app and Claude Code does the terminal work on my behalf.
 
@@ -66,7 +66,7 @@ Here's what parallel execution looks like in practice.
 
 **In Discord (Hermes):** I opened the Discord app and told Hermes to write a post about [the webhook bridge pattern](/blog/webhook-bridge-pattern). Hermes started working — drafting the MDX, generating a pixel art header image, processing it to WebP, uploading to Bunny CDN, and scaffolding the metadata.
 
-**In the Claude app (Claude Code):** While Hermes was churning through the content pipeline, I switched to the Claude app and told Claude Code to upgrade the EC2 instance from `t4g.medium` to `t4g.large`. Claude Code opened the OpenTofu config on my Mac mini, found the instance type variable, updated it, ran `tofu plan` to show me the change set, and waited for my go-ahead. I typed "apply" and it ran `tofu apply`.
+**In the Claude app (Claude Code):** While Hermes was churning through the content pipeline, I switched to the Claude app and told Claude Code to upgrade the EC2 instance from `t4g.medium` to `t4g.large`. Claude Code opened the OpenTofu config on my laptop, found the instance type variable, updated it, ran `tofu plan` to show me the change set, and waited for my go-ahead. I typed "apply" and it ran `tofu apply`.
 
 <Image src="https://zackproser.b-cdn.net/images/two-agents-parallel.webp" alt="Pixel art showing two phones side by side — one with Discord chat, one with terminal commands" width={1200} height={675} />
 
@@ -81,7 +81,7 @@ The agents can also talk to each other. When Claude Code needs to hand something
 The flow looks like this:
 
 ```
-Claude Code (Mac mini)
+Claude Code (Mac laptop)
   → constructs payload + HMAC-SHA256 signature
   → POST to Hermes webhook over Tailscale (private network, no public exposure)
   → Hermes validates signature
