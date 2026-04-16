@@ -1,9 +1,10 @@
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
+import GitHubRepoCard from '@/components/GitHubRepoCard';
 
 export const metadata = createMetadata(rawMetadata);
 
-For the past year I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, Tailscale overlay so I can reach it from anywhere. Most of the time it works great.
+Since early February I've run a personal AI assistant — OpenClaw — on a System76 Meerkat sitting in my home office. Cheap hardware, fast NVMe, Tailscale overlay so I can reach it from anywhere. Most of the time it works great.
 
 Twice in the past few months it didn't, and both times I was out of the country. I'd open my laptop in a hotel, reach for the assistant I'd quietly started depending on, and get silence. First time was a power blip. Second time I'd recently installed a HackRF One in the same room and my best guess is a transient power fault that took the NUC down with it.
 
@@ -24,32 +25,35 @@ Number 6 turned out to be the most interesting constraint. This could have been 
 
 ## Choosing primitives (and the ones I rejected)
 
-Before writing any code, I spent about an hour in an adversarial architecture conversation with Claude. I pushed back, Claude pushed back, and we ruled out options with enough reasoning that the final choices felt earned.
+Before writing any code, I spent about an hour in an adversarial architecture conversation with Claude. I pushed back, Claude pushed back, and we ruled out options with enough reasoning that the final choices felt solid.
 
-**Rejected:** RunPod and Modal (GPU-first platforms for a CPU-only daemon — wrong shape). Cloudflare Workers (Python Workers use Pyodide, can't persist filesystem state between invocations). Fly.io (the volume-loss incidents of 2023-24 eroded trust). Raw DigitalOcean/Hetzner (viable, but I already use AWS daily and want expansion headroom for vector DBs, queues, whatever comes next).
+**Rejected:** RunPod and Modal (GPU-first platforms for a CPU-only daemon — wrong shape). Cloudflare Workers (Python Workers use Pyodide, can't persist filesystem state between invocations). Fly.io (the volume-loss incidents of 2023-24 eroded trust). Raw DigitalOcean/Hetzner were viable, but I'm already very familiar with AWS, have an account ready to go, and I know their products support building this in a stateless, 12-factor way — secrets management, IaC-native, the works.
 
-**Chosen:**
+With AWS as the foundation, the rest of the stack came together quickly. OpenTofu for IaC with encrypted state in S3 and native locking — no DynamoDB lock table needed. Any Claude session on any machine can `tofu init` and immediately manage the deployment. A separate EBS data volume mounted at the assistant's home directory, with `delete_on_termination=false` and `prevent_destroy=true`, so the root volume stays ephemeral while memory, conversations, skills, and Tailscale node identity all persist through instance replacements. SSM Parameter Store for secrets — 12 SecureString params, rotatable with a single `aws ssm put-parameter --overwrite`, no redeploy. SSM Session Manager as break-glass access with zero inbound public ports and every session audited in CloudTrail. Tailscale for everyday access — MagicDNS, ACL-governed SSH, WireGuard end-to-end, node identity persisting via a symlink onto the data volume. Discord as the UI (already had a bot, created a second one in five minutes).
 
-- **AWS EC2 `t4g.small`** — ARM Graviton, 2 vCPU, 2GB RAM. ~$9/mo reserved. Mature, boring, reliable.
-- **OpenTofu** — FOSS fork of Terraform with native state encryption. State in S3 with native locking (no DynamoDB lock table needed). Any Claude session on any machine can `tofu init` and immediately manage the deployment.
-- **Separate EBS data volume** — mounted at the assistant's home directory, `delete_on_termination=false`, `prevent_destroy=true` in OpenTofu. Root volume is ephemeral. Data volume persists through instance replacements. Memory, conversations, skills, Tailscale node identity — all on the pet volume.
-- **SSM Parameter Store** for secrets (12 SecureString params). Rotation is a single `aws ssm put-parameter --overwrite`. No redeploy.
-- **SSM Session Manager** as break-glass access. Zero inbound public ports. No SSH key management. Every session audited in CloudTrail.
-- **Tailscale** for everyday access. MagicDNS, ACL-governed SSH, WireGuard end-to-end. Node identity persists across instance replacement via a symlink onto the data volume.
-- **Discord** as the UI. Already had a bot; created a second one in five minutes.
-- **OpenRouter** as the model backend. One API key, access to the whole model zoo.
+OpenRouter was a deliberate choice for the model backend. One API key gives you access to every major model — Claude, GPT-4, Gemini, Llama, Mistral, whatever drops next week. For a personal assistant that I want to keep running indefinitely, I didn't want to be locked into one provider's auth and billing. OpenRouter lets me swap models with a config change, compare outputs across providers, and fall back gracefully if one provider has an outage. It's the one dependency that makes every other model decision reversible.
 
-The meta-decision at every inflection point was: "what does OpenClaw already have for this?" Personality contract? Port `SOUL.md` wholesale. User profile? Port `USER.md` — two years of accumulated context in one `scp`. Teller bank integration? Port the mTLS certs and access tokens. Skills? Copy the directory. I got the compounding value of months of iteration without rebuilding any of it.
+## Choosing the agent
+
+The agent framework mattered as much as the infrastructure. I spent time reading through several options — LangChain, CrewAI, various "agent-as-a-service" platforms — but landed on Hermes Agent from Nous Research.
+
+<GitHubRepoCard repo="NousResearch/hermes-agent" />
+
+What drew me in was the feature surface. Hermes ships with persistent memory across sessions, a skills system for teaching it reusable workflows, a full terminal backend, browser automation, file management, cron scheduling, sub-agent delegation, and platform gateways for Discord, Telegram, Slack, and more. It also has a `SOUL.md` file — a personality contract that persists on disk and survives instance replacement — and a `USER.md` for storing context about the human it's working with.
+
+I read through the docs, looked at what was on the menu, and then tailored it to my specific needs. The skills system is where most of the customization lives — I ported 25+ skills from my previous setup covering everything from bank account monitoring to blog post publishing to flight search. The webhook system gave me event-driven activation. The approval system (which I later disabled) showed that security was designed in, not bolted on.
+
+The key insight at every decision point was that OpenClaw had already solved most of these problems. Personality contract? Port `SOUL.md` wholesale. User profile? Port `USER.md` — months of accumulated context in one `scp`. Teller bank integration? Port the mTLS certs and access tokens. Skills? Copy the directory. Every integration I'd refined over the past few months came along for the ride, and I got the compounding value of all that iteration without rebuilding any of it.
 
 ## The architecture
 
 <img src="https://zackproser.b-cdn.net/images/hermes-architecture.webp" alt="Hermes Agent architecture diagram showing AWS EC2, EBS data volume, Tailscale mesh, Discord, and external services" />
 
-The cattle/pet split is the load-bearing idea. The EC2 instance is cattle — cloud-init bootstrapped, replaceable in under two minutes. The EBS data volume is the pet — `prevent_destroy=true`, daily DLM snapshots at 04:00 UTC with 7-day retention. SOUL.md, USER.md, memories, skills, conversation history, and even the Tailscale node identity all live on the pet volume. Eight instance replacements so far. The volume never moved.
+The cattle/pet split is the load-bearing idea. In DevOps, "cattle" are servers you can destroy and replace without thinking about it — they're interchangeable. "Pets" are servers with identity and state you care about — you nurse them back to health when they get sick. The trick here is splitting one system into both: the EC2 instance is cattle — cloud-init bootstrapped, replaceable in under two minutes. The EBS data volume is the pet — `prevent_destroy=true`, daily DLM snapshots at 04:00 UTC with 7-day retention. SOUL.md, USER.md, memories, skills, conversation history, and even the Tailscale node identity all live on the pet volume. Eight instance replacements so far. The volume never moved.
 
 ## The cloud-init saga
 
-Specs and plans came first — a ~200-line architecture doc and a 25-task implementation plan, both committed to the repo before any `tofu apply`. Claude executed while I worked on WorkOS stuff, made coffee, took a nap.
+Specs and plans came first — a ~200-line architecture doc and a 25-task implementation plan, both committed to the repo before any `tofu apply`. I kept coming back to it throughout the day between WorkOS work and meetings, running on pretty little sleep. Claude executed tasks while I was in calls, and I'd check results when I came back.
 
 The single biggest surprise was how much debugging cloud-init took. AWS itself was frictionless. The fights were all about bootstrapping a modern Python app non-interactively:
 
@@ -58,19 +62,36 @@ The single biggest surprise was how much debugging cloud-init took. AWS itself w
 - **The installer launches an interactive setup wizard** that writes directly to `/dev/tty`. Fix: tolerate a non-zero exit and verify success by checking whether the binary exists, not the exit code.
 - **I broke `curl | bash`** by putting `</dev/null` on the wrong side of the pipe. `bash` read its script from `/dev/null`, exited clean, `curl` got SIGPIPE. Diagnosing this took 20 minutes.
 - **`hermes gateway install --system` refused to run as root.** "Refusing to install the gateway system service as root; pass `--run-as-user` to override." Cool flag. Wish I'd known about it.
-- **My idempotent YAML-append heredoc broke the outer cloud-init YAML parse.** Because of course it did.
+- **My idempotent YAML-append heredoc broke the outer cloud-init YAML parse.** I had a `runcmd` step that appended config to a YAML file using a heredoc, something like:
 
-Each fix was a single commit. Each instance replacement took ~90 seconds. By the time cloud-init was solid, I'd cycled through 8 instance IDs. The data volume never moved. The cattle/pet split earned its keep on day one.
+```yaml
+runcmd:
+  - |
+    cat >> /home/hermes/.hermes/config.yaml << 'EOF'
+    approvals:
+      mode: "off"
+    EOF
+```
+
+The nested YAML inside the heredoc confused the cloud-init YAML parser, which tried to parse the *entire* `runcmd` block as YAML before executing it. Fix: base64-encode the payload and decode it at runtime.
+
+Each fix was a single commit. Each instance replacement took ~90 seconds. Because we'd chosen the right primitives — OpenTofu and AWS — the workflow was a proven loop: change the config, `tofu apply`, watch the instance rebuild, see if it comes up clean. If not, fix, commit, repeat. By the time cloud-init was solid, I'd cycled through 8 instance IDs. The data volume never moved. The cattle/pet split earned its keep on day one. And all the OpenTofu was committed to a private GitHub repo, so any future session can manage the deployment from scratch.
 
 ## The webhook bridge
 
-<img src="https://zackproser.b-cdn.net/images/hermes-dataflow.webp" alt="Data flow diagram showing the webhook bridge, interactive chat, and autonomous job flows" />
+<img src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge data flow: Claude Code on Mac sends HMAC-signed payload over Tailscale to Hermes, which activates and delivers to Discord" />
 
 Once the assistant was alive on Discord with its ported persona, I realized I had a silent-files problem. My Claude Code sessions on my Mac could write context files to the assistant's filesystem via SSM — but the assistant didn't know they were there until it explicitly checked.
 
 Digging through the CLI turned up `hermes webhook` — an event-driven activation mechanism. Subscribe a route with a prompt template, POST signed JSON to it over Tailscale, and the assistant activates with the payload interpolated into the prompt.
 
 That became the second load-bearing primitive. A shell script now archives context to the assistant's filesystem (persistent storage) and hits the webhook (immediate activation). The full loop: Claude on Mac → SSM + Tailscale → assistant on EC2 → Discord → my phone. Same pattern generalizes to GitHub webhooks, Twilio, cron, whatever.
+
+## Interactive chat
+
+<img src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow: Zack types in Discord, message routes through gateway to Hermes agent with full tool access, streams response back" />
+
+The other mode is straightforward. I type in Discord, the message hits the bot gateway over WebSocket, routes to the agent with full session memory, and the agent has access to everything — terminal, GitHub, bank APIs, browser, web search, files. Responses stream back to Discord in real time. The agent maintains conversation context across turns within a session, and persistent memory across sessions via the data volume.
 
 ## Autonomy after a threat model conversation
 
@@ -90,11 +111,11 @@ The operational invariant I care most about: any Claude session, on any machine,
 
 A year ago this build would have been a week of focused engineering. Today it fit in the margins of a normal workday, done mostly while something else had my attention.
 
-The primitives are mature — AWS is AWS, OpenTofu is OpenTofu. What changed is the loop between "describe what I want" and "observe the result on real infrastructure." I can manage AWS the way I previously managed a git repo: say what I want, watch it happen, check in when it matters.
+The primitives are mature and well-understood, so none of the individual pieces required learning anything new. What changed is the loop between "describe what I want" and "observe the result on real infrastructure." I can manage AWS the way I previously managed a git repo: say what I want, watch it happen, check in when it matters.
 
 The spec-then-plan-then-execute pattern helped. Having the architecture written down in a document that Claude and I both re-read kept things coherent through 30+ commits. The plan with exact commands meant I could be genuinely async — "execute task 11" without re-explaining context.
 
-But the biggest accelerant was the selective port. I didn't build an AI assistant in a day. I built the *infrastructure for* an AI assistant in a day, then moved in the personality, context, skills, and integrations I'd been refining for a year. The distinction matters. The hard part of a useful AI assistant is the accumulated context and earned trust, and that traveled in a single `scp`.
+But the biggest accelerant was the selective port. I didn't build an AI assistant in a day. I built the *infrastructure for* an AI assistant in a day, then moved in the personality, context, skills, and integrations I'd been refining since February. The distinction matters. The hard part of a useful AI assistant is the accumulated context and earned trust, and that traveled in a single `scp`.
 
 Hermes is online. He's survived seven instance replacements. He can check my bank accounts, manage my GitHub, and run on infrastructure that — unlike the Meerkat in my home office — does not care whether my HackRF One is misbehaving.
 
