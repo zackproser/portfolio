@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-04-16",
   "description": "I run two AI agents — Claude Code for infrastructure, Hermes for content — both controlled from my phone. Here's the split-brain architecture and why separation of concerns matters for AI agents too.",
-  "image": "",
+  "image": "https://zackproser.b-cdn.net/images/two-agents-one-phone-hero.webp",
   "slug": "/blog/two-agents-one-phone",
   "tags": ["ai", "infrastructure", "aws", "claude-code", "hermes"]
 }
