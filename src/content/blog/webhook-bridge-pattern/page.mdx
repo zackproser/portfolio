@@ -126,4 +126,6 @@ The silent files problem is common whenever you connect systems through shared f
 
 Building `tell-hermes.sh` took maybe an hour. But it changed the relationship between my two agents from "Claude can write files that Hermes might eventually see" to "Claude can talk to Hermes and get a response in seconds." That's a qualitative difference in what's possible.
 
+The practical upside: I run Claude Code via `--remote-control` from my phone to handle all infrastructure work — upgrading Hermes, managing OpenTofu deployments, rotating secrets, debugging cloud-init. And I direct Hermes through Discord for content work — writing blog posts, generating images, opening PRs. The webhook bridge is what lets these two agents coordinate without me manually relaying messages between them. **Claude Code for infra. Discord for content. Both from my phone.**
+
 The next step is bidirectional: giving Hermes a `tell-claude` capability so it can push context back to my terminal sessions. But that's a different architectural problem — Claude Code doesn't have a webhook server. Yet.
