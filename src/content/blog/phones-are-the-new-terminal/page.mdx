@@ -2,6 +2,8 @@ import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 import Image from 'next/image'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -54,7 +56,23 @@ I've been a software engineer for 14 years. Fourteen years of sitting in chairs,
 
 <Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-freedom.webp" alt="Pixel art contrasting a hunched developer at a desk in pain versus the same developer walking freely on a trail with phone in hand" width={1200} height={675} />
 
-I'm done accepting this as the cost of doing business. The tools exist now to do real engineering work without sitting at a desk, without a keyboard, without a monitor. Not all of it — I still sit down for deep architecture sessions and thorny debugging. But a huge percentage of daily engineering work is "decide what should happen and tell something capable to do it." That works from a trail as well as it works from a desk. Better, actually, because my brain works better when I'm moving.
+I'm done accepting this as the cost of doing business. The tools exist now to do real engineering work without sitting at a desk, without a keyboard, without a monitor. Not all of it — I still sit down at my laptop for deep debugging sessions and thorny architecture work. But a huge percentage of daily engineering work is "decide what should happen and tell something capable to do it." That works from a trail as well as it works from a desk.
+
+And honestly? Sometimes I can't focus at the desk. My ADHD brain stalls when I'm sitting still staring at a screen. Walking activates [diffuse-mode thinking](https://en.wikipedia.org/wiki/Dual_process_theory) — the background processing that happens when you're not forcing concentration. Problems that felt stuck at the desk start resolving themselves on the trail. Walking is a focus strategy as much as a health one. I start moving and my brain starts working.
+
+## WisprFlow: voice is the other half of the equation
+
+The phone as a control plane only works because I'm not typing on a tiny screen. [WisprFlow](/blog/wisprflow-review) is what makes the input side viable. It's a voice-to-text tool that runs on both my Mac and my iPhone, and it handles technical language — function names, file paths, CLI flags — at [179 words per minute](/blog/voice-coding-vs-typing-speed). I'm not tapping out messages with my thumbs. I'm talking naturally and WisprFlow transcribes in real time, directly into whatever app has focus.
+
+When I'm on the trail directing Claude Code, I'm dictating the instructions. "Update the instance type in the OpenTofu config from t4g.medium to t4g.large and run tofu plan." WisprFlow catches all of that. When I'm telling Hermes to write a post, same thing — I speak the brief and WisprFlow turns it into text in the Discord message box.
+
+This is the combination that makes phone-first engineering actually work: Claude Code remote control for driving the computer, WisprFlow for fast voice input, and multiple agent sessions for parallel execution. Without any one of these pieces, the phone is still limited to poking at PRs. With all three, it's a genuine control plane.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+If you want to see voice-to-text in action — what it looks like to dictate at 179 WPM and have technical terms come through correctly — try the interactive demo:
+
+<VoiceAIDemoCard />
 
 ## The phone is the new terminal
 
@@ -68,7 +86,9 @@ This is the evolution of what I talked about at DevSecCon. The keynote was about
 
 ## What this actually buys me
 
-I'm walking 5-8 miles on days when I would have been sitting. My neck doesn't hurt. My wrists get a break from typing. I'm thinking more clearly because physical movement is genuinely good for cognition — this is well-studied, not handwaving.
+I'm walking 5-8 miles on days when I would have been sitting. My neck doesn't hurt. My wrists get a break from typing — [WisprFlow handles the input](/blog/wisprflow-claude-code-setup-guide) whether I'm on my Mac or my iPhone. I'm thinking more clearly because physical movement genuinely helps with focus and cognition — not in some vague wellness way, but in the specific sense that my ADHD brain produces better output when my legs are moving.
+
+<InlineAffiliateCTA product="wisprflow" />
 
 And the work output hasn't dropped. If anything, it's higher. The [two-agent setup](/blog/two-agents-one-phone) means I'm running parallel workstreams that would have been sequential at a desk. While I'm reviewing one agent's output, the other is already working on the next task. The phone UX — switching between Discord and the Claude app — is natural. It's the same muscle memory as switching between Slack and email.
 
