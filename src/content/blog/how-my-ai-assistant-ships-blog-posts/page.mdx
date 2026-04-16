@@ -1,0 +1,123 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={metadata.image} alt="Hermes AI assistant shipping blog posts from Discord" width={1920} height={1080} />
+
+I built an AI assistant that ships my blog posts. It writes the MDX, generates hero images, uploads them to a CDN, commits to git, opens pull requests, and merges them — all from a Discord conversation on my phone.
+
+The assistant is called Hermes. It runs on an AWS EC2 instance with a persistent EBS volume, communicates through Discord, and has full access to my portfolio site repository. The stack is Hermes Agent + OpenTofu + Tailscale + Bunny CDN + OpenRouter.
+
+This post covers the exact workflow Hermes uses to take a blog post from idea to production on zackproser.com.
+
+## The workflow
+
+It starts with a message in Discord. I describe what I want — the topic, angle, any specific points to cover. Sometimes I'm on my phone, sometimes on my Vision Pro. Doesn't matter. Hermes picks it up and gets to work.
+
+### Writing the content
+
+Hermes writes the MDX content directly, following the writing rules defined in my repository's CLAUDE.md file. Those rules are strict: no buzzwords, no throat-clearing transitions, no "this isn't X, it's Y" patterns. Direct, matter-of-fact prose. First person where appropriate. Lead with the point, not the setup.
+
+The content lands in `src/content/blog/{slug}/page.mdx` with the standard imports — `next/image`, `createMetadata`, and the `metadata.json` sidecar file that holds the title, author, date, description, hero image URL, and tags.
+
+### Generating hero images
+
+Hermes generates hero images using nano-banana-pro, which wraps the Gemini 3 Pro Image API. The command looks like this:
+
+```bash
+uv run generate_image.py --prompt "a developer's AI assistant shipping code from a terminal, cyberpunk style" --resolution 2K
+```
+
+This produces a high-resolution PNG. Hermes then converts it to WebP for smaller file sizes and uploads it to Bunny CDN via their storage API. The final URL follows the pattern `https://zackproser.b-cdn.net/images/{name}.webp`.
+
+The image generation happens on the same EC2 instance where Hermes runs. No separate service, no queue, no Lambda. Just a Python script called from the shell.
+
+### Git operations
+
+With the content written and the hero image uploaded, Hermes creates a new branch from `origin/main`:
+
+```bash
+git checkout -b blog/how-my-ai-assistant-ships-blog-posts origin/main
+```
+
+It stages the new files, commits with a descriptive message, and pushes to the remote. Then it opens a pull request using the `gh` CLI:
+
+```bash
+gh pr create --title "Add blog post: How My AI Assistant Ships Blog Posts" --body "New blog post about the Hermes blog shipping workflow"
+```
+
+Once the PR is open, Vercel picks it up automatically and deploys a preview build.
+
+### Review and iteration
+
+I review the preview on my phone or Vision Pro. The Vercel preview URL gives me the exact rendering — layout, images, typography, everything. If something needs to change, I tell Hermes in Discord.
+
+"Swap the hero image for something with more contrast."
+
+"Fix the second paragraph — it's too long."
+
+"Move the architecture diagram higher."
+
+Hermes makes the changes, commits, and pushes. The preview updates. This loop is fast because there's no context switching. I stay in Discord, Hermes stays in the repo. No IDE, no local dev environment on my end.
+
+### OG image generation
+
+Once the content is finalized, Hermes generates the Open Graph image. This requires a running Next.js dev server because the OG image generator renders the actual page layout:
+
+```bash
+npm run dev &
+npm run og:generate-for -- --slug how-my-ai-assistant-ships-blog-posts
+```
+
+The script captures the OG-formatted screenshot and saves it as a PNG. Hermes uploads the OG image to Bunny CDN at the path `images/og-images/{slug}.png`.
+
+### Merging
+
+When everything looks good, Hermes merges the PR:
+
+```bash
+gh pr merge --squash --admin
+```
+
+The `--admin` flag bypasses branch protection rules. This is intentional — Hermes has already verified the build passes, the preview looks correct, and I've approved the content. Adding a manual approval step in GitHub would just slow things down without adding value.
+
+Vercel deploys the production build. The post is live.
+
+## Architecture
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-architecture-v2.webp" alt="Hermes Agent architecture diagram showing EC2, Discord, and integration points" width={1920} height={1080} />
+
+Hermes runs on an EC2 instance provisioned with OpenTofu. The instance has a persistent EBS volume that survives restarts, so the repo clone, credentials, and local state persist across sessions. Tailscale provides secure networking without exposing any ports to the public internet.
+
+The agent communicates exclusively through Discord. I send messages, Hermes processes them, executes tool calls against the filesystem and shell, and responds with results. The LLM inference happens via OpenRouter, which routes to whatever model I've configured — currently Claude for writing tasks.
+
+The tool surface is broad: file read/write, shell command execution, image generation, HTTP requests, git operations. Hermes can do anything I could do if I were SSH'd into the box.
+
+## What this gets me
+
+I shipped two blog posts in the same session where I developed this workflow. One about the always-on infrastructure setup, and this one you're reading now. Both went through the full cycle — content written, images generated, PRs opened, previews reviewed, OG images created, PRs merged.
+
+The time from "I want to write about X" to a live post on production is about 30-45 minutes, depending on how many revision cycles the images and content go through. Most of that time is me reviewing previews and deciding what to change.
+
+I don't open my laptop for any of this. The entire authoring and publishing pipeline runs through Discord messages on my phone. Hermes handles every mechanical step — writing files, running commands, managing git state, uploading assets.
+
+This setup also means I can ship posts from anywhere. Waiting in line. On a walk. The barrier to publishing went from "sit down at my desk, open VS Code, write, generate images, commit, push, check the preview, fix things, push again, merge" to "tell Hermes what I want in Discord."
+
+## The stack
+
+| Component | Role |
+|---|---|
+| **Hermes Agent** | AI assistant with shell/file/git access |
+| **AWS EC2 + EBS** | Persistent compute and storage |
+| **OpenTofu** | Infrastructure provisioning |
+| **Tailscale** | Secure networking |
+| **Discord** | Communication interface |
+| **OpenRouter** | LLM inference routing |
+| **Bunny CDN** | Image hosting and delivery |
+| **nano-banana-pro** | Image generation (Gemini 3 Pro) |
+| **Vercel** | Build previews and production deploys |
+| **gh CLI** | Pull request management |
+
+The whole thing is a loop: I describe what I want, Hermes builds it, I review it, Hermes iterates, and eventually it ships. No CI/CD pipeline to configure for the content itself. No CMS. No admin panel. Just a conversation with an AI that has the right tools and the right access.
