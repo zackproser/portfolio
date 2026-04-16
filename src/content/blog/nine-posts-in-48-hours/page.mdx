@@ -4,9 +4,9 @@ import Image from 'next/image'
 
 export const metadata = createMetadata(rawMetadata)
 
-I flew to London for AI Engineering World's Fair 3, gave a talk, ran a workshop, did a live podcast, then came home and published 9 blog posts in 48 hours. While working full-time at WorkOS. While being a parent.
+I flew to London for AI Engineering World's Fair 3, gave a talk, ran a workshop, did a live podcast, then came home and published 9 blog posts in 48 hours. While working full-time at WorkOS. While solo-parenting a three-year-old and a two-year-old — with the phone down and the laptop closed every second I was with them.
 
-14,790 words. 5 pixel art hero images generated and uploaded. 9 pull requests opened, previewed, and merged. All of it driven by two AI agents I talk to from my phone and my laptop.
+14,790 words. 47 images generated and uploaded to CDN. 12 pull requests opened, previewed, and merged. All of it driven by two AI agents I talk to from my phone and my laptop, in the compressed windows between everything else.
 
 This is the post about how that happened.
 
@@ -52,13 +52,13 @@ That's the whole loop. No IDE. No local dev server. No switching between termina
 
 The pixel art is the same way. Every post on my site has 3-4 pixel art images breaking up the text. I don't make them in Photoshop. I describe what I want in Discord: "16-bit pixel art, cozy retro SNES-era aesthetic, dark purple-navy background with subtle stars — a developer on a forest trail talking to their phone while AI agents work on floating holographic screens." Hermes calls the Gemini image API, converts to WebP, uploads to Bunny CDN, and drops the Image component into the MDX. I see it rendered in the Vercel preview 90 seconds later.
 
-The [five posts I shipped on Wednesday](/blog/two-agents-one-phone) required 20 pixel art images total. Hermes generated all of them. I described zero of them in detail — for most, Hermes read the post content and proposed appropriate images. I approved or redirected.
+The [five posts I shipped on Wednesday](/blog/two-agents-one-phone) required dozens of images total — pixel art hero images, screenshots, architecture diagrams. Hermes generated all the pixel art. I described zero of them in detail — for most, Hermes read the post content and proposed appropriate images. I approved or redirected.
 
 ## What I was actually doing during all this
 
 Working. Parenting two toddlers. Living a full life.
 
-I want to be clear about the parenting part: when I'm with my kids, the phone is down and the laptop is closed. I have a two-year-old and a four-year-old. They need a present dad, not a dad who's sneaking glances at Discord while they play. That time is theirs.
+I want to be clear about the parenting part: I'm a solo parent to a three-year-old and a two-year-old. When I'm with them, the phone is face-down on the counter and the laptop is closed. Period. No "quick check on Discord." No "let me just merge this." They get a fully present dad. That time is completely theirs, and it's most of the day.
 
 Which means my working windows are brutally compressed. I get focused time before the kids wake up, during naptime if I'm lucky, and after bedtime. At work, I'm in sprint at WorkOS — shipping features, reviewing pull requests, doing standups. The blog posts don't get their own time block. There is no time block.
 
@@ -88,4 +88,4 @@ What changed is the labor. The typing, the formatting, the image generation, the
 
 I wrote about this tradeoff in [The LLM Is Not My Friend](/blog/llm-is-not-my-friend). The AI handles what I'm bad at (sustained typing, repetitive workflows, context switching between tools). I handle what it's bad at (taste, voice, knowing what's worth saying).
 
-Nine posts in 48 hours. 14,790 words. While working a full-time job and being a present dad to two toddlers. Not by grinding harder — by investing in a pipeline that turns 30-second conversations into finished blog posts. The tools are here. The question is whether you're willing to rewire your workflow to use them.
+Nine posts in 48 hours. 14,790 words. 47 images. 12 PRs merged. While working a full-time job and solo-parenting two toddlers with zero screen time during kid hours. Not by grinding harder — by investing in a pipeline that turns 30-second conversations into finished blog posts. The tools are here. The question is whether you're willing to rewire your workflow to use them.
