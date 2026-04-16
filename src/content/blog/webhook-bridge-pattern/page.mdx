@@ -1,0 +1,123 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+I have two AI agents. Claude Code runs in my terminal on my Mac. Hermes, my custom agent built on Nous Research's Hermes 3, runs on an EC2 instance. They needed to talk to each other.
+
+The obvious approach — writing files to EC2 via SSM RunCommand — worked fine for getting data onto the box. But it had a fundamental problem I started calling the "silent files" issue.
+
+## The silent files problem
+
+Claude Code can execute AWS SSM RunCommand to drop files onto my EC2 instance. Markdown files, scripts, context dumps — whatever I need. The files land exactly where I put them.
+
+But Hermes doesn't know they're there.
+
+Hermes is an event-driven agent. It responds to Discord messages, processes incoming requests, and manages its own memory. It doesn't poll the filesystem looking for new files. Why would it? That's not how you build a responsive system.
+
+So I had this one-way channel: Claude could write to Hermes's box, but Hermes would only see those files if it happened to check, or if I manually told it to look. That's not a bridge. That's a dead drop.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-webhook-bridge.webp" alt="Webhook bridge architecture: Claude Code on Mac communicates with Hermes on EC2 via SSM RunCommand and Tailscale webhook" width={1200} height={675} />
+
+## Discovery: `hermes webhook`
+
+While reviewing Hermes's CLI capabilities, I found the `hermes webhook` command. Hermes can subscribe to named webhook endpoints and execute a prompt template when a matching payload arrives. Event-driven activation — exactly what I needed.
+
+The subscription looks like this:
+
+```bash
+hermes webhook subscribe claude-context \
+  --secret "$WEBHOOK_SECRET" \
+  --prompt "Incoming from Claude (terminal session, topic: {topic}):\n\n{body}"
+```
+
+This registers an endpoint at `/webhooks/claude-context` on Hermes's HTTP server (port 8644). When a properly signed POST hits that endpoint, Hermes extracts the `topic` and `body` fields from the JSON payload, interpolates them into the prompt template, and processes the result like any other incoming message.
+
+The key insight: Hermes doesn't need to poll. It just needs to be told.
+
+## The solution: `tell-hermes.sh`
+
+I built `ops/tell-hermes.sh` as a Claude Code skill. It does three things in sequence:
+
+**1. Archive context via SSM RunCommand**
+
+The script writes the full context — topic, body, timestamp — to a markdown file at `/home/hermes/.hermes/memories/claude-<timestamp>-<slug>.md` on the EC2 instance. This goes through AWS SSM RunCommand, same as before.
+
+This is the persistent storage step. Even if the webhook fails, even if Hermes restarts, the context is on disk in Hermes's memory directory. It's durable.
+
+**2. POST a signed webhook over Tailscale**
+
+Immediately after the file write, the script sends an HMAC-SHA256 signed JSON payload to `http://hermes-3:8644/webhooks/claude-context`. That hostname resolves over Tailscale — my private mesh network. No public endpoint. No internet exposure.
+
+The payload is simple:
+
+```json
+{
+  "topic": "deployment-status",
+  "body": "The portfolio site deploy completed successfully. All checks passed."
+}
+```
+
+The HMAC signature goes in the `X-Webhook-Signature` header. Hermes validates it against the shared secret before processing.
+
+**3. Hermes processes, replies, remembers**
+
+Hermes receives the webhook, validates the signature, interpolates the prompt template, and processes the message. It replies in Discord (where I see it on my phone), and updates its own memory with the interaction.
+
+## The full loop
+
+The complete flow looks like this:
+
+**Claude on Mac → SSM + Tailscale → Hermes on EC2 → Discord → Zack's phone**
+
+I'm working in my terminal with Claude Code. I ask it to tell Hermes something — a status update, a question, a task. Claude runs `tell-hermes.sh`, which archives the context and fires the webhook. Hermes picks it up, thinks about it, and replies in Discord. I get a notification on my phone.
+
+Two AI agents coordinating across machines, with me in the loop via Discord. The latency from Claude sending to Hermes replying is typically under 10 seconds.
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow between Claude Code, Hermes agent, and Discord" width={1200} height={675} />
+
+## Security
+
+Three layers, all straightforward:
+
+**HMAC-SHA256 signatures.** Every webhook payload is signed with a shared secret. Hermes rejects anything with an invalid or missing signature. Replay attacks are mitigated by including timestamps in the payload.
+
+**Tailscale-only networking.** The webhook endpoint is bound to Hermes's Tailscale IP. It's not reachable from the public internet. You need to be on my tailnet to even attempt a connection.
+
+**Secret management via AWS SSM Parameter Store.** The webhook secret lives in SSM Parameter Store, not in code, not in environment files. The `tell-hermes.sh` script fetches it at runtime.
+
+## Six skills targeting Hermes
+
+Once the webhook bridge pattern worked, I built it out. I now have six Claude Code skills that treat Hermes as a remote resource:
+
+- **tell-hermes** — Send a message or context to Hermes, get a response in Discord
+- **hermes-status** — Check if Hermes is running, get system stats
+- **hermes-deploy** — Trigger a deployment of the latest Hermes build
+- **hermes-skill-port** — Port a Claude Code skill definition to Hermes's skill format
+- **hermes-debug** — Send diagnostic info to Hermes for troubleshooting
+- **hermes-memory-query** — Search Hermes's memory from Claude's terminal
+
+Each one follows the same pattern: archive context via SSM, fire a webhook for immediate activation. The archive step means I have a full audit trail of every cross-agent interaction.
+
+## The pattern generalizes
+
+The webhook bridge isn't specific to Claude Code and Hermes. It's a general pattern for connecting any system that can POST JSON to an event-driven agent.
+
+**GitHub webhooks** — Hermes could subscribe to push events, PR reviews, issue comments. Same HMAC validation, same prompt templating.
+
+**Twilio inbound SMS** — Forward incoming text messages to Hermes for processing. The webhook subscription handles the routing.
+
+**Cron jobs** — A scheduled task archives a report and fires a webhook. Hermes summarizes it and posts to Discord.
+
+**Any external system** — If it can make an HTTP POST with a JSON body, it can talk to Hermes through a webhook subscription.
+
+The two-step pattern (durable file + immediate webhook) is the key. The file ensures nothing is lost. The webhook ensures nothing is delayed. Together they give you reliable, event-driven communication between systems that weren't designed to talk to each other.
+
+## What I learned
+
+The silent files problem is common whenever you connect systems through shared filesystems. Polling is the lazy solution. Webhooks are the correct one.
+
+Building `tell-hermes.sh` took maybe an hour. But it changed the relationship between my two agents from "Claude can write files that Hermes might eventually see" to "Claude can talk to Hermes and get a response in seconds." That's a qualitative difference in what's possible.
+
+The next step is bidirectional: giving Hermes a `tell-claude` capability so it can push context back to my terminal sessions. But that's a different architectural problem — Claude Code doesn't have a webhook server. Yet.
