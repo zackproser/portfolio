@@ -141,6 +141,20 @@ When a payload arrives, Hermes replaces `{body}` with the POST content and `{top
 
 That became the second load-bearing primitive. A shell script now archives context to the assistant's filesystem (persistent storage) and hits the webhook (immediate activation). The full loop: Claude on Mac → SSM + Tailscale → assistant on EC2 → Discord → my phone. Same pattern generalizes to GitHub webhooks, Twilio, cron, whatever.
 
+## The operator pattern: Claude Code as infrastructure brain
+
+<Image src="https://zackproser.b-cdn.net/images/hermes-operator-triangle.webp" alt="Pixel art diagram of the operator triangle: a MacBook running Claude Code on the left, AWS EC2 cloud server in the center, Discord chat on the right, with Zack as director below — connected by glowing data lines" width={1200} height={630} />
+
+The piece I keep glossing over is the third actor in this system. Hermes is the user-facing agent. I'm the human who directs things. But the entire infrastructure layer — every `tofu apply`, every cloud-init debug cycle, every SSM parameter rotation — runs through a dedicated Claude Code session on my MacBook.
+
+That session holds all the IaC context: the OpenTofu state, the cloud-init template, the SSM parameter inventory, the EBS volume lifecycle. It can SSH into the EC2 instance via Tailscale, tail journalctl, restart systemd services, grep through hermes's logs. When something breaks, Claude Code is the one diagnosing it — and things broke a lot during the build.
+
+Eight instance replacements came from cloud-init failures alone. Claude Code caught the OOM-kill when we tried running Next.js builds on 4 GB of RAM (the fix: bump to `t4g.xlarge` with 16 GB). It diagnosed the webhook HMAC signature mismatch that ate an hour — the secret had a trailing newline from the SSM `put-parameter` call. It found that `hermes` wasn't on PATH after install because the installer wrote to `/usr/local/bin` but cloud-init's `runcmd` inherited a stripped environment. Each diagnosis was a commit in the hermes-bot repo. Fifty-plus commits by end of day.
+
+The six Claude Code skills I built (`tell-hermes`, `hermes-status`, `hermes-deploy`, `hermes-skill-port`, `hermes-debug`, `hermes-memory-query`) encode the operational playbook so any future Claude Code session can manage the deployment without re-learning the topology. The `tell-hermes` skill is the bridge: Claude Code discovers something — a new API endpoint, a config change, a piece of context from my work — and pipes it directly to Hermes via the webhook, no human re-speaking required.
+
+The separation of concerns is what made the one-day build possible. Claude Code handles the AWS/IaC/debugging complexity: cloud-init YAML parsing, systemd unit files, Tailscale ACL rules, DLM snapshot policies. Hermes handles the conversational and task complexity: bank account monitoring, blog publishing, flight search, the accumulated personality and memory. I sit in the middle, directing both — telling Claude Code what infrastructure to build, telling Hermes what tasks to run, and letting each one operate in its domain without the other needing to understand it.
+
 ## Interactive chat
 
 <Image src="https://zackproser.b-cdn.net/images/hermes-interactive-chat.webp" alt="Interactive chat flow: Zack types in Discord, message routes through gateway to Hermes agent with full tool access, streams response back" width={1200} height={800} />
