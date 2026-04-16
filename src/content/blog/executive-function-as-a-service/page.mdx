@@ -1,0 +1,127 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+I was diagnosed with autism and severe ADHD in October 2025, at age 36. By then I'd already been a software engineer for 14 years. I'd built the compensatory systems unconsciously — the obsessive note-taking, the rigid morning routines, the tendency to hyperfocus for 16 hours then crash for three days. I just didn't know what I was compensating for.
+
+Now I know. And now I'm engineering the compensation deliberately.
+
+This post is the practical guide. Not the emotional story — I wrote that in [In the LLM, I Saw Myself](/blog/in-the-llm-i-saw-myself) and [Claude as My External Brain](/blog/claude-external-brain-adhd-autistic). This is the engineering side: what executive function deficits actually look like in a software engineering workflow, and how I've built AI systems that compensate for each one.
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-hero.webp" alt="Pixel art of a glowing brain with golden scaffolding beams being assembled around it by tiny helpful robots" width={1200} height={675} />
+
+## What executive function actually is (for engineers)
+
+Executive function is the brain's project manager. It handles working memory, task initiation, prioritization, time estimation, context switching, and emotional regulation. Neurotypical brains do most of this automatically. ADHD and autistic brains don't.
+
+Here's what that looks like in practice, translated into engineering terms:
+
+**Working memory is a leaky cache.** I can hold a complex system architecture in my head for hours during hyperfocus, then lose the entire mental model the moment someone asks me a question. The context doesn't page back in cleanly. I have to rebuild it from scratch every time.
+
+**Task initiation has a cold-start problem.** Knowing I need to do something and being able to *start* doing it are completely different operations in my brain. I can stare at a ticket for 45 minutes, fully understanding what needs to happen, and be physically unable to start typing. The activation energy required to begin is wildly disproportionate to the difficulty of the task.
+
+**Prioritization is a broken comparator.** Every task has equal urgency in my head. The critical production bug and the interesting refactoring idea compete for attention on the same plane. My brain doesn't automatically sort by importance — it sorts by novelty and dopamine potential.
+
+**Time estimation doesn't exist.** I have no internal clock. A task I think will take 20 minutes takes 4 hours. A task I'm dreading and assume will take all day takes 15 minutes. I genuinely cannot predict how long things will take, and experience hasn't improved this.
+
+**Context switching is a full restart.** Neurotypical engineers lose some state when they switch contexts. I lose all of it. Switching from one codebase to another means 30-60 minutes of re-orientation before I can produce anything useful. Every interruption is a cold boot.
+
+## The insight: AI agents are executive function prosthetics
+
+I stopped trying to fix my executive function and started building external systems that provide it instead.
+
+The shift happened when I realized what my AI agents were actually doing for me. On the surface, [Claude Code](/blog/claude-code-phone-remote-control) writes code and [Hermes](/blog/building-always-on-ai-assistant) writes blog posts. But underneath, they're doing something more specific: they're holding context I can't hold, sequencing tasks I can't sequence, and initiating work I can't initiate.
+
+That's executive function. They're providing it as a service.
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-threads.webp" alt="Pixel art showing chaotic tangled thought threads on the left passing through a glowing AI terminal and emerging as neatly organized parallel tracks on the right" width={1200} height={675} />
+
+## How I've built each compensating system
+
+### Working memory: persistent context that survives my brain
+
+My brain drops context constantly. The agents don't.
+
+[Hermes](/blog/building-always-on-ai-assistant) has a skills system — structured markdown files that encode procedures, API endpoints, credential locations, and lessons learned. When I tell Hermes to "upload images to Bunny CDN," it doesn't ask me for the API key path or the URL format. That knowledge is in a skill file that persists across every session. My brain forgets the Bunny CDN API structure every single time. Hermes never does.
+
+Claude Code uses CLAUDE.md — a project-level instruction file that loads automatically. Mine includes my writing rules, banned patterns, common commands, and project structure. Every time Claude Code opens a session in my portfolio repo, it has the full context immediately. I don't have to rebuild anything.
+
+The practical pattern: **externalize everything you find yourself re-explaining.** Every time you tell an AI agent something for the second time, that information belongs in a persistent file — a skill, a CLAUDE.md, a project README. Your brain is going to drop it again. The file won't.
+
+I've built about 90 skills for Hermes at this point. Each one is a piece of working memory I no longer need to maintain in my head. The [Bunny CDN skill](/blog/how-my-ai-assistant-ships-blog-posts) knows the storage API, the key location in AWS SSM, the WebP conversion pipeline. The [OG image skill](/blog/how-my-ai-assistant-ships-blog-posts) knows to start the dev server, run the generator script, upload to CDN, and clean up. The [Typefully skill](https://typefully.com) knows my social set ID and the v2 API payload structure.
+
+None of that is in my head. All of it executes reliably every time.
+
+### Task initiation: the agent starts, I steer
+
+The cold-start problem — being unable to begin a task — is the ADHD symptom that has cost me the most in my career. I've lost entire days staring at screens, knowing what to do but unable to do it.
+
+AI agents invert the initiation problem. Instead of me starting the work and the agent helping, the agent starts the work and I direct it.
+
+I open Discord and say: "Hermes, write a post about the webhook bridge pattern." That's a 10-word message. The activation energy is almost zero — I'm having a conversation, not opening an IDE and staring at a blank file. Hermes produces a first draft, and now I'm *reacting* to something that exists instead of *creating* from nothing. Reacting is easy for my brain. Creating from zero is the hard part.
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-bodydouble.webp" alt="Pixel art of a developer at a desk with a translucent friendly ghost-like AI companion hovering nearby, pointing at a task list on the screen" width={1200} height={675} />
+
+The same pattern works with Claude Code. "Update the OpenTofu config to use t4g.large and run the plan." I said one sentence. Claude Code opened the file, made the change, ran `tofu plan`, and showed me the output. If I had to do that manually, I'd have spent 20 minutes context-switching to the right directory, remembering the variable name, looking up the instance types, and getting distracted by something in the config file. The agent collapses all of that into a single conversational exchange.
+
+This is body doubling — the ADHD strategy of working alongside someone else to borrow their activation energy. AI agents are the most patient, most available body doubles that have ever existed. They don't judge the gap between "knowing" and "doing." They just start.
+
+### Prioritization: the agent holds the queue
+
+When everything feels equally urgent, I need something external to enforce order.
+
+My approach: I describe the full scope of what I want to accomplish to Claude Code or Hermes, and they break it down into a sequenced plan. "I need to write three conference recap posts, a technical walkthrough, and a meta post about the workflow." The agent creates a todo list, prioritized, and works through them in order. I don't have to decide which one to start — I review what's next in the queue and approve or redirect.
+
+[I shipped 9 posts in 48 hours](/blog/nine-posts-in-48-hours) this way. Not because I was hyperfocused on writing for two days straight. Because the agents maintained the queue and the priority order while I context-switched between work, parenting, and travel. When I had 5 minutes free, I'd check what Hermes had ready. The decision of "what should I work on" was already made.
+
+This works because the agents don't have a broken comparator. They don't get seduced by the interesting refactor when there's a production bug to fix. They work the queue in order. I set the order once and they execute.
+
+### Context switching: warm handoffs between sessions
+
+My brain does full cold restarts on every context switch. The agents don't.
+
+When I'm [walking through the forest directing agents from my phone](/blog/phones-are-the-new-terminal), I might switch between Claude Code (infrastructure) and Hermes (content) ten times in an hour. Each time I return to a conversation, the full context is right there in the chat history. I don't need to remember what state the OpenTofu plan was in or which pixel art images Hermes already generated. It's all in the thread.
+
+This is the cognitive equivalent of using git stash — but my brain's stash is unreliable, and the chat thread's stash is perfect. I leave context with an agent, go do something else, come back, and the context is exactly where I left it.
+
+The [two-agent architecture](/blog/two-agents-one-phone) makes this even better. Because Claude Code and Hermes have separate contexts, there's no bleed between workstreams. I can switch from infrastructure to content and back without either agent losing state. It's like having two monitors, each with its own persistent workspace, except the monitors are in my pocket.
+
+### Time estimation: the agent tracks what I can't
+
+I genuinely can't estimate how long things take. But I can observe how long the agents take, and that gives me calibration data I've never had before.
+
+When Hermes writes a blog post, I can see it took 3 minutes to draft, 2 minutes for the images, 1 minute for the CDN upload, and 30 seconds for the PR. When Claude Code runs an OpenTofu plan, I can see the actual duration. Over time, I'm building an external time model based on agent execution data rather than my broken internal clock.
+
+I haven't automated this into a dashboard yet. But the chat histories serve as a log. If someone asks "how long does it take you to publish a blog post," I can answer with data instead of a guess.
+
+## The CLAUDE.md as a living cognitive map
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-claudemd.webp" alt="Pixel art of a large glowing document floating in space with small pixel-art hands actively editing different sections" width={1200} height={675} />
+
+My CLAUDE.md file has evolved from a list of coding preferences into a cognitive support document. Here's what's in it beyond the usual coding rules:
+
+**Banned patterns that catch my AI-tell slippage.** When I'm tired or rushing, I stop editing carefully and LLM tells slip through. The banned patterns list catches "isn't just X, it's Y" and similar constructions before they hit production. This compensates for my variable attention to detail — high during hyperfocus, nearly zero during executive function crashes.
+
+**Writing voice calibration.** I've described my voice precisely enough that both agents can approximate it. Direct, technical, warm, sometimes sweary, never performative. The more explicit I make this, the less editing I do. Less editing means less activation energy required to finish and publish.
+
+**The skill system as extended cognition.** Each of the 90 skills in Hermes is a chunk of procedural memory I've externalized. The [portfolio content skill](https://github.com/zackproser/portfolio) encodes the complete blog post workflow: MDX structure, metadata.json conventions, Bunny CDN image pipeline, pre-push validation, PR workflow. I don't need to remember any of that. The skill remembers it for me.
+
+I update these documents constantly. Every time I hit a new failure mode — "oh, Hermes used the wrong CDN URL format" or "Claude Code committed directly to main" — I add a rule. The documents get smarter at compensating for my specific patterns over time.
+
+This is what I described in [Training Claude to Compensate for My Neurological Patterns](/blog/training-claude-neurological-patterns). The training isn't a one-time setup. It's a continuous process of encoding my compensatory needs into persistent configuration that the agents load on every session.
+
+## What this buys me
+
+I shipped [9 blog posts in 48 hours](/blog/nine-posts-in-48-hours) while working full-time and parenting. I maintain [90 skills](/blog/how-my-ai-assistant-ships-blog-posts) that encode institutional knowledge I'd otherwise lose. I do real infrastructure work [from my phone while walking](/blog/phones-are-the-new-terminal), which means my body gets movement instead of accumulating [RSI and crane neck](/blog/phones-are-the-new-terminal) at a desk.
+
+The agents provide the executive function substrate that my brain doesn't. Working memory that persists. Task initiation that requires near-zero activation energy. Prioritization that doesn't get hijacked by novelty. Context switching with zero state loss.
+
+I'm not masking anymore. I'm not trying to perform neurotypical executive function through sheer willpower. I'm building systems that compensate for my specific deficits, the same way I'd build monitoring for a service that has known failure modes.
+
+My brain is the service. The agents are the monitoring, the auto-scaling, and the self-healing. The failure modes are documented. The compensating controls are in place. The system stays up.
+
+If you're a neurodivergent engineer — ADHD, autistic, or both — and you haven't started building this kind of scaffolding yet, start small. Put one thing you keep forgetting into a CLAUDE.md or a skill file. Ask an agent to start a task you've been unable to initiate. Let it hold the context you can't hold. Build from there.
+
+The tools are capable enough now. The question is whether you recognize what they're actually offering: the executive function you were never going to develop on your own, delivered as infrastructure you can engineer and improve.

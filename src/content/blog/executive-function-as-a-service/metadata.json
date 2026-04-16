@@ -1,0 +1,8 @@
+{
+  "title": "Executive Function as a Service: AI Scaffolding for Neurodivergent Engineers",
+  "author": "Zachary Proser",
+  "date": "2026-04-17",
+  "description": "I have ADHD and autism. My AI agents handle the executive function I don't have — working memory, task sequencing, context persistence. Here's the practical engineering guide to building that scaffolding.",
+  "image": "https://zackproser.b-cdn.net/images/exec-function-hero.webp",
+  "tags": ["ai", "adhd", "autism", "productivity", "claude-code", "hermes-agent", "cognitive-infrastructure"]
+}
