@@ -4,5 +4,5 @@
   "date": "2026-04-16",
   "description": "My AI assistant Hermes writes MDX content, generates hero images, uploads to Bunny CDN, commits to git, opens pull requests, and merges — all from a Discord conversation.",
   "image": "https://zackproser.b-cdn.net/images/hermes-ships-blog-posts-hero.webp",
-  "tags": ["AI", "Infrastructure", "Hermes Agent", "Automation"]
+  "tags": ["ai", "infrastructure", "hermes-agent", "automation"]
 }
