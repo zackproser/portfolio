@@ -9,17 +9,26 @@ Last year I gave a [DevSecCon keynote](/blog/untethered-software-development-dev
 
 <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote: Walking and Talking in the Woods with AI" />
 
-That talk was about voice-to-text and orchestrating agents from a laptop. This post is about what happened next: I stopped needing the laptop entirely. Now when I walk into the woods, I'm talking directly to the agents from my phone. Not dictating text for later — actually driving infrastructure changes in AWS and content pipelines in real time, from the trail.
+I only took my phone on those walks. No laptop. The phone was enough to poke at PRs that agents had started, leave review comments, redirect Cursor Bug Bot by commenting on its work. That was real — I was still moving work forward from the trail. But the interactions were limited. I could steer. I couldn't drive.
+
+This post is about what changed: [Claude Code remote control](https://docs.anthropic.com/en/docs/claude-code/remote). Now when I take my phone into the woods, I'm driving a real computer at home. My Mac laptop is sitting on my desk with Claude Code running, and I'm piloting it from the Claude app on my iPhone. That single connection gives me multiple simultaneous sessions — one doing AWS infrastructure work, another running an AI agent, another implementing code directly on a project, another brainstorming and writing in Notion. From the same phone, on the same walk.
 
 <Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-woods.webp" alt="Pixel art of a developer on a forest trail talking to their phone while AI agents work on floating holographic screens" width={1200} height={675} />
 
-## From voice dictation to agent control
+## From steering to driving
 
-In the keynote, I described a workflow with three elements: [WisprFlow](https://zackproser.com/blog/wisprflow-review) for voice dictation at 179 WPM, background AI agents handling scoped tasks, and hardened CI/CD as the safety net. That was powerful — I could think through problems on a walk and capture the output as text, then hand off work to agents when I got back to the laptop.
+In the keynote, I described a workflow with three elements: [WisprFlow](https://zackproser.com/blog/wisprflow-review) for voice dictation at 179 WPM, background AI agents handling scoped tasks, and hardened CI/CD as the safety net. That was powerful — agents would start PRs and I could review, comment, and redirect from my phone. I was the orchestrator, nudging work forward through GitHub comments and quick approvals. Real output, real velocity, but I was limited to the interfaces those tools exposed on mobile.
 
-The evolution is that the laptop is gone from the loop. [Claude Code's remote control feature](https://docs.anthropic.com/en/docs/claude-code/remote) means I can drive a full Claude Code session from the Claude app on my iPhone. The session runs on my Mac laptop at home — it has the AWS credentials, the SSH keys, the OpenTofu state — but I interact with it from my phone. I have a second agent, [Hermes](/blog/building-always-on-ai-assistant), running on an EC2 instance as a Discord bot. I talk to that one through the Discord app.
+Claude Code remote control changed the equation completely. Now my phone isn't poking at the edges of what agents produce — it's plugged directly into a real development machine. The session runs on my Mac laptop at home, but I interact with it from the Claude app on my iPhone. And it's not one session. I can have Claude Code running multiple workstreams:
 
-Two apps on my phone. Two agents. One handles [infrastructure changes in AWS](/blog/two-agents-one-phone). The other handles [content pipelines](/blog/how-my-ai-assistant-ships-blog-posts). Both are working simultaneously while I'm on the trail.
+- **One session doing AWS infrastructure** — OpenTofu plans, applies, secret rotation
+- **Another session running an agent** — standing up Hermes, configuring its skills, debugging its behavior
+- **Another session writing code** — direct implementation on any project in my repos
+- **Another session brainstorming** — writing specs in Notion, drafting architecture docs
+
+<Image src="https://zackproser.b-cdn.net/images/phone-new-terminal-sessions.webp" alt="Pixel art of a phone with multiple glowing session windows fanning out — AWS console, code editor, agent terminal, and writing app" width={1200} height={675} />
+
+On top of that, I have [Hermes](/blog/building-always-on-ai-assistant) running on an EC2 instance as a Discord bot. I talk to that one through the Discord app. So I'm running Claude Code sessions for heavy lifting *and* directing Hermes for [content pipelines](/blog/how-my-ai-assistant-ships-blog-posts) — all from two apps on the same phone, simultaneously, while walking through the forest.
 
 ## What I actually do on these walks now
 
@@ -55,7 +64,7 @@ AI agents break that constraint. Natural language is the interface now. A text m
 
 The phone is the control plane for a fleet of autonomous agents. I'm not SSH-ing into a box. I'm not reading scrolling terminal output. I'm directing systems that have context about my codebase, access to my credentials, and the ability to reason about what needs to happen next. I describe what I want in plain English and the agents figure out the steps.
 
-This is the evolution of what I talked about at DevSecCon. The keynote was about untethering from the desk using voice and agents. The reality now is that the untethering is complete. The phone replaced the laptop. The agents replaced the manual execution. The CI/CD pipeline — the hardened safety net from the keynote — is still there, still catching mistakes, still making speed safe. That part hasn't changed. What changed is that the human in the loop needs nothing more than a phone and a clear thought.
+This is the evolution of what I talked about at DevSecCon. The keynote was about untethering from the desk using voice and agents — steering work from the trail through comments and reviews. Claude Code remote control completed the picture. The phone went from steering wheel to cockpit. I'm not just nudging PRs anymore — I'm plugged into a real machine running multiple sessions, any one of which can do full-stack engineering work. The CI/CD pipeline — the hardened safety net from the keynote — is still there, still catching mistakes, still making speed safe. That part hasn't changed. What changed is that the phone became a genuine control plane for everything.
 
 ## What this actually buys me
 
