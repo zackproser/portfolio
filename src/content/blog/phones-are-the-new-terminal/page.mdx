@@ -1,0 +1,65 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+Last Tuesday I shipped three blog posts and upgraded an EC2 instance while walking my dog. I was on my phone the whole time. Two AI agents — Claude Code and Hermes — did the actual work. I just told them what to do.
+
+This is real production work from a phone. Not reading Slack. Not triaging PagerDuty alerts. Writing code, modifying infrastructure, publishing content to a live site.
+
+## What happened on that walk
+
+I opened Discord on my Pixel and messaged Hermes: draft a post about the webhook bridge pattern, generate a hero image, push a PR. While Hermes worked on that, I switched to Claude Code in the terminal and asked it to resize my EC2 instance from t3.medium to t3.large and update the OpenTofu config to match.
+
+By the time I got home, the EC2 resize was done, the blog post PR was open with a generated hero image uploaded to Bunny CDN, and two more draft posts were in progress. I reviewed the diffs on my phone, approved the PRs, and merged.
+
+I wrote about the two-agent setup in detail in [Two Agents, One Phone](/blog/two-agents-one-phone). The infrastructure that makes this possible — a persistent EC2 instance running Hermes with Discord as the interface — is covered in [Building an Always-On AI Assistant](/blog/building-always-on-ai-assistant).
+
+## The terminal was the interface to one machine
+
+For decades, the terminal was how engineers got things done. SSH into a box, run commands, watch output scroll. The terminal gave you direct control over a single system. You typed; the machine executed.
+
+That model scaled with tools like tmux, SSH multiplexing, and eventually infrastructure-as-code. But the fundamental relationship stayed the same: one human, one terminal session, one machine at a time. Your hands had to be on a keyboard. Your eyes had to be on scrolling output.
+
+The phone breaks that model.
+
+## The phone is the control plane
+
+When I message an AI agent from my phone, I'm not operating a machine. I'm directing an autonomous system. The agent has context about my codebase, access to my git repos, credentials for my infrastructure, and the ability to make decisions within the boundaries I've set.
+
+The interaction pattern is closer to managing a team than running commands. I say "draft a blog post about X with these key points" or "upgrade the instance type and update the Terraform config." The agent figures out the steps, executes them, and reports back. If something goes wrong, it tells me and I course-correct — still from my phone.
+
+This changes what "work" looks like. I don't need to be at a desk. I don't need a laptop. I don't even need both hands free. One thumb and a clear instruction is enough to set real work in motion.
+
+## Why this is different from mobile apps
+
+Engineers have had phone apps for years. GitHub Mobile, AWS Console, various monitoring dashboards. But those are read-mostly interfaces. You can check a build status or approve a PR. You can't architect a solution or debug a complex issue through a mobile app's tiny UI.
+
+AI agents change the equation because natural language is the interface. A text message works on every screen size. I don't need a 27-inch monitor to type "Hermes, write a comparison post about Cursor vs Windsurf, include pricing tables, generate an OG image, and open a PR." That instruction works the same whether I type it on my laptop or thumb it into Discord while standing in line at the grocery store.
+
+The bottleneck shifts from "can my fingers reach all the right buttons" to "can I clearly articulate what I want done." That second skill doesn't require a keyboard.
+
+## Two agents, one phone
+
+The most productive setup I've found is running two agents simultaneously. Hermes handles content operations — writing MDX, generating images, managing git workflows, uploading assets to CDN. Claude Code handles infrastructure and code changes — modifying Terraform configs, writing application code, debugging issues.
+
+I can have both working on separate tasks at the same time. While Hermes drafts a blog post, Claude Code can be refactoring a module or updating dependencies. I check in on each one when they ping me, review what they've produced, and either approve or redirect.
+
+This is parallel execution directed from a device that fits in my pocket. Three years ago, this workflow didn't exist. Two years ago, the models weren't good enough to trust with real code changes. Now it's how I get a significant chunk of my work done.
+
+## What this means for engineering culture
+
+The "I need to be at my desk to be productive" assumption is dying. If an engineer can ship meaningful work from their phone while walking a dog, the value of butts-in-seats drops to zero. What matters is the quality of the instructions and the review of the output.
+
+This also changes on-call culture. Instead of opening a laptop at 2 AM, groggy and half-awake, you can tell an agent to investigate the alert, propose a fix, and stage it for your review. The agent can do the tedious diagnostic work while you gather yourself.
+
+I don't think phones will replace laptops for all engineering work. Deep architecture sessions, complex debugging, code review that requires reading hundreds of lines — those still benefit from a large screen and a keyboard. But a surprising amount of daily engineering work turns out to be "decide what should happen and tell something to do it." Phones are perfectly good at that.
+
+## The trajectory
+
+Agent capabilities are improving every few months. The tasks I can delegate from my phone today are more complex than what was possible six months ago. Six months from now, I expect to be directing multi-step infrastructure migrations and feature implementations from the same Discord interface.
+
+The phone is becoming what the terminal was in the 1990s — the default interface through which engineers interact with the systems they build. Except this time, the systems on the other end aren't waiting for keystroke-by-keystroke instructions. They're autonomous agents that take high-level intent and execute.
+
+The terminal connected you to one machine. The phone connects you to a fleet of agents. That's the shift.
