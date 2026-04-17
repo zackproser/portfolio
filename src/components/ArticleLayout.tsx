@@ -15,6 +15,7 @@ import { generateOgUrl } from '@/utils/ogUrl'
 import { useRouter } from 'next/navigation'
 import { metadataLogger as logger } from '@/utils/logger'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
+import { SeriesBadge } from '@/components/SeriesBadge'
 
 // Voice-related slugs that should show the affiliate CTA
 const VOICE_AFFILIATE_SLUGS = [
@@ -197,6 +198,9 @@ export function ArticleLayout({
               />
             )}
             <article>
+              {metadata?.series && (
+                <SeriesBadge series={metadata.series} variant="full" />
+              )}
               <header className="flex flex-col">
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-burnt-400 dark:text-amber-400 sm:text-5xl">
                   {safeTitle}

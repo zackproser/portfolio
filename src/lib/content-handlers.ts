@@ -158,6 +158,7 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
     ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
     ...(processedMetadata.landing && { landing: processedMetadata.landing }),
     ...(processedMetadata.tags && { tags: processedMetadata.tags }),
+    ...(processedMetadata.series && { series: processedMetadata.series }),
     ...(typeof processedMetadata.hiddenFromIndex !== 'undefined' && { hiddenFromIndex: processedMetadata.hiddenFromIndex })
   };
 
