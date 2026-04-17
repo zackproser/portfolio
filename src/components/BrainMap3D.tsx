@@ -4,27 +4,48 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-// Radial-gradient texture used as the glow sprite map. A soft white→transparent
-// falloff tinted by each region's network color gives us clean, legible
-// colored "regions of activation" that read at a glance.
-let cachedGlowTexture: THREE.CanvasTexture | null = null
-function getGlowTexture(): THREE.CanvasTexture {
-  if (cachedGlowTexture) return cachedGlowTexture
-  const size = 256
+// Build a 3D text sprite that hangs above its parent group. Sprites are
+// billboards (always face camera), so the label stays readable no matter how
+// the user rotates the brain — it effectively "travels with" the brain
+// rather than sitting at a fixed screen position.
+function buildTextSprite(
+  text: string,
+  color: string,
+  subColor?: string,
+  subText?: string,
+): THREE.Sprite {
   const canvas = document.createElement('canvas')
-  canvas.width = canvas.height = size
+  const w = 1024
+  const h = 256
+  canvas.width = w
+  canvas.height = h
   const ctx = canvas.getContext('2d')!
-  const grd = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
-  grd.addColorStop(0.0, 'rgba(255,255,255,1.0)')
-  grd.addColorStop(0.15, 'rgba(255,255,255,0.9)')
-  grd.addColorStop(0.45, 'rgba(255,255,255,0.35)')
-  grd.addColorStop(1.0, 'rgba(255,255,255,0)')
-  ctx.fillStyle = grd
-  ctx.fillRect(0, 0, size, size)
+  ctx.clearRect(0, 0, w, h)
+  ctx.fillStyle = color
+  ctx.font = '700 96px ui-monospace, SFMono-Regular, Menlo, monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  // Letter-spaced feel via extra-wide tracking — draw once:
+  ctx.fillText(text, w / 2, subText ? h * 0.38 : h * 0.5)
+  if (subText && subColor) {
+    ctx.font = '500 48px ui-monospace, SFMono-Regular, Menlo, monospace'
+    ctx.fillStyle = subColor
+    ctx.fillText(subText, w / 2, h * 0.76)
+  }
   const tex = new THREE.CanvasTexture(canvas)
   tex.needsUpdate = true
-  cachedGlowTexture = tex
-  return tex
+  tex.anisotropy = 4
+  const mat = new THREE.SpriteMaterial({
+    map: tex,
+    transparent: true,
+    depthWrite: false,
+    depthTest: false,
+    toneMapped: false,
+  })
+  const sprite = new THREE.Sprite(mat)
+  // Aspect ratio 4:1 — text fits wide and short.
+  sprite.scale.set(1.7, 0.42, 1)
+  return sprite
 }
 
 // ─── Networks ───────────────────────────────────────────────────────────────
@@ -144,15 +165,57 @@ type FiberBundle = {
   currentIntensity: number
 }
 
-// Each region is rendered as a large glow sprite (billboard) at its anchor
-// position. Sprites read cleanly as "regions of activation" on any brain
-// orientation and never saturate the canvas because they use a pre-baked
-// radial falloff texture — no fighting with wireframe-edge classifiers.
-type GlowItem = {
+// ─── Region classifier ────────────────────────────────────────────────────
+// The brain's wireframe edges are split into buckets — one per network and
+// one default "unclassified" bucket. Each bucket becomes its own
+// THREE.LineSegments, colored by the network. At any given state the
+// non-active region buckets fade out (opacity → 0) and the active ones pop
+// to full saturation, so the brain's *own lines* light up the regions.
+//
+// Classification uses priority-ordered slabs in the normalized (post-scale)
+// frame where the brain fits roughly in ±0.8 along its longest axis. Axis
+// convention (matches most Blender-exported brain GLBs):
+//   +z = anterior (front, toward nose)
+//   +y = superior (up)
+//   ±x = lateral (left / right)
+// If the brain arrives mirrored or flipped, invert the `SIGN_` constants.
+const SIGN_Z_FRONT = 1  // +Z is anterior
+const SIGN_Y_UP = 1     // +Y is superior
+
+function classifyRegion(mx: number, my: number, mz: number): NetworkKey | null {
+  const front = mz * SIGN_Z_FRONT
+  const up = my * SIGN_Y_UP
+  const lat = Math.abs(mx)
+  // Priority-ordered so overlapping zones resolve cleanly. Return on first
+  // match so smaller/deeper regions win over broader cortical ones.
+
+  // Amygdala — ventral temporal, bilateral (low, moderately forward, lateral)
+  if (up < -0.05 && lat > 0.15 && lat < 0.5 && front > -0.15 && front < 0.5) {
+    return 'amygdala'
+  }
+  // Dopamine / striatum — central deep, a small zone near the origin
+  if (Math.abs(up) < 0.18 && lat < 0.22 && Math.abs(front) < 0.25) {
+    return 'dopamine'
+  }
+  // Prefrontal cortex — very anterior, upper
+  if (front > 0.45 && up > -0.1) {
+    return 'prefrontal'
+  }
+  // Working memory / DLPFC — lateral, upper, frontal-to-middle, bilateral
+  if (lat > 0.3 && up > 0.1 && front > -0.2) {
+    return 'workingMemory'
+  }
+  // DMN — medial strip (mPFC + posterior cingulate + precuneus)
+  if (lat < 0.18 && front > -0.75 && front < 0.55 && up > -0.05) {
+    return 'dmn'
+  }
+  return null
+}
+
+type RegionWire = {
   key: NetworkKey
-  sprite: THREE.Sprite
-  material: THREE.SpriteMaterial
-  basePosition: [number, number, number]
+  lines: THREE.LineSegments[]
+  materials: THREE.LineBasicMaterial[]
 }
 
 // The user-selectable ADHD states. The left (NT) side is always fixed at
@@ -258,35 +321,46 @@ export default function BrainMap3D({
       key: SideKey
       root: THREE.Group
       bundles: FiberBundle[]
-      // One soft-glow sprite per network — the primary region indicator.
-      glows: GlowItem[]
       // Uniform faint-pink brain silhouette (one entry per mesh in the GLB).
       wireframes: THREE.LineSegments[]
+      // One region-wire entry per network. Each contains the set of
+      // classified edges colored in that network's color.
+      regionWires: RegionWire[]
+      // 3D text label hanging above the brain; rotates with the brain root
+      // so the label always travels with its brain.
+      label: THREE.Sprite
       getState: () => typeof SCROLL_STATES[number]
     }
 
     const sides: Side[] = []
     let disposedDuringLoad = false
 
-    function buildSide(key: SideKey, offsetX: number, getState: Side['getState']): Side {
+    function buildSide(
+      key: SideKey,
+      offsetX: number,
+      labelText: string,
+      labelColor: string,
+      labelSub: string,
+      labelSubColor: string,
+      getState: Side['getState'],
+    ): Side {
       const sideGroup = new THREE.Group()
       sideGroup.position.x = offsetX
       root.add(sideGroup)
 
-      // Node orbs — invisible, still used as semantic anchors. Initial
-      // activation levels derive from the side's initial state so the first
-      // rendered frame already matches the mode rather than flashing through
-      // a uniform baseline as the lerp converges.
+      // Node orbs — small but visible, serve as the raycast hit targets for
+      // legend clicks. Initial intensity derives from the side's initial
+      // state so no flash of wrong-state lighting on first render.
       const initialState = getState()
       const initialBoost = initialState.boost ?? 1
       const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
         const net = NETWORKS[nkey]
         const color = new THREE.Color(net.color)
-        const nodeGeom = new THREE.SphereGeometry(0.04, 16, 16)
+        const nodeGeom = new THREE.SphereGeometry(0.05, 16, 16)
         const nodeMat = new THREE.MeshBasicMaterial({
           color,
           transparent: true,
-          opacity: 0,  // hidden by default; glow sprite carries the visual
+          opacity: 0.9,
           toneMapped: false,
           blending: THREE.AdditiveBlending,
           depthWrite: false,
@@ -311,39 +385,18 @@ export default function BrainMap3D({
         }
       })
 
-      // Large soft glow sprites — the main visual. Billboards so they're
-      // always readable regardless of camera angle. Additive blending lets
-      // them brighten against the dark brain wireframe without muddying.
-      const glowTex = getGlowTexture()
-      const glows: GlowItem[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
-        const net = NETWORKS[nkey]
-        const mat = new THREE.SpriteMaterial({
-          map: glowTex,
-          color: new THREE.Color(net.color),
-          transparent: true,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-          depthTest: true,
-          toneMapped: false,
-        })
-        const sprite = new THREE.Sprite(mat)
-        sprite.position.fromArray(net.anchor)
-        sprite.scale.setScalar(0.4)
-        sideGroup.add(sprite)
-        return {
-          key: nkey,
-          sprite,
-          material: mat,
-          basePosition: [...net.anchor] as [number, number, number],
-        }
-      })
+      // Anchored 3D label that hangs above the brain.
+      const label = buildTextSprite(labelText, labelColor, labelSubColor, labelSub)
+      label.position.set(0, 1.25, 0)
+      sideGroup.add(label)
 
       const side: Side = {
         key,
         root: sideGroup,
         bundles,
-        glows,
         wireframes: [],
+        regionWires: [],
+        label,
         getState,
       }
       sides.push(side)
@@ -351,17 +404,34 @@ export default function BrainMap3D({
     }
 
     const NT_STATE = SCROLL_STATES[0]
-    buildSide('nt', -SIDE_OFFSET_X, () => NT_STATE)
-    buildSide('adhd', +SIDE_OFFSET_X, () => stateRef.current)
+    buildSide(
+      'nt',
+      -SIDE_OFFSET_X,
+      'NEUROTYPICAL',
+      '#5eead4', // teal-300
+      'baseline · 5/5 networks',
+      '#99f6e4', // teal-200
+      () => NT_STATE,
+    )
+    buildSide(
+      'adhd',
+      +SIDE_OFFSET_X,
+      'NEURODIVERGENT',
+      '#fbbf24', // amber-400
+      '',        // sub-label updated per-frame from mode
+      '#fde68a', // amber-200
+      () => stateRef.current,
+    )
 
-    // Load brain GLB once. For each side we build:
-    //   - A very faint translucent flesh layer (establishes anatomy subtly)
-    //   - A single uniform pink wireframe (thin, low-opacity) that shows
-    //     the brain silhouette without saturating or competing with the
-    //     region glows.
-    // Region-of-activation coloring comes entirely from the glow sprites
-    // built in `buildSide` — no edge classification, no internal line
-    // clusters. Much more legible at a glance.
+    // Load brain GLB once. For each mesh in the GLB, classify its wireframe
+    // edges into per-region buckets, then build one THREE.LineSegments per
+    // bucket per side. Region coloring uses the brain's OWN edges — so an
+    // active region literally lights up its own piece of the wireframe.
+    //
+    // Line rendering uses LineBasicMaterial (1px default, non-additive),
+    // which means:
+    //   - The lines stay thin and crisp (no white saturation).
+    //   - Overlapping activations don't add; each region stays its own color.
     const brainLoader = new GLTFLoader()
     brainLoader.load(
       '/models/brain.glb',
@@ -381,6 +451,35 @@ export default function BrainMap3D({
           const m = node as THREE.Mesh
           const g = m.geometry as THREE.BufferGeometry
           const wireGeom = new THREE.WireframeGeometry(g)
+          const posAttr = wireGeom.attributes.position as THREE.BufferAttribute
+          const posArr = posAttr.array as Float32Array
+          const segCount = posArr.length / 6  // 2 verts × 3 coords per segment
+
+          // Bucket edges by region. Default bucket holds everything
+          // unclassified, kept as a faint pink silhouette.
+          const buckets: Record<string, number[]> = {
+            default: [],
+            prefrontal: [],
+            dmn: [],
+            dopamine: [],
+            amygdala: [],
+            workingMemory: [],
+          }
+          for (let i = 0; i < segCount; i++) {
+            const ax = posArr[i * 6 + 0]
+            const ay = posArr[i * 6 + 1]
+            const az = posArr[i * 6 + 2]
+            const bx = posArr[i * 6 + 3]
+            const by = posArr[i * 6 + 4]
+            const bz = posArr[i * 6 + 5]
+            // Normalize midpoint into the centered-and-scaled frame so the
+            // classifier sees coords in [-0.8, 0.8].
+            const mx = ((ax + bx) / 2 - center.x) * scale
+            const my = ((ay + by) / 2 - center.y) * scale
+            const mz = ((az + bz) / 2 - center.z) * scale
+            const bucket = classifyRegion(mx, my, mz) ?? 'default'
+            buckets[bucket].push(ax, ay, az, bx, by, bz)
+          }
 
           for (const s of sides) {
             // Very subtle flesh layer — just a hint of mass under the wires.
@@ -393,7 +492,7 @@ export default function BrainMap3D({
                 roughness: 0.9,
                 metalness: 0.0,
                 transparent: true,
-                opacity: 0.08,
+                opacity: 0.06,
                 side: THREE.DoubleSide,
                 depthWrite: false,
               }),
@@ -402,23 +501,51 @@ export default function BrainMap3D({
             flesh.scale.setScalar(scale)
             s.root.add(flesh)
 
-            // Uniform pink wireframe (thin, low opacity). LineBasicMaterial
-            // gives us the 1-pixel default linewidth, which is exactly what
-            // we want — crisp, non-saturating, legible.
-            const wireMat = new THREE.LineBasicMaterial({
-              color: 0xffb5c8,
-              transparent: true,
-              opacity: 0.3,
-              depthWrite: false,
-              toneMapped: false,
-            })
-            const wireMesh = new THREE.LineSegments(wireGeom, wireMat)
-            wireMesh.position.copy(center).multiplyScalar(-scale)
-            wireMesh.scale.setScalar(scale)
-            s.root.add(wireMesh)
-            s.wireframes.push(wireMesh)
+            // Helper: build a THREE.LineSegments from a flat positions array.
+            const buildLines = (positions: number[], color: number, opacity: number) => {
+              const geom = new THREE.BufferGeometry()
+              geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+              const mat = new THREE.LineBasicMaterial({
+                color,
+                transparent: true,
+                opacity,
+                depthWrite: false,
+                toneMapped: false,
+              })
+              const line = new THREE.LineSegments(geom, mat)
+              line.position.copy(center).multiplyScalar(-scale)
+              line.scale.setScalar(scale)
+              s.root.add(line)
+              return { line, mat }
+            }
+
+            // Default (unclassified) wireframe — uniform faint pink.
+            if (buckets.default.length) {
+              const { line } = buildLines(buckets.default, 0xffb5c8, 0.28)
+              s.wireframes.push(line)
+            }
+
+            // One LineSegments per region bucket. Opacity is driven per-
+            // frame from activation; starts at 0 and is pushed to full
+            // saturation when the region is active.
+            for (const nkey of Object.keys(NETWORKS) as NetworkKey[]) {
+              const seg = buckets[nkey]
+              if (!seg || seg.length === 0) continue
+              const colorHex = new THREE.Color(NETWORKS[nkey].color).getHex()
+              const { line, mat } = buildLines(seg, colorHex, 0.0)
+              // Accumulate lines + materials; multi-mesh GLBs contribute
+              // multiple entries per region.
+              let entry = s.regionWires.find((rw) => rw.key === nkey)
+              if (!entry) {
+                entry = { key: nkey, lines: [], materials: [] }
+                s.regionWires.push(entry)
+              }
+              entry.lines.push(line)
+              entry.materials.push(mat)
+            }
           }
-          // Intentionally do NOT dispose wireGeom — it's shared across sides.
+          // Don't dispose wireGeom — we used it to read positions only.
+          wireGeom.dispose()
         })
       },
       undefined,
@@ -472,13 +599,9 @@ export default function BrainMap3D({
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
 
-    // ── Click → raycast against glow sprites (big, easy to hit) ──
+    // ── Click → raycast against node orbs on either side ──
     const raycaster = new THREE.Raycaster()
     const ndc = new THREE.Vector2()
-    // Track networkKey on each sprite so the hit can resolve to its region.
-    for (const s of sides) {
-      for (const g of s.glows) g.sprite.userData.networkKey = g.key
-    }
     const onClick = (e: MouseEvent) => {
       const dx = e.clientX - startX
       const dy = e.clientY - startY
@@ -488,7 +611,7 @@ export default function BrainMap3D({
       ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(ndc, camera)
-      const targets = sides.flatMap((s) => s.glows.map((g) => g.sprite))
+      const targets = sides.flatMap((s) => s.bundles.map((b) => b.nodeMesh))
       const hits = raycaster.intersectObjects(targets, false)
       if (hits.length > 0) {
         const key = hits[0].object.userData.networkKey as NetworkKey
@@ -522,9 +645,6 @@ export default function BrainMap3D({
       const elapsed = clock.elapsedTime
 
       // Per-side update: glow sprites carry the region-of-activation story.
-      // The wireframe is a constant silhouette; it lightly breathes with
-      // total activity but never changes color so the brain shape is always
-      // readable.
       for (const side of sides) {
         const sideState = side.getState()
         const boost = sideState.boost ?? 1
@@ -538,33 +658,48 @@ export default function BrainMap3D({
               : 0.15
           b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 5
           intensity[b.key] = b.currentIntensity
+
+          // Node orb: small "you are here" marker. Color stays bright and
+          // constant; opacity dims with activation so dimmed regions read
+          // as absent rather than misleading bright dots.
+          const i = b.currentIntensity
+          const nodeMat = b.nodeMesh.material as THREE.MeshBasicMaterial
+          nodeMat.opacity = Math.min(1, 0.3 + i * 0.7)
+          nodeMat.color.copy(b.color).multiplyScalar(Math.min(2.0, 0.9 + i * 0.6))
+          b.nodeMesh.scale.setScalar(0.6 + i * 0.5)
+          b.nodeMesh.visible = i > 0.02
         }
 
-        // Drive each region's glow sprite. Scale grows with activation and
-        // the sprite pulses gently at peak intensity (hyperfocus) to convey
-        // overdrive. Colors are never mixed or classified — each sprite is
-        // its own region, always the region's color.
-        for (const g of side.glows) {
-          const i = intensity[g.key] ?? 0
-          const iC = Math.min(2.5, i)
-          const pulse = iC > 1.2 ? 0.97 + Math.sin(elapsed * 3 + g.basePosition[0]) * 0.04 : 1
-          const scale = (0.32 + iC * 0.28) * pulse
-          g.sprite.scale.setScalar(scale)
-          g.material.opacity = Math.min(1, iC * 0.95)
-          g.material.color
-            .set(NETWORKS[g.key].color)
-            .multiplyScalar(Math.min(2.5, 0.85 + iC * 0.7))
-          g.sprite.visible = iC > 0.02
+        // The region wireframes are the primary visual: each region's
+        // classified edges glow in the network's color when active. Thin
+        // 1px LineBasicMaterial + non-additive blending keeps everything
+        // crisp — no white saturation even when all 5 fire at hyperfocus.
+        for (const rw of side.regionWires) {
+          const i = intensity[rw.key] ?? 0
+          const iC = Math.min(2.2, i)
+          // Soft pulse at overdrive — a subtle "blazing" rhythm.
+          const pulse = iC > 1.3 ? 0.92 + Math.sin(elapsed * 3.5) * 0.08 : 1
+          const opacity = Math.min(1, iC * 0.9) * pulse
+          // Brighten color multiplicatively — dimmed regions fade via
+          // opacity, active ones saturate via color scaling.
+          const tint = Math.min(2.2, 0.85 + iC * 0.6)
+          for (const mat of rw.materials) {
+            mat.opacity = opacity
+            mat.color.set(NETWORKS[rw.key].color).multiplyScalar(tint)
+          }
+          for (const line of rw.lines) {
+            line.visible = iC > 0.015
+          }
         }
 
-        // Wireframe breathes very slightly with total activity so an
-        // all-off crash reads darker than a fully-lit hyperfocus brain,
-        // but the silhouette is always visible.
+        // Default wireframe breathes lightly with total activity so all-off
+        // crash reads darker than a fully-lit hyperfocus brain — but the
+        // silhouette is always visible.
         const totalActivity = Object.values(intensity).reduce<number>(
           (acc, v) => acc + (v ?? 0),
           0,
         )
-        const wireOpacity = 0.14 + Math.min(0.22, totalActivity * 0.04)
+        const wireOpacity = 0.12 + Math.min(0.2, totalActivity * 0.04)
         for (const w of side.wireframes) {
           ;(w.material as THREE.LineBasicMaterial).opacity = wireOpacity
         }
@@ -669,31 +804,23 @@ export default function BrainMap3D({
         })}
       </div>
 
-      {/* Side-by-side panel frames with anchored brain titles. Each brain
-          has its own gold-bordered panel so the NT vs Neurodivergent
-          delineation is unambiguous. */}
-      <div className="relative z-10 mt-5 grid grid-cols-2 gap-3 px-3">
-        {/* NT panel */}
-        <div className="rounded-xl border border-teal-400/40 bg-teal-500/[0.03] shadow-[0_0_24px_rgba(45,212,191,0.08)]">
-          <div className="border-b border-teal-400/30 px-4 py-2.5 text-center">
-            <p className="text-sm font-mono font-bold uppercase tracking-[0.3em] text-teal-200">
-              Neurotypical
-            </p>
-            <p className="text-[10px] font-mono text-teal-300/70 mt-0.5">
-              baseline · 5 / 5 networks · constant reference
-            </p>
-          </div>
+      {/* Compact mode-status strip — primary side titles are 3D sprites
+          that live above each brain inside the canvas, so they rotate and
+          stay visually locked to their brain. These HTML sub-lines carry
+          the dynamic state info (active-network count, state description)
+          that's awkward to re-render in 3D. */}
+      <div className="relative z-10 mt-4 grid grid-cols-2 gap-3 px-3">
+        <div className="rounded-md border border-teal-400/30 bg-teal-500/[0.04] px-3 py-1.5 text-center">
+          <p className="text-[10px] font-mono text-teal-300/80">
+            <span className="font-bold text-teal-200">5 / 5</span> networks · constant reference
+          </p>
         </div>
-        {/* Neurodivergent panel */}
-        <div className="rounded-xl border border-amber-400/45 bg-amber-400/[0.04] shadow-[0_0_24px_rgba(251,191,36,0.12)]">
-          <div className="border-b border-amber-400/35 px-4 py-2.5 text-center">
-            <p className="text-sm font-mono font-bold uppercase tracking-[0.3em] text-amber-200">
-              Neurodivergent
-            </p>
-            <p className="text-[10px] font-mono text-amber-300/80 mt-0.5 truncate px-2">
-              {adhdModeLabel.toLowerCase()} · {adhdActiveCount} / 5 · {adhdSubtitle}
-            </p>
-          </div>
+        <div className="rounded-md border border-amber-400/40 bg-amber-400/[0.05] px-3 py-1.5 text-center">
+          <p className="text-[10px] font-mono text-amber-300/90 truncate px-1">
+            <span className="font-bold text-amber-200">{adhdActiveCount} / 5</span>
+            {' · '}
+            {adhdModeLabel.toLowerCase()} · {adhdSubtitle}
+          </p>
         </div>
       </div>
 
