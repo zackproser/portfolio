@@ -613,11 +613,14 @@ export default function BrainMap3D({
           ;(b.nodeMesh.material as THREE.Material).dispose()
         }
         side.root.traverse((n) => {
-          const mesh = n as THREE.Mesh | THREE.LineSegments
+          const mesh = n as THREE.Mesh | THREE.LineSegments | THREE.Sprite
           if ((mesh as THREE.Mesh).isMesh || (mesh as THREE.LineSegments).isLineSegments) {
             const geom = mesh.geometry as THREE.BufferGeometry | undefined
             const mat = mesh.material as THREE.Material | undefined
             geom?.dispose()
+            mat?.dispose()
+          } else if ((mesh as THREE.Sprite).isSprite) {
+            const mat = (mesh as THREE.Sprite).material as THREE.Material | undefined
             mat?.dispose()
           }
         })
