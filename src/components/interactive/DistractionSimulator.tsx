@@ -12,19 +12,43 @@ import {
 
 const ORIGINAL_TEXT = `The alert fired at 2:47 AM. Response times had spiked to 14 seconds across the payment service. You pull up the dashboard, squinting at the latency graph. The p99 jumped from 200ms to 14,000ms in under three minutes. No deploy happened. You check the database connections — pool utilization is at 98%. Something is holding connections open. You trace the slow queries log and find a full table scan on the transactions table. An index was dropped during last night's migration. The ORM generated a query plan that bypassed the covering index entirely. You draft the fix: recreate the index, but you need to do it concurrently to avoid locking the table in production. You run CREATE INDEX CONCURRENTLY and watch the p99 start to drop. 14 seconds. 8 seconds. 3 seconds. 400ms. The pager goes silent. You document the incident, tag the migration PR, and add a check to the CI pipeline so an index drop can never ship without explicit approval again.`
 
+// A mix of mundane loops and the emotional/personal rumination that runs in
+// the background at all times: social regret, professional shame, self-
+// criticism, relational worry. The louder, uglier thoughts are the ones that
+// actually take the most cognitive bandwidth away from the work.
 const INTRUSIVE_THOUGHTS = [
+  // social / emotional replay
+  'why did they say that shit to me',
+  "why did I say that in the meeting",
+  'they must hate me by now',
+  'am I the asshole here',
+  'that was so fucking cringe',
+  "everyone saw me stumble on that word",
+  'they\'re judging me right now',
+  'I came across as a fraud',
+  'did I sound stupid on the call',
+  'why am I like this',
+  "I should have said it differently",
+  // self-criticism / shame
+  "I'm a fuckup",
+  "I can't do anything right",
+  "why can't I just focus",
+  "everyone else has their shit together",
+  "I should be further along by now",
+  // anxiety / obligation
   'did I lock the door',
-  'that song from 2013',
   'is the stove on',
-  'reply to that email',
-  'what time is pickup',
-  'I should exercise more',
+  'what if I get fired over this',
+  "I haven't called my mom in weeks",
+  "am I a bad parent",
+  'that email from three weeks ago',
+  'I need to reply to them',
+  'I should be exercising',
+  // random hijack
+  'that song from 2013',
   'that thing I said in 2014',
-  'did I pay rent',
-  'call the dentist',
-  'why did I open this tab',
   'what was I doing',
-  'I need groceries',
+  'why did I open this tab',
 ]
 
 const VISUAL_AUDIO_CUES = ['🔔', '💬', '📱', '🎵']
@@ -327,8 +351,11 @@ export function DistractionSimulator() {
 
       <div
         ref={containerRef}
-        className="relative my-8 overflow-hidden rounded-2xl bg-zinc-900/50 px-8 py-10 md:px-12"
-        style={{ height: '36rem' }}
+        className="relative my-8 overflow-hidden rounded-2xl border border-white/5 px-8 py-10 md:px-12"
+        style={{
+          height: '36rem',
+          background: 'radial-gradient(ellipse at 30% 10%, #2a0f38 0%, #120620 55%, #0a0118 100%)',
+        }}
       >
         {/* Fake macOS notification */}
         <FakeNotification visible={showNotification} />

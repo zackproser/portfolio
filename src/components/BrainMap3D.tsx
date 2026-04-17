@@ -108,7 +108,18 @@ const NETWORKS = {
 
 type NetworkKey = keyof typeof NETWORKS
 
-const SCROLL_STATES: { threshold: number; active: NetworkKey[]; dimmed: NetworkKey[]; title: string }[] = [
+// `boost` is a multiplier on active-network intensity. >1 = overdrive
+// (hyperfocus; networks glow past 1.0). The NT side is always boost 1 so
+// the contrast during hyperfocus is instant: ADHD brain blazes while NT
+// stays at steady state.
+type ScrollState = {
+  threshold: number
+  active: NetworkKey[]
+  dimmed: NetworkKey[]
+  title: string
+  boost?: number
+}
+const SCROLL_STATES: ScrollState[] = [
   {
     threshold: 0,
     active: ['prefrontal', 'dmn', 'dopamine', 'amygdala', 'workingMemory'],
@@ -131,13 +142,14 @@ const SCROLL_STATES: { threshold: number; active: NetworkKey[]; dimmed: NetworkK
     threshold: 0.45,
     active: ['dopamine', 'prefrontal', 'workingMemory'],
     dimmed: ['dmn', 'amygdala'],
-    title: 'Hyperfocus — dopamine floods, everything else quiets',
+    title: 'Hyperfocus — three networks fire at 180%, nothing else exists',
+    boost: 1.8,
   },
   {
     threshold: 0.6,
-    active: ['dmn'],
-    dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'amygdala'],
-    title: 'The void after the win — dopamine pipeline shuts off',
+    active: [],
+    dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'amygdala', 'dmn'],
+    title: 'The crash — hyperfocus is not free; the brain is dark for a day',
   },
   {
     threshold: 0.75,
@@ -424,14 +436,15 @@ export default function BrainMap3D() {
         const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
 
         const tubeMeshes: THREE.Mesh[] = curves.map((curve) => {
-          const tubeGeom = new THREE.TubeGeometry(curve, 32, 0.006, 6, false)
-          const mat = new THREE.MeshStandardMaterial({
+          // Thicker tubes + additive blending → electric "bioluminescent" look
+          // that stands out dramatically against the pink brain tissue.
+          const tubeGeom = new THREE.TubeGeometry(curve, 48, 0.012, 8, false)
+          const mat = new THREE.MeshBasicMaterial({
             color,
-            emissive: color,
-            emissiveIntensity: 0.9,
             transparent: true,
             opacity: 0.85,
             depthWrite: false,
+            blending: THREE.AdditiveBlending,
             toneMapped: false,
           })
           const mesh = new THREE.Mesh(tubeGeom, mat)
@@ -440,36 +453,39 @@ export default function BrainMap3D() {
         })
 
         const signals: FiberBundle['signals'] = []
-        const signalsPerFiber = 2
+        const signalsPerFiber = 4
         for (let ci = 0; ci < curves.length; ci++) {
           for (let si = 0; si < signalsPerFiber; si++) {
-            const sphereGeom = new THREE.SphereGeometry(0.016, 12, 12)
+            // Larger sparkles with additive blending — visible as bright
+            // flares moving along each fiber, reading as "electrical activity".
+            const sphereGeom = new THREE.SphereGeometry(0.028, 10, 10)
             const sMat = new THREE.MeshBasicMaterial({
-              color,
+              color: new THREE.Color('#ffffff').lerp(color, 0.3),
               transparent: true,
               opacity: 1.0,
               depthWrite: false,
               toneMapped: false,
+              blending: THREE.AdditiveBlending,
             })
             const m = new THREE.Mesh(sphereGeom, sMat)
             sideGroup.add(m)
             signals.push({
               curveIndex: ci,
-              t: (si / signalsPerFiber + Math.random() * 0.2) % 1,
+              t: (si / signalsPerFiber + Math.random() * 0.15) % 1,
               mesh: m,
-              speed: 0.15 + Math.random() * 0.2,
+              speed: 0.25 + Math.random() * 0.25,
             })
           }
         }
 
-        const nodeGeom = new THREE.SphereGeometry(0.035, 20, 20)
-        const nodeMat = new THREE.MeshStandardMaterial({
+        const nodeGeom = new THREE.SphereGeometry(0.055, 20, 20)
+        const nodeMat = new THREE.MeshBasicMaterial({
           color,
-          emissive: color,
-          emissiveIntensity: 1.0,
           transparent: true,
           opacity: 1.0,
           toneMapped: false,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
         })
         const nodeMesh = new THREE.Mesh(nodeGeom, nodeMat)
         nodeMesh.position.fromArray(net.anchor)
@@ -647,29 +663,45 @@ export default function BrainMap3D() {
       const state = stateRef.current
 
       // Update each side's bundles with its own driving state.
+      // IMPORTANT: dimmed networks fade to fully invisible so the NT and ADHD
+      // brains actually look different (not just different brightness).
       for (const side of sides) {
         const sideState = side.getState()
+        const boost = sideState.boost ?? 1
         for (const b of side.bundles) {
-          b.targetIntensity = sideState.active.includes(b.key) ? 1 : sideState.dimmed.includes(b.key) ? 0.08 : 0.35
+          b.targetIntensity = sideState.active.includes(b.key)
+            ? 1 * boost
+            : sideState.dimmed.includes(b.key)
+              ? 0
+              : 0.15
           b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
 
           const i = b.currentIntensity
+          // Clamped opacity (so overdriven tubes still render solid) vs raw
+          // intensity for emissive/scale where overbright is the point.
+          const iOpacity = Math.min(1, i)
+          const visible = i > 0.02
           for (const tm of b.tubeMeshes) {
-            const mat = tm.material as THREE.MeshStandardMaterial
-            mat.emissiveIntensity = 0.2 + i * 1.8
-            mat.opacity = 0.15 + i * 0.8
+            tm.visible = visible
+            const mat = tm.material as THREE.MeshBasicMaterial
+            // Additive blending + overbright color when i > 1 = bloom-like glow
+            mat.opacity = iOpacity * iOpacity
+            mat.color.copy(b.color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.8))
           }
-          const nodeMat = b.nodeMesh.material as THREE.MeshStandardMaterial
-          nodeMat.emissiveIntensity = 0.2 + i * 2.0
-          nodeMat.opacity = 0.3 + i * 0.7
-          b.nodeMesh.scale.setScalar(0.85 + i * 0.5)
+          const nodeMat = b.nodeMesh.material as THREE.MeshBasicMaterial
+          b.nodeMesh.visible = visible
+          nodeMat.opacity = iOpacity * iOpacity
+          nodeMat.color.copy(b.color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
+          b.nodeMesh.scale.setScalar(0.6 + i * 0.8) // pulses bigger in hyperfocus
 
           for (const s of b.signals) {
             s.t = (s.t + delta * s.speed * (0.3 + i * 0.7)) % 1
             b.curves[s.curveIndex].getPointAt(s.t, tmp)
             s.mesh.position.copy(tmp)
             const sMat = s.mesh.material as THREE.MeshBasicMaterial
-            sMat.opacity = i > 0.15 ? 0.95 : 0.0
+            s.mesh.visible = i > 0.25
+            sMat.opacity = i > 0.25 ? Math.min(1, 0.6 + i * 0.4) : 0
+            s.mesh.scale.setScalar(0.7 + Math.min(1.5, i) * 0.8)
           }
         }
       }
@@ -730,17 +762,26 @@ export default function BrainMap3D() {
     >
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0118] via-[#1a0a2e] to-[#0a0118]" />
 
-      {/* Split labels — NT (left) / ADHD (right) */}
+      {/* Split labels — NT (left) / ADHD (right) with live activation count */}
       <div className="absolute top-4 left-0 right-0 z-10 grid grid-cols-2 gap-2 px-6 pointer-events-none">
         <div className="text-center">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-teal-300/80">Neurotypical</p>
-          <p className="text-[10px] font-mono text-white/40 mt-0.5">all systems balanced</p>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-teal-300">Neurotypical</p>
+          <p className="text-[10px] font-mono text-teal-200/70 mt-0.5">
+            <span className="font-bold text-teal-300">5 / 5</span> networks online
+          </p>
         </div>
         <div className="text-center">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-amber-400/80">ADHD</p>
-          <p className="text-[10px] font-mono text-amber-300/60 mt-0.5 truncate">{currentState.title.split(' — ')[1] ?? currentState.title}</p>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-amber-400">ADHD</p>
+          <p className="text-[10px] font-mono text-amber-300/80 mt-0.5 truncate px-2">
+            <span className="font-bold text-amber-300">{currentState.active.length} / 5</span>
+            {' · '}
+            {currentState.title.split(' — ')[1] ?? currentState.title}
+          </p>
         </div>
       </div>
+
+      {/* Vertical divider between the two brains */}
+      <div className="absolute top-20 bottom-14 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent pointer-events-none" />
 
       {/* Center progress bar for the ADHD side's scroll state */}
       <div className="absolute top-14 left-1/4 right-1/4 z-10 pointer-events-none">
