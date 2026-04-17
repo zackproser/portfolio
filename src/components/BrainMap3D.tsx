@@ -282,6 +282,8 @@ export default function BrainMap3D({
       root.add(sideGroup)
 
       // Fiber bundles for this side
+      const initialState = getState()
+      const initialBoost = initialState.boost ?? 1
       const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
         const net = NETWORKS[nkey]
         const color = new THREE.Color(net.color)
@@ -300,12 +302,18 @@ export default function BrainMap3D({
         nodeMesh.userData.networkKey = nkey
         sideGroup.add(nodeMesh)
 
+        const initialIntensity = initialState.active.includes(nkey)
+          ? 1 * initialBoost
+          : initialState.dimmed.includes(nkey)
+            ? 0
+            : 0.15
+
         return {
           key: nkey,
           color,
           nodeMesh,
-          targetIntensity: 1,
-          currentIntensity: 1,
+          targetIntensity: initialIntensity,
+          currentIntensity: initialIntensity,
         }
       })
 
