@@ -1,5 +1,5 @@
 {
-  "title": "Two Agents, One Phone",
+  "title": "One Phone, Two Agents",
   "author": "Zachary Proser",
   "date": "2026-04-16",
   "description": "I run two AI agents — Claude Code for infrastructure, Hermes for content — both controlled from my phone. Here's the split-brain architecture and why separation of concerns matters for AI agents too.",
