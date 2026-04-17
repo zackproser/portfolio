@@ -248,25 +248,45 @@ export default function BrainMap3D() {
   const [currentState, setCurrentState] = useState(SCROLL_STATES[0])
   const [isInView, setIsInView] = useState(false)
 
-  // Scroll tracking
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      const viewportHeight = window.innerHeight
-      const elementHeight = rect.height
+  const handleScroll = useCallback(() => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const viewportHeight = window.innerHeight
+    const elementHeight = rect.height
 
-      // Calculate how far through the element we've scrolled
-      const start = rect.top
-      const progress = Math.max(0, Math.min(1, (-start + viewportHeight * 0.3) / (elementHeight + viewportHeight * 0.3)))
-      setScrollProgress(progress)
-      setIsInView(rect.top < viewportHeight && rect.bottom > 0)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
+    // Calculate how far through the element we've scrolled
+    const start = rect.top
+    const progress = Math.max(0, Math.min(1, (-start + viewportHeight * 0.3) / (elementHeight + viewportHeight * 0.3)))
+    setScrollProgress(progress)
   }, [])
+
+  // Use IntersectionObserver to gate scroll listener
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    let listening = false
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const isVisible = entries.some((e) => e.isIntersecting)
+        setIsInView(isVisible)
+        if (isVisible && !listening) {
+          window.addEventListener('scroll', handleScroll, { passive: true })
+          listening = true
+          handleScroll()
+        } else if (!isVisible && listening) {
+          window.removeEventListener('scroll', handleScroll)
+          listening = false
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [handleScroll])
 
   // Update state based on scroll
   useEffect(() => {
