@@ -1,8 +1,8 @@
 {
-  "title": "Executive Function as a Service: AI Scaffolding for Neurodivergent Engineers",
+  "title": "What It Feels Like To Be a Neurodivergent Engineer (Interactive)",
   "author": "Zachary Proser",
   "date": "2026-04-17",
-  "description": "I have ADHD and autism. My AI agents handle the executive function I don't have — working memory, task sequencing, context persistence. Here's the practical engineering guide to building that scaffolding.",
+  "description": "An interactive primer on the ADHD engineering brain — a 3D brain you can put through hyperfocus and crash, a simulator for what reading feels like under intrusive thoughts and notification overload, and the AI scaffolding I use to work around all of it.",
   "image": "https://zackproser.b-cdn.net/images/exec-function-hero.webp",
-  "tags": ["ai", "adhd", "autism", "productivity", "claude-code", "hermes-agent", "cognitive-infrastructure"]
+  "tags": ["ai", "adhd", "autism", "neurodivergent", "interactive", "productivity", "claude-code", "hermes-agent", "cognitive-infrastructure"]
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { DistractionSimulatorProps } from './interactive/DistractionSimulator'
 
 const DistractionSimulator = dynamic(
   () =>
@@ -17,4 +18,8 @@ const DistractionSimulator = dynamic(
   }
 )
 
-export default DistractionSimulator
+export default function DistractionSimulatorWrapper(
+  props: DistractionSimulatorProps = {},
+) {
+  return <DistractionSimulator {...props} />
+}

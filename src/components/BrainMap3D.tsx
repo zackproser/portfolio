@@ -174,13 +174,20 @@ const MODE_BUTTONS: { mode: AdhdMode; short: string; tag: string }[] = [
   { mode: 'scaffolding', short: 'With AI Scaffolding', tag: 'PFC restored externally' },
 ]
 
-export default function BrainMap3D() {
+export type BrainMap3DProps = {
+  /** Initial ADHD mode shown on mount. Users can still switch via toggles. */
+  defaultMode?: AdhdMode
+}
+
+export default function BrainMap3D({
+  defaultMode = 'rest',
+}: BrainMap3DProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
-  const [adhdMode, setAdhdMode] = useState<AdhdMode>('rest')
+  const [adhdMode, setAdhdMode] = useState<AdhdMode>(defaultMode)
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey | null>(null)
   const [webglFailed, setWebglFailed] = useState(false)
-  const stateRef = useRef<ScrollState>(ADHD_STATE_BY_MODE.rest)
+  const stateRef = useRef<ScrollState>(ADHD_STATE_BY_MODE[defaultMode])
 
   const currentState = ADHD_STATE_BY_MODE[adhdMode]
 

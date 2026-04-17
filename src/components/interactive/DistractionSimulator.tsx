@@ -8,11 +8,14 @@ import {
   type ReactNode,
 } from 'react'
 
-// ─── Content ──────────────────────────────────────────────────────────────
+// ─── Content defaults ─────────────────────────────────────────────────────
+// These are defaults used when no props are passed — the component is
+// reusable across posts by overriding `text`, `intrusiveThoughts`,
+// `notifications`, and `memoryFragments`.
 
-const ORIGINAL_TEXT = `The alert fired at 2:47 AM. Response times had spiked to 14 seconds across the payment service. You pull up the dashboard, squinting at the latency graph. The p99 jumped from 200ms to 14,000ms in under three minutes. No deploy happened. You check the database connections — pool utilization is at 98%. Something is holding connections open. You trace the slow queries log and find a full table scan on the transactions table. An index was dropped during last night's migration. The ORM generated a query plan that bypassed the covering index entirely. You draft the fix: recreate the index, but you need to do it concurrently to avoid locking the table in production. You run CREATE INDEX CONCURRENTLY and watch the p99 start to drop. 14 seconds. 8 seconds. 3 seconds. 400ms. The pager goes silent. You document the incident, tag the migration PR, and add a check to the CI pipeline so an index drop can never ship without explicit approval again.`
+const DEFAULT_TEXT = `The alert fired at 2:47 AM. Response times had spiked to 14 seconds across the payment service. You pull up the dashboard, squinting at the latency graph. The p99 jumped from 200ms to 14,000ms in under three minutes. No deploy happened. You check the database connections — pool utilization is at 98%. Something is holding connections open. You trace the slow queries log and find a full table scan on the transactions table. An index was dropped during last night's migration. The ORM generated a query plan that bypassed the covering index entirely. You draft the fix: recreate the index, but you need to do it concurrently to avoid locking the table in production. You run CREATE INDEX CONCURRENTLY and watch the p99 start to drop. 14 seconds. 8 seconds. 3 seconds. 400ms. The pager goes silent. You document the incident, tag the migration PR, and add a check to the CI pipeline so an index drop can never ship without explicit approval again.`
 
-const INTRUSIVE_THOUGHTS = [
+const DEFAULT_INTRUSIVE_THOUGHTS = [
   'why did they say that shit to me',
   'why did I say that in the meeting',
   'they must hate me by now',
@@ -58,7 +61,7 @@ type NotificationDef = {
   emoji: string
 }
 
-const NOTIFICATIONS: NotificationDef[] = [
+const DEFAULT_NOTIFICATIONS: NotificationDef[] = [
   { app: 'Slack',        title: '#general',              body: 'Hey are you coming to the…',               accent: 'from-purple-500 to-pink-500', emoji: '💬' },
   { app: 'iMessage',     title: 'Mom',                   body: 'can you call me when you get a sec',       accent: 'from-green-400 to-emerald-500', emoji: '💬' },
   { app: 'Gmail',        title: 'IRS Notice',            body: 'Action required on your tax return',       accent: 'from-red-500 to-orange-500', emoji: '✉️' },
@@ -77,8 +80,8 @@ const NOTIFICATIONS: NotificationDef[] = [
   { app: 'Zoom',         title: 'Recording ready',       body: 'from yesterday\'s call',                    accent: 'from-blue-400 to-indigo-600', emoji: '🎥' },
 ]
 
-type MemoryFragment = { emoji: string; label: string; tint: string }
-const MEMORY_FRAGMENTS: MemoryFragment[] = [
+type MemoryFragmentDef = { emoji: string; label: string; tint: string }
+const DEFAULT_MEMORY_FRAGMENTS: MemoryFragmentDef[] = [
   { emoji: '📸', label: '2018 wedding',           tint: 'from-rose-400/60 to-pink-600/60' },
   { emoji: '🎂', label: "dad's 65th",             tint: 'from-amber-400/60 to-orange-600/60' },
   { emoji: '🏃',  label: "5k I DNF'd",             tint: 'from-emerald-400/60 to-teal-600/60' },
@@ -154,7 +157,7 @@ function MemoryFragment({
   frag,
   style,
 }: {
-  frag: MemoryFragment
+  frag: MemoryFragmentDef
   style: React.CSSProperties
 }) {
   return (
@@ -189,7 +192,26 @@ function ThoughtBubble({
 
 type ViewMode = 'nt' | 'nd'
 
-export function DistractionSimulator() {
+export type DistractionSimulatorProps = {
+  /** The clean paragraph shown at baseline and deteriorated over scroll. */
+  text?: string
+  /** Pool of intrusive thoughts that replace words + float as bubbles. */
+  intrusiveThoughts?: string[]
+  /** Notification cards that stack onto the page as chaos escalates. */
+  notifications?: NotificationDef[]
+  /** Memory-fragment tiles that drift across the page at peak overwhelm. */
+  memoryFragments?: MemoryFragmentDef[]
+  /** Final takeaway line shown after the scroll completes. */
+  revealText?: string
+}
+
+export function DistractionSimulator({
+  text = DEFAULT_TEXT,
+  intrusiveThoughts = DEFAULT_INTRUSIVE_THOUGHTS,
+  notifications = DEFAULT_NOTIFICATIONS,
+  memoryFragments = DEFAULT_MEMORY_FRAGMENTS,
+  revealText = REVEAL_TEXT,
+}: DistractionSimulatorProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
@@ -256,7 +278,7 @@ export function DistractionSimulator() {
     : 0
 
   // ── Word replacement — aggressive ramp
-  const words = ORIGINAL_TEXT.split(' ')
+  const words = text.split(' ')
   const wordCount = words.length
   let replaceRatio = 0
   if (pct > 10 && pct <= 25) replaceRatio = 0.08
@@ -269,7 +291,7 @@ export function DistractionSimulator() {
 
   const renderedWords: ReactNode[] = words.map((word, i) => {
     if (replacedSet.has(i)) {
-      const thought = INTRUSIVE_THOUGHTS[(i * 7) % INTRUSIVE_THOUGHTS.length]
+      const thought = intrusiveThoughts[(i * 7) % intrusiveThoughts.length]
       const color =
         pct > 70 ? '#fb923c' : pct > 50 ? '#f87171' : '#ef4444'
       return (
@@ -293,7 +315,7 @@ export function DistractionSimulator() {
   const notifVisible: { n: NotificationDef; style: React.CSSProperties }[] = []
   {
     const rand = seededRandom(7)
-    for (let i = 0; i < NOTIFICATIONS.length; i++) {
+    for (let i = 0; i < notifications.length; i++) {
       const threshold = 10 + i * 5 // first notif at 10%, last around 85%
       if (pct > threshold) {
         const ageFactor = Math.min(1, (pct - threshold) / 20) // fade in
@@ -302,7 +324,7 @@ export function DistractionSimulator() {
         const top = 6 + row * 7.5 + rand() * 2
         const horizOffset = rand() * 2
         notifVisible.push({
-          n: NOTIFICATIONS[i],
+          n: notifications[i],
           style: {
             [lane === 0 ? 'right' : 'left']: `${1 + horizOffset}rem`,
             top: `${top}%`,
@@ -322,7 +344,7 @@ export function DistractionSimulator() {
     const rand = seededRandom(99)
     for (let i = 0; i < bubbleCount; i++) {
       thoughtBubbles.push({
-        text: INTRUSIVE_THOUGHTS[(i * 3 + 5) % INTRUSIVE_THOUGHTS.length],
+        text: intrusiveThoughts[(i * 3 + 5) % intrusiveThoughts.length],
         style: {
           top: `${10 + rand() * 75}%`,
           left: `${5 + rand() * 70}%`,
@@ -334,12 +356,12 @@ export function DistractionSimulator() {
   }
 
   // ── Memory fragments — colored tilted boxes from 55% onward
-  const memoryItems: { frag: MemoryFragment; style: React.CSSProperties }[] = []
+  const memoryItems: { frag: MemoryFragmentDef; style: React.CSSProperties }[] = []
   if (pct > 55) {
     const count = pct > 90 ? 14 : pct > 75 ? 9 : pct > 65 ? 5 : 2
     const rand = seededRandom(31)
     for (let i = 0; i < count; i++) {
-      const frag = MEMORY_FRAGMENTS[i % MEMORY_FRAGMENTS.length]
+      const frag = memoryFragments[i % memoryFragments.length]
       const size = 80 + rand() * 80 // 80-160 px wide
       const rotation = (rand() - 0.5) * 30
       memoryItems.push({
@@ -390,7 +412,7 @@ export function DistractionSimulator() {
     return (
       <div className="my-8 rounded-2xl bg-zinc-900/50 p-6">
         <p className="mb-4 text-sm leading-relaxed text-zinc-300">
-          {ORIGINAL_TEXT.slice(0, 200)}…
+          {text.slice(0, 200)}…
         </p>
         <p className="mb-3 text-sm text-zinc-500">
           On desktop, scroll through this section slowly — the paragraph
@@ -399,7 +421,7 @@ export function DistractionSimulator() {
           almost unreadable. That&apos;s what reading with ADHD feels like.
         </p>
         <p className="border-t border-zinc-700 pt-4 text-base font-medium text-orange-400">
-          {REVEAL_TEXT}
+          {revealText}
         </p>
       </div>
     )
@@ -471,7 +493,7 @@ export function DistractionSimulator() {
               isNt ? 'text-teal-100' : 'text-zinc-800'
             }`}
           >
-            {ORIGINAL_TEXT}
+            {text}
           </p>
           {isNt ? (
             <p className="mx-auto mt-6 max-w-[42rem] text-sm font-mono text-teal-300/70">
@@ -597,7 +619,7 @@ export function DistractionSimulator() {
         >
           <div className="mx-auto max-w-[40rem] rounded-xl border border-orange-400/30 bg-black/80 px-6 py-4 backdrop-blur-md">
             <p className="text-center text-lg font-medium leading-relaxed text-orange-300 md:text-xl">
-              {REVEAL_TEXT}
+              {revealText}
             </p>
           </div>
         </div>

@@ -1,8 +1,9 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { BrainMap3DProps } from './BrainMap3D'
 
-const BrainMap3D = dynamic(() => import('./BrainMap3D'), { 
+const BrainMap3D = dynamic(() => import('./BrainMap3D'), {
   ssr: false,
   loading: () => (
     <div className="relative w-full my-8 rounded-2xl overflow-hidden" style={{ minHeight: '500px' }}>
@@ -13,6 +14,6 @@ const BrainMap3D = dynamic(() => import('./BrainMap3D'), {
   )
 })
 
-export default function BrainMap3DWrapper() {
-  return <BrainMap3D />
+export default function BrainMap3DWrapper(props: BrainMap3DProps = {}) {
+  return <BrainMap3D {...props} />
 }
