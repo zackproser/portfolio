@@ -355,8 +355,9 @@ export default function BrainMap3D() {
     let height = host.clientHeight || 500
 
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
-    camera.position.set(0, 0.4, 3.4)
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100)
+    // Pulled back + up so both side-by-side brains frame cleanly.
+    camera.position.set(0, 0.5, 5.2)
     camera.lookAt(0, 0, 0)
 
     let renderer: THREE.WebGLRenderer
@@ -389,61 +390,152 @@ export default function BrainMap3D() {
     rimLight.position.set(0, 0, -5)
     scene.add(rimLight)
 
-    // Root group for drag-rotation
+    // Root group for drag-rotation — rotates BOTH brains in sync.
     const root = new THREE.Group()
     scene.add(root)
 
-    // Brain: actual anatomical mesh loaded from GLB (photogrammetry/MRI-derived).
-    // Rendered as a translucent flesh layer + wireframe overlay so it reads as
-    // a "wire-framed real human brain". Loads async — fibers render first.
-    const brainGroup = new THREE.Group()
-    root.add(brainGroup)
-    let brainSolidRef: THREE.Mesh | null = null
-    let brainWireRef: THREE.LineSegments | null = null
+    // Two "hemisphere side" groups: NT (left) and ADHD (right). Each holds
+    // its own brain shell + fiber bundles. They share fiber geometry logic
+    // but track activation independently so NT stays static while ADHD
+    // responds to scroll.
+    const SIDE_OFFSET_X = 1.25
+
+    type SideKey = 'nt' | 'adhd'
+    type Side = {
+      key: SideKey
+      root: THREE.Group
+      bundles: FiberBundle[]
+      // What state drives this side's activation.
+      getState: () => typeof SCROLL_STATES[number]
+    }
+
+    const sides: Side[] = []
     let disposedDuringLoad = false
+
+    function buildSide(key: SideKey, offsetX: number, getState: Side['getState']): Side {
+      const sideGroup = new THREE.Group()
+      sideGroup.position.x = offsetX
+      root.add(sideGroup)
+
+      // Fiber bundles for this side
+      const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
+        const net = NETWORKS[nkey]
+        const color = new THREE.Color(net.color)
+        const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
+
+        const tubeMeshes: THREE.Mesh[] = curves.map((curve) => {
+          const tubeGeom = new THREE.TubeGeometry(curve, 32, 0.006, 6, false)
+          const mat = new THREE.MeshStandardMaterial({
+            color,
+            emissive: color,
+            emissiveIntensity: 0.9,
+            transparent: true,
+            opacity: 0.85,
+            depthWrite: false,
+            toneMapped: false,
+          })
+          const mesh = new THREE.Mesh(tubeGeom, mat)
+          sideGroup.add(mesh)
+          return mesh
+        })
+
+        const signals: FiberBundle['signals'] = []
+        const signalsPerFiber = 2
+        for (let ci = 0; ci < curves.length; ci++) {
+          for (let si = 0; si < signalsPerFiber; si++) {
+            const sphereGeom = new THREE.SphereGeometry(0.016, 12, 12)
+            const sMat = new THREE.MeshBasicMaterial({
+              color,
+              transparent: true,
+              opacity: 1.0,
+              depthWrite: false,
+              toneMapped: false,
+            })
+            const m = new THREE.Mesh(sphereGeom, sMat)
+            sideGroup.add(m)
+            signals.push({
+              curveIndex: ci,
+              t: (si / signalsPerFiber + Math.random() * 0.2) % 1,
+              mesh: m,
+              speed: 0.15 + Math.random() * 0.2,
+            })
+          }
+        }
+
+        const nodeGeom = new THREE.SphereGeometry(0.035, 20, 20)
+        const nodeMat = new THREE.MeshStandardMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 1.0,
+          transparent: true,
+          opacity: 1.0,
+          toneMapped: false,
+        })
+        const nodeMesh = new THREE.Mesh(nodeGeom, nodeMat)
+        nodeMesh.position.fromArray(net.anchor)
+        nodeMesh.userData.networkKey = nkey
+        sideGroup.add(nodeMesh)
+
+        return {
+          key: nkey,
+          color,
+          curves,
+          tubeMeshes,
+          signals,
+          nodeMesh,
+          targetIntensity: 1,
+          currentIntensity: 1,
+        }
+      })
+
+      const side: Side = { key, root: sideGroup, bundles, getState }
+      sides.push(side)
+      return side
+    }
+
+    const NT_STATE = SCROLL_STATES[0]
+    buildSide('nt', -SIDE_OFFSET_X, () => NT_STATE)
+    buildSide('adhd', +SIDE_OFFSET_X, () => stateRef.current)
+
+    // Load brain GLB once, clone geometry into each side.
     const brainLoader = new GLTFLoader()
     brainLoader.load(
       '/models/brain.glb',
       (gltf) => {
         if (disposedDuringLoad) return
-        // Collect all meshes, merge-equivalent by adding the loaded scene
         const loaded = gltf.scene
-        // Compute bbox to normalize
         const box = new THREE.Box3().setFromObject(loaded)
         const size = new THREE.Vector3()
         const center = new THREE.Vector3()
         box.getSize(size)
         box.getCenter(center)
-        // Normalize: center at origin, scale so longest dim ≈ 1.6 units
-        // (fibers sit in roughly ±0.5 xy, ±0.85 z, so 1.6 envelopes them)
         const longest = Math.max(size.x, size.y, size.z)
         const scale = 1.6 / longest
-        loaded.position.sub(center)
-        loaded.scale.setScalar(scale)
 
         loaded.traverse((node) => {
-          if ((node as THREE.Mesh).isMesh) {
-            const m = node as THREE.Mesh
-            const g = m.geometry as THREE.BufferGeometry
-            // Solid flesh layer
-            const solidMat = new THREE.MeshStandardMaterial({
-              color: new THREE.Color('#d5a5a5'),
-              emissive: new THREE.Color('#2a1018'),
-              emissiveIntensity: 0.4,
-              roughness: 0.85,
-              metalness: 0.0,
-              transparent: true,
-              opacity: 0.15,
-              side: THREE.DoubleSide,
-              depthWrite: false,
-            })
-            const solid = new THREE.Mesh(g, solidMat)
-            solid.position.copy(loaded.position)
-            solid.scale.copy(loaded.scale)
-            brainGroup.add(solid)
-            brainSolidRef = solid
+          if (!(node as THREE.Mesh).isMesh) return
+          const m = node as THREE.Mesh
+          const g = m.geometry as THREE.BufferGeometry
 
-            // Wireframe overlay
+          for (const s of sides) {
+            const flesh = new THREE.Mesh(
+              g,
+              new THREE.MeshStandardMaterial({
+                color: new THREE.Color('#d5a5a5'),
+                emissive: new THREE.Color('#2a1018'),
+                emissiveIntensity: 0.4,
+                roughness: 0.85,
+                metalness: 0.0,
+                transparent: true,
+                opacity: 0.15,
+                side: THREE.DoubleSide,
+                depthWrite: false,
+              })
+            )
+            flesh.position.copy(center).multiplyScalar(-scale)
+            flesh.scale.setScalar(scale)
+            s.root.add(flesh)
+
             const wireGeomLocal = new THREE.WireframeGeometry(g)
             const wireLine = new THREE.LineSegments(
               wireGeomLocal,
@@ -455,10 +547,9 @@ export default function BrainMap3D() {
                 toneMapped: false,
               })
             )
-            wireLine.position.copy(loaded.position)
-            wireLine.scale.copy(loaded.scale)
-            brainGroup.add(wireLine)
-            brainWireRef = wireLine
+            wireLine.position.copy(center).multiplyScalar(-scale)
+            wireLine.scale.setScalar(scale)
+            s.root.add(wireLine)
           }
         })
       },
@@ -467,79 +558,6 @@ export default function BrainMap3D() {
         console.error('Brain GLB failed to load', err)
       }
     )
-
-    // ── Fiber bundles per network ─────────────────────────────────────
-    const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((key) => {
-      const net = NETWORKS[key]
-      const color = new THREE.Color(net.color)
-      const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
-
-      const tubeMeshes: THREE.Mesh[] = curves.map((curve) => {
-        const tubeGeom = new THREE.TubeGeometry(curve, 32, 0.006, 6, false)
-        const mat = new THREE.MeshStandardMaterial({
-          color,
-          emissive: color,
-          emissiveIntensity: 0.9,
-          transparent: true,
-          opacity: 0.85,
-          depthWrite: false,
-          toneMapped: false,
-        })
-        const mesh = new THREE.Mesh(tubeGeom, mat)
-        root.add(mesh)
-        return mesh
-      })
-
-      // Signal particles — a few per fiber, offset t-values
-      const signals: FiberBundle['signals'] = []
-      const signalsPerFiber = 2
-      for (let ci = 0; ci < curves.length; ci++) {
-        for (let si = 0; si < signalsPerFiber; si++) {
-          const sphereGeom = new THREE.SphereGeometry(0.016, 12, 12)
-          const sMat = new THREE.MeshBasicMaterial({
-            color,
-            transparent: true,
-            opacity: 1.0,
-            depthWrite: false,
-            toneMapped: false,
-          })
-          const m = new THREE.Mesh(sphereGeom, sMat)
-          root.add(m)
-          signals.push({
-            curveIndex: ci,
-            t: (si / signalsPerFiber + Math.random() * 0.2) % 1,
-            mesh: m,
-            speed: 0.15 + Math.random() * 0.2,
-          })
-        }
-      }
-
-      // Anchor node orb
-      const nodeGeom = new THREE.SphereGeometry(0.035, 20, 20)
-      const nodeMat = new THREE.MeshStandardMaterial({
-        color,
-        emissive: color,
-        emissiveIntensity: 1.0,
-        transparent: true,
-        opacity: 1.0,
-        toneMapped: false,
-      })
-      const nodeMesh = new THREE.Mesh(nodeGeom, nodeMat)
-      nodeMesh.position.fromArray(net.anchor)
-      nodeMesh.userData.networkKey = key
-      root.add(nodeMesh)
-
-      return {
-        key,
-        color,
-        curves,
-        tubeMeshes,
-        signals,
-        nodeMesh,
-        targetIntensity: 1,
-        currentIntensity: 1,
-      }
-    })
 
     // ── Pointer rotate ──
     let autoRotating = true
@@ -586,7 +604,7 @@ export default function BrainMap3D() {
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
 
-    // ── Click → raycast against node orbs ──
+    // ── Click → raycast against node orbs on either side ──
     const raycaster = new THREE.Raycaster()
     const ndc = new THREE.Vector2()
     const onClick = (e: MouseEvent) => {
@@ -598,7 +616,8 @@ export default function BrainMap3D() {
       ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(ndc, camera)
-      const hits = raycaster.intersectObjects(bundles.map((b) => b.nodeMesh), false)
+      const allNodes = sides.flatMap((s) => s.bundles.map((b) => b.nodeMesh))
+      const hits = raycaster.intersectObjects(allNodes, false)
       if (hits.length > 0) {
         const key = hits[0].object.userData.networkKey as NetworkKey
         if (key) handleNetworkClick(key)
@@ -627,28 +646,31 @@ export default function BrainMap3D() {
       const delta = Math.min(clock.getDelta(), 1 / 30)
       const state = stateRef.current
 
-      // Update bundle intensities
-      for (const b of bundles) {
-        b.targetIntensity = state.active.includes(b.key) ? 1 : state.dimmed.includes(b.key) ? 0.08 : 0.35
-        b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
+      // Update each side's bundles with its own driving state.
+      for (const side of sides) {
+        const sideState = side.getState()
+        for (const b of side.bundles) {
+          b.targetIntensity = sideState.active.includes(b.key) ? 1 : sideState.dimmed.includes(b.key) ? 0.08 : 0.35
+          b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
 
-        const i = b.currentIntensity
-        for (const tm of b.tubeMeshes) {
-          const mat = tm.material as THREE.MeshStandardMaterial
-          mat.emissiveIntensity = 0.2 + i * 1.8
-          mat.opacity = 0.15 + i * 0.8
-        }
-        const nodeMat = b.nodeMesh.material as THREE.MeshStandardMaterial
-        nodeMat.emissiveIntensity = 0.2 + i * 2.0
-        nodeMat.opacity = 0.3 + i * 0.7
-        b.nodeMesh.scale.setScalar(0.85 + i * 0.5)
+          const i = b.currentIntensity
+          for (const tm of b.tubeMeshes) {
+            const mat = tm.material as THREE.MeshStandardMaterial
+            mat.emissiveIntensity = 0.2 + i * 1.8
+            mat.opacity = 0.15 + i * 0.8
+          }
+          const nodeMat = b.nodeMesh.material as THREE.MeshStandardMaterial
+          nodeMat.emissiveIntensity = 0.2 + i * 2.0
+          nodeMat.opacity = 0.3 + i * 0.7
+          b.nodeMesh.scale.setScalar(0.85 + i * 0.5)
 
-        for (const s of b.signals) {
-          s.t = (s.t + delta * s.speed * (0.3 + i * 0.7)) % 1
-          b.curves[s.curveIndex].getPointAt(s.t, tmp)
-          s.mesh.position.copy(tmp)
-          const sMat = s.mesh.material as THREE.MeshBasicMaterial
-          sMat.opacity = i > 0.15 ? 0.95 : 0.0
+          for (const s of b.signals) {
+            s.t = (s.t + delta * s.speed * (0.3 + i * 0.7)) % 1
+            b.curves[s.curveIndex].getPointAt(s.t, tmp)
+            s.mesh.position.copy(tmp)
+            const sMat = s.mesh.material as THREE.MeshBasicMaterial
+            sMat.opacity = i > 0.15 ? 0.95 : 0.0
+          }
         }
       }
 
@@ -671,31 +693,30 @@ export default function BrainMap3D() {
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
 
-      for (const b of bundles) {
-        for (const tm of b.tubeMeshes) {
-          ;(tm.geometry as THREE.BufferGeometry).dispose()
-          ;(tm.material as THREE.Material).dispose()
-        }
-        for (const s of b.signals) {
-          ;(s.mesh.geometry as THREE.BufferGeometry).dispose()
-          ;(s.mesh.material as THREE.Material).dispose()
-        }
-        ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
-        ;(b.nodeMesh.material as THREE.Material).dispose()
-      }
       disposedDuringLoad = true
-      brainGroup.traverse((n) => {
-        const m = n as THREE.Mesh
-        if (m.isMesh || (n as THREE.LineSegments).isLineSegments) {
-          const geom = (m as THREE.Mesh | THREE.LineSegments).geometry as THREE.BufferGeometry | undefined
-          const mat = (m as THREE.Mesh | THREE.LineSegments).material as THREE.Material | undefined
-          geom?.dispose()
-          mat?.dispose()
+      for (const side of sides) {
+        for (const b of side.bundles) {
+          for (const tm of b.tubeMeshes) {
+            ;(tm.geometry as THREE.BufferGeometry).dispose()
+            ;(tm.material as THREE.Material).dispose()
+          }
+          for (const s of b.signals) {
+            ;(s.mesh.geometry as THREE.BufferGeometry).dispose()
+            ;(s.mesh.material as THREE.Material).dispose()
+          }
+          ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
+          ;(b.nodeMesh.material as THREE.Material).dispose()
         }
-      })
-      // Silence unused-ref warnings; they are captured via brainGroup already.
-      void brainSolidRef
-      void brainWireRef
+        side.root.traverse((n) => {
+          const mesh = n as THREE.Mesh | THREE.LineSegments
+          if ((mesh as THREE.Mesh).isMesh || (mesh as THREE.LineSegments).isLineSegments) {
+            const geom = mesh.geometry as THREE.BufferGeometry | undefined
+            const mat = mesh.material as THREE.Material | undefined
+            geom?.dispose()
+            mat?.dispose()
+          }
+        })
+      }
       renderer.dispose()
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement)
     }
@@ -705,15 +726,25 @@ export default function BrainMap3D() {
     <div
       ref={containerRef}
       className="relative w-full my-8 rounded-2xl overflow-hidden"
-      style={{ minHeight: '500px' }}
+      style={{ minHeight: '560px' }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0118] via-[#1a0a2e] to-[#0a0118]" />
 
-      <div className="absolute top-4 left-4 right-4 z-10 text-center pointer-events-none">
-        <p className="text-sm font-mono text-amber-400/80 tracking-wide">
-          {currentState.title}
-        </p>
-        <div className="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
+      {/* Split labels — NT (left) / ADHD (right) */}
+      <div className="absolute top-4 left-0 right-0 z-10 grid grid-cols-2 gap-2 px-6 pointer-events-none">
+        <div className="text-center">
+          <p className="text-[11px] font-mono uppercase tracking-widest text-teal-300/80">Neurotypical</p>
+          <p className="text-[10px] font-mono text-white/40 mt-0.5">all systems balanced</p>
+        </div>
+        <div className="text-center">
+          <p className="text-[11px] font-mono uppercase tracking-widest text-amber-400/80">ADHD</p>
+          <p className="text-[10px] font-mono text-amber-300/60 mt-0.5 truncate">{currentState.title.split(' — ')[1] ?? currentState.title}</p>
+        </div>
+      </div>
+
+      {/* Center progress bar for the ADHD side's scroll state */}
+      <div className="absolute top-14 left-1/4 right-1/4 z-10 pointer-events-none">
+        <div className="h-0.5 bg-white/10 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-amber-500 to-teal-500 transition-all duration-300"
             style={{ width: `${scrollProgress * 100}%` }}
@@ -722,7 +753,7 @@ export default function BrainMap3D() {
       </div>
 
       {selectedNetwork && (
-        <div className="absolute bottom-4 left-4 right-4 z-10 bg-black/60 backdrop-blur-sm rounded-lg p-3 border border-white/10">
+        <div className="absolute bottom-14 left-4 right-4 z-10 bg-black/60 backdrop-blur-sm rounded-lg p-3 border border-white/10">
           <p className="text-sm font-bold" style={{ color: NETWORKS[selectedNetwork].color }}>
             {NETWORKS[selectedNetwork].label}
           </p>
@@ -732,12 +763,25 @@ export default function BrainMap3D() {
         </div>
       )}
 
-      <div className="absolute top-16 right-4 z-10 space-y-1">
+      {/* Canvas */}
+      <div className="relative w-full" style={{ height: '520px' }}>
+        <div ref={canvasHostRef} className="absolute inset-0" />
+        {webglFailed && (
+          <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+            <p className="text-xs font-mono text-amber-400/80">
+              3D rendering unavailable. {currentState.title}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Legend row — bottom, flat */}
+      <div className="absolute bottom-1 left-0 right-0 z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3 pb-2">
         {(Object.entries(NETWORKS) as [NetworkKey, NetworkDef][]).map(([key, net]) => (
           <button
             key={key}
             type="button"
-            className="flex items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity bg-transparent border-0 p-0"
+            className="flex items-center gap-1.5 cursor-pointer opacity-70 hover:opacity-100 transition-opacity bg-transparent border-0 p-0"
             onClick={() => handleNetworkClick(key)}
           >
             <span
@@ -753,19 +797,8 @@ export default function BrainMap3D() {
         ))}
       </div>
 
-      <div className="relative w-full" style={{ height: '500px' }}>
-        <div ref={canvasHostRef} className="absolute inset-0" />
-        {webglFailed && (
-          <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
-            <p className="text-xs font-mono text-amber-400/80">
-              3D rendering unavailable. {currentState.title}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
-        <p className="text-[10px] text-white/30 font-mono">drag to rotate · click nodes · scroll to explore</p>
+      <div className="absolute bottom-1 right-3 z-10 pointer-events-none">
+        <p className="text-[9px] text-white/25 font-mono hidden md:block">drag · click nodes · scroll</p>
       </div>
     </div>
   )
