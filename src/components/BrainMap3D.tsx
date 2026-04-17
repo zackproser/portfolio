@@ -546,7 +546,6 @@ export default function BrainMap3D() {
 
     const animate = () => {
       const delta = Math.min(clock.getDelta(), 1 / 30)
-      const state = stateRef.current
 
       // Update each side's bundles with its own driving state.
       // IMPORTANT: dimmed networks fade to fully invisible so the NT and ADHD

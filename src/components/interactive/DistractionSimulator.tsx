@@ -326,17 +326,18 @@ export function DistractionSimulator() {
     for (let i = 0; i < count; i++) {
       const frag = MEMORY_FRAGMENTS[i % MEMORY_FRAGMENTS.length]
       const size = 80 + rand() * 80 // 80-160 px wide
+      const rotation = (rand() - 0.5) * 30
       memoryItems.push({
         frag,
         style: {
           top: `${5 + rand() * 85}%`,
           left: `${2 + rand() * 85}%`,
           width: `${size}px`,
-          transform: `rotate(${(rand() - 0.5) * 30}deg)`,
+          '--rot': `rotate(${rotation}deg)`,
           animation: `drift ${3 + rand() * 3}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.15}s`,
           opacity: Math.min(1, (pct - 55) / 25),
-        },
+        } as React.CSSProperties,
       })
     }
   }
