@@ -3,6 +3,9 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js'
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js'
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js'
 
 // ─── Networks ───────────────────────────────────────────────────────────────
 // Each network is a bundle of curved fiber tracts anchored in an anatomical
@@ -90,10 +93,10 @@ const SCROLL_STATES: ScrollState[] = [
   },
   {
     threshold: 0.45,
-    active: ['dopamine', 'prefrontal', 'workingMemory'],
-    dimmed: ['dmn', 'amygdala'],
-    title: 'Hyperfocus — three networks fire at 180%, nothing else exists',
-    boost: 1.8,
+    active: ['prefrontal', 'workingMemory', 'dopamine', 'dmn', 'amygdala'],
+    dimmed: [],
+    title: 'Hyperfocus — every network firing at once, the whole brain ignites',
+    boost: 2.2,
   },
   {
     threshold: 0.6,
@@ -152,8 +155,8 @@ function classifyRegion(nx: number, ny: number, nz: number): NetworkKey | null {
 
 type RegionWire = {
   key: NetworkKey
-  lines: THREE.LineSegments
-  material: THREE.LineBasicMaterial
+  lines: LineSegments2
+  material: LineMaterial
 }
 
 // The user-selectable ADHD states. The left (NT) side is always fixed at
@@ -264,9 +267,9 @@ export default function BrainMap3D({
       regionWires: RegionWire[]
       // Internal small structures (amygdala, dopamine/striatum, DMN hub).
       // Populated after GLB load; glow when their network is active.
-      internals: { key: NetworkKey; mesh: THREE.LineSegments; material: THREE.LineBasicMaterial }[]
+      internals: { key: NetworkKey; mesh: LineSegments2; material: LineMaterial }[]
       // Default (unclassified) wireframe — stays the base pink color.
-      defaultWire: THREE.LineSegments[]
+      defaultWire: LineSegments2[]
       getState: () => typeof SCROLL_STATES[number]
     }
 
@@ -322,6 +325,13 @@ export default function BrainMap3D({
     const NT_STATE = SCROLL_STATES[0]
     buildSide('nt', -SIDE_OFFSET_X, () => NT_STATE)
     buildSide('adhd', +SIDE_OFFSET_X, () => stateRef.current)
+
+    // LineMaterial requires a resolution matching the render target, updated
+    // on every resize. Collected here so the resize handler can iterate.
+    const lineMaterials: LineMaterial[] = []
+    const setResolutionAll = (w: number, h: number) => {
+      for (const m of lineMaterials) m.resolution.set(w, h)
+    }
 
     // Load brain GLB once. For each side we build:
     //   - A translucent flesh layer (same pink base tissue both sides)
@@ -404,38 +414,52 @@ export default function BrainMap3D({
             flesh.scale.setScalar(scale)
             s.root.add(flesh)
 
-            // Helper to build a LineSegments from a flat position bucket
-            const buildLines = (positions: number[], color: number, opacity: number, additive = false) => {
-              const geom = new THREE.BufferGeometry()
-              geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-              const mat = new THREE.LineBasicMaterial({
-                color: new THREE.Color(color),
+            // Helper to build LineSegments2 (screen-space pixel linewidth) from
+            // a flat position bucket. Produces visibly chunkier lines than
+            // gl.LINES which is capped at 1px on most drivers.
+            const buildLines = (
+              positions: number[],
+              color: number,
+              opacity: number,
+              linewidth: number,
+              additive = false,
+            ) => {
+              const geom = new LineSegmentsGeometry().setPositions(positions)
+              const mat = new LineMaterial({
+                color,
+                linewidth, // screen-space pixels (worldUnits: false default)
                 transparent: true,
                 opacity,
                 depthWrite: false,
                 toneMapped: false,
+                worldUnits: false,
                 ...(additive ? { blending: THREE.AdditiveBlending } : {}),
               })
-              const line = new THREE.LineSegments(geom, mat)
+              mat.resolution.set(width, height)
+              lineMaterials.push(mat)
+              const line = new LineSegments2(geom, mat)
               line.position.copy(center).multiplyScalar(-scale)
               line.scale.setScalar(scale)
               s.root.add(line)
               return { line, mat }
             }
 
-            // Default (unclassified) wireframe — faint pink
+            // Default (unclassified) wireframe — faint pink, slightly chunky.
+            // Push into the array; for multi-mesh GLBs we accumulate one per
+            // mesh so every mesh's pink outline animates consistently.
             if (buckets.default.length) {
-              const { line } = buildLines(buckets.default, 0xffb5c8, 0.35)
+              const { line } = buildLines(buckets.default, 0xffb5c8, 0.35, 1.4)
               s.defaultWire.push(line)
             }
 
-            // Per-region wireframes — color is the network's color, opacity
-            // starts low; boosted to full when active.
+            // Per-region wireframes — color is the network's color, chunky
+            // linewidth so the region coloring reads clearly. Opacity starts
+            // low; boosted to full when active.
             for (const key of Object.keys(NETWORKS) as NetworkKey[]) {
               const seg = buckets[key]
               if (!seg || seg.length === 0) continue
               const colorHex = new THREE.Color(NETWORKS[key].color).getHex()
-              const { line, mat } = buildLines(seg, colorHex, 0.25, true)
+              const { line, mat } = buildLines(seg, colorHex, 0.2, 2.4, true)
               s.regionWires.push({ key, lines: line, material: mat })
             }
 
@@ -466,17 +490,20 @@ export default function BrainMap3D({
             const z2 = center3[2] + r2 * Math.cos(phi2)
             positions.push(x1, y1, z1, x2, y2, z2)
           }
-          const geomI = new THREE.BufferGeometry()
-          geomI.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-          const matI = new THREE.LineBasicMaterial({
-            color: new THREE.Color(colorHex),
+          const geomI = new LineSegmentsGeometry().setPositions(positions)
+          const matI = new LineMaterial({
+            color: colorHex,
+            linewidth: 3.0,
             transparent: true,
             opacity: 0.25,
             depthWrite: false,
             toneMapped: false,
+            worldUnits: false,
             blending: THREE.AdditiveBlending,
           })
-          const lineI = new THREE.LineSegments(geomI, matI)
+          matI.resolution.set(width, height)
+          lineMaterials.push(matI)
+          const lineI = new LineSegments2(geomI, matI)
           return { line: lineI, mat: matI }
         }
 
@@ -586,6 +613,7 @@ export default function BrainMap3D({
       camera.aspect = width / height
       camera.updateProjectionMatrix()
       renderer.setSize(width, height, false)
+      setResolutionAll(width, height)
     }
     const ro = new ResizeObserver(resize)
     ro.observe(host)
@@ -630,13 +658,16 @@ export default function BrainMap3D({
         }
 
         // Brain-surface wireframe: each region's classified edges glow in
-        // that network's color when active. Dimmed regions fade to 0.
+        // that network's color when active. Dimmed regions fade nearly
+        // to 0 so the crash-state brain reads clearly dark, and active
+        // regions push past saturation for a blazing hyperfocus look.
         for (const rw of side.regionWires) {
           const i = intensity[rw.key] ?? 0
-          const iOpacity = Math.min(1, i)
-          rw.material.opacity = 0.08 + iOpacity * 0.92
-          rw.material.color.set(NETWORKS[rw.key].color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
-          rw.lines.visible = i > 0.02
+          const iOpacity = Math.min(1, i * 0.9)
+          rw.material.opacity = 0.02 + iOpacity * 0.98
+          rw.material.color.set(NETWORKS[rw.key].color).multiplyScalar(Math.min(3.5, 0.7 + i * 1.4))
+          rw.material.linewidth = 2.4 + Math.min(1.6, i * 0.8)
+          rw.lines.visible = i > 0.015
         }
 
         // Internal line clusters for subcortical regions.
@@ -644,16 +675,19 @@ export default function BrainMap3D({
           const i = intensity[intern.key] ?? 0
           const iOpacity = Math.min(1, i)
           intern.material.opacity = iOpacity * iOpacity
-          intern.material.color.set(NETWORKS[intern.key].color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
+          intern.material.color.set(NETWORKS[intern.key].color).multiplyScalar(Math.min(3.0, 0.9 + i * 1.1))
           intern.mesh.visible = i > 0.05
         }
 
-        // Default wireframe fades when many networks are active — let the
-        // colored regions dominate during hyperfocus / baseline NT.
+        // Default wireframe fades with activation: low activity → very dim
+        // so the crash-state brain looks dark; medium-to-high → also dim so
+        // the colored regions dominate.
         const totalActivity = Object.values(intensity).reduce<number>((acc, v) => acc + (v ?? 0), 0)
-        const faded = Math.max(0.1, 0.45 - totalActivity * 0.06)
+        const fadedDefault = totalActivity < 0.2
+          ? 0.04
+          : Math.max(0.05, 0.4 - totalActivity * 0.07)
         for (const wire of side.defaultWire) {
-          ;(wire.material as THREE.LineBasicMaterial).opacity = faded
+          ;(wire.material as LineMaterial).opacity = fadedDefault
         }
       }
 

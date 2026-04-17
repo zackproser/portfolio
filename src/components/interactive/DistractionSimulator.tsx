@@ -12,8 +12,17 @@ import {
 // These are defaults used when no props are passed — the component is
 // reusable across posts by overriding `text`, `intrusiveThoughts`,
 // `notifications`, and `memoryFragments`.
+//
+// Paragraphs are separated by double newlines so the simulator can split
+// long text into several <p> blocks for more scroll runway.
 
-const DEFAULT_TEXT = `The alert fired at 2:47 AM. Response times had spiked to 14 seconds across the payment service. You pull up the dashboard, squinting at the latency graph. The p99 jumped from 200ms to 14,000ms in under three minutes. No deploy happened. You check the database connections — pool utilization is at 98%. Something is holding connections open. You trace the slow queries log and find a full table scan on the transactions table. An index was dropped during last night's migration. The ORM generated a query plan that bypassed the covering index entirely. You draft the fix: recreate the index, but you need to do it concurrently to avoid locking the table in production. You run CREATE INDEX CONCURRENTLY and watch the p99 start to drop. 14 seconds. 8 seconds. 3 seconds. 400ms. The pager goes silent. You document the incident, tag the migration PR, and add a check to the CI pipeline so an index drop can never ship without explicit approval again.`
+const DEFAULT_TEXT = `The alert fired at 2:47 AM. Response times had spiked to 14 seconds across the payment service. You roll out of bed, pull the laptop onto your knees, and squint at the latency graph. The p99 jumped from 200ms to 14,000ms in under three minutes. No deploy happened in the last hour. Something changed in the environment, not the code.
+
+You check the database connections first. Pool utilization is at 98%. Connections are being held open somewhere, starving new requests. You trace the slow queries log and see dozens of queries taking 9+ seconds each — all hitting the same table. A full table scan on the transactions table, which should never scan because there's a covering index. You check the schema and find the index is gone. You cross-reference with last night's migration. The migration author meant to rebuild the index concurrently but fat-fingered a DROP without the CREATE.
+
+You draft the fix with the pager still vibrating. CREATE INDEX CONCURRENTLY, so production writes aren't blocked while the index rebuilds. You triple-check the statement — there is no undo button on a production database at 2 AM. You run it, then watch the monitor. The p99 latency doesn't move for 30 seconds. Then it starts to drop. 14 seconds. 8 seconds. 3 seconds. 400ms. The pager goes silent. Traffic recovers. You exhale for the first time in forty minutes.
+
+You document everything while the context is still hot: the query plan before and after, the migration diff, the timeline, the decisions. You tag the original migration PR with a link to the incident report. You add a check to the CI pipeline so an index drop can never ship without an explicit reviewer approval again. You close the laptop at 4:12 AM. The ceiling is still dark. You know you won't sleep, but the system is stable. Everyone else will wake up and never know.`
 
 const DEFAULT_INTRUSIVE_THOUGHTS = [
   'why did they say that shit to me',
@@ -277,9 +286,11 @@ export function DistractionSimulator({
       : Math.min(100, ((rawPct - 30) / 70) * 100)
     : 0
 
-  // ── Word replacement — aggressive ramp
-  const words = text.split(' ')
-  const wordCount = words.length
+  // ── Word replacement — aggressive ramp. Paragraphs are split on \n\n.
+  const paragraphs = text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean)
+  const tokensPerParagraph = paragraphs.map((p) => p.split(/\s+/))
+  const wordCount = tokensPerParagraph.reduce((acc, p) => acc + p.length, 0)
+
   let replaceRatio = 0
   if (pct > 10 && pct <= 25) replaceRatio = 0.08
   else if (pct > 25 && pct <= 40) replaceRatio = 0.22
@@ -289,18 +300,27 @@ export function DistractionSimulator({
   const replacedIndices = pickIndices(wordCount, Math.floor(wordCount * replaceRatio), 42)
   const replacedSet = new Set(replacedIndices)
 
-  const renderedWords: ReactNode[] = words.map((word, i) => {
-    if (replacedSet.has(i)) {
-      const thought = intrusiveThoughts[(i * 7) % intrusiveThoughts.length]
-      const color =
-        pct > 70 ? '#fb923c' : pct > 50 ? '#f87171' : '#ef4444'
-      return (
-        <span key={i} className="font-semibold italic" style={{ color }}>
-          {thought}
-        </span>
-      )
-    }
-    return <span key={i}>{word}</span>
+  // Render each paragraph, keyed off a running global word index so
+  // replaced-word selections stay stable across paragraphs.
+  let globalWordIdx = 0
+  const renderedParagraphs: ReactNode[] = tokensPerParagraph.map((tokens, pi) => {
+    const nodes: ReactNode[] = []
+    tokens.forEach((word, wi) => {
+      const i = globalWordIdx++
+      if (wi > 0) nodes.push(' ')
+      if (replacedSet.has(i)) {
+        const thought = intrusiveThoughts[(i * 7) % intrusiveThoughts.length]
+        const color = pct > 70 ? '#fb923c' : pct > 50 ? '#f87171' : '#ef4444'
+        nodes.push(
+          <span key={`${pi}-${wi}`} className="font-semibold italic" style={{ color }}>
+            {thought}
+          </span>,
+        )
+      } else {
+        nodes.push(<span key={`${pi}-${wi}`}>{word}</span>)
+      }
+    })
+    return nodes
   })
 
   // ── Vibration
@@ -427,35 +447,47 @@ export function DistractionSimulator({
     )
   }
 
-  // Controls bar — shared across all demo states. Mode toggle + start/reset.
+  // Reset any in-progress demo when the user switches modes, so clicking
+  // between NT and ND always returns to a known preview state instead of
+  // leaking scroll progress (or a stale `started` flag) across modes.
+  const switchMode = (m: ViewMode) => {
+    setViewMode(m)
+    setStarted(false)
+    setScrollProgress(0)
+  }
+
+  // Controls bar — dark pill that reads clearly on both light and dark
+  // page backgrounds. Shared across preview + chaos states.
   const controls = (
-    <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-xs font-mono">
-      <div className="flex overflow-hidden rounded-full border border-white/15 bg-black/20">
-        {(['nt', 'nd'] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => {
-              setViewMode(m)
-              if (m === 'nt') setStarted(true)
-            }}
-            className={`px-4 py-1.5 transition-colors ${
-              viewMode === m
-                ? 'bg-orange-500/80 text-white'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            {m === 'nt' ? 'Read as Neurotypical' : 'Read as ADHD'}
-          </button>
-        ))}
+    <div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-sm font-mono">
+      <div className="flex overflow-hidden rounded-full border border-zinc-700 bg-zinc-900 shadow-lg">
+        {(['nt', 'nd'] as const).map((m) => {
+          const selected = viewMode === m
+          return (
+            <button
+              key={m}
+              type="button"
+              onClick={() => switchMode(m)}
+              className={`px-4 py-2 font-semibold transition-colors ${
+                selected
+                  ? m === 'nt'
+                    ? 'bg-teal-500 text-white'
+                    : 'bg-orange-500 text-white'
+                  : 'bg-transparent text-zinc-200 hover:bg-zinc-800'
+              }`}
+            >
+              {m === 'nt' ? 'Read as Neurotypical' : 'Read as ADHD'}
+            </button>
+          )
+        })}
       </div>
       {viewMode === 'nd' && !started && (
         <button
           type="button"
           onClick={() => setStarted(true)}
-          className="rounded-full border border-orange-400/60 bg-orange-500/20 px-4 py-1.5 font-semibold text-orange-200 shadow-[0_0_16px_rgba(249,115,22,0.35)] transition-all hover:bg-orange-500/30"
+          className="rounded-full border border-orange-400 bg-orange-500 px-4 py-2 font-semibold text-white shadow-[0_0_16px_rgba(249,115,22,0.5)] transition-transform hover:scale-[1.02]"
         >
-          ▶ Start demo — scroll slowly
+          ▶ Start demo — then scroll slowly
         </button>
       )}
       {viewMode === 'nd' && started && (
@@ -465,9 +497,9 @@ export function DistractionSimulator({
             setStarted(false)
             setScrollProgress(0)
           }}
-          className="rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-zinc-300 hover:border-white/40 hover:text-white"
+          className="rounded-full border border-zinc-500 bg-zinc-100 px-3 py-2 text-zinc-800 hover:bg-zinc-200 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
         >
-          reset
+          ↺ reset
         </button>
       )}
     </div>
@@ -485,27 +517,29 @@ export function DistractionSimulator({
           className={`rounded-2xl px-8 py-10 md:px-14 border ${
             isNt
               ? 'border-teal-400/30 bg-gradient-to-b from-[#0a1820] to-[#0a1416]'
-              : 'border-white/10 bg-[#f8f8fa]'
+              : 'border-zinc-200 bg-[#f8f8fa] dark:border-zinc-800 dark:bg-zinc-100'
           }`}
         >
-          <p
-            className={`mx-auto max-w-[42rem] text-base leading-loose md:text-lg ${
-              isNt ? 'text-teal-100' : 'text-zinc-800'
-            }`}
-          >
-            {text}
-          </p>
+          <div className="mx-auto max-w-[42rem] space-y-5 text-base leading-loose md:text-lg">
+            {paragraphs.map((p, i) => (
+              <p key={i} className={isNt ? 'text-teal-100' : 'text-zinc-800'}>
+                {p}
+              </p>
+            ))}
+          </div>
           {isNt ? (
-            <p className="mx-auto mt-6 max-w-[42rem] text-sm font-mono text-teal-300/70">
-              This is what reading a technical paragraph feels like with an
-              intact prefrontal cortex: linear, sustained, uninterrupted.
-              Now toggle to <span className="font-semibold text-teal-200">Read as ADHD</span> and
-              click <span className="font-semibold text-teal-200">Start demo</span>.
+            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-teal-300/70">
+              This is what reading feels like with an intact prefrontal
+              cortex: linear, sustained, uninterrupted. Toggle to{' '}
+              <span className="font-semibold text-teal-200">Read as ADHD</span> and
+              click <span className="font-semibold text-teal-200">Start demo</span>{' '}
+              to see what the same passage feels like to my brain.
             </p>
           ) : (
-            <p className="mx-auto mt-6 max-w-[42rem] text-sm font-mono text-zinc-500">
-              Above is the paragraph as it would read to a neurotypical
-              brain. Click <span className="font-semibold text-orange-500">▶ Start demo</span>{' '}
+            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-zinc-600">
+              Above is the passage as it would read to a neurotypical
+              brain. Click{' '}
+              <span className="font-semibold text-orange-600">▶ Start demo</span>{' '}
               and then scroll slowly — the first 30% of the scroll stays
               normal, then the ADHD load begins accumulating.
             </p>
@@ -561,7 +595,7 @@ export function DistractionSimulator({
         ref={containerRef}
         className="relative my-4 overflow-hidden rounded-2xl px-8 py-12 md:px-14 transition-colors duration-150"
         style={{
-          height: '60rem',
+          height: '96rem',
           backgroundColor: rgb(bg),
           borderWidth: '1px',
           borderColor: `rgba(255,255,255,${borderOpacity})`,
@@ -593,14 +627,16 @@ export function DistractionSimulator({
         ))}
 
         {/* Main text block */}
-        <div className={`relative z-10 mx-auto max-w-[42rem] pr-24 ${vibrateClass}`}>
-          <p className="text-base leading-loose md:text-lg" style={{ color: rgb(textColor) }}>
-            {renderedWords.reduce<ReactNode[]>((acc, node, i) => {
-              if (i > 0) acc.push(' ')
-              acc.push(node)
-              return acc
-            }, [])}
-          </p>
+        <div className={`relative z-10 mx-auto max-w-[42rem] space-y-6 pr-24 ${vibrateClass}`}>
+          {renderedParagraphs.map((nodes, pi) => (
+            <p
+              key={pi}
+              className="text-base leading-loose md:text-lg"
+              style={{ color: rgb(textColor) }}
+            >
+              {nodes}
+            </p>
+          ))}
         </div>
 
         {/* Progress bar along bottom */}
