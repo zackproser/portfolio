@@ -62,8 +62,8 @@ const SCROLL_STATES: { threshold: number; active: RegionKey[]; dimmed: RegionKey
   },
   {
     threshold: 0.3,
-    active: ['amygdala', 'dmn'],
-    dimmed: ['prefrontal', 'dopamine', 'workingMemory'],
+    active: ['amygdala'],
+    dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'dmn'],
     title: 'Priority blindness — amygdala fires on everything equally',
   },
   {
@@ -112,7 +112,8 @@ function BrainRegion({
   }, [isActive, isDimmed])
 
   useFrame((_, delta) => {
-    currentIntensity.current += (targetIntensity.current - currentIntensity.current) * delta * 3
+    const clampedDelta = Math.min(delta, 1 / 30)
+    currentIntensity.current += (targetIntensity.current - currentIntensity.current) * clampedDelta * 3
 
     if (meshRef.current) {
       const mat = meshRef.current.material as THREE.MeshStandardMaterial
@@ -180,11 +181,12 @@ function NeuralParticles({ activeRegions }: { activeRegions: RegionKey[] }) {
     if (!particlesRef.current) return
     const pos = particlesRef.current.geometry.attributes.position.array as Float32Array
     const speed = activeRegions.length > 3 ? 2 : activeRegions.length > 1 ? 1 : 0.3
+    const clampedDelta = Math.min(delta, 1 / 30)
 
     for (let i = 0; i < count; i++) {
-      pos[i * 3] += velocities[i * 3] * speed * delta * 60
-      pos[i * 3 + 1] += velocities[i * 3 + 1] * speed * delta * 60
-      pos[i * 3 + 2] += velocities[i * 3 + 2] * speed * delta * 60
+      pos[i * 3] += velocities[i * 3] * speed * clampedDelta * 60
+      pos[i * 3 + 1] += velocities[i * 3 + 1] * speed * clampedDelta * 60
+      pos[i * 3 + 2] += velocities[i * 3 + 2] * speed * clampedDelta * 60
 
       const dist = Math.sqrt(pos[i * 3] ** 2 + pos[i * 3 + 1] ** 2 + pos[i * 3 + 2] ** 2)
       if (dist > 1.8 || dist < 0.4) {
