@@ -344,6 +344,31 @@ export function DistractionSimulator() {
 
   const showReveal = pct > 90
 
+  // Color interpolation — container background and text fade from normal
+  // paragraph (light bg, dark text) into chaos (dark bg, dim text) as scroll
+  // advances. Splits at 50% so the mid is an ominous purple.
+  const tScroll = pct / 100
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+  const lerp3 = (a: number[], b: number[], t: number) => [
+    lerp(a[0], b[0], t),
+    lerp(a[1], b[1], t),
+    lerp(a[2], b[2], t),
+  ]
+  const rgb = (c: number[]) => `rgb(${c[0] | 0}, ${c[1] | 0}, ${c[2] | 0})`
+  const bgLight = [252, 252, 252]
+  const bgMid = [80, 30, 110]
+  const bgDark = [8, 2, 20]
+  const bg = tScroll < 0.5
+    ? lerp3(bgLight, bgMid, tScroll / 0.5)
+    : lerp3(bgMid, bgDark, (tScroll - 0.5) / 0.5)
+  const textLight = [24, 24, 27]   // zinc-900
+  const textMid = [190, 190, 200]  // mid-gray (peak overwhelm)
+  const textDark = [110, 100, 130] // dim zinc-500-ish
+  const textColor = tScroll < 0.5
+    ? lerp3(textLight, textMid, tScroll / 0.5)
+    : lerp3(textMid, textDark, (tScroll - 0.5) / 0.5)
+  const borderOpacity = Math.min(0.3, 0.05 + tScroll * 0.6)
+
   if (!mounted) return null
 
   if (isMobile) {
@@ -404,13 +429,27 @@ export function DistractionSimulator() {
         .thought-bubble { animation: float-bubble 3s ease-in-out infinite alternate; }
       `}</style>
 
+      {/* Prompt above the widget — sets the expectation that something
+          interactive is coming. Fades out once the user is scrolling into
+          the chaos so it doesn't compete with the distractions. */}
+      <div
+        className="mt-12 mb-4 text-center transition-opacity duration-300"
+        style={{ opacity: pct < 8 ? 1 : Math.max(0, 1 - (pct - 8) / 10) }}
+      >
+        <p className="text-sm font-mono uppercase tracking-[0.25em] text-zinc-500">
+          see it in action below
+        </p>
+        <p className="mt-1 text-xs font-mono text-zinc-400">↓ scroll slowly ↓</p>
+      </div>
+
       <div
         ref={containerRef}
-        className="relative my-8 overflow-hidden rounded-2xl border border-white/5 px-8 py-12 md:px-14"
+        className="relative my-4 overflow-hidden rounded-2xl px-8 py-12 md:px-14 transition-colors duration-150"
         style={{
           height: '60rem',
-          background:
-            'radial-gradient(ellipse at 25% 10%, #3a0f52 0%, #180629 45%, #05010e 100%)',
+          backgroundColor: rgb(bg),
+          borderWidth: '1px',
+          borderColor: `rgba(255,255,255,${borderOpacity})`,
         }}
       >
         {/* Noise overlay (very subtle) */}
@@ -440,7 +479,7 @@ export function DistractionSimulator() {
 
         {/* Main text block */}
         <div className={`relative z-10 mx-auto max-w-[42rem] pr-24 ${vibrateClass}`}>
-          <p className="text-base leading-loose text-zinc-200 md:text-lg">
+          <p className="text-base leading-loose md:text-lg" style={{ color: rgb(textColor) }}>
             {renderedWords.reduce<ReactNode[]>((acc, node, i) => {
               if (i > 0) acc.push(' ')
               acc.push(node)
