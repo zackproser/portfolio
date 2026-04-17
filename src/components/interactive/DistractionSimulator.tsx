@@ -187,11 +187,15 @@ function ThoughtBubble({
 
 // ─── Main ─────────────────────────────────────────────────────────────────
 
+type ViewMode = 'nt' | 'nd'
+
 export function DistractionSimulator() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('nd')
+  const [started, setStarted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -212,9 +216,12 @@ export function DistractionSimulator() {
     setScrollProgress(progress)
   }, [])
 
+  // Only track scroll after the demo has been started in ND mode.
+  const scrollActive = started && viewMode === 'nd' && !isMobile
+
   useEffect(() => {
     const el = containerRef.current
-    if (!el || isMobile || !mounted) return
+    if (!el || !scrollActive || !mounted) return
 
     let listening = false
     const observer = new IntersectionObserver(
@@ -236,9 +243,17 @@ export function DistractionSimulator() {
       observer.disconnect()
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [handleScroll, isMobile, mounted])
+  }, [handleScroll, scrollActive, mounted])
 
-  const pct = scrollProgress * 100
+  // Raw scroll (0-100). Remap so the first 30% of scroll stays pristine —
+  // no effects fire until past 30% — then 30-100 → 0-100 so the ramp is
+  // fully expressed across the remaining scroll range.
+  const rawPct = scrollProgress * 100
+  const pct = scrollActive
+    ? rawPct <= 30
+      ? 0
+      : Math.min(100, ((rawPct - 30) / 70) * 100)
+    : 0
 
   // ── Word replacement — aggressive ramp
   const words = ORIGINAL_TEXT.split(' ')
@@ -390,6 +405,94 @@ export function DistractionSimulator() {
     )
   }
 
+  // Controls bar — shared across all demo states. Mode toggle + start/reset.
+  const controls = (
+    <div className="mb-3 flex flex-wrap items-center justify-center gap-3 text-xs font-mono">
+      <div className="flex overflow-hidden rounded-full border border-white/15 bg-black/20">
+        {(['nt', 'nd'] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => {
+              setViewMode(m)
+              if (m === 'nt') setStarted(true)
+            }}
+            className={`px-4 py-1.5 transition-colors ${
+              viewMode === m
+                ? 'bg-orange-500/80 text-white'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            {m === 'nt' ? 'Read as Neurotypical' : 'Read as ADHD'}
+          </button>
+        ))}
+      </div>
+      {viewMode === 'nd' && !started && (
+        <button
+          type="button"
+          onClick={() => setStarted(true)}
+          className="rounded-full border border-orange-400/60 bg-orange-500/20 px-4 py-1.5 font-semibold text-orange-200 shadow-[0_0_16px_rgba(249,115,22,0.35)] transition-all hover:bg-orange-500/30"
+        >
+          ▶ Start demo — scroll slowly
+        </button>
+      )}
+      {viewMode === 'nd' && started && (
+        <button
+          type="button"
+          onClick={() => {
+            setStarted(false)
+            setScrollProgress(0)
+          }}
+          className="rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-zinc-300 hover:border-white/40 hover:text-white"
+        >
+          reset
+        </button>
+      )}
+    </div>
+  )
+
+  // Pre-start state (ND mode not yet started) OR NT mode: render a clean,
+  // readable paragraph so the user can experience what the passage is
+  // actually saying before (or without) the distractions.
+  if (!started || viewMode === 'nt') {
+    const isNt = viewMode === 'nt'
+    return (
+      <div className="my-8">
+        {controls}
+        <div
+          className={`rounded-2xl px-8 py-10 md:px-14 border ${
+            isNt
+              ? 'border-teal-400/30 bg-gradient-to-b from-[#0a1820] to-[#0a1416]'
+              : 'border-white/10 bg-[#f8f8fa]'
+          }`}
+        >
+          <p
+            className={`mx-auto max-w-[42rem] text-base leading-loose md:text-lg ${
+              isNt ? 'text-teal-100' : 'text-zinc-800'
+            }`}
+          >
+            {ORIGINAL_TEXT}
+          </p>
+          {isNt ? (
+            <p className="mx-auto mt-6 max-w-[42rem] text-sm font-mono text-teal-300/70">
+              This is what reading a technical paragraph feels like with an
+              intact prefrontal cortex: linear, sustained, uninterrupted.
+              Now toggle to <span className="font-semibold text-teal-200">Read as ADHD</span> and
+              click <span className="font-semibold text-teal-200">Start demo</span>.
+            </p>
+          ) : (
+            <p className="mx-auto mt-6 max-w-[42rem] text-sm font-mono text-zinc-500">
+              Above is the paragraph as it would read to a neurotypical
+              brain. Click <span className="font-semibold text-orange-500">▶ Start demo</span>{' '}
+              and then scroll slowly — the first 30% of the scroll stays
+              normal, then the ADHD load begins accumulating.
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <style>{`
@@ -429,18 +532,8 @@ export function DistractionSimulator() {
         .thought-bubble { animation: float-bubble 3s ease-in-out infinite alternate; }
       `}</style>
 
-      {/* Prompt above the widget — sets the expectation that something
-          interactive is coming. Fades out once the user is scrolling into
-          the chaos so it doesn't compete with the distractions. */}
-      <div
-        className="mt-12 mb-4 text-center transition-opacity duration-300"
-        style={{ opacity: pct < 8 ? 1 : Math.max(0, 1 - (pct - 8) / 10) }}
-      >
-        <p className="text-sm font-mono uppercase tracking-[0.25em] text-zinc-500">
-          see it in action below
-        </p>
-        <p className="mt-1 text-xs font-mono text-zinc-400">↓ scroll slowly ↓</p>
-      </div>
+      <div className="my-8">
+        {controls}
 
       <div
         ref={containerRef}
@@ -508,6 +601,7 @@ export function DistractionSimulator() {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </>
   )

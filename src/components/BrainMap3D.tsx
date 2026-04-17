@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
@@ -156,21 +156,33 @@ type RegionWire = {
   material: THREE.LineBasicMaterial
 }
 
+// The user-selectable ADHD states. The left (NT) side is always fixed at
+// baseline so you can see the delta instantly as you toggle.
+type AdhdMode = 'rest' | 'hyperfocus' | 'crash' | 'scaffolding'
+
+const ADHD_STATE_BY_MODE: Record<AdhdMode, ScrollState> = {
+  rest: SCROLL_STATES[1],         // "ADHD at rest — prefrontal dims, DMN won't shut off"
+  hyperfocus: SCROLL_STATES[3],   // "Hyperfocus — three networks fire at 180%"
+  crash: SCROLL_STATES[4],        // "The crash — brain is dark for a day"
+  scaffolding: SCROLL_STATES[5],  // "With AI scaffolding — external systems compensate"
+}
+
+const MODE_BUTTONS: { mode: AdhdMode; short: string; tag: string }[] = [
+  { mode: 'rest',        short: 'At Rest',        tag: 'low PFC · DMN loud' },
+  { mode: 'hyperfocus',  short: 'Hyperfocus',     tag: '180% on 3 networks' },
+  { mode: 'crash',       short: 'The Crash',      tag: 'systems offline' },
+  { mode: 'scaffolding', short: 'With AI Scaffolding', tag: 'PFC restored externally' },
+]
+
 export default function BrainMap3D() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const [adhdMode, setAdhdMode] = useState<AdhdMode>('rest')
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey | null>(null)
   const [webglFailed, setWebglFailed] = useState(false)
-  const stateRef = useRef(SCROLL_STATES[0])
+  const stateRef = useRef<ScrollState>(ADHD_STATE_BY_MODE.rest)
 
-  const currentState = useMemo(() => {
-    let matched = SCROLL_STATES[0]
-    for (const state of SCROLL_STATES) {
-      if (scrollProgress >= state.threshold) matched = state
-    }
-    return matched
-  }, [scrollProgress])
+  const currentState = ADHD_STATE_BY_MODE[adhdMode]
 
   useEffect(() => {
     stateRef.current = currentState
@@ -179,25 +191,6 @@ export default function BrainMap3D() {
   const handleNetworkClick = useCallback((key: NetworkKey) => {
     setSelectedNetwork(prev => (prev === key ? null : key))
   }, [])
-
-  const handleScroll = useCallback(() => {
-    if (!containerRef.current) return
-    const rect = containerRef.current.getBoundingClientRect()
-    const viewportHeight = window.innerHeight
-    const elementHeight = rect.height
-    const start = rect.top
-    const progress = Math.max(
-      0,
-      Math.min(1, (-start + viewportHeight * 0.3) / (elementHeight + viewportHeight * 0.3))
-    )
-    setScrollProgress(progress)
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
 
   useEffect(() => {
     if (webglFailed) return
@@ -714,44 +707,62 @@ export default function BrainMap3D() {
     }
   }, [webglFailed, handleNetworkClick])
 
+  const adhdActiveCount = currentState.active.length
+  const adhdSubtitle = currentState.title.split(' — ')[1] ?? currentState.title
+
   return (
     <div
       ref={containerRef}
       className="relative w-full my-8 rounded-2xl overflow-hidden"
-      style={{ minHeight: '560px' }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0118] via-[#1a0a2e] to-[#0a0118]" />
 
-      {/* Split labels — NT (left) / ADHD (right) with live activation count */}
-      <div className="absolute top-4 left-0 right-0 z-10 grid grid-cols-2 gap-2 px-6 pointer-events-none">
+      {/* Mode toggle — the primary interaction. Click one to see exactly
+          what that ADHD state looks like next to the stable NT baseline. */}
+      <div className="relative z-10 flex flex-wrap items-center justify-center gap-2 px-4 pt-4">
+        <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/40 mr-1 hidden sm:inline">
+          ADHD mode →
+        </span>
+        {MODE_BUTTONS.map((b) => {
+          const selected = adhdMode === b.mode
+          return (
+            <button
+              key={b.mode}
+              type="button"
+              onClick={() => setAdhdMode(b.mode)}
+              className={`rounded-full border px-3 py-1.5 text-xs font-mono transition-all ${
+                selected
+                  ? 'border-amber-300 bg-amber-400/15 text-amber-200 shadow-[0_0_12px_rgba(251,191,36,0.35)]'
+                  : 'border-white/15 bg-white/5 text-white/60 hover:border-white/30 hover:text-white/80'
+              }`}
+            >
+              <span className="font-semibold">{b.short}</span>
+              <span className="ml-1.5 text-[10px] text-white/50">· {b.tag}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Split labels — NT (fixed) / ADHD (varies with mode) */}
+      <div className="relative z-10 grid grid-cols-2 gap-2 px-6 pt-3">
         <div className="text-center">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-teal-300">Neurotypical</p>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-teal-300">Neurotypical · Baseline</p>
           <p className="text-[10px] font-mono text-teal-200/70 mt-0.5">
-            <span className="font-bold text-teal-300">5 / 5</span> networks online
+            <span className="font-bold text-teal-300">5 / 5</span> networks online · constant reference
           </p>
         </div>
         <div className="text-center">
-          <p className="text-[11px] font-mono uppercase tracking-widest text-amber-400">ADHD</p>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-amber-400">ADHD · {MODE_BUTTONS.find(b => b.mode === adhdMode)?.short}</p>
           <p className="text-[10px] font-mono text-amber-300/80 mt-0.5 truncate px-2">
-            <span className="font-bold text-amber-300">{currentState.active.length} / 5</span>
+            <span className="font-bold text-amber-300">{adhdActiveCount} / 5</span>
             {' · '}
-            {currentState.title.split(' — ')[1] ?? currentState.title}
+            {adhdSubtitle}
           </p>
         </div>
       </div>
 
       {/* Vertical divider between the two brains */}
-      <div className="absolute top-20 bottom-14 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent pointer-events-none" />
-
-      {/* Center progress bar for the ADHD side's scroll state */}
-      <div className="absolute top-14 left-1/4 right-1/4 z-10 pointer-events-none">
-        <div className="h-0.5 bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-amber-500 to-teal-500 transition-all duration-300"
-            style={{ width: `${scrollProgress * 100}%` }}
-          />
-        </div>
-      </div>
+      <div className="absolute top-[7.5rem] bottom-14 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent pointer-events-none" />
 
       {selectedNetwork && (
         <div className="absolute bottom-14 left-4 right-4 z-10 bg-black/60 backdrop-blur-sm rounded-lg p-3 border border-white/10">
@@ -777,7 +788,7 @@ export default function BrainMap3D() {
       </div>
 
       {/* Legend row — bottom, flat */}
-      <div className="absolute bottom-1 left-0 right-0 z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3 pb-2">
+      <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3 pb-2 pt-2">
         {(Object.entries(NETWORKS) as [NetworkKey, NetworkDef][]).map(([key, net]) => (
           <button
             key={key}
@@ -799,7 +810,7 @@ export default function BrainMap3D() {
       </div>
 
       <div className="absolute bottom-1 right-3 z-10 pointer-events-none">
-        <p className="text-[9px] text-white/25 font-mono hidden md:block">drag · click nodes · scroll</p>
+        <p className="text-[9px] text-white/25 font-mono hidden md:block">drag to rotate · click a mode above</p>
       </div>
     </div>
   )
