@@ -266,7 +266,7 @@ export default function BrainMap3D({
       // Populated after GLB load; glow when their network is active.
       internals: { key: NetworkKey; mesh: THREE.LineSegments; material: THREE.LineBasicMaterial }[]
       // Default (unclassified) wireframe — stays the base pink color.
-      defaultWire: THREE.LineSegments | null
+      defaultWire: THREE.LineSegments[]
       getState: () => typeof SCROLL_STATES[number]
     }
 
@@ -312,7 +312,7 @@ export default function BrainMap3D({
         bundles,
         regionWires: [],
         internals: [],
-        defaultWire: null,
+        defaultWire: [],
         getState,
       }
       sides.push(side)
@@ -426,7 +426,7 @@ export default function BrainMap3D({
             // Default (unclassified) wireframe — faint pink
             if (buckets.default.length) {
               const { line } = buildLines(buckets.default, 0xffb5c8, 0.35)
-              s.defaultWire = line
+              s.defaultWire.push(line)
             }
 
             // Per-region wireframes — color is the network's color, opacity
@@ -650,10 +650,10 @@ export default function BrainMap3D({
 
         // Default wireframe fades when many networks are active — let the
         // colored regions dominate during hyperfocus / baseline NT.
-        if (side.defaultWire) {
-          const totalActivity = Object.values(intensity).reduce<number>((acc, v) => acc + (v ?? 0), 0)
-          const faded = Math.max(0.1, 0.45 - totalActivity * 0.06)
-          ;(side.defaultWire.material as THREE.LineBasicMaterial).opacity = faded
+        const totalActivity = Object.values(intensity).reduce<number>((acc, v) => acc + (v ?? 0), 0)
+        const faded = Math.max(0.1, 0.45 - totalActivity * 0.06)
+        for (const wire of side.defaultWire) {
+          ;(wire.material as THREE.LineBasicMaterial).opacity = faded
         }
       }
 
