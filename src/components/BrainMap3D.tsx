@@ -465,13 +465,18 @@ export default function BrainMap3D({
             amygdala: [],
             workingMemory: [],
           }
+          const worldVec = new THREE.Vector3()
           for (let i = 0; i < segCount; i++) {
-            const ax = posArr[i * 6 + 0]
-            const ay = posArr[i * 6 + 1]
-            const az = posArr[i * 6 + 2]
-            const bx = posArr[i * 6 + 3]
-            const by = posArr[i * 6 + 4]
-            const bz = posArr[i * 6 + 5]
+            worldVec.set(posArr[i * 6 + 0], posArr[i * 6 + 1], posArr[i * 6 + 2])
+            worldVec.applyMatrix4(m.matrixWorld)
+            const ax = worldVec.x
+            const ay = worldVec.y
+            const az = worldVec.z
+            worldVec.set(posArr[i * 6 + 3], posArr[i * 6 + 4], posArr[i * 6 + 5])
+            worldVec.applyMatrix4(m.matrixWorld)
+            const bx = worldVec.x
+            const by = worldVec.y
+            const bz = worldVec.z
             // Normalize midpoint into the centered-and-scaled frame so the
             // classifier sees coords in [-0.8, 0.8].
             const mx = ((ax + bx) / 2 - center.x) * scale
