@@ -2,6 +2,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 import Image from 'next/image'
 import BrainMap3DWrapper from '@/components/BrainMap3DWrapper'
+import DistractionSimulator from '@/components/DistractionSimulatorWrapper'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -20,6 +21,10 @@ Executive function is the brain's project manager. Working memory, task initiati
 Here's what the failure modes actually look like:
 
 <BrainMap3DWrapper />
+
+Before we get into the specifics, try reading this paragraph. Scroll slowly.
+
+<DistractionSimulator />
 
 **Working memory is volatile storage.** I can hold a complex system architecture in my head for hours during hyperfocus, then lose the entire mental model the moment someone asks me a question. The context doesn't page back in cleanly. I rebuild from scratch every time. Travis Sparks, who runs 55 AI agents for his ADHD brain, put it perfectly: "My working memory evicts information with prejudice. If it's not in front of me, it doesn't exist."
 

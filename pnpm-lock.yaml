@@ -35,6 +35,9 @@ importers:
       '@giscus/react':
         specifier: ^3.0.0
         version: 3.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@gsap/react':
+        specifier: ^2.1.2
+        version: 2.1.2(gsap@3.15.0)(react@18.2.0)
       '@headlessui/react':
         specifier: ^1.7.13
         version: 1.7.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -126,10 +129,10 @@ importers:
         specifier: ^1.2.7
         version: 1.2.14(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@react-three/drei':
-        specifier: ^9.114.3
+        specifier: ^9.122.0
         version: 9.122.0(@react-three/fiber@8.18.0(@types/react@18.3.23)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(three@0.184.0))(@types/react@18.3.23)(@types/three@0.184.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(three@0.184.0)(use-sync-external-store@1.5.0(react@18.2.0))
       '@react-three/fiber':
-        specifier: ^8.17.10
+        specifier: ^8.18.0
         version: 8.18.0(@types/react@18.3.23)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(three@0.184.0)
       '@stripe/react-stripe-js':
         specifier: ^2.4.0
@@ -230,6 +233,9 @@ importers:
       framer-motion:
         specifier: ^12.23.6
         version: 12.23.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      gsap:
+        specifier: ^3.15.0
+        version: 3.15.0
       handlebars:
         specifier: ^4.7.8
         version: 4.7.8
@@ -952,6 +958,12 @@ packages:
     peerDependencies:
       react: ^16 || ^17 || ^18 || ^19
       react-dom: ^16 || ^17 || ^18 || ^19
+
+  '@gsap/react@2.1.2':
+    resolution: {integrity: sha512-JqliybO1837UcgH2hVOM4VO+38APk3ECNrsuSM4MuXp+rbf+/2IG2K1YJiqfTcXQHH7XlA0m3ykniFYstfq0Iw==}
+    peerDependencies:
+      gsap: ^3.12.5
+      react: '>=17'
 
   '@headlessui/react@1.7.19':
     resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
@@ -4384,6 +4396,9 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
 
   handlebars@4.7.8:
     resolution: {integrity: sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==}
@@ -7849,6 +7864,11 @@ snapshots:
       giscus: 1.6.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+
+  '@gsap/react@2.1.2(gsap@3.15.0)(react@18.2.0)':
+    dependencies:
+      gsap: 3.15.0
+      react: 18.2.0
 
   '@headlessui/react@1.7.19(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -11625,6 +11645,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  gsap@3.15.0: {}
 
   handlebars@4.7.8:
     dependencies:
