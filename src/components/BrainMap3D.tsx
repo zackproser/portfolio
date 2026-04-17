@@ -127,7 +127,7 @@ function BrainRegion({
     }
   })
 
-  const c = new THREE.Color(color)
+  const c = useMemo(() => new THREE.Color(color), [color])
 
   return (
     <group position={position}>
