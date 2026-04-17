@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
@@ -205,9 +205,16 @@ export default function BrainMap3D() {
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey | null>(null)
-  const [currentState, setCurrentState] = useState(SCROLL_STATES[0])
   const [webglFailed, setWebglFailed] = useState(false)
   const stateRef = useRef(SCROLL_STATES[0])
+
+  const currentState = useMemo(() => {
+    let matched = SCROLL_STATES[0]
+    for (const state of SCROLL_STATES) {
+      if (scrollProgress >= state.threshold) matched = state
+    }
+    return matched
+  }, [scrollProgress])
 
   useEffect(() => {
     stateRef.current = currentState
@@ -235,14 +242,6 @@ export default function BrainMap3D() {
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
-
-  useEffect(() => {
-    let matched = SCROLL_STATES[0]
-    for (const state of SCROLL_STATES) {
-      if (scrollProgress >= state.threshold) matched = state
-    }
-    setCurrentState(matched)
-  }, [scrollProgress])
 
   useEffect(() => {
     if (webglFailed) return
