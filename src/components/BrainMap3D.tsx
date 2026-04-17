@@ -185,19 +185,55 @@ type FiberBundle = {
   key: NetworkKey
   color: THREE.Color
   curves: THREE.CatmullRomCurve3[]
-  // Line tubes (one per curve) — we use thin tubes so they can be seen
   tubeMeshes: THREE.Mesh[]
-  // Signal particles that travel along curves
   signals: {
     curveIndex: number
     t: number
     mesh: THREE.Mesh
     speed: number
   }[]
-  // Anchor orb (the "node" at the region centroid)
   nodeMesh: THREE.Mesh
   targetIntensity: number
   currentIntensity: number
+}
+
+// ─── Anatomical classifier ──────────────────────────────────────────────────
+// Takes a normalized position (in the brain-centered, scaled frame where the
+// whole brain fits in ±1) and returns which network "owns" that point, or null
+// if it belongs to the default (uncolored) surface.
+//
+// NOTE on axes: the loaded brain GLB appears to have +X as the anterior-
+// posterior axis (brain is longest along X). The empirical convention we use:
+//   nx > 0  → front of brain (frontal lobes)
+//   nx < 0  → back of brain (occipital / cerebellum)
+//   ny > 0  → top (dorsal)
+//   ny < 0  → bottom (ventral) — temporal lobes, cerebellum
+//   nz      → lateral (hemispheres)
+//
+// If regions end up on the wrong side after render we flip the nx sign or
+// swap nx/nz in this function.
+function classifyRegion(nx: number, ny: number, nz: number): NetworkKey | null {
+  // Prefrontal: very anterior top (frontal pole + dorsolateral PFC). Keep
+  // this first so it wins over the wider working-memory band in the overlap.
+  if (nx > 0.3 && ny > -0.05) return 'prefrontal'
+  // Working memory / dlPFC: lateral frontal (sides of the frontal lobe).
+  if (nx > 0.05 && ny > 0.05 && Math.abs(nz) > 0.22) return 'workingMemory'
+  // DMN: medial strip running from frontal-medial through posterior-medial
+  // (mPFC + posterior cingulate). Narrow z band, most of the x range.
+  if (Math.abs(nz) < 0.1 && nx > -0.4 && nx < 0.5) return 'dmn'
+  // Amygdala: deep temporal — low ventral lateral. Wireframe surface only
+  // approximates this; the "real" amygdala is subcortical, so an internal
+  // line cluster is added separately inside the brain.
+  if (ny < -0.12 && Math.abs(nz) > 0.18 && nx > -0.15 && nx < 0.4) return 'amygdala'
+  // Dopamine/striatum is subcortical; no surface mapping, handled as an
+  // internal structure elsewhere.
+  return null
+}
+
+type RegionWire = {
+  key: NetworkKey
+  lines: THREE.LineSegments
+  material: THREE.LineBasicMaterial
 }
 
 export default function BrainMap3D() {
@@ -302,7 +338,14 @@ export default function BrainMap3D() {
       key: SideKey
       root: THREE.Group
       bundles: FiberBundle[]
-      // What state drives this side's activation.
+      // Region-colored wireframe overlays on the brain surface. One per
+      // anatomical network; populated after GLB load.
+      regionWires: RegionWire[]
+      // Internal small structures (amygdala, dopamine/striatum, DMN hub).
+      // Populated after GLB load; glow when their network is active.
+      internals: { key: NetworkKey; mesh: THREE.LineSegments; material: THREE.LineBasicMaterial }[]
+      // Default (unclassified) wireframe — stays the base pink color.
+      defaultWire: THREE.LineSegments | null
       getState: () => typeof SCROLL_STATES[number]
     }
 
@@ -389,7 +432,15 @@ export default function BrainMap3D() {
         }
       })
 
-      const side: Side = { key, root: sideGroup, bundles, getState }
+      const side: Side = {
+        key,
+        root: sideGroup,
+        bundles,
+        regionWires: [],
+        internals: [],
+        defaultWire: null,
+        getState,
+      }
       sides.push(side)
       return side
     }
@@ -398,7 +449,16 @@ export default function BrainMap3D() {
     buildSide('nt', -SIDE_OFFSET_X, () => NT_STATE)
     buildSide('adhd', +SIDE_OFFSET_X, () => stateRef.current)
 
-    // Load brain GLB once, clone geometry into each side.
+    // Load brain GLB once. For each side we build:
+    //   - A translucent flesh layer (same pink base tissue both sides)
+    //   - A default wireframe (pink) for unclassified edges
+    //   - 5 per-region wireframes — same lines of the brain, but the ones
+    //     classified as belonging to a network. When that network is active
+    //     these segments glow in the network's color, painting the region
+    //     onto the brain surface.
+    //   - Internal tiny line clusters for deep/subcortical structures
+    //     (amygdala, dopamine/striatum, DMN hub) — anatomically positioned
+    //     inside the brain since surface wireframe can't represent them.
     const brainLoader = new GLTFLoader()
     brainLoader.load(
       '/models/brain.glb',
@@ -418,17 +478,50 @@ export default function BrainMap3D() {
           const m = node as THREE.Mesh
           const g = m.geometry as THREE.BufferGeometry
 
+          // Build the wireframe once; split into per-region buckets.
+          const wireGeom = new THREE.WireframeGeometry(g)
+          const wirePosAttr = wireGeom.attributes.position as THREE.BufferAttribute
+          const wirePosArr = wirePosAttr.array as Float32Array
+          const segCount = wirePosArr.length / 6 // each segment = 2 verts * 3 coords
+
+          // Buckets keyed by NetworkKey | 'default'
+          const buckets: Record<string, number[]> = {
+            default: [],
+            prefrontal: [],
+            dmn: [],
+            dopamine: [],
+            amygdala: [],
+            workingMemory: [],
+          }
+
+          for (let si = 0; si < segCount; si++) {
+            const ax = wirePosArr[si * 6 + 0]
+            const ay = wirePosArr[si * 6 + 1]
+            const az = wirePosArr[si * 6 + 2]
+            const bx = wirePosArr[si * 6 + 3]
+            const by = wirePosArr[si * 6 + 4]
+            const bz = wirePosArr[si * 6 + 5]
+            // Normalize midpoint to the centered+scaled frame
+            const mx = ((ax + bx) / 2 - center.x) * scale
+            const my = ((ay + by) / 2 - center.y) * scale
+            const mz = ((az + bz) / 2 - center.z) * scale
+            const region = classifyRegion(mx, my, mz) ?? 'default'
+            const bucket = buckets[region]
+            bucket.push(ax, ay, az, bx, by, bz)
+          }
+
           for (const s of sides) {
+            // Flesh layer (translucent)
             const flesh = new THREE.Mesh(
               g,
               new THREE.MeshStandardMaterial({
-                color: new THREE.Color('#d5a5a5'),
-                emissive: new THREE.Color('#2a1018'),
-                emissiveIntensity: 0.4,
-                roughness: 0.85,
+                color: new THREE.Color('#b88080'),
+                emissive: new THREE.Color('#1a0612'),
+                emissiveIntensity: 0.25,
+                roughness: 0.9,
                 metalness: 0.0,
                 transparent: true,
-                opacity: 0.15,
+                opacity: 0.12,
                 side: THREE.DoubleSide,
                 depthWrite: false,
               })
@@ -437,21 +530,100 @@ export default function BrainMap3D() {
             flesh.scale.setScalar(scale)
             s.root.add(flesh)
 
-            const wireGeomLocal = new THREE.WireframeGeometry(g)
-            const wireLine = new THREE.LineSegments(
-              wireGeomLocal,
-              new THREE.LineBasicMaterial({
-                color: new THREE.Color('#ffb5c8'),
+            // Helper to build a LineSegments from a flat position bucket
+            const buildLines = (positions: number[], color: number, opacity: number, additive = false) => {
+              const geom = new THREE.BufferGeometry()
+              geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+              const mat = new THREE.LineBasicMaterial({
+                color: new THREE.Color(color),
                 transparent: true,
-                opacity: 0.55,
+                opacity,
                 depthWrite: false,
                 toneMapped: false,
+                ...(additive ? { blending: THREE.AdditiveBlending } : {}),
               })
-            )
-            wireLine.position.copy(center).multiplyScalar(-scale)
-            wireLine.scale.setScalar(scale)
-            s.root.add(wireLine)
+              const line = new THREE.LineSegments(geom, mat)
+              line.position.copy(center).multiplyScalar(-scale)
+              line.scale.setScalar(scale)
+              s.root.add(line)
+              return { line, mat }
+            }
+
+            // Default (unclassified) wireframe — faint pink
+            if (buckets.default.length) {
+              const { line } = buildLines(buckets.default, 0xffb5c8, 0.35)
+              s.defaultWire = line
+            }
+
+            // Per-region wireframes — color is the network's color, opacity
+            // starts low; boosted to full when active.
+            for (const key of Object.keys(NETWORKS) as NetworkKey[]) {
+              const seg = buckets[key]
+              if (!seg || seg.length === 0) continue
+              const colorHex = new THREE.Color(NETWORKS[key].color).getHex()
+              const { line, mat } = buildLines(seg, colorHex, 0.25, true)
+              s.regionWires.push({ key, lines: line, material: mat })
+            }
+
+            // Internal structures (subcortical / medial hubs) — small line
+            // bundles at anatomical positions, rendered additive so they
+            // read as bright glowing clusters when their network is active.
+            const buildInternalCluster = (center3: Vec3, radius: number, count: number, colorHex: number) => {
+              // Build a cluster of ~count short random segments centered at center3.
+              const positions: number[] = []
+              for (let k = 0; k < count; k++) {
+                const theta1 = Math.random() * Math.PI * 2
+                const phi1 = Math.acos(2 * Math.random() - 1)
+                const r1 = radius * (0.4 + Math.random() * 0.6)
+                const x1 = center3[0] + r1 * Math.sin(phi1) * Math.cos(theta1)
+                const y1 = center3[1] + r1 * Math.sin(phi1) * Math.sin(theta1)
+                const z1 = center3[2] + r1 * Math.cos(phi1)
+                const theta2 = Math.random() * Math.PI * 2
+                const phi2 = Math.acos(2 * Math.random() - 1)
+                const r2 = radius * (0.4 + Math.random() * 0.6)
+                const x2 = center3[0] + r2 * Math.sin(phi2) * Math.cos(theta2)
+                const y2 = center3[1] + r2 * Math.sin(phi2) * Math.sin(theta2)
+                const z2 = center3[2] + r2 * Math.cos(phi2)
+                positions.push(x1, y1, z1, x2, y2, z2)
+              }
+              const geomI = new THREE.BufferGeometry()
+              geomI.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+              const matI = new THREE.LineBasicMaterial({
+                color: new THREE.Color(colorHex),
+                transparent: true,
+                opacity: 0.25,
+                depthWrite: false,
+                toneMapped: false,
+                blending: THREE.AdditiveBlending,
+              })
+              const lineI = new THREE.LineSegments(geomI, matI)
+              s.root.add(lineI)
+              return { line: lineI, mat: matI }
+            }
+
+            // Amygdala — bilateral, deep temporal
+            {
+              const colorHex = new THREE.Color(NETWORKS.amygdala.color).getHex()
+              for (const sign of [-1, 1]) {
+                const { line, mat } = buildInternalCluster([0.1 * sign, -0.2, 0.3 * sign], 0.08, 12, colorHex)
+                s.internals.push({ key: 'amygdala', mesh: line, material: mat })
+              }
+            }
+            // Dopamine/striatum — central deep
+            {
+              const colorHex = new THREE.Color(NETWORKS.dopamine.color).getHex()
+              const { line, mat } = buildInternalCluster([0.05, -0.05, 0], 0.1, 18, colorHex)
+              s.internals.push({ key: 'dopamine', mesh: line, material: mat })
+            }
+            // DMN posterior-cingulate hub — medial
+            {
+              const colorHex = new THREE.Color(NETWORKS.dmn.color).getHex()
+              const { line, mat } = buildInternalCluster([-0.1, 0.1, 0], 0.09, 14, colorHex)
+              s.internals.push({ key: 'dmn', mesh: line, material: mat })
+            }
           }
+
+          wireGeom.dispose() // only used to extract positions
         })
       },
       undefined,
@@ -546,12 +718,15 @@ export default function BrainMap3D() {
     const animate = () => {
       const delta = Math.min(clock.getDelta(), 1 / 30)
 
-      // Update each side's bundles with its own driving state.
-      // IMPORTANT: dimmed networks fade to fully invisible so the NT and ADHD
-      // brains actually look different (not just different brightness).
+      // Per-side update: drive activation into the brain's own wireframe
+      // (region-classified edges glow in network colors) + internal
+      // subcortical line clusters. Fiber tubes/signals are hidden now — the
+      // brain surface itself is the canvas.
       for (const side of sides) {
         const sideState = side.getState()
         const boost = sideState.boost ?? 1
+
+        const intensity: Partial<Record<NetworkKey, number>> = {}
         for (const b of side.bundles) {
           b.targetIntensity = sideState.active.includes(b.key)
             ? 1 * boost
@@ -559,34 +734,48 @@ export default function BrainMap3D() {
               ? 0
               : 0.15
           b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
+          intensity[b.key] = b.currentIntensity
 
+          // Hide fiber tubes and signal particles — replaced by wireframe coloring.
+          for (const tm of b.tubeMeshes) tm.visible = false
+          for (const s of b.signals) s.mesh.visible = false
+
+          // Node orb stays as the region's raycast target; small and subtle.
           const i = b.currentIntensity
-          // Clamped opacity (so overdriven tubes still render solid) vs raw
-          // intensity for emissive/scale where overbright is the point.
           const iOpacity = Math.min(1, i)
           const visible = i > 0.02
-          for (const tm of b.tubeMeshes) {
-            tm.visible = visible
-            const mat = tm.material as THREE.MeshBasicMaterial
-            // Additive blending + overbright color when i > 1 = bloom-like glow
-            mat.opacity = iOpacity * iOpacity
-            mat.color.copy(b.color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.8))
-          }
-          const nodeMat = b.nodeMesh.material as THREE.MeshBasicMaterial
           b.nodeMesh.visible = visible
+          const nodeMat = b.nodeMesh.material as THREE.MeshBasicMaterial
           nodeMat.opacity = iOpacity * iOpacity
-          nodeMat.color.copy(b.color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
-          b.nodeMesh.scale.setScalar(0.6 + i * 0.8) // pulses bigger in hyperfocus
+          nodeMat.color.copy(b.color).multiplyScalar(Math.min(2.0, 0.85 + i * 0.8))
+          b.nodeMesh.scale.setScalar(0.55 + i * 0.55)
+        }
 
-          for (const s of b.signals) {
-            s.t = (s.t + delta * s.speed * (0.3 + i * 0.7)) % 1
-            b.curves[s.curveIndex].getPointAt(s.t, tmp)
-            s.mesh.position.copy(tmp)
-            const sMat = s.mesh.material as THREE.MeshBasicMaterial
-            s.mesh.visible = i > 0.25
-            sMat.opacity = i > 0.25 ? Math.min(1, 0.6 + i * 0.4) : 0
-            s.mesh.scale.setScalar(0.7 + Math.min(1.5, i) * 0.8)
-          }
+        // Brain-surface wireframe: each region's classified edges glow in
+        // that network's color when active. Dimmed regions fade to 0.
+        for (const rw of side.regionWires) {
+          const i = intensity[rw.key] ?? 0
+          const iOpacity = Math.min(1, i)
+          rw.material.opacity = 0.08 + iOpacity * 0.92
+          rw.material.color.set(NETWORKS[rw.key].color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
+          rw.lines.visible = i > 0.02
+        }
+
+        // Internal line clusters for subcortical regions.
+        for (const intern of side.internals) {
+          const i = intensity[intern.key] ?? 0
+          const iOpacity = Math.min(1, i)
+          intern.material.opacity = iOpacity * iOpacity
+          intern.material.color.set(NETWORKS[intern.key].color).multiplyScalar(Math.min(2.2, 0.9 + i * 0.9))
+          intern.mesh.visible = i > 0.05
+        }
+
+        // Default wireframe fades when many networks are active — let the
+        // colored regions dominate during hyperfocus / baseline NT.
+        if (side.defaultWire) {
+          const totalActivity = Object.values(intensity).reduce<number>((acc, v) => acc + (v ?? 0), 0)
+          const faded = Math.max(0.1, 0.45 - totalActivity * 0.06)
+          ;(side.defaultWire.material as THREE.LineBasicMaterial).opacity = faded
         }
       }
 
