@@ -202,7 +202,8 @@ export default function BrainMap3D() {
   useEffect(() => {
     if (webglFailed) return
     const host = canvasHostRef.current
-    if (!host) return
+    const container = containerRef.current
+    if (!host || !container) return
 
     let width = host.clientWidth || 600
     let height = host.clientHeight || 500
@@ -592,8 +593,11 @@ export default function BrainMap3D() {
     // ── Animation loop ──
     const clock = new THREE.Clock()
     let raf = 0
+    let isVisible = false
 
     const animate = () => {
+      if (!isVisible) return
+
       const delta = Math.min(clock.getDelta(), 1 / 30)
 
       // Per-side update: drive activation into the brain's own wireframe
@@ -661,10 +665,27 @@ export default function BrainMap3D() {
       renderer.render(scene, camera)
       raf = requestAnimationFrame(animate)
     }
-    animate()
+
+    // IntersectionObserver to pause rendering when off-screen
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const nowVisible = entries.some((e) => e.isIntersecting)
+        if (nowVisible && !isVisible) {
+          isVisible = true
+          clock.start()
+          animate()
+        } else if (!nowVisible && isVisible) {
+          isVisible = false
+          cancelAnimationFrame(raf)
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(container)
 
     return () => {
       cancelAnimationFrame(raf)
+      observer.disconnect()
       ro.disconnect()
       if (autoRotateTimeout !== null) clearTimeout(autoRotateTimeout)
       renderer.domElement.removeEventListener('pointerdown', onDown)
