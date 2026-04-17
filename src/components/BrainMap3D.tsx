@@ -21,9 +21,6 @@ type NetworkDef = {
   description: string
   // Anchor: the region's "centroid" — used for the raycast target and label.
   anchor: Vec3
-  // Fiber endpoints: each pair [a, b] becomes a smooth curve from a to b.
-  // The curve arcs outward from the midpoint to suggest a fiber tract.
-  fibers: [Vec3, Vec3][]
 }
 
 const NETWORKS = {
@@ -32,77 +29,30 @@ const NETWORKS = {
     label: 'Prefrontal Cortex',
     description: 'Executive function, planning, prioritization',
     anchor: [0, 0.2, 0.85] as Vec3,
-    fibers: [
-      [[-0.25, 0.25, 0.9], [0.25, 0.25, 0.9]],
-      [[-0.35, 0.15, 0.8], [0.35, 0.15, 0.8]],
-      [[-0.2, 0.35, 0.75], [0.2, 0.35, 0.75]],
-      [[0, 0.3, 0.9], [0, 0, 0.2]],
-      [[-0.3, 0.2, 0.85], [-0.4, 0.0, 0.3]],
-      [[0.3, 0.2, 0.85], [0.4, 0.0, 0.3]],
-      [[-0.15, 0.3, 0.85], [0.15, 0.1, 0.5]],
-      [[0.15, 0.3, 0.85], [-0.15, 0.1, 0.5]],
-    ] as [Vec3, Vec3][],
   },
   dmn: {
     color: '#4ecdc4',
     label: 'Default Mode Network',
     description: 'Mind-wandering, internal chatter, "brain radio"',
     anchor: [0, 0.1, -0.15] as Vec3,
-    fibers: [
-      [[0, 0.35, 0.5], [0, 0.1, -0.3]],
-      [[0, 0.1, -0.3], [0, -0.1, -0.75]],
-      [[-0.35, 0.25, 0.2], [0.35, 0.25, 0.2]],
-      [[-0.4, 0.1, -0.3], [0.4, 0.1, -0.3]],
-      [[0, 0.4, 0.2], [-0.35, 0.05, -0.5]],
-      [[0, 0.4, 0.2], [0.35, 0.05, -0.5]],
-      [[-0.3, 0.3, -0.1], [0.3, 0.3, -0.1]],
-      [[0, 0.3, 0.6], [0, 0, -0.7]],
-    ] as [Vec3, Vec3][],
   },
   dopamine: {
     color: '#ffe66d',
     label: 'Dopamine Pathways',
     description: 'Reward, motivation, interest-based activation',
     anchor: [0, -0.1, 0.05] as Vec3,
-    fibers: [
-      [[0, -0.2, -0.35], [0, 0.0, 0.15]],
-      [[0, 0.0, 0.15], [0, 0.25, 0.8]],
-      [[0, -0.15, -0.25], [-0.25, 0.1, 0.1]],
-      [[0, -0.15, -0.25], [0.25, 0.1, 0.1]],
-      [[-0.15, -0.05, 0.05], [-0.3, 0.15, 0.6]],
-      [[0.15, -0.05, 0.05], [0.3, 0.15, 0.6]],
-      [[0, -0.2, -0.3], [0, -0.15, 0.4]],
-    ] as [Vec3, Vec3][],
   },
   amygdala: {
     color: '#ff6b6b',
     label: 'Amygdala',
     description: 'Emotional urgency, everything-feels-urgent signal',
     anchor: [0.3, -0.15, 0.1] as Vec3,
-    fibers: [
-      [[-0.3, -0.15, 0.1], [0.3, -0.15, 0.1]],
-      [[0.3, -0.15, 0.1], [0.4, 0.15, 0.7]],
-      [[-0.3, -0.15, 0.1], [-0.4, 0.15, 0.7]],
-      [[0.3, -0.15, 0.1], [0.1, -0.1, -0.4]],
-      [[-0.3, -0.15, 0.1], [-0.1, -0.1, -0.4]],
-      [[0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
-      [[-0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
-    ] as [Vec3, Vec3][],
   },
   workingMemory: {
     color: '#c44dff',
     label: 'Working Memory',
     description: 'Volatile cache — context that leaks on interruption',
     anchor: [-0.4, 0.3, 0.5] as Vec3,
-    fibers: [
-      [[-0.4, 0.3, 0.5], [0.4, 0.3, 0.5]],
-      [[-0.4, 0.3, 0.5], [-0.4, 0.3, -0.2]],
-      [[0.4, 0.3, 0.5], [0.4, 0.3, -0.2]],
-      [[-0.4, 0.3, 0.5], [0, 0.3, 0.85]],
-      [[0.4, 0.3, 0.5], [0, 0.3, 0.85]],
-      [[-0.4, 0.3, 0.5], [-0.3, 0, -0.2]],
-      [[0.4, 0.3, 0.5], [0.3, 0, -0.2]],
-    ] as [Vec3, Vec3][],
   },
 } satisfies Record<string, NetworkDef>
 
@@ -159,32 +109,9 @@ const SCROLL_STATES: ScrollState[] = [
   },
 ]
 
-// ─── Fiber curve builder ────────────────────────────────────────────────────
-// Build a smooth curve between two anchor points that arcs outward through
-// the brain. We use CatmullRomCurve3 with a midpoint pulled outward along
-// the midpoint's normal.
-function buildFiberCurve(a: Vec3, b: Vec3): THREE.CatmullRomCurve3 {
-  const pa = new THREE.Vector3().fromArray(a)
-  const pb = new THREE.Vector3().fromArray(b)
-  const mid = pa.clone().add(pb).multiplyScalar(0.5)
-  // Outward bulge: push mid along its radial
-  const radial = mid.clone().normalize()
-  const bulge = 0.15 + Math.random() * 0.1
-  const midOut = mid.clone().addScaledVector(radial, bulge)
-  // Slight lateral jitter for organic variance
-  const jitter = new THREE.Vector3(
-    (Math.random() - 0.5) * 0.06,
-    (Math.random() - 0.5) * 0.06,
-    (Math.random() - 0.5) * 0.06
-  )
-  midOut.add(jitter)
-  return new THREE.CatmullRomCurve3([pa, midOut, pb], false, 'centripetal', 0.5)
-}
-
 type FiberBundle = {
   key: NetworkKey
   color: THREE.Color
-  curves: THREE.CatmullRomCurve3[]
   nodeMesh: THREE.Mesh
   targetIntensity: number
   currentIntensity: number
@@ -354,7 +281,6 @@ export default function BrainMap3D() {
       const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
         const net = NETWORKS[nkey]
         const color = new THREE.Color(net.color)
-        const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
 
         const nodeGeom = new THREE.SphereGeometry(0.055, 20, 20)
         const nodeMat = new THREE.MeshBasicMaterial({
@@ -373,7 +299,6 @@ export default function BrainMap3D() {
         return {
           key: nkey,
           color,
-          curves,
           nodeMesh,
           targetIntensity: 1,
           currentIntensity: 1,
@@ -513,66 +438,72 @@ export default function BrainMap3D() {
               s.regionWires.push({ key, lines: line, material: mat })
             }
 
-            // Internal structures (subcortical / medial hubs) — small line
-            // bundles at anatomical positions, rendered additive so they
-            // read as bright glowing clusters when their network is active.
-            const buildInternalCluster = (center3: Vec3, radius: number, count: number, colorHex: number) => {
-              // Build a cluster of ~count short random segments centered at center3.
-              const positions: number[] = []
-              for (let k = 0; k < count; k++) {
-                const theta1 = Math.random() * Math.PI * 2
-                const phi1 = Math.acos(2 * Math.random() - 1)
-                const r1 = radius * (0.4 + Math.random() * 0.6)
-                const x1 = center3[0] + r1 * Math.sin(phi1) * Math.cos(theta1)
-                const y1 = center3[1] + r1 * Math.sin(phi1) * Math.sin(theta1)
-                const z1 = center3[2] + r1 * Math.cos(phi1)
-                const theta2 = Math.random() * Math.PI * 2
-                const phi2 = Math.acos(2 * Math.random() - 1)
-                const r2 = radius * (0.4 + Math.random() * 0.6)
-                const x2 = center3[0] + r2 * Math.sin(phi2) * Math.cos(theta2)
-                const y2 = center3[1] + r2 * Math.sin(phi2) * Math.sin(theta2)
-                const z2 = center3[2] + r2 * Math.cos(phi2)
-                positions.push(x1, y1, z1, x2, y2, z2)
-              }
-              const geomI = new THREE.BufferGeometry()
-              geomI.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-              const matI = new THREE.LineBasicMaterial({
-                color: new THREE.Color(colorHex),
-                transparent: true,
-                opacity: 0.25,
-                depthWrite: false,
-                toneMapped: false,
-                blending: THREE.AdditiveBlending,
-              })
-              const lineI = new THREE.LineSegments(geomI, matI)
-              s.root.add(lineI)
-              return { line: lineI, mat: matI }
-            }
-
-            // Amygdala — bilateral, deep temporal
-            {
-              const colorHex = new THREE.Color(NETWORKS.amygdala.color).getHex()
-              for (const sign of [-1, 1]) {
-                const { line, mat } = buildInternalCluster([0.1 * sign, -0.2, 0.3 * sign], 0.08, 12, colorHex)
-                s.internals.push({ key: 'amygdala', mesh: line, material: mat })
-              }
-            }
-            // Dopamine/striatum — central deep
-            {
-              const colorHex = new THREE.Color(NETWORKS.dopamine.color).getHex()
-              const { line, mat } = buildInternalCluster([0.05, -0.05, 0], 0.1, 18, colorHex)
-              s.internals.push({ key: 'dopamine', mesh: line, material: mat })
-            }
-            // DMN posterior-cingulate hub — medial
-            {
-              const colorHex = new THREE.Color(NETWORKS.dmn.color).getHex()
-              const { line, mat } = buildInternalCluster([-0.1, 0.1, 0], 0.09, 14, colorHex)
-              s.internals.push({ key: 'dmn', mesh: line, material: mat })
-            }
           }
 
           wireGeom.dispose() // only used to extract positions
         })
+
+        // Internal structures (subcortical / medial hubs) — small line
+        // bundles at anatomical positions, rendered additive so they
+        // read as bright glowing clusters when their network is active.
+        // These are created once per side, not per mesh.
+        const buildInternalCluster = (center3: Vec3, radius: number, count: number, colorHex: number) => {
+          // Build a cluster of ~count short random segments centered at center3.
+          const positions: number[] = []
+          for (let k = 0; k < count; k++) {
+            const theta1 = Math.random() * Math.PI * 2
+            const phi1 = Math.acos(2 * Math.random() - 1)
+            const r1 = radius * (0.4 + Math.random() * 0.6)
+            const x1 = center3[0] + r1 * Math.sin(phi1) * Math.cos(theta1)
+            const y1 = center3[1] + r1 * Math.sin(phi1) * Math.sin(theta1)
+            const z1 = center3[2] + r1 * Math.cos(phi1)
+            const theta2 = Math.random() * Math.PI * 2
+            const phi2 = Math.acos(2 * Math.random() - 1)
+            const r2 = radius * (0.4 + Math.random() * 0.6)
+            const x2 = center3[0] + r2 * Math.sin(phi2) * Math.cos(theta2)
+            const y2 = center3[1] + r2 * Math.sin(phi2) * Math.sin(theta2)
+            const z2 = center3[2] + r2 * Math.cos(phi2)
+            positions.push(x1, y1, z1, x2, y2, z2)
+          }
+          const geomI = new THREE.BufferGeometry()
+          geomI.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+          const matI = new THREE.LineBasicMaterial({
+            color: new THREE.Color(colorHex),
+            transparent: true,
+            opacity: 0.25,
+            depthWrite: false,
+            toneMapped: false,
+            blending: THREE.AdditiveBlending,
+          })
+          const lineI = new THREE.LineSegments(geomI, matI)
+          return { line: lineI, mat: matI }
+        }
+
+        for (const s of sides) {
+          // Amygdala — bilateral, deep temporal
+          {
+            const colorHex = new THREE.Color(NETWORKS.amygdala.color).getHex()
+            for (const sign of [-1, 1]) {
+              const { line, mat } = buildInternalCluster([0.1 * sign, -0.2, 0.3 * sign], 0.08, 12, colorHex)
+              s.root.add(line)
+              s.internals.push({ key: 'amygdala', mesh: line, material: mat })
+            }
+          }
+          // Dopamine/striatum — central deep
+          {
+            const colorHex = new THREE.Color(NETWORKS.dopamine.color).getHex()
+            const { line, mat } = buildInternalCluster([0.05, -0.05, 0], 0.1, 18, colorHex)
+            s.root.add(line)
+            s.internals.push({ key: 'dopamine', mesh: line, material: mat })
+          }
+          // DMN posterior-cingulate hub — medial
+          {
+            const colorHex = new THREE.Color(NETWORKS.dmn.color).getHex()
+            const { line, mat } = buildInternalCluster([-0.1, 0.1, 0], 0.09, 14, colorHex)
+            s.root.add(line)
+            s.internals.push({ key: 'dmn', mesh: line, material: mat })
+          }
+        }
       },
       undefined,
       (err) => {
