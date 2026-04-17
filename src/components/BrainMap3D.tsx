@@ -26,12 +26,12 @@ type NetworkDef = {
   fibers: [Vec3, Vec3][]
 }
 
-const NETWORKS: Record<string, NetworkDef> = {
+const NETWORKS = {
   prefrontal: {
     color: '#ff6b35',
     label: 'Prefrontal Cortex',
     description: 'Executive function, planning, prioritization',
-    anchor: [0, 0.2, 0.85],
+    anchor: [0, 0.2, 0.85] as Vec3,
     fibers: [
       [[-0.25, 0.25, 0.9], [0.25, 0.25, 0.9]],
       [[-0.35, 0.15, 0.8], [0.35, 0.15, 0.8]],
@@ -41,13 +41,13 @@ const NETWORKS: Record<string, NetworkDef> = {
       [[0.3, 0.2, 0.85], [0.4, 0.0, 0.3]],
       [[-0.15, 0.3, 0.85], [0.15, 0.1, 0.5]],
       [[0.15, 0.3, 0.85], [-0.15, 0.1, 0.5]],
-    ],
+    ] as [Vec3, Vec3][],
   },
   dmn: {
     color: '#4ecdc4',
     label: 'Default Mode Network',
     description: 'Mind-wandering, internal chatter, "brain radio"',
-    anchor: [0, 0.1, -0.15],
+    anchor: [0, 0.1, -0.15] as Vec3,
     fibers: [
       [[0, 0.35, 0.5], [0, 0.1, -0.3]],
       [[0, 0.1, -0.3], [0, -0.1, -0.75]],
@@ -57,13 +57,13 @@ const NETWORKS: Record<string, NetworkDef> = {
       [[0, 0.4, 0.2], [0.35, 0.05, -0.5]],
       [[-0.3, 0.3, -0.1], [0.3, 0.3, -0.1]],
       [[0, 0.3, 0.6], [0, 0, -0.7]],
-    ],
+    ] as [Vec3, Vec3][],
   },
   dopamine: {
     color: '#ffe66d',
     label: 'Dopamine Pathways',
     description: 'Reward, motivation, interest-based activation',
-    anchor: [0, -0.1, 0.05],
+    anchor: [0, -0.1, 0.05] as Vec3,
     fibers: [
       [[0, -0.2, -0.35], [0, 0.0, 0.15]],
       [[0, 0.0, 0.15], [0, 0.25, 0.8]],
@@ -72,13 +72,13 @@ const NETWORKS: Record<string, NetworkDef> = {
       [[-0.15, -0.05, 0.05], [-0.3, 0.15, 0.6]],
       [[0.15, -0.05, 0.05], [0.3, 0.15, 0.6]],
       [[0, -0.2, -0.3], [0, -0.15, 0.4]],
-    ],
+    ] as [Vec3, Vec3][],
   },
   amygdala: {
     color: '#ff6b6b',
     label: 'Amygdala',
     description: 'Emotional urgency, everything-feels-urgent signal',
-    anchor: [0.3, -0.15, 0.1],
+    anchor: [0.3, -0.15, 0.1] as Vec3,
     fibers: [
       [[-0.3, -0.15, 0.1], [0.3, -0.15, 0.1]],
       [[0.3, -0.15, 0.1], [0.4, 0.15, 0.7]],
@@ -87,13 +87,13 @@ const NETWORKS: Record<string, NetworkDef> = {
       [[-0.3, -0.15, 0.1], [-0.1, -0.1, -0.4]],
       [[0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
       [[-0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
-    ],
+    ] as [Vec3, Vec3][],
   },
   workingMemory: {
     color: '#c44dff',
     label: 'Working Memory',
     description: 'Volatile cache — context that leaks on interruption',
-    anchor: [-0.4, 0.3, 0.5],
+    anchor: [-0.4, 0.3, 0.5] as Vec3,
     fibers: [
       [[-0.4, 0.3, 0.5], [0.4, 0.3, 0.5]],
       [[-0.4, 0.3, 0.5], [-0.4, 0.3, -0.2]],
@@ -102,9 +102,9 @@ const NETWORKS: Record<string, NetworkDef> = {
       [[0.4, 0.3, 0.5], [0, 0.3, 0.85]],
       [[-0.4, 0.3, 0.5], [-0.3, 0, -0.2]],
       [[0.4, 0.3, 0.5], [0.3, 0, -0.2]],
-    ],
+    ] as [Vec3, Vec3][],
   },
-}
+} satisfies Record<string, NetworkDef>
 
 type NetworkKey = keyof typeof NETWORKS
 
@@ -212,6 +212,8 @@ function buildBrainGeometry(detail: number): THREE.BufferGeometry {
   const scaleX = 1.1
   const scaleY = 0.85
   const scaleZ = 1.35
+  const cerebCenter = new THREE.Vector3(0, -0.38, -0.95)
+  const stemCenter = new THREE.Vector3(0, -0.5, -0.3)
   for (let i = 0; i < count; i++) {
     v.fromBufferAttribute(pos, i)
     // Anatomical ellipsoid scale first
@@ -241,7 +243,6 @@ function buildBrainGeometry(detail: number): THREE.BufferGeometry {
     v.y = ny * finalR
     v.z = nz * finalR
     // Cerebellum bump: outward bulge at back-bottom
-    const cerebCenter = new THREE.Vector3(0, -0.38, -0.95)
     const d = v.distanceTo(cerebCenter)
     if (d < 0.55) {
       const bump = (1 - d / 0.55) * 0.22
@@ -249,7 +250,6 @@ function buildBrainGeometry(detail: number): THREE.BufferGeometry {
       v.addScaledVector(bn, bump)
     }
     // Brain stem: thin downward protrusion at center-back-bottom
-    const stemCenter = new THREE.Vector3(0, -0.5, -0.3)
     const dStem = v.distanceTo(stemCenter)
     if (dStem < 0.25 && v.y < -0.3) {
       const bump = (1 - dStem / 0.25) * 0.08
@@ -546,6 +546,8 @@ export default function BrainMap3D() {
     let dragging = false
     let lastX = 0
     let lastY = 0
+    let startX = 0
+    let startY = 0
     let rotY = 0
     let rotX = 0
     let autoRotateTimeout: ReturnType<typeof setTimeout> | null = null
@@ -560,6 +562,8 @@ export default function BrainMap3D() {
       }
       lastX = e.clientX
       lastY = e.clientY
+      startX = e.clientX
+      startY = e.clientY
       renderer.domElement.style.cursor = 'grabbing'
       try { renderer.domElement.setPointerCapture(e.pointerId) } catch {}
     }
@@ -586,6 +590,10 @@ export default function BrainMap3D() {
     const raycaster = new THREE.Raycaster()
     const ndc = new THREE.Vector2()
     const onClick = (e: MouseEvent) => {
+      const dx = e.clientX - startX
+      const dy = e.clientY - startY
+      const dragDistance = Math.sqrt(dx * dx + dy * dy)
+      if (dragDistance > 5) return
       const rect = renderer.domElement.getBoundingClientRect()
       ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
