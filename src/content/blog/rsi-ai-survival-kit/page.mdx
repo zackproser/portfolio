@@ -5,6 +5,7 @@ import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 
 export const metadata = createMetadata(rawMetadata)
+export const campaign = "rsi-ai-survival-kit"
 
 I've been a software engineer for 14 years. Here's the damage report: RSI in both wrists that flares when I type for more than two hours straight. Crane neck from leaning toward monitors. Chronic upper back tension that became my baseline normal sometime around year eight. The ache in my wrists that I used to ignore and now can't.
 
@@ -28,7 +29,7 @@ The core shift: I went from typing at 40-60 WPM to speaking at 179 WPM. That's a
 
 When I say "update the instance type in the OpenTofu config from t4g.medium to t4g.large and run tofu plan," WisprFlow catches all of it. The transcription goes into Claude Code. Claude Code opens the file, makes the change, runs the plan, shows me the output. I spoke one sentence. My wrists did nothing.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 <Image src="https://zackproser.b-cdn.net/images/rsi-survival-contrast.webp" alt="Pixel art split scene showing a developer hunched at a desk with red pain indicators on the left, versus the same developer walking a forest trail with golden voice waves on the right" width={1200} height={675} />
 
@@ -58,7 +59,7 @@ The learning curve is 2-4 weeks to basic proficiency. Multiple developers on Hac
 
 For a comparison of voice tools and the 179 WPM evidence, see [Voice Coding vs Typing Speed](/blog/voice-coding-vs-typing-speed). To set up the WisprFlow + Claude Code integration specifically, read the [setup guide](/blog/wisprflow-claude-code-setup-guide).
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 <VoiceAIDemoCard />
 
