@@ -3,47 +3,111 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
 
-const REGIONS = {
+// ─── Networks ───────────────────────────────────────────────────────────────
+// Each network is a bundle of curved fiber tracts anchored in an anatomical
+// region. When the network is "active" the fibers emit light and signal
+// particles pulse along them. When "dimmed" they fade to a faint outline.
+//
+// Positions are in the brain-envelope frame: +z is forward (towards nose),
+// +y is up, +x is the right hemisphere. The envelope is scaled
+// x:1.1 / y:0.85 / z:1.35 after displacement.
+
+type Vec3 = [number, number, number]
+
+type NetworkDef = {
+  color: string
+  label: string
+  description: string
+  // Anchor: the region's "centroid" — used for the raycast target and label.
+  anchor: Vec3
+  // Fiber endpoints: each pair [a, b] becomes a smooth curve from a to b.
+  // The curve arcs outward from the midpoint to suggest a fiber tract.
+  fibers: [Vec3, Vec3][]
+}
+
+const NETWORKS: Record<string, NetworkDef> = {
   prefrontal: {
-    position: [0, 0.6, 0.8] as [number, number, number],
-    scale: 0.35,
     color: '#ff6b35',
     label: 'Prefrontal Cortex',
     description: 'Executive function, planning, prioritization',
+    anchor: [0, 0.2, 0.85],
+    fibers: [
+      [[-0.25, 0.25, 0.9], [0.25, 0.25, 0.9]],
+      [[-0.35, 0.15, 0.8], [0.35, 0.15, 0.8]],
+      [[-0.2, 0.35, 0.75], [0.2, 0.35, 0.75]],
+      [[0, 0.3, 0.9], [0, 0, 0.2]],
+      [[-0.3, 0.2, 0.85], [-0.4, 0.0, 0.3]],
+      [[0.3, 0.2, 0.85], [0.4, 0.0, 0.3]],
+      [[-0.15, 0.3, 0.85], [0.15, 0.1, 0.5]],
+      [[0.15, 0.3, 0.85], [-0.15, 0.1, 0.5]],
+    ],
   },
   dmn: {
-    position: [0, 0.2, -0.4] as [number, number, number],
-    scale: 0.3,
     color: '#4ecdc4',
     label: 'Default Mode Network',
     description: 'Mind-wandering, internal chatter, "brain radio"',
+    anchor: [0, 0.1, -0.15],
+    fibers: [
+      [[0, 0.35, 0.5], [0, 0.1, -0.3]],
+      [[0, 0.1, -0.3], [0, -0.1, -0.75]],
+      [[-0.35, 0.25, 0.2], [0.35, 0.25, 0.2]],
+      [[-0.4, 0.1, -0.3], [0.4, 0.1, -0.3]],
+      [[0, 0.4, 0.2], [-0.35, 0.05, -0.5]],
+      [[0, 0.4, 0.2], [0.35, 0.05, -0.5]],
+      [[-0.3, 0.3, -0.1], [0.3, 0.3, -0.1]],
+      [[0, 0.3, 0.6], [0, 0, -0.7]],
+    ],
   },
   dopamine: {
-    position: [0, -0.2, 0.3] as [number, number, number],
-    scale: 0.25,
     color: '#ffe66d',
     label: 'Dopamine Pathways',
     description: 'Reward, motivation, interest-based activation',
+    anchor: [0, -0.1, 0.05],
+    fibers: [
+      [[0, -0.2, -0.35], [0, 0.0, 0.15]],
+      [[0, 0.0, 0.15], [0, 0.25, 0.8]],
+      [[0, -0.15, -0.25], [-0.25, 0.1, 0.1]],
+      [[0, -0.15, -0.25], [0.25, 0.1, 0.1]],
+      [[-0.15, -0.05, 0.05], [-0.3, 0.15, 0.6]],
+      [[0.15, -0.05, 0.05], [0.3, 0.15, 0.6]],
+      [[0, -0.2, -0.3], [0, -0.15, 0.4]],
+    ],
   },
   amygdala: {
-    position: [0.5, -0.3, 0.2] as [number, number, number],
-    scale: 0.2,
     color: '#ff6b6b',
     label: 'Amygdala',
     description: 'Emotional urgency, everything-feels-urgent signal',
+    anchor: [0.3, -0.15, 0.1],
+    fibers: [
+      [[-0.3, -0.15, 0.1], [0.3, -0.15, 0.1]],
+      [[0.3, -0.15, 0.1], [0.4, 0.15, 0.7]],
+      [[-0.3, -0.15, 0.1], [-0.4, 0.15, 0.7]],
+      [[0.3, -0.15, 0.1], [0.1, -0.1, -0.4]],
+      [[-0.3, -0.15, 0.1], [-0.1, -0.1, -0.4]],
+      [[0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
+      [[-0.3, -0.15, 0.1], [0.0, 0.35, 0.85]],
+    ],
   },
   workingMemory: {
-    position: [-0.5, 0.4, 0.4] as [number, number, number],
-    scale: 0.22,
     color: '#c44dff',
     label: 'Working Memory',
     description: 'Volatile cache — context that leaks on interruption',
+    anchor: [-0.4, 0.3, 0.5],
+    fibers: [
+      [[-0.4, 0.3, 0.5], [0.4, 0.3, 0.5]],
+      [[-0.4, 0.3, 0.5], [-0.4, 0.3, -0.2]],
+      [[0.4, 0.3, 0.5], [0.4, 0.3, -0.2]],
+      [[-0.4, 0.3, 0.5], [0, 0.3, 0.85]],
+      [[0.4, 0.3, 0.5], [0, 0.3, 0.85]],
+      [[-0.4, 0.3, 0.5], [-0.3, 0, -0.2]],
+      [[0.4, 0.3, 0.5], [0.3, 0, -0.2]],
+    ],
   },
 }
 
-type RegionKey = keyof typeof REGIONS
+type NetworkKey = keyof typeof NETWORKS
 
-const SCROLL_STATES: { threshold: number; active: RegionKey[]; dimmed: RegionKey[]; title: string }[] = [
+const SCROLL_STATES: { threshold: number; active: NetworkKey[]; dimmed: NetworkKey[]; title: string }[] = [
   {
     threshold: 0,
     active: ['prefrontal', 'dmn', 'dopamine', 'amygdala', 'workingMemory'],
@@ -82,11 +146,157 @@ const SCROLL_STATES: { threshold: number; active: RegionKey[]; dimmed: RegionKey
   },
 ]
 
-type RegionMesh = {
-  key: RegionKey
-  group: THREE.Group
-  core: THREE.Mesh
-  glow: THREE.Mesh
+// ─── Inline 3D value noise (no external deps) ──────────────────────────────
+// Deterministic from integer coords; trilinear interpolation with smoothstep.
+// Good enough for gyri-like surface displacement.
+function hash3(x: number, y: number, z: number): number {
+  let n = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453
+  n -= Math.floor(n)
+  return n
+}
+function smoothstep(t: number) {
+  return t * t * t * (t * (t * 6 - 15) + 10)
+}
+function noise3(x: number, y: number, z: number): number {
+  const xi = Math.floor(x)
+  const yi = Math.floor(y)
+  const zi = Math.floor(z)
+  const xf = x - xi
+  const yf = y - yi
+  const zf = z - zi
+  const u = smoothstep(xf)
+  const v = smoothstep(yf)
+  const w = smoothstep(zf)
+  const v000 = hash3(xi, yi, zi)
+  const v100 = hash3(xi + 1, yi, zi)
+  const v010 = hash3(xi, yi + 1, zi)
+  const v110 = hash3(xi + 1, yi + 1, zi)
+  const v001 = hash3(xi, yi, zi + 1)
+  const v101 = hash3(xi + 1, yi, zi + 1)
+  const v011 = hash3(xi, yi + 1, zi + 1)
+  const v111 = hash3(xi + 1, yi + 1, zi + 1)
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+  return lerp(
+    lerp(lerp(v000, v100, u), lerp(v010, v110, u), v),
+    lerp(lerp(v001, v101, u), lerp(v011, v111, u), v),
+    w
+  )
+}
+// fbm: multi-octave noise in [0,1]
+function fbm(x: number, y: number, z: number, octaves = 4): number {
+  let amp = 0.5
+  let freq = 1
+  let sum = 0
+  let norm = 0
+  for (let i = 0; i < octaves; i++) {
+    sum += amp * noise3(x * freq, y * freq, z * freq)
+    norm += amp
+    amp *= 0.5
+    freq *= 2
+  }
+  return sum / norm
+}
+
+// ─── Brain geometry generator ───────────────────────────────────────────────
+// Starts from an icosphere, scales anatomically, then displaces each vertex
+// along its normal with fbm noise to suggest gyri. Adds a longitudinal
+// fissure along x≈0 and a cerebellum-ish lobe at the back-bottom.
+function buildBrainGeometry(detail: number): THREE.BufferGeometry {
+  // Icosphere with enough subdivision to resolve gyri/sulci.
+  // detail=6 → 40962 verts. Heavy but still fine for one-off mesh at page load.
+  const geom = new THREE.IcosahedronGeometry(1, detail)
+  const pos = geom.attributes.position as THREE.BufferAttribute
+  const count = pos.count
+  const v = new THREE.Vector3()
+  const scaleX = 1.1
+  const scaleY = 0.85
+  const scaleZ = 1.35
+  for (let i = 0; i < count; i++) {
+    v.fromBufferAttribute(pos, i)
+    // Anatomical ellipsoid scale first
+    v.x *= scaleX
+    v.y *= scaleY
+    v.z *= scaleZ
+    // Normal is radial for a sphere; close enough after mild scaling
+    const len = v.length()
+    const nx = v.x / len
+    const ny = v.y / len
+    const nz = v.z / len
+    // Gyri — smooth bumps at large scale
+    const big = fbm(v.x * 1.8, v.y * 1.8, v.z * 1.8, 4) // 0..1
+    // Sulci — ridged noise at finer scale (turns noise ridges into grooves)
+    const fine = fbm(v.x * 4.5, v.y * 4.5, v.z * 4.5, 4) // 0..1
+    const ridged = 1 - Math.abs(fine * 2 - 1) // 0..1, high on ridges
+    // Large-scale gyri outward, ridged sulci inward
+    const disp = (big - 0.5) * 0.28 - ridged * 0.08
+    // Longitudinal fissure: pinch inward along x when close to x=0.
+    // Wider band, smooth falloff, deeper on dorsal side.
+    const fissureBand = Math.max(0, 1 - Math.abs(v.x) / 0.15)
+    const fissure = fissureBand * fissureBand * 0.18 * (v.y > -0.25 ? 1 : 0.2)
+    // Frontal/occipital tapering — subtle
+    const taper = 1 - Math.min(Math.abs(v.z), 1.3) * 0.05
+    const finalR = len * taper + disp - fissure
+    v.x = nx * finalR
+    v.y = ny * finalR
+    v.z = nz * finalR
+    // Cerebellum bump: outward bulge at back-bottom
+    const cerebCenter = new THREE.Vector3(0, -0.38, -0.95)
+    const d = v.distanceTo(cerebCenter)
+    if (d < 0.55) {
+      const bump = (1 - d / 0.55) * 0.22
+      const bn = v.clone().sub(cerebCenter).normalize()
+      v.addScaledVector(bn, bump)
+    }
+    // Brain stem: thin downward protrusion at center-back-bottom
+    const stemCenter = new THREE.Vector3(0, -0.5, -0.3)
+    const dStem = v.distanceTo(stemCenter)
+    if (dStem < 0.25 && v.y < -0.3) {
+      const bump = (1 - dStem / 0.25) * 0.08
+      v.y -= bump
+    }
+    pos.setXYZ(i, v.x, v.y, v.z)
+  }
+  geom.computeVertexNormals()
+  return geom
+}
+
+// ─── Fiber curve builder ────────────────────────────────────────────────────
+// Build a smooth curve between two anchor points that arcs outward through
+// the brain. We use CatmullRomCurve3 with a midpoint pulled outward along
+// the midpoint's normal.
+function buildFiberCurve(a: Vec3, b: Vec3): THREE.CatmullRomCurve3 {
+  const pa = new THREE.Vector3().fromArray(a)
+  const pb = new THREE.Vector3().fromArray(b)
+  const mid = pa.clone().add(pb).multiplyScalar(0.5)
+  // Outward bulge: push mid along its radial
+  const radial = mid.clone().normalize()
+  const bulge = 0.15 + Math.random() * 0.1
+  const midOut = mid.clone().addScaledVector(radial, bulge)
+  // Slight lateral jitter for organic variance
+  const jitter = new THREE.Vector3(
+    (Math.random() - 0.5) * 0.06,
+    (Math.random() - 0.5) * 0.06,
+    (Math.random() - 0.5) * 0.06
+  )
+  midOut.add(jitter)
+  return new THREE.CatmullRomCurve3([pa, midOut, pb], false, 'centripetal', 0.5)
+}
+
+type FiberBundle = {
+  key: NetworkKey
+  color: THREE.Color
+  curves: THREE.CatmullRomCurve3[]
+  // Line tubes (one per curve) — we use thin tubes so they can be seen
+  tubeMeshes: THREE.Mesh[]
+  // Signal particles that travel along curves
+  signals: {
+    curveIndex: number
+    t: number
+    mesh: THREE.Mesh
+    speed: number
+  }[]
+  // Anchor orb (the "node" at the region centroid)
+  nodeMesh: THREE.Mesh
   targetIntensity: number
   currentIntensity: number
 }
@@ -95,7 +305,7 @@ export default function BrainMap3D() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [selectedRegion, setSelectedRegion] = useState<RegionKey | null>(null)
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey | null>(null)
   const [currentState, setCurrentState] = useState(SCROLL_STATES[0])
   const [webglFailed, setWebglFailed] = useState(false)
   const stateRef = useRef(SCROLL_STATES[0])
@@ -104,8 +314,8 @@ export default function BrainMap3D() {
     stateRef.current = currentState
   }, [currentState])
 
-  const handleRegionClick = useCallback((key: RegionKey) => {
-    setSelectedRegion(prev => (prev === key ? null : key))
+  const handleNetworkClick = useCallback((key: NetworkKey) => {
+    setSelectedNetwork(prev => (prev === key ? null : key))
   }, [])
 
   const handleScroll = useCallback(() => {
@@ -135,7 +345,6 @@ export default function BrainMap3D() {
     setCurrentState(matched)
   }, [scrollProgress])
 
-  // Vanilla three.js canvas setup
   useEffect(() => {
     if (webglFailed) return
     const host = canvasHostRef.current
@@ -146,7 +355,7 @@ export default function BrainMap3D() {
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
-    camera.position.set(0, 1, 3.5)
+    camera.position.set(0, 0.4, 3.4)
     camera.lookAt(0, 0, 0)
 
     let renderer: THREE.WebGLRenderer
@@ -168,96 +377,127 @@ export default function BrainMap3D() {
     renderer.domElement.style.cursor = 'grab'
 
     // Lights
-    scene.add(new THREE.AmbientLight(0xffffff, 0.3))
-    const warmLight = new THREE.PointLight(0xffe66d, 0.8, 20)
-    warmLight.position.set(5, 5, 5)
+    scene.add(new THREE.AmbientLight(0xffffff, 0.25))
+    const warmLight = new THREE.PointLight(0xffd0a0, 1.2, 20)
+    warmLight.position.set(4, 3, 4)
     scene.add(warmLight)
-    const coolLight = new THREE.PointLight(0x4ecdc4, 0.5, 20)
-    coolLight.position.set(-5, -5, 5)
+    const coolLight = new THREE.PointLight(0x9cb8ff, 0.6, 20)
+    coolLight.position.set(-4, -2, 2)
     scene.add(coolLight)
+    const rimLight = new THREE.PointLight(0xffb0c0, 0.35, 20)
+    rimLight.position.set(0, 0, -5)
+    scene.add(rimLight)
 
-    // Outer brain shell (wireframe)
-    const shell = new THREE.Mesh(
-      new THREE.SphereGeometry(1.2, 48, 48),
-      new THREE.MeshBasicMaterial({
-        color: 0x4ecdc4,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.08,
-      })
-    )
-    scene.add(shell)
-
-    // Root group we rotate together (the "float" + auto-rotate behavior)
+    // Root group for drag-rotation
     const root = new THREE.Group()
     scene.add(root)
 
-    // Regions
-    const regionMeshes: RegionMesh[] = (Object.keys(REGIONS) as RegionKey[]).map((key) => {
-      const { position, scale, color } = REGIONS[key]
-      const group = new THREE.Group()
-      group.position.set(position[0], position[1], position[2])
+    // Brain — solid translucent flesh
+    const brainGeom = buildBrainGeometry(6) // ~40k verts — resolves sulci
+    const brainSolid = new THREE.Mesh(
+      brainGeom,
+      new THREE.MeshStandardMaterial({
+        color: new THREE.Color('#d5a5a5'),
+        emissive: new THREE.Color('#2a1018'),
+        emissiveIntensity: 0.3,
+        roughness: 0.85,
+        metalness: 0.0,
+        transparent: true,
+        opacity: 0.18,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+      })
+    )
+    root.add(brainSolid)
 
-      const core = new THREE.Mesh(
-        new THREE.SphereGeometry(scale, 32, 32),
-        new THREE.MeshStandardMaterial({
-          color: new THREE.Color(color),
-          emissive: new THREE.Color(color),
-          emissiveIntensity: 0.5,
-          roughness: 0.3,
-          metalness: 0.1,
-          transparent: true,
-          opacity: 0.8,
-        })
-      )
-      core.userData.regionKey = key
+    // Brain — wireframe overlay (the "wire-framed actual brain")
+    const wireGeom = new THREE.WireframeGeometry(brainGeom)
+    const wire = new THREE.LineSegments(
+      wireGeom,
+      new THREE.LineBasicMaterial({
+        color: new THREE.Color('#ffb5c8'),
+        transparent: true,
+        opacity: 0.7,
+        depthWrite: false,
+        toneMapped: false,
+      })
+    )
+    root.add(wire)
 
-      const glow = new THREE.Mesh(
-        new THREE.SphereGeometry(scale * 1.5, 20, 20),
-        new THREE.MeshBasicMaterial({
-          color: new THREE.Color(color),
+    // ── Fiber bundles per network ─────────────────────────────────────
+    const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((key) => {
+      const net = NETWORKS[key]
+      const color = new THREE.Color(net.color)
+      const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
+
+      const tubeMeshes: THREE.Mesh[] = curves.map((curve) => {
+        const tubeGeom = new THREE.TubeGeometry(curve, 32, 0.006, 6, false)
+        const mat = new THREE.MeshStandardMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 0.9,
           transparent: true,
-          opacity: 0.12,
+          opacity: 0.85,
           depthWrite: false,
+          toneMapped: false,
         })
-      )
+        const mesh = new THREE.Mesh(tubeGeom, mat)
+        root.add(mesh)
+        return mesh
+      })
 
-      group.add(glow)
-      group.add(core)
-      root.add(group)
+      // Signal particles — a few per fiber, offset t-values
+      const signals: FiberBundle['signals'] = []
+      const signalsPerFiber = 2
+      for (let ci = 0; ci < curves.length; ci++) {
+        for (let si = 0; si < signalsPerFiber; si++) {
+          const sphereGeom = new THREE.SphereGeometry(0.016, 12, 12)
+          const sMat = new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 1.0,
+            depthWrite: false,
+            toneMapped: false,
+          })
+          const m = new THREE.Mesh(sphereGeom, sMat)
+          root.add(m)
+          signals.push({
+            curveIndex: ci,
+            t: (si / signalsPerFiber + Math.random() * 0.2) % 1,
+            mesh: m,
+            speed: 0.15 + Math.random() * 0.2,
+          })
+        }
+      }
 
-      return { key, group, core, glow, targetIntensity: 1, currentIntensity: 1 }
+      // Anchor node orb
+      const nodeGeom = new THREE.SphereGeometry(0.035, 20, 20)
+      const nodeMat = new THREE.MeshStandardMaterial({
+        color,
+        emissive: color,
+        emissiveIntensity: 1.0,
+        transparent: true,
+        opacity: 1.0,
+        toneMapped: false,
+      })
+      const nodeMesh = new THREE.Mesh(nodeGeom, nodeMat)
+      nodeMesh.position.fromArray(net.anchor)
+      nodeMesh.userData.networkKey = key
+      root.add(nodeMesh)
+
+      return {
+        key,
+        color,
+        curves,
+        tubeMeshes,
+        signals,
+        nodeMesh,
+        targetIntensity: 1,
+        currentIntensity: 1,
+      }
     })
 
-    // Particle cloud
-    const particleCount = 200
-    const positions = new Float32Array(particleCount * 3)
-    const velocities = new Float32Array(particleCount * 3)
-    for (let i = 0; i < particleCount; i++) {
-      const theta = Math.random() * Math.PI * 2
-      const phi = Math.acos(2 * Math.random() - 1)
-      const r = 0.8 + Math.random() * 0.6
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
-      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
-      positions[i * 3 + 2] = r * Math.cos(phi)
-      velocities[i * 3] = (Math.random() - 0.5) * 0.02
-      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02
-    }
-    const particleGeom = new THREE.BufferGeometry()
-    particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.025,
-      color: 0x4ecdc4,
-      transparent: true,
-      opacity: 0.7,
-      sizeAttenuation: true,
-      depthWrite: false,
-    })
-    const particles = new THREE.Points(particleGeom, particleMat)
-    root.add(particles)
-
-    // Pointer drag / auto-rotate
+    // ── Pointer rotate ──
     let autoRotating = true
     let dragging = false
     let lastX = 0
@@ -292,15 +532,13 @@ export default function BrainMap3D() {
       dragging = false
       renderer.domElement.style.cursor = 'grab'
       try { renderer.domElement.releasePointerCapture(e.pointerId) } catch {}
-      // Resume auto-rotate after a short delay
-      autoRotateTimeout = setTimeout(() => { autoRotating = true }, 2000)
+      autoRotateTimeout = setTimeout(() => { autoRotating = true }, 2500)
     }
-
     renderer.domElement.addEventListener('pointerdown', onDown)
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
 
-    // Click → raycast against region cores
+    // ── Click → raycast against node orbs ──
     const raycaster = new THREE.Raycaster()
     const ndc = new THREE.Vector2()
     const onClick = (e: MouseEvent) => {
@@ -308,10 +546,10 @@ export default function BrainMap3D() {
       ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
       ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
       raycaster.setFromCamera(ndc, camera)
-      const hits = raycaster.intersectObjects(regionMeshes.map((r) => r.core), false)
+      const hits = raycaster.intersectObjects(bundles.map((b) => b.nodeMesh), false)
       if (hits.length > 0) {
-        const key = hits[0].object.userData.regionKey as RegionKey
-        if (key) handleRegionClick(key)
+        const key = hits[0].object.userData.networkKey as NetworkKey
+        if (key) handleNetworkClick(key)
       }
     }
     renderer.domElement.addEventListener('click', onClick)
@@ -328,53 +566,44 @@ export default function BrainMap3D() {
     const ro = new ResizeObserver(resize)
     ro.observe(host)
 
-    // Animation loop
+    // ── Animation loop ──
     const clock = new THREE.Clock()
     let raf = 0
+    const tmp = new THREE.Vector3()
 
     const animate = () => {
       const delta = Math.min(clock.getDelta(), 1 / 30)
       const state = stateRef.current
 
-      // Update region intensities
-      for (const rm of regionMeshes) {
-        const target = state.active.includes(rm.key) ? 1 : state.dimmed.includes(rm.key) ? 0.15 : 0.5
-        rm.targetIntensity = target
-        rm.currentIntensity += (rm.targetIntensity - rm.currentIntensity) * delta * 3
-        const mat = rm.core.material as THREE.MeshStandardMaterial
-        mat.emissiveIntensity = rm.currentIntensity * 0.9
-        mat.opacity = 0.3 + rm.currentIntensity * 0.7
-        const gmat = rm.glow.material as THREE.MeshBasicMaterial
-        gmat.opacity = rm.currentIntensity * 0.18
-        const s = 1 + rm.currentIntensity * 0.4
-        rm.glow.scale.setScalar(s)
-      }
+      // Update bundle intensities
+      for (const b of bundles) {
+        b.targetIntensity = state.active.includes(b.key) ? 1 : state.dimmed.includes(b.key) ? 0.08 : 0.35
+        b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
 
-      // Particle drift
-      const speed = state.active.length > 3 ? 2 : state.active.length > 1 ? 1 : 0.3
-      const posAttr = particleGeom.getAttribute('position') as THREE.BufferAttribute
-      const arr = posAttr.array as Float32Array
-      for (let i = 0; i < particleCount; i++) {
-        arr[i * 3] += velocities[i * 3] * speed * delta * 60
-        arr[i * 3 + 1] += velocities[i * 3 + 1] * speed * delta * 60
-        arr[i * 3 + 2] += velocities[i * 3 + 2] * speed * delta * 60
-        const dx = arr[i * 3]
-        const dy = arr[i * 3 + 1]
-        const dz = arr[i * 3 + 2]
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-        if (dist > 1.8 || dist < 0.4) {
-          velocities[i * 3] *= -1
-          velocities[i * 3 + 1] *= -1
-          velocities[i * 3 + 2] *= -1
+        const i = b.currentIntensity
+        for (const tm of b.tubeMeshes) {
+          const mat = tm.material as THREE.MeshStandardMaterial
+          mat.emissiveIntensity = 0.2 + i * 1.8
+          mat.opacity = 0.15 + i * 0.8
+        }
+        const nodeMat = b.nodeMesh.material as THREE.MeshStandardMaterial
+        nodeMat.emissiveIntensity = 0.2 + i * 2.0
+        nodeMat.opacity = 0.3 + i * 0.7
+        b.nodeMesh.scale.setScalar(0.85 + i * 0.5)
+
+        for (const s of b.signals) {
+          s.t = (s.t + delta * s.speed * (0.3 + i * 0.7)) % 1
+          b.curves[s.curveIndex].getPointAt(s.t, tmp)
+          s.mesh.position.copy(tmp)
+          const sMat = s.mesh.material as THREE.MeshBasicMaterial
+          sMat.opacity = i > 0.15 ? 0.95 : 0.0
         }
       }
-      posAttr.needsUpdate = true
 
-      // Rotation
-      if (autoRotating) rotY += delta * 0.25
+      // Rotate
+      if (autoRotating) rotY += delta * 0.15
       root.rotation.y = rotY
       root.rotation.x = rotX
-      shell.rotation.y = rotY * 0.5
 
       renderer.render(scene, camera)
       raf = requestAnimationFrame(animate)
@@ -389,21 +618,27 @@ export default function BrainMap3D() {
       renderer.domElement.removeEventListener('click', onClick)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
-      // Dispose GPU resources
-      for (const rm of regionMeshes) {
-        ;(rm.core.geometry as THREE.BufferGeometry).dispose()
-        ;(rm.core.material as THREE.Material).dispose()
-        ;(rm.glow.geometry as THREE.BufferGeometry).dispose()
-        ;(rm.glow.material as THREE.Material).dispose()
+
+      for (const b of bundles) {
+        for (const tm of b.tubeMeshes) {
+          ;(tm.geometry as THREE.BufferGeometry).dispose()
+          ;(tm.material as THREE.Material).dispose()
+        }
+        for (const s of b.signals) {
+          ;(s.mesh.geometry as THREE.BufferGeometry).dispose()
+          ;(s.mesh.material as THREE.Material).dispose()
+        }
+        ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
+        ;(b.nodeMesh.material as THREE.Material).dispose()
       }
-      particleGeom.dispose()
-      particleMat.dispose()
-      shell.geometry.dispose()
-      ;(shell.material as THREE.Material).dispose()
+      brainGeom.dispose()
+      wireGeom.dispose()
+      ;(brainSolid.material as THREE.Material).dispose()
+      ;(wire.material as THREE.Material).dispose()
       renderer.dispose()
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement)
     }
-  }, [webglFailed, handleRegionClick])
+  }, [webglFailed, handleNetworkClick])
 
   return (
     <div
@@ -425,33 +660,34 @@ export default function BrainMap3D() {
         </div>
       </div>
 
-      {selectedRegion && (
+      {selectedNetwork && (
         <div className="absolute bottom-4 left-4 right-4 z-10 bg-black/60 backdrop-blur-sm rounded-lg p-3 border border-white/10">
-          <p className="text-sm font-bold" style={{ color: REGIONS[selectedRegion].color }}>
-            {REGIONS[selectedRegion].label}
+          <p className="text-sm font-bold" style={{ color: NETWORKS[selectedNetwork].color }}>
+            {NETWORKS[selectedNetwork].label}
           </p>
           <p className="text-xs text-white/70 mt-1">
-            {REGIONS[selectedRegion].description}
+            {NETWORKS[selectedNetwork].description}
           </p>
         </div>
       )}
 
       <div className="absolute top-16 right-4 z-10 space-y-1">
-        {(Object.entries(REGIONS) as [RegionKey, typeof REGIONS[RegionKey]][]).map(([key, region]) => (
+        {(Object.entries(NETWORKS) as [NetworkKey, NetworkDef][]).map(([key, net]) => (
           <button
             key={key}
             type="button"
             className="flex items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity bg-transparent border-0 p-0"
-            onClick={() => handleRegionClick(key)}
+            onClick={() => handleNetworkClick(key)}
           >
             <span
               className="w-2 h-2 rounded-full inline-block"
               style={{
-                backgroundColor: region.color,
+                backgroundColor: net.color,
                 opacity: currentState.active.includes(key) ? 1 : 0.3,
+                boxShadow: currentState.active.includes(key) ? `0 0 6px ${net.color}` : 'none',
               }}
             />
-            <span className="text-[10px] text-white/60 font-mono">{region.label}</span>
+            <span className="text-[10px] text-white/60 font-mono">{net.label}</span>
           </button>
         ))}
       </div>
@@ -468,7 +704,7 @@ export default function BrainMap3D() {
       </div>
 
       <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
-        <p className="text-[10px] text-white/30 font-mono">drag to rotate · click regions · scroll to explore</p>
+        <p className="text-[10px] text-white/30 font-mono">drag to rotate · click nodes · scroll to explore</p>
       </div>
     </div>
   )
