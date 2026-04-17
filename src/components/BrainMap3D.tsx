@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // ─── Networks ───────────────────────────────────────────────────────────────
 // Each network is a bundle of curved fiber tracts anchored in an anatomical
@@ -392,37 +393,80 @@ export default function BrainMap3D() {
     const root = new THREE.Group()
     scene.add(root)
 
-    // Brain — solid translucent flesh
-    const brainGeom = buildBrainGeometry(6) // ~40k verts — resolves sulci
-    const brainSolid = new THREE.Mesh(
-      brainGeom,
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#d5a5a5'),
-        emissive: new THREE.Color('#2a1018'),
-        emissiveIntensity: 0.3,
-        roughness: 0.85,
-        metalness: 0.0,
-        transparent: true,
-        opacity: 0.18,
-        side: THREE.DoubleSide,
-        depthWrite: false,
-      })
-    )
-    root.add(brainSolid)
+    // Brain: actual anatomical mesh loaded from GLB (photogrammetry/MRI-derived).
+    // Rendered as a translucent flesh layer + wireframe overlay so it reads as
+    // a "wire-framed real human brain". Loads async — fibers render first.
+    const brainGroup = new THREE.Group()
+    root.add(brainGroup)
+    let brainSolidRef: THREE.Mesh | null = null
+    let brainWireRef: THREE.LineSegments | null = null
+    let disposedDuringLoad = false
+    const brainLoader = new GLTFLoader()
+    brainLoader.load(
+      '/models/brain.glb',
+      (gltf) => {
+        if (disposedDuringLoad) return
+        // Collect all meshes, merge-equivalent by adding the loaded scene
+        const loaded = gltf.scene
+        // Compute bbox to normalize
+        const box = new THREE.Box3().setFromObject(loaded)
+        const size = new THREE.Vector3()
+        const center = new THREE.Vector3()
+        box.getSize(size)
+        box.getCenter(center)
+        // Normalize: center at origin, scale so longest dim ≈ 1.6 units
+        // (fibers sit in roughly ±0.5 xy, ±0.85 z, so 1.6 envelopes them)
+        const longest = Math.max(size.x, size.y, size.z)
+        const scale = 1.6 / longest
+        loaded.position.sub(center)
+        loaded.scale.setScalar(scale)
 
-    // Brain — wireframe overlay (the "wire-framed actual brain")
-    const wireGeom = new THREE.WireframeGeometry(brainGeom)
-    const wire = new THREE.LineSegments(
-      wireGeom,
-      new THREE.LineBasicMaterial({
-        color: new THREE.Color('#ffb5c8'),
-        transparent: true,
-        opacity: 0.7,
-        depthWrite: false,
-        toneMapped: false,
-      })
+        loaded.traverse((node) => {
+          if ((node as THREE.Mesh).isMesh) {
+            const m = node as THREE.Mesh
+            const g = m.geometry as THREE.BufferGeometry
+            // Solid flesh layer
+            const solidMat = new THREE.MeshStandardMaterial({
+              color: new THREE.Color('#d5a5a5'),
+              emissive: new THREE.Color('#2a1018'),
+              emissiveIntensity: 0.4,
+              roughness: 0.85,
+              metalness: 0.0,
+              transparent: true,
+              opacity: 0.15,
+              side: THREE.DoubleSide,
+              depthWrite: false,
+            })
+            const solid = new THREE.Mesh(g, solidMat)
+            solid.position.copy(loaded.position)
+            solid.scale.copy(loaded.scale)
+            brainGroup.add(solid)
+            brainSolidRef = solid
+
+            // Wireframe overlay
+            const wireGeomLocal = new THREE.WireframeGeometry(g)
+            const wireLine = new THREE.LineSegments(
+              wireGeomLocal,
+              new THREE.LineBasicMaterial({
+                color: new THREE.Color('#ffb5c8'),
+                transparent: true,
+                opacity: 0.55,
+                depthWrite: false,
+                toneMapped: false,
+              })
+            )
+            wireLine.position.copy(loaded.position)
+            wireLine.scale.copy(loaded.scale)
+            brainGroup.add(wireLine)
+            brainWireRef = wireLine
+          }
+        })
+      },
+      undefined,
+      (err) => {
+        console.error('Brain GLB failed to load', err)
+      }
     )
-    root.add(wire)
 
     // ── Fiber bundles per network ─────────────────────────────────────
     const bundles: FiberBundle[] = (Object.keys(NETWORKS) as NetworkKey[]).map((key) => {
@@ -631,10 +675,19 @@ export default function BrainMap3D() {
         ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
         ;(b.nodeMesh.material as THREE.Material).dispose()
       }
-      brainGeom.dispose()
-      wireGeom.dispose()
-      ;(brainSolid.material as THREE.Material).dispose()
-      ;(wire.material as THREE.Material).dispose()
+      disposedDuringLoad = true
+      brainGroup.traverse((n) => {
+        const m = n as THREE.Mesh
+        if (m.isMesh || (n as THREE.LineSegments).isLineSegments) {
+          const geom = (m as THREE.Mesh | THREE.LineSegments).geometry as THREE.BufferGeometry | undefined
+          const mat = (m as THREE.Mesh | THREE.LineSegments).material as THREE.Material | undefined
+          geom?.dispose()
+          mat?.dispose()
+        }
+      })
+      // Silence unused-ref warnings; they are captured via brainGroup already.
+      void brainSolidRef
+      void brainWireRef
       renderer.dispose()
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement)
     }
