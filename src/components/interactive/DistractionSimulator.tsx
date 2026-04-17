@@ -327,8 +327,8 @@ export function DistractionSimulator() {
 
       <div
         ref={containerRef}
-        className="relative my-8 rounded-2xl bg-zinc-900/50 px-8 py-10 md:px-12"
-        style={{ minHeight: '28rem' }}
+        className="relative my-8 overflow-hidden rounded-2xl bg-zinc-900/50 px-8 py-10 md:px-12"
+        style={{ height: '36rem' }}
       >
         {/* Fake macOS notification */}
         <FakeNotification visible={showNotification} />
