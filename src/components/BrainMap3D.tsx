@@ -113,18 +113,27 @@ type ScrollState = {
   title: string
   boost?: number
 }
+// Neuroscientific model used by the visual:
+//   Task networks    : prefrontal, workingMemory, dopamine
+//   Task-NEGATIVE    : dmn, amygdala (loud at rest / in ADHD at rest)
+// A focused neurotypical brain has task networks ON and task-negative
+// networks SUPPRESSED. Hyperfocus is that same pattern but ~2.7× stronger
+// with DMN/amygdala crushed. ADHD at rest inverts it. Crash turns
+// everything off. This gives each state a distinct visual signature —
+// NT ≠ Hyperfocus because hyperfocus is DRAMATICALLY brighter on the same
+// 3 task networks.
 const SCROLL_STATES: ScrollState[] = [
   {
     threshold: 0,
-    active: ['prefrontal', 'dmn', 'dopamine', 'amygdala', 'workingMemory'],
-    dimmed: [],
-    title: 'Neurotypical baseline — all systems online',
+    active: ['prefrontal', 'workingMemory', 'dopamine'],
+    dimmed: ['dmn', 'amygdala'],
+    title: 'Neurotypical baseline — task networks sustained, DMN quiet',
   },
   {
     threshold: 0.15,
     active: ['dmn', 'amygdala'],
-    dimmed: ['prefrontal', 'dopamine', 'workingMemory'],
-    title: "ADHD at rest — prefrontal dims, DMN won't shut off",
+    dimmed: ['prefrontal', 'workingMemory', 'dopamine'],
+    title: 'ADHD at rest — PFC offline, DMN and amygdala take over',
   },
   {
     threshold: 0.3,
@@ -133,27 +142,23 @@ const SCROLL_STATES: ScrollState[] = [
     title: 'Priority blindness — amygdala fires on everything equally',
   },
   {
-    // Hyperfocus: all five regions fire, but at 2.2× the sustained
-    // neurotypical intensity. The user's mental model ("every region
-    // blazes") is the visual we honor here — the ADHD brain in this
-    // state is not a better NT brain, it's an overdriven one.
     threshold: 0.45,
-    active: ['prefrontal', 'workingMemory', 'dopamine', 'dmn', 'amygdala'],
-    dimmed: [],
-    title: 'Hyperfocus — every region blazing past baseline; the ADHD brain overdrives',
-    boost: 2.2,
+    active: ['prefrontal', 'workingMemory', 'dopamine'],
+    dimmed: ['dmn', 'amygdala'],
+    title: 'Hyperfocus — task networks overdriven past 270%, DMN crushed',
+    boost: 2.7,
   },
   {
     threshold: 0.6,
     active: [],
     dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'amygdala', 'dmn'],
-    title: 'The crash — hyperfocus is not free; the brain is dark for a day',
+    title: 'The crash — every network offline, the brain is dark for a day',
   },
   {
     threshold: 0.75,
-    active: ['prefrontal', 'dopamine', 'workingMemory'],
+    active: ['prefrontal', 'workingMemory', 'dopamine'],
     dimmed: ['dmn', 'amygdala'],
-    title: 'With AI scaffolding — external systems compensate',
+    title: 'With AI scaffolding — task networks externally restored',
   },
 ]
 
@@ -560,7 +565,7 @@ export default function BrainMap3D({
     )
 
     // ── Pointer rotate ──
-    let autoRotating = true
+    let autoRotating = false  // brains stay still by default — user drags to rotate
     let dragging = false
     let lastX = 0
     let lastY = 0
@@ -598,7 +603,9 @@ export default function BrainMap3D({
       dragging = false
       renderer.domElement.style.cursor = 'grab'
       try { renderer.domElement.releasePointerCapture(e.pointerId) } catch {}
-      autoRotateTimeout = setTimeout(() => { autoRotating = true }, 2500)
+      // Let auto-rotation resume after a long idle (8s) so the scene
+      // doesn't feel permanently frozen if the user hovers away.
+      autoRotateTimeout = setTimeout(() => { autoRotating = true }, 8000)
     }
     renderer.domElement.addEventListener('pointerdown', onDown)
     window.addEventListener('pointermove', onMove)
@@ -773,10 +780,6 @@ export default function BrainMap3D({
     }
   }, [webglFailed, handleNetworkClick])
 
-  const adhdActiveCount = currentState.active.length
-  const adhdSubtitle = currentState.title.split(' — ')[1] ?? currentState.title
-
-  const adhdModeLabel = MODE_BUTTONS.find((b) => b.mode === adhdMode)?.short ?? ''
 
   return (
     <div
@@ -810,26 +813,6 @@ export default function BrainMap3D({
             </button>
           )
         })}
-      </div>
-
-      {/* Compact mode-status strip — primary side titles are 3D sprites
-          that live above each brain inside the canvas, so they rotate and
-          stay visually locked to their brain. These HTML sub-lines carry
-          the dynamic state info (active-network count, state description)
-          that's awkward to re-render in 3D. */}
-      <div className="relative z-10 mt-4 grid grid-cols-2 gap-3 px-3">
-        <div className="rounded-md border border-teal-400/30 bg-teal-500/[0.04] px-3 py-1.5 text-center">
-          <p className="text-[10px] font-mono text-teal-300/80">
-            <span className="font-bold text-teal-200">5 / 5</span> networks · constant reference
-          </p>
-        </div>
-        <div className="rounded-md border border-amber-400/40 bg-amber-400/[0.05] px-3 py-1.5 text-center">
-          <p className="text-[10px] font-mono text-amber-300/90 truncate px-1">
-            <span className="font-bold text-amber-200">{adhdActiveCount} / 5</span>
-            {' · '}
-            {adhdModeLabel.toLowerCase()} · {adhdSubtitle}
-          </p>
-        </div>
       </div>
 
       {selectedNetwork && (
@@ -881,8 +864,14 @@ export default function BrainMap3D({
         ))}
       </div>
 
-      <div className="absolute bottom-1 right-3 z-10 pointer-events-none">
-        <p className="text-[9px] text-white/30 font-mono hidden md:block">drag to rotate · click a mode above</p>
+      {/* Explicit, readable interaction hint — more prominent than the old
+          tiny corner label. Brains don't auto-rotate anymore, so the user
+          needs to know they CAN drag. */}
+      <div className="pointer-events-none absolute top-20 right-4 z-10 hidden md:block">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] font-mono text-white/70 backdrop-blur-sm">
+          <span aria-hidden>↻</span>
+          drag the brains to rotate
+        </span>
       </div>
     </div>
   )

@@ -276,27 +276,20 @@ export function DistractionSimulator({
     }
   }, [handleScroll, scrollActive, mounted])
 
-  // Raw scroll (0-100). Remap so the first 30% of scroll stays pristine —
-  // no effects fire until past 30% — then 30-100 → 0-100 so the ramp is
-  // fully expressed across the remaining scroll range.
-  const rawPct = scrollProgress * 100
-  const pct = scrollActive
-    ? rawPct <= 30
-      ? 0
-      : Math.min(100, ((rawPct - 30) / 70) * 100)
-    : 0
+  // Scroll-derived progress (0–100). No remapping; distraction thresholds
+  // are tuned to the scroll directly. First ~25% of scroll is clean; after
+  // that every distraction type ramps in as a continuous function of pct so
+  // the mount is smooth, not stepwise.
+  const pct = scrollActive ? scrollProgress * 100 : 0
+  // Universal ramp: 0 at pct<=25, rising linearly toward 1 at pct=100.
+  const t = Math.max(0, Math.min(1, (pct - 25) / 75))
 
-  // ── Word replacement — aggressive ramp. Paragraphs are split on \n\n.
+  // ── Word replacement — smooth linear ramp
   const paragraphs = text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean)
   const tokensPerParagraph = paragraphs.map((p) => p.split(/\s+/))
   const wordCount = tokensPerParagraph.reduce((acc, p) => acc + p.length, 0)
 
-  let replaceRatio = 0
-  if (pct > 10 && pct <= 25) replaceRatio = 0.08
-  else if (pct > 25 && pct <= 40) replaceRatio = 0.22
-  else if (pct > 40 && pct <= 55) replaceRatio = 0.4
-  else if (pct > 55 && pct <= 70) replaceRatio = 0.6
-  else if (pct > 70) replaceRatio = 0.8
+  const replaceRatio = t * 0.8  // up to 80% of words replaced at peak
   const replacedIndices = pickIndices(wordCount, Math.floor(wordCount * replaceRatio), 42)
   const replacedSet = new Set(replacedIndices)
 
@@ -323,23 +316,26 @@ export function DistractionSimulator({
     return nodes
   })
 
-  // ── Vibration
+  // ── Vibration — continuous ramp. Mild starts at ~45, heavy past ~75.
   let vibrateClass = ''
-  if (pct > 25 && pct <= 45) vibrateClass = 'vibrate-mild'
-  else if (pct > 45 && pct <= 65) vibrateClass = 'vibrate-medium'
-  else if (pct > 65) vibrateClass = 'vibrate-heavy'
+  if (pct > 45 && pct <= 60) vibrateClass = 'vibrate-mild'
+  else if (pct > 60 && pct <= 78) vibrateClass = 'vibrate-medium'
+  else if (pct > 78) vibrateClass = 'vibrate-heavy'
 
-  // ── Notification stack — scales with scroll, accumulates downward
-  // Each notification has a "spawn threshold" — once pct passes it, the card
-  // is visible. Later cards stack on top of earlier ones with slight offsets.
+  // ── Notification stack — one card per ~4.5% after pct=27. Each card fades
+  // in over its first 8% of life, so the arrival is gentle rather than
+  // popping in. This means the first notification slides in around pct≈30
+  // and by pct=100 all 16 are on screen.
   const notifVisible: { n: NotificationDef; style: React.CSSProperties }[] = []
   {
     const rand = seededRandom(7)
+    const firstAt = 27
+    const step = 4.5
     for (let i = 0; i < notifications.length; i++) {
-      const threshold = 10 + i * 5 // first notif at 10%, last around 85%
+      const threshold = firstAt + i * step
       if (pct > threshold) {
-        const ageFactor = Math.min(1, (pct - threshold) / 20) // fade in
-        const lane = i % 2 // two columns: 0=right, 1=left
+        const ageFactor = Math.min(1, (pct - threshold) / 8)
+        const lane = i % 2
         const row = Math.floor(i / 2)
         const top = 6 + row * 7.5 + rand() * 2
         const horizOffset = rand() * 2
@@ -350,19 +346,23 @@ export function DistractionSimulator({
             top: `${top}%`,
             opacity: ageFactor * (pct > 90 ? 1 : 0.95),
             transform: `translateY(${(1 - ageFactor) * -24}px) rotate(${(rand() - 0.5) * 4}deg)`,
-            transition: 'opacity 0.4s ease, transform 0.4s ease',
+            transition: 'opacity 0.5s ease, transform 0.5s ease',
           },
         })
       }
     }
   }
 
-  // ── Thought bubbles (orange pill overlays)
+  // ── Thought bubbles — start sparse at pct~40 and add one per ~5% of
+  // scroll. Gradual arrival, not a sudden wave.
   const thoughtBubbles: { text: string; style: React.CSSProperties }[] = []
-  if (pct > 35) {
-    const bubbleCount = pct > 80 ? 10 : pct > 60 ? 6 : 3
+  {
+    const bubbleStart = 40
+    const bubbleCount = Math.max(0, Math.min(12, Math.floor((pct - bubbleStart) / 5)))
     const rand = seededRandom(99)
     for (let i = 0; i < bubbleCount; i++) {
+      const ownThreshold = bubbleStart + i * 5
+      const age = Math.min(1, (pct - ownThreshold) / 4)
       thoughtBubbles.push({
         text: intrusiveThoughts[(i * 3 + 5) % intrusiveThoughts.length],
         style: {
@@ -370,19 +370,24 @@ export function DistractionSimulator({
           left: `${5 + rand() * 70}%`,
           animation: `float-bubble ${2 + rand() * 2}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.2}s`,
+          opacity: age,
         },
       })
     }
   }
 
-  // ── Memory fragments — colored tilted boxes from 55% onward
+  // ── Memory fragments — add one per ~3.5% of scroll after pct=55. Each
+  // fades in over 4% so new fragments arrive gently instead of all at once.
   const memoryItems: { frag: MemoryFragmentDef; style: React.CSSProperties }[] = []
-  if (pct > 55) {
-    const count = pct > 90 ? 14 : pct > 75 ? 9 : pct > 65 ? 5 : 2
+  {
+    const memStart = 55
+    const count = Math.max(0, Math.min(memoryFragments.length, Math.floor((pct - memStart) / 3.5)))
     const rand = seededRandom(31)
     for (let i = 0; i < count; i++) {
+      const ownThreshold = memStart + i * 3.5
+      const age = Math.min(1, (pct - ownThreshold) / 4)
       const frag = memoryFragments[i % memoryFragments.length]
-      const size = 80 + rand() * 80 // 80-160 px wide
+      const size = 80 + rand() * 80 // 80–160 px wide
       const rotation = (rand() - 0.5) * 30
       memoryItems.push({
         frag,
@@ -393,7 +398,7 @@ export function DistractionSimulator({
           '--rot': `rotate(${rotation}deg)`,
           animation: `drift ${3 + rand() * 3}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.15}s`,
-          opacity: Math.min(1, (pct - 55) / 25),
+          opacity: age,
         } as React.CSSProperties,
       })
     }
@@ -401,30 +406,30 @@ export function DistractionSimulator({
 
   const showReveal = pct > 90
 
-  // Color interpolation — container background and text fade from normal
-  // paragraph (light bg, dark text) into chaos (dark bg, dim text) as scroll
-  // advances. Splits at 50% so the mid is an ominous purple.
-  const tScroll = pct / 100
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-  const lerp3 = (a: number[], b: number[], t: number) => [
-    lerp(a[0], b[0], t),
-    lerp(a[1], b[1], t),
-    lerp(a[2], b[2], t),
+  // Color interpolation — container background and text stay bright white
+  // until pct=25, then fade smoothly into the chaos palette. Using `t`
+  // (shared ramp) means background darkening mounts in sync with every
+  // other distraction type.
+  const lerp = (a: number, b: number, tt: number) => a + (b - a) * tt
+  const lerp3 = (a: number[], b: number[], tt: number) => [
+    lerp(a[0], b[0], tt),
+    lerp(a[1], b[1], tt),
+    lerp(a[2], b[2], tt),
   ]
   const rgb = (c: number[]) => `rgb(${c[0] | 0}, ${c[1] | 0}, ${c[2] | 0})`
   const bgLight = [252, 252, 252]
   const bgMid = [80, 30, 110]
   const bgDark = [8, 2, 20]
-  const bg = tScroll < 0.5
-    ? lerp3(bgLight, bgMid, tScroll / 0.5)
-    : lerp3(bgMid, bgDark, (tScroll - 0.5) / 0.5)
+  const bg = t < 0.5
+    ? lerp3(bgLight, bgMid, t / 0.5)
+    : lerp3(bgMid, bgDark, (t - 0.5) / 0.5)
   const textLight = [24, 24, 27]   // zinc-900
   const textMid = [190, 190, 200]  // mid-gray (peak overwhelm)
   const textDark = [110, 100, 130] // dim zinc-500-ish
-  const textColor = tScroll < 0.5
-    ? lerp3(textLight, textMid, tScroll / 0.5)
-    : lerp3(textMid, textDark, (tScroll - 0.5) / 0.5)
-  const borderOpacity = Math.min(0.3, 0.05 + tScroll * 0.6)
+  const textColor = t < 0.5
+    ? lerp3(textLight, textMid, t / 0.5)
+    : lerp3(textMid, textDark, (t - 0.5) / 0.5)
+  const borderOpacity = Math.min(0.3, 0.05 + t * 0.5)
 
   if (!mounted) return null
 
@@ -507,7 +512,10 @@ export function DistractionSimulator({
 
   // Pre-start state (ND mode not yet started) OR NT mode: render a clean,
   // readable paragraph so the user can experience what the passage is
-  // actually saying before (or without) the distractions.
+  // actually saying before (or without) the distractions. Both modes use a
+  // light "normal reading" background — the point is that NT reading and
+  // pre-demo ND reading look IDENTICAL; the difference only shows up once
+  // you start the ND demo and scroll.
   if (!started || viewMode === 'nt') {
     const isNt = viewMode === 'nt'
     return (
@@ -516,22 +524,22 @@ export function DistractionSimulator({
         <div
           className={`rounded-2xl px-8 py-10 md:px-14 border ${
             isNt
-              ? 'border-teal-400/30 bg-gradient-to-b from-[#0a1820] to-[#0a1416]'
-              : 'border-zinc-200 bg-[#f8f8fa] dark:border-zinc-800 dark:bg-zinc-100'
+              ? 'border-teal-400/50 bg-[#f8fbfb] ring-1 ring-teal-400/20'
+              : 'border-zinc-200 bg-[#f8f8fa]'
           }`}
         >
           <div className="mx-auto max-w-[42rem] space-y-5 text-base leading-loose md:text-lg">
             {paragraphs.map((p, i) => (
-              <p key={i} className={isNt ? 'text-teal-100' : 'text-zinc-800'}>
+              <p key={i} className="text-zinc-900">
                 {p}
               </p>
             ))}
           </div>
           {isNt ? (
-            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-teal-300/70">
+            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-teal-700">
               This is what reading feels like with an intact prefrontal
               cortex: linear, sustained, uninterrupted. Toggle to{' '}
-              <span className="font-semibold text-teal-200">Read as ADHD</span> and
+              <span className="font-semibold text-teal-800">Read as ADHD</span> and
               click <span className="font-semibold text-teal-200">Start demo</span>{' '}
               to see what the same passage feels like to my brain.
             </p>
