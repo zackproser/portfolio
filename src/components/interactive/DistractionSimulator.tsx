@@ -185,7 +185,7 @@ export function DistractionSimulator() {
       observer.disconnect()
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [handleScroll, isMobile])
+  }, [handleScroll, isMobile, mounted])
 
   // Convert progress (0-1) to percentage band
   const pct = scrollProgress * 100
