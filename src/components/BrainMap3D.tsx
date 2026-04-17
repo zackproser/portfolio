@@ -120,7 +120,7 @@ function BrainRegion({
       mat.opacity = 0.3 + currentIntensity.current * 0.7
     }
     if (glowRef.current) {
-      glowRef.current.scale.setScalar(scale * (1 + currentIntensity.current * 0.5))
+      glowRef.current.scale.setScalar(1 + currentIntensity.current * 0.5)
       const gmat = glowRef.current.material as THREE.MeshBasicMaterial
       gmat.opacity = currentIntensity.current * 0.15
     }
@@ -237,20 +237,6 @@ function BrainShell() {
   )
 }
 
-// ─── Auto-rotate camera ───
-function CameraController() {
-  const { camera } = useThree()
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime * 0.1
-    camera.position.x = Math.sin(t) * 3.5
-    camera.position.z = Math.cos(t) * 3.5
-    camera.position.y = 1 + Math.sin(t * 0.5) * 0.5
-    camera.lookAt(0, 0, 0)
-  })
-
-  return null
-}
 
 // ─── Main component ───
 export default function BrainMap3D() {
@@ -373,12 +359,13 @@ export default function BrainMap3D() {
               <NeuralParticles activeRegions={currentState.active} />
             </Float>
 
-            <CameraController />
             <OrbitControls
               enableZoom={false}
               enablePan={false}
               minPolarAngle={Math.PI / 4}
               maxPolarAngle={Math.PI / 1.5}
+              autoRotate
+              autoRotateSpeed={0.5}
             />
           </Canvas>
         )}
