@@ -117,7 +117,7 @@ function MarginCue({ emoji, side, topPercent, visible, delay }: MarginCueProps) 
     <span
       className="margin-cue pointer-events-none absolute z-20 text-lg"
       style={{
-        [side]: side === 'left' ? '-2rem' : '-2rem',
+        [side]: side === 'left' ? '-2rem' : '-3rem',
         top: `${topPercent}%`,
         opacity: visible ? 1 : 0,
         transition: `opacity 0.4s ease ${delay}ms`,
@@ -327,7 +327,7 @@ export function DistractionSimulator() {
 
       <div
         ref={containerRef}
-        className="relative my-8 overflow-hidden rounded-2xl bg-zinc-900/50 px-8 py-10 md:px-12"
+        className="relative my-8 rounded-2xl bg-zinc-900/50 px-8 py-10 md:px-12"
         style={{ minHeight: '28rem' }}
       >
         {/* Fake macOS notification */}
