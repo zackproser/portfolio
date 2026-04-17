@@ -755,8 +755,11 @@ export default function BrainMap3D({
             geom?.dispose()
             mat?.dispose()
           } else if ((mesh as THREE.Sprite).isSprite) {
-            const mat = (mesh as THREE.Sprite).material as THREE.Material | undefined
-            mat?.dispose()
+            const mat = (mesh as THREE.Sprite).material as THREE.SpriteMaterial | undefined
+            if (mat) {
+              mat.map?.dispose()
+              mat.dispose()
+            }
           }
         })
       }
