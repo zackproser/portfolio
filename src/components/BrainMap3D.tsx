@@ -185,13 +185,6 @@ type FiberBundle = {
   key: NetworkKey
   color: THREE.Color
   curves: THREE.CatmullRomCurve3[]
-  tubeMeshes: THREE.Mesh[]
-  signals: {
-    curveIndex: number
-    t: number
-    mesh: THREE.Mesh
-    speed: number
-  }[]
   nodeMesh: THREE.Mesh
   targetIntensity: number
   currentIntensity: number
@@ -363,49 +356,6 @@ export default function BrainMap3D() {
         const color = new THREE.Color(net.color)
         const curves: THREE.CatmullRomCurve3[] = net.fibers.map((p) => buildFiberCurve(p[0], p[1]))
 
-        const tubeMeshes: THREE.Mesh[] = curves.map((curve) => {
-          // Thicker tubes + additive blending → electric "bioluminescent" look
-          // that stands out dramatically against the pink brain tissue.
-          const tubeGeom = new THREE.TubeGeometry(curve, 48, 0.012, 8, false)
-          const mat = new THREE.MeshBasicMaterial({
-            color,
-            transparent: true,
-            opacity: 0.85,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
-            toneMapped: false,
-          })
-          const mesh = new THREE.Mesh(tubeGeom, mat)
-          sideGroup.add(mesh)
-          return mesh
-        })
-
-        const signals: FiberBundle['signals'] = []
-        const signalsPerFiber = 4
-        for (let ci = 0; ci < curves.length; ci++) {
-          for (let si = 0; si < signalsPerFiber; si++) {
-            // Larger sparkles with additive blending — visible as bright
-            // flares moving along each fiber, reading as "electrical activity".
-            const sphereGeom = new THREE.SphereGeometry(0.028, 10, 10)
-            const sMat = new THREE.MeshBasicMaterial({
-              color: new THREE.Color('#ffffff').lerp(color, 0.3),
-              transparent: true,
-              opacity: 1.0,
-              depthWrite: false,
-              toneMapped: false,
-              blending: THREE.AdditiveBlending,
-            })
-            const m = new THREE.Mesh(sphereGeom, sMat)
-            sideGroup.add(m)
-            signals.push({
-              curveIndex: ci,
-              t: (si / signalsPerFiber + Math.random() * 0.15) % 1,
-              mesh: m,
-              speed: 0.25 + Math.random() * 0.25,
-            })
-          }
-        }
-
         const nodeGeom = new THREE.SphereGeometry(0.055, 20, 20)
         const nodeMat = new THREE.MeshBasicMaterial({
           color,
@@ -424,8 +374,6 @@ export default function BrainMap3D() {
           key: nkey,
           color,
           curves,
-          tubeMeshes,
-          signals,
           nodeMesh,
           targetIntensity: 1,
           currentIntensity: 1,
@@ -713,7 +661,6 @@ export default function BrainMap3D() {
     // ── Animation loop ──
     const clock = new THREE.Clock()
     let raf = 0
-    const tmp = new THREE.Vector3()
 
     const animate = () => {
       const delta = Math.min(clock.getDelta(), 1 / 30)
@@ -735,10 +682,6 @@ export default function BrainMap3D() {
               : 0.15
           b.currentIntensity += (b.targetIntensity - b.currentIntensity) * delta * 4
           intensity[b.key] = b.currentIntensity
-
-          // Hide fiber tubes and signal particles — replaced by wireframe coloring.
-          for (const tm of b.tubeMeshes) tm.visible = false
-          for (const s of b.signals) s.mesh.visible = false
 
           // Node orb stays as the region's raycast target; small and subtle.
           const i = b.currentIntensity
@@ -801,14 +744,6 @@ export default function BrainMap3D() {
       disposedDuringLoad = true
       for (const side of sides) {
         for (const b of side.bundles) {
-          for (const tm of b.tubeMeshes) {
-            ;(tm.geometry as THREE.BufferGeometry).dispose()
-            ;(tm.material as THREE.Material).dispose()
-          }
-          for (const s of b.signals) {
-            ;(s.mesh.geometry as THREE.BufferGeometry).dispose()
-            ;(s.mesh.material as THREE.Material).dispose()
-          }
           ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
           ;(b.nodeMesh.material as THREE.Material).dispose()
         }
