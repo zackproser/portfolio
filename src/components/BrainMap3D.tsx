@@ -264,11 +264,16 @@ export default function BrainMap3D() {
     let lastY = 0
     let rotY = 0
     let rotX = 0
+    let autoRotateTimeout: ReturnType<typeof setTimeout> | null = null
     const clampX = (v: number) => Math.max(-0.6, Math.min(0.6, v))
 
     const onDown = (e: PointerEvent) => {
       dragging = true
       autoRotating = false
+      if (autoRotateTimeout !== null) {
+        clearTimeout(autoRotateTimeout)
+        autoRotateTimeout = null
+      }
       lastX = e.clientX
       lastY = e.clientY
       renderer.domElement.style.cursor = 'grabbing'
@@ -288,7 +293,7 @@ export default function BrainMap3D() {
       renderer.domElement.style.cursor = 'grab'
       try { renderer.domElement.releasePointerCapture(e.pointerId) } catch {}
       // Resume auto-rotate after a short delay
-      setTimeout(() => { autoRotating = true }, 2000)
+      autoRotateTimeout = setTimeout(() => { autoRotating = true }, 2000)
     }
 
     renderer.domElement.addEventListener('pointerdown', onDown)
@@ -379,6 +384,7 @@ export default function BrainMap3D() {
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
+      if (autoRotateTimeout !== null) clearTimeout(autoRotateTimeout)
       renderer.domElement.removeEventListener('pointerdown', onDown)
       renderer.domElement.removeEventListener('click', onClick)
       window.removeEventListener('pointermove', onMove)
