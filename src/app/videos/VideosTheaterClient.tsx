@@ -16,6 +16,7 @@ export type TheaterVideo = {
   seriesPart: number | null
   glyph: string
   ytId: string | null
+  image: string | null
   thumbStyle: 't-warm' | 't-cool' | 't-plate' | 't-mono'
 }
 
@@ -38,13 +39,25 @@ const fmtViews = (n: number) => {
   return String(n)
 }
 
+function posterUrl(v: TheaterVideo): string | null {
+  if (v.image) return v.image
+  if (v.ytId) return `https://i.ytimg.com/vi/${v.ytId}/hqdefault.jpg`
+  return null
+}
+
 function Thumb({ v, plInner = false }: { v: TheaterVideo; plInner?: boolean }) {
   const cls = plInner ? `thumb pl-inner-thumb ${v.thumbStyle}` : `thumb ${v.thumbStyle}`
+  const src = posterUrl(v)
   return (
     <div className={cls}>
-      <span className="thumb-glyph">{v.glyph}</span>
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="thumb-img" src={src} alt="" loading="lazy" />
+      ) : (
+        <span className="thumb-glyph">{v.glyph}</span>
+      )}
       {!plInner && <span className="thumb-rule" />}
-      <span className="thumb-dur">{fmtDur(v.durSec)}</span>
+      {v.durSec > 0 && <span className="thumb-dur">{fmtDur(v.durSec)}</span>}
     </div>
   )
 }
@@ -141,7 +154,7 @@ export default function VideosTheaterClient({ videos }: Props) {
             Watch me <em>build</em>, break, and explain applied AI.
           </h1>
           <p className="vid-dek">
-            Long-form tutorials, working sessions, and short explainers. Recorded in my home office on a $40 mic.
+            Long-form tutorials, working sessions, and short explainers.
             No course bundles, no upsells — just the same material I&apos;d use in a workshop.
           </p>
           <div className="vid-rule">
@@ -253,8 +266,14 @@ export default function VideosTheaterClient({ videos }: Props) {
                       type="button"
                       onClick={() => { if (current.ytId) setEmbedLive(true) }}
                       aria-label={current.ytId ? `Play ${current.title}` : current.title}
+                      disabled={!current.ytId}
                     >
-                      <span className="glyph">{current.glyph}</span>
+                      {posterUrl(current) ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img className="poster-img" src={posterUrl(current)!} alt="" />
+                      ) : (
+                        <span className="glyph">{current.glyph}</span>
+                      )}
                       <div className="play" />
                     </button>
                   )}

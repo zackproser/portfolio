@@ -12,7 +12,7 @@ export const metadata: Metadata = createMetadata({
     'All of my latest Twitch streams, YouTube videos, how-tos, talks, webinars, demos, and code walkthroughs',
 })
 
-const YT_EMBED_RE = /(?:youtube-nocookie\.com|youtube\.com)\/embed\/([A-Za-z0-9_-]{6,})/
+const YT_ID_RE = /(?:youtube-nocookie\.com\/embed\/|youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/
 const THUMB_STYLES = ['t-warm', 't-cool', 't-plate', 't-mono'] as const
 
 function extractYouTubeId(slug: string): string | null {
@@ -20,7 +20,7 @@ function extractYouTubeId(slug: string): string | null {
   if (!fs.existsSync(mdx)) return null
   try {
     const body = fs.readFileSync(mdx, 'utf8')
-    const m = body.match(YT_EMBED_RE)
+    const m = body.match(YT_ID_RE)
     return m ? m[1] : null
   } catch {
     return null
@@ -72,6 +72,13 @@ export default async function VideosIndex() {
     .map((v, i) => {
       const kind = kindOf(v)
       const { series, part } = seriesOf(v)
+      const imageRaw = v.image
+      const image =
+        typeof imageRaw === 'string'
+          ? imageRaw
+          : imageRaw && typeof imageRaw === 'object' && 'src' in imageRaw
+            ? imageRaw.src
+            : null
       return {
         slug: v.slug,
         title: v.title,
@@ -85,6 +92,7 @@ export default async function VideosIndex() {
         seriesPart: part,
         glyph: glyphFor(v.title),
         ytId: extractYouTubeId(v.slug),
+        image,
         thumbStyle: thumbStyleFor(i, kind),
       }
     })

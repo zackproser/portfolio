@@ -220,6 +220,10 @@
   background: repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0 1px, transparent 1px 4px);
   pointer-events: none;
 }
+.videos-page .thumb-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block; z-index: 1;
+}
 .videos-page .thumb-glyph {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   font-family: var(--vb-font-serif); font-weight: 800; font-size: clamp(40px, 8vw, 80px);
@@ -228,7 +232,7 @@
 }
 .videos-page .thumb.t-plate .thumb-glyph { color: rgba(255,255,255,.28); }
 .videos-page .thumb-dur {
-  position: absolute; right: 6px; bottom: 6px;
+  position: absolute; right: 6px; bottom: 6px; z-index: 2;
   font-family: var(--vb-font-mono); font-size: 10px; letter-spacing: .04em;
   color: #fff; background: rgba(15,15,31,.78);
   padding: 2px 6px; border-radius: 3px; font-weight: 600;
@@ -266,7 +270,16 @@
     repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 4px),
     #1a1a2e;
   cursor: pointer; border: 0; width: 100%; padding: 0;
+  overflow: hidden;
 }
+.videos-page .player-poster:disabled { cursor: default; }
+.videos-page .player-poster .poster-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block; z-index: 0;
+  filter: brightness(.88);
+}
+.videos-page .player-poster .play { z-index: 1; }
+.videos-page .player-poster .glyph { z-index: 1; }
 .videos-page .player-poster .glyph {
   font-family: var(--vb-font-serif); font-weight: 800; font-size: clamp(120px, 14vw, 200px);
   line-height: 1; color: rgba(245,158,11,.7); letter-spacing: -.04em;
