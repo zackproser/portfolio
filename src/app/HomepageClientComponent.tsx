@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
 import type { Route } from 'next'
 import { track } from '@vercel/analytics'
-import { sendGTMEvent } from '@next/third-parties/google'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import ConsultationForm from '@/components/ConsultationForm'
+import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -30,45 +30,6 @@ interface Props {
 // ----- Hero ---------------------------------------------------------
 
 function EditorialHero({ onConsult }: { onConsult: () => void }) {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const [errorMessage, setErrorMessage] = useState<string>('')
-
-  async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const form = event.currentTarget
-    const email = (form.elements.namedItem('email') as HTMLInputElement)?.value?.trim()
-    if (!email) return
-
-    setStatus('submitting')
-    setErrorMessage('')
-
-    try {
-      const response = await fetch('/api/form', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, referrer: '/', tags: [] }),
-      })
-      const data = await response.json().catch(() => ({}))
-      if (!response.ok) {
-        throw new Error(data?.data || 'Failed to subscribe')
-      }
-      track('newsletter-signup', { location: 'hero' })
-      sendGTMEvent({
-        event: 'newsletter-signup-conversion',
-        method: 'newsletter',
-        source: '/',
-        position: 'hero',
-        tags: '',
-        slug: 'homepage',
-      })
-      setStatus('success')
-      form.reset()
-    } catch (err) {
-      setStatus('error')
-      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong')
-    }
-  }
-
   return (
     <section className="pt-16 pb-12 md:pt-24 md:pb-16">
       <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-14 lg:grid-cols-[1.35fr_1fr] lg:items-start">
@@ -88,45 +49,7 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
           </p>
 
           {/* Newsletter — the primary CTA. Inline under the lede. */}
-          <form className="editorial-capture" onSubmit={handleSubscribe} noValidate>
-            <div className="editorial-capture-label text-parchment-600 dark:text-slate-400">
-              <span className="text-burnt-400 dark:text-amber-400">✱</span>
-              <span>The Modern Coding letter</span>
-            </div>
-            <div className="editorial-capture-title text-burnt-400 dark:text-amber-400">
-              Applied AI dispatches read by 5,000+ engineers
-            </div>
-            {status === 'success' ? (
-              <div className="editorial-capture-fine text-burnt-400 dark:text-amber-400" role="status">
-                ✓ Subscribed. Check your inbox to confirm.
-              </div>
-            ) : (
-              <>
-                <div className="editorial-capture-row">
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="you@company.com"
-                    aria-label="Email"
-                    disabled={status === 'submitting'}
-                  />
-                  <button
-                    type="submit"
-                    disabled={status === 'submitting'}
-                    className="inline-flex items-center justify-center px-5 py-[13px] text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors disabled:opacity-60"
-                  >
-                    {status === 'submitting' ? 'Subscribing…' : 'Subscribe →'}
-                  </button>
-                </div>
-                <div className="editorial-capture-fine text-parchment-500 dark:text-slate-500">
-                  {status === 'error' && errorMessage
-                    ? errorMessage
-                    : 'No spam. Unsubscribe in one click.'}
-                </div>
-              </>
-            )}
-          </form>
+          <EditorialNewsletter location="hero" />
 
           <div className="editorial-secondary text-parchment-600 dark:text-slate-400">
             <button
