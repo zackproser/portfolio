@@ -29,16 +29,14 @@ function getGlowTexture(): THREE.CanvasTexture {
   return tex
 }
 
-// Build a 3D text sprite that hangs above its parent group. Sprites are
-// billboards (always face camera), so the label stays readable no matter how
-// the user rotates the brain — it effectively "travels with" the brain
-// rather than sitting at a fixed screen position.
-function buildTextSprite(
+// Create a canvas texture with rendered text. Shared by buildTextSprite and
+// updateTextSprite to avoid duplicating the canvas rendering logic.
+function createTextTexture(
   text: string,
   color: string,
   subColor?: string,
   subText?: string,
-): THREE.Sprite {
+): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
   const w = 1024
   const h = 256
@@ -50,7 +48,6 @@ function buildTextSprite(
   ctx.font = '700 96px ui-monospace, SFMono-Regular, Menlo, monospace'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  // Letter-spaced feel via extra-wide tracking — draw once:
   ctx.fillText(text, w / 2, subText ? h * 0.38 : h * 0.5)
   if (subText && subColor) {
     ctx.font = '500 48px ui-monospace, SFMono-Regular, Menlo, monospace'
@@ -60,6 +57,20 @@ function buildTextSprite(
   const tex = new THREE.CanvasTexture(canvas)
   tex.needsUpdate = true
   tex.anisotropy = 4
+  return tex
+}
+
+// Build a 3D text sprite that hangs above its parent group. Sprites are
+// billboards (always face camera), so the label stays readable no matter how
+// the user rotates the brain — it effectively "travels with" the brain
+// rather than sitting at a fixed screen position.
+function buildTextSprite(
+  text: string,
+  color: string,
+  subColor?: string,
+  subText?: string,
+): THREE.Sprite {
+  const tex = createTextTexture(text, color, subColor, subText)
   const mat = new THREE.SpriteMaterial({
     map: tex,
     transparent: true,
@@ -68,7 +79,6 @@ function buildTextSprite(
     toneMapped: false,
   })
   const sprite = new THREE.Sprite(mat)
-  // Aspect ratio 4:1 — text fits wide and short.
   sprite.scale.set(1.7, 0.42, 1)
   return sprite
 }
@@ -82,28 +92,9 @@ function updateTextSprite(
   subColor?: string,
   subText?: string,
 ): void {
-  const canvas = document.createElement('canvas')
-  const w = 1024
-  const h = 256
-  canvas.width = w
-  canvas.height = h
-  const ctx = canvas.getContext('2d')!
-  ctx.clearRect(0, 0, w, h)
-  ctx.fillStyle = color
-  ctx.font = '700 96px ui-monospace, SFMono-Regular, Menlo, monospace'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(text, w / 2, subText ? h * 0.38 : h * 0.5)
-  if (subText && subColor) {
-    ctx.font = '500 48px ui-monospace, SFMono-Regular, Menlo, monospace'
-    ctx.fillStyle = subColor
-    ctx.fillText(subText, w / 2, h * 0.76)
-  }
   const mat = sprite.material as THREE.SpriteMaterial
   mat.map?.dispose()
-  const tex = new THREE.CanvasTexture(canvas)
-  tex.needsUpdate = true
-  tex.anisotropy = 4
+  const tex = createTextTexture(text, color, subColor, subText)
   mat.map = tex
   mat.needsUpdate = true
 }
