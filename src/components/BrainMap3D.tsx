@@ -400,6 +400,10 @@ export default function BrainMap3D({
     const sides: Side[] = []
     let disposedDuringLoad = false
 
+    // Shared glow texture for all burst sprites — created once and reused
+    // across all networks on both sides. Color is applied via SpriteMaterial.color.
+    const sharedGlowTexture = createGlowTexture()
+
     function buildSide(
       key: SideKey,
       offsetX: number,
@@ -461,9 +465,8 @@ export default function BrainMap3D({
       // specific visual effect absent from NT baseline at equivalent coverage.
       const bursts: BurstItem[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
         const net = NETWORKS[nkey]
-        const glowTex = createGlowTexture()
         const mat = new THREE.SpriteMaterial({
-          map: glowTex,
+          map: sharedGlowTexture,
           color: new THREE.Color(net.color),
           transparent: true,
           opacity: 0,
@@ -889,6 +892,7 @@ export default function BrainMap3D({
       window.removeEventListener('pointerup', onUp)
 
       disposedDuringLoad = true
+      sharedGlowTexture.dispose()
       for (const side of sides) {
         for (const b of side.bundles) {
           ;(b.nodeMesh.geometry as THREE.BufferGeometry).dispose()
@@ -904,7 +908,7 @@ export default function BrainMap3D({
           } else if ((mesh as THREE.Sprite).isSprite) {
             const mat = (mesh as THREE.Sprite).material as THREE.SpriteMaterial | undefined
             if (mat) {
-              mat.map?.dispose()
+              // Don't dispose mat.map here — it's the shared texture
               mat.dispose()
             }
           }
