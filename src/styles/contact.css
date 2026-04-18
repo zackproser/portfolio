@@ -491,7 +491,7 @@
   color: var(--ink-dim); margin: 14px 0 0 80px; max-width: 62ch; text-wrap: pretty;
 }
 @media (max-width: 640px) {
-  .contact-page .faq summary { grid-template-columns: 40px 1fr; }
+  .contact-page .faq summary { grid-template-columns: 40px 1fr auto; }
   .contact-page .faq .a { margin-left: 0; }
 }
 
