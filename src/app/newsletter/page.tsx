@@ -97,7 +97,7 @@ export default async function NewsletterPage() {
                 <span>Applied AI &middot; Brooklyn, NY</span>
               </div>
               <p className="mh-strapline">
-                One applied-AI essay a month, written by someone actually shipping it. {subscriberCount}+ readers and counting.
+                One applied-AI essay a month, written by someone actually shipping it. {subscriberCount} readers and counting.
               </p>
             </header>
 
@@ -116,7 +116,7 @@ export default async function NewsletterPage() {
                 <SubscribeForm fieldNum="01" submitLabel="Subscribe" />
 
                 <div className="sp-fine" style={{ marginTop: 18 }}>
-                  <span>{subscriberCount}+ readers</span>
+                  <span>{subscriberCount} readers</span>
                   <span className="dot" />
                   <span>Monthly</span>
                   <span className="dot" />
@@ -363,7 +363,7 @@ export default async function NewsletterPage() {
               <div className="nl-chip">
                 <span className="dot" />
                 <span className="accent">Open</span>
-                <span>&middot; {subscriberCount}+ readers &middot; next issue ships monthly</span>
+                <span>&middot; {subscriberCount} readers &middot; next issue ships monthly</span>
               </div>
               <h2>Get the next issue in your inbox <em>the day it ships.</em></h2>
               <p>No double-opt-in theatre. Enter an email, click a link, done. Unsubscribing is equally uneventful.</p>

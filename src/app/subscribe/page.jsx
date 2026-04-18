@@ -85,7 +85,7 @@ export default function SubscribePage() {
           <header className="postcard-mast">
             <span className="left">Modern Coding</span>
             <span className="title"><em>Subscribe &mdash; Free forever</em></span>
-            <span className="right">{subscriberCount}+ engineers &middot; Est. {romanYear}</span>
+            <span className="right">{subscriberCount} engineers &middot; Est. {romanYear}</span>
           </header>
 
           {/* ============================================== */}
@@ -116,7 +116,7 @@ export default function SubscribePage() {
             <SubscribeForm fieldNum="01" submitLabel="Count me in" />
 
             <div className="sp-fine" aria-hidden="true">
-              <span>{subscriberCount}+ engineers</span>
+              <span>{subscriberCount} engineers</span>
               <span className="dot" />
               <span>One-click unsubscribe</span>
               <span className="dot" />
@@ -254,7 +254,7 @@ export default function SubscribePage() {
           <section className="postcard-cta">
             <div className="sp-kicker">&sect; 05 &middot; <em>Last call</em></div>
             <h2>Ready to <em>master AI development?</em></h2>
-            <p>Join {subscriberCount}+ engineers getting smarter about AI tools &mdash; one essay, first of the month.</p>
+            <p>Join {subscriberCount} engineers getting smarter about AI tools &mdash; one essay, first of the month.</p>
             <SubscribeForm fieldNum="02" submitLabel="Count me in" />
             <div className="cta-fine">No spam &middot; Unsubscribe anytime &middot; Free forever</div>
           </section>
