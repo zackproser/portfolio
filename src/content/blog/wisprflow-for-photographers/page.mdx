@@ -1,0 +1,61 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'wisprflow-for-photographers';
+
+# WisprFlow for Photographers: Voice Coding for Portfolio Sites and Client Systems
+
+Every photographer eventually faces the same decision: pay $300/year for an off-the-shelf portfolio platform with mediocre control, or spend weeks building something custom. Voice coding changes that math significantly. With WisprFlow, you describe your ideal portfolio site or client-delivery system out loud, and it writes the code. What would take a developer two weeks, you can build in two afternoons-without knowing how to type a line of JavaScript.
+
+## Building portfolio sites via voice
+
+Your portfolio is your calling card. It needs to load instantly, showcase images at full quality, adapt to mobile and desktop, and reflect your artistic style. Template-based platforms force you into their grids, their compression, their cookie-cutter layouts. With WisprFlow, you build exactly what you imagine.
+
+Say, "Create a Next.js site with a dark-mode toggle, a masonry grid for portfolio images, and a contact form that sends to my email." WisprFlow generates the React components, sets up Tailwind CSS for styling, and integrates Formspree for the form. "Add a lightbox that opens when you click an image." It installs `react-image-lightbox` and wires it up. "Make the header sticky and add a smooth scroll." It writes the CSS and JavaScript.
+
+Because you're building with voice, you can iterate at the speed of thought. "Change the grid to three columns on desktop, two on tablet, one on mobile." "Add a filter that lets visitors sort by genre: portrait, landscape, street." "Embed an Instagram feed at the bottom." Each change takes seconds, not hours. The result is a portfolio that's uniquely yours, hosted on your own domain, with no monthly fees beyond basic hosting.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Client delivery systems
+
+After a shoot, you need to deliver proofs, collect selections, share final edits, and handle downloads. Off-the-shelf gallery tools charge per client or limit bandwidth. With WisprFlow, you build a system that matches your workflow.
+
+"Create a password-protected page where clients can view their proofs. Let them favorite images and leave comments." WisprFlow builds a Next.js page with Auth0 integration, a database for favorites, and a comment thread. "Add a download button for high-res JPEGs after they've paid." It integrates Stripe and sets up a webhook that unlocks downloads upon payment.
+
+You can also automate the entire post-shoot pipeline. "When I upload a folder of RAW files to Dropbox, convert them to web-sized JPEGs, apply my preset, and create a new gallery." WisprFlow writes a Python script that monitors Dropbox, runs Darktable CLI for conversion, and generates the gallery page. "Send the client an email with the link." It adds SendGrid integration.
+
+The system you build is tailored to your pricing, your brand, your clients. There are no arbitrary limits, no surprise overage charges, no branding from a third-party platform.
+
+## Business automation
+
+Photography is a business-you need booking forms, contracts, invoices, and scheduling. Manually managing those across different tools eats into editing time. With WisprFlow, you automate them.
+
+"Build a booking form that collects name, email, shoot date, and package choice. When submitted, create a Google Calendar event and send a contract via DocuSign." WisprFlow generates the form HTML, connects to Google Calendar API, and triggers the DocuSign envelope. "If the client doesn't sign within three days, send a reminder email." It adds a cron job.
+
+"Generate an invoice with my logo, itemized services, and a Pay Now button." WisprFlow creates a PDF invoice template and integrates with Stripe Checkout. "At the end of each month, email me a summary of revenue and expenses." It writes a script that queries your Stripe and bank accounts and sends a report.
+
+Each automation saves you administrative hours each week, letting you focus on shooting and editing. Because you built it with voice, you can adjust it as your business grows. "Add a deposit requirement for weddings." "Split invoices into two payments." "Send a satisfaction survey after delivery." Each new feature is a few spoken sentences away.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## WisprFlow for photographers who aren't traditional coders
+
+You don't need to know programming syntax to use WisprFlow. You describe what you want in plain English, and WisprFlow produces working code. You can review the code to learn-or you can ignore it and just use the result. The learning curve is about thinking in steps, not memorizing commands.
+
+Start small. "Create a page that shows my ten best portraits." Then, "Add a button that lets visitors download a PDF price sheet." Then, "Connect the page to my Instagram so it updates automatically." Each success builds confidence. Within a week, you'll be building tools you previously thought required a developer.
+
+WisprFlow also teaches you as you go. If you say something ambiguous-"Make the images bigger"-it might ask, "Do you want to increase the grid column width or the lightbox size?" You clarify, and it generates the right code. Over time, you learn to be more precise, which makes you a better collaborator with any future developer you hire.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Conclusion
+
+Photographers who can build their own tools have a competitive edge. They can create portfolio sites that truly reflect their style, client-delivery systems that match their workflow, and business automations that save them hours each week. WisprFlow makes that possible without requiring a computer-science degree.
+
+With voice-driven development, you turn ideas into working software in real time. The barrier between "I wish my website could..." and "Now my website does..." disappears. In a visual industry where presentation and efficiency matter, that's a concrete business advantage.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

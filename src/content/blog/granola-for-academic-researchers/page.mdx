@@ -1,101 +1,57 @@
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
-import { createMetadata } from '@/utils/createMetadata'
-import rawMetadata from './metadata.json'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
 
-export const metadata = createMetadata(rawMetadata)
+export const metadata = createMetadata(rawMetadata);
 
-export const campaign = 'granola-for-academic-researchers'
+export const campaign = 'granola-for-academic-researchers';
 
-# Granola for Academic Researchers: AI Notes for PhD Students and Professors
+# Granola for Academic Researchers: Capture Every Insight from Collaboration Meetings
 
-Academic research is fundamentally conversational. Ideas develop through advisor meetings, lab discussions, conference presentations, and collaborative calls. PhD students conduct research interviews, present to dissertation committees, and coordinate with collaborators across institutions. Professors manage research teams, attend department meetings, and engage with grant program officers.
+The best ideas in research often emerge in conversation—a lab‑meeting comment that reframes a null result, a collaborator’s offhand observation that suggests a new methodology, a conference‑hall debate that reveals a flaw in your analysis. Without notes, those moments exist only in memory until they fade. Granola captures the technical nuance from lab meetings, grant‑planning calls, and conference discussions, turning ephemeral insights into searchable, shareable records.
 
-All of this conversation generates knowledge that deserves to be captured precisely.
+## Lab meetings and research group discussions
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+Lab meetings are where research directions are set. A graduate student presents preliminary data; the PI suggests a different statistical test; a postdoc mentions a relevant paper from another field. The conversation moves fast, and handwritten notes capture only a fraction of the nuance. By the time the meeting ends, you might remember that someone suggested a new test, but not why, or which paper they referenced.
 
-## The Knowledge Capture Problem in Academia
+Granola records the entire discussion. Upload the audio, and Granola returns a transcript that includes every technical term— “Bonferroni correction,” “Western blot,” “confounding variable,” “PCR cycle threshold.” It extracts action items: “Alice will run the robustness check by Friday.” “Bob will email the author of the 2023 Nature paper.” “The lab will switch to the revised protocol next week.” Each item is tagged to a person, making follow‑up unambiguous.
 
-Academic researchers face a unique documentation challenge: the conversations that matter most are often the least formally documented.
-
-A breakthrough insight from an advisor meeting might get captured in a hasty margin note. A critical comment from a dissertation committee member might be half-remembered when you're revising your proposal six weeks later. An expert interview with a key informant might yield a crucial quote that you can't quite reconstruct verbatim when you need it for your paper.
-
-Granola addresses this by providing complete, accurate transcripts of every research conversation — so the knowledge you generate in conversation becomes fully retrievable.
-
-## Key Use Cases for Academic Researchers
-
-### Research Interviews and Informant Conversations
-
-Qualitative researchers conducting interviews face the same challenge as UX researchers: you can't fully engage with your informant while simultaneously taking detailed notes. One or the other suffers.
-
-Granola lets you be fully present in the interview — asking better follow-up questions, noticing emotional nuance, probing unexpected threads — while capturing every word automatically.
-
-The resulting transcripts are research-grade documentation suitable for qualitative coding, quotation extraction, and IRB compliance records.
+Because Granola understands academic jargon, it doesn’t mangle “heteroskedasticity” into “hetero‑scarcity.” It correctly transcribes gene names (BRCA1, TP53), chemical formulas (C₂H₅OH), and statistical methods (ANOVA, Kaplan‑Meier). That accuracy matters when the details determine whether an experiment is reproducible.
 
 <InlineAffiliateCTA product="granola" campaign={campaign} />
 
-### Advisor Meetings and PhD Progress Discussions
+## Grant proposal planning calls
 
-Graduate students often leave advisor meetings with an unclear picture of priorities, next steps, and feedback received. When an advisor says "I think you should think more carefully about your theoretical framework" during a 45-minute meeting packed with feedback, that note might not surface again until the committee reads your next chapter draft.
+Grant proposals are shaped in collaborative calls. A multi‑institutional team debates specific aims, budget allocations, and timeline milestones. The NIH program officer offers feedback on the research strategy. A co‑PI from another time zone suggests a different outcome measure. These conversations are dense with decisions that will determine whether the proposal gets funded—but they’re rarely documented in full.
 
-Granola captures every piece of feedback with full context. You leave every advisor meeting with a complete record of what was said, what was praised, what was questioned, and what you're expected to do before the next meeting.
+Granola captures every decision. When the program officer says, “Focus more on translational impact in aim 3,” that note appears in the transcript with a timestamp. When the team agrees to shift $50,000 from equipment to personnel, the rationale is preserved. After the call, you can search for “budget” and see all the budget‑related comments, or search for “timeline” to review the agreed‑upon milestones.
 
-### Grant-Related Conversations with Program Officers
+The transcript becomes a living record that new team members can consult to understand why choices were made. It also prevents the “I thought we decided X” disagreements that often arise weeks later. When you’re writing the proposal, you can pull direct quotes from the discussion to strengthen the narrative.
 
-NSF, NIH, and foundation program officers often provide informal guidance that significantly influences proposal strategy. These conversations — "we'd be very interested in seeing more emphasis on X" — are gold. Granola preserves them exactly.
+## Conference networking and paper discussions
 
-### Conference Presentations and Panels
+Conferences are idea marketplaces. You bump into a former colleague who suggests a novel application of your method. You give a talk, and during Q&A someone points out a related study you missed. You meet a potential collaborator over coffee and sketch a joint project on a napkin. Those interactions are invaluable, but they’re almost never recorded.
 
-Academic conferences are dense with ideas. After a day of panels and presentations, the specifics blur. If you ask permission and it's appropriate, Granola can capture presentations and discussions for later review — preserving the arguments, methods, and critiques you encountered.
+With Granola, you can record (with permission) hallway conversations, poster‑session discussions, and even quick coffee‑chat brainstorms. The audio file is uploaded later, and Granola extracts the key points: “Dr. Chen mentioned a 2025 paper in *Science* that uses a similar approach.” “The reviewer suggested we compare our results to the Johnson et al. dataset.” “We agreed to share code and draft a short preprint by May.”
 
-### Research Team Meetings
-
-For faculty managing labs or research teams, Granola provides consistent documentation of team meetings: project status updates, methodology discussions, assignment of research tasks, and troubleshooting conversations. Lab meetings often contain important methodological decisions that should be documented for research integrity purposes.
-
-## Ethical Considerations for Research Recordings
-
-Academic research involves strict ethical obligations around human subjects research. Before recording any conversation involving research participants:
-
-- **Obtain informed consent** consistent with your IRB protocol
-- **Clarify in your consent form** how recordings will be stored, who will access them, and when they will be destroyed
-- **Follow institutional data security policies** for research recordings
-- **Consider participant privacy** carefully, especially for sensitive topics
-- **Review disciplinary norms** for recording research conversations in your field
-
-Granola's local-first processing is a meaningful advantage here — recordings stay on your machine rather than being uploaded to a third-party server, giving you greater control over research data.
+Those notes are searchable forever. Six months later, when you’re writing a literature review, you can search “Johnson et al.” and find the conversation where the dataset was recommended. When you’re preparing a revision, you can pull up the Q&A feedback from your talk. The result is a personal knowledge base that grows with every conference you attend.
 
 <InlineAffiliateCTA product="granola" campaign={campaign} />
 
-## Practical Workflow for Graduate Students
+## Multi‑institution collaboration calls and accent‑handling
 
-**Before your advisor meeting:**
-- Set Granola to your "Advisor Meeting" template
-- Review your last meeting's action items in Granola
-- Prepare your agenda and open it alongside Granola
+Global research teams bring together accents, dialects, and speaking styles. A PI from Manchester, a postdoc from Beijing, a grad student from Mumbai, and a statistician from Boston all bring different pronunciation patterns. Traditional speech‑to‑text tools often stumble on accents, turning “multivariate” into “multi‑variate” or “Bayesian” into “Asian.”
 
-**During the meeting:**
-- Let Granola capture the full conversation
-- Take only sparse notes on things to look up later
-- Ask more and better follow-up questions — you're not dividing attention
+Granola is trained on diverse audio, including academic presentations and international meetings. It correctly transcribes technical terms regardless of accent, and it distinguishes between homophones in context—“variance” vs. “variants,” “regression” vs. “recession.” That accuracy is critical when the transcript will be used to draft a paper or assign tasks.
 
-**After the meeting:**
-- Review Granola's summary within the hour
-- Extract specific action items to your task manager
-- Export transcript to your research notes for searchability
-- Update your dissertation timeline based on feedback received
+Granola also handles cross‑talk gracefully. When two people speak simultaneously—common in lively debates—it identifies both speakers and captures as much as possible, flagging overlaps for review. The result is a transcript that feels like a faithful record, not a garbled approximation.
 
-This workflow transforms advisor meetings from anxiety-producing evaluations into valuable knowledge-generation sessions.
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
-## For Qualitative Researchers: Transcription at Scale
+## Conclusion
 
-A qualitative study with 15–20 interviews traditionally requires significant resources for transcription — either hours of manual work or significant expense for a transcription service. Granola automates this completely.
+Research advances through conversation. The insight that completes a paper, the feedback that strengthens a proposal, the collaboration that sparks a new project—all begin as spoken words. Granola preserves those words, turning them into a permanent, searchable asset.
 
-Researchers using Granola for qualitative studies report spending 40–60% less time on transcription and data preparation, freeing that time for analysis, writing, and thinking.
+For academic researchers, Granola provides institutional memory for your lab, a decision log for your collaborations, and a personal archive of every idea you’ve ever heard. In a field where a single comment can change the direction of your work, that archive is invaluable.
 
-## The Cumulative Value of Research Documentation
-
-Individual meeting notes matter. But over the course of a multi-year PhD program or research project, the cumulative value of having precise, searchable records of every significant conversation is extraordinary.
-
-When you're writing your dissertation, <AffiliateLink product="granola" campaign={campaign}>Granola's archive of your research conversations</AffiliateLink> becomes a resource as valuable as your literature notes — a searchable record of the intellectual journey your work represents.
-
-Start using Granola at the beginning of your research project. The compounding returns on well-documented conversations are one of the most underrated advantages in academic work.
+<InlineAffiliateCTA product="granola" campaign={campaign} />
