@@ -9,6 +9,7 @@ import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import ConsultationForm from '@/components/ConsultationForm'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -94,8 +95,9 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
 // ----- Stat row -----------------------------------------------------
 
 function StatRow() {
+  const yearsExperience = RenderNumYearsExperience()
   const stats = [
-    { num: '14', unit: 'yrs', label: 'Shipping software' },
+    { num: String(yearsExperience), unit: 'yrs', label: 'Shipping software' },
     { num: '5,000', unit: '+', label: 'Newsletter readers' },
     { num: '184', unit: 'wpm', label: 'Voice-coding velocity' },
     { num: '30', unit: 'yrs', label: 'Writing online' },
