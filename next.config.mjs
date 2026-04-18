@@ -160,6 +160,11 @@ const nextConfig = {
         source: '/blog/rag-pipeline-tutorial-free',
         destination: '/blog/langchain-pinecone-chat-with-my-blog',
         permanent: true
+      },
+      {
+        source: '/blog/executive-function-as-a-service',
+        destination: '/blog/executive-function-as-a-service-ai-scaffolding-for-neurodivergent-engineers',
+        permanent: true
       }
     ]
   },
