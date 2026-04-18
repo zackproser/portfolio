@@ -1,50 +1,21 @@
 'use client'
 
-import { useState } from 'react'
 import { Mail, CheckCircle } from 'lucide-react'
+import { useEmailCapture } from '@/hooks/useEmailCapture'
 
 interface NewsletterSignupInlineProps {
   variant?: 'light' | 'dark'
 }
 
 export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupInlineProps) {
-  const [email, setEmail] = useState('')
-  const [formSuccess, setSuccess] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const { email, setEmail, status, submitEmail } = useEmailCapture()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setIsLoading(true)
-
-    try {
-      const form = event.target as HTMLFormElement
-      const data = {
-        email: form.email.value,
-        referrer: window.location.pathname,
-      }
-
-      const response = await fetch('/api/form', {
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`)
-      }
-
-      setSuccess(true)
-    } catch (error) {
-      console.error('Newsletter signup error:', error)
-      // TODO: Show user-friendly error message
-    } finally {
-      setIsLoading(false)
-    }
+    await submitEmail(email)
   }
 
-  if (formSuccess) {
+  if (status === 'success') {
     return (
       <div className="flex items-center justify-center gap-3 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
         <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -81,14 +52,14 @@ export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupIn
         </div>
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={status === 'loading'}
           className={`w-full py-5 rounded-xl font-bold text-xl transition-all ${
             isDark
               ? 'bg-white text-gray-900 hover:bg-gray-100 disabled:opacity-50'
               : 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 shadow-lg hover:shadow-xl'
           }`}
         >
-          {isLoading ? 'Subscribing...' : 'Count me in'}
+          {status === 'loading' ? 'Subscribing...' : 'Count me in'}
         </button>
       </div>
       <p className={`mt-4 text-sm text-center ${

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { CheckCircle, Mail } from 'lucide-react'
+import { useEmailCapture } from '@/hooks/useEmailCapture'
 
 type InlineCTAProps = {
   heading: string
@@ -13,28 +13,11 @@ type InlineCTAProps = {
 // breaks the reading flow. Self-contained form submission so it doesn't
 // depend on the taller NewsletterSignupInline component.
 export function InlineCTA({ heading, blurb }: InlineCTAProps) {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle')
+  const { email, setEmail, status, submitEmail } = useEmailCapture()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!email.trim()) return
-    setStatus('loading')
-    try {
-      const res = await fetch('/api/form', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          referrer: typeof window !== 'undefined' ? window.location.pathname : '',
-        }),
-      })
-      if (!res.ok) throw new Error(`api ${res.status}`)
-      setStatus('success')
-    } catch (err) {
-      console.error('InlineCTA submit failed', err)
-      setStatus('idle')
-    }
+    await submitEmail(email)
   }
 
   return (
