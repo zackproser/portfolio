@@ -11,6 +11,7 @@ import '@/styles/global.css';
 import '@/styles/editorial-home.css';
 import '@/styles/blog-post.css';
 import '@/styles/testimonials.css';
+import '@/styles/videos.css';
 import PlausibleProvider from 'next-plausible';
 
 const notoSans = Noto_Sans({
