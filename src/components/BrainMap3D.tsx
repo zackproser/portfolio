@@ -727,17 +727,21 @@ export default function BrainMap3D({
     ro.observe(host)
 
     // ── Animation loop ──
-    const clock = new THREE.Clock()
     let raf = 0
     let isVisible = false
     let lastAdhdMode: AdhdMode | null = null
+    let lastFrameTime = performance.now()
+    let accumulatedTime = 0
 
     const animate = () => {
       if (!isVisible) return
 
-      const delta = Math.min(clock.getDelta(), 1 / 30)
+      const now = performance.now()
+      const delta = Math.min((now - lastFrameTime) / 1000, 1 / 30)
+      lastFrameTime = now
+      accumulatedTime += delta
 
-      const elapsed = clock.elapsedTime
+      const elapsed = accumulatedTime
 
       // Update ADHD brain label when mode changes
       const currentAdhdMode = adhdModeRef.current
@@ -856,7 +860,7 @@ export default function BrainMap3D({
         const nowVisible = entries.some((e) => e.isIntersecting)
         if (nowVisible && !isVisible) {
           isVisible = true
-          clock.start()
+          lastFrameTime = performance.now()
           animate()
         } else if (!nowVisible && isVisible) {
           isVisible = false
