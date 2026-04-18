@@ -302,7 +302,7 @@ export function DistractionSimulator({
       const i = globalWordIdx++
       if (wi > 0) nodes.push(' ')
       if (replacedSet.has(i)) {
-        const thought = intrusiveThoughts[(i * 7) % intrusiveThoughts.length]
+        const thought = intrusiveThoughts[(i * 11) % intrusiveThoughts.length]
         const color = pct > 70 ? '#fb923c' : pct > 50 ? '#f87171' : '#ef4444'
         nodes.push(
           <span key={`${pi}-${wi}`} className="font-semibold italic" style={{ color }}>

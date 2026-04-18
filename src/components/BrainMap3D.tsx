@@ -107,7 +107,6 @@ type NetworkKey = keyof typeof NETWORKS
 // the contrast during hyperfocus is instant: ADHD brain blazes while NT
 // stays at steady state.
 type ScrollState = {
-  threshold: number
   active: NetworkKey[]
   dimmed: NetworkKey[]
   title: string
@@ -124,38 +123,27 @@ type ScrollState = {
 // 3 task networks.
 const SCROLL_STATES: ScrollState[] = [
   {
-    threshold: 0,
     active: ['prefrontal', 'workingMemory', 'dopamine'],
     dimmed: ['dmn', 'amygdala'],
     title: 'Neurotypical baseline — task networks sustained, DMN quiet',
   },
   {
-    threshold: 0.15,
     active: ['dmn', 'amygdala'],
     dimmed: ['prefrontal', 'workingMemory', 'dopamine'],
     title: 'ADHD at rest — PFC offline, DMN and amygdala take over',
   },
   {
-    threshold: 0.3,
-    active: ['amygdala'],
-    dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'dmn'],
-    title: 'Priority blindness — amygdala fires on everything equally',
-  },
-  {
-    threshold: 0.45,
     active: ['prefrontal', 'workingMemory', 'dopamine'],
     dimmed: ['dmn', 'amygdala'],
     title: 'Hyperfocus — task networks overdriven past 270%, DMN crushed',
     boost: 2.7,
   },
   {
-    threshold: 0.6,
     active: [],
     dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'amygdala', 'dmn'],
     title: 'The crash — every network offline, the brain is dark for a day',
   },
   {
-    threshold: 0.75,
     active: ['prefrontal', 'workingMemory', 'dopamine'],
     dimmed: ['dmn', 'amygdala'],
     title: 'With AI scaffolding — task networks externally restored',
@@ -229,9 +217,9 @@ type AdhdMode = 'rest' | 'hyperfocus' | 'crash' | 'scaffolding'
 
 const ADHD_STATE_BY_MODE: Record<AdhdMode, ScrollState> = {
   rest: SCROLL_STATES[1],         // "ADHD at rest — prefrontal dims, DMN won't shut off"
-  hyperfocus: SCROLL_STATES[3],   // "Hyperfocus — three networks fire at 270%"
-  crash: SCROLL_STATES[4],        // "The crash — brain is dark for a day"
-  scaffolding: SCROLL_STATES[5],  // "With AI scaffolding — external systems compensate"
+  hyperfocus: SCROLL_STATES[2],   // "Hyperfocus — three networks fire at 270%"
+  crash: SCROLL_STATES[3],        // "The crash — brain is dark for a day"
+  scaffolding: SCROLL_STATES[4],  // "With AI scaffolding — external systems compensate"
 }
 
 const MODE_BUTTONS: { mode: AdhdMode; short: string; tag: string }[] = [
