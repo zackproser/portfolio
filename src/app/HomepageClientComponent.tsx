@@ -182,7 +182,7 @@ function StatRow() {
     { num: '14', unit: 'yrs', label: 'Shipping software' },
     { num: '5,000', unit: '+', label: 'Newsletter readers' },
     { num: '184', unit: 'wpm', label: 'Voice-coding velocity' },
-    { num: '30', unit: 'yrs', label: 'Writing online since' },
+    { num: '30', unit: 'yrs', label: 'Writing online' },
   ]
   return (
     <section className="pb-12">
@@ -501,9 +501,9 @@ export default function HomepageClientComponent({
           keyPrefix="video"
           kind="Video"
         />
-
-        <ColophonFooter />
       </main>
+
+      <ColophonFooter />
 
       <ConsultationForm
         isOpen={isConsultOpen}

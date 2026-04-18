@@ -4,6 +4,7 @@ import { createMetadata } from '@/utils/createMetadata'
 import { getContentsByDirectorySlugs } from '@/lib/content-handlers'
 import HomepageClientComponent from './HomepageClientComponent'
 import { Metadata } from 'next'
+import '@/styles/editorial-home.css'
 
 export const dynamic = 'force-dynamic'
 
