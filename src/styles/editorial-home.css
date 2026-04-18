@@ -11,16 +11,28 @@
 
 /* ---------- Engineering paper background (whole page) ----- */
 .editorial-home {
+  position: relative;
   background-color: #fbf7f0; /* parchment-100 */
+}
+.editorial-home::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background-image:
     linear-gradient(rgba(139, 115, 85, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(139, 115, 85, 0.05) 1px, transparent 1px),
     radial-gradient(ellipse at top left, rgba(230, 126, 34, 0.025), transparent 60%);
   background-size: 120px 120px, 120px 120px, 100% 100%;
-  background-attachment: fixed;
+  pointer-events: none;
 }
 .dark .editorial-home {
   background-color: #1a1a2e; /* charcoal-400 */
+}
+.dark .editorial-home::before {
   background-image:
     linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
@@ -290,6 +302,10 @@
   .editorial-stat:nth-child(1),
   .editorial-stat:nth-child(2) {
     border-bottom: 1px solid rgba(139, 115, 85, 0.15);
+  }
+  .dark .editorial-stat:nth-child(1),
+  .dark .editorial-stat:nth-child(2) {
+    border-bottom-color: rgba(148, 163, 184, 0.15);
   }
 }
 
