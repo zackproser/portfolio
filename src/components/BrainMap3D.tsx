@@ -229,14 +229,14 @@ type AdhdMode = 'rest' | 'hyperfocus' | 'crash' | 'scaffolding'
 
 const ADHD_STATE_BY_MODE: Record<AdhdMode, ScrollState> = {
   rest: SCROLL_STATES[1],         // "ADHD at rest — prefrontal dims, DMN won't shut off"
-  hyperfocus: SCROLL_STATES[3],   // "Hyperfocus — three networks fire at 180%"
+  hyperfocus: SCROLL_STATES[3],   // "Hyperfocus — three networks fire at 270%"
   crash: SCROLL_STATES[4],        // "The crash — brain is dark for a day"
   scaffolding: SCROLL_STATES[5],  // "With AI scaffolding — external systems compensate"
 }
 
 const MODE_BUTTONS: { mode: AdhdMode; short: string; tag: string }[] = [
   { mode: 'rest',        short: 'At Rest',        tag: 'low PFC · DMN loud' },
-  { mode: 'hyperfocus',  short: 'Hyperfocus',     tag: '180% on 3 networks' },
+  { mode: 'hyperfocus',  short: 'Hyperfocus',     tag: '270% on 3 networks' },
   { mode: 'crash',       short: 'The Crash',      tag: 'systems offline' },
   { mode: 'scaffolding', short: 'With AI Scaffolding', tag: 'PFC restored externally' },
 ]

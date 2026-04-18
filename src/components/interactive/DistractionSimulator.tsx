@@ -540,7 +540,7 @@ export function DistractionSimulator({
               This is what reading feels like with an intact prefrontal
               cortex: linear, sustained, uninterrupted. Toggle to{' '}
               <span className="font-semibold text-teal-800">Read as ADHD</span> and
-              click <span className="font-semibold text-teal-200">Start demo</span>{' '}
+              click <span className="font-semibold text-teal-800">Start demo</span>{' '}
               to see what the same passage feels like to my brain.
             </p>
           ) : (
