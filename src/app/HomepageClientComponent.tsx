@@ -43,16 +43,6 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
     setStatus('submitting')
     setErrorMessage('')
 
-    track('newsletter_subscribe_submit', { location: 'hero' })
-    sendGTMEvent({
-      event: 'newsletter-signup-conversion',
-      method: 'newsletter',
-      source: '/',
-      position: 'hero',
-      tags: '',
-      slug: 'homepage',
-    })
-
     try {
       const response = await fetch('/api/form', {
         method: 'POST',
@@ -63,6 +53,15 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
       if (!response.ok) {
         throw new Error(data?.data || 'Failed to subscribe')
       }
+      track('newsletter_subscribe_submit', { location: 'hero' })
+      sendGTMEvent({
+        event: 'newsletter-signup-conversion',
+        method: 'newsletter',
+        source: '/',
+        position: 'hero',
+        tags: '',
+        slug: 'homepage',
+      })
       setStatus('success')
       form.reset()
     } catch (err) {
