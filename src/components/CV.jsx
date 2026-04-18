@@ -1,11 +1,5 @@
 import Image from 'next/image'
-
-const logoCloudflare = 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg'
-const logoCloudmark = 'https://zackproser.b-cdn.net/images/logos/cloudmark.png'
-const logoGrunty = 'https://zackproser.b-cdn.net/images/logos/grunty.png'
-const logoPinecone = 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png'
-const logoBrightcontext = 'https://zackproser.b-cdn.net/images/logos/brightcontext.png'
-const logoWorkOS = 'https://zackproser.b-cdn.net/images/logos/workos.svg'
+import { resumeData } from '@/data/resume'
 
 function BriefcaseIcon(props) {
   return (
@@ -31,60 +25,12 @@ function BriefcaseIcon(props) {
 }
 
 export default function CV({ showHeading = true }) {
-  let resume = [
-    {
-      company: 'WorkOS',
-      title: 'Developer Experience Engineer',
-      logo: logoWorkOS,
-      start: '2025',
-      end: {
-        label: 'Present',
-        dateTime: new Date().getFullYear(),
-      },
-    },
-    {
-      company: 'WorkOS',
-      title: 'Developer Education',
-      logo: logoWorkOS,
-      start: '2024',
-      end: '2025',
-    },
-    {
-      company: 'Pinecone.io',
-      title: 'Staff Developer Advocate',
-      logo: logoPinecone,
-      start: '2023',
-      end: '2024',
-    },
-    {
-      company: 'Gruntwork.io',
-      title: 'Tech Lead',
-      logo: logoGrunty,
-      start: '2020',
-      end: '2023'
-    },
-    {
-      company: 'Cloudflare',
-      title: 'Senior Software Engineer',
-      logo: logoCloudflare,
-      start: '2017',
-      end: '2020',
-    },
-    {
-      company: 'Cloudmark',
-      title: 'Software Engineer',
-      logo: logoCloudmark,
-      start: '2015',
-      end: '2017',
-    },
-    {
-      company: 'BrightContext',
-      title: 'Software Engineer',
-      logo: logoBrightcontext,
-      start: '2012',
-      end: '2014',
-    },
-  ]
+  let resume = resumeData.map((role) => ({
+    ...role,
+    end: role.end === 'Present' 
+      ? { label: 'Present', dateTime: new Date().getFullYear() }
+      : role.end,
+  }))
 
   return (
     <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">

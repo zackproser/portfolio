@@ -1,0 +1,51 @@
+export const resumeData = [
+  {
+    company: 'WorkOS',
+    title: 'Developer Experience Engineer',
+    logo: 'https://zackproser.b-cdn.net/images/logos/workos.svg',
+    start: '2025',
+    end: 'Present',
+  },
+  {
+    company: 'WorkOS',
+    title: 'Developer Education',
+    logo: 'https://zackproser.b-cdn.net/images/logos/workos.svg',
+    start: '2024',
+    end: '2025',
+  },
+  {
+    company: 'Pinecone.io',
+    title: 'Staff Developer Advocate',
+    logo: 'https://zackproser.b-cdn.net/images/logos/pinecone-logo.png',
+    start: '2023',
+    end: '2024',
+  },
+  {
+    company: 'Gruntwork.io',
+    title: 'Tech Lead',
+    logo: 'https://zackproser.b-cdn.net/images/logos/grunty.png',
+    start: '2020',
+    end: '2023',
+  },
+  {
+    company: 'Cloudflare',
+    title: 'Senior Software Engineer',
+    logo: 'https://zackproser.b-cdn.net/images/logos/cloudflare.svg',
+    start: '2017',
+    end: '2020',
+  },
+  {
+    company: 'Cloudmark',
+    title: 'Software Engineer',
+    logo: 'https://zackproser.b-cdn.net/images/logos/cloudmark.png',
+    start: '2015',
+    end: '2017',
+  },
+  {
+    company: 'BrightContext',
+    title: 'Software Engineer',
+    logo: 'https://zackproser.b-cdn.net/images/logos/brightcontext.png',
+    start: '2012',
+    end: '2014',
+  },
+]
