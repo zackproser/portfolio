@@ -12,6 +12,7 @@
 /* ---------- Engineering paper background (whole page) ----- */
 .editorial-home {
   position: relative;
+  isolation: isolate;
   background-color: #fbf7f0; /* parchment-100 */
 }
 .editorial-home::before {
