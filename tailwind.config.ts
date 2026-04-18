@@ -29,8 +29,9 @@ export default {
     typography: typographyStyles,
     extend: {
       fontFamily: {
-        serif: ['var(--font-source-serif)', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       colors: {
         // Parchment theme - Authority glow-up palette

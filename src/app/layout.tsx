@@ -1,4 +1,4 @@
-import { Noto_Sans, Press_Start_2P, Source_Serif_4, Inter } from 'next/font/google';
+import { Noto_Sans, Press_Start_2P, Source_Serif_4, Inter, JetBrains_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -8,6 +8,7 @@ import { ConsultancyNav } from '@/components/ConsultancyNav';
 import { Toaster } from '@/components/ui/toaster';
 import '@/styles/tailwind.css';
 import '@/styles/global.css';
+import '@/styles/editorial-home.css';
 import PlausibleProvider from 'next-plausible';
 
 const notoSans = Noto_Sans({
@@ -22,18 +23,25 @@ const pressStart2P = Press_Start_2P({
   variable: '--font-press-start-2p',
 });
 
-// Authority glow-up fonts
+// Editorial glow-up fonts
 const sourceSerif = Source_Serif_4({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-source-serif',
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-serif',
   display: 'swap',
 });
 
 const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-inter',
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -43,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable} ${sourceSerif.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`h-full antialiased ${notoSans.variable} ${pressStart2P.variable} ${sourceSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-K9XTVH6V" />
       <head>
         <PlausibleProvider domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN ?? 'zackproser.com'} />

@@ -102,7 +102,7 @@
 
 /* Serif headline styling */
 .authority-headline {
-  font-family: var(--font-source-serif), Georgia, serif;
+  font-family: var(--font-serif), Georgia, serif;
   @apply text-charcoal-50 dark:text-parchment-100;
 }
 

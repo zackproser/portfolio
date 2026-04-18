@@ -1,0 +1,408 @@
+/* Editorial homepage — engineering-paper background + hero primitives.
+ * Import once from src/app/layout.tsx or src/app/globals.css.
+ *
+ * Relies on tokens already present in the repo's Tailwind config:
+ *   parchment-*, charcoal-*, burnt-*, amber-*, slate-* ...
+ * plus the fonts registered in layout.tsx: --font-serif (Source Serif 4),
+ * --font-sans (Inter), --font-mono (adds JetBrains Mono — see DIFF.md).
+ *
+ * Everything here is additive. Remove this file to revert.
+ */
+
+/* ---------- Engineering paper background (whole page) ----- */
+.editorial-home {
+  background-color: #fbf7f0; /* parchment-100 */
+  background-image:
+    linear-gradient(rgba(139, 115, 85, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 115, 85, 0.05) 1px, transparent 1px),
+    radial-gradient(ellipse at top left, rgba(230, 126, 34, 0.025), transparent 60%);
+  background-size: 120px 120px, 120px 120px, 100% 100%;
+  background-attachment: fixed;
+}
+.dark .editorial-home {
+  background-color: #1a1a2e; /* charcoal-400 */
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px;
+}
+
+/* Sections with .editorial-section-alt get a slightly stronger 40px grid */
+.editorial-section-alt {
+  background-color: #f5f0e6; /* parchment-200 */
+  background-image:
+    linear-gradient(rgba(139, 115, 85, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 115, 85, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+}
+.dark .editorial-section-alt {
+  background-color: #141428; /* charcoal-500 */
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+}
+
+/* ---------- Hero typography -------------------------------- */
+.editorial-hero-h1 {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(40px, 5vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin: 16px 0 0;
+}
+
+.editorial-eyebrow {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.editorial-lede {
+  margin: 28px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+/* Hero newsletter — inline (no card, no border) */
+.editorial-capture {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 560px;
+}
+.editorial-capture-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.editorial-capture-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.2;
+}
+.editorial-capture-title {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 0;
+}
+.editorial-capture-row {
+  display: flex;
+  gap: 8px;
+}
+.editorial-capture-row input {
+  flex: 1;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 13px 16px;
+  border-radius: 6px;
+  background: #fefdfb;
+  border: 1px solid #d1c7b7;
+  color: #2c3e50;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.dark .editorial-capture-row input {
+  background: #1e293b;
+  border-color: #475569;
+  color: #fbf7f0;
+}
+.editorial-capture-row input:focus {
+  outline: none;
+  border-color: #e67e22;
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.25);
+}
+.dark .editorial-capture-row input:focus {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.25);
+}
+.editorial-capture-fine {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+@media (max-width: 540px) {
+  .editorial-capture-row {
+    flex-direction: column;
+  }
+}
+
+/* Secondary links under hero */
+.editorial-secondary {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.editorial-secondary a {
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding-bottom: 1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.dark .editorial-secondary a {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+.editorial-secondary a:hover {
+  border-bottom-color: currentColor;
+}
+
+/* Hero meta (DL) */
+.editorial-meta {
+  margin: 28px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid rgba(139, 115, 85, 0.25);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 18px;
+  row-gap: 6px;
+  font-size: 13px;
+}
+.dark .editorial-meta {
+  border-top-color: rgba(148, 163, 184, 0.2);
+}
+.editorial-meta dt {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.editorial-meta dd {
+  margin: 0;
+}
+
+/* Portrait frame */
+.editorial-portrait {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-width: 340px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #d1c7b7;
+  box-shadow: 0 1px 0 0 rgba(230, 126, 34, 0.9),
+    0 24px 40px -20px rgba(24, 24, 40, 0.25);
+  background: linear-gradient(160deg, #b08968 0%, #6b5842 45%, #2c3e50 100%);
+}
+.dark .editorial-portrait {
+  border-color: #475569;
+  box-shadow: 0 1px 0 0 rgba(243, 156, 18, 0.7),
+    0 24px 40px -20px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(160deg, #475569 0%, #1e293b 55%, #0f172a 100%);
+}
+.editorial-portrait::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(230, 126, 34, 0.18) 0 1px,
+    transparent 1px 4px
+  );
+}
+.dark .editorial-portrait::before {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(252, 211, 77, 0.15) 0 1px,
+    transparent 1px 4px
+  );
+}
+.editorial-portrait-caption {
+  margin-top: 10px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ---------- Stat row --------------------------------------- */
+.editorial-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(139, 115, 85, 0.3);
+  border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+}
+.dark .editorial-stats {
+  border-color: rgba(148, 163, 184, 0.25);
+}
+.editorial-stat {
+  padding: 24px 20px;
+  border-right: 1px solid rgba(139, 115, 85, 0.15);
+}
+.dark .editorial-stat {
+  border-right-color: rgba(148, 163, 184, 0.15);
+}
+.editorial-stat:last-child {
+  border-right: 0;
+}
+.editorial-stat-num {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.editorial-stat-num .unit {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 4px;
+  opacity: 0.6;
+}
+.editorial-stat-label {
+  margin-top: 8px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: 0.7;
+}
+@media (max-width: 780px) {
+  .editorial-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .editorial-stat:nth-child(2) {
+    border-right: 0;
+  }
+  .editorial-stat:nth-child(1),
+  .editorial-stat:nth-child(2) {
+    border-bottom: 1px solid rgba(139, 115, 85, 0.15);
+  }
+}
+
+/* ---------- Section head (rule + number + title + more) ---- */
+.editorial-section-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.3);
+}
+.dark .editorial-section-head {
+  border-bottom-color: rgba(148, 163, 184, 0.2);
+}
+.editorial-section-num {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.editorial-section-title {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  margin: 0;
+  line-height: 1.2;
+}
+.editorial-section-more {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+/* ---------- Rule label (pre-feature) ----------------------- */
+.editorial-rule-label {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.editorial-rule-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+/* ---------- Colophon footer -------------------------------- */
+.editorial-colophon {
+  border-top: 1px solid rgba(139, 115, 85, 0.3);
+  padding-top: 48px;
+  padding-bottom: 40px;
+  font-size: 14px;
+}
+.dark .editorial-colophon {
+  border-top-color: rgba(148, 163, 184, 0.2);
+}
+.editorial-colophon h4 {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  opacity: 0.6;
+}
+.editorial-colophon ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.editorial-colophon a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.editorial-colophon a:hover {
+  border-bottom-color: currentColor;
+}
+.editorial-colophon-rule {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(139, 115, 85, 0.25);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+.dark .editorial-colophon-rule {
+  border-top-color: rgba(148, 163, 184, 0.15);
+}
+@media (max-width: 720px) {
+  .editorial-colophon-rule {
+    grid-template-columns: 1fr;
+  }
+}
