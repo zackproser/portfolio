@@ -116,8 +116,7 @@ const testimonials = [
 ]
 
 const trustedCompanies = [
-  'Cloudflare', 'HashiCorp', 'Okta', 'Asana',
-  'Cohesity', 'Proofpoint', 'MariaDB',
+  'Cloudflare', 'Cohesity', 'Proofpoint',
 ]
 
 function pad(n) {
@@ -271,7 +270,7 @@ export default function TestimonialsPage() {
                 <div key={co} className="co">{co}</div>
               ))}
               <div className="co">
-                <em>Harvard</em>
+                <em>Johns Hopkins</em>
               </div>
             </div>
           </div>

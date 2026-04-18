@@ -1,26 +1,10 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useTheme } from 'next-themes'
-import dynamic from 'next/dynamic'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { Route } from 'next'
-import Image from 'next/image'
 import { Content } from '@/types'
-import { ArrowRight, Mic, Play, Sparkles } from 'lucide-react'
-
-// Dynamically import the NeuralNetworkPulse with no SSR
-const NeuralNetworkPulse = dynamic(
-  () => import('@/components/NeuralNetworkPulse').then(mod => mod.NeuralNetworkPulse),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-[300px] h-[300px] flex items-center justify-center">
-        <div className="animate-pulse text-slate-400">Loading visualization...</div>
-      </div>
-    )
-  }
-)
+import { EditorialCard } from '@/components/EditorialCard'
 
 interface DemosClientProps {
   demos: Content[]
@@ -29,359 +13,220 @@ interface DemosClientProps {
   otherDemos?: Content[]
 }
 
-export default function DemosClient({ demos, featuredVoiceDemo, verticalVoiceDemos, otherDemos }: DemosClientProps) {
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+function kindFor(demo: Content): 'Voice' | 'RAG' | 'Tool' {
+  const slug = (demo.slug || '').toLowerCase()
+  if (slug.includes('voice')) return 'Voice'
+  if (slug.includes('rag') || slug.includes('firecrawl')) return 'RAG'
+  if (slug.includes('chat')) return 'RAG'
+  return 'Tool'
+}
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+export default function DemosClient({ demos }: DemosClientProps) {
+  const [typeFilter, setTypeFilter] = useState<'All' | 'Voice' | 'RAG' | 'Tool'>('All')
+  const [query, setQuery] = useState('')
 
-  const isDark = mounted && resolvedTheme === 'dark'
+  const indexed = useMemo(() => (
+    demos.map((d, i) => ({
+      demo: d,
+      kind: kindFor(d),
+      num: String(i + 1).padStart(3, '0'),
+    }))
+  ), [demos])
+
+  const counts = useMemo(() => {
+    const c = { All: indexed.length, Voice: 0, RAG: 0, Tool: 0 }
+    for (const x of indexed) c[x.kind] += 1
+    return c
+  }, [indexed])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return indexed.filter(({ demo, kind }) => {
+      if (typeFilter !== 'All' && kind !== typeFilter) return false
+      if (!q) return true
+      const hay = `${demo.title || ''} ${demo.description || ''}`.toLowerCase()
+      return hay.includes(q)
+    })
+  }, [indexed, typeFilter, query])
+
+  const totalLive = indexed.length
+  const years = Math.max(1, new Date().getFullYear() - 2023)
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${
-      isDark
-        ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950'
-        : 'bg-gradient-to-b from-parchment-50 via-parchment-100 to-parchment-200'
-    }`}>
-      {/* Hero Section with Neural Network */}
-      <section className={`relative overflow-hidden ${
-        isDark ? '' : ''
-      }`}>
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            {/* Left: Text Content */}
-            <div className="flex-1 text-center lg:text-left">
-              <h1 className={`font-serif text-4xl md:text-5xl font-bold mb-4 ${
-                isDark ? '!text-amber-400' : '!text-burnt-400'
-              }`}>
-                Interactive AI & ML Demos
+    <div className="editorial-home flex flex-col min-h-screen text-charcoal-50 dark:text-parchment-100 theme-transition">
+      <main className="flex-1">
+        {/* ----- Hero ----- */}
+        <section className="pt-14 pb-8 md:pt-20 md:pb-10">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-start">
+            <div>
+              <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
+                § 00 · Playground · Est. MMXXIII
+              </div>
+              <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
+                Things I built to{' '}
+                <em className="text-burnt-400 dark:text-amber-400 italic font-extrabold">think</em>
+                {' '}with.
               </h1>
-              <p className={`text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-6 ${
-                isDark ? 'text-slate-300' : 'text-parchment-600'
-              }`}>
-                Learn cutting-edge AI techniques through hands-on interactive experiences.
-                See embeddings, tokenization, RAG, and more in action.
+              <p className="editorial-lede text-parchment-600 dark:text-slate-300">
+                Not demos. Not case studies. Working artifacts — small machines
+                I built to answer a real question about retrieval, cognition,
+                or how an engineer stays legible to themselves.{' '}
+                {indexed.length} of them, indexed below.
               </p>
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                <Link
-                  href="#demos"
-                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-                    isDark
-                      ? 'bg-amber-500 hover:bg-amber-400 text-white'
-                      : 'bg-burnt-400 hover:bg-burnt-500 text-white'
-                  }`}
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a
+                  href="#index"
+                  className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
                 >
-                  <Play size={18} />
-                  Explore Demos
-                </Link>
+                  Jump to the index →
+                </a>
                 <Link
-                  href="/learn"
-                  className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all hover:-translate-y-0.5 border-2 ${
-                    isDark
-                      ? 'border-slate-600 text-slate-300 hover:border-amber-500/50'
-                      : 'border-parchment-300 text-parchment-600 hover:border-burnt-400/50'
-                  }`}
+                  href="/blog"
+                  className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
                 >
-                  View Courses
-                  <ArrowRight size={18} />
+                  Read the essays
                 </Link>
               </div>
-            </div>
-
-            {/* Right: Neural Network Animation */}
-            <div className="flex-shrink-0">
-              <Suspense fallback={
-                <div className="w-[300px] h-[300px] flex items-center justify-center">
-                  <div className="animate-pulse text-slate-400">Loading visualization...</div>
-                </div>
-              }>
-                <div className="scale-[0.75] origin-center">
-                  <NeuralNetworkPulse />
-                </div>
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Tools Quick Start */}
-      <section className={`py-6 ${
-        isDark ? 'bg-amber-900/20 border-y border-amber-700/30' : 'bg-amber-50 border-y border-amber-200'
-      }`}>
-        <div className="container mx-auto px-4">
-          <Link href="/best-ai-tools" className="block group">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
-              <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
-                isDark ? 'bg-amber-500/30' : 'bg-amber-500/20'
-              }`}>
-                <Sparkles className={`w-5 h-5 ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-              </div>
-              <div>
-                <span className={`font-semibold ${isDark ? 'text-white' : 'text-charcoal-50'}`}>
-                  Want to skip the theory?
-                </span>
-                <span className={`ml-2 ${isDark ? 'text-slate-300' : 'text-parchment-600'}`}>
-                  See the 4 AI tools I recommend for getting real work done →
-                </span>
-              </div>
-              <ArrowRight className={`w-5 h-5 group-hover:translate-x-1 transition-transform ${isDark ? 'text-amber-400' : 'text-amber-600'}`} />
-            </div>
-          </Link>
-        </div>
-      </section>
-
-      {/* Featured Voice AI Demo */}
-      <div id="demos" />
-      {featuredVoiceDemo && (
-        <section className={`py-12 ${
-          isDark ? 'bg-slate-900/50' : 'bg-parchment-100'
-        }`}>
-          <div className="container mx-auto px-4">
-            <Link
-              href={featuredVoiceDemo.slug as Route}
-              className="group block mb-8"
-            >
-              <div className={`rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                isDark
-                  ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
-                  : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
-              }`}>
-                <div className="flex flex-col md:flex-row">
-                  <div className="relative md:w-1/2 h-64 md:h-auto overflow-hidden">
-                    {featuredVoiceDemo.image && (
-                      <Image
-                        src={typeof featuredVoiceDemo.image === 'string' ? featuredVoiceDemo.image : featuredVoiceDemo.image.src}
-                        alt={featuredVoiceDemo.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                    <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
-                      isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
-                    }`}>
-                      <div className={`w-20 h-20 rounded-full flex items-center justify-center ${
-                        isDark ? 'bg-amber-500' : 'bg-burnt-400'
-                      }`}>
-                        <Play size={36} className="text-white ml-1" />
-                      </div>
-                    </div>
-                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
-                      isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
-                    }`}>
-                      Featured Demo
-                    </div>
+              <div className="editorial-stats text-charcoal-50 dark:text-parchment-100 mt-10">
+                <div className="editorial-stat">
+                  <div className="editorial-stat-num">
+                    {indexed.length}<span className="unit">objects</span>
                   </div>
-                  <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                    <h3 className={`font-serif text-2xl md:text-3xl font-bold mb-3 transition-colors ${
-                      isDark
-                        ? 'text-white group-hover:text-amber-400'
-                        : 'text-charcoal-50 group-hover:text-burnt-400'
-                    }`}>
-                      {featuredVoiceDemo.title}
-                    </h3>
-                    <p className={`text-base mb-4 ${
-                      isDark ? 'text-slate-300' : 'text-parchment-600'
-                    }`}>
-                      {featuredVoiceDemo.description}
-                    </p>
-                    <div className={`inline-flex items-center gap-2 text-base font-medium ${
-                      isDark ? 'text-amber-400' : 'text-burnt-400'
-                    }`}>
-                      Try it now
-                      <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
+                  <div className="editorial-stat-label text-parchment-600 dark:text-slate-400">
+                    In rotation
+                  </div>
+                </div>
+                <div className="editorial-stat">
+                  <div className="editorial-stat-num">
+                    {totalLive}<span className="unit">live</span>
+                  </div>
+                  <div className="editorial-stat-label text-parchment-600 dark:text-slate-400">
+                    Pokable in-browser
+                  </div>
+                </div>
+                <div className="editorial-stat">
+                  <div className="editorial-stat-num">
+                    {years}<span className="unit">yrs</span>
+                  </div>
+                  <div className="editorial-stat-label text-parchment-600 dark:text-slate-400">
+                    Continuous field notes
+                  </div>
+                </div>
+                <div className="editorial-stat">
+                  <div className="editorial-stat-num">
+                    {counts.Voice + counts.RAG}<span className="unit">ship</span>
+                  </div>
+                  <div className="editorial-stat-label text-parchment-600 dark:text-slate-400">
+                    Voice &amp; retrieval shipped
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
+
+            {/* Terminal index on the right */}
+            <div className="rounded-md overflow-hidden border border-charcoal-100/30 dark:border-slate-700 bg-[#141428] text-sm font-mono shadow-lg">
+              <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-black/20">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
+                <span className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
+                <span className="ml-3 text-[11px] tracking-wider uppercase text-slate-400">
+                  ~/playground — ls -lah
+                </span>
+              </div>
+              <div className="p-4 text-[12px] leading-relaxed text-slate-200 whitespace-nowrap overflow-x-auto">
+                {indexed.slice(0, 8).map(({ demo, kind, num }) => (
+                  <div key={demo.slug}>
+                    <span className="text-slate-500">#{num}</span>
+                    {'  '}
+                    <span className="text-amber-400">{demo.title}</span>
+                    {'  '}
+                    <span className="text-slate-500 uppercase">{kind}</span>
+                  </div>
+                ))}
+                {indexed.length > 8 ? (
+                  <div className="mt-2 text-slate-500">
+                    — — — + {indexed.length - 8} more below — — —
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
         </section>
-      )}
 
-      {/* Voice AI for Professionals */}
-      {verticalVoiceDemos && verticalVoiceDemos.length > 0 && (
-        <section className={`py-12 ${
-          isDark ? 'bg-slate-800/30' : 'bg-parchment-50'
-        }`}>
-          <div className="container mx-auto px-4">
-            <h2 className={`font-serif text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3 ${
-              isDark ? 'text-white' : 'text-charcoal-50'
-            }`}>
-              <Mic className={`w-7 h-7 ${isDark ? 'text-amber-400' : 'text-burnt-400'}`} />
-              Voice AI for Professionals
-            </h2>
-            <p className={`text-base mb-8 max-w-2xl ${
-              isDark ? 'text-slate-400' : 'text-parchment-500'
-            }`}>
-              See how voice AI transforms workflows across industries — from legal briefs to real estate listings.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {verticalVoiceDemos.map((demo) => (
-                <Link
-                  key={demo.slug}
-                  href={demo.slug as Route}
-                  className="group"
+        {/* ----- Filter bar ----- */}
+        <section className="py-6 border-y border-parchment-300 dark:border-slate-700">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500 mr-2">
+                Type
+              </span>
+              {(['All', 'Voice', 'RAG', 'Tool'] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTypeFilter(t)}
+                  className={`font-mono text-[11px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
+                    typeFilter === t
+                      ? 'border-burnt-400 dark:border-amber-400 text-burnt-400 dark:text-amber-400'
+                      : 'border-parchment-300 dark:border-slate-700 text-parchment-600 dark:text-slate-400 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400'
+                  }`}
                 >
-                  <div className={`rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                    isDark
-                      ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
-                      : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
-                  }`}>
-                    <div className="relative h-48 overflow-hidden">
-                      {demo.image && (
-                        <Image
-                          src={typeof demo.image === 'string' ? demo.image : demo.image.src}
-                          alt={demo.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
-                      <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
-                        isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
-                      }`}>
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                          isDark ? 'bg-amber-500' : 'bg-burnt-400'
-                        }`}>
-                          <Play size={28} className="text-white ml-1" />
-                        </div>
-                      </div>
-                      <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
-                        isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
-                      }`}>
-                        Industry Demo
-                      </div>
-                    </div>
-                    <div className="p-5 flex-grow flex flex-col">
-                      <h3 className={`font-serif text-xl font-bold mb-2 transition-colors ${
-                        isDark
-                          ? 'text-white group-hover:text-amber-400'
-                          : 'text-charcoal-50 group-hover:text-burnt-400'
-                      }`}>
-                        {demo.title}
-                      </h3>
-                      <p className={`text-sm flex-grow ${
-                        isDark ? 'text-slate-300' : 'text-parchment-600'
-                      }`}>
-                        {demo.description}
-                      </p>
-                      <div className={`mt-4 inline-flex items-center gap-1 text-sm font-medium ${
-                        isDark ? 'text-amber-400' : 'text-burnt-400'
-                      }`}>
-                        Try it now
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                  {t} <span className="opacity-60 ml-1">{String(counts[t]).padStart(2, '0')}</span>
+                </button>
               ))}
             </div>
+            <div className="flex-1 lg:max-w-sm">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search titles, stack, blurbs…"
+                className="w-full px-4 py-2 rounded-sm border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800/60 text-[14px] text-charcoal-50 dark:text-parchment-100 placeholder:text-parchment-500 dark:placeholder:text-slate-500 focus:outline-none focus:border-burnt-400 dark:focus:border-amber-400"
+              />
+            </div>
           </div>
         </section>
-      )}
 
-      {/* Other Demos */}
-      <section className={`py-12 ${
-        isDark ? 'bg-slate-900/50' : 'bg-parchment-100'
-      }`}>
-        <div className="container mx-auto px-4">
-          <h2 className={`font-serif text-2xl md:text-3xl font-bold mb-8 ${
-            isDark ? 'text-white' : 'text-charcoal-50'
-          }`}>
-            AI & ML Demos
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(otherDemos || []).map((demo) => (
-              <Link
-                key={demo.slug}
-                href={demo.slug as Route}
-                className="group"
-              >
-                <div className={`rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
-                  isDark
-                    ? 'bg-slate-800/60 border border-slate-700 hover:border-amber-500/50'
-                    : 'bg-white border border-parchment-200 hover:border-burnt-400/50'
-                }`}>
-                  <div className="relative h-48 overflow-hidden">
-                    {demo.image && (
-                      <Image
-                        src={typeof demo.image === 'string' ? demo.image : demo.image.src}
-                        alt={demo.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                    <div className={`absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${
-                      isDark ? 'bg-slate-900/60' : 'bg-parchment-900/40'
-                    }`}>
-                      <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                        isDark ? 'bg-amber-500' : 'bg-burnt-400'
-                      }`}>
-                        <Play size={28} className="text-white ml-1" />
-                      </div>
-                    </div>
-                    <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold ${
-                      isDark ? 'bg-amber-500/90 text-white' : 'bg-burnt-400/90 text-white'
-                    }`}>
-                      Interactive Demo
-                    </div>
-                  </div>
-                  <div className="p-5 flex-grow flex flex-col">
-                    <h3 className={`font-serif text-xl font-bold mb-2 transition-colors ${
-                      isDark
-                        ? 'text-white group-hover:text-amber-400'
-                        : 'text-charcoal-50 group-hover:text-burnt-400'
-                    }`}>
-                      {demo.title}
-                    </h3>
-                    <p className={`text-sm flex-grow ${
-                      isDark ? 'text-slate-300' : 'text-parchment-600'
-                    }`}>
-                      {demo.description}
-                    </p>
-                    <div className={`mt-4 inline-flex items-center gap-1 text-sm font-medium ${
-                      isDark ? 'text-amber-400' : 'text-burnt-400'
-                    }`}>
-                      Try it now
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+        {/* ----- Index grid ----- */}
+        <section id="index" className="py-12">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+              Showing {filtered.length} of {indexed.length} objects
+            </div>
+            {filtered.length === 0 ? (
+              <div className="py-24 text-center">
+                <p className="font-serif text-xl text-parchment-600 dark:text-slate-400">
+                  Nothing matches {query ? `"${query}"` : 'that filter'} yet.
+                </p>
+                <button
+                  onClick={() => { setTypeFilter('All'); setQuery('') }}
+                  className="mt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 hover:underline"
+                >
+                  Clear filters →
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filtered.map(({ demo, kind }, i) => (
+                  <EditorialCard
+                    key={demo.slug}
+                    article={demo}
+                    index={i + 1}
+                    kind={kind}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Bottom CTA */}
-      <section className={`py-16 ${
-        isDark ? '' : 'bg-parchment-200'
-      }`}>
-        <div className="container mx-auto px-4 text-center">
-          <h2 className={`font-serif text-2xl md:text-3xl font-bold mb-4 ${
-            isDark ? 'text-white' : 'text-charcoal-50'
-          }`}>
-            Want to Learn More?
-          </h2>
-          <p className={`text-lg mb-6 max-w-xl mx-auto ${
-            isDark ? 'text-slate-300' : 'text-parchment-600'
-          }`}>
-            Explore my courses for in-depth tutorials on building AI-powered applications.
-          </p>
-          <Link
-            href="/learn"
-            className={`inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-              isDark
-                ? 'bg-amber-500 hover:bg-amber-400 text-white'
-                : 'bg-burnt-400 hover:bg-burnt-500 text-white'
-            }`}
-          >
-            Browse Courses
-            <ArrowRight size={20} />
-          </Link>
-        </div>
-      </section>
+        {/* ----- Footer tagline ----- */}
+        <section className="py-10 border-t border-parchment-300 dark:border-slate-700">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6 font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400 flex flex-wrap gap-x-6 gap-y-2 justify-between">
+            <span>© MMXXVI · Zachary Proser · Playground</span>
+            <span>{indexed.length} objects · Source Serif 4 / Inter / JetBrains Mono</span>
+          </div>
+        </section>
+      </main>
     </div>
   )
 }

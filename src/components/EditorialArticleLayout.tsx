@@ -174,8 +174,8 @@ export function EditorialArticleLayout({
       await navigator.clipboard.writeText(fullUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
-      trackShare('copy')
     } catch { /* ignore */ }
+    trackShare('copy')
   }
 
   const handleBookmark = () => {
