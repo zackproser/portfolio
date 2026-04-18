@@ -4,6 +4,31 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
+// Radial glow texture — used for "overdrive" burst halos that appear only
+// when a region is driven past its NT baseline (intensity > 1.0). This is
+// the visual signature that separates ADHD hyperfocus from NT task focus:
+// same regions active, but hyperfocus has phasic dopamine-burst halos that
+// NT simply doesn't have.
+let cachedGlowTexture: THREE.CanvasTexture | null = null
+function getGlowTexture(): THREE.CanvasTexture {
+  if (cachedGlowTexture) return cachedGlowTexture
+  const size = 256
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = size
+  const ctx = canvas.getContext('2d')!
+  const grd = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
+  grd.addColorStop(0.0, 'rgba(255,255,255,1.0)')
+  grd.addColorStop(0.15, 'rgba(255,255,255,0.9)')
+  grd.addColorStop(0.45, 'rgba(255,255,255,0.3)')
+  grd.addColorStop(1.0, 'rgba(255,255,255,0)')
+  ctx.fillStyle = grd
+  ctx.fillRect(0, 0, size, size)
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.needsUpdate = true
+  cachedGlowTexture = tex
+  return tex
+}
+
 // Build a 3D text sprite that hangs above its parent group. Sprites are
 // billboards (always face camera), so the label stays readable no matter how
 // the user rotates the brain — it effectively "travels with" the brain
@@ -139,9 +164,14 @@ const SCROLL_STATES: ScrollState[] = [
     boost: 2.7,
   },
   {
-    active: [],
-    dimmed: ['prefrontal', 'dopamine', 'workingMemory', 'amygdala', 'dmn'],
-    title: 'The crash — every network offline, the brain is dark for a day',
+    // Post-hyperfocus: task networks fatigued/depleted, DMN and amygdala
+    // rebound (mind-wandering + emotional dysregulation are the lived-
+    // experience hallmarks of the crash). Dim boost so it reads as
+    // sub-baseline, not normal.
+    active: ['dmn', 'amygdala'],
+    dimmed: ['prefrontal', 'dopamine', 'workingMemory'],
+    title: 'The crash — task networks depleted; DMN rebounds, emotional dysregulation',
+    boost: 0.55,
   },
   {
     active: ['prefrontal', 'workingMemory', 'dopamine'],
@@ -310,6 +340,11 @@ export default function BrainMap3D({
     const SIDE_OFFSET_X = 1.25
 
     type SideKey = 'nt' | 'adhd'
+    type BurstItem = {
+      key: NetworkKey
+      sprite: THREE.Sprite
+      material: THREE.SpriteMaterial
+    }
     type Side = {
       key: SideKey
       root: THREE.Group
@@ -319,6 +354,11 @@ export default function BrainMap3D({
       // One region-wire entry per network. Each contains the set of
       // classified edges colored in that network's color.
       regionWires: RegionWire[]
+      // Overdrive burst halos — invisible at baseline; blaze only when a
+      // region is pushed past intensity 1.0 (i.e., hyperfocus). These are
+      // the "phasic dopamine / BOLD burst" signature that makes the ND
+      // brain read visually distinct from the NT brain at equal coverage.
+      bursts: BurstItem[]
       // 3D text label hanging above the brain; rotates with the brain root
       // so the label always travels with its brain.
       label: THREE.Sprite
@@ -383,12 +423,38 @@ export default function BrainMap3D({
       label.position.set(0, 1.25, 0)
       sideGroup.add(label)
 
+      // Overdrive burst halos — one bright additive sprite per network,
+      // anchored at the network's centroid. Invisible until intensity > 1.0,
+      // then bloom outward with a rapid pulse. This is the hyperfocus-
+      // specific visual effect absent from NT baseline at equivalent coverage.
+      const glowTex = getGlowTexture()
+      const bursts: BurstItem[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
+        const net = NETWORKS[nkey]
+        const mat = new THREE.SpriteMaterial({
+          map: glowTex,
+          color: new THREE.Color(net.color),
+          transparent: true,
+          opacity: 0,
+          depthWrite: false,
+          depthTest: false,
+          blending: THREE.AdditiveBlending,
+          toneMapped: false,
+        })
+        const sprite = new THREE.Sprite(mat)
+        sprite.position.fromArray(net.anchor)
+        sprite.scale.setScalar(0)
+        sprite.visible = false
+        sideGroup.add(sprite)
+        return { key: nkey, sprite, material: mat }
+      })
+
       const side: Side = {
         key,
         root: sideGroup,
         bundles,
         wireframes: [],
         regionWires: [],
+        bursts,
         label,
         getState,
       }
@@ -693,6 +759,29 @@ export default function BrainMap3D({
           for (const line of rw.lines) {
             line.visible = iC > 0.015
           }
+        }
+
+        // Overdrive bursts — only visible when a region is pushed past
+        // baseline. Fast 7Hz pulse mimics fMRI BOLD-burst / phasic dopamine
+        // firing visible in ADHD hyperfocus. Absent at NT baseline, where
+        // regions run at intensity≈1.0 and overdrive=0. This is what makes
+        // NT ≠ hyperfocus at a glance.
+        for (const bu of side.bursts) {
+          const i = intensity[bu.key] ?? 0
+          const overdrive = Math.max(0, (i - 1.0) / 1.7)  // 0 at i≤1, 1 at i≥2.7
+          if (overdrive < 0.01) {
+            bu.sprite.visible = false
+            continue
+          }
+          bu.sprite.visible = true
+          const fastPulse = 0.75 + Math.sin(elapsed * 7 + bu.sprite.position.x * 4) * 0.25
+          const slowPulse = 0.85 + Math.sin(elapsed * 2.3) * 0.15
+          const scale = overdrive * 1.0 * fastPulse
+          bu.sprite.scale.setScalar(scale)
+          bu.material.opacity = Math.min(1, overdrive * 1.3 * slowPulse)
+          bu.material.color
+            .set(NETWORKS[bu.key].color)
+            .multiplyScalar(2.2 + overdrive * 0.8)
         }
 
         // Default wireframe breathes lightly with total activity so all-off
