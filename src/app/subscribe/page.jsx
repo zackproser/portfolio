@@ -199,7 +199,7 @@ export default function SubscribePage() {
                     </span>
                     <span className="c-yr">
                       {role.start} &mdash;{' '}
-                      {typeof role.end === 'object' ? role.end.label : role.end}
+                      {role.end && typeof role.end === 'object' ? role.end.label : role.end}
                     </span>
                   </li>
                 ))}

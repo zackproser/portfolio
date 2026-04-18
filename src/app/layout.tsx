@@ -14,6 +14,7 @@ import '@/styles/testimonials.css';
 import '@/styles/contact.css';
 import '@/styles/subscribe.css';
 import '@/styles/newsletter.css';
+import '@/styles/subscribe-form-shared.css';
 import PlausibleProvider from 'next-plausible';
 
 const notoSans = Noto_Sans({

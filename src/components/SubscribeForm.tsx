@@ -107,7 +107,7 @@ export function SubscribeForm({
       <button
         type="submit"
         className="sp-submit"
-        disabled={state === 'submitting' || validShape === false}
+        disabled={state === 'submitting' || validShape !== true}
       >
         {state === 'submitting' ? 'Sending…' : submitLabel}
         <span className="arrow">→</span>
