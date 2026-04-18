@@ -2,110 +2,20 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
 import { AuthStatus } from './AuthStatus'
 
-// Export navigation items to be used in components
+// Flat editorial navigation — a single line, mono/uppercase
 export const navItems = [
-  { name: 'Blog', href: '/blog' },
-  {
-    name: 'Tools & Demos',
-    dropdown: [
-      { name: 'Interactive Demos', href: '/demos' },
-      { name: 'Best AI Tools', href: '/best-ai-tools' },
-    ],
-  },
-  {
-    name: 'Learn',
-    dropdown: [
-      { name: 'Courses', href: '/products' },
-      { name: 'Videos', href: '/videos' },
-      { name: 'Publications', href: '/publications' },
-    ],
-  },
-  {
-    name: 'Services',
-    dropdown: [
-      { name: 'Custom Gen AI Solutions', href: '/services' },
-      { name: '90-Day AI Team Transformation', href: '/ai-training' },
-      { name: 'Workshops', href: '/workshops/claude-cowork' },
-    ],
-  },
-  {
-    name: 'About',
-    dropdown: [
-      { name: 'About Me', href: '/about' },
-      { name: 'Speaking', href: '/speaking' },
-      { name: 'Testimonials', href: '/testimonials' },
-      { name: 'Contact', href: '/contact' },
-    ],
-  },
+  { name: 'Writing', href: '/blog' },
+  { name: 'Builds', href: '/projects' },
+  { name: 'Videos', href: '/videos' },
+  { name: 'Workshops', href: '/workshops/claude-cowork' },
+  { name: 'About', href: '/about' },
 ];
-
-function DropdownMenu({ label, items }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Toggle dropdown visibility
-  const toggleDropdown = (e) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  // Close dropdown when clicking outside
-  const closeDropdown = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-
-  // Add document click listener when dropdown is open
-  React.useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('click', closeDropdown);
-    }
-    return () => {
-      document.removeEventListener('click', closeDropdown);
-    };
-  }, [isOpen, closeDropdown]);
-
-  return (
-    <div className="relative">
-      {/* Dropdown trigger button */}
-      <button
-        className="flex items-center gap-1 text-sm font-medium text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors"
-        onClick={toggleDropdown}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-      >
-        {label}
-        <ChevronDown
-          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-        />
-      </button>
-
-      {/* Dropdown menu */}
-      {isOpen && (
-        <div
-          className="absolute left-0 mt-2 w-48 rounded-lg shadow-lg bg-parchment-50 dark:bg-slate-800 backdrop-blur-sm ring-1 ring-parchment-300 dark:ring-slate-700 z-50"
-        >
-          <div className="py-1" role="menu" aria-orientation="vertical">
-            {items.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="block px-4 py-2 text-sm text-charcoal-50 dark:text-slate-200 hover:bg-parchment-200 dark:hover:bg-slate-700 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors"
-                role="menuitem"
-                onClick={closeDropdown}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+export const navCta = { name: 'Hire →', href: '/contact' };
 
 export function ConsultancyNav() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -115,13 +25,19 @@ export function ConsultancyNav() {
   }, [])
 
   return (
-    <header className="w-full h-16 sm:h-18 flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link className="flex items-center justify-center shrink-0" href="/">
+    <header className="w-full flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
+      <div className="container mx-auto px-4 h-16 sm:h-18 flex items-center justify-between gap-6">
+        {/* Wordmark + meta */}
+        <Link className="flex items-baseline gap-3 shrink-0" href="/">
           <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white whitespace-nowrap">
             Zachary <span className="text-burnt-400 dark:text-amber-400">Proser</span>
           </span>
+          <span className="hidden md:inline font-mono text-[10px] tracking-[0.14em] uppercase text-parchment-600 dark:text-slate-400 whitespace-nowrap">
+            № MMXXVI · Applied AI
+          </span>
         </Link>
+
+        {/* Mobile toggle */}
         <div className="lg:hidden">
           <button
             type="button"
@@ -132,30 +48,30 @@ export function ConsultancyNav() {
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
+
         <nav
           className={`absolute top-16 sm:top-18 left-0 w-full bg-parchment-100 dark:bg-slate-900 lg:static lg:w-auto lg:bg-transparent dark:lg:bg-transparent
-                      flex-col lg:flex-row lg:flex gap-4 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
-                      ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}>
-          <div className="flex flex-col lg:flex-row gap-2 items-center w-full lg:w-auto">
+                      flex-col lg:flex-row lg:flex gap-4 lg:gap-7 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
+                      ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}
+        >
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-7 items-center w-full lg:w-auto">
             {navItems.map((item) => (
-              item.dropdown ? (
-                <DropdownMenu
-                  key={item.name}
-                  label={item.name}
-                  items={item.dropdown}
-                />
-              ) : (
-                <Link
-                  key={item.name}
-                  className="text-sm font-medium text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-indigo-400 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left px-2"
-                  href={item.href}
-                >
-                  {item.name}
-                </Link>
-              )
+              <Link
+                key={item.name}
+                href={item.href}
+                className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left"
+              >
+                {item.name}
+              </Link>
             ))}
+            <Link
+              href={navCta.href}
+              className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-burnt-400 dark:text-amber-400 hover:opacity-80 transition-opacity py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left"
+            >
+              {navCta.name}
+            </Link>
           </div>
-          <div className="flex items-center gap-2 mt-4 lg:mt-0">
+          <div className="flex items-center gap-2 mt-4 lg:mt-0 lg:pl-4 lg:border-l lg:border-parchment-300 dark:lg:border-slate-700">
             <ThemeToggleWrapper />
             <AuthStatus />
           </div>
@@ -164,4 +80,4 @@ export function ConsultancyNav() {
       <NavigationEvents onRouteChange={handleRouteChange} />
     </header>
   )
-} 
+}

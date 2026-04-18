@@ -6,7 +6,7 @@ import { useState, FormEvent } from 'react'
 import type { Route } from 'next'
 import { track } from '@vercel/analytics'
 import { sendGTMEvent } from '@next/third-parties/google'
-import { ContentCard } from '@/components/ContentCard'
+import { EditorialCard } from '@/components/EditorialCard'
 import ConsultationForm from '@/components/ConsultationForm'
 import type { Content } from '@/types/content'
 
@@ -279,24 +279,23 @@ function FeaturedProject() {
             </div>
           </div>
 
-          {/* Terminal readout — static, editorial flavor */}
+          {/* Terminal readout — site index */}
           <div className="rounded-md overflow-hidden border border-charcoal-100/30 dark:border-slate-700 bg-[#141428] text-sm font-mono shadow-lg">
             <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-black/20">
               <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
               <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
               <span className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-              <span className="ml-3 text-[11px] text-slate-400">pnpm ingest</span>
+              <span className="ml-3 text-[11px] tracking-wider uppercase text-slate-400">~/zackproser.com — index</span>
             </div>
             <div className="p-4 text-[12px] leading-relaxed text-slate-200 whitespace-nowrap overflow-x-auto">
-              <div><span className="text-amber-400">➜</span> <span className="text-slate-500">rag-pipeline-tutorial</span> pnpm ingest</div>
-              <div><span className="text-slate-500">  scanning ./content ...........</span> <span className="text-green-400">218 files</span></div>
-              <div><span className="text-slate-500">  chunking (1024/128) ..........</span> <span className="text-green-400">3,740 chunks</span></div>
-              <div><span className="text-slate-500">  embed (text-3-large) .........</span> <span className="text-green-400">$0.14</span></div>
-              <div><span className="text-slate-500">  upsert → pinecone ............</span> <span className="text-green-400">ok</span></div>
-              <div><span className="text-amber-400">➜</span> pnpm eval</div>
-              <div><span className="text-slate-500">  faithfulness ..</span> <span className="text-green-400">0.94</span> <span className="text-slate-500">p@5 ..</span> <span className="text-green-400">0.87</span></div>
-              <div><span className="text-slate-500">  recall@10 .....</span> <span className="text-green-400">0.91</span> <span className="text-slate-500">p95 ..</span> <span className="text-yellow-400">340ms</span></div>
-              <div><span className="text-amber-400">➜</span> <span className="inline-block w-2 h-3.5 bg-amber-400 align-middle animate-pulse ml-1" /></div>
+              <div><span className="text-slate-500">zp@work ~ $</span> ls -lh ./content</div>
+              <div><span className="text-slate-500">drwx  </span>writing/<span className="text-slate-500">        218 essays       </span><span className="text-amber-400">&quot;modern-coding&quot;</span></div>
+              <div><span className="text-slate-500">drwx  </span>builds/<span className="text-slate-500">          37 projects     </span><span className="text-amber-400">&quot;rag, tools, tuis&quot;</span></div>
+              <div><span className="text-slate-500">drwx  </span>videos/<span className="text-slate-500">          24 screencasts  </span><span className="text-amber-400">&quot;long-form&quot;</span></div>
+              <div><span className="text-slate-500">drwx  </span>workshops/<span className="text-slate-500">        6 decks        </span><span className="text-amber-400">&quot;cowork, claude&quot;</span></div>
+              <div><span className="text-slate-500">zp@work ~ $</span> cat ./status.json</div>
+              <div>{'{ '}<span className="text-amber-400">&quot;current&quot;</span>: <span className="text-green-400">&quot;applied-ai @ workos&quot;</span>, <span className="text-amber-400">&quot;open_to&quot;</span>: [<span className="text-green-400">&quot;workshops&quot;</span>, <span className="text-green-400">&quot;retainers&quot;</span>], <span className="text-amber-400">&quot;wpm&quot;</span>: <span className="text-green-400">184</span> {'}'}</div>
+              <div><span className="text-slate-500">zp@work ~ $</span> <span className="inline-block w-2 h-3.5 bg-amber-400 align-middle animate-pulse ml-1" /></div>
             </div>
           </div>
         </article>
@@ -340,6 +339,7 @@ function ContentRail({
   articles,
   alt,
   keyPrefix,
+  kind,
 }: {
   num: string
   title: string
@@ -348,6 +348,7 @@ function ContentRail({
   articles: Article[]
   alt?: boolean
   keyPrefix: string
+  kind?: string
 }) {
   return (
     <section className={`py-14 ${alt ? 'editorial-section-alt' : ''}`}>
@@ -355,7 +356,12 @@ function ContentRail({
         <SectionHead num={num} title={title} moreHref={moreHref} moreLabel={moreLabel} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.slice(0, 3).map((a, i) => (
-            <ContentCard key={`${keyPrefix}-${i}`} article={a as never} />
+            <EditorialCard
+              key={`${keyPrefix}-${i}`}
+              article={a}
+              index={i + 1}
+              kind={kind}
+            />
           ))}
         </div>
       </div>
@@ -442,6 +448,7 @@ export default function HomepageClientComponent({
           articles={deepMLTutorials}
           alt
           keyPrefix="ml-tutorial"
+          kind="Tutorial"
         />
 
         <ContentRail
@@ -451,6 +458,7 @@ export default function HomepageClientComponent({
           moreLabel="All projects →"
           articles={mlProjects}
           keyPrefix="ml-project"
+          kind="Project"
         />
 
         <ContentRail
@@ -461,6 +469,7 @@ export default function HomepageClientComponent({
           articles={aiDev}
           alt
           keyPrefix="ai-dev"
+          kind="Essay"
         />
 
         <ContentRail
@@ -469,6 +478,7 @@ export default function HomepageClientComponent({
           moreHref="/blog"
           articles={refArchitectures}
           keyPrefix="ref-arch"
+          kind="Ref arch"
         />
 
         <ContentRail
@@ -479,6 +489,7 @@ export default function HomepageClientComponent({
           articles={careerAdvice}
           alt
           keyPrefix="career"
+          kind="Field note"
         />
 
         <ContentRail
@@ -488,6 +499,7 @@ export default function HomepageClientComponent({
           moreLabel="All videos →"
           articles={videos}
           keyPrefix="video"
+          kind="Video"
         />
 
         <ColophonFooter />
