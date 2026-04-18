@@ -71,12 +71,6 @@ export default async function Page() {
     console.log(`- Career Advice: ${careerAdvice.length}/${careerAdviceSlugs.length}`)
     console.log(`- Videos: ${videos.length}/${videoSlugs.length}`)
 
-    // Server-side mobile detection
-    const headersList = await headers()
-    const userAgent = headersList.get('user-agent') || ''
-    const parser = new UAParser(userAgent)
-    const isMobile = parser.getDevice().type === 'mobile'
-
     return (
       <HomepageClientComponent
         deepMLTutorials={deepMLTutorials}
@@ -85,7 +79,6 @@ export default async function Page() {
         refArchitectures={refArchitectures}
         careerAdvice={careerAdvice}
         videos={videos}
-        isMobile={isMobile}
       />
     )
   } catch (error) {

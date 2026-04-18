@@ -135,7 +135,7 @@ export default function About() {
                 software development experience at top startups and established
                 enterprise companies. Currently a Developer Experience Engineer
                 at{' '}
-                <Link href="/blog" className="text-burnt-400 dark:text-amber-400 hover:underline">
+                <Link href="https://workos.com" className="text-burnt-400 dark:text-amber-400 hover:underline">
                   WorkOS
                 </Link>
                 , where we help companies add enterprise features to their apps
@@ -227,7 +227,7 @@ export default function About() {
             <div className="prose-editorial text-[17px] leading-[1.7] text-charcoal-50 dark:text-parchment-100 space-y-5 mt-6">
               <p className="first-letter:float-left first-letter:font-serif first-letter:text-[64px] first-letter:leading-[0.9] first-letter:mr-2 first-letter:mt-1 first-letter:text-burnt-400 dark:first-letter:text-amber-400">
                 I&apos;m a Developer Experience Engineer at{' '}
-                <Link href="/blog" className="underline decoration-burnt-400/40 hover:decoration-burnt-400 dark:decoration-amber-400/40 dark:hover:decoration-amber-400">
+                <Link href="https://workos.com" className="underline decoration-burnt-400/40 hover:decoration-burnt-400 dark:decoration-amber-400/40 dark:hover:decoration-amber-400">
                   WorkOS
                 </Link>
                 . Before that I did developer-education and staff developer-

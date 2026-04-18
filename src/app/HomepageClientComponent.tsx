@@ -25,7 +25,6 @@ interface Props {
   refArchitectures: Article[]
   careerAdvice: Article[]
   videos: Article[]
-  isMobile: boolean
 }
 
 // ----- Hero ---------------------------------------------------------
