@@ -204,11 +204,34 @@
   margin: 0;
 }
 
+/* Hero right-column plate: portrait + caption + meta + pull-quote */
+.editorial-hero-plate {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.editorial-hero-plate .editorial-meta {
+  margin: 0;
+  padding: 18px 0 0;
+}
+.editorial-hero-plate-quote {
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(139, 115, 85, 0.25);
+}
+.dark .editorial-hero-plate-quote {
+  border-top-color: rgba(148, 163, 184, 0.2);
+}
+.editorial-hero-plate-quote blockquote {
+  margin: 10px 0 0;
+  text-wrap: balance;
+  quotes: "\201C" "\201D";
+}
+
 /* Portrait frame */
 .editorial-portrait {
   width: 100%;
   aspect-ratio: 4 / 5;
-  max-width: 440px;
   border-radius: 2px;
   position: relative;
   overflow: hidden;

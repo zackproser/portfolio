@@ -148,27 +148,45 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
             <Link href="/services">Workshops →</Link>
           </div>
 
-          <dl className="editorial-meta text-parchment-600 dark:text-slate-400">
-            <dt>Current</dt>
-            <dd>Applied AI · WorkOS</dd>
-            <dt>Recent</dt>
-            <dd>Pinecone · Cloudflare · Gruntwork</dd>
-          </dl>
         </div>
 
-        <div className="lg:justify-self-end">
+        <div className="editorial-hero-plate">
           <div className="editorial-portrait">
             <Image
               src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
               alt="Portrait of Zachary Proser"
               fill
-              sizes="(max-width: 1024px) 80vw, 440px"
+              sizes="(max-width: 1024px) 80vw, 500px"
               className="editorial-portrait-image"
               priority
             />
           </div>
           <div className="editorial-portrait-caption text-parchment-600 dark:text-slate-400">
             Plate I · Applied AI · MMXXVI
+          </div>
+          <dl className="editorial-meta text-parchment-600 dark:text-slate-400">
+            <dt>Current</dt>
+            <dd>Applied AI · WorkOS</dd>
+            <dt>Recent</dt>
+            <dd>Pinecone · Cloudflare · Gruntwork</dd>
+            <dt>Open to</dt>
+            <dd>
+              <span className="text-burnt-400 dark:text-amber-400">●</span> Workshops and retainers
+            </dd>
+          </dl>
+          <div className="editorial-hero-plate-quote">
+            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+              In the wild
+            </div>
+            <blockquote className="font-serif text-[17px] leading-[1.4] text-charcoal-50 dark:text-parchment-100">
+              “Zack is the rare engineer who ships, writes, and teaches — all at
+              the depth you actually want.”
+            </blockquote>
+            <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+              <Link href="/testimonials" className="hover:text-burnt-400 dark:hover:text-amber-400">
+                Read the testimonials →
+              </Link>
+            </div>
           </div>
         </div>
       </div>
