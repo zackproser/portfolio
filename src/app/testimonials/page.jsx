@@ -115,8 +115,15 @@ const testimonials = [
   },
 ]
 
+// Sourced from the real CV data in src/data/resume.js — the places Zack has
+// actually shipped at. Johns Hopkins is accented (italic) at the end.
 const trustedCompanies = [
-  'Cloudflare', 'Cohesity', 'Proofpoint',
+  'WorkOS',
+  'Pinecone',
+  'Gruntwork',
+  'Cloudflare',
+  'Cloudmark',
+  'BrightContext',
 ]
 
 function pad(n) {
