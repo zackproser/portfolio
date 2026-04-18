@@ -4,8 +4,6 @@ import { ExtendedMetadata } from './metadata'
 export interface Content extends ExtendedMetadata {
   tags?: string[]
   directorySlug?: string  // The original directory name, used for reliable matching
-  /** Per-post opt-out for the sticky newsletter-capture modal. */
-  hideNewsletter?: boolean
 }
 
 // For blog posts and courses
