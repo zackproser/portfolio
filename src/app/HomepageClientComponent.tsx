@@ -3,13 +3,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import type { Route } from 'next'
 import { track } from '@vercel/analytics'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import ConsultationForm from '@/components/ConsultationForm'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
-import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import RenderNumYearsExperience, { getYearsExperienceAsWord } from '@/components/NumYearsExperience'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -31,6 +30,7 @@ interface Props {
 // ----- Hero ---------------------------------------------------------
 
 function EditorialHero({ onConsult }: { onConsult: () => void }) {
+  const yearsWord = getYearsExperienceAsWord()
   return (
     <section className="pt-16 pb-12 md:pt-24 md:pb-16">
       <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-14 lg:grid-cols-[1.35fr_1fr] lg:items-start">
@@ -44,7 +44,7 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
           </h1>
           <p className="editorial-lede text-parchment-600 dark:text-slate-300">
             I build retrieval pipelines, agent harnesses, and ship-ready
-            developer tools at WorkOS. Fourteen years in production. Writing,
+            developer tools at WorkOS. {yearsWord} years in production. Writing,
             workshops, and consulting for teams that got handed an LLM and a
             deadline.
           </p>
@@ -96,11 +96,12 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
 
 function StatRow() {
   const yearsExperience = RenderNumYearsExperience()
+  const yearsWritingOnline = Math.abs(new Date('January 1 2005').getFullYear() - new Date().getFullYear())
   const stats = [
     { num: String(yearsExperience), unit: 'yrs', label: 'Shipping software' },
     { num: '5,000', unit: '+', label: 'Newsletter readers' },
     { num: '184', unit: 'wpm', label: 'Voice-coding velocity' },
-    { num: '30', unit: 'yrs', label: 'Writing online' },
+    { num: String(yearsWritingOnline), unit: 'yrs', label: 'Writing online' },
   ]
   return (
     <section className="pb-12">
