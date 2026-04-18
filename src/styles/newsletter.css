@@ -1,0 +1,334 @@
+/* =========================================================
+   Newsletter — "Masthead" variation (A)
+   Scoped under .newsletter-page so nothing leaks.
+   Reuses editorial tokens from editorial-home.css.
+   ========================================================= */
+
+.newsletter-page {
+  --nl-accent: #e67e22;
+  --nl-ink: #2c3e50;
+  --nl-ink-dim: #8b7355;
+  --nl-rule: rgb(139 115 85 / .28);
+  --nl-rule-strong: rgb(139 115 85 / .55);
+  --nl-paper: #fefdfb;
+  --nl-paper-2: #f5f0e6;
+}
+.dark .newsletter-page {
+  --nl-accent: #f39c12;
+  --nl-ink: #fbf7f0;
+  --nl-ink-dim: #cbd5e1;
+  --nl-rule: rgb(148 163 184 / .22);
+  --nl-rule-strong: rgb(148 163 184 / .4);
+  --nl-paper: #1e293b;
+  --nl-paper-2: #141428;
+}
+
+/* ========== Masthead ==================================== */
+.newsletter-page .nl-masthead {
+  padding: 24px 0 20px;
+  border-top: 2px solid var(--nl-ink);
+  border-bottom: 1px solid var(--nl-rule);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 16px;
+  row-gap: 14px;
+}
+.dark .newsletter-page .nl-masthead { border-top-color: var(--nl-rule-strong); }
+.newsletter-page .nl-masthead .mh-l,
+.newsletter-page .nl-masthead .mh-r {
+  display: flex; flex-direction: column; gap: 4px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--nl-ink-dim);
+}
+.newsletter-page .nl-masthead .mh-r { align-items: flex-end; text-align: right; }
+.newsletter-page .nl-masthead .mh-title {
+  grid-column: 2;
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(48px, 8vw, 110px);
+  letter-spacing: -0.04em;
+  line-height: .9;
+  color: var(--nl-ink);
+  margin: 0;
+  text-align: center;
+  text-wrap: balance;
+}
+.newsletter-page .nl-masthead .mh-title em {
+  font-style: italic; color: var(--nl-accent); font-weight: 500;
+}
+.newsletter-page .nl-masthead .mh-strapline {
+  grid-column: 1 / -1;
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 17px; line-height: 1.5;
+  color: var(--nl-ink-dim);
+  max-width: 62ch; margin: 8px auto 0;
+  text-align: center; text-wrap: pretty;
+}
+@media (max-width: 720px) {
+  .newsletter-page .nl-masthead { grid-template-columns: 1fr; text-align: center; }
+  .newsletter-page .nl-masthead .mh-l,
+  .newsletter-page .nl-masthead .mh-r {
+    align-items: center; text-align: center; flex-direction: row; gap: 10px;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .newsletter-page .nl-masthead .mh-title { grid-column: 1; font-size: clamp(40px, 12vw, 72px); }
+}
+
+/* ========== Hero split (pitch + sample cover) =========== */
+.newsletter-page .nl-split {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 56px;
+  padding: 40px 0 32px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .newsletter-page .nl-split { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.newsletter-page .nl-pitch .nl-kicker {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--nl-ink-dim);
+}
+.newsletter-page .nl-pitch .nl-kicker em {
+  font-style: normal; color: var(--nl-accent); font-weight: 700;
+}
+.newsletter-page .nl-pitch .nl-display {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.028em;
+  color: var(--nl-ink);
+  margin: 14px 0 16px;
+  text-wrap: balance;
+}
+.newsletter-page .nl-pitch .nl-display em {
+  font-style: italic; color: var(--nl-accent); font-weight: 500;
+}
+.newsletter-page .nl-pitch .nl-lead {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 18px; line-height: 1.6;
+  color: var(--nl-ink-dim);
+  margin: 0 0 24px;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+/* Sample-issue cover card --------------------------------- */
+.newsletter-page .nl-cover {
+  position: relative;
+  padding: 26px 28px 24px;
+  background: var(--nl-paper);
+  border: 1px solid var(--nl-rule-strong);
+  box-shadow:
+    0 1px 0 0 var(--nl-accent),
+    0 18px 36px -22px rgba(24,24,40,.22);
+}
+.dark .newsletter-page .nl-cover {
+  box-shadow:
+    0 1px 0 0 var(--nl-accent),
+    0 18px 36px -22px rgba(0,0,0,.6);
+}
+.newsletter-page .nl-cover::before {
+  content: ''; position: absolute; inset: 8px;
+  border: 1px dashed var(--nl-rule); pointer-events: none;
+}
+.newsletter-page .nl-cover > * { position: relative; }
+.newsletter-page .nl-cover .nl-cover-stamp {
+  position: absolute; top: -12px; right: 22px;
+  width: 72px; aspect-ratio: 4 / 5;
+  background: var(--nl-paper-2);
+  border: 1.5px dashed var(--nl-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--nl-ink-dim);
+  text-align: center; line-height: 1.3;
+  transform: rotate(3deg); z-index: 1;
+}
+.newsletter-page .nl-cover .nl-cover-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--nl-ink-dim);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--nl-rule);
+  margin-bottom: 14px;
+}
+.newsletter-page .nl-cover .nl-cover-top .issue { color: var(--nl-accent); font-weight: 700; }
+.newsletter-page .nl-cover .nl-cover-title {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(22px, 2.6vw, 28px);
+  line-height: 1.1;
+  letter-spacing: -0.018em;
+  color: var(--nl-ink);
+  margin: 0 0 10px;
+  text-wrap: balance;
+}
+.newsletter-page .nl-cover .nl-cover-dek {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 15.5px; line-height: 1.5;
+  color: var(--nl-ink-dim);
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+.newsletter-page .nl-cover .nl-cover-foot {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: 12px; border-top: 1px dashed var(--nl-rule);
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--nl-ink-dim);
+}
+.newsletter-page .nl-cover .nl-cover-foot a {
+  color: var(--nl-accent); font-weight: 700;
+}
+
+/* ========== "What's inside" 3-col columns ================ */
+.newsletter-page .nl-inside {
+  padding: 64px 0 40px;
+  border-top: 1px solid var(--nl-rule);
+}
+.newsletter-page .nl-inside-head {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: baseline; gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--nl-rule-strong);
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.newsletter-page .nl-inside-head .num { color: var(--nl-ink-dim); font-weight: 600; }
+.newsletter-page .nl-inside-head h2 {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(22px, 2.8vw, 32px);
+  letter-spacing: -0.018em;
+  color: var(--nl-ink);
+  line-height: 1.1; margin: 0;
+  text-transform: none;
+}
+.newsletter-page .nl-inside-head .more { color: var(--nl-accent); font-weight: 700; }
+
+.newsletter-page .nl-columns {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  padding-top: 32px;
+  column-rule: 1px solid var(--nl-rule);
+}
+@media (max-width: 900px) {
+  .newsletter-page .nl-columns { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .newsletter-page .nl-columns { grid-template-columns: 1fr; }
+}
+.newsletter-page .nl-column {
+  padding: 0 0 0 16px;
+  border-left: 1px solid var(--nl-rule);
+}
+.newsletter-page .nl-column:first-child { border-left: 0; padding-left: 0; }
+@media (max-width: 900px) {
+  .newsletter-page .nl-column:nth-child(3) { border-left: 0; padding-left: 0; }
+}
+@media (max-width: 560px) {
+  .newsletter-page .nl-column { border-left: 0; padding-left: 0; }
+}
+.newsletter-page .nl-column .section {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--nl-accent);
+  margin-bottom: 10px;
+}
+.newsletter-page .nl-column .headline {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500; font-size: 19px; line-height: 1.2;
+  letter-spacing: -.015em; color: var(--nl-ink);
+  margin: 0 0 8px; text-wrap: balance;
+}
+.newsletter-page .nl-column .dek {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 15px; line-height: 1.55;
+  color: var(--nl-ink-dim);
+  margin: 0; text-wrap: pretty;
+}
+
+/* ========== Section head ================================= */
+.newsletter-page .nl-section-head {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: baseline; gap: 16px;
+  padding: 48px 0 18px;
+  border-bottom: 1px solid var(--nl-rule-strong);
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.newsletter-page .nl-section-head .num { color: var(--nl-ink-dim); font-weight: 600; }
+.newsletter-page .nl-section-head h2 {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500; font-size: clamp(22px, 2.8vw, 32px);
+  letter-spacing: -.018em; line-height: 1.1;
+  color: var(--nl-ink); margin: 0;
+  text-transform: none;
+}
+.newsletter-page .nl-section-head .more { color: var(--nl-accent); font-weight: 700; }
+
+/* ========== Signup band (bottom) ========================= */
+.newsletter-page .nl-signup-band {
+  margin: 72px 0 32px;
+  padding: 56px 48px;
+  background: var(--nl-paper);
+  border: 1px solid var(--nl-rule-strong);
+  box-shadow:
+    0 1px 0 0 var(--nl-accent),
+    0 16px 40px -24px rgba(24,24,40,.2);
+  text-align: center; position: relative;
+}
+.newsletter-page .nl-signup-band::before {
+  content: ''; position: absolute; inset: 8px;
+  border: 1px dashed var(--nl-rule); pointer-events: none;
+}
+.newsletter-page .nl-signup-band > * { position: relative; }
+.newsletter-page .nl-signup-band .nl-chip {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--nl-ink-dim);
+  padding: 6px 12px;
+  border: 1px solid var(--nl-rule-strong);
+}
+.newsletter-page .nl-signup-band .nl-chip .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--nl-accent);
+}
+.newsletter-page .nl-signup-band .nl-chip .accent {
+  color: var(--nl-accent); font-weight: 700;
+}
+.newsletter-page .nl-signup-band h2 {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 500; font-size: clamp(28px, 3.8vw, 44px);
+  letter-spacing: -.025em; line-height: 1.05;
+  color: var(--nl-ink); margin: 24px auto 12px;
+  max-width: 22ch; text-wrap: balance;
+}
+.newsletter-page .nl-signup-band h2 em {
+  font-style: italic; color: var(--nl-accent); font-weight: 500;
+}
+.newsletter-page .nl-signup-band p {
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 17px; line-height: 1.5;
+  color: var(--nl-ink-dim);
+  margin: 0 auto 24px;
+  max-width: 52ch; text-wrap: balance;
+}
+.newsletter-page .nl-signup-band .sp-form {
+  max-width: 520px; margin: 0 auto; text-align: left;
+}
+@media (max-width: 720px) {
+  .newsletter-page .nl-signup-band { padding: 40px 24px; }
+}
