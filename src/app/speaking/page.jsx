@@ -113,9 +113,24 @@ function SpeakingEditorialCard({ engagement, index, prefix }) {
   )
 }
 
+function computeTopicCounts(engagements) {
+  const counts = new Map()
+  for (const e of engagements) {
+    for (const t of e.topics || []) {
+      counts.set(t, (counts.get(t) || 0) + 1)
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+}
+
 export default function Speaking() {
   const publicEngagements = speakingEngagements.filter(e => e.type === 'public')
   const internalEngagements = speakingEngagements.filter(e => e.type === 'internal')
+  const topicCounts = computeTopicCounts(speakingEngagements).slice(0, 14)
+  const sortedByDate = [...speakingEngagements].sort((a, b) =>
+    (b.isoDate || '').localeCompare(a.isoDate || '')
+  )
 
   return (
     <div className="editorial-home flex flex-col min-h-screen text-charcoal-50 dark:text-parchment-100 theme-transition">
@@ -125,7 +140,9 @@ export default function Speaking() {
           <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-end">
             <div>
               <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
-                Speaking · Conferences · Corporate training
+                <Link href="/" className="hover:text-burnt-400 dark:hover:text-amber-400">Home</Link>
+                <span className="mx-2 opacity-40">/</span>
+                <span>Speaking</span>
               </div>
               <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
                 Talks, workshops, and trainings for teams that{' '}
@@ -173,11 +190,33 @@ export default function Speaking() {
           </div>
         </section>
 
-        {/* ----- § 01 Public engagements ----- */}
+        {/* ----- § 01 Topics I cover ----- */}
+        <section className="pb-8">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+              § 01 · Topics I cover
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {topicCounts.map(([topic, n]) => (
+                <span
+                  key={topic}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-parchment-300 dark:border-slate-600 bg-parchment-50 dark:bg-slate-800/60 text-[13px] text-charcoal-50 dark:text-parchment-100"
+                >
+                  <span>{topic}</span>
+                  <span className="font-mono text-[10px] tracking-wider text-burnt-400 dark:text-amber-400">
+                    {String(n).padStart(2, '0')}
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ----- § 02 Public engagements ----- */}
         <section className="py-14 editorial-section-alt">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
             <SectionHead
-              num="01"
+              num="02"
               title="Conference talks & public workshops"
               moreHref="/contact"
               moreLabel="Book a talk →"
@@ -221,11 +260,11 @@ export default function Speaking() {
           </div>
         </section>
 
-        {/* ----- § 02 Internal training ----- */}
+        {/* ----- § 03 Internal training ----- */}
         <section className="py-14 editorial-section-alt">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
             <SectionHead
-              num="02"
+              num="03"
               title="Corporate training & team development"
               moreHref="/ai-training"
               moreLabel="Training services →"
@@ -243,8 +282,62 @@ export default function Speaking() {
           </div>
         </section>
 
+        {/* ----- § 04 Past appearances ledger ----- */}
+        <section className="py-14">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <SectionHead
+              num="04"
+              title="Past appearances"
+              moreHref="/blog"
+              moreLabel="Archive →"
+            />
+            <div className="border-t border-parchment-300 dark:border-slate-700">
+              {sortedByDate.map((e) => {
+                const primaryLink = e.links?.[0]
+                const rowHref = e.slug ? `/speaking/${e.slug}` : (primaryLink?.url || null)
+                const kind = e.type === 'internal' ? 'Internal' : 'Public'
+                const RowTag = rowHref ? (rowHref.startsWith('http') ? 'a' : Link) : 'div'
+                const rowProps = rowHref
+                  ? (rowHref.startsWith('http')
+                      ? { href: rowHref, target: '_blank', rel: 'noopener noreferrer' }
+                      : { href: rowHref })
+                  : {}
+                return (
+                  <RowTag
+                    key={e.id}
+                    {...rowProps}
+                    className="grid grid-cols-[auto_1fr_auto] md:grid-cols-[110px_1.2fr_2fr_100px_90px] gap-4 py-4 border-b border-parchment-300 dark:border-slate-700 text-charcoal-50 dark:text-parchment-100 hover:bg-parchment-50/60 dark:hover:bg-slate-800/40 transition-colors group"
+                  >
+                    <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400 pt-1">
+                      {e.date}
+                    </div>
+                    <div className="font-serif text-[15px] font-semibold leading-snug">
+                      {e.event}
+                      <span className="block md:hidden font-mono text-[10px] uppercase tracking-wider text-parchment-500 dark:text-slate-500 mt-1">
+                        {e.location}
+                      </span>
+                      <span className="hidden md:block font-mono text-[10px] uppercase tracking-wider text-parchment-500 dark:text-slate-500 mt-1">
+                        {e.location}
+                      </span>
+                    </div>
+                    <div className="hidden md:block text-[14px] leading-snug text-parchment-600 dark:text-slate-300">
+                      {e.title}
+                    </div>
+                    <div className="hidden md:block font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400 pt-1">
+                      {kind}
+                    </div>
+                    <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 pt-1 text-right group-hover:underline">
+                      {rowHref ? 'Open →' : ''}
+                    </div>
+                  </RowTag>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* ----- CTA ----- */}
-        <section className="py-20">
+        <section className="py-20 editorial-section-alt">
           <div className="container mx-auto max-w-4xl px-4 md:px-6 text-center">
             <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400 justify-center">
               Looking for a speaker?

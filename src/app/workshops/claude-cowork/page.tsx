@@ -92,7 +92,11 @@ export default function ClaudeCoworkWorkshop() {
           <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-start">
             <div>
               <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
-                Workshop · Hands-on · 2 hours
+                <Link href="/" className="hover:text-burnt-400 dark:hover:text-amber-400">Home</Link>
+                <span className="mx-2 opacity-40">/</span>
+                <Link href="/speaking" className="hover:text-burnt-400 dark:hover:text-amber-400">Workshops</Link>
+                <span className="mx-2 opacity-40">/</span>
+                <span>Claude Cowork</span>
               </div>
               <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
                 Claude Cowork —{' '}
@@ -176,6 +180,89 @@ export default function ClaudeCoworkWorkshop() {
           </div>
         </section>
 
+        {/* ----- § 01 Workshop catalog (single card, full product treatment) ----- */}
+        <section className="py-14">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <SectionHead num="01" title="The workshop" moreHref="/contact" moreLabel="Book for your team →" />
+            <article className="editorial-card grid md:grid-cols-[1.1fr_1fr] overflow-hidden">
+              <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[420px]">
+                <Image
+                  src="https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
+                  alt="Zack presenting the Claude Cowork workshop at WorkOS x Anthropic, SF, February 2026"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-charcoal-50/40 dark:to-charcoal-500/60" />
+                <div className="absolute top-4 left-4 right-4 flex items-baseline justify-between">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/90 drop-shadow">
+                    Workshop № 01
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/80 drop-shadow">
+                    Hands-on · 2 hr
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 font-serif text-[28px] md:text-[36px] font-bold leading-[1.05] tracking-tight text-white drop-shadow">
+                  Claude Cowork — <span className="text-amber-400">build</span>, don&apos;t watch.
+                </div>
+              </div>
+              <div className="p-6 md:p-8 flex flex-col gap-5">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="font-serif text-[22px] font-bold leading-tight text-charcoal-50 dark:text-parchment-100">
+                    Claude Cowork Workshop
+                  </h3>
+                  <div className="font-mono text-[11px] uppercase tracking-[0.14em] border border-burnt-400/40 dark:border-amber-400/40 text-burnt-400 dark:text-amber-400 px-2 py-1 rounded-sm whitespace-nowrap">
+                    $750 / pp
+                  </div>
+                </div>
+                <p className="text-[15px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                  Two-hour, hands-on session. Your team builds a full GTM workflow
+                  with Claude Code and Cowork — ICP identification, competitive
+                  analysis, battlecards, cold email, content, and scheduled tasks
+                  that keep producing while you&apos;re offline.
+                </p>
+                <dl className="grid grid-cols-3 gap-4 pt-4 border-t border-parchment-300/50 dark:border-slate-700/50">
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Format
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      2-hour, hands-on
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Team size
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      Up to 20
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Level
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      All levels
+                    </dd>
+                  </div>
+                </dl>
+                <div className="flex items-center justify-between pt-4 border-t border-parchment-300/50 dark:border-slate-700/50 mt-auto">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                    Delivered WorkOS × Anthropic · Feb 2026
+                  </span>
+                  <a
+                    href="#flow"
+                    className="font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 hover:underline"
+                  >
+                    Syllabus →
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
         {/* ----- Photo strip ----- */}
         <section className="py-12">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
@@ -233,7 +320,7 @@ export default function ClaudeCoworkWorkshop() {
         {/* ----- § 01 Workshop flow ----- */}
         <section id="flow" className="py-14">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
-            <SectionHead num="01" title="What you'll build" moreHref="/contact" moreLabel="Book a session →" />
+            <SectionHead num="02" title="What you'll build" moreHref="/contact" moreLabel="Book a session →" />
             <div className="grid gap-6 md:grid-cols-3">
               {workshopPhases.map((phase) => (
                 <article key={phase.num} className="editorial-card">
@@ -267,7 +354,7 @@ export default function ClaudeCoworkWorkshop() {
         {/* ----- § 02 Who it's for ----- */}
         <section className="py-14 editorial-section-alt">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
-            <SectionHead num="02" title="Who this is for" moreHref="/contact" moreLabel="Tell me about your team →" />
+            <SectionHead num="03" title="Who this is for" moreHref="/contact" moreLabel="Tell me about your team →" />
             <div className="grid gap-6 md:grid-cols-3">
               {audiences.map((a) => (
                 <article key={a.idx} className="editorial-card">
@@ -287,6 +374,84 @@ export default function ClaudeCoworkWorkshop() {
                 </article>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ----- § 04 Custom engagement upsell ----- */}
+        <section className="py-14">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <SectionHead num="04" title="Not in the catalog?" moreHref="/contact" moreLabel="Scope a project →" />
+            <article className="editorial-card grid md:grid-cols-[1.1fr_1fr] overflow-hidden">
+              <div className="relative min-h-[260px] md:min-h-[360px] bg-gradient-to-br from-burnt-400/25 via-parchment-200 to-parchment-100 dark:from-amber-400/20 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
+                <div className="absolute top-4 left-4 right-4 flex items-baseline justify-between">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                    Bespoke
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                    Custom scope
+                  </span>
+                </div>
+                <span className="font-serif text-[160px] md:text-[220px] leading-none text-burnt-400 dark:text-amber-400 select-none">
+                  ✱
+                </span>
+                <div className="absolute bottom-4 left-4 right-4 font-serif text-[22px] md:text-[28px] font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100">
+                  Designed around <span className="text-burnt-400 dark:text-amber-400">your stack</span>, your team, your deadline.
+                </div>
+              </div>
+              <div className="p-6 md:p-8 flex flex-col gap-5">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="font-serif text-[22px] font-bold leading-tight text-charcoal-50 dark:text-parchment-100">
+                    Custom engagement
+                  </h3>
+                  <div className="font-mono text-[11px] uppercase tracking-[0.14em] border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 px-2 py-1 rounded-sm whitespace-nowrap">
+                    On request
+                  </div>
+                </div>
+                <p className="text-[15px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                  When Claude Cowork isn&apos;t the right shape — different team,
+                  different stack, different definition of done — we scope a
+                  workshop tuned to your codebase and the artifact you actually
+                  want to walk away with. Tell me what your team needs and when.
+                </p>
+                <dl className="grid grid-cols-3 gap-4 pt-4 border-t border-parchment-300/50 dark:border-slate-700/50">
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Starts with
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      30-min scoping call
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Delivered
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      Live + recorded
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                      Leave with
+                    </dt>
+                    <dd className="mt-1 font-mono text-[13px] font-semibold text-charcoal-50 dark:text-parchment-100">
+                      Code + playbook
+                    </dd>
+                  </div>
+                </dl>
+                <div className="flex items-center justify-between pt-4 border-t border-parchment-300/50 dark:border-slate-700/50 mt-auto">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                    Reply within 48 hours
+                  </span>
+                  <Link
+                    href="/contact"
+                    className="font-mono text-[11px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 hover:underline"
+                  >
+                    Scope a project →
+                  </Link>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
 
