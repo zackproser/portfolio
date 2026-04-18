@@ -14,6 +14,7 @@ import { MailIcon } from "@/components/icons"
 import RenderNumYearsExperience from "@/components/NumYearsExperience"
 import RandomPortrait from "@/components/RandomPortrait"
 import { generateOgUrl } from "@/utils/ogUrl"
+import { resumeData } from "@/data/resume"
 
 const data = {
   title: "About Zachary Proser",
@@ -38,69 +39,21 @@ export const metadata = {
   },
 }
 
-// Career history — single source is CV.jsx. Replicated here so the
-// timeline can render without the CV tile's chrome.
-const resume = [
-  {
-    company: "WorkOS",
-    title: "Developer Experience Engineer",
-    logo: "https://zackproser.b-cdn.net/images/logos/workos.svg",
-    start: "2025",
-    end: "Present",
-    blurb:
-      "Applied AI work on developer-facing products. Retrieval, agent harnesses, and the writing that helps teams adopt them.",
-  },
-  {
-    company: "WorkOS",
-    title: "Developer Education",
-    logo: "https://zackproser.b-cdn.net/images/logos/workos.svg",
-    start: "2024",
-    end: "2025",
-    blurb:
-      "Built and led the developer-education surface at WorkOS — documentation, workshops, and video.",
-  },
-  {
-    company: "Pinecone.io",
-    title: "Staff Developer Advocate",
-    logo: "https://zackproser.b-cdn.net/images/logos/pinecone-logo.png",
-    start: "2023",
-    end: "2024",
-    blurb:
-      "Designed the RAG reference architectures and tutorials that thousands of teams used to go from embeddings to a shipped retrieval system.",
-  },
-  {
-    company: "Gruntwork.io",
-    title: "Tech Lead",
-    logo: "https://zackproser.b-cdn.net/images/logos/grunty.png",
-    start: "2020",
-    end: "2023",
-    blurb:
-      "Wrote, maintained, and open-sourced Terraform modules used by hundreds of companies to run their AWS infrastructure.",
-  },
-  {
-    company: "Cloudflare",
-    title: "Senior Software Engineer",
-    logo: "https://zackproser.b-cdn.net/images/logos/cloudflare.svg",
-    start: "2017",
-    end: "2020",
-    blurb:
-      "Built and shipped developer-tooling features used by hundreds of thousands of developers per month.",
-  },
-  {
-    company: "Cloudmark",
-    title: "Software Engineer",
-    logo: "https://zackproser.b-cdn.net/images/logos/cloudmark.png",
-    start: "2015",
-    end: "2017",
-  },
-  {
-    company: "BrightContext",
-    title: "Software Engineer",
-    logo: "https://zackproser.b-cdn.net/images/logos/brightcontext.png",
-    start: "2012",
-    end: "2014",
-  },
-]
+// Career history with additional blurbs for the about page
+const resume = resumeData.map((role) => {
+  const blurbs = {
+    'WorkOS-Developer Experience Engineer': "Applied AI work on developer-facing products. Retrieval, agent harnesses, and the writing that helps teams adopt them.",
+    'WorkOS-Developer Education': "Built and led the developer-education surface at WorkOS — documentation, workshops, and video.",
+    'Pinecone.io-Staff Developer Advocate': "Designed the RAG reference architectures and tutorials that thousands of teams used to go from embeddings to a shipped retrieval system.",
+    'Gruntwork.io-Tech Lead': "Wrote, maintained, and open-sourced Terraform modules used by hundreds of companies to run their AWS infrastructure.",
+    'Cloudflare-Senior Software Engineer': "Built and shipped developer-tooling features used by hundreds of thousands of developers per month.",
+  }
+  const key = `${role.company}-${role.title}`
+  return {
+    ...role,
+    blurb: blurbs[key],
+  }
+})
 
 const pressLogos = [
   "Pinecone",

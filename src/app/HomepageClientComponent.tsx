@@ -52,7 +52,7 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
       if (!response.ok) {
         throw new Error(data?.data || 'Failed to subscribe')
       }
-      track('newsletter_subscribe_submit', { location: 'hero' })
+      track('newsletter-signup', { location: 'hero' })
       sendGTMEvent({
         event: 'newsletter-signup-conversion',
         method: 'newsletter',
