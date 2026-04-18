@@ -1,18 +1,8 @@
-import { Suspense } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import Newsletter from "@/components/NewsletterWrapper"
-import {
-  GitHubIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-  YouTubeIcon,
-  SocialLink,
-} from "@/components/SocialIcons"
-import { MailIcon } from "@/components/icons"
+import { EditorialNewsletter } from "@/components/EditorialNewsletter"
+import { Twitter, Youtube, Github, Linkedin, Instagram, Mail } from "lucide-react"
 import RenderNumYearsExperience from "@/components/NumYearsExperience"
-import RandomPortrait from "@/components/RandomPortrait"
 import { generateOgUrl } from "@/utils/ogUrl"
 import { resumeData } from "@/data/resume"
 
@@ -120,9 +110,14 @@ export default function About() {
 
             <div className="lg:justify-self-end">
               <div className="editorial-portrait" style={{ maxWidth: 440 }}>
-                <Suspense>
-                  <RandomPortrait width={600} height={600} />
-                </Suspense>
+                <Image
+                  src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
+                  alt="Portrait of Zachary Proser"
+                  fill
+                  sizes="(max-width: 1024px) 80vw, 440px"
+                  className="editorial-portrait-image"
+                  priority
+                />
               </div>
               <div className="editorial-portrait-caption text-parchment-600 dark:text-slate-400">
                 Plate I · Applied AI · MMXXVI
@@ -185,8 +180,14 @@ export default function About() {
                 </Link>
                 . Before that I did developer-education and staff developer-
                 advocacy work at Pinecone, senior engineering at Cloudflare, and
-                tech-lead work at Gruntwork. {years} years in production,
-                mostly building the thing underneath the thing.
+                tech-lead work at Gruntwork. {years} years in production as a
+                full-stack engineer — databases, backends, middleware, and
+                frontends — with a deep love for{' '}
+                <span className="text-burnt-400 dark:text-amber-400 font-semibold">
+                  infrastructure-as-code and cloud systems
+                </span>
+                . I&apos;ll happily write the migration, the API, the React,
+                and the Terraform module that deploys it.
               </p>
               <p>
                 I offer{' '}
@@ -303,35 +304,44 @@ export default function About() {
             </header>
 
             <ul role="list" className="grid gap-3 md:grid-cols-2">
-              <SocialLink href="https://twitter.com/zackproser" icon={TwitterIcon}>
-                Follow on Twitter
-              </SocialLink>
-              <SocialLink href="https://youtube.com/@zackproser" icon={YouTubeIcon}>
-                Subscribe on YouTube
-              </SocialLink>
-              <SocialLink href="https://github.com/zackproser" icon={GitHubIcon}>
-                Follow on GitHub
-              </SocialLink>
-              <SocialLink href="https://linkedin.com/in/zackproser" icon={LinkedInIcon}>
-                Connect on LinkedIn
-              </SocialLink>
-              <SocialLink href="https://instagram.com/zackproser" icon={InstagramIcon}>
-                Follow on Instagram
-              </SocialLink>
-              <SocialLink href="mailto:zackproser@gmail.com" icon={MailIcon}>
-                zackproser@gmail.com
-              </SocialLink>
+              {[
+                { href: 'https://twitter.com/zackproser', icon: Twitter, label: 'Follow on Twitter', handle: '@zackproser' },
+                { href: 'https://youtube.com/@zackproser', icon: Youtube, label: 'Subscribe on YouTube', handle: '@zackproser' },
+                { href: 'https://github.com/zackproser', icon: Github, label: 'Follow on GitHub', handle: 'zackproser' },
+                { href: 'https://linkedin.com/in/zackproser', icon: Linkedin, label: 'Connect on LinkedIn', handle: 'in/zackproser' },
+                { href: 'https://instagram.com/zackproser', icon: Instagram, label: 'Follow on Instagram', handle: '@zackproser' },
+                { href: 'mailto:zackproser@gmail.com', icon: Mail, label: 'Email', handle: 'zackproser@gmail.com' },
+              ].map(({ href, icon: Icon, label, handle }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="group flex items-center gap-4 px-4 py-3 rounded-sm border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800/60 hover:border-burnt-400 dark:hover:border-amber-400 transition-colors"
+                  >
+                    <Icon className="h-5 w-5 text-burnt-400 dark:text-amber-400 flex-none" strokeWidth={1.5} />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                        {label}
+                      </div>
+                      <div className="font-serif text-[15px] font-semibold text-charcoal-50 dark:text-parchment-100 truncate group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+                        {handle}
+                      </div>
+                    </div>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+                      →
+                    </span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </section>
 
         {/* ----- Newsletter ----- */}
         <section className="py-14">
-          <div className="container mx-auto max-w-3xl px-4 md:px-6">
-            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
-              The Modern Coding letter
-            </div>
-            <Newsletter />
+          <div className="container mx-auto max-w-2xl px-4 md:px-6">
+            <EditorialNewsletter location="about" />
           </div>
         </section>
 
