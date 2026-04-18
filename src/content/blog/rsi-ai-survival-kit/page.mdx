@@ -1,0 +1,102 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
+
+export const metadata = createMetadata(rawMetadata)
+export const campaign = "rsi-ai-survival-kit"
+
+I've been a software engineer for 14 years. Here's the damage report: RSI in both wrists that flares when I type for more than two hours straight. Crane neck from leaning toward monitors. Chronic upper back tension that became my baseline normal sometime around year eight. The ache in my wrists that I used to ignore and now can't.
+
+Every engineer I know who's been at this more than a decade has some version of this story. The ergonomic keyboards and standing desks help, but they're compensating for a fundamental problem: the human body was not designed to make the same small finger movements for eight hours a day.
+
+I stopped accepting that as the cost of doing this job. Here's the stack I use now instead.
+
+<Image src="https://zackproser.b-cdn.net/images/rsi-survival-hero.webp" alt="Pixel art of hands releasing a keyboard in relief, with golden sound waves flowing from a developer's mouth toward floating code screens" width={1200} height={675} />
+
+## The numbers
+
+61% of programmers report neck pain. Up to 89% of IT professionals have musculoskeletal problems. Working more than five hours without breaks pushes wrist pain prevalence to 58%. The RSI treatment market is $2.35 billion and growing at 8% annually. This is an industry-wide injury that we've normalized as the price of admission.
+
+90% of developers now use AI tools for coding. Claude Code's work adoption went from 3% to 18% in six months. The tools that replace keyboard input with natural language already exist. The connection between these two facts is obvious and almost nobody is making it: AI coding agents are RSI accommodations.
+
+## Voice in, code out
+
+The core shift: I went from typing at 40-60 WPM to speaking at 179 WPM. That's a 3-4x increase in input throughput with zero wrist involvement.
+
+[WisprFlow](/blog/wisprflow-review) is what makes this work. It runs on my Mac and iPhone, handles technical vocabulary — function names, file paths, CLI flags — and transcribes in real time into whatever app has focus. I dictate instructions to [Claude Code](/blog/claude-code-phone-remote-control) and messages to [Hermes](/blog/building-always-on-ai-assistant) without touching a keyboard.
+
+When I say "update the instance type in the OpenTofu config from t4g.medium to t4g.large and run tofu plan," WisprFlow catches all of it. The transcription goes into Claude Code. Claude Code opens the file, makes the change, runs the plan, shows me the output. I spoke one sentence. My wrists did nothing.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+<Image src="https://zackproser.b-cdn.net/images/rsi-survival-contrast.webp" alt="Pixel art split scene showing a developer hunched at a desk with red pain indicators on the left, versus the same developer walking a forest trail with golden voice waves on the right" width={1200} height={675} />
+
+## The full voice-first stack
+
+Here's what I actually use, ranked by how much keyboard input each tool eliminates:
+
+**[WisprFlow](/blog/wisprflow-review) — primary voice input.** 179 WPM, 97.2% accuracy, context-aware (adjusts vocabulary for Slack vs terminal vs IDE). Runs on Mac and iOS. Auto-removes filler words. $12-15/month. This is the foundation everything else builds on.
+
+**[Claude Code](https://docs.anthropic.com/en/docs/claude-code) — agentic coding.** I describe what I want in natural language. Claude Code writes the code, runs it, fixes errors, opens PRs. The entire coding workflow becomes a conversation. Claude Code also has native push-to-talk voice mode — hold spacebar, speak, release. Zero-setup voice input for agents that already eliminated most typing.
+
+**[Hermes](/blog/building-always-on-ai-assistant) — content pipeline.** My AI assistant runs on EC2 and handles blog posts, image generation, CDN uploads, and git workflows through Discord messages. I [shipped 9 blog posts in 48 hours](/blog/nine-posts-in-48-hours) by having short voice-dictated conversations.
+
+**Phone as control plane.** Claude Code [remote control](/blog/claude-code-phone-remote-control) lets me drive my Mac from the Claude app on my iPhone. Combined with WisprFlow on iOS, I can do real engineering work [from a trail](/blog/phones-are-the-new-terminal) without a keyboard in sight.
+
+<Image src="https://zackproser.b-cdn.net/images/rsi-survival-stack.webp" alt="Pixel art of a vertical stack of glowing tool icons — microphone, phone with chat, and code windows — connected by golden lines with sparkle particles flowing upward" width={800} height={1200} />
+
+## What about full hands-free?
+
+If your RSI is severe enough that you need to eliminate the keyboard entirely, the tools exist:
+
+**Talon Voice + Cursorless** is the serious hands-free coding setup. Talon is a programmable voice command system — you write Python rules that map spoken phrases to actions. Cursorless adds AST-level structural code editing to VS Code. Josh Comeau, the React educator, coded for seven months exclusively with Talon + a Tobii eye tracker ($229) after developing cubital tunnel syndrome. He works at roughly 50% normal speed — 25% typing speed but 100% thinking speed.
+
+The learning curve is 2-4 weeks to basic proficiency. Multiple developers on Hacker News describe it as career-saving technology. One commenter: "This saved my bacon last year when I couldn't use my hands for months."
+
+**Superwhisper** is the privacy-focused alternative to WisprFlow — 100% local processing, no audio leaves your machine. Endorsed by Andrej Karpathy. $8.49/month. Lacks WisprFlow's cross-platform iOS support but ideal for air-gapped environments.
+
+For a comparison of voice tools and the 179 WPM evidence, see [Voice Coding vs Typing Speed](/blog/voice-coding-vs-typing-speed). To set up the WisprFlow + Claude Code integration specifically, read the [setup guide](/blog/wisprflow-claude-code-setup-guide).
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+<VoiceAIDemoCard />
+
+## Walking is the other half
+
+Voice input eliminates wrist strain. But you're still sitting. And the research on sitting is brutal.
+
+A 2024 JAMA study of 480,000 people over 13 years found predominantly sitting workers have 16% higher all-cause mortality and 34% higher cardiovascular death risk. A Harvard study found 40-60% greater risk of heart failure when sedentary behavior exceeds 10.6 hours per day — and exercise doesn't fully eliminate the risk. Sitting is an independent risk factor. The Mayo Clinic's blunt summary: "Being sedentary is the new smoking."
+
+I walk 5-8 miles on days when I would have been sitting. I'm directing [AWS infrastructure and content agents from my phone](/blog/phones-are-the-new-terminal) the entire time. A BYU study found walking at 1.5 mph causes only a 9% drop in processing speed. A treadmill desk study found 45% of remote workers reported better focus while walking and 30% reported significant pain relief.
+
+The tasks that work on a walk: orchestration, direction, review, decision-making. Telling Claude Code what to build. Reviewing Hermes's draft and requesting changes. Approving and merging PRs. Everything that's "decide what should happen and tell something capable to do it."
+
+The tasks that don't: deep debugging, thorny architecture decisions, reading dense code. I still sit down for those. But they're maybe 20% of a typical engineering day. The other 80% is orchestration that works from a trail as well as it works from a desk.
+
+<Image src="https://zackproser.b-cdn.net/images/rsi-survival-walking.webp" alt="Pixel art of a developer walking on a forest trail at golden hour with translucent health data panels floating around them and a phone with a chat window in hand" width={1200} height={675} />
+
+## My body since switching
+
+My wrists don't flare anymore. They're not healed — 14 years of RSI doesn't reverse in six months. But the typing volume is down by 80% or more, and the acute flare-ups have stopped.
+
+My neck is better. Not perfect, but I'm not spending eight hours leaning toward a monitor. The physical therapy exercises actually stick now because I'm not re-aggravating the posture damage every day.
+
+The walking has done more than I expected. I'm in significantly better cardiovascular shape than I was a year ago. My ADHD brain [produces better output when my legs are moving](/blog/phones-are-the-new-terminal) — diffuse-mode thinking activates on the trail and problems that felt stuck at the desk start resolving themselves.
+
+## The survival kit
+
+If you're an engineer dealing with RSI, here's the minimum viable stack:
+
+1. **Get voice input working today.** [WisprFlow](/blog/wisprflow-review) or Superwhisper. Install it, start dictating messages and prompts. You don't need to go fully voice-first on day one — just start reducing the typing volume.
+
+2. **Use AI agents for the mechanical work.** Claude Code, Cursor, or Copilot. The more work you can delegate to agents via natural language, the less you type. Every `tofu apply` you invoke by speaking instead of typing is wear you didn't put on your wrists.
+
+3. **Move.** Walk while you work if the task allows it. Not every task does. But orchestration, review, and direction all work from a phone on a trail. Your body will thank you faster than you expect.
+
+4. **If it's severe, invest in Talon.** The two-week learning curve is real, but it's a career-extending investment. The Talon Slack community and Hands Free Discord are full of developers who've been through exactly this.
+
+The tools exist. The AI agents are good enough. The voice input is accurate enough. The phone-based workflows are mature enough. The only thing standing between you and a sustainable engineering career is the willingness to change how you interact with a computer.
+
+Your wrists have been telling you to stop for years. You can listen now and build something better, or you can wait until they make the decision for you.
