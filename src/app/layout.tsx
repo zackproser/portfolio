@@ -8,6 +8,7 @@ import { ConsultancyNav } from '@/components/ConsultancyNav';
 import { Toaster } from '@/components/ui/toaster';
 import '@/styles/tailwind.css';
 import '@/styles/global.css';
+import '@/styles/editorial-home.css';
 import PlausibleProvider from 'next-plausible';
 
 const notoSans = Noto_Sans({

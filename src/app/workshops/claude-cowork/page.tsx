@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import YoutubeEmbed from "@/components/YoutubeEmbed"
+import { SectionHead } from "@/components/SectionHead"
 
 export const metadata: Metadata = {
   title: "Claude Cowork Workshop | Hands-On AI-Assisted Development | Zachary Proser",
@@ -81,30 +82,6 @@ const credentials = [
   "Workshop co-hosted with Anthropic, February 2026",
   "35,000+ readers on zackproser.com",
 ]
-
-function SectionHead({
-  num,
-  title,
-  moreHref,
-  moreLabel = 'Archive →',
-}: {
-  num: string
-  title: string
-  moreHref?: string
-  moreLabel?: string
-}) {
-  return (
-    <header className="editorial-section-head text-charcoal-50 dark:text-parchment-100">
-      <div className="editorial-section-num">§ {num}</div>
-      <h2 className="editorial-section-title">{title}</h2>
-      {moreHref ? (
-        <Link href={moreHref as Route} className="editorial-section-more text-burnt-400 dark:text-amber-400 hover:underline">
-          {moreLabel}
-        </Link>
-      ) : <span />}
-    </header>
-  )
-}
 
 export default function ClaudeCoworkWorkshop() {
   return (

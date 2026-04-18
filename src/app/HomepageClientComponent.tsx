@@ -7,6 +7,7 @@ import type { Route } from 'next'
 import { track } from '@vercel/analytics'
 import { sendGTMEvent } from '@next/third-parties/google'
 import { EditorialCard } from '@/components/EditorialCard'
+import { SectionHead } from '@/components/SectionHead'
 import ConsultationForm from '@/components/ConsultationForm'
 import type { Content } from '@/types/content'
 
@@ -304,32 +305,7 @@ function FeaturedProject() {
   )
 }
 
-// ----- Section head + Content rail ----------------------------------
-
-function SectionHead({
-  num,
-  title,
-  moreHref,
-  moreLabel = 'Archive →',
-}: {
-  num: string
-  title: string
-  moreHref: string
-  moreLabel?: string
-}) {
-  return (
-    <header className="editorial-section-head text-charcoal-50 dark:text-parchment-100">
-      <div className="editorial-section-num">§ {num}</div>
-      <h2 className="editorial-section-title">{title}</h2>
-      <Link
-        href={moreHref as Route}
-        className="editorial-section-more text-burnt-400 dark:text-amber-400 hover:underline"
-      >
-        {moreLabel}
-      </Link>
-    </header>
-  )
-}
+// ----- Content rail ----------------------------------
 
 function ContentRail({
   num,

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
 import { createMetadata } from '@/utils/createMetadata'
 import { ExternalLinkButton } from '@/components/ExternalLinkButton'
+import { SectionHead } from '@/components/SectionHead'
 import { speakingEngagements, galleryImages } from './speaking-data'
 
 export const metadata = createMetadata({
@@ -46,6 +47,7 @@ function SpeakingEditorialCard({ engagement, index, prefix }) {
   const kind = engagement.type === 'internal' ? 'Internal' : 'Public'
   const href = engagement.slug ? `/speaking/${engagement.slug}` : null
   const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center'
+  const hasLinks = engagement.links && engagement.links.length > 0
 
   const Content = (
     <article className="editorial-card group h-full">
@@ -90,7 +92,7 @@ function SpeakingEditorialCard({ engagement, index, prefix }) {
             </span>
             <span className="editorial-card-index">{prefix}.{idx}</span>
           </div>
-          {engagement.links && engagement.links.length > 0 ? (
+          {hasLinks ? (
             <div className="flex flex-wrap gap-2 pt-2 border-t border-parchment-300/40 dark:border-slate-700/40">
               {engagement.links.map((link, i) => (
                 <ExternalLinkButton key={i} link={link} />
@@ -102,26 +104,12 @@ function SpeakingEditorialCard({ engagement, index, prefix }) {
     </article>
   )
 
-  if (!href) return Content
+  if (!href || hasLinks) return Content
 
   return (
     <Link href={href} className="block h-full">
       {Content}
     </Link>
-  )
-}
-
-function SectionHead({ num, title, moreHref, moreLabel = 'Archive →' }) {
-  return (
-    <header className="editorial-section-head text-charcoal-50 dark:text-parchment-100">
-      <div className="editorial-section-num">§ {num}</div>
-      <h2 className="editorial-section-title">{title}</h2>
-      {moreHref ? (
-        <Link href={moreHref} className="editorial-section-more text-burnt-400 dark:text-amber-400 hover:underline">
-          {moreLabel}
-        </Link>
-      ) : <span />}
-    </header>
   )
 }
 
