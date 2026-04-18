@@ -174,15 +174,15 @@ export function EditorialArticleLayout({
       await navigator.clipboard.writeText(fullUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
+      trackShare('copy')
     } catch { /* ignore */ }
-    trackShare('copy')
   }
 
   const handleBookmark = () => {
     try {
       localStorage.setItem(`bookmark:${baseSlug}`, '1')
+      trackShare('bookmark')
     } catch { /* ignore */ }
-    trackShare('bookmark')
   }
 
   const shareXUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(safeTitle)}&url=${encodeURIComponent(fullUrl)}`
