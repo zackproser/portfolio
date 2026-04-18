@@ -481,8 +481,11 @@ export default function BrainMap3D({
 
           for (const s of sides) {
             // Very subtle flesh layer — just a hint of mass under the wires.
+            // Clone geometry and transform to world space to match wireframe.
+            const fleshGeom = g.clone()
+            fleshGeom.applyMatrix4(m.matrixWorld)
             const flesh = new THREE.Mesh(
-              g,
+              fleshGeom,
               new THREE.MeshStandardMaterial({
                 color: new THREE.Color('#b88080'),
                 emissive: new THREE.Color('#2a0818'),
