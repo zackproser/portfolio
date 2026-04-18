@@ -419,7 +419,7 @@ export default function HomepageClientComponent({
 
         <ContentRail
           num="01"
-          title="Deep &amp; machine learning, by hand"
+          title="Deep & machine learning, by hand"
           moreHref="/blog"
           articles={deepMLTutorials}
           alt
@@ -470,7 +470,7 @@ export default function HomepageClientComponent({
 
         <ContentRail
           num="06"
-          title="Video &amp; screencasts"
+          title="Video & screencasts"
           moreHref="/videos"
           moreLabel="All videos →"
           articles={videos}
