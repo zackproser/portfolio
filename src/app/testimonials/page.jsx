@@ -143,7 +143,7 @@ export default function TestimonialsPage() {
               § T · <em>Testimonials</em> · What it&apos;s like to work with me
             </div>
 
-            <div className="mt-2 grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+            <div className="mt-2 grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-start">
               <div>
                 <p className="monument-quote">
                   When I ran your s<span className="monument-mark">o</span>ftware, I felt j<span className="monument-mark">o</span>y.
@@ -161,7 +161,7 @@ export default function TestimonialsPage() {
                     src={featured.image}
                     alt={featured.name}
                     fill
-                    sizes="(max-width: 1024px) 50vw, 180px"
+                    sizes="(max-width: 1024px) 80vw, 500px"
                     priority
                   />
                 </div>

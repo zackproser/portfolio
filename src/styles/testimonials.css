@@ -64,10 +64,9 @@
 }
 .dark .testimonials-page .stars { color: #f39c12; }
 
-/* Featured attribution plate (Jim) */
+/* Featured attribution plate (Jim) — fills its column like the homepage portrait */
 .testimonials-page .a-plate {
   width: 100%;
-  max-width: 180px;
   aspect-ratio: 4 / 5;
   border-radius: 2px;
   position: relative;
@@ -76,7 +75,6 @@
   box-shadow: 0 1px 0 0 rgba(230,126,34,.9),
     0 24px 40px -20px rgba(24,24,40,.25);
   background: linear-gradient(160deg, #b08968 0%, #6b5842 45%, #2c3e50 100%);
-  margin-left: auto;
 }
 .dark .testimonials-page .a-plate {
   border-color: #475569;
@@ -110,25 +108,26 @@
   position: absolute; inset: 0; z-index: 2;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-weight: 800; font-size: 48px; color: rgba(255,255,255,.28);
+  font-weight: 800;
+  font-size: clamp(72px, 10vw, 120px);
+  color: rgba(255,255,255,.24);
+  letter-spacing: -.02em;
+  pointer-events: none;
 }
 
 .testimonials-page .a-name {
   margin-top: 14px;
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-weight: 700; font-size: 18px; letter-spacing: -.005em;
+  font-weight: 700; font-size: 20px; letter-spacing: -.005em;
   color: #2c3e50;
-  text-align: right;
 }
 .dark .testimonials-page .a-name { color: #fbf7f0; }
 .testimonials-page .a-role {
   margin-top: 4px;
   font-family: var(--font-sans, Inter), system-ui, sans-serif;
-  font-size: 12px; line-height: 1.5;
+  font-size: 13px; line-height: 1.5;
   color: #8b7355;
-  max-width: 280px;
-  text-align: right;
-  margin-left: auto;
+  max-width: 40ch;
 }
 .dark .testimonials-page .a-role { color: #cbd5e1; }
 
