@@ -61,6 +61,13 @@ export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupIn
         >
           {status === 'loading' ? 'Subscribing...' : 'Count me in'}
         </button>
+        {status === 'error' && (
+          <p className={`text-sm text-center ${
+            isDark ? 'text-red-300' : 'text-red-600 dark:text-red-400'
+          }`}>
+            Submission failed. Please try again.
+          </p>
+        )}
       </div>
       <p className={`mt-4 text-sm text-center ${
         isDark ? 'text-white/70' : 'text-gray-600 dark:text-gray-400'

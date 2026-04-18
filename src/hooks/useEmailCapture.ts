@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-type EmailCaptureStatus = 'idle' | 'loading' | 'success'
+type EmailCaptureStatus = 'idle' | 'loading' | 'success' | 'error'
 
 export function useEmailCapture() {
   const [email, setEmail] = useState('')
@@ -25,13 +25,8 @@ export function useEmailCapture() {
       setStatus('success')
     } catch (err) {
       console.error('Email submission failed:', err)
-      setStatus('idle')
+      setStatus('error')
     }
-  }
-
-  const resetForm = () => {
-    setEmail('')
-    setStatus('idle')
   }
 
   return {
@@ -39,6 +34,5 @@ export function useEmailCapture() {
     setEmail,
     status,
     submitEmail,
-    resetForm,
   }
 }
