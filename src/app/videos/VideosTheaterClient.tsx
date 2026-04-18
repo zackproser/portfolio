@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { NewsletterSignupInline } from '@/components/NewsletterSignupInline'
 
 export type TheaterVideo = {
   slug: string
@@ -343,10 +344,9 @@ export default function VideosTheaterClient({ videos }: Props) {
               <h3>New videos, in your inbox.</h3>
               <p>One email per drop. Usually a tutorial, sometimes a workshop, never a launch announcement. Unsubscribe in one click.</p>
             </div>
-            <form className="newsletter-form" action="/subscribe" method="get">
-              <input type="email" name="email" placeholder="you@company.com" aria-label="Email" required />
-              <button type="submit" className="btn-primary">Subscribe →</button>
-            </form>
+            <div>
+              <NewsletterSignupInline />
+            </div>
           </div>
         </div>
       </main>

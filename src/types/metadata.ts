@@ -26,6 +26,8 @@ export interface ExtendedMetadata extends Metadata {
   _id?: string  // Internal unique identifier to prevent duplicate key issues
   hiddenFromIndex?: boolean  // Hide from /blog listing but keep accessible via direct link (for SEO/affiliate content)
   hideNewsletter?: boolean  // Per-post opt-out for the sticky newsletter-capture modal
+  durSec?: number  // Video duration in seconds (for video content type)
+  views?: number  // Video view count (for video content type)
   commerce?: CommerceConfig
   landing?: {
     heroTitle?: string  // Custom hero title

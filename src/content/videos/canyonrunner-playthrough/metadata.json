@@ -4,5 +4,7 @@
   "title": "A full play through of my HTML5 game, CanyonRunner",
   "description": "I built a complete game using the Phaser.js game development framework",
   "image": "https://zackproser.b-cdn.net/images/canyonrunner-title-screen.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 722,
+  "views": 613
 }

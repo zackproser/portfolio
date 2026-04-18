@@ -4,5 +4,7 @@
   "title": "Deploying the first Cloudflare workers in front of api.cloudflare.com and www.cloudflare.com",
   "description": "How we dogfooded Cloudflare workers on the API team",
   "image": "https://zackproser.b-cdn.net/images/cloudflare-workers-talk.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 2216,
+  "views": 1725
 }

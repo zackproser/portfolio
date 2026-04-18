@@ -4,5 +4,7 @@
   "title": "Live code review: Pinecone Vercel starter template and Retrieval Augmented Generation (RAG) Part #1",
   "description": "Twitch Livestream: walking through the Pinecone Vercel AI chatbot template commit-by-commit",
   "image": "https://zackproser.b-cdn.net/images/typescript-rag-livestream-part1.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 4567,
+  "views": 945
 }

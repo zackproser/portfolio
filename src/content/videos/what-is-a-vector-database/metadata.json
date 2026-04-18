@@ -4,5 +4,7 @@
   "title": "What is a vector database?",
   "description": "Vector databases explained, featuring clowns, embeddings, neural networks, feature extraction, semantic search and Retrieval Augmented Generation (RAG).",
   "image": "https://zackproser.b-cdn.net/images/what-is-a-vector-db-thumb.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 1163,
+  "views": 1108
 }

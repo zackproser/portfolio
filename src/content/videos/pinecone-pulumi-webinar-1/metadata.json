@@ -4,5 +4,7 @@
   "title": "Pinecone & Pulumi webinar: Taking AI apps to production",
   "description": "I co-hosted a webinar with Pulumi about productionizing AI applications",
   "image": "https://zackproser.b-cdn.net/images/pinecone-pulumi-webinar1.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 2596,
+  "views": 1691
 }

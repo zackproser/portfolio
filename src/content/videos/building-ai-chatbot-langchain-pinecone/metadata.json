@@ -4,5 +4,7 @@
   "title": "Building an AI chatbot with langchain, Pinecone.io, Jupyter notebooks and Vercel",
   "description": "How I built an Office chatbot that can answer any question about the office",
   "image": "https://zackproser.b-cdn.net/images/building-an-ai-chatbot.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 1716,
+  "views": 682
 }
