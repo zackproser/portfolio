@@ -322,83 +322,102 @@ export function DistractionSimulator({
   else if (pct > 60 && pct <= 78) vibrateClass = 'vibrate-medium'
   else if (pct > 78) vibrateClass = 'vibrate-heavy'
 
-  // ── Notification stack — one card per ~4.5% after pct=27. Each card fades
-  // in over its first 8% of life, so the arrival is gentle rather than
-  // popping in. This means the first notification slides in around pct≈30
-  // and by pct=100 all 16 are on screen.
+  // Scroll-tracking base: all overlays position themselves relative to the
+  // user's current scroll position within the 128rem container, so they
+  // stay in the viewport instead of scrolling off the top as new ones
+  // mount below. This IS the "sticky notification pile" behavior — each
+  // card's stack position follows the scroll head, so by pct=80 the user
+  // is looking at a growing pile of 10+ notifications in their viewport.
+  //
+  // The container is ~128rem tall; we let the base travel 0 → 108rem
+  // (leaving ~20rem of runway at the bottom for the reveal card).
+  const stickyBaseRem = scrollProgress * 108
+
+  // ── Notifications — earlier first appearance, tighter spacing, more of
+  // them simultaneously on screen because they pile up instead of vanishing.
   const notifVisible: { n: NotificationDef; style: React.CSSProperties }[] = []
   {
     const rand = seededRandom(7)
-    const firstAt = 27
-    const step = 4.5
+    const firstAt = 20
+    const step = 2.8
     for (let i = 0; i < notifications.length; i++) {
       const threshold = firstAt + i * step
       if (pct > threshold) {
-        const ageFactor = Math.min(1, (pct - threshold) / 8)
-        const lane = i % 2
+        const ageFactor = Math.min(1, (pct - threshold) / 5)
+        const lane = i % 2  // 0 = right column, 1 = left column
         const row = Math.floor(i / 2)
-        const top = 6 + row * 7.5 + rand() * 2
+        // Base follows scroll; each row stacks down 4.5rem from the base
+        // with a touch of jitter so the pile looks organic, not a grid.
+        const rowTopRem = stickyBaseRem + 2 + row * 4.5 + rand() * 0.6
         const horizOffset = rand() * 2
         notifVisible.push({
           n: notifications[i],
           style: {
             [lane === 0 ? 'right' : 'left']: `${1 + horizOffset}rem`,
-            top: `${top}%`,
+            top: `${rowTopRem}rem`,
             opacity: ageFactor * (pct > 90 ? 1 : 0.95),
             transform: `translateY(${(1 - ageFactor) * -24}px) rotate(${(rand() - 0.5) * 4}deg)`,
-            transition: 'opacity 0.5s ease, transform 0.5s ease',
+            transition: 'opacity 0.4s ease, transform 0.4s ease, top 0.15s linear',
           },
         })
       }
     }
   }
 
-  // ── Thought bubbles — start sparse at pct~40 and add one per ~5% of
-  // scroll. Gradual arrival, not a sudden wave.
+  // ── Thought bubbles — scroll-tracking too; scattered around the sticky
+  // base so the pile looks chaotic.
   const thoughtBubbles: { text: string; style: React.CSSProperties }[] = []
   {
     const bubbleStart = 40
-    const bubbleCount = Math.max(0, Math.min(12, Math.floor((pct - bubbleStart) / 5)))
+    const bubbleCount = Math.max(0, Math.min(14, Math.floor((pct - bubbleStart) / 4)))
     const rand = seededRandom(99)
     for (let i = 0; i < bubbleCount; i++) {
-      const ownThreshold = bubbleStart + i * 5
+      const ownThreshold = bubbleStart + i * 4
       const age = Math.min(1, (pct - ownThreshold) / 4)
+      // Scatter vertically around the sticky base (±15rem range) so they
+      // surround the user's current viewport rather than anchoring to a
+      // fixed container position.
+      const topRem = stickyBaseRem + 4 + (rand() - 0.5) * 28
       thoughtBubbles.push({
         text: intrusiveThoughts[(i * 3 + 5) % intrusiveThoughts.length],
         style: {
-          top: `${10 + rand() * 75}%`,
+          top: `${topRem}rem`,
           left: `${5 + rand() * 70}%`,
           animation: `float-bubble ${2 + rand() * 2}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.2}s`,
           opacity: age,
+          transition: 'top 0.15s linear',
         },
       })
     }
   }
 
-  // ── Memory fragments — add one per ~3.5% of scroll after pct=55. Each
-  // fades in over 4% so new fragments arrive gently instead of all at once.
+  // ── Memory fragments — scroll-tracking too. Scattered around the base
+  // so they pile into the user's viewport at peak chaos.
   const memoryItems: { frag: MemoryFragmentDef; style: React.CSSProperties }[] = []
   {
     const memStart = 55
-    const count = Math.max(0, Math.min(memoryFragments.length, Math.floor((pct - memStart) / 3.5)))
+    const count = Math.max(0, Math.min(memoryFragments.length, Math.floor((pct - memStart) / 3)))
     const rand = seededRandom(31)
     for (let i = 0; i < count; i++) {
-      const ownThreshold = memStart + i * 3.5
+      const ownThreshold = memStart + i * 3
       const age = Math.min(1, (pct - ownThreshold) / 4)
       const frag = memoryFragments[i % memoryFragments.length]
       const size = 80 + rand() * 80 // 80–160 px wide
       const rotation = (rand() - 0.5) * 30
+      // Scatter around the sticky base (±20rem range).
+      const topRem = stickyBaseRem + 3 + (rand() - 0.5) * 36
       memoryItems.push({
         frag,
         style: {
-          top: `${5 + rand() * 85}%`,
+          top: `${topRem}rem`,
           left: `${2 + rand() * 85}%`,
           width: `${size}px`,
           '--rot': `rotate(${rotation}deg)`,
           animation: `drift ${3 + rand() * 3}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.15}s`,
           opacity: age,
+          transition: 'top 0.15s linear',
         } as React.CSSProperties,
       })
     }
