@@ -2,23 +2,31 @@
 
 import React, { useState, useCallback } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { NavigationEvents } from './NavigationEvents'
 import { ThemeToggleWrapper } from './ThemeToggleWrapper'
 import { AuthStatus } from './AuthStatus'
 
-// Flat editorial navigation — a single line, mono/uppercase
+// Flat editorial navigation — a single line, sans title-case
 export const navItems = [
   { name: 'Writing', href: '/blog' },
-  { name: 'Builds', href: '/projects' },
+  { name: 'Projects', href: '/projects' },
   { name: 'Videos', href: '/videos' },
-  { name: 'Workshops', href: '/speaking' },
+  { name: 'Playground', href: '/demos' },
   { name: 'About', href: '/about' },
 ];
-export const navCta = { name: 'Hire \u2192', href: '/contact' };
+export const navCta = { name: 'Newsletter', href: '/newsletter' };
+
+function isActive(pathname, href) {
+  if (!pathname) return false
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
 
 export function ConsultancyNav() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const pathname = usePathname()
 
   const handleRouteChange = useCallback(() => {
     setMenuOpen(false)
@@ -48,28 +56,38 @@ export function ConsultancyNav() {
 
         <nav
           className={`absolute top-16 sm:top-18 left-0 w-full bg-parchment-100 dark:bg-slate-900 lg:static lg:w-auto lg:bg-transparent dark:lg:bg-transparent
-                      flex-col lg:flex-row lg:flex gap-4 lg:gap-7 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
+                      flex-col lg:flex-row lg:flex gap-4 lg:gap-8 items-center border-t lg:border-t-0 border-parchment-300 dark:border-slate-700
                       ${menuOpen ? 'flex py-4 shadow-lg' : 'hidden'} lg:flex`}
         >
-          <div className="flex flex-col lg:flex-row gap-3 lg:gap-7 items-center w-full lg:w-auto">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left"
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-8 items-center w-full lg:w-auto">
+            {navItems.map((item) => {
+              const active = isActive(pathname, item.href)
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`text-[15px] font-medium transition-colors py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left ${
+                    active
+                      ? 'text-burnt-400 dark:text-amber-400'
+                      : 'text-charcoal-50 dark:text-slate-200 hover:text-burnt-400 dark:hover:text-amber-400'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )
+            })}
+          </div>
+          <div className="flex items-center gap-2 mt-4 lg:mt-0 lg:pl-2">
+            <ThemeToggleWrapper />
             <Link
               href={navCta.href}
-              className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-burnt-400 dark:text-amber-400 hover:opacity-80 transition-opacity py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left whitespace-nowrap"
+              aria-current={isActive(pathname, navCta.href) ? 'page' : undefined}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-[15px] font-semibold text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors whitespace-nowrap"
             >
               {navCta.name}
+              <span aria-hidden="true">→</span>
             </Link>
-          </div>
-          <div className="flex items-center gap-2 mt-4 lg:mt-0 lg:pl-4 lg:border-l lg:border-parchment-300 dark:lg:border-slate-700">
-            <ThemeToggleWrapper />
             <AuthStatus />
           </div>
         </nav>
