@@ -16,7 +16,8 @@ const YT_ID_RE = /(?:youtube-nocookie\.com\/embed\/|youtube\.com\/embed\/|youtub
 const THUMB_STYLES = ['t-warm', 't-cool', 't-plate', 't-mono'] as const
 
 function extractYouTubeId(slug: string): string | null {
-  const mdx = path.join(process.cwd(), 'src/content/videos', slug, 'page.mdx')
+  const directorySlug = slug.replace(/^\/videos\//, '')
+  const mdx = path.join(process.cwd(), 'src/content/videos', directorySlug, 'page.mdx')
   if (!fs.existsSync(mdx)) return null
   try {
     const body = fs.readFileSync(mdx, 'utf8')
@@ -41,10 +42,10 @@ function kindOf(v: ExtendedMetadata): string {
 }
 
 function seriesOf(v: ExtendedMetadata): { series: string | null; part: number | null } {
-  const slug = (v.slug || '').toLowerCase()
+  const slug = (v.slug || '').toLowerCase().replace(/^\/videos\//, '')
   const m1 = slug.match(/^typescript-rag-twitch-part(\d+)/)
   if (m1) return { series: 'TypeScript RAG', part: Number(m1[1]) }
-  const m2 = slug.match(/^pinecone-pulumi-webinar(\d+)/)
+  const m2 = slug.match(/^pinecone-pulumi-webinar-?(\d+)/)
   if (m2) return { series: 'Pinecone + Pulumi', part: Number(m2[1]) }
   const m3 = slug.match(/^pinecone-ref-arch-deployment-(\d+)/)
   if (m3) return { series: 'Pinecone Ref Arch', part: Number(m3[1]) }

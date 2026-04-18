@@ -291,7 +291,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                     {current.tags.length > 0 && (<><span className="sep">·</span><span>{current.tags.slice(0, 3).map(t => `#${t}`).join(' · ')}</span></>)}
                   </div>
                   {current.description && <p className="player-dek">{current.description}</p>}
-                  <Link className="player-link" href={`/videos/${current.slug}`}>
+                  <Link className="player-link" href={current.slug as any}>
                     Open full write-up →
                   </Link>
                 </div>
