@@ -1,0 +1,101 @@
+---
+title: "Firecrawl API Reference and Usage Guide (2026)"
+author: Zachary Proser
+date: 2026-4-18
+description: A practical guide to the Firecrawl API — authentication, endpoints, rate limits, pricing, and how to integrate Firecrawl into your web scraping and data extraction workflows.
+image: https://zackproser.b-cdn.net/images/firecrawl-hero.webp
+tags: [ai, web-scraping, firecrawl, api, developers]
+hiddenFromIndex: true
+---
+
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+Firecrawl provides a clean API for scraping websites at scale, with particular strength in handling JavaScript-rendered pages and extracting structured data. The API design is straightforward: authenticate, call an endpoint, get back clean Markdown or structured JSON.
+
+Here is what you actually need to know to use it in production.
+
+## Authentication
+
+You get your API key from the Firecrawl dashboard. Pass it as a Bearer token in the Authorization header:
+
+```
+Authorization: Bearer fc-your-api-key-here
+```
+
+The free tier gives you 500 credits. Each API call consumes credits based on the number of pages scraped and whether you use the async batch endpoint.
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Core Endpoints
+
+**`POST /v1/scrape`** — scrape a single URL and get back structured data. You can specify which fields to extract using a schema.
+
+```python
+import requests
+
+response = requests.post(
+    "https://api.firecrawl.dev/v1/scrape",
+    headers={"Authorization": "Bearer fc-your-key"},
+    json={
+        "url": "https://example.com/pricing",
+        "extractorConfig": {
+            "mode": "llm-extraction"
+        },
+        "pageRanges": ["1-5"]
+    }
+)
+data = response.json()
+print(data["data"]["content"])  # Markdown content
+```
+
+**`POST /v1/batch/scrape`** — submit multiple URLs for asynchronous scraping. Returns a job ID you poll until completion. This is the right choice for anything more than 5-10 URLs.
+
+**`POST /v1/crawl`** — crawl an entire website starting from a seed URL, following internal links within the specified limits.
+
+**`POST /v1/extract`** — given a URL and a prompt, extract structured data matching your schema. This is the most powerful endpoint for building datasets.
+
+```python
+response = requests.post(
+    "https://api.firecrawl.dev/v1/extract",
+    headers={"Authorization": "Bearer fc-your-key"},
+    json={
+        "url": "https://news.ycombinator.com",
+        "prompt": "Extract all article titles, scores, and author names"
+    }
+)
+articles = response.json()["data"]["entities"]
+```
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Rate Limits and Pricing
+
+The free tier: 500 credits/month. A single page scrape consumes 1 credit. Batch scraping uses 0.5 credits per page.
+
+Paid plans start at $15/month for 5,000 credits. The growth plan at $49/month gives you 25,000 credits and priority rate limits.
+
+Rate limits on the free tier: 20 requests/minute. Paid tiers get 60-200 requests/minute depending on your plan.
+
+For production scraping jobs, batch endpoints are significantly more efficient — you submit once and poll, rather than hammering the synchronous endpoint.
+
+## Handling JavaScript-Rendered Pages
+
+Firecrawl uses a headless browser stack under the hood. Pages that require JavaScript execution are handled automatically. The `pageRanges` parameter lets you specify how many pages to scroll through on paginated content.
+
+For single-page applications that lazy-load content, you can increase the `waitFor` timeout in the request options.
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Common Issues
+
+**Incomplete content on SPA pages** — If a page loads content via JavaScript after the initial render, you may need to increase the `waitFor` timeout or use the batch scrape endpoint which gives pages more time to fully render.
+
+**CAPTCHA and bot detection** — Firecrawl handles some but not all anti-bot measures. For sites with aggressive protection, you may need to combine with proxy rotation.
+
+**Large websites** — Crawling a site with thousands of pages quickly consumes credits. Use page range limits and be selective about which sections you crawl.
+
+## When to Use Firecrawl vs Crawl4AI
+
+Crawl4AI is better for developers who want full control over the crawling process and are comfortable with a more hands-on setup. Firecrawl is the right choice when you want a managed service with reliable uptime, structured data extraction without writing custom parsers, and batch processing at scale.
+
+For RAG pipelines specifically, Firecrawl's extract endpoint is the fastest way to get clean, structured text from a list of URLs.

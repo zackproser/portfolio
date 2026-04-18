@@ -1,0 +1,9 @@
+{
+  "title": "Firecrawl API Reference and Usage Guide (2026)",
+  "author": "Zachary Proser",
+  "date": "2026-4-18",
+  "description": "A practical guide to the Firecrawl API — authentication, endpoints, rate limits, pricing, and how to integrate Firecrawl into your web scraping and data extraction workflows.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "tags": ["ai", "web-scraping", "firecrawl", "api", "developers"],
+  "hiddenFromIndex": true
+}

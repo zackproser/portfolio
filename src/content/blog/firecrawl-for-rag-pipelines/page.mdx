@@ -1,0 +1,139 @@
+---
+title: "Using Firecrawl for RAG Pipelines"
+author: Zachary Proser
+date: 2026-4-18
+description: How to use Firecrawl to scrape and preprocess web content for retrieval-augmented generation pipelines — from single-page extraction to full-site crawling with structured data output.
+image: https://zackproser.b-cdn.net/images/firecrawl-hero.webp
+tags: [ai, web-scraping, firecrawl, rag, llm, python]
+hiddenFromIndex: true
+---
+
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+RAG pipelines are only as good as the content you feed them. If you are building a knowledge base from web content, Firecrawl handles the messy parts — JavaScript rendering, link following, content extraction — and delivers clean text you can chunk and index directly.
+
+Here is how to wire it up.
+
+## The Core Problem with Web Content in RAG
+
+Web pages are designed for humans, not LLMs. Navigation chrome, ads, cookie banners, sidebar content, and dynamic lazy-loading all mix into your text content and reduce retrieval quality. Firecrawl strips this out and gives you clean Markdown.
+
+The extraction step matters enormously for downstream quality. Garbage in, garbage out applies to RAG with a vengeance.
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Basic Setup: Scrape and Extract
+
+For a single URL, the extract endpoint is the fastest path:
+
+```python
+import requests
+
+def fetch_page_content(url: str, api_key: str) -> str:
+    response = requests.post(
+        "https://api.firecrawl.dev/v1/extract",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={
+            "url": url,
+            "prompt": "Extract the main article content including headings, key points, and any structured data. Exclude navigation, comments, and promotional content."
+        }
+    )
+    response.raise_for_status()
+    return response.json()["data"]["content"]
+```
+
+This gives you plain text ready for chunking. You can then split by token count using a library like `langchain` or `llamaindex`.
+
+## Batch Crawling for Larger Knowledge Bases
+
+When you need to build a knowledge base from an entire documentation site or publication:
+
+```python
+def crawl_and_extract(url: str, api_key: str, max_pages: int = 100):
+    response = requests.post(
+        "https://api.firecrawl.dev/v1/crawl",
+        headers={"Authorization": f"Bearer {api_key}"},
+        json={
+            "url": url,
+            "scrapeConfig": {
+                "formats": ["markdown"],
+                "onlyMainContent": True
+            },
+            "limit": max_pages
+        }
+    )
+    job_id = response.json()["jobId"]
+    
+    # Poll for completion
+    while True:
+        status = requests.get(
+            f"https://api.firecrawl.dev/v1/crawl/status/{job_id}",
+            headers={"Authorization": f"Bearer {api_key}"}
+        ).json()
+        
+        if status["status"] == "completed":
+            return status["data"]
+        elif status["status"] == "failed":
+            raise Exception(f"Crawl failed: {status['error']}")
+```
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Chunking Strategy
+
+Chunk size directly affects retrieval precision. I have found that 512 tokens with 50-token overlaps works well for technical documentation. For blog posts and articles, 1024 tokens with 100-token overlaps captures enough context without mixing unrelated sections.
+
+You can control chunking at ingestion time in your vector database, or pre-chunk the content before indexing. Pre-chunking gives you more control over where boundaries fall.
+
+## Structured Data Extraction
+
+The extract endpoint accepts a schema, which lets you pull structured entities rather than raw text:
+
+```python
+response = requests.post(
+    "https://api.firecrawl.dev/v1/extract",
+    headers={"Authorization": f"Bearer {api_key}"},
+    json={
+        "url": "https://example.com/products",
+        "prompt": "Extract all product listings with name, price, description, and rating",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type": "string"},
+                            "price": {"type": "string"},
+                            "rating": {"type": "number"}
+                        }
+                    }
+                }
+            }
+        }
+    }
+)
+```
+
+For e-commerce and listing pages, structured extraction dramatically improves retrieval precision.
+
+<InlineAffiliateCTA product="firecrawl" />
+
+## Keeping Content Fresh
+
+Web content changes. For production RAG systems, you need a refresh cadence. Options:
+
+**Scheduled full recrawl** — re-crawl the entire source site on a schedule. Simple but expensive on credits.
+
+**Incremental updates** — store the last crawl timestamp per URL and only recrawl pages that have changed since. You can detect changes by comparing content hashes.
+
+**Event-driven** — use webhooks or RSS monitoring to trigger recrawls when source content updates.
+
+Firecrawl does not natively track changes, so you need to layer that logic yourself or use a downstream pipeline tool that handles it.
+
+## When Crawl4AI is a Better Fit
+
+Crawl4AI gives you more control over the crawling process — you can customize the browser config, set custom headers, and handle authentication flows that Firecrawl's managed service cannot. If you are crawling behind a login or need to handle complex session management, Crawl4AI is the better choice.
+
+For public-facing content where you want reliable managed infrastructure and structured extraction without infrastructure maintenance, Firecrawl is the right call.
