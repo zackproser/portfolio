@@ -342,21 +342,21 @@ export function DistractionSimulator({
     const step = 2.8
     for (let i = 0; i < notifications.length; i++) {
       const threshold = firstAt + i * step
+      const lane = i % 2  // 0 = right column, 1 = left column
+      const row = Math.floor(i / 2)
+      const rowJitter = rand() * 0.6
+      const horizOffset = rand() * 2
+      const rotation = (rand() - 0.5) * 4
       if (pct > threshold) {
         const ageFactor = Math.min(1, (pct - threshold) / 5)
-        const lane = i % 2  // 0 = right column, 1 = left column
-        const row = Math.floor(i / 2)
-        // Base follows scroll; each row stacks down 4.5rem from the base
-        // with a touch of jitter so the pile looks organic, not a grid.
-        const rowTopRem = stickyBaseRem + 2 + row * 4.5 + rand() * 0.6
-        const horizOffset = rand() * 2
+        const rowTopRem = stickyBaseRem + 2 + row * 4.5 + rowJitter
         notifVisible.push({
           n: notifications[i],
           style: {
             [lane === 0 ? 'right' : 'left']: `${1 + horizOffset}rem`,
             top: `${rowTopRem}rem`,
             opacity: ageFactor * (pct > 90 ? 1 : 0.95),
-            transform: `translateY(${(1 - ageFactor) * -24}px) rotate(${(rand() - 0.5) * 4}deg)`,
+            transform: `translateY(${(1 - ageFactor) * -24}px) rotate(${rotation}deg)`,
             transition: 'opacity 0.4s ease, transform 0.4s ease, top 0.15s linear',
           },
         })
@@ -374,16 +374,16 @@ export function DistractionSimulator({
     for (let i = 0; i < bubbleCount; i++) {
       const ownThreshold = bubbleStart + i * 4
       const age = Math.min(1, (pct - ownThreshold) / 4)
-      // Scatter vertically around the sticky base (±15rem range) so they
-      // surround the user's current viewport rather than anchoring to a
-      // fixed container position.
-      const topRem = stickyBaseRem + 4 + (rand() - 0.5) * 28
+      const verticalOffset = (rand() - 0.5) * 28
+      const leftPct = 5 + rand() * 70
+      const duration = 2 + rand() * 2
+      const topRem = stickyBaseRem + 4 + verticalOffset
       thoughtBubbles.push({
         text: intrusiveThoughts[(i * 3 + 5) % intrusiveThoughts.length],
         style: {
           top: `${topRem}rem`,
-          left: `${5 + rand() * 70}%`,
-          animation: `float-bubble ${2 + rand() * 2}s ease-in-out infinite alternate`,
+          left: `${leftPct}%`,
+          animation: `float-bubble ${duration}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.2}s`,
           opacity: age,
           transition: 'top 0.15s linear',
@@ -403,18 +403,20 @@ export function DistractionSimulator({
       const ownThreshold = memStart + i * 3
       const age = Math.min(1, (pct - ownThreshold) / 4)
       const frag = memoryFragments[i % memoryFragments.length]
-      const size = 80 + rand() * 80 // 80–160 px wide
+      const size = 80 + rand() * 80
       const rotation = (rand() - 0.5) * 30
-      // Scatter around the sticky base (±20rem range).
-      const topRem = stickyBaseRem + 3 + (rand() - 0.5) * 36
+      const verticalOffset = (rand() - 0.5) * 36
+      const leftPct = 2 + rand() * 85
+      const duration = 3 + rand() * 3
+      const topRem = stickyBaseRem + 3 + verticalOffset
       memoryItems.push({
         frag,
         style: {
           top: `${topRem}rem`,
-          left: `${2 + rand() * 85}%`,
+          left: `${leftPct}%`,
           width: `${size}px`,
           '--rot': `rotate(${rotation}deg)`,
-          animation: `drift ${3 + rand() * 3}s ease-in-out infinite alternate`,
+          animation: `drift ${duration}s ease-in-out infinite alternate`,
           animationDelay: `${i * 0.15}s`,
           opacity: age,
           transition: 'top 0.15s linear',
