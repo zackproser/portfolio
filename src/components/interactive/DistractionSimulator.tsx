@@ -417,7 +417,10 @@ export function DistractionSimulator({
     lerp(a[2], b[2], tt),
   ]
   const rgb = (c: number[]) => `rgb(${c[0] | 0}, ${c[1] | 0}, ${c[2] | 0})`
-  const bgLight = [252, 252, 252]
+  // Pure white at rest — matches the NT / pre-start card exactly, so the
+  // only thing that visually shifts as the user scrolls is the load
+  // building on top. No ambient gray tint. Ever.
+  const bgLight = [255, 255, 255]
   const bgMid = [80, 30, 110]
   const bgDark = [8, 2, 20]
   const bg = t < 0.5
@@ -522,11 +525,8 @@ export function DistractionSimulator({
       <div className="my-8">
         {controls}
         <div
-          className={`rounded-2xl px-8 py-10 md:px-14 border ${
-            isNt
-              ? 'border-teal-400/50 bg-[#f8fbfb] ring-1 ring-teal-400/20'
-              : 'border-zinc-200 bg-[#f8f8fa]'
-          }`}
+          className="rounded-2xl border border-zinc-200 px-8 py-10 md:px-14"
+          style={{ backgroundColor: '#ffffff' }}
         >
           <div className="mx-auto max-w-[42rem] space-y-5 text-base leading-loose md:text-lg">
             {paragraphs.map((p, i) => (
@@ -536,11 +536,11 @@ export function DistractionSimulator({
             ))}
           </div>
           {isNt ? (
-            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-teal-700">
+            <p className="mx-auto mt-8 max-w-[42rem] text-sm font-mono text-zinc-600">
               This is what reading feels like with an intact prefrontal
               cortex: linear, sustained, uninterrupted. Toggle to{' '}
-              <span className="font-semibold text-teal-800">Read as ADHD</span> and
-              click <span className="font-semibold text-teal-800">Start demo</span>{' '}
+              <span className="font-semibold text-orange-600">Read as ADHD</span> and
+              click <span className="font-semibold text-orange-600">Start demo</span>{' '}
               to see what the same passage feels like to my brain.
             </p>
           ) : (
@@ -548,7 +548,7 @@ export function DistractionSimulator({
               Above is the passage as it would read to a neurotypical
               brain. Click{' '}
               <span className="font-semibold text-orange-600">▶ Start demo</span>{' '}
-              and then scroll slowly — the first 30% of the scroll stays
+              and then scroll slowly — the first third of the scroll stays
               normal, then the ADHD load begins accumulating.
             </p>
           )}
@@ -603,10 +603,16 @@ export function DistractionSimulator({
         ref={containerRef}
         className="relative my-4 overflow-hidden rounded-2xl px-8 py-12 md:px-14 transition-colors duration-150"
         style={{
-          height: '96rem',
+          // Long runway so the distraction ramp has room to mount one
+          // element at a time instead of hitting the user all at once.
+          height: '128rem',
           backgroundColor: rgb(bg),
           borderWidth: '1px',
-          borderColor: `rgba(255,255,255,${borderOpacity})`,
+          // Border interpolates from zinc-200 at rest (visible on white) to
+          // white-alpha at chaos peak (visible on dark).
+          borderColor: t < 0.3
+            ? `rgba(212, 212, 216, ${1 - t / 0.3})`
+            : `rgba(255, 255, 255, ${borderOpacity})`,
         }}
       >
         {/* Noise overlay (very subtle) */}
