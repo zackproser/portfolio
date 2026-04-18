@@ -25,7 +25,7 @@ type Props = { videos: TheaterVideo[] }
 
 const pad2 = (n: number) => String(n).padStart(2, '0')
 const fmtDur = (s: number) => {
-  if (!s) return '—'
+  if (s == null || isNaN(s)) return '—'
   const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60
   return h ? `${h}:${pad2(m)}:${pad2(sec)}` : `${m}:${pad2(sec)}`
 }
