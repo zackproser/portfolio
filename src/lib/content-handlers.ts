@@ -158,7 +158,8 @@ function _processContentMetadata(contentType: string, directorySlug: string, raw
     ...(processedMetadata.commerce && { commerce: processedMetadata.commerce }),
     ...(processedMetadata.landing && { landing: processedMetadata.landing }),
     ...(processedMetadata.tags && { tags: processedMetadata.tags }),
-    ...(typeof processedMetadata.hiddenFromIndex !== 'undefined' && { hiddenFromIndex: processedMetadata.hiddenFromIndex })
+    ...(typeof processedMetadata.hiddenFromIndex !== 'undefined' && { hiddenFromIndex: processedMetadata.hiddenFromIndex }),
+    ...(typeof processedMetadata.hideNewsletter !== 'undefined' && { hideNewsletter: processedMetadata.hideNewsletter })
   };
 
   logger.debug(`Processed metadata for ${contentType}/${directorySlug}`, content);

@@ -1,0 +1,150 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+import BrainMap3DWrapper from '@/components/BrainMap3DWrapper'
+import DistractionSimulator from '@/components/DistractionSimulatorWrapper'
+import { InlineCTA } from '@/components/InlineCTA'
+
+export const metadata = createMetadata(rawMetadata)
+
+I was diagnosed with autism and severe ADHD at 39 and 8 months — basically 40 — after 14 years of building software. By then I'd already constructed an elaborate scaffolding of coping mechanisms without knowing what they were for — the freezing cold room, the blue lights, the tiny Netflix window providing background backpressure to keep my brain from looping. The obsessive note-taking. The rigid morning routines. The 14-hour hyperfocus sessions followed by three-day crashes.
+
+I'd been compensating for broken executive function my entire career. I just didn't have the language for it until the diagnosis.
+
+Now I do. And now I'm engineering the compensation deliberately, using AI agents as prosthetic executive function.
+
+Every trait here is double-edged. The hyperfocus that lets me disappear into a gnarly distributed-systems problem for 14 hours and come out the other side with a fix is the same hyperfocus that damages my bladder, my nervous system, and my circulation because I literally don't notice my body while it's happening. The interest-based engagement that makes me great at software is the same engagement that makes me bad at everything I'm not interested in — and bad at partnership when the thing I'm cranking on outranks the thing we were supposed to do together. The scaffolding I'm about to describe isn't about fixing any of that. The brain doesn't change. The scaffolding is about managing the cost of having a brain like this do work it cares about.
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-hero.webp" alt="Pixel art of a glowing brain with golden scaffolding beams being assembled around it by tiny helpful robots" width={1200} height={675} />
+
+## What executive function actually is (in engineering terms)
+
+Executive function is the brain's project manager. Working memory, task initiation, prioritization, time estimation, context switching, emotional regulation. Neurotypical brains do most of this automatically. Mine doesn't.
+
+Here's what the failure modes actually look like:
+
+<BrainMap3DWrapper />
+
+Before we get into the specifics, try reading this paragraph. Scroll slowly.
+
+<DistractionSimulator />
+
+**Working memory is volatile storage.** I can hold a complex system architecture in my head for hours during hyperfocus, then lose the entire mental model the moment someone asks me a question. The context doesn't page back in cleanly. I rebuild from scratch every time. Travis Sparks, who runs 55 AI agents for his ADHD brain, put it perfectly: "My working memory evicts information with prejudice. If it's not in front of me, it doesn't exist."
+
+**Task initiation has a cold-start problem.** Knowing I need to do something and being able to *start* doing it are completely different operations. I can stare at a ticket for 45 minutes, fully understanding what needs to happen, physically unable to begin typing. The activation energy is wildly disproportionate to the task difficulty. The ADHD community calls this task initiation paralysis, and it's the symptom that has cost me the most in my career. When an idea *is* driven by interest, the cold start collapses instantly — the only remaining question in my head is **"how do I start?"** — a hyper-present, everything-else-falls-away version of what Eckhart Tolle called the power of now. But "how do I start" is only a useful question when the interest is already there. For everything else — the emails, the taxes, the thing someone asked me to do that doesn't happen to match my current neurological weather — the activation energy doesn't move.
+
+**Prioritization is broken at the hardware level.** Dr. William Dodson's framework nails it: neurotypical brains run on an *importance-based nervous system* — they can force themselves to do things because they're important. ADHD brains run on an *interest-based nervous system* — engagement is driven by novelty, challenge, urgency, or personal passion, never by external importance. A trivial but novel refactoring idea competes for attention against a critical production bug on the same plane. Everything feels equally urgent, which means nothing gets triaged. The community term is priority blindness: "When everything is urgent, nothing is urgent."
+
+**Time estimation doesn't exist.** I have no internal clock. A task I think will take 20 minutes takes 4 hours. A task I'm dreading takes 15 minutes. Experience hasn't improved this.
+
+**Context switching is a full cold boot.** Not a stash and restore — a complete state loss. Switching from one codebase to another means 30-60 minutes of re-orientation. Every interruption is starting from zero.
+
+<InlineCTA heading="More writing like this on neurodivergent engineering →" />
+
+## The paradox: I need MORE stimuli, not fewer
+
+Here's the part most productivity advice gets wrong about ADHD.
+
+I work in a freezing cold room. Blue lights. A tiny Netflix window on one monitor. Sometimes music on top of that. When I described this setup to my diagnostician, she explained what I'd been doing unconsciously for years: feeding the monster.
+
+<a href="/blog/in-the-llm-i-saw-myself">
+  <Image src="https://zackproser.b-cdn.net/images/blue-office.webp" alt="My office: freezing, dark, deep blue Nanoleaf lighting — the environment I reverse-engineered for my sensory profile before I knew what I was doing" width={800} height={600} />
+</a>
+
+The ADHD brain has lower baseline dopamine and norepinephrine in the prefrontal cortex. There's a stimulation gap — the brain's threshold for engagement is higher than average, so when the environment is too quiet, it starts hunting for novelty. Tab switching. Phone checking. The constant internal monologue that the community calls "brain radio" — music and commentary you can't turn off.
+
+The neuroscience term is stochastic resonance: adding moderate random noise to an understimulated neural system actually helps weak signals (like "focus on this code review") cross the firing threshold. A 2024 meta-analysis of 13 studies confirmed that white and pink noise significantly improved ADHD task performance — while the same noise *impaired* neurotypical performance.
+
+So when someone tells me to "minimize distractions," they're describing the exact opposite of what my brain needs. I need the cold room and the blue lights and the Netflix window and the music. Those occupy the hungry part of my brain so the working part can focus.
+
+And I need one more thing: a patient, context-aware system that handles the executive function I don't have. That's where the agents come in.
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-threads.webp" alt="Pixel art showing chaotic tangled thought threads on the left passing through a glowing AI terminal and emerging as neatly organized parallel tracks on the right" width={1200} height={675} />
+
+## The double-edged blade
+
+Before I describe the scaffolding, the honest bit.
+
+Every trait here cuts both ways. Hyperfocus is how I melt a gnarly problem in a single afternoon — and also how I sit in one position for 14 hours without noticing that my bladder is full, my legs have gone numb, and my nervous system is redlining. The dopamine rush that pins me to the problem pins me past the point my body should have moved. The output I'm proudest of in my career often comes from sessions that were, physiologically, a slow-motion injury.
+
+I also don't get to cleanly wrap up at 5pm. If the problem is interesting, my brain keeps cranking whether I'm at a computer or not. Technically I'm off the clock. Practically, I'm irritable and three-quarters somewhere else until I can return to the thing. *"All set then — see you Monday"* is not a switch my brain has, especially when the thing I'm cranking on is software and software is something I actually care about. This has caused real friction in my relationships — the cost of a dopamine loop I'm running in my head is paid by the people sitting next to me at dinner.
+
+The same interest-based nervous system that makes me great at problems I find interesting makes me terrible at problems I don't. Priority blindness isn't me being lazy about your thing — it's my brain being literally unable to force itself onto the importance-based track that neurotypical brains run on by default.
+
+The scaffolding below is not a cure. The brain doesn't change. What the scaffolding does is manage the cost — keep the hyperfocus productive instead of destructive, make it possible for the work to actually end when the day ends, make it so the people I love don't keep paying for my dopamine loops. It turns a double-edged blade into something I can hold without bleeding.
+
+## AI agents as prosthetic executive function
+
+Russell Barkley, the canonical ADHD researcher, said it directly: "We're going to have to design a prosthetic environment around them." He was talking about physical scaffolding — timers, planners, external cues. But AI agents are that prosthetic environment in software form.
+
+Here's how I've mapped each failure mode to a specific AI compensating system:
+
+### Working memory → persistent skills and CLAUDE.md
+
+My brain drops context constantly. The agents don't.
+
+[Hermes](/blog/building-always-on-ai-assistant) has 90 skill files — structured markdown that encodes procedures, API endpoints, credential locations, and lessons learned. When I tell Hermes to upload images to Bunny CDN, it doesn't ask me for the API key path or the URL format. That knowledge is in a skill file that persists across every session. My brain forgets the Bunny CDN API structure every single time. Hermes never does.
+
+Claude Code loads CLAUDE.md automatically for every project. Mine includes writing rules, banned patterns, common commands, project structure. Every time it opens a session in my portfolio repo, it has full context immediately. I don't rebuild anything.
+
+The pattern: **externalize everything you find yourself re-explaining.** Every time you tell an AI agent something for the second time, that information belongs in a persistent file. Your brain is going to drop it again. The file won't.
+
+### Task initiation → the agent starts, I steer
+
+AI agents invert the initiation problem. Instead of me creating from nothing, the agent creates a draft and I react to something that exists.
+
+I open Discord and say: "Hermes, write a post about the webhook bridge pattern." That's a 10-word message. The activation energy is almost zero — I'm having a conversation, not opening an IDE and staring at a blank file. Hermes produces a first draft, and now I'm *editing* instead of *creating*. Editing is easy for my brain. The blank page is the enemy.
+
+This is body doubling — the ADHD strategy of working alongside someone else to borrow their activation energy. A 2025 study by Sanchez and Jarrahi found AI avatars increased sustained attention by 27-33% and task speed by 21% for ADHD participants. AI agents are the most patient body doubles that have ever existed. They don't judge the gap between "knowing" and "doing." They just start.
+
+### Prioritization → the agent holds the queue
+
+When everything feels equally urgent, I need something external to enforce order.
+
+I describe the full scope to Claude Code or Hermes: "I need to write three conference recap posts, a technical walkthrough, and a meta post about the workflow." The agent creates a sequenced plan and works through it. I don't decide which to start — I review what's next and approve or redirect.
+
+I [shipped 9 posts in 48 hours](/blog/nine-posts-in-48-hours) this way. Not because I was hyperfocused for two straight days. Because the agents maintained the queue while I context-switched between work, parenting, and travel. When I had 5 minutes free, the next task was already decided.
+
+The agents don't get seduced by the interesting refactor when there's a production bug. They work the queue in order. I set the priority once and they execute.
+
+<InlineCTA heading="Get the next ND-engineer playbook post →" />
+
+### Context switching → warm handoffs with zero state loss
+
+My brain does full cold restarts on every context switch. The chat threads don't.
+
+When I'm [directing agents from my phone while walking](/blog/phones-are-the-new-terminal), I switch between Claude Code and Hermes ten times in an hour. Each time I return, the full context is right there in the conversation. I don't need to remember what state the OpenTofu plan was in. It's all in the thread.
+
+The [two-agent architecture](/blog/two-agents-one-phone) makes this better. Claude Code and Hermes have separate contexts, so there's no bleed between infrastructure work and content work. Switching between them is like having two persistent workspaces in my pocket.
+
+### The void after the win → externalized evidence
+
+I wrote about this in [Training Claude to Compensate for My Neurological Patterns](/blog/training-claude-neurological-patterns): every major accomplishment is followed by flat, disconnected emptiness rather than satisfaction. The dopamine pipeline shuts off. My internal register of accomplishments is volatile — completed work vanishes from awareness as if it never happened.
+
+The chat histories and PR logs are the fix. Nine posts merged this week. Twelve PRs closed. 47 images generated. I can look at the evidence and see that it happened, even when my brain insists it didn't.
+
+## The CLAUDE.md as a living cognitive map
+
+<Image src="https://zackproser.b-cdn.net/images/exec-function-claudemd.webp" alt="Pixel art of a large glowing document floating in space with small pixel-art hands actively editing different sections" width={1200} height={675} />
+
+My CLAUDE.md and skill files have evolved from coding preferences into cognitive support infrastructure.
+
+The banned patterns list catches LLM writing tells that slip through when my attention to detail crashes — high during hyperfocus, nearly zero during executive function collapses. The writing voice calibration means agents approximate my style closely enough that editing requires minimal activation energy. Each of the 90 skills is a chunk of procedural memory I no longer maintain in my head.
+
+I update these documents constantly. Every failure mode — wrong CDN URL format, direct push to main, stale image cached on Bunny — gets encoded as a rule. The documents get smarter at compensating for my specific patterns over time. I described this process in [Training Claude to Compensate for My Neurological Patterns](/blog/training-claude-neurological-patterns): continuous encoding of compensatory needs into persistent configuration.
+
+## What this looks like in practice
+
+I'm walking [5-8 miles on days I would have been sitting](/blog/phones-are-the-new-terminal). My wrists get a break from typing — [WisprFlow handles the input](/blog/wisprflow-claude-code-setup-guide) by voice at 179 WPM. My ADHD brain produces better output when my legs are moving. Walking activates diffuse-mode thinking — the background processing that happens when you stop forcing concentration. Problems that felt stuck at the desk start resolving themselves on the trail.
+
+The agents provide the executive function substrate. Working memory that persists. Task initiation that requires near-zero activation energy. Prioritization that doesn't get hijacked by novelty. Context switching with zero state loss. Evidence of accomplishment that my brain would otherwise erase.
+
+I'm not masking anymore. I'm not performing neurotypical executive function through willpower. I'm building systems that compensate for documented failure modes, the same way I'd build monitoring for a service with known reliability issues.
+
+My brain is the service. The agents are the monitoring, the auto-scaling, and the self-healing. The failure modes are documented. The compensating controls are in place. The system stays up.
+
+If you're a neurodivergent engineer and you haven't started building this kind of scaffolding, start small. Put one thing you keep forgetting into a CLAUDE.md. Ask an agent to start a task you've been unable to initiate. Let it hold the context you can't hold.
+
+The tools are capable enough now. The executive function you were never going to develop on your own — it's available as infrastructure you can engineer and improve.
+
+<InlineCTA heading="Send me the next essay when it drops →" />

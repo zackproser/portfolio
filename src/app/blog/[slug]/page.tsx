@@ -90,8 +90,14 @@ export default async function Page({ params }: PageProps) {
   
   logger.info(`Rendering page for slug: ${slug}, Paid: ${!!content?.commerce?.isPaid}, Purchased: ${hasPurchased}`);
 
-  // Always use ArticleLayout for consistency, even for purchased content
-  const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
+  // Always use ArticleLayout for consistency, even for purchased content.
+  // Per-post opt-out via `hideNewsletter: true` in metadata (used for the
+  // neurodivergent-engineer post where the sticky capture modal overlapped
+  // the simulator's distraction overlays in a cruel way).
+  const hideNewsletter = !!(
+    content?.hideNewsletter ||
+    (content?.commerce?.requiresEmail && !isSubscribed)
+  )
 
   return (
     <>

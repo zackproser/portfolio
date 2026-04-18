@@ -1,6 +1,7 @@
 'use client'
 
 import type { Database } from '@/types/database'
+import type { LucideIcon } from 'lucide-react'
 import { Sparkles, Rocket, Lock, Code2, Zap, DollarSign } from 'lucide-react'
 import { track } from '@vercel/analytics'
 
@@ -13,7 +14,7 @@ interface ComparisonSet {
   id: string
   title: string
   description: string
-  icon: React.ElementType
+  icon: LucideIcon
   filter: (db: Database) => boolean
   sort?: (a: Database, b: Database) => number
   limit?: number

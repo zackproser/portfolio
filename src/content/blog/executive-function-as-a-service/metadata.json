@@ -1,0 +1,9 @@
+{
+  "title": "What It Feels Like To Be a Neurodivergent Engineer (Interactive)",
+  "author": "Zachary Proser",
+  "date": "2026-04-17",
+  "description": "An interactive primer on the ADHD engineering brain — a 3D brain you can put through hyperfocus and crash, a simulator for what reading feels like under intrusive thoughts and notification overload, and the AI scaffolding I use to work around all of it.",
+  "image": "https://zackproser.b-cdn.net/images/exec-function-hero.webp",
+  "tags": ["ai", "adhd", "autism", "neurodivergent", "interactive", "productivity", "claude-code", "hermes-agent", "cognitive-infrastructure"],
+  "hideNewsletter": true
+}
