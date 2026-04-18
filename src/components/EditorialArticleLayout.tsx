@@ -109,6 +109,7 @@ export function EditorialArticleLayout({
   const progressFillRef = useRef<HTMLDivElement | null>(null)
   const [readingMin, setReadingMin] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
+  const [shareVisible, setShareVisible] = useState(false)
 
   useEffect(() => {
     const body = articleRef.current
@@ -135,12 +136,22 @@ export function EditorialArticleLayout({
 
   useEffect(() => {
     const fill = progressFillRef.current
-    if (!fill) return
+    const body = articleRef.current
     let raf = 0
     const update = () => {
       const h = document.documentElement
-      const pct = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)
-      fill.style.width = `${Math.min(100, Math.max(0, pct * 100))}%`
+      if (fill) {
+        const pct = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)
+        fill.style.width = `${Math.min(100, Math.max(0, pct * 100))}%`
+      }
+      if (body) {
+        // Fade the share rail in once the reader is ~2 sentences into the body.
+        const bodyTop = body.getBoundingClientRect().top
+        setShareVisible((prev) => {
+          const next = bodyTop < -160
+          return next === prev ? prev : next
+        })
+      }
       raf = 0
     }
     const onScroll = () => {
@@ -149,8 +160,10 @@ export function EditorialArticleLayout({
     }
     update()
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
       if (raf) window.cancelAnimationFrame(raf)
     }
   }, [])
@@ -275,7 +288,11 @@ export function EditorialArticleLayout({
         </section>
 
         {/* Share rail */}
-        <aside className="share-rail" aria-label="Share">
+        <aside
+          className={`share-rail${shareVisible ? ' visible' : ''}`}
+          aria-label="Share"
+          aria-hidden={!shareVisible}
+        >
           <div className="share-btn-label">Share</div>
           <button className="share-btn" aria-label="Copy link" title="Copy link" onClick={handleCopy}>
             {copied ? <Check /> : <LinkIcon />}

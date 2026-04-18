@@ -276,6 +276,15 @@
   top: 40%;
   display: flex; flex-direction: column; gap: 8px;
   z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity .28s ease, transform .28s ease;
+}
+.blog-post-page .share-rail.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 @media (max-width: 1380px) { .blog-post-page .share-rail { display: none; } }
 .blog-post-page .share-btn {
