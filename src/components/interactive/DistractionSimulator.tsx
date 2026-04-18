@@ -277,19 +277,21 @@ export function DistractionSimulator({
   }, [handleScroll, scrollActive, mounted])
 
   // Scroll-derived progress (0–100). No remapping; distraction thresholds
-  // are tuned to the scroll directly. First ~25% of scroll is clean; after
+  // are tuned to the scroll directly. First ~30% of scroll is clean; after
   // that every distraction type ramps in as a continuous function of pct so
-  // the mount is smooth, not stepwise.
+  // the mount is smooth, not stepwise. Slower ramp than before — previous
+  // version hit peak chaos by ~pct 70 and felt punishing.
   const pct = scrollActive ? scrollProgress * 100 : 0
-  // Universal ramp: 0 at pct<=25, rising linearly toward 1 at pct=100.
-  const t = Math.max(0, Math.min(1, (pct - 25) / 75))
+  // Universal ramp: 0 at pct<=30, rising linearly toward 1 at pct=95.
+  const t = Math.max(0, Math.min(1, (pct - 30) / 65))
 
-  // ── Word replacement — smooth linear ramp
+  // ── Word replacement — smooth linear ramp, peaks at 55% replaced so
+  // the underlying paragraph stays partially legible even at full chaos.
   const paragraphs = text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean)
   const tokensPerParagraph = paragraphs.map((p) => p.split(/\s+/))
   const wordCount = tokensPerParagraph.reduce((acc, p) => acc + p.length, 0)
 
-  const replaceRatio = t * 0.8  // up to 80% of words replaced at peak
+  const replaceRatio = t * 0.55
   const replacedIndices = pickIndices(wordCount, Math.floor(wordCount * replaceRatio), 42)
   const replacedSet = new Set(replacedIndices)
 
@@ -333,14 +335,15 @@ export function DistractionSimulator({
   // (leaving ~20rem of runway at the bottom for the reveal card).
   const stickyBaseRem = scrollProgress * 108
 
-  // ── Notifications — earlier first appearance, tighter spacing, more of
-  // them simultaneously on screen because they pile up instead of vanishing.
+  // ── Notifications — slower arrival, cap at 10 visible at once so the
+  // pile doesn't overwhelm. First at pct=32; spaced 5.5% apart.
   const notifVisible: { n: NotificationDef; style: React.CSSProperties }[] = []
   {
     const rand = seededRandom(7)
-    const firstAt = 20
-    const step = 2.8
-    for (let i = 0; i < notifications.length; i++) {
+    const firstAt = 32
+    const step = 5.5
+    const maxVisible = 10
+    for (let i = 0; i < Math.min(notifications.length, maxVisible); i++) {
       const threshold = firstAt + i * step
       const lane = i % 2  // 0 = right column, 1 = left column
       const row = Math.floor(i / 2)
@@ -368,11 +371,11 @@ export function DistractionSimulator({
   // base so the pile looks chaotic.
   const thoughtBubbles: { text: string; style: React.CSSProperties }[] = []
   {
-    const bubbleStart = 40
-    const bubbleCount = Math.max(0, Math.min(14, Math.floor((pct - bubbleStart) / 4)))
+    const bubbleStart = 55
+    const bubbleCount = Math.max(0, Math.min(8, Math.floor((pct - bubbleStart) / 6)))
     const rand = seededRandom(99)
     for (let i = 0; i < bubbleCount; i++) {
-      const ownThreshold = bubbleStart + i * 4
+      const ownThreshold = bubbleStart + i * 6
       const age = Math.min(1, (pct - ownThreshold) / 4)
       const verticalOffset = (rand() - 0.5) * 28
       const leftPct = 5 + rand() * 70
@@ -396,11 +399,11 @@ export function DistractionSimulator({
   // so they pile into the user's viewport at peak chaos.
   const memoryItems: { frag: MemoryFragmentDef; style: React.CSSProperties }[] = []
   {
-    const memStart = 55
-    const count = Math.max(0, Math.min(memoryFragments.length, Math.floor((pct - memStart) / 3)))
+    const memStart = 70
+    const count = Math.max(0, Math.min(7, Math.floor((pct - memStart) / 4)))
     const rand = seededRandom(31)
     for (let i = 0; i < count; i++) {
-      const ownThreshold = memStart + i * 3
+      const ownThreshold = memStart + i * 4
       const age = Math.min(1, (pct - ownThreshold) / 4)
       const frag = memoryFragments[i % memoryFragments.length]
       const size = 80 + rand() * 80
@@ -425,7 +428,11 @@ export function DistractionSimulator({
     }
   }
 
-  const showReveal = pct > 90
+  // Reveal appears earlier (pct > 65) and scroll-tracks in the user's
+  // viewport so they actually have time to read it instead of zipping past
+  // a card nailed to the bottom of the container.
+  const showReveal = pct > 65
+  const revealTopRem = stickyBaseRem + 14  // a bit below the thickest pile of distractions
 
   // Color interpolation — container background and text stay bright white
   // until pct=25, then fade smoothly into the chaos palette. Using `t`
@@ -680,15 +687,17 @@ export function DistractionSimulator({
           style={{ width: `${pct}%` }}
         />
 
-        {/* Reveal */}
+        {/* Reveal — scroll-sticky so it floats in the user's viewport from
+            pct=65 onward, giving them plenty of time to read it as the
+            chaos continues mounting around it. */}
         <div
-          className="absolute bottom-10 left-8 right-8 z-40 transition-all duration-700"
+          className="absolute left-8 right-8 z-40 transition-opacity duration-500"
           style={{
+            top: `${revealTopRem}rem`,
             opacity: showReveal ? 1 : 0,
-            transform: showReveal ? 'translateY(0)' : 'translateY(12px)',
           }}
         >
-          <div className="mx-auto max-w-[40rem] rounded-xl border border-orange-400/30 bg-black/80 px-6 py-4 backdrop-blur-md">
+          <div className="mx-auto max-w-[40rem] rounded-xl border border-orange-400/50 bg-black/85 px-6 py-4 shadow-[0_0_40px_rgba(249,115,22,0.3)] backdrop-blur-md">
             <p className="text-center text-lg font-medium leading-relaxed text-orange-300 md:text-xl">
               {revealText}
             </p>

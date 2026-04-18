@@ -3,6 +3,7 @@ import rawMetadata from './metadata.json'
 import Image from 'next/image'
 import BrainMap3DWrapper from '@/components/BrainMap3DWrapper'
 import DistractionSimulator from '@/components/DistractionSimulatorWrapper'
+import { InlineCTA } from '@/components/InlineCTA'
 
 export const metadata = createMetadata(rawMetadata)
 
@@ -35,6 +36,11 @@ Before we get into the specifics, try reading this paragraph. Scroll slowly.
 **Time estimation doesn't exist.** I have no internal clock. A task I think will take 20 minutes takes 4 hours. A task I'm dreading takes 15 minutes. Experience hasn't improved this.
 
 **Context switching is a full cold boot.** Not a stash and restore — a complete state loss. Switching from one codebase to another means 30-60 minutes of re-orientation. Every interruption is starting from zero.
+
+<InlineCTA
+  heading="Want more writing about the neurodivergent engineering experience?"
+  blurb="I publish essays on building AI scaffolding around ADHD and autism — the specific failure modes, the specific workarounds, and the systems I'm engineering around my own brain. Drop your email and I'll send the next one."
+/>
 
 ## The paradox: I need MORE stimuli, not fewer
 
@@ -90,6 +96,11 @@ I [shipped 9 posts in 48 hours](/blog/nine-posts-in-48-hours) this way. Not beca
 
 The agents don't get seduced by the interesting refactor when there's a production bug. They work the queue in order. I set the priority once and they execute.
 
+<InlineCTA
+  heading="If you're an ND engineer building your own scaffolding, I want to hear from you"
+  blurb="Subscribe and you'll get the playbook posts first — the exact skill files, the CLAUDE.md patterns, the prompt templates I'm using to externalize the work my brain can't hold."
+/>
+
 ### Context switching → warm handoffs with zero state loss
 
 My brain does full cold restarts on every context switch. The chat threads don't.
@@ -127,3 +138,8 @@ My brain is the service. The agents are the monitoring, the auto-scaling, and th
 If you're a neurodivergent engineer and you haven't started building this kind of scaffolding, start small. Put one thing you keep forgetting into a CLAUDE.md. Ask an agent to start a task you've been unable to initiate. Let it hold the context you can't hold.
 
 The tools are capable enough now. The executive function you were never going to develop on your own — it's available as infrastructure you can engineer and improve.
+
+<InlineCTA
+  heading="Get the next neurodivergent-engineer essay when it drops"
+  blurb="I write about the specific patterns — body-doubling with AI agents, externalizing working memory, turning hyperfocus into something sustainable — with enough detail that you can actually implement them. No motivational fluff."
+/>

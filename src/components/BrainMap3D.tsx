@@ -35,8 +35,10 @@ function createTextTexture(
   subText?: string,
 ): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
-  const w = 1024
-  const h = 256
+  // Wider canvas so long subtitle strings (e.g. "With AI Scaffolding · PFC
+  // restored") don't get clipped by the sprite's billboard frame.
+  const w = 1536
+  const h = 272
   canvas.width = w
   canvas.height = h
   const ctx = canvas.getContext('2d')!
@@ -45,9 +47,12 @@ function createTextTexture(
   ctx.font = '700 96px ui-monospace, SFMono-Regular, Menlo, monospace'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.fillText(text, w / 2, subText ? h * 0.38 : h * 0.5)
+  ctx.fillText(text, w / 2, subText ? h * 0.36 : h * 0.5)
   if (subText && subColor) {
-    ctx.font = '500 48px ui-monospace, SFMono-Regular, Menlo, monospace'
+    // Smaller sub so long mode names/tags fit inside the sprite width
+    // across all the mode toggles ("With AI Scaffolding · PFC restored"
+    // is the longest one we render).
+    ctx.font = '500 40px ui-monospace, SFMono-Regular, Menlo, monospace'
     ctx.fillStyle = subColor
     ctx.fillText(subText, w / 2, h * 0.76)
   }
@@ -76,7 +81,9 @@ function buildTextSprite(
     toneMapped: false,
   })
   const sprite = new THREE.Sprite(mat)
-  sprite.scale.set(1.7, 0.42, 1)
+  // Wider+taller sprite so the label + subtitle always fit regardless of
+  // which ADHD mode is selected. Aspect ratio matches the 1536×272 canvas.
+  sprite.scale.set(2.4, 0.425, 1)
   return sprite
 }
 
@@ -277,9 +284,9 @@ const ADHD_STATE_BY_MODE: Record<AdhdMode, ScrollState> = {
 
 const MODE_BUTTONS: { mode: AdhdMode; short: string; tag: string }[] = [
   { mode: 'rest',        short: 'At Rest',        tag: 'low PFC · DMN loud' },
-  { mode: 'hyperfocus',  short: 'Hyperfocus',     tag: '270% on 3 networks' },
-  { mode: 'crash',       short: 'The Crash',      tag: 'systems offline' },
-  { mode: 'scaffolding', short: 'With AI Scaffolding', tag: 'PFC restored externally' },
+  { mode: 'hyperfocus',  short: 'Hyperfocus',     tag: '270% · DMN crushed' },
+  { mode: 'crash',       short: 'The Crash',      tag: 'DMN rebound · fatigue' },
+  { mode: 'scaffolding', short: 'With AI Scaffolding', tag: 'PFC restored' },
 ]
 
 export type BrainMap3DProps = {
@@ -992,10 +999,9 @@ export default function BrainMap3D({
         ))}
       </div>
 
-      {/* Explicit, readable interaction hint — more prominent than the old
-          tiny corner label. Brains don't auto-rotate anymore, so the user
-          needs to know they CAN drag. */}
-      <div className="pointer-events-none absolute top-20 right-4 z-10 hidden md:block">
+      {/* Interaction hint — sits below the canvas, right side, so it never
+          collides with the "With AI Scaffolding" mode pill. */}
+      <div className="pointer-events-none absolute bottom-6 right-4 z-10 hidden md:block">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-[10px] font-mono text-white/70 backdrop-blur-sm">
           <span aria-hidden>↻</span>
           drag the brains to rotate
