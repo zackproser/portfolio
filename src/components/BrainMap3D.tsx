@@ -73,6 +73,41 @@ function buildTextSprite(
   return sprite
 }
 
+// Update a sprite's texture with new text content. Disposes the old texture
+// and replaces it with a freshly rendered one.
+function updateTextSprite(
+  sprite: THREE.Sprite,
+  text: string,
+  color: string,
+  subColor?: string,
+  subText?: string,
+): void {
+  const canvas = document.createElement('canvas')
+  const w = 1024
+  const h = 256
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')!
+  ctx.clearRect(0, 0, w, h)
+  ctx.fillStyle = color
+  ctx.font = '700 96px ui-monospace, SFMono-Regular, Menlo, monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(text, w / 2, subText ? h * 0.38 : h * 0.5)
+  if (subText && subColor) {
+    ctx.font = '500 48px ui-monospace, SFMono-Regular, Menlo, monospace'
+    ctx.fillStyle = subColor
+    ctx.fillText(subText, w / 2, h * 0.76)
+  }
+  const mat = sprite.material as THREE.SpriteMaterial
+  mat.map?.dispose()
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.needsUpdate = true
+  tex.anisotropy = 4
+  mat.map = tex
+  mat.needsUpdate = true
+}
+
 // ─── Networks ───────────────────────────────────────────────────────────────
 // Each network is a bundle of curved fiber tracts anchored in an anatomical
 // region. When the network is "active" the fibers emit light and signal
@@ -273,12 +308,14 @@ export default function BrainMap3D({
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkKey | null>(null)
   const [webglFailed, setWebglFailed] = useState(false)
   const stateRef = useRef<ScrollState>(ADHD_STATE_BY_MODE[defaultMode])
+  const adhdModeRef = useRef<AdhdMode>(defaultMode)
 
   const currentState = ADHD_STATE_BY_MODE[adhdMode]
 
   useEffect(() => {
     stateRef.current = currentState
-  }, [currentState])
+    adhdModeRef.current = adhdMode
+  }, [currentState, adhdMode])
 
   const handleNetworkClick = useCallback((key: NetworkKey) => {
     setSelectedNetwork(prev => (prev === key ? null : key))
@@ -705,6 +742,7 @@ export default function BrainMap3D({
     const clock = new THREE.Clock()
     let raf = 0
     let isVisible = false
+    let lastAdhdMode: AdhdMode | null = null
 
     const animate = () => {
       if (!isVisible) return
@@ -712,6 +750,24 @@ export default function BrainMap3D({
       const delta = Math.min(clock.getDelta(), 1 / 30)
 
       const elapsed = clock.elapsedTime
+
+      // Update ADHD brain label when mode changes
+      const currentAdhdMode = adhdModeRef.current
+      if (currentAdhdMode !== lastAdhdMode) {
+        lastAdhdMode = currentAdhdMode
+        const adhdSide = sides.find((s) => s.key === 'adhd')
+        if (adhdSide) {
+          const modeButton = MODE_BUTTONS.find((b) => b.mode === currentAdhdMode)
+          const subLabel = modeButton ? `${modeButton.short} · ${modeButton.tag}` : ''
+          updateTextSprite(
+            adhdSide.label,
+            'NEURODIVERGENT',
+            '#fbbf24',
+            '#fde68a',
+            subLabel,
+          )
+        }
+      }
 
       // Per-side update: glow sprites carry the region-of-activation story.
       for (const side of sides) {
@@ -855,6 +911,7 @@ export default function BrainMap3D({
           }
         })
       }
+      cachedGlowTexture = null
       renderer.dispose()
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement)
     }
