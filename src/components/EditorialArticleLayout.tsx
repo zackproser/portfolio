@@ -1,6 +1,5 @@
 'use client'
 
-import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -10,7 +9,6 @@ import MiniPaywall from '@/components/MiniPaywall'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import type { ExtendedMetadata, Content } from '@/types'
-import { generateOgUrl } from '@/utils/ogUrl'
 
 const VOICE_AFFILIATE_SLUGS = [
   'wisprflow', 'granola', 'voice-to-text', 'voice-tools', 'voice-ai',
@@ -95,13 +93,6 @@ export function EditorialArticleLayout({
   const publishedLabel = formatPublished(metadata?.date)
   const tags = metadata?.tags || []
   const category = tags[0] || 'Applied AI'
-
-  const ogUrl = generateOgUrl({
-    title: safeTitle,
-    description: safeDescription || undefined,
-    image: metadata?.image,
-    slug: baseSlug as any,
-  })
 
   const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}/blog/${baseSlug}`
 
@@ -188,20 +179,6 @@ export function EditorialArticleLayout({
 
   return (
     <>
-      <Head>
-        <title>{`${safeTitle} - Zachary Proser`}</title>
-        <meta name="description" content={safeDescription} />
-        <meta property="og:title" content={safeTitle} />
-        <meta property="og:description" content={safeDescription} />
-        <meta property="og:url" content={fullUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:image" content={ogUrl} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={safeTitle} />
-        <meta name="twitter:description" content={safeDescription} />
-        <meta name="twitter:image" content={ogUrl} />
-        <meta name="twitter:domain" content="zackproser.com" />
-      </Head>
 
       <div className="blog-post-page">
         {/* Reading progress */}
