@@ -227,11 +227,42 @@
   filter: grayscale(100%) contrast(1.12) brightness(1.04);
   mix-blend-mode: multiply;
   z-index: 0;
+  transition: filter .45s ease, mix-blend-mode .45s ease, opacity .45s ease, transform .6s ease;
 }
 .dark .blog-post-page .hdr-A-plate .plate-image {
   filter: grayscale(100%) contrast(1.15) brightness(1.08);
   mix-blend-mode: lighten;
   opacity: .9;
+}
+
+/* Hero portrait rollover — fade to full color on hover/focus */
+.blog-post-page .hdr-A-plate { transition: box-shadow .35s ease, border-color .35s ease; }
+.blog-post-page .hdr-A-plate::before { transition: opacity .45s ease; }
+.blog-post-page .hdr-A-plate:hover::before,
+.blog-post-page .hdr-A-plate:focus-within::before { opacity: .25; }
+.blog-post-page .hdr-A-plate:hover .plate-image,
+.blog-post-page .hdr-A-plate:focus-within .plate-image {
+  filter: grayscale(0%) contrast(1) brightness(1);
+  mix-blend-mode: normal;
+  opacity: 1;
+  transform: scale(1.01);
+}
+.dark .blog-post-page .hdr-A-plate:hover .plate-image,
+.dark .blog-post-page .hdr-A-plate:focus-within .plate-image {
+  filter: grayscale(0%) contrast(1.05) brightness(1);
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+.blog-post-page .hdr-A-plate:hover {
+  box-shadow: 0 2px 0 0 rgba(230,126,34,1), 0 28px 48px -18px rgba(24,24,40,.35);
+}
+.dark .blog-post-page .hdr-A-plate:hover {
+  box-shadow: 0 2px 0 0 rgba(243,156,18,.95), 0 28px 48px -18px rgba(0,0,0,.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .blog-post-page .hdr-A-plate .plate-image,
+  .blog-post-page .hdr-A-plate,
+  .blog-post-page .hdr-A-plate::before { transition: none; }
 }
 .blog-post-page .hdr-A-plate .glyph {
   position: absolute; inset: 0; z-index: 2;

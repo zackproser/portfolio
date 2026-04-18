@@ -1,4 +1,4 @@
-import type { Metadata, Route } from "next"
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import YoutubeEmbed from "@/components/YoutubeEmbed"

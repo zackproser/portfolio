@@ -1,16 +1,15 @@
 'use client'
 
-import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { Twitter, Linkedin, Github, Link as LinkIcon, Bookmark, Check } from 'lucide-react'
+import { track } from '@vercel/analytics'
 import GiscusWrapper from '@/components/GiscusWrapper'
 import MiniPaywall from '@/components/MiniPaywall'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import type { ExtendedMetadata, Content } from '@/types'
-import { generateOgUrl } from '@/utils/ogUrl'
 
 const VOICE_AFFILIATE_SLUGS = [
   'wisprflow', 'granola', 'voice-to-text', 'voice-tools', 'voice-ai',
@@ -96,13 +95,6 @@ export function EditorialArticleLayout({
   const tags = metadata?.tags || []
   const category = tags[0] || 'Applied AI'
 
-  const ogUrl = generateOgUrl({
-    title: safeTitle,
-    description: safeDescription || undefined,
-    image: metadata?.image,
-    slug: baseSlug as any,
-  })
-
   const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}/blog/${baseSlug}`
 
   const articleRef = useRef<HTMLDivElement | null>(null)
@@ -168,11 +160,28 @@ export function EditorialArticleLayout({
     }
   }, [])
 
+  const trackShare = (channel: 'copy' | 'x' | 'linkedin' | 'bookmark') => {
+    track('post_share', {
+      channel,
+      slug: baseSlug,
+      title: safeTitle,
+      url: fullUrl,
+    })
+  }
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(fullUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
+      trackShare('copy')
+    } catch { /* ignore */ }
+  }
+
+  const handleBookmark = () => {
+    try {
+      localStorage.setItem(`bookmark:${baseSlug}`, '1')
+      trackShare('bookmark')
     } catch { /* ignore */ }
   }
 
@@ -188,20 +197,6 @@ export function EditorialArticleLayout({
 
   return (
     <>
-      <Head>
-        <title>{`${safeTitle} - Zachary Proser`}</title>
-        <meta name="description" content={safeDescription} />
-        <meta property="og:title" content={safeTitle} />
-        <meta property="og:description" content={safeDescription} />
-        <meta property="og:url" content={fullUrl} />
-        <meta property="og:type" content="article" />
-        <meta property="og:image" content={ogUrl} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={safeTitle} />
-        <meta name="twitter:description" content={safeDescription} />
-        <meta name="twitter:image" content={ogUrl} />
-        <meta name="twitter:domain" content="zackproser.com" />
-      </Head>
 
       <div className="blog-post-page">
         {/* Reading progress */}
@@ -297,17 +292,31 @@ export function EditorialArticleLayout({
           <button className="share-btn" aria-label="Copy link" title="Copy link" onClick={handleCopy}>
             {copied ? <Check /> : <LinkIcon />}
           </button>
-          <a className="share-btn" href={shareXUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+          <a
+            className="share-btn"
+            href={shareXUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on X"
+            onClick={() => trackShare('x')}
+          >
             <Twitter />
           </a>
-          <a className="share-btn" href={shareLinkedInUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+          <a
+            className="share-btn"
+            href={shareLinkedInUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on LinkedIn"
+            onClick={() => trackShare('linkedin')}
+          >
             <Linkedin />
           </a>
           <button
             className="share-btn"
             aria-label="Save for later"
             title="Save for later"
-            onClick={() => { try { localStorage.setItem(`bookmark:${baseSlug}`, '1') } catch {} }}
+            onClick={handleBookmark}
           >
             <Bookmark />
           </button>
