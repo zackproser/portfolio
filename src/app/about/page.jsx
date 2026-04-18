@@ -84,13 +84,13 @@ export default function About() {
                 , where we help companies add enterprise features to their apps
                 in minutes, not months.
               </p>
-              <div className="editorial-secondary text-parchment-600 dark:text-slate-400 mt-6">
+              <div className="editorial-secondary text-burnt-400 dark:text-amber-400 mt-6">
                 <a href="#work">Work history →</a>
-                <span>·</span>
+                <span className="text-parchment-500 dark:text-slate-500">·</span>
                 <Link href="/blog">Writing →</Link>
-                <span>·</span>
+                <span className="text-parchment-500 dark:text-slate-500">·</span>
                 <Link href="/testimonials">Testimonials →</Link>
-                <span>·</span>
+                <span className="text-parchment-500 dark:text-slate-500">·</span>
                 <Link href="/contact">Say hello →</Link>
               </div>
               <dl className="editorial-meta text-parchment-600 dark:text-slate-400">
@@ -108,13 +108,13 @@ export default function About() {
               </dl>
             </div>
 
-            <div className="lg:justify-self-end">
-              <div className="editorial-portrait" style={{ maxWidth: 440 }}>
+            <div className="editorial-hero-plate">
+              <div className="editorial-portrait">
                 <Image
                   src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
                   alt="Portrait of Zachary Proser"
                   fill
-                  sizes="(max-width: 1024px) 80vw, 440px"
+                  sizes="(max-width: 1024px) 80vw, 500px"
                   className="editorial-portrait-image"
                   priority
                 />
