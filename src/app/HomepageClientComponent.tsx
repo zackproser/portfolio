@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, FormEvent } from 'react'
 import type { Route } from 'next'
 import { track } from '@vercel/analytics'
@@ -77,7 +78,8 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
             Applied AI · WorkOS
           </div>
           <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
-            AI engineering for teams that actually ship.
+            AI engineering for teams that actually{' '}
+            <span className="text-burnt-400 dark:text-amber-400">ship</span>.
           </h1>
           <p className="editorial-lede text-parchment-600 dark:text-slate-300">
             I build retrieval pipelines, agent harnesses, and ship-ready
@@ -154,7 +156,16 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
         </div>
 
         <div className="lg:justify-self-end">
-          <div className="editorial-portrait" role="img" aria-label="Portrait of Zachary Proser" />
+          <div className="editorial-portrait">
+            <Image
+              src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
+              alt="Portrait of Zachary Proser"
+              fill
+              sizes="(max-width: 1024px) 80vw, 340px"
+              className="editorial-portrait-image"
+              priority
+            />
+          </div>
           <div className="editorial-portrait-caption text-parchment-600 dark:text-slate-400">
             Plate I · Applied AI · MMXXVI
           </div>

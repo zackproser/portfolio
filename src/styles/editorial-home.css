@@ -222,11 +222,23 @@
     0 24px 40px -20px rgba(0, 0, 0, 0.6);
   background: linear-gradient(160deg, #475569 0%, #1e293b 55%, #0f172a 100%);
 }
+.editorial-portrait-image {
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(100%) contrast(1.12) brightness(1.04);
+  mix-blend-mode: multiply;
+}
+.dark .editorial-portrait-image {
+  filter: grayscale(100%) contrast(1.15) brightness(1.08);
+  mix-blend-mode: lighten;
+  opacity: 0.9;
+}
 .editorial-portrait::before {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
   background: repeating-linear-gradient(
     0deg,
     rgba(230, 126, 34, 0.18) 0 1px,

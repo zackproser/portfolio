@@ -118,7 +118,9 @@ export function ConsultancyNav() {
     <header className="w-full h-16 sm:h-18 flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link className="flex items-center justify-center shrink-0" href="/">
-          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white whitespace-nowrap">Zachary Proser</span>
+          <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white whitespace-nowrap">
+            Zachary <span className="text-burnt-400 dark:text-amber-400">Proser</span>
+          </span>
         </Link>
         <div className="lg:hidden">
           <button
