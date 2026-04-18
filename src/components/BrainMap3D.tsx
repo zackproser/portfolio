@@ -9,9 +9,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 // the visual signature that separates ADHD hyperfocus from NT task focus:
 // same regions active, but hyperfocus has phasic dopamine-burst halos that
 // NT simply doesn't have.
-let cachedGlowTexture: THREE.CanvasTexture | null = null
-function getGlowTexture(): THREE.CanvasTexture {
-  if (cachedGlowTexture) return cachedGlowTexture
+function createGlowTexture(): THREE.CanvasTexture {
   const size = 256
   const canvas = document.createElement('canvas')
   canvas.width = canvas.height = size
@@ -25,7 +23,6 @@ function getGlowTexture(): THREE.CanvasTexture {
   ctx.fillRect(0, 0, size, size)
   const tex = new THREE.CanvasTexture(canvas)
   tex.needsUpdate = true
-  cachedGlowTexture = tex
   return tex
 }
 
@@ -455,9 +452,9 @@ export default function BrainMap3D({
       // anchored at the network's centroid. Invisible until intensity > 1.0,
       // then bloom outward with a rapid pulse. This is the hyperfocus-
       // specific visual effect absent from NT baseline at equivalent coverage.
-      const glowTex = getGlowTexture()
       const bursts: BurstItem[] = (Object.keys(NETWORKS) as NetworkKey[]).map((nkey) => {
         const net = NETWORKS[nkey]
+        const glowTex = createGlowTexture()
         const mat = new THREE.SpriteMaterial({
           map: glowTex,
           color: new THREE.Color(net.color),
@@ -902,7 +899,6 @@ export default function BrainMap3D({
           }
         })
       }
-      cachedGlowTexture = null
       renderer.dispose()
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement)
     }
