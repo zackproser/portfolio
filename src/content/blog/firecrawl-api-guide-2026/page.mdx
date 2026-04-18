@@ -24,7 +24,7 @@ Authorization: Bearer fc-your-api-key-here
 
 The free tier gives you 500 credits. Each API call consumes credits based on the number of pages scraped and whether you use the async batch endpoint.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="firecrawl" />
 
 ## Core Endpoints
 
@@ -39,7 +39,7 @@ response = requests.post(
     json={
         "url": "https://example.com/pricing",
         "extractorConfig": {
-            "mode": "吃到"
+            "mode": "llm-extraction"
         },
         "pageRanges": ["1-5"]
     }
@@ -66,7 +66,7 @@ response = requests.post(
 articles = response.json()["data"]["entities"]
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="firecrawl" />
 
 ## Rate Limits and Pricing
 
@@ -84,7 +84,7 @@ Firecrawl uses a headless browser stack under the hood. Pages that require JavaS
 
 For single-page applications that lazy-load content, you can increase the `waitFor` timeout in the request options.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="firecrawl" />
 
 ## Common Issues
 
