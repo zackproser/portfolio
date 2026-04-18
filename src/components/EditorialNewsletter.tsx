@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
+import { usePathname } from 'next/navigation'
 import { track } from '@vercel/analytics'
 import { sendGTMEvent } from '@next/third-parties/google'
 
@@ -17,6 +18,7 @@ export function EditorialNewsletter({
   title = 'Applied AI dispatches read by 5,000+ engineers',
   fine = 'No spam. Unsubscribe in one click.',
 }: EditorialNewsletterProps) {
+  const referrer = usePathname()
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
 
@@ -29,25 +31,26 @@ export function EditorialNewsletter({
     setStatus('submitting')
     setErrorMessage('')
 
+    track('newsletter-signup', { location })
+    sendGTMEvent({
+      event: 'newsletter-signup-conversion',
+      method: 'newsletter',
+      source: referrer,
+      position: location,
+      tags: '',
+      slug: referrer?.split('/').pop() || 'homepage',
+    })
+
     try {
       const response = await fetch('/api/form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, referrer: '/', tags: [] }),
+        body: JSON.stringify({ email, referrer, tags: [] }),
       })
       const data = await response.json().catch(() => ({}))
       if (!response.ok) {
         throw new Error(data?.data || 'Failed to subscribe')
       }
-      track('newsletter-signup', { location })
-      sendGTMEvent({
-        event: 'newsletter-signup-conversion',
-        method: 'newsletter',
-        source: '/',
-        position: location,
-        tags: '',
-        slug: location,
-      })
       setStatus('success')
       form.reset()
     } catch (err) {
