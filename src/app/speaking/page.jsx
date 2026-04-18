@@ -1,10 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import YoutubeEmbed from '@/components/YoutubeEmbed'
-import { SimpleLayout } from '@/components/SimpleLayout'
 import { createMetadata } from '@/utils/createMetadata'
 import { ExternalLinkButton } from '@/components/ExternalLinkButton'
-import { ExternalLink, Calendar, Users, Building2, Youtube, Link as LinkIcon, Mic, Presentation, GraduationCap, Play } from 'lucide-react'
 import { speakingEngagements, galleryImages } from './speaking-data'
 
 export const metadata = createMetadata({
@@ -43,196 +41,248 @@ export const metadata = createMetadata({
   ]
 });
 
+function SpeakingEditorialCard({ engagement, index, prefix }) {
+  const idx = String(index).padStart(2, '0')
+  const kind = engagement.type === 'internal' ? 'Internal' : 'Public'
+  const href = engagement.slug ? `/speaking/${engagement.slug}` : null
+  const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center'
 
-// Component for a single speaking engagement card
-function SpeakingCard({ engagement }) {
-  const imagePositionClass = engagement.imagePosition === 'top' ? 'object-top' : 'object-center';
-
-  return (
-    <div className="bg-parchment-50 dark:bg-slate-800 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-      {/* Image */}
-      <Link href={engagement.slug ? `/speaking/${engagement.slug}` : '#'} className={engagement.slug ? '' : 'pointer-events-none'}>
-        <div className="relative h-48 bg-gradient-to-br from-burnt-400 to-burnt-500 dark:from-amber-500 dark:to-amber-600">
-          <Image src={engagement.image}
+  const Content = (
+    <article className="editorial-card group h-full">
+      <div className="editorial-card-link">
+        <div className="editorial-card-meta flex items-center justify-between">
+          <span>{prefix}{idx} · {kind}</span>
+          {engagement.slidevUrl ? (
+            <span className="text-burnt-400 dark:text-amber-400">Interactive deck</span>
+          ) : null}
+        </div>
+        <div className="editorial-card-media">
+          <Image
+            src={engagement.image}
             alt={engagement.title}
             fill
-            className={`object-cover ${imagePositionClass}`}
-           />
-          {/* Badge for internal vs public */}
-          <div className="absolute top-4 left-4 flex gap-2">
-            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-              engagement.type === 'internal'
-                ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400'
-                : 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-            }`}>
-              {engagement.type === 'internal' ? <Building2 className="h-3 w-3" /> : <Users className="h-3 w-3" />}
-              {engagement.type === 'internal' ? 'Internal' : 'Public'}
-            </span>
-            {engagement.slidevUrl && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
-                <Play className="h-3 w-3" />
-                Interactive Deck
-              </span>
-            )}
-          </div>
-
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className={`editorial-card-image ${imagePositionClass}`}
+          />
+          <div className="editorial-card-rule" />
         </div>
-      </Link>
-
-      {/* Content */}
-      <div className="p-6">
-        <div className="flex items-center gap-2 text-sm text-parchment-500 dark:text-slate-400 mb-2">
-          <Calendar className="h-4 w-4" />
-          {engagement.date}
-        </div>
-        
-        {engagement.slug ? (
-          <Link href={`/speaking/${engagement.slug}`}>
-            <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors">
-              {engagement.title}
-            </h3>
-          </Link>
-        ) : (
-          <h3 className="text-xl font-bold text-charcoal-50 dark:text-slate-100 mb-2">
-            {engagement.title}
-          </h3>
-        )}
-        
-        <p className="text-burnt-400 dark:text-amber-400 font-medium mb-3">
-          {engagement.event}
-        </p>
-        
-        <p className="text-parchment-600 dark:text-slate-300 mb-4 line-clamp-3">
-          {engagement.description}
-        </p>
-
-        {/* Details */}
-        <div className="space-y-2 mb-4 text-sm">
-          <div className="flex items-center gap-2 text-parchment-500 dark:text-slate-400">
-            <Users className="h-4 w-4" />
-            <span>{engagement.audience}</span>
+        <div className="editorial-card-body">
+          <div className="editorial-card-date">
+            {engagement.date} · {engagement.event}
           </div>
-          <div className="text-parchment-500 dark:text-slate-400">
-            📍 {engagement.location}
-          </div>
-        </div>
-
-        {/* Topics */}
-        <div className="mb-4">
-          <div className="flex flex-wrap gap-2">
-            {engagement.topics.map((topic, index) => (
+          <h3 className="editorial-card-title">{engagement.title}</h3>
+          {engagement.description ? (
+            <p className="editorial-card-desc">{engagement.description}</p>
+          ) : null}
+          <div className="flex flex-wrap gap-1.5 mt-1">
+            {engagement.topics.slice(0, 4).map((topic) => (
               <span
-                key={index}
-                className="inline-block px-2 py-1 bg-burnt-400/10 dark:bg-amber-500/20 text-burnt-500 dark:text-amber-400 text-xs rounded-md"
+                key={topic}
+                className="inline-block px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-burnt-500 dark:text-amber-400 border border-burnt-400/30 dark:border-amber-400/30 rounded-sm"
               >
                 {topic}
               </span>
             ))}
           </div>
-        </div>
-
-        {/* Links */}
-        {engagement.links && engagement.links.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {engagement.links.map((link, index) => (
-              <ExternalLinkButton key={index} link={link} />
-            ))}
+          <div className="editorial-card-footer">
+            <span className="editorial-card-read">
+              {engagement.audience.split(' ').slice(0, 3).join(' ')} · {engagement.location}
+            </span>
+            <span className="editorial-card-index">{prefix}.{idx}</span>
           </div>
-        )}
+          {engagement.links && engagement.links.length > 0 ? (
+            <div className="flex flex-wrap gap-2 pt-2 border-t border-parchment-300/40 dark:border-slate-700/40">
+              {engagement.links.map((link, i) => (
+                <ExternalLinkButton key={i} link={link} />
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
-  );
+    </article>
+  )
+
+  if (!href) return Content
+
+  return (
+    <Link href={href} className="block h-full">
+      {Content}
+    </Link>
+  )
+}
+
+function SectionHead({ num, title, moreHref, moreLabel = 'Archive →' }) {
+  return (
+    <header className="editorial-section-head text-charcoal-50 dark:text-parchment-100">
+      <div className="editorial-section-num">§ {num}</div>
+      <h2 className="editorial-section-title">{title}</h2>
+      {moreHref ? (
+        <Link href={moreHref} className="editorial-section-more text-burnt-400 dark:text-amber-400 hover:underline">
+          {moreLabel}
+        </Link>
+      ) : <span />}
+    </header>
+  )
 }
 
 export default function Speaking() {
-  const publicEngagements = speakingEngagements.filter(e => e.type === 'public');
-  const internalEngagements = speakingEngagements.filter(e => e.type === 'internal');
+  const publicEngagements = speakingEngagements.filter(e => e.type === 'public')
+  const internalEngagements = speakingEngagements.filter(e => e.type === 'internal')
 
   return (
-    <SimpleLayout
-        title="Speaking Engagements"
-        intro="I speak at conferences, meetups, and corporate events about AI, infrastructure as code, vector databases, and developer tools. I also provide internal training for engineering and content teams."
-      >
+    <div className="editorial-home flex flex-col min-h-screen text-charcoal-50 dark:text-parchment-100 theme-transition">
+      <main className="flex-1">
+        {/* ----- Hero ----- */}
+        <section className="pt-16 pb-12 md:pt-24 md:pb-16">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-end">
+            <div>
+              <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
+                Speaking · Conferences · Corporate training
+              </div>
+              <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
+                Talks, workshops, and trainings for teams that{' '}
+                <span className="text-burnt-400 dark:text-amber-400">actually ship</span>.
+              </h1>
+              <p className="editorial-lede text-parchment-600 dark:text-slate-300">
+                Keynotes, hands-on workshops, and corporate training across AI engineering,
+                agent-assisted development, RAG, and developer tools. Fourteen years in production.
+              </p>
+              <div className="editorial-secondary text-parchment-600 dark:text-slate-400 mt-6">
+                <Link href="/contact">Book a talk →</Link>
+                <span>·</span>
+                <Link href="/workshops/claude-cowork">Workshops →</Link>
+                <span>·</span>
+                <Link href="/ai-training">Corporate training →</Link>
+              </div>
+              <dl className="editorial-meta text-parchment-600 dark:text-slate-400">
+                <dt>Featured</dt>
+                <dd>DevSecCon 2025 keynote · AI Engineering World Fair workshop (70+ engineers)</dd>
+                <dt>Recent</dt>
+                <dd>AI Engineering London · WorkOS × Anthropic · a16z</dd>
+              </dl>
+            </div>
 
-        {/* Featured Keynote */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-4 flex items-center gap-2">
-            <Presentation className="h-6 w-6 text-red-600" />
-            DevSecCon 2025 Keynote
-          </h2>
-          <div className="">
-            <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote" />
-            <div className="mt-4">
-              <ExternalLinkButton link={{ type: 'youtube', url: 'https://www.youtube.com/watch?v=kwIzRkzO_Z4', label: 'Watch on YouTube' }} />
+            {/* Featured keynote preview on the right */}
+            <div>
+              <div className="editorial-rule-label text-parchment-600 dark:text-slate-400 mb-3">
+                Featured keynote
+              </div>
+              <div className="rounded-md overflow-hidden border border-parchment-300 dark:border-slate-700 shadow-lg">
+                <YoutubeEmbed urls="https://www.youtube.com/watch?v=kwIzRkzO_Z4" title="DevSecCon 2025 Keynote" />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-[12px] font-mono uppercase tracking-wider text-parchment-600 dark:text-slate-400">
+                <span>DevSecCon 2025 · Keynote</span>
+                <a
+                  href="https://www.youtube.com/watch?v=kwIzRkzO_Z4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-burnt-400 dark:text-amber-400 hover:underline"
+                >
+                  Watch →
+                </a>
+              </div>
             </div>
           </div>
         </section>
 
-
-        {/* Public Engagements */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6 flex items-center gap-2">
-            <Mic className="h-6 w-6 text-burnt-400 dark:text-amber-400" />
-            Conference Talks & Public Workshops
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {publicEngagements.map((engagement) => (
-              <SpeakingCard key={engagement.id} engagement={engagement} />
-            ))}
+        {/* ----- § 01 Public engagements ----- */}
+        <section className="py-14 editorial-section-alt">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <SectionHead
+              num="01"
+              title="Conference talks & public workshops"
+              moreHref="/contact"
+              moreLabel="Book a talk →"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {publicEngagements.map((engagement, i) => (
+                <SpeakingEditorialCard
+                  key={engagement.id}
+                  engagement={engagement}
+                  index={i + 1}
+                  prefix="T"
+                />
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Speaking Gallery */}
-        <section className="mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {galleryImages.map((img, index) => (
-              <div key={index} className="relative h-64 rounded-xl overflow-hidden shadow-lg">
-                <Image src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-300"
-                 />
-              </div>
-            ))}
+        {/* ----- Gallery strip ----- */}
+        <section className="py-14">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+              In the room
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {galleryImages.map((img, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-[4/3] overflow-hidden rounded-sm border border-parchment-300 dark:border-slate-700 shadow-md"
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-500 hover:scale-[1.03]"
+                    style={{ filter: 'contrast(1.05)' }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Internal Training */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-6 flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-amber-600" />
-            Corporate Training & Team Development
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {internalEngagements.map((engagement) => (
-              <SpeakingCard key={engagement.id} engagement={engagement} />
-            ))}
+        {/* ----- § 02 Internal training ----- */}
+        <section className="py-14 editorial-section-alt">
+          <div className="container mx-auto max-w-6xl px-4 md:px-6">
+            <SectionHead
+              num="02"
+              title="Corporate training & team development"
+              moreHref="/ai-training"
+              moreLabel="Training services →"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {internalEngagements.map((engagement, i) => (
+                <SpeakingEditorialCard
+                  key={engagement.id}
+                  engagement={engagement}
+                  index={i + 1}
+                  prefix="I"
+                />
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="bg-parchment-50 dark:bg-slate-800 border border-parchment-200 dark:border-slate-700 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-charcoal-50 dark:text-slate-100 mb-4">Looking for a Speaker?</h2>
-          <p className="text-parchment-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
-            I&apos;m available for conference talks, meetups, corporate training, and workshops. 
-            I speak about AI engineering, infrastructure as code, vector databases, developer tools, 
-            and practical machine learning implementations.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-semibold rounded-md transition-colors"
-            >
-              Book a Speaking Engagement
-            </Link>
-            <Link
-              href="/ai-training"
-              className="inline-flex items-center justify-center px-6 py-3 bg-parchment-100 hover:bg-parchment-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-charcoal-50 dark:text-slate-100 font-semibold rounded-md transition-colors"
-            >
-              View Training Services
-            </Link>
+        {/* ----- CTA ----- */}
+        <section className="py-20">
+          <div className="container mx-auto max-w-4xl px-4 md:px-6 text-center">
+            <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400 justify-center">
+              Looking for a speaker?
+            </div>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold leading-tight tracking-tight mt-4 text-charcoal-50 dark:text-parchment-100">
+              Conference talks, team workshops, and practical, hands-on training
+              — tell me what your team needs to{' '}
+              <span className="text-burnt-400 dark:text-amber-400">ship</span>.
+            </h2>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
+              >
+                Book a speaking engagement →
+              </Link>
+              <Link
+                href="/workshops/claude-cowork"
+                className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold rounded-md border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
+              >
+                View the Claude Cowork workshop →
+              </Link>
+            </div>
           </div>
         </section>
-      </SimpleLayout>
-  );
-} 
+      </main>
+    </div>
+  )
+}

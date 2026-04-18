@@ -12,10 +12,10 @@ export const navItems = [
   { name: 'Writing', href: '/blog' },
   { name: 'Builds', href: '/projects' },
   { name: 'Videos', href: '/videos' },
-  { name: 'Workshops', href: '/workshops/claude-cowork' },
+  { name: 'Workshops', href: '/speaking' },
   { name: 'About', href: '/about' },
 ];
-export const navCta = { name: 'Hire →', href: '/contact' };
+export const navCta = { name: 'Hire \u2192', href: '/contact' };
 
 export function ConsultancyNav() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -27,13 +27,10 @@ export function ConsultancyNav() {
   return (
     <header className="w-full flex bg-parchment-100 dark:bg-slate-900 border-b border-parchment-300 dark:border-slate-700 sticky top-0 shadow-sm relative z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 h-16 sm:h-18 flex items-center justify-between gap-6">
-        {/* Wordmark + meta */}
+        {/* Wordmark */}
         <Link className="flex items-baseline gap-3 shrink-0" href="/">
           <span className="text-xl font-bold font-serif text-charcoal-50 dark:text-white whitespace-nowrap">
             Zachary <span className="text-burnt-400 dark:text-amber-400">Proser</span>
-          </span>
-          <span className="hidden md:inline font-mono text-[10px] tracking-[0.14em] uppercase text-parchment-600 dark:text-slate-400 whitespace-nowrap">
-            № MMXXVI · Applied AI
           </span>
         </Link>
 
@@ -66,7 +63,7 @@ export function ConsultancyNav() {
             ))}
             <Link
               href={navCta.href}
-              className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-burnt-400 dark:text-amber-400 hover:opacity-80 transition-opacity py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left"
+              className="font-mono text-[11px] tracking-[0.14em] uppercase font-semibold text-burnt-400 dark:text-amber-400 hover:opacity-80 transition-opacity py-2 lg:py-0 w-full lg:w-auto text-center lg:text-left whitespace-nowrap"
             >
               {navCta.name}
             </Link>

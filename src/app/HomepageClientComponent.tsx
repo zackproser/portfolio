@@ -72,7 +72,7 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
 
   return (
     <section className="pt-16 pb-12 md:pt-24 md:pb-16">
-      <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-14 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-14 lg:grid-cols-[1.35fr_1fr] lg:items-start">
         <div>
           <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
             Applied AI · WorkOS
@@ -161,7 +161,7 @@ function EditorialHero({ onConsult }: { onConsult: () => void }) {
               src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
               alt="Portrait of Zachary Proser"
               fill
-              sizes="(max-width: 1024px) 80vw, 340px"
+              sizes="(max-width: 1024px) 80vw, 440px"
               className="editorial-portrait-image"
               priority
             />
@@ -414,8 +414,16 @@ function ColophonFooter() {
           </div>
         </div>
         <div className="editorial-colophon-rule text-parchment-600 dark:text-slate-500">
-          <div>© MMXXVI Zachary Proser · Set in Source Serif 4 &amp; JetBrains Mono</div>
-          <div>Built with Next.js · Hosted on Vercel</div>
+          <div>
+            <span className="text-burnt-400 dark:text-amber-400">●</span>{' '}
+            Currently: Applied AI @ WorkOS · Open to{' '}
+            <Link href="/speaking" className="underline decoration-dotted underline-offset-4 hover:text-burnt-400 dark:hover:text-amber-400">workshops</Link>
+            {' '}and{' '}
+            <Link href="/contact" className="underline decoration-dotted underline-offset-4 hover:text-burnt-400 dark:hover:text-amber-400">retainers</Link>
+          </div>
+          <div>
+            <Link href="/contact" className="hover:text-burnt-400 dark:hover:text-amber-400">Get in touch →</Link>
+          </div>
         </div>
       </div>
     </footer>
