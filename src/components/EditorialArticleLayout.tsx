@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { Twitter, Linkedin, Github, Link as LinkIcon, Bookmark, Check } from 'lucide-react'
+import { track } from '@vercel/analytics'
 import GiscusWrapper from '@/components/GiscusWrapper'
 import MiniPaywall from '@/components/MiniPaywall'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
@@ -159,12 +160,29 @@ export function EditorialArticleLayout({
     }
   }, [])
 
+  const trackShare = (channel: 'copy' | 'x' | 'linkedin' | 'bookmark') => {
+    track('post_share', {
+      channel,
+      slug: baseSlug,
+      title: safeTitle,
+      url: fullUrl,
+    })
+  }
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(fullUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
+      trackShare('copy')
     } catch { /* ignore */ }
+  }
+
+  const handleBookmark = () => {
+    try {
+      localStorage.setItem(`bookmark:${baseSlug}`, '1')
+    } catch { /* ignore */ }
+    trackShare('bookmark')
   }
 
   const shareXUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(safeTitle)}&url=${encodeURIComponent(fullUrl)}`
@@ -274,17 +292,31 @@ export function EditorialArticleLayout({
           <button className="share-btn" aria-label="Copy link" title="Copy link" onClick={handleCopy}>
             {copied ? <Check /> : <LinkIcon />}
           </button>
-          <a className="share-btn" href={shareXUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+          <a
+            className="share-btn"
+            href={shareXUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on X"
+            onClick={() => trackShare('x')}
+          >
             <Twitter />
           </a>
-          <a className="share-btn" href={shareLinkedInUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
+          <a
+            className="share-btn"
+            href={shareLinkedInUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on LinkedIn"
+            onClick={() => trackShare('linkedin')}
+          >
             <Linkedin />
           </a>
           <button
             className="share-btn"
             aria-label="Save for later"
             title="Save for later"
-            onClick={() => { try { localStorage.setItem(`bookmark:${baseSlug}`, '1') } catch {} }}
+            onClick={handleBookmark}
           >
             <Bookmark />
           </button>

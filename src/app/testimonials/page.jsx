@@ -42,10 +42,7 @@ export const metadata = {
 }
 
 const featured = {
-  quote: 'When I ran your software, I felt joy.',
   name: 'Jim Brikman',
-  role: 'Co-founder of Gruntwork, OpenTofu · Author, Terraform Up & Running',
-  roleEm: 'Terraform Up & Running',
   monogram: 'JB',
   image: img.jim,
 }
