@@ -78,7 +78,7 @@ export function SubscribeForm({
     validShape === true ? 'ok' : validShape === false ? 'bad' : ''
   const validateMsg =
     validShape === true
-      ? '· looks good · press subscribe'
+      ? `· looks good · press ${submitLabel.toLowerCase()}`
       : validShape === false
       ? '· expected shape: name@domain.tld'
       : ''
