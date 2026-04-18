@@ -8,7 +8,7 @@ import {
   renderPaywalledContent
 } from '@/lib/content-handlers'
 import { notFound } from 'next/navigation'
-import { ArticleLayout } from '@/components/ArticleLayout'
+import { EditorialArticleLayout } from '@/components/EditorialArticleLayout'
 import React from 'react'
 import { CheckCircle } from 'lucide-react'
 import { metadataLogger as logger } from '@/utils/logger'
@@ -94,8 +94,7 @@ export default async function Page({ params }: PageProps) {
   const hideNewsletter = !!(content?.commerce?.requiresEmail && !isSubscribed)
 
   return (
-    <>
-    <ArticleLayout metadata={content} serverHasPurchased={hasPurchased} hideNewsletter={hideNewsletter}>
+    <EditorialArticleLayout metadata={content} serverHasPurchased={hasPurchased} hideNewsletter={hideNewsletter}>
       {hasPurchased ? (
         <div className="purchased-content">
           <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 mb-6">
@@ -107,7 +106,6 @@ export default async function Page({ params }: PageProps) {
       ) : (
         renderPaywalledContent(MdxContent, content, hasPurchased, isSubscribed)
       )}
-    </ArticleLayout>
-    </>
+    </EditorialArticleLayout>
   );
-} 
+}
