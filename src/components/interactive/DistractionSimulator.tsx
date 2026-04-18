@@ -621,7 +621,6 @@ export function DistractionSimulator({
         .vibrate-mild { animation: vibrate-mild 0.09s linear infinite; }
         .vibrate-medium { animation: vibrate-medium 0.06s linear infinite; }
         .vibrate-heavy { animation: vibrate-heavy 0.04s linear infinite; }
-        .thought-bubble { animation: float-bubble 3s ease-in-out infinite alternate; }
       `}</style>
 
       <div className="my-8">
