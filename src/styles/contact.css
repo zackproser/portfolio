@@ -71,7 +71,7 @@
 
 /* Hero chrome */
 .contact-page .c-hero {
-  padding: 80px 0 56px;
+  padding: 40px 0 32px;
   border-bottom: 1px solid var(--rule);
   position: relative;
 }
@@ -81,7 +81,7 @@
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--ink-dim);
-  margin-bottom: 26px;
+  margin-bottom: 18px;
 }
 .contact-page .c-hero .kicker em { font-style: normal; color: var(--accent); }
 
@@ -105,10 +105,10 @@
   font-size: 11px;
   letter-spacing: .1em; text-transform: uppercase;
   color: var(--ink-dim);
-  padding: 14px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
-  margin-top: 48px;
+  margin-top: 28px;
 }
 .contact-page .avail-strip .slot { display: inline-flex; align-items: center; gap: 8px; }
 .contact-page .avail-strip .dot {
@@ -130,28 +130,29 @@
 /* Dispatch: monument + attribution */
 .contact-page .dispatch {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 80px;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 56px;
   align-items: end;
 }
 .contact-page .dispatch-display {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
   font-weight: 400;
-  font-size: clamp(56px, 7.6vw, 112px);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  font-size: clamp(40px, 4.6vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   color: var(--ink);
-  margin: 0 0 0 -0.03em;
+  margin: 0;
   text-wrap: balance;
+  max-width: 22ch;
 }
 .contact-page .dispatch-display em { font-style: italic; color: var(--accent); font-weight: 400; }
 .contact-page .dispatch-lead {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-size: 21px;
+  font-size: 18px;
   line-height: 1.5;
   color: var(--fg-muted);
   max-width: 52ch;
-  margin: 28px 0 0;
+  margin: 20px 0 0;
   text-wrap: pretty;
 }
 .contact-page .dispatch-side {

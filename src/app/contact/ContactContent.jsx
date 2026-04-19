@@ -302,12 +302,12 @@ export function ContactContent() {
                   </div>
                 ) : status === 'err' ? (
                   <div className="form-status err" role="alert">
-                    {errorMessage || 'Something went wrong. Email zack@workos.com instead.'}
+                    {errorMessage || 'Something went wrong. Email zackproser@gmail.com instead.'}
                   </div>
                 ) : null}
 
                 <div className="ed-submit-row">
-                  <span className="fine">Forwarded to zack@workos.com · paid work answered first</span>
+                  <span className="fine">Forwarded to zackproser@gmail.com · paid work answered first</span>
                   <button className="ed-submit" type="submit" disabled={status === 'submitting'}>
                     {status === 'submitting' ? 'Sending…' : 'Send dispatch'} <span>→</span>
                   </button>
@@ -326,12 +326,12 @@ export function ContactContent() {
                 <button
                   type="button"
                   className="channel"
-                  onClick={() => handleCopy('zack@workos.com')}
+                  onClick={() => handleCopy('zackproser@gmail.com')}
                 >
                   <div className="ch-icon">@</div>
                   <div className="ch-body">
                     <div className="ch-title">Email</div>
-                    <div className="ch-sub">zack@workos.com</div>
+                    <div className="ch-sub">zackproser@gmail.com</div>
                   </div>
                   <div className="ch-go">Copy →</div>
                 </button>
