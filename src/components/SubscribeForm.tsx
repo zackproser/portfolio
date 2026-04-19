@@ -49,23 +49,30 @@ export function SubscribeForm({
     return (
       <div className="sp-ok" role="status" aria-live="polite">
         <div className="sp-ok-stamp">
-          Received
+          <span className="sp-ok-stamp-line">Received</span>
           <span className="mark">✓</span>
-          confirm via email
+          <span className="sp-ok-stamp-line">Confirm</span>
+          <span className="sp-ok-stamp-line">via email</span>
         </div>
         <h1>Almost there. Check <em>your inbox</em>.</h1>
         <p className="sp-ok-lead">
-          A confirmation is en route to <code>{trimmed}</code>. Click the link inside and you&apos;re on the list. If it doesn&apos;t arrive within a couple minutes, check the promotions folder.
+          A confirmation is en route to <code className="sp-ok-email">{trimmed}</code>. Click the link inside and you&apos;re on the list. If it doesn&apos;t arrive in a couple minutes, check the promotions folder.
         </p>
-        <ol>
+        <ol className="sp-ok-steps">
           <li>
-            Open the email from <b>zack@zackproser.com</b>. One line, one link.
+            <span className="sp-ok-step-body">
+              Open the email from <b className="sp-ok-email">zack@zackproser.com</b> &mdash; one line, one link.
+            </span>
           </li>
           <li>
-            Click <b>Confirm subscription</b>. No form, no redirect gymnastics.
+            <span className="sp-ok-step-body">
+              Click <b>Confirm subscription</b>. No form, no redirect gymnastics.
+            </span>
           </li>
           <li>
-            The next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
+            <span className="sp-ok-step-body">
+              The next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
+            </span>
           </li>
         </ol>
       </div>

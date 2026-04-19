@@ -169,7 +169,7 @@
 .subscribe-page .sp-ok,
 .newsletter-page .sp-ok {
   max-width: 720px; margin: 0 auto;
-  padding: 40px 40px 36px;
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 3.5vw, 40px);
   position: relative;
 }
 .subscribe-page .sp-ok {
@@ -196,15 +196,22 @@
 
 .subscribe-page .sp-ok .sp-ok-stamp,
 .newsletter-page .sp-ok .sp-ok-stamp {
-  width: 104px; aspect-ratio: 4 / 5;
-  margin: 0 auto 18px;
+  width: 112px; aspect-ratio: 4 / 5;
+  margin: 0 auto 20px;
+  padding: 10px 8px;
   border: 1.5px dashed;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
   font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
-  font-size: 10.5px; letter-spacing: .12em;
+  font-size: 10px; letter-spacing: .1em;
   text-transform: uppercase;
-  text-align: center; line-height: 1.35;
+  text-align: center; line-height: 1.2;
   transform: rotate(-2deg);
+  white-space: nowrap;
+}
+.subscribe-page .sp-ok .sp-ok-stamp .sp-ok-stamp-line,
+.newsletter-page .sp-ok .sp-ok-stamp .sp-ok-stamp-line {
+  display: block;
 }
 .subscribe-page .sp-ok .sp-ok-stamp {
   border-color: var(--sp-accent);
@@ -229,10 +236,11 @@
 .subscribe-page .sp-ok h1,
 .newsletter-page .sp-ok h1 {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-weight: 500; font-size: clamp(28px, 3.6vw, 40px);
-  letter-spacing: -.02em; line-height: 1.1;
+  font-weight: 500; font-size: clamp(22px, 2.4vw, 30px);
+  letter-spacing: -.02em; line-height: 1.12;
   margin: 0 0 14px;
   text-wrap: balance; text-align: center;
+  overflow-wrap: break-word;
 }
 .subscribe-page .sp-ok h1 { color: var(--sp-ink); }
 .newsletter-page .sp-ok h1 { color: var(--nl-ink); }
@@ -247,9 +255,11 @@
 .subscribe-page .sp-ok .sp-ok-lead,
 .newsletter-page .sp-ok .sp-ok-lead {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-size: 17px; line-height: 1.55;
+  font-size: 15.5px; line-height: 1.55;
   margin: 0 auto 20px;
-  max-width: 56ch; text-align: center;
+  max-width: 52ch; text-align: center;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 .subscribe-page .sp-ok .sp-ok-lead { color: var(--sp-ink-dim); }
 .newsletter-page .sp-ok .sp-ok-lead { color: var(--nl-ink-dim); }
@@ -257,8 +267,14 @@
 .subscribe-page .sp-ok .sp-ok-lead code,
 .newsletter-page .sp-ok .sp-ok-lead code {
   font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
-  font-size: 13px;
+  font-size: 12.5px;
   padding: 2px 6px;
+  line-height: 1.4;
+}
+.subscribe-page .sp-ok-email,
+.newsletter-page .sp-ok-email {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .subscribe-page .sp-ok .sp-ok-lead code {
   color: var(--sp-ink);
@@ -280,11 +296,11 @@
 .subscribe-page .sp-ok ol li,
 .newsletter-page .sp-ok ol li {
   counter-increment: step;
-  display: grid; grid-template-columns: auto 1fr; gap: 16px;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
   padding: 14px 4px;
-  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
-  font-size: 16px; line-height: 1.5;
 }
 .subscribe-page .sp-ok ol li {
   border-bottom: 1px dashed var(--sp-rule);
@@ -300,10 +316,23 @@
   content: counter(step, decimal-leading-zero);
   font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
   font-size: 11px; font-weight: 700;
-  letter-spacing: .14em;
+  letter-spacing: .1em;
+  line-height: 1.6;
+  padding-top: 2px;
 }
 .subscribe-page .sp-ok ol li::before { color: var(--sp-accent); }
 .newsletter-page .sp-ok ol li::before { color: var(--nl-accent); }
+
+.subscribe-page .sp-ok .sp-ok-step-body,
+.newsletter-page .sp-ok .sp-ok-step-body {
+  display: block;
+  min-width: 0;
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-size: 15.5px;
+  line-height: 1.55;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
 
 .subscribe-page .sp-ok ol li b,
 .newsletter-page .sp-ok ol li b { font-weight: 600; }
