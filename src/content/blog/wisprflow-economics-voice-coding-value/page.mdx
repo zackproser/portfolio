@@ -1,0 +1,106 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import VoiceAIDemoCard from '@/components/VoiceAIDemoCard';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+export const campaign = "wisprflow-economics";
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow-economics-hero.webp" alt="Pixel art of a developer floating in space with thought bubbles containing code rushing toward them, captured by a glowing voice waveform" width={1200} height={675} />
+</AffiliateLink>
+
+## The moment I stopped measuring WPM
+
+I was dictating an RFC at 184 words per minute when I realized I'd written more in twenty minutes than I typically produce in a full afternoon. The thought struck me mid-sentence: the number on the screen wasn't a typing speed. It was a measure of how much of my thinking I was actually capturing before it dissipated.
+
+My baseline typing sits around 90 WPM. With WisprFlow, I consistently hit 184 WPM — sometimes higher. That's not just doubling throughput. It's a qualitative shift in what I'm able to externalize from my head.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The raw numbers
+
+My WisprFlow stats show 182,718 words dictated across 36 applications. Moby Dick runs about 54,000 words. I've dictated the equivalent of nearly 3.5 copies of Moby Dick. This isn't impressive as a volume milestone — it's impressive as a time-compressed output measurement.
+
+Those 182,718 words represent however many months of active WisprFlow use. In that time, I haven't felt like I was "using voice coding." I've just... written more. Faster.
+
+## The time math
+
+At 90 WPM typing, I produce roughly 5,400 words per hour.
+
+At 184 WPM voice, I produce roughly 11,040 words per hour.
+
+The ratio isn't exactly 2x in practice — you pause, you correct, you think. But the ballpark holds. Voice dictation runs at roughly double the throughput of typing for most people who adopt it seriously.
+
+Here's the session math that matters:
+
+If I write for 2 hours per day of active code and prose (a conservative estimate for someone who primarily directs AI agents):
+
+- **Typing**: 10,800 words/day output
+- **Voice**: 22,080 words/day output
+
+Voice delivers the same output in half the active writing time.
+
+Over a month of 20 working days, voice gives me back 20 hours of pure writing time. Over a year: 240 hours. That's six full workweeks recaptured from switching from typing to voice.
+
+<Image src="https://zackproser.b-cdn.net/images/wisprflow-economics-comparison.webp" alt="Pixel art desk at night showing 90 WPM vs 184 WPM with golden numbers flowing into a laptop and a clock showing half the time on the right side" width={1200} height={675} />
+
+<VoiceAIDemoCard />
+
+## The quality argument nobody makes
+
+The speed conversation misses the more important point. When I type, I truncate my thoughts. I settle on the first phrasing that works because retyping is expensive. I skip the aside that might have been the real insight because it's only tangentially relevant.
+
+When I dictate, I speak the aside. I say the thing I would have cut. The reason: dictation at 184 WPM makes re-speaking cheaper than typing, so I don't mentally ration my ideas.
+
+For brains that work like mine — ADHD, fast-associating, constantly generating tangents that turn out to be the point — voice capture isn't a productivity hack. It's the difference between a document that reflects how I actually think and one that reads like I was being careful.
+
+I wrote more about how this fits into my [overall setup for developers using AI](/blog/wisprflow-review). The short version: WisprFlow at 179-184 WPM is part of a system that includes [directing agents from my phone while walking](/blog/phones-are-the-new-terminal) and [a two-agent architecture](/blog/two-agents-one-phone) that separates infrastructure work from content work.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The compounding effect
+
+When writing any single task is 2x faster, the kinds of tasks you attempt change.
+
+Writing a detailed PR description? I do it because it costs me 15 minutes instead of 30. Writing architecture documentation? Same. Drafting a long Slack message to explain a complex decision? Same.
+
+The marginal task becomes viable. The "I'll come back to this" becomes "I'll dictate this now."
+
+Over months, this reshapes output. Not through dramatic productivity gains, but through accumulated marginal decisions about what to write down. When voice is 2x faster, you write more things. More things written means more context preserved. More context means better decisions downstream.
+
+## Where the math matters most
+
+**Code reviews**: Verbally dictating review comments at 184 WPM catches more than typing them. I get the full thought out instead of the abbreviated version.
+
+**Architecture docs**: These die in draft because they take so long to write. Voice makes the first draft cheap enough to happen.
+
+**Commit messages**: I speak comprehensive commit messages instead of "fix stuff" because dictating takes the same effort as typing a placeholder.
+
+**RFCs**: The document type most likely to exist only as a mental outline. Voice makes the outline into a draft.
+
+**Blog posts**: This one included. The overhead of moving thought from head to page dropped enough that publishing became worth the effort more often.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The real ROI
+
+Here's what 184 WPM is actually worth: you stop rationing your ideas.
+
+When typing was my bottleneck, I triage. I keep the good ideas and let the experimental ones evaporate. I write the important thing and skip the thing that might be important.
+
+Voice at 184 WPM removes the triage pressure. The idea costs the same to capture whether it's brilliant or exploratory. I can afford to get it all out.
+
+The hours saved matter less than this shift. A 240-hour annual time savings is real, but the better outcome is not losing things worth saying because capturing them felt too expensive.
+
+<AffiliateLink product="wisprflow" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/wisprflow-economics-footer.webp" alt="Pixel art of thoughts flowing through a voice waveform into polished documents" width={1200} height={675} />
+</AffiliateLink>
+
+If you spend meaningful time creating text and you've been assuming voice coding is for people who can't type, try [WisprFlow](https://ref.wisprflow.ai/zack-proser). The throughput isn't the point — but it's where most people start noticing something has changed.
+
+<VoiceAIDemoCard />
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
