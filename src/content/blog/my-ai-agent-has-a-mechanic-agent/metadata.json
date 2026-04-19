@@ -1,0 +1,9 @@
+{
+  "title": "My AI Agent Has a Mechanic Agent",
+  "author": "Zachary Proser",
+  "date": "2026-04-19",
+  "description": "Hermes was producing shallow responses. Instead of debugging from the inside, I opened Claude Code, SSH'd into the EC2 instance, found the throttled context window, fixed it, and restarted the gateway. Hermes woke up improved — without knowing it happened.",
+  "image": "https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp",
+  "tags": ["ai", "infrastructure", "claude-code", "hermes-agent", "aws", "tailscale"],
+  "slug": "/blog/my-ai-agent-has-a-mechanic-agent"
+}

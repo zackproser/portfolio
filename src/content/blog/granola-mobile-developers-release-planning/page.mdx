@@ -1,0 +1,63 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-mobile-developers-release-planning';
+
+# Granola for Mobile Developers: AI Notes for Release Planning and Stakeholder Syncs
+
+Mobile development has a coordination overhead that web development doesn't. App Store and Play Store review processes introduce external deadlines that don't flex for sprint overruns. OS version announcements require rapid architectural decisions with long lead times. Beta testing programs involve external users whose feedback must be triaged and acted on within tight windows.
+
+The meetings that surround this work—release planning, review cycle debriefs, OS migration discussions, stakeholder syncs about feature roadmaps—generate decisions that affect months of development. When those decisions aren't documented, they resurface as disputes about what was agreed, who approved what, and why the current implementation diverges from what was discussed.
+
+Granola handles the documentation side of mobile development coordination so engineers can stay in the code rather than managing the administrative overhead of keeping meeting records.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Release planning and store submission coordination
+
+A mobile release involves coordinating across engineering, QA, design, marketing, and leadership. The release planning meeting establishes the feature scope, the submission target date, the QA sign-off criteria, and the rollout strategy. It's a high-information meeting that generates specific commitments from specific people.
+
+When a feature gets cut from the release—because QA found a blocking issue, or because App Store review history suggests a particular API usage needs more testing—that decision needs to be documented. The product manager who expected that feature in the next release needs to know it was cut and why. The developer who built it needs to know whether it should be deployed behind a feature flag or held for the following release.
+
+Granola captures the release planning conversation and produces an action item summary. The decision to cut the feature is documented with the reasoning. The follow-up assignment—update the App Store description, notify marketing, adjust the rollout percentage—is in the transcript.
+
+## App Store review response and rejection debriefs
+
+App Store rejections are learning opportunities that mobile teams consistently fail to institutionalize. When a rejection arrives, there's a scramble to understand what guideline was violated, how the reviewer interpreted the app's functionality, and what changes are needed to resubmit. If that analysis is done by one engineer in isolation, the institutional knowledge disappears when they're on PTO during the next rejection.
+
+Post-rejection debriefs—where the team reviews the rejection notice, interprets the specific guideline issue, and plans the remediation—are valuable meetings. Granola captures them. The next time a related rejection occurs, the transcript from the previous debrief is searchable. The team doesn't start from scratch; they start from the reasoning developed the last time.
+
+This institutional knowledge compounds over time. A team that has documented its App Store rejection history and the interpretations that resolved each rejection operates more efficiently than a team that reconstructs the analysis fresh each time.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## OS version migration planning
+
+Apple and Google announce major OS versions months before release, with developer betas available for testing. The window between beta availability and general release—typically three to four months—is when mobile teams make architectural decisions about supporting the new OS, adopting new APIs, and handling the deprecation of old ones.
+
+These decisions involve meetings: initial technical assessment, stakeholder briefings about the impact on planned features, decisions about which deprecated APIs to migrate first, and sprint planning adjustments to accommodate migration work. Each meeting generates decisions that affect the next several sprints.
+
+Granola captures those architectural discussions. When a decision made in April affects development in September—because the deprecated API was planned for Q3 migration—the transcript from the April meeting explains the reasoning. The engineer joining the team in July can read the migration planning discussions and understand why the technical debt exists and what the plan is.
+
+## TestFlight and beta program coordination
+
+Beta testing programs involve external users and internal stakeholders who provide feedback through channels that range from structured surveys to informal Slack messages to scheduled feedback calls. The feedback calls are where the richest signal comes from: beta users explaining their use patterns, describing specific failure scenarios, and articulating their expectations.
+
+Granola captures beta feedback calls with the same fidelity it captures internal planning meetings. The beta user who described a specific flow that reliably triggers a crash provides a reproduction path that's more useful than a crash log. The stakeholder who explains how their sales team expects to use the app informs the feature prioritization conversation that happens the following sprint.
+
+For apps in B2B markets, beta coordination calls with enterprise clients are particularly valuable. The client's IT administrator explaining their MDM requirements, or their compliance officer describing the data handling requirements that must be met for deployment, provides guidance that affects the entire product architecture. Those calls need to be captured precisely.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Cross-functional sync and feature negotiation
+
+Mobile developers operate at the intersection of engineering constraints and product ambitions. The meetings where engineers push back on feature scope—explaining what's technically feasible in the release window, what requires native platform APIs that behave differently across OS versions, what will trigger App Store guideline scrutiny—are where important negotiations happen.
+
+These negotiations benefit from documentation. When engineering says a feature requires location permissions that will trigger App Store privacy nutrition label requirements, and product says they want the feature anyway, that conversation should be documented. When the decision is made to include the feature with the understanding that the privacy disclosure will affect user acquisition, the tradeoff that was made is in the record.
+
+Granola captures technical constraints as clearly as it captures business requirements. The meeting where an engineer explains that push notification delivery rates on Android vary by manufacturer and the product manager needs to lower their engagement projections accordingly—that conversation is worth having on the record. Six months later, when the engagement metrics come in below target, the discussion of the technical constraint that was documented at the outset is the context that explains the gap.
+
+Mobile development coordination is complex enough that documentation shouldn't be optional. Granola makes it automatic.
