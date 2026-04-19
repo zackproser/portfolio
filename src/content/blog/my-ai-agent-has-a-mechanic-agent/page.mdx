@@ -1,15 +1,10 @@
-import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
 
-export const metadata = {
-  title: "The Mechanic Pattern: Claude Code as the System That Repairs Itself",
-  author: "Zachary Proser",
-  date: "2026-04-19",
-  description: "How I built an AI agent that can diagnose and repair my other AI agent — because Claude Code built Hermes, it knows exactly where to look when something breaks.",
-  image: "https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp",
-  tags: ["ai", "infrastructure", "claude-code", "hermes-agent", "aws", "tailscale"],
-};
+export const metadata = createMetadata(rawMetadata)
 
-# The Mechanic Pattern: Claude Code as the System That Repairs Itself
+# My AI Agent Has a Mechanic Agent
 
 Three weeks ago I noticed Hermes's responses getting thin. Not wrong, exactly — just surface-level. Brief answers where there should have been depth. Context that felt like it was being lost somewhere between my message and the model's reasoning.
 

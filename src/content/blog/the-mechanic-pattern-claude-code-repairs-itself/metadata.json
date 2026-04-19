@@ -1,9 +1,0 @@
-{
-  "title": "The Mechanic Pattern: Claude Code as the System That Repairs Itself",
-  "author": "Zachary Proser",
-  "date": "2026-04-19",
-  "description": "How I built an AI agent that can diagnose and repair my other AI agent — because Claude Code built Hermes, it knows exactly where to look when something breaks.",
-  "image": "https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp",
-  "tags": ["ai", "infrastructure", "claude-code", "hermes-agent", "aws", "tailscale"],
-  "slug": "/blog/the-mechanic-pattern-claude-code-repairs-itself"
-}
