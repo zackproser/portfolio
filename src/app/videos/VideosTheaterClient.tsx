@@ -27,6 +27,11 @@ export type TheaterVideo = {
 
 type Props = { videos: TheaterVideo[] }
 
+const MONTHS_SHORT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+]
+
 const pad2 = (n: number) => String(n).padStart(2, '0')
 const fmtDur = (s: number) => {
   if (s == null || isNaN(s)) return '—'
@@ -34,7 +39,10 @@ const fmtDur = (s: number) => {
   return h ? `${h}:${pad2(m)}:${pad2(sec)}` : `${m}:${pad2(sec)}`
 }
 const fmtMon = (iso: string) => {
-  try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) }
+  try {
+    const d = new Date(iso)
+    return `${MONTHS_SHORT[d.getUTCMonth()]} ${d.getUTCFullYear()}`
+  }
   catch { return iso }
 }
 const fmtViews = (n: number) => {
