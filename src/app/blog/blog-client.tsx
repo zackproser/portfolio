@@ -12,7 +12,6 @@ type SortKey = "newest" | "oldest";
 
 interface BlogClientProps {
   articles: ArticleWithSlug[];
-  years: string[];
 }
 
 const KIND_LABEL: Record<string, string> = {
@@ -32,11 +31,11 @@ const MONTHS_SHORT = [
 const pad2 = (n: number) => String(n).padStart(2, "0");
 const fmtMonYear = (iso: string) => {
   const d = new Date(iso);
-  return `${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear()}`;
+  return `${MONTHS_SHORT[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 };
 const fmtDayMon = (iso: string) => {
   const d = new Date(iso);
-  return { day: pad2(d.getDate()), mon: MONTHS_SHORT[d.getMonth()].toUpperCase() };
+  return { day: pad2(d.getUTCDate()), mon: MONTHS_SHORT[d.getUTCMonth()].toUpperCase() };
 };
 
 function toRomanNumeral(year: number): string {
@@ -173,7 +172,7 @@ export default function BlogClient({ articles }: BlogClientProps) {
   const ledgerGroups = useMemo(() => {
     const byYear: Record<string, ArticleWithSlug[]> = {};
     for (const a of filtered) {
-      const y = new Date(a.date).getFullYear().toString();
+      const y = new Date(a.date).getUTCFullYear().toString();
       (byYear[y] ||= []).push(a);
     }
     const keys = Object.keys(byYear).sort((a, b) => (sort === "oldest" ? +a - +b : +b - +a));

@@ -23,8 +23,6 @@ export default async function ArticlesIndex() {
     !a.hiddenFromIndex  // Exclude SEO/affiliate articles from main listing
   ) as Blog[];
 
-  const years = [...new Set(articles.map((a) => new Date(a.date).getFullYear().toString()))].sort((a, b) => parseInt(b) - parseInt(a));
-
-  return <BlogClient articles={articles} years={years} />;
+  return <BlogClient articles={articles} />;
 }
 
