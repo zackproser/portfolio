@@ -424,7 +424,7 @@ function Gallery({ posts, showLead }: { posts: ArticleWithSlug[]; showLead: bool
           <Link
             key={post.slug ?? `${post.title}-${i}`}
             className={`eb-card${isLead ? " is-lead" : ""}`}
-            href={`/blog/${post.slug}`}
+            href={post.slug as any}
           >
             <div className={`eb-thumb ${imgSrc ? "" : pattern}`}>
               {imgSrc ? (
@@ -488,7 +488,7 @@ function Ledger({ groups }: { groups: Array<{ year: string; posts: ArticleWithSl
                 <Link
                   key={post.slug ?? `${post.title}-${running}`}
                   className="eb-row"
-                  href={`/blog/${post.slug}`}
+                  href={post.slug as any}
                 >
                   <div className="eb-num">№ {pad2(running)}</div>
                   <div className="eb-mdate">
