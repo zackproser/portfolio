@@ -65,7 +65,7 @@ export function SubscribeForm({
             Click <b>Confirm subscription</b>. No form, no redirect gymnastics.
           </li>
           <li>
-            The next issue lands on the first of the month. Nothing else hits your inbox between now and then.
+            The next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
           </li>
         </ol>
       </div>
