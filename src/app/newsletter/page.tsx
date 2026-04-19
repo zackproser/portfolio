@@ -1,15 +1,41 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { getAllContent } from '@/lib/content-handlers'
 import { ContentCard } from '@/components/ContentCard'
 import { createMetadata } from '@/utils/createMetadata'
-import { Zap, TrendingUp, Code, Sparkles, ArrowRight, Rocket } from 'lucide-react'
 import Link from 'next/link'
 import { SubscribeForm } from '@/components/SubscribeForm'
-import { Suspense } from 'react'
-import CV from '@/components/CV'
-import RandomPortrait from '@/components/RandomPortrait'
-import { NewsletterSocialProof } from '@/components/NewsletterSocialProof'
+import { resumeData } from '@/data/resume'
+
+const HERO_PORTRAIT = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
+
+const WHAT_YOU_GET = [
+  {
+    num: '01',
+    kind: 'Column',
+    title: 'Tool reviews, with numbers.',
+    body: 'Hands-on reviews of Cursor, Claude, GPT-4, WisprFlow, and other AI coding tools. Real performance benchmarks and workflow integration tips.',
+  },
+  {
+    num: '02',
+    kind: 'Column',
+    title: 'AI implementation guides.',
+    body: 'Step-by-step tutorials on building with LLMs, embeddings, vector databases, and RAG pipelines. Code examples included.',
+  },
+  {
+    num: '03',
+    kind: 'Column',
+    title: 'Industry trends.',
+    body: 'Analysis of the latest AI developments, new model releases, and emerging tools. Cut through the hype with data-driven insights.',
+  },
+  {
+    num: '04',
+    kind: 'Column',
+    title: 'Productivity hacks.',
+    body: 'Voice-to-code workflows, AI agent orchestration, and automation strategies. 10x your development speed.',
+  },
+]
 
 export const metadata: Metadata = createMetadata({
   title: 'AI & Developer Tools Newsletter - Zachary Proser',
@@ -173,77 +199,116 @@ export default async function NewsletterPage() {
         </Container>
 
         {/* ============================================== */}
-        {/* Featured: AI Tools Guide                       */}
+        {/* Primer: Start here (editorial "New to AI?")    */}
         {/* ============================================== */}
-        <section className="py-12 bg-gradient-to-r from-amber-500/10 via-burnt-400/10 to-amber-500/10 dark:from-amber-900/20 dark:via-amber-800/20 dark:to-amber-900/20 border-y border-amber-500/20 dark:border-amber-700/30 mt-16">
-          <Container>
-            <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-amber-500/20 dark:bg-amber-500/30 rounded-2xl flex items-center justify-center">
-                    <Rocket className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-                  </div>
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h2 className="text-2xl md:text-3xl font-bold text-charcoal-50 dark:text-white mb-2">
-                    New to AI? Skip the Learning Curve
-                  </h2>
-                  <p className="text-lg text-parchment-600 dark:text-slate-300">
-                    I tested hundreds of AI tools so you don&apos;t have to. Here are the 4 that actually matter for running a business in {currentYear}.
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <Link
-                    href="/best-ai-tools"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 dark:bg-amber-600 dark:hover:bg-amber-500 text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-                  >
-                    See the Stack
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+        <Container>
+          <div className="max-w-6xl mx-auto">
+            <section className="nl-primer">
+              <div className="nl-primer-kicker">&sect; 02 &middot; <em>Start here</em></div>
+              <div className="nl-primer-body">
+                <h3>New to AI? Skip the learning curve.</h3>
+                <p>
+                  I tested hundreds of AI tools so you don&apos;t have to. Here are the four that actually matter for running a business in {currentYear}.
+                </p>
+                <Link href="/best-ai-tools" className="nl-primer-link">
+                  See the stack &rarr;
+                </Link>
               </div>
-            </div>
-          </Container>
-        </section>
-
-        <NewsletterSocialProof />
+            </section>
+          </div>
+        </Container>
 
         {/* ============================================== */}
-        {/* About section                                  */}
+        {/* The desk: bio + career                         */}
         {/* ============================================== */}
-        <section className="py-24 bg-parchment-100/50 dark:bg-slate-800/50">
-          <Container>
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div className="space-y-8">
-                  <div className="w-full max-w-[400px] mx-auto lg:mx-0">
-                    <Suspense fallback={<div className="w-full aspect-square bg-parchment-200 dark:bg-slate-700 rounded-2xl animate-pulse" />}>
-                      <RandomPortrait width={400} height={400} />
-                    </Suspense>
+        <Container>
+          <div className="max-w-6xl mx-auto">
+            <section className="nl-section">
+              <div className="nl-section-head-centered">
+                <div className="nl-kicker">&sect; 03 &middot; <em>The desk</em></div>
+                <h2>Learn from someone <em>building this stuff.</em></h2>
+              </div>
+
+              <div className="nl-bio-grid">
+                <div>
+                  <div className="nl-bio-portrait">
+                    <div className="nl-bio-portrait-media">
+                      <Image
+                        src={HERO_PORTRAIT}
+                        alt="Zachary Proser"
+                        fill
+                        sizes="(max-width: 820px) 100vw, 280px"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <CV showHeading={false} />
+                  <div className="nl-bio-tag">
+                    <span className="k">Desk</span>
+                    <span>Modern Coding &middot; Est. {establishedYear}</span>
                   </div>
                 </div>
-
-                <div className="space-y-6">
-                  <h2 className="font-serif text-4xl font-bold text-charcoal-50 dark:text-white">
-                    Learn from Someone <span className="text-burnt-400 dark:text-amber-400">Building This Stuff</span>
-                  </h2>
-                  <p className="text-lg text-parchment-600 dark:text-slate-300 leading-relaxed">
-                    I&apos;m <strong className="text-charcoal-50 dark:text-white">Zachary Proser</strong>, a Staff-level AI Engineer with 13+ years shipping production systems. I&apos;ve built RAG pipelines, vector database features, and AI developer tools at companies you know.
+                <div className="nl-bio-prose">
+                  <p>
+                    I&apos;m <b>Zachary Proser</b>, a Staff-level AI Engineer with 13+ years shipping production systems. I&apos;ve built RAG pipelines, vector-database features, and AI developer tools at companies you know.
                   </p>
-                  <p className="text-lg text-parchment-600 dark:text-slate-300 leading-relaxed">
-                    I teach AI development through <strong className="text-charcoal-50 dark:text-white">interactive machine learning examples</strong> that break down complex concepts from the ground up&mdash;no prerequisites needed.
+                  <p>
+                    I teach AI development through <b>interactive machine-learning examples</b> that break down complex concepts from the ground up &mdash; no prerequisites needed.
                   </p>
-                  <p className="text-lg text-parchment-600 dark:text-slate-300 leading-relaxed">
-                    This newsletter shares what I&apos;m actually using and building&mdash;real benchmarks, honest tool comparisons, and technical breakdowns that skip the marketing fluff.
+                  <p>
+                    This newsletter shares what I&apos;m actually using and building. Real benchmarks, honest tool comparisons, and technical breakdowns that skip the marketing fluff.
                   </p>
                 </div>
               </div>
-            </div>
-          </Container>
-        </section>
+
+              <div className="nl-career-table">
+                <div className="nl-career-head">
+                  <span className="k">&sect; 04 &middot; Career record</span>
+                  <span className="right">
+                    {currentYear - 2012}+ years &middot; {new Set(resumeData.map((r) => r.company)).size} companies
+                  </span>
+                </div>
+                <ol className="nl-career-list">
+                  {resumeData.map((role) => (
+                    <li key={`${role.company}-${role.title}-${role.start}`}>
+                      <span className="c-role">{role.title}</span>
+                      <span className="c-at">
+                        @ <b>{role.company}</b>
+                      </span>
+                      <span className="c-yr">
+                        {role.start} &mdash; {role.end}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </section>
+          </div>
+        </Container>
+
+        {/* ============================================== */}
+        {/* What you'll get (editorial 2x2)                */}
+        {/* ============================================== */}
+        <Container>
+          <div className="max-w-6xl mx-auto">
+            <section className="nl-section">
+              <div className="nl-section-head-centered">
+                <div className="nl-kicker">&sect; 05 &middot; <em>What you&apos;ll get</em></div>
+                <h2>Cut through the AI hype with <em>practical, battle-tested</em> insights.</h2>
+              </div>
+              <div className="nl-wyg-grid">
+                {WHAT_YOU_GET.map((card) => (
+                  <article className="nl-wyg-card" key={card.num}>
+                    <header className="nl-wyg-card-head">
+                      <span className="nl-wyg-num">{card.num}</span>
+                      <span>{card.kind}</span>
+                    </header>
+                    <h3>{card.title}</h3>
+                    <p>{card.body}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </div>
+        </Container>
 
         {/* ============================================== */}
         {/* Recent episodes                                */}
@@ -251,7 +316,7 @@ export default async function NewsletterPage() {
         <Container>
           <div className="max-w-6xl mx-auto">
             <header className="nl-section-head">
-              <span className="num">&sect; 02</span>
+              <span className="num">&sect; 06</span>
               <h2>Recent episodes.</h2>
               <span className="more">
                 {articles.length > 0 ? `E.${String(Math.max(articles.length - 6, 1)).padStart(2, '0')} \u2014 E.${String(articles.length).padStart(2, '0')}` : ''}
@@ -260,17 +325,13 @@ export default async function NewsletterPage() {
 
             <div className="pt-10 pb-4">
               {latest && (
-                <div className="mb-12 bg-gradient-to-br from-burnt-400/5 to-burnt-600/10 dark:from-amber-900/20 dark:to-amber-800/10 rounded-2xl p-8 border border-burnt-400/20 dark:border-amber-700">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="px-3 py-1 bg-burnt-400 dark:bg-amber-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                      Latest
-                    </div>
-                  </div>
+                <div className="nl-latest-wrap">
+                  <div className="nl-latest-badge">Latest</div>
                   <ContentCard article={latest} />
                 </div>
               )}
 
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-3 gap-8 mt-8">
                 {articles.slice(1, 7).map((article) => (
                   <ContentCard key={article.slug} article={article} />
                 ))}
@@ -278,74 +339,11 @@ export default async function NewsletterPage() {
 
               {articles.length > 7 && (
                 <div className="text-center mt-12">
-                  <p className="text-parchment-600 dark:text-slate-400 text-lg">
+                  <p className="text-parchment-600 dark:text-slate-400 text-sm font-mono uppercase tracking-widest">
                     <strong className="text-charcoal-50 dark:text-white">{articles.length - 7} more episodes</strong> in the archive
                   </p>
                 </div>
               )}
-            </div>
-          </div>
-        </Container>
-
-        {/* ============================================== */}
-        {/* What You'll Get                                */}
-        {/* ============================================== */}
-        <Container>
-          <div className="max-w-6xl mx-auto mt-16 mb-16">
-            <header className="nl-section-head">
-              <span className="num">&sect; 03</span>
-              <h2>What you&apos;ll get.</h2>
-              <span className="more">4 columns</span>
-            </header>
-
-            <div className="grid md:grid-cols-2 gap-8 pt-10">
-              <div className="group relative bg-parchment-50 dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-parchment-200 dark:border-slate-700 hover:shadow-xl hover:border-burnt-400/50 dark:hover:border-amber-500/50 transition-all hover:-translate-y-1">
-                <div className="w-16 h-16 bg-burnt-400/10 dark:bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
-                  <Code className="w-8 h-8 text-burnt-400 dark:text-amber-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal-50 dark:text-white mb-4">
-                  Tool Reviews
-                </h3>
-                <p className="text-parchment-600 dark:text-slate-300 text-lg leading-relaxed">
-                  Hands-on reviews of Cursor, Claude, GPT-4, WisprFlow, and other AI coding tools. Real performance benchmarks and workflow integration tips.
-                </p>
-              </div>
-
-              <div className="group relative bg-parchment-50 dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-parchment-200 dark:border-slate-700 hover:shadow-xl hover:border-burnt-400/50 dark:hover:border-amber-500/50 transition-all hover:-translate-y-1">
-                <div className="w-16 h-16 bg-burnt-400/10 dark:bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
-                  <Sparkles className="w-8 h-8 text-burnt-400 dark:text-amber-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal-50 dark:text-white mb-4">
-                  AI Implementation Guides
-                </h3>
-                <p className="text-parchment-600 dark:text-slate-300 text-lg leading-relaxed">
-                  Step-by-step tutorials on building with LLMs, embeddings, vector databases, and RAG pipelines. Code examples included.
-                </p>
-              </div>
-
-              <div className="group relative bg-parchment-50 dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-parchment-200 dark:border-slate-700 hover:shadow-xl hover:border-burnt-400/50 dark:hover:border-amber-500/50 transition-all hover:-translate-y-1">
-                <div className="w-16 h-16 bg-burnt-400/10 dark:bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
-                  <TrendingUp className="w-8 h-8 text-burnt-400 dark:text-amber-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal-50 dark:text-white mb-4">
-                  Industry Trends
-                </h3>
-                <p className="text-parchment-600 dark:text-slate-300 text-lg leading-relaxed">
-                  Analysis of the latest AI developments, new model releases, and emerging tools. Cut through the hype with data-driven insights.
-                </p>
-              </div>
-
-              <div className="group relative bg-parchment-50 dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-parchment-200 dark:border-slate-700 hover:shadow-xl hover:border-burnt-400/50 dark:hover:border-amber-500/50 transition-all hover:-translate-y-1">
-                <div className="w-16 h-16 bg-burnt-400/10 dark:bg-amber-500/20 rounded-xl flex items-center justify-center mb-6">
-                  <Zap className="w-8 h-8 text-burnt-400 dark:text-amber-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal-50 dark:text-white mb-4">
-                  Productivity Hacks
-                </h3>
-                <p className="text-parchment-600 dark:text-slate-300 text-lg leading-relaxed">
-                  Voice-to-code workflows, AI agent orchestration, and automation strategies. Learn how to 10x your development speed.
-                </p>
-              </div>
             </div>
           </div>
         </Container>
