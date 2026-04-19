@@ -1,0 +1,62 @@
+[
+  {
+    "t": 11,
+    "title": "Intro"
+  },
+  {
+    "t": 65,
+    "title": "Basic concepts of lexical search"
+  },
+  {
+    "t": 295,
+    "title": "What are embeddings?"
+  },
+  {
+    "t": 548,
+    "title": "How does semantic search work?"
+  },
+  {
+    "t": 930,
+    "title": "Comparing semantic and lexical search"
+  },
+  {
+    "t": 1180,
+    "title": "Build session intro, CSV loader"
+  },
+  {
+    "t": 1600,
+    "title": "CSV loader done, short review of utilities"
+  },
+  {
+    "t": 1680,
+    "title": "Introducing Transformers.js"
+  },
+  {
+    "t": 1970,
+    "title": "Short look at why types can be helpful"
+  },
+  {
+    "t": 2140,
+    "title": "Embedding in batches"
+  },
+  {
+    "t": 2340,
+    "title": "Ideas around using workers to parallelize embeddings"
+  },
+  {
+    "t": 2435,
+    "title": "A client helper function"
+  },
+  {
+    "t": 2650,
+    "title": "The main portion of the indexing process"
+  },
+  {
+    "t": 3340,
+    "title": "Where to find the repo"
+  },
+  {
+    "t": 3386,
+    "title": "Querying the index"
+  }
+]

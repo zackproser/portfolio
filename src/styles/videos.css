@@ -337,7 +337,10 @@
 .videos-page .chapters li {
   display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: baseline;
   padding: 6px 4px; border-radius: 4px;
+  cursor: pointer; transition: background .15s;
 }
+.videos-page .chapters li:hover,
+.videos-page .chapters li:focus-visible { background: var(--vb-accent-soft); outline: none; }
 .videos-page .chapters li .t { font-family: var(--vb-font-mono); font-size: 11px; color: var(--vb-accent); font-weight: 600; }
 .videos-page .chapters li .l { font-size: 13.5px; color: var(--vb-fg); line-height: 1.4; }
 

@@ -1,0 +1,66 @@
+[
+  {
+    "t": 0,
+    "title": "What is a Vercel template?"
+  },
+  {
+    "t": 78,
+    "title": "How to find the template"
+  },
+  {
+    "t": 111,
+    "title": "What is hallucination?"
+  },
+  {
+    "t": 176,
+    "title": "Example of hallucination in a Generative AI application"
+  },
+  {
+    "t": 318,
+    "title": "What is Retrieval Augmented Generation? (Diagram)"
+  },
+  {
+    "t": 617,
+    "title": "How you can modify and deploy this template yourself"
+  },
+  {
+    "t": 724,
+    "title": "Start of the live stream recording"
+  },
+  {
+    "t": 860,
+    "title": "OpenAIStream responses"
+  },
+  {
+    "t": 955,
+    "title": "What are embeddings? How do we get them?"
+  },
+  {
+    "t": 1195,
+    "title": "Initializing the Pinecone client (API key & environment)"
+  },
+  {
+    "t": 1289,
+    "title": "Getting matches from Pinecone vector database"
+  },
+  {
+    "t": 1382,
+    "title": "The getContext method and how it works / Metadata"
+  },
+  {
+    "t": 1608,
+    "title": "Converting the user's query into embeddings"
+  },
+  {
+    "t": 1660,
+    "title": "Summarizing what we have built so far"
+  },
+  {
+    "t": 1739,
+    "title": "The Crawler component - how it works - HTML semantics"
+  },
+  {
+    "t": 2006,
+    "title": "Zack presses Roie on how this Crawler was REALLY built :)"
+  }
+]

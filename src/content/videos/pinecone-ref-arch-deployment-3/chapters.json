@@ -1,0 +1,62 @@
+[
+  {
+    "t": 15,
+    "title": "ECS target and autoscaling policies provisioning"
+  },
+  {
+    "t": 31,
+    "title": "Emu workers are up and healthy. Discussing autoscaling policy and behavior"
+  },
+  {
+    "t": 65,
+    "title": "Autoscaling configuration properties as \"knobs\""
+  },
+  {
+    "t": 115,
+    "title": "Different autoscaling strategies and policies you can configure"
+  },
+  {
+    "t": 210,
+    "title": "Configuring the autoscaling parameters in code with Pulumi"
+  },
+  {
+    "t": 240,
+    "title": "AWS quotas and their importance to high-scale use cases"
+  },
+  {
+    "t": 300,
+    "title": "scaleInCooldown and scaleOutCooldown and what they do"
+  },
+  {
+    "t": 340,
+    "title": "Autoscaling behavior for Pelican and why it is slightly different from Emu"
+  },
+  {
+    "t": 375,
+    "title": "Deployment is complete at 14.5 minutes!"
+  },
+  {
+    "t": 397,
+    "title": "Stepping through AWS account to see what's running"
+  },
+  {
+    "t": 450,
+    "title": "Looking at RDS database"
+  },
+  {
+    "t": 472,
+    "title": "Sanity checking the Frontend ECS service and the table-driven semantic search UI"
+  },
+  {
+    "t": 494,
+    "title": "Load balancer integration for UI and how the UI looks"
+  },
+  {
+    "t": 510,
+    "title": "The deployment is healthy!"
+  },
+  {
+    "t": 523,
+    "title": "SQS queues"
+  }
+]

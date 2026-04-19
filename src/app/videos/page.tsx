@@ -15,9 +15,12 @@ export const metadata: Metadata = createMetadata({
 const YT_ID_RE = /(?:youtube-nocookie\.com\/embed\/|youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/
 const THUMB_STYLES = ['t-warm', 't-cool', 't-plate', 't-mono'] as const
 
+function dirSlugOf(s: string): string {
+  return s.replace(/^\/?videos\//, '').replace(/^\/+|\/+$/g, '')
+}
+
 function extractYouTubeId(slug: string): string | null {
-  const directorySlug = slug.replace(/^\/videos\//, '')
-  const mdx = path.join(process.cwd(), 'src/content/videos', directorySlug, 'page.mdx')
+  const mdx = path.join(process.cwd(), 'src/content/videos', dirSlugOf(slug), 'page.mdx')
   if (!fs.existsSync(mdx)) return null
   try {
     const body = fs.readFileSync(mdx, 'utf8')
@@ -25,6 +28,20 @@ function extractYouTubeId(slug: string): string | null {
     return m ? m[1] : null
   } catch {
     return null
+  }
+}
+
+function loadChapters(slug: string): { t: number; title: string }[] {
+  const p = path.join(process.cwd(), 'src/content/videos', dirSlugOf(slug), 'chapters.json')
+  if (!fs.existsSync(p)) return []
+  try {
+    const data = JSON.parse(fs.readFileSync(p, 'utf8'))
+    if (!Array.isArray(data)) return []
+    return data
+      .filter(c => c && typeof c.t === 'number' && typeof c.title === 'string')
+      .map(c => ({ t: c.t, title: c.title }))
+  } catch {
+    return []
   }
 }
 
@@ -95,6 +112,7 @@ export default async function VideosIndex() {
         ytId: extractYouTubeId(v.slug),
         image,
         thumbStyle: thumbStyleFor(i, kind),
+        chapters: loadChapters(v.slug),
       }
     })
 

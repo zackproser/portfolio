@@ -1,0 +1,70 @@
+[
+  {
+    "t": 0,
+    "title": "Explain why the jump host is necessary when working with the Pinecone AWS Reference Architecture"
+  },
+  {
+    "t": 65,
+    "title": "What the data flow will look like end to end"
+  },
+  {
+    "t": 98,
+    "title": "Where to find comprehensive instructions on launching a jump host"
+  },
+  {
+    "t": 156,
+    "title": "Configure and deploy the jump host"
+  },
+  {
+    "t": 230,
+    "title": "Important network settings for the jump host"
+  },
+  {
+    "t": 275,
+    "title": "Why you must pick a public subnet when launching your jump host"
+  },
+  {
+    "t": 300,
+    "title": "Security group settings for the jump host"
+  },
+  {
+    "t": 355,
+    "title": "The instance is launched - but we need to wait until its ready"
+  },
+  {
+    "t": 370,
+    "title": "File permissions for your downloaded SSH private key"
+  },
+  {
+    "t": 402,
+    "title": "The SSH command, using the private SSH key we downloaded"
+  },
+  {
+    "t": 435,
+    "title": "We're logged onto the jump host!"
+  },
+  {
+    "t": 445,
+    "title": "Granting the jump host network access to the RDS Postgres instance"
+  },
+  {
+    "t": 480,
+    "title": "Looking at the RDS Postgres security group"
+  },
+  {
+    "t": 539,
+    "title": "Installing the psql client on the jump host using yum"
+  },
+  {
+    "t": 570,
+    "title": "psql is installed, so we are ready to connect to RDS"
+  },
+  {
+    "t": 610,
+    "title": "Connecting to RDS via psql from the jump host"
+  },
+  {
+    "t": 630,
+    "title": "Testing by issuing SQL queries"
+  }
+]

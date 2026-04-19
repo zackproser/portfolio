@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { track } from '@vercel/analytics'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 
+export type Chapter = { t: number; title: string }
+
 export type TheaterVideo = {
   slug: string
   title: string
@@ -20,6 +22,7 @@ export type TheaterVideo = {
   ytId: string | null
   image: string | null
   thumbStyle: 't-warm' | 't-cool' | 't-plate' | 't-mono'
+  chapters: Chapter[]
 }
 
 type Props = { videos: TheaterVideo[] }
@@ -71,6 +74,7 @@ export default function VideosTheaterClient({ videos }: Props) {
   const [sort, setSort] = useState<'newest' | 'oldest' | 'popular' | 'longest' | 'shortest'>('newest')
   const [playingSlug, setPlayingSlug] = useState<string | null>(null)
   const [embedLive, setEmbedLive] = useState(false)
+  const [embedStart, setEmbedStart] = useState(0)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const { kinds, tags } = useMemo(() => {
@@ -117,7 +121,7 @@ export default function VideosTheaterClient({ videos }: Props) {
     return filtered.find(v => v.slug === playingSlug) || filtered[0]
   }, [filtered, playingSlug])
 
-  useEffect(() => { setEmbedLive(false) }, [current?.slug])
+  useEffect(() => { setEmbedLive(false); setEmbedStart(0) }, [current?.slug])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -137,15 +141,7 @@ export default function VideosTheaterClient({ videos }: Props) {
     return sorted[0]?.date ? fmtMon(sorted[0].date) : ''
   }, [videos])
 
-  const chapterTitles = [
-    "Cold open & what we're building",
-    'Setup, repo, and prerequisites',
-    'First end-to-end pass',
-    'The part that always breaks',
-    'Hardening for production',
-    'Wrap, gotchas, and resources',
-  ]
-  const chN = current ? Math.min(6, Math.max(3, Math.round((current.durSec || 900) / 600))) : 0
+  const chapters = current?.chapters ?? []
 
   useEffect(() => {
     const needle = q.trim()
@@ -212,6 +208,18 @@ export default function VideosTheaterClient({ videos }: Props) {
 
   const onYouTubeClick = () => {
     track('videos_yt_channel_click', { source: 'videos_header' })
+  }
+
+  const seekChapter = (c: Chapter, index: number) => {
+    if (!current?.ytId) return
+    track('videos_chapter_click', {
+      slug: current.slug,
+      chapter_index: index + 1,
+      chapter_title: c.title,
+      t: c.t,
+    })
+    setEmbedStart(c.t)
+    setEmbedLive(true)
   }
 
   return (
@@ -330,7 +338,8 @@ export default function VideosTheaterClient({ videos }: Props) {
                 <div className="player-frame">
                   {embedLive && current.ytId ? (
                     <iframe
-                      src={`https://www.youtube-nocookie.com/embed/${current.ytId}?autoplay=1`}
+                      key={`${current.slug}-${embedStart}`}
+                      src={`https://www.youtube-nocookie.com/embed/${current.ytId}?autoplay=1${embedStart > 0 ? `&start=${embedStart}` : ''}`}
                       title={current.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -370,17 +379,27 @@ export default function VideosTheaterClient({ videos }: Props) {
                     Open full write-up →
                   </Link>
                 </div>
-                <div className="chapters">
-                  <div className="ch-head"><span>Chapters</span><span>{chN} sections</span></div>
-                  <ol>
-                    {chapterTitles.slice(0, chN).map((t, i) => (
-                      <li key={t}>
-                        <span className="t">{fmtDur(Math.floor(current.durSec * i / chN))}</span>
-                        <span className="l">{t}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
+                {chapters.length > 0 && (
+                  <div className="chapters">
+                    <div className="ch-head">
+                      <span>Chapters</span>
+                      <span>{chapters.length} sections</span>
+                    </div>
+                    <ol>
+                      {chapters.map((c, i) => (
+                        <li
+                          key={`${c.t}-${i}`}
+                          onClick={() => seekChapter(c, i)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <span className="t">{fmtDur(c.t)}</span>
+                          <span className="l">{c.title}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
               </div>
 
               <aside className="playlist">

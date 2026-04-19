@@ -1,0 +1,62 @@
+[
+  {
+    "t": 0,
+    "title": "Why you need a jump host to access the persistence tier (database and microservices)"
+  },
+  {
+    "t": 96,
+    "title": "Following the bundled instructions on using a jump host with the Reference Architecture"
+  },
+  {
+    "t": 120,
+    "title": "Quick demo of what you can do via the jump host"
+  },
+  {
+    "t": 130,
+    "title": "Explaining what we're going to do in this video before we can run pulumi destroy"
+  },
+  {
+    "t": 160,
+    "title": "Unwinding the Security group changes we made to allow the jump host to access RDS"
+  },
+  {
+    "t": 220,
+    "title": "The settings we chose to give our jump host network connectivity to our RDS Postgres instance"
+  },
+  {
+    "t": 265,
+    "title": "Deleting the jump host inbound rule in the RDS security group"
+  },
+  {
+    "t": 350,
+    "title": "Terminating the EC2 jump host"
+  },
+  {
+    "t": 423,
+    "title": "Running pulumi destroy"
+  },
+  {
+    "t": 478,
+    "title": "The most common resource likely to get stuck during teardown"
+  },
+  {
+    "t": 565,
+    "title": "How the pulumi destroy command works with ECS clusters and services"
+  },
+  {
+    "t": 620,
+    "title": "Deleting custom VPC dependencies"
+  },
+  {
+    "t": 639,
+    "title": "Deleting NAT gateways"
+  },
+  {
+    "t": 680,
+    "title": "Deleting the custom VPC itself"
+  },
+  {
+    "t": 720,
+    "title": "A trick for cleaning up the custom VPC more quickly than waiting"
+  }
+]
