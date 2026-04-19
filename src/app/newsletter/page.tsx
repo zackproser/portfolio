@@ -10,11 +10,10 @@ import { Suspense } from 'react'
 import CV from '@/components/CV'
 import RandomPortrait from '@/components/RandomPortrait'
 import { NewsletterSocialProof } from '@/components/NewsletterSocialProof'
-import { getSubscriberCount } from '@/components/SubscriberCount'
 
 export const metadata: Metadata = createMetadata({
   title: 'AI & Developer Tools Newsletter - Zachary Proser',
-  description: `Get monthly insights on AI coding tools, vector databases, and developer productivity. Join ${getSubscriberCount()} engineers staying ahead of the curve.`,
+  description: 'Applied-AI essays on coding tools, vector databases, and developer productivity. Join 5,000+ subscribers reading when something worth sending ships.',
 })
 
 export const revalidate = 3600
@@ -37,7 +36,7 @@ const INSIDE_COLUMNS = [
   },
   {
     section: 'Links \u00B7 Hand-picked',
-    headline: 'Four to six things I read this month, with a sentence on why.',
+    headline: 'Four to six things I\u2019ve been reading, with a sentence on why.',
     dek: 'Papers, repos, essays, talks. No aggregator regurgitation \u2014 if I didn\u2019t read it, it isn\u2019t there.',
   },
   {
@@ -61,7 +60,6 @@ function formatIssueDate(date?: string | Date) {
 
 export default async function NewsletterPage() {
   const articles = await getAllContent('newsletter')
-  const subscriberCount = getSubscriberCount()
   const latest = articles[0]
   const issueCount = articles.length
   const establishedYear = 2019
@@ -87,38 +85,36 @@ export default async function NewsletterPage() {
             <header className="nl-masthead">
               <div className="mh-l">
                 <span>Vol. {currentYear - establishedYear + 1} &middot; {issueCount} issues</span>
-                <span>Dispatched monthly</span>
+                <span>Essays when something ships</span>
               </div>
               <h1 className="mh-title">
                 Modern <em>Coding</em>
               </h1>
               <div className="mh-r">
                 <span>Est. {establishedYear}</span>
-                <span>Applied AI &middot; Brooklyn, NY</span>
+                <span>Applied AI</span>
               </div>
               <p className="mh-strapline">
-                One applied-AI essay a month, written by someone actually shipping it. {subscriberCount} readers and counting.
+                Applied-AI essays written by someone actually shipping it. 5,000+ subscribers and counting.
               </p>
             </header>
 
             <div className="nl-split">
               <div className="nl-pitch">
                 <div className="nl-kicker">
-                  &sect; N &middot; <em>Newsletter</em> &middot; Open to readers &middot; Free forever
+                  &sect; N &middot; <em>Newsletter</em> &middot; Open to readers
                 </div>
                 <h2 className="nl-display">
                   The <em>applied-AI</em> reading list I actually wish I&apos;d had in <em>2022</em>.
                 </h2>
                 <p className="nl-lead">
-                  No predictions. No hot takes. One essay a month, written the week something real shipped &mdash; production RAG that earned its keep, an agent loop that failed informatively, a retrieval experiment that saved me six weeks. The parts nobody tutorials until two years after the hype.
+                  No predictions. No hot takes. Essays written the week something real shipped &mdash; production RAG that earned its keep, an agent loop that failed informatively, a retrieval experiment that saved me six weeks. The parts nobody tutorials until two years after the hype.
                 </p>
 
                 <SubscribeForm fieldNum="01" submitLabel="Subscribe" />
 
                 <div className="sp-fine" style={{ marginTop: 18 }}>
-                  <span>{subscriberCount} readers</span>
-                  <span className="dot" />
-                  <span>Monthly</span>
+                  <span>5,000+ subscribers</span>
                   <span className="dot" />
                   <span>One-click unsubscribe</span>
                 </div>
@@ -363,7 +359,7 @@ export default async function NewsletterPage() {
               <div className="nl-chip">
                 <span className="dot" />
                 <span className="accent">Open</span>
-                <span>&middot; {subscriberCount} readers &middot; next issue ships monthly</span>
+                <span>&middot; 5,000+ subscribers</span>
               </div>
               <h2>Get the next issue in your inbox <em>the day it ships.</em></h2>
               <p>No double-opt-in theatre. Enter an email, click a link, done. Unsubscribing is equally uneventful.</p>

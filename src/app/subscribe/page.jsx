@@ -1,10 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { SubscribeForm } from '@/components/SubscribeForm'
-import { getSubscriberCount } from '@/components/SubscriberCount'
 import { resumeData } from '@/data/resume'
 
-const HERO_PORTRAIT = 'https://zackproser.b-cdn.net/images/avatars/8.webp'
+const HERO_PORTRAIT = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
 
 const whatYouGet = [
   {
@@ -37,12 +36,12 @@ const faqs = [
   {
     num: 'Q.01',
     q: 'How often does it actually ship?',
-    a: 'Once a month, on or around the 1st. Since 2019, I\u2019ve missed one issue (flu \u00B7 Jan \u201923). That\u2019s the only SLA I commit to.',
+    a: 'It ships when it ships. When something worth sending shows up, an issue goes out \u2014 no fixed cadence, no guarantees.',
   },
   {
     num: 'Q.02',
     q: 'Do you sell or share my email?',
-    a: 'Never. The list has exactly one purpose: delivering the newsletter to you. No vendors, no lead-gen, no cross-promo.',
+    a: 'Never sold. The list has one purpose: delivering the newsletter to the inbox you signed up with.',
   },
   {
     num: 'Q.03',
@@ -52,14 +51,13 @@ const faqs = [
   {
     num: 'Q.04',
     q: 'Is there a paid tier?',
-    a: 'No. The free tier is the whole thing. If that ever changes, the free experience stays free \u2014 and existing subscribers hear first, by email, before anything else changes.',
+    a: 'Not right now. If that changes, subscribers hear first \u2014 by email, before any public announcement.',
   },
 ]
 
 const trustedCompanies = ['WorkOS', 'Pinecone', 'Gruntwork', 'Cloudflare', 'Cloudmark', 'BrightContext']
 
 export default function SubscribePage() {
-  const subscriberCount = getSubscriberCount()
   const romanYear = 'MMXIX'
   const spanYears = new Date().getFullYear() - 2012
   const numCompanies = new Set(resumeData.map((r) => r.company)).size
@@ -84,8 +82,8 @@ export default function SubscribePage() {
           {/* ============================================== */}
           <header className="postcard-mast">
             <span className="left">Modern Coding</span>
-            <span className="title"><em>Subscribe &mdash; Free forever</em></span>
-            <span className="right">{subscriberCount} engineers &middot; Est. {romanYear}</span>
+            <span className="title"><em>Subscribe</em></span>
+            <span className="right">5,000+ subscribers &middot; Est. {romanYear}</span>
           </header>
 
           {/* ============================================== */}
@@ -116,11 +114,9 @@ export default function SubscribePage() {
             <SubscribeForm fieldNum="01" submitLabel="Count me in" />
 
             <div className="sp-fine" aria-hidden="true">
-              <span>{subscriberCount} engineers</span>
+              <span>5,000+ subscribers</span>
               <span className="dot" />
               <span>One-click unsubscribe</span>
-              <span className="dot" />
-              <span>Free forever</span>
             </div>
           </article>
 
@@ -169,7 +165,7 @@ export default function SubscribePage() {
                 </div>
                 <div className="bio-tag">
                   <span className="k">Desk</span>
-                  <span>Brooklyn, NY</span>
+                  <span>Modern Coding &middot; Est. {romanYear}</span>
                 </div>
               </div>
               <div className="bio-prose">
@@ -199,7 +195,7 @@ export default function SubscribePage() {
                     </span>
                     <span className="c-yr">
                       {role.start} &mdash;{' '}
-                      {role.end && typeof role.end === 'object' ? role.end.label : role.end}
+                      {typeof role.end === 'object' ? role.end.label : role.end}
                     </span>
                   </li>
                 ))}
@@ -254,9 +250,9 @@ export default function SubscribePage() {
           <section className="postcard-cta">
             <div className="sp-kicker">&sect; 05 &middot; <em>Last call</em></div>
             <h2>Ready to <em>master AI development?</em></h2>
-            <p>Join {subscriberCount} engineers getting smarter about AI tools &mdash; one essay, first of the month.</p>
+            <p>Join 5,000+ subscribers getting smarter about AI tools.</p>
             <SubscribeForm fieldNum="02" submitLabel="Count me in" />
-            <div className="cta-fine">No spam &middot; Unsubscribe anytime &middot; Free forever</div>
+            <div className="cta-fine">Unsubscribe anytime</div>
           </section>
 
           {/* ============================================== */}
