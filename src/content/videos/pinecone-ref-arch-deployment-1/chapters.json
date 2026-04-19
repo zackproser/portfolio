@@ -1,0 +1,30 @@
+[
+  {
+    "t": 0,
+    "title": "Explain the deployment process at a high level"
+  },
+  {
+    "t": 111,
+    "title": "Create a new IAM user for use with the Reference Architecture"
+  },
+  {
+    "t": 255,
+    "title": "Generating IAM user security credentials"
+  },
+  {
+    "t": 332,
+    "title": "The AWS credentials file - writing out security credentials"
+  },
+  {
+    "t": 372,
+    "title": "How to sanity check that your AWS credentials are configured properly"
+  },
+  {
+    "t": 475,
+    "title": "Pulumi / GitHub account setup"
+  },
+  {
+    "t": 495,
+    "title": "Configuring Pulumi to use our AWS credentials file profile"
+  }
+]

@@ -4,5 +4,8 @@
   "title": "Project Panthalia: AI-assisted mobile blogging platform",
   "description": "Panthalia enables me to author rich-media blog posts on the go - assisted by StableDiffusion XL for image generation",
   "image": "https://zackproser.b-cdn.net/images/panthalia-video.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 1711,
+  "views": 70,
+  "_ytStatsFetchedAt": "2026-04-19"
 }

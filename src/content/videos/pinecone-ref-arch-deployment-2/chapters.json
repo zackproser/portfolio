@@ -1,0 +1,46 @@
+[
+  {
+    "t": 0,
+    "title": "Pinecone environment variable configuration"
+  },
+  {
+    "t": 90,
+    "title": "Configuring Pinecone API key and environment values"
+  },
+  {
+    "t": 145,
+    "title": "Initializing a new Pulumi stack (+ what are stacks?)"
+  },
+  {
+    "t": 220,
+    "title": "Ready to run `pulumi up`!"
+  },
+  {
+    "t": 235,
+    "title": "What Pulumi is doing when we run pulumi up"
+  },
+  {
+    "t": 270,
+    "title": "Everything is defined as code, including the Docker builds"
+  },
+  {
+    "t": 307,
+    "title": "Talking through deployment and average deployment times"
+  },
+  {
+    "t": 370,
+    "title": "A brief overview of the Reference Architecture and what it deploys (data flow of system)"
+  },
+  {
+    "t": 440,
+    "title": "How we use Metadata with our Pinecone vectors to connect the user's ambiguous query to our structured data store"
+  },
+  {
+    "t": 525,
+    "title": "Many supporting resources are provisioned. Starting on Emu service"
+  },
+  {
+    "t": 559,
+    "title": "Sanity checking ECS clusters and services"
+  }
+]

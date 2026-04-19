@@ -4,5 +4,8 @@
   "title": "Deploying the Pinecone AWS Reference Architecture - Part 3",
   "description": "I deploy the Pinecone AWS Reference Architecture end to end in this three part video series",
   "image": "https://zackproser.b-cdn.net/images/pinecone-ref-arch-deployment-part-3.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 591,
+  "views": 191,
+  "_ytStatsFetchedAt": "2026-04-19"
 }

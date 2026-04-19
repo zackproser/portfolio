@@ -1,0 +1,142 @@
+[
+  {
+    "t": 0,
+    "title": "Intro and where to find the code"
+  },
+  {
+    "t": 25,
+    "title": "What is Panthalia?"
+  },
+  {
+    "t": 72,
+    "title": "StableDiffusionXL integration"
+  },
+  {
+    "t": 135,
+    "title": "Why I needed to build this for myself"
+  },
+  {
+    "t": 165,
+    "title": "What is Replicate.com and why is it useful?"
+  },
+  {
+    "t": 210,
+    "title": "A closer look at Panthalia as a CMS"
+  },
+  {
+    "t": 390,
+    "title": "How I generated the project’s logo and what Panthalia means"
+  },
+  {
+    "t": 480,
+    "title": "The Panthalia workflow"
+  },
+  {
+    "t": 545,
+    "title": "How the pull requests get progressively built up"
+  },
+  {
+    "t": 599,
+    "title": "Looking at the sequence diagram for how Panthalia works"
+  },
+  {
+    "t": 700,
+    "title": "My personal blog and how it works - hero images and MDX12:29 - Why maintaining this site used to suck"
+  },
+  {
+    "t": 810,
+    "title": "Live demo of Panthalia to create a new post"
+  },
+  {
+    "t": 850,
+    "title": "The Ballad of Pizza Rat"
+  },
+  {
+    "t": 880,
+    "title": "Markdown WYSIWYG"
+  },
+  {
+    "t": 890,
+    "title": "Generating images via image prompts"
+  },
+  {
+    "t": 918,
+    "title": "Pizza Rat running for mayor because he’s power-hungry"
+  },
+  {
+    "t": 965,
+    "title": "The asynchronous workflow and why I did things this way"
+  },
+  {
+    "t": 1032,
+    "title": "The Ballad of Pizza Rat gets a pull request"
+  },
+  {
+    "t": 1070,
+    "title": "Panthalia's edit post capability / route (generated images are seen!)"
+  },
+  {
+    "t": 1110,
+    "title": "Why I chose the image workflow I did"
+  },
+  {
+    "t": 1190,
+    "title": "Why I don't automatically commit images to the branch"
+  },
+  {
+    "t": 1235,
+    "title": "Special considerations for running on Vercel and serverless functions"
+  },
+  {
+    "t": 1269,
+    "title": "I am a sadist - I and I used JavaScript for my git operations"
+  },
+  {
+    "t": 1330,
+    "title": "Updates being pushed to the same branch and updating the PR"
+  },
+  {
+    "t": 1350,
+    "title": "One click buttons to add images to the posts"
+  },
+  {
+    "t": 1394,
+    "title": "I can't stand these buttons right now"
+  },
+  {
+    "t": 1413,
+    "title": "What the initial preview post looks like before being updated"
+  },
+  {
+    "t": 1440,
+    "title": "I don't actually write about Pizza Rat...really"
+  },
+  {
+    "t": 1482,
+    "title": "The Pizza Rat post got its pull request URL saved"
+  },
+  {
+    "t": 1510,
+    "title": "Let's examine the final result and see what a full post looks like"
+  },
+  {
+    "t": 1530,
+    "title": "I had to do this demo 135 times for all of you!"
+  },
+  {
+    "t": 1550,
+    "title": "How the flow looks on mobile"
+  },
+  {
+    "t": 1590,
+    "title": "I told you I don't actually write about Pizza Rat"
+  },
+  {
+    "t": 1625,
+    "title": "Free programming advice"
+  },
+  {
+    "t": 1643,
+    "title": "You should buy some Yubikeys"
+  }
+]

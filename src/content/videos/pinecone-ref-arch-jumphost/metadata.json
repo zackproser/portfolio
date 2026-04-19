@@ -4,5 +4,8 @@
   "title": "Deploying a jump host for the Pinecone AWS Reference Architecture",
   "description": "I demonstrate how to deploy and connect through a jump host in order to interact with Postgres",
   "image": "https://zackproser.b-cdn.net/images/pinecone-ref-arch-jumphost.webp",
-  "type": "video"
+  "type": "video",
+  "durSec": 682,
+  "views": 179,
+  "_ytStatsFetchedAt": "2026-04-19"
 }

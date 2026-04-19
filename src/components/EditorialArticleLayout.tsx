@@ -95,7 +95,11 @@ export function EditorialArticleLayout({
   const tags = metadata?.tags || []
   const category = tags[0] || 'Applied AI'
 
-  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}/blog/${baseSlug}`
+  const contentPathSegment = metadata?.type === 'video' ? 'videos' : metadata?.type === 'course' ? 'learn/courses' : metadata?.type === 'demo' ? 'demos' : 'blog'
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}/${contentPathSegment}/${baseSlug}`
+
+  const breadcrumbText = metadata?.type === 'video' ? 'Videos' : metadata?.type === 'course' ? 'Courses' : metadata?.type === 'demo' ? 'Demos' : 'Writing'
+  const breadcrumbHref = metadata?.type === 'video' ? '/videos' : metadata?.type === 'course' ? '/learn/courses' : metadata?.type === 'demo' ? '/demos' : '/blog'
 
   const articleRef = useRef<HTMLDivElement | null>(null)
   const progressFillRef = useRef<HTMLDivElement | null>(null)
@@ -207,7 +211,7 @@ export function EditorialArticleLayout({
         {/* Breadcrumb */}
         <div className="post-container">
           <div className="post-crumbs">
-            <Link href="/blog">Writing</Link>
+            <Link href={breadcrumbHref}>{breadcrumbText}</Link>
             <span className="sep">/</span>
             <span className="current">{safeTitle}</span>
           </div>
@@ -333,7 +337,7 @@ export function EditorialArticleLayout({
 
           {!hideNewsletter && (
             <div className="inline-newsletter-card">
-              <EditorialNewsletter location={`blog:${baseSlug}`} />
+              <EditorialNewsletter location={`${contentPathSegment}:${baseSlug}`} />
             </div>
           )}
 

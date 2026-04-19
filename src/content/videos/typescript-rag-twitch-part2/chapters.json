@@ -1,0 +1,110 @@
+[
+  {
+    "t": 0,
+    "title": "Continuing discussion around the recursive crawler"
+  },
+  {
+    "t": 8,
+    "title": "GitHub CoPilot, and the tasks it excels"
+  },
+  {
+    "t": 50,
+    "title": "What do we do with the HTML we extract? How the seeder works"
+  },
+  {
+    "t": 111,
+    "title": "The different types of document splitters you can use"
+  },
+  {
+    "t": 152,
+    "title": "embedDocument and how it works"
+  },
+  {
+    "t": 191,
+    "title": "Why do we split documents when working with a vector database?"
+  },
+  {
+    "t": 240,
+    "title": "Problems that occur if you don’t split documents"
+  },
+  {
+    "t": 332,
+    "title": "Proper chunking improves relevance"
+  },
+  {
+    "t": 410,
+    "title": "You still need to tweak and experiment with your chunk parameters"
+  },
+  {
+    "t": 420,
+    "title": "Chunked upserts"
+  },
+  {
+    "t": 516,
+    "title": "Chat endpoint - how we use the context at runtime"
+  },
+  {
+    "t": 560,
+    "title": "Injecting context in LLMs prompts"
+  },
+  {
+    "t": 624,
+    "title": "Is there a measurable difference in where you put the context in the prompt?"
+  },
+  {
+    "t": 672,
+    "title": "Reviewing the end to end RAG workflow"
+  },
+  {
+    "t": 785,
+    "title": "LLMs conditioned us to be okay with responses taking time (being pretty slow!)"
+  },
+  {
+    "t": 825,
+    "title": "Cool UX anecdote around what humans consider too long"
+  },
+  {
+    "t": 1020,
+    "title": "You have an opportunity to associate chunks with metadata"
+  },
+  {
+    "t": 1145,
+    "title": "UI cards - selecting one to show it was used as context in response"
+  },
+  {
+    "t": 1282,
+    "title": "How we make it visually clear which chunks and context were used in the LLM"
+  },
+  {
+    "t": 1425,
+    "title": "Auditability and why it matters"
+  },
+  {
+    "t": 1470,
+    "title": "Testing the live app"
+  },
+  {
+    "t": 1795,
+    "title": "Outro chatting - Thursday AI sessions on Twitter spaces"
+  },
+  {
+    "t": 1824,
+    "title": "Review GitHub project - this is all open-source!"
+  },
+  {
+    "t": 1859,
+    "title": "Inaugural stream conclusion"
+  },
+  {
+    "t": 1915,
+    "title": "Vim / VsCode / Cursor AI IDE discussion"
+  },
+  {
+    "t": 1943,
+    "title": "Setting up Devtools on Mac OSX"
+  },
+  {
+    "t": 1992,
+    "title": "Upcoming stream ideas - Image search / Pokemon search"
+  }
+]

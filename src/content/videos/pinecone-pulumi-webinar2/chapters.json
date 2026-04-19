@@ -1,0 +1,54 @@
+[
+  {
+    "t": 0,
+    "title": "Introduction"
+  },
+  {
+    "t": 165,
+    "title": "What is Infrastructure as Code (IaC)?"
+  },
+  {
+    "t": 864,
+    "title": "What does one AI application require?"
+  },
+  {
+    "t": 927,
+    "title": "Pinecone as Code"
+  },
+  {
+    "t": 1017,
+    "title": "Navigating from Jupyter Notebooks to Production"
+  },
+  {
+    "t": 1469,
+    "title": "Major component: IaC"
+  },
+  {
+    "t": 1574,
+    "title": "How do I start?"
+  },
+  {
+    "t": 1840,
+    "title": "How much of a lift is it going to be?"
+  },
+  {
+    "t": 2062,
+    "title": "Quick but Powerful Aside - Embeddings"
+  },
+  {
+    "t": 2315,
+    "title": "Back to the example..."
+  },
+  {
+    "t": 2970,
+    "title": "Pitfalls and risks"
+  },
+  {
+    "t": 3078,
+    "title": "Q&A"
+  },
+  {
+    "t": 3395,
+    "title": "Closing"
+  }
+]
