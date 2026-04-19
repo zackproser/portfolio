@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
             .header { background-color: #1e40af; color: white; padding: 20px; border-radius: 5px 5px 0 0; }
             .content { background-color: #f9fafb; padding: 20px; border-radius: 0 0 5px 5px; border: 1px solid #e5e7eb; border-top: none; }
             .label { font-weight: bold; margin-bottom: 5px; color: #4b5563; }
-            .value { margin-bottom: 15px; }
+            .value { margin-bottom: 15px; white-space: pre-line; }
             .footer { margin-top: 20px; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 10px; }
           </style>
         </head>

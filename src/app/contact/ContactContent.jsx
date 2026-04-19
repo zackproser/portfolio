@@ -99,7 +99,11 @@ export function ContactContent() {
     const email = form.elements.namedItem('email')?.value?.trim()
     const company = form.elements.namedItem('company')?.value?.trim()
     const rawMessage = form.elements.namedItem('message')?.value?.trim()
-    if (!name || !email || !rawMessage) return
+    if (!name || !email || !rawMessage) {
+      setStatus('err')
+      setErrorMessage('Please fill in all required fields (Name, Email, and Message)')
+      return
+    }
 
     const trackLabel = tracks.find((t) => t.id === track)?.num || track
     const scopeLine = scope ? `Budget / Timeline: ${scope}\n\n` : ''
