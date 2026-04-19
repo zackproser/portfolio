@@ -107,8 +107,8 @@ export default function VideosTheaterClient({ videos }: Props) {
       }
       return true
     }).sort((a, b) => {
-      if (sort === 'newest') return a.date < b.date ? 1 : -1
-      if (sort === 'oldest') return a.date > b.date ? 1 : -1
+      if (sort === 'newest') return new Date(b.date).getTime() - new Date(a.date).getTime()
+      if (sort === 'oldest') return new Date(a.date).getTime() - new Date(b.date).getTime()
       if (sort === 'popular') return b.views - a.views
       if (sort === 'longest') return b.durSec - a.durSec
       if (sort === 'shortest') return a.durSec - b.durSec
@@ -137,7 +137,7 @@ export default function VideosTheaterClient({ videos }: Props) {
   const totalSec = useMemo(() => videos.reduce((s, v) => s + v.durSec, 0), [videos])
   const totalViews = useMemo(() => videos.reduce((s, v) => s + v.views, 0), [videos])
   const lastDate = useMemo(() => {
-    const sorted = [...videos].sort((a, b) => (a.date < b.date ? 1 : -1))
+    const sorted = [...videos].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     return sorted[0]?.date ? fmtMon(sorted[0].date) : ''
   }, [videos])
 

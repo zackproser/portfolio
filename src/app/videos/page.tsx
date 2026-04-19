@@ -86,7 +86,7 @@ export default async function VideosIndex() {
 
   const payload: TheaterVideo[] = videos
     .filter(v => !v.hiddenFromIndex)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .map((v, i) => {
       const kind = kindOf(v)
       const { series, part } = seriesOf(v)
