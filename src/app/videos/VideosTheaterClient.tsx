@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { NewsletterSignupInline } from '@/components/NewsletterSignupInline'
+import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 
 export type TheaterVideo = {
   slug: string
@@ -339,14 +339,13 @@ export default function VideosTheaterClient({ videos }: Props) {
             </div>
           )}
 
-          <div className="newsletter-strip">
-            <div>
-              <h3>New videos, in your inbox.</h3>
-              <p>One email per drop. Usually a tutorial, sometimes a workshop, never a launch announcement. Unsubscribe in one click.</p>
-            </div>
-            <div>
-              <NewsletterSignupInline />
-            </div>
+          <div className="videos-newsletter">
+            <EditorialNewsletter
+              location="videos"
+              label="New videos, in your inbox"
+              title="Applied AI dispatches read by 5,000+ engineers"
+              fine="One email per drop. Tutorial, workshop, or a short explainer — never a launch announcement. Unsubscribe in one click."
+            />
           </div>
         </div>
       </main>
