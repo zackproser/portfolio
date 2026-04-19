@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 
 export type TheaterVideo = {
@@ -146,6 +147,73 @@ export default function VideosTheaterClient({ videos }: Props) {
   ]
   const chN = current ? Math.min(6, Math.max(3, Math.round((current.durSec || 900) / 600))) : 0
 
+  useEffect(() => {
+    const needle = q.trim()
+    if (!needle) return
+    const handle = setTimeout(() => {
+      track('videos_search', { query: needle, result_count: filtered.length })
+    }, 700)
+    return () => clearTimeout(handle)
+  }, [q, filtered.length])
+
+  const playCurrent = () => {
+    if (!current?.ytId) return
+    const position = filtered.findIndex(v => v.slug === current.slug) + 1
+    track('videos_play', {
+      slug: current.slug,
+      title: current.title,
+      kind: current.kind,
+      series: current.series ?? 'none',
+      position,
+      source: 'poster',
+    })
+    setEmbedLive(true)
+  }
+
+  const switchTo = (v: TheaterVideo, position: number) => {
+    if (v.slug === current?.slug) return
+    track('videos_switch', {
+      from_slug: current?.slug ?? 'none',
+      to_slug: v.slug,
+      title: v.title,
+      kind: v.kind,
+      series: v.series ?? 'none',
+      position,
+    })
+    setPlayingSlug(v.slug)
+  }
+
+  const onKindChange = (k: string) => {
+    if (k === kind) return
+    track('videos_filter_kind', { kind: k })
+    setKind(k)
+  }
+
+  const onTagChange = (t: string) => {
+    if (t === tag) return
+    track('videos_filter_topic', { topic: t })
+    setTag(t)
+  }
+
+  const onSortChange = (s: typeof sort) => {
+    if (s === sort) return
+    track('videos_sort_change', { sort: s })
+    setSort(s)
+  }
+
+  const onWriteupClick = () => {
+    if (!current) return
+    track('videos_writeup_click', {
+      slug: current.slug,
+      title: current.title,
+      kind: current.kind,
+    })
+  }
+
+  const onYouTubeClick = () => {
+    track('videos_yt_channel_click', { source: 'videos_header' })
+  }
+
   return (
     <div className="videos-page">
       <section className="vid-header">
@@ -164,7 +232,13 @@ export default function VideosTheaterClient({ videos }: Props) {
             <span><b>{fmtViews(totalViews)}</b> views</span>
             <span>Updated <b>{lastDate}</b></span>
             <span />
-            <a className="yt" href="https://www.youtube.com/@zackproser" target="_blank" rel="noreferrer">
+            <a
+              className="yt"
+              href="https://www.youtube.com/@zackproser"
+              target="_blank"
+              rel="noreferrer"
+              onClick={onYouTubeClick}
+            >
               Subscribe on YouTube ↗
             </a>
           </div>
@@ -195,7 +269,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                   <button
                     key={k}
                     className={`chip ${kind === k ? 'active' : ''}`}
-                    onClick={() => setKind(k)}
+                    onClick={() => onKindChange(k)}
                     type="button"
                   >
                     {k}<span className="count">{n}</span>
@@ -207,7 +281,7 @@ export default function VideosTheaterClient({ videos }: Props) {
               className="sort-select"
               aria-label="Sort"
               value={sort}
-              onChange={e => setSort(e.target.value as typeof sort)}
+              onChange={e => onSortChange(e.target.value as typeof sort)}
             >
               <option value="newest">↓ Newest</option>
               <option value="oldest">↑ Oldest</option>
@@ -227,7 +301,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                     <button
                       key={t}
                       className={`chip ${tag === t ? 'active' : ''}`}
-                      onClick={() => setTag(t)}
+                      onClick={() => onTagChange(t)}
                       type="button"
                     >
                       {label}<span className="count">{n}</span>
@@ -265,7 +339,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                     <button
                       className="player-poster"
                       type="button"
-                      onClick={() => { if (current.ytId) setEmbedLive(true) }}
+                      onClick={playCurrent}
                       aria-label={current.ytId ? `Play ${current.title}` : current.title}
                       disabled={!current.ytId}
                     >
@@ -292,7 +366,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                     {current.tags.length > 0 && (<><span className="sep">·</span><span>{current.tags.slice(0, 3).map(t => `#${t}`).join(' · ')}</span></>)}
                   </div>
                   {current.description && <p className="player-dek">{current.description}</p>}
-                  <Link className="player-link" href={current.slug as any}>
+                  <Link className="player-link" href={current.slug as any} onClick={onWriteupClick}>
                     Open full write-up →
                   </Link>
                 </div>
@@ -320,7 +394,7 @@ export default function VideosTheaterClient({ videos }: Props) {
                       key={v.slug}
                       className={`pl-item ${v.slug === current.slug ? 'active' : ''}`}
                       type="button"
-                      onClick={() => setPlayingSlug(v.slug)}
+                      onClick={() => switchTo(v, i + 1)}
                     >
                       <span className="pl-num">{pad2(i + 1)}</span>
                       <div className="pl-thumb"><Thumb v={v} plInner /></div>
