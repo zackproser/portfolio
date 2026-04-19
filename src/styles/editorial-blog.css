@@ -430,13 +430,46 @@
   text-align: right; transition: color .15s, transform .15s;
 }
 .editorial-blog .eb-row:hover .eb-arrow { color: var(--eb-accent); transform: translateX(3px); }
+/* Tablet: collapse the date+kind columns, keep a single content column + arrow. */
 @media (max-width: 1000px) {
-  .editorial-blog .eb-row { grid-template-columns: 60px 1fr auto; gap: 14px; }
+  .editorial-blog .eb-row {
+    grid-template-columns: 60px 1fr auto;
+    grid-template-areas:
+      "num   title arrow"
+      ".     meta  meta";
+    gap: 6px 14px;
+  }
+  .editorial-blog .eb-row .eb-num        { grid-area: num; }
+  .editorial-blog .eb-row .eb-title-wrap { grid-area: title; min-width: 0; }
+  .editorial-blog .eb-row .eb-arrow      { grid-area: arrow; align-self: center; }
   .editorial-blog .eb-row .eb-mdate,
-  .editorial-blog .eb-row .eb-kind { grid-column: 2; font-size: 10px; }
-  .editorial-blog .eb-row .eb-arrow { grid-row: 1; grid-column: 3; align-self: center; }
+  .editorial-blog .eb-row .eb-kind {
+    grid-area: meta; display: inline;
+    font-size: 10px; color: var(--eb-fg-subtle);
+  }
+  .editorial-blog .eb-row .eb-mdate::after { content: " · "; opacity: .5; }
   .editorial-blog .eb-year { grid-template-columns: 1fr; gap: 4px; position: static; }
   .editorial-blog .eb-year-label { font-size: 40px; }
+}
+
+/* Phone: ditch the grid, stack meta / title / dek; drop the arrow. */
+@media (max-width: 640px) {
+  .editorial-blog .eb-row {
+    display: block; padding: 18px 0; gap: 0;
+  }
+  .editorial-blog .eb-row:hover { padding-left: 0; }
+  .editorial-blog .eb-row .eb-num,
+  .editorial-blog .eb-row .eb-mdate,
+  .editorial-blog .eb-row .eb-kind {
+    display: inline; font-size: 10px; margin-right: 10px;
+  }
+  .editorial-blog .eb-row .eb-mdate::after { content: none; }
+  .editorial-blog .eb-row .eb-title-wrap {
+    display: block; margin-top: 8px; min-width: 0;
+  }
+  .editorial-blog .eb-row .eb-row-title { font-size: 18px; }
+  .editorial-blog .eb-row .eb-row-dek { margin-top: 4px; }
+  .editorial-blog .eb-row .eb-arrow { display: none; }
 }
 
 /* ---------------- Newsletter strip ---------------- */
