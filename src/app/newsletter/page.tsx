@@ -196,7 +196,7 @@ export default async function NewsletterPage() {
                     I&apos;m <b>Zachary Proser</b>, {BIO_PROSE.intro.replace("I'm Zachary Proser, ", '')}
                   </p>
                   <p>
-                    I teach AI development through <b>interactive machine-learning examples</b> that break down complex concepts from the ground up &mdash; no prerequisites needed.
+                    {BIO_PROSE.teaching}
                   </p>
                   <p>
                     {BIO_PROSE.newsletter}
@@ -238,7 +238,7 @@ export default async function NewsletterPage() {
               <span className="num">&sect; 05</span>
               <h2>Recent episodes.</h2>
               <span className="more">
-                {articles.length > 0 ? `E.${String(Math.max(articles.length - 6, 1)).padStart(2, '0')} \u2014 E.${String(articles.length).padStart(2, '0')}` : ''}
+                {articles.length > 0 ? `E.${String(Math.max(articles.length - 5, 1)).padStart(2, '0')} \u2014 E.${String(articles.length).padStart(2, '0')}` : ''}
               </span>
             </header>
 

@@ -147,7 +147,7 @@ export default function SubscribePage() {
                   I&apos;m <b>Zachary Proser</b>, {BIO_PROSE.intro.replace("I'm Zachary Proser, ", '')}
                 </p>
                 <p>
-                  I teach AI development through <b>interactive machine-learning examples</b> that break down complex concepts from the ground up &mdash; no prerequisites needed.
+                  {BIO_PROSE.teaching}
                 </p>
                 <p>
                   {BIO_PROSE.newsletter}
