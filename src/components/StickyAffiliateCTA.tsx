@@ -132,12 +132,13 @@ export default function StickyAffiliateCTA({
                             bg-gradient-to-r ${data.gradient} ${data.hoverGradient}
                             text-white text-sm font-semibold shadow-md
                             hover:shadow-lg transition-all duration-200
+                            !text-white
                           `}
                         >
-                          <Icon className="h-4 w-4" />
-                          <span className="hidden sm:inline">{data.name}</span>
-                          <span className="sm:hidden">{data.name.slice(0, 1)}</span>
-                          <ArrowRight className="h-3.5 w-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform" />
+                          <Icon className="h-4 w-4 !text-white" />
+                          <span className="hidden sm:inline !text-white">{data.name}</span>
+                          <span className="sm:hidden !text-white">{data.name.slice(0, 1)}</span>
+                          <ArrowRight className="h-3.5 w-3.5 opacity-70 group-hover:translate-x-0.5 transition-transform !text-white" />
                         </a>
                       )
                     })}
@@ -199,11 +200,12 @@ export function InlineAffiliateCTA({
         text-white text-sm font-semibold shadow-md
         hover:shadow-lg transition-all duration-200
         no-underline
+        !text-white
       `}
     >
-      <Icon className="h-4 w-4" />
-      Try {data.name} Free
-      <ArrowRight className="h-3.5 w-3.5" />
+      <Icon className="h-4 w-4 !text-white" />
+      <span className="!text-white">Try {data.name} Free</span>
+      <ArrowRight className="h-3.5 w-3.5 !text-white" />
     </a>
   )
 }
