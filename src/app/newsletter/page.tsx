@@ -2,9 +2,10 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { Container } from '@/components/Container'
 import { getAllContent } from '@/lib/content-handlers'
-import { ContentCard } from '@/components/ContentCard'
+import { EditorialCard } from '@/components/EditorialCard'
 import { createMetadata } from '@/utils/createMetadata'
 import Link from 'next/link'
+import type { Route } from 'next'
 import { SubscribeForm } from '@/components/SubscribeForm'
 import { resumeData } from '@/data/resume'
 import { WHAT_YOU_GET, BIO_PROSE } from '@/data/newsletter-content'
@@ -17,39 +18,6 @@ export const metadata: Metadata = createMetadata({
 })
 
 export const revalidate = 3600
-
-const INSIDE_COLUMNS = [
-  {
-    section: 'Opening · Every issue',
-    headline: 'A paragraph on what shipped, what broke, and what I\u2019m chewing on.',
-    dek: 'Written the week of, not the quarter of. Light on adjectives, heavy on diffs.',
-  },
-  {
-    section: 'Feature \u00B7 10\u201314 min',
-    headline: 'One long essay \u2014 usually a production postmortem or a technique at depth.',
-    dek: 'Usually code, diagrams, or both. No takes about GPT-Next. No Medium roundups.',
-  },
-  {
-    section: 'Sidebar \u00B7 3 min',
-    headline: 'One smaller piece \u2014 a prompt, a trick, a "do this instead of that."',
-    dek: 'The kind of note I\u2019d otherwise text to a friend. Sometimes it\u2019s a snippet.',
-  },
-  {
-    section: 'Links \u00B7 Hand-picked',
-    headline: 'Four to six things I\u2019ve been reading, with a sentence on why.',
-    dek: 'Papers, repos, essays, talks. No aggregator regurgitation \u2014 if I didn\u2019t read it, it isn\u2019t there.',
-  },
-  {
-    section: 'Desk note \u00B7 Short',
-    headline: 'What I\u2019m reading on my actual bookshelf, not the curated one.',
-    dek: 'A closing note. Sometimes it\u2019s a paper, sometimes it\u2019s a poem. It\u2019s fine.',
-  },
-  {
-    section: 'Archive \u00B7 Open',
-    headline: 'Every back issue lives on the archive, ungated and searchable.',
-    dek: 'Paywall-free. Subscribing just gets it to your inbox the day it ships.',
-  },
-]
 
 function formatIssueDate(date?: string | Date) {
   if (!date) return ''
@@ -136,7 +104,7 @@ export default async function NewsletterPage() {
                   <div className="nl-cover-foot">
                     <span>Latest issue</span>
                     <Link
-                      href={`/newsletter/${latest.slug}`}
+                      href={(latest.slug || '#') as Route}
                       className="hover:underline"
                     >
                       Read online &rarr;
@@ -149,22 +117,25 @@ export default async function NewsletterPage() {
         </Container>
 
         {/* ============================================== */}
-        {/* What's inside                                  */}
+        {/* What you'll get (editorial 2x2)                */}
         {/* ============================================== */}
         <Container>
           <div className="max-w-6xl mx-auto">
             <section className="nl-inside">
               <header className="nl-inside-head">
                 <span className="num">&sect; 01</span>
-                <h2>What actually shows up in your inbox.</h2>
-                <span className="more">I.01 &mdash; I.06</span>
+                <h2>What you&apos;ll get.</h2>
+                <span className="more">I.01 &mdash; I.04</span>
               </header>
-              <div className="nl-columns">
-                {INSIDE_COLUMNS.map((c) => (
-                  <article className="nl-column" key={c.section}>
-                    <div className="section">{c.section}</div>
-                    <h3 className="headline">{c.headline}</h3>
-                    <p className="dek">{c.dek}</p>
+              <div className="nl-wyg-grid">
+                {WHAT_YOU_GET.map((card) => (
+                  <article className="nl-wyg-card" key={card.num}>
+                    <header className="nl-wyg-card-head">
+                      <span className="nl-wyg-num">{card.num}</span>
+                      <span>{card.kind}</span>
+                    </header>
+                    <h3>{card.title}</h3>
+                    <p>{card.body}</p>
                   </article>
                 ))}
               </div>
@@ -259,38 +230,12 @@ export default async function NewsletterPage() {
         </Container>
 
         {/* ============================================== */}
-        {/* What you'll get (editorial 2x2)                */}
-        {/* ============================================== */}
-        <Container>
-          <div className="max-w-6xl mx-auto">
-            <section className="nl-section">
-              <div className="nl-section-head-centered">
-                <div className="nl-kicker">&sect; 05 &middot; <em>What you&apos;ll get</em></div>
-                <h2>Cut through the AI hype with <em>practical, battle-tested</em> insights.</h2>
-              </div>
-              <div className="nl-wyg-grid">
-                {WHAT_YOU_GET.map((card) => (
-                  <article className="nl-wyg-card" key={card.num}>
-                    <header className="nl-wyg-card-head">
-                      <span className="nl-wyg-num">{card.num}</span>
-                      <span>{card.kind}</span>
-                    </header>
-                    <h3>{card.title}</h3>
-                    <p>{card.body}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </div>
-        </Container>
-
-        {/* ============================================== */}
         {/* Recent episodes                                */}
         {/* ============================================== */}
         <Container>
           <div className="max-w-6xl mx-auto">
             <header className="nl-section-head">
-              <span className="num">&sect; 06</span>
+              <span className="num">&sect; 05</span>
               <h2>Recent episodes.</h2>
               <span className="more">
                 {articles.length > 0 ? `E.${String(Math.max(articles.length - 6, 1)).padStart(2, '0')} \u2014 E.${String(articles.length).padStart(2, '0')}` : ''}
@@ -298,23 +243,21 @@ export default async function NewsletterPage() {
             </header>
 
             <div className="pt-10 pb-4">
-              {latest && (
-                <div className="nl-latest-wrap">
-                  <div className="nl-latest-badge">Latest</div>
-                  <ContentCard article={latest} />
-                </div>
-              )}
-
-              <div className="grid md:grid-cols-3 gap-8 mt-8">
-                {articles.slice(1, 7).map((article) => (
-                  <ContentCard key={article.slug} article={article} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.slice(0, 6).map((article, i) => (
+                  <EditorialCard
+                    key={article.slug ?? `nl-${i}`}
+                    article={article}
+                    index={i + 1}
+                    kind={i === 0 ? 'Latest' : 'Issue'}
+                  />
                 ))}
               </div>
 
-              {articles.length > 7 && (
+              {articles.length > 6 && (
                 <div className="text-center mt-12">
                   <p className="text-parchment-600 dark:text-slate-400 text-sm font-mono uppercase tracking-widest">
-                    <strong className="text-charcoal-50 dark:text-white">{articles.length - 7} more episodes</strong> in the archive
+                    <strong className="text-charcoal-50 dark:text-white">{articles.length - 6} more issues</strong> in the archive
                   </p>
                 </div>
               )}

@@ -15,6 +15,7 @@ export const navItems = [
   { name: 'Videos', href: '/videos' },
   { name: 'Playground', href: '/demos' },
   { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
 ];
 export const navCta = { name: 'Newsletter', href: '/newsletter' };
 
