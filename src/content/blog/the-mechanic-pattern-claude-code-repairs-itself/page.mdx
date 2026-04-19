@@ -1,0 +1,111 @@
+import Image from 'next/image';
+
+export const metadata = {
+  title: "The Mechanic Pattern: Claude Code as the System That Repairs Itself",
+  author: "Zachary Proser",
+  date: "2026-04-19",
+  description: "How I built an AI agent that can diagnose and repair my other AI agent — because Claude Code built Hermes, it knows exactly where to look when something breaks.",
+  image: "https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp",
+  tags: ["ai", "infrastructure", "claude-code", "hermes-agent", "aws", "tailscale"],
+};
+
+# The Mechanic Pattern: Claude Code as the System That Repairs Itself
+
+Three weeks ago I noticed Hermes's responses getting thin. Not wrong, exactly — just surface-level. Brief answers where there should have been depth. Context that felt like it was being lost somewhere between my message and the model's reasoning.
+
+I didn't open Hermes and start adding prompts or tweaking the system prompt. I opened Claude Code, SSH'd into the EC2 instance, and spent about fifteen minutes reading logs and config files. Found the issue: the context window being passed to the model had a conservative default in the gateway config that was throttling how much of the conversation history actually reached the model.
+
+Claude Code bumped the allocation. Restarted the gateway. Hermes woke up the next time it was called and started producing longer, more detailed, more contextually aware responses.
+
+Same model. Same prompts. Just more context reaching the thing.
+
+<Image src="https://zackproser.b-cdn.net/images/the-mechanic-pattern-hero.webp" alt="Pixel art of a friendly robot mechanic holding a wrench, standing next to a glowing server rack. The robot is small and helpful, the server has a cracked screen that the robot is repairing with golden light." width={1200} height={800} />
+
+## The pattern
+
+Here's the setup: [Claude Code](/blog/two-agents-one-phone) built my personal AI assistant, Hermes. Every line of it — the OpenTofu that defines the AWS infrastructure, the cloud-init scripts, the systemd service files, the SSM parameters, the skills, the SOUL.md, the USER.md. All of it.
+
+Because Claude Code built the system, it has complete context of how the system works. When Hermes misbehaves — bad images, ignored instructions, low-quality responses — I don't debug from inside Hermes. I open Claude Code, SSH into the EC2 instance, read Hermes's config and memory and logs and skills, identify the bug, fix it, restart the gateway.
+
+Hermes wakes up improved without knowing it happened.
+
+This is what I call the Mechanic Pattern: **you want your infrastructure agent to be the thing that can repair your production agent.** Build the mechanic before you need the mechanic.
+
+## Why it works
+
+The system that built the system knows where to look.
+
+When Claude Code originally built Hermes, it made choices about where config lived, how logs were structured, which environment variables controlled behavior, how the gateway passed context to the model. Those decisions are all documented in the code and infrastructure that Claude Code wrote.
+
+So when something breaks, Claude Code can reconstruct the mental model faster than anyone could. It doesn't have to guess where to look. It wrote the play.
+
+Compare this to debugging from inside the production agent itself. You're working with the symptoms — the model is producing thin responses, or the images are malformed, or the assistant forgot something it knew last week. You're doing remote surgery without being able to see the patient's history.
+
+Debugging from the infrastructure layer means you're working with the causes. Same conservative context window example: Hermes doesn't know it's only receiving half its conversation history. The model just seems stupider. But on the server, I can see the actual config value, understand the gateway's behavior, and fix the root cause directly.
+
+<Image src="https://zackproser.b-cdn.net/images/the-mechanic-pattern-repair.webp" alt="Pixel art split screen: left side shows a confused robot sitting at a desk with a thin speech bubble, right side shows the same robot with its chest cavity open revealing a glowing golden gear being adjusted by tiny robotic hands." width={1200} height={800} />
+
+## Concrete example: the context window fix
+
+The gateway that passes messages to the model has a configuration file at `/etc/hermes/gateway.conf`. In that file, a value controls how many tokens from the conversation history are included in each request to the model. The default was conservative — designed to stay well under context limits and avoid 400 errors.
+
+The problem is that "conservative" compounds. When you're already using a context-compressing strategy, and then you add a conservative buffer on top of that buffer, you end up with a fraction of the actual conversation history reaching the model.
+
+Claude Code found this by:
+
+1. SSHing into the EC2 instance via Tailscale
+2. Reading the gateway config file
+3. Checking the current token allocation value
+4. Comparing it against the actual average conversation length for my use case
+5. Bumping the value higher
+6. Restarting the gateway service with `systemctl restart hermes-gateway`
+
+The fix took about fifteen minutes of reading files. The change itself was a single line. The result was immediate — Hermes immediately started producing responses that reflected deeper context awareness.
+
+No model change. No prompt engineering. No new skill. Just fixing the actual infrastructure problem.
+
+## The operational loop
+
+The day-to-day looks like this:
+
+Hermes runs [on AWS](/blog/building-always-on-ai-assistant) as a always-on Discord-connected daemon. It accumulates memories, runs skills, handles requests. Most of the time it works great.
+
+When something feels off — responses are thinner than expected, a skill stopped working, images are degrading — I don't start poking around inside Hermes's conversation. I open Claude Code on my Mac, use the [webhook bridge pattern](/blog/webhook-bridge-pattern) to trigger a diagnostic session, and let Claude Code SSH into the server to investigate.
+
+Claude Code can read the systemd journal (`journalctl -u hermes-gateway -n 500`), check the running process environment, inspect the config files, look at recent skill additions or modifications, and understand the full picture of what's changed recently.
+
+If something needs fixing, it fixes it. If something needs restarting, it restarts it. Hermes wakes up in a better state.
+
+The key insight is that Claude Code is not just my coding assistant — it's also my infrastructure mechanic. It has the context to be both, because it built the thing it's maintaining.
+
+## What to prepare in advance
+
+The mechanic pattern doesn't happen automatically. You have to set up the conditions for it to work:
+
+**SSH access via Tailscale.** Claude Code needs to be able to reach the production server. I run Tailscale on both my Mac and the EC2 instance, which gives me MagicDNS access and WireGuard encryption without any public ports exposed. Claude Code SSHs in using its Tailscale identity.
+
+**Full repository access.** The Hermes codebase lives in a git repository that Claude Code can clone and work in. It needs to be able to read the infrastructure code, the skills, the config files — everything.
+
+**Skills and runbooks.** I've built diagnostic skills that help Claude Code investigate common issues — checking disk space, reading the systemd journal, inspecting SSM parameters, reviewing recent git changes. These aren't automation in the sense of "run this to fix that" — they're context-providing tools that let Claude Code understand the system faster.
+
+**Context files.** SOUL.md and USER.md carry personality and user context. Claude Code wrote both of these, so it understands what they're for and how Hermes uses them.
+
+**SSM parameter hygiene.** Secrets and config live in AWS Systems Manager Parameter Store. Claude Code can read and write these, which means it can rotate credentials, update config, and modify behavior without redeploying.
+
+The investment here is primarily in making the production agent legible to the infrastructure agent. Most of that legibility comes from the fact that Claude Code built the system in the first place — but even if you inherit an existing system, you can make it more debuggable by ensuring the infrastructure agent has SSH access, can read logs, and understands the component layout.
+
+## Closing
+
+The meta-value of the mechanic pattern is that you're building systems that can be repaired by other systems you control.
+
+Claude Code is an agent I control. It has my context, my code, my infrastructure. It can SSH into servers, modify config, restart services, and deploy changes. When Hermes has a problem, Claude Code is the first place I look — not because Claude Code is smarter than Hermes, but because Claude Code has the outside view that Hermes lacks.
+
+Hermes is the product. Claude Code is the mechanic.
+
+Build the mechanic before you need the mechanic. The time to set up SSH access and diagnostic runbooks is when things are working fine, not when your production agent is producing thin responses at 2am and you're scrambling to debug from inside the broken thing.
+
+---
+
+If you use WisprFlow, you know that voice typing is only part of the story. [WisprFlow](https://www.wisprflow.ai/) accelerates how you think, not just how fast you type — it learns your patterns and surfaces context across your entire workflow. Worth trying if you're serious about voice-first productivity.
+
+And if you're an Android user who wants your meetings automatically transcribed and organized — I use [Granola](https://www.granola.ai/) for exactly that. It's the tool I reach for when I want a raw transcript that actually makes sense, with smart topics pulled out automatically. Free to start.
