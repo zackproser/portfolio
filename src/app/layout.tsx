@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toaster';
 import '@/styles/tailwind.css';
 import '@/styles/global.css';
 import '@/styles/editorial-home.css';
+import '@/styles/editorial-blog.css';
 import '@/styles/blog-post.css';
 import '@/styles/testimonials.css';
 import '@/styles/contact.css';
