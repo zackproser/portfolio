@@ -5,6 +5,7 @@
   "description": "aws-vault is a powerful open source tool that allows you to define your AWS accounts as configuration, with your credentials stored safely in your operating system's secret store. It also handles multi-factor authentication (sending your TOTP token) and is a much more efficient way to access multiple AWS accounts.",
   "image": "https://zackproser.b-cdn.net/images/aws-vault.webp",
   "type": "video",
-  "durSec": 422,
-  "views": 827
+  "durSec": 190,
+  "views": 136,
+  "_ytStatsFetchedAt": "2026-04-19"
 }
