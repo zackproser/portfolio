@@ -166,7 +166,7 @@ export default function ProjectsClient({ projects }: Props) {
         if (sort === 'stars') return (b.stars || 0) - (a.stars || 0)
         if (sort === 'oldest') return a.startedYear - b.startedYear
         if (sort === 'newest') return b.startedYear - a.startedYear
-        if (sort === 'alpha') return a.name.localeCompare(b.name)
+        if (sort === 'alpha') return a.title.localeCompare(b.title)
         return 0
       })
   }, [projects, q, cat, lang, tag, sort])
