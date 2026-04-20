@@ -1,0 +1,479 @@
+import { Metadata } from 'next'
+import { createMetadata } from '@/utils/createMetadata'
+import ProjectsClient, { type ProjectItem } from './projects-client'
+
+const baseMetadata = createMetadata({
+  title: "Zack Proser's Builds — projects, open source, infra, workshops",
+  description:
+    "An editorial index of things I've shipped, written, or open-sourced. Applied AI tutorials, reference architectures, OSS repos, and the talks that went with them.",
+  author: 'Zachary Proser',
+})
+
+export const metadata: Metadata = {
+  ...baseMetadata,
+  metadataBase: new URL('https://zackproser.com'),
+}
+
+type CoverStyle = 'grid' | 'dots' | 'rule' | 'diag' | 'wave'
+
+type SeedProject = {
+  id: string
+  name: string
+  title: string
+  description: string
+  url: string
+  blogLink?: string
+  demoUrl?: string
+  company?: string
+  category: ProjectItem['category']
+  kind: ProjectItem['kind']
+  language: string
+  topics: string[]
+  stars?: number
+  startedYear: number
+  updatedAt: string
+  pinned?: boolean
+  premium?: boolean
+  price?: number
+  deprecated?: boolean
+  cover: CoverStyle
+  glyph?: string
+}
+
+// Hand-curated for now. A follow-up PR can replace this with a pre-build
+// `scripts/sync-projects.ts` that pulls from github.com/zackproser and
+// merges with data/overrides.json.
+const SEED: SeedProject[] = [
+  {
+    id: 'digital-detective',
+    name: 'digital-detective',
+    title: 'Digital Detective — browser fingerprinting demo',
+    description:
+      'A multiplayer demo of browser fingerprinting for webinars and anyone wanting to understand the techniques and protections.',
+    url: 'https://v0-web-fingerprinting-demo.vercel.app/',
+    category: 'Demo',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['security', 'fingerprinting', 'nextjs', 'vercel'],
+    startedYear: 2025,
+    updatedAt: '2025-08-12',
+    cover: 'diag',
+    glyph: 'D',
+    company: 'Personal',
+  },
+  {
+    id: 'workos-cli-oauth',
+    name: 'cli-auth-example',
+    title: 'WorkOS CLI OAuth authentication',
+    description:
+      'Tutorial + reference repo showing how to build browser-based OAuth into CLI tools with WorkOS AuthKit — including secure token storage and retrieval.',
+    url: 'https://github.com/zackproser-workos/cli-auth-example',
+    category: 'Tutorial',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['workos', 'oauth', 'cli', 'security'],
+    startedYear: 2025,
+    updatedAt: '2025-07-04',
+    cover: 'rule',
+    glyph: 'W',
+    company: 'WorkOS',
+  },
+  {
+    id: 'workos-s3-fga',
+    name: 'aws-lambda-authorizer-fga-cdk',
+    title: 'WorkOS S3 document access control',
+    description:
+      'A proof-of-concept for fine-grained S3 authorization using WorkOS FGA + AWS Lambda authorizers. Secure document access on a serverless stack.',
+    url: 'https://github.com/zackproser-workos/aws-lambda-authorizer-fga-cdk',
+    category: 'Infra',
+    kind: 'infra',
+    language: 'TypeScript',
+    topics: ['workos', 'aws', 'cdk', 'lambda', 's3', 'fga'],
+    startedYear: 2025,
+    updatedAt: '2025-09-21',
+    cover: 'grid',
+    glyph: 'S',
+    company: 'WorkOS',
+  },
+  {
+    id: 'workos-fga-rag',
+    name: 'fga-pinecone-poc',
+    title: 'WorkOS fine-grained auth for RAG pipelines',
+    description:
+      'Proof-of-concept for securing RAG apps with WorkOS FGA so users only see retrievals from documents they actually have permission to read.',
+    url: 'https://github.com/zackproser-workos/fga-pinecone-poc',
+    category: 'Infra',
+    kind: 'infra',
+    language: 'TypeScript',
+    topics: ['workos', 'pinecone', 'rag', 'authorization'],
+    startedYear: 2025,
+    updatedAt: '2025-10-15',
+    cover: 'wave',
+    glyph: 'F',
+    company: 'WorkOS',
+  },
+  {
+    id: 'tox-index-chat',
+    name: 'tox-index-chat',
+    title: 'Tox Index Chat',
+    description:
+      'Analyze chemicals for toxicity risk using real-time chemical analysis plus a modern LLM stack. Built on the Vercel AI SDK.',
+    url: 'https://tox-index-chat.vercel.app/',
+    category: 'Demo',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['ai', 'openai', 'vercel', 'nextjs'],
+    startedYear: 2024,
+    updatedAt: '2025-03-30',
+    cover: 'diag',
+    glyph: 'T',
+    company: 'Personal',
+  },
+  {
+    id: 'pinecone-assistant',
+    name: 'pinecone-assistant',
+    title: 'Pinecone Assistant — sample app',
+    description:
+      'Official Pinecone sample app. A chat UI on top of an existing Assistant for RAG-backed Q&A. Clone and run in minutes.',
+    url: 'https://docs.pinecone.io/examples/sample-apps/pinecone-assistant',
+    category: 'Demo',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['pinecone', 'rag', 'nextjs', 'assistant'],
+    startedYear: 2024,
+    updatedAt: '2024-12-11',
+    cover: 'grid',
+    glyph: 'π',
+    company: 'Pinecone',
+  },
+  {
+    id: 'pinecone-legal-search',
+    name: 'legal-semantic-search',
+    title: 'Pinecone — legal semantic search',
+    description:
+      'Official Pinecone sample app showing a custom knowledge base over legal documents. Uses the Voyage embeddings model.',
+    url: 'https://docs.pinecone.io/examples/sample-apps/legal-semantic-search',
+    category: 'Demo',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['pinecone', 'rag', 'embeddings', 'voyage'],
+    startedYear: 2024,
+    updatedAt: '2024-11-02',
+    cover: 'rule',
+    glyph: 'L',
+    company: 'Pinecone',
+  },
+  {
+    id: 'pinecone-aws-refarch',
+    name: 'aws-reference-architecture-pulumi',
+    title: 'Pinecone AWS Reference Architecture',
+    description:
+      'Production-ready distributed system that demonstrates Pinecone + AWS best practices at scale. The first official AWS reference architecture for Pinecone.',
+    url: 'https://github.com/pinecone-io/aws-reference-architecture-pulumi',
+    category: 'Infra',
+    kind: 'infra',
+    language: 'TypeScript',
+    topics: ['aws', 'pulumi', 'pinecone', 'iac'],
+    startedYear: 2023,
+    updatedAt: '2024-06-18',
+    pinned: true,
+    cover: 'diag',
+    glyph: 'π',
+    company: 'Pinecone',
+  },
+  {
+    id: 'zackproser-com',
+    name: 'portfolio',
+    title: 'zackproser.com',
+    description:
+      "The site you're looking at. Next.js App Router, MDX, a RAG-powered search index, and a fair amount of yak-shaving. Open source.",
+    url: 'https://github.com/zackproser/portfolio',
+    demoUrl: 'https://zackproser.com',
+    category: 'Open source',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['nextjs', 'mdx', 'rag', 'blog'],
+    startedYear: 2021,
+    updatedAt: '2026-04-19',
+    pinned: true,
+    cover: 'wave',
+    glyph: 'Z',
+    company: 'Personal',
+  },
+  {
+    id: 'sponsor-me',
+    name: 'sponsor-zackproser-com',
+    title: 'Sponsor — hire me / sponsor my projects',
+    description:
+      "A site where folks can hire me, sponsor my projects, or learn about the kind of work I do.",
+    url: 'https://sponsor.zackproser.com',
+    category: 'Open source',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['nextjs', 'tailwind'],
+    startedYear: 2024,
+    updatedAt: '2024-09-01',
+    cover: 'rule',
+    glyph: '$',
+    company: 'Personal',
+  },
+  {
+    id: 'canyonrunner',
+    name: 'CanyonRunner',
+    title: 'CanyonRunner — HTML5 game',
+    description:
+      'A complete Phaser.js game with multiple levels and endings, mobile + desktop modes, and a full story.',
+    url: 'https://github.com/zackproser/CanyonRunner',
+    blogLink: '/blog/canyonrunner-html5-game',
+    category: 'Open source',
+    kind: 'github',
+    language: 'JavaScript',
+    topics: ['phaser', 'game', 'html5'],
+    startedYear: 2014,
+    updatedAt: '2018-03-10',
+    cover: 'dots',
+    glyph: 'C',
+    company: 'Personal',
+  },
+  {
+    id: 'pageripper',
+    name: 'pageripper',
+    title: 'Pageripper API',
+    description:
+      'A productionized commercial API built on Chromium + Puppeteer. Scrapes data from arbitrary sites and returns it structured.',
+    url: 'https://pageripper.com',
+    blogLink: '/blog/introducing-pageripper-api',
+    category: 'Open source',
+    kind: 'github',
+    language: 'JavaScript',
+    topics: ['chromium', 'puppeteer', 'scraping', 'api'],
+    startedYear: 2023,
+    updatedAt: '2024-02-18',
+    cover: 'grid',
+    glyph: 'P',
+    company: 'Personal',
+  },
+  {
+    id: 'bubbletea',
+    name: 'bubbletea',
+    title: 'Bubbletea state machine pattern',
+    description:
+      "Bubbletea is Charmbracelet's Golang TUI library. While at Gruntwork, I found and popularized the state-machine pattern for complex deployments.",
+    url: 'https://github.com/charmbracelet/bubbletea',
+    blogLink: '/blog/bubbletea-state-machine',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['tui', 'charm', 'devops', 'cli'],
+    startedYear: 2022,
+    updatedAt: '2023-01-20',
+    cover: 'rule',
+    glyph: 'B',
+    company: 'Gruntwork',
+  },
+  {
+    id: 'panthalia',
+    name: 'panthalia',
+    title: 'Panthalia — AI-assisted mobile blogging',
+    description:
+      'A mobile-first blogging platform for creating media-rich posts on the go, with AI assistance baked into the authoring loop.',
+    url: 'https://github.com/zackproser/panthalia',
+    category: 'Open source',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['ai', 'mobile', 'blogging'],
+    startedYear: 2023,
+    updatedAt: '2024-01-08',
+    cover: 'wave',
+    glyph: 'p',
+    company: 'Personal',
+  },
+  {
+    id: 'automations',
+    name: 'automations',
+    title: 'automations',
+    description:
+      'A year of shell scripts that use LLMs. Charmbracelet TUIs + Claude. The dotfiles-adjacent repo I actually use every day.',
+    url: 'https://github.com/zackproser/automations',
+    blogLink: '/blog/automations-project',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Shell',
+    topics: ['ai', 'devtools', 'shell', 'charm'],
+    startedYear: 2024,
+    updatedAt: '2026-03-14',
+    pinned: true,
+    cover: 'rule',
+    glyph: '∴',
+    company: 'Personal',
+  },
+  {
+    id: 'office-oracle',
+    name: 'office-oracle',
+    title: 'Office Oracle',
+    description:
+      'A Retrieval Augmented Generation chatbot trained on the entire Office television series. Surprisingly good at Dwight quotes.',
+    url: 'https://github.com/zackproser/office-oracle',
+    blogLink: '/blog/office-oracle-overview',
+    demoUrl: 'https://office-oracle.vercel.app',
+    category: 'Demo',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['rag', 'openai', 'pinecone', 'nextjs'],
+    startedYear: 2023,
+    updatedAt: '2024-05-22',
+    cover: 'grid',
+    glyph: '§',
+    company: 'Personal',
+  },
+  {
+    id: 'cloud-nuke',
+    name: 'cloud-nuke',
+    title: 'cloud-nuke',
+    description:
+      'Find and destroy AWS resources by type, region, and regex include/exclude patterns. Production-grade Go CLI.',
+    url: 'https://github.com/gruntwork-io/cloud-nuke',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['aws', 'devops', 'cli'],
+    startedYear: 2018,
+    updatedAt: '2024-07-05',
+    cover: 'diag',
+    glyph: '☁',
+    company: 'Gruntwork',
+  },
+  {
+    id: 'git-xargs',
+    name: 'git-xargs',
+    title: 'git-xargs',
+    description:
+      'Make the same change across many GitHub repos fast. Run any command or script on multiple repos in parallel.',
+    url: 'https://github.com/gruntwork-io/git-xargs',
+    blogLink: '/blog/git-xargs-software',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['git', 'automation', 'devops', 'cli'],
+    startedYear: 2020,
+    updatedAt: '2024-04-12',
+    cover: 'rule',
+    glyph: 'X',
+    company: 'Gruntwork',
+  },
+  {
+    id: 'cf-terraforming',
+    name: 'cf-terraforming',
+    title: 'cf-terraforming',
+    description:
+      'At Cloudflare, I helped build cf-terraforming: reads your Cloudflare API config and generates valid Terraform for it. Fast IaC adoption.',
+    url: 'https://github.com/cloudflare/cf-terraforming',
+    category: 'Infra',
+    kind: 'infra',
+    language: 'Go',
+    topics: ['terraform', 'cloudflare', 'iac'],
+    startedYear: 2019,
+    updatedAt: '2023-09-22',
+    cover: 'grid',
+    glyph: '▲',
+    company: 'Cloudflare',
+  },
+  {
+    id: 'procrastiproxy',
+    name: 'procrastiproxy',
+    title: 'procrastiproxy',
+    description:
+      'A Go proxy you can deploy to block distracting sites during a time window you configure. Works on a laptop, works on a homelab.',
+    url: 'https://github.com/zackproser/procrastiproxy',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['proxy', 'productivity', 'cli'],
+    startedYear: 2020,
+    updatedAt: '2022-06-08',
+    cover: 'dots',
+    glyph: 'p',
+    company: 'Personal',
+  },
+  {
+    id: 'teatutor',
+    name: 'teatutor',
+    title: 'Teatutor',
+    description:
+      'Configure and deploy custom quizzes over SSH. Written in Go, using the Bubbletea TUI library. Runs on a tiny VM.',
+    url: 'https://github.com/zackproser/teatutor',
+    blogLink: '/blog/teatutor-deepdive',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['go', 'ssh', 'tui', 'charm'],
+    startedYear: 2022,
+    updatedAt: '2023-04-17',
+    cover: 'rule',
+    glyph: 'τ',
+    company: 'Personal',
+  },
+  {
+    id: 'sizeof',
+    name: 'sizeof',
+    title: 'sizeof',
+    description:
+      'A Go CLI and experiment — co-authored with ChatGPT-4 via Neovim AI plugins that turned me into an AI-enhanced developer.',
+    url: 'https://github.com/zackproser/sizeof',
+    category: 'Open source',
+    kind: 'github',
+    language: 'Go',
+    topics: ['cli', 'ai', 'go'],
+    startedYear: 2023,
+    updatedAt: '2023-10-05',
+    cover: 'diag',
+    glyph: 's',
+    company: 'Personal',
+  },
+  {
+    id: 'quake-in-fargate',
+    name: 'quake-in-fargate',
+    title: 'Quake in AWS Fargate',
+    description:
+      'An IaC tutorial: define and launch a game server as code, then connect from your laptop to frag with coworkers. Dockerized, documented.',
+    url: 'https://github.com/zackproser/quake-in-fargate',
+    blogLink: '/blog/quake-in-fargate',
+    category: 'Tutorial',
+    kind: 'github',
+    language: 'TypeScript',
+    topics: ['aws', 'fargate', 'iac', 'gaming'],
+    startedYear: 2022,
+    updatedAt: '2023-03-03',
+    cover: 'wave',
+    glyph: 'Q',
+    company: 'Personal',
+  },
+]
+
+export default function ProjectsPage() {
+  const projects: ProjectItem[] = SEED.map((p) => ({
+    id: p.id,
+    name: p.name,
+    title: p.title,
+    description: p.description,
+    url: p.url,
+    blogLink: p.blogLink,
+    demoUrl: p.demoUrl,
+    company: p.company,
+    category: p.category,
+    kind: p.kind,
+    language: p.language,
+    topics: p.topics,
+    stars: p.stars,
+    startedYear: p.startedYear,
+    updatedAt: p.updatedAt,
+    pinned: !!p.pinned,
+    premium: !!p.premium,
+    price: p.price,
+    deprecated: !!p.deprecated,
+    cover: p.cover,
+    glyph: p.glyph || p.name.charAt(0).toUpperCase(),
+  }))
+
+  return <ProjectsClient projects={projects} />
+}
