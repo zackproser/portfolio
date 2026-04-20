@@ -1,0 +1,11 @@
+{
+  "title": "WisprFlow for Data Scientists: Dictate Experiment Notes and Analysis Faster Than You Can Type",
+  "author": "Zachary Proser",
+  "date": "2026-04-20",
+  "description": "The gap between running an experiment and documenting it is where context dies. WisprFlow lets data scientists narrate findings at 179 WPM while the results are still on screen — capturing the full thinking, not a degraded summary.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "slug": "wisprflow-for-data-scientists-experiments",
+  "keywords": ["WisprFlow", "data science", "voice to text", "experiment documentation", "Jupyter notebooks", "machine learning", "dictation software", "data scientist productivity"],
+  "tags": ["WisprFlow", "Data Science", "Productivity"],
+  "hiddenFromIndex": true
+}

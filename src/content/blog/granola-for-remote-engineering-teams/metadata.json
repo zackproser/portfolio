@@ -1,0 +1,11 @@
+{
+  "title": "Granola for Remote Engineering Teams: Async-First Meeting Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-04-20",
+  "description": "Remote engineering teams lose decisions in Zoom calls that no one can find six weeks later. Granola creates searchable transcripts of standups, retros, and incident reviews so async teammates stay in sync without attending every meeting.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "slug": "granola-for-remote-engineering-teams",
+  "keywords": ["Granola", "remote engineering teams", "async documentation", "distributed teams", "incident postmortem", "retrospective", "meeting transcription", "remote work"],
+  "tags": ["Granola", "Remote Work", "Productivity"],
+  "hiddenFromIndex": true
+}

@@ -1,0 +1,11 @@
+{
+  "title": "Granola for Data Science Teams: Capture Model Decisions and Experiment Rationale",
+  "author": "Zachary Proser",
+  "date": "2026-04-20",
+  "description": "Data science teams forget why they rejected experiments and which model tradeoffs they already evaluated. Granola documents model reviews, experiment planning sessions, and stakeholder demos so institutional knowledge doesn't evaporate.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "slug": "granola-for-data-science-teams",
+  "keywords": ["Granola", "data science teams", "model decisions", "experiment documentation", "ML meetings", "stakeholder demos", "machine learning", "meeting notes"],
+  "tags": ["Granola", "Data Science", "Productivity"],
+  "hiddenFromIndex": true
+}

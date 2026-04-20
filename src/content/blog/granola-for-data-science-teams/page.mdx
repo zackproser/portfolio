@@ -1,0 +1,105 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-data-science-teams';
+
+# Granola for Data Science Teams: Capture Model Decisions and Experiment Rationale
+
+Six months into a project, someone asks: "Why did we choose XGBoost over the neural network approach?" Nobody remembers clearly. There's no document. The person who ran the comparison has moved to another team. You're either re-running experiments you already ran, or you're defending a choice you can't fully justify.
+
+Data science teams generate a specific category of institutional knowledge that's both critical and routinely undocumented: the reasoning behind model choices, the experiments that were tried and rejected, the tradeoffs that were evaluated and accepted. Granola captures that reasoning as it happens, in the meetings where it's actually discussed.
+
+## Where Data Science Decision Knowledge Lives (and Dies)
+
+Technical decisions in data science work happen across a few meeting types, and each has its own documentation failure mode:
+
+**Model review meetings** — the team evaluates candidate models, compares performance metrics, discusses operational complexity and inference cost. The metrics make it into a spreadsheet. The qualitative discussion about production risk, interpretability requirements, and team maintenance burden usually doesn't.
+
+**Experiment planning sessions** — the team decides which experiments to run next, in what order, with what hypotheses. The experiment tickets capture the what. The discussion about why this ordering, what prior results informed the hypothesis, and what outcomes would change the strategy — that's verbal and ephemeral.
+
+**Stakeholder demo calls** — the team presents model performance to product or business stakeholders. The stakeholders ask questions and make feedback comments that shape the next iteration. "We need this to work better for the enterprise segment specifically, even if it degrades slightly for SMBs" is direction that affects model development. It lives in no one's notes.
+
+**Standups** — engineers mention in passing that an experiment is showing unexpected behavior, that a feature isn't contributing what they expected, or that they're going to try a different data pipeline approach. These signals often disappear before anyone acts on them.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The Experiment Graveyard Problem
+
+Data science teams run experiments that fail. Failed experiments are valuable knowledge — they tell you what doesn't work, what assumptions were wrong, and what approaches the team has already eliminated. The problem is that this knowledge lives primarily in the head of whoever ran the experiment.
+
+The experiment record usually captures: what was tested, the evaluation metrics, and the outcome (didn't beat baseline). What it usually doesn't capture: why this approach was thought promising enough to try, what the team observed about why it failed, whether the failure was categorical ("this approach can't work for this problem") or conditional ("this approach doesn't work with our current data quality"), and what the failure suggested about the next experiment.
+
+This undocumented failure context means teams re-explore directions they've already eliminated. A new team member proposes an approach; a senior engineer says "we tried that, it doesn't work"; the new member asks why; the senior engineer says they don't remember the details. The experiment gets re-run to reconstruct the knowledge, or the new member defers to institutional authority without understanding the reasoning.
+
+Granola captures the experiment debrief conversations where this context exists. When the team discusses why the experiment failed and what it means for the roadmap, that discussion becomes searchable text. A year later, when someone proposes a similar approach, you can find the conversation where the team evaluated it before.
+
+## Model Review Meetings
+
+Model selection decisions carry long-term consequences. The model choice affects inference latency, training cost, maintenance complexity, interpretability for compliance, and performance characteristics across different data segments. These factors get weighed in model review meetings, and the weighing process is where the decision actually gets made — not in the summary doc that comes after.
+
+A typical model review conversation includes:
+
+"The transformer architecture gets us 4 points of F1 on the benchmark, but inference is 200ms vs 30ms for the gradient boosted model. For real-time scoring we can't take that latency hit."
+
+"What if we distill it?"
+
+"We'd need to run that experiment. Timeline is four weeks minimum. The business needs something in production in six weeks."
+
+"Can we ship the gradient boosted model now and plan the distillation experiment for Q3?"
+
+"That works, but we need to document that we're accepting the 4-point performance gap and why, so we're not re-litigating this in the Q3 planning."
+
+That last sentence is the intent. Granola is the execution. The conversation is transcribed, the decision is in the summary, and the reasoning — the latency constraint, the timeline pressure, the explicit acknowledgment of the performance gap — is in the transcript. Q3 planning starts with that context already documented.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Stakeholder Feedback Loops
+
+Data science work gets directed by stakeholder feedback, and stakeholder feedback happens in demo calls where the team shows model outputs and the business side reacts. Those reactions contain requirements.
+
+"These false positives are going to cause too many customer service escalations in the premium tier."
+
+"Can you show me how it performs on manufacturing clients specifically? That's our fastest-growing segment."
+
+"The compliance team is going to push back on anything that can't be explained at the individual decision level."
+
+Each of those comments carries requirements implications. The first one says the precision/recall tradeoff needs to shift in a specific direction for a specific customer segment. The second is a request for stratified evaluation that's going to affect how you measure success. The third is a hard constraint that eliminates certain model architectures regardless of performance.
+
+These requirements often don't make it into formal tickets or design documents. They live in emails or the memory of whoever was on the call. When the team is three months into development and someone asks "why are we prioritizing precision over recall here," the answer should be traceable to a specific stakeholder conversation. Granola transcripts make that trace possible.
+
+## Standup Signals That Disappear
+
+Data science standups contain low-volume, high-signal information that gets lost because it doesn't trigger formal documentation.
+
+"The feature importance analysis shows that the temporal features are contributing almost nothing, which is weird given our hypothesis."
+
+"I'm getting very different results when I run the same pipeline with different random seeds, so I'm investigating whether there's a data leakage issue."
+
+"The model is performing 15 points worse on Q4 data than Q3 data, and I think it's related to the product change in October."
+
+None of these statements generate a ticket. They're in-progress observations that the team hears and processes. But they're also the early signals of problems that matter: a feature hypothesis that's wrong, potential data leakage, distribution shift. If the observation was heard by the right person who connected it to relevant context, it gets acted on. If not, it fades.
+
+Granola transcripts of standups create a record of these signals. Teams can search for when an issue was first mentioned. They can trace how the team's understanding of a problem evolved over multiple standups. They can find the standup where someone noted the data leakage suspicion before it was confirmed, and use that for better early-detection patterns in the future.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Reproducibility and Documentation Standards
+
+Reproducibility is a core concern in data science. Model results need to be reproducible; training runs need to be reproducible; evaluations need to be comparable. Teams invest heavily in experiment tracking, model registries, and versioned data pipelines to support this.
+
+Meeting documentation is the soft analog. The decisions that shaped the experiment design, the evaluation criteria that were chosen and why, the baseline comparison that was agreed on — these aren't captured by MLflow or DVC. They're captured in Granola transcripts of the conversations where the team aligned on methodology.
+
+For teams working in regulated industries where model decisions require auditability, this is directly relevant. The documentation of why a model was chosen, what the team evaluated, and who made the call is part of the compliance record. Granola transcripts provide that documentation automatically, without requiring the data science team to write formal documentation at every decision point.
+
+## Building Team ML Intuition
+
+The most experienced data scientists on a team have deep intuition about which approaches work for which problems, built from years of experiments and failures. That intuition is hard to transfer.
+
+When senior data scientists explain their reasoning out loud — in model reviews, in experiment planning, in ad-hoc technical discussions — that reasoning is teachable content. Junior team members learn from both what the senior person decided and how they thought through the problem.
+
+Granola captures those explanations. A junior data scientist who joins six months into a project can search the Granola archive for discussions of the approaches they're working with and hear how senior engineers reasoned about them. The institutional knowledge transfer doesn't require scheduling an explicit knowledge-sharing session — it's already embedded in the meeting history.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />

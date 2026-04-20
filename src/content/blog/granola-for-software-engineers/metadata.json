@@ -1,0 +1,11 @@
+{
+  "title": "Granola for Software Engineers: Capture Everything from Standups, Reviews, and Planning Sessions",
+  "author": "Zachary Proser",
+  "date": "2026-04-20",
+  "description": "Software engineers lose critical technical decisions in meetings every week. Granola captures standups, architecture discussions, and planning sessions automatically so you can focus on the conversation instead of your notes.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "slug": "granola-for-software-engineers",
+  "keywords": ["Granola", "software engineers", "meeting notes", "standup", "sprint planning", "architecture decisions", "code review", "developer tools", "AI notes"],
+  "tags": ["Granola", "Software Engineering", "Productivity"],
+  "hiddenFromIndex": true
+}

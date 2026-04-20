@@ -1,0 +1,89 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-remote-engineering-teams';
+
+# Granola for Remote Engineering Teams: Async-First Meeting Documentation
+
+Your Singapore engineer missed the incident post-mortem because it happened at 2 AM their time. Your Berlin engineer missed the architecture review because it conflicted with a client call. They'll both read the notes — except the notes are three bullet points someone typed while half-paying attention to the conversation, and they capture maybe 20% of what was actually decided.
+
+Remote engineering teams run on async communication, but meetings are still happening synchronously. The documentation from those meetings rarely meets the quality bar that async consumption requires. Granola closes that gap by treating every meeting as content for the people who weren't there.
+
+## The Documentation Quality Problem
+
+In-person and synchronous teams get away with thin meeting notes because the people who were there fill in the gaps from memory. Someone reads the notes and thinks "right, I remember that discussion" — the notes are prompts, not records.
+
+Remote async teams can't do this. The engineer in Singapore reading post-mortem notes at 9 AM has no memory of the conversation to fill gaps with. They need the notes to stand alone. They need to understand what was decided, why it was decided, what alternatives were considered, what the dissenting opinion was, and what conditions or assumptions the decision rested on.
+
+Current tools for generating this quality of documentation require significant manual effort: someone has to be designated note-taker, they have to type quickly while also participating, and then someone has to clean up and expand the notes after the fact. Most teams skip the cleanup step. The notes stay thin.
+
+Granola handles transcription automatically so the designated note-taker role goes away. The AI summary that Granola generates after each meeting is structured and comprehensive enough that someone who wasn't on the call can read it and get the real picture.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Standups Across Timezones
+
+For teams distributed across more than eight hours of timezone difference, synchronous standups require someone to be on the call at an inconvenient time. Many distributed teams solve this with async standups — text updates posted to Slack on a schedule. This works but loses the spontaneous exchange: "Oh you're blocked on X? Talk to Y, she solved that exact problem last week."
+
+Some teams do hybrid: a core standup at a time that works for most people, with async catch-up for those who can't make it. Granola makes the catch-up version actually useful.
+
+When the standup transcript includes the exchange about blockers and workarounds alongside the status updates, the async viewer gets the real value. The Singapore engineer who reads the Granola summary at 9 AM sees that Alex is blocked on an API rate limit issue, that Jamie suggested a retry pattern she used on a previous project, and that they agreed to pair on it at 2 PM Eastern. That's actionable information. "Alex: blocked on API issue" is not.
+
+## Incident Post-Mortems
+
+Post-mortems are the meeting type where documentation quality matters most and fails most consistently.
+
+A good post-mortem covers timeline, contributing factors, detection gaps, response effectiveness, and preventive measures — with enough detail that engineers who weren't on-call can learn from it and that the on-call engineers themselves can remember the context six months later when a similar incident hits.
+
+The typical post-mortem note document is a rough timeline and a list of action items. The discussion that generated those action items — the debate about whether the monitoring gap was a tooling problem or a process problem, the specific sequence of events that made the incident hard to detect, the decision not to implement a particular fix because of another system dependency — is gone.
+
+With Granola running on the post-mortem call, the full discussion is captured. The action item about improving alert thresholds is in the summary, and the transcript shows the 12 minutes of discussion that explained why the current thresholds were set where they were and what tradeoffs the team is making by changing them. That context is what turns a post-mortem doc from a compliance artifact into something engineers actually learn from.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Retrospectives
+
+Retros generate qualitative team intelligence that is remarkably hard to preserve. "We should do more pair programming" is a decision that evaporates unless someone drives it. But why the team reached that conclusion — what specific patterns of isolated work caused problems, what the team noticed about quality and speed — that context helps the team remember its own reasoning when the practice starts to slip.
+
+Granola transcripts of retrospectives give teams something to reference. Six weeks after a retro decision stops being enforced, someone can go back to the transcript and read why the team thought it mattered. That's more persuasive than "we decided this in a retro" with no further detail.
+
+For teams doing quarterly or bi-annual retrospectives — looking back at longer periods — the Granola archives from previous retros become useful input. You can search for how specific topics have evolved over time, which problems recur, and which solutions actually held.
+
+## Architecture and Design Reviews for Async Consumption
+
+Architecture reviews are high-information meetings that are genuinely hard to document manually at the quality level that async readers need.
+
+The typical output: a brief doc summarizing the decision and maybe the top-line tradeoffs. What's missing: the alternative that was seriously considered before being rejected, the specific operational concern that made Option A preferable to Option B, the assumption about traffic patterns that the decision depends on, the follow-up questions that were deferred.
+
+An engineer joining the team three months later who wants to understand the system architecture reads the doc and gets the conclusion. With Granola, they can read the conclusion in the summary and then search the transcript for the discussion around any specific technical question. "Why are we using a message queue here instead of direct service calls?" — you can find the 8-minute segment of the architecture review where that was debated.
+
+This is particularly valuable for distributed teams where it's expensive to schedule a follow-up call just to explain historical context. The context is in the Granola archive. The new engineer can get it async.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Sharing and Access Patterns
+
+Granola notes can be shared as links. The practical workflow for remote teams: after any meeting that generates decisions or substantive discussion, share the Granola summary link in the relevant Slack channel or Linear ticket.
+
+For standups: post the Granola link in the #standup channel after the call. Anyone who missed it has the real record, not a text summary someone typed.
+
+For post-mortems: attach the Granola link to the incident ticket. The full transcript of the post-mortem call is one click away from the incident record.
+
+For architecture reviews: link the Granola notes in the ADR (Architecture Decision Record) or design doc. The doc contains the decision; the Granola link contains the discussion.
+
+This pattern shifts the team's documentation burden significantly. Instead of someone needing to write comprehensive notes after every meeting, the comprehensive notes generate automatically and the only task is sharing the link.
+
+## Building the Institutional Knowledge Base
+
+Individual meeting value is real. The aggregate value is more significant.
+
+Remote engineering teams accumulate institutional knowledge in people's heads. When senior engineers leave, that knowledge walks out. When someone goes on parental leave, their context gaps are expensive. When a team doubles in size in a quarter, new engineers have no path to the historical reasoning behind current architecture.
+
+Granola archives give teams a searchable history of their technical discussions. "When did we first talk about migrating to Kubernetes?" — you can search and find the meeting. "Who was involved in the decision to use Postgres for event storage?" — the transcript shows the conversation.
+
+This doesn't replace onboarding, wikis, or architecture docs. It supplements them with the source material: the actual conversations where decisions were made, by the people who made them, with the reasoning that drove the choices. For a remote team operating across timezones, that archive is the closest thing to shared institutional memory that doesn't require everyone to be in the same room.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
