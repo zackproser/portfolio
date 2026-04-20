@@ -11,5 +11,6 @@
     "mobile",
     "agents",
     "health"
-  ]
+  ],
+  "hiddenFromIndex": true
 }

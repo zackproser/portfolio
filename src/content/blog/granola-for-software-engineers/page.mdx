@@ -1,0 +1,94 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-software-engineers';
+
+# Granola for Software Engineers: Capture Everything from Standups, Reviews, and Planning Sessions
+
+Six months after your architecture meeting, someone will ask why you chose Postgres over DynamoDB, or why you rejected the event-sourcing approach. Nobody wrote it down. The person who made the call is gone. The Slack thread is buried. You make your best guess and move on, potentially repeating the same debate from scratch.
+
+This is the default state for most engineering teams. Granola fixes it without adding process overhead.
+
+## The Meeting Types That Actually Matter
+
+Engineers sit in four categories of meetings where decisions stick to the walls and never make it into any doc:
+
+**Standups** feel low-stakes, but they contain blockers, workarounds, and contextual flags that explain why code looks the way it does. "I'm working around a bug in the SDK" is information. Six weeks later when someone reviews that code, they need that information.
+
+**Sprint planning** generates dozens of implicit decisions: which stories got cut and why, what the team estimates assumed, which dependencies were acknowledged as risks. None of this makes it into Jira tickets. The tickets just have numbers and half-finished descriptions.
+
+**Architecture reviews** are the worst offenders. These are the meetings where three senior engineers debate two approaches for 45 minutes, reach a nuanced conclusion that depends on five assumptions, and then one sentence makes it into a doc: "We chose approach A." The reasoning, the tradeoffs, the dissenting opinion that almost changed the outcome — gone.
+
+**1:1s** between engineers and managers contain career feedback, growth conversations, and explicit commitments that should be tracked. "You'll get to lead the next major feature" is a commitment. "We're planning to restructure the team in Q3" is information that affects decisions. These conversations routinely vanish.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## How Granola Works During a Standup
+
+Granola runs as a Mac app that detects when you're on a call and starts transcribing automatically. You open your standup, join the video call, and Granola captures everything said — by anyone on the call — without you doing anything.
+
+During the standup, you can add sparse notes directly in Granola's notepad. Not full sentences — just anchors. "SDK bug — check with Tim" or "API contract TBD." These sparse notes get woven into the AI summary Granola generates after the call ends.
+
+The AI summary isn't just a transcript dump. Granola identifies action items, decisions, and blockers and surfaces them separately. After a 15-minute standup, you get a structured document: what was decided, who owns what, what's blocked and why.
+
+That document lives in Granola and can be searched later. When someone asks in three months why the feature shipped without the caching layer, you can pull up the standup from the week that decision was made and see exactly what was said.
+
+## Architecture Decisions That Don't Disappear
+
+The architecture review problem is where Granola earns its keep. Here's what a typical session looks like without it:
+
+Three engineers get on a call to discuss the data pipeline design. They talk through two approaches for 40 minutes. The discussion is good — real tradeoffs get surfaced, edge cases get identified, someone raises a concern about operational complexity that changes the direction. They agree on an approach with two specific conditions attached.
+
+Afterward, someone writes an ADR (Architecture Decision Record) if the team has that discipline. More often, someone posts a Slack summary. The summary captures the decision but not the reasoning that survived scrutiny. The conditions attached get simplified or dropped.
+
+With Granola, the full discussion is transcribed and searchable. The ADR author has source material. The conditions that almost got dropped are documented verbatim. Someone joining the team six months later can read the actual conversation, not the sanitized summary.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Code Review Discussions
+
+Code review comments are documented in GitHub. The conversation that happens on a Zoom call while looking at a PR together is not. "We agreed to keep it simple for now and revisit when we hit scale" — that agreement shapes the codebase for months and is invisible to anyone who didn't attend.
+
+Engineers who do synchronous code reviews via video call should be running Granola on every one. The discussion captures intent. Intent explains code. Code without intent context is a maintenance burden.
+
+The same applies to design reviews, API contract discussions, and any other technical conversation that happens verbally. Granola doesn't require the other participants to install anything or join a different tool. You run it on your machine, it picks up the audio, the transcript is yours.
+
+## 1:1s and Career Conversations
+
+This is where engineers consistently fail themselves. A 1:1 contains:
+
+- Feedback that should inform how you work
+- Explicit commitments from your manager about opportunities or resources
+- Context about company direction that affects your career decisions
+- Agreements about goals, growth areas, and timelines
+
+Most engineers write nothing or write a few scattered notes that don't capture the specifics. Three months later when a commitment doesn't materialize, you have no record of it. When annual review comes and the feedback feels inconsistent with what you were told, you can't point to anything concrete.
+
+Granola lets you run the 1:1 as a natural conversation while capturing everything. After the call, you have a structured summary of what was discussed, what was agreed, and what you committed to. You can store this, reference it, and use it to track whether commitments hold.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Searching Across Meetings
+
+The individual meeting value is clear. The compounded value is better.
+
+When you can search across three months of meeting transcripts, patterns appear. You can find every time a specific technical topic came up. You can pull all the meetings where a particular system was discussed before it broke in production. You can trace a decision back through multiple conversations to understand how it evolved.
+
+This is institutional knowledge that normally lives in people's heads and walks out the door when they leave. Granola makes it searchable text.
+
+For engineers in fast-moving teams — where sprint cadence is two weeks, team composition changes, and technical debt accumulates faster than documentation — this searchable record is the closest thing to an accurate project history that actually exists.
+
+## Setup and Practical Considerations
+
+Granola is a Mac app. It installs, you grant microphone and screen recording permissions, and it starts working. There's no configuration required to get basic transcription. The AI summaries appear automatically after calls end.
+
+You can customize the note templates Granola uses to generate summaries. For engineering teams, a template that surfaces decisions, action items, blockers, and technical references works well. You set this once and it applies to all subsequent meetings.
+
+For calls where you don't want transcription — personal conversations, anything with confidential external parties — you can pause or disable it per session. Granola doesn't run a persistent recording; it activates when it detects a meeting.
+
+The meeting types where it adds the most value for engineers: standups, sprint planning, architecture reviews, incident post-mortems, and 1:1s. Run it on all of them for two weeks and you'll have more useful meeting documentation than most teams generate in a year.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />

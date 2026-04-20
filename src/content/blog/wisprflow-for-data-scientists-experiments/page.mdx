@@ -1,0 +1,71 @@
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'wisprflow-for-data-scientists-experiments';
+
+# WisprFlow for Data Scientists: Dictate Experiment Notes and Analysis Faster Than You Can Type
+
+The gap between running an experiment and documenting it is where context dies. A data scientist finishes a training run, reviews the output metrics, has three clear observations about what the results mean and what to try next — and then sits down to write it up. The typing takes long enough that the clarity of the first observations fades. The documentation ends up shallower than the thinking.
+
+WisprFlow closes that gap. Speak your observations while you're looking at the output. Have the documentation done before the clarity expires.
+
+## What Data Scientists Actually Write
+
+The scope of writing in data science is larger than it looks from outside the field. Experiment logs, model evaluation reports, Jupyter notebook markdown cells, feature engineering documentation, data quality assessments, stakeholder reports on model performance, methodology sections for internal papers, analysis summaries — all of it needs to be written, and most of it gets written in compressed windows of time.
+
+The common pattern: run an experiment, review results, have clear thinking about what the results mean, then lose some of that thinking during the documentation step because documentation is slower than analysis.
+
+At 60 WPM typing, a 400-word experiment summary takes 6-7 minutes. At 179 WPM dictation, the same summary takes under 3 minutes. The difference sounds small, but it changes when in the workflow you can afford to document. If documentation is fast enough, you do it immediately after each experiment. If it's slow, you batch it for later — and later means worse context and thinner notes.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Narrating While You Review Outputs
+
+The highest-value time to document an experiment is while you're still looking at the results. Your mental model of what the metrics mean, what the loss curves indicate, why the validation accuracy diverged from training accuracy — all of that is sharp when you're staring at the plots.
+
+The practical workflow: finish a training run, bring up your evaluation plots and metrics, open a markdown cell in your Jupyter notebook below the output, activate WisprFlow, and speak your observations in real time.
+
+"The model hit 0.87 F1 on the validation set, up from 0.82 on the previous run. The main change was increasing the dropout rate from 0.2 to 0.4 on the second dense layer. The training curve looks stable — no signs of oscillation after epoch 15. Validation loss is still decreasing slightly at epoch 30, which suggests we have headroom for longer training. Worth trying 50 epochs with the same configuration before touching anything else. One concern: precision on class 3 dropped from 0.79 to 0.71. Need to check if class 3 examples in the validation set are systematically different from training."
+
+That's 107 words. It took about 36 seconds to speak. That note captures the result, the cause, the next step, and the open question — the full thinking, not a degraded summary written two hours later from memory.
+
+## Jupyter Notebook Documentation
+
+Jupyter notebooks are notorious for being well-executed on code and poorly executed on explanation. The markdown cells that should explain what the code is doing and why often end up as minimal one-liners or get skipped entirely because writing prose in a notebook is friction-heavy.
+
+WisprFlow removes that friction. With your cursor in a markdown cell, you can speak multi-paragraph explanations directly into the notebook. Document your preprocessing rationale while you're writing the preprocessing code. Explain your feature selection logic while you're implementing it. Write the analysis conclusion while the result is on screen.
+
+Notebooks documented this way are actually useful to teammates and to yourself six months later. Instead of "run model," you have "We chose gradient boosting over logistic regression here because the feature interactions are strongly non-linear — see the correlation heatmap in the previous cell. The training time is acceptable at 4 minutes per run given the improved performance on the held-out test set."
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## Hypothesis Notes and Experimental Design
+
+Before running an experiment, good practice is documenting your hypothesis: what you expect to happen, why you expect it, and what result would cause you to update your thinking. In practice, this documentation often gets skipped because writing it out takes time and the experiment seems more urgent.
+
+Dictating your hypothesis takes less than a minute. "Hypothesis: adding the engineered ratio feature (clicks divided by impressions) will improve the model's precision on high-traffic queries. Reasoning: we've seen in the EDA that high-traffic queries have systematically different click patterns, and the raw counts don't capture that. Expected outcome: precision improves by at least 3 points on high-traffic queries without hurting recall. If precision doesn't improve or recall drops more than 2 points, we'll remove the feature."
+
+That note took 30 seconds to speak and costs nothing to have. When the experiment finishes, you have something to compare against — not just what happened, but whether it matched your prediction and what that means for your model of the data.
+
+## Model Performance Reports for Stakeholders
+
+Data scientists regularly translate technical results into language that product managers, engineers, and executives can use to make decisions. These reports explain what the model does, how well it performs, what the failure modes are, and what the tradeoffs are between different versions.
+
+Writing these reports by typing is slow and often gets compressed under deadline. Dictating them is faster and, because you're speaking rather than typing, tends to produce more accessible language. When you're typing technical content for a non-technical audience, there's a tendency to slip into jargon. When you're speaking it, you naturally use language closer to how you'd explain it in person.
+
+A practical approach: dictate the report sections in sequence, starting with the executive summary. "The new recommendation model increases click-through rate by 8% compared to the previous version in A/B testing on 15% of traffic over 14 days. The improvement is consistent across device types and geographic regions. The main tradeoff is inference latency — the new model takes 45ms versus 12ms for the previous model. At current traffic levels that's within our SLA, but we should revisit if daily active users grows by more than 40%."
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
+## The Velocity Difference Over a Sprint
+
+Consider a data scientist running five experiments per week. Each experiment produces results that warrant a 300-word summary and a 200-word hypothesis for the next run. That's 500 words of documentation per experiment, 2,500 words per week.
+
+Typing at 60 WPM: 41 minutes per week on documentation. Dictating at 179 WPM: 14 minutes per week. The recovered 27 minutes aren't the main benefit. The main benefit is that documentation happens immediately — when the thinking is sharp — rather than being batched to the end of the day when it's not.
+
+Over a quarter, the cumulative effect on experiment quality is significant. Better notes mean faster iteration because you can accurately recall what you tried and why it did or didn't work. Experiments build on each other rather than repeating mistakes that weren't clearly documented.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />

@@ -3,5 +3,6 @@
   "date": "2025-07-22",
   "title": "Cursor Agents Review: Real Results in 2026",
   "description": "I ran Cursor Agents on production codebases for weeks. Background tasks, multi-file edits, and where it still breaks down.",
-  "image": "https://zackproser.b-cdn.net/images/cursor-agents-hero.webp"
+  "image": "https://zackproser.b-cdn.net/images/cursor-agents-hero.webp",
+  "hiddenFromIndex": true
 }

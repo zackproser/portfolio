@@ -12,5 +12,6 @@
     "ai",
     "images",
     "google"
-  ]
+  ],
+  "hiddenFromIndex": true
 }

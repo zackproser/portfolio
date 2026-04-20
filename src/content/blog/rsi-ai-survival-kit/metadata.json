@@ -4,5 +4,14 @@
   "date": "2026-04-17",
   "description": "14 years of typing gave me RSI and crane neck. Now I ship code by voice while walking 5-8 miles a day. Here's the full voice-first stack: WisprFlow, Claude Code, and the tools that replaced my keyboard.",
   "image": "https://zackproser.b-cdn.net/images/rsi-survival-hero.webp",
-  "tags": ["ai", "health", "rsi", "voice-coding", "wisprflow", "claude-code", "productivity"]
+  "tags": [
+    "ai",
+    "health",
+    "rsi",
+    "voice-coding",
+    "wisprflow",
+    "claude-code",
+    "productivity"
+  ],
+  "hiddenFromIndex": true
 }
