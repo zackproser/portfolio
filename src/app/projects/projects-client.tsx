@@ -199,7 +199,8 @@ export default function ProjectsClient({ projects }: Props) {
     (cat !== 'All' ? 1 : 0) +
     (lang !== 'All' ? 1 : 0) +
     (tag !== 'All' ? 1 : 0) +
-    (sort !== 'updated' ? 1 : 0)
+    (sort !== 'updated' ? 1 : 0) +
+    (q.trim() !== '' ? 1 : 0)
 
   const resetFilters = () => {
     setCat('All')
