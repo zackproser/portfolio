@@ -213,7 +213,7 @@
 .projects-page .chip:hover { border-color: var(--pb-accent); color: var(--pb-accent); }
 .projects-page .chip.active { background: var(--pb-accent); color: #fff; border-color: var(--pb-accent); }
 .projects-page .chip .count { font-family: var(--pb-font-mono); font-size: 10.5px; opacity: .75; }
-.projects-page .chip .lang-dot { width: 9px; height: 9px; border-radius: 999px; }
+.projects-page .chip .dot { width: 9px; height: 9px; border-radius: 999px; }
 .projects-page .sort-select {
   padding: 8px 12px; border: 1px solid var(--pb-border-strong); border-radius: 8px;
   background: var(--pb-bg-elevated); color: var(--pb-fg);
