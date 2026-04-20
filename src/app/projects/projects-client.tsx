@@ -64,8 +64,8 @@ function fmtMonthDay(iso: string): { day: string; mon: string } | null {
   const d = new Date(iso)
   if (isNaN(d.getTime())) return null
   return {
-    day: d.toLocaleDateString('en-US', { day: '2-digit' }),
-    mon: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+    day: d.toLocaleDateString('en-US', { day: '2-digit', timeZone: 'UTC' }),
+    mon: d.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase(),
   }
 }
 
@@ -443,7 +443,7 @@ function GalleryView({ items, now }: { items: ProjectItem[]; now: Date }) {
         const classes = ['proj-card']
         if (isLead) classes.push('is-lead')
         if (p.premium) classes.push('is-premium')
-        const href = p.blogLink || p.url
+        const href = p.demoUrl || p.blogLink || p.url
         const isExternal = href.startsWith('http')
         const rel = relTime(p.updatedAt, now)
         const arrowLabel = p.premium ? 'Buy →' : p.demoUrl ? 'Demo →' : p.blogLink ? 'Read →' : 'Repo →'
@@ -608,9 +608,9 @@ function JournalView({ items, now }: { items: ProjectItem[]; now: Date }) {
             </div>
             <a
               className="cta"
-              href={featured.blogLink || featured.url}
-              target={(featured.blogLink || featured.url).startsWith('http') ? '_blank' : undefined}
-              rel={(featured.blogLink || featured.url).startsWith('http') ? 'noopener noreferrer' : undefined}
+              href={featured.demoUrl || featured.blogLink || featured.url}
+              target={(featured.demoUrl || featured.blogLink || featured.url).startsWith('http') ? '_blank' : undefined}
+              rel={(featured.demoUrl || featured.blogLink || featured.url).startsWith('http') ? 'noopener noreferrer' : undefined}
             >
               {featured.premium ? 'Buy the tutorial' : featured.demoUrl ? 'Try the demo' : featured.blogLink ? 'Read the write-up' : 'View on GitHub'} →
             </a>
