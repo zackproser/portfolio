@@ -27,6 +27,7 @@ export type ProjectItem = {
   deprecated: boolean
   cover: 'grid' | 'dots' | 'rule' | 'diag' | 'wave'
   glyph: string
+  image?: string
 }
 
 type Props = { projects: ProjectItem[] }
@@ -75,6 +76,17 @@ function kSuffix(n: number): string {
 }
 
 function Cover({ p }: { p: ProjectItem }) {
+  if (p.image) {
+    return (
+      <div className="cover cover-image">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="cover-img" src={p.image} alt="" loading="lazy" />
+        <span className="cap">
+          {p.category.toUpperCase()} · {p.language}
+        </span>
+      </div>
+    )
+  }
   return (
     <div className={`cover cover-${p.cover}`}>
       <span className="cap">

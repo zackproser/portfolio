@@ -38,6 +38,7 @@ type SeedProject = {
   deprecated?: boolean
   cover: CoverStyle
   glyph?: string
+  image?: string
 }
 
 // Hand-curated for now. A follow-up PR can replace this with a pre-build
@@ -60,6 +61,7 @@ const SEED: SeedProject[] = [
     cover: 'diag',
     glyph: 'D',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/digital-detective.webp',
   },
   {
     id: 'workos-cli-oauth',
@@ -128,6 +130,7 @@ const SEED: SeedProject[] = [
     cover: 'diag',
     glyph: 'T',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/tox-index-chat.webp',
   },
   {
     id: 'pinecone-assistant',
@@ -145,6 +148,7 @@ const SEED: SeedProject[] = [
     cover: 'grid',
     glyph: 'π',
     company: 'Pinecone',
+    image: 'https://zackproser.b-cdn.net/images/pinecone-assistant.webp',
   },
   {
     id: 'pinecone-legal-search',
@@ -162,6 +166,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: 'L',
     company: 'Pinecone',
+    image: 'https://zackproser.b-cdn.net/images/legal-semantic-search.webp',
   },
   {
     id: 'pinecone-aws-refarch',
@@ -180,6 +185,7 @@ const SEED: SeedProject[] = [
     cover: 'diag',
     glyph: 'π',
     company: 'Pinecone',
+    image: 'https://zackproser.b-cdn.net/images/pinecone-refarch-logo.webp',
   },
   {
     id: 'zackproser-com',
@@ -194,11 +200,12 @@ const SEED: SeedProject[] = [
     language: 'TypeScript',
     topics: ['nextjs', 'mdx', 'rag', 'blog'],
     startedYear: 2021,
-    updatedAt: '2026-04-19',
+    updatedAt: '2026-04-20',
     pinned: true,
     cover: 'wave',
     glyph: 'Z',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/zackproser-com-screenshot.webp',
   },
   {
     id: 'sponsor-me',
@@ -216,6 +223,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: '$',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/sponsor-me.webp',
   },
   {
     id: 'canyonrunner',
@@ -234,6 +242,7 @@ const SEED: SeedProject[] = [
     cover: 'dots',
     glyph: 'C',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/canyonrunner-screens/CanyonRunner-Title-Screen.webp',
   },
   {
     id: 'pageripper',
@@ -252,6 +261,7 @@ const SEED: SeedProject[] = [
     cover: 'grid',
     glyph: 'P',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/pageripper-bot.webp',
   },
   {
     id: 'bubbletea',
@@ -270,6 +280,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: 'B',
     company: 'Gruntwork',
+    image: 'https://zackproser.b-cdn.net/images/bubbletea-stages.gif',
   },
   {
     id: 'panthalia',
@@ -287,6 +298,7 @@ const SEED: SeedProject[] = [
     cover: 'wave',
     glyph: 'p',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/panthalia-logo.webp',
   },
   {
     id: 'automations',
@@ -306,6 +318,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: '∴',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/automations.gif',
   },
   {
     id: 'office-oracle',
@@ -325,6 +338,7 @@ const SEED: SeedProject[] = [
     cover: 'grid',
     glyph: '§',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/office-oracle-screenshot.webp',
   },
   {
     id: 'cloud-nuke',
@@ -342,6 +356,7 @@ const SEED: SeedProject[] = [
     cover: 'diag',
     glyph: '☁',
     company: 'Gruntwork',
+    image: 'https://zackproser.b-cdn.net/images/cloud-nuke-intro.webp',
   },
   {
     id: 'git-xargs',
@@ -360,6 +375,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: 'X',
     company: 'Gruntwork',
+    image: 'https://zackproser.b-cdn.net/images/git-xargs-demo.gif',
   },
   {
     id: 'cf-terraforming',
@@ -412,6 +428,7 @@ const SEED: SeedProject[] = [
     cover: 'rule',
     glyph: 'τ',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/teatutor-logo.webp',
   },
   {
     id: 'sizeof',
@@ -447,6 +464,7 @@ const SEED: SeedProject[] = [
     cover: 'wave',
     glyph: 'Q',
     company: 'Personal',
+    image: 'https://zackproser.b-cdn.net/images/quake-in-fargate.webp',
   },
 ]
 
@@ -473,6 +491,7 @@ export default function ProjectsPage() {
     deprecated: !!p.deprecated,
     cover: p.cover,
     glyph: p.glyph || p.name.charAt(0).toUpperCase(),
+    image: p.image,
   }))
 
   return <ProjectsClient projects={projects} />

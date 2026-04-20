@@ -291,6 +291,17 @@
 .projects-page .cover-wave {
   background-image: repeating-linear-gradient(-45deg, var(--pb-bg-secondary), var(--pb-bg-secondary) 10px, var(--pb-bg-elevated) 10px, var(--pb-bg-elevated) 20px);
 }
+.projects-page .cover-image { background: var(--pb-bg-secondary); }
+.projects-page .cover-image .cover-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.projects-page .cover-image::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.28) 0%, rgba(0,0,0,0) 38%);
+  pointer-events: none;
+}
+.projects-page .cover-image .cap { color: #fff; mix-blend-mode: normal; z-index: 1; }
 
 /* ================================================================
    VARIATION A · GALLERY
