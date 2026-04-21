@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Mobile Developers: Voice Coding iOS and Android Apps",
+  "author": "Zachary Proser",
+  "date": "2026-04-21",
+  "description": "How mobile developers use WisprFlow to code iOS and Android apps hands-free, from Swift UI layouts to Kotlin coroutines.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["wisprflow", "mobile", "ios", "android", "voice-coding", "swift", "kotlin"],
+  "hiddenFromIndex": true
+}

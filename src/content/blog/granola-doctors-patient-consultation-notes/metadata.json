@@ -1,0 +1,9 @@
+{
+  "title": "Granola for Doctors: Patient Consultation Transcription and Medical Notes",
+  "author": "Zachary Proser",
+  "date": "2026-04-21",
+  "description": "How physicians use Granola to automatically transcribe patient consultations, capture medical history, and generate structured notes for electronic health records.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": ["granola", "doctors", "medical", "transcription", "ehr", "patient-care"],
+  "hiddenFromIndex": true
+}
