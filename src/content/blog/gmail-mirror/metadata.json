@@ -1,0 +1,7 @@
+{
+  "title": "I Built a Local Gmail Mirror So My AI Assistant Could Actually Read My Email",
+  "author": "Zachary Proser",
+  "date": "2026-02-22",
+  "description": "My always-on AI assistant couldn't see past my last 6 emails. So I built gmail-mirror — a Go CLI that syncs 205K messages into local SQLite with FTS5 search. First thing it found: $30K in missed consulting opportunities.",
+  "image": "https://zackproser.b-cdn.net/images/gmail-mirror-og.webp"
+}
