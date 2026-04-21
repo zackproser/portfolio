@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Data Scientists: Voice-to-Text Analysis Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-04-21",
+  "description": "How data scientists use WisprFlow to document analysis findings, model explanations, and research insights while staying focused on data exploration.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["wisprflow", "data-science", "analysis", "documentation", "voice-to-text", "ml"],
+  "hiddenFromIndex": true
+}

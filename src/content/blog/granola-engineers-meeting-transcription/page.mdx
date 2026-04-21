@@ -1,0 +1,115 @@
+import { AffiliateLink, InlineAffiliateCTA, VoiceAIDemoCard } from '@/components/StickyAffiliateCTA'
+
+# Granola for Software Engineers: Meeting Transcription That Actually Works
+
+Software engineering meetings are where critical decisions get buried in noise. Sprint planning sessions, architecture reviews, standup meetings — the important stuff often gets lost in rambling discussions about deployment strategies or that weird bug in the payment service.
+
+<InlineAffiliateCTA product="granola" />
+
+As a software engineer with 14 years shipping production systems, I've sat through thousands of meetings where someone said "we should definitely do X" and then three weeks later nobody remembers who was supposed to implement X, or even what X was exactly.
+
+That's where [Granola](https://granola.ai) comes in. It's an AI meeting assistant that automatically transcribes your technical discussions and pulls out the actual decisions and action items.
+
+## Why Engineers Need Meeting Transcription
+
+Engineering meetings are dense with technical context. When you're discussing microservice architecture or debugging a race condition, the details matter enormously. Missing a single constraint or assumption can derail weeks of development work.
+
+Traditional meeting notes don't cut it because:
+- **Context switching kills flow** — stopping to take notes breaks your technical thinking
+- **Manual notes miss nuance** — "we need to refactor the auth service" doesn't capture the why or the specific approach
+- **Action items get lost** — buried in 45 minutes of discussion about database schema changes
+- **Knowledge silos form** — when only one person takes notes, critical context doesn't propagate
+
+<InlineAffiliateCTA product="granola" />
+
+## How Granola Works for Engineering Teams
+
+Granola transcribes your meetings in real-time and uses AI to extract the meaningful bits. Here's what that looks like for common engineering scenarios:
+
+### Sprint Planning
+Instead of frantically scribbling story points and acceptance criteria, Granola captures:
+- Specific technical requirements for each story
+- Risk factors and technical debt discussions  
+- Capacity planning decisions
+- Dependencies between stories
+
+### Architecture Reviews
+These meetings are all about trade-offs and constraints. Granola extracts:
+- Design decisions with rationale
+- Performance requirements
+- Scalability concerns
+- Integration points with other systems
+
+### Incident Postmortems
+When you're debugging production issues, every detail matters. Granola records:
+- Timeline of events
+- Contributing factors
+- Proposed fixes
+- Prevention strategies
+
+<InlineAffiliateCTA product="granola" />
+
+## Real Engineering Meeting Examples
+
+Let's look at how Granola handles actual engineering discussions.
+
+**Sprint Planning Discussion:**
+```
+PM: "The user dashboard story seems large. Should we break it down?"
+Engineer: "Yeah, I'd split it into data layer and UI components. The API changes alone are probably a 5-pointer."
+Tech Lead: "Agreed. Plus we need to consider the mobile app impact."
+```
+
+**Granola's Output:**
+- **Decision**: Split user dashboard story into data layer and UI components
+- **Estimation**: API changes estimated at 5 story points  
+- **Dependencies**: Mobile app impact needs evaluation
+- **Action**: PM to create separate stories for data layer and UI
+
+**Architecture Review:**
+```
+Architect: "The payment service is hitting rate limits. We need either caching or async processing."
+Lead: "Async would be better long-term but caching is faster to implement."
+Engineer: "Redis cluster is already set up. We could cache payment status for 30 seconds."
+```
+
+**Granola's Output:**
+- **Problem**: Payment service rate limits
+- **Options**: Caching vs async processing  
+- **Decision**: Implement Redis caching as interim solution
+- **Specification**: 30-second TTL for payment status
+- **Action**: Engineer to implement Redis caching this sprint
+
+## Integrating Granola with Engineering Workflows
+
+The beauty of Granola is it fits into existing tools without disrupting your workflow:
+
+**Slack Integration**: Meeting summaries get posted directly to your team channels. No more "what did we decide in standup?" questions.
+
+**Linear/Jira Integration**: Action items become tickets automatically with proper context and acceptance criteria.
+
+**Confluence Integration**: Architecture decisions get documented in your knowledge base with full context.
+
+<InlineAffiliateCTA product="granola" />
+
+## Why This Matters for Engineering Productivity
+
+Good engineering teams move fast by making clear decisions and avoiding rework. Granola helps by:
+
+1. **Eliminating decision archaeology** — no more digging through Slack to find out why we chose approach A over approach B
+2. **Reducing context switching** — engineers stay in the code, not the note-taking
+3. **Improving handoffs** — when someone leaves the team, their knowledge doesn't walk out the door
+4. **Catching forgotten action items** — the "I thought you were doing that" problem disappears
+
+## Getting Started with Granola
+
+Setting up Granola for your engineering team takes about 5 minutes:
+
+1. Install the app on your laptop or phone
+2. Join your first meeting and let it transcribe
+3. Review the AI-generated summary and action items
+4. Share the results with your team via Slack or email
+
+The free tier gives you 10 hours of transcription monthly, which covers most team's sprint ceremonies and important technical discussions.
+
+Ready to stop losing engineering decisions in meeting noise? <AffiliateLink product="granola">Try Granola free for your next sprint planning session</AffiliateLink> and see how much clearer your team communications become.
