@@ -1,136 +1,51 @@
-import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
-import { createMetadata } from '@/utils/createMetadata'
-import rawMetadata from './metadata.json'
+# Best AI Meeting Assistant for Engineers in 2026
 
-export const metadata = createMetadata(rawMetadata)
+Software engineers attend a lot of meetings. Sprint planning, architecture discussions, code reviews, stakeholder syncs, retrospectives. The cognitive overhead of participating actively while also taking notes is real — you're either half-present in the conversation or you miss what's being said while trying to document it.
 
-export const campaign = 'best-ai-meeting-assistant-engineers'
+AI meeting assistants have improved dramatically in the last two years. Here's what I use and why, plus the options worth considering if you're trying to get your time back.
 
-# Best AI Meeting Assistant for Engineers in 2026: Full Roundup
+<InlineAffiliateCTA product="granola" />
 
-Engineers have specific needs from AI meeting tools that generic reviewers often miss. Technical vocabulary accuracy matters. Integration with dev tools (Linear, Jira, GitHub) matters. Privacy for internal architecture discussions matters. And meeting types — sprint ceremonies, architecture reviews, postmortems, incident calls — are different from generic business meetings.
+## The Actual Problem With Meetings for Engineers
 
-This roundup ranks the top AI meeting assistants specifically for software engineers, data engineers, ML engineers, and technical teams.
+The standard advice is "decline meetings you don't need." This works until you realize that most of the meetings you think you don't need actually contain information you'll need later. The 15-minute sync that seemed optional? Someone mentioned a breaking API change. The architecture review that felt redundant? It resolved a question you've been carrying for a week.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+The real problem isn't the number of meetings. It's that you're doing two things at once — processing information and recording it — when your brain should be doing one.
 
-## Quick Rankings
+AI meeting assistants solve this by handling the recording and note-taking, letting you stay fully present in the conversation.
 
-| Tool | Best For | Accuracy | Price/mo |
-|---|---|---|---|
-| **Granola** | Mac-based engineers, privacy, quality summaries | ⭐⭐⭐⭐⭐ | ~$18 |
-| **Otter.ai** | Cross-platform, large teams | ⭐⭐⭐⭐ | $16.99 |
-| **Fireflies.ai** | Bot-based capture, CRM integration | ⭐⭐⭐⭐ | $18 |
-| **tl;dv** | Video recording, searchable clips | ⭐⭐⭐⭐ | $20 |
-| **Tactiq** | Chrome extension, Google Meet | ⭐⭐⭐ | $12 |
-| **MeetGeek** | Team video library | ⭐⭐⭐ | $15 |
+<InlineAffiliateCTA product="granola" />
 
-## #1 Granola — Best Overall for Engineers on Mac
+## What I Use: Granola
 
-Granola leads this list for engineers on Mac systems for four key reasons:
+I've tried most of the major tools in this space. Granola is what I reach for now, especially on the Mac.
 
-**Technical vocabulary accuracy:** Granola's transcription model handles software engineering terminology better than consumer-grade alternatives. Library names, framework terms, architectural patterns, and technical acronyms transcribe correctly rather than being phonetically mangled.
+Granola records your meetings and generates notes that go beyond a raw transcript. It uses context from your calendar and previous meetings to generate structured notes — action items, decisions made, open questions. The output feels like someone who was paying attention took brief, useful notes, not a verbatim capture of every word spoken.
 
-**Privacy for internal discussions:** Architecture reviews, incident postmortems, and security discussions shouldn't live on third-party cloud servers. Granola's local-first processing keeps your technical discussions on your machine.
+On Mac, it integrates with the native Calendar and video conferencing apps. It detects when a meeting starts based on your calendar, joins if it can, and starts recording. The friction is near zero.
 
-**Developer-friendly integrations:** Export action items directly to Linear, Jira, or GitHub Issues. Share summaries to Slack channels. Paste into Notion or Confluence. The workflow fits naturally into how engineering teams already work.
+<InlineAffiliateCTA product="granola" />
 
-**No bot participant:** Granola doesn't join your meetings as a bot. For internal technical discussions, you don't want a robot attendee appearing in your call participants.
+## Other Options Worth Knowing About
 
-**Custom templates for engineering meetings:** Configure templates for sprint planning, retrospectives, architecture reviews, and incident calls — each producing the appropriate structured output.
+**Otter.ai** — the established player. Accurate transcription, good speaker identification, solid integrations with Zoom and Google Meet. The AI features (highlights, action items) are useful but feel bolted on rather than core to the experience. Works well for larger teams where multiple people need access to meeting records.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
+**Fireflies.ai** — another strong option with good analytics on your meeting patterns. Useful if you want visibility into how much time your team spends in meetings. The AI summaries are generated after the fact rather than in real-time.
 
-### Granola's Limitations
-- **Mac only** — Windows engineers can't use it
-- **No video recording** — if you need video clips, look elsewhere
-- **No cross-meeting search** — can't query across all past meetings
+**Fathom** — focused and simple. Records, transcribes, and generates highlights. Less feature-rich than Otter or Fireflies but easier to set up and use.
 
-## #2 Otter.ai Business — Best for Cross-Platform Teams
+**Fellow + AI** — if your team already uses Fellow for meeting agendas and notes, their AI feature is worth evaluating. The integration with your existing workflow matters — less context switching.
 
-Otter is the most widely-used AI meeting tool and for good reason — it works on any platform, supports Windows and Mac, and has mature integrations with Zoom, Teams, and Google Meet.
+## How to Choose
 
-For engineering teams that need something everyone can use regardless of OS, Otter is the default choice. Its transcription handles technical content reasonably well, though not at Granola's level for specialized terminology.
+If you're an individual engineer looking to recapture time from meetings you attend, start with Granola. The Mac-native experience, calendar integration, and structured notes output are the best fit for solo use.
 
-**Best for:** Cross-platform engineering teams, organizations standardizing on a single tool across technical and non-technical staff.
+If you're equipping a team, Otter or Fireflies make more sense — they handle multiple participants better, integrate with enterprise video conferencing, and give team admins visibility into meeting content.
 
-**Limitations:** Cloud-only (privacy trade-off), less precise technical vocabulary handling, generic meeting summaries.
+<InlineAffiliateCTA product="granola" />
 
-## #3 Fireflies.ai — Best for Integration-Heavy Teams
+## One Practical Tip
 
-Fireflies joins your meetings as a bot and provides solid transcription with a focus on integrations. For engineering teams that want automatic push to Jira, Salesforce (for developer relations), or Notion, Fireflies has the broadest integration surface of any tool in this list.
+Don't try to use all of this on day one. Pick one tool, use it consistently for two weeks, then evaluate whether it's actually saving you time. The overhead of maintaining multiple meeting tools, or using a tool poorly, is worse than just taking notes yourself.
 
-Its "AskFred" AI feature lets you query a past meeting — "what did we decide about the authentication architecture?" — which is useful for engineering teams with high meeting volume.
-
-**Best for:** Teams that want automatic CRM/project management sync, developer relations teams.
-
-**Limitations:** Bot participant required (visible in meetings), cloud-only processing, accuracy trails Granola for specialized technical content.
-
-## #4 tl;dv — Best for Video-Heavy Engineering Teams
-
-tl;dv's timestamped video clips are genuinely useful for engineering contexts: "here's the moment in the architecture review where we decided to go with the event-driven approach." Sharing a 90-second video clip is sometimes more compelling than a text summary.
-
-The cross-meeting search ("Ask tl;dv") that queries your full meeting archive is valuable for teams where architectural decisions build on each other over time.
-
-**Best for:** Teams that communicate heavily through async video, engineering orgs that want a searchable decision archive.
-
-**Limitations:** Higher cost for full features, bot participant, cloud-only, transcript accuracy behind Granola.
-
-<InlineAffiliateCTA product="granola" campaign={campaign} />
-
-## #5 Tactiq — Best Budget Option for Google Meet
-
-If your engineering team lives in Google Meet and you want a zero-installation-overhead tool, Tactiq's Chrome extension works well. It's not the most accurate and it's limited to Zoom/Meet/Teams, but at $12/month or free for basic use, it's a low-risk starting point.
-
-**Best for:** Teams on tight budgets, Google Meet-only teams, individual engineers who want to experiment before committing.
-
-**Limitations:** Chrome extension only, accuracy depends on platform captions, not suitable for sensitive technical discussions.
-
-## Engineering-Specific Meeting Templates
-
-Regardless of which tool you choose, configure custom templates for your most common meeting types:
-
-**Sprint Planning:**
-- Sprint goal and acceptance criteria
-- Stories committed and why
-- Dependencies identified
-- Risks and assumptions
-- Capacity considerations
-
-**Architecture Review:**
-- Design decision summary
-- Alternatives considered and why rejected
-- Trade-offs accepted
-- Concerns raised and how addressed
-- Action items before implementation
-
-**Incident Postmortem:**
-- Incident timeline
-- Root cause analysis
-- Contributing factors
-- Detection gaps identified
-- Action items with owners and deadlines
-- What went well
-
-**1:1 with Manager:**
-- Topics discussed
-- Feedback received
-- Career development points
-- Blockers and support needed
-- Commitments made
-
-## What Engineers Get Wrong About Meeting Tools
-
-The most common mistake engineering teams make is choosing a meeting tool based on features alone without considering the privacy model. Architecture discussions, security conversations, and product strategy sessions contain information that shouldn't live on third-party servers without careful consideration.
-
-Build your tool selection criteria from privacy requirements first, then feature requirements.
-
-## Our Recommendation
-
-For engineers on Mac who care about accuracy, privacy, and clean integration with dev tools: <AffiliateLink product="granola" campaign={campaign}>Granola is the clear choice</AffiliateLink>. Its free trial lets you evaluate it on a week of real meetings before committing.
-
-For Windows engineers or cross-platform teams: Otter.ai Business is the most reliable starting point, with the understanding that you're accepting cloud-based data processing.
-
-For teams that want video recording and a searchable meeting archive: tl;dv is worth the evaluation at its price point.
-
-Start with the tool that fits your privacy requirements and primary use cases — you can always switch or add tools as your needs evolve.
+If you're an engineer with RSI concerns or typing fatigue, pair an AI meeting assistant with a voice input tool like WisprFlow. Meeting notes get recorded automatically, and when you need to follow up on action items or write documentation about decisions made, you can dictate that instead of typing it.

@@ -1,0 +1,60 @@
+# Firecrawl AI: Turn Any Website into Clean Markdown or Structured Data
+
+Web scraping is tedious. Every site behaves differently — some block bots, some require JavaScript rendering, some have anti-scraping measures that trip you up mid-crawl. Firecrawl handles the infrastructure layer so you can focus on what you actually want to do with the data.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## What Firecrawl Is
+
+Firecrawl is a web scraping API that processes websites at scale. You give it a URL or list of URLs, and it returns clean, structured data — markdown, HTML, or structured JSON depending on what you need. It handles JavaScript rendering, respects robots.txt, manages rate limiting, and returns consistent, normalized output regardless of how messy the source site is.
+
+The core use case is taking websites and turning them into data you can work with: feeding them into RAG pipelines, building competitive research datasets, monitoring competitor pricing, or training data collection.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## How It Works
+
+You send a request to the Firecrawl API with a URL (or batch of URLs) and a format specification. Firecrawl's infrastructure crawls the site, renders any JavaScript, and returns cleaned content. The API handles:
+
+**JavaScript rendering** — sites built with React, Vue, or other client-side frameworks render their content in the browser. Firecrawl renders it server-side so you get the final DOM, not a blank page.
+
+**Anti-bot evasion** — it rotates IP addresses, manages request timing, and presents itself as a normal browser to avoid triggering anti-scraping defenses.
+
+**Structured output** — instead of raw HTML that requires parsing, you can request markdown or JSON with the exact fields you need. The extraction is configurable.
+
+**Batch crawling** — you can submit a sitemap URL and Firecrawl will crawl all URLs under it, or provide a list of specific URLs to process in parallel.
+
+## Common Use Cases
+
+**RAG pipelines** — feeding website content into LLM workflows requires clean text. Firecrawl gives you markdown that can be chunked and embedded without HTML parsing overhead.
+
+**Competitive research** — crawl competitor product pages, pricing pages, or content sites to build datasets for analysis.
+
+**SEO monitoring** — track how your own or competitor pages change over time. Firecrawl's output is normalized so diffing is meaningful.
+
+**Training data** — web content is a rich source of training data for fine-tuning. Firecrawl processes it at scale so you're not writing custom scrapers for each site.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Firecrawl vs Traditional Scraping
+
+The traditional approach to web scraping is writing custom code per site: figure out how the site renders, handle the specific JavaScript framework, manage the site's particular quirks. This works but doesn't scale — you're essentially re-solving the same problem for every new site you want to scrape.
+
+Firecrawl abstracts the scraping infrastructure. You interact with a consistent API regardless of what the target site looks like. This makes it practical to scrape dozens of sites for a project instead of just one or two.
+
+The tradeoff is cost — Firecrawl is a paid service (there's a free tier with limits). For one-off scraping tasks, writing custom code is cheaper. For recurring scraping at scale, Firecrawl's convenience and reliability are worth it.
+
+## Pricing
+
+Firecrawl offers a free tier with limited credits, and paid tiers that scale with usage. The relevant dimension is page count — each crawl consumes credits based on how many pages are processed. For development and small projects, the free tier is sufficient. For production workloads with large sites, the paid tiers are reasonably priced for what you get.
+
+## Getting Started
+
+1. Create an account at firecrawl.dev and get an API key
+2. Make your first request — send a URL, specify the output format (markdown recommended for most use cases)
+3. Inspect the response and adjust your extraction parameters as needed
+4. Scale up to batch processing once your pipeline is working
+
+The API documentation is straightforward. If you've used any REST API before, you'll find it familiar.
+
+<InlineAffiliateCTA product="wisprflow" />
