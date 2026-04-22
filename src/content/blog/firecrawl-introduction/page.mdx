@@ -1,5 +1,8 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
 
+export const metadata = createMetadata(rawMetadata);
 export const campaign = 'firecrawl-introduction';
 
 # Firecrawl AI: Turn Any Website into Clean Markdown or Structured Data
