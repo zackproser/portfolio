@@ -6,89 +6,75 @@ export const metadata = createMetadata(rawMetadata)
 
 # How to Play Steam Link on Vision Pro While Watching TV
 
-I spent weeks failing at this. Like, embarrassingly long. Weeks of dropping frames, stuttering video, lag that made every first-person shooter feel like I was controlling a car with delayed steering.
+The setup I wanted: Vision Pro on my face, a wireless controller in my hands, Steam running somewhere in the house, and Apple TV shrunk and floating above the game. Zombies below. A drama above. Exactly the kind of sensory control my brain needs to actually relax.
 
-The setup I wanted was simple in my head: Vision Pro on my face, a wireless controller in my hands, Steam running somewhere in the house streaming to me. And above the game — Apple TV, shrunken down, playing a show while I killed zombies underneath.
+Getting there took weeks of dead ends. Here's what I learned, including every wrong turn.
 
-That mental model is correct. The execution nearly broke me.
-
-This is the post I wish I'd found at the start. Everything I learned, every wrong door I knocked on, and exactly what works.
-
-<Image src="https://zackproser.b-cdn.net/images/steam-link-vision-pro-couch.webp" alt="A pixel art scene of someone wearing Apple Vision Pro, reclining on a couch with a wireless Xbox controller, bathed in the soft glow of a massive projected screen" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/steam-link-vision-pro-couch-v2.webp" alt="A man wearing Apple Vision Pro, reclining on a couch with a wireless Xbox controller, bathed in the soft glow of a massive projected screen" width={1200} height={675} />
 
 ## The Wrong Turn: Steam Deck as the Host
 
-My first instinct was elegant in its wrongness: use the Steam Deck as the host.
+My first instinct was to use the Steam Deck as the streaming host. It's right there on my network, it runs Steam games natively — how could it not work?
 
-The logic was sound enough on paper. Steam Deck runs Steam games natively. It's right there on my network. I'd connect Vision Pro to it via Steam Link and stream from the Deck like I was streaming from any other PC.
+It didn't work. Constant frame drops. Input lag that made every shooter feel like steering with a delay. Games that should have run fine looked like a slideshow through fog.
 
-What actually happened: constant frame drops. Input lag that turned aiming into a coin flip. Games that should have run fine looked like I was watching a slideshow through a foggy window.
+The problem is architecture. The Steam Deck renders games for its own screen. When you use it as a dedicated streaming host, you're asking it to encode video for the stream while simultaneously running the game. On a device this tightly integrated, that competition is brutal and constant.
 
-The problem is architecture. The Steam Deck is a handheld — a marvel of engineering, but it's designed to render games for its own screen. When you try to use it as a dedicated streaming host while simultaneously running the game, you're asking it to do two jobs that fight each other. The encoding pipeline for Steam Link competes with the game itself for GPU and CPU resources. On a device this tightly integrated, that competition is brutal and constant.
-
-Steam's own [network settings documentation](https://help.steampowered.com/en/faqs/view/3E3D-BE6B-787D-A5D2) is clear: a wired connection for the host is strongly recommended, and wireless-to-wireless setups cause "choppy" performance. The Deck was compounding every networking problem I hadn't diagnosed yet.
+Steam's own [network settings documentation](https://help.steampowered.com/en/faqs/view/3E3D-BE6B-787D-A5D2) recommends a wired connection for the host and notes that wireless-to-wireless setups cause choppy performance. The Deck was compounding every networking problem I hadn't diagnosed yet.
 
 ## The Vision Pro Steam Link Problem Nobody Talks About
 
-Once I stopped blaming the Steam Deck, I went all-in on using Vision Pro as the client with my Steam Deck as the host. That's when I hit the Wi-Fi cycling issue.
+Once I stopped blaming the Steam Deck, I hit a different wall: the Wi-Fi cycling issue.
 
-Apple Vision Pro's version of Steam Link has a specific behavior when it can't establish a proper network handshake: it starts cycling Wi-Fi connections aggressively. It tries, fails, tries again, fails faster, and in the process floods the network with connection attempts. This manifests as extreme frame drops — not consistent lag, but a rhythmic stutter that makes games feel broken even when your network is technically functioning.
+Vision Pro's version of Steam Link has a specific behavior when it can't establish a proper network handshake. It starts cycling Wi-Fi connections aggressively — tries, fails, tries again — flooding the network with attempts. This manifests as extreme frame drops, not consistent lag. A rhythmic stutter that makes games feel broken even when your network is technically fine.
 
-The root cause, as I eventually pieced together through a conversation with a friend who works on networking at Valve, is a privilege networking flag. Vision Pro's sandboxed environment handles network permissions differently than a standard iOS or macOS device. Steam Link on visionOS needs to signal certain network priority behavior to the OS, and without the right handshake, the Vision Pro throttles or misroutes the streaming traffic. This is why the same streaming setup that works perfectly on an iPhone or Apple TV can fail completely on Vision Pro.
+The root cause is a networking privilege flag. Vision Pro's sandboxed environment handles network permissions differently than standard iOS or macOS. Steam Link on visionOS needs to signal certain network priority behavior to the OS, and without the right handshake, the Vision Pro misroutes the streaming traffic. This is why the same setup works on an iPhone or Apple TV but fails on Vision Pro.
 
 ## The Fix: A Full Gaming Rig as the Host
 
-This is the part that solved everything.
+The host machine needs to be a real computer. Not a handheld. A PC with a dedicated GPU doing the heavy lifting — running the game and encoding the video stream simultaneously.
 
-The host machine needs to be a real computer. Not a handheld. Not a console in disguise. A PC with a dedicated GPU doing dedicated GPU work — encoding — while the game runs.
-
-I had one already gathering a polite amount of dust: an older Windows build I put together about eight years ago. It has a GeForce GTX 1080 Ti, plenty of RAM, and a large platter drive for the game library. That GPU is still an absolute workhorse. It's not the newest silicon, but the 1080 Ti encodes like a champion, and it chews through AAA titles without breaking a sweat.
+I had one already: an older Windows build I put together about eight years ago. GeForce GTX 1080 Ti, plenty of RAM, a large platter drive for the game library. That GPU is still an absolute workhorse. It chews through AAA titles like *Warhammer 40,000: Space Marine 2* without breaking a sweat, and it encodes like a champion for Steam Link.
 
 The moment I moved the host to that rig, everything changed.
 
-Here's the critical part: **the gaming rig connects to your router via Ethernet. Not Wi-Fi. Ethernet.** Wired straight into the access point.
+**The gaming rig connects to your router via Ethernet. Not Wi-Fi. Ethernet.** Wired straight into the access point.
 
 <Image src="https://zackproser.b-cdn.net/images/steam-link-vision-pro-network-diagram.webp" alt="A pixel art network diagram showing a gaming PC connected by Ethernet to a router, which broadcasts Wi-Fi to Apple Vision Pro below, with data packets flowing along the cable" width={1200} height={675} />
 
-This is non-negotiable. Steam's own documentation recommends wired connections for the host and notes that wireless-to-wireless setups cause significant interference and choppy performance. The host machine needs a clean, stable 1 Gigabit link to the router. Anything less introduces latency that compounds through the entire streaming pipeline.
+Steam's own documentation is unambiguous: wired connections for the host produce the best results, and wireless-to-wireless setups cause significant interference. The host machine needs a clean, stable 1 Gigabit link to the router. Anything less introduces latency that compounds through the entire streaming pipeline.
 
-I made the mistake of thinking I could solve this with Wi-Fi extenders before I figured out what was actually wrong. I bought two of them. Tried different placements. Fussed with channels. None of it mattered, because the problem wasn't signal strength to the Vision Pro — it was that the host machine itself was trying to communicate over a shared, contended Wi-Fi link while simultaneously encoding video. The extender situation was a complete red herring.
+Once the gaming rig was hardwired into the access point, I disabled its Wi-Fi radio entirely. No reason for it to compete with Ethernet. The machine has one job: be fast and reliable on the network.
 
-Once the gaming rig was hardwired into the access point at the top of my network hierarchy, Vision Pro could finally maintain a stable connection. The Cyan line in Steam Link's performance overlay — the one that indicates network time variability — went flat.
+Wi-Fi extenders were a complete red herring. I bought two of them before I figured out what was actually wrong. The problem wasn't signal strength to the Vision Pro — it was that the host machine itself was trying to communicate over a shared, contended Wi-Fi link while simultaneously encoding video. Fussing with extenders was like rearranging furniture while the foundation was cracked.
 
 ## The Final Piece: Xbox Controller via Bluetooth to Vision Pro
 
-With the host sorted and the network sorted, I had one more puzzle piece to crack.
+The Xbox controller pairs directly to Vision Pro, not to the gaming rig.
 
-The Xbox controller can't be paired to the gaming rig. It can't be paired to the Steam Deck or the router or anything else in the chain. **It pairs directly to Vision Pro via Bluetooth.**
+The input path is: controller → Vision Pro → network → gaming rig. The controller talks to Vision Pro, which sends input over the network to the host, which runs the game and streams video back. Any other pairing configuration — controller to the host, controller to the Steam Deck — adds an extra hop or creates competing Bluetooth domains that fragment timing.
 
-Here's why this matters: the controller is the client-side input device. The game runs on the host rig. Steam Link streams video from the host to Vision Pro and receives input commands from the controller back to the host. The controller talks to Vision Pro, Vision Pro talks to the host over the network, and the host runs the game.
+To pair: put your Xbox controller in pairing mode, open Settings on Vision Pro → Bluetooth, and pair it like any other accessory. Steam Link will automatically recognize it as your input device.
 
-If you pair the controller to the wrong device in this chain, you introduce an extra hop or a competing Bluetooth domain that fragments the timing. The cleanest possible signal path is: controller → Vision Pro → network → gaming rig.
-
-To pair: put your Xbox controller in pairing mode, open Settings on Vision Pro, go to Bluetooth, and pair it like any other accessory. Once paired, Steam Link running on Vision Pro will automatically recognize it as an input device.
-
-<Image src="https://zackproser.b-cdn.net/images/steam-link-vision-pro-dual-screen.webp" alt="A pixel art scene showing someone wearing Vision Pro looking forward at a dual-screen setup: a zombie shooter game displayed on the lower portion of the virtual screen and a shrunken Apple TV interface floating above it" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/steam-link-vision-pro-dual-screen-v2.webp" alt="A man wearing Vision Pro looking forward at a dual-screen setup: a high-fidelity AAA sci-fi combat game displayed on the lower portion of the virtual screen and a prestige TV drama floating above it" width={1200} height={675} />
 
 ## The Result
 
-Zero lag. Zero dropped frames. A game running in 4K on a massive virtual screen, with Apple TV shrunk and floating above it like it's on a shelf in my peripheral vision.
+Zero lag. Zero dropped frames. A modern AAA title running in 4K on a massive virtual screen, with Apple TV shrunk and floating above it — a drama playing quietly in my peripheral vision while I play underneath.
 
-The Steam Link beta for Vision Pro [supports up to 4K streaming](https://mobilesyrup.com/2026/04/14/apple-vision-pro-users-gain-access-to-select-steam-link/) with improved network performance. The panoramic mode lets you adjust the display curve so the virtual screen wraps around your field of view naturally. It is, genuinely, one of the most absorbing gaming experiences I've had in years.
+The Steam Link beta for Vision Pro [supports up to 4K streaming](https://mobilesyrup.com/2026/04/14/apple-vision-pro-users-gain-access-to-select-steam-link/) with improved network performance. The panoramic mode lets you adjust the display curve so the virtual screen wraps around your field of view naturally.
 
-When my brain needs to shut off from the world, I put on Vision Pro, grab the controller, and disappear into whatever game I want on a screen the size of a movie theater. Above it, something from Apple TV plays quietly — enough to fill the silence without demanding attention. This is exactly the kind of sensory control my brain craves.
+This is what I wanted: a screen the size of a movie theater, with the option to layer something else in my peripheral. When my brain needs to shut off from the world, I put on Vision Pro, grab the controller, and disappear.
 
-## The Complete Setup, End to End
-
-Here's everything you need, in order:
+## The Complete Setup
 
 **1. A Windows PC or Mac as your streaming host**
 
-It needs a dedicated GPU that can both run the game and encode the video stream simultaneously. The GeForce GTX 1080 Ti in my eight-year-old build handles this without flinching. A more modern GPU will only improve things.
+A dedicated GPU that can both run the game and encode the video stream simultaneously. The GTX 1080 Ti in my eight-year-old build handles this without flinching. A more modern GPU improves things further.
 
-**2. Ethernet from the host directly to your router**
+**2. Ethernet from the host directly to your router — then disable the host's Wi-Fi**
 
-No Wi-Fi for the host machine. Wired connection only. This is the single biggest factor in getting stable streaming.
+No Wi-Fi for the host machine. Wired connection only. Once it's working, disable the Wi-Fi radio so the machine has one network path and one network path only.
 
 **3. Apple Vision Pro with Steam Link beta**
 
@@ -100,7 +86,7 @@ Put the controller in pairing mode, open Vision Pro Settings → Bluetooth, and 
 
 **5. Your games running on the host, controlled from Vision Pro**
 
-Connect to your host from Steam Link on Vision Pro, launch a game from your library, and play. The controller input goes to Vision Pro, which sends it over the network to the host, which runs the game and streams the video back.
+Connect to your host from Steam Link on Vision Pro, launch a game from your library, and play.
 
 ## What Didn't Work (And Why)
 
@@ -110,14 +96,10 @@ Connect to your host from Steam Link on Vision Pro, launch a game from your libr
 | Wi-Fi for host machine | Contended wireless link creates latency that compounds through the pipeline |
 | Wi-Fi extenders | Red herring — problem was host machine connectivity, not Vision Pro signal strength |
 | Controller paired to host | Input routing through the wrong device adds an extra hop and fragments timing |
-| Controller paired to Steam Deck | Same problem; creates competing Bluetooth domains |
+| Controller paired to Steam Deck | Creates competing Bluetooth domains |
 
 ## What Actually Matters
 
-The gaming industry's obsession with dedicated VR headsets is understandable, but it misses what a lot of us actually want: a massive screen we can disappear into, with the option to layer something else in our peripheral vision. Apple Vision Pro's passthrough mixed reality is the perfect canvas for this.
+Apple Vision Pro's passthrough mixed reality is the perfect canvas for this. Steam Link on Vision Pro is 2D game streaming to a virtual display — you get the screen size of a theater and the multitasking of a spatial computer.
 
-Steam Link on Vision Pro isn't VR streaming — it's 2D game streaming to a virtual display, with the ability to shrink other apps and position them in your space. You get the screen size of a theater and the multitasking of a spatial computer.
-
-The lag-free, zero-drop-frames experience requires exactly three things: a real gaming PC as the host, that host wired to Ethernet, and the controller paired directly to Vision Pro. Everything else flows from those foundations.
-
-Get those three things right, and the rest just works.
+The lag-free experience requires exactly three things: a real gaming PC as the host, that host wired to Ethernet with Wi-Fi disabled, and the controller paired directly to Vision Pro. Everything else follows from those foundations.
