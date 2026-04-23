@@ -28,13 +28,17 @@ Steam's own [network settings documentation](https://help.steampowered.com/en/fa
 
 There was a second layer to the failure I didn't understand at first.
 
-Most Steam Link apps on Vision Pro are just iPad apps running in compatibility mode. Apple allows most iPad apps to run unmodified on Vision Pro — they're essentially iPadOS apps running in a window with iPad SDK restrictions. The problem is that apps built for iPad inherit those restrictions. They can't access certain network capabilities that native visionOS apps can request.
+Most Steam Link apps on Vision Pro are just iPad apps running in compatibility mode. Apple allows most iPad apps to run unmodified on Vision Pro — they're essentially iPadOS apps running in a window with iPad SDK restrictions. The problem is that apps built for iPad inherit those restrictions and can't declare the network entitlements a streaming app requires.
 
-When the Steam Link iPad app tries to establish a streaming connection on Vision Pro, it can't pass the elevated network priority flags that a native visionOS app can. The result is the Wi-Fi cycling behavior: Vision Pro's network stack doesn't get the signal it needs to maintain a stable connection to the host, so it keeps cycling connections and flooding the network with attempts. The stream stutters and drops frames as a result.
+<Image src="https://zackproser.b-cdn.net/images/ipad-compat-vs-native-visionos-diagram.webp" alt="Split screen pixel art diagram: left side shows iPad app in compatibility mode with a red X and missing Bonjour service declaration, right side shows native visionOS app with a green checkmark and _steamcast._udp service declared" width={1200} height={675} />
 
-Right around the time I was deep in this problem, Valve released a native visionOS beta of Steam Link — built specifically for Vision Pro using the visionOS SDK, not just the iPad app in compatibility mode. That native app could pass the right network flags and maintain a proper handshake with the host. I grabbed the TestFlight beta immediately.
+When a native visionOS app wants to do local network game streaming, it needs to declare the specific Bonjour service types it's using in its `NSBonjourServices` Info.plist entry — specifically `_steamcast._udp` for Steam Remote Play. It also needs `NSLocalNetworkUsageDescription` to explain why it needs local network access. Steam Remote Play uses UDP ports 27031 and 27036 for the video/audio/game data stream.
 
-What I didn't realize yet was that the app wasn't the bottleneck. The architecture was.
+The iPad version of Steam Link, running in compatibility mode, doesn't have access to these declaration mechanisms the same way a natively-compiled visionOS app does. The app can try to bind to those UDP ports, but it can't properly advertise itself via Bonjour, and it can't trigger the local network permission prompt in a way that gives it the stable priority access it needs. Vision Pro's network stack then interprets this as a failed handshake, starts cycling Wi-Fi connections aggressively, and the stream stutters.
+
+Right around the time I was deep in this, Valve released a native visionOS beta of Steam Link — built specifically for Vision Pro using the visionOS SDK, with the proper Bonjour service declarations and network entitlements. I grabbed the TestFlight beta immediately. The difference was immediate: no cycling, no stuttering, a clean green connection indicator.
+
+What I didn't realize yet was that the app wasn't the only bottleneck. The architecture was still wrong. More on that below.
 
 ## The Fix: A Full Gaming Rig as the Host
 
@@ -64,6 +68,8 @@ This was the realization that completed the architecture. The controller talks t
 
 Input path: controller → Vision Pro → network → gaming rig.
 
+<Image src="https://zackproser.b-cdn.net/images/input-path-controller-vision-pro-gaming-rig.webp" alt="Pixel art flow diagram showing a green Xbox controller connected via Bluetooth to Apple Vision Pro, which is connected via Wi-Fi to the gaming PC, with arrows showing data flowing both directions" width={1200} height={675} />
+
 If you pair the controller to the gaming rig instead, you're creating an extra hop and competing Bluetooth domains that fragment timing. If you pair it to the Steam Deck, same problem. One path. Clean.
 
 To pair: put your Xbox controller in pairing mode, open Settings on Vision Pro → Bluetooth, and pair it. Steam Link on Vision Pro will automatically detect it as your input device.
@@ -79,6 +85,8 @@ The Environments feature lets you replace your entire surroundings with a immers
 I use the snowy peaks most. There's something about the combination — a visceral AAA game running underneath, a drama floating above, and cold mountain air implied in my peripheral vision — that creates a complete mental cocoon. The game pulls my focus. The show gives me somewhere to look when I need a break from aiming. The environment wraps everything in calm.
 
 After running hot all day — parenting, working, managing a household — this is what my nervous system needs. Two hours in the snowy peaks, killing things in a game, with something quiet playing above. It's specific, but if it resonates, you know exactly what I mean.
+
+This is the decompression version of something I wrote about in [Training Claude to Compensate for My Neurological Patterns](/blog/executive-function-as-a-service) — that post covers the other direction: sometimes to concentrate I need *more* stimulation, not less. A tiny Netflix window open alongside my code, the blue lights, the cold room. Background noise and sensory input that keeps my brain from looping while it works. The cocoon here is the inverse: instead of using external input to steady a working brain, I'm using it to give a resting brain somewhere to go that isn't painful.
 
 <Image src="https://zackproser.b-cdn.net/images/vision-pro-environment-snowy-peaks-v2.webp" alt="Snowy mountain environment in Apple Vision Pro with two fullscreen displays: a prestige TV drama in the top half and a first-person zombie slashing game filling the bottom half, all surrounded by snowy peaks and cold blue light" width={1200} height={675} />
 
