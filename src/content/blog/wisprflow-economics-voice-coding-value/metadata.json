@@ -16,6 +16,11 @@
     "productivity",
     "coding speed"
   ],
-  "tags": ["voice ai", "productivity", "wisprflow", "developer tools"],
-  "hiddenFromIndex": false
+  "tags": [
+    "voice ai",
+    "productivity",
+    "wisprflow",
+    "developer tools"
+  ],
+  "hiddenFromIndex": true
 }
