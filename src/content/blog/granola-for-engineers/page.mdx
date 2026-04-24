@@ -1,0 +1,73 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-for-engineers';
+
+# Granola for Engineers: AI Meeting Notes for Technical Teams
+
+Software engineers spend more time in meetings than most of us would like to admit. Design reviews, sprint planning, incident retrospectives, architecture discussions, one-on-ones with engineering managers — the meeting load for a mid-career engineer at a growing company is substantial. And unlike most knowledge workers, engineers need their documentation to be technically accurate. "Discussed caching" doesn't help anyone. "Agreed to use Redis with a 30-minute TTL for session data, with read-through on miss" does.
+
+[Granola](https://go.granola.ai/zack-proser) captures the full technical discussion from your meetings and produces structured notes that preserve the detail that matters. So you can focus on the engineering conversation instead of trying to type while thinking.
+
+## The Cost of Incomplete Technical Documentation
+
+The documentation failures in engineering meetings aren't just inconvenient — they compound over time.
+
+Architecture decisions made without recorded rationale lead to the same proposals being relitigated every six months. A new engineer joins, evaluates the codebase, and proposes switching from a message queue to direct service calls — not knowing that the team debated this exact question two years ago and documented specific failure scenarios that ruled it out. Without the documentation, you're having the same conversation again.
+
+Incident retrospectives that don't capture the full timeline lead to repeated incidents. The nuance of what was tried, what made things worse, and what ultimately worked lives in the post-mortem meeting — and if that meeting isn't documented, you're relying on whoever was on-call to remember and accurately transcribe their experience under pressure.
+
+Technical specification reviews involve requirements clarifications that determine what gets built. When engineering and product have different memories of what was agreed in the spec review, someone builds the wrong thing.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## What Granola Captures for Engineering Teams
+
+### Technical Design Reviews
+
+Design reviews are where proposed architectures get challenged, edge cases get identified, and technical choices get validated before implementation. The most valuable part of a design review isn't the final decision — it's the discussion that got there. Which alternatives were considered? Why was the current approach chosen over them? What failure modes were identified and how are they handled?
+
+Granola captures that discussion verbatim, including the questions that were raised and the specific answers given. Months later when someone asks "why did we build it this way?", the answer is in the meeting record, not in the fading memory of whoever was in the room.
+
+Technical vocabulary gets captured accurately: eventual consistency, distributed transaction, idempotency, connection pooling, read replica, circuit breaker, backpressure, graceful degradation, data locality. The engineering context is preserved.
+
+### Incident Retrospectives
+
+Post-incident reviews are high-value and high-stress. The team is processing a painful experience while trying to extract lessons from it. The timeline reconstruction, the contributing factor analysis, the action item generation — this all needs to be captured accurately while it's fresh.
+
+Granola records the full retrospective discussion so the post-mortem document can be built from an accurate transcript rather than from the filtered recollections of multiple participants. The nuance — the false starts, the tried-and-failed remediation attempts, the cascading failure details — stays in the record.
+
+### Sprint Planning and Estimation Sessions
+
+Sprint planning involves scope discussions and estimation that create commitments. When scope creep happens mid-sprint, the record of what was specifically committed to in planning is the reference point. Granola captures those commitments — including the conditions and assumptions that were attached to estimates — so there's a clear record of what was agreed versus what was added.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+### Engineering Manager One-on-Ones
+
+One-on-ones are where career development, performance feedback, and project context get discussed. The commitments made — "I'll get you more context on that promotion criteria", "let's revisit this project scope in two weeks" — need to be captured so they don't fall through the cracks between sessions.
+
+Granola's structured notes from one-on-ones give both engineers and managers a clear record of what was discussed and what was committed to, reducing the ambiguity that often accumulates across a long reporting relationship.
+
+### Cross-Team Alignment Meetings
+
+The meetings where your team coordinates with other teams — API contract discussions, shared infrastructure planning, dependency management calls — are where assumptions get made that later cause production problems. What exactly was agreed about that API contract? What was the timeline for the infra change? Who was responsible for the migration script?
+
+Granola captures those alignment conversations with enough detail that the assumptions and agreements are visible, not just implied.
+
+### Technical Onboarding Sessions
+
+When new engineers join, the context they receive is shaped by the walkthroughs and onboarding sessions they attend. Granola-documented onboarding sessions give new engineers a reference they can return to, and give the team a record of what context was provided — so gaps in understanding can be identified and addressed.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## From Meeting Notes to Architecture Decision Records
+
+One of the highest-leverage uses of Granola for engineering teams is using meeting transcripts as the source material for Architecture Decision Records. ADRs capture the context, the decision, and the rationale — exactly the material that comes out of a good design review or architecture discussion.
+
+With Granola, the discussion is already documented. Writing the ADR becomes a matter of pulling the key arguments from the transcript and structuring them, rather than reconstructing a conversation from memory.
+
+[Start capturing your engineering meetings with Granola](https://go.granola.ai/zack-proser) and build the documentation culture that high-performing teams depend on.

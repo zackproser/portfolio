@@ -1,0 +1,75 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'granola-mobile-developers-ai-notes';
+
+# Granola for Mobile Developers: AI Meeting Notes for iOS and Android Teams
+
+Mobile development teams live in a world of short cycles and high stakes. Your sprint planning sessions set feature priorities that determine what ships in the next release. Your App Store review discussions involve decisions about privacy permissions and content policies that affect approval timelines. Your crash triage calls involve root cause analysis that needs to translate directly into bug tickets and rollout decisions.
+
+All of this happens in meetings — and most of it gets documented through a combination of half-attention note-taking and memory. Which means the details that matter most often aren't captured at all.
+
+[Granola](https://go.granola.ai/zack-proser) runs in the background during your meetings and produces structured notes that capture technical decisions, action items, and the reasoning behind choices. So you can focus on the engineering conversation instead of toggling between thinking and typing.
+
+## Why Mobile Teams Need Better Meeting Documentation
+
+The mobile development cycle has some documentation failure modes that are unique to the platform.
+
+App Store review rejections require detailed responses that reference specific guidelines and your implementation decisions. When you need to write that response, you're pulling from memory about conversations that happened days or weeks ago. If the conversation where you made that implementation choice was captured by Granola, you have the context you need.
+
+Release go/no-go calls involve multiple stakeholders: engineering, QA, product, marketing. The decision criteria get discussed. Crash rates, test coverage, outstanding issues — all get weighed against ship date pressure. When the call is made, the reasoning should be documented. Six months later, when someone asks why a particular build was shipped with a known issue, the answer should be available.
+
+Cross-platform consistency discussions between iOS and Android teams need accurate documentation of what was agreed. When one platform implements something differently than the other, and the question arises about whether that was intentional, the meeting record is the authoritative source.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## What Granola Captures for Mobile Development Teams
+
+### Sprint Planning and Backlog Grooming
+
+Sprint planning involves prioritization decisions that balance feature work, technical debt, and bug fixes. The reasoning behind those decisions — why a particular feature moved up the backlog, why a performance improvement got deprioritized — is valuable context that influences future planning.
+
+Granola captures that reasoning, not just the output. So when you're planning the next sprint and someone asks why a particular item was pushed, you can pull up the documented discussion rather than reconstructing from individual memory.
+
+It handles mobile development vocabulary accurately: view controller lifecycle, fragment backstack, build variants, ProGuard rules, entitlements, provisioning profiles, Xcode schemes, Gradle configurations, ANR rates, crash-free session rates. The technical context won't get lost in transcription.
+
+### App Store Strategy and Review Preparation
+
+App Store submissions involve strategic decisions about metadata, screenshots, permissions justifications, and review timing. Those discussions happen in calls where someone from product, marketing, and engineering participates, and the decisions made affect submission outcomes.
+
+When a review is rejected and you need to appeal, the documentation of why you implemented a feature a particular way — captured in a product call weeks earlier — becomes directly useful. Granola gives you that documentation without requiring you to anticipate which meetings will matter most for future appeals.
+
+### Crash Triage and Incident Response
+
+Production crashes require fast response. The triage meeting involves identifying the crash signature, estimating the scope of impact, assigning investigation ownership, and deciding whether to pull the build. Those decisions need to be documented quickly and accurately.
+
+Granola produces a real-time record of the crash triage discussion so the incident timeline includes what was decided and by whom, not just what happened to the app.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+### Performance Review Sessions
+
+Mobile performance reviews cover metrics that are specific and consequential: cold start time, frame drop rates, battery usage, network efficiency, binary size. Discussions about which metrics to optimize and how involve technical tradeoffs that need to be documented.
+
+When a performance regression appears in production, the record of which optimizations were chosen and which were deferred — and why — explains the current state and informs the remediation approach.
+
+### User Research and Feedback Reviews
+
+Mobile teams frequently review user research, App Store reviews, and crash feedback together. These sessions surface patterns that inform product decisions. Granola captures the observations and the decisions that result from them — so the connection between user feedback and product changes is documented, not just assumed.
+
+### Cross-Functional Alignment Calls
+
+The calls where mobile engineering aligns with design, product, backend, and marketing are where the requirements that determine what gets built actually get set. Granola captures those alignment conversations so engineering has an accurate record of what was specified, not just what they remember being asked to build.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Action Item Tracking Across Release Cycles
+
+Mobile release cycles involve dozens of action items distributed across multiple people and roles. Granola extracts action items from meeting transcripts and attributes them to specific people, giving the team a clear record of commitments made in each session.
+
+This matters especially for items that bridge release cycles — a performance improvement committed to in one sprint that needs to be tracked through to completion several sprints later.
+
+[Start capturing your mobile development meetings with Granola](https://go.granola.ai/zack-proser) and give your team the documentation foundation your release cycles require.
