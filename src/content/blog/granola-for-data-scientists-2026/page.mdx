@@ -1,0 +1,67 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-data-scientists-2026'
+
+# Granola for Data Scientists: Meeting Notes That Keep Up With Technical Discussions
+
+The worst part of a model review isn't presenting results. It's realizing two weeks later that you can't remember why the team decided to drop a feature, or what the business stakeholder actually said about the acceptable false positive rate.
+
+Data science work is intensely collaborative. You're in meetings constantly — requirements sessions with product, model review standups with engineering, experiment postmortems, data governance reviews, vendor evaluations. And every one of those conversations generates information that needs to be captured accurately or it disappears.
+
+Granola records, transcribes, and summarizes your meetings with AI, so you can actually pay attention to the conversation instead of racing to capture everything in a notebook.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The documentation problem in data science teams
+
+Data scientists deal with a specific flavor of meeting documentation pain. The technical vocabulary is dense — AUC-ROC, feature drift, p-values, embedding dimensions, hyperparameter schedules — and most generic transcription tools butcher it. You end up with transcripts full of phonetic guesses that are more confusing than helpful.
+
+Beyond vocabulary, data science discussions have a particular structure. The important content is often buried in the middle of a discussion: "Yeah, we could do that, but actually the reason we're not is..." followed by a nuanced explanation of a constraint that will determine everything that happens next. If you're writing notes and miss that sentence, you lose the context that makes all the downstream decisions make sense.
+
+Standard meeting notes don't capture the reasoning chain. They capture conclusions. Granola's summaries pull out both — what was decided and, when it comes up in discussion, why.
+
+## Where Granola fits in a data science workflow
+
+**Experiment design reviews.** When you're planning an experiment, the decisions you make about holdout sets, evaluation metrics, and success criteria need to be documented. These discussions can go in several directions, and having a searchable record of the final design and the alternatives considered is genuinely useful when you're writing up results six weeks later.
+
+**Stakeholder requirements meetings.** Translating business requirements into modeling objectives is hard enough without also trying to take accurate notes. Granola handles the documentation while you focus on asking good questions and probing the actual constraints. The summary afterward tells you what success criteria the stakeholder committed to — not what you thought you heard.
+
+**Model review sessions.** Code reviews have pull requests. Model reviews often have nothing. Granola gives model reviews a structured record: what metrics were presented, what concerns were raised, what follow-up was requested, and who owns it.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+**Cross-functional syncs with engineering.** When data scientists and engineers discuss deployment architecture, feature pipeline changes, or serving infrastructure, the technical specifics matter. Granola captures the full conversation so you can refer back to what was actually agreed about latency requirements or batch versus real-time serving.
+
+**Vendor and tool evaluations.** If you're evaluating ML platforms, data providers, or annotation services, the discussions get detailed fast. Granola's notes give you something to share with your team that goes beyond "here's what I remember from the demo."
+
+## Technical vocabulary handling
+
+One of the reasons data scientists tend to distrust transcription tools is the vocabulary problem. Granola handles technical language well — it's trained to recognize ML terminology, statistical concepts, and the kind of compound phrases that appear in data science discussions.
+
+It won't be perfect on proprietary internal terminology (your company's internal model names, codenames for products, team-specific jargon). But for standard ML vocabulary, it performs significantly better than generic transcription. And you can always add notes inline to the Granola summary before sending it to teammates.
+
+## The async use case
+
+Data science teams are often distributed. Granola's summaries solve the async problem: teammates who couldn't make a meeting get a clear record of what was discussed and decided, not just "notes from the call" that require context they don't have.
+
+The AI summary isn't a replacement for attending the meeting when presence matters. But for recurring syncs, status updates, and informational sessions, Granola gives absentees something genuinely useful.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Setup
+
+Granola works on Mac. It runs in the background during meetings and picks up audio from your system and microphone. There's no bot that joins your Zoom or Google Meet — Granola is local software that processes what's happening on your computer.
+
+The free plan covers a set number of meetings per month. For most data scientists who want to try it on their highest-value meetings, the trial is plenty of runway to evaluate whether it's worth adding to your workflow.
+
+If your team runs a lot of high-stakes technical meetings — model reviews, architecture discussions, stakeholder alignment — the paid plan pays for itself quickly in reduced meeting overhead and better documentation.
+
+---
+
+Data science is a discipline where the difference between a good outcome and a wasted quarter often comes down to whether the right information was captured and shared. Granola is one of the cheapest ways to close that gap.
+
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free</AffiliateLink>
