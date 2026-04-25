@@ -1,0 +1,11 @@
+{
+  "title": "WisprFlow for Chiropractors and Physical Therapists: Hands-Free Clinical Documentation",
+  "author": "Zachary Proser",
+  "date": "2026-04-25",
+  "description": "Chiropractors and physical therapists use WisprFlow to dictate SOAP notes, treatment plans, and patient progress between appointments — cutting documentation time in half.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "imageAlt": "WisprFlow voice AI interface used by a chiropractor to dictate patient SOAP notes hands-free",
+  "tags": ["voice-ai", "chiropractic", "physical-therapy", "clinical-documentation", "soap-notes"],
+  "hiddenFromIndex": true,
+  "product": "wisprflow"
+}
