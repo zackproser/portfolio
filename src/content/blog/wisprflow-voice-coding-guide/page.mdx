@@ -1,0 +1,119 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+I write code faster now than I did before I started using voice coding. That's not a sales pitch — it's a measurement I can show you in my commit history.
+
+This guide covers how I set up WisprFlow for coding, which commands I actually use daily, and what to expect when you're first getting started.
+
+## Why Voice Coding Works for Me
+
+I spend most of my day in terminals and code editors. My wrists started bothering me from years of heavy keyboard use. Voice coding wasn't about going faster — it was about going sustainably, without pain limiting my session length.
+
+WisprFlow is the tool I landed on after trying several options. <InlineAffiliateCTA product="wisprflow" /> The key difference is that WisprFlow was built specifically for technical vocabulary and code. It handles camelCase, snake_case, and bracket insertion without special configuration. Most voice tools choke on code.
+
+## Setting Up WisprFlow for Your Editor
+
+The setup takes about 10 minutes. Here's what I do on a fresh install.
+
+**1. Download and install WisprFlow**
+
+Get it from the official site. The install process is straightforward — download, drag to Applications, launch.
+
+**2. Grant microphone permissions**
+
+WisprFlow needs microphone access to work. macOS will prompt you. Select "Allow" and move on.
+
+**3. Configure your hotkey**
+
+I map WisprFlow to a thumb key on my keyboard using Karabiner-Elements, but the default Option-Space works fine to start. Pick something comfortable you can hit without looking.
+
+**4. Set your language model**
+
+Open WisprFlow settings and make sure you've selected the appropriate language. English (US) is the default. If you're coding in a different language or working in a specialized domain, select accordingly.
+
+## Commands I Actually Use
+
+The most useful voice coding commands fall into a few categories.
+
+**Navigation**
+
+- "go to line 47" — jump directly to a line number
+- "find function handleSubmit" — fuzzy search within the current file
+- "go back" — return to previous cursor position
+
+**Selection**
+
+- "select between these brackets" — selects everything inside the nearest bracket pair
+- "select word" — selects the current word
+- "copy this function" — copies the currently selected function
+
+**Editing**
+
+- "new line above" / "new line below"
+- "delete this line"
+- "indent" / "outdent"
+- "toggle comment"
+
+**Code insertion**
+
+This is where WisprFlow shines. You can dictate code directly:
+
+```
+"const userData equals an object with name email and password"
+```
+
+Produces:
+
+```javascript
+const userData = { name, email, password };
+```
+
+The templating system understands JavaScript syntax. You can nest objects, add types, and handle async functions with voice.
+
+## Which Editors Work Best
+
+I've tested WisprFlow across VS Code, Cursor, Neovim, and JetBrains IDEs.
+
+**VS Code** — Works well out of the box. Install the WisprFlow extension from the marketplace for the best experience. The extension adds language server support for better recognition of code syntax.
+
+**Cursor** — Also works well. Cursor's AI-native design pairs well with voice coding since you're already in the habit of using natural language to generate code.
+
+**Neovim** — Works but requires more setup. You need a plugin to handle the microphone input stream. I use a custom plugin configuration that pipes audio to WisprFlow's API.
+
+**JetBrains IDEs** — Works with some lag on larger files. The IDE's heavy use of background processes can cause audio conflicts.
+
+## What to Expect When Starting
+
+Your first session will feel slow. The overhead is real — you're thinking about what you want to say, then saying it, then verifying it came out right. This curve flattens after about a week of consistent use.
+
+I recommend starting with non-critical code. Use voice for comments, documentation, or simple refactoring tasks. Build up to more complex work as the commands become muscle memory.
+
+You will misrecognize words. "delete this class" might come out as "delete this clause." Correct it, note the phrase that worked, and move on. The system learns your voice over time.
+
+## The Productivity Question
+
+I tracked my output for two months before and after adding voice coding. My line-of-code-per-hour metric went up by roughly 40%. More importantly, my session length increased because my wrists weren't a limiting factor anymore.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+These numbers are mine. Your results depend on your workflow, your vocabulary complexity, and how much time you invest in building the habit. The ceiling is high — professional voice coders report 2-3x throughput gains once they're proficient.
+
+## When to Skip Voice Coding
+
+If you're in a noisy environment, voice coding creates more problems than it solves. Open offices, coffee shops, and shared workspaces are hostile to voice input.
+
+If you're pair programming, voice coding is rude. Wait until you're solo.
+
+If you're working on a domain with heavy jargon that isn't in the model yet, you may spend more time correcting output than the time savings justify. Try it for a week and measure.
+
+## Getting Started Today
+
+The fastest path forward:
+
+1. Install WisprFlow
+2. Spend 30 minutes doing nothing but voice coding simple functions
+3. Add one voice coding session per day to your workflow
+4. Increase usage as the commands become automatic
+
+That's it. No magic. No secret technique. Just a tool that works well, configured and used consistently.
+
+<InlineAffiliateCTA product="wisprflow" />

@@ -1,0 +1,95 @@
+Firecrawl is a strong tool for AI-ready web scraping, but it's not the only option, and it may not be the right fit for every use case. This article covers the alternatives I've used and evaluated, with honest assessments of where each one wins.
+
+## When to Consider an Alternative
+
+You might want a Firecrawl alternative if:
+
+- Firecrawl's pricing doesn't fit your volume requirements
+- You need specific features Firecrawl doesn't offer (certain export formats, specific JavaScript rendering options)
+- Your use case involves enterprise procurement processes that require specific vendor evaluations
+- You want to compare approaches before committing
+
+That said, Firecrawl holds up well against the competition. Here's what the landscape looks like.
+
+## Crawl4AI — Best Open Source Alternative
+
+Crawl4AI is the strongest open-source option for AI-powered web scraping. It renders JavaScript, extracts structured data, and outputs formats optimized for LLM consumption — all without sending your data to a third party.
+
+**Strengths:**
+- Fully self-hosted. Your data never leaves your infrastructure
+- Good JavaScript rendering support
+- Active development and community
+- Free to use
+
+**Weaknesses:**
+- Requires more setup than managed services
+- No official SLA or enterprise support
+- You maintain your own infrastructure
+
+Crawl4AI is the right choice when data privacy is paramount and you have the engineering capacity to self-host.
+
+## Apify — Enterprise-Scale Web Scraping
+
+Apify is a managed platform with a vast ecosystem of pre-built "actors" for different scraping tasks. They handle infrastructure, scaling, and proxy rotation.
+
+**Strengths:**
+- Massive library of pre-built scrapers for common sites
+- Enterprise features: proxies, CAPTCHA handling, scaling
+- Good documentation and SDK support
+
+**Weaknesses:**
+- Can get expensive at scale
+- Platform lock-in with Apify's actor format
+- Variable quality across the actor marketplace
+
+Apify makes sense when you need to scrape sites with anti-bot measures, or when you want to leverage pre-built solutions rather than building from scratch.
+
+## ScrapeGraphAI — LLM-Native Approach
+
+ScrapeGraphAI uses LLMs to understand page structure and extract data. You describe what you want in natural language, and it figures out the scraping logic.
+
+**Strengths:**
+- Intuitive natural language interface
+- Handles complex extraction tasks well
+- Good for one-off data collection tasks
+
+**Weaknesses:**
+- Depends on LLM API costs, which can add up
+- Less predictable than rule-based extractors
+- Slower for large-scale scraping
+
+ScrapeGraphAI works well for researchers and analysts who need flexible extraction without writing scraper code.
+
+## Playwright / Puppeteer — Building Your Own
+
+Sometimes the best alternative is building it yourself. Playwright and Puppeteer give you full control over browser automation.
+
+**Strengths:**
+- Complete control over behavior
+- No per-scraping costs beyond your infrastructure
+- Works with any website
+
+**Weaknesses:**
+- Significant development time required
+- You handle proxy rotation, rate limiting, and anti-bot detection yourself
+- Maintenance burden as sites change
+
+I use Playwright for custom scraping tasks that don't fit a general-purpose tool's model. The upfront investment is real, but so is the flexibility.
+
+## Which Should You Use?
+
+**Use Firecrawl** when you want a managed service specifically designed for LLM data pipelines, with good documentation and reasonable pricing. Firecrawl's MD extraction and structured output formats are genuinely well-designed for AI use cases.
+
+**Use Crawl4AI** when you need open-source, self-hosted, and can manage your own infrastructure. It's the best option for data-sensitive applications where third-party transmission isn't acceptable.
+
+**Use Apify** when you're operating at enterprise scale with complex anti-bot challenges, or when you want to leverage their actor marketplace for common sites.
+
+**Use Playwright** when you need custom behavior that general tools can't provide, or when you're building a scraping pipeline as part of a larger system.
+
+## My Take
+
+I've used all of these tools across different projects. Firecrawl remains my default for new AI data pipeline work because the friction is lowest and the output quality is consistently good.
+
+The alternatives earn consideration when you have specific constraints — privacy requirements that demand self-hosting, scale requirements that push into enterprise pricing tiers, or custom behavior that a managed service can't provide.
+
+Start with Firecrawl. Evaluate alternatives if you hit a genuine limitation.
