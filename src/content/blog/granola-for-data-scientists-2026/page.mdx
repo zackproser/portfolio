@@ -1,0 +1,109 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-data-scientists-2026'
+
+# Granola for Data Scientists: AI Meeting Notes That Handle Technical Vocabulary
+
+Data science is a deeply collaborative discipline masquerading as solo work. You spend hours alone with your models and notebooks, but the decisions that shape your work — what problem to solve, which experiments to prioritize, how to interpret ambiguous results, when to ship — all happen in meetings.
+
+And meetings are where data science teams hemorrhage information.
+
+A model review covers architecture choices, evaluation methodology, training data quality issues, deployment constraints, and risk considerations. A requirements session with business stakeholders requires precise capture of success criteria and constraints. An experiment postmortem contains hard-won lessons about what went wrong and why.
+
+Most of that information evaporates. Notes are sparse. Recordings sit unwatched. Team members remember different things.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## The Specific Problem with Technical Meetings
+
+General-purpose transcription tools fail data scientists in a specific, predictable way: they massacre technical vocabulary.
+
+"Gradient descent" becomes "radiant descent." "Recall at K" becomes "recalled a Kay." "PyTorch" becomes "pie torch." "F1 score" becomes whatever phonetic approximation the model picks. Framework names, statistical measures, model architectures, and mathematical concepts get garbled into phonetically similar common words.
+
+The result is transcripts that are useless — sometimes actively misleading. You end up spending more time correcting the transcript than you saved by recording.
+
+Granola's transcription model handles technical vocabulary substantially better. Terms stay accurate. Abbreviations survive. The transcript reflects what was actually said, which is the whole point.
+
+## Model Review Documentation
+
+Model reviews are the highest-information meetings data science teams hold. They cover:
+
+- Training data statistics and quality assessment
+- Evaluation methodology and metric selection rationale
+- Performance across different data slices and demographic groups
+- Bias and fairness analysis
+- Deployment readiness and infrastructure requirements
+- Risk conditions and monitoring requirements
+
+The formal review document captures conclusions. Granola captures the reasoning — the "we should probably watch performance on underrepresented segments" comment that predicts a future incident. The "we chose this metric because of a conversation we had three months ago about business priorities" context that makes the evaluation methodology legible to future team members.
+
+That reasoning is often more valuable than the conclusions.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Stakeholder Requirements Sessions
+
+The gap between what business stakeholders say they want and what data scientists build is well-documented and expensive. Stakeholders describe problems in business language; engineers interpret them in technical terms; the translation is lossy.
+
+Granola gives you an accurate transcript of requirements conversations that both sides can review. When a stakeholder says "we need the model to be accurate," you have the full surrounding context — what examples they gave, what mistakes they're most worried about, what trade-offs they indicated they'd accept. That context is what lets you define "accurate" operationally.
+
+The other benefit: stakeholders who know the meeting is being documented tend to be more precise. "Roughly 90% accurate" becomes "we'd accept 87% if it reduces false positives significantly" when people know they're creating a record.
+
+## Experiment Postmortems
+
+Understanding why experiments fail is how teams build institutional knowledge and stop relitigating the same decisions. But postmortem conversations are dense with hypotheses, root causes, and lessons that need to be preserved in detail.
+
+A Granola transcript of a postmortem becomes a reference document you can attach to the experiment record. When someone asks "why didn't we try approach X?" nine months from now, the answer might be in a postmortem transcript. When a new team member joins and wants context on methodology choices, postmortem documentation is where you point them.
+
+This is how data science teams build knowledge that survives personnel changes.
+
+<InlineAffiliateCTA product="granola" campaign={campaign} />
+
+## Meeting Templates for Data Science Workflows
+
+Granola supports custom meeting templates that structure your documentation automatically. Templates worth building for data science teams:
+
+**Model Review:**
+- Model description and version
+- Evaluation results (key metrics by slice)
+- Issues identified and severity
+- Conditions and caveats on approval
+- Explicit approval decision with rationale
+- Follow-up actions and owners
+
+**Requirements Session:**
+- Problem statement verbatim (as stakeholders described it)
+- Success criteria (quantitative where possible)
+- Constraints: technical, business, timeline
+- Explicitly out of scope
+- Open questions needing resolution
+- Next steps and owners
+
+**Experiment Postmortem:**
+- Experiment hypothesis and expected outcome
+- Actual results vs. expectation
+- Root cause analysis
+- What we'd do differently
+- Lessons for future experiments
+- Action items
+
+**Sprint/Iteration Review:**
+- Experiments completed this sprint
+- Results summary with key metrics
+- Learnings worth documenting
+- Next sprint priorities
+- Blockers and dependencies
+
+## Building a Searchable Technical Knowledge Base
+
+One of Granola's most valuable long-term contributions to a data science team is documentation accumulation. After six months of capturing model reviews, requirements sessions, and postmortems, you have a searchable record of your team's technical decision history.
+
+Why did you choose architecture X over Y? It's in a model review from Q3. What did the stakeholders say their actual success criteria were for the fraud detection project? Check the requirements transcript. What went wrong with the feature engineering approach on the churn model? The postmortem has it.
+
+This is the kind of institutional knowledge that usually lives in the heads of senior team members and walks out the door when they leave. Granola makes it available to everyone.
+
+<AffiliateLink product="granola" campaign={campaign}>Try Granola free</AffiliateLink> and use it on your next model review. The difference between a transcript that preserves your team's reasoning and notes that lose half the context is immediately apparent — and it compounds over time as your documentation library grows.
