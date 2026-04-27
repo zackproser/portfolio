@@ -14,7 +14,7 @@ Getting there took weeks of dead ends. Here's what I learned, including every wr
 
 ## The Wrong Turn: Steam Deck as the Host
 
-I worked on this in fits and starts — late nights after the kids were asleep, stolen hours on weekends. I should have started by reading Valve's own network documentation, but I didn't. I jumped straight into experimenting and spent weeks on dead ends before circling back to what the docs actually say.
+I worked on this in fits and starts — late nights after the kids were asleep, stolen hours on weekends. I should have started by reading Valve's own network documentation, but I didn't. I jumped straight into experimenting and spent weeks on dead ends before circling back to what the docs actually say. Haste makes waste!
 
 My first instinct was to use the Steam Deck as the streaming host. It's right there on my network, it runs Steam games natively — how could it not work?
 
@@ -62,15 +62,11 @@ Wi-Fi extenders were a complete red herring. I bought two of them before I figur
 
 ## The Controller: Vision Pro is the Client
 
-The Xbox controller pairs directly to Vision Pro, not to the gaming rig.
-
-This was the realization that completed the architecture. The controller talks to Vision Pro — the thin client — and Vision Pro sends input over the network to the host. The host runs the game and streams video back to Vision Pro. Vision Pro is the client. The controller connects to the client, not the host.
+This was the realization that completed the architecture. You must connect the Xbox controller directly to Vision Pro over native Bluetooth — there is no alternative configuration that works correctly. The Xbox controller does not connect to the gaming rig, the Steam Deck, or any intermediary device. It connects to Vision Pro, because Vision Pro is the client: it collects your input and sends it over the network to the host. The host runs the game and streams video back. That direct Bluetooth link between controller and Vision Pro is what makes the whole pipeline clean.
 
 Input path: controller → Vision Pro → network → gaming rig.
 
 <Image src="https://zackproser.b-cdn.net/images/input-path-controller-vision-pro-gaming-rig.webp" alt="Pixel art flow diagram showing a green Xbox controller connected via Bluetooth to Apple Vision Pro, which is connected via Wi-Fi to the gaming PC, with arrows showing data flowing both directions" width={1200} height={675} />
-
-If you pair the controller to the gaming rig instead, you're creating an extra hop and competing Bluetooth domains that fragment timing. If you pair it to the Steam Deck, same problem. One path. Clean.
 
 To pair: put your Xbox controller in pairing mode, open Settings on Vision Pro → Bluetooth, and pair it. Steam Link on Vision Pro will automatically detect it as your input device.
 
@@ -94,9 +90,9 @@ This is the decompression version of something I wrote about in [Training Claude
 
 Zero lag. Zero dropped frames. A modern AAA title running in 4K on a massive virtual screen, with Apple TV floating above it, in an environment of your choosing.
 
-The native Steam Link beta for Vision Pro [supports up to 4K streaming](https://mobilesyrup.com/2026/04/14/apple-vision-pro-users-gain-access-to-select-steam-link/) with improved network performance. Panoramic mode lets you adjust the display curve so the virtual screen wraps around your field of view naturally.
+<Image src="https://zackproser.b-cdn.net/images/vision-pro-nirvana-setup.webp" alt="A pixel art scene showing a person lying in bed wearing Apple Vision Pro holding an Xbox controller, with Space Marine 2 gameplay visible on a massive virtual screen overhead, while downstairs a gaming PC with blue LED lighting streams via Steam Link over Wi-Fi" width={1200} height={675} />
 
-This is what I wanted: a screen the size of a movie theater, with the multitasking of a spatial computer, in an environment you can actually feel.
+Complete Nirvana: lying in bed upstairs, Vision Pro on my face, Xbox controller in my hands, playing *Space Marine 2* on a massive virtual screen while the host PC sits downstairs doing the actual work. The Vision Pro sends my inputs over Wi-Fi to the host, the host encodes the game and streams it back, and the whole pipeline hums with no perceptible lag. The network is doing exactly what it needs to do — backhauling input upstream and hauling video downstream — and that's all there is to it.
 
 ## The Complete Setup
 
@@ -114,7 +110,7 @@ This is a separate download from Valve. Install it, launch it, and keep it runni
 
 **4. A wireless Xbox controller paired to Vision Pro via Bluetooth**
 
-Pair the controller directly to Vision Pro. Vision Pro is the client — it takes the input and sends it over the network to the host.
+Pair the controller directly to Vision Pro over native Bluetooth. Vision Pro is the client — it takes the input and sends it over the network to the host. There is no substitute for this direct link.
 
 **5. Apple Vision Pro with the native visionOS Steam Link beta**
 
@@ -132,7 +128,7 @@ Connect to your host from Steam Link on Vision Pro, launch a game, and play. Opt
 | iPad Steam Link app in compatibility mode | Can't pass elevated network priority flags on visionOS; causes Wi-Fi cycling and stuttering |
 | Wi-Fi for host machine | Contended wireless link creates latency that compounds through the pipeline |
 | Wi-Fi extenders | Red herring — problem was host machine connectivity, not Vision Pro signal strength |
-| Controller paired to host | Input routing through the wrong device adds an extra hop and fragments timing |
+| Controller paired to something other than Vision Pro | Not a configuration option — the controller must pair directly to Vision Pro over native Bluetooth |
 
 ## What Actually Matters
 
@@ -141,3 +137,5 @@ The lag-free experience requires exactly three things: a real gaming PC as the h
 The native visionOS Steam Link beta matters too — without it, you're running the iPad app in compatibility mode, and it simply can't maintain the network handshake that stable streaming requires. Use the native beta.
 
 Get those four things right, and you can spend two hours in the snowy peaks with a game running underneath and a show floating above, and come back feeling like you actually rested.
+
+In the end, every piece was necessary — but if I'd sat down and designed it from first principles at the start, the path would have been a lot smoother.
