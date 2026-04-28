@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-bankruptcy-attorneys'
 
 Bankruptcy law demands precision. Every creditor meeting, every asset valuation, every payment plan discussion becomes part of the legal record. Missing details can derail cases, delay discharges, or expose clients to additional liability.
 
@@ -16,7 +22,7 @@ Bankruptcy attorneys juggle complex cases with high stakes:
 
 Traditional note-taking creates gaps. Court reporters aren't present for every client meeting. Manual transcription is slow and error-prone.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## How Granola Transforms Bankruptcy Practice
 
@@ -35,7 +41,7 @@ Record client consultations with automatic organization:
 - **Decision rationale** - why clients chose Chapter 7 vs Chapter 13
 - **Timeline construction** - events leading to bankruptcy filing
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Bankruptcy-Specific Use Cases
 
@@ -60,7 +66,7 @@ For Chapter 13 cases:
 - Capture court-approved plan terms with exact payment amounts
 - Track plan modification requests and approval status
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Security and Privilege Protection
 
@@ -86,7 +92,7 @@ Time savings translate directly to profitability:
 - **Better case preparation** - searchable meeting archive for trial prep
 - **Client service enhancement** - detailed follow-up summaries and action items
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Getting Started with Granola
 

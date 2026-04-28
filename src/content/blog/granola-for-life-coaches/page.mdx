@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-life-coaches'
 
 Coaching conversations create transformation. Every breakthrough moment, goal clarification, and barrier identification becomes the foundation for sustainable client growth. Missing these insights means missed opportunities for deeper impact.
 
@@ -18,7 +24,7 @@ Effective coaching practice involves complex client management:
 
 Traditional note-taking creates barriers to authentic coaching presence while missing crucial conversational nuances.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## How Granola Transforms Coaching Practice
 
@@ -37,7 +43,7 @@ Transform coaching conversations into organized development records:
 - **Success pattern analysis** - strategies that consistently create client breakthroughs
 - **Energy and motivation trends** - tracking client engagement levels across sessions
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Coaching-Specific Use Cases
 
@@ -62,7 +68,7 @@ During check-in sessions:
 - Identify successful strategies worth repeating or scaling
 - Document client growth patterns and increasing self-awareness
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Privacy and Professional Boundaries
 
@@ -103,7 +109,7 @@ Support for popular coaching frameworks:
 - **Values-based coaching** - tracking values clarification and alignment discussions
 - **Cognitive-behavioral integration** - recognizing thought pattern exploration and cognitive restructuring
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Client Engagement Benefits
 

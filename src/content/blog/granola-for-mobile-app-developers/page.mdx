@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-mobile-app-developers'
 
 Mobile development is highly collaborative. Sprint planning sessions, technical architecture discussions, and stakeholder meetings determine whether apps ship on schedule with the right features. Missing key decisions or unclear requirements leads to rework, delays, and frustrated teams.
 
@@ -16,7 +22,7 @@ Mobile app development involves complex collaboration:
 
 Traditional note-taking during development meetings creates information silos while missing technical nuances that impact implementation success.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## How Granola Transforms Mobile Development Teams
 
@@ -35,7 +41,7 @@ Transform development conversations into organized team knowledge:
 - **Risk identification** - potential blockers, dependencies, and mitigation strategies
 - **Team consensus building** - capturing agreement on implementation approaches and priorities
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Mobile Development-Specific Use Cases
 
@@ -60,7 +66,7 @@ During business requirement sessions:
 - Document timeline expectation setting and delivery milestone agreements
 - Track market requirement changes and competitive feature analysis
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Team Productivity Enhancement
 
@@ -86,7 +92,7 @@ Improve development process documentation:
 - Capture security review discussions and vulnerability mitigation plans
 - Track technical debt identification and prioritization discussions
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Platform-Specific Benefits
 
@@ -116,7 +122,7 @@ Granola connects with existing development workflows:
 - Create technical documentation from architecture conversation transcripts
 - Produce stakeholder status reports from recorded progress meetings
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Agile Process Enhancement
 

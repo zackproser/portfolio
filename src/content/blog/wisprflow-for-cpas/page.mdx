@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-for-cpas'
 
 Accounting practice demands precision under pressure. Tax season brings overwhelming client volume, complex return preparation, and detailed consultation requirements. Every number, deduction, and strategic recommendation must be documented accurately while managing dozens of concurrent client relationships.
 
@@ -16,7 +22,7 @@ Accounting professionals face intense seasonal workloads:
 
 Traditional typing becomes a severe bottleneck when CPAs need to process hundreds of returns while maintaining quality and client service standards.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Voice Documentation for Accounting Practice
 
@@ -42,7 +48,7 @@ Dictate comprehensive financial advice and planning strategies:
 "Tax planning strategy for client ABC Partnership 2026. Recommend equipment purchase under Section 179 deduction before year-end. Total equipment cost $85,000 qualifies for full deduction reducing ordinary income. Combined with bonus depreciation on building improvements $42,000, total tax savings approximately $35,000 assuming 35% effective tax rate..."
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Accounting-Specific Voice Workflows
 
@@ -70,7 +76,7 @@ Voice-develop strategic business recommendations:
 - **Cash flow management** - dictate working capital optimization and financing recommendations
 - **Tax strategy development** - voice-organize multi-year tax planning and compliance coordination
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Technology Integration
 
@@ -112,7 +118,7 @@ WisprFlow supports CPA professional requirements:
 - **Quality control compliance** - documented review procedures and professional standard adherence
 - **Peer review preparation** - voice-organized practice documentation and quality evidence
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Seasonal Workflow Optimization
 

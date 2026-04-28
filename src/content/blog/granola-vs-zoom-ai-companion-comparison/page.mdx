@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-vs-zoom-ai-companion-comparison'
 
 Meeting intelligence has become essential for productive teams. Both Granola and Zoom AI Companion promise to transform how we capture, analyze, and act on meeting conversations. But they take fundamentally different approaches to solving the meeting documentation challenge.
 
@@ -10,7 +16,7 @@ This comprehensive comparison examines both platforms across transcription accur
 
 **Zoom AI Companion** integrates directly into Zoom's video conferencing platform, offering native transcription and summary features within the familiar Zoom ecosystem.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Core Feature Comparison
 
@@ -50,7 +56,7 @@ This comprehensive comparison examines both platforms across transcription accur
 
 **Winner: Granola** - Significantly more sophisticated intelligence features and cross-meeting analysis capabilities.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Platform Integration and Workflow
 
@@ -90,7 +96,7 @@ This comprehensive comparison examines both platforms across transcription accur
 
 **Winner: Granola** - Superior integration ecosystem enables seamless workflow automation.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Privacy and Security
 
@@ -160,7 +166,7 @@ This comprehensive comparison examines both platforms across transcription accur
 - Higher upfront cost but covers all meeting scenarios
 - Eliminates need for multiple meeting intelligence solutions
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Use Case Recommendations
 
@@ -190,7 +196,7 @@ This comprehensive comparison examines both platforms across transcription accur
 
 **Zoom AI Companion works best for Zoom-exclusive organizations seeking basic transcription functionality** without additional software complexity or cost.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 The choice ultimately depends on your meeting platform diversity, intelligence feature requirements, and budget constraints. Granola offers the most comprehensive meeting intelligence solution, while Zoom AI Companion provides adequate functionality for Zoom-centric workflows at a lower total cost.
 

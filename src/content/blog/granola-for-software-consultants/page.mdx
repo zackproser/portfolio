@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-software-consultants'
 
 Software consulting success depends on crystal-clear communication. Every client requirement, scope change, and technical decision shapes project outcomes, timeline, and profitability. Missing key details leads to scope creep, budget overruns, and dissatisfied clients.
 
@@ -16,7 +22,7 @@ Consulting engagements involve complex stakeholder management:
 
 Traditional note-taking during client meetings creates information gaps while missing nuanced requirements that determine project success.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## How Granola Transforms Software Consulting
 
@@ -35,7 +41,7 @@ Transform consulting conversations into organized delivery assets:
 - **Risk identification** - potential blockers, integration challenges, and mitigation strategies
 - **Scope boundary definition** - clear documentation of what's included and excluded from engagement
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Consulting-Specific Use Cases
 
@@ -60,7 +66,7 @@ During iterative development sessions:
 - Document technical debt discussions and maintenance strategy planning
 - Track release planning conversations and deployment timeline coordination
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Client Relationship Enhancement
 
@@ -100,7 +106,7 @@ Granola helps manage common consulting challenges:
 - Clear communication records about project phases and deliverable definitions
 - Evidence of risk communication and mitigation strategy discussions
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Integration with Consulting Workflows
 
@@ -138,7 +144,7 @@ Enhance consulting team effectiveness:
 - Track client objection patterns and successful response strategies
 - Create compelling case studies from documented project success stories
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Professional Development Benefits
 

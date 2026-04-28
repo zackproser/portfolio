@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-for-mortgage-brokers'
 
 Mortgage lending demands exhaustive documentation. Every borrower conversation, income verification, and condition response must be documented with precision that satisfies underwriter requirements and regulatory compliance. Missing documentation delays closings, kills deals, and creates liability exposure.
 
@@ -16,7 +22,7 @@ Mortgage transactions involve overwhelming paperwork requirements:
 
 Traditional typing becomes a severe bottleneck when loan officers need to document dozens of files under tight closing deadlines.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Voice Documentation for Mortgage Practice
 
@@ -42,7 +48,7 @@ Dictate comprehensive condition responses and clarifications:
 "Underwriter condition response for loan number 2024-556789. Condition 47: Request for explanation of 60-day gap in employment between previous employer and current position. Response: Borrower took voluntary sabbatical to care for elderly parent following medical emergency. Supporting documentation includes: medical records dated May 2020, family leave authorization letter, and bank statements showing sufficient savings to support gap period..."
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Mortgage-Specific Voice Workflows
 
@@ -70,7 +76,7 @@ Maintain regulatory compliance through voice-driven record keeping:
 - **Quality control preparation** - voice-organize file documentation for post-closing review
 - **Audit trail maintenance** - comprehensive conversation and decision documentation
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Technology Integration
 

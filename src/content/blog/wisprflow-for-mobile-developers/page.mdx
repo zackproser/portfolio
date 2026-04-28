@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-for-mobile-developers'
 
 Mobile development is inherently tactile. You're constantly switching between simulator, device, and code editor. Your hands are busy tapping, swiping, and debugging on physical devices. Traditional typing becomes a bottleneck when you need to code while testing gestures, orientations, and real-world mobile scenarios.
 
@@ -16,7 +22,7 @@ Mobile development involves unique challenges:
 
 You need your hands for the device. Voice coding eliminates the keyboard bottleneck.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Voice Coding Mobile-Specific Workflows
 
@@ -69,7 +75,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
 }
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### Android Kotlin Development
 Navigate Android-specific patterns by voice:
@@ -119,7 +125,7 @@ Voice code responsive layouts while testing on different screen sizes:
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ### API Integration Patterns
 Code networking while testing on device networks:
@@ -196,7 +202,7 @@ describe('User Authentication Flow', () => {
 });
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Platform-Specific Optimizations
 

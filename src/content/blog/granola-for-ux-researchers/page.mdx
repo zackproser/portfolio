@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'granola-for-ux-researchers'
 
 User research drives product decisions. Every user interview, usability session, and stakeholder meeting contains insights that determine whether features succeed or fail. Missing these insights means building products that don't meet real user needs.
 
@@ -18,7 +24,7 @@ User research involves complex insight management:
 
 Traditional note-taking creates barriers to authentic research conversations while missing crucial behavioral and emotional nuances.
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## How Granola Transforms UX Research
 
@@ -37,7 +43,7 @@ Transform research conversations into structured user insights:
 - **Feature request tracking** - organizing user needs and solution ideas from conversations
 - **Behavioral pattern analysis** - identifying recurring user actions and decision-making processes
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## UX Research-Specific Use Cases
 
@@ -62,7 +68,7 @@ During research planning and results presentations:
 - Capture stakeholder feedback on findings and implementation considerations
 - Track resource allocation and timeline discussions for research initiatives
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Privacy and Research Ethics
 
@@ -103,7 +109,7 @@ Support for popular UX research approaches:
 - **Journey mapping workshops** - record collaborative insights and stakeholder perspective differences
 - **Co-design sessions** - capture creative ideation and consensus-building conversations
 
-<InlineAffiliateCTA product="granola" />
+<InlineAffiliateCTA product="granola" campaign={campaign} />
 
 ## Product Team Collaboration
 

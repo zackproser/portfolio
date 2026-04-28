@@ -1,4 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+export const campaign = 'wisprflow-for-immigration-lawyers'
 
 Immigration law demands exhaustive documentation. Client narratives span decades, involve multiple jurisdictions, and require precise chronological accuracy. Every detail matters - dates of entry, relationships, employment history, and persecution claims directly impact case outcomes.
 
@@ -16,7 +22,7 @@ Immigration cases involve overwhelming paperwork requirements:
 
 Traditional typing becomes a severe bottleneck when cases require 50+ page submissions with intricate factual details.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Voice Documentation for Immigration Practice
 
@@ -42,7 +48,7 @@ Dictate comprehensive legal documents while reviewing case files:
 "Section A: Information about you. Family name spelled G-O-N-Z-A-L-E-Z hyphen R-O-D-R-I-G-U-E-Z. Given name Carlos Eduardo. Date of birth February 28, 1985. Country of birth El Salvador. Nationality Salvadoran. Current immigration status pending asylum application filed October 12, 2019..."
 ```
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Immigration-Specific Voice Workflows
 
@@ -70,7 +76,7 @@ Handle complex business immigration requirements:
 - **Corporate structure analysis** - dictate ownership relationships and business operations
 - **Specialty occupation arguments** - voice-develop degree requirement justifications
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## High-Volume Practice Management
 
@@ -103,7 +109,7 @@ Immigration practice involves multiple languages and cultures:
 - **Document translation coordination** - voice-organize translation projects and certified copies
 - **Cultural sensitivity** - dictate culturally appropriate client communications
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Security and Confidentiality
 
