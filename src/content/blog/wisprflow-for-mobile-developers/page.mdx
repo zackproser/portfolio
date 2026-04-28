@@ -1,0 +1,233 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+Mobile development is inherently tactile. You're constantly switching between simulator, device, and code editor. Your hands are busy tapping, swiping, and debugging on physical devices. Traditional typing becomes a bottleneck when you need to code while testing gestures, orientations, and real-world mobile scenarios.
+
+WisprFlow transforms mobile development by letting you write React Native, Swift, and Kotlin code entirely by voice while your hands stay free for device interaction.
+
+## The Mobile Developer's Context-Switching Problem
+
+Mobile development involves unique challenges:
+
+- **Device testing** - constantly switching between simulator and physical devices
+- **Gesture debugging** - testing touch interactions while coding responses
+- **Orientation changes** - coding layout adjustments while physically rotating devices
+- **Platform differences** - managing iOS and Android codebases simultaneously
+- **API integration** - testing location, camera, and sensor APIs in real environments
+
+You need your hands for the device. Voice coding eliminates the keyboard bottleneck.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Voice Coding Mobile-Specific Workflows
+
+### React Native Development
+Speak your way through cross-platform development:
+
+```javascript
+// Voice: "Create async function handle location permission"
+const handleLocationPermission = async () => {
+  // Voice: "Try catch block for location permission request"
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+    // Voice: "If granted equals permission granted return true"
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+  } catch (error) {
+    // Voice: "Console error permission denied error"
+    console.error('Permission denied:', error);
+  }
+  return false;
+};
+```
+
+Test permissions on device while dictating error handling.
+
+### iOS Swift Development
+Voice coding while interacting with iOS simulator:
+
+```swift
+// Voice: "Class location manager implements location manager delegate"
+class LocationManager: NSObject, CLLocationManagerDelegate {
+  // Voice: "Private var manager equals CL location manager"
+  private var manager = CLLocationManager()
+  
+  // Voice: "Override init super init then setup manager"
+  override init() {
+    super.init()
+    setupManager()
+  }
+  
+  // Voice: "Function setup manager manager delegate equals self"
+  func setupManager() {
+    manager.delegate = self
+    // Voice: "Manager desired accuracy equals kCL location accuracy best"
+    manager.desiredAccuracy = kCLLocationAccuracyBest
+  }
+}
+```
+
+<InlineAffiliateCTA product="wisprflow" />
+
+### Android Kotlin Development
+Navigate Android-specific patterns by voice:
+
+```kotlin
+// Voice: "Class main activity extends app compat activity"
+class MainActivity : AppCompatActivity() {
+  
+  // Voice: "Private lateinit var binding activity main binding"
+  private lateinit var binding: ActivityMainBinding
+  
+  // Voice: "Override on create bundle super on create"
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    
+    // Voice: "Binding equals activity main binding inflate layout inflater"
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    // Voice: "Set content view binding root"
+    setContentView(binding.root)
+    
+    // Voice: "Setup click listeners"
+    setupClickListeners()
+  }
+}
+```
+
+## Mobile-Specific Voice Patterns
+
+### UI Layout and Constraints
+Voice code responsive layouts while testing on different screen sizes:
+
+```xml
+<!-- Voice: "Constraint layout width match parent height wrap content" -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <!-- Voice: "Text view ID title text width zero height wrap constraint start to parent start margin 16" -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp" />
+        
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+<InlineAffiliateCTA product="wisprflow" />
+
+### API Integration Patterns
+Code networking while testing on device networks:
+
+```dart
+// Voice: "Class API service"
+class ApiService {
+  // Voice: "Static const base URL equals HTTPS API example com"
+  static const baseUrl = 'https://api.example.com';
+  
+  // Voice: "Future map string dynamic get user data int user ID"
+  Future<Map<String, dynamic>> getUserData(int userId) async {
+    // Voice: "Final response equals await HTTP get URI parse base URL slash users slash user ID"
+    final response = await http.get(Uri.parse('$baseUrl/users/$userId'));
+    
+    // Voice: "If response status code equals 200"
+    if (response.statusCode == 200) {
+      // Voice: "Return JSON decode response body as map string dynamic"
+      return json.decode(response.body) as Map<String, dynamic>;
+    }
+    // Voice: "Throw exception failed to load user data"
+    throw Exception('Failed to load user data');
+  }
+}
+```
+
+### State Management
+Voice code complex state while interacting with UI:
+
+```dart
+// Voice: "Class counter bloc extends bloc counter event int"
+class CounterBloc extends Bloc<CounterEvent, int> {
+  // Voice: "Counter bloc colon super zero"
+  CounterBloc() : super(0) {
+    // Voice: "On increment event yield state plus 1"
+    on<IncrementEvent>((event, emit) {
+      emit(state + 1);
+    });
+    
+    // Voice: "On decrement event yield state minus 1"
+    on<DecrementEvent>((event, emit) {
+      emit(state - 1);
+    });
+  }
+}
+```
+
+## Testing and Debugging Workflows
+
+### Voice-Driven Device Testing
+Code test scenarios while physically using the app:
+
+```javascript
+// Voice: "Describe test user authentication flow"
+describe('User Authentication Flow', () => {
+  // Voice: "Test should login successfully with valid credentials"
+  test('should login successfully with valid credentials', async () => {
+    // Voice: "Const screen equals render login screen"
+    const screen = render(<LoginScreen />);
+    
+    // Voice: "Fire event change text get by placeholder email john at example dot com"
+    fireEvent.changeText(screen.getByPlaceholderText('Email'), 'john@example.com');
+    // Voice: "Fire event change text get by placeholder password password 123"
+    fireEvent.changeText(screen.getByPlaceholderText('Password'), 'password123');
+    
+    // Voice: "Fire event press get by text login"
+    fireEvent.press(screen.getByText('Login'));
+    
+    // Voice: "Await wait for expect get by text welcome"
+    await waitFor(() => {
+      expect(screen.getByText('Welcome')).toBeTruthy();
+    });
+  });
+});
+```
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Platform-Specific Optimizations
+
+WisprFlow understands mobile development terminology:
+- **Framework recognition** - React Native, Flutter, Xamarin commands
+- **Platform APIs** - location, camera, push notifications, biometrics
+- **UI components** - navigation, tab bars, modal presentations
+- **Build tools** - Xcode, Android Studio, Metro bundler integration
+
+## Hands-Free Development Benefits
+
+### Simultaneous Testing and Coding
+- Code gesture handlers while testing swipe interactions
+- Implement orientation changes while physically rotating device
+- Debug camera features while holding and positioning device
+- Test location features while walking with device
+
+### Ergonomic Advantages
+- Reduce repetitive strain from constant keyboard-device switching
+- Maintain better posture during long debugging sessions
+- Code while standing or moving around
+- Protect wrists from excessive typing
+
+## Getting Started with Mobile Voice Coding
+
+1. **Install WisprFlow** and configure for your development environment
+2. **Practice common patterns** - API calls, UI layouts, navigation
+3. **Set up device workflows** - voice coding while device testing
+4. **Customize commands** - create shortcuts for your mobile frameworks
+5. **Integrate with tools** - connect to simulators and build systems
+
+Mobile development is inherently interactive. WisprFlow lets you code as fluidly as you interact with the devices you're building for.
+
+Start your free trial and discover how voice coding transforms mobile development workflows.

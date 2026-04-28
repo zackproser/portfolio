@@ -1,0 +1,9 @@
+{
+  "title": "WisprFlow for Mobile Developers - Voice Coding on iOS and Android",
+  "author": "Zachary Proser",
+  "date": "2026-4-28", 
+  "description": "How mobile developers use WisprFlow to write React Native, Swift, and Kotlin code by voice - debugging on device, API integration, and mobile-specific development workflows.",
+  "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
+  "tags": ["ai", "voice-coding", "mobile", "development"],
+  "hiddenFromIndex": true
+}

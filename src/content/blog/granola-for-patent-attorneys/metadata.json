@@ -1,11 +1,9 @@
 {
-  "title": "Granola for Patent Attorneys: Capture Every Technical Detail from Inventor Meetings",
+  "title": "Granola for Patent Attorneys - AI Meeting Intelligence for IP Law",
   "author": "Zachary Proser",
-  "date": "2026-04-16",
-  "description": "Patent attorneys need precise technical records from inventor disclosure meetings. Granola's AI transcription captures the technical nuance that matters for prosecution.",
-  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "slug": "granola-for-patent-attorneys",
-  "keywords": ["granola for patent attorneys", "ai meeting notes for lawyers", "inventor disclosure meeting", "patent prosecution tools", "granola ai legal"],
-  "tags": ["Granola", "Legal", "Productivity"],
+  "date": "2026-4-28",
+  "description": "How patent attorneys use Granola's AI to record inventor interviews, track technical details, and streamline patent prosecution with intelligent meeting transcription.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp", 
+  "tags": ["ai", "legal", "patents", "intellectual-property"],
   "hiddenFromIndex": true
 }
