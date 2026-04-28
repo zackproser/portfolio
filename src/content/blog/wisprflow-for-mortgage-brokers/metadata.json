@@ -1,11 +1,9 @@
 {
-  "title": "WisprFlow for Mortgage Brokers: Voice Coding Loan Processing and Client Portals",
+  "title": "WisprFlow for Mortgage Brokers - Voice Documentation for Loan Processing",
   "author": "Zachary Proser",
-  "date": "2026-04-16",
-  "description": "Mortgage brokers managing complex pipelines need custom tooling that the off-the-shelf LOS doesn't provide. Voice coding with WisprFlow makes building those tools fast enough to actually happen.",
+  "date": "2026-4-28",
+  "description": "How mortgage brokers use WisprFlow to dictate loan files, document borrower communications, and streamline mortgage processing with voice-driven efficiency.",
   "image": "https://zackproser.b-cdn.net/images/wisprflow.webp",
-  "slug": "wisprflow-for-mortgage-brokers",
-  "keywords": ["wisprflow for mortgage brokers", "voice coding mortgage", "loan processing software", "mortgage broker tools ai", "wisprflow review"],
-  "tags": ["WisprFlow", "Finance", "Productivity"],
+  "tags": ["ai", "voice-coding", "mortgage", "finance"],
   "hiddenFromIndex": true
 }

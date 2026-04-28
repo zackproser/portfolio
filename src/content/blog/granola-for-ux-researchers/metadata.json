@@ -1,9 +1,9 @@
 {
-  "title": "Granola for UX Researchers: AI-Powered User Interview Notes",
-  "author": "Zachary Proser",
-  "date": "2026-03-12",
-  "description": "How UX researchers and design teams use Granola to capture user interviews, synthesize insights faster, and build better research repositories.",
+  "title": "Granola for UX Researchers - AI Meeting Intelligence for User Research",
+  "author": "Zachary Proser", 
+  "date": "2026-4-28",
+  "description": "How UX researchers use Granola's AI to capture user interviews, analyze behavior patterns, and transform qualitative research with intelligent conversation analysis.",
   "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
-  "tags": ["ai", "ux-research", "meetings", "productivity", "granola"],
+  "tags": ["ai", "ux", "research", "design"],
   "hiddenFromIndex": true
 }
