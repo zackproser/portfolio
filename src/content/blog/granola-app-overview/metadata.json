@@ -1,0 +1,9 @@
+{
+  "title": "Granola App: The Meeting Notes Tool That Actually Gets Used",
+  "author": "Zachary Proser",
+  "date": "2026-4-29",
+  "description": "An overview of the Granola app for meeting transcription and AI note-taking — what it does, how it works, and who it's for.",
+  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "tags": ["ai", "meetings", "granola", "note-taking", "productivity"],
+  "hiddenFromIndex": true
+}
