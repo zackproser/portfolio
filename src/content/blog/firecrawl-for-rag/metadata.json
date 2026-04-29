@@ -1,9 +1,0 @@
-{
-  "title": "Using Firecrawl for RAG Pipelines: A Practical Guide",
-  "author": "Zachary Proser",
-  "date": "2026-4-29",
-  "description": "How to use Firecrawl to scrape and process web content for retrieval-augmented generation pipelines.",
-  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
-  "tags": ["ai", "firecrawl", "rag", "web-scraping", "llm"],
-  "hiddenFromIndex": true
-}
