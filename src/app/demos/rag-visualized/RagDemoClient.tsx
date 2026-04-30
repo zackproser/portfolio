@@ -11,7 +11,6 @@ import {
   ChevronDown,
   AlertTriangle,
   Zap,
-  Play,
   MousePointerClick,
   Brain
 } from 'lucide-react'
