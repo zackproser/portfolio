@@ -112,13 +112,13 @@ export default function RagStepInspector({
   // Map each inspector view to the tutorial section that covers it,
   // so engineers can jump from "this is what the demo just did" to
   // "this is how to implement it in production code."
-  const TUTORIAL_BREADCRUMB: Record<string, string> = {
-    question: 'Phase 2 · Parsing the user query in the chat API',
-    embedding: 'Phase 1 · Creating embeddings with OpenAI',
-    search: 'Phase 2 · Hybrid retrieval — dense + BM25',
-    retrieval: 'Phase 2 · Reranking retrieved chunks with Cohere',
-    prompt: 'Phase 2 · Composing the grounded prompt',
-    answer: 'Phase 4 · Measuring faithfulness with the eval harness',
+  const TUTORIAL_BREADCRUMB: Record<string, { label: string; anchor: string }> = {
+    question: { label: 'Phase 2 · Parsing the user query in the chat API', anchor: '#step-2-create-the-chat-api' },
+    embedding: { label: 'Phase 1 · Creating embeddings with OpenAI', anchor: '#step-7-creating-a-vectorstore-with-langchain' },
+    search: { label: 'Phase 2 · Hybrid retrieval — dense + BM25', anchor: '#step-15-hybrid-retrieval-dense--bm25' },
+    retrieval: { label: 'Phase 2 · Reranking retrieved chunks with Cohere', anchor: '#step-16-reranking-with-cohere' },
+    prompt: { label: 'Phase 2 · Composing the grounded prompt', anchor: '#step-2-create-the-chat-api' },
+    answer: { label: 'Phase 4 · Measuring faithfulness with the eval harness', anchor: '#phase-4-evaluation' },
   }
   const tutorialBreadcrumb = TUTORIAL_BREADCRUMB[activeView]
 
@@ -354,14 +354,14 @@ export default function RagStepInspector({
                          </h2>
                          {tutorialBreadcrumb && (
                             <Link
-                               href="/blog/rag-pipeline-tutorial"
+                               href={`/blog/rag-pipeline-tutorial${tutorialBreadcrumb.anchor}`}
                                className="mt-2 inline-flex items-center gap-2 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-burnt-500 hover:text-burnt-400 dark:text-amber-300 dark:hover:text-amber-400 transition-colors"
                             >
                                <span className="text-zinc-500 dark:text-zinc-400 font-normal normal-case tracking-normal text-[11px]">
                                   In the $149 tutorial:
                                </span>
                                <span className="border-b border-burnt-400/50 dark:border-amber-300/50 pb-px">
-                                  {tutorialBreadcrumb}
+                                  {tutorialBreadcrumb.label}
                                </span>
                                <ExternalLink className="h-3 w-3" />
                             </Link>
