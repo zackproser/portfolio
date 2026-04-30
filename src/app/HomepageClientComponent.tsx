@@ -2,13 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
 import { track } from '@vercel/analytics'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
-import ConsultationForm from '@/components/ConsultationForm'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
-import RenderNumYearsExperience, { getYearsExperienceAsWord } from '@/components/NumYearsExperience'
+import RenderNumYearsExperience from '@/components/NumYearsExperience'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -29,64 +27,98 @@ interface Props {
 
 // ----- Hero ---------------------------------------------------------
 
-function EditorialHero({ onConsult }: { onConsult: () => void }) {
-  const yearsWord = getYearsExperienceAsWord()
+function EditorialHero() {
   return (
-    <section className="pt-16 pb-12 md:pt-24 md:pb-16">
-      <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-14 lg:grid-cols-[1.35fr_1fr] lg:items-start">
-        <div>
-          <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
-            Applied AI · WorkOS
+    <section className="pt-8 pb-8 md:pt-10 md:pb-10">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6 grid gap-8 lg:gap-12 lg:grid-cols-[1.45fr_1fr] lg:items-start">
+        <div className="editorial-hero-c-main">
+          <div className="editorial-eyebrow editorial-eyebrow--ruled text-parchment-600 dark:text-slate-400">
+            <span className="editorial-eyebrow-rule" aria-hidden />
+            <span>
+              <span className="editorial-eyebrow-section text-burnt-400 dark:text-amber-400">§ 00</span>
+              {' · From inside the building'}
+            </span>
           </div>
           <h1 className="editorial-hero-h1 text-charcoal-50 dark:text-parchment-100">
-            AI engineering for teams that actually{' '}
-            <span className="text-burnt-400 dark:text-amber-400">ship</span>.
+            Most AI advice{' '}
+            <span className="editorial-strike">is bullshit.</span>
+            <br />
+            <em className="editorial-h1-em text-burnt-400 dark:text-amber-400">
+              Here&rsquo;s what actually ships.
+            </em>
           </h1>
-          <p className="editorial-lede text-parchment-600 dark:text-slate-300">
-            I build retrieval pipelines, agent harnesses, and ship-ready
-            developer tools at WorkOS. {yearsWord} years in production. Writing,
-            workshops, and consulting for teams that got handed an LLM and a
-            deadline.
+          <p className="editorial-greeting text-parchment-600 dark:text-slate-300">
+            Hi, I&rsquo;m <span className="text-burnt-400 dark:text-amber-400">Zack</span>{' '}
+            <span className="editorial-greeting-wave" role="img" aria-label="waving hand">👋</span>
+          </p>
+          <p className="editorial-lede editorial-lede--tight text-parchment-600 dark:text-slate-300">
+            I&rsquo;m an AI engineer on the Applied AI team at WorkOS &mdash; we power
+            authentication for OpenAI, Cursor, and a lot of the labs you&rsquo;ve
+            heard of. Fifteen years of web engineering before that. I help with
+            the AI enablement function for our whole org: internal tooling,
+            workshops, harnesses for teammates, helping everyone level up. I
+            write down what I learn.
           </p>
 
-          {/* Newsletter — the primary CTA. Inline under the lede. */}
-          <EditorialNewsletter location="hero" />
+          {/* Newsletter — the dominant CTA, rendered as a bordered card. */}
+          <EditorialNewsletter
+            location="hero"
+            variant="card"
+            label="The Modern Coding letter"
+            meta="5,000+ engineers"
+            title="Dispatches from the edge of applied AI."
+            promise={
+              <>
+                <b>What lands in your inbox:</b> what I&rsquo;m building, what I&rsquo;m
+                learning, the tools I&rsquo;d actually pay for, and the occasional
+                workshop or tutorial. Names named, vendors graded, evals included.
+              </>
+            }
+            fine="Unsubscribe in one click · No spam, ever"
+            ctaLabel="Subscribe →"
+          />
 
           <div className="editorial-secondary text-parchment-600 dark:text-slate-400">
-            <button
-              type="button"
-              onClick={() => {
-                onConsult()
-                track('main_cta_click', { destination: 'consultation' })
-              }}
-              className="bg-transparent border-0 p-0 cursor-pointer font-inherit text-inherit"
-              style={{ borderBottom: '1px solid currentColor', paddingBottom: 1 }}
-            >
-              Book a consult →
-            </button>
+            <Link href="/blog">Read the archive →</Link>
             <span>·</span>
-            <Link href="/blog">Read the essays →</Link>
-            <span>·</span>
-            <Link href="/services">Workshops →</Link>
+            <Link href="/services">Workshops &amp; AI enablement →</Link>
           </div>
 
         </div>
 
-        <div className="editorial-hero-plate">
-          <div className="editorial-portrait">
+        <aside className="editorial-hero-c-side">
+          <div className="editorial-portrait editorial-portrait--c">
             <Image
               src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
               alt="Portrait of Zachary Proser"
               fill
-              sizes="(max-width: 1024px) 80vw, 500px"
+              sizes="(max-width: 1024px) 80vw, 320px"
               className="editorial-portrait-image"
               priority
             />
           </div>
-          <div className="editorial-portrait-caption text-parchment-600 dark:text-slate-400">
-            Plate I · Applied AI · MMXXVI
+          <div className="editorial-portrait-plate text-parchment-600 dark:text-slate-400">
+            <span>Plate I · Duotone</span>
+            <span>Source Serif</span>
           </div>
-        </div>
+
+          <div className="editorial-erratum">
+            <span className="editorial-erratum-stamp">Errata</span>
+            <div className="editorial-erratum-head text-burnt-400 dark:text-amber-400">
+              <span>Things I will not write about</span>
+            </div>
+            <ul className="editorial-erratum-list">
+              <li>&ldquo;Agents are eating SaaS&rdquo;</li>
+              <li>Frameworks I tried for 20 minutes</li>
+              <li>Demos that don&rsquo;t pass an eval</li>
+              <li>&ldquo;5 prompts that changed my life&rdquo;</li>
+              <li className="editorial-erratum-keep">
+                What I&rsquo;m actually building
+                <br />for engineers who ship.
+              </li>
+            </ul>
+          </div>
+        </aside>
       </div>
     </section>
   )
@@ -334,12 +366,10 @@ export default function HomepageClientComponent({
   careerAdvice,
   videos,
 }: Props) {
-  const [isConsultOpen, setIsConsultOpen] = useState(false)
-
   return (
     <div className="editorial-home flex flex-col min-h-screen text-charcoal-50 dark:text-parchment-100 theme-transition">
       <main className="flex-1">
-        <EditorialHero onConsult={() => setIsConsultOpen(true)} />
+        <EditorialHero />
         <StatRow />
         <FeaturedProject />
 
@@ -406,11 +436,6 @@ export default function HomepageClientComponent({
       </main>
 
       <ColophonFooter />
-
-      <ConsultationForm
-        isOpen={isConsultOpen}
-        onClose={() => setIsConsultOpen(false)}
-      />
     </div>
   )
 }
