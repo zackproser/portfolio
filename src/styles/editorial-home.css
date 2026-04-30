@@ -57,14 +57,16 @@
 }
 
 /* ---------- Hero typography -------------------------------- */
+/* Sizing is intentionally compact: the newsletter capture is the dominant
+ * CTA and must remain above the fold on standard 1080p viewports. */
 .editorial-hero-h1 {
   font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
   font-weight: 800;
-  font-size: clamp(40px, 5vw, 58px);
-  line-height: 1.08;
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 1.05;
   letter-spacing: -0.025em;
   text-wrap: balance;
-  margin: 16px 0 0;
+  margin: 10px 0 0;
 }
 
 .editorial-eyebrow {
@@ -76,11 +78,47 @@
 }
 
 .editorial-lede {
-  margin: 28px 0 0;
-  font-size: 19px;
-  line-height: 1.6;
+  margin: 20px 0 0;
+  font-size: 16px;
+  line-height: 1.55;
   max-width: 56ch;
   text-wrap: pretty;
+}
+
+/* Lightweight greeting — sits between the headline and the lede.
+ * Visually nudges the lede up by overriding its top margin. */
+.editorial-greeting {
+  margin: 18px 0 0;
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.editorial-greeting-wave {
+  display: inline-block;
+  font-size: 19px;
+  transform-origin: 70% 70%;
+  animation: editorial-wave 2.4s ease-in-out 1.2s 2;
+}
+@keyframes editorial-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-greeting-wave {
+    animation: none;
+  }
+}
+.editorial-lede--tight {
+  margin-top: 8px;
 }
 
 /* Hero newsletter — inline (no card, no border) */
@@ -283,6 +321,278 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.6;
+}
+
+/* ============================================================
+ * Hero — Variation C (Contrarian / Insider)
+ * Strikethrough headline, bordered newsletter card, and a side
+ * column with portrait + plate caption + errata panel.
+ * ============================================================ */
+
+/* §-numbered eyebrow with leading rule */
+.editorial-eyebrow--ruled {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.editorial-eyebrow-rule {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: #e67e22;
+}
+.dark .editorial-eyebrow-rule {
+  background: #f39c12;
+}
+.editorial-eyebrow-section {
+  font-weight: 600;
+}
+
+/* Headline accents — strikethrough for retracted line, italic em
+ * for the follow-up. */
+.editorial-strike {
+  text-decoration: line-through;
+  text-decoration-color: #e67e22;
+  text-decoration-thickness: 3px;
+  color: #b8a88f;
+  font-weight: 700;
+}
+.dark .editorial-strike {
+  text-decoration-color: #f39c12;
+  color: #94a3b8;
+}
+.editorial-h1-em {
+  font-style: italic;
+  font-weight: 700;
+}
+
+/* Bordered newsletter capture card */
+.editorial-capture--card {
+  margin-top: 18px;
+  padding: 16px 20px 14px;
+  border: 1.5px solid #e67e22;
+  border-radius: 10px;
+  background: #fefdfb;
+  box-shadow:
+    0 4px 0 -1px #e67e22,
+    0 18px 32px -16px rgba(230, 126, 34, 0.35);
+  position: relative;
+  gap: 8px;
+  max-width: none;
+}
+.dark .editorial-capture--card {
+  border-color: #f39c12;
+  background: #1e293b;
+  box-shadow:
+    0 4px 0 -1px #f39c12,
+    0 18px 32px -16px rgba(243, 156, 18, 0.4);
+}
+.editorial-capture--card .editorial-capture-tick {
+  font-size: 13px;
+}
+.editorial-capture-label--card {
+  margin-bottom: 4px;
+}
+.editorial-capture-label--card::after {
+  display: none;
+}
+.editorial-capture-meta {
+  margin-left: auto;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.editorial-capture-title--card {
+  font-size: 19px;
+  margin: 0 0 2px;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.editorial-capture-promise {
+  margin: 2px 0 6px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.editorial-capture-promise b {
+  color: #2c3e50;
+  font-weight: 600;
+}
+.dark .editorial-capture-promise b {
+  color: #fbf7f0;
+}
+
+/* Right column — portrait + plate caption + errata stack */
+.editorial-hero-c-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .editorial-hero-c-side {
+    max-width: 320px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-top: 4px;
+  }
+}
+.editorial-portrait--c {
+  /* Slightly squarer than 4/5 so portrait + plate + errata fit
+   * without dominating the column. Mirrors the design's 280px frame. */
+  aspect-ratio: 4 / 4.6;
+}
+.editorial-portrait-plate {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.25);
+  opacity: 0.75;
+}
+.dark .editorial-portrait-plate {
+  border-bottom-color: rgba(148, 163, 184, 0.2);
+}
+
+/* Errata panel — strikethrough rhetoric on a parchment card */
+.editorial-erratum {
+  margin-top: 4px;
+  background: #fefdfb;
+  border: 1px dashed #b8a88f;
+  border-radius: 6px;
+  padding: 14px 16px;
+  position: relative;
+  font-family: var(--font-serif, 'Source Serif 4'), Georgia, serif;
+}
+.dark .editorial-erratum {
+  background: #1e293b;
+  border-color: #475569;
+}
+.editorial-erratum-stamp {
+  position: absolute;
+  top: -10px;
+  right: 18px;
+  background: #fbf7f0;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ef4444;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid #ef4444;
+  border-radius: 3px;
+  transform: rotate(-2deg);
+}
+.dark .editorial-erratum-stamp {
+  background: #1a1a2e;
+}
+.editorial-erratum-head {
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.editorial-erratum-head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(139, 115, 85, 0.3);
+}
+.dark .editorial-erratum-head::after {
+  background: rgba(148, 163, 184, 0.25);
+}
+.editorial-erratum-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.editorial-erratum-list li {
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.18);
+  font-size: 13px;
+  color: #b8a88f;
+  text-decoration: line-through;
+  text-decoration-color: rgba(230, 126, 34, 0.6);
+  text-decoration-thickness: 2px;
+  list-style: none;
+}
+.dark .editorial-erratum-list li {
+  color: #94a3b8;
+  border-bottom-color: rgba(148, 163, 184, 0.15);
+  text-decoration-color: rgba(243, 156, 18, 0.55);
+}
+.editorial-erratum-list li:last-child {
+  border-bottom: 0;
+}
+.editorial-erratum-keep {
+  text-decoration: none !important;
+  color: #2c3e50 !important;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 14px !important;
+  padding-top: 9px !important;
+}
+.dark .editorial-erratum-keep {
+  color: #fbf7f0 !important;
+}
+.editorial-erratum-keep::before {
+  content: '↳ ';
+  color: #e67e22;
+  font-style: normal;
+  font-family: var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace;
+  margin-right: 4px;
+}
+.dark .editorial-erratum-keep::before {
+  color: #f39c12;
+}
+
+/* Stack the side column under the headline on tablet/mobile */
+@media (max-width: 1023px) {
+  .editorial-hero-c-side {
+    margin-top: 8px;
+    max-width: 480px;
+  }
+}
+@media (max-width: 640px) {
+  .editorial-capture--card {
+    padding: 18px 18px 16px;
+  }
+  .editorial-capture-title--card {
+    font-size: 18px;
+  }
+  .editorial-capture-meta {
+    display: none;
+  }
+  .editorial-hero-c-side {
+    gap: 10px;
+  }
+  .editorial-portrait--c {
+    aspect-ratio: 4 / 4.4;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  .editorial-portrait-plate {
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .editorial-erratum {
+    padding: 12px 14px;
+  }
+  .editorial-erratum-list li {
+    font-size: 12.5px;
+  }
 }
 
 /* ---------- Stat row --------------------------------------- */
