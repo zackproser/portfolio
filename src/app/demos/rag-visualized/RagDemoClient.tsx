@@ -268,7 +268,7 @@ export default function RagDemoClient() {
 
           <h2 className="mt-4 font-serif text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 max-w-3xl">
             Ship the pipeline behind this demo &mdash;{' '}
-            <em className="not-italic text-burnt-400 dark:text-amber-400 font-extrabold italic">with evals.</em>
+            <em className="text-burnt-400 dark:text-amber-400 font-extrabold italic">with evals.</em>
           </h2>
 
           <p className="mt-5 text-[15px] sm:text-base leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[60ch]">
