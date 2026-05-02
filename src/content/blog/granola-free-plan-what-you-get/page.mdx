@@ -1,17 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
 export const campaign = 'granola-free-plan-what-you-get'
 
-export const metadata = createMetadata({
-  title: 'Granola Free Plan: What You Actually Get Without Paying',
-  author: 'Zachary Proser',
-  date: '2026-5-2',
-  description: 'I went through the Granola free tier so you do not have to. Here is the honest breakdown.',
-  image: 'https://zackproser.b-cdn.net/images/granola-hero.webp',
-  tags: ['granola', 'free', 'ai', 'meeting-notes'],
-  hiddenFromIndex: true,
-})
+export const metadata = createMetadata(rawMetadata)
 
 I signed up for the Granola free plan and ran it through a real week of meetings. Here is what actually happens when you use it without paying.
 

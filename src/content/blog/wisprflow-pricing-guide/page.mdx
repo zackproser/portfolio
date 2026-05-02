@@ -1,17 +1,10 @@
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
 
 export const campaign = 'wisprflow-pricing-guide'
 
-export const metadata = createMetadata({
-  title: 'WisprFlow Pricing in 2026: What You Pay and What You Actually Get',
-  author: 'Zachary Proser',
-  date: '2026-5-2',
-  description: 'Straight talk on WisprFlow pricing tiers, what is included, and what costs extra.',
-  image: 'https://zackproser.b-cdn.net/images/wisprflow.webp',
-  tags: ['wisprflow', 'pricing', 'voice', 'ai'],
-  hiddenFromIndex: true,
-})
+export const metadata = createMetadata(rawMetadata)
 
 People ask me about WisprFlow pricing constantly, and I get it — nobody wants to sign up for a tool and then discover the real costs are buried behind a Pro tier paywall. Here is the honest breakdown of what each plan includes, what costs extra, and who should actually pay for what.
 
