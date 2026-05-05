@@ -240,7 +240,7 @@ export function PartnershipsContent() {
       timing ? `Timing: ${timing}` : null,
       '',
       brief,
-    ].filter(Boolean)
+    ].filter(x => x != null)
 
     setStatus('submitting')
     setErrorMessage('')
