@@ -13,6 +13,7 @@ import '@/styles/editorial-blog.css';
 import '@/styles/blog-post.css';
 import '@/styles/testimonials.css';
 import '@/styles/contact.css';
+import '@/styles/partnerships.css';
 import '@/styles/subscribe.css';
 import '@/styles/newsletter.css';
 import '@/styles/subscribe-form-shared.css';
