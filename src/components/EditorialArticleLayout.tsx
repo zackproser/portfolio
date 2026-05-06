@@ -9,6 +9,9 @@ import GiscusWrapper from '@/components/GiscusWrapper'
 import MiniPaywall from '@/components/MiniPaywall'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
+import { MeetingNotesConcierge } from '@/components/meeting-notes/MeetingNotesConcierge'
+import { MeetingNotesClusterRail } from '@/components/meeting-notes/MeetingNotesClusterRail'
+import { isMeetingNotesClusterPost, inferConciergeRole, inferRailPersona } from '@/lib/meeting-notes-cluster'
 import type { ExtendedMetadata, Content } from '@/types'
 
 const VOICE_AFFILIATE_SLUGS = [
@@ -73,6 +76,7 @@ interface Props {
     miniPaywallDescription?: string | null
     tags?: string[]
     githubUrl?: string
+    hiddenFromIndex?: boolean
   }
   serverHasPurchased?: boolean
   hideNewsletter?: boolean
@@ -334,6 +338,19 @@ export function EditorialArticleLayout({
           <div className="post-body" ref={articleRef}>
             {children}
           </div>
+
+          {isMeetingNotesClusterPost(safeSlug || baseSlug, tags, { hiddenFromIndex: !!metadata?.hiddenFromIndex }) && (
+            <>
+              <MeetingNotesConcierge
+                campaign={baseSlug || safeSlug}
+                defaultRole={inferConciergeRole(safeSlug || baseSlug, safeTitle)}
+              />
+              <MeetingNotesClusterRail
+                campaign={baseSlug || safeSlug}
+                persona={inferRailPersona(safeSlug || baseSlug, safeTitle)}
+              />
+            </>
+          )}
 
           {!hideNewsletter && (
             <div className="inline-newsletter-card">
