@@ -1,0 +1,76 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+import { createMetadata } from '@/lib/metadata'
+
+export const metadata = createMetadata({
+  title: 'Firecrawl Free Tier Limits 2026: What You Can Actually Scrape Without Paying',
+  description: "Firecrawl's free tier is generous for testing—but production use hits walls fast. Here's exactly what you get and where it breaks.",
+  image: 'https://zackproser.b-cdn.net/images/firecrawl-hero.webp',
+})
+
+I've been using Firecrawl for web scraping projects for about six months now. When people ask me about it, the first question is always the same: "what can I actually do with the free tier?"
+
+Fair question. Let me give you the honest answer based on actual usage.
+
+## What Firecrawl's Free Tier Gives You
+
+The free tier is genuinely functional for testing and small projects. You get:
+
+- 500 credits per month
+- Basic crawl capabilities
+- Standard rate limits
+- Access to the API
+- Output in clean markdown format
+
+500 credits sounds abstract. Here's what that means in practice:
+
+A simple static page might cost 1-3 credits to crawl. A complex JavaScript-rendered page with multiple sub-pages could run 10-20 credits per crawl. If you're scraping individual pages one at a time, you can get a meaningful amount of work done.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## Where the Free Tier Breaks Down
+
+The limits become apparent when you're trying to use Firecrawl for anything resembling real work:
+
+**Volume limits.** 500 credits goes fast when you're building datasets. If you're monitoring competitor pricing, aggregating content across multiple sites, or doing any kind of systematic research, you'll burn through that monthly allocation in days.
+
+**Rate limiting.** The free tier has stricter rate limits than paid plans. You can't fire off hundreds of requests per minute. This matters for anything time-sensitive.
+
+**No batch processing.** The free tier processes requests sequentially. For one-off scrapes, this is fine. For pipelines that need to crawl hundreds of URLs, the wait times add up.
+
+**Limited concurrent crawls.** If you're trying to scrape multiple sites simultaneously, you'll hit queue limits faster than you'd expect.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## What I Use It For on Free
+
+When I'm evaluating whether a site is worth a full scrape, I use the free tier. I might crawl 10-20 pages to understand:
+- How the site is structured
+- Whether it uses JavaScript rendering that requires special handling
+- What the content quality is like
+- Whether the crawl will be reliable
+
+This use case—intelligent exploration before committing resources—is where free tier scraping genuinely works well.
+
+I also use it for one-off small projects where I need a specific page or set of pages. A single product page, a blog post, a documentation section—these are fast and cheap with Firecrawl's credit system.
+
+## When You Need Paid
+
+The calculus changes when:
+
+**You're building anything that runs continuously.** Monitoring, alerting, and scheduled scraping jobs need the reliability and volume of a paid plan.
+
+**You need JavaScript rendering at scale.** Firecrawl's JS rendering is genuinely excellent, but running it against hundreds of pages requires the throughput you only get with paid access.
+
+**You need SLA guarantees.** The free tier doesn't come with uptime commitments or support. For anything that's infrastructure—feeding data pipelines, powering features in your product—you want the reliability of paid.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## The Honest Verdict
+
+The free tier is enough to know whether Firecrawl works for your use case. It's not enough for production work beyond small, sporadic projects.
+
+If you're evaluating web scraping tools, start here. You can crawl enough pages to understand whether the output quality meets your needs, whether the JavaScript rendering handles the sites you care about, and whether the API is something you can work with.
+
+If you determine Firecrawl is the right tool, the paid plans scale reasonably. The pricing isn't the cheapest option out there, but the quality of output—especially for complex, JavaScript-heavy sites—justifies the cost for serious work.
+
+Start free. Upgrade when you outgrow it. That's the right path for almost everyone evaluating this tool.
