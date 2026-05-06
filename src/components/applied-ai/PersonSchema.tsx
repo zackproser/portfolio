@@ -16,11 +16,11 @@ export default function PersonSchema() {
     "name": "Zachary D Proser",
     "alternateName": ["Zack Proser", "Zachary Proser"],
     "jobTitle": [
-      "Developer Experience Engineer",
+      "AI Engineer",
+      "Applied AI Engineer",
       "Staff AI Engineer",
-      "Applied AI Engineer", 
-      "Developer Education Specialist",
-      "AI Technical Trainer"
+      "AI Technical Trainer",
+      "Developer Education Specialist"
     ],
     "description": "Staff-level Applied AI Engineer with 13+ years experience building scalable systems and 3+ years specializing in AI/LLM solutions, RAG systems, and enterprise AI infrastructure. Specializes in vector databases, machine learning, and AI architecture.",
     "url": "https://zackproser.com",

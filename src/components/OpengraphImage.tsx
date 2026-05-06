@@ -43,7 +43,7 @@ const OpengraphImage: React.FC<OpengraphImageProps> = async ({
         </div>
         <div tw="flex flex-col ml-4 items-center">
           <h1 tw="text-4xl text-white">Zachary Proser</h1>
-          <h2 tw="text-3xl text-white">Developer Experience Engineer @WorkOS</h2>
+          <h2 tw="text-3xl text-white">AI Engineer · Applied AI @WorkOS</h2>
         </div>
       </div>
       <div
