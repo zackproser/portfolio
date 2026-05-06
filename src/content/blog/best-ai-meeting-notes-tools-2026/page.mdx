@@ -6,117 +6,64 @@ export const metadata = createMetadata(rawMetadata);
 
 export const campaign = 'best-ai-meeting-notes-tools-2026'
 
-I've tested every meaningful AI meeting notes tool over the past year. Not just clicked around them — actually used them on real client calls, investor meetings, and team syncs. Here's what I found.
+I have spent the last year on real client calls, investor meetings, and team syncs with every meaningful AI meeting notes tool open in the background. Below is what actually held up — and the one piece of friction that decides which tool you should be using.
 
-**Spoiler:** I use <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>. Not because of the features list, but because of one thing none of the others get right: no bot joins your call.
+**The single decision that matters:** does a recording bot joining your call change what people are willing to say? If yes, you want <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink>. If no, you have honest options.
 
-## The Market in 2026
+## The market in 2026, in one paragraph
 
-The AI meeting notes space has matured, but it's split into two camps:
+AI meeting notes split into two camps. **Bot-based** — Otter, Fireflies, Fathom, Avoma, Grain, Read AI — a bot joins, records, transcribes, summarizes. They differ on UI and integrations; they all change the shape of the conversation the moment they appear in the participant list. **Invisible** — Granola — captures system audio locally on your Mac, no bot, no recording prompt, nobody sees it. The accuracy gap closed a long time ago. The presence gap is permanent.
 
-**Camp 1: Bot-based tools** — Otter, Fireflies, Fathom, Avoma, Grain, Read AI. A bot joins your call, records everything, transcribes it, and generates a summary. They all work roughly the same way.
+## Tool-by-tool, with the verdict on top
 
-**Camp 2: Invisible tools** — Granola. Runs locally, captures your system audio, no bot, no recording notification. Nobody on the call knows.
+### Granola — invisible, Mac-first
 
-The fundamental difference: bot presence changes what conversations are possible.
+The notes I get from a sensitive client conversation are worth more than a perfect transcript of a sanitized one. Granola is the only tool in this list that does not announce itself. Captures audio locally, generates structured notes and action items after, no bot in the participant list, no consent prompt.
 
-<InlineAffiliateCTA product="granola" campaign={campaign} />
-
-## Tool-by-Tool Breakdown
-
-### Granola — Best Overall
-
-**What it does:** Captures meeting audio locally on your Mac, uses AI to generate structured notes and action items. No bot joins. No recording consent prompt. No "Granola is joining your meeting."
-
-**Best for:** Anyone in trust-dependent conversations — sales, consulting, executive meetings, client calls, sensitive HR discussions.
-
-**Pricing:** Free tier available; paid plans starting around $18/month.
-
-**Why I use it:** On three separate occasions in the last six months, a client said something important and candid — the kind of thing they'd never say if a recording bot was present. The notes I got from those conversations closed deals and shaped strategy. A bot-based tool would have changed the dynamic before they said a word.
-
-**Downsides:** Mac-only (as of early 2026). No live real-time transcription during the meeting. Notes appear after.
-
-### Otter.ai — Best for Teams Who Need Shared Transcripts
-
-**What it does:** Bot joins calls, produces live transcripts, team members can comment and highlight, integrates with Slack and CRMs.
-
-**Best for:** Internal team meetings where everyone knows it's being used, and you need a searchable transcript database.
-
-**Pricing:** Free tier (limited); Pro at $16.99/month, Business at $30/user/month.
-
-**Downsides:** Bot introduces itself when joining. Sensitive calls often get derailed by "Is that recording us?" The free tier is increasingly limited.
-
-### Fireflies.ai — Best for CRM Integration
-
-**What it does:** Bot records calls, transcribes, extracts action items, integrates deeply with Salesforce, HubSpot, and other CRMs.
-
-**Best for:** Sales teams tracking deal progression, customer success teams wanting call data in CRM.
-
-**Pricing:** Free tier; Pro at $18/user/month; Business at $29/user/month.
-
-**Downsides:** Same bot-presence issues as Otter. Overkill for individual contributors who just want personal notes.
-
-### Fathom — Best Free Option for Zoom
-
-**What it does:** Free AI notetaker for Zoom (and now Google Meet). Bot joins, records, produces summary and highlight clips.
-
-**Best for:** Individual contributors on a budget who mainly use Zoom and don't mind the bot.
-
-**Pricing:** Generous free tier. Paid plans for team features.
-
-**Downsides:** Bot-dependent. Quality of summaries is good but not consistently structured. Less useful if you're not on Zoom.
-
-### Avoma — Best for Revenue Teams
-
-**What it does:** Full conversation intelligence platform. Records calls, transcribes, analyzes talk ratios, coaching insights, CRM sync.
-
-**Best for:** Sales leaders and customer success managers who want coaching data and deal intelligence across their whole team.
-
-**Pricing:** Starts around $49/user/month for full features.
-
-**Downsides:** Expensive for individuals. Very much an enterprise product. Bot-based.
+**Best for:** consultants, executives, sales, therapists, anyone whose meetings hinge on candor.
+**Pricing:** Free tier; paid plans start around $18/month.
+**Trade-off:** Mac-only as of early 2026. No live captions during the call — notes appear after.
 
 <InlineAffiliateCTA product="granola" campaign={campaign} />
 
-## Decision Framework
+### Otter.ai — best when you want the bot
 
-**Use Granola if:**
-- Your most important conversations involve candor, trust, or sensitivity
-- You're a consultant, executive, salesperson, therapist, lawyer, or anyone where "the bot is recording" changes what people say
-- You want notes that actually capture what was said, not the sanitized version
-- You're on Mac
+Live captions during the call, searchable team transcripts, comments and highlights, Slack and CRM integrations. The bot announces itself, which is a feature for internal team meetings and a problem for client ones.
 
-**Use Otter if:**
-- You need searchable team transcripts
-- Your meetings are internal and everyone's fine with recording
-- You want live captions during the meeting
+**Best for:** internal team meetings where everyone is fine being recorded.
+**Pricing:** Limited free; Pro $16.99/month; Business $30/user/month.
+**Trade-off:** "Otter is recording" lands in every external call.
 
-**Use Fireflies if:**
-- You're in sales and need CRM sync
-- Call data lives in Salesforce or HubSpot
+### Fireflies.ai — best when CRM data is the deliverable
 
-**Use Fathom if:**
-- You're on Zoom all day
-- You want a free starting point
-- Bot presence isn't an issue for your meetings
+Bot records, transcribes, extracts action items, and pushes everything into Salesforce or HubSpot. If your sales motion lives in a CRM and revops needs the data, Fireflies is the answer.
 
-## What I Actually Care About
+**Best for:** sales teams, customer success.
+**Pricing:** Free tier; Pro $18/user/month; Business $29/user/month.
+**Trade-off:** Same bot-presence issue as Otter; overkill if you just want personal notes.
 
-Most meeting notes articles rank tools by features. I care about one thing: **do I get accurate notes from the conversations that matter?**
+### Fathom — free, Zoom-first
 
-A 98% accurate transcript of a conversation where everyone held back because the bot was present is less useful than 85% accurate notes from a real, candid conversation.
+A free notetaker for Zoom (and now Meet). Bot joins, records, summarizes, surfaces highlight clips. Quality is solid; it is the budget-conscious starting point if the bot does not bother you.
 
-That's why <AffiliateLink product="granola" campaign={campaign}>Granola</AffiliateLink> is my tool. The notes aren't just accurate — they're from conversations that actually happened.
+**Best for:** individual contributors on Zoom all day.
+**Pricing:** Generous free tier; paid plans for team features.
+**Trade-off:** Bot-dependent. Inconsistent summary structure.
+
+### Avoma — enterprise conversation intelligence
+
+Records, transcribes, analyzes talk ratios, gives coaching insights, syncs to CRM. A heavy enterprise platform — overkill unless you are running a sales team that wants deal intelligence across reps.
+
+**Best for:** sales leaders, customer success managers with a coaching mandate.
+**Pricing:** ~$49/user/month for full features.
+**Trade-off:** Expensive for individuals. Bot-based.
+
+## What actually decides this
+
+Every comparison article ranks these by features. Features are noise. The decision is one bit: does the bot showing up change what people say?
+
+If yes → Granola. If no → pick the one with the integration you actually need.
+
+A 98% accurate transcript of a meeting where everyone held back is worth less than 85% accurate notes from the meeting that really happened. That is the trade Granola is on the right side of, and it is the reason <AffiliateLink product="granola" campaign={campaign}>I use it</AffiliateLink> on every call where the conversation matters.
 
 <InlineAffiliateCTA product="granola" campaign={campaign} />
-
-## Bottom Line
-
-The best AI meeting notes tool in 2026 depends entirely on your use case:
-
-- **Most people:** Try Granola free first. The no-bot experience is genuinely different.
-- **Sales teams:** Granola for client calls, Fireflies for CRM integration on internal reviews.
-- **Budget-conscious:** Fathom's free tier is solid for Zoom-heavy users.
-- **Enterprise teams:** Avoma or Fireflies with your CRM.
-
-Whatever you choose, getting out of manual note-taking is worth it. The question is just how much the bot changes your meetings.
