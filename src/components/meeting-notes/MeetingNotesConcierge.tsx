@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { track } from '@vercel/analytics'
 import { ArrowRight, Check } from 'lucide-react'
-import { getAffiliateLink } from '@/lib/affiliate'
+import { getAffiliateLink, buildConciergeTerm } from '@/lib/affiliate'
 
 type Role =
   | 'sales'
@@ -137,12 +137,14 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
   const pickKey = useMemo(() => recommend(role, shape, stack), [role, shape, stack])
   const pick = PICKS[pickKey]
 
+  const term = buildConciergeTerm({ role, shape, stack })
   const link = pick.product
     ? getAffiliateLink({
         product: pick.product,
         campaign,
         medium: 'blog',
-        placement: 'inline-cta',
+        placement: 'concierge',
+        term,
       })
     : null
 
@@ -152,7 +154,14 @@ export function MeetingNotesConcierge({ campaign, defaultRole, headline }: Conci
     pick.tagline
 
   function handleClick() {
-    track('concierge_cta_click', { product: pickKey, role, shape: shape ?? '', stack: stack ?? '', campaign })
+    track('concierge_cta_click', {
+      product: pickKey,
+      role,
+      shape: shape ?? '',
+      stack: stack ?? '',
+      campaign,
+      term,
+    })
   }
 
   function handleAnswer<T extends string>(setter: (v: T) => void, value: T, key: 'role' | 'shape' | 'stack') {

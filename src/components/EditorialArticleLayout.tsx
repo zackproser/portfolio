@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Twitter, Linkedin, Github, Link as LinkIcon, Bookmark, Check } from 'lucide-react'
 import { track } from '@vercel/analytics'
 import GiscusWrapper from '@/components/GiscusWrapper'
@@ -106,19 +106,33 @@ export function EditorialArticleLayout({
   const breadcrumbHref = metadata?.type === 'video' ? '/videos' : metadata?.type === 'course' ? '/learn/courses' : metadata?.type === 'demo' ? '/demos' : '/blog'
 
   const articleRef = useRef<HTMLDivElement | null>(null)
+  const conciergeRef = useRef<HTMLDivElement | null>(null)
   const progressFillRef = useRef<HTMLDivElement | null>(null)
   const [readingMin, setReadingMin] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
   const [shareVisible, setShareVisible] = useState(false)
 
-  useEffect(() => {
+  // useLayoutEffect runs synchronously before paint so the concierge
+  // relocation doesn't flash. Falls back to useEffect on the server (where
+  // useLayoutEffect would warn about hydration mismatches).
+  const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+  useIsoLayoutEffect(() => {
     const body = articleRef.current
     if (!body) return
 
-    // Mark the first paragraph as .lede for drop cap
-    const firstP = body.querySelector('p')
+    // Mark the first paragraph as .lede for drop cap. Use direct-child only
+    // so we don't accidentally pick a <p> from the injected concierge widget
+    // once it's relocated into the body.
+    const firstP = body.querySelector<HTMLElement>(':scope > p')
     if (firstP && !firstP.classList.contains('lede')) {
       firstP.classList.add('lede')
+    }
+
+    // Relocate the concierge widget (if present) to sit right after the lede
+    // paragraph rather than at the top of post-body.
+    const concierge = conciergeRef.current
+    if (concierge && firstP && firstP.parentNode) {
+      firstP.parentNode.insertBefore(concierge, firstP.nextSibling)
     }
 
     // Number h2s with § 01, § 02 ...
@@ -335,22 +349,25 @@ export function EditorialArticleLayout({
           {shouldShowMiniPaywall && (
             <MiniPaywall content={metadata as Content} />
           )}
+
           <div className="post-body" ref={articleRef}>
+            {isMeetingNotesClusterPost(safeSlug || baseSlug, tags, { hiddenFromIndex: !!metadata?.hiddenFromIndex }) && (
+              <div ref={conciergeRef} className="mn-concierge-slot">
+                <MeetingNotesConcierge
+                  campaign={baseSlug || safeSlug}
+                  defaultRole={inferConciergeRole(safeSlug || baseSlug, safeTitle)}
+                />
+              </div>
+            )}
             {children}
           </div>
 
           {isMeetingNotesClusterPost(safeSlug || baseSlug, tags, { hiddenFromIndex: !!metadata?.hiddenFromIndex }) && (
-            <>
-              <MeetingNotesConcierge
-                campaign={baseSlug || safeSlug}
-                defaultRole={inferConciergeRole(safeSlug || baseSlug, safeTitle)}
-              />
-              <MeetingNotesClusterRail
-                campaign={baseSlug || safeSlug}
-                persona={inferRailPersona(safeSlug || baseSlug, safeTitle)}
-                currentSlug={baseSlug || safeSlug}
-              />
-            </>
+            <MeetingNotesClusterRail
+              campaign={baseSlug || safeSlug}
+              persona={inferRailPersona(safeSlug || baseSlug, safeTitle)}
+              currentSlug={baseSlug || safeSlug}
+            />
           )}
 
           {!hideNewsletter && (
