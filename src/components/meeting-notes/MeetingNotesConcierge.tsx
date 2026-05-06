@@ -101,7 +101,7 @@ function recommend(role: Role, shape: MeetingShape | null, stack: Stack | null):
   if (shape === 'interview') return 'granola'
   if (shape === 'client') {
     // Sales people who care about CRM → Fireflies; everyone else → Granola.
-    if (role === 'sales' && stack !== 'mac') return 'fireflies'
+    if (role === 'sales' && stack === 'windows') return 'fireflies'
     return 'granola'
   }
   if (shape === 'internal') {
