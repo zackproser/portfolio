@@ -474,7 +474,7 @@ export default function ProductsPageClient({ products }: { products: ProductCont
                     {[
                       {
                         company: 'WorkOS',
-                        title: 'Developer Experience Engineer',
+                        title: 'AI Engineer · Applied AI',
                         logo: logoWorkOS,
                         start: '2025',
                         end: 'Present'

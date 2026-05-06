@@ -1,7 +1,7 @@
 export const resumeData = [
   {
     company: 'WorkOS',
-    title: 'Developer Experience Engineer',
+    title: 'AI Engineer · Applied AI',
     logo: 'https://zackproser.b-cdn.net/images/logos/workos.svg',
     start: '2025',
     end: 'Present',
