@@ -86,7 +86,7 @@ const CLUSTER: ClusterPost[] = [
   },
 ]
 
-function pickFor(persona: Persona, max = 4): ClusterPost[] {
+function pickFor(persona: Persona, max = 4, currentSlug?: string): ClusterPost[] {
   // Show persona-specific first, fill with general posts up to `max`.
   const exact = CLUSTER.filter(p => p.personas.includes(persona) && persona !== 'general')
   const general = CLUSTER.filter(p => p.personas.includes('general'))
@@ -95,6 +95,7 @@ function pickFor(persona: Persona, max = 4): ClusterPost[] {
   for (const p of [...exact, ...general]) {
     if (out.length >= max) break
     if (seen.has(p.slug)) continue
+    if (currentSlug && p.slug.includes(currentSlug)) continue
     seen.add(p.slug)
     out.push(p)
   }
@@ -106,10 +107,12 @@ interface RailProps {
   campaign: string
   // Override the heading per host post if the default reads weird.
   heading?: string
+  // Current post slug to exclude from rail links.
+  currentSlug?: string
 }
 
-export function MeetingNotesClusterRail({ persona = 'general', campaign, heading }: RailProps) {
-  const posts = pickFor(persona)
+export function MeetingNotesClusterRail({ persona = 'general', campaign, heading, currentSlug }: RailProps) {
+  const posts = pickFor(persona, 4, currentSlug)
   const personaLabel: Record<Persona, string> = {
     sales: 'sales people',
     consultant: 'consultants',

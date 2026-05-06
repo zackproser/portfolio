@@ -348,6 +348,7 @@ export function EditorialArticleLayout({
               <MeetingNotesClusterRail
                 campaign={baseSlug || safeSlug}
                 persona={inferRailPersona(safeSlug || baseSlug, safeTitle)}
+                currentSlug={baseSlug || safeSlug}
               />
             </>
           )}
