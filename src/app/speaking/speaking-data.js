@@ -22,7 +22,18 @@ export const speakingEngagements = [
     image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
     audience: 'AI engineers and developers',
     topics: ['Claude Code', 'Skills', 'Agent Workflows', 'Team Productivity', 'Developer Tools'],
-    links: []
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=pFsfax19yOM',
+        label: 'Watch the workshop'
+      },
+      {
+        type: 'blog',
+        url: '/blog/aie-london-skills-at-scale',
+        label: 'Workshop write-up'
+      }
+    ]
   },
   {
     id: 'aie-london-untethered-productivity',
