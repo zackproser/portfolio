@@ -1,0 +1,93 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A rate card laid on warm parchment paper, editorial dispatch aesthetic" width={1200} height={630} />
+
+For most of the time this site has existed, it was a personal blog. I wrote about whatever I'd just learned — Terraform, vector databases, Neovim setups — and the people who read it were mostly other engineers from the same Slack channels.
+
+Today I shipped <Link href="/partnerships">/partnerships</Link>. It's a rate card. It lists eight placement formats with starting prices, what I won't run, and an intake form that auto-replies to the kind of one-line "do you accept guest posts" emails that have been arriving twice a week.
+
+This post is about why now.
+
+## The bottleneck became me
+
+The honest version: inbound got to the point where I couldn't keep up with it.
+
+Not because the volume was huge — because I had less and less of myself to give it. Day job at WorkOS on the Applied AI team. Personal life. Side projects and products I actually care about and want to grow. Each cold email arriving at the same flat rate as ever, and me with steadily less time to evaluate it, write back, negotiate from scratch, decide if it's a fit, send a number, watch the thread die.
+
+What I wanted, very specifically, was an auto-classifier in front of my inbox: a thing that reads incoming partnership-shaped messages, decides whether they're worth my attention, and replies to the rest with a single URL that explains how this works.
+
+The URL didn't exist yet. So before I could build the classifier, I had to build the URL.
+
+That's <Link href="/partnerships">/partnerships</Link>.
+
+## This page is the surface of a long, quiet thing
+
+Standing back: /partnerships is the visible artifact of a slow compound.
+
+For years I've been working on this property in parallel with everything else. Writing posts, then more posts, then a newsletter. Testing tools and writing what I actually thought of them. Speaking at conferences. Running technical workshops. Shipping systems at every startup I've worked at — Cloudmark/Proofpoint, Cloudflare, Gruntwork, Pinecone, now WorkOS. Enabling teammates with AI tooling once that became part of the work, at Pinecone and now at WorkOS.
+
+None of it was a campaign. It was the same handful of habits, repeated for long enough that they compounded — into a 5,000-person newsletter, into 8.77 million annual Google Search impressions, into the kind of inbound that now exceeds what I can answer one email at a time.
+
+This felt like the right moment to tie it all together. Eight placements, public pricing, an editorial line, and a single URL I can send back.
+
+## What I built
+
+/partnerships is a public rate card. The shape:
+
+- **Audience numbers up top.** 5,000+ readers on Modern Coding. 8.77M annual search impressions, trailing twelve months. Senior engineering audience — staff, principal, founders, engineering managers.
+- **Eight placements.** Sponsored articles, newsletter primary slot, dedicated sends, classifieds, affiliates, workshops, podcast/YouTube reads, quarterly retainers. Each has a starting price.
+- **Editorial line.** Five rules for what I will do (use the tool first, disclose sponsorship, no edit rights but a fact-check pass) and six things I won't run (link exchanges, generic guest posts, AI-generated placements, pay-for-positive-review, crypto/gambling, aggregator content).
+- **Process.** Five steps from inquiry to ship-and-report, each with a realistic time estimate.
+- **Intake form.** Name, email, company, budget tier, timing, and a paragraph of context.
+- **Side rail with credibility links.** <Link href="/speaking">/speaking</Link>, <Link href="/publications">/publications</Link>, <Link href="/testimonials">/testimonials</Link>, <Link href="/videos">/videos</Link>. Plus the actual engineering background — Pinecone, Gruntwork, Cloudflare, Cloudmark/Proofpoint, currently WorkOS.
+
+Total real estate: one URL I can send back.
+
+## Why publish pricing publicly
+
+This was the most counterintuitive decision and the easiest to justify in retrospect.
+
+Most freelancers and creators keep their pricing private. The argument is that you preserve negotiating leverage: you can charge a brand-name company more than a startup, and you don't paint yourself into a corner by publishing a number.
+
+That's the argument. The reality is that most inbound "what do you charge" emails are not from people who'd ever pay. They're tire-kickers, agencies fishing on behalf of clients who aren't briefed yet, or PR firms shopping the same pitch to forty sites. Negotiating from zero each time means writing a custom reply forty times, sending forty different numbers, and watching most of those threads die.
+
+Publishing a number lets you skip the entire low-quality cohort. The serious people see the price, decide they can or can't, and write back with a specific proposal. The unserious people stop emailing. You spend your time on the inquiries that have a chance.
+
+I priced things at the lower end of what I'd accept. Numbers go up for rush turnaround and down for quarterly retainers. The list price is a starting point, not a ceiling.
+
+## The editorial line is the product
+
+The "what I won't run" section gets more attention than the prices. That makes sense — the prices tell you what something costs, the editorial line tells you what you're buying.
+
+What you get when you sponsor a slot here: access to an audience that pays attention because the editorial line has held for years. The verdict is independent. If your product earns a positive write-up, it's because it earned one.
+
+That's why "no pay-for-positive-review" is on the list. The moment the answer is "yes, I'll say nice things if you pay me," the slot stops being worth what you'd have paid for it. The line is the product.
+
+The other items — no link exchanges, no AI-generated placements, no aggregator content, no crypto or gambling — are filters that protect the same thing. They're public so people can check whether they're a fit before sending a pitch.
+
+## Where this is going
+
+A few honest things I haven't built yet:
+
+- **The classifier.** The original motivating idea: an LLM-fronted email triage that reads incoming partnership messages, scores them against the editorial line, and routes each to the right reply — most of which will be a polite link to /partnerships. That's the next thing I build.
+- **Case studies.** When a partnership has wrapped and I have a story to tell — campaign goals, what we ran, what the numbers looked like — those will live somewhere on /partnerships. They're not there yet because I'd rather show real ones than hypotheticals.
+- **A media kit.** If you want detailed audience breakdowns, sample placements, and full format specs, you have to ask. A PDF media kit is on the list — gated behind the email field on the intake form.
+- **Longer retainers.** The quarterly tier is the largest format on the rate card. If a partner runs a quarter and it works, the next conversation is usually about an annual relationship. I want that conversation to start from a pre-built shape rather than from negotiation. A real annual partner agreement is the next thing I draft.
+- **Workshop partnerships.** This is the format I'm most curious about. I run technical workshops as part of my WorkOS work and have co-built training with platform companies before. /partnerships lists this as P.06 with a starting price; what's missing is a portfolio of past workshops and a clear curriculum-design process. That's the next page I build.
+
+There are things I won't add. A self-serve checkout. A standard-template "sponsored content" link bundle. Anything that turns this into a slot machine. The reason this audience pays attention is that every recommendation is grounded in actual use. Anything that breaks that grounding is off the table.
+
+## Why this matters beyond me
+
+If you're a writer with an audience that's started getting real inbound, the move is the same: publish your terms before you need them. A rate card filters bad pitches, gives you something to negotiate from, and forces you to decide what you do and don't run before someone with a budget tries to talk you into something you'll regret.
+
+The hard part is the editorial line. The pricing is just numbers. The line is what you're willing to say no to when there's money on the other side. That's the part most people don't think through until after they've taken the first thing they shouldn't have.
+
+I'd rather have the page up before I need it.
+
+<Link href="/partnerships">/partnerships</Link> is at zackproser.com/partnerships. If you've got a real product and a real budget, the intake form is the front door.
