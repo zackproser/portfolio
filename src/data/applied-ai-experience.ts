@@ -21,11 +21,11 @@ export interface ExperienceData {
 export const appliedAiExperience: ExperienceData[] = [
   {
     company: "WorkOS",
-    role: "Developer Experience Engineer",
+    role: "AI Engineer · Applied AI",
     duration: "2025–Present",
     location: "Remote",
     logo: logoWorkOS,
-    description: "Building developer experience across SDKs, templates, and AI integrations. Focused on AuthKit-secured MCP servers, high-quality examples, docs, and pragmatic developer tooling that accelerates adoption and success.",
+    description: "Applied AI engineering on WorkOS's developer-facing products: retrieval pipelines, agent harnesses, evaluation systems, and AuthKit-secured MCP servers. Production AI infrastructure that other teams ship against.",
     achievements: [],
     technologies: []
   },

@@ -9,7 +9,7 @@ import { resumeData } from "@/data/resume"
 const data = {
   title: "About Zachary Proser",
   description:
-    "Full-stack open-source hacker, technical writer, and Developer Experience Engineer at WorkOS.",
+    "AI Engineer on the Applied AI team at WorkOS. Full-stack open-source hacker, technical writer, and operator behind Modern Coding.",
 }
 
 const ogUrl = generateOgUrl(data)
@@ -32,7 +32,7 @@ export const metadata = {
 // Career history with additional blurbs for the about page
 const resume = resumeData.map((role) => {
   const blurbs = {
-    'WorkOS-Developer Experience Engineer': "Applied AI work on developer-facing products. Retrieval, agent harnesses, and the writing that helps teams adopt them.",
+    'WorkOS-AI Engineer · Applied AI': "Applied AI engineering on WorkOS's developer-facing products. Retrieval, agent harnesses, evals, and the production systems behind them.",
     'WorkOS-Developer Education': "Built and led the developer-education surface at WorkOS — documentation, workshops, and video.",
     'Pinecone.io-Staff Developer Advocate': "Designed the RAG reference architectures and tutorials that thousands of teams used to go from embeddings to a shipped retrieval system.",
     'Gruntwork.io-Tech Lead': "Wrote, maintained, and open-sourced Terraform modules used by hundreds of companies to run their AWS infrastructure.",
@@ -74,15 +74,14 @@ export default function About() {
                 <span className="text-burnt-400 dark:text-amber-400">Zachary</span>.
               </h1>
               <p className="editorial-lede text-parchment-600 dark:text-slate-300">
-                I&apos;m a full-stack open-source hacker with {years} years of
-                software development experience at top startups and established
-                enterprise companies. Currently a Developer Experience Engineer
-                at{' '}
+                I&apos;m an AI Engineer on the Applied AI team at{' '}
                 <Link href="https://workos.com" className="text-burnt-400 dark:text-amber-400 hover:underline">
                   WorkOS
                 </Link>
-                , where we help companies add enterprise features to their apps
-                in minutes, not months.
+                , shipping retrieval, agent harnesses, and the evals that keep
+                them honest. {years} years in production as a full-stack
+                engineer before that — at top startups and enterprise infra
+                companies.
               </p>
               <div className="editorial-secondary text-burnt-400 dark:text-amber-400 mt-6">
                 <a href="#work">Work history →</a>
@@ -95,7 +94,7 @@ export default function About() {
               </div>
               <dl className="editorial-meta text-parchment-600 dark:text-slate-400">
                 <dt>Currently</dt>
-                <dd>Developer Experience Engineer · WorkOS</dd>
+                <dd>AI Engineer · Applied AI · WorkOS</dd>
                 <dt>Formerly</dt>
                 <dd>Pinecone · Cloudflare · Gruntwork</dd>
                 <dt>Writes</dt>
@@ -174,13 +173,16 @@ export default function About() {
             </div>
             <div className="prose-editorial text-[17px] leading-[1.7] text-charcoal-50 dark:text-parchment-100 space-y-5 mt-6">
               <p className="first-letter:float-left first-letter:font-serif first-letter:text-[64px] first-letter:leading-[0.9] first-letter:mr-2 first-letter:mt-1 first-letter:text-burnt-400 dark:first-letter:text-amber-400">
-                I&apos;m a Developer Experience Engineer at{' '}
+                I&apos;m an AI Engineer on the Applied AI team at{' '}
                 <Link href="https://workos.com" className="underline decoration-burnt-400/40 hover:decoration-burnt-400 dark:decoration-amber-400/40 dark:hover:decoration-amber-400">
                   WorkOS
                 </Link>
-                . Before that I did developer-education and staff developer-
-                advocacy work at Pinecone, senior engineering at Cloudflare, and
-                tech-lead work at Gruntwork. {years} years in production as a
+                , where I ship retrieval, agent harnesses, and the evals that
+                keep them honest. Before that: staff developer advocacy at
+                Pinecone (where I designed the RAG reference architectures
+                thousands of teams shipped against), senior engineering at
+                Cloudflare, and tech-lead work at Gruntwork on the Terraform
+                modules behind hundreds of companies&apos; AWS infrastructure. {years} years in production as a
                 full-stack engineer — databases, backends, middleware, and
                 frontends — with a deep love for{' '}
                 <span className="text-burnt-400 dark:text-amber-400 font-semibold">
