@@ -222,33 +222,43 @@ describe('isKitSubscriber', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('returns true when email is on the active list', async () => {
+  it('returns true when email is on the active list (single filtered call)', async () => {
     const fetchMock = jest.fn().mockResolvedValueOnce(
       jsonRes({
         subscribers: [
-          { id: 1, email_address: 'someone@else.com', state: 'active' },
           { id: 2, email_address: 'TARGET@b.com', state: 'active' },
         ],
-        pagination: { has_next_page: false, end_cursor: null },
       }),
     )
     global.fetch = fetchMock as unknown as typeof fetch
 
     expect(await isKitSubscriber('target@b.com')).toBe(true)
+    // Confirm the single-call filter pattern, not a paginated scan.
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const url: string = fetchMock.mock.calls[0][0]
+    expect(url).toContain('email_address=target%40b.com')
   })
 
   it('returns false when email not present on active list', async () => {
     const fetchMock = jest.fn().mockResolvedValueOnce(
-      jsonRes({
-        subscribers: [
-          { id: 1, email_address: 'other@b.com', state: 'active' },
-        ],
-        pagination: { has_next_page: false, end_cursor: null },
-      }),
+      jsonRes({ subscribers: [] }),
     )
     global.fetch = fetchMock as unknown as typeof fetch
 
     expect(await isKitSubscriber('missing@b.com')).toBe(false)
+  })
+
+  it('returns false when filter returns the email but in a non-active state', async () => {
+    const fetchMock = jest.fn().mockResolvedValueOnce(
+      jsonRes({
+        subscribers: [
+          { id: 5, email_address: 'cancelled@b.com', state: 'cancelled' },
+        ],
+      }),
+    )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    expect(await isKitSubscriber('cancelled@b.com')).toBe(false)
   })
 
   it('returns false on Kit API error rather than throwing', async () => {

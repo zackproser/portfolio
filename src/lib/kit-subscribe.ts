@@ -161,12 +161,10 @@ export async function subscribeToKit(
  * Returns true when `email` is an active Kit subscriber. Used by gated-content
  * flows that short-circuit when the visitor is already on the list.
  *
- * Implementation note: Kit's v4 subscribers endpoint doesn't expose an
- * email-address filter, so this scans the active list. With ~5,500 subs the
- * cost is one paginated GET (typically 5-6 round-trips at per_page=1000) per
- * cold start. Returns false on any error to keep the gate's UX safe — a false
- * negative just shows the signup form, which is harmless because re-subscribing
- * is idempotent.
+ * Single API call: Kit's v4 `GET /subscribers?email_address=…` filter returns
+ * the matching subscriber (or empty). Errors are logged but swallowed —
+ * returning `false` keeps the gate's UX safe (a false negative just shows the
+ * signup form, which is harmless because re-subscribing is idempotent).
  */
 export async function isKitSubscriber(
   email: string | null | undefined
@@ -174,31 +172,23 @@ export async function isKitSubscriber(
   if (!email) return false
   const target = email.trim().toLowerCase()
   try {
-    type ListPage = {
+    type ListResp = {
       subscribers: Array<{ id: number; email_address: string; state: string }>
-      pagination: { has_next_page: boolean; end_cursor: string | null }
     }
-    let after: string | undefined
-    while (true) {
-      const params = new URLSearchParams({
-        per_page: '1000',
-        status: 'active',
-      })
-      if (after) params.set('after', after)
-      const page = await kitFetch<ListPage>(
-        `/subscribers?${params.toString()}`
-      )
-      for (const s of page.subscribers) {
-        if (s.email_address.toLowerCase() === target && s.state === 'active') {
-          return true
-        }
-      }
-      if (!page.pagination?.has_next_page || !page.pagination.end_cursor) {
-        return false
-      }
-      after = page.pagination.end_cursor
-    }
-  } catch {
+    const params = new URLSearchParams({ email_address: target })
+    const resp = await kitFetch<ListResp>(`/subscribers?${params.toString()}`)
+    return resp.subscribers.some(
+      (s) =>
+        s.email_address.toLowerCase() === target && s.state === 'active'
+    )
+  } catch (err) {
+    // Log so production failures aren't invisible. Still return false to keep
+    // the gating UX safe — a false negative is harmless (signup form shows;
+    // Kit dedupes on email so re-subscribing is idempotent).
+    console.error(
+      `[kit-subscribe] isKitSubscriber lookup failed for ${target}:`,
+      (err as Error).message
+    )
     return false
   }
 }

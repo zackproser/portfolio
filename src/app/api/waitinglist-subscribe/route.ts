@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getTagsFromReferrer } from "@/lib/subscriber-tags";
 import { subscribeToKit } from "@/lib/kit-subscribe";
 
 /**
@@ -17,9 +18,16 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
+	// Preserve referrer-derived segmentation alongside the waitlist tag, so
+	// waitlist signups are routable by the same auto-tag rules as regular
+	// signups (interest:*, vertical:*, source:*).
+	const referrerTags = getTagsFromReferrer(referrer);
 	const tags = [
-		`waitlist:${productSlug}`,
-		productSlug,
+		...new Set<string>([
+			`waitlist:${productSlug}`,
+			productSlug,
+			...referrerTags,
+		]),
 	];
 
 	const result = await subscribeToKit({

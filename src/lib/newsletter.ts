@@ -1,4 +1,3 @@
-import { logger } from '@/utils/logger'
 import { isKitSubscriber } from '@/lib/kit-subscribe'
 
 /**
@@ -6,18 +5,11 @@ import { isKitSubscriber } from '@/lib/kit-subscribe'
  * Used by gated-content modal logic to short-circuit when the visitor is
  * already on the list (no point re-prompting them to subscribe).
  *
- * Returns false on any lookup error so the UX defaults to "show the signup
- * form" rather than gating content incorrectly. Re-subscribing is idempotent
- * in Kit, so a false negative is harmless.
+ * Failures are logged inside `isKitSubscriber` and surfaced as `false` —
+ * a false negative is harmless because re-subscribing is idempotent.
  */
 export async function isEmailSubscribed(
   email: string | null | undefined,
 ): Promise<boolean> {
-  if (!email) return false
-  try {
-    return await isKitSubscriber(email)
-  } catch (err) {
-    logger.error('Failed to check Kit subscription', err)
-    return false
-  }
+  return isKitSubscriber(email)
 }
