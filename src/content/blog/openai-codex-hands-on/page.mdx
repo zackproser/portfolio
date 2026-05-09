@@ -1,0 +1,50 @@
+export const campaign = 'openai-codex-hands-on'
+
+# Using OpenAI Codex for Real Work: A Practical Guide
+
+I've been using Codex directly via the API for several months now, outside of GitHub Copilot. Here's what I've learned about where it actually shines — and where it falls short.
+
+## What Codex Actually Is
+
+Codex is OpenAI's model specifically fine-tuned for code generation and completion. It's the engine running GitHub Copilot's suggestions under the hood. The API access gives you more control: you can set temperature, pick specific models, and integrate it into tools Copilot doesn't reach.
+
+The `codex` model ID is `gpt-4o` in the latest API — OpenAI has consolidated things, so the dedicated Codex endpoint is now just the chat completions API with a code-focused system prompt.
+
+## Where Codex Excels
+
+**Boilerplate generation at scale.** I use it to generate test scaffolding, factory classes, and repetitive CRUD operations. Feed it a schema and ask for a Python dataclass with validation — it handles that cleanly.
+
+**Documentation extraction.** Point it at a function and ask for a docstring. It's good at reading intent from variable names and producing sensible output without much context.
+
+**Language translation.** Converting a JavaScript module to TypeScript, or translating Python 2 to Python 3 — Codex handles the mechanical parts so I can focus on the logic changes.
+
+**Shell command generation.** Describe what you want in natural language: "list all files modified in the last 7 days, excluding node_modules, sorted by size" — Codex usually produces the correct `find` command.
+
+## Where It Struggles
+
+**Understanding large codebases.** Codex has context window limits. It can't see your entire repo — you have to feed it the relevant snippets. The quality of output depends heavily on what context you provide.
+
+**Novel algorithms.** If you've never implemented something and don't know the right search terms, Codex will confidently generate plausible-looking wrong code. It doesn't know what it doesn't know.
+
+**Debugging.** Codex can explain what's wrong with code you've identified as broken, but finding the bug in the first place still requires you. It can suggest fixes for compile errors, but logical errors need human diagnosis.
+
+## My Workflow
+
+I keep a split-pane setup: Codex API responses on the right, my editor on the left. I use a small wrapper script that sends the selected code plus my prompt to the API and streams the response back.
+
+```bash
+# Example: generate a Python test fixture
+codex "write a pytest fixture for mocking this API call"
+```
+
+The key habit: always review before committing. Codex accelerates the mechanical parts of coding, but judgment about *what* to write remains human.
+
+## Is It Worth the API Cost?
+
+For infrequent use, GitHub Copilot covers most needs at a flat subscription price. Direct API access makes sense when you're building Codex into automated workflows — CI pipelines that flag complex functions, scripts that generate boilerplate across a hundred files, tools that don't have Copilot integrations.
+
+The API pricing is reasonable for code generation tasks. I spend less than $20/month for heavy daily use.
+
+---
+
+Codex is a power tool. It amplifies what you're already able to do — it doesn't replace the underlying skill. If you know what you want to build, it helps you build it faster. If you don't, you'll need to figure that out first.

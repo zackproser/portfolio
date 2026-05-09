@@ -1,0 +1,23 @@
+{
+  "title": "How Firecrawl Handles JavaScript Rendering for Web Scraping",
+  "author": "Zachary Proser",
+  "date": "2026-05-09",
+  "description": "Firecrawl's JavaScript rendering pipeline handles SPAs, client-side hydration, infinite scroll, and dynamic content — without you managing a single browser instance.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-javascript-rendering",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "firecrawl javascript rendering",
+    "scrape javascript website",
+    "spa web scraping",
+    "client side rendering scraping",
+    "dynamic content extraction",
+    "headless browser alternatives"
+  ],
+  "tags": [
+    "Web Scraping",
+    "AI Tools",
+    "Developer Tools",
+    "Firecrawl"
+  ]
+}
