@@ -50,6 +50,13 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
+	if (result.failedTags.length > 0) {
+		console.warn(
+			`[waitinglist] subscribed ${email} (id ${result.subscriberId}); ${result.failedTags.length}/${tags.length} tags failed:`,
+			result.failedTags,
+		);
+	}
+
 	return new NextResponse(
 		JSON.stringify({
 			data: `Successfully added ${email} to ${productSlug} waitlist`,
