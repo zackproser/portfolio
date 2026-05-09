@@ -130,6 +130,13 @@ export async function subscribeToKit(
     if (args.firstName) body.first_name = args.firstName
     const sub = await kitFetch<SubResp>('/subscribers', { method: 'POST', body })
 
+    if (sub.subscriber.state !== 'active') {
+      return {
+        ok: false,
+        error: `Subscriber exists but is in '${sub.subscriber.state}' state. Please resubscribe through the Kit form to reactivate.`,
+      }
+    }
+
     const appliedTags: string[] = []
     const failedTags: Array<{ tag: string; reason: string }> = []
     if (args.tags && args.tags.length > 0) {
