@@ -1,3 +1,5 @@
+import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
 export const campaign = 'openai-codex-hands-on'
 
 # Using OpenAI Codex for Real Work: A Practical Guide
@@ -20,6 +22,8 @@ The `codex` model ID is `gpt-4o` in the latest API — OpenAI has consolidated t
 
 **Shell command generation.** Describe what you want in natural language: "list all files modified in the last 7 days, excluding node_modules, sorted by size" — Codex usually produces the correct `find` command.
 
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
+
 ## Where It Struggles
 
 **Understanding large codebases.** Codex has context window limits. It can't see your entire repo — you have to feed it the relevant snippets. The quality of output depends heavily on what context you provide.
@@ -38,6 +42,8 @@ codex "write a pytest fixture for mocking this API call"
 ```
 
 The key habit: always review before committing. Codex accelerates the mechanical parts of coding, but judgment about *what* to write remains human.
+
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Is It Worth the API Cost?
 

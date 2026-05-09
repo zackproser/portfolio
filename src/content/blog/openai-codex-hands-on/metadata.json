@@ -3,7 +3,7 @@
   "author": "Zachary Proser",
   "date": "2026-5-9",
   "description": "Codex powers GitHub Copilot's suggestions, but you can also access it directly via API. Here's how to integrate Codex into your development workflow.",
-  "image": "https://zackproser.b-cdn.net/images/granola-hero.webp",
+  "image": "https://zackproser.b-cdn.net/images/codex-hero.webp",
   "tags": [
     "openai",
     "codex",
