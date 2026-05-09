@@ -18,6 +18,13 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
+	if (!productSlug) {
+		return new NextResponse(
+			JSON.stringify({ data: "Error: no product slug found in request" }),
+			{ status: 400 },
+		);
+	}
+
 	// Preserve referrer-derived segmentation alongside the waitlist tag, so
 	// waitlist signups are routable by the same auto-tag rules as regular
 	// signups (interest:*, vertical:*, source:*).
