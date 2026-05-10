@@ -111,7 +111,7 @@ describe('subscribeToResend', () => {
     })
 
     const eventCall = fetchMock.mock.calls[1]
-    expect(eventCall[0]).toBe('https://api.resend.com/events/send')
+    expect(eventCall[0]).toBe('https://api.resend.com/events')
     expect(eventCall[1].method).toBe('POST')
     expect(JSON.parse(eventCall[1].body)).toEqual({
       event: SIGNUP_EVENT_NAME,
