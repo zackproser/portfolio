@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendFreeChaptersEmail } from "@/lib/postmark";
-import { getContentWithComponentByDirectorySlug, getAllPurchasableContent, getContentSlugs } from "@/lib/content-handlers";
+import { getContentWithComponentByDirectorySlug } from "@/lib/content-handlers";
 import { recordFreeChapterRequest, markFreeChapterRequestFulfilled } from "@/lib/free-chapters";
 import { getTagsFromReferrer } from "@/lib/subscriber-tags";
+import { subscribeToResend } from "@/lib/resend-subscribe";
 import { auth } from "../../../../auth";
 
 export async function POST(req: NextRequest) {
 	console.log(`📬 [API] Received free chapters request`);
-	
-	// Get data submitted in the request's body.
-	const { email, productSlug, referrer } = await req.json();
-	console.log(`📬 [API] Request data: email=${email}, productSlug=${productSlug}, referrer=${referrer || 'none'}`);
 
-	// If email is missing, return an error.
+	const { email, productSlug, referrer } = await req.json();
+	console.log(
+		`📬 [API] Request data: email=${email}, productSlug=${productSlug}, referrer=${referrer || 'none'}`,
+	);
+
 	if (!email) {
 		console.log(`📬 [API] Rejecting request - missing email`);
 		return new NextResponse(
@@ -29,63 +30,43 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
-	// First, subscribe the user to the newsletter using EmailOctopus
-	console.log(`📬 [API] Preparing to subscribe user to EmailOctopus`);
-	const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
-	const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID;
-	const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`;
-	
-	console.log(`📬 [API] EmailOctopus configuration: API Key exists=${!!emailOctopusAPIKey}, List ID exists=${!!emailOctopusListId}`);
+	// Subscribe via Resend. Tags: gated-content marker + auto-tags from referrer.
+	const referrerTags = getTagsFromReferrer(referrer || '');
+	const allTags = [
+		...new Set<string>([`free-chapters-${productSlug}`, ...referrerTags]),
+	];
 
-    // Build payload with only supported fields to avoid INVALID_PARAMETERS
-    const referrerTags = getTagsFromReferrer(referrer || '')
-    const allTags = [...new Set([`free-chapters-${productSlug}`, ...referrerTags])]
-    const subscriptionData: Record<string, any> = {
-        api_key: emailOctopusAPIKey,
-        email_address: email,
-        tags: allTags,
-        status: "SUBSCRIBED",
-    };
-    // Always write to the 'Referrer' field on EmailOctopus (list has this field)
-    subscriptionData.fields = { Referrer: referrer || `/products/${productSlug}` };
-
-	const requestOptions = {
-		crossDomain: true,
-		method: "POST",
-		headers: { "Content-type": "application/json" },
-		body: JSON.stringify(subscriptionData),
-	};
+	console.log(`📬 [API] Subscribing ${email} to Resend with ${allTags.length} tags`);
+	const subResult = await subscribeToResend({ email, tags: allTags });
+	if (!subResult.ok) {
+		console.error(`📬 [API] Resend subscribe failed: ${subResult.error}`);
+		return new NextResponse(
+			JSON.stringify({ success: false, error: `Failed to subscribe: ${subResult.error}` }),
+			{ status: 500 },
+		);
+	}
+	console.log(`📬 [API] Resend subscription successful (id ${subResult.contactId})`);
 
 	try {
-		// Subscribe the user to the newsletter
-		console.log(`📬 [API] Sending subscription request to EmailOctopus`);
-		const subscriptionResponse = await fetch(emailOctopusAPIEndpoint, requestOptions);
-		
-		if (!subscriptionResponse.ok) {
-			const errorText = await subscriptionResponse.text();
-			console.error(`📬 [API] EmailOctopus subscription failed: ${subscriptionResponse.status} ${subscriptionResponse.statusText}`, errorText);
-			throw new Error(`Failed to subscribe: ${subscriptionResponse.statusText}`);
-		}
-		
-		console.log(`📬 [API] EmailOctopus subscription successful`);
-
-		// Get the product details to include in the email
 		console.log(`📬 [API] Loading content for product slug: ${productSlug}`);
 		const contentResult = await getContentWithComponentByDirectorySlug(
 			'blog',
-			productSlug
+			productSlug,
 		);
-		
+
 		if (!contentResult) {
 			console.error(`🚨 [API] Failed to load content for product: ${productSlug}`);
-			return NextResponse.json({ error: "Failed to load chapter content." }, { status: 500 });
+			return NextResponse.json(
+				{ error: "Failed to load chapter content." },
+				{ status: 500 },
+			);
 		}
-		
-		// Extract the content (metadata) and the MDX component
-		const { MdxContent, content } = contentResult;
 
-		console.log(`📬 [API] Content loaded successfully for: ${productSlug}`);
-		console.log(`📬 [API] Sending free chapter email for ${email} - Chapter: ${content.title}, Product: ${content.title}`);
+		const { content } = contentResult;
+
+		console.log(
+			`📬 [API] Sending free chapter email for ${email} - Chapter: ${content.title}, Product: ${content.title}`,
+		);
 
 		await sendFreeChaptersEmail({
 			To: email,
@@ -95,18 +76,16 @@ export async function POST(req: NextRequest) {
 
 		console.log(`📬 [API] Free chapters email requested via Postmark for ${email}`);
 
-		// Get the current user session (if any)
-		console.log(`📬 [API] Checking for authenticated user session`);
 		const session = await auth();
-		const userId = session?.user?.id || undefined; // Ensure userId is string | undefined, not null
-		console.log(`📬 [API] User authentication status: ${userId ? 'Authenticated' : 'Not authenticated'}`);
+		const userId = session?.user?.id || undefined;
+		console.log(
+			`📬 [API] User authentication status: ${userId ? 'Authenticated' : 'Not authenticated'}`,
+		);
 
-		// Record the free chapter request in the database
 		console.log(`📬 [API] Recording free chapter request in database`);
 		await recordFreeChapterRequest(email, productSlug, userId);
 		console.log(`📬 [API] Free chapter request recorded successfully`);
 
-		// Update the database to mark the request as fulfilled
 		console.log(`📬 [API] Marking free chapter request as fulfilled in database`);
 		await markFreeChapterRequestFulfilled(email, productSlug);
 		console.log(`📬 [API] Free chapter request marked as fulfilled`);
@@ -133,4 +112,4 @@ export async function POST(req: NextRequest) {
 			{ status: 500 },
 		);
 	}
-} 
+}

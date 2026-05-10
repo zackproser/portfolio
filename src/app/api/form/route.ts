@@ -1,76 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTagsFromReferrer } from "@/lib/subscriber-tags";
+import { subscribeToResend } from "@/lib/resend-subscribe";
 
 export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
-	// Get data submitted in the request's body.
 	const body = await req.json();
 
-	// If email is missing, return an error.
-	if (body.email === "") {
+	if (body.email === "" || !body.email) {
 		return new NextResponse(
 			JSON.stringify({ data: "Error: no valid email found in request" }),
 			{ status: 400 },
 		);
 	}
 
-	const emailOctopusAPIKey = process.env.EMAIL_OCTOPUS_API_KEY;
-	const emailOctopusListId = process.env.EMAIL_OCTOPUS_LIST_ID;
-	const newMemberEmailAddress = body.email;
-	const emailOctopusAPIEndpoint = `https://emailoctopus.com/api/1.6/lists/${emailOctopusListId}/contacts`;
-
-	// Auto-tag based on referrer page (e.g., voice-ai, real-estate, etc.)
+	// Auto-tag based on referrer page (e.g., voice-ai, real-estate, etc.).
+	// Tags are forwarded as `data.tags` on the fired `newsletter.signup`
+	// event so Resend automations can branch on them.
 	const referrerTags = getTagsFromReferrer(body.referrer);
 	const explicitTags = body.tags && Array.isArray(body.tags) ? body.tags : [];
-	const allTags = [...new Set([...explicitTags, ...referrerTags])];
+	const allTags = [...new Set<string>([...explicitTags, ...referrerTags])];
 
-	const data: { [key: string]: any } = {
-		api_key: emailOctopusAPIKey,
-		email_address: newMemberEmailAddress,
-		fields: {
-			Referrer: body.referrer,
-		},
-		status: "SUBSCRIBED",
-		tags: allTags
-	};
+	const result = await subscribeToResend({
+		email: body.email,
+		tags: allTags,
+	});
 
-	if (data.tags && data.tags.length === 0) {
-		delete data.tags;
-	}
-
-	const requestOptions = {
-		crossDomain: true,
-		method: "POST",
-		headers: { "Content-type": "application/json" },
-		body: JSON.stringify(data),
-	};
-
-	try {
-		const response = await fetch(emailOctopusAPIEndpoint, requestOptions);
-		if (!response.ok) {
-			throw new Error(`Failed to subscribe: ${response.statusText}`);
-		}
-		console.dir(await response.json());
+	if (!result.ok) {
+		console.error(`[form] Resend subscribe failed for ${body.email}: ${result.error}`);
 		return new NextResponse(
-			JSON.stringify({
-				data: `Think we successfully subscribed ${body.email}`,
-			}),
-			{ status: 200 },
-		);
-	} catch (error: unknown) {
-		if (error instanceof Error) {
-			console.error(error.message);
-			return new NextResponse(
-				JSON.stringify({ data: `Error: ${error.message}` }),
-				{ status: 500 },
-			);
-		}
-		// If error is not an instance of Error, it's a type we weren't expecting and we'll just log it as is.
-		console.error(error);
-		return new NextResponse(
-			JSON.stringify({ data: "An unknown error occurred" }),
+			JSON.stringify({ data: `Error: ${result.error}` }),
 			{ status: 500 },
 		);
 	}
+
+	return new NextResponse(
+		JSON.stringify({
+			data: `Successfully subscribed ${body.email}`,
+			contactId: result.contactId,
+			eventFired: result.eventFired,
+			tagsForwarded: result.tagsForwarded,
+		}),
+		{ status: 200 },
+	);
 }
