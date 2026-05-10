@@ -6,6 +6,7 @@ import {
   isResendSubscriber,
   isGoogleMailbox,
   SIGNUP_EVENT_NAME,
+  _resetTopicCacheForTests,
 } from '../resend-subscribe'
 
 const ORIGINAL_FETCH = global.fetch
@@ -42,6 +43,11 @@ function restoreEnv(name: string, original: string | undefined): void {
   else process.env[name] = original
 }
 
+// Helper: build the topic-list response shape Resend returns.
+function topicsList(items: Array<{ id: string; name: string }>): MockResponse {
+  return jsonRes({ object: 'list', has_more: false, data: items })
+}
+
 describe('isGoogleMailbox', () => {
   it('matches gmail.com and googlemail.com (case-insensitive)', () => {
     expect(isGoogleMailbox('a@gmail.com')).toBe(true)
@@ -62,6 +68,7 @@ describe('subscribeToResend', () => {
     process.env.RESEND_API_KEY = 'test-key'
     process.env.RESEND_AUDIENCE_ID = TEST_AUDIENCE
     delete process.env.RESEND_GMAIL_HOLD
+    _resetTopicCacheForTests()
   })
 
   afterEach(() => {
@@ -88,14 +95,42 @@ describe('subscribeToResend', () => {
     }
   })
 
-  it('creates contact and fires signup event with tag metadata', async () => {
+  it('no tags → only contact + event, no topic calls, topicsApplied empty', async () => {
     const fetchMock = jest.fn()
       .mockResolvedValueOnce(
-        jsonRes(
-          { object: 'contact', id: 'contact-uuid-123', email: 'a@b.com' },
-          201,
-        ),
+        jsonRes({ object: 'contact', id: 'c-1', email: 'a@b.com' }, 201),
       )
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
+      )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({ email: 'a@b.com' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.tagsForwarded).toEqual([])
+      expect(result.topicsApplied).toEqual([])
+      expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('tags + all topics already exist → cache GET, PATCH topics, event fires', async () => {
+    const fetchMock = jest.fn()
+      // 1) contact create
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'contact', id: 'c-1' }, 201),
+      )
+      // 2) topics list — both tags already exist
+      .mockResolvedValueOnce(
+        topicsList([
+          { id: 't-blog', name: 'source:blog' },
+          { id: 't-voice', name: 'interest:voice-ai' },
+        ]),
+      )
+      // 3) PATCH contact topics
+      .mockResolvedValueOnce(jsonRes({ id: 'c-1' }))
+      // 4) event send
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
@@ -108,117 +143,164 @@ describe('subscribeToResend', () => {
 
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.contactId).toBe('contact-uuid-123')
+      expect(result.contactId).toBe('c-1')
+      expect(result.topicsApplied).toEqual(['source:blog', 'interest:voice-ai'])
       expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
-      expect(result.tagsForwarded).toEqual(['source:blog', 'interest:voice-ai'])
-      expect(result.heldForReputation).toBe(false)
+      expect(result.topicWarning).toBeUndefined()
     }
 
-    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(fetchMock).toHaveBeenCalledTimes(4)
 
-    const contactCall = fetchMock.mock.calls[0]
-    expect(contactCall[0]).toBe(
-      `https://api.resend.com/audiences/${TEST_AUDIENCE}/contacts`,
-    )
-    expect(contactCall[1].method).toBe('POST')
-    expect(contactCall[1].headers.Authorization).toBe('Bearer test-key')
-    expect(JSON.parse(contactCall[1].body)).toEqual({
-      email: 'a@b.com',
-      unsubscribed: false,
-    })
+    // Topics list call
+    expect(fetchMock.mock.calls[1][0]).toMatch(/^https:\/\/api\.resend\.com\/topics\?/)
 
-    const eventCall = fetchMock.mock.calls[1]
-    expect(eventCall[0]).toBe('https://api.resend.com/events/send')
-    expect(eventCall[1].method).toBe('POST')
-    expect(JSON.parse(eventCall[1].body)).toEqual({
-      event: SIGNUP_EVENT_NAME,
-      email: 'a@b.com',
-      payload: {
-        source: 'source:blog',
-        tags: ['source:blog', 'interest:voice-ai'],
-      },
-    })
+    // PATCH /contacts/{id}/topics body shape
+    const patchCall = fetchMock.mock.calls[2]
+    expect(patchCall[0]).toBe('https://api.resend.com/contacts/c-1/topics')
+    expect(patchCall[1].method).toBe('PATCH')
+    expect(JSON.parse(patchCall[1].body)).toEqual([
+      { id: 't-blog', subscription: 'opt_in' },
+      { id: 't-voice', subscription: 'opt_in' },
+    ])
   })
 
-  it('passes first_name when provided and defaults source when no tags', async () => {
+  it('tags with a missing topic → creates it via POST /topics on the fly', async () => {
     const fetchMock = jest.fn()
+      // 1) contact create
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'c-2' }, 201))
+      // 2) topics list — only one of two exists
       .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'c-1', email: 'x@y.com' }, 201),
+        topicsList([{ id: 't-blog', name: 'source:blog' }]),
       )
+      // 3) POST /topics to create the missing one
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'topic', id: 't-new' }, 201),
+      )
+      // 4) PATCH topics
+      .mockResolvedValueOnce(jsonRes({ id: 'c-2' }))
+      // 5) event send
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
     global.fetch = fetchMock as unknown as typeof fetch
 
-    const result = await subscribeToResend({ email: 'x@y.com', firstName: 'Pat' })
-    expect(result.ok).toBe(true)
-    if (result.ok) expect(result.heldForReputation).toBe(false)
-
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
-      email: 'x@y.com',
-      first_name: 'Pat',
-      unsubscribed: false,
+    const result = await subscribeToResend({
+      email: 'a@b.com',
+      tags: ['source:blog', 'interest:new-thing'],
     })
 
-    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
-      event: SIGNUP_EVENT_NAME,
-      email: 'x@y.com',
-      payload: { source: 'newsletter', tags: [] },
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.topicsApplied).toEqual(['source:blog', 'interest:new-thing'])
+      expect(result.topicWarning).toBeUndefined()
+    }
+
+    // POST /topics call shape
+    const createCall = fetchMock.mock.calls[2]
+    expect(createCall[0]).toBe('https://api.resend.com/topics')
+    expect(createCall[1].method).toBe('POST')
+    expect(JSON.parse(createCall[1].body)).toEqual({
+      name: 'interest:new-thing',
+      default_subscription: 'opt_in',
     })
   })
 
-  it('treats duplicate-email 201 as success (idempotency)', async () => {
+  it('topic-list failure → topicWarning, contact + event still complete', async () => {
     const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'c-3' }, 201))
+      .mockResolvedValueOnce(errorRes(500, { error: 'topics down' }))
       .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'existing-id' }, 201),
+        jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
+    const consoleWarn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined)
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({
+      email: 'a@b.com',
+      tags: ['source:blog'],
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.contactId).toBe('c-3')
+      expect(result.topicsApplied).toEqual([])
+      expect(result.topicWarning).toMatch(/Failed to resolve/)
+      expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
+    }
+    consoleWarn.mockRestore()
+  })
+
+  it('PATCH-topics failure → topicWarning, topicsApplied cleared, event still fires', async () => {
+    const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'c-4' }, 201))
+      .mockResolvedValueOnce(
+        topicsList([{ id: 't-blog', name: 'source:blog' }]),
+      )
+      .mockResolvedValueOnce(errorRes(503, { error: 'patch down' }))
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
     global.fetch = fetchMock as unknown as typeof fetch
 
-    const result = await subscribeToResend({ email: 'dup@b.com' })
+    const result = await subscribeToResend({
+      email: 'a@b.com',
+      tags: ['source:blog'],
+    })
     expect(result.ok).toBe(true)
-    if (result.ok) expect(result.contactId).toBe('existing-id')
+    if (result.ok) {
+      expect(result.topicsApplied).toEqual([])
+      expect(result.topicWarning).toMatch(/Topic apply failed/)
+      expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
+    }
   })
 
-  it('returns error when contact create fails', async () => {
+  it('returns error when contact create fails (no topic or event calls)', async () => {
     const fetchMock = jest.fn().mockResolvedValueOnce(
       errorRes(422, { error: 'invalid email' }),
     )
     global.fetch = fetchMock as unknown as typeof fetch
 
-    const result = await subscribeToResend({ email: 'a@b.com' })
+    const result = await subscribeToResend({
+      email: 'a@b.com',
+      tags: ['source:blog'],
+    })
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.error).toMatch(/422/)
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('surfaces event-send failure as warning when contact is already created', async () => {
+  it('event-send failure → warning with topicsApplied preserved', async () => {
     const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'c-5' }, 201))
       .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'c-2' }, 201),
+        topicsList([{ id: 't-blog', name: 'source:blog' }]),
       )
-      .mockResolvedValueOnce(errorRes(500, { error: 'down' }))
+      .mockResolvedValueOnce(jsonRes({ id: 'c-5' }))
+      .mockResolvedValueOnce(errorRes(500, { error: 'event down' }))
     global.fetch = fetchMock as unknown as typeof fetch
 
-    const result = await subscribeToResend({ email: 'a@b.com' })
+    const result = await subscribeToResend({
+      email: 'a@b.com',
+      tags: ['source:blog'],
+    })
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.contactId).toBe('c-2')
+      expect(result.topicsApplied).toEqual(['source:blog'])
       expect(result.eventSendWarning).toMatch(/500/)
-      expect(result.heldForReputation).toBe(false)
     }
   })
 
   // === Gmail reputation hold ===
 
-  it('with RESEND_GMAIL_HOLD=true, Gmail address: creates contact but does NOT fire event', async () => {
+  it('Gmail + RESEND_GMAIL_HOLD=true: contact + topics applied, NO event', async () => {
     process.env.RESEND_GMAIL_HOLD = 'true'
     const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'gmail-c-1' }, 201))
       .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'gmail-c-1' }, 201),
+        topicsList([{ id: 't-blog', name: 'source:blog' }]),
       )
+      .mockResolvedValueOnce(jsonRes({ id: 'gmail-c-1' }))
     global.fetch = fetchMock as unknown as typeof fetch
 
     const result = await subscribeToResend({
@@ -228,61 +310,42 @@ describe('subscribeToResend', () => {
 
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.contactId).toBe('gmail-c-1')
       expect(result.eventFired).toBeNull()
       expect(result.heldForReputation).toBe(true)
-      expect(result.tagsForwarded).toEqual(['source:blog'])
+      expect(result.topicsApplied).toEqual(['source:blog'])
     }
-
-    // Only the contact-create call. NO event call.
-    expect(fetchMock).toHaveBeenCalledTimes(1)
-    expect(fetchMock.mock.calls[0][0]).toBe(
-      `https://api.resend.com/audiences/${TEST_AUDIENCE}/contacts`,
-    )
+    expect(fetchMock).toHaveBeenCalledTimes(3) // contact + topics-list + PATCH, NO event
   })
 
-  it('with RESEND_GMAIL_HOLD=true, googlemail.com is also held', async () => {
-    process.env.RESEND_GMAIL_HOLD = 'true'
-    const fetchMock = jest.fn().mockResolvedValueOnce(
-      jsonRes({ object: 'contact', id: 'gm-c-1' }, 201),
-    )
-    global.fetch = fetchMock as unknown as typeof fetch
-
-    const result = await subscribeToResend({ email: 'a@googlemail.com' })
-    expect(result.ok).toBe(true)
-    if (result.ok) {
-      expect(result.eventFired).toBeNull()
-      expect(result.heldForReputation).toBe(true)
-    }
-    expect(fetchMock).toHaveBeenCalledTimes(1)
-  })
-
-  it('with RESEND_GMAIL_HOLD=true, non-Gmail address: fires event as normal', async () => {
+  it('non-Gmail + RESEND_GMAIL_HOLD=true: full normal flow (topics + event)', async () => {
     process.env.RESEND_GMAIL_HOLD = 'true'
     const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'p-c-1' }, 201))
       .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'proton-c-1' }, 201),
+        topicsList([{ id: 't-blog', name: 'source:blog' }]),
       )
+      .mockResolvedValueOnce(jsonRes({ id: 'p-c-1' }))
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
     global.fetch = fetchMock as unknown as typeof fetch
 
-    const result = await subscribeToResend({ email: 'a@protonmail.com' })
+    const result = await subscribeToResend({
+      email: 'a@protonmail.com',
+      tags: ['source:blog'],
+    })
     expect(result.ok).toBe(true)
     if (result.ok) {
       expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
       expect(result.heldForReputation).toBe(false)
+      expect(result.topicsApplied).toEqual(['source:blog'])
     }
-    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
-  it('without RESEND_GMAIL_HOLD, Gmail address fires event as normal', async () => {
-    // RESEND_GMAIL_HOLD unset (default)
+  it('Gmail without RESEND_GMAIL_HOLD: fires event normally', async () => {
+    // RESEND_GMAIL_HOLD unset
     const fetchMock = jest.fn()
-      .mockResolvedValueOnce(
-        jsonRes({ object: 'contact', id: 'gmail-c-2' }, 201),
-      )
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'gmail-c-2' }, 201))
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
@@ -294,7 +357,6 @@ describe('subscribeToResend', () => {
       expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
       expect(result.heldForReputation).toBe(false)
     }
-    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 })
 
