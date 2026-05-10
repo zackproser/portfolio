@@ -11,9 +11,9 @@
  *   - There is one or more "audiences" (lists); contacts belong to audiences.
  *   - There is no first-class "tag" concept on contacts. We preserve
  *     tag-style segmentation by firing a typed event after contact creation,
- *     passing tag names through the event `data` payload. Automations in the
- *     Resend dashboard subscribe to the event name and may branch on
- *     `data.tags` / `data.source`.
+ *     passing tag names through the event `payload` object. Automations in
+ *     the Resend dashboard subscribe to the event name and may branch on
+ *     `payload.tags` / `payload.source`.
  *
  * Signup flow per request:
  *   1) POST /audiences/{id}/contacts  → idempotent (existing email returns 201
@@ -33,6 +33,20 @@ export const SIGNUP_EVENT_NAME = 'newsletter.signup'
 
 function audienceId(): string {
   return process.env.RESEND_AUDIENCE_ID || DEFAULT_AUDIENCE_ID
+}
+
+/**
+ * Returns true when `email` is at a Google-operated public mailbox (gmail.com
+ * or googlemail.com). Used to gate sending while sender-domain reputation at
+ * Gmail warms up — Google Workspace domains are NOT detected here (impossible
+ * from the address alone; would need MX lookup).
+ */
+export function isGoogleMailbox(email: string): boolean {
+  return /@(gmail|googlemail)\.com$/i.test(email.trim())
+}
+
+function gmailHoldEnabled(): boolean {
+  return process.env.RESEND_GMAIL_HOLD === 'true'
 }
 
 type ResendInit = {
@@ -65,8 +79,8 @@ async function resendFetch<T>(path: string, init: ResendInit = {}): Promise<Rese
 export type ResendSubscribeArgs = {
   email: string
   firstName?: string
-  // Preserved as `data.tags` on the fired event (Resend has no native tags).
-  // The first tag is also surfaced as `data.source` for automation branching.
+  // Preserved as `payload.tags` on the fired event (Resend has no native
+  // tags). The first tag is also surfaced as `payload.source` for branching.
   tags?: string[]
 }
 
@@ -74,8 +88,15 @@ export type ResendSubscribeResult =
   | {
       ok: true
       contactId: string
-      eventFired: string
+      // null when held for reputation warmup (Gmail subscriber while
+      // RESEND_GMAIL_HOLD=true). The contact is still on the audience; only
+      // the welcome-trigger event is suppressed.
+      eventFired: string | null
       tagsForwarded: string[]
+      heldForReputation: boolean
+      // Present when the contact was created but /events/send failed.
+      // Surfaced so callers can log the partial failure — the subscriber
+      // is on the audience either way.
       eventSendWarning?: string
     }
   | { ok: false; error: string }
@@ -111,6 +132,21 @@ export async function subscribeToResend(
     }
 
     const tags = args.tags ?? []
+
+    // Reputation hold: while RESEND_GMAIL_HOLD=true, contacts at gmail.com
+    // and googlemail.com are added to the audience (captured) but the
+    // welcome-trigger event is NOT fired. Lets us build sender-domain
+    // reputation against non-Gmail providers first.
+    if (isGoogleMailbox(args.email) && gmailHoldEnabled()) {
+      return {
+        ok: true,
+        contactId,
+        eventFired: null,
+        tagsForwarded: tags,
+        heldForReputation: true,
+      }
+    }
+
     const eventRes = await resendFetch<EventSendResp>(`/events/send`, {
       method: 'POST',
       body: {
@@ -130,6 +166,7 @@ export async function subscribeToResend(
         contactId,
         eventFired: SIGNUP_EVENT_NAME,
         tagsForwarded: tags,
+        heldForReputation: false,
         eventSendWarning: `Resend event send failed: HTTP ${eventRes.status}`,
       }
     }
@@ -139,6 +176,7 @@ export async function subscribeToResend(
       contactId,
       eventFired: SIGNUP_EVENT_NAME,
       tagsForwarded: tags,
+      heldForReputation: false,
     }
   } catch (err) {
     return { ok: false, error: (err as Error).message }

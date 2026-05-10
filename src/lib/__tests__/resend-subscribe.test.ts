@@ -4,12 +4,14 @@
 import {
   subscribeToResend,
   isResendSubscriber,
+  isGoogleMailbox,
   SIGNUP_EVENT_NAME,
 } from '../resend-subscribe'
 
 const ORIGINAL_FETCH = global.fetch
 const ORIGINAL_API_KEY = process.env.RESEND_API_KEY
 const ORIGINAL_AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID
+const ORIGINAL_GMAIL_HOLD = process.env.RESEND_GMAIL_HOLD
 
 type MockResponse = {
   ok: boolean
@@ -35,18 +37,38 @@ function errorRes(status: number, body: unknown = { error: 'oops' }): MockRespon
 
 const TEST_AUDIENCE = '5f50ed9c-cf50-4a17-8e1e-1b782a4414d1'
 
+function restoreEnv(name: string, original: string | undefined): void {
+  if (original === undefined) delete process.env[name]
+  else process.env[name] = original
+}
+
+describe('isGoogleMailbox', () => {
+  it('matches gmail.com and googlemail.com (case-insensitive)', () => {
+    expect(isGoogleMailbox('a@gmail.com')).toBe(true)
+    expect(isGoogleMailbox('A@GMAIL.COM')).toBe(true)
+    expect(isGoogleMailbox('a@googlemail.com')).toBe(true)
+    expect(isGoogleMailbox('  a@gmail.com  ')).toBe(true)
+  })
+  it('rejects non-Google mailboxes', () => {
+    expect(isGoogleMailbox('a@protonmail.com')).toBe(false)
+    expect(isGoogleMailbox('a@workos.com')).toBe(false)
+    expect(isGoogleMailbox('a@gmail.com.evil.test')).toBe(false)
+    expect(isGoogleMailbox('a@yahoo.com')).toBe(false)
+  })
+})
+
 describe('subscribeToResend', () => {
   beforeEach(() => {
     process.env.RESEND_API_KEY = 'test-key'
     process.env.RESEND_AUDIENCE_ID = TEST_AUDIENCE
+    delete process.env.RESEND_GMAIL_HOLD
   })
 
   afterEach(() => {
     global.fetch = ORIGINAL_FETCH
-    if (ORIGINAL_API_KEY === undefined) delete process.env.RESEND_API_KEY
-    else process.env.RESEND_API_KEY = ORIGINAL_API_KEY
-    if (ORIGINAL_AUDIENCE_ID === undefined) delete process.env.RESEND_AUDIENCE_ID
-    else process.env.RESEND_AUDIENCE_ID = ORIGINAL_AUDIENCE_ID
+    restoreEnv('RESEND_API_KEY', ORIGINAL_API_KEY)
+    restoreEnv('RESEND_AUDIENCE_ID', ORIGINAL_AUDIENCE_ID)
+    restoreEnv('RESEND_GMAIL_HOLD', ORIGINAL_GMAIL_HOLD)
   })
 
   it('rejects empty email without calling Resend', async () => {
@@ -68,18 +90,12 @@ describe('subscribeToResend', () => {
 
   it('creates contact and fires signup event with tag metadata', async () => {
     const fetchMock = jest.fn()
-      // POST /audiences/{id}/contacts
       .mockResolvedValueOnce(
         jsonRes(
-          {
-            object: 'contact',
-            id: 'contact-uuid-123',
-            email: 'a@b.com',
-          },
+          { object: 'contact', id: 'contact-uuid-123', email: 'a@b.com' },
           201,
         ),
       )
-      // POST /events/send
       .mockResolvedValueOnce(
         jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
       )
@@ -95,6 +111,7 @@ describe('subscribeToResend', () => {
       expect(result.contactId).toBe('contact-uuid-123')
       expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
       expect(result.tagsForwarded).toEqual(['source:blog', 'interest:voice-ai'])
+      expect(result.heldForReputation).toBe(false)
     }
 
     expect(fetchMock).toHaveBeenCalledTimes(2)
@@ -135,6 +152,7 @@ describe('subscribeToResend', () => {
 
     const result = await subscribeToResend({ email: 'x@y.com', firstName: 'Pat' })
     expect(result.ok).toBe(true)
+    if (result.ok) expect(result.heldForReputation).toBe(false)
 
     expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
       email: 'x@y.com',
@@ -150,9 +168,6 @@ describe('subscribeToResend', () => {
   })
 
   it('treats duplicate-email 201 as success (idempotency)', async () => {
-    // Resend's behavior live-verified: posting an existing email returns 201
-    // with the same contact id and no error. The lib must not treat that as
-    // a failure.
     const fetchMock = jest.fn()
       .mockResolvedValueOnce(
         jsonRes({ object: 'contact', id: 'existing-id' }, 201),
@@ -176,7 +191,6 @@ describe('subscribeToResend', () => {
     const result = await subscribeToResend({ email: 'a@b.com' })
     expect(result.ok).toBe(false)
     if (!result.ok) expect(result.error).toMatch(/422/)
-    // Event MUST NOT fire if contact create failed.
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
@@ -193,7 +207,94 @@ describe('subscribeToResend', () => {
     if (result.ok) {
       expect(result.contactId).toBe('c-2')
       expect(result.eventSendWarning).toMatch(/500/)
+      expect(result.heldForReputation).toBe(false)
     }
+  })
+
+  // === Gmail reputation hold ===
+
+  it('with RESEND_GMAIL_HOLD=true, Gmail address: creates contact but does NOT fire event', async () => {
+    process.env.RESEND_GMAIL_HOLD = 'true'
+    const fetchMock = jest.fn()
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'contact', id: 'gmail-c-1' }, 201),
+      )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({
+      email: 'someone@gmail.com',
+      tags: ['source:blog'],
+    })
+
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.contactId).toBe('gmail-c-1')
+      expect(result.eventFired).toBeNull()
+      expect(result.heldForReputation).toBe(true)
+      expect(result.tagsForwarded).toEqual(['source:blog'])
+    }
+
+    // Only the contact-create call. NO event call.
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      `https://api.resend.com/audiences/${TEST_AUDIENCE}/contacts`,
+    )
+  })
+
+  it('with RESEND_GMAIL_HOLD=true, googlemail.com is also held', async () => {
+    process.env.RESEND_GMAIL_HOLD = 'true'
+    const fetchMock = jest.fn().mockResolvedValueOnce(
+      jsonRes({ object: 'contact', id: 'gm-c-1' }, 201),
+    )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({ email: 'a@googlemail.com' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.eventFired).toBeNull()
+      expect(result.heldForReputation).toBe(true)
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('with RESEND_GMAIL_HOLD=true, non-Gmail address: fires event as normal', async () => {
+    process.env.RESEND_GMAIL_HOLD = 'true'
+    const fetchMock = jest.fn()
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'contact', id: 'proton-c-1' }, 201),
+      )
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
+      )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({ email: 'a@protonmail.com' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
+      expect(result.heldForReputation).toBe(false)
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('without RESEND_GMAIL_HOLD, Gmail address fires event as normal', async () => {
+    // RESEND_GMAIL_HOLD unset (default)
+    const fetchMock = jest.fn()
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'contact', id: 'gmail-c-2' }, 201),
+      )
+      .mockResolvedValueOnce(
+        jsonRes({ object: 'event', event: SIGNUP_EVENT_NAME }, 202),
+      )
+    global.fetch = fetchMock as unknown as typeof fetch
+
+    const result = await subscribeToResend({ email: 'a@gmail.com' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.eventFired).toBe(SIGNUP_EVENT_NAME)
+      expect(result.heldForReputation).toBe(false)
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 })
 
@@ -205,10 +306,8 @@ describe('isResendSubscriber', () => {
 
   afterEach(() => {
     global.fetch = ORIGINAL_FETCH
-    if (ORIGINAL_API_KEY === undefined) delete process.env.RESEND_API_KEY
-    else process.env.RESEND_API_KEY = ORIGINAL_API_KEY
-    if (ORIGINAL_AUDIENCE_ID === undefined) delete process.env.RESEND_AUDIENCE_ID
-    else process.env.RESEND_AUDIENCE_ID = ORIGINAL_AUDIENCE_ID
+    restoreEnv('RESEND_API_KEY', ORIGINAL_API_KEY)
+    restoreEnv('RESEND_AUDIENCE_ID', ORIGINAL_AUDIENCE_ID)
   })
 
   it('returns false for null/empty email without calling Resend', async () => {
@@ -222,11 +321,7 @@ describe('isResendSubscriber', () => {
 
   it('returns true when contact exists and is not unsubscribed', async () => {
     const fetchMock = jest.fn().mockResolvedValueOnce(
-      jsonRes({
-        id: 'c-3',
-        email: 'target@b.com',
-        unsubscribed: false,
-      }),
+      jsonRes({ id: 'c-3', email: 'target@b.com', unsubscribed: false }),
     )
     global.fetch = fetchMock as unknown as typeof fetch
 
@@ -257,9 +352,7 @@ describe('isResendSubscriber', () => {
   })
 
   it('swallows errors and returns false', async () => {
-    const fetchMock = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('network down'))
+    const fetchMock = jest.fn().mockRejectedValueOnce(new Error('network down'))
     global.fetch = fetchMock as unknown as typeof fetch
     const consoleErr = jest
       .spyOn(console, 'error')
