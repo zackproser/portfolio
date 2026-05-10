@@ -18,7 +18,7 @@
  * Signup flow per request:
  *   1) POST /audiences/{id}/contacts  → idempotent (existing email returns 201
  *      with the same contact id and no error).
- *   2) POST /events                   → fires `newsletter.signup`, which is
+ *   2) POST /events/send              → fires `newsletter.signup`, which is
  *      the trigger the welcome-v1 automation listens on.
  *
  * Bulk imports (e.g., the EO→Resend migration) skip step 2 so existing
@@ -111,7 +111,7 @@ export async function subscribeToResend(
     }
 
     const tags = args.tags ?? []
-    const eventRes = await resendFetch<EventSendResp>(`/events`, {
+    const eventRes = await resendFetch<EventSendResp>(`/events/send`, {
       method: 'POST',
       body: {
         event: SIGNUP_EVENT_NAME,
