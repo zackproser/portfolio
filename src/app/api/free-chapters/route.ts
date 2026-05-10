@@ -49,6 +49,9 @@ export async function POST(req: NextRequest) {
 	if (subResult.eventSendWarning) {
 		console.warn(`📬 [API] Resend event send warning: ${subResult.eventSendWarning}`);
 	}
+	if (subResult.topicWarning) {
+		console.warn(`📬 [API] Resend topic warning: ${subResult.topicWarning}`);
+	}
 
 	try {
 		console.log(`📬 [API] Loading content for product slug: ${productSlug}`);

@@ -249,6 +249,9 @@ export async function subscribeToResend(
         } catch (err) {
           topicWarning = `Topic apply failed: ${(err as Error).message}`
           topicsApplied.length = 0
+          console.warn(
+            `[resend-subscribe] applyTopicsToContact failed: ${(err as Error).message}`,
+          )
         }
       }
       if (!topicWarning && failedTags.length > 0) {
@@ -289,7 +292,7 @@ export async function subscribeToResend(
       return {
         ok: true,
         contactId,
-        eventFired: SIGNUP_EVENT_NAME,
+        eventFired: null,
         tagsForwarded: tags,
         heldForReputation: false,
         topicsApplied,

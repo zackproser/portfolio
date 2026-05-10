@@ -38,6 +38,10 @@ export async function POST(req: NextRequest) {
 		console.warn(`[form] Resend event send warning: ${result.eventSendWarning}`);
 	}
 
+	if (result.topicWarning) {
+		console.warn(`[form] Resend topic warning: ${result.topicWarning}`);
+	}
+
 	return new NextResponse(
 		JSON.stringify({
 			data: `Successfully subscribed ${body.email}`,

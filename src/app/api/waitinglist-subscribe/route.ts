@@ -55,6 +55,10 @@ export async function POST(req: NextRequest) {
 		console.warn(`[waitinglist] Resend event send warning: ${result.eventSendWarning}`);
 	}
 
+	if (result.topicWarning) {
+		console.warn(`[waitinglist] Resend topic warning: ${result.topicWarning}`);
+	}
+
 	return new NextResponse(
 		JSON.stringify({
 			data: `Successfully added ${email} to ${productSlug} waitlist`,
