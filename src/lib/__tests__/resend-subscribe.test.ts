@@ -158,10 +158,12 @@ describe('subscribeToResend', () => {
     const patchCall = fetchMock.mock.calls[2]
     expect(patchCall[0]).toBe('https://api.resend.com/contacts/c-1/topics')
     expect(patchCall[1].method).toBe('PATCH')
-    expect(JSON.parse(patchCall[1].body)).toEqual([
-      { id: 't-blog', subscription: 'opt_in' },
-      { id: 't-voice', subscription: 'opt_in' },
-    ])
+    expect(JSON.parse(patchCall[1].body)).toEqual({
+      topics: [
+        { id: 't-blog', subscription: 'opt_in' },
+        { id: 't-voice', subscription: 'opt_in' },
+      ],
+    })
   })
 
   it('tags with a missing topic → creates it via POST /topics on the fly', async () => {

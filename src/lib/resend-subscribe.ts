@@ -179,7 +179,7 @@ async function applyTopicsToContact(
   topicIds: string[],
 ): Promise<void> {
   if (topicIds.length === 0) return
-  const body = topicIds.map((id) => ({ id, subscription: 'opt_in' as const }))
+  const body = { topics: topicIds.map((id) => ({ id, subscription: 'opt_in' as const })) }
   const res = await resendFetch<{ id: string }>(
     `/contacts/${encodeURIComponent(contactId)}/topics`,
     { method: 'PATCH', body },
