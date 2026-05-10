@@ -76,6 +76,7 @@ export type ResendSubscribeResult =
       contactId: string
       eventFired: string
       tagsForwarded: string[]
+      eventSendWarning?: string
     }
   | { ok: false; error: string }
 
@@ -122,11 +123,14 @@ export async function subscribeToResend(
       },
     })
     if (eventRes.status >= 300) {
-      // Contact is on the list; trigger event failed. Surface this so the
-      // caller logs it — the subscriber is captured but won't get welcome v1.
+      // Contact is on the list; trigger event failed. Surface this as a warning
+      // so the caller logs it — the subscriber is captured but won't get welcome v1.
       return {
-        ok: false,
-        error: `Resend event send failed: HTTP ${eventRes.status}`,
+        ok: true,
+        contactId,
+        eventFired: SIGNUP_EVENT_NAME,
+        tagsForwarded: tags,
+        eventSendWarning: `Resend event send failed: HTTP ${eventRes.status}`,
       }
     }
 

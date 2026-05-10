@@ -46,6 +46,9 @@ export async function POST(req: NextRequest) {
 		);
 	}
 	console.log(`📬 [API] Resend subscription successful (id ${subResult.contactId})`);
+	if (subResult.eventSendWarning) {
+		console.warn(`📬 [API] Resend event send warning: ${subResult.eventSendWarning}`);
+	}
 
 	try {
 		console.log(`📬 [API] Loading content for product slug: ${productSlug}`);

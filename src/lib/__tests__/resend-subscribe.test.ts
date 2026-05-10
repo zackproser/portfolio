@@ -180,7 +180,7 @@ describe('subscribeToResend', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('surfaces event-send failure but already-created contact is on the list', async () => {
+  it('surfaces event-send failure as warning when contact is already created', async () => {
     const fetchMock = jest.fn()
       .mockResolvedValueOnce(
         jsonRes({ object: 'contact', id: 'c-2' }, 201),
@@ -189,8 +189,11 @@ describe('subscribeToResend', () => {
     global.fetch = fetchMock as unknown as typeof fetch
 
     const result = await subscribeToResend({ email: 'a@b.com' })
-    expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.error).toMatch(/500/)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.contactId).toBe('c-2')
+      expect(result.eventSendWarning).toMatch(/500/)
+    }
   })
 })
 
