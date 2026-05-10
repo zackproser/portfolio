@@ -116,7 +116,7 @@ describe('subscribeToResend', () => {
     expect(JSON.parse(eventCall[1].body)).toEqual({
       event: SIGNUP_EVENT_NAME,
       email: 'a@b.com',
-      data: {
+      payload: {
         source: 'source:blog',
         tags: ['source:blog', 'interest:voice-ai'],
       },
@@ -145,7 +145,7 @@ describe('subscribeToResend', () => {
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({
       event: SIGNUP_EVENT_NAME,
       email: 'x@y.com',
-      data: { source: 'newsletter', tags: [] },
+      payload: { source: 'newsletter', tags: [] },
     })
   })
 

@@ -115,7 +115,7 @@ export async function subscribeToResend(
       body: {
         event: SIGNUP_EVENT_NAME,
         email: args.email,
-        data: {
+        payload: {
           source: tags[0] ?? 'newsletter',
           tags,
         },
