@@ -14,7 +14,7 @@ What I wanted was a system that would draft the right reply, in my voice, and dr
 
 This is how it's wired, what I got wrong on the way, and where it goes from here.
 
-<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-flow.webp" alt="Pixel-art diagram: email enters on the left, an AI brain in the middle splits the message into a review path and an auto-reply path" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-servicetitan.webp" alt="Pixel-art scene: a robot sits at a laptop reading an inbound email with a low fit-score, drafting a polite decline in the side panel" width={1200} height={675} />
 
 ## The graduation ladder
 
@@ -23,6 +23,8 @@ For the first stretch I ran everything manual. The classifier produced a draft, 
 A category becomes a candidate for auto-send after roughly ten drafts I would have sent verbatim. Not "would have sent after a tweak" — verbatim. At that point the voice rules for the category get pinned: the phrasings that worked, the hard rules ("never offer a meeting time," "never quote a rate inline"), the things to never include. The expert-call category, for instance, picked up a hard rule that the reply must not contain a generic "I'm participating as an individual practitioner, not speaking for my employer" disclaimer. That kind of compliance hedge is actively wrong for the kind of calls I take — they're paying for an actual perspective, not a watered-down version of one.
 
 When a category clears the bar, one env var change opts it into auto-send. Other categories stay manual until they earn their way over. The reversion is the same env var edited back the other way and a redeploy.
+
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-flow.webp" alt="Pixel-art architecture diagram: email enters from the left, passes through an AI classifier brain in the middle, then splits into two paths — manual review on top, auto-reply on bottom" width={1200} height={675} />
 
 ## Wiring Gmail into Trigger.dev
 
