@@ -24,7 +24,7 @@ A category becomes a candidate for auto-send after roughly ten drafts I would ha
 
 When a category clears the bar, one env var change opts it into auto-send. Other categories stay manual until they earn their way over. The reversion is the same env var edited back the other way and a redeploy.
 
-Concretely, here's what the manual review actually looks like for me. Every classification fires a preview email into my inbox: the original sender + subject, the assigned category and fit score, a one-line reasoning, and the proposed reply in a highlighted block. I open it, glance at the draft, jump to the Gmail thread, click Send. Each one takes maybe ten seconds.
+Every classification fires a preview email into my inbox — original sender + subject, assigned category and fit score, one-line reasoning, proposed reply in a highlighted block. I open it, glance at the draft, jump to the Gmail thread, click Send. Maybe ten seconds per email.
 
 <Image src="https://zackproser.b-cdn.net/images/inbound-classifier-preview-example.webp" alt="Preview email from the classifier showing an expert-network consultation request. Category badge reads 'expert-network · fit 8/10'. The proposed reply is highlighted: 'happy to take this one, AI agents is squarely in my wheelhouse. My rate is $650/hour. Happy to complete the standard compliance packet and get it on the calendar — send me the booking link or next steps. — Zack'" width={1200} height={833} />
 
@@ -34,7 +34,7 @@ After enough drafts I'd have sent verbatim, the category graduates. Until then, 
 
 ## Wiring Gmail into Trigger.dev
 
-OAuth for Gmail is the section of the stack with the most undocumented edges, so it deserves the most paragraphs.
+OAuth for Gmail is the messiest part of this stack. Most pieces have a docs page; this one has folklore.
 
 ### OAuth client type: Desktop App
 
@@ -55,7 +55,7 @@ The drafts phase works without ever granting send access. You cannot auto-send u
 
 Both scopes, once granted, appear in the Data Access section of the OAuth consent screen — `gmail.send` lives under "Your sensitive scopes" and `gmail.modify` under "Your restricted scopes" (because read-and-write access to all your email is considered restricted, while just-send is merely sensitive — Google's nomenclature, not mine).
 
-<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-gcloud-scopes.webp" alt="Google Cloud Console Data Access page showing the two Gmail scopes — gmail.send under 'Your sensitive scopes' with description 'Send email on your behalf', and gmail.modify under 'Your restricted scopes' with description 'Read, compose, and send emails from your Gmail account'" width={1200} height={875} />
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-gcloud-scopes-v2.webp" alt="Google Cloud Console Data Access page showing the two Gmail scopes — gmail.send under 'Your sensitive scopes' with description 'Send email on your behalf', and gmail.modify under 'Your restricted scopes' (Gmail scopes section) with description 'Read, compose, and send emails from your Gmail account'" width={1200} height={1169} />
 
 ### The refresh-token wrinkle
 
@@ -224,7 +224,7 @@ The shape that comes back looks like this — a real example for an inbound that
 }
 ```
 
-The strict schema is the load-bearing piece: every field downstream (label routing, draft body, audit log) consumes the same parsed object, so one fragile prompt regression on field names breaks the rest. The `validateClassification` runtime check throws if the model drifts.
+Every downstream step — label routing, draft body, audit log — reads from this same parsed object. If a prompt change accidentally renames a field, `validateClassification` throws on the bad shape on the next run rather than letting silently-wrong objects propagate. That runtime check has caught at least one drift already.
 
 The system prompt is a TypeScript string export, not a markdown file. Originally it was a `.md` loaded with `fs.readFileSync`. Trigger.dev's bundler doesn't include arbitrary file types in the deploy bundle, so the first run threw `ENOENT` and stayed broken until I moved the prompt into a `.ts` export. A parallel `.md` version of the same content lives in the repo for diff-friendly review, but the runtime source of truth is the TypeScript file.
 
