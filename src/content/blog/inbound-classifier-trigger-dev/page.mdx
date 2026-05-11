@@ -1,0 +1,123 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+Last Tuesday a partnership email landed in my inbox. ServiceTitan — big player in field service software, serious company. My inbox classifier caught it within five minutes. By the time I opened my laptop, Claude had already classified it as `partnership-fit-low` (fit score 2/10), drafted a two-sentence reply declining cleanly, and sent it into the original thread via Resend. No back-and-forth. Done.
+
+That's what I want to walk through here — the setup, the flow, the gotchas, and the one real test that proved it worked.
+
+## The Setup
+
+Here's the constraint I started with: I didn't want to automate everything. I've seen what happens when people set their LLM loose on all inbound — it drafts responses that sound confident, professional, and completely disconnected from the actual context of the conversation. You get form letters dressed up as personalized replies. Nobody wins.
+
+So the system only fires when I manually trigger it. That was a deliberate design choice — the classifier catches interesting emails, but the actual reply drafting is opt-in. I see the classification, I see the draft, and I decide whether to send it or write something myself.
+
+This matters because the failure mode of "auto-reply to everything" is worse than the failure mode of "occasionally draft a reply manually." I can always write a reply. I can't always unsend one.
+
+## The Flow
+
+Here's how a message moves through the system:
+
+<center>
+  <Image
+    src="https://zackproser.b-cdn.net/images/inbound-classifier-flow.webp"
+    alt="Email entering from the left, passing through an AI classifier brain, then splitting into two paths — one to review, one to auto-reply"
+    width={1200}
+    height={675}
+    style={{ borderRadius: '8px', maxWidth: '100%', height: 'auto' }}
+  />
+</center>
+
+The classifier runs in a webhook handler. Resend receives the email, fires a POST to my endpoint with the full message content, and Claude kicks back a classification + reasoning. If the fit score is below threshold, it generates a reply and sends it directly back to the original sender through the same thread.
+
+At no point does anything happen without me seeing it first — the reply draft lands in a specific label in my inbox so I can review before it goes out. Actually, wait — let me be precise. The reply goes out automatically for scores below 3. For scores between 3 and 7, it drafts and alerts. That threshold is configurable and I've adjusted it twice already.
+
+## Classification Logic
+
+The classifier is a simple structured output prompt. I ask Claude to return:
+
+```
+fit_score: integer 0-10
+reasoning: string
+category: partnership-fit-high | partnership-fit-low | not-replyworthy | follow-up
+```
+
+The threshold lives at 7. Anything below that gets a draft reply generated automatically. Here's the actual prompt structure:
+
+```
+You are an inbox triage assistant. Classify the following inbound email.
+Return a fit_score 0-10 (10 = perfect strategic fit for a one-person operation),
+a one-sentence reasoning, and a category.
+
+Rules:
+- Ignore press inquiries, podcast book requests, cold outreach without substance
+- High fit = clear business problem, budget context, timeline indication
+- Low fit = vague "would love to connect," unsolicited pitches, feature requests
+- follow-up = existing thread, don't draft a new reply
+```
+
+<center>
+  <Image
+    src="https://zackproser.b-cdn.net/images/inbound-classifier-threshold.webp"
+    alt="A threshold gauge set at 7, emails above going to review, emails below going to auto-reply"
+    width={1200}
+    height={675}
+    style={{ borderRadius: '8px', maxWidth: '100%', height: 'auto' }}
+  />
+</center>
+
+I've iterated on this prompt four times. The biggest jump came from adding the "existing thread" logic for `follow-up` — without it, the classifier was drafting duplicate replies to emails I'd already handled manually. The second biggest change was the "budget context" signal in the high-fit rules. That alone cut false positives by about 60%.
+
+The gotcha nobody talks about: LLM classification drift. The same email classified on Monday might come back as `fit-score-6` and on Wednesday as `fit-score-4`. Not because the email changed — because the model's behavior shifted slightly across runs. This is why I log every classification with a timestamp and the full prompt snapshot. When the variance gets too high, I retake the baseline.
+
+## The ServiceTitan Test
+
+<center>
+  <Image
+    src="https://zackproser.b-cdn.net/images/inbound-classifier-servicetitan.webp"
+    alt="A laptop showing a ServiceTitan partnership email with a fit-score of 2/10 in red, an AI robot drafting a decline reply beside it"
+    width={1200}
+    height={675}
+    style={{ borderRadius: '8px', maxWidth: '100%', height: 'auto' }}
+  />
+</center>
+
+I knew the system was working when I got the ServiceTitan email. It came in on a Tuesday morning — the kind of inbound that would normally sit in my inbox for three days while I decided whether it was worth responding to. Partnership inquiry, growth-stage software company, something about integrating with their ecosystem.
+
+The classifier ran, returned `fit-score-2`, and drafted this in under thirty seconds:
+
+> Thanks for reaching out — sounds like an interesting space. Given where things are on my end right now, I'm not in a position to take on new partnership conversations, but I'll keep them in mind if that changes. Best of luck with the launch.
+
+Two sentences. Not a form letter. Didn't feel like it was written by a robot trying to sound human. I read it once, confirmed it was accurate, and marked it as no-reply-needed. Done.
+
+What I liked about it: it declined cleanly without burning the bridge. "I'll keep them in mind" sounds like I might actually think about it, which means if ServiceTitan becomes relevant in six months, I can follow up without the awkward "sorry I never wrote back" problem.
+
+## What I'd Do Differently
+
+**Dry run mode** — I want a setting that generates the draft reply but routes it to me instead of the sender, regardless of score. Right now the auto-send only applies below a certain threshold, but there's no way to force dry-run behavior for a specific email. I've added this to my backlog.
+
+**Version-tracked prompts** — I'm treating the classifier prompt like code now, which means it needs a version history. The current setup has the prompt in an environment variable, which means every change overwrites the previous one. I've lost probably three iterations that were better than what replaced them. Next step: prompt versioning in the same repo as the handler.
+
+**Human-reply alerts** — if an email comes in from someone I've exchanged emails with before, the system should flag it as potentially sensitive and suppress auto-reply entirely, even if the score is low. A reply from "John at Company" who I actually know should come to me, not get auto-declined on my behalf.
+
+**The sender reputation trap** — here's one I almost hit. The auto-reply goes out from my personal inbox through Resend's routing. If the classifier fires on an email thread that includes multiple CC'd addresses, the reply goes to everyone — including people who didn't send the original message. I caught this in testing and added a rule to suppress auto-reply when there are more than two recipients on the original thread.
+
+## What's Next
+
+The classifier currently only handles the partnership-fit category. I'm planning to extend it to:
+
+- **Speaker inquiry** — "would you like to speak at our conference" emails. These often have a clear fit score based on topic alignment and whether I actually speak at that type of event. Low-fit inquiries get a standard "thanks but not looking to add more talks right now" reply.
+
+- **Media requests** — press inquiries and podcast book requests. These are almost never worth my time, but the classifier should handle them explicitly rather than letting them pile up.
+
+- **Recruiter noise** — role-agnostic outreach from third-party recruiters gets a short decline. Role-specific outreach from internal recruiters gets a score based on title, company, and whether the comp range is listed.
+
+Each extension follows the same pattern: classification prompt, threshold configuration, reply template, dry-run option.
+
+The broader lesson here is that inbox automation isn't about replacing judgment — it's about eliminating the tax on low-stakes decisions. The ServiceTitan email didn't need my judgment. It needed my time, and I wasn't going to give it any until I had to. Now I don't have to.
+
+---
+
+If you're building something similar, the non-obvious part isn't the classifier — it's the versioning, the dry-run mode, and the recipient-count check. Start there.

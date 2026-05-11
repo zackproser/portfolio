@@ -1,0 +1,10 @@
+{
+  "title": "I Built an AI Email Inbox That Replies for Me (With Guardrails)",
+  "author": "Zachary Proser",
+  "date": "2026-05-11",
+  "description": "How I built an AI inbox classifier that drafts replies for low-fit inbound — and the guardrails that keep it from embarrassing me.",
+  "tags": ["ai", "automation", "email", "production"],
+  "status": "published",
+  "canonical_url": "https://zackproser.com/blog/inbound-classifier-trigger-dev",
+  "image": "https://zackproser.b-cdn.net/images/inbound-classifier-hero.webp"
+}
