@@ -202,6 +202,20 @@ const parsed = JSON.parse(text);
 validateClassification(parsed);
 ```
 
+The shape that comes back looks like this — a real example for an inbound that scored well on the `alphasights-intro` category:
+
+```json
+{
+  "category": "alphasights-intro",
+  "fit_score": 8,
+  "reasoning": "Standard expert-network outreach about applied AI engineering — matches my actual domain. Hand-drafted; warmer tone.",
+  "reply_subject": "Re: Quick question on RAG architecture for an AI Coding Agents project",
+  "reply_body": "Hi Maria — yes, this is squarely in my wheelhouse and I'd be glad to take the call. My rate is $650/hour. Happy to complete the standard compliance packet and get it on the calendar — send me the booking link or next steps.\n\n— Zack"
+}
+```
+
+The strict schema is the load-bearing piece: every field downstream (label routing, draft body, audit log) consumes the same parsed object, so one fragile prompt regression on field names breaks the rest. The `validateClassification` runtime check throws if the model drifts.
+
 The system prompt is a TypeScript string export, not a markdown file. Originally it was a `.md` loaded with `fs.readFileSync`. Trigger.dev's bundler doesn't include arbitrary file types in the deploy bundle, so the first run threw `ENOENT` and stayed broken until I moved the prompt into a `.ts` export. A parallel `.md` version of the same content lives in the repo for diff-friendly review, but the runtime source of truth is the TypeScript file.
 
 The strip-and-parse pattern handles the case where Claude returns the JSON wrapped in code fences. Sometimes it does, sometimes it doesn't. Both parse cleanly after the regex cleanups.
