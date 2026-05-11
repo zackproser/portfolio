@@ -19,7 +19,7 @@ export const metadata = {
   openGraph: {
     title: data.title,
     description: data.description,
-    url: ogUrl,
+    url: 'https://zackproser.com/recruiters',
     siteName: 'Modern Coding',
     images: [{ url: ogUrl }],
     locale: 'en_US',
