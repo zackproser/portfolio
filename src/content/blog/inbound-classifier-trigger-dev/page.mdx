@@ -18,11 +18,11 @@ This is how it's wired, what I got wrong on the way, and where it goes from here
 
 ## The graduation ladder
 
-For the first stretch I ran everything manual. The classifier produced a draft, the draft sat in the original Gmail thread, I reviewed it and clicked Send. While doing that I kept a calibration log — a short note per draft about whether the category was right, whether the voice landed, whether the prompt needed a rule added for the edge case I just hit.
+For the first stretch I ran everything manually. The classifier produced a draft, the draft sat in the original Gmail thread, I reviewed it and clicked Send. While doing that I kept a calibration log — a short note per draft about whether the category was right, whether the voice landed, whether the prompt needed a rule added for the edge case I just hit.
 
 A category becomes a candidate for auto-send after roughly ten drafts I would have sent verbatim. Not "would have sent after a tweak" — verbatim. At that point the voice rules for the category get pinned: the phrasings that worked, the hard rules ("never offer a meeting time," "never quote a rate inline"), the things to never include. The expert-call category, for instance, picked up a hard rule that the reply must not contain a generic "I'm participating as an individual practitioner, not speaking for my employer" disclaimer. That kind of compliance hedge is actively wrong for the kind of calls I take — they're paying for an actual perspective, not a watered-down version of one.
 
-When a category clears the bar, one env var change opts it into auto-send. Other categories stay manual until they earn their way over. The reversion is the same env var edited back the other way and a redeploy.
+When a category clears the bar, one env var change opts it into auto-send. Other categories stay in manual mode until they earn their way over. The reversion is the same env var edited back the other way and a redeploy.
 
 Every classification fires a preview email into my inbox — original sender + subject, assigned category and fit score, one-line reasoning, proposed reply in a highlighted block. I open it, glance at the draft, jump to the Gmail thread, click Send. Maybe ten seconds per email.
 
@@ -30,7 +30,7 @@ Every classification fires a preview email into my inbox — original sender + s
 
 After enough drafts I'd have sent verbatim, the category graduates. Until then, every reply has a human gate.
 
-<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-flow.webp" alt="Pixel-art architecture diagram: email enters from the left, passes through an AI classifier brain in the middle, then splits into two paths — manual review on top, auto-reply on bottom" width={1200} height={675} />
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-architecture.webp" alt="Pixel-art end-to-end architecture diagram: Gmail inbox with claude/needs-reply label → Trigger.dev cron task → Claude Opus classify + draft → Gmail draft created in the original thread → splits into manual-review path (Zack reviews and clicks Send) and auto-send path (only after a category graduates), with a Resend belt notification arrow on the side" width={1200} height={655} />
 
 ## Wiring Gmail into Trigger.dev
 
@@ -297,7 +297,7 @@ A few things this block is doing on purpose:
 
 **Belt notification.** The system also sends me a brief Resend email confirming the auto-send. Even when I trust the category, I want to see every outgoing in real-time, so I can intervene immediately if something looks off.
 
-## Five things I got wrong on the way
+## Four things I got wrong on the way
 
 **OOM on the default Trigger.dev machine.** The `small-1x` preset (0.5GB) crashed on cold start before any work ran. The `googleapis` library is massive — even with tree-shaking it pulls in code for every Google service. Bumping to `medium-1x` (2GB) was the fix. The crash was silent in the sense that the cron just stopped advancing; I had to dig through the dashboard run history to spot the OOM.
 
@@ -306,8 +306,6 @@ A few things this block is doing on purpose:
 **The bundler doesn't include `.md` files.** Already mentioned this one above, but it's worth re-flagging: when you deploy to a remote bundler, only the JavaScript/TypeScript graph ships. Anything you load via `fs.readFileSync` from outside that graph isn't there at runtime. The fix is to make the asset part of the import graph — for a prompt, a `.ts` export.
 
 **Assuming `--env-file` syncs the vault.** Covered above; this one cost about half an hour.
-
-**Quoted values in `.env` killing systemd.** Unrelated detour for a different service of mine, but it bit the same evening so it's worth mentioning. A `.env` file with single-quoted values (`KEY='value'`) was being silently dropped by systemd's `EnvironmentFile=` directive. Every secret missing. Stripping the quotes brought everything back. Worth knowing if you load `.env` anywhere systemd reads it.
 
 ## Where it goes from here
 
