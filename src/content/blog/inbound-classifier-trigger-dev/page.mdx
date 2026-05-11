@@ -122,7 +122,7 @@ export const gmailClassifyTask = schedules.task({
   run: async (payload) => {
     const messages = await gmailListLabeled({
       include: "claude/needs-reply",
-      exclude: ["claude/drafted", "claude/processing", "claude/error"],
+      exclude: ["claude/drafted", "claude/sent", "claude/processing", "claude/error"],
       maxResults: 10,
     });
     for (const ref of messages) {
