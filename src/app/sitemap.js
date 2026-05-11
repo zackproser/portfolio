@@ -14,6 +14,7 @@ const excludeRoutePatterns = [
   /^\/checkout(\/|$)/,
   /^\/success(\/|$)/,
   /^\/login(\/|$)/,
+  /^\/recruiters(\/|$)/,
   /\[.*\]/, // Exclude any literal dynamic route patterns like [slug]
 ];
 
