@@ -4,15 +4,15 @@ const CONTACT_EMAIL = 'zackproser@gmail.com'
 
 const roles = [
   {
-    num: 'R.01 · Senior+ AI/ML engineering',
-    status: { label: 'Open if compelling', tone: 'ok' },
-    title: 'A real role at a place that ships AI to users.',
+    num: 'R.01 · AI/ML engineering',
+    status: { label: 'Selectively', tone: 'ok' },
+    title: 'Senior+ engineer building applied AI in production.',
     desc:
-      "Senior, staff, or principal. Building applied AI systems — retrieval, agents, LLM pipelines, evals, ML infra. Not research-only. I'm an engineer who ships, not a paper author.",
+      'Retrieval, agents, evals, ML infra. Real systems shipping to real users. Not research-only — I ship; I don’t write papers.',
     meta: [
       ['Level', 'Senior → Principal'],
       ['Stack', 'Python/TS · LLMs · infra'],
-      ['Comp', '$250K+ TC'],
+      ['Mode', 'IC'],
     ],
   },
   {
@@ -20,35 +20,35 @@ const roles = [
     status: { label: 'Open', tone: 'ok' },
     title: 'Build the substrate teams use to ship AI internally.',
     desc:
-      "Platform / infra work — eval frameworks, model-routing, agent runtimes, retrieval pipelines, observability. The closer to the metal of real-world LLM systems, the better.",
+      'Eval frameworks, model-routing, agent runtimes, retrieval pipelines, observability. The closer to the metal of real LLM systems, the better.',
     meta: [
-      ['Type', 'Platform/infra'],
-      ['Team', '∼5–25 engs'],
-      ['Comp', '$250K+ TC'],
+      ['Type', 'Platform / infra'],
+      ['Team', '∼5–25 engineers'],
+      ['Mode', 'IC or TL'],
     ],
   },
   {
     num: 'R.03 · Anthropic / OpenAI · any role',
-    status: { label: 'Always open', tone: 'ok' },
-    title: 'The two AI labs I would hear out for almost anything.',
+    status: { label: 'Always · any role', tone: 'ok' },
+    title: 'The two labs I’d hear out for almost anything.',
     desc:
-      'Engineering, applied research, infra — happy to chat. The labs are exceptions to most of my other filters.',
+      'Engineering, applied research, infra — happy to chat. The frontier labs are the exception to most of my other filters.',
     meta: [
       ['Companies', 'Anthropic · OpenAI'],
       ['Roles', 'Engineering / applied'],
-      ['Comp', "Their comp, I trust"],
+      ['Bar', 'Their bar, I trust'],
     ],
   },
   {
     num: 'R.04 · Anthropic / OpenAI DevRel',
-    status: { label: 'The DevRel exception', tone: 'ok' },
-    title: 'The only DevRel roles I would actively consider.',
+    status: { label: 'Sole DevRel exception', tone: 'ok' },
+    title: 'The only DevRel role I’d actively consider.',
     desc:
-      "Everywhere else, I'm not interested in DevRel — I work as an engineer and want to keep doing that. The frontier labs are the exception because of who their audience is.",
+      "Everywhere else, I'm not interested in DevRel. The frontier labs are the exception — their audience is the one worth speaking to from that seat.",
     meta: [
-      ['Roles', 'DevRel / DX / Advocate'],
+      ['Roles', 'DevRel · DX · Advocate'],
       ['Companies', 'Anthropic · OpenAI'],
-      ['Comp', '$250K+ TC'],
+      ['Mode', 'Hybrid OK'],
     ],
   },
 ]
@@ -57,22 +57,22 @@ const yesSignals = [
   {
     lede: 'Personalized.',
     gloss:
-      'Addresses me by name. References something I have actually written or shipped — a specific blog post, talk, or repo.',
+      'Addresses me by name. References something I’ve actually written or shipped — a specific post, talk, or repo.',
   },
   {
-    lede: 'Total comp range upfront.',
+    lede: 'Comp range upfront.',
     gloss:
-      'Either a concrete range or an explicit "compensation is openly discussed." If TC is below $250K, just say so — saves both of us a round-trip.',
+      'A concrete TC range, or an explicit “compensation is openly discussed.” Below my floor? Just say so — saves us both a round-trip.',
   },
   {
     lede: 'Real role description.',
     gloss:
-      "Team size, reporting line, scope of the role, remote policy, on-call expectations. Specifics that make it clear you've spoken to the hiring manager.",
+      'Team size, reporting line, scope, remote policy, on-call. Specifics that signal you’ve talked to the hiring manager.',
   },
   {
     lede: 'Sent by someone close to the role.',
     gloss:
-      'Internal recruiter or the hiring manager themselves. External agency outreach is fine when it carries the same level of detail.',
+      'Internal recruiter or hiring manager directly. Agency outreach is fine when it carries the same level of detail.',
   },
 ]
 
@@ -80,27 +80,27 @@ const noSignals = [
   {
     lede: 'Template blasts.',
     gloss:
-      'Generic openings, "Hi {first_name}", no personalization, mass-CC visible in headers. Auto-declined with a polite one-liner.',
+      'Generic openings, “Hi {first_name}”, no personalization, mass-CC headers. Auto-declined with a one-liner.',
   },
   {
-    lede: 'DevRel / Developer Advocate / DX / Community.',
+    lede: 'DevRel / Developer Advocate / DX.',
     gloss:
-      "I'm an engineer, not in DevRel. The only exception is Anthropic and OpenAI — see R.04.",
+      'I’m an engineer, not in DevRel. The only exception is Anthropic and OpenAI — see R.04.',
   },
   {
     lede: 'Engineering outside AI.',
     gloss:
-      'Mobile, frontend without an AI angle, sales engineering, full-stack web, embedded, blockchain. Not what I do or want to do.',
+      'Mobile, frontend without an AI angle, sales engineering, full-stack web, embedded, blockchain. Not what I do.',
   },
   {
-    lede: 'Total comp under $250K.',
+    lede: 'Total comp below my floor.',
     gloss:
-      "I'm a senior AI engineer at WorkOS, ∼2 years in, raise expected. To consider a move I need $250K+ TC. Junior/mid-level positioning is an instant no.",
+      'I’m an AI engineer on an Applied AI team supporting the whole org. To consider leaving a place I’m still happy and learning at, I need real upside in scope and comp.',
   },
   {
-    lede: 'Pre-approved-content / paid placements / link exchanges.',
+    lede: 'Pre-approved content · paid placements · link exchanges.',
     gloss:
-      "Different bucket entirely — see /partnerships for editorial standards. Don't pitch a job in the same email as a sponsorship ask.",
+      'Different bucket — see /partnerships for editorial standards. Don’t pitch a job in the same email as a sponsorship ask.',
   },
 ]
 
@@ -109,28 +109,28 @@ const procSteps = [
     pn: '01 · Confirm fit',
     title: 'Check the bar before sending.',
     body:
-      "Senior+ AI engineering role. $250K+ TC. Not DevRel (unless Anthropic/OpenAI). Not outside the AI domain.",
+      'AI engineering role. Comp well above my current package. Not DevRel (unless Anthropic / OpenAI). Not outside the AI domain.',
     when: '30 seconds',
   },
   {
     pn: '02 · Write a real email',
-    title: "Address me by name. Lead with the role + comp.",
+    title: 'Address me by name. Lead with role + comp.',
     body:
-      "First three lines: who you are, what the role is, the TC range. Then team / reporting / remote. Two paragraphs is plenty.",
+      'First three lines: who you are, what the role is, the TC range. Then team / reporting / remote. Two paragraphs is plenty.',
     when: '5 minutes',
   },
   {
-    pn: '03 · Send to the address below',
-    title: "No InMail / LinkedIn forms / agency CRM blasts.",
+    pn: '03 · Send it directly',
+    title: 'No InMail · no agency CRM blasts.',
     body:
-      "Direct email beats LinkedIn — InMail is high-noise and easy to miss. Forwarded chains and CRM templates land in spam.",
+      'Direct email beats LinkedIn — InMail is high-noise and easy to miss. Forwarded chains and CRM templates land in spam.',
     when: 'Same day',
   },
   {
     pn: '04 · I reply within ~5 business days',
-    title: "Yes, no, or a question.",
+    title: 'Yes, no, or a question.',
     body:
-      "Hand-drafted, well-targeted outreach gets a real reply. Template blasts get a one-line decline pointing back here.",
+      'Hand-drafted, well-targeted outreach gets a real reply. Template blasts get a one-line decline that points back here.',
     when: '≤ 5 business days',
   },
 ]
@@ -163,15 +163,15 @@ export function RecruitersContent() {
                 me
               </div>
               <h1 className="dispatch-display">
-                I&apos;m a senior AI engineer at WorkOS.{' '}
-                <em>Here&apos;s how to reach me productively</em> about roles.
+                AI engineer on an Applied AI team,{' '}
+                <em>supporting the whole org</em>.
               </h1>
               <p className="dispatch-lead">
-                If we both spend 30 seconds reading what&apos;s on this page
-                before writing the email, we save a lot of back-and-forth.
-                I&apos;m not actively looking, but I do hear out the right
-                roles. Here&apos;s what those look like — and what they
-                don&apos;t.
+                If we both spend 30 seconds reading this page before writing the
+                email, we save a lot of back-and-forth. I&apos;m not actively
+                looking — I&apos;m still happy and learning where I am — but I
+                do hear out the right roles. Below is what those look like and
+                what they don&apos;t.
               </p>
             </div>
             <aside className="dispatch-side">
@@ -179,7 +179,7 @@ export function RecruitersContent() {
               <div className="a-plate">ZP</div>
               <div className="who">Zachary Proser</div>
               <div className="role">
-                Senior AI Engineer · Applied AI · WorkOS · Brooklyn, NY · GMT−5
+                AI Engineer · Applied AI · Brooklyn, NY · GMT−5
               </div>
             </aside>
           </div>
@@ -188,41 +188,39 @@ export function RecruitersContent() {
           <div className="aud-slab">
             <div className="aud-cell">
               <div className="aud-k">Current role</div>
-              <div className="aud-v">Senior AI eng.</div>
-              <div className="aud-sub">WorkOS · Applied AI team</div>
+              <div className="aud-v">AI engineer</div>
+              <div className="aud-sub">Applied AI · supporting whole org</div>
             </div>
             <div className="aud-cell">
               <div className="aud-k">Tenure</div>
               <div className="aud-v">
                 ∼2<span className="unit">years</span>
               </div>
-              <div className="aud-sub">Coming up on 2-year mark · raise expected</div>
+              <div className="aud-sub">Still happy and learning</div>
             </div>
             <div className="aud-cell">
               <div className="aud-k">Status</div>
               <div className="aud-v"><em>Not</em> looking</div>
-              <div className="aud-sub">Happy here · open to the right thing</div>
+              <div className="aud-sub">Open to the right thing</div>
             </div>
             <div className="aud-cell">
-              <div className="aud-k">Comp bar</div>
-              <div className="aud-v">
-                $250k<span className="unit">+ TC</span>
-              </div>
-              <div className="aud-sub">To consider leaving WorkOS</div>
+              <div className="aud-k">Bar</div>
+              <div className="aud-v">Real upside</div>
+              <div className="aud-sub">Scope and comp both</div>
             </div>
           </div>
 
           <div className="avail-strip" style={{ marginTop: 24 }}>
             <span className="slot">
               <span className="dot" />
-              <span className="k">Senior+ AI eng.</span>&nbsp;
-              <span className="v">Open if compelling</span>
+              <span className="k">AI engineering</span>&nbsp;
+              <span className="v">Selectively</span>
             </span>
             <span className="sep">·</span>
             <span className="slot">
               <span className="dot" />
               <span className="k">Anthropic / OpenAI</span>&nbsp;
-              <span className="v">Always open</span>
+              <span className="v">Always</span>
             </span>
             <span className="sep">·</span>
             <span className="slot">
@@ -233,8 +231,8 @@ export function RecruitersContent() {
             <span className="sep">·</span>
             <span className="slot">
               <span className="dot warn" />
-              <span className="k">{'< $250K TC'}</span>&nbsp;
-              <span className="v">Closed</span>
+              <span className="k">Below minimal TC</span>&nbsp;
+              <span className="v">Save us both the email</span>
             </span>
           </div>
         </div>
@@ -354,8 +352,8 @@ export function RecruitersContent() {
               </p>
               <p className="intake-lead">
                 I reply within ~5 business days when there&apos;s a fit. Template
-                blasts get a one-line decline pointing back here so you know for
-                next time.
+                blasts get a one-line decline that points back here so you know
+                for next time.
               </p>
             </div>
 
@@ -375,8 +373,7 @@ export function RecruitersContent() {
                 <p className="partners">
                   Pinecone (vector DB / RAG) · Gruntwork (Terragrunt &amp;
                   OpenTofu) · Cloudflare (workers, edge) · Cloudmark / Proofpoint
-                  (anti-spam) ·{' '}
-                  <em>currently WorkOS, applied AI</em>.
+                  (anti-spam) · <em>currently Applied AI</em>.
                 </p>
               </div>
 
