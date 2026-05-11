@@ -1,0 +1,10 @@
+{
+  "title": "I Built an AI Email Inbox That Replies for Me (With Safety Checks)",
+  "author": "Zachary Proser",
+  "date": "2026-05-11",
+  "description": "How I built a human-in-the-loop AI inbox classifier that drafts replies, and the per-category graduation ladder that lets each category earn its way to auto-send.",
+  "tags": ["ai", "automation", "email", "production"],
+  "status": "draft",
+  "canonical_url": "https://zackproser.com/blog/inbound-classifier-trigger-dev",
+  "image": "https://zackproser.b-cdn.net/images/inbound-classifier-hero.webp"
+}
