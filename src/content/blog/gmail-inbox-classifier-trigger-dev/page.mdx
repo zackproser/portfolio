@@ -1,0 +1,162 @@
+import rawMetadata from './metadata.json';
+import { createMetadata } from '@/utils/createMetadata'
+
+
+export const metadata = createMetadata(rawMetadata);
+
+
+## The reply that landed while I was making dinner
+
+Subject line from a Business Development person at ServiceTitan: something about being impressed with my work, a partnership opportunity, a link. Classic.
+
+I had labeled the thread `claude/needs-reply` that afternoon. By the time I checked, there was a draft sitting right in the thread — created by an agent running on a Trigger.dev cron job, written by Claude Opus 4.7.
+
+The classifier tagged it `partnership-fit-low` (2 out of 10). The drafted reply:
+
+> Hi — thanks for reaching out. We're not taking on new partnerships at this time, but our current partners page has everything you need if that's useful: [zackproser.com/partnerships](https://zackproser.com/partnerships).
+
+Two sentences. Curt. Correct.
+
+Total build time: about an hour. Eleven deployments that evening, all logged in git with reasons. More on that below.
+
+---
+
+## Why not just use a SaaS for this?
+
+Zapier has Gmail integrations. SaneBox has some classification. There are half a dozen AI email assistants.
+
+None of them let you write the prompt. None of them give you structured JSON output you can route on. None of them let you own the cost at roughly $0.02 per classification.
+
+The other thing: voice. My partnership replies shouldn't sound like partnership replies — they should sound like me saying no to partnerships. That's a real distinction when you're reading a rejection you've never seen before and you want to believe it's actually from me.
+
+Same thing with recruiter outreach. A template blast sounds like a template blast. A curt two-sentence decline linking to my recruiters page sounds like a person who doesn't have time for recruiters. Both are fine, but they're different.
+
+Owning the prompt means owning the voice rules, the category definitions, and the escalation logic — including what I will and won't say to people offering $300K base plus equity.
+
+---
+
+## The shape
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│  Inbound email arrives at zackproser@gmail.com (any sender)    │
+└────────────────────────────┬───────────────────────────────────┘
+                             │
+                             ▼
+       ┌───────────────────────────────────────────────────────┐
+       │ Zack applies Gmail label "claude/needs-reply"         │
+       │ (manual triage, or a Gmail filter for trusted senders)│
+       └────────────────────────────┬──────────────────────────┘
+                                    │ every 5 min — Trigger.dev cron
+                                    ▼
+   ┌────────────────────────────────────────────────────────────────┐
+   │            Trigger.dev v4 — scheduled task                      │
+   │                                                                 │
+   │   1. Gmail API: list labeled, unprocessed messages              │
+   │   2. For each: classify via Claude Opus 4.7 + draft reply       │
+   │   3. Create Gmail DRAFT in the original thread (Phase-2A)       │
+   │   4. Brief Resend notification so Zack sees it in inbox         │
+   │   5. Swap labels: needs-reply → drafted                         │
+   │                                                                 │
+   │  Idempotent by Gmail label — labels ARE the state              │
+   └────────────────────┬──────────────┬─────────────────────────────┘
+                        │              │
+                        ▼              ▼
+        ┌────────────────────────┐  ┌────────────────────────────────┐
+        │ Anthropic API          │  │ Gmail users.drafts.create       │
+        │  → strict JSON output  │  │  + Resend notification          │
+        │                        │  │                                │
+        │ Categories enforce     │  │ Zack opens Gmail → sees draft  │
+        │ voice rules + tone     │  │ in the original thread →       │
+        │ modulation             │  │ reviews → hits Send            │
+        └────────────────────────┘  └────────────────────────────────┘
+```
+
+No database. Labels are the state machine.
+
+---
+
+## The setup
+
+**Trigger.dev project** (`proj_turjdyumataunbtfbdbl`) running a v4 scheduled task on a cron — every 5 minutes, no exceptions. The Trigger.dev SDK makes the polling + orchestration straightforward.
+
+**Gmail API** via googleapis OAuth. The task lists messages with label `needs-reply`, skips messages already labeled `drafted` (idempotency), and for each one: fetches the message body, sends it to Claude, receives a structured JSON response, creates a Gmail draft in the original thread via `users.drafts.create`, sends a brief Resend notification so I see it in my inbox, then swaps the label from `needs-reply` to `drafted`.
+
+**Anthropic API** — Claude Opus 4.7 with a strict JSON output prompt. The prompt lives in `inbound-classifier/prompts/classify-and-draft.ts`. The classification categories, voice rules, and tone modulation are all defined in the calibration corpus at `inbound-classifier/calibration/{log,edge-cases,voice,metrics}.md`.
+
+**Labels as state.** I didn't build a database for this. The Gmail labels `claude/needs-reply` and `claude/drafted` are the state. If something goes wrong, I can relabel and re-run.
+
+**Resend** for the notification layer — a plain text email that lands in my inbox saying "draft's ready, go review it." Doesn't need to be fancy.
+
+---
+
+## The gotchas (honest)
+
+**OOM on small-1x.** First deployment on a small Trigger.dev task runner ran out of memory. Bumped to medium-1x and it was fine. This is the kind of thing you find out by deploying, not by reading docs.
+
+**`data` vs `payload` field in Resend webhook events.** Resend's webhook payload structure doesn't match what you'd guess from the examples. The actual event data lives under `payload` in production, but local test events sometimes use `data`. Took two deployments to figure out why local tests worked and production didn't.
+
+**Bundler not including the .md prompt.** I had a separate `.md` file for the classification prompt that the bundler wasn't including in the deployment package. Moved the prompt inline as a TypeScript string — solved. No more separate file.
+
+**`--env-file` doesn't push to the vault.** Trigger.dev has a `--env-file` flag that sounds like it should populate environment variables in the remote runtime. It doesn't. You need the `syncEnvVars` build extension. Spent a deployment cycle on this one.
+
+**Single quotes in systemd EnvironmentFile silently dropping all env vars.** This isn't Trigger.dev, but it's related — this project touches enough Linux infrastructure that it snuck in. If you have `KEY='value'` in a systemd EnvironmentFile, the single quotes are literal and the variable is set to the string `value` including the quotes. Use `KEY=value` without quotes.
+
+---
+
+## Result and voice modulation
+
+The ServiceTitan classification was the first real test.
+
+The system correctly identified the link-insertion-disguised-as-thank-you pattern. Flagged it as low fit, drafted a two-sentence decline, dropped it in-thread.
+
+Tone modulation works on a per-category basis. A template-blast partnership email gets a template-blast reply. A hand-drafted warm outreach gets something warmer. The calibration corpus defines what "warm" means for each category — and that corpus grows as real replies teach the system what good looks like.
+
+---
+
+## Calibration in real time
+
+The classification categories have hard limits:
+
+- **$300K base plus equity bar** — offers below this don't get a reply at all. Not because money is the only thing, but because time is finite and this is a signal.
+- **Expert call yes-fast** — direct path to scheduling for legitimate expert-network follow-ups. Rate: $650/hr. Compliance packet required before the call.
+- **Ban on "individual practitioner" compliance disclaimers.** If someone sends the kind of boilerplate that sounds like it was written for a law firm, they're not on my list.
+- **New category `expert-network-followup`** — for post-call paperwork. Keeps the pipeline clean while the relationship is warm.
+
+These rules live in the calibration corpus. When I change my mind about something, I update the corpus and redeploy.
+
+---
+
+## What's still manual on purpose
+
+Phase-2A drafts go in-thread. I still click Send.
+
+This is deliberate for three reasons:
+
+1. **Warm Gmail sender reputation.** If the agent sends directly from my address, and something goes wrong with the classification, my sending reputation takes a hit before I know there's a problem.
+
+2. **Human-approval gate.** I'm still calibrating. Every real reply teaches me something about where the categories need refinement. Fully automated send means I'd be tuning blind.
+
+3. **Calibration phase.** Right now the system is making real decisions on real inbound. I want to see every draft before it goes out until I'm confident in the categories.
+
+---
+
+## The future
+
+**Phase-2B** — per-category opt-in for auto-send. Low-risk categories (template-blast declines, clear fits below threshold) can go out without a review step. High-risk categories (anything involving money, compliance, or a human I might actually want to talk to) stay behind the approval gate longer.
+
+**Phase-2C** — Cloudflare Email Worker for `contact@`. A different ingestion path for the address I publish publicly, with its own labeling and classification logic.
+
+**Fine-tuning a smaller model** on the calibration log eventually. Once the corpus is large enough, I could run a distilled model for the routing decisions while Claude handles the actual draft writing. Cost optimization at the edge.
+
+---
+
+## Closing
+
+Build small. Build honest.
+
+The editorial standards at [/partnerships](/partnerships) explain what I'm actually looking for — partners who have done the work, not just LinkedIn networking. The recruiter policy at [/recruiters](/recruiters) is short: I don't engage with unsolicited recruiter outreach, and I mean that.
+
+The inbox classifier is a tool for enforcing those policies at scale — not for replacing the judgment, but for making the judgment faster to act on.
+
+Eleven deployments from one couch session. All of them logged with reasons in git. That's the real workflow.
