@@ -4,33 +4,27 @@ import Image from 'next/image'
 
 export const metadata = createMetadata(rawMetadata)
 
-A ServiceTitan partnership email landed in my inbox last Tuesday. Big player in field service software — serious company, growth-stage, ecosystem pitch. My inbox classifier caught it within five minutes: fit score 2/10, drafted a clean two-sentence decline, and had it ready to send when I checked.
+<Image src={rawMetadata.image} alt="A pixel-art inbox classifier scanning emails into color-coded categories" width={1200} height={675} />
 
-That's the cold open. ServiceTitan gets one paragraph — because that's not the point.
+A link-insertion pitch landed in my inbox last Tuesday. Polished sender, real company, the kind of "I love your content, would you mind adding our link" email that arrives every other week. Within five minutes my inbox classifier flagged it: category `partnership-fit-low`, fit score 2/10, two-sentence decline drafted in my voice, ready to send.
 
-The point is the architecture underneath: a human-in-the-loop email system where every category earns its way off the manual-review list through a graduation ladder. No black-box automation. No "trust me, the AI knows what it's doing." Categories prove themselves, one verified output at a time, before they get auto-send privileges.
+I didn't have to read the pitch. I didn't have to think about the response. The system absorbed it the way an immune system absorbs a routine threat — quietly, in the background.
+
+That's the cold open. The point isn't that one email got handled. The point is the architecture underneath: a human-in-the-loop system where every category earns its way off the manual-review list through a graduation ladder. No black-box automation. No "trust me, the AI knows what it's doing." Categories prove themselves, one verified output at a time, before they earn auto-send privileges.
 
 That's the system worth writing about.
 
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-flow.webp" alt="Pixel-art diagram: email enters on the left, an AI brain in the middle splits the message into a review path and an auto-reply path" width={1200} height={675} />
+
 ## Safety First: The Graduation Ladder
 
-Here's the design constraint I started with: auto-replying to everything is a disaster waiting to happen. The failure mode — confident, context-blind form letters going out under your name — is worse than occasionally spending thirty seconds on a low-stakes reply yourself.
+Here's the design constraint I started with: auto-replying to everything is a disaster waiting to happen. The failure mode — confident, context-blind form letters going out under your name — is worse than occasionally spending thirty seconds on a low-stakes reply myself.
 
-So the system started fully manual. Every classifier output generated a draft Zack reviewed and clicked Send on. That manual phase wasn't a limitation — it was the test bed. Each category accumulated a corpus of confirmed-correct drafts. I was building a track record.
+So the system started fully manual. Every classifier output generated a draft I reviewed and clicked Send on. That manual phase wasn't a limitation — it was the test bed. Each category accumulated a corpus of confirmed-correct drafts. I was building a track record.
 
-Once a category proved itself — roughly 10 verified-correct outputs in a row, voice rules locked in — it graduated to opt-in auto-send for that specific category. Other categories stayed manual until they earned the promotion. Graduation per-category, not system-wide.
+Once a category proved itself — roughly ten verified-correct outputs in a row, voice rules locked in — it graduated to opt-in auto-send for that specific category. Other categories stayed manual until they earned the promotion. Graduation per-category, not system-wide.
 
 The reversion path is one env var edit and a redeploy. If anything breaks, I flip the switch and everything goes back to manual review on the next run. No code changes, no panic.
-
-<center>
-  <Image
-    src="https://zackproser.b-cdn.net/images/inbound-classifier-ladder.webp"
-    alt="A graduation ladder diagram: Manual Review at the bottom, Draft Mode in the middle, Auto-Send at the top — each rung labeled with category name"
-    width={1200}
-    height={675}
-    style={{ borderRadius: '8px', maxWidth: '100%', height: 'auto' }}
-  />
-</center>
 
 This is more interesting than "AI drafts emails." It's a human-in-the-loop architecture with an explicit graduation ladder per category.
 
@@ -40,7 +34,7 @@ Here's the part nobody writes about: how a Trigger.dev task actually gets read a
 
 ### OAuth Client Type: Desktop App
 
-The alternative (Web application) needs a hosted callback URL — something like `https://myapp.ngrok.io/callback`. That's fine if you're running a web app, but my Trigger.dev task is a scheduled background worker. Desktop app clients accept `http://localhost:<port>` as a valid callback, which works from a one-shot local script. Less infra to maintain.
+The alternative (Web application) needs a hosted callback URL — something like `https://myapp.ngrok.io/callback`. That's fine if you're running a web app, but a scheduled background worker doesn't have one. Desktop app clients accept `http://localhost:<port>` as a valid callback, which works from a one-shot local script. Less infra to maintain.
 
 ### OAuth Consent Screen
 
@@ -51,9 +45,9 @@ Configure it as **External / Testing** with yourself as the only test user. This
 Two scopes, granted in sequence:
 
 - `https://www.googleapis.com/auth/gmail.modify` — read messages, manage labels, create drafts
-- `https://www.googleapis.com/auth/gmail.send` — only added when we promote a category to auto-send
+- `https://www.googleapis.com/auth/gmail.send` — only added when I promote a category to auto-send
 
-The two-stage scope grant is itself a safety pattern. Phase 2A (drafts) works without ever granting send access. You literally cannot auto-send until you've separately granted that scope. If the scope list is a security boundary, this is a physical enforcement of it.
+The two-stage scope grant is itself a safety pattern. The drafts phase works without ever granting send access. You literally cannot auto-send until you've separately granted that scope. If the scope list is a security boundary, this is a physical enforcement of it.
 
 ### The Refresh Token Flow
 
@@ -61,20 +55,23 @@ Standard OAuth 2.0 Authorization Code, but with a wrinkle: Google's refresh toke
 
 ### The Localhost Callback Script
 
-A 50-line Node script that opens the browser, captures the auth code on redirect, exchanges it for tokens, and stashes the refresh token in AWS SSM — never touching the repo:
+A ~50-line Node script that opens the browser, captures the auth code on redirect, exchanges it for tokens, and stashes the refresh token in AWS SSM — never touching the repo:
 
 ```javascript
 // scripts/get-gmail-refresh-token.mjs
 import { OAuth2Client } from "google-auth-library";
 import http from "http";
 import { execSync } from "child_process";
-import { SSMClient, PutParameterCommand } from "@aws-sdk/client-ssm";
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const PORT = 3030;
 
-const oauthClient = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, `http://localhost:${PORT}`);
+const oauthClient = new OAuth2Client(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  `http://localhost:${PORT}`,
+);
 
 const authUrl = oauthClient.generateAuthUrl({
   access_type: "offline",
@@ -85,32 +82,20 @@ const authUrl = oauthClient.generateAuthUrl({
   ],
 });
 
-const server = http.createServer((req, res) => {
-  const url = new URL(req.url, `http://localhost:${PORT}`);
-  if (url.pathname === "/") {
-    const code = url.searchParams.get("code");
-    if (code) {
-      oauthClient.getToken(code).then(async (tokenResponse) => {
-        const ssm = new SSMClient({});
-        await ssm.send(new PutParameterCommand({
-          Name: "/hermes/gmail-refresh-token",
-          Value: tokenResponse.tokens.refresh_token,
-          Type: "SecureString",
-          Overwrite: true,
-        }));
-        res.end("Token saved to SSM. Close this window.");
-        server.close();
-      });
-    }
-  }
+const server = http.createServer(async (req, res) => {
+  const code = new URL(req.url, `http://localhost:${PORT}`)
+    .searchParams.get("code");
+  if (!code) return;
+  const { tokens } = await oauthClient.getToken(code);
+  // Stash refresh_token in SSM SecureString (omitted for brevity)
+  res.end("Token saved. Close this window.");
+  server.close();
 });
 
-server.listen(PORT, () => {
-  execSync(`open "${authUrl}"`);
-});
+server.listen(PORT, () => execSync(`open "${authUrl}"`));
 ```
 
-Run it once, the refresh token lands in SSM, the deploy pulls it at runtime. The script never runs again.
+Run it once, the refresh token lands in SSM, the deploy pulls it at runtime. The script never runs again unless I want to add a new scope — at which point I edit the scope list and re-run.
 
 ## Trigger.dev v4: The Scheduled Task
 
@@ -138,8 +123,8 @@ export const gmailClassifyTask = schedules.task({
       try {
         await gmailAddLabel(ref.id, "claude/processing"); // lock
         const message = await gmailGetMessage(ref.id);
-        const classification = await classifyAndDraft({ ... });
-        // ... draft / auto-send / label-swap (see below)
+        const classification = await classifyAndDraft({ /* ... */ });
+        // draft / auto-send / label-swap — see below
       } catch (err) {
         await gmailAddLabel(ref.id, "claude/error");
       }
@@ -148,13 +133,15 @@ export const gmailClassifyTask = schedules.task({
 });
 ```
 
-**Labels as state.** This is the part that took me a while to appreciate: no database needed because Gmail labels are persistent and queryable. `claude/needs-reply` triggers, `claude/processing` locks, `claude/drafted` (or `claude/sent`) marks done, `claude/error` flags broken. Re-runs are idempotent because the search query excludes terminal-state labels. Gmail is the state store.
+**Labels as state.** This is the part that took me a while to appreciate: no database needed, because Gmail labels are persistent and queryable. `claude/needs-reply` triggers, `claude/processing` locks, `claude/drafted` (or `claude/sent`) marks done, `claude/error` flags broken. Re-runs are idempotent because the search query excludes terminal-state labels. Gmail is the state store.
+
+<Image src="https://zackproser.b-cdn.net/images/inbound-classifier-threshold.webp" alt="Pixel-art threshold gauge: emails above a fit score of 7 route to auto-reply, below to manual review" width={1200} height={675} />
 
 ## The syncEnvVars Build Extension
 
 This one cost me about thirty minutes of head-scratching and it's not documented well enough.
 
-`--env-file .env` on the deploy command only loads vars into the CLI process. The actual sync to Trigger.dev's encrypted vault happens via this build extension. Without it, your deployed task has no env vars at runtime even though the deploy claimed success.
+`--env-file .env` on the deploy command only loads vars into the CLI process. The actual sync to Trigger.dev's encrypted vault happens via the `syncEnvVars` build extension. Without it, your deployed task has no env vars at runtime even though the deploy claimed success.
 
 ```typescript
 // trigger.config.ts
@@ -162,8 +149,11 @@ import { defineConfig } from "@trigger.dev/sdk";
 import { syncEnvVars } from "@trigger.dev/build/extensions/core";
 
 const RUNTIME_ENV_VAR_NAMES = [
-  "ANTHROPIC_API_KEY", "RESEND_API_KEY",
-  "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REFRESH_TOKEN",
+  "ANTHROPIC_API_KEY",
+  "RESEND_API_KEY",
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET",
+  "GOOGLE_REFRESH_TOKEN",
   "AUTO_SEND_CATEGORIES",
 ] as const;
 
@@ -194,33 +184,39 @@ const response = await client.messages.create({
   model: "claude-opus-4-7",
   max_tokens: 2048,
   system: SYSTEM_PROMPT, // long versioned prompt
-  messages: [{ role: "user", content: `INBOUND EMAIL:
+  messages: [{
+    role: "user",
+    content: `INBOUND EMAIL:
 From: ${input.from}
 Subject: ${input.subject}
 
 ${input.body.slice(0, 4000)}
 
-Respond ONLY with the JSON object specified in the system prompt — no preamble, no markdown fences.` }],
+Respond ONLY with the JSON object specified in the system prompt — no preamble, no markdown fences.`,
+  }],
 });
 
 const text = response.content
-  .filter((c): c is Anthropic.TextBlock => c.type === "text")
-  .map((c) => c.text).join("").trim()
-  .replace(/^\`\`\`(?:json)?\s*/i, "").replace(/\s*\`\`\`$/i, "");
+  .filter((c) => c.type === "text")
+  .map((c) => c.text)
+  .join("")
+  .trim()
+  .replace(/^```(?:json)?\s*/i, "")
+  .replace(/\s*```$/i, "");
 
-const parsed = JSON.parse(text) as Classification;
+const parsed = JSON.parse(text);
 validateClassification(parsed); // runtime type check
 ```
 
-**Prompt as code.** The system prompt is a TypeScript string export, not a markdown file. Why? The Trigger.dev bundler doesn't include arbitrary file types in the deploy bundle — `fs.readFileSync` on the .md threw ENOENT at runtime. Bundling the prompt as a TS const means it's guaranteed to ship with the code. The .md version stays around as human-readable docs.
+**Prompt as code.** The system prompt is a TypeScript string export, not a markdown file. Why? The Trigger.dev bundler doesn't include arbitrary file types in the deploy bundle — `fs.readFileSync` on the `.md` threw `ENOENT` at runtime. Bundling the prompt as a TS const means it's guaranteed to ship with the code. I keep a parallel `.md` version around as human-readable docs, but the TypeScript file is the source of truth at runtime.
 
-The strip-and-parse pattern handles a common problem: Claude sometimes returns the JSON wrapped in ```json fences and sometimes doesn't. Both are valid — both parse correctly after the regex cleanups.
+The strip-and-parse pattern handles a common problem: Claude sometimes returns the JSON wrapped in code fences and sometimes doesn't. Both are valid — both parse correctly after the regex cleanups.
 
 ## Gmail Draft Creation in the Original Thread
 
 ```typescript
 // lib/gmail.ts
-export async function gmailCreateDraft(input: DraftInput) {
+export async function gmailCreateDraft(input) {
   const headerLines = [
     `To: ${input.to}`,
     `Subject: ${input.subject}`,
@@ -237,7 +233,7 @@ export async function gmailCreateDraft(input: DraftInput) {
       message: { threadId: input.threadId, raw: rawBase64 },
     },
   });
-  return { id: res.data.id! };
+  return { id: res.data.id };
 }
 ```
 
@@ -249,11 +245,16 @@ The `threadId` plus In-Reply-To and References headers are what make the draft t
 // trigger/gmail-classify.ts (inside the run loop)
 const AUTO_SEND_CATEGORIES = new Set(
   (process.env.AUTO_SEND_CATEGORIES ?? "")
-    .split(",").map(s => s.trim().toLowerCase()).filter(Boolean),
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean),
 );
 
-// These two CAN NEVER auto-send regardless of env, even if listed.
-const AUTO_SEND_DISQUALIFIED = new Set(["expert-network-followup", "noise"]);
+// These two can never auto-send regardless of env, even if listed.
+const AUTO_SEND_DISQUALIFIED = new Set([
+  "expert-network-followup",
+  "noise",
+]);
 
 const shouldAutoSend =
   hasReply &&
@@ -261,7 +262,7 @@ const shouldAutoSend =
   !AUTO_SEND_DISQUALIFIED.has(category);
 
 if (shouldAutoSend) {
-  // gmail.users.drafts.send — converts draft into sent message in-thread
+  // gmail.users.drafts.send — converts draft into a sent message in-thread
   await gmailSendDraft(draftId);
   await gmailAddLabel(ref.id, "claude/sent"); // distinct from claude/drafted
 }
@@ -269,11 +270,11 @@ if (shouldAutoSend) {
 
 This is the keystone. Here's why:
 
-**Per-category graduation.** You don't promote "the whole system to auto-send" — you promote one category at a time, after it's earned the trust. Each category has a track record. You're not gambling on the system — you're accumulating evidence.
+**Per-category graduation.** I don't promote "the whole system to auto-send" — I promote one category at a time, after it's earned the trust. Each category has a track record. I'm not gambling on the system — I'm accumulating evidence.
 
-**Hard-coded disqualifications.** Some categories can never auto-send regardless of what the env var says. Empty-reply categories like `expert-network-followup` where the action belongs to me, not the system. The hard-coded set is the last line of defense.
+**Hard-coded disqualifications.** Some categories can never auto-send regardless of what the env var says. Empty-reply categories like `expert-network-followup` — where the action belongs to me (clicking a payment form, signing a W-9) and there's no reply to draft. The hard-coded set is a last line of defense against a config typo promoting a category that shouldn't be promoted.
 
-**Kill switch.** Setting the env to empty reverts every category back to manual draft mode on the next run. No code change, no panic. One env var, one deploy, everything stops.
+**Kill switch.** Setting the env var to empty reverts every category back to manual draft mode on the next run. No code change, no panic. One env var edit, one deploy, everything stops.
 
 **Label as audit trail.** Auto-sent messages get `claude/sent`, drafts get `claude/drafted`. Reviewing the audit trail later is a single Gmail filter. I can see every auto-sent message and when it went out.
 
@@ -283,23 +284,28 @@ This is the keystone. Here's why:
 
 ## What I Got Wrong the First Time
 
-**Dry run mode first.** I should have started with a full manual phase and only introduced auto-send after building the calibration corpus. Instead I tried to be clever about thresholds early and spent time unwinding decisions that were premature.
+Several footguns I hit, in case you're building something similar:
 
-**Prompt versioning from day one.** The current setup has the prompt in an environment variable, which means every change overwrites the previous one. I've lost probably three iterations that were better than what replaced them. Prompt versioning in the repo is the first thing I'd add if I were starting over.
+**OOM on the default machine size.** Trigger.dev's default `small-1x` preset (0.5GB) crashed on cold start before any work ran. The `googleapis` library is huge — even with tree-shaking it pulls in code for every Google service. I bumped to `medium-1x` (2GB) and got reliable headroom. The crash was silent in the sense that the cron just stopped advancing; I had to look at the run history in the Trigger.dev dashboard to find the OOM.
 
-**Recipient count check.** The auto-reply goes out from my personal inbox through Resend's routing. If the classifier fires on a thread with multiple CC'd addresses, the reply goes to everyone. I caught this in testing and added a rule to suppress auto-reply when there are more than two recipients. This is the one that almost shipped.
+**`data` vs `payload` on Resend events.** I sent the trigger event with `{event, email, data: {...}}` and the API returned 202 — looked fine. Except `data` is the wrong field name; Resend's `/events/send` accepts custom payload under `payload`. The 202 was Resend silently dropping my custom data. The catch was when an automation that was supposed to branch on `payload.source` saw nothing. The fix was one field name change; finding it took a code review pass from Cursor Bugbot.
+
+**The bundler doesn't include `.md` files.** I had the system prompt as a versioned markdown file and loaded it with `fs.readFileSync`. The deploy succeeded; the first run threw `ENOENT` at runtime. Trigger.dev's bundler only includes TypeScript / JavaScript imports. The fix: export the prompt as a TypeScript string const.
+
+**`--env-file` doesn't actually push env vars.** I assumed `npx trigger.dev deploy --env-file .env` would upload my env vars to Trigger.dev's vault. It doesn't — that flag only loads them into the deploy CLI process. The actual sync requires the `syncEnvVars` build extension. The task failed at runtime with `GOOGLE_CLIENT_ID env var is required` before I figured this out.
+
+**Quoted values in `.env` and systemd.** A separate service I run loads `.env` via systemd's `EnvironmentFile`. It was silently dropping env vars because the file had single-quoted values (`KEY='value'`). Stripping the quotes brought every secret back. Worth knowing if you're loading `.env` anywhere systemd reads it.
 
 ## What's Next
 
-The classifier currently handles the `partnership-fit` category — that one graduated to auto-send two weeks ago. I'm watching the error rate and will demote it to manual if the false-positive rate climbs.
+The first two categories that graduated to auto-send: `alphasights-intro` and `expert-network`. These are expert-call requests from research firms — the response is always some flavor of "yes, $650/hour, send the booking link." Calibrated enough that I trust the system to send these directly without me reviewing every word.
 
-Next categories in the pipeline:
+Next on the pipeline:
 
-- **Speaker inquiry** — "would you like to speak at our conference" emails. Low fit gets a standard decline. I'm still building the calibration corpus.
-- **Recruiter noise** — role-agnostic third-party recruiter outreach gets a short decline. Internal recruiter, role-specific, comp range listed — that gets a score based on title, company, and fit signals.
+- **The polite-no categories.** `partnership-fit-low` (link exchanges, irrelevant sponsor pitches), `recruiter-low-comp` (below-bar engineering recruiter), `recruiter-devrel` (not interested), `recruiter-irrelevant` (engineering outside AI). All have well-defined response templates and minimal nuance. Once I have ten verified drafts each, they graduate.
+- **`contact@zackproser.com` as a public address.** The classifier currently only handles email I receive at my personal Gmail (after I label it). I want to add a public `contact@` address that anyone can reach me at, routed via a Cloudflare Email Worker to the same Trigger.dev pipeline. Same classifier, same safety architecture, new input source.
+- **Fine-tune a smaller model on the calibration corpus.** Every confirmed-correct draft is tagged in a calibration log. Eventually that corpus could be used to fine-tune a smaller model to handle the high-volume categories. Not a priority yet — Opus token costs are well under my coffee budget at current volume — but the corpus is being built in case I need it.
 
-Each extension follows the same pattern: classification prompt, threshold configuration, reply template, calibration corpus, graduation.
-
-The broader lesson: inbox automation isn't about replacing judgment. It's about eliminating the tax on low-stakes decisions so you have attention left for the ones that actually need you. ServiceTitan didn't need my judgment — it needed thirty seconds, and I wasn't going to give it any until I had to. Now I don't have to.
+The broader lesson: inbox automation isn't about replacing judgment. It's about eliminating the tax on low-stakes decisions so I have attention left for the ones that actually need me.
 
 — Zack
