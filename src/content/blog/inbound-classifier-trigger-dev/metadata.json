@@ -4,7 +4,7 @@
   "date": "2026-05-11",
   "description": "How I built an AI inbox classifier that drafts replies for low-fit inbound — and the safety checks that keep it from embarrassing me.",
   "tags": ["ai", "automation", "email", "production"],
-  "status": "published",
+  "status": "draft",
   "canonical_url": "https://zackproser.com/blog/inbound-classifier-trigger-dev",
   "image": "https://zackproser.b-cdn.net/images/inbound-classifier-hero.webp"
 }
