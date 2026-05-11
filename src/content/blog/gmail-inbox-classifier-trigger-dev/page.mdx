@@ -78,7 +78,7 @@ No database. Labels are the state machine.
 
 ## The setup
 
-**Trigger.dev project** (`proj_turjdyumataunbtfbdbl`) running a v4 scheduled task on a cron — every 5 minutes, no exceptions. The Trigger.dev SDK makes the polling + orchestration straightforward.
+**Trigger.dev project** (`proj_xxxxxxxxxxxxx`) running a v4 scheduled task on a cron — every 5 minutes, no exceptions. The Trigger.dev SDK makes the polling + orchestration straightforward.
 
 **Gmail API** via googleapis OAuth. The task lists messages with label `needs-reply`, skips messages already labeled `drafted` (idempotency), and for each one: fetches the message body, sends it to Claude, receives a structured JSON response, creates a Gmail draft in the original thread via `users.drafts.create`, sends a brief Resend notification so I see it in my inbox, then swaps the label from `needs-reply` to `drafted`.
 
