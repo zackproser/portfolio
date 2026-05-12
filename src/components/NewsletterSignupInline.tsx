@@ -49,7 +49,7 @@ export function NewsletterSignupInline({ variant = 'light' }: NewsletterSignupIn
       <div className="flex items-center justify-center gap-3 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
         <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
         <p className="text-green-800 dark:text-green-200 font-semibold">
-          🤖 Neural Network Activated! Check your inbox for confirmation.
+          🤖 Neural Network Activated! Welcome email incoming.
         </p>
       </div>
     )

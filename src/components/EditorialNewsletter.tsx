@@ -107,7 +107,7 @@ export function EditorialNewsletter({
       ) : null}
       {status === 'success' ? (
         <div className="editorial-capture-fine text-burnt-400 dark:text-amber-400" role="status">
-          ✓ Subscribed. Check your inbox to confirm.
+          ✓ Subscribed. Welcome email incoming.
         </div>
       ) : (
         <>

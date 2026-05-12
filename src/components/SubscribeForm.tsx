@@ -49,29 +49,28 @@ export function SubscribeForm({
     return (
       <div className="sp-ok" role="status" aria-live="polite">
         <div className="sp-ok-stamp">
-          <span className="sp-ok-stamp-line">Received</span>
+          <span className="sp-ok-stamp-line">On the</span>
           <span className="mark">✓</span>
-          <span className="sp-ok-stamp-line">Confirm</span>
-          <span className="sp-ok-stamp-line">via email</span>
+          <span className="sp-ok-stamp-line">list</span>
         </div>
-        <h1>Almost there. Check <em>your inbox</em>.</h1>
+        <h1>You&apos;re in. Welcome email <em>incoming</em>.</h1>
         <p className="sp-ok-lead">
-          A confirmation is en route to <code className="sp-ok-email">{trimmed}</code>. Click the link inside and you&apos;re on the list. If it doesn&apos;t arrive in a couple minutes, check the promotions folder.
+          <code className="sp-ok-email">{trimmed}</code> is on the list. Your first email lands in a few minutes &mdash; check the promotions folder if it&apos;s slow to arrive.
         </p>
         <ol className="sp-ok-steps">
           <li>
             <span className="sp-ok-step-body">
-              Open the email from <b className="sp-ok-email">zack@zackproser.com</b> &mdash; one line, one link.
+              The welcome series is six emails over six weeks. Each one short, each one useful.
             </span>
           </li>
           <li>
             <span className="sp-ok-step-body">
-              Click <b>Confirm subscription</b>. No form, no redirect gymnastics.
+              After that, the next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
             </span>
           </li>
           <li>
             <span className="sp-ok-step-body">
-              The next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
+              One-click unsubscribe in every email. No form, no redirect gymnastics.
             </span>
           </li>
         </ol>
