@@ -317,7 +317,7 @@ export async function subscribeToResend(
     // (captured) but the welcome-trigger event is NOT fired. Lets us build
     // sender-domain reputation against non-Gmail providers first.
     if (isGoogleMailbox(normalizedEmail) && gmailHoldEnabled()) {
-      await notifyZackOfSignup({
+      void notifyZackOfSignup({
         email: normalizedEmail,
         contactId,
         source: tags[0] ?? 'newsletter',
@@ -348,7 +348,7 @@ export async function subscribeToResend(
     if (eventRes.status >= 300) {
       // Contact is on the list; trigger event failed. Surface this as a warning
       // so the caller logs it — the subscriber is captured but won't get welcome v1.
-      await notifyZackOfSignup({
+      void notifyZackOfSignup({
         email: normalizedEmail,
         contactId,
         source: tags[0] ?? 'newsletter',
@@ -366,7 +366,7 @@ export async function subscribeToResend(
       }
     }
 
-    await notifyZackOfSignup({
+    void notifyZackOfSignup({
       email: normalizedEmail,
       contactId,
       source: tags[0] ?? 'newsletter',
