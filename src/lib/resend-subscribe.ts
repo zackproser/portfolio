@@ -207,6 +207,44 @@ export function _resetTopicCacheForTests(): void {
   topicCache = null
 }
 
+/**
+ * Ops notification: posts a short summary to `RESEND_OPS_NOTIFY_TO` whenever a
+ * real signup is captured. Lets Zack spot-check production signups without
+ * watching the Resend dashboard.
+ *
+ * Gated on the env var being set — unset in tests and in any environment where
+ * notifications aren't wanted, the function is a no-op (no fetch call). Wrapped
+ * in try/catch so a notify failure never blocks the signup response.
+ */
+async function notifyZackOfSignup(args: {
+  email: string
+  contactId: string
+  source: string
+  held: boolean
+}): Promise<void> {
+  const to = process.env.RESEND_OPS_NOTIFY_TO?.trim()
+  if (!to) return
+  try {
+    await resendFetch<{ id: string }>(`/emails`, {
+      method: 'POST',
+      body: {
+        from: 'Zack <zack@zackproser.com>',
+        to: [to],
+        subject: `[zackproser.com] new sub: ${args.email}`,
+        text: [
+          `email:  ${args.email}`,
+          `source: ${args.source}`,
+          `held:   ${args.held ? 'yes (Gmail reputation hold)' : 'no — welcome chain fired'}`,
+          ``,
+          `https://resend.com/audiences/${audienceId()}/contacts/${args.contactId}`,
+        ].join('\n'),
+      },
+    })
+  } catch {
+    // Fire-and-forget: never block the signup response on a notify failure.
+  }
+}
+
 export async function subscribeToResend(
   args: ResendSubscribeArgs,
 ): Promise<ResendSubscribeResult> {
@@ -279,6 +317,12 @@ export async function subscribeToResend(
     // (captured) but the welcome-trigger event is NOT fired. Lets us build
     // sender-domain reputation against non-Gmail providers first.
     if (isGoogleMailbox(normalizedEmail) && gmailHoldEnabled()) {
+      await notifyZackOfSignup({
+        email: normalizedEmail,
+        contactId,
+        source: tags[0] ?? 'newsletter',
+        held: true,
+      })
       return {
         ok: true,
         contactId,
@@ -315,6 +359,13 @@ export async function subscribeToResend(
         eventSendWarning: `Resend event send failed: HTTP ${eventRes.status}`,
       }
     }
+
+    await notifyZackOfSignup({
+      email: normalizedEmail,
+      contactId,
+      source: tags[0] ?? 'newsletter',
+      held: false,
+    })
 
     return {
       ok: true,
