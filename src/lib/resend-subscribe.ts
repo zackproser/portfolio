@@ -233,6 +233,11 @@ async function notifyZackOfSignup(args: {
   const to = process.env.RESEND_OPS_NOTIFY_TO?.trim()
   if (!to) return
   try {
+    // Dashboard URLs (verified 2026-05-12, both are login-walled real routes):
+    //   /audience/contacts/{contactId}    → contact deep-link
+    //   /audience/segments/{audienceId}   → audience list
+    // NOT `/audiences/{id}/contacts/{contactId}` — that's the API path, 404
+    // on the dashboard.
     await resendFetch<{ id: string }>(`/emails`, {
       method: 'POST',
       body: {
@@ -240,11 +245,12 @@ async function notifyZackOfSignup(args: {
         to: [to],
         subject: `[zackproser.com] new sub: ${args.email}`,
         text: [
-          `email:  ${args.email}`,
-          `source: ${args.source}`,
-          `held:   ${args.held ? 'yes (Gmail reputation hold)' : 'no — welcome chain fired'}`,
+          `email:    ${args.email}`,
+          `source:   ${args.source}`,
+          `held:     ${args.held ? 'yes (Gmail reputation hold)' : 'no — welcome chain fired'}`,
           ``,
-          `https://resend.com/audiences/${audienceId()}/contacts/${args.contactId}`,
+          `Contact:  https://resend.com/audience/contacts/${args.contactId}`,
+          `Audience: https://resend.com/audience/segments/${audienceId()}`,
         ].join('\n'),
       },
     })
