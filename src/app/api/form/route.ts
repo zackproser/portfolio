@@ -45,9 +45,6 @@ export async function POST(req: NextRequest) {
 	return new NextResponse(
 		JSON.stringify({
 			data: `Successfully subscribed ${body.email}`,
-			contactId: result.contactId,
-			eventFired: result.eventFired,
-			tagsForwarded: result.tagsForwarded,
 		}),
 		{ status: 200 },
 	);

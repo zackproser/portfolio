@@ -62,7 +62,6 @@ export async function POST(req: NextRequest) {
 	return new NextResponse(
 		JSON.stringify({
 			data: `Successfully added ${email} to ${productSlug} waitlist`,
-			contactId: result.contactId,
 		}),
 		{ status: 200 },
 	);
