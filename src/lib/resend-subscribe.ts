@@ -250,7 +250,10 @@ async function notifyZackOfSignup(args: {
       body: {
         from: 'Zack <zack@zackproser.com>',
         to: [to],
-        subject: `[zackproser.com] new sub: ${args.email}`,
+        // Subject deliberately omits the subscriber email — keeps PII out of
+        // subject lines (visible in push notifications, mail-server logs).
+        // Address lives in the body alongside the dashboard link.
+        subject: `[zackproser.com] new subscriber`,
         text: [
           `email:    ${args.email}`,
           `source:   ${args.source}`,
@@ -271,9 +274,14 @@ export async function subscribeToResend(
 ): Promise<ResendSubscribeResult> {
   if (!args.email) return { ok: false, error: 'Missing email' }
 
-  const normalizedEmail = args.email.trim().toLowerCase()
-
   try {
+    // Validate + normalize INSIDE the try so a non-string email (e.g. a
+    // number from a malformed JSON body) doesn't escape as an unhandled
+    // TypeError from `.trim()`.
+    if (typeof args.email !== 'string') {
+      return { ok: false, error: 'email must be a string' }
+    }
+    const normalizedEmail = args.email.trim().toLowerCase()
     const contactBody: Record<string, unknown> = {
       email: normalizedEmail,
       unsubscribed: false,
