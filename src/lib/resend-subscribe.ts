@@ -77,7 +77,14 @@ async function resendFetch<T>(path: string, init: ResendInit = {}): Promise<Rese
     body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
   })
   const text = await res.text()
-  const body = (text.length === 0 ? undefined : JSON.parse(text)) as T | undefined
+  let body: T | undefined
+  if (text.length > 0) {
+    try {
+      body = JSON.parse(text) as T
+    } catch {
+      body = undefined
+    }
+  }
   return { status: res.status, body }
 }
 
