@@ -65,7 +65,7 @@ export function SubscribeForm({
           </li>
           <li>
             <span className="sp-ok-step-body">
-              After that, the next issue ships when something worth sending is ready. Nothing else hits your inbox in between.
+              After that, you&apos;ll get one essay per week — a year-long curated drip of my best work, then new writing as it ships.
             </span>
           </li>
           <li>

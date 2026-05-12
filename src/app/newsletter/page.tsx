@@ -14,7 +14,7 @@ const HERO_PORTRAIT = 'https://zackproser.b-cdn.net/images/zack-sketch.webp'
 
 export const metadata: Metadata = createMetadata({
   title: 'AI & Developer Tools Newsletter - Zachary Proser',
-  description: 'Applied-AI essays on coding tools, vector databases, and developer productivity. Join 5,000+ subscribers reading when something worth sending ships.',
+  description: 'Applied-AI essays on coding tools, vector databases, and developer productivity. Join 5,000+ subscribers getting one essay per week.',
 })
 
 export const revalidate = 3600
