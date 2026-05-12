@@ -133,8 +133,15 @@ type TopicCreateResp = { object?: string; id: string }
 //
 // Topic names map 1:1 to our tag names. Resolution is GET /topics (paginated)
 // with a 5-minute in-memory cache. On cache miss for a tag, POST /topics
-// creates the topic with `default_subscription: opt_in` (non-subscribers do
-// NOT auto-receive — only contacts explicitly opted in).
+// creates the topic with `default_subscription: opt_out`. CRITICAL: this
+// MUST be `opt_out`, not `opt_in`. With `opt_in`, every contact in the
+// account is auto-subscribed to the topic regardless of whether they were
+// ever PATCH'd in — Resend's GET /contacts/{id}/topics returns the topic
+// as `subscription: opt_in` via the default, and a tag-targeted broadcast
+// would go to every contact instead of the intended segment. Discovered
+// 2026-05-12 when a brand-new /subscribe signup (tags: []) showed up
+// subscribed to all 22 topics in the dashboard. Per-contact PATCH opt_ins
+// still work the same; only the default for untouched contacts changes.
 
 const TOPIC_CACHE_TTL_MS = 5 * 60 * 1000
 type TopicCache = { ids: Map<string, string>; expiresAt: number }
@@ -172,7 +179,7 @@ async function ensureTopic(name: string): Promise<string> {
   if (existing) return existing
   const res = await resendFetch<TopicCreateResp>(`/topics`, {
     method: 'POST',
-    body: { name, default_subscription: 'opt_in' },
+    body: { name, default_subscription: 'opt_out' },
   })
   if (res.status >= 300 || !res.body?.id) {
     throw new Error(`Topic create failed for "${name}": HTTP ${res.status}`)

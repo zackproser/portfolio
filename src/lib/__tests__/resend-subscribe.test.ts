@@ -242,9 +242,14 @@ describe('subscribeToResend', () => {
     const createCall = fetchMock.mock.calls[2]
     expect(createCall[0]).toBe('https://api.resend.com/topics')
     expect(createCall[1].method).toBe('POST')
+    // CRITICAL regression guard: must be `opt_out`, not `opt_in`.
+    // With `opt_in`, every contact in the account is auto-subscribed via
+    // the topic default — a tag-targeted broadcast goes to everyone.
+    // Discovered 2026-05-12 when a brand-new /subscribe signup (tags: [])
+    // showed up in the dashboard subscribed to all 22 topics.
     expect(JSON.parse(createCall[1].body)).toEqual({
       name: 'interest:new-thing',
-      default_subscription: 'opt_in',
+      default_subscription: 'opt_out',
     })
   })
 
