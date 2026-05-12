@@ -348,6 +348,12 @@ export async function subscribeToResend(
     if (eventRes.status >= 300) {
       // Contact is on the list; trigger event failed. Surface this as a warning
       // so the caller logs it — the subscriber is captured but won't get welcome v1.
+      await notifyZackOfSignup({
+        email: normalizedEmail,
+        contactId,
+        source: tags[0] ?? 'newsletter',
+        held: false,
+      })
       return {
         ok: true,
         contactId,
