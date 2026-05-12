@@ -215,6 +215,14 @@ export function _resetTopicCacheForTests(): void {
  * Gated on the env var being set — unset in tests and in any environment where
  * notifications aren't wanted, the function is a no-op (no fetch call). Wrapped
  * in try/catch so a notify failure never blocks the signup response.
+ *
+ * MUST be awaited at call sites. Don't be tempted to fire-and-forget with
+ * `void` to shave latency — on Vercel serverless, once the route handler
+ * returns its response the runtime suspends/terminates the lambda and any
+ * in-flight fetches get cut off mid-flight. We learned this the hard way:
+ * the 2026-05-12 cutover initially shipped with `void` and zero notifications
+ * reached the ops mailbox. For background work outside the response cycle,
+ * use `waitUntil` from `@vercel/functions`, not bare `void`.
  */
 async function notifyZackOfSignup(args: {
   email: string
@@ -317,7 +325,7 @@ export async function subscribeToResend(
     // (captured) but the welcome-trigger event is NOT fired. Lets us build
     // sender-domain reputation against non-Gmail providers first.
     if (isGoogleMailbox(normalizedEmail) && gmailHoldEnabled()) {
-      void notifyZackOfSignup({
+      await notifyZackOfSignup({
         email: normalizedEmail,
         contactId,
         source: tags[0] ?? 'newsletter',
@@ -348,7 +356,7 @@ export async function subscribeToResend(
     if (eventRes.status >= 300) {
       // Contact is on the list; trigger event failed. Surface this as a warning
       // so the caller logs it — the subscriber is captured but won't get welcome v1.
-      void notifyZackOfSignup({
+      await notifyZackOfSignup({
         email: normalizedEmail,
         contactId,
         source: tags[0] ?? 'newsletter',
@@ -366,7 +374,7 @@ export async function subscribeToResend(
       }
     }
 
-    void notifyZackOfSignup({
+    await notifyZackOfSignup({
       email: normalizedEmail,
       contactId,
       source: tags[0] ?? 'newsletter',
