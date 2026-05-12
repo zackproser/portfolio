@@ -205,9 +205,11 @@ export async function subscribeToResend(
 ): Promise<ResendSubscribeResult> {
   if (!args.email) return { ok: false, error: 'Missing email' }
 
+  const normalizedEmail = args.email.trim().toLowerCase()
+
   try {
     const contactBody: Record<string, unknown> = {
-      email: args.email,
+      email: normalizedEmail,
       unsubscribed: false,
     }
     if (args.firstName) contactBody.first_name = args.firstName
@@ -269,7 +271,7 @@ export async function subscribeToResend(
     // and googlemail.com are added to the audience and tagged via Topics
     // (captured) but the welcome-trigger event is NOT fired. Lets us build
     // sender-domain reputation against non-Gmail providers first.
-    if (isGoogleMailbox(args.email) && gmailHoldEnabled()) {
+    if (isGoogleMailbox(normalizedEmail) && gmailHoldEnabled()) {
       return {
         ok: true,
         contactId,
@@ -285,7 +287,7 @@ export async function subscribeToResend(
       method: 'POST',
       body: {
         event: SIGNUP_EVENT_NAME,
-        email: args.email,
+        email: normalizedEmail,
         payload: {
           source: tags[0] ?? 'newsletter',
           tags,
