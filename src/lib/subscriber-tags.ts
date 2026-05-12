@@ -1,8 +1,8 @@
 /**
- * Maps referrer URLs to subscriber tags for EmailOctopus.
+ * Maps referrer URLs to subscriber tags for email marketing.
  *
  * When someone signs up from a specific page, they get auto-tagged
- * with interest and vertical tags. These tags power EmailOctopus
+ * with interest and vertical tags. These tags power email
  * automations that send targeted affiliate content.
  */
 
@@ -90,78 +90,4 @@ export function getTagsFromReferrer(referrer: string | undefined | null): string
   }
 
   return Array.from(tagSet)
-}
-
-/**
- * Generate a click-tracked affiliate link for use in EmailOctopus emails.
- *
- * This wraps the affiliate URL through /api/click so that clicking the
- * link in an email also tags the subscriber with behavioral data.
- *
- * @param siteUrl - Base URL of your site (e.g., "https://zackproser.com")
- * @param product - The affiliate product ("wisprflow" or "granola")
- * @param campaign - Campaign identifier for UTM tracking
- * @param tags - Additional tags to apply on click
- * @returns URL string for use in EmailOctopus email templates
- *
- * @example
- * // In an EmailOctopus email template, use the merge tag for email:
- * // {{EmailAddress}} will be replaced by EmailOctopus
- *
- * getEmailAffiliateLink(
- *   "https://zackproser.com",
- *   "wisprflow",
- *   "welcome-sequence",
- *   ["clicked:wisprflow", "email:welcome-1"]
- * )
- * // Returns: https://zackproser.com/api/click?e={{EmailAddress}}&tag=clicked:wisprflow&tag=email:welcome-1&r=https://ref.wisprflow.ai/zack-proser?utm_source=zackproser&utm_medium=newsletter&utm_campaign=welcome-sequence&utm_content=email-cta
- */
-export function getEmailAffiliateLink(
-  siteUrl: string,
-  product: 'wisprflow' | 'granola',
-  campaign: string,
-  tags: string[] = []
-): string {
-  const BASE_LINKS: Record<string, string> = {
-    wisprflow: 'https://ref.wisprflow.ai/zack-proser',
-    granola: 'https://go.granola.ai/zack-proser'
-  }
-
-  // Build the affiliate destination URL with UTM params
-  const affiliateUrl = new URL(BASE_LINKS[product])
-  affiliateUrl.searchParams.set('utm_source', 'zackproser')
-  affiliateUrl.searchParams.set('utm_medium', 'newsletter')
-  affiliateUrl.searchParams.set('utm_campaign', campaign)
-  affiliateUrl.searchParams.set('utm_content', 'email-cta')
-
-  // Build the click-tracking wrapper URL
-  // Note: {{EmailAddress}} is an EmailOctopus merge tag - it gets replaced per-subscriber
-  const clickUrl = new URL('/api/click', siteUrl)
-  clickUrl.searchParams.set('e', '{{EmailAddress}}')
-
-  // Always tag with the product click
-  const allTags = [`clicked:${product}`, ...tags]
-  allTags.forEach(tag => clickUrl.searchParams.append('tag', tag))
-
-  clickUrl.searchParams.set('r', affiliateUrl.toString())
-
-  return clickUrl.toString()
-}
-
-/**
- * Generate a click-tracked content link for use in EmailOctopus emails.
- *
- * Routes through /api/click to tag the subscriber based on what content
- * they clicked, then redirects to the actual page.
- */
-export function getEmailContentLink(
-  siteUrl: string,
-  contentPath: string,
-  tags: string[] = []
-): string {
-  const clickUrl = new URL('/api/click', siteUrl)
-  clickUrl.searchParams.set('e', '{{EmailAddress}}')
-  tags.forEach(tag => clickUrl.searchParams.append('tag', tag))
-  clickUrl.searchParams.set('r', `${siteUrl}${contentPath}`)
-  return clickUrl.toString()
 }
