@@ -10,7 +10,7 @@ const faqs = [
   {
     num: 'Q.01',
     q: 'How often does it actually ship?',
-    a: 'It ships when it ships. When something worth sending shows up, an issue goes out \u2014 no fixed cadence, no guarantees.',
+    a: 'Roughly weekly. New subscribers get a 6-email welcome series, then a year-long evergreen drip of my best work \u2014 one essay per week. After that, new writing as it ships.',
   },
   {
     num: 'Q.02',

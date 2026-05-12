@@ -70,7 +70,13 @@ prisma/.env
 public/og-images-optimized/
 .env.production
 
-# Internal marketing/strategy docs
+# Internal marketing/strategy docs (never commit — drafts, internal-only, or PII)
 EMAIL_MARKETING_PLAYBOOK.md
 EMAILOCTOPUS_SETUP_GUIDE.md
 EMAIL_DRIP_REDESIGN.md
+AI_*.md
+AIE_*.md
+CON_*.md
+WELCOME_SEQUENCE_*.md
+*_DRAFT.md
+*_OUTLINE.md
