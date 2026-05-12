@@ -179,7 +179,13 @@ async function applyTopicsToContact(
   topicIds: string[],
 ): Promise<void> {
   if (topicIds.length === 0) return
-  const body = { topics: topicIds.map((id) => ({ id, subscription: 'opt_in' as const })) }
+  // Resend's PATCH /contacts/{id}/topics expects a BARE ARRAY, not the
+  // intuitive {topics: [...]} wrapper. The wrapped form returns
+  //   422 { message: "The `` field must be an `array`." }
+  // and silently leaves the contact untagged. Verified by probing the
+  // live API during the EO→Resend Topics backfill (2026-05-12) — every
+  // PATCH was failing until we swapped to the bare list shape.
+  const body = topicIds.map((id) => ({ id, subscription: 'opt_in' as const }))
   const res = await resendFetch<{ id: string }>(
     `/contacts/${encodeURIComponent(contactId)}/topics`,
     { method: 'PATCH', body },

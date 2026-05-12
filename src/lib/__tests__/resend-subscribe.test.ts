@@ -154,16 +154,57 @@ describe('subscribeToResend', () => {
     // Topics list call
     expect(fetchMock.mock.calls[1][0]).toMatch(/^https:\/\/api\.resend\.com\/topics\?/)
 
-    // PATCH /contacts/{id}/topics body shape
+    // PATCH /contacts/{id}/topics body shape — Resend wants a BARE ARRAY,
+    // NOT the intuitive `{topics: [...]}` wrapper. The wrapped form 422s
+    // silently. Discovered during the 1,240-contact Topics backfill run
+    // (2026-05-12) where the wrapped shape returned `The `` field must
+    // be an `array`.` for every single PATCH.
     const patchCall = fetchMock.mock.calls[2]
     expect(patchCall[0]).toBe('https://api.resend.com/contacts/c-1/topics')
     expect(patchCall[1].method).toBe('PATCH')
-    expect(JSON.parse(patchCall[1].body)).toEqual({
-      topics: [
-        { id: 't-blog', subscription: 'opt_in' },
-        { id: 't-voice', subscription: 'opt_in' },
-      ],
+    const parsedBody = JSON.parse(patchCall[1].body)
+    expect(Array.isArray(parsedBody)).toBe(true) // regression guard
+    expect(parsedBody).toEqual([
+      { id: 't-blog', subscription: 'opt_in' },
+      { id: 't-voice', subscription: 'opt_in' },
+    ])
+  })
+
+  it('PATCH /topics body is a BARE ARRAY (not wrapped in {topics: [...]})', async () => {
+    // Hard regression guard: the wrapped form `{topics: [...]}` returns
+    // 422 from Resend and silently fails. This test exists ONLY to ensure
+    // applyTopicsToContact never reverts to the wrapped form. If a future
+    // refactor wraps the array, this test fails before the bug ships.
+    const fetchMock = jest.fn()
+      .mockResolvedValueOnce(jsonRes({ object: 'contact', id: 'c-guard' }, 201))
+      .mockResolvedValueOnce(
+        topicsList([
+          { id: 't-blog', name: 'source:blog' },
+        ]),
+      )
+      .mockResolvedValueOnce(jsonRes({ id: 'c-guard' }, 200))
+      .mockResolvedValueOnce(jsonRes({ id: 'evt-guard' }, 200))
+    ;(global as any).fetch = fetchMock
+
+    await subscribeToResend({
+      email: 'guard@example.com',
+      tags: ['source:blog'],
     })
+
+    const patchCall = fetchMock.mock.calls[2]
+    const body = JSON.parse(patchCall[1].body)
+
+    // 1. Must be a bare array
+    expect(Array.isArray(body)).toBe(true)
+    // 2. Must NOT be an object with a `topics` key (the broken shape)
+    expect(typeof body).not.toBe('object' && body && 'topics' in body ? 'object' : 'never')
+    expect((body as any).topics).toBeUndefined()
+    // 3. Each entry must have id + subscription only
+    for (const entry of body as Array<Record<string, unknown>>) {
+      expect(Object.keys(entry).sort()).toEqual(['id', 'subscription'])
+      expect(entry.subscription).toBe('opt_in')
+      expect(typeof entry.id).toBe('string')
+    }
   })
 
   it('tags with a missing topic → creates it via POST /topics on the fly', async () => {
