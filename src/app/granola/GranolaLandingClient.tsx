@@ -31,7 +31,7 @@ export function GranolaLandingClient() {
     setErrMsg(null)
 
     const form = e.currentTarget
-    const hpField = form.elements.namedItem('company') as HTMLInputElement | null
+    const hpField = form.elements.namedItem('website_url') as HTMLInputElement | null
     const hp = hpField?.value ?? ''
 
     try {
@@ -121,11 +121,11 @@ export function GranolaLandingClient() {
           overflow: 'hidden',
         }}
       >
-        <label htmlFor="granola-hp-company">Company (leave blank)</label>
+        <label htmlFor="granola-hp-website">Website (leave blank)</label>
         <input
-          id="granola-hp-company"
+          id="granola-hp-website"
           type="text"
-          name="company"
+          name="website_url"
           tabIndex={-1}
           autoComplete="off"
         />
