@@ -5,32 +5,71 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src={rawMetadata.image} alt="A workspace organized for neurodivergent focus — minimal surface, one notebook, headphones" width={1200} height={630} />
-<figcaption>The setup that finally works after years of trying systems built for other brains.</figcaption>
+<Image src={rawMetadata.image} alt="A minimal workspace: closed notebook, over-ear headphones, single small plant on a wood desk" width={1200} height={630} />
+<figcaption>The setup that finally works. Less is the thing it is.</figcaption>
 
-## The diagnosis context
+I got an AuDHD diagnosis a few years into my career. The diagnosis itself is not the subject of this post, but the reframe it produced is: for a long time, I had attributed my inability to sustain note-taking systems to a personal failing. The diagnosis renamed the same data as wiring. That changed the question from *what discipline do I need to build* to *what system would my actual brain use*.
 
-[TODO — 200 words. Brief, dignified, not over-shared. The diagnosis happened in [year]. Up to that point my note-taking had been a constant source of friction I'd attributed to laziness. Reframing it as wiring changed the toolset entirely.]
+This is the system. It runs on three rules and two tools. It survives bad weeks. That last part is the part the systems before this kept failing.
+
+---
 
 ## What stopped working
 
-[TODO — 400 words. Specific failures: trying to listen and write at the same time in meetings, end-of-day journaling that I never sustained, complex hierarchical note systems (Roam, Obsidian graphs) that I built and abandoned. The pattern.]
+Every system that asked me to listen *and* write at the same time. Cornell Notes. Bullet journaling during meetings. Live-mind-mapping. End-of-day journaling that required me to remember what happened.
 
-## The three rules I work from now
+The pattern was always the same: a couple of good weeks where the system felt productive, followed by a missed day, followed by a missed week, followed by abandonment. By the time I was thirty I had probably abandoned a dozen different note-taking and capture systems. I didn&apos;t know yet that the abandonment was the data point.
 
-[TODO — 600 words. One: never write while listening. Two: capture is separate from organization, in time and tool. Three: the system has to survive a bad week, not just a good week.]
+The other pattern: I would build elaborate hierarchical systems (Roam, Obsidian, multiple competing zettelkasten flavors) and then never re-read anything I&apos;d written. The system itself was the thing I was building. The note-taking was theater for the system.
 
-## What the daily flow looks like
+---
 
-[TODO — 500 words. Meetings: Granola. Inbox / async: dictation (WisprFlow). End-of-day: one paragraph, in the same place, every day. No graphs, no backlinks I'll never reread.]
+## The three rules
+
+**One. Never write while listening.** Listening and writing are different cognitive modes for me, and trying to do them simultaneously means I&apos;m bad at both. So I don&apos;t do it. <Link href="/granola">Granola</Link> records the meeting; I&apos;m in the meeting. The handoff is total.
+
+**Two. Capture is separate from organization. In time and in tool.** Capture happens at the speed of the moment: voice dictation into whatever&apos;s open, Granola in meetings, a one-line note on my phone if I&apos;m walking. Organization happens later — usually Sunday — when I&apos;m in a completely different mental mode. Mixing them was the second-biggest source of failure.
+
+**Three. The system has to survive a bad week.** This is the rule that ruled out most things. Any system that requires me to do something every day eventually fails. Any system that requires hierarchy or categorization at capture time eventually fails. The system has to be runnable when I&apos;m exhausted, dysregulated, or just having a bad time. If it isn&apos;t, it isn&apos;t my system; it&apos;s a fantasy of someone else&apos;s.
+
+---
+
+## The daily flow
+
+**Meetings.** Granola captures everything I take a call for — work, consulting, personal, friend catch-ups. No bot joins. Structured notes land within seconds of the call ending. The full transcript stays searchable. I do not take notes in meetings. I have not taken notes in meetings in over a year and the quality of my recall, my follow-through, and my contribution in the conversation itself have all improved.
+
+**Async input.** When I&apos;m typing — Slack, email, code comments, PR descriptions, ticket updates — I&apos;m almost always dictating instead. <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> runs at 175+ WPM with a system-level hotkey. The keyboard exists for code. Voice handles everything else.
+
+**End-of-day.** One short paragraph, in the same place, every day. Not a journal. Not a reflection. Three to five lines about what happened. The point is the consistency of location, not the eloquence. Bad weeks the paragraph is two words. Good weeks it&apos;s a page. The system doesn&apos;t care.
+
+That is the entire daily flow.
+
+---
 
 ## What I keep simple on purpose
 
-[TODO — 300 words. The temptation to over-engineer the system. Why I resist. The maintenance budget I refuse to spend.]
+I do not maintain a personal knowledge graph. I do not connect my notes with backlinks. I do not use tags. I do not have an inbox to triage.
+
+Every time I&apos;ve added structure beyond "things go in one place" my system has decayed within a quarter. The maintenance budget I refuse to spend on these tools is what keeps the tools running at all.
+
+If something matters enough to find again, I&apos;ll find it again. Granola is searchable. WisprFlow output goes to wherever I was typing it. My end-of-day paragraphs are searchable in plain text. That&apos;s plenty. The fantasy of perfect retrieval was always more expensive than the cost of occasionally not retrieving something.
+
+---
+
+## The thing the diagnosis changed
+
+The diagnosis didn&apos;t hand me a system. It handed me permission to stop building systems that didn&apos;t fit. For a long time I had been trying to operate the same note-taking pattern as the engineers and PMs around me — assuming they had the same hardware as me and were just being more disciplined.
+
+They mostly don&apos;t. They mostly have brains that don&apos;t pay the listening-while-writing tax I do. The fix wasn&apos;t to try harder; the fix was to stop solving a problem I was never going to solve and route around it instead.
+
+Granola is the routing. The three rules are the operating principle. The rest is just consistency on the small flat surface I&apos;ve made for myself.
+
+---
 
 ## Tools
 
-- [Granola](/granola) — meeting notes without taking notes
-- [WisprFlow](https://ref.wisprflow.ai/zack-proser) — voice input for everything else
+- <Link href="/granola">Granola</Link> — meetings, captured silently, summarized faithfully. The single tool that did the most for my note-taking.
+- <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> — voice input everywhere else. Same effect: the friction I was paying turns out to have been the whole tax.
+- One plain-text file for end-of-day. Any tool. Pick the one you&apos;ll open.
 
-I have affiliate relationships with both. I'd use both without that arrangement — the commission lets me write about them at this length.
+I have affiliate relationships with both products mentioned. The system existed before the relationships; the relationships are what makes time spent writing about them economic.

@@ -5,30 +5,80 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src={rawMetadata.image} alt="A Slack thread structured as an async standup post with three bullet sections" width={1200} height={630} />
-<figcaption>The whole standup. No video call. Posted in a Slack thread, read on people's own time.</figcaption>
+<Image src={rawMetadata.image} alt="A laptop screen showing a vertical thread with three avatars and stacked text blocks; a coffee cup beside it" width={1200} height={630} />
+<figcaption>The whole standup. No video call. Posted in a Slack thread, read at the right time for whoever&apos;s reading.</figcaption>
 
-## Why we killed the daily video standup
+I kill daily video standups when I can. Not because I dislike my teammates — the opposite, actually. The daily 9am video call wasn&apos;t bringing me closer to them. It was making me dread my mornings.
 
-[TODO — 300 words. The actual reasons: timezone span made it 9pm for one person; the meeting itself produced no artifacts; status updates that everyone forgot by lunch. The conversation with the team that made the change.]
+I lead Applied AI at WorkOS. My team spans about nine hours of timezone. Some of us are pre-coffee at the time others of us are pre-lunch. The format that replaced the daily video standup is the format I want to describe here, because every time I&apos;ve adopted it on a team, the team has gotten faster and less anxious at the same time.
+
+---
+
+## Why the daily video standup actually fails
+
+It looks productive. It generates the feeling of momentum. It is also, in practice, a daily fifteen-minute interruption that produces no artifact, surfaces no real blockers, and forces the worst-timezone person on the team to do mental math every morning.
+
+The case for keeping it that I see most often: *it builds team cohesion*. In my experience, it does not. People show up muted, half-distracted, performing alertness. Cohesion is built by doing real work together, not by gathering on Zoom to talk about doing real work.
+
+The case I find more honest: *the manager wants to know what&apos;s happening*. That is a reasonable thing to want. There are cheaper ways to get it.
+
+---
 
 ## The format that replaced it
 
-[TODO — 400 words. Three bullets per person: shipped yesterday, shipping today, blocked on what. Posted to a single Slack thread that lives Monday-Friday. Twenty-minute window each morning for posting, but you can post asynchronously across the day.]
+Three bullets, per person, in a single persistent Slack thread that runs Monday through Friday. The bullets are:
+
+- **Shipped yesterday.** What landed. One line.
+- **Shipping today.** What I&apos;m working on. One line.
+- **Blocked on.** What I need from someone, with a name. One line. Most days this is "nothing."
+
+The thread is open between 8am and noon each person&apos;s local time. People post when they post. If someone wants to ping a name they post the bullet and tag the person. The thread is read at whatever speed people read it.
+
+There is no agenda. There is no scribe. The thread is the artifact.
+
+---
+
+## What changed once we adopted it
+
+**The morning got quiet.** People who used to spend the first hour of their day getting ready for the standup spent it doing the actual work. The standup happened *in* the work, not as a thing to do before the work.
+
+**Blockers surfaced faster.** Counter-intuitive: in a meeting, surfacing a blocker is performative — there&apos;s an audience, there&apos;s a vibe to manage, you don&apos;t want to be the person dragging on for too long. In a Slack thread, surfacing a blocker is just a bullet. The cost of being honest dropped, so people were more honest.
+
+**The async-by-default culture extended past standups.** Once the daily ritual was in writing, the rest of the team&apos;s communication shifted. Decisions started landing in threads instead of in calls. The threads were searchable. The calls had been costing us a thing we didn&apos;t fully see until it was gone.
+
+---
 
 ## The synchronous remnant
 
-[TODO — 300 words. We kept one sync ritual — Monday kickoff, thirty minutes. That's the only one. The Granola transcript goes in the Slack thread so anyone who missed it can read the decisions, not just the chatter.]
+We kept one sync ritual. Monday kickoff, thirty minutes, video, all hands. The point of Monday kickoff is to be a *human meeting*, not a status meeting — to actually see each other, to argue about a single hard topic in the week ahead, to be a team rather than a federation.
 
-## Recording the rare sync meeting
+<Link href="/granola">Granola</Link> runs in the background of Monday kickoff. The summary lands in the thread by lunchtime. People who weren&apos;t able to attend — sick, dentist, school pickup, timezone fully against them that week — read the summary and stay in the loop without anyone having to manually backfill them. Inclusion as a property of the system, not as a thing someone has to do on top of everything else.
 
-[TODO — 300 words. When we do meet live, Granola captures it. The team treats the Granola output as the authoritative record, not anyone's hand-written notes. Why this changed who feels included in decisions.]
+---
 
-## What broke and what I'd change
+## When it breaks
 
-[TODO — 400 words. The first month wasn't smooth. Specific failure modes: people who skipped posting; the temptation to turn the standup into a slack thread debate; the early version of the format that asked too many questions.]
+A team that wasn&apos;t already disposed toward writing will treat the bullet format as a tax. The first month, expect resistance. The fix is not enforcement; the fix is to demonstrate that the format makes them less interrupted, not more. Once a person experiences a Tuesday morning where they were never pulled away from the keyboard, the format defends itself.
+
+A blocker that needs synchronous resolution still needs a synchronous conversation. The format does not replace the *we should jump on a call* instinct — it just makes the rest of the team&apos;s time stop being captured by other people&apos;s incidental updates.
+
+A team in crisis sometimes needs the daily-call comfort. I&apos;ve gone back to a temporary daily call during incident response, and dropped it when the incident was resolved. The default is async. The exception is named.
+
+---
+
+## What I&apos;d do differently if I started again
+
+**Set the format on day one of any new team.** Migration off a sync ritual is harder than starting in the right place. If you&apos;re forming a team, write down the cadence and the artifact before anyone&apos;s muscle memory hardens.
+
+**Recap on Fridays.** A short thread post on Friday afternoon summarizing the week — what we shipped, what we learned, what&apos;s next week. It takes ten minutes. It saves a Monday meeting.
+
+**Use the notetaker on Mondays from day one.** The Granola transcript of Monday kickoff is the artifact that lets the rest of the week stay async. Without that, the "I missed Monday, can someone catch me up" thread is the thing that pulls everyone back into synchronous resolution. With it, the catch-up is just a read.
+
+---
 
 ## Tools
 
-- [Granola](/granola) — recording layer for the one remaining sync ritual
-- Slack — async standup lives here, in one persistent channel
+- <Link href="/granola">Granola</Link> — the recording and summary layer for the one remaining synchronous ritual. Without it the async-by-default model is harder to defend.
+- Slack — the standup thread lives in a single channel, pinned. Any chat tool works. The discipline is what matters.
+
+I have an affiliate relationship with Granola. The cadence I describe predates the relationship; the relationship is what makes the time to write this piece economic.

@@ -5,29 +5,77 @@ import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src={rawMetadata.image} alt="A simple notebook spread next to a laptop showing a 1:1 prep doc" width={1200} height={630} />
-<figcaption>The prep doc lives in one place. The notes from the meeting itself live somewhere else. That separation is the whole system.</figcaption>
+<Image src={rawMetadata.image} alt="A simple notebook open next to a closed laptop on a wooden desk" width={1200} height={630} />
+<figcaption>The prep doc lives somewhere I can find it on a Tuesday. That&apos;s the whole secret.</figcaption>
 
-## The prep doc / notes-doc split
+I have a 1:1 with my manager once a week. I have 1:1s with my direct reports once every other week. By the end of any given month I&apos;ve been in roughly ten of these conversations, and for most of the years before I figured out how to prep for them, I treated each one as a thing that happened *to* me on the calendar, rather than something I could shape on purpose.
 
-[TODO — 200 words. Why I keep them as separate artifacts. Prep doc is mine, lives in my weekly review. Notes doc is shared, lives in Granola.]
+The shift came when I started keeping two artifacts instead of one: a *prep doc* and a *notes doc*. They are not the same. They live in different places. <Link href="/granola">Granola</Link> handles the second one. The first is mine to maintain.
+
+---
+
+## The prep doc is for me. The notes doc is for both of us.
+
+The prep doc is a single running document, by relationship — one for me with my manager, one for each person reporting to me. It lives in my weekly review. It is private, it is messy, and nothing in it is performance.
+
+The notes doc is whatever Granola produced after the most recent 1:1. It is the structured record. It&apos;s shareable. It&apos;s referenceable. I do not write into it during the meeting and I rarely edit it after.
+
+Separating these two artifacts is the entire technique. Most of the failure modes of 1:1s come from collapsing them into a single artifact — either by writing during the meeting (which sacrifices presence), or by trying to "share notes" with the other person and then sanding everything down to corporate diplomatic English (which sacrifices the part that was actually useful to me).
+
+Keep them separate. Mix only at the edges.
+
+---
 
 ## What goes in the prep doc
 
-[TODO — 400 words. The three buckets: blockers I need help with, things I want my manager to know, topics I want to surface but don't need a decision on. Why "decisions I need" goes at the top.]
+Three buckets. In order:
 
-## What I let Granola handle
+**Decisions I need.** Things I am stuck on, where I need air cover, a call, or someone else&apos;s pull on a lever I don&apos;t own. This bucket goes at the top because if I only get five minutes of the meeting, this is what I want to leave with.
 
-[TODO — 300 words. Why I don't take notes during the 1:1. The cognitive load argument. How I link the Granola output back into my prep doc for next week.]
+**Things I want them to know.** Context that doesn&apos;t need a decision but matters for the relationship: a project I&apos;m unblocked on now, a customer call that went sideways, a colleague who&apos;s been a force multiplier this sprint. The point of this bucket is that I keep showing them what I&apos;m seeing.
+
+**Topics to surface, no urgency.** Things I&apos;d like to talk about eventually. A question about promotion criteria. A piece of feedback I&apos;m sitting on. A decision the team is going to face in six weeks that I want them thinking about now. This bucket is the bucket I&apos;m most likely to skip; that&apos;s fine. It&apos;s the one whose value compounds across many 1:1s instead of any single one.
+
+Each item gets a single sentence. I do not write paragraphs. The point is to walk in knowing what I want to leave with — not to read a script.
+
+---
+
+## What I let the notetaker handle
+
+The meeting itself. The structural notes. The follow-up commitments by owner. The "what we decided" vs "what we discussed" distinction.
+
+I take zero notes in the moment. The cognitive load of writing while listening is precisely the load that makes the rest of the day&apos;s thinking degrade. I&apos;m there to be present with the other person, not to be a stenographer who happens to be sitting in front of them.
+
+After the call ends, the Granola summary lands within seconds. I read it, lift the *committed* items into my prep doc for the next 1:1, archive the rest. The full transcript stays available if I ever need to go back and check what was actually said. In practice, I almost never do.
+
+---
 
 ## The weekly review loop
 
-[TODO — 400 words. Sunday evening or Monday morning. Read last week's Granola output. Update prep doc. The 20-minute version of this that actually compounds.]
+Sunday evening or Monday morning, depending on how my week shaped up. Twenty minutes, maximum.
+
+1. Read last week&apos;s Granola summary for each 1:1.
+2. Move anything from the *committed* section into next week&apos;s prep doc.
+3. Glance at the prep doc&apos;s "topics to surface" bucket. Is anything stale enough to remove or promote?
+4. Add anything new that came up over the week.
+
+That&apos;s it. The point of the loop is not to plan perfectly. It&apos;s to make sure nothing important gets lost between sessions, and that I walk into each meeting with two minutes of accumulated context instead of trying to remember what I cared about a week ago.
+
+---
 
 ## When the system fails
 
-[TODO — 200 words. The 1:1 where I forgot to prep. The 1:1 where my manager went a different direction. What I do when the system breaks.]
+It fails when I treat the prep doc as a performance instead of a tool. The temptation is to clean it up, organize it, make it pretty. None of that helps me in the actual meeting.
+
+It also fails when I skip the review loop two weeks in a row. After two missed Sundays, the prep doc loses signal and I walk in cold. The fix is to keep the loop short enough that skipping it is the unusual case, not the norm.
+
+The one failure mode I&apos;ve never been able to engineer around: the 1:1 where my manager (or my report) has something on their mind that I didn&apos;t know about. The prep doc is mine. It does not know what the other person is bringing. That&apos;s fine — the prep doc was never meant to make the meeting predictable. It was meant to make sure I show up with the things I needed to show up with.
+
+---
 
 ## Tools
 
-I use [Granola](/granola) as the notetaker layer. [TODO — link any other tools that show up here naturally. Don't force WisprFlow if not relevant.]
+- <Link href="/granola">Granola</Link> — the notetaker layer. Captures the meeting silently, produces structured notes, makes the transcript queryable.
+- Whatever you write your prep doc in. I use Obsidian. The tool doesn&apos;t matter. The two-artifact split does.
+
+I have an affiliate relationship with Granola. The recommendation predates the relationship; the relationship is what makes time spent writing about it economic.
