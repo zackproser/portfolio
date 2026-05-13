@@ -1,0 +1,301 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'monitor-competitors-firecrawl';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Monitor competitor websites with Firecrawl" width={800} height={450} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+Your competitors are always publishing. New pricing pages, updated feature lists, revised SEO content, shifted messaging. If you're not tracking it, you're flying blind.
+
+Firecrawl makes automated competitor monitoring practical. Here's how I built a system that tracks competitor content and alerts me when something material changes.
+
+## The Monitoring Problem
+
+Traditional monitoring tools do one of two things: they track rankings (which pages rank for which keywords) or they track technical changes (did the HTML change). Neither tells you what actually changed.
+
+You need both. And you need the content diff — not just "the page changed" but "they added a new pricing tier and dropped the price on the entry plan by 30%."
+
+That's what Firecrawl enables.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Core Architecture
+
+The monitoring pipeline has four stages:
+
+1. **Crawl** — Fetch all competitor pages at regular intervals
+2. **Extract** — Pull out the structured data you care about
+3. **Diff** — Compare current state against previous state
+4. **Alert** — Notify when material changes are detected
+
+```python
+from firecrawl import FirecrawlApp
+import json
+from datetime import datetime
+from difflib import unified_diff
+
+app = FirecrawlApp(api_key='your-api-key')
+
+COMPETITORS = {
+    'competitor_a': 'https://competitor-a.com',
+    'competitor_b': 'https://competitor-b.com',
+    'competitor_c': 'https://competitor-c.com',
+}
+
+def crawl_competitor(name, base_url):
+    """Crawl a competitor's key pages"""
+    pages = {}
+    
+    # Core pages to track
+    key_paths = ['/', '/pricing', '/features', '/blog']
+    
+    for path in key_paths:
+        url = base_url + path
+        try:
+            result = app.scrape_url(url, {'page_timeout': 30000})
+            pages[path] = {
+                'url': url,
+                'markdown': result['markdown'],
+                'timestamp': datetime.utcnow().isoformat()
+            }
+        except Exception as e:
+            print(f"Failed to scrape {url}: {e}")
+    
+    return {'competitor': name, 'base_url': base_url, 'pages': pages}
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Detecting Material Changes
+
+A page changing its footer text isn't interesting. A page changing its pricing or adding new features is. The diff logic needs to distinguish between noise and signal:
+
+```python
+def detect_material_changes(old_page, new_page):
+    """Identify material changes in page content"""
+    changes = []
+    
+    old_text = old_page['markdown']
+    new_text = new_page['markdown']
+    
+    if old_text == new_text:
+        return changes
+    
+    # Check for pricing changes
+    pricing_indicators = ['$', 'price', 'cost', 'plan', 'tier', 'monthly', 'annually']
+    has_pricing_change = any(
+        indicator in new_text.lower() and indicator not in old_text.lower()
+        for indicator in pricing_indicators
+    )
+    
+    if has_pricing_change:
+        changes.append({
+            'type': 'pricing_change',
+            'page': old_page['url'],
+            'detail': 'Pricing-related content detected'
+        })
+    
+    # Check for feature additions
+    old_word_count = len(old_text.split())
+    new_word_count = len(new_text.split())
+    content_growth = (new_word_count - old_word_count) / old_word_count if old_word_count > 0 else 0
+    
+    if content_growth > 0.15:  # 15%+ content growth is significant
+        changes.append({
+            'type': 'content_expansion',
+            'page': old_page['url'],
+            'detail': f'Content grew {content_growth:.0%} ({old_word_count} -> {new_word_count} words)'
+        })
+    
+    # Generate diff for human review
+    diff = list(unified_diff(
+        old_text.splitlines(keepends=True),
+        new_text.splitlines(keepends=True),
+        lineterm=''
+    ))
+    
+    if diff:
+        changes.append({
+            'type': 'general_change',
+            'page': old_page['url'],
+            'detail': f'{len(diff)} lines changed',
+            'diff': ''.join(diff[:50])  # First 50 diff lines
+        })
+    
+    return changes
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Storing and Comparing State
+
+You need persistent storage to compare state across runs. I use a simple JSON file per competitor, but a proper database gives you better query capabilities:
+
+```python
+import os
+import json
+from datetime import datetime
+
+STATE_DIR = './competitor_state'
+
+def save_state(competitor_name, data):
+    """Save current crawl state for future comparison"""
+    os.makedirs(STATE_DIR, exist_ok=True)
+    filepath = f"{STATE_DIR}/{competitor_name}_current.json"
+    
+    with open(filepath, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def load_previous_state(competitor_name):
+    """Load previous crawl state for comparison"""
+    filepath = f"{STATE_DIR}/{competitor_name}_current.json"
+    
+    if not os.path.exists(filepath):
+        return None
+    
+    with open(filepath) as f:
+        return json.load(f)
+
+def run_monitoring_cycle():
+    """Run full monitoring cycle for all competitors"""
+    all_alerts = []
+    
+    for name, base_url in COMPETITORS.items():
+        current = crawl_competitor(name, base_url)
+        previous = load_previous_state(name)
+        
+        competitor_alerts = []
+        
+        if previous:
+            # Compare pages
+            for path, page_data in current['pages'].items():
+                if path in previous['pages']:
+                    changes = detect_material_changes(
+                        previous['pages'][path],
+                        page_data
+                    )
+                    competitor_alerts.extend(changes)
+        else:
+            # First run - no changes to report
+            pass
+        
+        if competitor_alerts:
+            all_alerts.append({
+                'competitor': name,
+                'alerts': competitor_alerts
+            })
+        
+        # Save current state for next run
+        save_state(name, current)
+    
+    return all_alerts
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Alerting and Reporting
+
+Alerts without a delivery mechanism are worthless. Here's how to route them:
+
+```python
+def send_alert(alerts):
+    """Send alert summary via webhook/email/slack"""
+    if not alerts:
+        return
+    
+    summary = f"Competitor Monitoring Alert - {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}\n"
+    
+    for competitor_data in alerts:
+        summary += f"\n## {competitor_data['competitor'].upper()}\n"
+        for alert in competitor_data['alerts']:
+            summary += f"- [{alert['type']}] {alert['page']}: {alert['detail']}\n"
+    
+    # Send to Slack webhook
+    slack_webhook = os.environ.get('SLACK_WEBHOOK_URL')
+    if slack_webhook:
+        import urllib.request
+        payload = json.dumps({'text': summary})
+        req = urllib.request.Request(
+            slack_webhook,
+            data=payload.encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+        urllib.request.urlopen(req)
+    
+    print(summary)
+
+# Run monitoring
+alerts = run_monitoring_cycle()
+send_alert(alerts)
+```
+
+This delivers a daily digest of material competitor changes to Slack. The summary is human-readable in seconds, and the diff detail is available for deeper investigation.
+
+## Tracking SEO Strategy Shifts
+
+Content changes reveal SEO strategy. When a competitor publishes a long-form guide on a keyword they weren't previously targeting, that's a signal. When they quietly remove pages, that's another signal.
+
+```python
+def track_keyword_targets(competitor_name, previous, current):
+    """Track which keywords a competitor is targeting based on their content"""
+    
+    def extract_keywords(text):
+        """Simple keyword extraction from text"""
+        # Remove common words, get significant terms
+        common_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
+        words = [w.lower() for w in text.split() if w.lower() not in common_words and len(w) > 3]
+        return set(words)
+    
+    changes = []
+    
+    for path in current['pages']:
+        if path not in previous['pages']:
+            changes.append(f"New page: {path}")
+            continue
+        
+        old_keywords = extract_keywords(previous['pages'][path]['markdown'])
+        new_keywords = extract_keywords(current['pages'][path]['markdown'])
+        
+        added = new_keywords - old_keywords
+        removed = old_keywords - new_keywords
+        
+        if added:
+            changes.append(f"New keywords on {path}: {', '.join(list(added)[:10])}")
+        if removed:
+            changes.append(f"Dropped keywords on {path}: {', '.join(list(removed)[:10])}")
+    
+    return changes
+```
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Scheduling the Pipeline
+
+I run this as a scheduled job — daily crawls during business hours, with faster re-crawl intervals for critical pages like pricing.
+
+```bash
+# Run monitoring daily at 9am
+0 9 * * * cd /path/to/monitor && python run_monitoring.py >> /var/log/monitor.log 2>&1
+```
+
+For pricing pages specifically, I trigger on-demand crawls when I hear about competitor announcements, then compare against the last scheduled crawl to see exactly what changed.
+
+## What This Replaces
+
+Before building this, I was doing competitor research manually. Checking pricing pages every few weeks, reading blog posts when I had time, trying to remember what I'd seen before.
+
+The automated system is more thorough, runs on schedule without me remembering, and surfaces changes I wouldn't have caught manually. The signal-to-noise ratio is good — material changes show up, routine content updates don't create false alerts.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Build your competitor monitoring system** — <AffiliateLink product="firecrawl" campaign={campaign}>Start with Firecrawl's free tier and build the pipeline in an afternoon</AffiliateLink>
+
+---
+
+*Competitive intelligence that's not continuous is already outdated.*

@@ -1,0 +1,25 @@
+{
+  "title": "Firecrawl Python SDK: Complete Guide to Web Scraping for AI Pipelines",
+  "author": "Zachary Proser",
+  "date": "2026-05-13",
+  "description": "A practical guide to the Firecrawl Python SDK — scrape URLs, extract structured data, and build production-ready web scraping pipelines.",
+  "image": "https://zackproser.b-cdn.net/images/firecrawl-hero.webp",
+  "slug": "/blog/firecrawl-python-sdk-tutorial",
+  "hiddenFromIndex": true,
+  "keywords": [
+    "firecrawl python sdk",
+    "firecrawl python tutorial",
+    "firecrawl python example",
+    "from firecrawl import firecrawlapp",
+    "web scraping python ai",
+    "firecrawl api python",
+    "scrape websites python ai pipeline"
+  ],
+  "tags": [
+    "Firecrawl",
+    "Python",
+    "Web Scraping",
+    "AI Pipeline",
+    "Tutorial"
+  ]
+}

@@ -1,0 +1,242 @@
+import Image from 'next/image';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+import { InlineAffiliateCTA, AffiliateLink } from '@/components/StickyAffiliateCTA';
+
+export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'firecrawl-python-sdk-tutorial';
+
+<AffiliateLink product="firecrawl" campaign={campaign}>
+  <Image src="https://zackproser.b-cdn.net/images/firecrawl-hero.webp" alt="Firecrawl Python SDK tutorial" width={800} height={450} className="rounded-lg shadow-xl"/>
+</AffiliateLink>
+
+Firecrawl's Python SDK is the fastest way to add reliable web scraping to your AI pipelines. Unlike other scraping tools that break on JavaScript-heavy sites, Firecrawl renders pages properly and gives you clean markdown output.
+
+Here's how to use it.
+
+## Installation
+
+```bash
+pip install firecrawl-py
+```
+
+You'll need an API key from [firecrawl.com](https://firecrawl.com). The free tier gives you enough to build and test your pipeline.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Basic Scraping
+
+```python
+from firecrawl import FirecrawlApp
+
+app = FirecrawlApp(api_key='your-api-key')
+
+# Scrape a single URL and get markdown
+response = app.scrape_url('https://example.com')
+print(response['markdown'])
+```
+
+The `scrape_url` method returns a dictionary. The `markdown` field contains the page content as clean text with all HTML stripped. This is exactly what you want for RAG pipelines — no HTML parsing, no selector hell, just text.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Extracting Structured Data
+
+One of Firecrawl's most useful features is structured data extraction. Instead of scraping raw HTML and parsing it yourself, you define a schema and Firecrawl returns structured JSON.
+
+```python
+response = app.scrape_url('https://news.ycombinator.com', {
+    'extractor': {
+        'type': 'json',
+        'pattern': 'article'
+    },
+    'page_timeout': 30000
+})
+
+# Extract multiple pages
+crawl_response = app.crawl_url('https://news.ycombinator.com', {
+    'crawl_params': {
+        'max_depth': 2,
+        'max_urls': 50
+    }
+})
+print(f"Crawled {len(crawl_response['data'])} pages")
+```
+
+The `crawl_url` method handles pagination and link following automatically. You get a list of crawled pages with their extracted content.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Building a RAG Pipeline
+
+Here's a practical example: building a RAG pipeline that keeps your vector database updated with competitor content.
+
+```python
+from firecrawl import FirecrawlApp
+from embedding_model import embed_text
+import json
+
+app = FirecrawlApp(api_key='your-api-key')
+
+COMPETITORS = [
+    'https://competitor-a.com/blog',
+    'https://competitor-b.com/docs',
+    'https://competitor-c.com/resources',
+]
+
+def scrape_and_embed(urls):
+    all_chunks = []
+    
+    for base_url in urls:
+        result = app.crawl_url(base_url, {
+            'crawl_params': {
+                'max_depth': 2,
+                'max_urls': 25
+            }
+        })
+        
+        for page in result['data']:
+            # Split into chunks for embedding
+            text = page['markdown']
+            chunks = chunk_text(text, max_tokens=512)
+            
+            for chunk in chunks:
+                all_chunks.append({
+                    'text': chunk,
+                    'url': page['url'],
+                    'embed': embed_text(chunk)
+                })
+    
+    return all_chunks
+
+def chunk_text(text, max_tokens=512):
+    # Simple fixed-size chunking
+    words = text.split()
+    chunks = []
+    current_chunk = []
+    current_length = 0
+    
+    for word in words:
+        word_length = len(word.split()
+        if current_length + word_length > max_tokens:
+            chunks.append(' '.join(current_chunk))
+            current_chunk = [word]
+            current_length = word_length
+        else:
+            current_chunk.append(word)
+            current_length += word_length
+    
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+    
+    return chunks
+```
+
+This pattern scales. You can add new competitors by adding URLs to the list. Firecrawl handles the scraping complexity while you focus on the pipeline logic.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Handling JavaScript-Heavy Sites
+
+Some of the most valuable content lives on sites that render JavaScript on the client. Firecrawl's Cloudflare-aware scraping handles this automatically.
+
+```python
+# A page that requires JavaScript rendering
+result = app.scrape_url('https://a-javascript-heavy-site.com/dashboard', {
+    'page_timeout': 60000  # Extra time for JS rendering
+})
+
+print(result['markdown'][:500])
+```
+
+The markdown output is identical to what you'd get from a static HTML page. No special handling needed for SPAs or client-rendered content.
+
+## Error Handling
+
+Production scraping code needs robust error handling. Here's how I structure it:
+
+```python
+from firecrawl import FirecrawlApp
+from firecrawl.exceptions import RateLimitError, FirecrawlError
+import time
+
+app = FirecrawlApp(api_key='your-api-key')
+
+def scrape_with_retry(url, max_retries=3, delay=5):
+    for attempt in range(max_retries):
+        try:
+            result = app.scrape_url(url)
+            return result
+        except RateLimitError:
+            if attempt < max_retries - 1:
+                time.sleep(delay * (attempt + 1))
+            else:
+                raise
+        except FirecrawlError as e:
+            if attempt < max_retries - 1:
+                time.sleep(delay)
+            else:
+                raise
+    return None
+
+# Usage
+result = scrape_with_retry('https://example.com')
+if result:
+    process_markdown(result['markdown'])
+```
+
+The SDK raises specific exceptions for different error types, so you can handle rate limits, network failures, and scrape failures separately.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+## Batch Operations
+
+For large-scale scraping, batch operations keep your pipeline moving:
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+from firecrawl import FirecrawlApp
+
+app = FirecrawlApp(api_key='your-api-key')
+
+URLS = [
+    'https://site-a.com/page1',
+    'https://site-a.com/page2',
+    'https://site-b.com/docs',
+    # ... 100+ URLs
+]
+
+def scrape_one(url):
+    try:
+        result = app.scrape_url(url)
+        return {'url': url, 'content': result['markdown'], 'status': 'success'}
+    except Exception as e:
+        return {'url': url, 'error': str(e), 'status': 'failed'}
+
+MAX_WORKERS = 5
+
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    results = list(executor.map(scrape_one, URLS))
+
+successful = [r for r in results if r['status'] == 'success']
+print(f"Scraped {len(successful)}/{len(URLS)} URLs")
+```
+
+Firecrawl's API has its own rate limiting, but running concurrent requests across multiple URLs gets you throughput without hammering their infrastructure.
+
+## What's Different From Crawl4ai
+
+I used Crawl4ai before switching to Firecrawl. The difference is operational reliability.
+
+Crawl4ai runs locally, which means you're managing your own infrastructure and dealing with sites that block your IP. Firecrawl runs in their cloud, handles IP rotation, manages headless browser instances, and deals with Cloudflare and other anti-bot measures.
+
+For a production RAG pipeline, the reliability difference matters more than the cost difference. When your pipeline fails at 3am because a scraper got blocked, you notice.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
+**Get started with Firecrawl** — <AffiliateLink product="firecrawl" campaign={campaign}>Sign up for free and start scraping in minutes</AffiliateLink>
+
+---
+
+*Web scraping for AI pipelines is reliability engineering as much as it is data engineering. Firecrawl handles the hard parts.*
