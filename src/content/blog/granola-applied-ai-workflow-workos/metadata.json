@@ -1,0 +1,19 @@
+{
+  "title": "Granola as the missing piece of my Applied AI workflow at WorkOS",
+  "author": "Zachary Proser",
+  "date": "2026-05-13",
+  "description": "A senior engineer's 90-day review of Granola — how it fits exec syncs, 1:1s, customer calls, and design reviews on the WorkOS Applied AI team. Real screenshots, real meetings, real workflow.",
+  "image": "https://zackproser.b-cdn.net/images/granola-applied-ai-workos-hero.webp",
+  "slug": "/blog/granola-applied-ai-workflow-workos",
+  "keywords": [
+    "Granola review",
+    "Granola AI",
+    "AI meeting notes",
+    "Applied AI workflow",
+    "WorkOS",
+    "senior engineer workflow",
+    "meeting notetaker"
+  ],
+  "tags": ["granola", "meetings", "productivity", "applied-ai", "review"],
+  "hiddenFromIndex": true
+}
