@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTagsFromReferrer } from "@/lib/subscriber-tags";
 import { subscribeToResend } from "@/lib/resend-subscribe";
+import { createSubmitDedup } from "@/lib/submit-dedup";
 
 /**
  * Used to be a separate EmailOctopus list for product waitlists. Post-Resend
@@ -9,8 +10,13 @@ import { subscribeToResend } from "@/lib/resend-subscribe";
  * in one segmentable place instead of fragmenting audiences across multiple
  * lists.
  */
+
+// Own dedup namespace — a regular signup and a waitlist signup for the same
+// email within 30s are distinct intents and should NOT collide.
+const dedup = createSubmitDedup();
+
 export async function POST(req: NextRequest) {
-	const { email, referrer, productSlug } = await req.json();
+	const { email, referrer, productSlug, hp } = await req.json();
 
 	if (!email) {
 		return new NextResponse(
@@ -24,6 +30,21 @@ export async function POST(req: NextRequest) {
 			JSON.stringify({ data: "Error: no product slug found in request" }),
 			{ status: 400 },
 		);
+	}
+
+	// Honeypot — same pattern as /api/form. Fake-success the bot, don't
+	// actually subscribe.
+	if (typeof hp === "string" && hp.trim().length > 0) {
+		return new NextResponse(
+			JSON.stringify({ data: `Successfully added ${email} to ${productSlug} waitlist` }),
+			{ status: 200 },
+		);
+	}
+
+	const dedupKey = `${String(email).trim().toLowerCase()}::${productSlug}`;
+	const cached = dedup.get(dedupKey);
+	if (cached) {
+		return new NextResponse(JSON.stringify(cached), { status: 200 });
 	}
 
 	// Preserve referrer-derived segmentation alongside the waitlist tag so
@@ -59,10 +80,7 @@ export async function POST(req: NextRequest) {
 		console.warn(`[waitinglist] Resend topic warning: ${result.topicWarning}`);
 	}
 
-	return new NextResponse(
-		JSON.stringify({
-			data: `Successfully added ${email} to ${productSlug} waitlist`,
-		}),
-		{ status: 200 },
-	);
+	const responseBody = { data: `Successfully added ${email} to ${productSlug} waitlist` };
+	dedup.remember(dedupKey, responseBody);
+	return new NextResponse(JSON.stringify(responseBody), { status: 200 });
 }

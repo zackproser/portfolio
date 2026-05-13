@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTagsFromReferrer } from "@/lib/subscriber-tags";
 import { subscribeToResend } from "@/lib/resend-subscribe";
+import { createSubmitDedup } from "@/lib/submit-dedup";
 
 export const maxDuration = 300;
+
+// Same email submitted twice within 30s gets the cached result back rather
+// than re-firing the chain trigger + ops notification. See submit-dedup.ts
+// for the warm-lambda caveat.
+const dedup = createSubmitDedup();
 
 export async function POST(req: NextRequest) {
 	const body = await req.json();
@@ -12,6 +18,22 @@ export async function POST(req: NextRequest) {
 			JSON.stringify({ data: "Error: no valid email found in request" }),
 			{ status: 400 },
 		);
+	}
+
+	// Honeypot: bots auto-fill the hidden `hp` field. Return a fake success
+	// (200, same body shape) so the bot doesn't adapt to a 400 and retry
+	// with a different shape. Never log, never alert, never subscribe.
+	if (typeof body.hp === "string" && body.hp.trim().length > 0) {
+		return new NextResponse(
+			JSON.stringify({ data: `Successfully subscribed ${body.email}` }),
+			{ status: 200 },
+		);
+	}
+
+	const dedupKey = String(body.email).trim().toLowerCase();
+	const cached = dedup.get(dedupKey);
+	if (cached) {
+		return new NextResponse(JSON.stringify(cached), { status: 200 });
 	}
 
 	// Auto-tag based on referrer page (e.g., voice-ai, real-estate, etc.).
@@ -42,10 +64,7 @@ export async function POST(req: NextRequest) {
 		console.warn(`[form] Resend topic warning: ${result.topicWarning}`);
 	}
 
-	return new NextResponse(
-		JSON.stringify({
-			data: `Successfully subscribed ${body.email}`,
-		}),
-		{ status: 200 },
-	);
+	const responseBody = { data: `Successfully subscribed ${body.email}` };
+	dedup.remember(dedupKey, responseBody);
+	return new NextResponse(JSON.stringify(responseBody), { status: 200 });
 }
