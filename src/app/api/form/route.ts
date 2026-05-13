@@ -14,6 +14,14 @@ export async function POST(req: NextRequest) {
 		);
 	}
 
+	// Honeypot check: if the hidden field is filled, reject silently
+	if (body.hp && body.hp.trim() !== "") {
+		return new NextResponse(
+			JSON.stringify({ data: "Successfully subscribed" }),
+			{ status: 200 },
+		);
+	}
+
 	// Auto-tag based on referrer page (e.g., voice-ai, real-estate, etc.).
 	// Tags are forwarded as `data.tags` on the fired `newsletter.signup`
 	// event so Resend automations can branch on them.
