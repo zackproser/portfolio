@@ -3,7 +3,27 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
+import AffiliateCard from '@/app/demos/voice-ai/AffiliateCard'
 import { GranolaLandingClient } from './GranolaLandingClient'
+
+// --- Affiliate placements in this pillar -------------------------------
+//
+// All cards/links go through `getAffiliateLink({ product: 'granola',
+// campaign: 'granola-pillar', ... })` so the Granola dashboard groups
+// them under one campaign. The `placement` and `term` fields then split
+// the conversions by where on the page the reader was when they clicked.
+// Adding a new placement: pick a section tag like "s07-prompt-pack" and
+// it'll start showing up in utm_term immediately.
+
+const CAMPAIGN = 'granola-pillar'
+
+const inlineCtaS03 = getAffiliateLink({
+  product: 'granola',
+  campaign: CAMPAIGN,
+  medium: 'blog',
+  placement: 'inline-cta',
+  term: 's03-end-of-shapes',
+})
 
 export const metadata: Metadata = createMetadata({
   title: 'Granola — the AI notetaker I actually use, every meeting, for 12 months',
@@ -23,23 +43,18 @@ export const metadata: Metadata = createMetadata({
 
 const directLink = getAffiliateLink({
   product: 'granola',
-  campaign: 'granola-landing',
-  medium: 'homepage',
+  campaign: CAMPAIGN,
+  medium: 'blog',
   placement: 'text-link',
+  term: 'side-rail-skip-email',
 })
 
 const stickyLink = getAffiliateLink({
   product: 'granola',
-  campaign: 'granola-landing',
-  medium: 'homepage',
+  campaign: CAMPAIGN,
+  medium: 'blog',
   placement: 'sticky-cta',
-})
-
-const inlineLink = getAffiliateLink({
-  product: 'granola',
-  campaign: 'granola-landing',
-  medium: 'homepage',
-  placement: 'inline-cta',
+  term: 'side-rail-primary',
 })
 
 // --- Editorial typography helpers --------------------------------------
@@ -261,6 +276,17 @@ export default function GranolaLandingPage() {
               That is all it does. Most of what makes it good is what it does <em>not</em> do.
             </p>
 
+            <div style={{ margin: '32px 0' }}>
+              <AffiliateCard
+                product="granola"
+                variant="compact"
+                campaign={CAMPAIGN}
+                medium="blog"
+                context="pillar:s02-what-it-is"
+                term="s02-what-it-is"
+              />
+            </div>
+
             <figure>
               <Image
                 src={IMG.granolaUi}
@@ -331,6 +357,14 @@ export default function GranolaLandingPage() {
             </p>
             <p style={bodyStyle}>
               What I do instead: Granola captures, like always, but I write the Architecture Decision Record by hand using the transcript as source material. The transcript is good — I can search for the moment someone said &ldquo;the consistency model breaks if we do that&rdquo; and pull the surrounding two minutes. The summary is the wrong granularity for an ADR. The transcript is exactly the right granularity. Granola is the input; the document is mine.
+            </p>
+
+            <p style={bodyStyle}>
+              If those four shapes look like your week, the short version is:{' '}
+              <a href={inlineCtaS03} rel="sponsored noopener" target="_blank" style={inlineAccentLink}>
+                start a free trial of Granola
+              </a>{' '}
+              and run it through one or two of them this week. The rest of this page is how I actually use it; the link above is the easiest way to follow along live.
             </p>
 
             <figure>
@@ -424,6 +458,17 @@ export default function GranolaLandingPage() {
               I still tell people. The technical silence is what gives me the option to disclose like a human, not like compliance theater.
             </p>
 
+            <div style={{ margin: '40px 0' }}>
+              <AffiliateCard
+                product="granola"
+                variant="hero"
+                campaign={CAMPAIGN}
+                medium="blog"
+                context="pillar:s06-after-etiquette"
+                term="s06-after-etiquette"
+              />
+            </div>
+
             <hr style={dividerStyle} />
 
             {/* § 07 — Prompt pack */}
@@ -515,6 +560,17 @@ export default function GranolaLandingPage() {
               </figcaption>
             </figure>
 
+            <div style={{ margin: '40px 0' }}>
+              <AffiliateCard
+                product="granola"
+                variant="compact"
+                campaign={CAMPAIGN}
+                medium="blog"
+                context="pillar:s09-after-math"
+                term="s09-after-math"
+              />
+            </div>
+
             <hr style={dividerStyle} />
 
             {/* § 10 — Onboarding */}
@@ -576,6 +632,17 @@ export default function GranolaLandingPage() {
             <p style={bodyStyle}>
               If that sounds like a thing your week could use, the form below is the easiest way in. The workflow guide is the email I&apos;ve been promising friends for a year. The product is on the other side of either link.
             </p>
+
+            <div style={{ margin: '40px 0 0' }}>
+              <AffiliateCard
+                product="granola"
+                variant="hero"
+                campaign={CAMPAIGN}
+                medium="blog"
+                context="pillar:s12-the-take"
+                term="s12-the-take"
+              />
+            </div>
           </article>
         </div>
       </section>

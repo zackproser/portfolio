@@ -11,6 +11,13 @@ interface AffiliateCardProps {
   context?: string // Where in the demo this appears
   campaign?: string // Page slug for UTM tracking
   medium?: AffiliateMedium
+  /**
+   * Optional utm_term forwarded to the affiliate URL — lets two cards
+   * with the same `variant` (and therefore same `placement` UTM) be
+   * distinguished in the affiliate dashboard. Use kebab-case section
+   * tags like "s06-after-etiquette".
+   */
+  term?: string
 }
 
 const PRODUCT_DATA = {
@@ -69,7 +76,8 @@ export default function AffiliateCard({
   variant = 'default',
   context = 'demo',
   campaign = 'voice-ai-demo',
-  medium = 'demo'
+  medium = 'demo',
+  term
 }: AffiliateCardProps) {
   const data = PRODUCT_DATA[product]
   const styles = PRODUCT_STYLES[product]
@@ -86,7 +94,8 @@ export default function AffiliateCard({
     product,
     campaign,
     medium,
-    placement: placementMap[variant] || 'compact-card'
+    placement: placementMap[variant] || 'compact-card',
+    term
   })
 
   const handleClick = () => {
@@ -94,7 +103,8 @@ export default function AffiliateCard({
       product,
       context,
       variant,
-      campaign
+      campaign,
+      ...(term ? { term } : {})
     })
   }
 
