@@ -1,62 +1,156 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-<Image src={rawMetadata.image} alt="Granola running during a live meeting, showing the side-by-side note panel" width={1200} height={630} />
-<figcaption>Granola as it sits during one of my actual exec syncs — notes generating as the conversation happens, not after.</figcaption>
+<Image src={rawMetadata.image} alt="Granola running on my laptop during a live meeting, structured notes appearing next to a coffee cup and notebook" width={1200} height={630} />
+<figcaption>The setup. Granola runs in the background. The notebook is for the drawings my hands still want to make.</figcaption>
 
-> **Sponsored / affiliate disclosure** — Granola pays me a commission on signups through my partner link. I would use and recommend Granola without the commission; the commission is what makes the time to write this review economic. The shape of the take is mine. No edit rights granted.
+> **Sponsored / affiliate disclosure** — Granola pays me a commission on signups through my <Link href="/granola">partner link</Link>. I would use and recommend Granola without the commission. The commission is what makes the time to write at this length economic. The shape of the take is mine. No edit rights granted.
 
-## TL;DR
+---
 
-I run Applied AI at WorkOS. My calendar is exec syncs, customer calls, and design reviews three days a week, with technical 1:1s and async standups filling the gaps. For 90 days I've used Granola as the layer that turns those conversations into the artifacts that drive the rest of my week.
+## The thing I wanted to say first
 
-This is the workflow piece I've wanted to write since week three.
+Live syncs are the part of my job I find hardest. Not because I struggle to communicate — I&apos;ve spent a career driving customer calls, complex AWS deployments, live triage, planning sessions, software-delivery hand-offs, friend catch-ups. It is just that I carry a low-grade hum of anxiety around speaking with someone live anyway. It is just there.
 
-## The 90-day before / after
+The single biggest thing Granola did for me was lower that hum. Note-taking is gone as a concern. Before the call starts, before anything has been said, the knowledge that capture is handled is — on its own — regulating. The rest of this review is about what Granola does. The thing I wanted to say first is what it changed for me.
 
-[TODO — short table or before/after callout showing what changed: time spent writing notes after meetings, follow-up commitment recall, week-over-week meeting retrospective hit rate.]
+I&apos;m an Applied AI lead at WorkOS. My calendar is exec syncs, customer calls, and design reviews three days a week, with technical 1:1s and async standups filling the gaps. For twelve months — ninety days of which I&apos;ll cover in detail here — Granola has been the layer that turns those conversations into the artifacts that drive the rest of my week.
+
+This is the workflow piece I&apos;ve wanted to write since week three.
+
+---
 
 ## What Granola is, in one paragraph
 
-[TODO — concise factual description: local Mac app, no bot in the meeting, captures system audio + mic, generates structured notes by template, ships them to wherever you keep notes. Two screenshots.]
+Granola is a Mac app that records the audio on your machine — your microphone and the system output, both — without joining the call as a participant. There is no bot in the meeting. There is no notification to the other side. After the call ends, Granola produces a structured summary based on a template you pick, with the full transcript one click away. It connects to your calendar and prompts you to start capture a minute before each meeting. iOS and Windows versions exist. The one on my laptop is the one I live in.
+
+That is all it does. Most of what makes it good is what it does *not* do.
+
+---
 
 ## The four meeting shapes that drive my week
 
-### Exec syncs
+### 1. Exec syncs
 
-[TODO — 400-600 words. Specific shape: 30-minute cadence with VP-level peers. What Granola captures well: decision points, owner assignments, follow-up commitments. What I have to clean up by hand: org-chart context that Granola can't infer. Screenshot of a real (sanitized) exec sync output.]
+These are thirty-minute cadences with peers and VPs. The shape is dense: status across multiple initiatives, decisions queued for input, surfaces where I need air cover, places I need to pull on a thread someone else owns. The cost of missing a commitment in an exec sync is high — it shows up as the same conversation, repeated, two weeks later, with worse vibes.
 
-### 1:1s
+Granola is excellent at the structural parts. Decisions land in the summary cleanly. Owner assignments come through with names attached. Follow-ups read like they were written by someone who was actually in the room — which, in a way, they were.
 
-[TODO — 400-600 words. Different shape entirely from exec syncs. Why I keep notes minimal in the moment and let Granola do the heavy lifting. The "what we decided" vs "what we discussed" distinction. How I share notes back with reports without sharing raw transcripts.]
+The part I still do by hand is org-chart context. Granola can&apos;t infer that the person committing to a thing is the right owner versus the wrong owner. I&apos;ll skim the summary, move a couple of items to different names, and ship it to the relevant Slack channel. Two minutes of cleanup on a thirty-minute meeting.
 
-### Customer calls
+### 2. 1:1s
 
-[TODO — 400-600 words. The compliance and consent shape. How Granola handles the local-only audio path. Why this matters for selling to enterprise. The post-call workflow: Granola → CRM update → internal Slack summary.]
+A different shape entirely. Less about decisions, more about context: how someone is doing, what they&apos;re stuck on, what they&apos;re going to want my air cover for in the next two weeks. The notes I want from a 1:1 are not the same notes I want from an exec sync.
 
-### Technical design reviews
+I keep notes minimal in the moment — almost zero — and let Granola do the structural lifting. After the call, I separate the output into two pieces: *what we decided* (which I&apos;ll reference next time) and *what we discussed* (which is for me, often archived after a read-through). The "decided" half lives in my prep doc for the next 1:1. The "discussed" half lives in my weekly review.
 
-[TODO — 400-600 words. Where Granola is weakest and what I do instead. Why architecture conversations need a different post-process. The handoff from Granola transcript → design doc revision.]
+I do not share the raw transcript back with the person I just spoke to. The summary is for me. What gets surfaced back to them — in Slack, in a follow-up email, in the next 1:1 — is something I wrote, informed by the record. The record is private. The reflection is the thing I share.
+
+### 3. Customer calls
+
+The compliance and consent shape. The local-audio architecture is what makes this work — there is no third-party bot joining, which means no third-party data path to disclose. That changes what I can responsibly capture in calls with customers who haven&apos;t signed something specific about a vendor in the loop.
+
+I still tell people. The point is not to capture covertly; the point is that the *technical* footprint is small enough that telling them lands as "I&apos;m taking notes" rather than "I&apos;ve added a recording bot to our meeting." People understand the first sentence. The second sentence has historically gotten me asked to turn things off.
+
+The post-call workflow is straightforward: read the summary, lift the top items into a Slack thread for the account team, and update the CRM. Five minutes for a thirty-minute call, on a good day.
+
+### 4. Technical design reviews
+
+This is where Granola is weakest, and the place I&apos;m most willing to say it out loud.
+
+Architecture conversations don&apos;t reduce well into bullet summaries. The shape of the thing — *we considered X, we ruled it out for these failure modes, we landed on Y because of these constraints* — is exactly the kind of structured reasoning that an LLM summarizer flattens. You end up with a list of statements that are individually true and collectively useless, because the *order* and *because* are gone.
+
+What I do instead: Granola captures, like always, but I write the Architecture Decision Record by hand using the transcript as source material. The transcript is good — I can search for the moment someone said "the consistency model breaks if we do that" and pull the surrounding two minutes. The summary is the wrong granularity for an ADR. The transcript is exactly the right granularity.
+
+Granola is the input; the document is mine.
+
+---
+
+## What lives in the meeting itself
+
+There&apos;s a thing that doesn&apos;t fit cleanly under a meeting shape because it&apos;s not about a particular call — it&apos;s about *being* in any call.
+
+I lose the thread mid-meeting. Especially at work, where I&apos;m juggling six projects, four codebases, and twelve open Linear tickets across two teams, the cognitive load of holding the conversation plus the rest of the day in working memory is real. I miss things. Used to be: smile, nod, hope it shakes out by the time I&apos;m supposed to weigh in.
+
+Granola has a live query feature — ask it, in-call, *what was just said*, or *clarify that last phrase I missed*, and it answers. Not from the eventual summary; from the running transcript, live, while the meeting is still happening.
+
+The cost of momentary distraction drops from "I just missed something I&apos;ll need in twenty minutes" to "I&apos;ll re-read the last sixty seconds and rejoin." That second cost is fine. The first cost is what made meetings feel expensive.
+
+---
+
+## Capture is the input layer for everything downstream
+
+The deeper change isn&apos;t at the meeting level. It&apos;s what becomes possible *after* the meeting because the meeting now produces a structured artifact every time, with the transcript attached.
+
+I shipped a <a href="https://workos.com/blog/cloudflare-workers-workflows-ai-blog-bot" target="_blank" rel="noopener">blog bot at WorkOS</a> — Cloudflare Workers + Workflows + Slack + Webflow CMS — that&apos;s now used org-wide for drafting and publishing. Once that pipeline existed, every other Applied AI internal feature I wanted to build became cheaper, because the input/output/auth/Slack-bot scaffolding was already in place.
+
+Granola plugs into that pipeline directly. "Draft our perspective on the customer questions from this morning&apos;s Acme call" stops being a thirty-minute writing task. It becomes a few-minute slash-command, because the transcript is already structured, my voice is already a known input to the blog bot, and the output is already going to land in a Webflow draft. Meeting capture is no longer a sink. It&apos;s the start of a pipeline.
+
+That, more than any single feature inside Granola, is the bet. If you&apos;re building internal AI tooling, the layer that captures *what was actually said in conversation* is the layer most starved for good plumbing. Granola is the plumbing.
+
+---
 
 ## My prompt pack
 
-[TODO — 4-6 of the custom Granola templates / prompts I actually use. One per meeting type. This is the section people will screenshot and steal. Good.]
+Six templates I actually use. Granola lets you set a default template per meeting type or override per-meeting. These are the ones I&apos;ve refined over a year:
 
-## Where Granola breaks down
+1. **Exec sync** — three sections: *decisions taken*, *commitments by owner*, *open threads to chase*. No prose. Action items get bolded. Anything tagged "open" gets carried to the next sync if it isn&apos;t closed before.
+2. **1:1 with a report** — two sections: *what we discussed* and *what was committed*. The second section is what I bring to the next 1:1. The first section gets archived.
+3. **1:1 with my manager** — same structure as the report 1:1, plus a third section: *what I asked for* (air cover, headcount, context I need from elsewhere in the org). That third section is the most useful one for me as I track what I&apos;m repeatedly asking for.
+4. **Customer call** — *what they care about*, *what they pushed back on*, *what we owe them*, *what the account team should know*. The last bucket goes to Slack within the hour.
+5. **Design review** — short summary plus a *decisions to capture in the ADR* block. The full transcript is the actual source for the doc.
+6. **Catch-up with a friend** — yes, I run it for these. Single section: *things to follow up on next time*. That is the whole template. It has made me a meaningfully better friend.
 
-[TODO — honest section. The cases where it underperforms: long technical whiteboarding, multi-speaker debates without clear turn-taking, calls in languages other than English. What I do instead.]
+The last one is the one most people are surprised by. I&apos;m the most surprised by how much I depend on it.
+
+---
+
+## Where it breaks down
+
+The honest section.
+
+**Long technical whiteboarding.** When the conversation depends on a diagram that&apos;s being drawn, the transcript loses the shape. The references to "this box" and "that arrow" produce a summary that&apos;s about as useful as nothing.
+
+**Multi-speaker debates without clear turn-taking.** Three or four engineers all making the same point at the same time, with disagreement on the second point that overlaps with agreement on the third — Granola gets the words but loses who-said-what enough that I can&apos;t reconstruct the negotiation. I treat these meetings as "transcript only, no summary."
+
+**Calls in languages other than English.** I&apos;ve had a handful of consulting calls in Spanish and the summary quality drops sharply. Transcript is OK. Summary is generic. I assume this will close over time.
+
+**Meetings where the substantive content was a screen share.** Granola hears what was said about the demo. It does not see the demo. For "did the click-through feel right" conversations, the summary is structurally insufficient.
+
+None of these are deal-breakers. They&apos;re shapes where I treat Granola as "transcript-only" and write the artifact myself.
+
+---
 
 ## The cost-benefit math
 
-[TODO — actual numbers. Hours saved per week. The decision criteria for paid vs free tier. Why I pay personally even though I could probably expense it.]
+I pay for it personally, even though I could probably expense it. The reason is that I use it in personal contexts — friend catch-ups, consulting calls, family calls — that I don&apos;t want overlapping with any work data plane. The paid tier is something like the cost of two coffees a week. The math isn&apos;t close.
+
+If you want the spreadsheet version: a thirty-minute meeting used to cost me ~ten minutes of post-meeting cleanup time, on average. With Granola, it costs ~two minutes. I do something like twenty captured meetings a week. The arithmetic is roughly two and a half hours back, every week, against a few dollars in subscription cost. The arithmetic stopped being the interesting part somewhere in month two.
+
+The interesting part is the bigger effect. Meetings I would have previously dreaded — three back-to-back exec syncs, a customer call, a 1:1 — stopped feeling like cognitive overhead I had to budget for. The hum dropped. The hum was always the budget item that was hardest to plan around.
+
+---
 
 ## How to try it without losing the week
 
-[TODO — concrete onboarding plan: which meeting to start with, which template to load first, what to ignore in week one.]
+If you&apos;re going to install Granola today, don&apos;t do what I did and try to capture everything from day one. The week-one play that actually works:
 
-## Affiliate CTA
+1. **Pick one meeting type to start with.** I&apos;d say 1:1s. They&apos;re short, low-stakes, and the structure of the output is easy to evaluate.
+2. **Use the default template.** Don&apos;t build your own prompt pack yet. You don&apos;t know what you want from the output until you&apos;ve seen a week of defaults.
+3. **Read every summary the day it lands.** Build an opinion. If something is consistently missing or wrong, that&apos;s the shape of your eventual custom template.
+4. **Expand after a week.** Add a second meeting type. Add a third. Build your prompt pack one template at a time, anchored to a meeting shape you actually attend.
+5. **Tell people.** The local-audio architecture lets you be silent. That doesn&apos;t mean you should be. "I&apos;m taking notes with an AI tool" is one sentence. It costs nothing. It also closes the consent loop and you stop having to think about it.
 
-<a href="https://zackproser.com/granola" rel="sponsored">→ Try Granola through my partner link</a> (drops you on my landing page first — there's a meeting workflow guide I'll send if you drop your email).
+The first week of running Granola is the only week where it&apos;s a tax. By week two you stop noticing it&apos;s there, except for the part where you start noticing how much less you&apos;re carrying.
+
+---
+
+## The plug
+
+If you want to try it, do it through my <Link href="/granola">partner link</Link>. The link drops you on a short landing page first — I&apos;ll send you the meeting workflow guide I run, with the templates and the prompt pack, in exchange for an email. If you don&apos;t want the email step, the same page has a "skip and just go to Granola" link with the same partner code applied.
+
+I write about this stuff because I use it. The commission is what makes the writing economic. The take is mine either way.
