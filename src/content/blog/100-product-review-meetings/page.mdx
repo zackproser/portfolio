@@ -1,0 +1,33 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A whiteboard with sticky notes grouping product review meeting patterns" width={1200} height={630} />
+<figcaption>The patterns started showing up around meeting forty. Hundred felt like enough to write about.</figcaption>
+
+## How I tracked them
+
+[TODO — 200 words. Granola transcript archive plus a weekly review pass. Not a formal study — a habit that turned into a dataset.]
+
+## What good reviews share
+
+[TODO — 600 words. Three to five patterns. Probably: a sharp one-paragraph problem statement at the top; a clear "what would change your mind" section; named owners on each open question. Real examples (sanitized).]
+
+## What bad reviews share
+
+[TODO — 600 words. The opposites. Anti-patterns: surfacing decisions for the first time in the meeting, no written context, three people answering for the absent one, scope expansion in the room.]
+
+## How I prep differently now
+
+[TODO — 400 words. The pre-read pass I do the night before. The two questions I bring written down. The notetaker setup so I can listen instead of write.]
+
+## The meeting-to-action ratio
+
+[TODO — 300 words. Granola makes the action items mechanical. The harder problem is making sure the actions get done, not captured. The cadence loop I run on Fridays.]
+
+## Tools
+
+- [Granola](/granola) — every product review meeting runs through it

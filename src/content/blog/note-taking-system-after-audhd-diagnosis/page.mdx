@@ -1,0 +1,36 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A workspace organized for neurodivergent focus — minimal surface, one notebook, headphones" width={1200} height={630} />
+<figcaption>The setup that finally works after years of trying systems built for other brains.</figcaption>
+
+## The diagnosis context
+
+[TODO — 200 words. Brief, dignified, not over-shared. The diagnosis happened in [year]. Up to that point my note-taking had been a constant source of friction I'd attributed to laziness. Reframing it as wiring changed the toolset entirely.]
+
+## What stopped working
+
+[TODO — 400 words. Specific failures: trying to listen and write at the same time in meetings, end-of-day journaling that I never sustained, complex hierarchical note systems (Roam, Obsidian graphs) that I built and abandoned. The pattern.]
+
+## The three rules I work from now
+
+[TODO — 600 words. One: never write while listening. Two: capture is separate from organization, in time and tool. Three: the system has to survive a bad week, not just a good week.]
+
+## What the daily flow looks like
+
+[TODO — 500 words. Meetings: Granola. Inbox / async: dictation (WisprFlow). End-of-day: one paragraph, in the same place, every day. No graphs, no backlinks I'll never reread.]
+
+## What I keep simple on purpose
+
+[TODO — 300 words. The temptation to over-engineer the system. Why I resist. The maintenance budget I refuse to spend.]
+
+## Tools
+
+- [Granola](/granola) — meeting notes without taking notes
+- [WisprFlow](https://ref.wisprflow.ai/zack-proser) — voice input for everything else
+
+I have affiliate relationships with both. I'd use both without that arrangement — the commission lets me write about them at this length.

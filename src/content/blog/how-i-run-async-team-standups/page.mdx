@@ -1,0 +1,34 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A Slack thread structured as an async standup post with three bullet sections" width={1200} height={630} />
+<figcaption>The whole standup. No video call. Posted in a Slack thread, read on people's own time.</figcaption>
+
+## Why we killed the daily video standup
+
+[TODO — 300 words. The actual reasons: timezone span made it 9pm for one person; the meeting itself produced no artifacts; status updates that everyone forgot by lunch. The conversation with the team that made the change.]
+
+## The format that replaced it
+
+[TODO — 400 words. Three bullets per person: shipped yesterday, shipping today, blocked on what. Posted to a single Slack thread that lives Monday-Friday. Twenty-minute window each morning for posting, but you can post asynchronously across the day.]
+
+## The synchronous remnant
+
+[TODO — 300 words. We kept one sync ritual — Monday kickoff, thirty minutes. That's the only one. The Granola transcript goes in the Slack thread so anyone who missed it can read the decisions, not just the chatter.]
+
+## Recording the rare sync meeting
+
+[TODO — 300 words. When we do meet live, Granola captures it. The team treats the Granola output as the authoritative record, not anyone's hand-written notes. Why this changed who feels included in decisions.]
+
+## What broke and what I'd change
+
+[TODO — 400 words. The first month wasn't smooth. Specific failure modes: people who skipped posting; the temptation to turn the standup into a slack thread debate; the early version of the format that asked too many questions.]
+
+## Tools
+
+- [Granola](/granola) — recording layer for the one remaining sync ritual
+- Slack — async standup lives here, in one persistent channel

@@ -1,0 +1,45 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="Two columns of app icons — daily-use on the left, single-trial on the right" width={1200} height={630} />
+<figcaption>Two years of evaluation. Eight tools survived. The rest got a single careful try.</figcaption>
+
+## The bar for "actually use"
+
+[TODO — 150 words. My definition: I'd notice if it disappeared tomorrow. I open it without thinking. The expense line is paid by me personally.]
+
+## The actually-use list
+
+### Granola
+
+[TODO — 200 words. Every meeting. Why it stuck. Link to the [deep-dive review](/blog/granola-applied-ai-workflow-workos) and the [landing page](/granola).]
+
+### WisprFlow
+
+[TODO — 200 words. Voice input for everything that isn't a meeting. The 179 WPM number. The compounding effect over a year.]
+
+### Claude (the model, not the product)
+
+[TODO — 200 words. Where I use it inside Claude Code vs the web app. What I won't use it for.]
+
+### Cursor
+
+[TODO — 200 words. The narrow set of things it does better than Claude Code. When I switch between them.]
+
+### [TODO — 3-4 more tools that made the cut. Honest answers only.]
+
+## The tried-once list
+
+[TODO — 600 words. The pattern of why these didn't stick. Common failure modes: the tool that needed a workflow change I wasn't going to make, the tool that demoed well but produced output I couldn't trust, the tool that worked but cost more attention than it saved.]
+
+## What I'm watching but haven't adopted
+
+[TODO — 300 words. Two or three tools I'm tracking but not paying for yet. Why I haven't committed.]
+
+## Affiliate disclosure
+
+I have affiliate relationships with Granola and WisprFlow. Both are on the actually-use list independently of the commission. The commission is what makes the time to write at this length economic.

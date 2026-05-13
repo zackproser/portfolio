@@ -1,0 +1,33 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { createMetadata } from '@/utils/createMetadata';
+import rawMetadata from './metadata.json';
+
+export const metadata = createMetadata(rawMetadata);
+
+<Image src={rawMetadata.image} alt="A simple notebook spread next to a laptop showing a 1:1 prep doc" width={1200} height={630} />
+<figcaption>The prep doc lives in one place. The notes from the meeting itself live somewhere else. That separation is the whole system.</figcaption>
+
+## The prep doc / notes-doc split
+
+[TODO — 200 words. Why I keep them as separate artifacts. Prep doc is mine, lives in my weekly review. Notes doc is shared, lives in Granola.]
+
+## What goes in the prep doc
+
+[TODO — 400 words. The three buckets: blockers I need help with, things I want my manager to know, topics I want to surface but don't need a decision on. Why "decisions I need" goes at the top.]
+
+## What I let Granola handle
+
+[TODO — 300 words. Why I don't take notes during the 1:1. The cognitive load argument. How I link the Granola output back into my prep doc for next week.]
+
+## The weekly review loop
+
+[TODO — 400 words. Sunday evening or Monday morning. Read last week's Granola output. Update prep doc. The 20-minute version of this that actually compounds.]
+
+## When the system fails
+
+[TODO — 200 words. The 1:1 where I forgot to prep. The 1:1 where my manager went a different direction. What I do when the system breaks.]
+
+## Tools
+
+I use [Granola](/granola) as the notetaker layer. [TODO — link any other tools that show up here naturally. Don't force WisprFlow if not relevant.]

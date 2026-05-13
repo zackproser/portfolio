@@ -1,0 +1,18 @@
+{
+  "title": "How I run async team standups now",
+  "author": "Zachary Proser",
+  "date": "2026-05-13",
+  "description": "What replaced the daily 9am video standup on my Applied AI team at WorkOS — the format, the tooling, and the recording layer that keeps async working when timezones span 9 hours.",
+  "image": "https://zackproser.b-cdn.net/images/async-team-standups-hero.webp",
+  "slug": "/blog/how-i-run-async-team-standups",
+  "keywords": [
+    "async standup",
+    "remote team standup",
+    "engineering team rituals",
+    "applied AI team",
+    "WorkOS",
+    "async meetings"
+  ],
+  "tags": ["meetings", "leadership", "async", "remote-work"],
+  "hiddenFromIndex": true
+}
