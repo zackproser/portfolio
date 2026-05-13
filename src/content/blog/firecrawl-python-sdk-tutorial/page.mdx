@@ -118,7 +118,7 @@ def chunk_text(text, max_tokens=512):
     current_length = 0
     
     for word in words:
-        word_length = len(word.split()
+        word_length = len(word.split())
         if current_length + word_length > max_tokens:
             chunks.append(' '.join(current_chunk))
             current_chunk = [word]
