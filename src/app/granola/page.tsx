@@ -114,19 +114,6 @@ export default function GranolaLandingPage() {
           <ul className="grid md:grid-cols-2 gap-4 text-stone-700 dark:text-stone-300">
             <li>
               <Link
-                href="/blog/granola-applied-ai-workflow-workos"
-                className="block p-5 border border-stone-200 dark:border-stone-800 rounded-xl hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
-              >
-                <div className="font-semibold mb-1">
-                  Granola in my Applied AI workflow at WorkOS
-                </div>
-                <div className="text-sm text-stone-500 dark:text-stone-400">
-                  The deep-dive review — real screenshots, real meetings.
-                </div>
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/blog/adhd-meeting-notes-strategy"
                 className="block p-5 border border-stone-200 dark:border-stone-800 rounded-xl hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
               >
