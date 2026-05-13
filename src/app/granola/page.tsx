@@ -267,7 +267,10 @@ export default function GranolaLandingPage() {
                   </a>
                 </p>
                 <p>
-                  No email, no workflow guide, no follow-up. The form above just lets me send the workflow I would otherwise have to write twice.
+                  No email, no workflow guide, no follow-up. The form above just lets me send the workflow I would otherwise have to write twice.{' '}
+                  <a href={directLink} rel="sponsored noopener" target="_blank" style={{ color: 'var(--accent)' }}>
+                    Skip the email →
+                  </a>
                 </p>
               </div>
 
