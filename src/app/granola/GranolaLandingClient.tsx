@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { track } from '@vercel/analytics'
 import { getAffiliateLink } from '@/lib/affiliate'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -95,6 +96,15 @@ export function GranolaLandingClient() {
           href={affiliateLink}
           rel="sponsored noopener"
           target="_blank"
+          onClick={() =>
+            track('affiliate_click', {
+              product: 'granola',
+              context: 'pillar:success-state',
+              variant: 'hero',
+              campaign: 'granola-pillar',
+              term: 'hero-card',
+            })
+          }
           className="ed-submit"
           style={{
             textAlign: 'center',

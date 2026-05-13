@@ -136,13 +136,11 @@ const inlineAccentLink: React.CSSProperties = {
 // done per-section without restructuring.
 
 const IMG = {
-  laptopHero: 'https://zackproser.b-cdn.net/images/granola-applied-ai-workos-hero.webp',
   granolaUi: 'https://zackproser.b-cdn.net/images/granola-example.webp',
   granolaInUse: 'https://zackproser.b-cdn.net/images/granola.webp',
   busyMind: 'https://zackproser.b-cdn.net/images/busy.webp',
   walking: 'https://zackproser.b-cdn.net/images/walking-talking-ai.webp',
   river: 'https://zackproser.b-cdn.net/images/river-walking-ai.webp',
-  bleachers: 'https://zackproser.b-cdn.net/images/bleachers-walking-ai.webp',
 }
 
 export default function GranolaLandingPage() {
