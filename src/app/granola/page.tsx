@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
-import AffiliateCard from '@/app/demos/voice-ai/AffiliateCard'
+import { GranolaCompactCTA, GranolaHeroCTA, GranolaInlineCTA } from './CTACards'
 import { GranolaLandingClient } from './GranolaLandingClient'
 
 // --- Affiliate placements in this pillar -------------------------------
@@ -16,14 +16,6 @@ import { GranolaLandingClient } from './GranolaLandingClient'
 // it'll start showing up in utm_term immediately.
 
 const CAMPAIGN = 'granola-pillar'
-
-const inlineCtaS03 = getAffiliateLink({
-  product: 'granola',
-  campaign: CAMPAIGN,
-  medium: 'blog',
-  placement: 'inline-cta',
-  term: 's03-end-of-shapes',
-})
 
 export const metadata: Metadata = createMetadata({
   title: 'Granola — the AI notetaker I actually use, every meeting, for 12 months',
@@ -277,13 +269,10 @@ export default function GranolaLandingPage() {
             </p>
 
             <div style={{ margin: '32px 0' }}>
-              <AffiliateCard
-                product="granola"
-                variant="compact"
-                campaign={CAMPAIGN}
-                medium="blog"
-                context="pillar:s02-what-it-is"
+              <GranolaCompactCTA
                 term="s02-what-it-is"
+                headline="Granola — the app I just described."
+                sub="Free trial · Mac, Windows, iOS · ~5 minute setup."
               />
             </div>
 
@@ -361,9 +350,9 @@ export default function GranolaLandingPage() {
 
             <p style={bodyStyle}>
               If those four shapes look like your week, the short version is:{' '}
-              <a href={inlineCtaS03} rel="sponsored noopener" target="_blank" style={inlineAccentLink}>
+              <GranolaInlineCTA term="s03-end-of-shapes">
                 start a free trial of Granola
-              </a>{' '}
+              </GranolaInlineCTA>{' '}
               and run it through one or two of them this week. The rest of this page is how I actually use it; the link above is the easiest way to follow along live.
             </p>
 
@@ -459,13 +448,18 @@ export default function GranolaLandingPage() {
             </p>
 
             <div style={{ margin: '40px 0' }}>
-              <AffiliateCard
-                product="granola"
-                variant="hero"
-                campaign={CAMPAIGN}
-                medium="blog"
-                context="pillar:s06-after-etiquette"
+              <GranolaHeroCTA
                 term="s06-after-etiquette"
+                kicker="§ 06 · No bot · The product"
+                headline="Try the silent-capture meeting tool I just described."
+                sub="Twelve months of daily use across exec syncs, customer calls, design reviews, and friend catch-ups. Audio captured locally. No bot ever joins the conversation."
+                benefits={[
+                  'No bot joins the call · local audio only',
+                  'Structured summary in seconds, transcript one click away',
+                  'Templates per meeting shape · live-query mid-call',
+                ]}
+                ctaLabel="Start your free trial"
+                secondaryLabel="Get the workflow guide"
               />
             </div>
 
@@ -561,13 +555,11 @@ export default function GranolaLandingPage() {
             </figure>
 
             <div style={{ margin: '40px 0' }}>
-              <AffiliateCard
-                product="granola"
-                variant="compact"
-                campaign={CAMPAIGN}
-                medium="blog"
-                context="pillar:s09-after-math"
+              <GranolaCompactCTA
                 term="s09-after-math"
+                headline="Two coffees a week. Two and a half hours back."
+                sub="Free plan to start. The paid tier is roughly the cost of two coffees per week."
+                ctaLabel="Try Granola free"
               />
             </div>
 
@@ -634,13 +626,18 @@ export default function GranolaLandingPage() {
             </p>
 
             <div style={{ margin: '40px 0 0' }}>
-              <AffiliateCard
-                product="granola"
-                variant="hero"
-                campaign={CAMPAIGN}
-                medium="blog"
-                context="pillar:s12-the-take"
+              <GranolaHeroCTA
                 term="s12-the-take"
+                kicker="§ 12 · The take · Take the link"
+                headline="If your week could use this, this is the door."
+                sub="Granola removes the part of meetings I was bad at and leaves the part I have to do. Twelve months in, it is the first AI tool whose absence would measurably raise my baseline. Try it on next week's calendar."
+                benefits={[
+                  'Free plan available — no credit card to try',
+                  '~5 minute setup, runs in the background',
+                  'Cancel anytime · iOS, Mac, and Windows clients',
+                ]}
+                ctaLabel="Start your free trial"
+                secondaryLabel="Send me the workflow guide first"
               />
             </div>
           </article>
