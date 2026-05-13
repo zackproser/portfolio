@@ -89,10 +89,12 @@ def detect_material_changes(old_page, new_page):
     
     # Check for pricing changes
     pricing_indicators = ['$', 'price', 'cost', 'plan', 'tier', 'monthly', 'annually']
-    old_has_pricing = any(indicator in old_text.lower() for indicator in pricing_indicators)
-    new_has_pricing = any(indicator in new_text.lower() for indicator in pricing_indicators)
     
-    has_pricing_change = old_has_pricing and new_has_pricing
+    # Extract lines containing pricing-related content for comparison
+    old_pricing_lines = [line for line in old_text.splitlines() if any(indicator in line.lower() for indicator in pricing_indicators)]
+    new_pricing_lines = [line for line in new_text.splitlines() if any(indicator in line.lower() for indicator in pricing_indicators)]
+    
+    has_pricing_change = old_pricing_lines != new_pricing_lines
     
     if has_pricing_change:
         changes.append({
