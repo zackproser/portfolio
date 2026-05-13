@@ -13,6 +13,7 @@ const affiliateLink = getAffiliateLink({
   campaign: 'granola-pillar',
   medium: 'blog',
   placement: 'hero-card',
+  term: 'hero-card',
 })
 
 export function GranolaLandingClient() {
