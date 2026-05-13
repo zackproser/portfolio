@@ -89,7 +89,7 @@ export function GranolaLandingClient() {
             margin: 0,
           }}
         >
-          Workflow guide email lands in a few minutes. In the meantime — your Granola partner link is one click away.
+          Workflow guide lands in your inbox in a few minutes. If you want to try Granola in the meantime, it&apos;s one click away.
         </p>
         <a
           href={affiliateLink}
@@ -102,7 +102,7 @@ export function GranolaLandingClient() {
             textDecoration: 'none',
           }}
         >
-          Open Granola with my partner link <span>→</span>
+          Go to granola.ai <span>→</span>
         </a>
       </div>
     )
@@ -156,7 +156,7 @@ export function GranolaLandingClient() {
       )}
 
       <div className="ed-submit-row">
-        <span className="fine">→ workflow guide + partner link · single email</span>
+        <span className="fine">→ one email, the workflow guide, then nothing</span>
         <button
           type="submit"
           className="ed-submit"

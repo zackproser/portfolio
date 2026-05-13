@@ -120,7 +120,7 @@ export default function GranolaLandingPage() {
       <section className="c-hero">
         <div className="container mx-auto max-w-6xl px-4 md:px-6">
           <div className="kicker">
-            § G · <em>Granola</em> · 12 months in · personal walkthrough · partner link below
+            § G · <em>Granola</em> · 12 months in · personal review
           </div>
 
           <div className="dispatch">
@@ -134,11 +134,7 @@ export default function GranolaLandingPage() {
                 my anxiety level.
               </h1>
               <p className="dispatch-lead">
-                I&apos;ve been running{' '}
-                <a href={directLink} rel="sponsored noopener" target="_blank" style={{ color: 'var(--accent)' }}>
-                  Granola
-                </a>{' '}
-                in every meeting for twelve months. WorkOS exec syncs, customer calls, consulting calls, friend catch-ups, the lot. This page is the short version of why it stuck — five specific things, in my voice, without the affiliate-blog throat-clearing.
+                I&apos;ve been running Granola in every meeting for twelve months. WorkOS exec syncs, customer calls, consulting calls, friend catch-ups, the lot. This page is the short version of why it stuck — five specific things I would not be able to give up.
               </p>
             </div>
             <aside className="dispatch-side">
@@ -242,10 +238,10 @@ export default function GranolaLandingPage() {
             <div>
               <div className="db-head" style={{ marginBottom: 16 }}>
                 <div className="num">§ 03</div>
-                <h3>Claim my partner link.</h3>
+                <h3>The meeting workflow guide.</h3>
               </div>
               <p className="intake-lead">
-                Drop your email and I will send you the meeting workflow I actually run: which templates I use for which meeting shapes, the prompt pack I&apos;ve refined over twelve months, and what I do after the call. Then your address bar goes to Granola with my partner code applied.
+                Drop your email and I will send you the meeting workflow I actually run: which templates I use for which meeting shapes, the prompt pack I&apos;ve refined over twelve months, and what I do after the call. Roughly one email, then nothing.
               </p>
               <GranolaLandingClient />
               <p
@@ -264,14 +260,14 @@ export default function GranolaLandingPage() {
 
             <aside className="intake-side">
               <div>
-                <h4>Skip the email</h4>
+                <h4>Try Granola</h4>
                 <p className="direct">
                   <a href={stickyLink} rel="sponsored noopener" target="_blank">
-                    granola.ai · my partner link →
+                    granola.ai →
                   </a>
                 </p>
                 <p>
-                  Same partner link, no email step, no workflow guide. I will not chase you. The form lets me send the workflow I would otherwise have to write twice.
+                  No email, no workflow guide, no follow-up. The form above just lets me send the workflow I would otherwise have to write twice.
                 </p>
               </div>
 
