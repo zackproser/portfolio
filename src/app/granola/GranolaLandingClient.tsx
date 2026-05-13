@@ -160,7 +160,7 @@ export function GranolaLandingClient() {
         <button
           type="submit"
           className="ed-submit"
-          disabled={state === 'submitting' || validShape === false}
+          disabled={state === 'submitting' || !validShape}
         >
           {state === 'submitting' ? 'Sending…' : 'Send it'} <span>→</span>
         </button>
