@@ -9,8 +9,8 @@ type State = 'idle' | 'submitting' | 'ok' | 'error'
 
 const affiliateLink = getAffiliateLink({
   product: 'granola',
-  campaign: 'granola-landing',
-  medium: 'homepage',
+  campaign: 'granola-pillar',
+  medium: 'blog',
   placement: 'hero-card',
 })
 
