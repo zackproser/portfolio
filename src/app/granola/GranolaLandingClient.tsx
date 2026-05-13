@@ -50,43 +50,74 @@ export function GranolaLandingClient() {
     } catch (err) {
       inFlight.current = false
       setState('error')
-      setErrMsg('Something broke on our end. Try again or use the direct link below.')
+      setErrMsg('Something broke on our end. Try again, or use the direct link in the sidebar.')
     }
   }
 
   if (state === 'ok') {
     return (
-      <div role="status" aria-live="polite" className="space-y-4">
-        <div className="flex items-center gap-2 text-green-700 dark:text-green-400 font-semibold">
-          <span aria-hidden>✓</span>
-          <span>You&apos;re on the list.</span>
+      <div
+        role="status"
+        aria-live="polite"
+        style={{
+          display: 'grid',
+          gap: 14,
+          padding: '22px 24px',
+          border: '1px solid var(--rule)',
+          borderRadius: 8,
+          background: 'var(--bg-secondary)',
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace",
+            fontSize: 11,
+            letterSpacing: '.14em',
+            textTransform: 'uppercase',
+            color: 'var(--accent)',
+            fontWeight: 600,
+          }}
+        >
+          ✓ on the list
         </div>
-        <p className="text-stone-700 dark:text-stone-300">
-          The workflow guide email lands in a few minutes. In the meantime,
-          claim your Granola access:
+        <p
+          style={{
+            fontFamily: "var(--font-serif, 'Crimson Pro'), Georgia, serif",
+            fontSize: 18,
+            lineHeight: 1.5,
+            color: 'var(--ink)',
+            margin: 0,
+          }}
+        >
+          Workflow guide email lands in a few minutes. In the meantime — your Granola partner link is one click away.
         </p>
         <a
           href={affiliateLink}
           rel="sponsored noopener"
           target="_blank"
-          className="block w-full text-center py-4 px-6 rounded-xl bg-charcoal-500 dark:bg-parchment-50 text-parchment-50 dark:text-charcoal-500 font-bold text-lg hover:opacity-90 transition-opacity"
+          className="ed-submit"
+          style={{
+            textAlign: 'center',
+            display: 'block',
+            textDecoration: 'none',
+          }}
         >
-          Open Granola with my partner link →
+          Open Granola with my partner link <span>→</span>
         </a>
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="ed-form">
       {/* Honeypot field — hidden from humans, auto-filled by bots */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           left: '-10000px',
-          width: '1px',
-          height: '1px',
+          width: 1,
+          height: 1,
           overflow: 'hidden',
         }}
       >
@@ -100,12 +131,14 @@ export function GranolaLandingClient() {
         />
       </div>
 
-      <div>
-        <label htmlFor="granola-email" className="sr-only">
-          Email address
-        </label>
+      <div className="ed-field">
+        <div className="ed-label">
+          <span>Email</span>
+          <span className="num">01</span>
+        </div>
         <input
           id="granola-email"
+          className="ed-input"
           type="email"
           name="email"
           value={email}
@@ -113,23 +146,25 @@ export function GranolaLandingClient() {
           placeholder="you@company.com"
           required
           autoComplete="email"
-          className="w-full px-4 py-4 rounded-xl border-2 border-stone-300 dark:border-stone-700 bg-white dark:bg-charcoal-200 text-charcoal-500 dark:text-parchment-100 text-lg focus:outline-none focus:border-charcoal-500 dark:focus:border-parchment-300"
         />
       </div>
 
       {state === 'error' && errMsg && (
-        <div role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <div className="form-status err" role="alert">
           {errMsg}
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={state === 'submitting' || validShape === false}
-        className="w-full py-4 px-6 rounded-xl bg-charcoal-500 dark:bg-parchment-50 text-parchment-50 dark:text-charcoal-500 font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {state === 'submitting' ? 'Sending…' : 'Send me the guide + my Granola link'}
-      </button>
+      <div className="ed-submit-row">
+        <span className="fine">→ workflow guide + partner link · single email</span>
+        <button
+          type="submit"
+          className="ed-submit"
+          disabled={state === 'submitting' || validShape === false}
+        >
+          {state === 'submitting' ? 'Sending…' : 'Send it'} <span>→</span>
+        </button>
+      </div>
     </form>
   )
 }
