@@ -1,9 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { AffiliateLink } from '@/components/StickyAffiliateCTA';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
+
+export const campaign = 'note-taking-system-after-audhd-diagnosis';
 
 <Image src={rawMetadata.image} alt="A minimal workspace: closed notebook, over-ear headphones, single small plant on a wood desk" width={1200} height={630} />
 <figcaption>The setup that finally works. Less is the thing it is.</figcaption>
@@ -36,7 +39,7 @@ The third rule is the rule that ruled out most things: the system has to survive
 
 The flow has three layers and almost no ceremony. Meetings go through Granola — every call I take, work or consulting or personal or friend catch-up. No bot joins. Structured notes land within seconds of the call ending. The full transcript stays searchable. I have not taken notes during a meeting in over a year, and the quality of my recall, my follow-through, and my contribution inside the conversation itself have all improved. I noticed because other people noticed.
 
-Async input runs through <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link>. When I&apos;m typing — Slack, email, code comments, PR descriptions, ticket updates, the comments on the thing my colleague just shared — I&apos;m almost always dictating instead. WisprFlow runs at 175+ WPM with a system-level hotkey. The keyboard exists for code; voice handles everything else. Speed is the side effect. The bigger change is that the friction between thinking and writing dropped enough that I stopped getting stuck on small messages.
+Async input runs through <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink>. When I&apos;m typing — Slack, email, code comments, PR descriptions, ticket updates, the comments on the thing my colleague just shared — I&apos;m almost always dictating instead. WisprFlow runs at 175+ WPM with a system-level hotkey. The keyboard exists for code; voice handles everything else. Speed is the side effect. The bigger change is that the friction between thinking and writing dropped enough that I stopped getting stuck on small messages.
 
 The third layer is one short paragraph at the end of each day, in the same plain-text file, every day. Not a journal. Not a reflection. Three to five lines about what happened. The point is the consistency of the location, not the eloquence. On bad weeks the paragraph is two words. On good weeks it&apos;s a page. The file does not care, and neither do I — the only thing the daily paragraph has to do is exist where I can find it later.
 
@@ -63,7 +66,7 @@ Granola is the routing. The three rules are the operating principle. The rest is
 ## Tools
 
 - <Link href="/granola">Granola</Link> — meetings, captured silently, summarized faithfully. The single tool that did the most for my note-taking.
-- <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> — voice input for everything else. Same effect: the friction I was paying turns out to have been the entire tax.
+- <AffiliateLink product="wisprflow" campaign={campaign}>WisprFlow</AffiliateLink> — voice input for everything else. Same effect: the friction I was paying turns out to have been the entire tax.
 - One plain-text file for the daily paragraph. Any tool. Pick the one you will open.
 
 I have affiliate relationships with both products mentioned. The system existed before the relationships; the relationships are what make the time to write about it at this length economic.
