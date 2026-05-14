@@ -124,13 +124,6 @@ const figcapStyle: React.CSSProperties = {
   fontStyle: 'italic',
 }
 
-const dividerStyle: React.CSSProperties = {
-  border: 0,
-  borderTop: '1px solid var(--rule)',
-  margin: '56px auto',
-  width: 80,
-}
-
 const inlineAccentLink: React.CSSProperties = {
   color: 'var(--accent)',
   textDecoration: 'none',
