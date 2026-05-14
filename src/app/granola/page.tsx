@@ -107,6 +107,8 @@ const links = {
   s15FinalCta: gLink('hero-card', 's15-final-cta'),
   sideRailPrimary: gLink('sticky-cta', 'side-rail-primary'),
   sideRailSkipEmail: gLink('text-link', 'side-rail-skip-email'),
+  fig01: gLink('compact-card', 'fig01-interface-shot'),
+  fig02: gLink('compact-card', 'fig02-rendered-output'),
 } as const
 
 // ---- JSON-LD ---------------------------------------------------------------
@@ -431,21 +433,29 @@ export default function GranolaPillarPage() {
         {/* ============ FIG 01 · GRANOLA HOMEPAGE ============ */}
         <div className="gx-container">
           <figure className="post-wide g-laptop-figure">
-            <Image
-              src="https://zackproser.b-cdn.net/images/granola-hero.webp"
-              alt="Granola AI meeting intelligence interface — live transcript on the left, structured notes on the right, anchored to a template I wrote."
-              width={1600}
-              height={1000}
-              priority={false}
-              style={{
-                width: '100%',
-                height: 'auto',
-                borderRadius: 12,
-                boxShadow:
-                  '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
-                border: '1px solid var(--border-strong)',
-              }}
-            />
+            <a
+              href={links.fig01}
+              rel="sponsored noopener"
+              target="_blank"
+              className="g-figure-link"
+              aria-label="Open Granola — affiliate link"
+            >
+              <Image
+                src="https://zackproser.b-cdn.net/images/granola-hero.webp"
+                alt="Granola AI meeting intelligence interface — live transcript on the left, structured notes on the right, anchored to a template I wrote."
+                width={1600}
+                height={1000}
+                priority={false}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: 12,
+                  boxShadow:
+                    '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
+                  border: '1px solid var(--border-strong)',
+                }}
+              />
+            </a>
             <figcaption className="g-laptop-caption">
               <span className="num">FIG · 01</span>
               <span className="cap">
@@ -549,20 +559,28 @@ export default function GranolaPillarPage() {
           </article>
 
           <figure className="post-wide g-laptop-figure" style={{ marginTop: 40 }}>
-            <Image
-              src="https://zackproser.b-cdn.net/images/granola-example.webp"
-              alt="A real Granola meeting summary — transcription with extracted action items, decisions, and follow-ups."
-              width={1600}
-              height={1000}
-              style={{
-                width: '100%',
-                height: 'auto',
-                borderRadius: 12,
-                boxShadow:
-                  '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
-                border: '1px solid var(--border-strong)',
-              }}
-            />
+            <a
+              href={links.fig02}
+              rel="sponsored noopener"
+              target="_blank"
+              className="g-figure-link"
+              aria-label="Open Granola — affiliate link"
+            >
+              <Image
+                src="https://zackproser.b-cdn.net/images/granola-example.webp"
+                alt="A real Granola meeting summary — transcription with extracted action items, decisions, and follow-ups."
+                width={1600}
+                height={1000}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  borderRadius: 12,
+                  boxShadow:
+                    '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
+                  border: '1px solid var(--border-strong)',
+                }}
+              />
+            </a>
             <figcaption className="g-laptop-caption">
               <span className="num">FIG · 02</span>
               <span className="cap">
@@ -578,18 +596,17 @@ export default function GranolaPillarPage() {
             <h2 className="g-section-head" id="s05">
               <span className="post-kicker">§ 05 · The list</span>
             </h2>
-            <h2 style={{ marginTop: 0 }}>A list of templates I run more than once a week.</h2>
+            <h2 style={{ marginTop: 0 }}>The templates I run more than once a week.</h2>
             <div className="g-prose">
-              <ul className="def-list">
-                <li><strong>1:1 (engineer).</strong> The one above. Six instances a week. The most-edited template I own.</li>
-                <li><strong>1:1 (manager).</strong> Same shape, an extra section for org context. Two instances a week.</li>
-                <li><strong>Customer call (discovery).</strong> Use case, friction, quote, ask, follow-up. Feeds the CRM row.</li>
-                <li><strong>Customer call (escalation).</strong> Same plus a strict timeline section and a who-owns-it row.</li>
-                <li><strong>Hiring screen.</strong> Rubric signals + two verbatim quotes + recommendation. No editorializing.</li>
-                <li><strong>External strategy.</strong> Room map at the top, decisions in the middle, parked items at the bottom.</li>
-                <li><strong>Internal review.</strong> What shipped, what slipped, the honest reason, asks for next quarter.</li>
-                <li><strong>Pre-mortem.</strong> One section per failure mode. Three lines: how it happens, how we catch it, what we do.</li>
-              </ul>
+              <p>
+                The 1:1 engineer template above is the one I run most — six times a week, and the most edited of any I own. Its sibling, the 1:1 manager template, shares the same shape but adds an extra section for org context, which I need exactly twice a week. Both pull their value from being stable: the cost of changing them is high enough that doing so signals the underlying meeting actually changed.
+              </p>
+              <p>
+                Customer calls come in two shapes that need separate templates. Discovery is the canonical one — use case, friction, the verbatim quote I want my PM to see, the ask I&apos;m carrying back, the follow-up — and it feeds the CRM row directly. Escalation is the same template plus a strict timeline section and a who-owns-it row, which is what turns a tough call into a closeable thread instead of a vague apology.
+              </p>
+              <p>
+                The remaining four templates each match a specific recurring shape. Hiring screens get rubric signals plus two verbatim quotes plus a recommendation, with no editorializing — the whole point is to keep my opinions visible as opinions. External strategy meetings get a room map at the top, decisions in the middle, parked items at the bottom, in that order. Internal reviews track what shipped, what slipped, the honest reason for the slippage, and the asks for next quarter. Pre-mortems get one section per failure mode and three lines under each: how it happens, how we catch it, what we do.
+              </p>
             </div>
 
             <p className="g-pullquote">
@@ -1011,32 +1028,16 @@ export default function GranolaPillarPage() {
             <h2 style={{ marginTop: 0 }}>My prompt pack.</h2>
             <div className="g-prose">
               <p>
-                These are the chat prompts I run against a finished transcript. None of them are clever. They are the operations I used to do by hand at the end of the day. I have refined each over twelve months by deleting the parts that did not survive into the doc I actually sent.
+                These are the chat prompts I run against a finished transcript. None of them are clever — they are the operations I used to do by hand at the end of the day, each refined over twelve months by deleting the parts that did not survive into the doc I actually sent.
               </p>
-              <ul className="def-list">
-                <li>
-                  <strong>The Slack update.</strong>{' '}
-                  <em>&ldquo;Write a four-bullet Slack update to my team about this meeting. Lead with what we decided. Use my voice — short, first-person, no jargon.&rdquo;</em>
-                </li>
-                <li>
-                  <strong>The CRM row.</strong>{' '}
-                  <em>&ldquo;Output a single-row update for our CRM with these fields: Use case · Friction · Verbatim quote · Asks · Next step. One line each.&rdquo;</em>
-                </li>
-                <li>
-                  <strong>The follow-up email.</strong>{' '}
-                  <em>&ldquo;Draft a follow-up to [name] that thanks them, restates the two decisions, and asks for the one thing I committed to ask. Six sentences max.&rdquo;</em>
-                </li>
-                <li>
-                  <strong>The Friday review.</strong>{' '}
-                  <em>&ldquo;Across all meetings tagged #1:1 this week, list every commitment I made with an owner of &lsquo;me&rsquo; and a due date. Sort by due date.&rdquo;</em>
-                </li>
-                <li>
-                  <strong>The pre-mortem rewrite.</strong>{' '}
-                  <em>&ldquo;Re-read this pre-mortem. For each failure mode, write the one sentence we would say in the retro if it happened.&rdquo;</em>
-                </li>
-              </ul>
               <p>
-                The prompts are not the value. The constraint behind each prompt is — knowing the shape of the artifact I want before I ask for it. That part transfers.
+                The first is the Slack update. After every meeting that warrants one, I run <em>&ldquo;Write a four-bullet Slack update to my team about this meeting. Lead with what we decided. Use my voice — short, first-person, no jargon.&rdquo;</em> The output ships within a minute of the call ending, before anyone has to ask what happened. For customer calls the equivalent is the CRM row, generated from a stricter prompt — <em>&ldquo;Output a single-row update for our CRM with these fields: Use case · Friction · Verbatim quote · Asks · Next step. One line each.&rdquo;</em> Paste, save, done.
+              </p>
+              <p>
+                Follow-up emails get a similar treatment, scoped to one recipient and capped at six sentences: <em>&ldquo;Draft a follow-up to [name] that thanks them, restates the two decisions, and asks for the one thing I committed to ask.&rdquo;</em> On Fridays I run a different kind of prompt across the whole week&apos;s captures — <em>&ldquo;Across all meetings tagged #1:1 this week, list every commitment I made with an owner of &lsquo;me&rsquo; and a due date. Sort by due date.&rdquo;</em> That one is the closest thing I have to a personal accountability dashboard. Once a quarter I also run a pre-mortem rewrite — <em>&ldquo;Re-read this pre-mortem. For each failure mode, write the one sentence we would say in the retro if it happened.&rdquo;</em> Sharper hypothetical, sharper meeting.
+              </p>
+              <p>
+                The prompts are not the value. The constraint behind each prompt is — knowing the shape of the artifact you want before you ask for it. That part transfers.
               </p>
             </div>
           </article>
@@ -1050,13 +1051,15 @@ export default function GranolaPillarPage() {
             </h2>
             <h2 style={{ marginTop: 0 }}>Where it breaks down.</h2>
             <div className="g-prose">
-              <ul className="def-list">
-                <li><strong>Cold-room transcription.</strong> A conference room with three people, one phone speaker, one whiteboard — capture quality drops. The fix is to be the person near the speakerphone, not to expect magic.</li>
-                <li><strong>Overlapping speakers.</strong> Three voices on top of each other get collapsed. The transcript reads like the loudest person was the only person. Granola does not fix the meeting, only the writing about the meeting.</li>
-                <li><strong>The first week is a tax.</strong> You will not have templates yet. You will not have a sense for which prompts produce which artifacts. By week two it stops being a tax. By week four it stops being noticed.</li>
-                <li><strong>Multi-language meetings.</strong> The current capture is strong in English, decent in Spanish and French, weaker elsewhere. If half your meetings are bilingual, test it on yours.</li>
-                <li><strong>Stretching it past meetings.</strong> I have tried to use Granola for long phone calls with vendors. It works, but the output is rougher because the meeting shape is rougher. The tool is honest about that.</li>
-              </ul>
+              <p>
+                Capture quality drops in the cold-room case — a conference room with three people, one phone speaker, one whiteboard. The fix is to be the person near the speakerphone, not to expect magic. The related failure mode is overlapping speakers: three voices on top of each other get collapsed, and the transcript reads like the loudest person was the only person. Granola does not fix the meeting, only the writing about the meeting.
+              </p>
+              <p>
+                The first week is also a tax. You will not have templates yet, and you will not yet have a sense for which prompts produce which artifacts. By week two it stops being a tax; by week four you stop noticing it&apos;s there. Multi-language meetings are a real edge — capture is strong in English, decent in Spanish and French, weaker elsewhere. If half your calendar is bilingual, test it on yours before committing.
+              </p>
+              <p>
+                The honest stretch is using Granola past meetings — long phone calls with vendors, for example. It works, but the output is rougher because the meeting shape is rougher. The tool is honest about that, and so am I.
+              </p>
             </div>
           </article>
         </div>
@@ -1069,13 +1072,15 @@ export default function GranolaPillarPage() {
             </h2>
             <h2 style={{ marginTop: 0 }}>How to actually start using it — the first week.</h2>
             <div className="g-prose">
-              <ul className="def-list">
-                <li><strong>Install before Sunday.</strong> Open it once. Click through the onboarding. Do not write a template yet. Let it sit there.</li>
-                <li><strong>Run it on your first meeting Monday.</strong> Use the default template. Read the output. Notice what is missing.</li>
-                <li><strong>Write one template Monday evening.</strong> The shape of the meeting you have the most of. Five sections, a one-line instruction under each. Twenty minutes.</li>
-                <li><strong>Expand after a week.</strong> Add a second meeting type. Add a third. Build your prompt pack one template at a time, anchored to a meeting shape you actually attend.</li>
-                <li><strong>Tell people.</strong> The local-audio architecture lets you be silent. That doesn&apos;t mean you should be. &ldquo;I&apos;m taking notes with an AI tool&rdquo; is one sentence. It costs nothing. It also closes the consent loop and you stop having to think about it.</li>
-              </ul>
+              <p>
+                Install it before Sunday. Open it once. Click through the onboarding. Do not write a template yet — let the app sit there until Monday. Then run it on your first real meeting using the default template, read the output, and notice what&apos;s missing. The point of the first run is not to like the output; it is to discover what you want.
+              </p>
+              <p>
+                Monday evening, write one template — the shape of the meeting you have the most of. Five sections, a one-line instruction under each. Twenty minutes, no more. Then leave it alone for the rest of the week and use it. By Friday you&apos;ll either trust the output or have a specific edit in mind. Either is fine.
+              </p>
+              <p>
+                After a week, add a second meeting type, then a third. Build your prompt pack one template at a time, anchored to a meeting shape you actually attend. And tell people. The local-audio architecture lets you be silent; that doesn&apos;t mean you should be. &ldquo;I&apos;m taking notes with an AI tool&rdquo; is one sentence. It costs nothing, and it closes the consent loop so you stop having to think about it.
+              </p>
               <p>
                 The first week of running Granola is the only week where it&apos;s a tax. By week two you stop noticing it&apos;s there, except for the part where you start noticing how much less you&apos;re carrying.
               </p>
@@ -1093,11 +1098,15 @@ export default function GranolaPillarPage() {
             </h2>
             <h2 style={{ marginTop: 0 }}>What I do not use it for.</h2>
             <div className="g-prose">
-              <ul className="def-list">
-                <li><strong>Calls where consent is unclear.</strong> Personal capture is one thing. Recording someone who has not understood that capture is happening is another. The local-audio architecture makes it technically silent. That does not make it ethically silent. I tell people.</li>
-                <li><strong>Pasting raw transcripts back at people.</strong> The summary is for me. The transcript is for me. What goes to my manager, a customer, a partner is something I wrote, informed by the record, not pulled from it verbatim.</li>
-                <li><strong>Pretending the AI is doing the listening for me.</strong> It captures. I still have to think, still have to remember, still have to actually be in the meeting. Granola removed the part of meetings I was bad at; it did not remove the part I have to do.</li>
-              </ul>
+              <p>
+                I do not run Granola in calls where consent is unclear. Personal capture is one thing; recording someone who has not understood that capture is happening is another, and the local-audio architecture makes it technically silent without making it ethically silent. I tell people. The one-sentence disclosure costs nothing and resolves the awkwardness before it starts.
+              </p>
+              <p>
+                I do not paste raw transcripts back at people, either. The summary is for me. The transcript is for me. What goes to my manager, a customer, or a partner is something I wrote, informed by the record, not pulled from it verbatim. The line between those two artifacts is the thing that protects the relationship.
+              </p>
+              <p>
+                And I do not pretend the AI is doing the listening for me. It captures. I still have to think, still have to remember, still have to actually be in the meeting. Granola removed the part of meetings I was bad at; it did not remove the part I have to do.
+              </p>
             </div>
           </article>
         </div>
