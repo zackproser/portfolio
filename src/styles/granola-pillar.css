@@ -15,6 +15,94 @@
 /* Fonts (Source Serif 4, Inter, JetBrains Mono) are loaded via next/font
    in src/app/layout.tsx — using var(--font-*) fallbacks here. */
 
+/* ---------- design tokens (scoped under .granola-pillar) ----------
+   The site only defines these custom properties inside the .contact-page
+   and .blog-post wrappers, so we duplicate them here for the
+   .granola-pillar wrapper. Without this, var(--border), var(--accent),
+   var(--bg-elevated), etc. resolve to nothing and rules degrade.
+   ------------------------------------------------------------- */
+.granola-pillar {
+  /* Palette */
+  --parchment-50:  #fefdfb;
+  --parchment-100: #fbf7f0;
+  --parchment-200: #f5f0e6;
+  --parchment-300: #e8e0d0;
+  --parchment-400: #d1c7b7;
+  --parchment-500: #b8a88f;
+  --parchment-600: #8b7355;
+  --charcoal-50:   #2c3e50;
+  --charcoal-100:  #1f2d3d;
+  --charcoal-200:  #1a2533;
+  --charcoal-300:  #16213e;
+  --charcoal-400:  #1a1a2e;
+  --charcoal-500:  #141428;
+  --charcoal-600:  #0f0f1f;
+  --burnt-200: #fbd38d;
+  --burnt-300: #f6ad55;
+  --burnt-400: #e67e22;
+  --burnt-500: #d35400;
+  --amber-300: #fcd34d;
+  --amber-400: #f39c12;
+  --amber-500: #f59e0b;
+  --slate-500: #64748b;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+
+  --bg:           var(--parchment-100);
+  --bg-secondary: var(--parchment-200);
+  --bg-elevated:  var(--parchment-50);
+
+  --fg:           var(--charcoal-50);
+  --fg-muted:     var(--parchment-600);
+  --fg-subtle:    var(--parchment-500);
+
+  --border:        rgb(139 115 85 / .25);
+  --border-strong: rgb(139 115 85 / .5);
+
+  --accent:        var(--burnt-400);
+  --accent-hover:  var(--burnt-500);
+  --accent-soft:   rgb(230 126 34 / .10);
+
+  --link:          var(--burnt-400);
+  --link-hover:    var(--burnt-500);
+
+  --ink:           var(--fg);
+  --ink-dim:       var(--fg-muted);
+  --rule:          var(--border);
+  --rule-strong:   var(--border-strong);
+  --paper:         var(--bg);
+}
+.dark .granola-pillar {
+  --bg:           var(--charcoal-400);
+  --bg-secondary: var(--charcoal-500);
+  --bg-elevated:  var(--slate-800);
+
+  --fg:        #fbf7f0;
+  --fg-muted:  #cbd5e1;
+  --fg-subtle: #94a3b8;
+
+  --border:        rgb(148 163 184 / .2);
+  --border-strong: rgb(148 163 184 / .4);
+
+  --accent:        var(--amber-400);
+  --accent-hover:  var(--amber-300);
+  --accent-soft:   rgb(243 156 18 / .20);
+
+  --link:          var(--amber-400);
+  --link-hover:    var(--amber-300);
+
+  --ink:           var(--fg);
+  --ink-dim:       var(--fg-muted);
+  --rule:          var(--border);
+  --rule-strong:   var(--border-strong);
+}
+
+/* Page background uses the resolved token */
+.granola-pillar { background: var(--bg); color: var(--fg); }
+
 /* ---------- container + buttons (scoped names) ---------- */
 
 .gx-container { max-width: 1152px; margin: 0 auto; padding: 0 24px; }

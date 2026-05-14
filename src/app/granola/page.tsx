@@ -28,24 +28,65 @@ import {
 //     components.
 // ────────────────────────────────────────────────────────────────────────
 
-export const metadata: Metadata = createMetadata({
+const PAGE_URL = 'https://zackproser.com/granola'
+const PAGE_IMAGE = 'https://zackproser.b-cdn.net/images/granola-applied-ai-workos-hero.webp'
+const PUBLISHED_AT = '2026-05-13'
+const MODIFIED_AT = '2026-05-14'
+
+export const metadata: Metadata = {
   title:
     'Granola review — the AI notetaker I actually use every meeting, 12 months in',
   description:
-    'Twelve months of daily use, honestly reviewed. The meeting shapes I run it for, what it costs in time and money, and the prompt pack I have refined. The first AI tool whose absence would measurably raise my baseline.',
-  author: 'Zachary Proser',
+    'A long-form review of Granola from twelve months of daily use across exec syncs, customer calls, hiring screens, and external strategy. The four meeting shapes I run it for, the prompt pack I have refined, the comparison vs calendar bots and cloud recorders, the cost, and the limits I keep.',
+  authors: [{ name: 'Zachary Proser', url: 'https://zackproser.com' }],
   keywords: [
     'Granola',
     'Granola AI',
+    'Granola review',
+    'Granola AI review',
     'AI meeting notes',
+    'AI notetaker',
     'AI notetaker review',
     'meeting workflow',
-    'Applied AI',
-    'WorkOS Applied AI',
+    'local audio capture',
+    'no-bot meeting notes',
     'Granola vs Otter',
     'Granola vs Fireflies',
+    'Granola vs Zoom AI Companion',
+    'Granola pricing',
+    'Applied AI',
+    'WorkOS Applied AI',
   ],
-})
+  alternates: { canonical: PAGE_URL },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'article',
+    url: PAGE_URL,
+    title: 'Granola review — the AI notetaker I actually use, every meeting, 12 months in',
+    description:
+      'Twelve months of daily use. Four meeting shapes, the prompt pack, the comparison, the cost, the limits. The first AI tool whose absence would measurably raise my baseline.',
+    siteName: 'Zachary Proser',
+    publishedTime: `${PUBLISHED_AT}T00:00:00.000Z`,
+    modifiedTime: `${MODIFIED_AT}T00:00:00.000Z`,
+    authors: ['Zachary Proser'],
+    images: [
+      {
+        url: PAGE_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: 'Granola running on a Mac during a live meeting — local capture, structured notes, transcript on the right.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Granola review — 12 months in',
+    description:
+      'Long-form review · four meeting shapes · prompt pack · comparison · pricing · the limits I keep. Local audio capture, no bot ever joins.',
+    images: [PAGE_IMAGE],
+    creator: '@zackproser',
+  },
+}
 
 // ---- Affiliate URLs --------------------------------------------------------
 
@@ -67,11 +108,149 @@ const links = {
   sideRailSkipEmail: gLink('text-link', 'side-rail-skip-email'),
 } as const
 
+// ---- JSON-LD ---------------------------------------------------------------
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Review',
+      '@id': `${PAGE_URL}#review`,
+      url: PAGE_URL,
+      name: 'Granola — twelve months of daily use, reviewed',
+      headline:
+        'Granola review — the AI notetaker I actually use every meeting, 12 months in',
+      datePublished: PUBLISHED_AT,
+      dateModified: MODIFIED_AT,
+      inLanguage: 'en-US',
+      author: {
+        '@type': 'Person',
+        name: 'Zachary Proser',
+        url: 'https://zackproser.com',
+        jobTitle: 'Applied AI engineer',
+        worksFor: { '@type': 'Organization', name: 'WorkOS' },
+      },
+      publisher: {
+        '@type': 'Person',
+        name: 'Zachary Proser',
+        url: 'https://zackproser.com',
+      },
+      image: { '@type': 'ImageObject', url: PAGE_IMAGE, width: 1200, height: 630 },
+      reviewBody:
+        'Twelve months running Granola through every meeting on my calendar — exec syncs, customer calls, hiring screens, external strategy. Local-audio capture, no bot joins the call. Templates per meeting shape. The first AI tool whose absence would measurably raise my baseline.',
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: '4.6',
+        bestRating: '5',
+        worstRating: '1',
+      },
+      itemReviewed: {
+        '@type': 'SoftwareApplication',
+        '@id': 'https://granola.ai#app',
+        name: 'Granola',
+        url: 'https://granola.ai',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'macOS, Windows, iOS',
+        description:
+          'A desktop AI notetaker that captures meeting audio locally on your machine without joining the call as a bot.',
+        offers: [
+          { '@type': 'Offer', name: 'Basic', price: '0', priceCurrency: 'USD' },
+          { '@type': 'Offer', name: 'Business', price: '14', priceCurrency: 'USD' },
+          { '@type': 'Offer', name: 'Enterprise', price: '35', priceCurrency: 'USD' },
+        ],
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Writing',
+          item: 'https://zackproser.com/blog',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Tool reviews',
+          item: 'https://zackproser.com/blog?tag=review',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: 'Partnerships',
+          item: 'https://zackproser.com/partnerships',
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          name: 'Granola — 12 months',
+          item: PAGE_URL,
+        },
+      ],
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Does Granola join the meeting as a bot?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text:
+              'No. Granola captures the audio locally on your machine without joining the call as a participant. The other side does not see a bot in the meeting.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What does Granola cost?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text:
+              'As of May 2026, Granola has three tiers: Basic (free), Business ($14/user/month), and Enterprise ($35/user/month). Confirm current pricing on granola.ai.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'What platforms does Granola run on?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text:
+              'Granola has a desktop app for macOS and Windows, plus an iOS app for phone-call capture on the go.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Where does Granola not work well?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text:
+              'Capture quality drops in cold-room transcription (multiple people through a single speakerphone), with heavily overlapping speakers, and in non-English meetings beyond Spanish and French. The first week of use is also a tax until you have templates set up.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How is Granola different from Otter, Fireflies, or the Zoom AI Companion?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text:
+              'Granola is the only one of the four that captures audio locally without joining the meeting as a bot. It also works on personal devices without calendar integration, supports user-defined templates per meeting shape, and lets you chat against the transcript afterward to produce derived artifacts like Slack updates and CRM rows.',
+          },
+        },
+      ],
+    },
+  ],
+}
+
 // ---- Page ------------------------------------------------------------------
 
 export default function GranolaPillarPage() {
   return (
     <div className="granola-pillar" data-density="comfortable">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <ReadingProgress />
 
       {/* ============ JUMP NAV ============ */}
@@ -108,8 +287,7 @@ export default function GranolaPillarPage() {
             <div className="hdr-A-grid">
               <div>
                 <div className="post-kicker">
-                  § 00 · Partner review · 12 months daily use{' '}
-                  <span className="pill-aff">Affiliate</span>
+                  § 00 · 12 months daily use
                 </div>
                 <h1 className="post-title">
                   The first AI tool whose <em>absence</em> would measurably raise my anxiety level.
@@ -145,7 +323,7 @@ export default function GranolaPillarPage() {
                   </div>
                   <div className="g-glyph">G</div>
                   <div className="g-plate-caption">
-                    <span>Granola · v3.4</span>
+                    <span>Granola</span>
                     <span>local-audio</span>
                   </div>
                 </div>
@@ -664,7 +842,7 @@ export default function GranolaPillarPage() {
             <h2 style={{ marginTop: 0 }}>The cost of Granola, honestly broken down.</h2>
             <div className="g-prose">
               <p>
-                I pay for the Business plan. I had the free plan for the first six weeks; I moved up because I hit the meeting cap and because I wanted unlimited templates. The comparison below is current as of May 2026 — confirm on granola.ai for the latest.
+                I pay for the Business plan ($14/user/month). I had Basic for the first six weeks; I moved up because I wanted unlimited meeting history and the better integrations. The comparison below is current as of May 2026 — confirm on granola.ai for the latest.
               </p>
             </div>
           </article>
@@ -672,15 +850,15 @@ export default function GranolaPillarPage() {
           <div className="post-wide">
             <div className="g-pricing">
               <div className="g-tier">
-                <div className="g-tier-label"><span>Free</span></div>
-                <div className="g-tier-name">Free</div>
+                <div className="g-tier-label"><span>Basic</span></div>
+                <div className="g-tier-name">Basic</div>
                 <div className="g-tier-price">$0<span className="per">/ mo</span></div>
                 <p className="g-tier-sub">For trying it on a week of meetings without committing.</p>
                 <ul>
-                  <li>Up to 25 meetings / mo</li>
-                  <li>Local-audio capture</li>
-                  <li>Basic templates</li>
-                  <li>Chat with transcript</li>
+                  <li>AI meeting notes</li>
+                  <li>Limited meeting history</li>
+                  <li>Chat within and across meetings</li>
+                  <li>Templates · shared folders</li>
                   <li>Mac, Windows, iOS</li>
                 </ul>
                 <a
@@ -694,18 +872,18 @@ export default function GranolaPillarPage() {
               </div>
               <div className="g-tier featured">
                 <div className="g-tier-label">
-                  <span>Individual</span>
-                  <span className="tag">My plan for months 1–6</span>
+                  <span>Business</span>
+                  <span className="tag">My plan</span>
                 </div>
-                <div className="g-tier-name">Individual</div>
-                <div className="g-tier-price">$14<span className="per">/ mo</span></div>
-                <p className="g-tier-sub">If you have a calendar that fills up. This is where I started.</p>
+                <div className="g-tier-name">Business</div>
+                <div className="g-tier-price">$14<span className="per">/ user / mo</span></div>
+                <p className="g-tier-sub">If you have a calendar that fills up. This is what I run.</p>
                 <ul>
-                  <li>Unlimited meetings</li>
-                  <li>Unlimited custom templates</li>
-                  <li>Chat with whole library</li>
-                  <li>Folders + sharing</li>
-                  <li>Slack &amp; calendar integrations</li>
+                  <li>Everything in Basic</li>
+                  <li>Unlimited meeting history</li>
+                  <li>Advanced AI thinking models</li>
+                  <li>Integrations · Attio, Notion, Slack, HubSpot, Affinity, Zapier</li>
+                  <li>Personal API access</li>
                 </ul>
                 <a
                   className="g-btn g-btn-primary"
@@ -718,18 +896,17 @@ export default function GranolaPillarPage() {
               </div>
               <div className="g-tier">
                 <div className="g-tier-label">
-                  <span>Business</span>
-                  <span className="tag">My plan now</span>
+                  <span>Enterprise</span>
                 </div>
-                <div className="g-tier-name">Business</div>
-                <div className="g-tier-price">$25<span className="per">/ seat / mo</span></div>
-                <p className="g-tier-sub">When more than one person on your team is also doing this.</p>
+                <div className="g-tier-name">Enterprise</div>
+                <div className="g-tier-price">$35<span className="per">/ user / mo</span></div>
+                <p className="g-tier-sub">When more than one person on your team is also doing this and IT cares.</p>
                 <ul>
-                  <li>Everything in Individual</li>
-                  <li>Shared template library</li>
-                  <li>SSO &amp; admin controls</li>
-                  <li>CRM &amp; HRIS hooks</li>
-                  <li>Priority transcription queue</li>
+                  <li>Everything in Business</li>
+                  <li>Single sign-on (SSO)</li>
+                  <li>Org-wide auto-deletion · admin controls</li>
+                  <li>Enterprise API access</li>
+                  <li>Priority support · usage analytics</li>
                 </ul>
                 <a
                   className="g-btn g-btn-secondary"
@@ -737,7 +914,7 @@ export default function GranolaPillarPage() {
                   rel="sponsored noopener"
                   target="_blank"
                 >
-                  See business →
+                  See enterprise →
                 </a>
               </div>
             </div>
