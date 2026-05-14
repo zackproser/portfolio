@@ -1088,7 +1088,7 @@ export default function GranolaPillarPage() {
         {/* ============ § 14 LIMITS ============ */}
         <div className="gx-container">
           <article className="post-measure post-body">
-            <h2 className="g-section-head" id="s14-limits">
+            <h2 className="g-section-head" id="s14">
               <span className="post-kicker">§ 14 · The limits I keep</span>
             </h2>
             <h2 style={{ marginTop: 0 }}>What I do not use it for.</h2>
@@ -1107,7 +1107,7 @@ export default function GranolaPillarPage() {
         {/* ============ § 15 THE TAKE ============ */}
         <div className="gx-container">
           <article className="post-measure post-body">
-            <h2 className="g-section-head" id="s14">
+            <h2 className="g-section-head" id="s15">
               <span className="post-kicker">§ 15 · The take</span>
             </h2>
             <h2 style={{ marginTop: 0 }}>If you only read one paragraph of this page.</h2>
@@ -1175,7 +1175,7 @@ export default function GranolaPillarPage() {
 
         {/* ============ § 16 EMAIL CAPTURE + RELATED ============ */}
         <div className="gx-container">
-          <div className="g-capture" id="s15">
+          <div className="g-capture" id="s16">
             <div>
               <div className="kicker">
                 <span className="num">§ 16</span> The meeting workflow guide

@@ -130,24 +130,24 @@
 .granola-pillar[data-density="comfortable"] { --post-fs: 19px; }
 .granola-pillar[data-density="spacious"]    { --post-fs: 21px; }
 
-.post-measure  { max-width: 680px; margin: 0 auto; padding: 0 24px; }
-.post-figure   { max-width: 880px; margin: 0 auto; padding: 0 24px; }
-.post-bleed    { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.granola-pillar .post-measure  { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+.granola-pillar .post-figure   { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.granola-pillar .post-bleed    { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
 .granola-pillar .post-measure { max-width: 720px; }
 .granola-pillar .post-wide    { max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
-.post-crumbs {
+.granola-pillar .post-crumbs {
   display: flex; align-items: center; gap: 10px;
   font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 11px; letter-spacing: .12em;
   text-transform: uppercase; color: var(--fg-subtle, #b8a88f);
   padding: 22px 0 0;
 }
-.post-crumbs a { color: var(--fg-muted, #8b7355); text-decoration: none; border-bottom: 1px solid var(--border, #e8e0d0); padding-bottom: 1px; }
-.post-crumbs a:hover { color: var(--accent, #e67e22); border-color: var(--accent, #e67e22); }
-.post-crumbs .sep { opacity: .5; }
-.post-crumbs .current { color: var(--accent, #e67e22); }
+.granola-pillar .post-crumbs a { color: var(--fg-muted, #8b7355); text-decoration: none; border-bottom: 1px solid var(--border, #e8e0d0); padding-bottom: 1px; }
+.granola-pillar .post-crumbs a:hover { color: var(--accent, #e67e22); border-color: var(--accent, #e67e22); }
+.granola-pillar .post-crumbs .sep { opacity: .5; }
+.granola-pillar .post-crumbs .current { color: var(--accent, #e67e22); }
 
 .reading-progress {
   position: fixed; top: 0; left: 0; right: 0; height: 2px;
@@ -159,44 +159,44 @@
   box-shadow: 0 0 8px rgba(230,126,34,.5);
 }
 
-.post-body {
+.granola-pillar .post-body {
   font-family: var(--font-serif, 'Source Serif 4', Georgia, serif);
   font-size: var(--post-fs, 19px);
   line-height: 1.72;
   color: var(--fg, #2c3e50);
   letter-spacing: -.003em;
 }
-.post-body > * + * { margin-top: 1.1em; }
-.post-body p { margin: 0; text-wrap: pretty; color: var(--fg, #2c3e50); }
-.post-body p + p { margin-top: 1.1em; }
-.post-body strong { color: var(--fg, #2c3e50); font-weight: 700; }
-.post-body em { font-style: italic; }
-.post-body a {
+.granola-pillar .post-body > * + * { margin-top: 1.1em; }
+.granola-pillar .post-body p { margin: 0; text-wrap: pretty; color: var(--fg, #2c3e50); }
+.granola-pillar .post-body p + p { margin-top: 1.1em; }
+.granola-pillar .post-body strong { color: var(--fg, #2c3e50); font-weight: 700; }
+.granola-pillar .post-body em { font-style: italic; }
+.granola-pillar .post-body a {
   color: var(--link, #e67e22); text-decoration: underline;
   text-decoration-color: color-mix(in oklab, var(--link, #e67e22) 40%, transparent);
   text-underline-offset: 3px;
 }
-.post-body a:hover { color: var(--link-hover, #d35400); }
+.granola-pillar .post-body a:hover { color: var(--link-hover, #d35400); }
 
 /* Section kicker + title from the design */
-.post-kicker {
+.granola-pillar .post-kicker {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 11px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--fg-subtle, #b8a88f); font-weight: 600;
 }
-.post-kicker::before {
+.granola-pillar .post-kicker::before {
   content: ''; width: 24px; height: 1px; background: var(--accent, #e67e22);
 }
-.post-title {
+.granola-pillar .post-title {
   margin: 0;
   font-family: var(--font-serif, 'Source Serif 4', Georgia, serif); font-weight: 800;
   font-size: clamp(40px, 4.6vw, 64px); line-height: 1.04;
   letter-spacing: -.025em; color: var(--fg, #2c3e50);
   text-wrap: balance;
 }
-.post-title em { font-style: normal; color: var(--accent, #e67e22); font-weight: 700; }
-.post-dek {
+.granola-pillar .post-title em { font-style: normal; color: var(--accent, #e67e22); font-weight: 700; }
+.granola-pillar .post-dek {
   font-family: var(--font-serif, 'Source Serif 4', Georgia, serif); font-weight: 400;
   font-size: clamp(18px, 1.6vw, 22px); line-height: 1.5;
   color: var(--fg-muted, #8b7355);
@@ -204,8 +204,8 @@
   margin: 22px 0 0;
 }
 
-.hdr-A { padding: 48px 0 40px; }
-.hdr-A .hdr-A-grid {
+.granola-pillar .hdr-A { padding: 48px 0 40px; }
+.granola-pillar .hdr-A .hdr-A-grid {
   display: grid; grid-template-columns: 1.5fr 1fr; gap: 56px; align-items: end;
 }
 
