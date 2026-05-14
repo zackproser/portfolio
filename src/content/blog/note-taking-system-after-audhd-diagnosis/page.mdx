@@ -8,68 +8,62 @@ export const metadata = createMetadata(rawMetadata);
 <Image src={rawMetadata.image} alt="A minimal workspace: closed notebook, over-ear headphones, single small plant on a wood desk" width={1200} height={630} />
 <figcaption>The setup that finally works. Less is the thing it is.</figcaption>
 
-I got an AuDHD diagnosis a few years into my career. The diagnosis itself is not the subject of this post, but the reframe it produced is: for a long time, I had attributed my inability to sustain note-taking systems to a personal failing. The diagnosis renamed the same data as wiring. That changed the question from *what discipline do I need to build* to *what system would my actual brain use*.
+I got an AuDHD diagnosis a few years into my career. The diagnosis itself is not the subject of this post, but the reframe it produced is. For a long time, I had attributed my inability to sustain a note-taking system to a personal failing — somewhere between insufficient discipline and a character flaw. The diagnosis renamed the same data as wiring. It changed the question from *what discipline do I need to build* to *what system would my actual brain use*. That is a much smaller and much more answerable question, and asking it produced the system I have run for the last two years.
 
-This is the system. It runs on three rules and two tools. It survives bad weeks. That last part is the part the systems before this kept failing.
+This is that system. It runs on three rules and two tools. It survives bad weeks, which is the part the systems before it kept failing.
 
 ---
 
 ## What stopped working
 
-Every system that asked me to listen *and* write at the same time. Cornell Notes. Bullet journaling during meetings. Live-mind-mapping. End-of-day journaling that required me to remember what happened.
+Every system that asked me to listen and write at the same time. Cornell Notes. Bullet journaling during meetings. Live mind-mapping. End-of-day journaling that required me to remember what happened. The pattern was always the same: a few good weeks where the system felt productive, then a missed day, then a missed week, then quiet abandonment. By the time I was thirty I had probably given up on a dozen capture systems of different shapes. I didn&apos;t know yet that the abandonment was itself the data point.
 
-The pattern was always the same: a couple of good weeks where the system felt productive, followed by a missed day, followed by a missed week, followed by abandonment. By the time I was thirty I had probably abandoned a dozen different note-taking and capture systems. I didn&apos;t know yet that the abandonment was the data point.
-
-The other pattern: I would build elaborate hierarchical systems (Roam, Obsidian, multiple competing zettelkasten flavors) and then never re-read anything I&apos;d written. The system itself was the thing I was building. The note-taking was theater for the system.
+The other thing that stopped working was the system-as-monument problem. I would build elaborate hierarchical setups — Roam, Obsidian with backlinks, three competing zettelkasten flavors — and then never re-read anything I had written. The system itself became the project. The note-taking became theater for the system. The fact that I could spend a weekend on the structure and then find nothing useful in it on a Tuesday was, in retrospect, the same data point in a different shape.
 
 ---
 
 ## The three rules
 
-**One. Never write while listening.** Listening and writing are different cognitive modes for me, and trying to do them simultaneously means I&apos;m bad at both. So I don&apos;t do it. <Link href="/granola">Granola</Link> records the meeting; I&apos;m in the meeting. The handoff is total.
+The first rule is that I never write while listening. Listening and writing are different cognitive modes for my brain, and trying to do both at the same time means I am bad at both. So I don&apos;t. <Link href="/granola">Granola</Link> records the meeting; I&apos;m in the meeting. The handoff is total, and it is the single rule that did the most for me.
 
-**Two. Capture is separate from organization. In time and in tool.** Capture happens at the speed of the moment: voice dictation into whatever&apos;s open, Granola in meetings, a one-line note on my phone if I&apos;m walking. Organization happens later — usually Sunday — when I&apos;m in a completely different mental mode. Mixing them was the second-biggest source of failure.
+The second rule is that capture is separate from organization — in time and in tool. Capture happens at the speed of the moment: voice dictation into whatever&apos;s open, Granola in meetings, a one-line note on my phone if I&apos;m walking. Organization happens later, usually on a Sunday, when I am in an entirely different mental mode. Mixing them — trying to file as I capture, trying to categorize at the speed of speech — was the second-biggest source of failure across every system I tried.
 
-**Three. The system has to survive a bad week.** This is the rule that ruled out most things. Any system that requires me to do something every day eventually fails. Any system that requires hierarchy or categorization at capture time eventually fails. The system has to be runnable when I&apos;m exhausted, dysregulated, or just having a bad time. If it isn&apos;t, it isn&apos;t my system; it&apos;s a fantasy of someone else&apos;s.
+The third rule is the rule that ruled out most things: the system has to survive a bad week. Any system that requires me to do something every day eventually fails. Any system that requires hierarchy or categorization at capture time eventually fails. The system has to run when I am exhausted, dysregulated, or just having a bad time, because those are the weeks when it matters most that the system run at all. If it doesn&apos;t survive those weeks, it isn&apos;t my system — it&apos;s someone else&apos;s fantasy that I tried to adopt.
 
 ---
 
 ## The daily flow
 
-**Meetings.** Granola captures everything I take a call for — work, consulting, personal, friend catch-ups. No bot joins. Structured notes land within seconds of the call ending. The full transcript stays searchable. I do not take notes in meetings. I have not taken notes in meetings in over a year and the quality of my recall, my follow-through, and my contribution in the conversation itself have all improved.
+The flow has three layers and almost no ceremony. Meetings go through Granola — every call I take, work or consulting or personal or friend catch-up. No bot joins. Structured notes land within seconds of the call ending. The full transcript stays searchable. I have not taken notes during a meeting in over a year, and the quality of my recall, my follow-through, and my contribution inside the conversation itself have all improved. I noticed because other people noticed.
 
-**Async input.** When I&apos;m typing — Slack, email, code comments, PR descriptions, ticket updates — I&apos;m almost always dictating instead. <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> runs at 175+ WPM with a system-level hotkey. The keyboard exists for code. Voice handles everything else.
+Async input runs through <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link>. When I&apos;m typing — Slack, email, code comments, PR descriptions, ticket updates, the comments on the thing my colleague just shared — I&apos;m almost always dictating instead. WisprFlow runs at 175+ WPM with a system-level hotkey. The keyboard exists for code; voice handles everything else. Speed is the side effect. The bigger change is that the friction between thinking and writing dropped enough that I stopped getting stuck on small messages.
 
-**End-of-day.** One short paragraph, in the same place, every day. Not a journal. Not a reflection. Three to five lines about what happened. The point is the consistency of location, not the eloquence. Bad weeks the paragraph is two words. Good weeks it&apos;s a page. The system doesn&apos;t care.
+The third layer is one short paragraph at the end of each day, in the same plain-text file, every day. Not a journal. Not a reflection. Three to five lines about what happened. The point is the consistency of the location, not the eloquence. On bad weeks the paragraph is two words. On good weeks it&apos;s a page. The file does not care, and neither do I — the only thing the daily paragraph has to do is exist where I can find it later.
 
-That is the entire daily flow.
+That is the entire daily flow. There is no fourth layer.
 
 ---
 
 ## What I keep simple on purpose
 
-I do not maintain a personal knowledge graph. I do not connect my notes with backlinks. I do not use tags. I do not have an inbox to triage.
+I do not maintain a personal knowledge graph. I do not connect my notes with backlinks. I do not use tags. I do not have an inbox to triage. Every time I have added structure beyond "things go in one place" the system has decayed within a quarter. The maintenance budget I refuse to spend on the tools is what keeps the tools running at all. I have been disappointed by this fact for years. I have stopped trying to argue with it.
 
-Every time I&apos;ve added structure beyond "things go in one place" my system has decayed within a quarter. The maintenance budget I refuse to spend on these tools is what keeps the tools running at all.
-
-If something matters enough to find again, I&apos;ll find it again. Granola is searchable. WisprFlow output goes to wherever I was typing it. My end-of-day paragraphs are searchable in plain text. That&apos;s plenty. The fantasy of perfect retrieval was always more expensive than the cost of occasionally not retrieving something.
+If something matters enough to find again, I will find it again. Granola is searchable. WisprFlow output goes to wherever I was typing it, which is the same place I would have looked for it anyway. My daily paragraphs are plain text and a `grep` away. That is plenty. The fantasy of perfect retrieval was always more expensive than the cost of occasionally not retrieving something.
 
 ---
 
 ## The thing the diagnosis changed
 
-The diagnosis didn&apos;t hand me a system. It handed me permission to stop building systems that didn&apos;t fit. For a long time I had been trying to operate the same note-taking pattern as the engineers and PMs around me — assuming they had the same hardware as me and were just being more disciplined.
+The diagnosis did not hand me a system. It handed me permission to stop building systems that didn&apos;t fit. For a long time I had been trying to operate the same note-taking pattern as the engineers and PMs around me, on the assumption that they had the same hardware as me and were just being more disciplined. They mostly didn&apos;t and weren&apos;t. They mostly had brains that didn&apos;t pay the listening-while-writing tax I do. The fix was never to try harder. The fix was to stop solving a problem I was never going to solve and route around it instead.
 
-They mostly don&apos;t. They mostly have brains that don&apos;t pay the listening-while-writing tax I do. The fix wasn&apos;t to try harder; the fix was to stop solving a problem I was never going to solve and route around it instead.
-
-Granola is the routing. The three rules are the operating principle. The rest is just consistency on the small flat surface I&apos;ve made for myself.
+Granola is the routing. The three rules are the operating principle. The rest is just consistency on the small flat surface I&apos;ve made for myself — a surface that is small enough to survive a bad week, and flat enough that I don&apos;t spend my Sundays maintaining it.
 
 ---
 
 ## Tools
 
 - <Link href="/granola">Granola</Link> — meetings, captured silently, summarized faithfully. The single tool that did the most for my note-taking.
-- <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> — voice input everywhere else. Same effect: the friction I was paying turns out to have been the whole tax.
-- One plain-text file for end-of-day. Any tool. Pick the one you&apos;ll open.
+- <Link href="https://ref.wisprflow.ai/zack-proser">WisprFlow</Link> — voice input for everything else. Same effect: the friction I was paying turns out to have been the entire tax.
+- One plain-text file for the daily paragraph. Any tool. Pick the one you will open.
 
-I have affiliate relationships with both products mentioned. The system existed before the relationships; the relationships are what makes time spent writing about them economic.
+I have affiliate relationships with both products mentioned. The system existed before the relationships; the relationships are what make the time to write about it at this length economic.
