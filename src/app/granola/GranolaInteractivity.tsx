@@ -89,7 +89,7 @@ export function TimeSavedBar() {
 
   const totalHrs = (meetings * duration) / 60
   const before = totalHrs * 1.0
-  const after = totalHrs * 0.4 + 1.5
+  const after = Math.min(before, totalHrs * 0.4 + 1.5)
   const sum = before + after
   const beforePct = (before / sum) * 100
   const afterPct = (after / sum) * 100
