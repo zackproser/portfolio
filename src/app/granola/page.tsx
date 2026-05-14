@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
@@ -427,55 +428,31 @@ export default function GranolaPillarPage() {
           </div>
         </div>
 
-        {/* ============ LAPTOP FIGURE ============ */}
+        {/* ============ FIG 01 · GRANOLA HOMEPAGE ============ */}
         <div className="gx-container">
-          <div className="post-wide g-laptop-figure">
-            <div className="g-laptop" aria-hidden="true">
-              <div className="g-laptop-screen">
-                <div className="g-laptop-bar">
-                  <div className="dots"><span /><span /><span /></div>
-                  <div className="tab">Tue · 2:00pm — Quarterly review</div>
-                  <div className="right">⌘N · ⌘K · ⌘E</div>
-                </div>
-                <div className="g-laptop-body">
-                  <aside className="g-laptop-side">
-                    <div className="sec">Today</div>
-                    <div className="item active"><span className="dot" />Quarterly review<span className="live">LIVE</span></div>
-                    <div className="item"><span className="dot" />1:1 with Priya</div>
-                    <div className="item"><span className="dot" />Eng standup</div>
-                    <div className="sec">Yesterday</div>
-                    <div className="item"><span className="dot" />Customer · Acme</div>
-                    <div className="item"><span className="dot" />Hiring debrief</div>
-                    <div className="item"><span className="dot" />Prep · roadmap</div>
-                    <div className="sec">Templates</div>
-                    <div className="item"><span className="dot" />1:1 (engineer)</div>
-                    <div className="item"><span className="dot" />Customer call</div>
-                    <div className="item"><span className="dot" />Hiring · screen</div>
-                  </aside>
-                  <div className="g-laptop-main">
-                    <div className="meta">
-                      <span className="live">Recording locally</span>
-                      <span>00:14:32</span>
-                      <span>Template · 1:1 engineer</span>
-                    </div>
-                    <div className="title">Q3 review with Priya · what shipped, what slipped, what we need next quarter</div>
-                    <div className="h">What we shipped this quarter</div>
-                    <div className="skel w9" /><div className="skel w7" /><div className="skel w5" />
-                    <div className="h">What slipped, and the honest reason</div>
-                    <div className="skel w9" /><div className="skel w7" /><div className="skel w9" /><div className="skel w5" />
-                    <div className="h">Asks for next quarter</div>
-                    <div className="skel w7" /><div className="skel w9" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="g-laptop-caption">
+          <figure className="post-wide g-laptop-figure">
+            <Image
+              src="https://zackproser.b-cdn.net/images/granola-hero.webp"
+              alt="Granola AI meeting intelligence interface — live transcript on the left, structured notes on the right, anchored to a template I wrote."
+              width={1600}
+              height={1000}
+              priority={false}
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: 12,
+                boxShadow:
+                  '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
+                border: '1px solid var(--border-strong)',
+              }}
+            />
+            <figcaption className="g-laptop-caption">
               <span className="num">FIG · 01</span>
               <span className="cap">
                 Granola during a meeting — local recording, live transcript, structured notes anchored to a template I wrote.
               </span>
-            </div>
-          </div>
+            </figcaption>
+          </figure>
         </div>
 
         {/* ============ § 03 MEETING SHAPES ============ */}
@@ -570,6 +547,29 @@ export default function GranolaPillarPage() {
               </p>
             </div>
           </article>
+
+          <figure className="post-wide g-laptop-figure" style={{ marginTop: 40 }}>
+            <Image
+              src="https://zackproser.b-cdn.net/images/granola-example.webp"
+              alt="A real Granola meeting summary — transcription with extracted action items, decisions, and follow-ups."
+              width={1600}
+              height={1000}
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: 12,
+                boxShadow:
+                  '0 30px 60px -25px rgba(15,23,42,.35), 0 12px 24px -12px rgba(15,23,42,.25)',
+                border: '1px solid var(--border-strong)',
+              }}
+            />
+            <figcaption className="g-laptop-caption">
+              <span className="num">FIG · 02</span>
+              <span className="cap">
+                The template rendered — Granola pulls action items, decisions, and follow-ups out of the transcript automatically.
+              </span>
+            </figcaption>
+          </figure>
         </div>
 
         {/* ============ § 05 TEMPLATES LIST ============ */}
