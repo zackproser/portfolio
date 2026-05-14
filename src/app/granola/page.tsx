@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
 import { GranolaCompactCTA, GranolaHeroCTA, GranolaInlineCTA } from './CTACards'
+import { ComparisonTable, ExampleOutput, VerdictCard } from './EditorialBlocks'
 import { GranolaLandingClient } from './GranolaLandingClient'
 
 // --- Affiliate placements in this pillar -------------------------------
@@ -136,8 +137,9 @@ const inlineAccentLink: React.CSSProperties = {
 // done per-section without restructuring.
 
 const IMG = {
-  granolaUi: 'https://zackproser.b-cdn.net/images/granola-example.webp',
-  granolaInUse: 'https://zackproser.b-cdn.net/images/granola.webp',
+  laptopHero: 'https://zackproser.b-cdn.net/images/granola-applied-ai-workos-hero.webp',
+  uiShot: 'https://zackproser.b-cdn.net/images/granola-pillar-ui-shot.webp',
+  fourShapes: 'https://zackproser.b-cdn.net/images/granola-pillar-four-shapes.webp',
   busyMind: 'https://zackproser.b-cdn.net/images/busy.webp',
   walking: 'https://zackproser.b-cdn.net/images/walking-talking-ai.webp',
   river: 'https://zackproser.b-cdn.net/images/river-walking-ai.webp',
@@ -217,9 +219,17 @@ export default function GranolaLandingPage() {
         </div>
       </section>
 
+      {/* ───── VERDICT SCORECARD ─────────────────────────────────── */}
+
+      <section style={{ padding: '56px 0 0', borderTop: '1px solid var(--rule)' }}>
+        <div className="container mx-auto max-w-3xl px-4 md:px-6">
+          <VerdictCard />
+        </div>
+      </section>
+
       {/* ───── PILLAR BODY ───────────────────────────────────────── */}
 
-      <section style={{ padding: '72px 0 88px', borderTop: '1px solid var(--rule)' }}>
+      <section style={{ padding: '72px 0 88px' }}>
         <div className="container mx-auto max-w-3xl px-4 md:px-6">
           <article>
             {/* § 01 — The lead */}
@@ -248,7 +258,7 @@ export default function GranolaLandingPage() {
                 style={{ width: '100%', height: 'auto' }}
               />
               <figcaption style={figcapStyle}>
-                Placeholder. Stands in for: the &ldquo;before&rdquo; state. The cognitive load of being responsible for the record of every conversation while also trying to be in it.
+                The &ldquo;before&rdquo; state — the cognitive load of being responsible for the record of every conversation while also trying to be in it.
               </figcaption>
             </figure>
 
@@ -276,15 +286,15 @@ export default function GranolaLandingPage() {
 
             <figure>
               <Image
-                src={IMG.granolaUi}
-                alt="Granola UI showing the side-by-side notes panel during a live meeting"
+                src={IMG.uiShot}
+                alt="Stylized Granola notes panel: decisions, action items, follow-ups, with a transcript indicator on the right"
                 width={1200}
-                height={750}
+                height={1200}
                 className="rounded-lg"
                 style={{ width: '100%', height: 'auto' }}
               />
               <figcaption style={figcapStyle}>
-                Placeholder. Stands in for: a real screenshot of my Granola pane mid-meeting, sensitive content blurred.
+                The shape of a Granola note: three regions — decisions, action items, follow-ups — and the transcript one click away.
               </figcaption>
             </figure>
 
@@ -309,6 +319,36 @@ export default function GranolaLandingPage() {
             <p style={bodyStyle}>
               The part I still do by hand is org-chart context. Granola can&apos;t infer that the person committing to a thing is the right owner versus the wrong owner. I&apos;ll skim the summary, move a couple of items to different names, and ship it to the relevant Slack channel. Two minutes of cleanup on a thirty-minute meeting.
             </p>
+
+            <ExampleOutput
+              meta="exec sync · 2026-05-12 · 30 min"
+              blocks={[
+                {
+                  heading: '── DECISIONS TAKEN',
+                  lines: [
+                    '• Approve Q3 hiring plan as scoped',
+                    '• Defer infrastructure migration to Q4',
+                    '• Pull Maya off auth project to support customer escalation',
+                  ],
+                },
+                {
+                  heading: '── COMMITMENTS BY OWNER',
+                  lines: [
+                    '• Zack    — circulate scoped Q3 plan by Friday',
+                    '• Priya   — schedule eng kickoff for auth backfill',
+                    '• Maya    — close current sprint, move to customer',
+                  ],
+                },
+                {
+                  heading: '── OPEN THREADS TO CHASE',
+                  lines: [
+                    '• Headcount approval for two senior engineers (finance)',
+                    '• Sales motion on enterprise tier (marketing)',
+                  ],
+                },
+              ]}
+              caption="A real exec sync summary, shape-preserved, names sanitized. Granola produces this within seconds of the call ending. The transcript is one click away if I need it."
+            />
 
             {/* 1:1s */}
             <h3 style={h3Style}>2. 1:1s</h3>
@@ -356,15 +396,15 @@ export default function GranolaLandingPage() {
 
             <figure>
               <Image
-                src={IMG.granolaInUse}
-                alt="Granola running quietly during a meeting workflow"
+                src={IMG.fourShapes}
+                alt="A 2x2 grid of the four meeting types: exec sync, 1:1, customer call, design review"
                 width={1200}
-                height={750}
+                height={1200}
                 className="rounded-lg"
                 style={{ width: '100%', height: 'auto' }}
               />
               <figcaption style={figcapStyle}>
-                Placeholder. Stands in for: a side-by-side of four real summary outputs, one per shape.
+                Four shapes, four templates. The post-call workflow looks different for each one.
               </figcaption>
             </figure>
 
@@ -425,7 +465,7 @@ export default function GranolaLandingPage() {
                 style={{ width: '100%', height: 'auto' }}
               />
               <figcaption style={figcapStyle}>
-                Placeholder. Stands in for: a diagram of the Granola → blog-bot → Webflow flow.
+                Capture as the input layer — the meeting becomes the start of a pipeline, not the end of a session.
               </figcaption>
             </figure>
 
@@ -443,6 +483,14 @@ export default function GranolaLandingPage() {
             </p>
             <p style={bodyStyle}>
               I still tell people. The technical silence is what gives me the option to disclose like a human, not like compliance theater.
+            </p>
+
+            <div style={{ margin: '40px 0' }}>
+              <ComparisonTable />
+            </div>
+
+            <p style={bodyStyle}>
+              The table is the part of the argument most people accept without writing it down. Granola is the only one I keep going back to, and the architecture explains why.
             </p>
 
             <div style={{ margin: '40px 0' }}>
@@ -548,7 +596,7 @@ export default function GranolaLandingPage() {
                 style={{ width: '100%', height: 'auto' }}
               />
               <figcaption style={figcapStyle}>
-                Placeholder. Stands in for: the &ldquo;after&rdquo; state. The hum, dropped.
+                The &ldquo;after&rdquo; state. The hum, dropped.
               </figcaption>
             </figure>
 
@@ -620,7 +668,7 @@ export default function GranolaLandingPage() {
             </p>
 
             <p style={bodyStyle}>
-              If that sounds like a thing your week could use, the form below is the easiest way in. The workflow guide is the email I&apos;ve been promising friends for a year. The product is on the other side of either link.
+              If your week could use this, the card below opens Granola directly. The form further down sends my workflow guide first. Either path works.
             </p>
 
             <div style={{ margin: '40px 0 0' }}>
