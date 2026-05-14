@@ -7,6 +7,14 @@ export const maxDuration = 300;
 export async function POST(req: NextRequest) {
 	const body = await req.json();
 
+	// Honeypot check: if the hidden field is filled, reject silently
+	if (body.hp && body.hp.trim() !== "") {
+		return new NextResponse(
+			JSON.stringify({ data: "Successfully subscribed" }),
+			{ status: 200 },
+		);
+	}
+
 	if (body.email === "" || !body.email) {
 		return new NextResponse(
 			JSON.stringify({ data: "Error: no valid email found in request" }),
