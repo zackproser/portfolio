@@ -4,7 +4,15 @@ import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import { getAffiliateLink } from '@/lib/affiliate'
 import { GranolaCompactCTA, GranolaHeroCTA, GranolaInlineCTA } from './CTACards'
-import { ComparisonTable, ExampleOutput, VerdictCard } from './EditorialBlocks'
+import {
+  Byline,
+  ComparisonTable,
+  ExampleOutput,
+  MathPanel,
+  Ornament,
+  PipelineDiagram,
+  VerdictCard,
+} from './EditorialBlocks'
 import { GranolaLandingClient } from './GranolaLandingClient'
 
 // --- Affiliate placements in this pillar -------------------------------
@@ -140,9 +148,6 @@ const IMG = {
   laptopHero: 'https://zackproser.b-cdn.net/images/granola-applied-ai-workos-hero.webp',
   uiShot: 'https://zackproser.b-cdn.net/images/granola-pillar-ui-shot.webp',
   fourShapes: 'https://zackproser.b-cdn.net/images/granola-pillar-four-shapes.webp',
-  busyMind: 'https://zackproser.b-cdn.net/images/busy.webp',
-  walking: 'https://zackproser.b-cdn.net/images/walking-talking-ai.webp',
-  river: 'https://zackproser.b-cdn.net/images/river-walking-ai.webp',
 }
 
 export default function GranolaLandingPage() {
@@ -231,12 +236,26 @@ export default function GranolaLandingPage() {
 
       <section style={{ padding: '72px 0 88px' }}>
         <div className="container mx-auto max-w-3xl px-4 md:px-6">
+          <Byline />
           <article>
+            {/* Drop-cap styling for the lede paragraph */}
+            <style>{`
+              .granola-lede::first-letter {
+                float: left;
+                font-family: var(--font-serif, 'Crimson Pro'), Georgia, serif;
+                font-size: 5.2em;
+                line-height: 0.82;
+                padding: 4px 12px 0 0;
+                color: var(--accent);
+                font-weight: 500;
+              }
+            `}</style>
+
             {/* § 01 — The lead */}
             <span style={sectionNumberStyle}>§ 01 · the lead</span>
             <h2 style={h2Style}>The thing I wanted to say first.</h2>
 
-            <p style={bodyStyle}>
+            <p className="granola-lede" style={bodyStyle}>
               Live syncs are the part of my job I find hardest. Not because I struggle to communicate — I&apos;ve spent a career driving customer calls, complex AWS deployments, live triage, planning sessions, software-delivery hand-offs, friend catch-ups. It is just that I carry a low-grade hum of anxiety around speaking with someone live anyway. It is just there.
             </p>
 
@@ -248,21 +267,7 @@ export default function GranolaLandingPage() {
               I&apos;m an Applied AI lead at WorkOS. My calendar is exec syncs, customer calls, and design reviews three days a week, with technical 1:1s and async standups filling the gaps. For twelve months, Granola has been the layer that turns those conversations into the artifacts that drive the rest of my week.
             </p>
 
-            <figure>
-              <Image
-                src={IMG.busyMind}
-                alt="Illustration of an overloaded mind trying to track too many things at once"
-                width={1200}
-                height={750}
-                className="rounded-lg"
-                style={{ width: '100%', height: 'auto' }}
-              />
-              <figcaption style={figcapStyle}>
-                The &ldquo;before&rdquo; state — the cognitive load of being responsible for the record of every conversation while also trying to be in it.
-              </figcaption>
-            </figure>
-
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 02 — What it is */}
             <span style={sectionNumberStyle}>§ 02 · what it is</span>
@@ -298,7 +303,7 @@ export default function GranolaLandingPage() {
               </figcaption>
             </figure>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 03 — The four shapes */}
             <span style={sectionNumberStyle}>§ 03 · the four shapes</span>
@@ -408,7 +413,7 @@ export default function GranolaLandingPage() {
               </figcaption>
             </figure>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 04 — Live query */}
             <span style={sectionNumberStyle}>§ 04 · the rescue</span>
@@ -427,7 +432,7 @@ export default function GranolaLandingPage() {
               The cost of momentary distraction drops from &ldquo;I just missed something I&apos;ll need in twenty minutes&rdquo; to &ldquo;I&apos;ll re-read the last sixty seconds and rejoin.&rdquo; That second cost is fine. The first cost is what made meetings feel expensive.
             </p>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 05 — Pipeline */}
             <span style={sectionNumberStyle}>§ 05 · the input layer</span>
@@ -455,21 +460,9 @@ export default function GranolaLandingPage() {
               That, more than any single feature inside Granola, is the bet. If you&apos;re building internal AI tooling, the layer that captures <em>what was actually said in conversation</em> is the layer most starved for good plumbing. Granola is the plumbing.
             </p>
 
-            <figure>
-              <Image
-                src={IMG.walking}
-                alt="Working away from the desk while AI tools handle the structured work"
-                width={1200}
-                height={750}
-                className="rounded-lg"
-                style={{ width: '100%', height: 'auto' }}
-              />
-              <figcaption style={figcapStyle}>
-                Capture as the input layer — the meeting becomes the start of a pipeline, not the end of a session.
-              </figcaption>
-            </figure>
+            <PipelineDiagram />
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 06 — No bot */}
             <span style={sectionNumberStyle}>§ 06 · the etiquette</span>
@@ -509,7 +502,7 @@ export default function GranolaLandingPage() {
               />
             </div>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 07 — Prompt pack */}
             <span style={sectionNumberStyle}>§ 07 · the templates</span>
@@ -544,7 +537,7 @@ export default function GranolaLandingPage() {
               The last one is the one most people are surprised by. I&apos;m the most surprised by how much I depend on it.
             </p>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 08 — Breakdown */}
             <span style={sectionNumberStyle}>§ 08 · the honest section</span>
@@ -570,7 +563,7 @@ export default function GranolaLandingPage() {
               None of these are deal-breakers. They&apos;re shapes where I treat Granola as &ldquo;transcript-only&rdquo; and write the artifact myself.
             </p>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 09 — Math */}
             <span style={sectionNumberStyle}>§ 09 · the math</span>
@@ -586,19 +579,7 @@ export default function GranolaLandingPage() {
               The interesting part is the bigger effect. Meetings I would have previously dreaded — three back-to-back exec syncs, a customer call, a 1:1 — stopped feeling like cognitive overhead I had to budget for. The hum dropped. The hum was always the budget item that was hardest to plan around.
             </p>
 
-            <figure>
-              <Image
-                src={IMG.river}
-                alt="A calmer mental state with the structural load handled by tooling"
-                width={1200}
-                height={750}
-                className="rounded-lg"
-                style={{ width: '100%', height: 'auto' }}
-              />
-              <figcaption style={figcapStyle}>
-                The &ldquo;after&rdquo; state. The hum, dropped.
-              </figcaption>
-            </figure>
+            <MathPanel />
 
             <div style={{ margin: '40px 0' }}>
               <GranolaCompactCTA
@@ -609,7 +590,7 @@ export default function GranolaLandingPage() {
               />
             </div>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 10 — Onboarding */}
             <span style={sectionNumberStyle}>§ 10 · how to start</span>
@@ -641,7 +622,7 @@ export default function GranolaLandingPage() {
               The first week of running Granola is the only week where it&apos;s a tax. By week two you stop noticing it&apos;s there, except for the part where you start noticing how much less you&apos;re carrying.
             </p>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 11 — What I won't use it for */}
             <span style={sectionNumberStyle}>§ 11 · the limits I keep</span>
@@ -657,7 +638,7 @@ export default function GranolaLandingPage() {
               <strong>Pretending the AI is doing the listening for me.</strong> It captures. I still have to think, still have to remember, still have to actually be in the meeting. Granola removed the part of meetings I was bad at; it did not remove the part I have to do.
             </p>
 
-            <hr style={dividerStyle} />
+            <Ornament />
 
             {/* § 12 — The take */}
             <span style={sectionNumberStyle}>§ 12 · the take</span>
@@ -668,15 +649,15 @@ export default function GranolaLandingPage() {
             </p>
 
             <p style={bodyStyle}>
-              If your week could use this, the card below opens Granola directly. The form further down sends my workflow guide first. Either path works.
+              The card below opens Granola directly. The form further down sends my workflow guide first. Either path works.
             </p>
 
             <div style={{ margin: '40px 0 0' }}>
               <GranolaHeroCTA
                 term="s12-the-take"
-                kicker="§ 12 · The take · Take the link"
-                headline="If your week could use this, this is the door."
-                sub="Granola removes the part of meetings I was bad at and leaves the part I have to do. Twelve months in, it is the first AI tool whose absence would measurably raise my baseline. Try it on next week's calendar."
+                kicker="§ 12 · Try it on next week's calendar"
+                headline="Run Granola through one meeting this week. Decide on Friday."
+                sub="Free trial, no credit card. Twelve months in I have not found a reason to switch. The fastest way to find out if it works for you is to put it on a real meeting this week."
                 benefits={[
                   'Free plan available — no credit card to try',
                   '~5 minute setup, runs in the background',

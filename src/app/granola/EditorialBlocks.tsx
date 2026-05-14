@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 // ────────────────────────────────────────────────────────────────────────
 // Editorial scaffolding blocks for the Granola pillar.
@@ -8,11 +8,18 @@ import React from 'react'
 // well and uses the editorial design vocabulary (Crimson Pro headings,
 // Inter sans body, JetBrains Mono kickers, burnt-orange #e67e22 accent).
 //
+//   <Byline />          — magazine-style byline strip with author, date,
+//                         read time, framed by hairline rules
 //   <VerdictCard />     — Wirecutter-style scorecard above the fold
 //   <ComparisonTable /> — head-to-head grid: Granola vs Otter vs Zoom AI…
 //   <ExampleOutput />   — mock Granola summary, styled like a terminal /
 //                         export, used to make the product tangible
-//   <WhoFor />          — compact "best for / skip if" call-out
+//   <PipelineDiagram /> — three-stage flow diagram (meeting → Granola →
+//                         downstream surfaces) rendered in CSS for the
+//                         input-layer section
+//   <MathPanel />       — paired-stat call-out (what I pay / what I get
+//                         back) for the cost-benefit section
+//   <Ornament />        — small magazine-style divider, three dots
 //
 // ────────────────────────────────────────────────────────────────────────
 
@@ -21,6 +28,360 @@ import React from 'react'
 const mono = "var(--font-mono, 'JetBrains Mono'), ui-monospace, monospace"
 const serif = "var(--font-serif, 'Crimson Pro'), Georgia, serif"
 const sans = "var(--font-sans, 'Inter'), system-ui, sans-serif"
+
+// ────────────────────────────────────────────────────────────────────────
+// <Byline /> — magazine-style author / date / read-time strip
+// ────────────────────────────────────────────────────────────────────────
+
+interface BylineProps {
+  author?: string
+  date?: string
+  readTime?: string
+}
+
+export function Byline({
+  author = 'Zachary Proser',
+  date = 'May 2026',
+  readTime = '~18 min read',
+}: BylineProps) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 18,
+        margin: '0 auto 56px',
+        maxWidth: 560,
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          flex: 1,
+          height: 1,
+          background: 'var(--rule)',
+        }}
+      />
+      <span
+        style={{
+          fontFamily: mono,
+          fontSize: 10.5,
+          letterSpacing: '.22em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-dim)',
+          whiteSpace: 'nowrap',
+          fontWeight: 500,
+        }}
+      >
+        <strong style={{ color: 'var(--ink)', fontWeight: 700 }}>{author}</strong>
+        {' '}·{' '}{date}{' '}·{' '}{readTime}
+      </span>
+      <span
+        aria-hidden
+        style={{
+          flex: 1,
+          height: 1,
+          background: 'var(--rule)',
+        }}
+      />
+    </div>
+  )
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// <Ornament /> — section divider, three burnt-orange dots
+// ────────────────────────────────────────────────────────────────────────
+
+export function Ornament() {
+  return (
+    <div
+      aria-hidden
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 14,
+        margin: '64px auto',
+        color: 'var(--accent)',
+        opacity: 0.6,
+      }}
+    >
+      <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: 'currentColor' }} />
+      <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: 'currentColor' }} />
+      <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: 'currentColor' }} />
+    </div>
+  )
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// <PipelineDiagram /> — three-stage flow (meeting → Granola → downstream)
+// ────────────────────────────────────────────────────────────────────────
+
+export function PipelineDiagram() {
+  const stage = (n: string, label: string, examples: string, highlight = false) => ({
+    n,
+    label,
+    examples,
+    highlight,
+  })
+
+  const stages = [
+    stage('01', 'The conversation', 'exec sync · customer call · design review · 1:1'),
+    stage('02', 'Granola', 'silent capture · structured summary · transcript', true),
+    stage('03', 'Downstream', 'Slack thread · CRM row · ADR · blog-bot draft'),
+  ]
+
+  return (
+    <figure
+      className="granola-pipeline"
+      style={{
+        margin: '40px auto',
+        maxWidth: 900,
+      }}
+    >
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr auto 1fr',
+          alignItems: 'stretch',
+          gap: 0,
+        }}
+      >
+        {stages.map((s, idx) => (
+          <React.Fragment key={s.n}>
+            <div
+              className={s.highlight ? 'pipeline-stage pipeline-stage-active' : 'pipeline-stage'}
+              style={{
+                padding: '22px 20px',
+                border: s.highlight
+                  ? '1.5px solid var(--accent)'
+                  : '1px solid var(--rule)',
+                borderRadius: 6,
+                background: s.highlight ? 'rgba(230, 126, 34, 0.04)' : 'var(--bg-secondary)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: mono,
+                  fontSize: 10,
+                  letterSpacing: '.18em',
+                  textTransform: 'uppercase',
+                  color: s.highlight ? 'var(--accent)' : 'var(--ink-dim)',
+                  fontWeight: 700,
+                }}
+              >
+                {s.n}
+              </div>
+              <div
+                style={{
+                  fontFamily: serif,
+                  fontSize: 'clamp(18px, 2vw, 22px)',
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                  letterSpacing: '-.01em',
+                  lineHeight: 1.2,
+                }}
+              >
+                {s.label}
+              </div>
+              <div
+                style={{
+                  fontFamily: sans,
+                  fontSize: 12.5,
+                  lineHeight: 1.5,
+                  color: 'var(--ink-dim)',
+                }}
+              >
+                {s.examples}
+              </div>
+            </div>
+            {idx < stages.length - 1 && (
+              <div
+                aria-hidden
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 8px',
+                  color: 'var(--accent)',
+                  fontFamily: mono,
+                  fontSize: 22,
+                  fontWeight: 700,
+                }}
+              >
+                →
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+      <figcaption
+        style={{
+          fontFamily: sans,
+          fontSize: 13,
+          lineHeight: 1.5,
+          color: 'var(--ink-dim)',
+          marginTop: 14,
+          textAlign: 'center',
+          fontStyle: 'italic',
+        }}
+      >
+        The meeting becomes the start of the pipeline, not the end of a session.
+      </figcaption>
+
+      <style>{`
+        @media (max-width: 720px) {
+          .granola-pipeline > div {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+          }
+          .granola-pipeline > div > div:nth-child(even) {
+            transform: rotate(90deg);
+            margin: 6px 0;
+          }
+        }
+      `}</style>
+    </figure>
+  )
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// <MathPanel /> — paired stat call-out for the cost-benefit section
+// ────────────────────────────────────────────────────────────────────────
+
+export function MathPanel() {
+  return (
+    <aside
+      className="granola-math"
+      style={{
+        margin: '40px auto',
+        maxWidth: 760,
+        border: '1px solid var(--rule)',
+        borderRadius: 4,
+        background: 'var(--bg-secondary)',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          padding: '14px 22px',
+          borderBottom: '1px solid var(--rule)',
+          background: 'var(--bg)',
+          fontFamily: mono,
+          fontSize: 11,
+          letterSpacing: '.16em',
+          textTransform: 'uppercase',
+          color: 'var(--accent)',
+          fontWeight: 700,
+        }}
+      >
+        § The math, in two numbers
+      </div>
+      <div
+        className="math-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+        }}
+      >
+        <div style={{ padding: '28px 26px', borderRight: '1px solid var(--rule)' }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 10,
+              letterSpacing: '.16em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-dim)',
+              marginBottom: 10,
+              fontWeight: 600,
+            }}
+          >
+            What I pay
+          </div>
+          <div
+            style={{
+              fontFamily: serif,
+              fontSize: 'clamp(34px, 4.5vw, 44px)',
+              fontWeight: 500,
+              letterSpacing: '-.02em',
+              color: 'var(--ink)',
+              lineHeight: 1,
+              marginBottom: 12,
+            }}
+          >
+            ~$14<span style={{ fontSize: '.55em', color: 'var(--ink-dim)' }}>/mo</span>
+          </div>
+          <div
+            style={{
+              fontFamily: sans,
+              fontSize: 13,
+              lineHeight: 1.5,
+              color: 'var(--ink-dim)',
+            }}
+          >
+            The cost of two coffees a week. I pay personally so I can use it in personal contexts without overlapping work data.
+          </div>
+        </div>
+        <div style={{ padding: '28px 26px' }}>
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: 10,
+              letterSpacing: '.16em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-dim)',
+              marginBottom: 10,
+              fontWeight: 600,
+            }}
+          >
+            What it gives back
+          </div>
+          <div
+            style={{
+              fontFamily: serif,
+              fontSize: 'clamp(34px, 4.5vw, 44px)',
+              fontWeight: 500,
+              letterSpacing: '-.02em',
+              color: 'var(--ink)',
+              lineHeight: 1,
+              marginBottom: 12,
+            }}
+          >
+            ~2.5<span style={{ fontSize: '.55em', color: 'var(--ink-dim)' }}> hrs / wk</span>
+          </div>
+          <div
+            style={{
+              fontFamily: sans,
+              fontSize: 13,
+              lineHeight: 1.5,
+              color: 'var(--ink-dim)',
+            }}
+          >
+            Post-meeting cleanup that used to cost ten minutes per meeting now costs two, across ~20 captured meetings a week.
+          </div>
+        </div>
+      </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .granola-math .math-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .granola-math .math-grid > div {
+            border-right: 0 !important;
+            border-bottom: 1px solid var(--rule);
+          }
+          .granola-math .math-grid > div:last-child {
+            border-bottom: 0;
+          }
+        }
+      `}</style>
+    </aside>
+  )
+}
 
 // ────────────────────────────────────────────────────────────────────────
 // <VerdictCard /> — the scorecard
