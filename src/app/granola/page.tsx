@@ -411,7 +411,7 @@ export default function GranolaPillarPage() {
                 >
                   Start your free trial <span aria-hidden="true">↗</span>
                 </a>
-                <a className="g-btn g-btn-secondary" href="#s15">
+                <a className="g-btn g-btn-secondary" href="#s16">
                   Send me the workflow guide first ↓
                 </a>
               </div>
@@ -989,7 +989,7 @@ export default function GranolaPillarPage() {
                 >
                   Start free trial <span aria-hidden="true">↗</span>
                 </a>
-                <a className="g-btn g-btn-secondary" href="#s15">
+                <a className="g-btn g-btn-secondary" href="#s16">
                   Get the workflow guide ↓
                 </a>
               </div>
@@ -1157,7 +1157,7 @@ export default function GranolaPillarPage() {
                 >
                   Start your free trial <span aria-hidden="true">↗</span>
                 </a>
-                <a className="g-btn g-btn-secondary" href="#s15">
+                <a className="g-btn g-btn-secondary" href="#s16">
                   Send me the workflow guide first ↓
                 </a>
               </div>
