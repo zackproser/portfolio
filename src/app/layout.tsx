@@ -14,6 +14,7 @@ import '@/styles/blog-post.css';
 import '@/styles/testimonials.css';
 import '@/styles/contact.css';
 import '@/styles/partnerships.css';
+import '@/styles/granola-pillar.css';
 import '@/styles/meeting-notes.css';
 import '@/styles/subscribe.css';
 import '@/styles/newsletter.css';
