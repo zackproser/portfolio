@@ -1225,18 +1225,18 @@ export default function GranolaPillarPage() {
                   <li>
                     <span className="num"><span className="arrow">→</span> 02</span>
                     <div className="body">
-                      <Link className="title" href="/blog/note-taking-system-after-audhd-diagnosis">
-                        <span>Note-taking after AuDHD</span>
-                        <span className="sub">the system I run now</span>
+                      <Link className="title" href="/blog/granola-ai-review">
+                        <span>The original Granola review</span>
+                        <span className="sub">the shorter version, daily-use angle</span>
                       </Link>
                     </div>
                   </li>
                   <li>
                     <span className="num"><span className="arrow">→</span> 03</span>
                     <div className="body">
-                      <Link className="title" href="/blog/how-i-prep-for-1-1s-as-an-engineer">
-                        <span>1:1 prep as an engineer</span>
-                        <span className="sub">how Granola fits the loop</span>
+                      <Link className="title" href="/blog/granola-wisprflow-productivity-stack">
+                        <span>Granola + WisprFlow stack</span>
+                        <span className="sub">voice in, meetings out</span>
                       </Link>
                     </div>
                   </li>
