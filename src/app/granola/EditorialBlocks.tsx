@@ -182,7 +182,7 @@ export function VerdictCard() {
             border-right: 0 !important;
             border-bottom: 1px solid var(--rule) !important;
           }
-          .verdict-grid:last-child > div:last-child {
+          .verdict-grid:last-of-type > div:last-child {
             border-bottom: 0 !important;
           }
         }
