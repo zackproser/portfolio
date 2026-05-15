@@ -892,10 +892,10 @@ export default function ClaudeWorkshopsPage() {
           </div>
         </section>
 
-        {/* ============ § 10 FAQ ============ */}
+        {/* ============ § 09 FAQ ============ */}
         <section className="py-14">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
-            <SectionHead num="10" title={<>Frequently — and reasonably — asked.</>} />
+            <SectionHead num="09" title={<>Frequently — and reasonably — asked.</>} />
             <div className="cw-faq-list">
               {faqs.map((f, i) => (
                 <div className="cw-faq-item" key={f.q}>
@@ -910,7 +910,7 @@ export default function ClaudeWorkshopsPage() {
           </div>
         </section>
 
-        {/* ============ § 11 Closing CTA ============ */}
+        {/* ============ § 10 Closing CTA ============ */}
         <section id="book" className="py-20 editorial-section-alt">
           <div className="container mx-auto max-w-4xl px-4 md:px-6 text-center">
             <div className="editorial-eyebrow text-parchment-600 dark:text-slate-400">
