@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 
@@ -19,7 +18,7 @@ I just want them all to know I think as little of them as they do of me. Opening
 
 I built an AI inbox classifier that classifies every inbound email and handles the response based on what it finds:
 
-- **Safe ones** — the obvious noise, the cold pitches that can't read, the SEO刮 ops — get an auto-reply drafted in my voice and sent. No human in the loop.
+- **Safe ones** — the obvious noise, the cold pitches that can't read, the SEO ops — get an auto-reply drafted in my voice and sent. No human in the loop.
 - **Dream gigs** — inbound from people who actually seem to know who I am and what I do — get flagged for manual review so I don't miss anything real.
 
 The full technical build is in [the post I wrote about building it](/blog/inbound-classifier-trigger-dev). The short version: Trigger.dev orchestrates, Claude thinks, Gmail sends. Labels as state. A graduation ladder so categories earn auto-send privileges over time.
