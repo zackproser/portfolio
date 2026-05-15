@@ -12,13 +12,11 @@
  *   - 4-up preflight grid
  * ============================================================ */
 
-/* Italic accent inside the section title and other shared headers */
-.editorial-section-title em,
+/* Italic accent inside hero headers */
 .cw-hero h1 em {
   color: #e67e22;
   font-style: italic;
 }
-.dark .editorial-section-title em,
 .dark .cw-hero h1 em {
   color: #f39c12;
 }
