@@ -156,39 +156,41 @@ function StatRow() {
   )
 }
 
-// ----- Featured Project ---------------------------------------------
+// ----- Featured Workshops (primary slot) ---------------------------
 
-function FeaturedProject() {
+function FeaturedWorkshops() {
   return (
     <section className="py-16">
       <div className="container mx-auto max-w-6xl px-4 md:px-6">
         <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
-          Featured project
+          Featured engagement
         </div>
         <article className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16 items-start">
           <div>
             <div className="flex flex-wrap gap-2 mb-5">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-bold font-mono uppercase tracking-wider text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-400/50">
-                Premium · $149
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-bold font-mono uppercase tracking-wider text-burnt-600 dark:text-amber-300 border border-burnt-400/50 dark:border-amber-400/50 bg-burnt-400/10 dark:bg-transparent">
+                Workshops · From $15k
               </span>
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold font-mono uppercase tracking-wider text-green-700 dark:text-green-300 border border-green-600/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-600 dark:bg-green-400" />
-                Shipping
+                Booking · Q3 open
               </span>
             </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100">
-              Build a chatbot that actually knows your shit.
+            <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance">
+              Make Claude{' '}
+              <em className="italic text-burnt-400 dark:text-amber-400">how your team works</em>
+              {' '}— not just a tool they have.
             </h2>
             <p className="mt-5 text-[17px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[52ch]">
-              End-to-end RAG with Pinecone, the Vercel AI SDK, and Next.js 15.
-              No hallucinations. No magic. A production harness you can hand to
-              your team and they&apos;ll still understand it in six months.
+              Three practitioners who ship with Claude daily at WorkOS come into your team — single team or
+              whole org — and embed inside your pods. We leave you with workflows, skills, and named
+              champions. Half-day, full-day, or two-day.
             </p>
             <div className="mt-7 grid grid-cols-3 gap-4 max-w-md">
               {[
-                ['Runtime', 'Node 20'],
-                ['Vector DB', 'Pinecone'],
-                ['Eval', 'Ragas++'],
+                ['Crew', '1 – 3 practitioners'],
+                ['Shape', '½ – 2 days'],
+                ['For', 'Team or whole org'],
               ].map(([label, val]) => (
                 <div key={label}>
                   <div className="font-mono text-[10px] uppercase tracking-wider text-parchment-500 dark:text-slate-500">
@@ -202,24 +204,130 @@ function FeaturedProject() {
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/checkout?product=rag-pipeline-tutorial&type=blog"
+                href="/workshops/claude-cowork#book"
                 className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
                 onClick={() =>
-                  track('featured_product_click', {
+                  track('featured_engagement_click', {
                     location: 'hero_section',
-                    product: 'rag_tutorial',
-                    action: 'buy',
+                    product: 'claude_workshops',
+                    action: 'book',
                   })
                 }
               >
-                Buy tutorial — $149
+                Book a workshop →
               </Link>
               <Link
-                href="/chat"
+                href="/workshops/claude-cowork#engagements"
                 className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
                 onClick={() =>
-                  track('featured_product_click', {
+                  track('featured_engagement_click', {
                     location: 'hero_section',
+                    product: 'claude_workshops',
+                    action: 'engagements',
+                  })
+                }
+              >
+                Engagement shapes →
+              </Link>
+            </div>
+          </div>
+
+          {/* Booking card — terminal-style calendar of upcoming weeks */}
+          <div className="rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 shadow-md p-6 flex flex-col gap-4">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+              <span className="font-bold text-burnt-400 dark:text-amber-400">~/workshops — calendar</span>
+              <span>Live</span>
+            </div>
+            <h3 className="font-serif text-[21px] font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0">
+              Booking the next collaboration weeks.
+            </h3>
+            <div className="h-px bg-parchment-300 dark:bg-slate-700" />
+            {[
+              { when: 'Jun 17', what: 'Healthcare · Org-wide', who: 'Booked', open: false },
+              { when: 'Jul 22', what: 'Fintech · Two-day', who: 'Booked', open: false },
+              { when: 'Aug — open', what: 'Your org here', who: '→', open: true },
+              { when: 'Sep — open', what: 'Your org here', who: '→', open: true },
+            ].map((row) => (
+              <div
+                key={row.when}
+                className="grid grid-cols-[92px_1fr_auto] gap-3 items-baseline font-mono text-[12px] py-1"
+              >
+                <span className="text-parchment-500 dark:text-slate-500">{row.when}</span>
+                <span
+                  className={`font-semibold ${
+                    row.open
+                      ? 'text-burnt-400 dark:text-amber-400'
+                      : 'text-charcoal-50 dark:text-parchment-100'
+                  }`}
+                >
+                  {row.what}
+                </span>
+                <span className="italic text-parchment-600 dark:text-slate-400">{row.who}</span>
+              </div>
+            ))}
+            <div className="flex justify-between items-baseline font-mono text-[11px] uppercase tracking-[0.1em] text-parchment-600 dark:text-slate-400 mt-2 pt-4 border-t border-parchment-300 dark:border-slate-700">
+              <span>Typical lead time 6–10 wk</span>
+              <Link
+                href="/workshops/claude-cowork#book"
+                className="text-burnt-400 dark:text-amber-400 no-underline hover:underline"
+              >
+                Hold a date →
+              </Link>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+// ----- Featured Tutorial (demoted RAG, between rails) --------------
+
+function FeaturedTutorialSecondary() {
+  return (
+    <section className="py-12">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+          Also from the catalog
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Demoted RAG tutorial */}
+          <article className="rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 p-6 flex flex-col gap-3">
+            <div className="flex justify-between items-baseline font-mono text-[11px] uppercase tracking-[0.12em] text-parchment-600 dark:text-slate-400">
+              <span className="font-bold text-charcoal-50 dark:text-parchment-100">Tutorial · Premium</span>
+              <span className="text-burnt-400 dark:text-amber-400">$149 · Shipping</span>
+            </div>
+            <h3 className="font-serif text-2xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0">
+              Build a chatbot that actually knows your shit.
+            </h3>
+            <p className="m-0 text-[15px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[52ch]">
+              End-to-end RAG with Pinecone, the Vercel AI SDK, and Next.js 15. No hallucinations. No magic.
+              A production harness you can hand to your team and they&apos;ll still understand it in six
+              months.
+            </p>
+            <dl className="grid grid-cols-3 gap-3 py-3 border-t border-b border-parchment-300 dark:border-slate-700">
+              {[
+                ['Runtime', 'Node 20'],
+                ['Vector DB', 'Pinecone'],
+                ['Eval', 'Ragas++'],
+              ].map(([label, val]) => (
+                <div key={label}>
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                    {label}
+                  </dt>
+                  <dd className="m-0 mt-0.5 font-mono text-xs font-semibold text-charcoal-50 dark:text-parchment-100">
+                    {val}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <div className="flex justify-between items-baseline font-mono text-[11px] uppercase tracking-[0.1em] text-parchment-600 dark:text-slate-400">
+              <Link
+                href="/chat"
+                className="text-burnt-400 dark:text-amber-400 no-underline hover:underline"
+                onClick={() =>
+                  track('featured_product_click', {
+                    location: 'secondary_catalog',
                     product: 'rag_tutorial',
                     action: 'demo',
                   })
@@ -227,29 +335,46 @@ function FeaturedProject() {
               >
                 Try the live demo →
               </Link>
+              <Link
+                href="/checkout?product=rag-pipeline-tutorial&type=blog"
+                className="text-charcoal-50 dark:text-parchment-100 no-underline border-b border-parchment-400 dark:border-slate-600 pb-px hover:text-burnt-400 dark:hover:text-amber-400 hover:border-burnt-400 dark:hover:border-amber-400"
+                onClick={() =>
+                  track('featured_product_click', {
+                    location: 'secondary_catalog',
+                    product: 'rag_tutorial',
+                    action: 'buy',
+                  })
+                }
+              >
+                Buy — $149
+              </Link>
             </div>
-          </div>
+          </article>
 
-          {/* Terminal readout — site index */}
-          <div className="rounded-md overflow-hidden border border-charcoal-100/30 dark:border-slate-700 bg-[#141428] text-sm font-mono shadow-lg">
-            <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/10 bg-black/20">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-              <span className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-              <span className="ml-3 text-[11px] tracking-wider uppercase text-slate-400">~/zackproser.com — index</span>
+          {/* Newsletter — dashed companion card */}
+          <article className="rounded-md border border-dashed border-parchment-400 dark:border-slate-600 p-6 flex flex-col gap-3">
+            <div className="flex justify-between items-baseline font-mono text-[11px] uppercase tracking-[0.12em] text-parchment-600 dark:text-slate-400">
+              <span className="font-bold text-charcoal-50 dark:text-parchment-100">Newsletter</span>
+              <span className="text-burnt-400 dark:text-amber-400">5,000+ readers</span>
             </div>
-            <div className="p-4 text-[12px] leading-relaxed text-slate-200 whitespace-nowrap overflow-x-auto">
-              <div><span className="text-slate-500">zp@work ~ $</span> ls -lh ./content</div>
-              <div><span className="text-slate-500">drwx  </span>writing/<span className="text-slate-500">        218 essays       </span><span className="text-amber-400">&quot;modern-coding&quot;</span></div>
-              <div><span className="text-slate-500">drwx  </span>builds/<span className="text-slate-500">          37 projects     </span><span className="text-amber-400">&quot;rag, tools, tuis&quot;</span></div>
-              <div><span className="text-slate-500">drwx  </span>videos/<span className="text-slate-500">          24 screencasts  </span><span className="text-amber-400">&quot;long-form&quot;</span></div>
-              <div><span className="text-slate-500">drwx  </span>workshops/<span className="text-slate-500">        6 decks        </span><span className="text-amber-400">&quot;cowork, claude&quot;</span></div>
-              <div><span className="text-slate-500">zp@work ~ $</span> cat ./status.json</div>
-              <div>{'{ '}<span className="text-amber-400">&quot;current&quot;</span>: <span className="text-green-400">&quot;applied-ai @ workos&quot;</span>, <span className="text-amber-400">&quot;open_to&quot;</span>: [<span className="text-green-400">&quot;workshops&quot;</span>, <span className="text-green-400">&quot;retainers&quot;</span>], <span className="text-amber-400">&quot;wpm&quot;</span>: <span className="text-green-400">184</span> {'}'}</div>
-              <div><span className="text-slate-500">zp@work ~ $</span> <span className="inline-block w-2 h-3.5 bg-amber-400 align-middle animate-pulse ml-1" /></div>
+            <h3 className="font-serif text-2xl font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0">
+              The Modern Coding letter.
+            </h3>
+            <p className="m-0 text-[15px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[52ch]">
+              Dispatches from the edge of applied AI. What I&apos;m building, what I&apos;m learning, the
+              tools I&apos;d actually pay for. Names named, vendors graded, evals included.
+            </p>
+            <div className="flex justify-between items-baseline font-mono text-[11px] uppercase tracking-[0.1em] text-parchment-600 dark:text-slate-400 mt-auto pt-4 border-t border-parchment-300 dark:border-slate-700">
+              <span>Unsubscribe in one click</span>
+              <Link
+                href="/newsletter"
+                className="text-burnt-400 dark:text-amber-400 no-underline hover:underline"
+              >
+                Subscribe →
+              </Link>
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
     </section>
   )
@@ -371,7 +496,7 @@ export default function HomepageClientComponent({
       <main className="flex-1">
         <EditorialHero />
         <StatRow />
-        <FeaturedProject />
+        <FeaturedWorkshops />
 
         <ContentRail
           num="01"
@@ -382,6 +507,8 @@ export default function HomepageClientComponent({
           keyPrefix="ml-tutorial"
           kind="Tutorial"
         />
+
+        <FeaturedTutorialSecondary />
 
         <ContentRail
           num="02"
