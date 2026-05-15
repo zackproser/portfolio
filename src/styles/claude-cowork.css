@@ -143,6 +143,7 @@ ul.cw-ticks li em { color: #2c3e50; font-style: italic; font-weight: 600; }
 @media (max-width: 640px) {
   .cw-preflight { grid-template-columns: 1fr; }
   .cw-preflight-step { border-right: 0; border-bottom: 1px solid rgba(139, 115, 85, 0.2); }
+  .dark .cw-preflight-step { border-bottom-color: rgba(148, 163, 184, 0.18); }
   .cw-preflight-step:last-child { border-bottom: 0; }
 }
 
