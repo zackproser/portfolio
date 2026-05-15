@@ -188,7 +188,7 @@ const engagements: Engagement[] = [
 const faqs: { q: string; a: string }[] = [
   {
     q: "Will this embarrass executives who haven't touched a terminal in years?",
-    a: 'No — and that\'s not an accident. See "Why the room is safe" above. Mixed-skill pods, a rotating keyboard, no public coding, no "stand up and demo." The shape of the room makes embarrassment impossible by design, not by hope.',
+    a: 'No — and that\'s not an accident. See § 05 above. Mixed-skill pods, a rotating keyboard, no public coding, no "stand up and demo." The shape of the room makes embarrassment impossible by design, not by hope.',
   },
   {
     q: "Can you actually handle a hundred attendees?",
