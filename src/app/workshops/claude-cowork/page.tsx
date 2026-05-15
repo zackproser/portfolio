@@ -277,14 +277,15 @@ const people: Person[] = [
   },
   {
     id: "nick-cannariato",
-    role: "Senior Solutions Engineer · AI Practitioner",
+    role: "Senior Solutions Engineer · WorkOS",
     name: (
       <>
         Nick <em>Cannariato</em>
       </>
     ),
-    bio: "Senior solutions engineer with a developer-tools tour-of-duty: Twilio, Heroku, Zapier, GitHub. Knows enterprise rollouts from inside the room — what melts, what scales, what your IT team will actually approve.",
+    bio: "Senior solutions engineer at WorkOS, with a developer-tools tour-of-duty before that: Twilio, Heroku, Zapier, GitHub. Knows enterprise rollouts from inside the room — what melts, what scales, what your IT team will actually approve.",
     creds: [
+      "Senior Solutions Engineer · WorkOS",
       "Ex-Twilio · Heroku · Zapier · GitHub",
       "Embedded with rollouts at Fortune-scale orgs",
       "Specializes in adoption + change management",
