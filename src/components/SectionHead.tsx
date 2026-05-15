@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import type { Route } from 'next'
+import type { ReactNode } from 'react'
 
 interface SectionHeadProps {
   num: string
-  title: string
+  title: ReactNode
   moreHref?: string
   moreLabel?: string
 }
