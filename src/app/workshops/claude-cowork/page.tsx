@@ -222,7 +222,6 @@ const faqs: { q: string; a: string }[] = [
 
 type Person = {
   id: string
-  tag: string
   role: string
   name: React.ReactNode
   bio: string
@@ -233,7 +232,6 @@ type Person = {
 const people: Person[] = [
   {
     id: "zack",
-    tag: "Lead",
     role: "Applied AI · WorkOS",
     name: (
       <>
@@ -261,16 +259,16 @@ const people: Person[] = [
   },
   {
     id: "nick-nisi",
-    tag: "Co-lead",
     role: "EM · DX / AI · WorkOS",
     name: (
       <>
         Nick <em>Nisi</em>
       </>
     ),
-    bio: "Engineering manager for WorkOS's DX / AI team. Same depth as Zack on Claude Code; ships the internal harnesses other teams build on top of. Co-instructed at AIE NY and AIE London.",
+    bio: "Staff engineer and AI practitioner working at the front of the field. EM of WorkOS's DX / AI team — owns the internal harnesses other teams build on top of. Co-instructed at AIE NY and AIE London.",
     creds: [
-      "Engineering manager · DX / AI · WorkOS",
+      "Staff engineer · AI practitioner",
+      "EM · DX / AI · WorkOS",
       "Co-host · AIE NY workshop",
       "Co-host · AIE London workshop",
       "Long-time JS & tooling community voice",
@@ -279,7 +277,6 @@ const people: Person[] = [
   },
   {
     id: "nick-cannariato",
-    tag: "Senior practitioner",
     role: "Senior Solutions Engineer · AI Practitioner",
     name: (
       <>
@@ -764,7 +761,6 @@ export default function ClaudeWorkshopsPage() {
                 </div>
                 <div>
                   <div className="cw-person-meta">
-                    <span className="tag">{person.tag}</span>
                     <span className="role">{person.role}</span>
                   </div>
                   <h4>{person.name}</h4>
