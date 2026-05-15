@@ -15,10 +15,13 @@ export const metadata: Metadata = {
   },
 }
 
-const ZACK_PHOTO = "https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp"
-const AUDIENCE_PHOTO = "https://zackproser.b-cdn.net/images/workshop-audience-coding-v2.webp"
-const QA_PHOTO = "https://zackproser.b-cdn.net/images/workshop-qa-lydia-zack-v2.webp"
+const HERO_PHOTO = "https://zackproser.b-cdn.net/images/zack-and-nick.webp"
+const STRIP_NICK_ZACK = "https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp"
+const STRIP_EVIDENCE = "https://zackproser.b-cdn.net/images/aie-london-workshop-evidence.webp"
+const STRIP_AUDIENCE = "https://zackproser.b-cdn.net/images/aie-london-audience-wide.webp"
 const ZACK_PORTRAIT = "https://zackproser.b-cdn.net/images/zack-sketch.webp"
+const NICK_NISI_PORTRAIT = "https://zackproser.b-cdn.net/images/nick-nisi-sketch.webp"
+const NICK_CANNARIATO_PORTRAIT = "https://zackproser.b-cdn.net/images/nick-cannariato-sketch.webp"
 
 type Phase = {
   code: string
@@ -223,7 +226,7 @@ type Person = {
   role: string
   name: React.ReactNode
   bio: string
-  creds: string[]
+  creds: React.ReactNode[]
   photo?: string
 }
 
@@ -237,13 +240,22 @@ const people: Person[] = [
         Zachary <em>Proser</em>
       </>
     ),
-    bio: "One of five on the Applied AI team at WorkOS supporting the entire org with internal tooling, AI enablement, training, and harnesses. WorkOS powers auth at OpenAI, Cursor, and most of the labs you've heard of. Ships production Claude Code daily — watchOS apps, MCP integrations, full-stack features.",
+    bio: "Full-stack engineer, 15 years shipping distributed systems, internal tooling, and customer-facing applications that automate manual tedium away. Currently one of five on the Applied AI team at WorkOS — which powers auth for OpenAI, Cursor, and most of the labs you've heard of. Ships production Claude Code daily.",
     creds: [
-      "14 years shipping production systems",
-      "Previously Staff DevRel at Pinecone, Cloudflare, Gruntwork",
+      "Full-stack engineer · 15 years",
+      "Core engineer · Cloudflare (when eng was ~100 worldwide)",
+      "Staff DevRel · Pinecone",
+      "Open-source developer, speaker, trainer",
       "AIE NY & AIE London workshop instructor",
-      "DevSecCon 2025 keynote speaker",
-      "5,000+ readers on Modern Coding",
+      <>
+        DevSecCon 2025 keynote —{" "}
+        <Link
+          href="/videos/devseccon-2025-keynote-walking-and-talking-in-the-woods-with-ai"
+          className="underline decoration-dotted underline-offset-2 hover:text-burnt-400 dark:hover:text-amber-400"
+        >
+          watch the talk →
+        </Link>
+      </>,
     ],
     photo: ZACK_PORTRAIT,
   },
@@ -263,6 +275,7 @@ const people: Person[] = [
       "Co-host · AIE London workshop",
       "Long-time JS & tooling community voice",
     ],
+    photo: NICK_NISI_PORTRAIT,
   },
   {
     id: "nick-cannariato",
@@ -280,6 +293,7 @@ const people: Person[] = [
       "Specializes in adoption + change management",
       'Brings the "what about IT?" sanity check',
     ],
+    photo: NICK_CANNARIATO_PORTRAIT,
   },
 ]
 
@@ -330,15 +344,15 @@ export default function ClaudeWorkshopsPage() {
               <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">In the room</div>
               <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-parchment-300 dark:border-slate-700 shadow-md">
                 <Image
-                  src={AUDIENCE_PHOTO}
-                  alt="Workshop pods mid-build at AI Engineer World's Fair"
+                  src={HERO_PHOTO}
+                  alt="Zack and Nick at the AI Engineer World's Fair, ready to teach the Mastra workshop"
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
                 />
               </div>
               <p className="mt-3 font-mono text-[11px] tracking-[0.1em] uppercase text-parchment-600 dark:text-slate-400">
-                AIE · 2025 — pods mid-build
+                AIE World&apos;s Fair · SF · Mastra workshop
               </p>
             </div>
           </div>
@@ -757,7 +771,7 @@ export default function ClaudeWorkshopsPage() {
                   <div className="cw-person-bio">{person.bio}</div>
                   <dl className="cw-creds">
                     {person.creds.map((c, i) => (
-                      <div key={c} className="contents">
+                      <div key={i} className="contents">
                         <dt>{String(i + 1).padStart(2, "0")}</dt>
                         <dd>{c}</dd>
                       </div>
@@ -862,13 +876,25 @@ export default function ClaudeWorkshopsPage() {
         <section className="py-14">
           <div className="container mx-auto max-w-6xl px-4 md:px-6">
             <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
-              In the room · AIE · WorkOS × Anthropic
+              In the room · AIE London · WorkOS
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {[
-                { src: ZACK_PHOTO, alt: "Workshop opening", caption: "Workshop opening" },
-                { src: AUDIENCE_PHOTO, alt: "The room mid-build", caption: "The room mid-build" },
-                { src: QA_PHOTO, alt: "Q&A · Anthropic · Feb 2026", caption: "Q&A · Anthropic · Feb 2026" },
+                {
+                  src: STRIP_NICK_ZACK,
+                  alt: "Zack and Nick co-instructing the Skills at Scale workshop at AI Engineering London",
+                  caption: "Skills at Scale · Nick & Zack",
+                },
+                {
+                  src: STRIP_EVIDENCE,
+                  alt: "Zack teaching backtick evidence patterns to workshop attendees",
+                  caption: "Teaching evidence patterns",
+                },
+                {
+                  src: STRIP_AUDIENCE,
+                  alt: "Packed audience at the AI Engineering London workshop",
+                  caption: "AIE London · the room",
+                },
               ].map((img) => (
                 <figure key={img.src} className="m-0">
                   <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-parchment-300 dark:border-slate-700 shadow-sm">
