@@ -1,0 +1,69 @@
+import Image from 'next/image'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src={rawMetadata.image} alt="Pixel-art scene: an inbox at war, with templated outreach getting routed to an auto-replier going guerilla" width={1200} height={675} />
+
+Last week I got a sales pitch from a company I used to respect more. It opened with `Hi {{first_name}},` — the template variable literally not rendered. Their automation didn't even bother to substitute my name before hitting send.
+
+So I built a thing that doesn't bother either.
+
+## How it works
+
+The classifier reads every inbound email landing in my Gmail primary tab, sorts it into one of fourteen categories, and routes it three ways:
+
+- **Bulk-template outreach** — cold recruiter blasts, lead-gen pitches, SEO and link-exchange schemes, "you've gotta hear about these pre-hype startups" intros — gets a templated reply auto-sent in my voice. No human reviews it on my end, because no human reviewed it on theirs. They mass-emailed me; my system auto-replies. Symmetric.
+- **Anything that might actually matter** — recruiter pings from companies I'd genuinely consider, real partnership conversations, fan mail, threads where there's history — gets drafted for me to review and send by hand. The thing that would make me feel terrible if I missed is exactly the thing the system protects from auto-anything.
+- **Pure noise** — Substack digests, GitHub notifications I subscribed to, receipt emails — gets a label and goes silent. No reply.
+
+The full technical build — Trigger.dev cron, Gmail OAuth, Claude classify-and-draft, a per-category graduation ladder where categories earn their way to auto-send — is in [the previous post](/blog/inbound-classifier-trigger-dev). This post is the other side: what it actually does to the inbox.
+
+<Image src="https://zackproser.b-cdn.net/images/inbox-guerilla-buckets.webp" alt="Pixel-art scene: a 16-bit envelope sorter splitting inbound mail into three chutes — a flaming auto-reply chute for templated cold outreach, a human-review chute for real personalized email, and a silent label chute for noise" width={1200} height={675} />
+
+## The receipts
+
+Three real auto-sends from this week. Names and email addresses redacted; everything else is exactly what went out. None of these had a human in the loop on either end.
+
+**A DevRel role pitch for an MLOps platform I'd never heard of.**
+
+<Image src="/images/inbox-guerilla-receipt-recruiter.png" alt="Gmail thread: a recruiter sends a templated DevRel role pitch with bullet points about GPU infrastructure and SSH sprawl; auto-reply three minutes later: 'Thanks JP — I'm an engineer, not in DevRel, and I'm happy where I am and not actively looking. More on how I work with recruiters here: zackproser.com/recruiters — Zack' followed by the auto-screen footer" width={1690} height={2256} />
+
+Inbound: 23 lines of templated MLOps copy that didn't reference a single thing I do. Outbound, three minutes later: I'm an engineer not in DevRel, link to my recruiters page, footer.
+
+**A lead-gen pitch from someone who'd "totally stalked my page".**
+
+<Image src="/images/inbox-guerilla-receipt-leadgen.png" alt="Gmail thread: a lead-gen consultant pitches turning zackproser.com into an inbound lead engine with a 100-leads-per-month guarantee; auto-reply three minutes later: 'Thanks Ryan, but I'll pass — zackproser.com isn't a lead-gen funnel and I'm not looking to turn it into one. — Zack' followed by the earlier version of the auto-screen footer" width={1192} height={1328} />
+
+Inbound: claimed they'd "never seen anything like" my work but couldn't name a single thing I'd built. Outbound, three minutes later: my site isn't a lead-gen funnel and I'm not looking to turn it into one.
+
+**The "the market has shifted, here are three pre-hype startups" namedrop.**
+
+<Image src="/images/inbox-guerilla-receipt-startup-pitch.png" alt="Gmail thread: a recruiter pitches three a16z and Sequoia and YC-backed startups stacked into a single paragraph and asks for a quick call; auto-reply five minutes later: 'Thanks for reaching out — I'm happy where I am and not actively looking right now. More on how I work with recruiters here: zackproser.com/recruiters — Zack' followed by the auto-screen footer" width={1942} height={1226} />
+
+Inbound: a16z and Sequoia and YC and three "pre-hype" startups stacked into a single paragraph. Outbound, five minutes later: same polite no, same link to my recruiters page, same footer.
+
+All three went out without me reading either side. The senders got a polite, on-voice reply within minutes. I didn't lose a single context switch.
+
+## The footer
+
+Every auto-replied message ships with this line at the bottom:
+
+> Your email was read and replied to by my homebrewed AI inbox-screener, because we don't template or mass-email people we really care about, right?
+
+Right on the edge of saying _get fucked_ politely. It only attaches to the bulk-template buckets — cold recruiter, lead-gen, SEO, the pre-hype-startup namedrop. Real personalized email never sees it, because the jab only lands when the sender's own message earned it.
+
+If you didn't template me, you'll hear from me directly. That's the contract.
+
+<Image src="https://zackproser.b-cdn.net/images/inbox-guerilla-footer-frogman.webp" alt="Pixel-art scene in Hotline-Miami / Mortal-Kombat-arcade register: a black-clad Navy SEAL frogman in wetsuit + diving mask + glowing cyan visor emerges from behind an unaware anthropomorphized spam-email — a smug winged white envelope clutching a 'HI {FIRSTNAME}' clipboard — and draws a combat knife across its paper neck. Bright red pixel-art blood arcs overhead in exaggerated arcade-game splatter. Treasure chest of letters at the base, deep purple cosmic night sky behind" width={1024} height={1024} />
+
+## Today I go guerilla
+
+I built this because I was tired of opening my inbox to find that someone spent four seconds copying a template and zero seconds reading anything about me.
+
+I'm going to keep tuning this for my own use cases. If something like this would help you too, ping me — I'm collecting signal on whether this should become a real product or just stay my personal weapon against asymmetric email warfare.
+
+<a href="mailto:contact@zackproser.com?subject=Inbox-screener interest&body=Hi Zack — an AI inbox-screener like this would be useful for me because: ...">Tell me you'd use this →</a>
+
+The subject line on that link routes the message to a folder I check. Tell me the shape of your inbox, the kind of outreach you'd want auto-handled, and whether you'd pay for it. The more shape I get, the better I'll know if this should leave my laptop.
