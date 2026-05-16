@@ -1,0 +1,61 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+export const campaign = 'firecrawl-free-tier-2026'
+
+Firecrawl's free tier is genuinely useful for small projects and testing — but it has real limits that trip up developers who don't read the fine print. Here's what you can actually do without paying, and when you need to upgrade.
+
+## What the Firecrawl Free Tier Gives You
+
+The free tier lets you scrape websites without a credit card. You get a set number of credits per month that reset on a cadence.
+
+The core scraping functionality works at this tier — Firecrawl's approach of using a headless browser to render JavaScript and extract clean markdown is active even on free requests. The quality of the output is the same regardless of plan; you're paying for volume, not different behavior.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+What you can do with the free tier:
+
+- Scrape individual pages and get clean markdown or HTML
+- Crawl entire sites with configurable depth limits
+- Test the API and evaluate output quality before committing
+- Handle sites that require JavaScript rendering
+
+## Where the Free Tier Falls Short
+
+The limits show up in a few places:
+
+**Rate limiting** — Free requests are throttled more aggressively than paid requests. If you're building a scraper that needs to move quickly across many pages, the free tier will bottleneck you.
+
+**Credit volume** — The monthly credit allocation is enough for evaluation and small projects, but production workloads will exhaust it quickly. Each scrape or crawl consumes credits proportional to the work done.
+
+**Concurrent requests** — You can't run multiple scrapes in parallel at the free tier. For workflows that need to process multiple URLs simultaneously, this is a blocker.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+**No priority support** — This one's obvious, but when something breaks in a paid workflow you have a path to help. With the free tier you're on your own.
+
+## When to Upgrade
+
+Upgrade when:
+
+- Your scraper is hitting rate limits and slowing down your pipeline
+- You need to process more URLs than the free allocation allows
+- Concurrent scraping matters for your use case
+- You're running Firecrawl in production and need reliability guarantees
+
+The paid plans scale reasonably. The cost is proportional to the credit usage, so you're not buying a massive bundle you won't use.
+
+<InlineAffiliateCTA product="wisprflow" />
+
+## How Firecrawl Compares to Alternatives
+
+If you're evaluating Firecrawl against Crawl4AI or other open-source options, the free tier gives you enough runway to test the comparison properly. Crawl4AI has no API cost but requires you to host and manage the infrastructure yourself. Firecrawl's cloud offering trades that operational burden for a per-request cost.
+
+For most developers, the cloud option wins unless you have specific infrastructure requirements that demand self-hosting.
+
+## Bottom Line
+
+Firecrawl's free tier is a legitimate way to evaluate the tool. The output quality is the same across tiers, so what you're testing is the workflow and API design, not a capped-down version of the real product.
+
+If you're building something that needs to scrape at scale or in production, you'll need a paid plan. The free tier is not designed to support production workloads — it's designed to let you verify that Firecrawl is the right tool before committing.
+
+<AffiliateLink product="wisprflow">Set up a free Firecrawl account and start testing against your target sites.</AffiliateLink> The API is straightforward and the documentation is solid. You can get from zero to a working scrape in under an hour.
