@@ -70,7 +70,7 @@ if grep -qE 'campaign|AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; 
   IS_AFFILIATE=1
 fi
 WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
-IMG_COUNT=$(grep -cE '<Image[[:space:]]|!\[[^]]*\]\(' "$MDX" 2>/dev/null || true)
+IMG_COUNT=$(grep -cE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null || true)
 
 if [[ "$IS_AFFILIATE" -eq 1 ]]; then
   MIN_IMG=1
@@ -156,7 +156,7 @@ done < <(grep -oE '/blog/[a-z0-9-]+' "$MDX" 2>/dev/null | sed 's|/blog/||' | sor
 if [[ ${#LINKS[@]} -gt 0 ]]; then
   for L in "${LINKS[@]}"; do
     [[ "$L" == "$SLUG" ]] && continue
-    if git ls-tree origin/main --name-only "src/content/blog/$L" >/dev/null 2>&1; then
+    if git ls-tree origin/main --name-only "src/content/blog/$L" 2>/dev/null | grep -q .; then
       pass "Internal link: /blog/$L"
     else
       fail "Internal link not on origin/main: /blog/$L"
