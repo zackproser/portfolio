@@ -353,7 +353,7 @@ function buildBot(): {
 
 export default function SensorBotScene({
   variant,
-  showAudioToggle = true,
+  showAudioToggle = false,
 }: SensorBotSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
