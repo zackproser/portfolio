@@ -125,7 +125,7 @@ sec "cdn images in mdx"
 CDN_URLS=()
 while IFS= read -r line; do
   [[ -n "$line" ]] && CDN_URLS+=("$line")
-done < <(grep -oE 'https://zackproser\.b-cdn\.net/[^")[:space:]]+\.(webp|png|jpg|jpeg|gif)' "$MDX" 2>/dev/null | sort -u)
+done < <(sed -e '/^```/,/^```/d' "$MDX" | grep -oE 'https://zackproser\.b-cdn\.net/[^")[:space:]]+\.(webp|png|jpg|jpeg|gif)' 2>/dev/null | sort -u)
 if [[ ${#CDN_URLS[@]} -eq 0 ]]; then
   warn "No b-cdn.net image URLs found in MDX (post may rely entirely on /images/ local refs)"
 else
@@ -144,7 +144,7 @@ sec "local image refs"
 LOCAL_IMGS=()
 while IFS= read -r line; do
   [[ -n "$line" ]] && LOCAL_IMGS+=("$line")
-done < <(grep -oE 'src="/images/[^"]+' "$MDX" 2>/dev/null | sed 's|src="||' | sort -u)
+done < <(sed -e '/^```/,/^```/d' "$MDX" | grep -oE 'src="/images/[^"]+' 2>/dev/null | sed 's|src="||' | sort -u)
 if [[ ${#LOCAL_IMGS[@]} -gt 0 ]]; then
   for IMG in "${LOCAL_IMGS[@]}"; do
     if [[ -f "public${IMG}" ]]; then
@@ -163,7 +163,7 @@ git fetch origin main --quiet 2>/dev/null || warn "git fetch failed — internal
 LINKS=()
 while IFS= read -r line; do
   [[ -n "$line" ]] && LINKS+=("$line")
-done < <(grep -oE '/blog/[a-z0-9-]+' "$MDX" 2>/dev/null | sed 's|/blog/||' | sort -u)
+done < <(sed -e '/^```/,/^```/d' "$MDX" | grep -oE '/blog/[a-z0-9-]+' 2>/dev/null | sed 's|/blog/||' | sort -u)
 if [[ ${#LINKS[@]} -gt 0 ]]; then
   for L in "${LINKS[@]}"; do
     [[ "$L" == "$SLUG" ]] && continue
@@ -180,7 +180,7 @@ fi
 # 7. Banned phrases (Anthropic LLM tells)
 sec "banned phrases"
 BANNED_RE='not just [^,]+, it.?s|isn.?t just [^,]+, it.?s|doesn.?t just [^—]+—|This isn.?t .+[—].*it.?s|What I didn.?t expect|Here.?s what surprised me|\bdelve\b|\bharness\b|\bleverage\b|game-?changer|level up|deep dive|seamless|robust|paradigm shift|transformative|revolutionary|unprecedented|holistic\b|synergy|actionable insights|thought leadership|furthermore|moreover|\bcrucially\b|\bnotably\b|tapestry|\bmyriad\b|plethora|at the end of the day|in conclusion'
-HITS=$(grep -inE "$BANNED_RE" "$MDX" 2>/dev/null || true)
+HITS=$(sed -e '/^```/,/^```/d' "$MDX" | grep -inE "$BANNED_RE" 2>/dev/null || true)
 if [[ -z "$HITS" ]]; then
   pass "No banned phrases"
 else
@@ -207,7 +207,7 @@ if [[ -n "$PR_NUMBER" ]]; then
     warn "gh CLI not available — skipping preview check"
   else
     PREVIEW=$(gh pr view "$PR_NUMBER" --json comments --jq '.comments[].body' 2>/dev/null \
-      | grep -oE 'https://portfolio[^ "<)]*\.vercel\.app[^ "<)]*' | head -1 || true)
+      | grep -oE 'https://portfolio[^ "<)]*\.vercel\.app' | head -1 || true)
     if [[ -z "$PREVIEW" ]]; then
       warn "No Vercel preview URL in PR #$PR_NUMBER comments yet (still deploying?). Re-run when the preview comment appears."
     else
