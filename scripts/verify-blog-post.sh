@@ -69,7 +69,12 @@ IS_AFFILIATE=0
 if grep -qE 'AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; then
   IS_AFFILIATE=1
 fi
-WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
+# Count only prose: strip imports, exports, code blocks, JSX tags
+WORD_COUNT=$(sed -e '/^import /d' \
+                 -e '/^export /d' \
+                 -e '/^```/,/^```/d' \
+                 -e 's/<[^>]*>//g' \
+                 "$MDX" | wc -w | tr -d ' ')
 IMG_COUNT=$(grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null | wc -l | tr -d ' ')
 # Interactive widgets (three.js scenes, simulators) count toward the post-type
 # minimum since they carry the visual weight in interactive/demo-poem posts.
