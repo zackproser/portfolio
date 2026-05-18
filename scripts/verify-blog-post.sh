@@ -24,7 +24,7 @@
 #   8. OG image exists at https://zackproser.b-cdn.net/images/og-images/<slug>.png
 #   9. If pr-number supplied: Vercel preview returns 200 + rendered HTML refs each CDN image
 
-set -uo pipefail
+set -o pipefail
 
 SLUG="${1:?usage: verify-blog-post.sh <slug> [pr-number]}"
 PR_NUMBER="${2:-}"
