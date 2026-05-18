@@ -70,7 +70,7 @@ if grep -qE 'campaign|AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; 
   IS_AFFILIATE=1
 fi
 WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
-IMG_COUNT=$(grep -cE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null || true)
+IMG_COUNT=$(grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null | wc -l)
 
 if [[ "$IS_AFFILIATE" -eq 1 ]]; then
   MIN_IMG=1
