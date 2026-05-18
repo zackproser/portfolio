@@ -69,7 +69,13 @@ IS_AFFILIATE=0
 if grep -qE 'campaign|AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; then
   IS_AFFILIATE=1
 fi
-WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
+WORD_COUNT=$(sed -E '
+  /^import /d;
+  /^export /d;
+  s/<[^>]*>//g;
+  s/https?:\/\/[^[:space:])"]+//g;
+  s/!\[[^]]*\]\([^)]*\)//g;
+' "$MDX" | wc -w | tr -d ' ')
 IMG_COUNT=$(grep -cE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null || true)
 
 if [[ "$IS_AFFILIATE" -eq 1 ]]; then
