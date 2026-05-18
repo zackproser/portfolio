@@ -75,12 +75,12 @@ WORD_COUNT=$(sed -e '/^import /d' \
                  -e '/^```/,/^```/d' \
                  -e 's/<[^>]*>//g' \
                  "$MDX" | wc -w | tr -d ' ')
-IMG_COUNT=$(grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null | wc -l | tr -d ' ')
+IMG_COUNT=$(sed -e '/^```/,/^```/d' "$MDX" | grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' 2>/dev/null | wc -l | tr -d ' ')
 # Interactive widgets (three.js scenes, simulators) count toward the post-type
 # minimum since they carry the visual weight in interactive/demo-poem posts.
 # Matches components named *Wrapper plus a handful of known interactive
 # components used directly without a Wrapper suffix.
-WIDGET_COUNT=$(grep -oE '<[A-Z][A-Za-z0-9_]*(Wrapper|3D|Simulator|Scene|DemoCard)[[:space:]/>]' "$MDX" 2>/dev/null | wc -l | tr -d ' ')
+WIDGET_COUNT=$(sed -e '/^```/,/^```/d' "$MDX" | grep -oE '<[A-Z][A-Za-z0-9_]*(Wrapper|3D|Simulator|Scene|DemoCard)[[:space:]/>]' 2>/dev/null | wc -l | tr -d ' ')
 EFFECTIVE_COUNT=$((IMG_COUNT + WIDGET_COUNT))
 
 if [[ "$IS_AFFILIATE" -eq 1 ]]; then
