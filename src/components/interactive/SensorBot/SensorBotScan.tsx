@@ -257,7 +257,9 @@ export default function SensorBotScan() {
       }
 
       renderer.render(scene, camera)
+      animIdRef.current = animId
     }
+    const animIdRef = { current: 0 }
     animate()
 
     // Resize handler
@@ -272,7 +274,7 @@ export default function SensorBotScan() {
     window.addEventListener('resize', handleResize)
 
     return () => {
-      cancelAnimationFrame(animId)
+      cancelAnimationFrame(animIdRef.current)
       window.removeEventListener('resize', handleResize)
       container.removeChild(overlay)
       container.removeChild(hudTop)

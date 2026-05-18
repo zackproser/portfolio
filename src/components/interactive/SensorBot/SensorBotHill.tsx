@@ -38,12 +38,12 @@ export default function SensorBotHill() {
     const posAttr = groundGeo.attributes.position as THREE.BufferAttribute
     for (let i = 0; i < posAttr.count; i++) {
       const x = posAttr.getX(i)
-      const z = posAttr.getZ(i)
+      const y = posAttr.getY(i)
       // Gentle hill under the bot
-      const dist = Math.sqrt(x * x + z * z)
+      const dist = Math.sqrt(x * x + y * y)
       if (dist < 4) {
         const bump = 0.8 * Math.exp(-dist * dist / 8)
-        posAttr.setY(i, posAttr.getY(i) + bump)
+        posAttr.setZ(i, posAttr.getZ(i) + bump)
       }
     }
     groundGeo.computeVertexNormals()
