@@ -48,6 +48,132 @@ function writeAudioPref(enabled: boolean) {
   }
 }
 
+// ─── Shared audio engine ──────────────────────────────────────────────────
+// All three scenes share one AudioContext so that resuming on the toggle
+// click (the user gesture) unlocks playback for every instance, not just
+// the one that owns the button. Each scene's audio is gated by its own
+// IntersectionObserver — only the visible scene makes sound.
+
+type Engine = { ctx: AudioContext; masterGain: GainNode }
+let engine: Engine | null = null
+
+function ensureEngine(): Engine | null {
+  if (engine) return engine
+  if (typeof window === 'undefined') return null
+  const Ctor: typeof AudioContext | undefined =
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext?: typeof AudioContext })
+      .webkitAudioContext
+  if (!Ctor) return null
+  const ctx = new Ctor()
+  const masterGain = ctx.createGain()
+  masterGain.gain.value = 0.7
+  masterGain.connect(ctx.destination)
+  engine = { ctx, masterGain }
+  return engine
+}
+
+type Note = {
+  freq: number
+  type: OscillatorType
+  durMs: number
+  gapMs: number
+  gain: number
+}
+
+type BeepProfile = {
+  notes: Note[]
+  vibratoHz?: number
+  vibratoCents?: number
+  pauseMs: number
+}
+
+// Per-variant beep sequences. Verbatim from the brief:
+//   scan : "boop-a-doo-doot, beep-beep-beep, doot" — short cluster + 3
+//          quick beeps + 1 long doot. Hungry empty scan.
+//   chewing : "bideet boop, bideet boop" — happy chirping while working.
+//   hill : a slowed, sparser, forlorn echo of the scan pattern.
+const BEEP_PROFILES: Record<SceneVariant, BeepProfile> = {
+  scan: {
+    notes: [
+      { freq: 280, type: 'sine', durMs: 100, gapMs: 30, gain: 0.075 },
+      { freq: 360, type: 'sine', durMs: 70, gapMs: 30, gain: 0.065 },
+      { freq: 310, type: 'sine', durMs: 90, gapMs: 30, gain: 0.075 },
+      { freq: 240, type: 'sine', durMs: 200, gapMs: 230, gain: 0.09 },
+      { freq: 380, type: 'sine', durMs: 60, gapMs: 70, gain: 0.06 },
+      { freq: 380, type: 'sine', durMs: 60, gapMs: 70, gain: 0.06 },
+      { freq: 380, type: 'sine', durMs: 60, gapMs: 220, gain: 0.06 },
+      { freq: 220, type: 'sine', durMs: 340, gapMs: 0, gain: 0.09 },
+    ],
+    pauseMs: 700,
+  },
+  chewing: {
+    notes: [
+      { freq: 720, type: 'triangle', durMs: 50, gapMs: 25, gain: 0.06 },
+      { freq: 540, type: 'triangle', durMs: 55, gapMs: 80, gain: 0.06 },
+      { freq: 620, type: 'sine', durMs: 200, gapMs: 140, gain: 0.07 },
+      { freq: 720, type: 'triangle', durMs: 50, gapMs: 25, gain: 0.06 },
+      { freq: 540, type: 'triangle', durMs: 55, gapMs: 80, gain: 0.06 },
+      { freq: 620, type: 'sine', durMs: 220, gapMs: 0, gain: 0.07 },
+    ],
+    vibratoHz: 5,
+    vibratoCents: 12,
+    pauseMs: 240,
+  },
+  hill: {
+    notes: [
+      { freq: 220, type: 'sine', durMs: 200, gapMs: 260, gain: 0.055 },
+      { freq: 198, type: 'sine', durMs: 380, gapMs: 0, gain: 0.07 },
+    ],
+    pauseMs: 1700,
+  },
+}
+
+function getSequenceDurationMs(profile: BeepProfile): number {
+  let total = 0
+  for (const n of profile.notes) total += n.durMs + n.gapMs
+  return total + profile.pauseMs
+}
+
+function playSequence(
+  ctx: AudioContext,
+  dest: AudioNode,
+  profile: BeepProfile,
+  startSec: number,
+) {
+  let t = startSec
+  for (const note of profile.notes) {
+    const osc = ctx.createOscillator()
+    osc.type = note.type
+    osc.frequency.setValueAtTime(note.freq, t)
+    const gain = ctx.createGain()
+    const dur = note.durMs / 1000
+    gain.gain.setValueAtTime(0, t)
+    gain.gain.linearRampToValueAtTime(note.gain, t + 0.012)
+    gain.gain.setValueAtTime(note.gain, t + dur - 0.02)
+    gain.gain.linearRampToValueAtTime(0, t + dur)
+
+    if (profile.vibratoHz && profile.vibratoCents) {
+      const lfo = ctx.createOscillator()
+      lfo.frequency.value = profile.vibratoHz
+      const lfoGain = ctx.createGain()
+      const depthHz =
+        note.freq * (Math.pow(2, profile.vibratoCents / 1200) - 1)
+      lfoGain.gain.value = depthHz
+      lfo.connect(lfoGain)
+      lfoGain.connect(osc.frequency)
+      lfo.start(t)
+      lfo.stop(t + dur)
+    }
+
+    osc.connect(gain)
+    gain.connect(dest)
+    osc.start(t)
+    osc.stop(t + dur + 0.02)
+    t += (note.durMs + note.gapMs) / 1000
+  }
+}
+
 // Build the sensor bot mesh used in every variant. The bot is a small dark
 // sphere body with a short stalk and a "head" capped by a glowing red
 // sensor disc. A thin emissive orange wire is visible through the body,
@@ -89,15 +215,16 @@ function buildBot(): {
   disposables.push(stalkGeom, stalkMat)
 
   // Head — WHITE sphere; sensor + halo + trim are parented to the head so
-  // head.rotation.y physically sweeps the eye. (Previously the sensor was a
-  // sibling on the group and the head spun invisibly.)
-  const headGeom = new THREE.SphereGeometry(0.22, 32, 32)
+  // head.rotation.y physically sweeps the eye. Higher mesh resolution +
+  // lower roughness + higher metalness for crisper highlights — the
+  // previous matte finish read as "cartoony soft."
+  const headGeom = new THREE.SphereGeometry(0.22, 48, 48)
   const headMat = new THREE.MeshStandardMaterial({
-    color: 0xe8e6e0,
-    emissive: 0x101010,
-    emissiveIntensity: 0.08,
-    roughness: 0.5,
-    metalness: 0.18,
+    color: 0xf2f0ea,
+    emissive: 0x080808,
+    emissiveIntensity: 0.04,
+    roughness: 0.32,
+    metalness: 0.35,
   })
   const head = new THREE.Mesh(headGeom, headMat)
   head.position.y = 1.52
@@ -187,9 +314,9 @@ export default function SensorBotScene({
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [audioEnabled, setAudioEnabled] = useState(false)
   const [webglFailed, setWebglFailed] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
   const audioRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
-  const isVisibleRef = useRef(false)
 
   // Hydrate audio pref from localStorage + cross-instance events
   useEffect(() => {
@@ -210,127 +337,51 @@ export default function SensorBotScene({
     variantRef.current = variant
   }, [audioEnabled, variant])
 
-  // Procedural Web Audio API beep loop. Three distinct profiles:
-  //   - scan : low hungry pulse (the empty-scan sound)
-  //   - chewing: brighter chord with vibrato (the happy-while-working sound)
-  //   - hill : same hungry pulse as scan, slightly quieter (the ghost echo)
-  // Only the active scene's audio plays — multiple instances each spin up
-  // their own AudioContext gated by viewport intersection + the global
-  // audio-enabled toggle. AudioContext requires a user gesture, which the
-  // toggle click satisfies.
+  // Beep loop for THIS scene's variant. Runs only when audio is enabled
+  // AND the scene is in the viewport. Uses the shared module-level engine
+  // so all three instances share one AudioContext (the toggle gesture
+  // resumes it once and all three become audible).
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!audioEnabled) return
+    if (!audioEnabled || !isVisible) return
 
-    type AudioCtxCtor = typeof AudioContext
-    const Ctor: AudioCtxCtor | undefined =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext?: AudioCtxCtor }).webkitAudioContext
-    if (!Ctor) return
-    const audioCtx = new Ctor()
-    // Resume in case it spawned suspended (Safari)
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => undefined)
+    const e = ensureEngine()
+    if (!e) return
+    if (e.ctx.state === 'suspended') {
+      e.ctx.resume().catch(() => undefined)
     }
-
-    const masterGain = audioCtx.createGain()
-    masterGain.gain.value = 0.7
-    masterGain.connect(audioCtx.destination)
 
     let cancelled = false
     let timer: ReturnType<typeof setTimeout> | null = null
 
-    type BeepProfile = {
-      tones: Array<{ freq: number; type: OscillatorType; gain: number }>
-      vibratoHz?: number
-      vibratoCents?: number
-      onMs: number
-      offMs: number
-    }
-    const profiles: Record<SceneVariant, BeepProfile> = {
-      // Hungry low pulse — the empty scanner sound
-      scan: {
-        tones: [{ freq: 360, type: 'sine', gain: 0.09 }],
-        onMs: 95,
-        offMs: 240,
-      },
-      // Happy chirping chord — major-third-ish with vibrato
-      chewing: {
-        tones: [
-          { freq: 560, type: 'triangle', gain: 0.06 },
-          { freq: 700, type: 'sine', gain: 0.045 },
-        ],
-        vibratoHz: 7,
-        vibratoCents: 22,
-        onMs: 75,
-        offMs: 95,
-      },
-      // Same as scan but a hair quieter and slightly slower — the ghost echo
-      hill: {
-        tones: [{ freq: 360, type: 'sine', gain: 0.07 }],
-        onMs: 95,
-        offMs: 280,
-      },
-    }
-
-    const playOne = (profile: BeepProfile, startSec: number) => {
-      const dur = profile.onMs / 1000
-      for (const tone of profile.tones) {
-        const osc = audioCtx.createOscillator()
-        osc.type = tone.type
-        osc.frequency.setValueAtTime(tone.freq, startSec)
-        const gain = audioCtx.createGain()
-        gain.gain.setValueAtTime(0, startSec)
-        gain.gain.linearRampToValueAtTime(tone.gain, startSec + 0.012)
-        gain.gain.setValueAtTime(tone.gain, startSec + dur - 0.03)
-        gain.gain.linearRampToValueAtTime(0, startSec + dur)
-
-        if (profile.vibratoHz && profile.vibratoCents) {
-          const lfo = audioCtx.createOscillator()
-          lfo.frequency.value = profile.vibratoHz
-          const lfoGain = audioCtx.createGain()
-          // Convert cents to Hz at this frequency
-          const depthHz = tone.freq * (Math.pow(2, profile.vibratoCents / 1200) - 1)
-          lfoGain.gain.value = depthHz
-          lfo.connect(lfoGain)
-          lfoGain.connect(osc.frequency)
-          lfo.start(startSec)
-          lfo.stop(startSec + dur)
-        }
-
-        osc.connect(gain)
-        gain.connect(masterGain)
-        osc.start(startSec)
-        osc.stop(startSec + dur + 0.02)
-      }
-    }
-
     const tick = () => {
-      if (cancelled || !audioRef.current || !isVisibleRef.current) return
-      const profile = profiles[variantRef.current]
-      const now = audioCtx.currentTime
-      playOne(profile, now + 0.02)
-      const periodMs = profile.onMs + profile.offMs
-      timer = setTimeout(tick, periodMs)
+      if (cancelled || !audioRef.current) return
+      const profile = BEEP_PROFILES[variantRef.current]
+      const now = e.ctx.currentTime
+      playSequence(e.ctx, e.masterGain, profile, now + 0.02)
+      timer = setTimeout(tick, getSequenceDurationMs(profile))
     }
     tick()
 
     return () => {
       cancelled = true
       if (timer) clearTimeout(timer)
-      masterGain.gain.setValueAtTime(masterGain.gain.value, audioCtx.currentTime)
-      masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.04)
-      setTimeout(() => {
-        audioCtx.close().catch(() => undefined)
-      }, 80)
     }
-  }, [audioEnabled, variant])
+  }, [audioEnabled, isVisible, variant])
 
   const handleToggleAudio = useCallback(() => {
     const next = !audioRef.current
     audioRef.current = next
     setAudioEnabled(next)
     writeAudioPref(next)
+    // Initialize + resume the shared engine inside the click handler so
+    // the user-gesture autoplay policy is satisfied for every scene.
+    if (next) {
+      const e = ensureEngine()
+      if (e && e.ctx.state === 'suspended') {
+        e.ctx.resume().catch(() => undefined)
+      }
+    }
     window.dispatchEvent(
       new CustomEvent(AUDIO_EVENT, { detail: { enabled: next } }),
     )
@@ -369,10 +420,15 @@ export default function SensorBotScene({
       return
     }
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    // Higher DPR + NoToneMapping + sRGB output for crisper, more saturated
+    // rendering. (Default LinearToneMapping was softening the colors and
+    // making the bot read as "cartoony and soft" per review.)
+    const dpr = Math.min(window.devicePixelRatio || 1, 3)
     renderer.setPixelRatio(dpr)
     renderer.setSize(width, height, false)
     renderer.setClearColor(0x000000, 0)
+    renderer.toneMapping = THREE.NoToneMapping
+    renderer.outputColorSpace = THREE.SRGBColorSpace
     host.appendChild(renderer.domElement)
     renderer.domElement.style.display = 'block'
     renderer.domElement.style.width = '100%'
@@ -437,52 +493,56 @@ export default function SensorBotScene({
 
     // Variant-specific bot placement
     if (variant === 'hill') {
-      // Lift the bot onto a hill — a small dark dome under it
-      const hillGeom = new THREE.SphereGeometry(2, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2)
+      // The bot is post-flow: doped-up racehorse after a race. Sits on a
+      // small hill, body tilted forward, head drooping, wire dim. The
+      // wasteland around is scattered with the remains of everything it
+      // has already consumed.
+      const hillGeom = new THREE.SphereGeometry(2.4, 28, 28, 0, Math.PI * 2, 0, Math.PI / 2)
       const hillMat = new THREE.MeshStandardMaterial({
-        color: 0x0a0810,
-        roughness: 0.9,
-        metalness: 0.2,
+        color: 0x080610,
+        roughness: 0.95,
+        metalness: 0.15,
       })
       const hill = new THREE.Mesh(hillGeom, hillMat)
       hill.position.y = -0.5
-      hill.scale.y = 0.4
+      hill.scale.y = 0.42
       scene.add(hill)
-      bot.group.position.y = 0.3
-      // Push bot slightly away from camera
-      bot.group.position.z = -0.5
+
+      // Bot listed forward (exhausted posture)
+      bot.group.position.y = 0.32
+      bot.group.position.z = -0.4
+      bot.group.rotation.x = 0.18 // slight forward lean
+      // Head droops downward slightly — sets a "post-race" posture even
+      // before the per-frame sweep kicks in.
+      bot.head.rotation.x = 0.35
+
+      // Scattered debris around the hill — small dim cubes / shards of
+      // everything the algorithm has already chewed through.
+      const debrisGroup = new THREE.Group()
+      const DEBRIS_COUNT = 18
+      for (let i = 0; i < DEBRIS_COUNT; i++) {
+        const dg = new THREE.BoxGeometry(0.05 + Math.random() * 0.08, 0.04, 0.05 + Math.random() * 0.06)
+        const dm = new THREE.MeshStandardMaterial({
+          color: 0x1a1014,
+          emissive: 0x080406,
+          roughness: 0.9,
+          metalness: 0.3,
+        })
+        const d = new THREE.Mesh(dg, dm)
+        const angle = Math.random() * Math.PI * 2
+        const radius = 1.7 + Math.random() * 2.6
+        d.position.set(
+          Math.cos(angle) * radius,
+          -0.18,
+          Math.sin(angle) * radius - 0.4,
+        )
+        d.rotation.set(0, Math.random() * Math.PI, 0)
+        debrisGroup.add(d)
+      }
+      scene.add(debrisGroup)
     }
 
     if (variant === 'chewing') {
-      // Spawn a "target" object the bot is consuming — a glitching cluster
-      // of orange torus fragments, the abstract shape of "a thing being
-      // ripped through."
-      const targetGroup = new THREE.Group()
-      for (let i = 0; i < 6; i++) {
-        const tg = new THREE.TorusGeometry(0.12, 0.025, 8, 24)
-        const tm = new THREE.MeshBasicMaterial({
-          color: 0xff7a30,
-          transparent: true,
-          opacity: 0.85,
-          toneMapped: false,
-        })
-        const t = new THREE.Mesh(tg, tm)
-        t.position.set(
-          (Math.random() - 0.5) * 0.5,
-          0.55 + (Math.random() - 0.5) * 0.4,
-          0.9 + Math.random() * 0.2,
-        )
-        t.rotation.set(
-          Math.random() * Math.PI,
-          Math.random() * Math.PI,
-          Math.random() * Math.PI,
-        )
-        t.userData = { phase: Math.random() * Math.PI * 2 }
-        targetGroup.add(t)
-      }
-      scene.add(targetGroup)
-      ;(scene as unknown as { targetGroup: THREE.Group }).targetGroup = targetGroup
-
       // Green vertical data bars — equalizer-style readout of the bot
       // processing the target. Sits between the bot and the target cluster.
       const dataBarGroup = new THREE.Group()
@@ -595,12 +655,14 @@ export default function SensorBotScene({
 
     // Animation loop
     let raf = 0
-    let isVisible = false
+    let animActive = false
     let lastFrameTime = performance.now()
-    let elapsed = 0
+    // Start partway into the sweep cycle so the head is visibly mid-motion
+    // when the user first sees the scene (instead of stationary at angle 0).
+    let elapsed = variant === 'chewing' ? 0 : Math.PI / 3
 
     const animate = () => {
-      if (!isVisible) return
+      if (!animActive) return
       const now = performance.now()
       const delta = Math.min((now - lastFrameTime) / 1000, 1 / 30)
       lastFrameTime = now
@@ -610,7 +672,10 @@ export default function SensorBotScene({
       // "the same scan from the same position in most of the animations").
       // Only the chewing variant locks the head in place.
       const sweepSpeed = variant === 'chewing' ? 0 : 1.0
-      const sweepAmplitude = variant === 'chewing' ? 0 : 0.85
+      // Wider amplitude (~75°) so the eye visibly sweeps "all the way left
+      // to right." Hill matches scan exactly so the same canonical motion
+      // reads across the post.
+      const sweepAmplitude = variant === 'chewing' ? 0 : 1.3
       const sweep = Math.sin(elapsed * sweepSpeed) * sweepAmplitude
       bot.head.rotation.y = sweep
 
@@ -626,10 +691,19 @@ export default function SensorBotScene({
       // Halo pulse — different rhythm per variant. (The red sensor disc
       // itself stays a stable saturated red so the eye reads cleanly; the
       // halo is what pulses.)
-      const haloPulse =
-        variant === 'chewing'
-          ? 0.85 + Math.sin(elapsed * 8) * 0.15
-          : 0.45 + Math.sin(elapsed * 2.5) * 0.25
+      let haloPulse: number
+      if (variant === 'chewing') {
+        haloPulse = 0.85 + Math.sin(elapsed * 8) * 0.15
+      } else if (variant === 'hill') {
+        // Erratic flicker — slow base pulse + fast jitter, sometimes dips
+        // near zero. Reads as "the eye is failing but won't shut off."
+        haloPulse = Math.max(
+          0.1,
+          0.35 + Math.sin(elapsed * 1.8) * 0.18 + Math.sin(elapsed * 17) * 0.08,
+        )
+      } else {
+        haloPulse = 0.5 + Math.sin(elapsed * 2.5) * 0.25
+      }
       const haloMat = bot.sensor.material as THREE.MeshBasicMaterial
       haloMat.opacity = Math.min(1, haloPulse)
       bot.sensor.scale.setScalar(0.85 + haloPulse * 0.4)
@@ -657,21 +731,6 @@ export default function SensorBotScene({
         bot.group.position.y = Math.sin(elapsed * 4) * 0.022
       } else {
         bot.group.position.y = 0.3 + Math.sin(elapsed * 0.7) * 0.012
-      }
-
-      // Animate the chewing target — disintegrating loop
-      const targetGroup = (scene as unknown as { targetGroup?: THREE.Group }).targetGroup
-      if (targetGroup) {
-        for (const child of targetGroup.children) {
-          const phase = (child.userData.phase as number) ?? 0
-          const cycle = (elapsed * 1.5 + phase) % (Math.PI * 2)
-          const k = (Math.sin(cycle) + 1) / 2 // 0..1
-          child.scale.setScalar(0.4 + k * 1.0)
-          const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial
-          mat.opacity = 0.2 + k * 0.7
-          child.rotation.x += delta * 0.5
-          child.rotation.y += delta * 0.7
-        }
       }
 
       // Animate the green vertical data bars (chewing only)
@@ -710,13 +769,15 @@ export default function SensorBotScene({
     const observer = new IntersectionObserver(
       (entries) => {
         const nowVisible = entries.some((e) => e.isIntersecting)
-        isVisibleRef.current = nowVisible
-        if (nowVisible && !isVisible) {
-          isVisible = true
+        // Mirror to React state so the audio useEffect can gate playback
+        // per-instance (only the on-screen scene makes sound).
+        setIsVisible(nowVisible)
+        if (nowVisible && !animActive) {
+          animActive = true
           lastFrameTime = performance.now()
           animate()
-        } else if (!nowVisible && isVisible) {
-          isVisible = false
+        } else if (!nowVisible && animActive) {
+          animActive = false
           cancelAnimationFrame(raf)
         }
       },
@@ -765,9 +826,9 @@ export default function SensorBotScene({
         style={{
           background:
             variant === 'chewing'
-              ? 'linear-gradient(180deg, #3a2410 0%, #2a1808 55%, #100804 100%)'
+              ? 'radial-gradient(ellipse 70% 60% at 50% 55%, #6a3818 0%, #3a1c0a 45%, #1a0a04 90%, #08040a 100%)'
               : variant === 'hill'
-                ? 'linear-gradient(180deg, #04060c 0%, #0a0820 60%, #04040a 100%)'
+                ? 'linear-gradient(180deg, #02040a 0%, #060616 55%, #030308 100%)'
                 : 'linear-gradient(180deg, #0a0418 0%, #1a0a35 55%, #08081a 100%)',
         }}
       />
@@ -801,23 +862,8 @@ export default function SensorBotScene({
         {variant === 'hill' && 'STATE · IDLE · NO TARGETS'}
       </div>
 
-      {/* Chewing-state phrase overlay — the phrase emerges occasionally as
-          a feeling rather than repeating like a mantra. CSS animation with
-          long pauses + fade-in / hold / glitch / fade-out / pause cycle. */}
-      {variant === 'chewing' && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 text-center">
-          <div
-            className="inline-block font-mono text-xs sm:text-sm tracking-widest text-amber-200"
-            style={{
-              textShadow:
-                '0 0 8px rgba(255,180,80,0.85), 0 0 22px rgba(255,140,60,0.5)',
-              animation: 'algo-emerge 11s ease-in-out infinite',
-            }}
-          >
-            &gt; I&nbsp;ONLY&nbsp;EXIST&nbsp;IN&nbsp;COMBAT
-          </div>
-        </div>
-      )}
+      {/* No visible-text overlay — per review, the combat phrase belongs in
+          the prose only, not in the animation itself. */}
 
       {/* Drag hint */}
       <div className="pointer-events-none absolute bottom-3 right-4 z-10 font-mono text-[10px] tracking-widest uppercase text-white/40 hidden md:block">
@@ -844,41 +890,6 @@ export default function SensorBotScene({
         </div>
       )}
 
-      <style jsx global>{`
-        @keyframes algo-emerge {
-          0%, 6%, 75%, 100% {
-            opacity: 0;
-            filter: blur(2px);
-            transform: translateY(6px);
-          }
-          14% {
-            opacity: 0.4;
-            filter: blur(1px);
-            transform: translateY(2px);
-          }
-          24%, 50% {
-            opacity: 1;
-            filter: blur(0);
-            transform: translateY(0);
-          }
-          32% {
-            opacity: 0.7;
-            transform: translateY(0) translateX(-2px);
-          }
-          36% {
-            opacity: 1;
-            transform: translateY(0) translateX(2px);
-          }
-          60% {
-            opacity: 0.55;
-            filter: blur(1px);
-          }
-          68% {
-            opacity: 0;
-            filter: blur(3px);
-          }
-        }
-      `}</style>
     </div>
   )
 }
