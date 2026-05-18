@@ -100,7 +100,7 @@ if [[ -f "$META" ]]; then
   if [[ -z "$HERO" ]]; then
     fail "metadata.json missing 'image' field"
   else
-    CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$HERO" 2>/dev/null || echo "000")
+    CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$HERO" 2>/dev/null)
     if [[ "$CODE" == "200" ]]; then
       pass "Hero image: $HERO"
     else
@@ -119,7 +119,7 @@ if [[ ${#CDN_URLS[@]} -eq 0 ]]; then
   warn "No b-cdn.net image URLs found in MDX (post may rely entirely on /images/ local refs)"
 else
   for URL in "${CDN_URLS[@]}"; do
-    CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$URL" 2>/dev/null || echo "000")
+    CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$URL" 2>/dev/null)
     if [[ "$CODE" == "200" ]]; then
       pass "CDN: $URL"
     else
@@ -180,7 +180,7 @@ fi
 # 8. OG image on CDN
 sec "og image"
 OG_URL="https://zackproser.b-cdn.net/images/og-images/$SLUG.png"
-CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$OG_URL" 2>/dev/null || echo "000")
+CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$OG_URL" 2>/dev/null)
 if [[ "$CODE" == "200" ]]; then
   pass "OG image: $OG_URL"
 else
