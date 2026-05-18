@@ -66,7 +66,7 @@ fi
 # 2. Image count
 sec "image count"
 IS_AFFILIATE=0
-if grep -qE 'campaign|AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; then
+if grep -qE 'AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; then
   IS_AFFILIATE=1
 fi
 WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
