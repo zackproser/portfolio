@@ -1,25 +1,10 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 
-interface SensorBotScanProps {
-  isActive?: boolean
-}
-
-export default function SensorBotScan({ isActive = true }: SensorBotScanProps) {
+export default function SensorBotScan() {
   const mountRef = useRef<HTMLDivElement>(null)
-  const sceneRef = useRef<{
-    renderer: THREE.WebGLRenderer
-    scene: THREE.Scene
-    camera: THREE.PerspectiveCamera
-    animId: number
-    bot: THREE.Group
-    sensorDot: THREE.Mesh
-    sensorLight: THREE.PointLight
-    particles: THREE.Points
-    clock: THREE.Clock
-  } | null>(null)
 
   useEffect(() => {
     if (!mountRef.current) return
@@ -257,31 +242,21 @@ export default function SensorBotScan({ isActive = true }: SensorBotScanProps) {
 
       // Bot scan flicker (glitch)
       if (Math.random() < 0.01) {
-        body.material = new THREE.MeshStandardMaterial({
+        const glitchMat = new THREE.MeshStandardMaterial({
           color: 0xaabbcc,
           roughness: 0.3,
           metalness: 0.8,
           emissive: 0x00ffcc,
           emissiveIntensity: 0.3,
         })
+        body.material = glitchMat
         setTimeout(() => {
           body.material = bodyMat
+          glitchMat.dispose()
         }, 80)
       }
 
       renderer.render(scene, camera)
-
-      sceneRef.current = {
-        renderer,
-        scene,
-        camera,
-        animId,
-        bot,
-        sensorDot,
-        sensorLight,
-        particles,
-        clock,
-      }
     }
     animate()
 

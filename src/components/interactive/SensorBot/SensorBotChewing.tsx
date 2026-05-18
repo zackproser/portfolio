@@ -12,11 +12,14 @@ export default function SensorBotChewing() {
   const gainRef = useRef<GainNode | null>(null)
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null)
   const animIdRef = useRef<number>(0)
+  const audioActiveRef = useRef(false)
+  const audioBtnRef = useRef<HTMLButtonElement | null>(null)
 
   const toggleAudio = useCallback(() => {
     setAudioEnabled((prev) => {
       if (!prev) {
         // Start audio
+        audioActiveRef.current = true
         try {
           const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
 
@@ -50,7 +53,7 @@ export default function SensorBotChewing() {
 
           // SpeechSynthesis - loop the phrase
           const speak = () => {
-            if (!window.speechSynthesis) return
+            if (!window.speechSynthesis || !audioActiveRef.current) return
             const u = new SpeechSynthesisUtterance(PHRASE)
             u.rate = 0.85
             u.pitch = 0.7
@@ -67,7 +70,9 @@ export default function SensorBotChewing() {
             if (robot) u.voice = robot
             u.onend = () => {
               // Loop after short delay
-              setTimeout(speak, 2000)
+              if (audioActiveRef.current) {
+                setTimeout(speak, 2000)
+              }
             }
             window.speechSynthesis.speak(u)
             speechRef.current = u
@@ -80,6 +85,7 @@ export default function SensorBotChewing() {
         }
       } else {
         // Stop audio
+        audioActiveRef.current = false
         try {
           window.speechSynthesis?.cancel()
           if (gainRef.current) {
@@ -96,12 +102,24 @@ export default function SensorBotChewing() {
 
   useEffect(() => {
     return () => {
+      audioActiveRef.current = false
       try {
         window.speechSynthesis?.cancel()
         ;(gainRef.current?.context as AudioContext).close()
       } catch (e) {}
     }
   }, [])
+
+  useEffect(() => {
+    if (!audioBtnRef.current) return
+    const btn = audioBtnRef.current
+    btn.textContent = audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF'
+    btn.style.background = audioEnabled
+      ? 'rgba(0,255,204,0.15)'
+      : 'rgba(255,68,0,0.15)'
+    btn.style.color = audioEnabled ? '#00ffcc' : '#ff4400'
+    btn.style.borderColor = audioEnabled ? '#00ffcc' : '#ff4400'
+  }, [audioEnabled])
 
   useEffect(() => {
     if (!mountRef.current) return
@@ -303,13 +321,8 @@ export default function SensorBotChewing() {
     audioBtn.textContent = 'AUDIO: OFF'
     audioBtn.onclick = () => {
       toggleAudio()
-      audioBtn.textContent = audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF'
-      audioBtn.style.background = audioEnabled
-        ? 'rgba(0,255,204,0.15)'
-        : 'rgba(255,68,0,0.15)'
-      audioBtn.style.color = audioEnabled ? '#00ffcc' : '#ff4400'
-      audioBtn.style.borderColor = audioEnabled ? '#00ffcc' : '#ff4400'
     }
+    audioBtnRef.current = audioBtn
     container.appendChild(audioBtn)
 
     const clock = new THREE.Clock()
