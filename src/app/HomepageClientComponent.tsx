@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import type { Route } from 'next'
 import Image from 'next/image'
 import { track } from '@vercel/analytics'
 import { EditorialCard } from '@/components/EditorialCard'
 import { SectionHead } from '@/components/SectionHead'
 import { EditorialNewsletter } from '@/components/EditorialNewsletter'
 import RenderNumYearsExperience from '@/components/NumYearsExperience'
+import { speakingEngagements } from '@/app/speaking/speaking-data'
 import type { Content } from '@/types/content'
 
 /* ------------------------------------------------------------------
@@ -380,6 +382,109 @@ function FeaturedTutorialSecondary() {
   )
 }
 
+// ----- Featured Talk (interactive deck) ----------------------------
+
+function FeaturedTalk() {
+  const talks = speakingEngagements.filter((e) => e.slidevUrl && e.slug)
+  if (talks.length === 0) return null
+  const talk = talks[0]
+  const href = `/speaking/${talk.slug}` as Route
+
+  return (
+    <section className="py-16">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+          Watch &amp; play
+        </div>
+        <article className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16 items-start">
+          {/* Left: deck preview with Play overlay */}
+          <Link
+            href={href}
+            className="group relative block rounded-md overflow-hidden border border-parchment-300 dark:border-slate-700 shadow-md aspect-[16/10]"
+          >
+            <Image
+              src={talk.image}
+              alt={talk.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-charcoal-50/70 via-charcoal-50/10 to-transparent dark:from-charcoal-500/80 dark:via-charcoal-500/20" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="flex items-center justify-center w-20 h-20 rounded-full bg-burnt-400/95 dark:bg-amber-400/95 text-white dark:text-charcoal-500 shadow-xl transition-transform duration-300 group-hover:scale-110">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-9 h-9 ml-1.5">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </div>
+            <div className="absolute bottom-3 left-4 right-4 flex items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-white drop-shadow">
+              <span>Interactive deck</span>
+              <span>← → to navigate</span>
+            </div>
+          </Link>
+
+          {/* Right: title + lede + topics + CTAs */}
+          <div>
+            <div className="flex flex-wrap gap-2 mb-5">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-bold font-mono uppercase tracking-wider text-burnt-600 dark:text-amber-300 border border-burnt-400/50 dark:border-amber-400/50 bg-burnt-400/10 dark:bg-transparent">
+                Interactive · Live deck
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold font-mono uppercase tracking-wider text-charcoal-50 dark:text-parchment-100 border border-parchment-400 dark:border-slate-600">
+                {talk.event} · {talk.date}
+              </span>
+            </div>
+            <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance">
+              {talk.title.split(':')[0]}
+              {talk.title.includes(':') && (
+                <>
+                  :{' '}
+                  <em className="italic text-burnt-400 dark:text-amber-400">
+                    {talk.title.split(':').slice(1).join(':').trim()}
+                  </em>
+                </>
+              )}
+            </h2>
+            <p className="mt-5 text-[17px] leading-relaxed text-parchment-600 dark:text-slate-300 max-w-[56ch]">
+              {talk.description}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-1.5">
+              {talk.topics.slice(0, 5).map((topic: string) => (
+                <span
+                  key={topic}
+                  className="inline-block px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-burnt-500 dark:text-amber-400 border border-burnt-400/30 dark:border-amber-400/30 rounded-sm"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                href={href}
+                className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md text-white bg-burnt-400 hover:bg-burnt-500 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-charcoal-500 transition-colors"
+                onClick={() =>
+                  track('featured_talk_click', {
+                    location: 'hero_section',
+                    talk: talk.slug,
+                    action: 'play',
+                  })
+                }
+              >
+                Play the deck →
+              </Link>
+              <Link
+                href="/speaking"
+                className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-md border border-parchment-400 dark:border-slate-600 text-charcoal-50 dark:text-parchment-100 hover:border-burnt-400 dark:hover:border-amber-400 hover:text-burnt-400 dark:hover:text-amber-400 transition-colors"
+              >
+                All talks &amp; workshops →
+              </Link>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  )
+}
+
 // ----- Content rail ----------------------------------
 
 function ContentRail({
@@ -509,6 +614,8 @@ export default function HomepageClientComponent({
         />
 
         <FeaturedTutorialSecondary />
+
+        <FeaturedTalk />
 
         <ContentRail
           num="02"
