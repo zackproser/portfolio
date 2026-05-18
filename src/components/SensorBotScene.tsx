@@ -79,6 +79,10 @@ type Note = {
   durMs: number
   gapMs: number
   gain: number
+  // Optional target frequency at end of note — slides from `freq` to
+  // `pitchBend` over `durMs`. Used on long notes for the "reaching and
+  // falling back" hungry-yearning quality.
+  pitchBend?: number
 }
 
 type BeepProfile = {
@@ -88,25 +92,32 @@ type BeepProfile = {
   pauseMs: number
 }
 
-// Per-variant beep sequences. Verbatim from the brief:
-//   scan : "boop-a-doo-doot, beep-beep-beep, doot" — short cluster + 3
-//          quick beeps + 1 long doot. Hungry empty scan.
-//   chewing : "bideet boop, bideet boop" — happy chirping while working.
-//   hill : a slowed, sparser, forlorn echo of the scan pattern.
+// Per-variant beep sequences.
+//   scan / hill : "boop-a-doo-doot, beep-beep-beep, doot" — IDENTICAL
+//     profile shared between the bookend scenes so the audio enacts the
+//     post's structure (hungry → happy → hungry). Triangle wave for a
+//     sharper hungry edge; pitch-bent long notes for the reaching-and-
+//     falling-back quality.
+//   chewing : "bideet boop, bideet boop" — happy chirping with vibrato.
+const HUNGRY_PROFILE: BeepProfile = {
+  notes: [
+    // "boop-a-doo-doot" — short cluster ending in a long pitch-bent doot
+    { freq: 380, type: 'triangle', durMs: 95, gapMs: 30, gain: 0.075 },
+    { freq: 480, type: 'triangle', durMs: 70, gapMs: 30, gain: 0.065 },
+    { freq: 420, type: 'triangle', durMs: 85, gapMs: 30, gain: 0.075 },
+    { freq: 340, type: 'triangle', durMs: 220, gapMs: 220, gain: 0.085, pitchBend: 290 },
+    // "beep-beep-beep" — three quick higher pips
+    { freq: 540, type: 'triangle', durMs: 60, gapMs: 70, gain: 0.065 },
+    { freq: 540, type: 'triangle', durMs: 60, gapMs: 70, gain: 0.065 },
+    { freq: 540, type: 'triangle', durMs: 60, gapMs: 210, gain: 0.065 },
+    // Final long "doot" — bigger downward bend
+    { freq: 360, type: 'triangle', durMs: 360, gapMs: 0, gain: 0.09, pitchBend: 290 },
+  ],
+  pauseMs: 680,
+}
+
 const BEEP_PROFILES: Record<SceneVariant, BeepProfile> = {
-  scan: {
-    notes: [
-      { freq: 280, type: 'sine', durMs: 100, gapMs: 30, gain: 0.075 },
-      { freq: 360, type: 'sine', durMs: 70, gapMs: 30, gain: 0.065 },
-      { freq: 310, type: 'sine', durMs: 90, gapMs: 30, gain: 0.075 },
-      { freq: 240, type: 'sine', durMs: 200, gapMs: 230, gain: 0.09 },
-      { freq: 380, type: 'sine', durMs: 60, gapMs: 70, gain: 0.06 },
-      { freq: 380, type: 'sine', durMs: 60, gapMs: 70, gain: 0.06 },
-      { freq: 380, type: 'sine', durMs: 60, gapMs: 220, gain: 0.06 },
-      { freq: 220, type: 'sine', durMs: 340, gapMs: 0, gain: 0.09 },
-    ],
-    pauseMs: 700,
-  },
+  scan: HUNGRY_PROFILE,
   chewing: {
     notes: [
       { freq: 720, type: 'triangle', durMs: 50, gapMs: 25, gain: 0.06 },
@@ -120,13 +131,7 @@ const BEEP_PROFILES: Record<SceneVariant, BeepProfile> = {
     vibratoCents: 12,
     pauseMs: 240,
   },
-  hill: {
-    notes: [
-      { freq: 220, type: 'sine', durMs: 200, gapMs: 260, gain: 0.055 },
-      { freq: 198, type: 'sine', durMs: 380, gapMs: 0, gain: 0.07 },
-    ],
-    pauseMs: 1700,
-  },
+  hill: HUNGRY_PROFILE,
 }
 
 function getSequenceDurationMs(profile: BeepProfile): number {
@@ -146,8 +151,13 @@ function playSequence(
     const osc = ctx.createOscillator()
     osc.type = note.type
     osc.frequency.setValueAtTime(note.freq, t)
-    const gain = ctx.createGain()
     const dur = note.durMs / 1000
+    // Pitch bend: slide from note.freq to note.pitchBend over the note's
+    // duration. Used on long notes for hungry "reaching and falling back."
+    if (note.pitchBend !== undefined) {
+      osc.frequency.linearRampToValueAtTime(note.pitchBend, t + dur)
+    }
+    const gain = ctx.createGain()
     gain.gain.setValueAtTime(0, t)
     gain.gain.linearRampToValueAtTime(note.gain, t + 0.012)
     gain.gain.setValueAtTime(note.gain, t + dur - 0.02)
@@ -172,6 +182,13 @@ function playSequence(
     osc.stop(t + dur + 0.02)
     t += (note.durMs + note.gapMs) / 1000
   }
+}
+
+// Smoothstep easing — used on the scroll-derived proximity so the
+// crossfade between scenes is perceptually smooth instead of linear.
+function smoothstep(x: number): number {
+  const t = Math.max(0, Math.min(1, x))
+  return t * t * (3 - 2 * t)
 }
 
 // Build the sensor bot mesh used in every variant. The bot is a small dark
@@ -232,47 +249,75 @@ function buildBot(): {
   group.add(head)
   disposables.push(headGeom, headMat)
 
-  // Sensor halo — soft red glow behind the disc (additive). Parented to
-  // head so it sweeps with the eye.
-  const haloGeom = new THREE.CircleGeometry(0.16, 32)
+  // ── Recessed sensor housing ─────────────────────────────────────────
+  // Four-layer eye that reads as a real plastic sensor housing:
+  //   • Cavity floor (black filled disc, deepest)
+  //   • LED halo (small red additive glow, just in front of the floor)
+  //   • LED dot (small red emissive disc — the lens itself)
+  //   • Bezel (3D black torus at the head surface — the rim around the hole)
+  // The depth gap between the bezel and the LED creates the recessed look;
+  // the halo is intentionally contained inside the cavity so the LED reads
+  // as "a dot down inside the housing" rather than "a bright glowing eye."
+
+  // Cavity floor — dark interior wall the LED sits against. Slightly
+  // metallic so light catches the back of the cavity at oblique angles.
+  const cavityGeom = new THREE.CircleGeometry(0.08, 48)
+  const cavityMat = new THREE.MeshStandardMaterial({
+    color: 0x050505,
+    emissive: 0x000000,
+    roughness: 0.4,
+    metalness: 0.55,
+    side: THREE.DoubleSide,
+  })
+  const cavity = new THREE.Mesh(cavityGeom, cavityMat)
+  cavity.position.set(0, 0, 0.198)
+  head.add(cavity)
+  disposables.push(cavityGeom, cavityMat)
+
+  // LED halo — soft red glow contained inside the cavity. Animation
+  // pulses opacity + scale within bezel inner radius so it never blooms
+  // past the rim.
+  const haloGeom = new THREE.CircleGeometry(0.05, 40)
   const haloMat = new THREE.MeshBasicMaterial({
-    color: 0xff4050,
+    color: 0xff3848,
     transparent: true,
-    opacity: 0.4,
+    opacity: 0.55,
     blending: THREE.AdditiveBlending,
     toneMapped: false,
     depthWrite: false,
   })
   const halo = new THREE.Mesh(haloGeom, haloMat)
-  halo.position.set(0, 0, 0.207)
+  halo.position.set(0, 0, 0.201)
   head.add(halo)
   disposables.push(haloGeom, haloMat)
 
-  // Sensor — red emissive disc, the eye. Parented to head.
-  const sensorGeom = new THREE.CircleGeometry(0.085, 32)
+  // LED dot — small bright red lens. Much smaller than the previous flat
+  // disc — sized so it reads as a single LED, not a giant red eye.
+  const sensorGeom = new THREE.CircleGeometry(0.025, 40)
   const sensorMat = new THREE.MeshBasicMaterial({
-    color: 0xff2030,
+    color: 0xff1020,
     toneMapped: false,
-    transparent: true,
-    opacity: 1,
+    transparent: false,
   })
   const sensor = new THREE.Mesh(sensorGeom, sensorMat)
-  sensor.position.set(0, 0, 0.218)
+  sensor.position.set(0, 0, 0.203)
   head.add(sensor)
   disposables.push(sensorGeom, sensorMat)
 
-  // Black trim ring around the sensor — the "iris" outline from the hero
-  // pixel-art reference. Parented to head; in front of the sensor disc.
-  const trimGeom = new THREE.RingGeometry(0.083, 0.105, 48)
-  const trimMat = new THREE.MeshBasicMaterial({
-    color: 0x000000,
-    side: THREE.DoubleSide,
-    toneMapped: false,
+  // Bezel — 3D black torus at the head surface, marking the rim of the
+  // recess. TorusGeometry (not flat RingGeometry) so the rim has real
+  // thickness from any viewing angle.
+  const bezelGeom = new THREE.TorusGeometry(0.094, 0.013, 12, 48)
+  const bezelMat = new THREE.MeshStandardMaterial({
+    color: 0x080808,
+    emissive: 0x000000,
+    roughness: 0.35,
+    metalness: 0.5,
   })
-  const trim = new THREE.Mesh(trimGeom, trimMat)
-  trim.position.set(0, 0, 0.219)
-  head.add(trim)
-  disposables.push(trimGeom, trimMat)
+  const bezel = new THREE.Mesh(bezelGeom, bezelMat)
+  bezel.position.set(0, 0, 0.214)
+  head.add(bezel)
+  disposables.push(bezelGeom, bezelMat)
 
   // Orange wire — a curved line that goes through the body. Drawn as a
   // TubeGeometry on a curved path for visibility from any angle.
@@ -308,15 +353,13 @@ function buildBot(): {
 
 export default function SensorBotScene({
   variant,
-  showAudioToggle = false,
+  showAudioToggle = true,
 }: SensorBotSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [audioEnabled, setAudioEnabled] = useState(false)
   const [webglFailed, setWebglFailed] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
   const audioRef = useRef(false)
-  const isVisibleRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
 
   // Hydrate audio pref from localStorage + cross-instance events
@@ -335,14 +378,14 @@ export default function SensorBotScene({
 
   useEffect(() => {
     audioRef.current = audioEnabled
-    isVisibleRef.current = isVisible
     variantRef.current = variant
-  }, [audioEnabled, isVisible, variant])
+  }, [audioEnabled, variant])
 
-  // Beep loop for THIS scene's variant. Runs only when audio is enabled
-  // AND the scene is in the viewport. Uses the shared module-level engine
-  // so all three instances share one AudioContext (the toggle gesture
-  // resumes it once and all three become audible).
+  // Per-scene audio: one GainNode per scene, continuous beep loop while
+  // audio is enabled. Scroll-driven proximity (smoothstep on distance to
+  // viewport center) drives sceneGain.gain so scenes crossfade smoothly
+  // as the user scrolls instead of cutting at viewport boundaries.
+  // All three scenes share one AudioContext via the module-level engine.
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (!audioEnabled) return
@@ -353,16 +396,39 @@ export default function SensorBotScene({
       e.ctx.resume().catch(() => undefined)
     }
 
+    // Per-scene gain — starts at 0, ramped up/down by scroll listener.
+    const sceneGain = e.ctx.createGain()
+    sceneGain.gain.value = 0
+    sceneGain.connect(e.masterGain)
+
+    // Scroll-driven crossfade. Proximity is computed from this scene's
+    // distance to viewport center, normalized by a "fade window" of
+    // ~75% of viewport height. smoothstep eases the curve. setTargetAtTime
+    // produces a perceptually smooth exponential ramp instead of jumps.
+    const TIME_CONSTANT = 0.08
+    const updateProximity = () => {
+      const container = containerRef.current
+      if (!container) return
+      const rect = container.getBoundingClientRect()
+      const sceneCenter = rect.top + rect.height / 2
+      const viewportCenter = window.innerHeight / 2
+      const distance = Math.abs(sceneCenter - viewportCenter)
+      const fadeWindow = window.innerHeight * 0.75
+      const raw = 1 - distance / fadeWindow
+      const target = smoothstep(raw)
+      sceneGain.gain.setTargetAtTime(target, e.ctx.currentTime, TIME_CONSTANT)
+    }
+    updateProximity()
+    window.addEventListener('scroll', updateProximity, { passive: true })
+    window.addEventListener('resize', updateProximity, { passive: true })
+
     let cancelled = false
     let timer: ReturnType<typeof setTimeout> | null = null
-
     const tick = () => {
       if (cancelled || !audioRef.current) return
       const profile = BEEP_PROFILES[variantRef.current]
-      if (isVisibleRef.current) {
-        const now = e.ctx.currentTime
-        playSequence(e.ctx, e.masterGain, profile, now + 0.02)
-      }
+      const now = e.ctx.currentTime
+      playSequence(e.ctx, sceneGain, profile, now + 0.02)
       timer = setTimeout(tick, getSequenceDurationMs(profile))
     }
     tick()
@@ -370,6 +436,17 @@ export default function SensorBotScene({
     return () => {
       cancelled = true
       if (timer) clearTimeout(timer)
+      window.removeEventListener('scroll', updateProximity)
+      window.removeEventListener('resize', updateProximity)
+      // Quick fade-out so the disconnect doesn't click
+      sceneGain.gain.setTargetAtTime(0, e.ctx.currentTime, 0.02)
+      setTimeout(() => {
+        try {
+          sceneGain.disconnect()
+        } catch {
+          // already disconnected
+        }
+      }, 120)
     }
   }, [audioEnabled, variant])
 
@@ -773,9 +850,6 @@ export default function SensorBotScene({
     const observer = new IntersectionObserver(
       (entries) => {
         const nowVisible = entries.some((e) => e.isIntersecting)
-        // Mirror to React state so the audio useEffect can gate playback
-        // per-instance (only the on-screen scene makes sound).
-        setIsVisible(nowVisible)
         if (nowVisible && !animActive) {
           animActive = true
           lastFrameTime = performance.now()
