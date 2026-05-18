@@ -189,6 +189,7 @@ export default function SensorBotScene({
   const [webglFailed, setWebglFailed] = useState(false)
   const audioRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
+  const isVisibleRef = useRef(false)
 
   // Hydrate audio pref from localStorage + cross-instance events
   useEffect(() => {
@@ -305,7 +306,7 @@ export default function SensorBotScene({
     }
 
     const tick = () => {
-      if (cancelled || !audioRef.current) return
+      if (cancelled || !audioRef.current || !isVisibleRef.current) return
       const profile = profiles[variantRef.current]
       const now = audioCtx.currentTime
       playOne(profile, now + 0.02)
@@ -655,7 +656,7 @@ export default function SensorBotScene({
       } else if (variant === 'chewing') {
         bot.group.position.y = Math.sin(elapsed * 4) * 0.022
       } else {
-        bot.group.position.y = Math.sin(elapsed * 0.7) * 0.012
+        bot.group.position.y = 0.3 + Math.sin(elapsed * 0.7) * 0.012
       }
 
       // Animate the chewing target — disintegrating loop
@@ -709,6 +710,7 @@ export default function SensorBotScene({
     const observer = new IntersectionObserver(
       (entries) => {
         const nowVisible = entries.some((e) => e.isIntersecting)
+        isVisibleRef.current = nowVisible
         if (nowVisible && !isVisible) {
           isVisible = true
           lastFrameTime = performance.now()
