@@ -70,7 +70,13 @@ if grep -qE 'AffiliateLink|InlineAffiliateCTA|VoiceAIDemoCard' "$MDX"; then
   IS_AFFILIATE=1
 fi
 WORD_COUNT=$(wc -w < "$MDX" | tr -d ' ')
-IMG_COUNT=$(grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null | wc -l)
+IMG_COUNT=$(grep -oE '<Image([[:space:]]|$)|!\[[^]]*\]\(' "$MDX" 2>/dev/null | wc -l | tr -d ' ')
+# Interactive widgets (three.js scenes, simulators) count toward the post-type
+# minimum since they carry the visual weight in interactive/demo-poem posts.
+# Matches components named *Wrapper plus a handful of known interactive
+# components used directly without a Wrapper suffix.
+WIDGET_COUNT=$(grep -oE '<[A-Z][A-Za-z0-9_]*(Wrapper|3D|Simulator|Scene|DemoCard)[[:space:]/>]' "$MDX" 2>/dev/null | wc -l | tr -d ' ')
+EFFECTIVE_COUNT=$((IMG_COUNT + WIDGET_COUNT))
 
 if [[ "$IS_AFFILIATE" -eq 1 ]]; then
   MIN_IMG=1
@@ -83,14 +89,14 @@ else
   TYPE="standard (${WORD_COUNT}w)"
 fi
 
-if [[ "$IMG_COUNT" -lt "$MIN_IMG" ]]; then
-  fail "Image count $IMG_COUNT < min $MIN_IMG for $TYPE post — generate more pixel-art images via nano-banana-pro"
+if [[ "$EFFECTIVE_COUNT" -lt "$MIN_IMG" ]]; then
+  fail "Effective visual count $EFFECTIVE_COUNT (images=$IMG_COUNT + interactive widgets=$WIDGET_COUNT) < min $MIN_IMG for $TYPE post"
 else
-  pass "Image count $IMG_COUNT meets min $MIN_IMG for $TYPE post"
+  pass "Effective visual count $EFFECTIVE_COUNT (images=$IMG_COUNT + interactive widgets=$WIDGET_COUNT) meets min $MIN_IMG for $TYPE post"
 fi
 
-if [[ "$IS_AFFILIATE" -eq 0 && "$WORD_COUNT" -gt 1000 && "$IMG_COUNT" -lt 3 ]]; then
-  warn "Standard post >1000 words with only $IMG_COUNT image(s) — consider 1-2 more inline images"
+if [[ "$IS_AFFILIATE" -eq 0 && "$WORD_COUNT" -gt 1000 && "$EFFECTIVE_COUNT" -lt 3 ]]; then
+  warn "Standard post >1000 words with only $EFFECTIVE_COUNT visual(s) — consider 1-2 more inline images or widgets"
 fi
 
 # 3. Hero image returns 200
