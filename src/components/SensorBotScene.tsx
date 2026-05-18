@@ -620,7 +620,7 @@ export default function SensorBotScene({
         </div>
       )}
 
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes algo-glitch {
           0%, 100% { opacity: 1; transform: translateX(0); }
           14% { opacity: 0.85; transform: translateX(-1px); }
