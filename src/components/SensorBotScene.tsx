@@ -58,7 +58,7 @@ function buildBot(): {
   body: THREE.Mesh
   head: THREE.Mesh
   sensor: THREE.Mesh
-  wire: THREE.Line
+  wire: THREE.Mesh
   dispose: () => void
 } {
   const group = new THREE.Group()
@@ -157,7 +157,7 @@ function buildBot(): {
     body,
     head,
     sensor: halo, // expose halo as the "sensor" for animation pulsing
-    wire: wire as unknown as THREE.Line,
+    wire,
     dispose: () => {
       for (const d of disposables) d.dispose()
     },
