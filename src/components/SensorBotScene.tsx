@@ -316,6 +316,7 @@ export default function SensorBotScene({
   const [webglFailed, setWebglFailed] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const audioRef = useRef(false)
+  const isVisibleRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
 
   // Hydrate audio pref from localStorage + cross-instance events
@@ -334,8 +335,9 @@ export default function SensorBotScene({
 
   useEffect(() => {
     audioRef.current = audioEnabled
+    isVisibleRef.current = isVisible
     variantRef.current = variant
-  }, [audioEnabled, variant])
+  }, [audioEnabled, isVisible, variant])
 
   // Beep loop for THIS scene's variant. Runs only when audio is enabled
   // AND the scene is in the viewport. Uses the shared module-level engine
@@ -343,7 +345,7 @@ export default function SensorBotScene({
   // resumes it once and all three become audible).
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!audioEnabled || !isVisible) return
+    if (!audioEnabled) return
 
     const e = ensureEngine()
     if (!e) return
@@ -357,8 +359,10 @@ export default function SensorBotScene({
     const tick = () => {
       if (cancelled || !audioRef.current) return
       const profile = BEEP_PROFILES[variantRef.current]
-      const now = e.ctx.currentTime
-      playSequence(e.ctx, e.masterGain, profile, now + 0.02)
+      if (isVisibleRef.current) {
+        const now = e.ctx.currentTime
+        playSequence(e.ctx, e.masterGain, profile, now + 0.02)
+      }
       timer = setTimeout(tick, getSequenceDurationMs(profile))
     }
     tick()
@@ -367,7 +371,7 @@ export default function SensorBotScene({
       cancelled = true
       if (timer) clearTimeout(timer)
     }
-  }, [audioEnabled, isVisible, variant])
+  }, [audioEnabled, variant])
 
   const handleToggleAudio = useCallback(() => {
     const next = !audioRef.current
