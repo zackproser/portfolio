@@ -89,7 +89,7 @@ function EditorialHero() {
         <aside className="editorial-hero-c-side">
           <div className="editorial-portrait editorial-portrait--c">
             <Image
-              src="https://zackproser.b-cdn.net/images/zack-sketch.webp"
+              src="https://zackproser.b-cdn.net/images/zack-sketch-beard.webp"
               alt="Portrait of Zachary Proser"
               fill
               sizes="(max-width: 1024px) 80vw, 320px"
