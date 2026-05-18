@@ -170,7 +170,7 @@ fi
 sec "banned phrases"
 APOS="('|&rsquo;|&apos;)?"
 MDASH="(—|&mdash;)"
-BANNED_RE="not just [^,]+, it${APOS}s|isn${APOS}t just [^,]+, it${APOS}s|doesn${APOS}t just [^—&]+${MDASH}|This isn${APOS}t .+[—&].*it${APOS}s|What I didn${APOS}t expect|Here${APOS}s what surprised me|\bdelve\b|\bharness\b|\bleverage\b|game-?changer|level up|deep dive|seamless|robust|paradigm shift|transformative|revolutionary|unprecedented|holistic\b|synergy|actionable insights|thought leadership|furthermore|moreover|\bcrucially\b|\bnotably\b|tapestry|\bmyriad\b|plethora|at the end of the day|in conclusion"
+BANNED_RE="not just [^,]+, it${APOS}s|isn${APOS}t just [^,]+, it${APOS}s|doesn${APOS}t just [^—&]+${MDASH}|This isn${APOS}t .+[—&].*it${APOS}s|What I didn${APOS}t expect|Here${APOS}s what surprised me|\bdelve|\bharness|\bleverage|game-?changer|level up|deep dive|seamless|robust|paradigm shift|transformative|revolutionary|unprecedented|holistic\b|synergy|actionable insights|thought leadership|furthermore|moreover|\bcrucially\b|\bnotably\b|tapestry|\bmyriad\b|plethora|at the end of the day|in conclusion"
 HITS=$(grep -inE "$BANNED_RE" "$MDX" 2>/dev/null || true)
 if [[ -z "$HITS" ]]; then
   pass "No banned phrases"
