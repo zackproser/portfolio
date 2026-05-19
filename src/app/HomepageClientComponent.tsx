@@ -449,7 +449,7 @@ function ColophonFooter() {
             <h4 className="text-parchment-600 dark:text-slate-400">Work with me</h4>
             <ul>
               <li><Link href="/services">Consulting</Link></li>
-              <li><Link href="/services">Workshops</Link></li>
+              <li><Link href="/workshops/claude-cowork">Workshops</Link></li>
               <li><Link href="/speaking">Speaking</Link></li>
               <li><Link href="/contact">Contact</Link></li>
             </ul>
@@ -468,7 +468,7 @@ function ColophonFooter() {
           <div>
             <span className="text-burnt-400 dark:text-amber-400">●</span>{' '}
             Currently: Applied AI @ WorkOS · Open to{' '}
-            <Link href="/speaking" className="underline decoration-dotted underline-offset-4 hover:text-burnt-400 dark:hover:text-amber-400">workshops</Link>
+            <Link href="/workshops/claude-cowork" className="underline decoration-dotted underline-offset-4 hover:text-burnt-400 dark:hover:text-amber-400">workshops</Link>
             {' '}and{' '}
             <Link href="/contact" className="underline decoration-dotted underline-offset-4 hover:text-burnt-400 dark:hover:text-amber-400">retainers</Link>
           </div>
