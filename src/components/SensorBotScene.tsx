@@ -455,6 +455,10 @@ export default function SensorBotScene({
     let timer: ReturnType<typeof setTimeout> | null = null
     const tick = () => {
       if (cancelled || !audioRef.current) return
+      if (e.ctx.state === 'suspended') {
+        timer = setTimeout(tick, getSequenceDurationMs(BEEP_PROFILES[variantRef.current]))
+        return
+      }
       const profile = BEEP_PROFILES[variantRef.current]
       const now = e.ctx.currentTime
       playSequence(e.ctx, sceneGain, profile, now + 0.02)
