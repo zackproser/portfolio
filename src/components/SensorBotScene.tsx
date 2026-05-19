@@ -99,21 +99,22 @@ type BeepProfile = {
 //     sharper hungry edge; pitch-bent long notes for the reaching-and-
 //     falling-back quality.
 //   chewing : "bideet boop, bideet boop" — happy chirping with vibrato.
+// Scanner-sweep pattern: a row of even short "do" ticks like a radar,
+// followed by a longer, longing descending tone before the loop. Reads
+// as endless searching with a yearning final note — the hungry-ghost
+// audio signature shared between the scan and hill scenes.
 const HUNGRY_PROFILE: BeepProfile = {
   notes: [
-    // "boop-a-doo-doot" — short cluster ending in a long pitch-bent doot
-    { freq: 380, type: 'triangle', durMs: 95, gapMs: 30, gain: 0.075 },
-    { freq: 480, type: 'triangle', durMs: 70, gapMs: 30, gain: 0.065 },
-    { freq: 420, type: 'triangle', durMs: 85, gapMs: 30, gain: 0.075 },
-    { freq: 340, type: 'triangle', durMs: 220, gapMs: 220, gain: 0.085, pitchBend: 290 },
-    // "beep-beep-beep" — three quick higher pips
-    { freq: 540, type: 'triangle', durMs: 60, gapMs: 70, gain: 0.065 },
-    { freq: 540, type: 'triangle', durMs: 60, gapMs: 70, gain: 0.065 },
-    { freq: 540, type: 'triangle', durMs: 60, gapMs: 210, gain: 0.065 },
-    // Final long "doot" — bigger downward bend
-    { freq: 360, type: 'triangle', durMs: 360, gapMs: 0, gain: 0.09, pitchBend: 290 },
+    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 420, type: 'sine', durMs: 85, gapMs: 280, gain: 0.075 },
+    // The longing tail: a long descending tone that decays from the
+    // tick frequency down past the floor before the cycle repeats.
+    { freq: 360, type: 'sine', durMs: 720, gapMs: 0, gain: 0.095, pitchBend: 200 },
   ],
-  pauseMs: 680,
+  pauseMs: 850,
 }
 
 const BEEP_PROFILES: Record<SceneVariant, BeepProfile> = {
@@ -199,6 +200,8 @@ function buildBot(): {
   group: THREE.Group
   body: THREE.Mesh
   head: THREE.Mesh
+  eye: THREE.Mesh
+  halo: THREE.Mesh
   sensor: THREE.Mesh
   wire: THREE.Mesh
   dispose: () => void
@@ -231,53 +234,89 @@ function buildBot(): {
   group.add(stalk)
   disposables.push(stalkGeom, stalkMat)
 
-  // Head — WHITE sphere; sensor + halo + trim are parented to the head so
-  // head.rotation.y physically sweeps the eye. Higher mesh resolution +
-  // lower roughness + higher metalness for crisper highlights — the
-  // previous matte finish read as "cartoony soft."
-  const headGeom = new THREE.SphereGeometry(0.22, 48, 48)
+  // Head — WHITE polished sphere. Perfectly spherical (no y-squash) so
+  // the eye assembly reads cleanly from any rotation angle.
+  const headGeom = new THREE.SphereGeometry(0.22, 56, 56)
   const headMat = new THREE.MeshStandardMaterial({
-    color: 0xf2f0ea,
-    emissive: 0x080808,
-    emissiveIntensity: 0.04,
-    roughness: 0.32,
-    metalness: 0.35,
+    color: 0xf4f2ec,
+    emissive: 0x0c0c0c,
+    emissiveIntensity: 0.05,
+    roughness: 0.28,
+    metalness: 0.42,
   })
   const head = new THREE.Mesh(headGeom, headMat)
   head.position.y = 1.52
-  head.scale.set(1.0, 0.9, 1.0)
+  head.scale.set(1, 1, 1)
   group.add(head)
   disposables.push(headGeom, headMat)
 
-  // ── Recessed sensor housing ─────────────────────────────────────────
-  // Four-layer eye that reads as a real plastic sensor housing:
-  //   • Cavity floor (black filled disc, deepest)
-  //   • LED halo (small red additive glow, just in front of the floor)
-  //   • LED dot (small red emissive disc — the lens itself)
-  //   • Bezel (3D black torus at the head surface — the rim around the hole)
-  // The depth gap between the bezel and the LED creates the recessed look;
-  // the halo is intentionally contained inside the cavity so the LED reads
-  // as "a dot down inside the housing" rather than "a bright glowing eye."
-
-  // Cavity floor — dark interior wall the LED sits against. Slightly
-  // metallic so light catches the back of the cavity at oblique angles.
-  const cavityGeom = new THREE.CircleGeometry(0.08, 48)
-  const cavityMat = new THREE.MeshStandardMaterial({
-    color: 0x050505,
-    emissive: 0x000000,
-    roughness: 0.4,
-    metalness: 0.55,
-    side: THREE.DoubleSide,
+  // ── GLaDOS-style optical aperture ───────────────────────────────────
+  // Conceptual fix after five failed attempts: the eye is an APERTURE
+  // ASSEMBLY mounted ON the head's front face — not a hole drilled into
+  // it. White dominates; black is thin SEAMS between concentric panels;
+  // the red optic is small, intense, at the focal center.
+  //
+  //   • Outer panel  → large white disc (the assembly face)
+  //   • Border seam  → thin black ring at the outer rim
+  //   • Middle panel → smaller white disc, stacked forward in z
+  //   • Middle seam  → thin black ring at its outer edge
+  //   • Inner panel  → smallest white disc
+  //   • Inner seam   → thin black ring at its outer edge
+  //   • Halo         → small additive red glow behind the eye
+  //   • Eye          → small bright red optic at dead center
+  //
+  // The eye fades in/out via the animation loop ("endless longing and
+  // scanning"). The halo tracks with it.
+  const panelMat = new THREE.MeshStandardMaterial({
+    color: 0xf6f4ee,
+    emissive: 0x0a0a0a,
+    emissiveIntensity: 0.04,
+    roughness: 0.25,
+    metalness: 0.5,
   })
-  const cavity = new THREE.Mesh(cavityGeom, cavityMat)
-  cavity.position.set(0, 0, 0.198)
-  head.add(cavity)
-  disposables.push(cavityGeom, cavityMat)
+  const seamMat = new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+  })
 
-  // LED halo — soft red glow contained inside the cavity. Animation
-  // pulses opacity + scale within bezel inner radius so it never blooms
-  // past the rim.
-  const haloGeom = new THREE.CircleGeometry(0.05, 40)
+  const outerPanelGeom = new THREE.CircleGeometry(0.128, 64)
+  const outerPanel = new THREE.Mesh(outerPanelGeom, panelMat)
+  outerPanel.position.set(0, 0, 0.211)
+  head.add(outerPanel)
+  disposables.push(outerPanelGeom)
+
+  const borderSeamGeom = new THREE.RingGeometry(0.124, 0.132, 64)
+  const borderSeam = new THREE.Mesh(borderSeamGeom, seamMat)
+  borderSeam.position.set(0, 0, 0.2115)
+  head.add(borderSeam)
+  disposables.push(borderSeamGeom)
+
+  const midPanelGeom = new THREE.CircleGeometry(0.088, 64)
+  const midPanel = new THREE.Mesh(midPanelGeom, panelMat)
+  midPanel.position.set(0, 0, 0.213)
+  head.add(midPanel)
+  disposables.push(midPanelGeom)
+
+  const midSeamGeom = new THREE.RingGeometry(0.084, 0.091, 64)
+  const midSeam = new THREE.Mesh(midSeamGeom, seamMat)
+  midSeam.position.set(0, 0, 0.2135)
+  head.add(midSeam)
+  disposables.push(midSeamGeom)
+
+  const innerPanelGeom = new THREE.CircleGeometry(0.052, 56)
+  const innerPanel = new THREE.Mesh(innerPanelGeom, panelMat)
+  innerPanel.position.set(0, 0, 0.215)
+  head.add(innerPanel)
+  disposables.push(innerPanelGeom)
+
+  const innerSeamGeom = new THREE.RingGeometry(0.049, 0.055, 56)
+  const innerSeam = new THREE.Mesh(innerSeamGeom, seamMat)
+  innerSeam.position.set(0, 0, 0.2155)
+  head.add(innerSeam)
+  disposables.push(innerSeamGeom)
+
+  const haloGeom = new THREE.CircleGeometry(0.036, 40)
   const haloMat = new THREE.MeshBasicMaterial({
     color: 0xff3848,
     transparent: true,
@@ -287,37 +326,25 @@ function buildBot(): {
     depthWrite: false,
   })
   const halo = new THREE.Mesh(haloGeom, haloMat)
-  halo.position.set(0, 0, 0.201)
+  halo.position.set(0, 0, 0.217)
   head.add(halo)
   disposables.push(haloGeom, haloMat)
 
-  // LED dot — small bright red lens. Much smaller than the previous flat
-  // disc — sized so it reads as a single LED, not a giant red eye.
-  const sensorGeom = new THREE.CircleGeometry(0.025, 40)
-  const sensorMat = new THREE.MeshBasicMaterial({
-    color: 0xff1020,
+  const eyeGeom = new THREE.CircleGeometry(0.019, 40)
+  const eyeMat = new THREE.MeshBasicMaterial({
+    color: 0xff1024,
     toneMapped: false,
-    transparent: false,
+    transparent: true,
+    opacity: 1,
   })
-  const sensor = new THREE.Mesh(sensorGeom, sensorMat)
-  sensor.position.set(0, 0, 0.203)
-  head.add(sensor)
-  disposables.push(sensorGeom, sensorMat)
+  const eye = new THREE.Mesh(eyeGeom, eyeMat)
+  eye.position.set(0, 0, 0.218)
+  head.add(eye)
+  disposables.push(eyeGeom, eyeMat)
 
-  // Bezel — 3D black torus at the head surface, marking the rim of the
-  // recess. TorusGeometry (not flat RingGeometry) so the rim has real
-  // thickness from any viewing angle.
-  const bezelGeom = new THREE.TorusGeometry(0.094, 0.013, 12, 48)
-  const bezelMat = new THREE.MeshStandardMaterial({
-    color: 0x080808,
-    emissive: 0x000000,
-    roughness: 0.35,
-    metalness: 0.5,
-  })
-  const bezel = new THREE.Mesh(bezelGeom, bezelMat)
-  bezel.position.set(0, 0, 0.214)
-  head.add(bezel)
-  disposables.push(bezelGeom, bezelMat)
+  // Alias `sensor` to `halo` for backward-compat with code paths that
+  // still reference bot.sensor (the previous return shape).
+  const sensor = halo
 
   // Orange wire — a curved line that goes through the body. Drawn as a
   // TubeGeometry on a curved path for visibility from any angle.
@@ -343,7 +370,9 @@ function buildBot(): {
     group,
     body,
     head,
-    sensor: halo, // expose halo as the "sensor" for animation pulsing
+    eye,         // the small bright red optic
+    halo,       // the additive red glow behind the eye
+    sensor,    // alias of halo for backward-compat with older animation code
     wire,
     dispose: () => {
       for (const d of disposables) d.dispose()
@@ -529,44 +558,129 @@ export default function SensorBotScene({
       const accent = new THREE.PointLight(0x60ffd0, 0.5, 8)
       accent.position.set(0, 0.5, 1.2)
       scene.add(accent)
+    } else if (variant === 'hill') {
+      // Twilight/dusk palette for the desolate hill — cooler but
+      // significantly brighter than the prior near-black render.
+      scene.add(new THREE.AmbientLight(0xffd0a0, 0.35))
+      const sky = new THREE.PointLight(0x8a8aff, 1.0, 18)
+      sky.position.set(-3, 6, 4)
+      scene.add(sky)
+      const horizon = new THREE.PointLight(0xff8060, 0.7, 14)
+      horizon.position.set(4, 1.2, -3)
+      scene.add(horizon)
     } else {
-      scene.add(new THREE.AmbientLight(0xffffff, 0.18))
-      const cool = new THREE.PointLight(0x60a8ff, 0.8, 14)
-      cool.position.set(-3, 4, 3)
-      scene.add(cool)
-      const magenta = new THREE.PointLight(0xc04098, 0.7, 12)
-      magenta.position.set(3, 1.5, -2)
-      scene.add(magenta)
-      if (variant === 'hill') {
-        cool.intensity = 0.4
-        magenta.intensity = 0.3
-      }
+      // Scan: dusk wasteland — bright enough to see the landscape, with
+      // a warm horizon glow + cool zenith.
+      scene.add(new THREE.AmbientLight(0xffd8b0, 0.42))
+      const sun = new THREE.PointLight(0xffb070, 1.4, 16)
+      sun.position.set(5, 4, 2)
+      scene.add(sun)
+      const sky = new THREE.PointLight(0x70a0ff, 0.9, 14)
+      sky.position.set(-4, 6, 3)
+      scene.add(sky)
     }
 
-    // Neon grid floor — cyberpunk Netrunner signature
+    // Neon grid floor — cyberpunk-Netrunner sweep signature underneath
+    // the landscape. Per-variant tinting reads as the scene's mood.
     const grid = new THREE.GridHelper(
       40,
       40,
-      variant === 'chewing' ? 0xff5040 : 0x40e0d0,
-      variant === 'chewing' ? 0x803020 : 0x4a2a8a,
+      variant === 'chewing' ? 0xff8050 : variant === 'hill' ? 0x8a8aff : 0x80c8ff,
+      variant === 'chewing' ? 0x803020 : variant === 'hill' ? 0x3a3a78 : 0x4a3a78,
     )
     const gridMat = grid.material as THREE.LineBasicMaterial
     gridMat.transparent = true
-    gridMat.opacity = variant === 'hill' ? 0.18 : 0.35
+    gridMat.opacity = variant === 'hill' ? 0.28 : 0.4
     grid.position.y = 0
     scene.add(grid)
 
-    // Subtle volumetric haze plane (large fog billboard)
+    // Volumetric haze billboard — brighter per-variant tones so the
+    // background no longer reads as near-black.
     const hazeGeom = new THREE.PlaneGeometry(60, 30)
     const hazeMat = new THREE.MeshBasicMaterial({
-      color: variant === 'chewing' ? 0x301010 : 0x100820,
+      color:
+        variant === 'chewing' ? 0x4a2010 : variant === 'hill' ? 0x2a2a50 : 0x4a3030,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.55,
       depthWrite: false,
     })
     const haze = new THREE.Mesh(hazeGeom, hazeMat)
     haze.position.set(0, 3, -8)
     scene.add(haze)
+
+    // ── Distant landscape — silhouette mountains across the horizon ──
+    // Adds depth and visual interest to scan + hill scenes. Built as a
+    // single low-poly Mesh of triangular peaks at varying heights.
+    if (variant !== 'chewing') {
+      const peakVerts: number[] = []
+      const horizonY = 0.05
+      const peakZ = -7
+      const rangeWidth = 22
+      let x = -rangeWidth / 2
+      while (x < rangeWidth / 2) {
+        const peakWidth = 0.5 + Math.random() * 0.9
+        const peakHeight = 0.45 + Math.random() * 1.35
+        peakVerts.push(
+          x - peakWidth, horizonY, peakZ,
+          x + peakWidth, horizonY, peakZ,
+          x, horizonY + peakHeight, peakZ,
+        )
+        x += peakWidth * 1.4
+      }
+      const mountainGeom = new THREE.BufferGeometry()
+      mountainGeom.setAttribute(
+        'position',
+        new THREE.Float32BufferAttribute(peakVerts, 3),
+      )
+      mountainGeom.computeVertexNormals()
+      const mountainMat = new THREE.MeshBasicMaterial({
+        color: variant === 'hill' ? 0x1c1c38 : 0x281a30,
+        side: THREE.DoubleSide,
+      })
+      const mountains = new THREE.Mesh(mountainGeom, mountainMat)
+      scene.add(mountains)
+
+      // Mid-distance terrain — a second darker mountain line in front
+      // of the far range, creating depth layers.
+      const midVerts: number[] = []
+      let mx = -10
+      while (mx < 10) {
+        const w = 0.4 + Math.random() * 0.7
+        const h = 0.25 + Math.random() * 0.65
+        midVerts.push(
+          mx - w, horizonY, peakZ + 2,
+          mx + w, horizonY, peakZ + 2,
+          mx, horizonY + h, peakZ + 2,
+        )
+        mx += w * 1.4
+      }
+      const midGeom = new THREE.BufferGeometry()
+      midGeom.setAttribute('position', new THREE.Float32BufferAttribute(midVerts, 3))
+      midGeom.computeVertexNormals()
+      const midMat = new THREE.MeshBasicMaterial({
+        color: variant === 'hill' ? 0x0e0e20 : 0x18101c,
+        side: THREE.DoubleSide,
+      })
+      const midMountains = new THREE.Mesh(midGeom, midMat)
+      scene.add(midMountains)
+
+      // Hill variant gets a few dead-tree silhouettes scattered around
+      // for forlorn texture.
+      if (variant === 'hill') {
+        for (let i = 0; i < 5; i++) {
+          const tx = -3.5 + Math.random() * 7
+          const tz = -2 - Math.random() * 2.5
+          const th = 0.35 + Math.random() * 0.35
+          const trunkGeom = new THREE.ConeGeometry(0.06, th, 6)
+          const trunkMat = new THREE.MeshBasicMaterial({
+            color: 0x0a0a16,
+          })
+          const trunk = new THREE.Mesh(trunkGeom, trunkMat)
+          trunk.position.set(tx, -0.18 + th / 2, tz)
+          scene.add(trunk)
+        }
+      }
+    }
 
     // Build the bot
     const bot = buildBot()
@@ -769,25 +883,36 @@ export default function SensorBotScene({
         bot.head.rotation.z = 0
       }
 
-      // Halo pulse — different rhythm per variant. (The red sensor disc
-      // itself stays a stable saturated red so the eye reads cleanly; the
-      // halo is what pulses.)
-      let haloPulse: number
+      // GLaDOS optic pulse — the eye fades intensity in/out conveying
+      // "endless longing and scanning." The halo behind it tracks with
+      // the eye so the glow swells and recedes together. Different
+      // rhythms per variant; on hill, the failing-eye flicker stays.
+      let eyePulse: number
       if (variant === 'chewing') {
-        haloPulse = 0.85 + Math.sin(elapsed * 8) * 0.15
+        // Bright, fast, intent — the bot is content / locked on
+        eyePulse = 0.85 + Math.sin(elapsed * 8) * 0.15
       } else if (variant === 'hill') {
-        // Erratic flicker — slow base pulse + fast jitter, sometimes dips
-        // near zero. Reads as "the eye is failing but won't shut off."
-        haloPulse = Math.max(
-          0.1,
-          0.35 + Math.sin(elapsed * 1.8) * 0.18 + Math.sin(elapsed * 17) * 0.08,
+        // Erratic flicker — slow base + fast jitter, occasional dip.
+        // The eye is failing but won't shut off.
+        eyePulse = Math.max(
+          0.15,
+          0.45 + Math.sin(elapsed * 1.5) * 0.25 + Math.sin(elapsed * 14) * 0.08,
         )
       } else {
-        haloPulse = 0.5 + Math.sin(elapsed * 2.5) * 0.25
+        // Slow longing scan — long fade in/out, ~2.6s period
+        eyePulse = 0.45 + Math.sin(elapsed * 1.2) * 0.5
       }
-      const haloMat = bot.sensor.material as THREE.MeshBasicMaterial
-      haloMat.opacity = Math.min(1, haloPulse)
-      bot.sensor.scale.setScalar(0.85 + haloPulse * 0.4)
+      eyePulse = Math.min(1, Math.max(0.1, eyePulse))
+
+      // Eye itself: opacity tracks intensity. The red color stays
+      // saturated; what changes is how brightly it shows.
+      const eyeMat = bot.eye.material as THREE.MeshBasicMaterial
+      eyeMat.opacity = 0.65 + eyePulse * 0.35
+
+      // Halo: opacity AND scale track intensity, so the glow swells.
+      const haloMat = bot.halo.material as THREE.MeshBasicMaterial
+      haloMat.opacity = 0.3 + eyePulse * 0.45
+      bot.halo.scale.setScalar(0.8 + eyePulse * 0.45)
 
       // Wire glow — hot during chewing, faint on hill
       const wireMat = bot.wire.material as THREE.MeshBasicMaterial
@@ -904,10 +1029,10 @@ export default function SensorBotScene({
         style={{
           background:
             variant === 'chewing'
-              ? 'radial-gradient(ellipse 70% 60% at 50% 55%, #6a3818 0%, #3a1c0a 45%, #1a0a04 90%, #08040a 100%)'
+              ? 'radial-gradient(ellipse 70% 60% at 50% 55%, #8a4820 0%, #4a2410 45%, #20100a 90%, #0e0808 100%)'
               : variant === 'hill'
-                ? 'linear-gradient(180deg, #02040a 0%, #060616 55%, #030308 100%)'
-                : 'linear-gradient(180deg, #0a0418 0%, #1a0a35 55%, #08081a 100%)',
+                ? 'linear-gradient(180deg, #3a4880 0%, #5a4a90 30%, #6a3c70 60%, #2a1d3a 100%)'
+                : 'linear-gradient(180deg, #243870 0%, #604858 40%, #9a6038 70%, #4a2828 100%)',
         }}
       />
 
