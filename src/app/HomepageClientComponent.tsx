@@ -281,6 +281,119 @@ function FeaturedWorkshops() {
   )
 }
 
+// ----- Featured Speaking (talks, workshops, keynotes) -------------
+
+function FeaturedSpeaking() {
+  const talks = [
+    {
+      slug: 'untethered-productivity',
+      event: 'AI Engineering London',
+      date: 'April 2026',
+      title: 'Untethered Productivity',
+      blurb:
+        'Staying healthy, creative, and shipping in the AI coding era. Interactive slide deck.',
+      tag: 'Talk · Slides',
+      image: 'https://zackproser.b-cdn.net/images/aie-london-untethered-bottleneck.webp',
+    },
+    {
+      slug: 'aie-london-skills-at-scale',
+      event: 'AI Engineering London',
+      date: 'April 2026',
+      title: 'Skills at Scale',
+      blurb:
+        'Leveraging Claude Code skills across workflows, agents, and teams. 80-minute workshop with Nick Nisi.',
+      tag: 'Workshop · 80 min',
+      image: 'https://zackproser.b-cdn.net/images/aie-london-workshop-nick-zack.webp',
+    },
+    {
+      slug: 'claude-cowork-workshop',
+      event: 'WorkOS × Anthropic',
+      date: 'February 2026',
+      title: 'Claude Cowork Workshop',
+      blurb:
+        'Hands-on hour with Lydia from Anthropic — Cowork enablement end-to-end, live demos to live workflow.',
+      tag: 'Workshop · Co-host',
+      image: 'https://zackproser.b-cdn.net/images/workshop-zack-presenting-v2.webp',
+    },
+    {
+      slug: 'devseccon-2025-keynote',
+      event: 'DevSecCon 2025',
+      date: '2025',
+      title: 'DevSecCon Keynote',
+      blurb:
+        'Modern AI and security — keynote address to the security engineering community.',
+      tag: 'Keynote',
+      image: 'https://img.youtube.com/vi/kwIzRkzO_Z4/0.jpg',
+    },
+  ]
+
+  return (
+    <section className="py-16">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <div className="editorial-rule-label text-parchment-600 dark:text-slate-400">
+          Recent talks
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+          <h2 className="font-serif text-3xl md:text-4xl font-extrabold leading-[1.08] tracking-tight text-charcoal-50 dark:text-parchment-100 text-balance m-0 max-w-[22ch]">
+            Keynotes, workshops, and{' '}
+            <em className="italic text-burnt-400 dark:text-amber-400">interactive slide decks</em>.
+          </h2>
+          <Link
+            href="/speaking"
+            className="font-mono text-[12px] uppercase tracking-[0.14em] text-burnt-400 dark:text-amber-400 no-underline hover:underline whitespace-nowrap"
+            onClick={() =>
+              track('featured_speaking_click', {
+                location: 'homepage_speaking_section',
+                action: 'all_talks',
+              })
+            }
+          >
+            All talks →
+          </Link>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {talks.map((t) => (
+            <Link
+              key={t.slug}
+              href={`/speaking/${t.slug}`}
+              className="group rounded-md border border-parchment-300 dark:border-slate-700 bg-parchment-50 dark:bg-slate-800 p-5 flex flex-col gap-3 no-underline hover:border-burnt-400 dark:hover:border-amber-400 transition-colors"
+              onClick={() =>
+                track('featured_speaking_click', {
+                  location: 'homepage_speaking_section',
+                  talk: t.slug,
+                })
+              }
+            >
+              <div className="relative aspect-[16/10] rounded-sm overflow-hidden bg-parchment-200 dark:bg-slate-900">
+                <Image
+                  src={t.image}
+                  alt={`${t.title} — ${t.event}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-600 dark:text-slate-400">
+                <span className="font-bold text-burnt-600 dark:text-amber-300">{t.tag}</span>
+                <span>{t.date}</span>
+              </div>
+              <h3 className="font-serif text-lg font-bold leading-tight tracking-tight text-charcoal-50 dark:text-parchment-100 m-0 group-hover:text-burnt-400 dark:group-hover:text-amber-400 transition-colors">
+                {t.title}
+              </h3>
+              <p className="m-0 text-[13px] leading-relaxed text-parchment-600 dark:text-slate-300">
+                {t.blurb}
+              </p>
+              <div className="mt-auto pt-3 border-t border-parchment-300 dark:border-slate-700 font-mono text-[10px] uppercase tracking-[0.14em] text-parchment-500 dark:text-slate-500">
+                {t.event}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ----- Featured Tutorial (demoted RAG, between rails) --------------
 
 function FeaturedTutorialSecondary() {
@@ -497,6 +610,8 @@ export default function HomepageClientComponent({
         <EditorialHero />
         <StatRow />
         <FeaturedWorkshops />
+
+        <FeaturedSpeaking />
 
         <ContentRail
           num="01"
