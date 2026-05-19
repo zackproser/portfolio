@@ -102,17 +102,19 @@ type BeepProfile = {
 // Scanner-sweep pattern: a row of even short "do" ticks like a radar,
 // followed by a longer, longing descending tone before the loop. Reads
 // as endless searching with a yearning final note — the hungry-ghost
-// audio signature shared between the scan and hill scenes.
+// audio signature shared between the scan and hill scenes. Pitches
+// nudged up roughly a third over the prior tuning for a brighter,
+// hungrier scan-line feel.
 const HUNGRY_PROFILE: BeepProfile = {
   notes: [
-    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
-    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
-    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
-    { freq: 420, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
-    { freq: 420, type: 'sine', durMs: 85, gapMs: 280, gain: 0.075 },
+    { freq: 560, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 560, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 560, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 560, type: 'sine', durMs: 85, gapMs: 110, gain: 0.075 },
+    { freq: 560, type: 'sine', durMs: 85, gapMs: 280, gain: 0.075 },
     // The longing tail: a long descending tone that decays from the
     // tick frequency down past the floor before the cycle repeats.
-    { freq: 360, type: 'sine', durMs: 720, gapMs: 0, gain: 0.095, pitchBend: 200 },
+    { freq: 480, type: 'sine', durMs: 720, gapMs: 0, gain: 0.095, pitchBend: 280 },
   ],
   pauseMs: 850,
 }
