@@ -13,16 +13,17 @@ export const speakingEngagements = [
     id: 'workos-applied-ai-showcase',
     slug: 'workos-applied-ai-showcase',
     type: 'public',
-    title: 'WorkOS Applied AI Showcase — Lessons from Shipping Internal AI Tooling, Fast',
+    title: 'Applied AI: Three Learnings from Shipping',
     event: 'WorkOS Applied AI Showcase',
     date: 'May 20, 2026',
     isoDate: '2026-05-20',
     location: 'WorkOS · Live broadcast',
-    description: 'Closing segment of the WorkOS Applied AI Showcase. After demos of our autonomous agent harness CLI, GTM intelligence platform, and the Horizon agentic coding platform, I shared the lessons from shipping it all: build harnesses not agents, evals are how you sleep at night, constraints over instructions, and why the compounding loop is the whole game.',
+    description: 'Closing segment of the WorkOS Applied AI Showcase. After demos of our autonomous agent harness CLI, GTM intelligence platform, and the Horizon agentic coding platform, I shared three learnings from shipping internal AI tooling at WorkOS: interface beats stack (Bartleby vs Blog Bot, eighteen months apart, same idea, different door), complete the loop (capture → plan → execute → ship), and the imagination gap (re-ask the question every quarter).',
     image: 'https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg',
     audience: 'AI engineers, engineering leaders, builders',
-    topics: ['Applied AI', 'Internal Tooling', 'Agent Harnesses', 'Evals', 'Claude Code', 'Constraints over Instructions'],
+    topics: ['Applied AI', 'Internal Tooling', 'Blog Bot', 'Bartleby', 'Cloudflare Workflows', 'Interface Beats Stack'],
     videoUrl: 'https://www.youtube.com/embed/V2PuEAeNXUU?start=3765',
+    slidevUrl: 'https://zackproser.b-cdn.net/talks/applied-ai-three-learnings/index.html',
     links: [
       {
         type: 'youtube',
@@ -38,6 +39,11 @@ export const speakingEngagements = [
         type: 'blog',
         url: '/blog/workos-applied-ai-showcase',
         label: 'Read the write-up'
+      },
+      {
+        type: 'github',
+        url: 'https://github.com/zackproser/ai-night-applied-ai-learnings',
+        label: 'Deck source on GitHub'
       }
     ]
   },
