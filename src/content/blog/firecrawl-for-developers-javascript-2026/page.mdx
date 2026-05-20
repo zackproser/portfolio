@@ -1,0 +1,51 @@
+import { AffiliateLink, InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
+
+export const campaign = 'firecrawl-for-developers-javascript-2026'
+
+Most web scraping tools assume the page you're scraping delivers content via HTML. That was a safe assumption in 2010. It's a bad assumption in 2026.
+
+Modern web applications — built with React, Vue, Angular, Next.js, and dozens of other JavaScript frameworks — render their content in the browser after the HTML shell loads. If your scraper can't execute JavaScript, you're getting an empty shell.
+
+Firecrawl executes JavaScript. That's the core differentiator, and it's why I reach for it when I need to scrape any modern web application.
+
+## The Problem with Traditional Scrapers
+
+Beautiful Soup, Scrapy, and similar tools work by fetching HTML and parsing it. They don't execute JavaScript. This means:
+
+- A React app returns `<div id="root">` and nothing else
+- A Vue single-page application returns the initial HTML template, not the rendered content
+- Any site using client-side routing returns an empty page
+
+For simple content sites, this isn't a problem. For the modern web — which is largely JavaScript-rendered — traditional scrapers are broken by default.
+
+The workaround most people use: run a headless browser (Puppeteer, Playwright) that executes JavaScript and then scrapes the rendered DOM. This works, but it introduces significant complexity. You need to manage browser state, wait for network requests to complete, handle JavaScript errors, and deal with a tool that's substantially more complex than a simple HTTP library.
+
+## What Firecrawl Does
+
+Firecrawl handles JavaScript rendering as a first-class feature. You give it a URL, and it returns the fully rendered page content — including content loaded by JavaScript — as clean Markdown or HTML.
+
+The API is straightforward. You POST a URL, Firecrawl queues the crawl, renders the JavaScript, and returns the content. There's no headless browser to manage, no wait times to configure, no state to handle.
+
+For single pages, this is fast. For entire domains, Firecrawl can discover all internal links and crawl them recursively, producing a structured dataset of every page's rendered content.
+
+The output format matters. Firecrawl returns clean Markdown, not HTML fragments. This makes it ideal for feeding into RAG pipelines, building documentation datasets, extracting structured data from competitor sites, or aggregating content across sources.
+
+## My Development Workflow
+
+I use Firecrawl in two primary scenarios.
+
+**Building training datasets.** When I'm working on AI projects that need examples from the web — competitor analysis, market research, or fine-tuning data — I use Firecrawl to extract rendered content from target sites. The Markdown output goes directly into my pipeline without HTML parsing overhead.
+
+**Scraping JavaScript-heavy sites for competitive research.** A client needed pricing data from a competitor's pricing page. Their site was a React SPA. Firecrawl rendered it cleanly in seconds.
+
+The one limitation I've encountered: extremely heavy client-side applications with complex hydration patterns sometimes require tuning the wait time or crawl depth. Firecrawl handles most cases automatically, but for sites with aggressive lazy loading, you may need to experiment with crawl settings.
+
+## The API and Developer Experience
+
+The Firecrawl API is clean and well-documented. Authentication is via API key, requests are straightforward, and the response format is consistent. I've integrated it into Python scripts, Node.js applications, and shell workflows without friction.
+
+The hosted service handles rate limiting, proxy rotation, and JavaScript rendering infrastructure. You focus on the data, not the scraping infrastructure.
+
+For developers building with modern JavaScript frameworks, Firecrawl fills the gap that traditional scrapers can't. The rendered content output makes it straightforward to pipe web data into any pipeline — no browser automation required.
+
+If you're scraping the modern web and not using a JavaScript-aware tool, you're leaving data on the table.
