@@ -20,6 +20,8 @@ For simple content sites, this isn't a problem. For the modern web — which is 
 
 The workaround most people use: run a headless browser (Puppeteer, Playwright) that executes JavaScript and then scrapes the rendered DOM. This works, but it introduces significant complexity. You need to manage browser state, wait for network requests to complete, handle JavaScript errors, and deal with a tool that's substantially more complex than a simple HTTP library.
 
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
 ## What Firecrawl Does
 
 Firecrawl handles JavaScript rendering as a first-class feature. You give it a URL, and it returns the fully rendered page content — including content loaded by JavaScript — as clean Markdown or HTML.
@@ -29,6 +31,8 @@ The API is straightforward. You POST a URL, Firecrawl queues the crawl, renders 
 For single pages, this is fast. For entire domains, Firecrawl can discover all internal links and crawl them recursively, producing a structured dataset of every page's rendered content.
 
 The output format matters. Firecrawl returns clean Markdown, not HTML fragments. This makes it ideal for feeding into RAG pipelines, building documentation datasets, extracting structured data from competitor sites, or aggregating content across sources.
+
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## My Development Workflow
 
@@ -46,6 +50,10 @@ The Firecrawl API is clean and well-documented. Authentication is via API key, r
 
 The hosted service handles rate limiting, proxy rotation, and JavaScript rendering infrastructure. You focus on the data, not the scraping infrastructure.
 
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
+
 For developers building with modern JavaScript frameworks, Firecrawl fills the gap that traditional scrapers can't. The rendered content output makes it straightforward to pipe web data into any pipeline — no browser automation required.
 
 If you're scraping the modern web and not using a JavaScript-aware tool, you're leaving data on the table.
+
+<AffiliateLink product="firecrawl" campaign={campaign}>Try Firecrawl free</AffiliateLink>
