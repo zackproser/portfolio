@@ -10,6 +10,38 @@ const claudeSkills = 'https://zackproser.b-cdn.net/images/claude-skills.webp'
 
 export const speakingEngagements = [
   {
+    id: 'workos-applied-ai-showcase',
+    slug: 'workos-applied-ai-showcase',
+    type: 'public',
+    title: 'WorkOS Applied AI Showcase — Lessons from Shipping Internal AI Tooling, Fast',
+    event: 'WorkOS Applied AI Showcase',
+    date: 'May 20, 2026',
+    isoDate: '2026-05-20',
+    location: 'WorkOS · Live broadcast',
+    description: 'Closing segment of the WorkOS Applied AI Showcase. After demos of our autonomous agent harness CLI, GTM intelligence platform, and the Horizon agentic coding platform, I shared the lessons from shipping it all: build harnesses not agents, evals are how you sleep at night, constraints over instructions, and why the compounding loop is the whole game.',
+    image: 'https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg',
+    audience: 'AI engineers, engineering leaders, builders',
+    topics: ['Applied AI', 'Internal Tooling', 'Agent Harnesses', 'Evals', 'Claude Code', 'Constraints over Instructions'],
+    videoUrl: 'https://www.youtube.com/embed/V2PuEAeNXUU?start=3765',
+    links: [
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=V2PuEAeNXUU&t=3765s',
+        label: 'Watch my segment (1:02:45)'
+      },
+      {
+        type: 'youtube',
+        url: 'https://www.youtube.com/watch?v=V2PuEAeNXUU',
+        label: 'Watch the full showcase'
+      },
+      {
+        type: 'blog',
+        url: '/blog/workos-applied-ai-showcase',
+        label: 'Read the write-up'
+      }
+    ]
+  },
+  {
     id: 'aie-london-skills-at-scale',
     slug: 'aie-london-skills-at-scale',
     type: 'public',
