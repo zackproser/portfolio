@@ -1,8 +1,8 @@
 {
-  "title": "WorkOS Applied AI Showcase — Lessons from Shipping a Lot of Internal AI Tooling, Fast",
+  "title": "Applied AI: Three Learnings from Shipping — My Talk at the WorkOS Applied AI Showcase",
   "author": "Zachary Proser",
   "date": "2026-05-20",
-  "description": "The WorkOS Applied AI team did a live showcase of the internal AI tooling we've shipped — autonomous agent harnesses, a GTM intelligence platform, and a code factory. I closed the session with what we actually learned shipping all of it at this pace.",
+  "description": "I closed the WorkOS Applied AI Showcase with three learnings from shipping internal AI tooling: interface beats stack, complete the loop, and the imagination gap. Bartleby vs Blog Bot, capture → plan → execute → ship, and re-asking the question every quarter.",
   "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg",
   "slug": "/blog/workos-applied-ai-showcase",
   "keywords": [
@@ -10,11 +10,11 @@
     "Applied AI",
     "AI engineering",
     "internal tooling",
-    "autonomous agents",
-    "Claude Code",
+    "Blog Bot",
+    "Bartleby",
+    "Cloudflare Workflows",
     "agentic coding",
-    "GTM intelligence",
-    "agent harness",
+    "interface beats stack",
     "shipping AI tooling"
   ],
   "tags": [

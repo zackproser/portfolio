@@ -1,8 +1,8 @@
 {
   "author": "Zachary Proser",
   "date": "2026-05-20",
-  "title": "WorkOS Applied AI Showcase — Lessons from Shipping Internal AI Tooling, Fast",
-  "description": "My closing segment of the WorkOS Applied AI Showcase (1:02:45 – 1:17:23). After demos of our autonomous agent harness CLI, GTM intelligence platform, and Horizon agentic coding platform, I share what we actually learned shipping all of it at this pace.",
+  "title": "Applied AI: Three Learnings from Shipping — WorkOS Applied AI Showcase",
+  "description": "My closing segment of the WorkOS Applied AI Showcase (1:02:45 – 1:17:23). Three learnings from shipping internal AI tooling at WorkOS: interface beats stack, complete the loop, and the imagination gap.",
   "image": "https://img.youtube.com/vi/V2PuEAeNXUU/maxresdefault.jpg",
   "type": "video"
 }

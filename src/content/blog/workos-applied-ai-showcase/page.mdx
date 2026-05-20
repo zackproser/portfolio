@@ -1,9 +1,10 @@
+import { SlidevEmbed } from '@/components/SlidevEmbed';
 import { createMetadata } from '@/utils/createMetadata';
 import rawMetadata from './metadata.json';
 
 export const metadata = createMetadata(rawMetadata);
 
-The WorkOS Applied AI team ran a live showcase today walking through the internal AI tooling we've built and use every day. Three demos, then I closed with what we actually learned shipping all of it at this pace.
+The WorkOS Applied AI team did a live showcase today. The first hour was demos — our autonomous agent harness CLI, the GTM intelligence platform, and the Horizon agentic coding platform. I closed it with my talk: **Applied AI: three learnings from shipping.**
 
 **My segment runs from 1:02:45 to about 1:17:23.** The embed below jumps straight to it.
 
@@ -14,56 +15,56 @@ The WorkOS Applied AI team ran a live showcase today walking through the interna
   allow="fullscreen">
 </iframe>
 
-For the full session — autonomous agent harness CLI, GTM intelligence platform, and the agentic coding platform — start the video from the top.
+## Play the deck
 
-## What we showed
+<SlidevEmbed src="https://zackproser.b-cdn.net/talks/applied-ai-three-learnings/index.html" title="Applied AI: Three Learnings from Shipping — Interactive Slides" />
 
-Three production systems that the Applied AI team built and that the rest of WorkOS actually uses.
+## Three things, one motion
 
-### Autonomous Agent Harness CLI
+The frame for the talk: three things I've learned shipping AI internally at WorkOS over the last eighteen months. They're not independent — they compound into one motion.
 
-Give it a GitHub issue or a Linear ticket. It handles implementation, review, PR, and — this is the part — learns from corrections over time. We use it internally to orchestrate AI agent work across WorkOS open source projects. The interesting part isn't that an agent can write code; it's that the harness captures what went wrong on each run and feeds those corrections forward.
+### 1 · Interface beats stack
 
-### GTM Intelligence Platform
+The same idea, two interfaces, eighteen months apart.
 
-Account enrichment and fit-scoring on demand. Our AEs query it from a dashboard, from Slack, or — and this is the part that surprised people — directly via MCP, so an agent can reach in and ask "is this account a fit, and why?" mid-conversation. The same scoring engine, three surfaces.
+In 2024 I built **Bartleby** — a standalone web app that did most of what Blog Bot does today. Almost nobody used it. Required a separate login. Required a separate URL. Required a separate context-switch from whatever the user was already doing. The verdict was a moment of silence, the kind of silence Bartleby the scrivener would have appreciated: *"I prefer not to."*
 
-### Agentic Coding Platform (Horizon)
+In 2026 I shipped **Blog Bot** — a Slack bot you `@`-mention in the channel you already live in. Tag it in a thread, it writes the draft, you ship. Required zero new behavior.
 
-A code factory that turns engineering signals into shipped work. Horizon runs in secure cloud sandboxes, orchestrates implementation across Linear, GitHub, and Slack, and gets faster with every run. It surfaces its own friction, fixes it, and codifies what worked. The compounding behavior is the whole point.
+Same model class. Same prompts. Same outputs. Different door. The 2026 version got adoption immediately because it removed the only thing that actually mattered: friction at the point of use.
 
-## My segment: lessons from the trenches
+Under the hood, the stack is anything but simple. Every `@`-mention spins up a Cloudflare Workflow with 20+ durable steps — route the conversation, pull Granola notes, fetch YouTube transcripts, match a format reference. The asymmetry is the leverage: one `@`-mention in, a fully drafted 1,635-word post out, five minutes later.
 
-I closed the showcase with what we actually learned shipping this much, this fast. A few things I hit on:
+**The lesson:** meet users where they already live. The interface is the product.
 
-### Pick problems where the bar is "useful," not "impressive"
+### 2 · Complete the loop
 
-The systems that landed were the ones that replaced a workflow someone was already doing manually — fit-scoring an account, triaging an issue, drafting a PR. The ones that didn't land were the ones we built because they sounded cool in a roadmap doc. The bar is "did it take less time today than yesterday." Not "did it pass a benchmark."
+Capture → plan → execute → ship.
 
-### Build harnesses, not agents
+I work against one Linear ticket per project. Subtasks for bugs and features. The agent `/loop`s against the main ticket — picks up the next subtask, implements it, opens the PR, deploys, marks it done, picks up the next one.
 
-The interesting unit of work isn't a prompt or a model — it's the harness around it: the scaffolding that gives the agent its tools, its constraints, its memory, and its recovery behavior. Every system we shipped got most of its leverage from harness work, not from the underlying model. Switch the model out, the harness keeps working.
+Three integrations, three minutes from idea to in-progress: Linear → GitHub → Slack. The kit is internal, the heuristic is the point.
 
-### Evals are how you sleep at night
+Speed requires safety. The loop runs with guardrails — every change goes through a verified, deployed sandbox before it touches `main`. A bug becomes a deployed change without ever touching production directly. I review. The bot does the typing. Two human touches per fix.
 
-If you can't measure regressions, you can't ship into production. Every system we showed has an eval suite that runs against a fixed set of cases. When we changed prompts or models, the evals told us what got better and what got worse. Not "vibes."
+One opinion that came up in the room: **give your agent the tools directly, not via MCP.** MCP is great for cross-tool portability, but for your *own* internal harness, direct tool calls are faster, easier to debug, and easier to constrain. Save MCP for the boundary where another agent needs to reach in.
 
-### Constraints over instructions
+### 3 · The imagination gap
 
-This one carries over from the AIE London workshop, and it kept showing up here. Telling an agent "be careful" is unenforceable. Telling it "never make changes outside this directory" is enforceable. Every unconstrained dimension is a dimension the agent will drift on.
+Model capability outruns our product imagination. Always. By a wide margin.
 
-### Ship the rough thing, then polish
+The exercise: re-ask the question every quarter. *"What would I build now that wasn't possible last quarter?"* The answer is never zero. This month's answer for me was a long-running-thread pattern I'm watching emerge.
 
-Most of these systems were ugly the first time we showed them. The Slack integration looked like a debug log. The dashboard was a single endpoint. We shipped them anyway, because the only way to know whether a thing is useful is to put it in front of people who would benefit. Polish came after adoption, not before it.
+**The pattern:** let humans talk. Flush on request.
 
-### The compounding loop is the whole game
+1. **Listen** — keep the buffer. Every message in the thread streams into D1. No edits, no opinions, no interruptions.
+2. **Wait** — let humans collaborate. People `@`-mention each other, debate, change their minds. The bot doesn't care — yet.
+3. **Flush** — act on request. *"Hey bot, apply the edits we just discussed."* It reads the buffer, makes the change, ships.
 
-The systems that compound — that get faster, smarter, or more useful with every use — are the ones worth investing in. A one-shot tool is a productivity boost. A compounding tool is a strategic asset. Horizon's "surfaces its own friction and codifies what worked" loop is the most important thing we shipped this year.
+It's the inverse of every chatbot pattern of the last three years. The bot is a journal that activates on cue, not an interrupter. Once you see it, you see it everywhere.
 
-## Why we did this
+## Why this transfers
 
-We're at a moment where the gap between "AI is useful" and "AI is how this company works" is everything. The systems we showed are how WorkOS is closing that gap internally. The lessons we shared are what we'd tell another team trying to do the same thing.
-
-If you're in that position — head of AI, CTO, or just an engineer trying to roll this out at your own org — the patterns transfer. The harness layer matters more than the model. The evals matter more than the demos. The constraints matter more than the instructions.
+If you're trying to roll AI tooling out at your own org, these three are the ones I'd give you in priority order. The interface decision determines whether anyone uses what you build. The loop decision determines whether what you build compounds. The imagination decision determines whether you're still building the right thing in six months.
 
 If you want to talk about how this might work at your org, [book a workshop](/workshops/claude-cowork) or [drop me a line](/contact). The Applied AI team runs workshops based on exactly this material.
