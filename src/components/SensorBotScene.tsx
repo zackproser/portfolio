@@ -9,8 +9,8 @@
 // ('hill'). Shared bot mesh, per-variant camera/lighting/environment.
 //
 // Audio is coordinated across instances via a window-scoped custom event
-// ('my-algorithm-audio') + localStorage. The audio toggle only renders on
-// the instance that passes `showAudioToggle`; other instances follow.
+// ('my-algorithm-audio') + localStorage. Audio autoplays by default; each
+// instance renders its own mute/unmute button.
 //
 // Visual stack is raw three.js (matches the pattern in BrainMap3D — fiber
 // not installed). Animation loop pauses via IntersectionObserver when the
@@ -32,11 +32,14 @@ const AUDIO_STORAGE_KEY = 'my-algorithm-audio-enabled'
 type AudioToggleEvent = CustomEvent<{ enabled: boolean }>
 
 function readAudioPref(): boolean {
-  if (typeof window === 'undefined') return false
+  if (typeof window === 'undefined') return true
   try {
-    return window.localStorage.getItem(AUDIO_STORAGE_KEY) === '1'
+    const val = window.localStorage.getItem(AUDIO_STORAGE_KEY)
+    // Default to enabled (autoplay) if user has never toggled
+    if (val === null) return true
+    return val === '1'
   } catch {
-    return false
+    return true
   }
 }
 
@@ -1079,17 +1082,15 @@ export default function SensorBotScene({
         drag to rotate
       </div>
 
-      {/* Audio toggle — only on first instance */}
-      {showAudioToggle && (
-        <button
-          type="button"
-          onClick={handleToggleAudio}
-          className="absolute top-3 right-4 z-20 rounded-full border border-cyan-300/30 bg-black/50 px-3 py-1 font-mono text-[10px] tracking-widest uppercase text-cyan-100 hover:border-cyan-200 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
-          aria-pressed={audioEnabled}
-        >
-          {audioEnabled ? 'AUDIO · ON' : 'AUDIO · OFF'}
-        </button>
-      )}
+      {/* Audio mute/unmute button — shown on every instance */}
+      <button
+        type="button"
+        onClick={handleToggleAudio}
+        className="absolute top-3 right-4 z-20 rounded-full border border-cyan-300/30 bg-black/50 px-3 py-1 font-mono text-[10px] tracking-widest uppercase text-cyan-100 hover:border-cyan-200 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
+        aria-pressed={audioEnabled}
+      >
+        {audioEnabled ? '🔊 MUTE' : '🔇 UNMUTE'}
+      </button>
 
       {webglFailed && (
         <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
