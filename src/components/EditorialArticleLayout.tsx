@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Twitter, Linkedin, Github, Link as LinkIcon, Bookmark, Check } from 'lucide-react'
 import { track } from '@vercel/analytics'
@@ -100,7 +101,8 @@ export function EditorialArticleLayout({
   const category = tags[0] || 'Applied AI'
 
   const contentPathSegment = metadata?.type === 'video' ? 'videos' : metadata?.type === 'course' ? 'learn/courses' : metadata?.type === 'demo' ? 'demos' : 'blog'
-  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}/${contentPathSegment}/${baseSlug}`
+  const pathname = usePathname()
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}${pathname}`
 
   const breadcrumbText = metadata?.type === 'video' ? 'Videos' : metadata?.type === 'course' ? 'Courses' : metadata?.type === 'demo' ? 'Demos' : 'Writing'
   const breadcrumbHref = metadata?.type === 'video' ? '/videos' : metadata?.type === 'course' ? '/learn/courses' : metadata?.type === 'demo' ? '/demos' : '/blog'

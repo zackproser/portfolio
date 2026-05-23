@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { generateOgUrl } from '@/utils/ogUrl'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { metadataLogger as logger } from '@/utils/logger'
 import StickyAffiliateCTA from '@/components/StickyAffiliateCTA'
 
@@ -153,19 +153,8 @@ export function ArticleLayout({
     (metadata?.miniPaywallTitle || metadata?.commerce?.miniPaywallTitle) &&
     (metadata?.miniPaywallDescription || metadata?.commerce?.miniPaywallDescription);
 
-  // Build the full URL for og:url and twitter:url
-  let rootPath = '/blog/';
-  
-  // Use a more flexible approach to determine the root path
-  if (safeType === 'video') {
-    rootPath = '/videos/';
-  } else if (safeType === 'course') {
-    rootPath = '/learn/courses/';
-  } else if (typeof safeType === 'string' && safeType.includes('comparison') || safeSlug.includes('comparisons/')) {
-    rootPath = '/comparisons/';
-  }
-  
-  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ''}${rootPath}${safeSlug}`;
+  const pathname = usePathname()
+  const fullUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://zackproser.com'}${pathname}`;
 
   return (
     <>
