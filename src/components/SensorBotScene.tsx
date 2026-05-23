@@ -59,6 +59,7 @@ function writeAudioPref(enabled: boolean) {
 
 type Engine = { ctx: AudioContext; masterGain: GainNode }
 let engine: Engine | null = null
+let autoplayListenerAttached = false
 
 function ensureEngine(): Engine | null {
   if (engine) return engine
@@ -74,6 +75,28 @@ function ensureEngine(): Engine | null {
   masterGain.connect(ctx.destination)
   engine = { ctx, masterGain }
   return engine
+}
+
+// Eagerly resume the AudioContext on the very first user interaction so
+// audio starts playing as soon as the user scrolls or clicks anywhere on
+// the page — no need to find and press the audio button.
+function attachAutoplayResume() {
+  if (autoplayListenerAttached) return
+  if (typeof window === 'undefined') return
+  autoplayListenerAttached = true
+  const resume = () => {
+    const e = ensureEngine()
+    if (e && e.ctx.state === 'suspended') {
+      e.ctx.resume().catch(() => undefined)
+    }
+    // Remove all listeners after first successful resume
+    for (const evt of ['scroll', 'click', 'touchstart', 'keydown']) {
+      window.removeEventListener(evt, resume, true)
+    }
+  }
+  for (const evt of ['scroll', 'click', 'touchstart', 'keydown']) {
+    window.addEventListener(evt, resume, { capture: true, passive: true, once: true })
+  }
 }
 
 type Note = {
@@ -396,10 +419,18 @@ export default function SensorBotScene({
   const audioRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
 
-  // Hydrate audio pref from localStorage + cross-instance events
+  // Hydrate audio pref from localStorage + cross-instance events.
+  // Also eagerly attach the autoplay-resume listener so the AudioContext
+  // unlocks on the very first user interaction (scroll, click, etc.).
   useEffect(() => {
     audioRef.current = readAudioPref()
     setAudioEnabled(audioRef.current)
+    // Eagerly create the engine + attach interaction listeners so audio
+    // starts as soon as the user scrolls or interacts with the page.
+    if (audioRef.current) {
+      ensureEngine()
+      attachAutoplayResume()
+    }
     const onEvt = (e: Event) => {
       const detail = (e as AudioToggleEvent).detail
       if (!detail) return

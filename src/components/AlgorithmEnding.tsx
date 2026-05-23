@@ -10,10 +10,10 @@
 export default function AlgorithmEnding() {
   return (
     <div className="my-12 text-center font-mono tracking-widest text-cyan-100/95 text-sm md:text-base">
-      <p className="algo-line algo-line-1">Doo doo be doo dooo.</p>
-      <p className="algo-line algo-line-2">Doo doo be doo dooo.</p>
+      <p className="algo-line algo-line-1">Do-do-do-do-dooooooooooo.</p>
+      <p className="algo-line algo-line-2">Do-do-do-do-dooooooooooo.</p>
       <p className="algo-line algo-line-3">
-        Doo doo be doo dooo
+        Do-do-do-do-dooooooooooo
         <span className="algo-dots">&hellip;</span>
       </p>
       <style jsx>{`
