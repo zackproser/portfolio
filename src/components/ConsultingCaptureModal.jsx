@@ -18,10 +18,12 @@ export default function ConsultingCaptureModal({ delay }) {
       const timer = setTimeout(() => {
         console.log('ConsultingCaptureModal firing...');
         // Capture google analytics event 
-        gtag("event", "display_consulting_modal", {
-          event_category: "advertising",
-          event_label: "consulting_modal",
-        });
+        if (typeof gtag === 'function') {
+          gtag("event", "display_consulting_modal", {
+            event_category: "advertising",
+            event_label: "consulting_modal",
+          });
+        }
 
         track('display_consulting_modal', {
           event_category: "advertising",
@@ -37,20 +39,24 @@ export default function ConsultingCaptureModal({ delay }) {
 
   const dismissModal = () => {
     // Capture google analytics event 
-    gtag("event", "dismiss_consulting_modal", {
-      event_category: "advertising",
-      event_label: "consulting_modal",
-    });
+    if (typeof gtag === 'function') {
+      gtag("event", "dismiss_consulting_modal", {
+        event_category: "advertising",
+        event_label: "consulting_modal",
+      });
+    }
     setShowModal(false);
     localStorage.setItem('dismissedModal', 'true');
   };
 
   const trackConsultClick = () => {
     // Capture google analytics event
-    gtag("event", "click_book_consult", {
-      event_category: "advertising",
-      event_label: "consulting_modal",
-    })
+    if (typeof gtag === 'function') {
+      gtag("event", "click_book_consult", {
+        event_category: "advertising",
+        event_label: "consulting_modal",
+      })
+    }
   }
 
   console.log('ConsultingCaptureModal running...');

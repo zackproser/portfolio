@@ -5,6 +5,8 @@ import YoutubeEmbed from '@/components/YoutubeEmbed'
 import VoiceAIDemoCard from '@/components/VoiceAIDemoCard'
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
+export const campaign = "phones-are-the-new-terminal"
+
 export const metadata = createMetadata(rawMetadata)
 
 Last year I gave a [DevSecCon keynote](/blog/untethered-software-development-devseccon-2025) called "Walking and Talking in the Woods with AI." The thesis: you can ship production code while hiking through the forest, using voice dictation and background AI agents, as long as you have hardened CI/CD pipelines keeping everything safe.
@@ -68,7 +70,7 @@ When I'm on the trail directing Claude Code, I'm dictating the instructions. "Up
 
 This is the combination that makes phone-first engineering actually work: Claude Code remote control for driving the computer, WisprFlow for fast voice input, and multiple agent sessions for parallel execution. Without any one of these pieces, the phone is still limited to poking at PRs. With all three, it's a genuine control plane.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 If you want to see voice-to-text in action — what it looks like to dictate at 179 WPM and have technical terms come through correctly — try the interactive demo:
 
@@ -88,7 +90,7 @@ This is the evolution of what I talked about at DevSecCon. The keynote was about
 
 I'm walking 5-8 miles on days when I would have been sitting. My neck doesn't hurt. My wrists get a break from typing — [WisprFlow handles the input](/blog/wisprflow-claude-code-setup-guide) whether I'm on my Mac or my iPhone. I'm thinking more clearly because physical movement genuinely helps with focus and cognition — not in some vague wellness way, but in the specific sense that my ADHD brain produces better output when my legs are moving.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 And the work output hasn't dropped. If anything, it's higher. The [two-agent setup](/blog/two-agents-one-phone) means I'm running parallel workstreams that would have been sequential at a desk. While I'm reviewing one agent's output, the other is already working on the next task. The phone UX — switching between Discord and the Claude app — is natural. It's the same muscle memory as switching between Slack and email.
 

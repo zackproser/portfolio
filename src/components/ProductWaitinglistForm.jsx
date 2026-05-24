@@ -41,10 +41,12 @@ export const ProductWaitinglistForm = ({
 
 	const sendFormSubmissionEvent = () => {
 		// Adjust the event for waiting list sign-up
-		gtag("event", "sign_up", {
-			method: "waitinglist",
-			product: productSlug,
-		});
+		if (typeof gtag === 'function') {
+			gtag("event", "sign_up", {
+				method: "waitinglist",
+				product: productSlug,
+			});
+		}
 		track("waitinglist-signup", {
 			method: "waitinglist",
 			product: productSlug,

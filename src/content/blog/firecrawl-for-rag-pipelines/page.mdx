@@ -10,6 +10,8 @@ hiddenFromIndex: true
 
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
+export const campaign = "firecrawl-for-rag-pipelines"
+
 RAG pipelines are only as good as the content you feed them. If you are building a knowledge base from web content, Firecrawl handles the messy parts — JavaScript rendering, link following, content extraction — and delivers clean text you can chunk and index directly.
 
 Here is how to wire it up.
@@ -20,7 +22,7 @@ Web pages are designed for humans, not LLMs. Navigation chrome, ads, cookie bann
 
 The extraction step matters enormously for downstream quality. Garbage in, garbage out applies to RAG with a vengeance.
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Basic Setup: Scrape and Extract
 
@@ -77,7 +79,7 @@ def crawl_and_extract(url: str, api_key: str, max_pages: int = 100):
             raise Exception(f"Crawl failed: {status['error']}")
 ```
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Chunking Strategy
 
@@ -118,7 +120,7 @@ response = requests.post(
 
 For e-commerce and listing pages, structured extraction dramatically improves retrieval precision.
 
-<InlineAffiliateCTA product="firecrawl" />
+<InlineAffiliateCTA product="firecrawl" campaign={campaign} />
 
 ## Keeping Content Fresh
 

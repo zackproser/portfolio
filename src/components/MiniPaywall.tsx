@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Image, { StaticImageData } from 'next/image'
 import { Content } from '@/types'
 import { getContentCheckoutUrl } from '@/lib/checkoutUtils'
+import { track } from '@vercel/analytics'
 
 interface MiniPaywallProps {
   content: Content
@@ -31,6 +32,7 @@ export default function MiniPaywall({
 
   const handlePurchase = async () => {
     setLoading(true)
+    track('paywall_cta_click', { slug: content.slug || '', price: String(price), variant: 'mini' })
     const checkoutUrl = getContentCheckoutUrl(content);
     
     if (!checkoutUrl) {

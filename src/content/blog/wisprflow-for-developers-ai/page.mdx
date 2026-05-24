@@ -10,6 +10,8 @@ hiddenFromIndex: true
 
 import { InlineAffiliateCTA } from '@/components/StickyAffiliateCTA'
 
+export const campaign = "wisprflow-for-developers-ai"
+
 WisprFlow handles transcription differently than most voice tools. Rather than running a generic Whisper model locally, WisprFlow uses a hybrid approach: a fine-tuned on-device model for initial transcription followed by server-side processing that applies context-aware corrections. The result is higher accuracy than raw Whisper, especially on technical terms, domain-specific jargon, and code.
 
 I have been testing WisprFlow's developer surface for the past few weeks. Here is what actually works and where the rough edges are.
@@ -18,7 +20,7 @@ I have been testing WisprFlow's developer surface for the past few weeks. Here i
 
 The on-device component is based on a distilled Whisper variant, which keeps latency low and works without an internet connection. The server-side component applies a larger language model to correct common Whisper errors — homophones, filler words, and misheard technical terms.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 This two-stage approach means you get near-realtime transcription that improves over time as your usage patterns are learned. The correction model is personalized to your voice over subsequent sessions.
 
@@ -34,7 +36,7 @@ This is particularly effective during:
 - **Debug logging** — quickly add print statements and logging calls while your hands stay on the keyboard
 - **Refactoring sessions** — describe what you want to change at a high level
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## WisprFlow API: What You Can Build
 
@@ -50,7 +52,7 @@ The WisprFlow API gives you programmatic access to transcription and session man
 
 The free tier gives you 60 minutes of transcription per month. The paid plan at $12/month unlocks 600 minutes and API access.
 
-<InlineAffiliateCTA product="wisprflow" />
+<InlineAffiliateCTA product="wisprflow" campaign={campaign} />
 
 ## Privacy and Data Handling
 
