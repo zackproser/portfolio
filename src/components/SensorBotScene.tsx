@@ -242,11 +242,11 @@ function buildBot(): {
   const group = new THREE.Group()
   const disposables: Array<{ dispose: () => void }> = []
 
-  // Body — dark gunmetal sphere
+  // Body — OD green sphere
   const bodyGeom = new THREE.SphereGeometry(0.55, 32, 32)
   const bodyMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a22,
-    emissive: 0x0a0a18,
+    color: 0x3a4a2a,
+    emissive: 0x1a2210,
     roughness: 0.7,
     metalness: 0.4,
   })
@@ -345,7 +345,7 @@ function buildBot(): {
   head.add(innerSeam)
   disposables.push(innerSeamGeom)
 
-  const haloGeom = new THREE.CircleGeometry(0.042, 40)
+  const haloGeom = new THREE.CircleGeometry(0.055, 40)
   const haloMat = new THREE.MeshBasicMaterial({
     color: 0xff1020,
     transparent: true,
@@ -360,13 +360,13 @@ function buildBot(): {
   disposables.push(haloGeom, haloMat)
 
   // Brake-light red optic — vivid and saturated in every scene to
-  // convey the exhaustion / relentless intensity.
-  const eyeGeom = new THREE.CircleGeometry(0.024, 40)
+  // convey the exhaustion / relentless intensity. Sized to fill the
+  // entire inner aperture (up to the inner seam at r=0.049) so it
+  // reads as a solid red disc, not a ring.
+  const eyeGeom = new THREE.CircleGeometry(0.046, 40)
   const eyeMat = new THREE.MeshBasicMaterial({
     color: 0xff0a0a,
     toneMapped: false,
-    transparent: true,
-    opacity: 1,
   })
   const eye = new THREE.Mesh(eyeGeom, eyeMat)
   eye.position.set(0, 0, 0.218)
@@ -975,12 +975,11 @@ export default function SensorBotScene({
       }
       eyePulse = Math.min(1, Math.max(0.1, eyePulse))
 
-      // Eye: always reads as vivid brake-light red. Minimum opacity
-      // stays high so the eye never dims below clearly visible.
-      const eyeMat = bot.eye.material as THREE.MeshBasicMaterial
-      eyeMat.opacity = 0.85 + eyePulse * 0.15
+      // Eye: solid opaque brake-light red disc — no opacity animation
+      // so it always reads fully filled.
 
-      // Halo: tracks intensity with stronger baseline glow.
+      // Halo: tracks intensity; the glow behind the eye swells/recedes
+      // but the eye itself stays solid.
       const haloMat = bot.halo.material as THREE.MeshBasicMaterial
       haloMat.opacity = 0.5 + eyePulse * 0.4
       bot.halo.scale.setScalar(0.85 + eyePulse * 0.5)
