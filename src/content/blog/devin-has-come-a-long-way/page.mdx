@@ -1,0 +1,77 @@
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+import Image from 'next/image'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src="https://zackproser.b-cdn.net/images/devin-has-come-a-long-way-hero.webp" alt="Pixel art of a Slack workspace with an AI bot avatar glowing in a channel, shipping code PRs and data tables while developers react with emoji" width={1200} height={675} />
+
+A year ago, my team at WorkOS trialed Devin. Nobody could get a single session to complete. The Slack integration was half-baked, sessions hung mid-task, the context window felt like a goldfish's memory. We gave it two weeks, got nothing shipped, and killed the trial. The consensus was fast and unanimous: not ready.
+
+Flash forward to today. Devin is one of the most-used agents in our Slack workspace. Engineers reach for it daily — implementation tasks, bug fixes, refactors, even complex data queries against our analytics warehouse. The product shipped iteration after iteration until the gap between "impressive demo" and "reliable tool" closed.
+
+## From zero sessions to daily driver
+
+The 2024 trial was bad in specific ways. The Slack integration would drop context between messages. You'd describe a task, Devin would start working, then ask you something that made clear it had already forgotten what you told it. Sessions would fail silently — no error, no output, just a spinning indicator and then nothing. Three engineers tried it independently over two weeks. Zero completed sessions. We moved on.
+
+I don't know exactly when things flipped. Sometime in early 2026 someone on the team tried it again, got a clean PR back from a single Slack message, and dropped it in our engineering channel. Then another person tried it. Then it was in daily standups: "Devin's got a PR up for that, I'll review it after lunch."
+
+The adoption was organic. Nobody mandated it. The product got good enough that people kept reaching for it because it kept working.
+
+## The data query that made me pay attention
+
+Here's what daily usage looks like now. An engineer drops this in Slack:
+
+> @Devin Find the most relevant tables for visits to our published content on the blog and make whatever joins necessary to stack rank our recent posts from the last 7 days in terms of any of the following: conversions (sign-ups, link clicks), time on page, scroll-depth and/or interactions with additional web properties
+
+Devin spins up, finds the right analytics tables, builds the joins, and comes back with a composite ranking — page views weighted at 35%, average engagement time at 30%, interaction density at 20%, new user reach at 15%:
+
+<Image src="https://app.devin.ai/attachments/477c1c16-15a2-4438-82da-06b97d79c4ef/image.png" alt="Devin's response in Slack showing a stack-ranked table of top blog posts by composite score including views, users, and average engagement time" width={1024} height={900} />
+
+It flagged that conversion tracking wasn't configured as GA4 key events for blog pages, so it couldn't measure blog→signup conversion directly. Instead it used interaction density and engagement time as proxies. That's the kind of judgment call that separates a working agent from a prompt wrapper — knowing when the ideal metric isn't available and reaching for the next best thing.
+
+A year ago this query would have produced a hung session and a confused follow-up message. Now it produces a formatted table with methodology notes in under six minutes.
+
+## Writing blog posts with Devin
+
+The WorkOS usage is team-wide. My personal experiment is different: I'm using Devin to write my blog posts.
+
+My posts aren't simple markdown. They include specific pixel art images in a retro SNES-era style I've developed over dozens of posts. Some interweave [three.js animations](/blog/my-algorithm) that support the overall story — interactive WebGL scenes that respond to scroll position or user input. The content, the images, and the interactive elements all need to work together as a coherent piece.
+
+<Image src="https://app.devin.ai/attachments/116506cc-5099-4010-8967-568a0c30c669/image.png" alt="Devin session showing a PR that replaces sensor animation with onomatopoeic beeping, handling three.js component changes and audio autoplay logic" width={1024} height={768} />
+
+That screenshot is from a recent session — Devin working on a three.js animation component for one of my posts. It's handling the WebGL scene, the audio autoplay logic (which is its own mess of browser policy edge cases), and the visual styling. The PR came back with working code. The audio context resumption was correct. The material colors were wrong on the first pass — it fixed them on the second.
+
+Early results: Devin handles the mechanical parts well. The MDX structure, the component wiring, the git workflow, the image optimization pipeline. For the creative direction — what to write about, what images to use, how to structure the narrative arc — I'm still driving. Same split I described with [Hermes](/blog/nine-posts-in-48-hours): I handle taste and voice, the agent handles labor and tooling.
+
+## Why Devin over a bespoke agent
+
+I built [Hermes](/blog/building-always-on-ai-assistant) — a custom Discord bot with 90 skills, full CDN integration, and deep context about my writing style. It works. I've shipped dozens of posts with it.
+
+So why am I experimenting with Devin for the same task?
+
+Surface area. Hermes lives in Discord and operates on one repo. Devin lives across my entire GitHub surface — it can open PRs, respond to review comments, run CI, create new sessions from any repo in my org. I have my personal portfolio org connected and a separate org I use for SaaS products. One agent, both contexts, no context-switching between apps.
+
+The other thing: Devin handles the full session lifecycle that I had to build myself with Hermes. The VM provisioning, the git auth, the preview deployments, the CI integration — all of that came for free. With Hermes I spent weeks wiring up webhook bridges and SSM commands and Tailscale networking. With Devin I type a message in Slack and a PR appears.
+
+I'm still keeping Hermes for certain flows where the deep custom context matters. But for the standard blog-post-with-images-and-PR workflow, Devin's integrated surface is winning.
+
+## What changed
+
+The product improved along axes that matter for real work:
+
+**Context persistence.** Sessions maintain state across long interactions now. You can come back to a session hours later and it knows what it was doing. This was completely broken a year ago.
+
+**Slack-native workflow.** The integration is solid. Messages land, tasks execute, PRs appear. No mysterious failures. No dropped context. The bot responds in-thread with progress updates that actually reflect what's happening.
+
+**Code quality.** The PRs that come back are reviewable. They follow the conventions of the repo they're operating in. They run the linter. They handle edge cases. A year ago the code output — when you got any — looked like it was written by someone who'd skimmed the README once.
+
+**Tool use.** Devin reads your repo structure, finds the right files, understands the build system, runs the test suite. It operates like a junior engineer who's done their homework, not like a chatbot that happens to emit code.
+
+## The broader pattern
+
+This tracks with something I said in my [Applied AI Showcase talk](/blog/workos-applied-ai-showcase): the imagination gap. Model capability outruns our product imagination. Always. The exercise is to re-ask the question every quarter: "what would I build now that wasn't possible last quarter?"
+
+A year ago the answer to "can Devin ship real work from a Slack message" was no. Today the answer is yes, daily, across a team of engineers who choose to use it without being told to.
+
+I expect this post to age fast. The gap between "impressive but unreliable" and "boring and reliable" keeps closing faster than my intuitions update. If you tried Devin a year ago and wrote it off — same as we did — it might be worth another look.

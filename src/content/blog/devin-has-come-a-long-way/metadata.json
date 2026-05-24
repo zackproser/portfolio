@@ -1,0 +1,8 @@
+{
+  "title": "Devin Has Come a Long Way",
+  "author": "Zachary Proser",
+  "date": "2026-05-24",
+  "description": "A year ago at WorkOS nobody could get a single Devin session working. We abandoned it. Now it's one of our most-used agents — handling implementation, bug fixes, and data queries from Slack. And I'm using it to write blog posts with pixel art and three.js animations.",
+  "image": "https://zackproser.b-cdn.net/images/devin-has-come-a-long-way-hero.webp",
+  "tags": ["ai", "devin", "agents", "productivity", "workos"]
+}
