@@ -3,17 +3,17 @@
 // AlgorithmEnding
 // ---------------
 // Animated closing for the My Algorithm post. Three repetitions of the
-// scanning line fade in and out in staggered sequence — the visual mirror
-// of the audio loop that never ends. The trailing ellipsis dots pulse on
-// their own beat.
+// onomatopoeic beeping phrase fade in and out in staggered sequence —
+// the visual mirror of the audio loop that never ends. The trailing
+// ellipsis dots pulse on their own beat.
 
 export default function AlgorithmEnding() {
   return (
     <div className="my-12 text-center font-mono tracking-widest text-cyan-100/95 text-sm md:text-base">
-      <p className="algo-line algo-line-1">The sensor sweeps and scans.</p>
-      <p className="algo-line algo-line-2">The sensor sweeps and scans.</p>
+      <p className="algo-line algo-line-1">Do-do-do-do-dooooooooooo.</p>
+      <p className="algo-line algo-line-2">Do-do-do-do-dooooooooooo.</p>
       <p className="algo-line algo-line-3">
-        The sensor sweeps and scans
+        Do-do-do-do-dooooooooooo
         <span className="algo-dots">&hellip;</span>
       </p>
       <style jsx>{`

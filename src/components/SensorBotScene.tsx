@@ -9,8 +9,8 @@
 // ('hill'). Shared bot mesh, per-variant camera/lighting/environment.
 //
 // Audio is coordinated across instances via a window-scoped custom event
-// ('my-algorithm-audio') + localStorage. The audio toggle only renders on
-// the instance that passes `showAudioToggle`; other instances follow.
+// ('my-algorithm-audio') + localStorage. Audio autoplays by default; each
+// instance renders its own mute/unmute button.
 //
 // Visual stack is raw three.js (matches the pattern in BrainMap3D — fiber
 // not installed). Animation loop pauses via IntersectionObserver when the
@@ -27,16 +27,20 @@ export type SensorBotSceneProps = {
 }
 
 const AUDIO_EVENT = 'my-algorithm-audio'
+const AUDIO_RESUMED_EVENT = 'my-algorithm-audio-resumed'
 const AUDIO_STORAGE_KEY = 'my-algorithm-audio-enabled'
 
 type AudioToggleEvent = CustomEvent<{ enabled: boolean }>
 
 function readAudioPref(): boolean {
-  if (typeof window === 'undefined') return false
+  if (typeof window === 'undefined') return true
   try {
-    return window.localStorage.getItem(AUDIO_STORAGE_KEY) === '1'
+    const val = window.localStorage.getItem(AUDIO_STORAGE_KEY)
+    // Default to enabled (autoplay) if user has never toggled
+    if (val === null) return true
+    return val === '1'
   } catch {
-    return false
+    return true
   }
 }
 
@@ -56,6 +60,7 @@ function writeAudioPref(enabled: boolean) {
 
 type Engine = { ctx: AudioContext; masterGain: GainNode }
 let engine: Engine | null = null
+let autoplayListenerAttached = false
 
 function ensureEngine(): Engine | null {
   if (engine) return engine
@@ -71,6 +76,32 @@ function ensureEngine(): Engine | null {
   masterGain.connect(ctx.destination)
   engine = { ctx, masterGain }
   return engine
+}
+
+// Eagerly resume the AudioContext on the very first user interaction so
+// audio starts playing as soon as the user scrolls or clicks anywhere on
+// the page — no need to find and press the audio button.
+function attachAutoplayResume() {
+  if (autoplayListenerAttached) return
+  if (typeof window === 'undefined') return
+  autoplayListenerAttached = true
+  const resume = () => {
+    const e = ensureEngine()
+    if (e && e.ctx.state === 'suspended') {
+      e.ctx.resume().then(() => {
+        // Notify all active beep loops that the context is now running
+        // so they start playing immediately instead of waiting for
+        // their next scheduled tick.
+        window.dispatchEvent(new Event(AUDIO_RESUMED_EVENT))
+      }).catch(() => undefined)
+    }
+    for (const evt of ['scroll', 'click', 'touchstart', 'keydown']) {
+      window.removeEventListener(evt, resume, true)
+    }
+  }
+  for (const evt of ['scroll', 'click', 'touchstart', 'keydown']) {
+    window.addEventListener(evt, resume, { capture: true, passive: true, once: true })
+  }
 }
 
 type Note = {
@@ -194,10 +225,10 @@ function smoothstep(x: number): number {
   return t * t * (3 - 2 * t)
 }
 
-// Build the sensor bot mesh used in every variant. The bot is a small dark
-// sphere body with a short stalk and a "head" capped by a glowing red
-// sensor disc. A thin emissive orange wire is visible through the body,
-// representing the algorithm running inside.
+// Build the sensor bot mesh used in every variant. The bot is a dark
+// gunmetal sphere body with a short stalk and a bright white "head" capped
+// by a glowing red sensor disc. A thin emissive orange wire is visible
+// through the body, representing the algorithm running inside.
 function buildBot(): {
   group: THREE.Group
   body: THREE.Mesh
@@ -211,11 +242,11 @@ function buildBot(): {
   const group = new THREE.Group()
   const disposables: Array<{ dispose: () => void }> = []
 
-  // Body — dark gunmetal sphere
+  // Body — OD green sphere
   const bodyGeom = new THREE.SphereGeometry(0.55, 32, 32)
   const bodyMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a22,
-    emissive: 0x0a0a18,
+    color: 0x3a4a2a,
+    emissive: 0x1a2210,
     roughness: 0.7,
     metalness: 0.4,
   })
@@ -236,15 +267,11 @@ function buildBot(): {
   group.add(stalk)
   disposables.push(stalkGeom, stalkMat)
 
-  // Head — WHITE polished sphere. Perfectly spherical (no y-squash) so
-  // the eye assembly reads cleanly from any rotation angle.
+  // Head — bright eggshell white. MeshBasicMaterial so scene lighting
+  // cannot tint or darken it — contrasts clearly against the dark body.
   const headGeom = new THREE.SphereGeometry(0.22, 56, 56)
-  const headMat = new THREE.MeshStandardMaterial({
-    color: 0xf4f2ec,
-    emissive: 0x0c0c0c,
-    emissiveIntensity: 0.05,
-    roughness: 0.28,
-    metalness: 0.42,
+  const headMat = new THREE.MeshBasicMaterial({
+    color: 0xf5f0e8,
   })
   const head = new THREE.Mesh(headGeom, headMat)
   head.position.y = 1.52
@@ -318,11 +345,11 @@ function buildBot(): {
   head.add(innerSeam)
   disposables.push(innerSeamGeom)
 
-  const haloGeom = new THREE.CircleGeometry(0.036, 40)
+  const haloGeom = new THREE.CircleGeometry(0.055, 40)
   const haloMat = new THREE.MeshBasicMaterial({
-    color: 0xff3848,
+    color: 0xff1020,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.7,
     blending: THREE.AdditiveBlending,
     toneMapped: false,
     depthWrite: false,
@@ -332,12 +359,14 @@ function buildBot(): {
   head.add(halo)
   disposables.push(haloGeom, haloMat)
 
-  const eyeGeom = new THREE.CircleGeometry(0.019, 40)
+  // Brake-light red optic — vivid and saturated in every scene to
+  // convey the exhaustion / relentless intensity. Sized to fill the
+  // entire inner aperture (up to the inner seam at r=0.049) so it
+  // reads as a solid red disc, not a ring.
+  const eyeGeom = new THREE.CircleGeometry(0.046, 40)
   const eyeMat = new THREE.MeshBasicMaterial({
-    color: 0xff1024,
+    color: 0xff0a0a,
     toneMapped: false,
-    transparent: true,
-    opacity: 1,
   })
   const eye = new THREE.Mesh(eyeGeom, eyeMat)
   eye.position.set(0, 0, 0.218)
@@ -389,22 +418,41 @@ export default function SensorBotScene({
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [audioEnabled, setAudioEnabled] = useState(false)
+  const [audioPlaying, setAudioPlaying] = useState(false)
   const [webglFailed, setWebglFailed] = useState(false)
   const audioRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
 
-  // Hydrate audio pref from localStorage + cross-instance events
+  // Hydrate audio pref from localStorage + cross-instance events.
+  // Also eagerly attach the autoplay-resume listener so the AudioContext
+  // unlocks on the very first user interaction (click, tap, keydown).
   useEffect(() => {
     audioRef.current = readAudioPref()
     setAudioEnabled(audioRef.current)
+    if (audioRef.current) {
+      const eng = ensureEngine()
+      attachAutoplayResume()
+      // Track when the AudioContext transitions to running so the
+      // button label updates from "TAP TO START" to "MUTE".
+      if (eng) {
+        const checkState = () => setAudioPlaying(eng.ctx.state === 'running')
+        checkState()
+        eng.ctx.addEventListener('statechange', checkState)
+      }
+    }
     const onEvt = (e: Event) => {
       const detail = (e as AudioToggleEvent).detail
       if (!detail) return
       audioRef.current = detail.enabled
       setAudioEnabled(detail.enabled)
     }
+    const onResumedGlobal = () => setAudioPlaying(true)
     window.addEventListener(AUDIO_EVENT, onEvt)
-    return () => window.removeEventListener(AUDIO_EVENT, onEvt)
+    window.addEventListener(AUDIO_RESUMED_EVENT, onResumedGlobal)
+    return () => {
+      window.removeEventListener(AUDIO_EVENT, onEvt)
+      window.removeEventListener(AUDIO_RESUMED_EVENT, onResumedGlobal)
+    }
   }, [])
 
   useEffect(() => {
@@ -468,9 +516,20 @@ export default function SensorBotScene({
     }
     tick()
 
+    // When the AudioContext resumes (from the autoplay gesture listener),
+    // immediately kick the loop so sound starts without waiting for the
+    // next scheduled tick.
+    const onResumed = () => {
+      if (cancelled || !audioRef.current) return
+      if (timer) clearTimeout(timer)
+      tick()
+    }
+    window.addEventListener(AUDIO_RESUMED_EVENT, onResumed)
+
     return () => {
       cancelled = true
       if (timer) clearTimeout(timer)
+      window.removeEventListener(AUDIO_RESUMED_EVENT, onResumed)
       window.removeEventListener('scroll', updateProximity)
       window.removeEventListener('resize', updateProximity)
       // Quick fade-out so the disconnect doesn't click
@@ -486,17 +545,23 @@ export default function SensorBotScene({
   }, [audioEnabled, variant])
 
   const handleToggleAudio = useCallback(() => {
+    // If audio is "enabled" but the AudioContext is still suspended
+    // (browser blocked autoplay), the first click should resume the
+    // context and start playback — NOT toggle to mute.
+    const e = ensureEngine()
+    if (audioRef.current && e && e.ctx.state === 'suspended') {
+      e.ctx.resume().then(() => {
+        window.dispatchEvent(new Event(AUDIO_RESUMED_EVENT))
+      }).catch(() => undefined)
+      return
+    }
+
     const next = !audioRef.current
     audioRef.current = next
     setAudioEnabled(next)
     writeAudioPref(next)
-    // Initialize + resume the shared engine inside the click handler so
-    // the user-gesture autoplay policy is satisfied for every scene.
-    if (next) {
-      const e = ensureEngine()
-      if (e && e.ctx.state === 'suspended') {
-        e.ctx.resume().catch(() => undefined)
-      }
+    if (next && e && e.ctx.state === 'suspended') {
+      e.ctx.resume().catch(() => undefined)
     }
     window.dispatchEvent(
       new CustomEvent(AUDIO_EVENT, { detail: { enabled: next } }),
@@ -910,15 +975,14 @@ export default function SensorBotScene({
       }
       eyePulse = Math.min(1, Math.max(0.1, eyePulse))
 
-      // Eye itself: opacity tracks intensity. The red color stays
-      // saturated; what changes is how brightly it shows.
-      const eyeMat = bot.eye.material as THREE.MeshBasicMaterial
-      eyeMat.opacity = 0.65 + eyePulse * 0.35
+      // Eye: solid opaque brake-light red disc — no opacity animation
+      // so it always reads fully filled.
 
-      // Halo: opacity AND scale track intensity, so the glow swells.
+      // Halo: tracks intensity; the glow behind the eye swells/recedes
+      // but the eye itself stays solid.
       const haloMat = bot.halo.material as THREE.MeshBasicMaterial
-      haloMat.opacity = 0.3 + eyePulse * 0.45
-      bot.halo.scale.setScalar(0.8 + eyePulse * 0.45)
+      haloMat.opacity = 0.5 + eyePulse * 0.4
+      bot.halo.scale.setScalar(0.85 + eyePulse * 0.5)
 
       // Wire glow — hot during chewing, faint on hill
       const wireMat = bot.wire.material as THREE.MeshBasicMaterial
@@ -1079,17 +1143,17 @@ export default function SensorBotScene({
         drag to rotate
       </div>
 
-      {/* Audio toggle — only on first instance */}
-      {showAudioToggle && (
-        <button
-          type="button"
-          onClick={handleToggleAudio}
-          className="absolute top-3 right-4 z-20 rounded-full border border-cyan-300/30 bg-black/50 px-3 py-1 font-mono text-[10px] tracking-widest uppercase text-cyan-100 hover:border-cyan-200 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
-          aria-pressed={audioEnabled}
-        >
-          {audioEnabled ? 'AUDIO · ON' : 'AUDIO · OFF'}
-        </button>
-      )}
+      {/* Audio mute/unmute button — shown on every instance */}
+      <button
+        type="button"
+        onClick={handleToggleAudio}
+        className="absolute top-3 right-4 z-20 rounded-full border border-cyan-300/30 bg-black/50 px-3 py-1 font-mono text-[10px] tracking-widest uppercase text-cyan-100 hover:border-cyan-200 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
+        aria-pressed={audioEnabled}
+      >
+        {audioEnabled
+          ? (audioPlaying ? '🔊 MUTE' : '🔊 TAP TO START')
+          : '🔇 UNMUTE'}
+      </button>
 
       {webglFailed && (
         <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
