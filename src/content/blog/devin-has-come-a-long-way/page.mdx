@@ -30,7 +30,7 @@ Devin spins up, finds the right analytics tables, builds the joins, and comes ba
 
 Here's what the actual output looked like in Slack:
 
-<Image src="https://zackproser.b-cdn.net/images/devin-slack-analytics.webp" alt="Devin's response in Slack showing a stack-ranked table of top blog posts by composite score including views, users, and average engagement time" width={1160} height={1216} />
+<Image src="https://zackproser.b-cdn.net/images/devin-slack-analytics-redacted.webp" alt="Devin's response in Slack showing a stack-ranked table of top blog posts by composite score including views, users, and average engagement time" width={1160} height={1216} />
 
 It flagged that conversion tracking wasn't configured as GA4 key events for blog pages, so it couldn't measure blog→signup conversion directly. Instead it used interaction density and engagement time as proxies. That's the kind of judgment call that separates a working agent from a prompt wrapper — knowing when the ideal metric isn't available and reaching for the next best thing.
 
