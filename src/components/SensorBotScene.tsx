@@ -220,8 +220,8 @@ function smoothstep(x: number): number {
   return t * t * (3 - 2 * t)
 }
 
-// Build the sensor bot mesh used in every variant. The bot is a small dark
-// sphere body with a short stalk and a "head" capped by a glowing red
+// Build the sensor bot mesh used in every variant. The bot is an eggshell
+// white sphere body with a short stalk and a "head" capped by a glowing red
 // sensor disc. A thin emissive orange wire is visible through the body,
 // representing the algorithm running inside.
 function buildBot(): {
@@ -237,25 +237,26 @@ function buildBot(): {
   const group = new THREE.Group()
   const disposables: Array<{ dispose: () => void }> = []
 
-  // Body — dark gunmetal sphere
+  // Body — eggshell white sphere
   const bodyGeom = new THREE.SphereGeometry(0.55, 32, 32)
   const bodyMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a22,
-    emissive: 0x0a0a18,
-    roughness: 0.7,
-    metalness: 0.4,
+    color: 0xf0ebe0,
+    emissive: 0x0c0c0c,
+    emissiveIntensity: 0.05,
+    roughness: 0.35,
+    metalness: 0.3,
   })
   const body = new THREE.Mesh(bodyGeom, bodyMat)
   body.position.y = 0.55
   group.add(body)
   disposables.push(bodyGeom, bodyMat)
 
-  // Stalk — thin neck cylinder
+  // Stalk — eggshell white neck cylinder
   const stalkGeom = new THREE.CylinderGeometry(0.06, 0.08, 0.35, 12)
   const stalkMat = new THREE.MeshStandardMaterial({
-    color: 0x2a2a35,
-    roughness: 0.4,
-    metalness: 0.6,
+    color: 0xe8e3d8,
+    roughness: 0.35,
+    metalness: 0.4,
   })
   const stalk = new THREE.Mesh(stalkGeom, stalkMat)
   stalk.position.y = 1.28
