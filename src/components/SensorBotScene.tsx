@@ -225,10 +225,10 @@ function smoothstep(x: number): number {
   return t * t * (3 - 2 * t)
 }
 
-// Build the sensor bot mesh used in every variant. The bot is an eggshell
-// white sphere body with a short stalk and a "head" capped by a glowing red
-// sensor disc. A thin emissive orange wire is visible through the body,
-// representing the algorithm running inside.
+// Build the sensor bot mesh used in every variant. The bot is a dark
+// gunmetal sphere body with a short stalk and a bright white "head" capped
+// by a glowing red sensor disc. A thin emissive orange wire is visible
+// through the body, representing the algorithm running inside.
 function buildBot(): {
   group: THREE.Group
   body: THREE.Mesh
@@ -242,36 +242,36 @@ function buildBot(): {
   const group = new THREE.Group()
   const disposables: Array<{ dispose: () => void }> = []
 
-  // Body — eggshell white sphere. MeshBasicMaterial so scene lighting
-  // cannot tint or darken it.
+  // Body — dark gunmetal sphere
   const bodyGeom = new THREE.SphereGeometry(0.55, 32, 32)
-  const bodyMat = new THREE.MeshBasicMaterial({
-    color: 0xf5f0e8,
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1a22,
+    emissive: 0x0a0a18,
+    roughness: 0.7,
+    metalness: 0.4,
   })
   const body = new THREE.Mesh(bodyGeom, bodyMat)
   body.position.y = 0.55
   group.add(body)
   disposables.push(bodyGeom, bodyMat)
 
-  // Stalk — eggshell white neck cylinder. MeshBasicMaterial to match body.
+  // Stalk — thin neck cylinder
   const stalkGeom = new THREE.CylinderGeometry(0.06, 0.08, 0.35, 12)
-  const stalkMat = new THREE.MeshBasicMaterial({
-    color: 0xede8de,
+  const stalkMat = new THREE.MeshStandardMaterial({
+    color: 0x2a2a35,
+    roughness: 0.4,
+    metalness: 0.6,
   })
   const stalk = new THREE.Mesh(stalkGeom, stalkMat)
   stalk.position.y = 1.28
   group.add(stalk)
   disposables.push(stalkGeom, stalkMat)
 
-  // Head — WHITE polished sphere. Perfectly spherical (no y-squash) so
-  // the eye assembly reads cleanly from any rotation angle.
+  // Head — bright eggshell white. MeshBasicMaterial so scene lighting
+  // cannot tint or darken it — contrasts clearly against the dark body.
   const headGeom = new THREE.SphereGeometry(0.22, 56, 56)
-  const headMat = new THREE.MeshStandardMaterial({
-    color: 0xf4f2ec,
-    emissive: 0x0c0c0c,
-    emissiveIntensity: 0.05,
-    roughness: 0.28,
-    metalness: 0.42,
+  const headMat = new THREE.MeshBasicMaterial({
+    color: 0xf5f0e8,
   })
   const head = new THREE.Mesh(headGeom, headMat)
   head.position.y = 1.52
@@ -345,11 +345,11 @@ function buildBot(): {
   head.add(innerSeam)
   disposables.push(innerSeamGeom)
 
-  const haloGeom = new THREE.CircleGeometry(0.036, 40)
+  const haloGeom = new THREE.CircleGeometry(0.042, 40)
   const haloMat = new THREE.MeshBasicMaterial({
-    color: 0xff3848,
+    color: 0xff1020,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.7,
     blending: THREE.AdditiveBlending,
     toneMapped: false,
     depthWrite: false,
@@ -359,9 +359,11 @@ function buildBot(): {
   head.add(halo)
   disposables.push(haloGeom, haloMat)
 
-  const eyeGeom = new THREE.CircleGeometry(0.019, 40)
+  // Brake-light red optic — vivid and saturated in every scene to
+  // convey the exhaustion / relentless intensity.
+  const eyeGeom = new THREE.CircleGeometry(0.024, 40)
   const eyeMat = new THREE.MeshBasicMaterial({
-    color: 0xff1024,
+    color: 0xff0a0a,
     toneMapped: false,
     transparent: true,
     opacity: 1,
@@ -973,15 +975,15 @@ export default function SensorBotScene({
       }
       eyePulse = Math.min(1, Math.max(0.1, eyePulse))
 
-      // Eye itself: opacity tracks intensity. The red color stays
-      // saturated; what changes is how brightly it shows.
+      // Eye: always reads as vivid brake-light red. Minimum opacity
+      // stays high so the eye never dims below clearly visible.
       const eyeMat = bot.eye.material as THREE.MeshBasicMaterial
-      eyeMat.opacity = 0.65 + eyePulse * 0.35
+      eyeMat.opacity = 0.85 + eyePulse * 0.15
 
-      // Halo: opacity AND scale track intensity, so the glow swells.
+      // Halo: tracks intensity with stronger baseline glow.
       const haloMat = bot.halo.material as THREE.MeshBasicMaterial
-      haloMat.opacity = 0.3 + eyePulse * 0.45
-      bot.halo.scale.setScalar(0.8 + eyePulse * 0.45)
+      haloMat.opacity = 0.5 + eyePulse * 0.4
+      bot.halo.scale.setScalar(0.85 + eyePulse * 0.5)
 
       // Wire glow — hot during chewing, faint on hill
       const wireMat = bot.wire.material as THREE.MeshBasicMaterial
