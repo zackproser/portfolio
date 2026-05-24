@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { createMetadata } from '@/utils/createMetadata'
 import rawMetadata from './metadata.json'
 
@@ -25,6 +26,37 @@ Apple's HomeKit is that control plane. Everything routes through it. One app, on
 I chose the lock-in deliberately. The alternative was stitching together four different apps, three different cloud backends, and a home automation server I'd need to maintain. I have two toddlers. I don't have time to run a Kubernetes cluster for my light switches.
 
 <Image src="https://zackproser.b-cdn.net/images/apple-home-control-plane-diagram.webp" alt="Pixel art network diagram showing Apple Watch, iPhone, MacBook, and Vision Pro all connected by glowing lines to a central Apple Home hub icon, with camera and smart plug icons branching off it" width={1200} height={675} />
+
+## The Equipment List
+
+Here's everything I bought to wire the house. All Amazon links are affiliate links.
+
+**Cameras:**
+- [Aqara Camera Hub G3](https://amzn.to/3PX3aHS) (×4) — Indoor pan-and-tilt cameras with HomeKit Secure Video. One in the living room, kitchen, and each kid's room.
+- Aqara Camera G5 Wi-Fi Outdoor (×2) — Weather-rated outdoor cameras bolted to the backyard fence.
+- Aqara Video Doorbell G4 (×3) — Two on the front door covering the whole front of the house, one on the side door covering the car and kitchen entrance.
+
+**Networking:**
+- [Eero Outdoor WiFi Repeater](https://amzn.to/3PX3aHS) — Mounted outside on the fence to serve the outdoor cameras, plus my phone and laptop when I'm working in the backyard. Without this, the G5 cameras would drop signal constantly.
+
+**Entertainment & Hubs:**
+- Apple TV 4K (×2) — One in the living room, one in the bedroom. Both serve as HomeKit hubs and Siri endpoints.
+- HomePod — In the living room for Siri voice commands and music.
+
+**Smart Plugs & Automation:**
+- Smart plugs (×3) — One on the bedroom water fountain, two on outdoor bug zappers. All on timed automations through the Home app.
+
+**Planned Additions:**
+- Govee smart light strips and bulbs — For every room, voice-controlled lighting
+- Aqara motion sensors — For hallways, stairway, and kitchen. Automatic nighttime lighting.
+
+## Wi-Fi Backbone: The Eero Outdoor Repeater
+
+None of the outdoor cameras work without reliable Wi-Fi at the fence line. My indoor router's signal was too weak by the time it reached the backyard — the G5 cameras would connect, stream for thirty seconds, then drop. Useless for actual monitoring.
+
+The [Eero outdoor repeater](https://amzn.to/3PX3aHS) fixed that. It's mounted outside, weather-rated, and extends the mesh network to the entire backyard. Both G5 fence cameras now hold a solid connection 24/7, including during rain and snow. The repeater also covers the patio, which means I can work outside on my laptop without the connection dying every time a cloud passes.
+
+If you're putting cameras on a fence or detached structure more than 30 feet from your house, a dedicated outdoor mesh node is non-optional. Indoor routers don't have the range, and powerline adapters are inconsistent. The Eero mounts flat on a wall or fence, runs on standard outdoor-rated power, and meshes automatically with the indoor Eero units.
 
 ## Indoor Cameras: Aqara G3s Everywhere
 
