@@ -1,0 +1,27 @@
+{
+  "title": "The Interface Matters Most",
+  "author": "Zachary Proser",
+  "date": "2026-05-24",
+  "description": "You have about ten seconds to wow your user and convince them you're already solving their problem. The model, the stack, the architecture — none of it matters if the door is wrong. Time-to-value is the moat now.",
+  "image": "https://zackproser.b-cdn.net/images/interface-matters-hero.webp",
+  "type": "blog",
+  "slug": "/blog/the-interface-matters-most",
+  "keywords": [
+    "interface design",
+    "time to value",
+    "AI engineering",
+    "user experience",
+    "internal tooling",
+    "Blog Bot",
+    "Bartleby",
+    "Cloudflare Workflows",
+    "Slack bot",
+    "product design"
+  ],
+  "tags": [
+    "AI Engineering",
+    "Product Design",
+    "Applied AI",
+    "Internal Tooling"
+  ]
+}
