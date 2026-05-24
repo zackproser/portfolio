@@ -242,26 +242,21 @@ function buildBot(): {
   const group = new THREE.Group()
   const disposables: Array<{ dispose: () => void }> = []
 
-  // Body — eggshell white sphere
+  // Body — eggshell white sphere. MeshBasicMaterial so scene lighting
+  // cannot tint or darken it.
   const bodyGeom = new THREE.SphereGeometry(0.55, 32, 32)
-  const bodyMat = new THREE.MeshStandardMaterial({
-    color: 0xf0ebe0,
-    emissive: 0x0c0c0c,
-    emissiveIntensity: 0.05,
-    roughness: 0.35,
-    metalness: 0.3,
+  const bodyMat = new THREE.MeshBasicMaterial({
+    color: 0xf5f0e8,
   })
   const body = new THREE.Mesh(bodyGeom, bodyMat)
   body.position.y = 0.55
   group.add(body)
   disposables.push(bodyGeom, bodyMat)
 
-  // Stalk — eggshell white neck cylinder
+  // Stalk — eggshell white neck cylinder. MeshBasicMaterial to match body.
   const stalkGeom = new THREE.CylinderGeometry(0.06, 0.08, 0.35, 12)
-  const stalkMat = new THREE.MeshStandardMaterial({
-    color: 0xe8e3d8,
-    roughness: 0.35,
-    metalness: 0.4,
+  const stalkMat = new THREE.MeshBasicMaterial({
+    color: 0xede8de,
   })
   const stalk = new THREE.Mesh(stalkGeom, stalkMat)
   stalk.position.y = 1.28
@@ -421,21 +416,27 @@ export default function SensorBotScene({
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const [audioEnabled, setAudioEnabled] = useState(false)
+  const [audioPlaying, setAudioPlaying] = useState(false)
   const [webglFailed, setWebglFailed] = useState(false)
   const audioRef = useRef(false)
   const variantRef = useRef<SceneVariant>(variant)
 
   // Hydrate audio pref from localStorage + cross-instance events.
   // Also eagerly attach the autoplay-resume listener so the AudioContext
-  // unlocks on the very first user interaction (scroll, click, etc.).
+  // unlocks on the very first user interaction (click, tap, keydown).
   useEffect(() => {
     audioRef.current = readAudioPref()
     setAudioEnabled(audioRef.current)
-    // Eagerly create the engine + attach interaction listeners so audio
-    // starts as soon as the user scrolls or interacts with the page.
     if (audioRef.current) {
-      ensureEngine()
+      const eng = ensureEngine()
       attachAutoplayResume()
+      // Track when the AudioContext transitions to running so the
+      // button label updates from "TAP TO START" to "MUTE".
+      if (eng) {
+        const checkState = () => setAudioPlaying(eng.ctx.state === 'running')
+        checkState()
+        eng.ctx.addEventListener('statechange', checkState)
+      }
     }
     const onEvt = (e: Event) => {
       const detail = (e as AudioToggleEvent).detail
@@ -443,8 +444,13 @@ export default function SensorBotScene({
       audioRef.current = detail.enabled
       setAudioEnabled(detail.enabled)
     }
+    const onResumedGlobal = () => setAudioPlaying(true)
     window.addEventListener(AUDIO_EVENT, onEvt)
-    return () => window.removeEventListener(AUDIO_EVENT, onEvt)
+    window.addEventListener(AUDIO_RESUMED_EVENT, onResumedGlobal)
+    return () => {
+      window.removeEventListener(AUDIO_EVENT, onEvt)
+      window.removeEventListener(AUDIO_RESUMED_EVENT, onResumedGlobal)
+    }
   }, [])
 
   useEffect(() => {
@@ -537,17 +543,23 @@ export default function SensorBotScene({
   }, [audioEnabled, variant])
 
   const handleToggleAudio = useCallback(() => {
+    // If audio is "enabled" but the AudioContext is still suspended
+    // (browser blocked autoplay), the first click should resume the
+    // context and start playback — NOT toggle to mute.
+    const e = ensureEngine()
+    if (audioRef.current && e && e.ctx.state === 'suspended') {
+      e.ctx.resume().then(() => {
+        window.dispatchEvent(new Event(AUDIO_RESUMED_EVENT))
+      }).catch(() => undefined)
+      return
+    }
+
     const next = !audioRef.current
     audioRef.current = next
     setAudioEnabled(next)
     writeAudioPref(next)
-    // Initialize + resume the shared engine inside the click handler so
-    // the user-gesture autoplay policy is satisfied for every scene.
-    if (next) {
-      const e = ensureEngine()
-      if (e && e.ctx.state === 'suspended') {
-        e.ctx.resume().catch(() => undefined)
-      }
+    if (next && e && e.ctx.state === 'suspended') {
+      e.ctx.resume().catch(() => undefined)
     }
     window.dispatchEvent(
       new CustomEvent(AUDIO_EVENT, { detail: { enabled: next } }),
@@ -1137,7 +1149,9 @@ export default function SensorBotScene({
         className="absolute top-3 right-4 z-20 rounded-full border border-cyan-300/30 bg-black/50 px-3 py-1 font-mono text-[10px] tracking-widest uppercase text-cyan-100 hover:border-cyan-200 hover:bg-cyan-400/10 transition-colors backdrop-blur-sm"
         aria-pressed={audioEnabled}
       >
-        {audioEnabled ? '🔊 MUTE' : '🔇 UNMUTE'}
+        {audioEnabled
+          ? (audioPlaying ? '🔊 MUTE' : '🔊 TAP TO START')
+          : '🔇 UNMUTE'}
       </button>
 
       {webglFailed && (
