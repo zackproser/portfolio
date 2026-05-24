@@ -26,7 +26,11 @@ Here's what daily usage looks like now. An engineer drops this in Slack:
 
 Devin spins up, finds the right analytics tables, builds the joins, and comes back with a composite ranking — page views weighted at 35%, average engagement time at 30%, interaction density at 20%, new user reach at 15%:
 
-<Image src="https://app.devin.ai/attachments/477c1c16-15a2-4438-82da-06b97d79c4ef/image.png" alt="Devin's response in Slack showing a stack-ranked table of top blog posts by composite score including views, users, and average engagement time" width={1024} height={900} />
+<Image src="https://zackproser.b-cdn.net/images/devin-data-query-slack.webp" alt="Pixel art of a Slack chat interface with an AI bot responding with a formatted data table showing blog post analytics" width={1200} height={675} />
+
+Here's what the actual output looked like in Slack:
+
+<Image src="https://zackproser.b-cdn.net/images/devin-slack-analytics.webp" alt="Devin's response in Slack showing a stack-ranked table of top blog posts by composite score including views, users, and average engagement time" width={1160} height={1216} />
 
 It flagged that conversion tracking wasn't configured as GA4 key events for blog pages, so it couldn't measure blog→signup conversion directly. Instead it used interaction density and engagement time as proxies. That's the kind of judgment call that separates a working agent from a prompt wrapper — knowing when the ideal metric isn't available and reaching for the next best thing.
 
@@ -38,7 +42,11 @@ The WorkOS usage is team-wide. My personal experiment is different: I'm using De
 
 My posts aren't simple markdown. They include specific pixel art images in a retro SNES-era style I've developed over dozens of posts. Some interweave [three.js animations](/blog/my-algorithm) that support the overall story — interactive WebGL scenes that respond to scroll position or user input. The content, the images, and the interactive elements all need to work together as a coherent piece.
 
-<Image src="https://app.devin.ai/attachments/116506cc-5099-4010-8967-568a0c30c669/image.png" alt="Devin session showing a PR that replaces sensor animation with onomatopoeic beeping, handling three.js component changes and audio autoplay logic" width={1024} height={768} />
+<Image src="https://zackproser.b-cdn.net/images/devin-threejs-blog.webp" alt="Pixel art of a split screen showing a GitHub PR on the left and a 3D wireframe animation on the right, with an AI bot bridging both" width={1200} height={675} />
+
+Here's what a recent session looked like — Devin working on a three.js animation component:
+
+<Image src="https://zackproser.b-cdn.net/images/devin-session-screenshot.webp" alt="Devin session showing a PR that replaces sensor animation with onomatopoeic beeping, handling three.js component changes and audio autoplay logic" width={3024} height={1724} />
 
 That screenshot is from a recent session — Devin working on a three.js animation component for one of my posts. It's handling the WebGL scene, the audio autoplay logic (which is its own mess of browser policy edge cases), and the visual styling. The PR came back with working code. The audio context resumption was correct. The material colors were wrong on the first pass — it fixed them on the second.
 
@@ -49,6 +57,8 @@ Early results: Devin handles the mechanical parts well. The MDX structure, the c
 I built [Hermes](/blog/building-always-on-ai-assistant) — a custom Discord bot with 90 skills, full CDN integration, and deep context about my writing style. It works. I've shipped dozens of posts with it.
 
 So why am I experimenting with Devin for the same task?
+
+<Image src="https://zackproser.b-cdn.net/images/devin-surface-area.webp" alt="Pixel art of a developer at the center of a constellation of connected GitHub repos, Slack channels, and CI pipelines linked by glowing golden lines" width={1200} height={675} />
 
 Surface area. Hermes lives in Discord and operates on one repo. Devin lives across my entire GitHub surface — it can open PRs, respond to review comments, run CI, create new sessions from any repo in my org. I have my personal portfolio org connected and a separate org I use for SaaS products. One agent, both contexts, no context-switching between apps.
 
