@@ -27,6 +27,7 @@ export type SensorBotSceneProps = {
 }
 
 const AUDIO_EVENT = 'my-algorithm-audio'
+const AUDIO_RESUMED_EVENT = 'my-algorithm-audio-resumed'
 const AUDIO_STORAGE_KEY = 'my-algorithm-audio-enabled'
 
 type AudioToggleEvent = CustomEvent<{ enabled: boolean }>
@@ -87,9 +88,13 @@ function attachAutoplayResume() {
   const resume = () => {
     const e = ensureEngine()
     if (e && e.ctx.state === 'suspended') {
-      e.ctx.resume().catch(() => undefined)
+      e.ctx.resume().then(() => {
+        // Notify all active beep loops that the context is now running
+        // so they start playing immediately instead of waiting for
+        // their next scheduled tick.
+        window.dispatchEvent(new Event(AUDIO_RESUMED_EVENT))
+      }).catch(() => undefined)
     }
-    // Remove all listeners after first successful resume
     for (const evt of ['scroll', 'click', 'touchstart', 'keydown']) {
       window.removeEventListener(evt, resume, true)
     }
@@ -503,9 +508,20 @@ export default function SensorBotScene({
     }
     tick()
 
+    // When the AudioContext resumes (from the autoplay gesture listener),
+    // immediately kick the loop so sound starts without waiting for the
+    // next scheduled tick.
+    const onResumed = () => {
+      if (cancelled || !audioRef.current) return
+      if (timer) clearTimeout(timer)
+      tick()
+    }
+    window.addEventListener(AUDIO_RESUMED_EVENT, onResumed)
+
     return () => {
       cancelled = true
       if (timer) clearTimeout(timer)
+      window.removeEventListener(AUDIO_RESUMED_EVENT, onResumed)
       window.removeEventListener('scroll', updateProximity)
       window.removeEventListener('resize', updateProximity)
       // Quick fade-out so the disconnect doesn't click
