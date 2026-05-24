@@ -1,0 +1,118 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import { createMetadata } from '@/utils/createMetadata'
+import rawMetadata from './metadata.json'
+
+export const metadata = createMetadata(rawMetadata)
+
+<Image src="https://zackproser.b-cdn.net/images/interface-matters-hero.webp" alt="A glowing portal doorway made of light and code — a person stepping through into a radiant digital world beyond" width={1200} height={675} />
+
+You have about ten seconds to wow your user and convince them you're already on the path to solving their problem.
+
+Ten seconds. That's the window. If your AI feature asks me to sign up, log in, find the right page, read the onboarding, and *then* start solving my problem — I'm already gone. I closed the tab. I'm back in Slack doing whatever I was doing before someone told me about your tool.
+
+I've been shipping AI tooling internally at WorkOS for eighteen months. I've built the same product twice, with two different interfaces, and watched one die in silence while the other got adopted in a week. The difference had nothing to do with models, prompts, or architecture. It had everything to do with where the door was.
+
+---
+
+## The same idea. Two doors.
+
+<Image src="https://zackproser.b-cdn.net/images/interface-matters-two-doors.webp" alt="Split-screen comparison: a dusty locked login door versus a bright active Slack channel" width={1200} height={675} />
+
+In 2024 I built **Bartleby** — a standalone web app for internal content creation. It could do most of what my current tool does. Same model class. Same prompts. Same quality of output.
+
+Almost nobody used it.
+
+The reason was obvious in retrospect. Bartleby required a separate login. A separate URL. A separate context-switch from whatever the user was already doing. For an internal writing tool, the first thing you saw was a login screen. Before you could read a single word of marketing copy, before you could experience a single moment of value — you had to authenticate.
+
+The verdict was a moment of silence. The kind of silence Bartleby the scrivener would have appreciated: *"I prefer not to."*
+
+In 2026 I shipped **Blog Bot** — a Slack bot. You `@`-mention it in the channel you already live in. Tag it in a thread, it writes the draft, you ship. Required zero new behavior.
+
+Same capability. Different door. The 2026 version got adoption immediately because it removed the only thing that actually mattered: friction at the point of use.
+
+<Image src="https://zackproser.b-cdn.net/images/interface-matters-ten-seconds.webp" alt="A dramatic glowing hourglass with sand flowing rapidly, question marks transforming into a completed solution" width={1200} height={675} />
+
+---
+
+## The ten-second rule
+
+Here's what I mean by ten seconds. When someone `@`-mentions Blog Bot with a request, the bot responds within ten seconds with a status message:
+
+> Classifying your input... Extracting facts from your sources... Building approved-fact pool...
+
+The user sees motion. Progress indicators. The system is already working. Five minutes later, a 1,635-word draft lands in the thread — fully structured, fact-checked, voice-matched, with images generated and a Webflow staging link ready.
+
+But the critical moment isn't the draft. The critical moment is those first ten seconds. The user typed one sentence and immediately saw evidence that the system understood them and was already executing. That's the feeling: *this thing is already on the path to solving my problem.*
+
+That feeling is the product.
+
+If you force me through a login screen, an onboarding wizard, a settings page, or a "getting started" tutorial before I get that feeling — you've already burned through my ten seconds of patience. The model behind the curtain could be the most capable system ever built. I'll never find out, because the door was wrong.
+
+---
+
+## The asymmetry is the point
+
+<Image src="https://zackproser.b-cdn.net/images/interface-matters-asymmetry.webp" alt="A single glowing chat bubble at the top connected by branching pathways to vast complex machinery underneath" width={1200} height={675} />
+
+The interface is simple. The stack behind it is anything but.
+
+Every `@`-mention of Blog Bot spins up a Cloudflare Workflow with 20+ durable steps. Four surface areas fire in sequence:
+
+**Intake** — classify input intent, route to a conversation, pull Granola meeting notes, fetch YouTube transcripts, match a format reference.
+
+**Research** — Firecrawl URL scrapes, PDF parsing, GitHub code context, accurate snippet extraction, source concatenation.
+
+**Write and verify** — extract facts into an approved pool, draft with Claude Opus, validate citations, run a voice and style scanner, de-Claude the output to strip AI tells.
+
+**Deliver** — generate brand-seeded images via Replicate, run a sensitivity guard, stage in Webflow, reply in Slack.
+
+One sentence in. A fully distributed system out. The user sees none of this. They shouldn't. The stack matters — it just shouldn't be the user's problem.
+
+That asymmetry is the whole point. The input is one `@`-mention. The output is a publication-ready draft with images, citations, and a staging link. The ratio between effort and result is what makes people come back. It's what makes them tell their teammates. It's what makes the tool spread.
+
+---
+
+## Joy as infrastructure
+
+The speed of building and iteration has compressed so far that the user's experience of joy — the feeling of *this thing already understands what I need* — has to be instantaneous. Not fast. Instantaneous.
+
+When the ten-second window works, something happens that you can't engineer with a better model or a cleaner architecture: the user relaxes. They stop evaluating. They stop comparing your tool to the twelve other tools they tried this month. They start *using* it. They start thinking about what they want to create instead of thinking about how the tool works.
+
+That shift — from evaluation mode to creation mode — is the entire game. Every second of friction before that shift is a second where the user might bail. Every additional click, every loading spinner without context, every "please wait while we set up your workspace" — all of it is burning through the ten seconds you had to earn trust.
+
+Blog Bot's all-time stats: 35 published posts, 27 staged, 195 drafts. The magnitude isn't the point. The point is that the slope only moved once we changed the door. Bartleby could do the same work. Nobody asked it to.
+
+---
+
+## The moat is the door
+
+<Image src="https://zackproser.b-cdn.net/images/interface-matters-moat.webp" alt="A castle surrounded by a glowing moat made of streaming data and clock symbols, gates open with warm light" width={1200} height={675} />
+
+Everyone can clone your SaaS with a prompt. The model layer commoditizes fast. The architecture patterns are well-documented. If your competitive advantage is "we use Claude Opus" or "we have RAG" — that's not an advantage. That's a feature list anyone can reproduce in a weekend.
+
+Time-to-value is the moat.
+
+Meet users where they already live. Slack. Linear. Granola. The terminal. The IDE. If your AI feature requires a new tab, a new login, or a new habit — you've already lost most of your users before the first prompt.
+
+The interface decision determines whether anyone uses what you build. The <Link href="/blog/workos-applied-ai-showcase">loop decision</Link> determines whether what you build compounds. The imagination decision determines whether you're still building the right thing in six months.
+
+But the interface comes first. Because if nobody opens the door, nothing else matters.
+
+---
+
+## What this means if you're building
+
+Three things, in priority order:
+
+**1. Ship the interface, not the stack.** Put the entry point inside the tool your users already have open. The model and the pipeline run behind the curtain. The user's only job is to express intent and receive value.
+
+**2. Show progress in the first ten seconds.** The user needs evidence that the system heard them and is already executing. Progress indicators, status messages, partial results — anything that signals motion. Silence is death.
+
+**3. Measure adoption, not capability.** Your benchmark isn't "can the model do this?" Your benchmark is "did anyone ask it to?" If the answer is no, the model isn't the problem. The door is.
+
+I learned these three things the hard way — by building the same product twice and watching the first one die. I talked about this at the <Link href="/blog/workos-applied-ai-showcase">WorkOS Applied AI Showcase</Link>, and the response from the room confirmed what I already suspected: everybody has a Bartleby. Some internal tool that technically works, that nobody uses, because the door is wrong.
+
+Kill the door. Meet them where they are. Give them ten seconds of joy.
+
+The interface matters most.
