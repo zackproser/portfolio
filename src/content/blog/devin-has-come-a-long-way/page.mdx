@@ -6,13 +6,13 @@ export const metadata = createMetadata(rawMetadata)
 
 <Image src="https://zackproser.b-cdn.net/images/devin-has-come-a-long-way-hero.webp" alt="Pixel art of a Slack workspace with an AI bot avatar glowing in a channel, shipping code PRs and data tables while developers react with emoji" width={1200} height={675} />
 
-A year ago, my team at WorkOS trialed Devin. Nobody could get a single session to complete. The Slack integration was half-baked, sessions hung mid-task, the context window felt like a goldfish's memory. We gave it two weeks, got nothing shipped, and killed the trial. The consensus was fast and unanimous: not ready.
+A year ago, my team at WorkOS trialed Devin. Nobody could get a single session to complete. The Slack integration was half-baked, sessions hung mid-task, the context window felt like a goldfish's memory. We gave it a couple months, got nothing shipped, and killed the trial. The consensus was unanimous: not ready.
 
 Flash forward to today. Devin is one of the most-used agents in our Slack workspace. Engineers reach for it daily — implementation tasks, bug fixes, refactors, even complex data queries against our analytics warehouse. The product shipped iteration after iteration until the gap between "impressive demo" and "reliable tool" closed.
 
 ## From zero sessions to daily driver
 
-The 2024 trial was bad in specific ways. The Slack integration would drop context between messages. You'd describe a task, Devin would start working, then ask you something that made clear it had already forgotten what you told it. Sessions would fail silently — no error, no output, just a spinning indicator and then nothing. Three engineers tried it independently over two weeks. Zero completed sessions. We moved on.
+The 2024 trial was bad in specific ways. The Slack integration would drop context between messages. You'd describe a task, Devin would start working, then ask you something that made clear it had already forgotten what you told it. Sessions would fail silently — no error, no output, just a spinning indicator and then nothing. Multiple engineers tried it independently over the course of the trial. Zero completed sessions. We moved on.
 
 I don't know exactly when things flipped. Sometime in early 2026 someone on the team tried it again, got a clean PR back from a single Slack message, and dropped it in our engineering channel. Then another person tried it. Then it was in daily standups: "Devin's got a PR up for that, I'll review it after lunch."
 
