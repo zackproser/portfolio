@@ -39,6 +39,7 @@ export default function ConsultationForm({ isOpen, onClose }: ConsultationFormPr
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [renderTs] = useState(() => Date.now());
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,6 +58,8 @@ export default function ConsultationForm({ isOpen, onClose }: ConsultationFormPr
           company,
           phoneNumber,
           message,
+          hp: (document.getElementById('consultation-hp') as HTMLInputElement | null)?.value ?? '',
+          _t: renderTs,
         }),
       });
 
@@ -187,6 +190,12 @@ export default function ConsultationForm({ isOpen, onClose }: ConsultationFormPr
                   </div>
                 ) : 'Request Consultation'}
               </Button>
+
+              {/* Honeypot — off-screen, aria/tab hidden. Bots auto-fill it. */}
+              <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }} aria-hidden="true">
+                <label htmlFor="consultation-hp">Leave this blank</label>
+                <input id="consultation-hp" name="website_url" type="text" tabIndex={-1} autoComplete="off" />
+              </div>
 
               <p className="text-xs text-center text-blue-200/70 mt-4">
                 I&apos;ll respond within 24-48 hours to schedule our call.
