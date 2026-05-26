@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -18,13 +18,21 @@ export function SubscribeForm({
   const [email, setEmail] = useState('')
   const [state, setState] = useState<State>('idle')
   const [errMsg, setErrMsg] = useState<string | null>(null)
+  // Honeypot bait. Real humans never see or touch this — bots that auto-fill
+  // every field by name do, which is the spam signal we forward to the server.
+  const [hp, setHp] = useState('')
+  // Synchronous in-flight flag. React's setState is async, so two rapid
+  // clicks could both pass `state === 'submitting'` before the state update
+  // propagates. The ref flips immediately so the second handler bails out.
+  const inFlightRef = useRef(false)
 
   const trimmed = email.trim()
   const validShape = trimmed.length === 0 ? null : EMAIL_RE.test(trimmed)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!validShape || state === 'submitting') return
+    if (!validShape || inFlightRef.current) return
+    inFlightRef.current = true
     setState('submitting')
     setErrMsg(null)
     try {
@@ -34,6 +42,7 @@ export function SubscribeForm({
         body: JSON.stringify({
           email: trimmed,
           referrer: typeof window !== 'undefined' ? window.location.pathname : '',
+          hp,
         }),
       })
       if (!res.ok) throw new Error(`status ${res.status}`)
@@ -42,6 +51,9 @@ export function SubscribeForm({
     } catch (err) {
       setState('error')
       setErrMsg('Something broke. Try again in a moment.')
+      // Release the guard only on error so the user can retry. Success paths
+      // stay locked (the success UI replaces the form anyway).
+      inFlightRef.current = false
     }
   }
 
@@ -91,6 +103,30 @@ export function SubscribeForm({
 
   return (
     <form className="sp-form" onSubmit={handleSubmit} noValidate>
+      {/* Honeypot. Off-screen + aria/tab hidden — real users never see, focus,
+          or submit this. Most form-spam bots auto-fill every named input,
+          which becomes the spam signal the server short-circuits on. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+        }}
+      >
+        <label htmlFor={`sp-hp-${fieldNum}`}>Leave this empty</label>
+        <input
+          id={`sp-hp-${fieldNum}`}
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          value={hp}
+          onChange={(e) => setHp(e.target.value)}
+        />
+      </div>
       <div className={`sp-field ${validateClass}`}>
         <label className="sp-field-label" htmlFor={`sp-email-${fieldNum}`}>
           <span>Your email</span>

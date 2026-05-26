@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { track } from "@vercel/analytics";
 
@@ -34,6 +34,11 @@ export const ProductWaitinglistForm = ({
 }) => {
 	const [formSuccess, setSuccess] = useState(false);
 	const [email, setEmail] = useState(userEmail);
+	// Honeypot bait — bots auto-fill named fields; humans never touch this.
+	const [hp, setHp] = useState("");
+	// Synchronous in-flight flag (React setState is async; useRef catches the
+	// rapid double-click before the state update propagates).
+	const inFlightRef = useRef(false);
 
 	useEffect(() => {
 		setEmail(userEmail);
@@ -57,11 +62,14 @@ export const ProductWaitinglistForm = ({
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		if (inFlightRef.current) return;
+		inFlightRef.current = true;
 		const form = event.target;
 
 		const data = {
 			email: form.email.value,
 			productSlug,
+			hp,
 		};
 
 		await fetch("/api/waitinglist-subscribe", {
@@ -77,6 +85,8 @@ export const ProductWaitinglistForm = ({
 			})
 			.catch((e) => {
 				console.error(e);
+				// Release the in-flight guard on error so the user can retry.
+				inFlightRef.current = false;
 			});
 	};
 
@@ -94,6 +104,29 @@ export const ProductWaitinglistForm = ({
 			onSubmit={handleSubmit}
 			className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
 		>
+			{/* Honeypot. Off-screen + aria/tab hidden — invisible to real users,
+			    bots auto-fill it and the server short-circuits. */}
+			<div
+				aria-hidden="true"
+				style={{
+					position: "absolute",
+					left: "-9999px",
+					width: "1px",
+					height: "1px",
+					overflow: "hidden",
+				}}
+			>
+				<label htmlFor={`waitlist-hp-${productSlug}`}>Leave this empty</label>
+				<input
+					id={`waitlist-hp-${productSlug}`}
+					type="text"
+					name="company"
+					tabIndex={-1}
+					autoComplete="off"
+					value={hp}
+					onChange={(e) => setHp(e.target.value)}
+				/>
+			</div>
 			<div className="mt-6 flex">
 				<input
 					type="email"
