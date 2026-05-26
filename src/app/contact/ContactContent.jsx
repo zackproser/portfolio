@@ -91,6 +91,7 @@ export function ContactContent() {
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [toast, setToast] = useState('')
+  const [renderTs] = useState(() => Date.now())
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -116,7 +117,14 @@ export function ContactContent() {
       const res = await fetch('/api/consultation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, company, message }),
+        body: JSON.stringify({
+          name,
+          email,
+          company,
+          message,
+          hp: form.elements.namedItem('website_url')?.value ?? '',
+          _t: renderTs,
+        }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -305,6 +313,12 @@ export function ContactContent() {
                     {errorMessage || 'Something went wrong. Email zackproser@gmail.com instead.'}
                   </div>
                 ) : null}
+
+                {/* Honeypot — off-screen, aria/tab hidden */}
+                <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }} aria-hidden="true">
+                  <label htmlFor="contact-hp">Leave this blank</label>
+                  <input id="contact-hp" name="website_url" type="text" tabIndex={-1} autoComplete="off" />
+                </div>
 
                 <div className="ed-submit-row">
                   <span className="fine">Forwarded to zackproser@gmail.com · paid work answered first</span>

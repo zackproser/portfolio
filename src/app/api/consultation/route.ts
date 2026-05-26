@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ServerClient } from 'postmark';
+import { detectSpam } from "@/lib/spam-detection";
 
 export const maxDuration = 300;
 
@@ -9,6 +10,20 @@ export const maxDuration = 300;
 export async function POST(req: NextRequest) {
   // Get data submitted in the request's body.
   const body = await req.json();
+
+  // ── Spam gate ───────────────────────────────────────────────────────
+  // Return a fake success so bots don't adapt to a rejection signal.
+  const spamReason = detectSpam(body);
+  if (spamReason) {
+    console.log(`[consultation] spam blocked (${spamReason}):`, body.email);
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        message: "Consultation request submitted successfully",
+      }),
+      { status: 200 },
+    );
+  }
 
   // Validate required fields
   if (!body.email || !body.email.trim()) {
